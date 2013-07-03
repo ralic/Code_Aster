@@ -4,35 +4,35 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                   ddlcho, ier)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mdchan.h'
-    include 'asterfort/mdchdl.h'
-    include 'asterfort/mdchre.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utnono.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mdchan.h"
+#include "asterfort/mdchdl.h"
+#include "asterfort/mdchre.h"
+#include "asterfort/posddl.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utnono.h"
+#include "asterfort/wkvect.h"
     integer :: nbnli, iamor, imode, ier, logcho(nbnli, *), ddlcho(*), nbrfis
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
     logical :: lflu

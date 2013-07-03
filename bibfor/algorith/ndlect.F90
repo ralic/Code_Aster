@@ -20,30 +20,30 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mxmoam.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmamab.h'
-    include 'asterfort/nmcsol.h'
-    include 'asterfort/nmimpe.h'
-    include 'asterfort/nmmoam.h'
-    include 'asterfort/nmmuap.h'
-    include 'asterfort/nmondp.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mxmoam.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmamab.h"
+#include "asterfort/nmcsol.h"
+#include "asterfort/nmimpe.h"
+#include "asterfort/nmmoam.h"
+#include "asterfort/nmmuap.h"
+#include "asterfort/nmondp.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: sddyna
     character(len=24) :: modele, mate, carele
     character(len=19) :: lischa

@@ -19,7 +19,7 @@ function nmcri2(dp)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/ecpuis.h'
+#include "asterfort/ecpuis.h"
     real(kind=8) :: nmcri2, dp
 ! ----------------------------------------------------------------------
 !   BUT: EVALUER LA FONCTION DONT ON CHERCHE LE ZERO POUR LA PLASTICITE

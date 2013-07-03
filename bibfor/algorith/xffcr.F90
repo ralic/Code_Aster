@@ -19,10 +19,10 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
     integer :: nfon, jfono, jbaso, jtailo, jindpt, jfon, jbas, jtail
     character(len=19) :: typfon
 !

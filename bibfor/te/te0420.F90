@@ -27,10 +27,10 @@ subroutine te0420(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
     character(len=16) :: nomte, option
 !
 !

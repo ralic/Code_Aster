@@ -21,18 +21,18 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/cfelpv.h'
-    include 'asterfort/cfimp2.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/caladu.h"
+#include "asterfort/cfelpv.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco, defico
     character(len=8) :: noma
     integer :: indic

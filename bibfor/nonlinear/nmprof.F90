@@ -19,13 +19,13 @@ subroutine nmprof(modele, result, lischa, solveu, numedd)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/numero.h'
-    include 'asterfort/rsnume.h'
+#include "jeveux.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/numero.h"
+#include "asterfort/rsnume.h"
     character(len=24) :: modele, numedd
     character(len=8) :: result
     character(len=19) :: lischa, solveu

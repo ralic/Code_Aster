@@ -18,7 +18,7 @@ subroutine ncpact(dg, nec, nbc)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/nbbit1.h'
+#include "asterfort/nbbit1.h"
     integer :: dg(*), nec, nbc
 !
 !**********************************************************************

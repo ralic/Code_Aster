@@ -29,11 +29,11 @@ function digde4(igr, iel, opt, ipar, dim1,&
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/digde3.h'
-    include 'asterfort/modatt.h'
-    include 'asterfort/voiuti.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/digde3.h"
+#include "asterfort/modatt.h"
+#include "asterfort/voiuti.h"
     integer :: igr, iel, opt, ipar, dim1
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, nbvois

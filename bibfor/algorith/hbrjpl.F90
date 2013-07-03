@@ -18,14 +18,14 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterc/r8pi.h'
-    include 'asterfort/hbderi.h'
-    include 'asterfort/hbmata.h'
-    include 'asterfort/hbvaec.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/trace.h'
-    include 'blas/ddot.h'
+#include "asterc/r8pi.h"
+#include "asterfort/hbderi.h"
+#include "asterfort/hbmata.h"
+#include "asterfort/hbvaec.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/trace.h"
+#include "blas/ddot.h"
     integer :: nbmat
     real(kind=8) :: vim(*), vip(*), sigp(6), dsidep(6, 6), materf(nbmat, 2)
     real(kind=8) :: vp(3), vecp(3, 3)

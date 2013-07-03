@@ -1,30 +1,30 @@
 subroutine chveno(fonree, noma, nomo)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/chbord.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/orilma.h'
-    include 'asterfort/ornorm.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utmamo.h'
-    include 'asterfort/utmotp.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/chbord.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/orilma.h"
+#include "asterfort/ornorm.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utmamo.h"
+#include "asterfort/utmotp.h"
+#include "asterfort/wkvect.h"
     character(len=4) :: fonree
     character(len=*) :: noma, nomo
 ! ======================================================================

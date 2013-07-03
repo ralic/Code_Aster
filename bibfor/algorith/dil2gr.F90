@@ -22,8 +22,8 @@ subroutine dil2gr(imate, compor, ndim, regula, dimdef,&
 ! ---       SECOND GRADIENT --------------------------------------------
 ! ======================================================================
     implicit      none
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
     integer :: imate, ndim, dimdef, regula(6)
     real(kind=8) :: sigp(ndim), dsde2g(ndim, ndim), defgep(dimdef)
     character(len=16) :: compor(*)

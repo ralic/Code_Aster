@@ -18,31 +18,31 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/inical.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislch.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lisllc.h'
-    include 'asterfort/lisltc.h'
-    include 'asterfort/lisnbg.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/lisnol.h'
-    include 'asterfort/lisopt.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecoor.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislch.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lisllc.h"
+#include "asterfort/lisltc.h"
+#include "asterfort/lisnbg.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/lisnol.h"
+#include "asterfort/lisopt.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecoor.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     character(len=19) :: lischa, vecele
     character(len=8) :: nomo
     real(kind=8) :: instan

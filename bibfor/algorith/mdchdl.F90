@@ -1,8 +1,8 @@
 subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
                   ier)
     implicit  none
-    include 'asterfort/posddl.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/posddl.h"
+#include "asterfort/u2mesk.h"
     integer :: nbnli, iliai, ddlcho(*), ier
     logical :: lnoue2
     character(len=8) :: noecho(nbnli, *)

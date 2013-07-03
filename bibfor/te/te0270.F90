@@ -25,12 +25,12 @@ subroutine te0270(option, nomte)
 ! CORPS DU PROGRAMME
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/vff2dn.h'
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
     integer :: nbres
     parameter (nbres=3)

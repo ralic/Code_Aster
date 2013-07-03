@@ -20,14 +20,14 @@ subroutine cfimp3(defico, resoco, noma, ifm, numord,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apnomp.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfnoap.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apnomp.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnoap.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
     integer :: ifm
     integer :: numord

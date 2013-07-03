@@ -1,17 +1,17 @@
 subroutine rcver1(phenoz, tablz, tably)
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: tablz, tably, phenoz
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

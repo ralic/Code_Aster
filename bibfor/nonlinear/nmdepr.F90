@@ -18,21 +18,21 @@ subroutine nmdepr(modele, ligrel, carele, charge, icha,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/gettco.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/rsinch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/gettco.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/rsinch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: modele, carele, resufv(3), ligrel, charge
     real(kind=8) :: instan
     integer :: icha

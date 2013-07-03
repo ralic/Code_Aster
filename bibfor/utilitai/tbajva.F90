@@ -2,13 +2,13 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
                   vr, livr, vc, livc, vk,&
                   livk)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nbpara, vi, livi(*)
     real(kind=8) :: vr, livr(*)
     complex(kind=8) :: vc, livc(*)
@@ -45,7 +45,7 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
 ! I/O : LIVK   : LISTE DES VALEURS POUR LES PARAMETRES "K"
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
 !

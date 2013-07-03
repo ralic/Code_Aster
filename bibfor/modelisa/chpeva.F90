@@ -25,24 +25,24 @@ subroutine chpeva(chou)
 !                ELLE FAIT DES CALL GETVXX.
 !     -----------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/ceseva.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnseva.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/ceseva.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnseva.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: n1, ib, jpara1, npara, jpara2, k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
     character(len=8) :: kbid, chin, chou, nomgd

@@ -1,15 +1,15 @@
 subroutine rc36rs(nomres, noma, nbma, listma, chindi,&
                   chresu)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
     integer :: nbma, listma(*)
     character(len=8) :: nomres, noma
     character(len=24) :: chindi, chresu

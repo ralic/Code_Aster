@@ -4,24 +4,24 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                   devgii, irtet)
 !
     implicit      none
-    include 'asterfort/calcpj.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/codree.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/lglcov.h'
-    include 'asterfort/lgldom.h'
-    include 'asterfort/lglini.h'
-    include 'asterfort/lglite.h'
-    include 'asterfort/prjsom.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/ddot.h'
+#include "asterfort/calcpj.h"
+#include "asterfort/codent.h"
+#include "asterfort/codree.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/lglcov.h"
+#include "asterfort/lgldom.h"
+#include "asterfort/lglini.h"
+#include "asterfort/lglite.h"
+#include "asterfort/prjsom.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mesk.h"
+#include "blas/ddot.h"
     integer :: itmax, nbmat, nr, nvi, icomp, irtet
     real(kind=8) :: toler, mater(nbmat, 2), deps(6), sigd(6)
     real(kind=8) :: vind(*), sigf(6), vinf(*), seuil, devg(6), devgii

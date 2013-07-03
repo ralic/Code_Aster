@@ -19,8 +19,8 @@ subroutine sansco(char, motfac, noma)
 ! REPONSABLE
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/sansno.h'
+#include "jeveux.h"
+#include "asterfort/sansno.h"
     character(len=8) :: char
     character(len=16) :: motfac
     character(len=8) :: noma

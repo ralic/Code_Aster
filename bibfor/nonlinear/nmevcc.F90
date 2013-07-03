@@ -20,16 +20,16 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
     character(len=24) :: defico, resoco
     integer :: iechec, ievdac, numins
     character(len=19) :: sddisc

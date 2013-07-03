@@ -20,17 +20,17 @@ subroutine rvchlo(epsi, ssch19, nbcp, nbco, nbsp,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvechb.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvechb.h"
+#include "asterfort/wkvect.h"
     integer :: m, f(*), n, nbcp, nbcm, nbsm, nbco, nbsp
     character(len=19) :: ssch19
     real(kind=8) :: r(*), valcp(*), epsi

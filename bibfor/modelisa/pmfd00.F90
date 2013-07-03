@@ -1,6 +1,6 @@
 subroutine pmfd00()
     implicit  none
-    include  'jeveux.h'
+#include "jeveux.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,36 +33,36 @@ subroutine pmfd00()
 !
 ! --- ------------------------------------------------------------------
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pmfd01.h'
-    include 'asterfort/pmfd02.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/rgcmpg.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pmfd01.h"
+#include "asterfort/pmfd02.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/reliem.h"
+#include "asterfort/rgcmpg.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !
     integer :: ncarfi
     parameter  (ncarfi=3)

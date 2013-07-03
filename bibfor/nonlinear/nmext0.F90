@@ -21,12 +21,12 @@ subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nbno, nbma
     integer :: nbpi, nbspi, nbcmp
     character(len=4) :: typcha

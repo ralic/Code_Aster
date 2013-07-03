@@ -3,14 +3,14 @@ subroutine calcdr(nbmat, mater, parame, derive, g,&
                   dfdl)
 !
     implicit      none
-    include 'asterfort/drfdrg.h'
-    include 'asterfort/drfdrs.h'
-    include 'asterfort/drfnew.h'
-    include 'asterfort/drudrg.h'
-    include 'asterfort/drudrs.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/drfdrg.h"
+#include "asterfort/drfdrs.h"
+#include "asterfort/drfnew.h"
+#include "asterfort/drudrg.h"
+#include "asterfort/drudrs.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), derive(4), g, i
     real(kind=8) :: q(6), devg(6), devgii, traceg, dfdl

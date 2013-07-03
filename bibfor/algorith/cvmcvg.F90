@@ -44,11 +44,11 @@ subroutine cvmcvg(dy, ddy, nr, itmax, toler,&
 !            IRTETI = 2:  RE-INTEGRATION
 !            IRTETI = 3:  REDECOUPAGE DU PAS DE TEMPS
 !       ----------------------------------------------------------------
-    include 'asterfort/codent.h'
-    include 'asterfort/codree.h'
-    include 'asterfort/lcverr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utexcm.h'
+#include "asterfort/codent.h"
+#include "asterfort/codree.h"
+#include "asterfort/lcverr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utexcm.h"
     integer :: typess, itmax, iter, intg, nr, icomp
     real(kind=8) :: toler, essai, ddy(*), dy(*)
 !       ----------------------------------------------------------------

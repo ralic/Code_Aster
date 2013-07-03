@@ -18,26 +18,26 @@ subroutine dfllty(sdlist, metlis, dtmin)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfllli.h'
-    include 'asterfort/dfllvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/nmarnr.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfllli.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/nmarnr.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: sdlist
     character(len=16) :: metlis
     real(kind=8) :: dtmin

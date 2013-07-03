@@ -20,13 +20,13 @@ subroutine nmdiri(modele, mate, carele, lischa, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/vebtla.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/vebtla.h"
     character(len=19) :: lischa
     character(len=24) :: modele, mate, carele
     character(len=19) :: vediri, sddyna

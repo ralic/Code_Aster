@@ -65,13 +65,13 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
 !           IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/burjac.h'
-    include 'asterfort/cvmjac.h'
-    include 'asterfort/hayjac.h'
-    include 'asterfort/hujjac.h'
-    include 'asterfort/irrjac.h'
-    include 'asterfort/lcmmja.h'
-    include 'asterfort/lkijac.h'
+#include "asterfort/burjac.h"
+#include "asterfort/cvmjac.h"
+#include "asterfort/hayjac.h"
+#include "asterfort/hujjac.h"
+#include "asterfort/irrjac.h"
+#include "asterfort/lcmmja.h"
+#include "asterfort/lkijac.h"
     integer :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
     integer :: indi(7)
     real(kind=8) :: deps(*), epsd(*), toler, crit(*)

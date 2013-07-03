@@ -53,27 +53,27 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/connor.h'
-    include 'asterfort/cpdepl.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fluimp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdconf.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/pacouc.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8pi.h"
+#include "asterfort/connor.h"
+#include "asterfort/cpdepl.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fluimp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdconf.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/pacouc.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: melflu
     character(len=8) :: typflu, base
     integer :: nuor(*)

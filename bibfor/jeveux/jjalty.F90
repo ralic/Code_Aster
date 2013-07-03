@@ -17,8 +17,8 @@ subroutine jjalty(typei, ltypi, cel, inatb, jctab)
 ! ======================================================================
 ! aslint: disable=C1002,W0405
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jxveuo.h'
+#include "jeveux.h"
+#include "asterfort/jxveuo.h"
     integer :: ltypi, inatb, jctab
     character(len=*) :: typei, cel
 !-----------------------------------------------------------------------

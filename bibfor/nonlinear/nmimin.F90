@@ -19,10 +19,10 @@ subroutine nmimin(sdimpr, fonact, sddisc, sdsuiv, numins)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/nmimac.h'
-    include 'asterfort/nmimpa.h'
-    include 'asterfort/nmimpt.h'
-    include 'asterfort/nmimpx.h'
+#include "asterfort/nmimac.h"
+#include "asterfort/nmimpa.h"
+#include "asterfort/nmimpt.h"
+#include "asterfort/nmimpx.h"
     character(len=24) :: sdimpr, sdsuiv
     integer :: fonact(*)
     character(len=19) :: sddisc

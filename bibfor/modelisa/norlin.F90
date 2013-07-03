@@ -18,8 +18,8 @@ subroutine norlin(typma, l, knumai, coor, dfonc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=3) :: typma
     character(len=8) :: knumai
     real(kind=8) :: coor(3, *), dfonc(*), a, b, c, prec

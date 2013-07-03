@@ -59,11 +59,11 @@ subroutine nmzmat(fami, kpg, ksp, ndim, typmod,&
 ! ----------------------------------------------------------------------
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/zaswrp.h'
-    include 'asterfort/naueul.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecael.h'
+#include "jeveux.h"
+#include "asterc/zaswrp.h"
+#include "asterfort/naueul.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
     integer :: ndim, codret, i, nunit, kpg, ksp, nvarcm, iret2, idbg, numa
     parameter (nvarcm=5)
     character(len=8) :: typmod(*)

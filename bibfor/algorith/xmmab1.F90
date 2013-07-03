@@ -26,9 +26,9 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/indent.h'
-    include 'asterfort/xplma2.h'
-    include 'blas/ddot.h'
+#include "asterfort/indent.h"
+#include "asterfort/xplma2.h"
+#include "blas/ddot.h"
     integer :: ndim, jnne(3), nnc, jnnm(3), nfaes, jpcai, cface(5, 3)
     integer :: nsinge, nsingm, nconta, jddle(2), jddlm(2)
     integer :: nvit, ndeple, nfhe

@@ -21,8 +21,8 @@ subroutine carapo(sect, geom, orien, xl, pgl,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/matrot.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/matrot.h"
+#include "asterfort/u2mess.h"
     integer :: itype
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl

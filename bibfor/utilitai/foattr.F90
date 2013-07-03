@@ -1,13 +1,13 @@
 subroutine foattr(motcle, iocc, nomfon)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
     integer :: iocc
     character(len=*) :: motcle, nomfon
 !     ----------------------------------------------------------------

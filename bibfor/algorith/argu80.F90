@@ -32,20 +32,20 @@ subroutine argu80(nomres)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/verecy.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/verecy.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: valk
     character(len=8) :: droite, gauche, axe, typd, typg, typa
     character(len=8) :: nomres, intf

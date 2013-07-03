@@ -39,25 +39,25 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/appmas.h'
-    include 'asterfort/calor.h'
-    include 'asterfort/capaca.h'
-    include 'asterfort/dhdt.h'
-    include 'asterfort/dilgaz.h'
-    include 'asterfort/dmasp2.h'
-    include 'asterfort/dmdepv.h'
-    include 'asterfort/dmwdt.h'
-    include 'asterfort/dqdeps.h'
-    include 'asterfort/dqdp.h'
-    include 'asterfort/dqdt.h'
-    include 'asterfort/dspdp2.h'
-    include 'asterfort/entgaz.h'
-    include 'asterfort/inithm.h'
-    include 'asterfort/masvol.h'
-    include 'asterfort/netbis.h'
-    include 'asterfort/sigmap.h'
-    include 'asterfort/thmrcp.h'
-    include 'asterfort/viporo.h'
+#include "asterfort/appmas.h"
+#include "asterfort/calor.h"
+#include "asterfort/capaca.h"
+#include "asterfort/dhdt.h"
+#include "asterfort/dilgaz.h"
+#include "asterfort/dmasp2.h"
+#include "asterfort/dmdepv.h"
+#include "asterfort/dmwdt.h"
+#include "asterfort/dqdeps.h"
+#include "asterfort/dqdp.h"
+#include "asterfort/dqdt.h"
+#include "asterfort/dspdp2.h"
+#include "asterfort/entgaz.h"
+#include "asterfort/inithm.h"
+#include "asterfort/masvol.h"
+#include "asterfort/netbis.h"
+#include "asterfort/sigmap.h"
+#include "asterfort/thmrcp.h"
+#include "asterfort/viporo.h"
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec, yate
     integer :: adcome, adcp11, adcote
     integer :: addeme, addep1, addete, advico, vicphi, retcom

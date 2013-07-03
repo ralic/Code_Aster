@@ -24,39 +24,39 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xismec.h'
-    include 'asterfort/xpoajc.h'
-    include 'asterfort/xpoajm.h'
-    include 'asterfort/xpocmp.h'
-    include 'asterfort/xpocox.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elref2.h"
+#include "asterfort/exisd.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xismec.h"
+#include "asterfort/xpoajc.h"
+#include "asterfort/xpoajm.h"
+#include "asterfort/xpocmp.h"
+#include "asterfort/xpocox.h"
     integer :: nbnoc, nbmac, ngfon
     character(len=2) :: prefno(4)
     character(len=8) :: mo, malini, maxfem, resuco

@@ -20,16 +20,16 @@ subroutine cfgeom(reageo, iterat, noma, sdtime, sdstat,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfappa.h'
-    include 'asterfort/cfimp4.h'
-    include 'asterfort/geomco.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/reajeu.h'
+#include "jeveux.h"
+#include "asterfort/cfappa.h"
+#include "asterfort/cfimp4.h"
+#include "asterfort/geomco.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/reajeu.h"
     integer :: iterat
     logical :: reageo
     character(len=8) :: noma

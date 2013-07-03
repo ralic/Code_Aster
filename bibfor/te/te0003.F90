@@ -54,45 +54,45 @@ subroutine te0003(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref7.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/ntfcma.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcfode.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uterec.h'
-    include 'asterfort/uterfl.h'
-    include 'asterfort/utersa.h'
-    include 'asterfort/uthk.h'
-    include 'asterfort/utin3d.h'
-    include 'asterfort/utintc.h'
-    include 'asterfort/utjac.h'
-    include 'asterfort/utnbnv.h'
-    include 'asterfort/utno3d.h'
-    include 'asterfort/utnorm.h'
-    include 'asterfort/utvois.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref7.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/ntfcma.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcfode.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uterec.h"
+#include "asterfort/uterfl.h"
+#include "asterfort/utersa.h"
+#include "asterfort/uthk.h"
+#include "asterfort/utin3d.h"
+#include "asterfort/utintc.h"
+#include "asterfort/utjac.h"
+#include "asterfort/utnbnv.h"
+#include "asterfort/utno3d.h"
+#include "asterfort/utnorm.h"
+#include "asterfort/utvois.h"
     character(len=16) :: option, nomte
 !
 !

@@ -19,15 +19,15 @@ subroutine nmcrpc(result)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/exisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltcrsd.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
+#include "asterfort/exisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
     character(len=8) :: result
 !
 ! ----------------------------------------------------------------------

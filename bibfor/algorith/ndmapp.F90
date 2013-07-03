@@ -19,14 +19,14 @@ subroutine ndmapp(sddyna, valinc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
     character(len=19) :: valinc(*)
     character(len=19) :: sddyna
 !

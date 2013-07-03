@@ -1,8 +1,8 @@
 subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
                   iddl, rep)
     implicit none
-    include 'asterfort/fointe.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/fointe.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: psidel(neq, *), temps, rep
     character(len=8) :: nomfon(*)
 ! ======================================================================

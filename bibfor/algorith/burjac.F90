@@ -39,20 +39,20 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 !       ----------------------------------------------------------------
     implicit none
 !     ----------------------------------------------------------------
-    include 'asterfort/burafd.h'
-    include 'asterfort/burafr.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/burafd.h"
+#include "asterfort/burafr.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/mgauss.h"
     common /tdim/   ndt  , ndi
 !     ----------------------------------------------------------------
     integer :: i, ndt, ndi, nmat, nr, nvi, iret

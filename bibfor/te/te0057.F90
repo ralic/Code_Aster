@@ -28,10 +28,10 @@ subroutine te0057(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
     integer :: ipoids, ivf, idfdx, idfdy, igeom

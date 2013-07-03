@@ -1,9 +1,9 @@
 subroutine xerfis(ndime, ninter, npts, nptm)
     implicit none
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: ndime, ninter, npts, nptm
 !
 ! ======================================================================

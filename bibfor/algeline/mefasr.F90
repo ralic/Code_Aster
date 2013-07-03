@@ -3,9 +3,9 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                   sgn, orig, beta, a, b)
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/mefac2.h'
-    include 'asterfort/trigom.h'
+#include "asterc/r8pi.h"
+#include "asterfort/mefac2.h"
+#include "asterfort/trigom.h"
     integer :: ndim(14), nbcyl, nbgrp, nbtron, numgrp(*), idir, igrp
     integer :: sgn(*), orig(*)
     real(kind=8) :: xint(*), yint(*), rint(*), beta(*)

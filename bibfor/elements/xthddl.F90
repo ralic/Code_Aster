@@ -19,13 +19,13 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 ! person_in_charge: sam.cuvilliez at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/teattr.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/indent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/teattr.h"
     integer :: nfh, nddlno, nno, stano(*)
     character(len=16) :: option, nomte
     real(kind=8) :: mat(*), vect(*)

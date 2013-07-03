@@ -19,8 +19,8 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
 ! ======================================================================
     implicit none
 !      REAL*8 (A-H,O-Z)
-    include 'asterfort/matini.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/matini.h"
+#include "asterfort/u2mesg.h"
     integer :: nno, nnf
     real(kind=8) :: poids, dfrdeg(1), dfrdng(1), dfrdkg(1), coor(1)
     real(kind=8) :: dfrdef(1), dfrdnf(1), dfrdkf(1)

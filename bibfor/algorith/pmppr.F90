@@ -40,7 +40,7 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     real(kind=8) :: amat(na1, na2), bmat(nb1, nb2), cmat(nc1, nc2)
 !
 !-----------------------------------------------------------------------

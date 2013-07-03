@@ -17,10 +17,10 @@ subroutine connec(nomte, nse, nnop2, c)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecael.h'
+#include "jeveux.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecael.h"
     character(len=16) :: nomte
     integer :: nsemax, nnomax
 !-----------------------------------------------------------------------

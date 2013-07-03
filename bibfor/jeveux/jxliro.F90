@@ -17,11 +17,11 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jxdeps.h'
-    include 'asterfort/jxecrb.h'
-    include 'asterfort/jxlirb.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jxdeps.h"
+#include "asterfort/jxecrb.h"
+#include "asterfort/jxlirb.h"
+#include "asterfort/u2mess.h"
     integer :: ic, iadmi, iaddi(2), lso
 ! ----------------------------------------------------------------------
 ! LECTURE D'UN SEGMENT DE VALEUR

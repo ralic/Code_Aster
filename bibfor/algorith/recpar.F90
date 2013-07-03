@@ -2,10 +2,10 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar,&
                   cmp, cdp, dtmin, nper, nrmax)
 !
     implicit none
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: vmin(*), cmp, cpmin, dtmin, dtmax, dti, cdp
     real(kind=8) :: valr(4)
     character(len=8) :: vvar

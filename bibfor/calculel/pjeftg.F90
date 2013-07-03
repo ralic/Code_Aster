@@ -33,16 +33,16 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: igeom
     character(len=8) :: nomai
     character(len=24) :: geomi

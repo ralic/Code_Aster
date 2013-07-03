@@ -47,18 +47,18 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt,&
 !  OUT
 !     VINF   :  VARIABLES INTERNES A T+DT
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lkbpri.h'
-    include 'asterfort/lkcalg.h'
-    include 'asterfort/lkcaln.h'
-    include 'asterfort/lkcrip.h'
-    include 'asterfort/lkcriv.h'
-    include 'asterfort/lkdfds.h'
-    include 'asterfort/lkdgde.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkds2h.h'
-    include 'asterfort/lkvacp.h'
-    include 'asterfort/lkvarp.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lkbpri.h"
+#include "asterfort/lkcalg.h"
+#include "asterfort/lkcaln.h"
+#include "asterfort/lkcrip.h"
+#include "asterfort/lkcriv.h"
+#include "asterfort/lkdfds.h"
+#include "asterfort/lkdgde.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkds2h.h"
+#include "asterfort/lkvacp.h"
+#include "asterfort/lkvarp.h"
     integer :: val, ndt, nvi, nmat, ndi, nr
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: yd(*), vind(*), dt, deps(6)

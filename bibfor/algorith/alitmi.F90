@@ -54,22 +54,22 @@ subroutine alitmi(np1, np2, np3, np4, n2,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/adimve.h'
-    include 'asterfort/calcmd.h'
-    include 'asterfort/calcmi.h'
-    include 'asterfort/calfmn.h'
-    include 'asterfort/calfnl.h'
-    include 'asterfort/coupla.h'
-    include 'asterfort/estivd.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/newton.h'
-    include 'asterfort/projmd.h'
-    include 'asterfort/projvd.h'
-    include 'asterfort/sommma.h'
-    include 'asterfort/testch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'blas/dcopy.h'
+#include "asterfort/adimve.h"
+#include "asterfort/calcmd.h"
+#include "asterfort/calcmi.h"
+#include "asterfort/calfmn.h"
+#include "asterfort/calfnl.h"
+#include "asterfort/coupla.h"
+#include "asterfort/estivd.h"
+#include "asterfort/matini.h"
+#include "asterfort/newton.h"
+#include "asterfort/projmd.h"
+#include "asterfort/projvd.h"
+#include "asterfort/sommma.h"
+#include "asterfort/testch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "blas/dcopy.h"
     integer :: np1, np2, np3, np4, n2, nbm, nbmcd, icoupl
     real(kind=8) :: tc, dt0, dt, vecdt(*)
     integer :: nbnl, ichoc, itest, indnew, indne0, idecrt

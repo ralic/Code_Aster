@@ -23,13 +23,13 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ini002.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/ini002.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=*) :: ligrel
     integer :: igrel, nmax, adtabl(nmax), nval
     character(len=24) :: k24tab(nmax)

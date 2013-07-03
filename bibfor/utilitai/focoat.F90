@@ -1,12 +1,12 @@
 subroutine focoat(nomfon, nbfon, nopara, noresu, interp,&
                   prolgd)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: nbfon
     character(len=*) :: nomfon(*)
     character(len=16) :: nopara, noresu, interp, prolgd

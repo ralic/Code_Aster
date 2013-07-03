@@ -27,21 +27,21 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
 ! ----------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/hdfcld.h'
-    include 'asterc/hdfclg.h'
-    include 'asterc/hdfnbo.h'
-    include 'asterc/hdfopd.h'
-    include 'asterc/hdfopg.h'
-    include 'asterc/hdfrsv.h'
-    include 'asterc/hdftsd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjhrsv.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjlihd.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterc/hdfcld.h"
+#include "asterc/hdfclg.h"
+#include "asterc/hdfnbo.h"
+#include "asterc/hdfopd.h"
+#include "asterc/hdfopg.h"
+#include "asterc/hdfrsv.h"
+#include "asterc/hdftsd.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjhrsv.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjlihd.h"
+#include "asterfort/u2mesk.h"
     integer :: id, ic, idfic, idts
     character(len=*) :: ngrp
 ! ----------------------------------------------------------------------

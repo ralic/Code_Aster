@@ -18,9 +18,9 @@ subroutine rvfcom(nmaila, m1, f1, m2, f2)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
-    include 'asterfort/i2extf.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/i2extf.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nmaila
     integer :: m1, m2, f1, f2
 !

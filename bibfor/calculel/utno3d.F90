@@ -52,10 +52,10 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/uthk.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/uthk.h"
     integer :: ifm, niv, nsomm, ifa, tymvol, igeom, idfdx, idfdy, npgf
     integer :: noe(9, 6, 4)
     real(kind=8) :: jac(9), xn(9), yn(9), zn(9), hf, poids3(9)

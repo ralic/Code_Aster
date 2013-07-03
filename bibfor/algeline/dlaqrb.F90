@@ -131,15 +131,15 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h,&
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/flanv2.h'
-    include 'asterfort/flarfg.h'
-    include 'blas/dcopy.h'
-    include 'blas/dlanhs.h'
-    include 'blas/drot.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/flanv2.h"
+#include "asterfort/flarfg.h"
+#include "blas/dcopy.h"
+#include "blas/dlanhs.h"
+#include "blas/drot.h"
     logical :: wantt
     integer :: ihi, ilo, info, ldh, n
 !

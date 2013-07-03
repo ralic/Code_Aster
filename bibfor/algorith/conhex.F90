@@ -38,13 +38,13 @@ subroutine conhex(macor, nbcor, macoc, nbcoc, lface,&
 !
 !     ------------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/concom.h'
-    include 'asterfort/conech.h'
-    include 'asterfort/conjac.h'
-    include 'asterfort/conors.h'
-    include 'asterfort/conper.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/concom.h"
+#include "asterfort/conech.h"
+#include "asterfort/conjac.h"
+#include "asterfort/conors.h"
+#include "asterfort/conper.h"
+#include "asterfort/u2mesg.h"
     integer :: nbnoco
     integer :: nblir, nbcor
     integer :: nblic, nbcoc, nococ(8)

@@ -19,18 +19,18 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mess.h"
     integer :: icesd, icesl, icesv, imap, adrma, jtypma, k
     real(kind=8) :: vala, valb, coefpa
     character(len=8) :: nommat

@@ -21,12 +21,12 @@ subroutine op0020()
 !     ET PRODUCTION DES IMPRESSIONS DE COMPLETUDE DES OPTIONS ET TYPELEM
 !     ------------------------------------------------------------------
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/aidty2.h'
-    include 'asterfort/ibcael.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterfort/aidty2.h"
+#include "asterfort/ibcael.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
     integer :: ouielt, impr, n1, nbocc
     character(len=24) :: fichie
     integer :: iarg

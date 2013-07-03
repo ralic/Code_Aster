@@ -28,8 +28,8 @@ subroutine kitdec(kpi, yachai, yamec, yate, yap1,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/calcva.h'
-    include 'asterfort/thmrcp.h'
+#include "asterfort/calcva.h"
+#include "asterfort/thmrcp.h"
     integer :: kpi, yamec, yate, yap1, yap2, imate
     logical :: yachai
     integer :: addeme, addep1, addep2, addete, ndim, retcom

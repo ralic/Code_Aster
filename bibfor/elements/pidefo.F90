@@ -20,11 +20,11 @@ subroutine pidefo(ndim, npg, kpg, compor, fm,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
+#include "jeveux.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
     integer :: ndim, kpg, npg
     character(len=16) :: compor(*)
     real(kind=8) :: epsm(6), epsp(6), epsd(6)

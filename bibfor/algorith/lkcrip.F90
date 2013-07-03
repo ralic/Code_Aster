@@ -2,11 +2,11 @@ subroutine lkcrip(invar, s, vin, nbmat, mater,&
                   ucrip, seuil)
 !
     implicit    none
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkhtet.h'
-    include 'asterfort/lkvacp.h'
-    include 'asterfort/lkvarp.h'
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkhtet.h"
+#include "asterfort/lkvacp.h"
+#include "asterfort/lkvarp.h"
     integer :: nbmat
     real(kind=8) :: invar, s(6), mater(nbmat, 2), vin(7), seuil
 ! =================================================================

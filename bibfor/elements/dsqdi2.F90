@@ -1,17 +1,17 @@
 subroutine dsqdi2(xyzl, df, dci, dmf, dfc,&
                   dmc, an, am)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dsqbfa.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dsqci2.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxhmft.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/mgauss.h'
+#include "jeveux.h"
+#include "asterfort/dsqbfa.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dsqci2.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxhmft.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/mgauss.h"
     real(kind=8) :: xyzl(3, *), df(3, 3), dmc(3, 2), dfc(3, 2), dci(2, 2)
     real(kind=8) :: dmf(3, 3), an(4, 12), am(4, 8)
 ! ======================================================================

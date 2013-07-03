@@ -1,10 +1,10 @@
 subroutine ndcent(igeom, lsn, x, xlsn)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/reereg.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/reereg.h"
     integer :: igeom
     real(kind=8) :: x(3), lsn(8), xlsn
 !

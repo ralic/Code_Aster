@@ -20,10 +20,10 @@ subroutine prep2(ndim, npg, g, rpa, etdpn1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tnsvec.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/lctr2m.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tnsvec.h"
+#include "asterfort/utbtab.h"
     integer :: ndim, npg, g, i, j
     real(kind=8) :: rpa(3, 3), rpat(3, 3), etdpn1(3, 3)
     real(kind=8) :: work(9), etdm(3, 3), rac2, etdv(6)

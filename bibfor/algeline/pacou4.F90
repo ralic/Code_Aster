@@ -20,7 +20,7 @@ subroutine pacou4(a, n, c, d, sing)
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: n
     real(kind=8) :: a(n, *), c(*), d(*)
     logical :: sing

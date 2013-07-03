@@ -2,14 +2,14 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
                   snij)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/rc32s0.h'
-    include 'asterfort/rc32st.h'
+#include "asterfort/codent.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/rc32s0.h"
+#include "asterfort/rc32st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
     logical :: seisme

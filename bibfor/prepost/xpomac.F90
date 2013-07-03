@@ -23,18 +23,18 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xpoco1.h'
-    include 'asterfort/xpoco2.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xpoco1.h"
+#include "asterfort/xpoco2.h"
     integer :: nbnoc, nbmac
     character(len=8) :: malini, maxfem, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2

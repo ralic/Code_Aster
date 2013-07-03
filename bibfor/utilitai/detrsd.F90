@@ -1,21 +1,21 @@
 subroutine detrsd(typesd, nomsd)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/amumph.h'
-    include 'asterfort/apetsc.h'
-    include 'asterfort/assde1.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrs2.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/amumph.h"
+#include "asterfort/apetsc.h"
+#include "asterfort/assde1.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrs2.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
 ! ======================================================================

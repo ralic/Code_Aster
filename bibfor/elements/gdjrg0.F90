@@ -34,9 +34,9 @@ subroutine gdjrg0(kp, nno, enprim, x00, y0,&
 !           ROT0   : MATRICE DE ROTATION
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/matrot.h'
-    include 'asterfort/transp.h'
-    include 'blas/ddot.h'
+#include "asterfort/matrot.h"
+#include "asterfort/transp.h"
+#include "blas/ddot.h"
     real(kind=8) :: enprim(3, 2), x00(3, 3), y0(3), rot(3, 3), rot0(3, 3), e1(3)
 !
 !-----------------------------------------------------------------------

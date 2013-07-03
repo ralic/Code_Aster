@@ -1,6 +1,6 @@
 subroutine poslag(typlaz, ilag1, ilag2)
     implicit none
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     character(len=*) :: typlaz
 !-----------------------------------------------------------------------
 ! ======================================================================

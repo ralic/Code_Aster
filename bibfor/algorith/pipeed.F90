@@ -22,15 +22,15 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/nmedpi.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/nmedpi.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=8) :: typmod(*)
     integer :: nno, npg
     integer :: mate

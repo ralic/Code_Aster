@@ -26,32 +26,32 @@ subroutine op0079()
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/copmod.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdall2.h'
-    include 'asterfort/rrlds.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/trlds.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/copmod.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdall2.h"
+#include "asterfort/rrlds.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/trlds.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
     integer :: idvec1, idvec2
 !-----------------------------------------------------------------------

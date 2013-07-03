@@ -1,18 +1,18 @@
 subroutine utcono(mcfac, mocle, iocc, nomail, ndim,&
                   coor, iret)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/utnono.h'
+#include "asterc/getres.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/utnono.h"
     integer :: iocc, ndim, iret
     real(kind=8) :: coor(*)
     character(len=8) :: nomail

@@ -1,26 +1,26 @@
 subroutine forngr(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/jacbm1.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/jm1dn1.h'
-    include 'asterfort/jm1dn2.h'
-    include 'asterfort/matbmn.h'
-    include 'asterfort/matbmr.h'
-    include 'asterfort/matbsr.h'
-    include 'asterfort/matbsu.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
-    include 'asterfort/vectpe.h'
-    include 'asterfort/vectrn.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/btsig.h"
+#include "asterfort/jacbm1.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/jm1dn1.h"
+#include "asterfort/jm1dn2.h"
+#include "asterfort/matbmn.h"
+#include "asterfort/matbmr.h"
+#include "asterfort/matbsr.h"
+#include "asterfort/matbsu.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
+#include "asterfort/vectpe.h"
+#include "asterfort/vectrn.h"
+#include "blas/daxpy.h"
     character(len=16) :: option, nomte
 !-----------------------------------------------------------------------
 ! ======================================================================

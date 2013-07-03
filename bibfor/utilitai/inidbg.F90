@@ -31,13 +31,13 @@ subroutine inidbg()
 !-----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: ifm, niv, n, i, jdbg
     character(len=16) :: czcont, czmeca, czpilo, k16b, czfact, czappa
     common /czdbg/czcont,czmeca,czpilo,czfact,czappa

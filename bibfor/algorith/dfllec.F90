@@ -18,19 +18,19 @@ subroutine dfllec(sdlist, dtmin)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dfdevn.h'
-    include 'asterfort/dfllac.h'
-    include 'asterfort/dfllne.h'
-    include 'asterfort/dfllpe.h'
-    include 'asterfort/dfllsv.h'
-    include 'asterfort/dfllvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dfdevn.h"
+#include "asterfort/dfllac.h"
+#include "asterfort/dfllne.h"
+#include "asterfort/dfllpe.h"
+#include "asterfort/dfllsv.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: sdlist
     real(kind=8) :: dtmin
 !

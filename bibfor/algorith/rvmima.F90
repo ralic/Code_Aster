@@ -1,26 +1,26 @@
 subroutine rvmima(nomres, iocc)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/prexel.h'
-    include 'asterfort/prexno.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/prexel.h"
+#include "asterfort/prexno.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: iocc
     character(len=*) :: nomres
 ! ----------------------------------------------------------------------

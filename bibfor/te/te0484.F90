@@ -24,20 +24,20 @@ subroutine te0484(option, nomte)
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/elref4.h'
-    include 'asterfort/idsshb.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/sh1for.h'
-    include 'asterfort/sh2for.h'
-    include 'asterfort/sh6for.h'
-    include 'asterfort/sh8for.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/elref4.h"
+#include "asterfort/idsshb.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/sh1for.h"
+#include "asterfort/sh2for.h"
+#include "asterfort/sh6for.h"
+#include "asterfort/sh8for.h"
+#include "asterfort/tecach.h"
     integer :: i, icompo, icontm, ideplm, idfde, igeom, imate
     integer :: ipoids, iret, ivectu, ivf, j, jgano, lag
     integer :: nbres, nbv, ndim, nno, nnos, npg

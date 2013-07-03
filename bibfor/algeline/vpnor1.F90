@@ -1,7 +1,7 @@
 subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
                   isign, numddl, coef)
     implicit   none
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     integer :: nbmode, neq, ddlexc(*), isign, numddl
     real(kind=8) :: vecpro(neq, *), coef(*)
     character(len=*) :: norm

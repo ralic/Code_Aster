@@ -1,9 +1,9 @@
 subroutine te0546(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/assert.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte, option
 !.......................................................................
 ! ======================================================================

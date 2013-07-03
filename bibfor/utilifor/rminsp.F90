@@ -1,6 +1,6 @@
 function rminsp(x1, x2, x3, x4, x5)
     implicit   none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: rminsp, x1, x2, x3, x4, x5, xmin
 !     ------------------------------------------------------------------
 ! ======================================================================

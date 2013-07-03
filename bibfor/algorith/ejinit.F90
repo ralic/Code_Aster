@@ -19,7 +19,7 @@ subroutine ejinit(nomte, iu, ip)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=16) :: nomte
     integer :: iu(3, 16), ip(4)
 ! ----------------------------------------------------------------------

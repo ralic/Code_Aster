@@ -19,13 +19,13 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
     character(len=24) :: resoco
     integer :: iechec, ievdac
     character(len=19) :: sddisc

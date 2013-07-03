@@ -20,16 +20,16 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
 !       CHAM_NO, CHAM_NO_S, CARTE, CHAM_ELEM, CHAM_ELEM_S,
 !       RESUELEM, CHAM_GENE
 !
-    include 'jeveux.h'
-    include 'asterfort/dismca.h'
-    include 'asterfort/dismce.h'
-    include 'asterfort/dismcg.h'
-    include 'asterfort/dismcn.h'
-    include 'asterfort/dismes.h'
-    include 'asterfort/dismns.h'
-    include 'asterfort/dismre.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
+#include "jeveux.h"
+#include "asterfort/dismca.h"
+#include "asterfort/dismce.h"
+#include "asterfort/dismcg.h"
+#include "asterfort/dismcn.h"
+#include "asterfort/dismes.h"
+#include "asterfort/dismns.h"
+#include "asterfort/dismre.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: repkz, nomobz

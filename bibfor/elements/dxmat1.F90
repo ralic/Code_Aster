@@ -2,15 +2,15 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
                   pgl, indith, t2ev, t2ve, t1ve,&
                   npg)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moyte2.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moyte2.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: indith, npg
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2ev(4), t2ve(4), t1ve(9)

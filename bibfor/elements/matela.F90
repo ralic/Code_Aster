@@ -1,7 +1,7 @@
 subroutine matela(icodma, materi, itemp, temp, e,&
                   nu)
     implicit none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     real(kind=8) :: temp, e, nu
     integer :: icodma, itemp
     character(len=*) :: materi

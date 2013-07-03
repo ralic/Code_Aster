@@ -20,13 +20,13 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 ! person_in_charge: sam.cuvilliez at edf.fr
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/reeret.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalf2.h'
-    include 'asterfort/xcalfe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref5.h"
+#include "asterfort/reeret.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf2.h"
+#include "asterfort/xcalfe.h"
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, nfh, nfe, jpintt
     integer :: lonch(10), cnset(4*32), heavt(36)

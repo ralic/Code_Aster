@@ -1,9 +1,9 @@
 subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
     implicit   none
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lxliis.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/u2mesg.h"
     integer :: iocc
     character(len=8) :: nomgd, nomcmp
     character(len=*) :: mcfac

@@ -21,28 +21,28 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xlmail.h'
-    include 'asterfort/xmafis.h'
-    include 'asterfort/xoriff.h'
-    include 'asterfort/xptfon.h'
-    include 'asterfort/xstama.h'
-    include 'asterfort/xstami.h'
-    include 'asterfort/xstano.h'
-    include 'asterfort/xtabff.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xlmail.h"
+#include "asterfort/xmafis.h"
+#include "asterfort/xoriff.h"
+#include "asterfort/xptfon.h"
+#include "asterfort/xstama.h"
+#include "asterfort/xstami.h"
+#include "asterfort/xstano.h"
+#include "asterfort/xtabff.h"
     integer :: ndim
     character(len=8) :: noma, fiss, nomo
     character(len=19) :: cnslt, cnsln, cnslj

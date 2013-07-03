@@ -20,17 +20,17 @@ subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfleqa.h'
-    include 'asterfort/cfleqb.h'
-    include 'asterfort/cfleqc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfleqa.h"
+#include "asterfort/cfleqb.h"
+#include "asterfort/cfleqc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma
     integer :: nnoco0, nsuco, nnoco, nzoco
     character(len=24) :: defico

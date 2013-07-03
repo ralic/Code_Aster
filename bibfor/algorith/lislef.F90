@@ -19,19 +19,19 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/focstc.h'
-    include 'asterfort/focste.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lispcp.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/exisd.h"
+#include "asterfort/focstc.h"
+#include "asterfort/focste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lispcp.h"
     character(len=16) :: motfac, typfct
     integer :: iexci
     character(len=8) :: nomfct

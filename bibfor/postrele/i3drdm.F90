@@ -1,8 +1,8 @@
 subroutine i3drdm(descm)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
     character(len=24) :: descm
 !
 !     ------------------------------------------------------------------

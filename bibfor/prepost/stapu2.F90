@@ -36,9 +36,9 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho,&
 !-----------------------------------------------------------------------
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8rddg.h'
-    include 'asterfort/pusur2.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/pusur2.h"
+#include "blas/dcopy.h"
     integer :: occure(100)
     real(kind=8) :: temps(*), fcho(*), vgli(*), wk1(*), wk2(*), wk3(*), wk4(*)
     real(kind=8) :: wk5(*), wk6(*), dloc(*), ang(*), coef(*), tmpvu(*)

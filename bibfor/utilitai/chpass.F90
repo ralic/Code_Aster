@@ -1,38 +1,38 @@
 subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                   chou)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/chsfus.h'
-    include 'asterfort/chsut1.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesred.h"
+#include "asterfort/chsfus.h"
+#include "asterfort/chsut1.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: ma, chou
     character(len=*) :: celmod
     character(len=4) :: tychr, tych2

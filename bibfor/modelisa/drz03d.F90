@@ -18,26 +18,26 @@ subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterfort/afrela.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/pmppr.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/matinv.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmppr.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: charge
     character(len=19) :: lisrel
     character(len=24) :: lisnoe

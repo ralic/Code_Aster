@@ -24,26 +24,26 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmaint.h'
-    include 'asterfort/nmassv.h'
-    include 'asterfort/nmcalv.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmfint.h'
-    include 'asterfort/nmvcaf.h'
-    include 'asterfort/nmvcex.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsorac.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmassv.h"
+#include "asterfort/nmcalv.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmvcaf.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, sdnume
     character(len=19) :: lischa

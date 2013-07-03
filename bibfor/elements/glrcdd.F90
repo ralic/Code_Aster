@@ -41,10 +41,10 @@ subroutine glrcdd(zimat, maxmp, minmp, matr, ep,&
 ! OUT DSIDEP : MATRICE TANGENTE
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    include 'asterfort/glrcad.h'
-    include 'asterfort/multsy.h'
-    include 'asterfort/ortloc.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/glrcad.h"
+#include "asterfort/multsy.h"
+#include "asterfort/ortloc.h"
+#include "asterfort/r8inir.h"
     integer :: i, j, zimat, codret
 !
     real(kind=8) :: matr(*), maxmp(*), minmp(*), normm, normn

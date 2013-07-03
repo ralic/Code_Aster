@@ -27,27 +27,27 @@ subroutine op0005()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getmat.h'
-    include 'asterc/getmjm.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/aniver.h'
-    include 'asterfort/indk16.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rcstoc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getmat.h"
+#include "asterc/getmjm.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/aniver.h"
+#include "asterfort/indk16.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rcstoc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nmocl
     parameter         (nmocl=200)
     character(len=16) :: motcle(nmocl)

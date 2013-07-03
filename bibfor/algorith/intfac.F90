@@ -5,16 +5,16 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/reereg.h"
+#include "asterfort/vecini.h"
     integer :: ifq, fa(6, 4), nno, ndim, jglsn, jglst, igeom, codret
     integer :: indptf(3), nmaabs
     real(kind=8) :: lsn(nno), lst(nno), m(ndim), gln(ndim), glt(ndim)

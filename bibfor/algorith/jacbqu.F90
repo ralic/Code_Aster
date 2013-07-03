@@ -30,7 +30,7 @@ subroutine jacbqu(np3, nbseg, rc, theta, xloc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
+#include "asterfort/disbut.h"
     integer :: np3, nbseg(*)
     real(kind=8) :: rc(np3, *), theta(np3, *), xloc(*), kn, cn
     integer :: ic

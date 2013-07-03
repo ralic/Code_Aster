@@ -2,20 +2,20 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                   nkcmp, nbcmp, ndim, chpgs, noma,&
                   nbno, nbma, nbval, tsca)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbcmp, ndim, nbno, nbma, nbval
     character(len=1) :: tsca
     character(len=4) :: tych

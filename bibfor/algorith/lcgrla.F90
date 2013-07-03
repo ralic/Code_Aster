@@ -21,11 +21,11 @@ subroutine lcgrla(f, eps)
 !     DEFORMATION DE GREEN-LAGRANGE ASSOCIEE AU TENSEUR F
 !     ----------------------------------------------------------------
 !
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/tnsvec.h'
-    include 'blas/daxpy.h'
-    include 'blas/dscal.h'
+#include "asterfort/lctr2m.h"
+#include "asterfort/pmat.h"
+#include "asterfort/tnsvec.h"
+#include "blas/daxpy.h"
+#include "blas/dscal.h"
     real(kind=8) :: f(3, 3), ft(3, 3), ftf(3, 3), eps(6), id6(6)
     data id6/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !

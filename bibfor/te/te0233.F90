@@ -1,12 +1,12 @@
 subroutine te0233(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/dfdm1d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================

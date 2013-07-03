@@ -26,10 +26,10 @@ subroutine eifint(ndim, axi, nno1, nno2, npg,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterfort/codere.h'
-    include 'asterfort/eicine.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/codere.h"
+#include "asterfort/eicine.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
 !

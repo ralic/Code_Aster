@@ -40,10 +40,10 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
 !     ARGUMENTS
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'asterfort/matini.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/matini.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: sigm(6), deps(6), vim(*)
     real(kind=8) :: sigp(6), vip(*), dsidep(6, 6), crildc(3)
     character(len=16) :: option

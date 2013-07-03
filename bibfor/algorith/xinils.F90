@@ -22,27 +22,27 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xajuls.h'
-    include 'asterfort/xcatls.h'
-    include 'asterfort/xls2d.h'
-    include 'asterfort/xls3d.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xajuls.h"
+#include "asterfort/xcatls.h"
+#include "asterfort/xls2d.h"
+#include "asterfort/xls3d.h"
     character(len=8) :: noma, meth, nfonf, nfong, cote
     character(len=8) :: maiaux
     character(len=16) :: geofis

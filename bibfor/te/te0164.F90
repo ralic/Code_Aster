@@ -16,15 +16,15 @@ subroutine te0164(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/biline.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/matvec.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
+#include "asterfort/biline.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/matvec.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MECABL2

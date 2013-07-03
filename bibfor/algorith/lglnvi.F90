@@ -1,9 +1,9 @@
 subroutine lglnvi(mod, ndt, ndi, nvi)
 !
     implicit     none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi
     character(len=8) :: mod
 ! =================================================================

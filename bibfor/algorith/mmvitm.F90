@@ -21,9 +21,9 @@ subroutine mmvitm(nbdm, ndim, nne, nnm, ffe,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbdm, ndim, nne, nnm
     real(kind=8) :: ffe(9), ffm(9)
     integer :: jvitm, jvitp, jaccm

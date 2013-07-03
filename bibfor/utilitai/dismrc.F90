@@ -1,9 +1,9 @@
 subroutine dismrc(questi, nomobz, repi, repk, ierd)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jelira.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jelira.h"
+#include "asterfort/jexnum.h"
     integer :: repi, ierd
     character(len=*) :: questi, repk
     character(len=19) :: nomob

@@ -37,13 +37,13 @@ subroutine burini(nmat, materd, materf, timed, timef,&
 !=====================================================================
     implicit none
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/burafd.h'
-    include 'asterfort/burafi.h'
-    include 'asterfort/burafr.h'
-    include 'asterfort/burdfi.h'
-    include 'asterfort/bursif.h'
-    include 'asterfort/vecini.h'
+#include "asterc/r8prem.h"
+#include "asterfort/burafd.h"
+#include "asterfort/burafi.h"
+#include "asterfort/burafr.h"
+#include "asterfort/burdfi.h"
+#include "asterfort/bursif.h"
+#include "asterfort/vecini.h"
     common /tdim/   ndt ,ndi
 !     ----------------------------------------------------------------
     integer :: nmat, nvi, ndt, ndi, nr, i, j

@@ -18,7 +18,7 @@ subroutine eiinit(nomte, iu, il, it)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=16) :: nomte
     integer :: iu(3, 18), il(3, 9), it(18)
 ! ----------------------------------------------------------------------

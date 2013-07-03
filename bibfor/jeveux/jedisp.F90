@@ -17,7 +17,7 @@ subroutine jedisp(n, tab)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
+#include "jeveux_private.h"
     integer :: n, tab(*)
 ! ----------------------------------------------------------------------
 ! RENVOIE DANS LE TABLEAU TAB LES LONGUEURS MAX DISPONIBLES DANS LA

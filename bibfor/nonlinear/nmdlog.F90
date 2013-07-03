@@ -57,19 +57,19 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmgrtg.h'
-    include 'asterfort/poslog.h'
-    include 'asterfort/prelog.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmgrtg.h"
+#include "asterfort/poslog.h"
+#include "asterfort/prelog.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     logical :: grand, axi, resi, rigi, matsym, cplan, lintbo
     parameter (grand = .true.)
     integer :: g, i, nddl, cod(27), ivf

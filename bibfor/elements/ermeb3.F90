@@ -70,8 +70,8 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
     integer :: noe(9, 6, 4), ifa, tymvol, iref1, iref2, ivois, igeom, isig
     integer :: nbcmp, nnof
     real(kind=8) :: inst

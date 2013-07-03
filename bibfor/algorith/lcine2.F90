@@ -1,7 +1,7 @@
 function lcine2(d, gm, pm, c, dgamma,&
                 alpham, x)
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     real(kind=8) :: d, gm, pm, c, dgamma, alpham, absdga, lcine2, x, alpha
     real(kind=8) :: signe
 ! person_in_charge: jean-michel.proix at edf.fr

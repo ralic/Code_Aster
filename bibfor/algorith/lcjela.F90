@@ -27,8 +27,8 @@ subroutine lcjela(loi, mod, nmat, mater, vin,&
 !           VIN    :  VARIABLES INTERNES
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT
 !       ----------------------------------------------------------------
-    include 'asterfort/lcopli.h'
-    include 'asterfort/rslpli.h'
+#include "asterfort/lcopli.h"
+#include "asterfort/rslpli.h"
     integer :: nmat
     real(kind=8) :: dsde(6, 6)
     real(kind=8) :: vin(*)

@@ -22,28 +22,28 @@ subroutine op0031()
 !     ------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/amogen.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vrrefe.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/amogen.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vrrefe.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: typres, base
     character(len=6) :: combrc
     character(len=8) :: matres, matri1, partie

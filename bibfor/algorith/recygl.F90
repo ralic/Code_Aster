@@ -38,19 +38,19 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/cynugl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/recbgl.h'
-    include 'asterfort/remngl.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/cynugl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/recbgl.h"
+#include "asterfort/remngl.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
     character(len=6) :: pgc
     character(len=*) :: nmresz, mdcycz, typsdz, maillz
     character(len=8) :: nomres, mailla, modcyc, typint

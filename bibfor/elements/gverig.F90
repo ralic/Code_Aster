@@ -56,30 +56,30 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
 !        ABSC_CURV     ( OBJET TRAV4 )
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/gabscu.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gabscu.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: chfond, grpno, nomno, coorn, taillr
     character(len=24) :: trav, trav0, trav1, trav2, trav3, trav4, trav5
     character(len=8) :: config, noma, noeud, noeud1, k8b

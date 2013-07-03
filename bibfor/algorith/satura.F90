@@ -18,7 +18,7 @@ subroutine satura(hydr, p1, sat, dsatp1)
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: p1, sat, dsatp1
     character(len=16) :: hydr
 !

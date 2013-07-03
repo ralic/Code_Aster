@@ -20,18 +20,18 @@ subroutine ndxmat(fonact, lischa, solveu, numedd, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/ascoma.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmchex.h'
+#include "jeveux.h"
+#include "asterfort/ascoma.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmchex.h"
     character(len=19) :: matass
     character(len=19) :: sddyna
     integer :: fonact(*)

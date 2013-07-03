@@ -1,15 +1,15 @@
 subroutine vpcrea(icond, modes, masse, amor, raide,&
                   nume, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: icond, ier
     character(len=*) :: modes, masse, amor, raide, nume
 !     ------------------------------------------------------------------

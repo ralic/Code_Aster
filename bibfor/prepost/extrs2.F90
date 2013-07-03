@@ -2,24 +2,24 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                   modele, nbordr, nuordr, nbacc, nomacc,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rdtchp.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rdtchp.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesg.h"
     integer :: nbordr, nuordr(*), nbarch, nbacc, nuarch(*), nbexcl, nbnosy
     character(len=16) :: nomacc(*), chexcl(*)
     character(len=*) :: resu0, resu1

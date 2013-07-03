@@ -19,14 +19,14 @@ subroutine sh2rig(xetemp, para, re)
 !               ELEMENT SHB20
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asbgl2.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rloshb.h'
-    include 'asterfort/s2calb.h'
-    include 'asterfort/sh2ksi.h'
-    include 'asterfort/tran63.h'
+#include "jeveux.h"
+#include "asterfort/asbgl2.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rloshb.h"
+#include "asterfort/s2calb.h"
+#include "asterfort/sh2ksi.h"
+#include "asterfort/tran63.h"
     integer :: p, q, irdc
     real(kind=8) :: para(11)
     real(kind=8) :: xe(60), re(60, 60), lambda

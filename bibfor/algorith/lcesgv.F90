@@ -19,14 +19,14 @@ subroutine lcesgv(fami, kpg, ksp, neps, typmod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lcerma.h'
-    include 'asterfort/lcervf.h'
-    include 'asterfort/lcesrf.h'
-    include 'asterfort/lcesvf.h'
-    include 'asterfort/lcgrad.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/lcerma.h"
+#include "asterfort/lcervf.h"
+#include "asterfort/lcesrf.h"
+#include "asterfort/lcesvf.h"
+#include "asterfort/lcgrad.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option
     character(len=*) :: fami

@@ -63,14 +63,14 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
 !         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
 !         (VINF) UNIQUEMENT POUR LETK  - ETAT PLASTIQUE DESACTIVE?
 !     ----------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/burcvg.h'
-    include 'asterfort/cvmcvg.h'
-    include 'asterfort/hujcvg.h'
-    include 'asterfort/irrcvg.h'
-    include 'asterfort/lccong.h'
-    include 'asterfort/lcmmcv.h'
-    include 'asterfort/lkicvg.h'
+#include "asterfort/assert.h"
+#include "asterfort/burcvg.h"
+#include "asterfort/cvmcvg.h"
+#include "asterfort/hujcvg.h"
+#include "asterfort/irrcvg.h"
+#include "asterfort/lccong.h"
+#include "asterfort/lcmmcv.h"
+#include "asterfort/lkicvg.h"
     integer :: typess, itmax, iter, intg, nr, icomp
     integer :: iret, nmat, nvi, indi(7)
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)

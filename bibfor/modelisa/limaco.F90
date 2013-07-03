@@ -20,32 +20,32 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cacoco.h'
-    include 'asterfort/cacoeq.h'
-    include 'asterfort/capoco.h'
-    include 'asterfort/cfbord.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfnodb.h'
-    include 'asterfort/chckco.h'
-    include 'asterfort/dimeco.h'
-    include 'asterfort/dimecz.h'
-    include 'asterfort/elimco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/limacx.h'
-    include 'asterfort/listco.h'
-    include 'asterfort/mmprel.h'
-    include 'asterfort/poinco.h'
-    include 'asterfort/quadco.h'
-    include 'asterfort/sanscc.h'
-    include 'asterfort/sansco.h'
-    include 'asterfort/tablco.h'
-    include 'asterfort/typeco.h'
-    include 'asterfort/xconta.h'
-    include 'asterfort/xmacon.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cacoco.h"
+#include "asterfort/cacoeq.h"
+#include "asterfort/capoco.h"
+#include "asterfort/cfbord.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfnodb.h"
+#include "asterfort/chckco.h"
+#include "asterfort/dimeco.h"
+#include "asterfort/dimecz.h"
+#include "asterfort/elimco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/limacx.h"
+#include "asterfort/listco.h"
+#include "asterfort/mmprel.h"
+#include "asterfort/poinco.h"
+#include "asterfort/quadco.h"
+#include "asterfort/sanscc.h"
+#include "asterfort/sansco.h"
+#include "asterfort/tablco.h"
+#include "asterfort/typeco.h"
+#include "asterfort/xconta.h"
+#include "asterfort/xmacon.h"
     character(len=8) :: char
     character(len=8) :: noma
     character(len=8) :: nomo

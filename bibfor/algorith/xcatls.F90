@@ -21,18 +21,18 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/disell.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/disrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/disell.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/disrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim, jltsv, jltsl, jlnsv, jlnsl
     character(len=8) :: noma, cote
     character(len=16) :: geofis

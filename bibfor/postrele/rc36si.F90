@@ -1,25 +1,25 @@
 subroutine rc36si(noma, nbma, listma)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ordis.h'
-    include 'asterfort/rc36cm.h'
-    include 'asterfort/rc36th.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ordis.h"
+#include "asterfort/rc36cm.h"
+#include "asterfort/rc36th.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbma, listma(*)
     character(len=8) :: noma
 ! ----------------------------------------------------------------------

@@ -18,25 +18,25 @@ subroutine te0402(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/antisy.h'
-    include 'asterfort/btdbma.h'
-    include 'asterfort/btkb.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/hsall.h'
-    include 'asterfort/jacbm1.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/jm1dn2.h'
-    include 'asterfort/jm1dn3.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/sigbar.h'
-    include 'asterfort/sigvte.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "asterfort/antisy.h"
+#include "asterfort/btdbma.h"
+#include "asterfort/btkb.h"
+#include "asterfort/btsig.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/hsall.h"
+#include "asterfort/jacbm1.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/jm1dn2.h"
+#include "asterfort/jm1dn3.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/sigbar.h"
+#include "asterfort/sigvte.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     character(len=16) :: option, nomte
 !
 ! ......................................................................

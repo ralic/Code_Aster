@@ -30,17 +30,17 @@ subroutine versst(nomres)
 ! NOMRES   /I/: NOM UTILISATEUR DU RESULTAT
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: vali(2)
 !
 !

@@ -2,18 +2,18 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf,&
                   nitf, nbfreq, mxresf, nprec, resufi,&
                   resufr)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wp1dft.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wp1dft.h"
     integer :: lmasse, lamor, lraide, nitf, nbfreq, resufi(mxresf, *)
     complex(kind=8) :: ptorig(3, *)
     real(kind=8) :: tolf, resufr(mxresf, *)

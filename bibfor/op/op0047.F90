@@ -23,12 +23,12 @@ subroutine op0047()
 !   - OUT :
 !       IERR   : NON UTILISE
 !     ------------------------------------------------------------
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/gmsast.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/stbast.h'
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/gmsast.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/stbast.h"
     integer :: nfie, nfis, n
     logical :: lgrcou
     character(len=8) :: k8b

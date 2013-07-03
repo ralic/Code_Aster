@@ -25,25 +25,25 @@ subroutine crvrc2()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecara.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesk.h"
     integer :: nbfac, n1, nbinst, kinst, jordr1, iordr
     integer :: nbin, iret, jinst, jtemp, iexi
     real(kind=8) :: vinst

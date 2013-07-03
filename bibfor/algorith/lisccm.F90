@@ -18,14 +18,14 @@ subroutine lisccm(nomcmd, lischa)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislch.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislch.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: nomcmd
     character(len=19) :: lischa
 !

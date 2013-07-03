@@ -2,11 +2,11 @@ subroutine recuvl(nbval, tbinst, nbval2, tbinth, norev,&
                   tbscrv, nomdb, tbscmb)
 !
     implicit      none
-    include 'asterc/getvid.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tbexv1.h'
+#include "asterc/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tbexv1.h"
     integer :: nbval, nbval2, norev, nomdb
     character(len=19) :: tbinst, tbinth, tbscrv, tbscmb
 ! ======================================================================

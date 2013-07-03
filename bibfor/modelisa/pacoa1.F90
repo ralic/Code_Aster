@@ -1,22 +1,22 @@
 subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
                   liso2z)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/padist.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: lonlis, noeud1(*), noeud2(*)
     character(len=*) :: nomaz, liso1z, liso2z
 !-----------------------------------------------------------------------

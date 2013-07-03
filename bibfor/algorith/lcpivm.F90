@@ -22,19 +22,19 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor,&
 !
 ! aslint: disable=
     implicit none
-    include 'asterfort/calcdp.h'
-    include 'asterfort/ecpuis.h'
-    include 'asterfort/gdsmci.h'
-    include 'asterfort/gdsmhy.h'
-    include 'asterfort/gdsmin.h'
-    include 'asterfort/gdsmtg.h'
-    include 'asterfort/lcpima.h'
-    include 'asterfort/lcpitg.h'
-    include 'asterfort/nmcri6.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/zerofr.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/calcdp.h"
+#include "asterfort/ecpuis.h"
+#include "asterfort/gdsmci.h"
+#include "asterfort/gdsmhy.h"
+#include "asterfort/gdsmin.h"
+#include "asterfort/gdsmtg.h"
+#include "asterfort/lcpima.h"
+#include "asterfort/lcpitg.h"
+#include "asterfort/nmcri6.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/zerofr.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: mate, iret, kpg, ksp
     character(len=16) :: compor, option
     character(len=*) :: fami

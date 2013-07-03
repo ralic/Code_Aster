@@ -1,19 +1,19 @@
 subroutine coqucf(nomu)
     implicit none
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
     character(len=8) :: nomu
 !
 ! ======================================================================
@@ -45,7 +45,7 @@ subroutine coqucf(nomu)
 !     ET REMPLIR LA CARTE DE REELS
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: ifm, niv, iret, ibid, ii, jj, kk
     integer :: jcesdf, jcesdo, jcescf, jcesco, nbmail, adrm, iad

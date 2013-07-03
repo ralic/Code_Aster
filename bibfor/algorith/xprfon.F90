@@ -1,18 +1,18 @@
 subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/vecini.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: fiss, noma
 !
     character(len=24) :: nvit, nbeta

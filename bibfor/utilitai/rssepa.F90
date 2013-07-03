@@ -19,10 +19,10 @@ subroutine rssepa(result, nuordr, modele, mate, carele,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsadpa.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsadpa.h"
     integer :: nuordr
     character(len=8) :: result, modele, carele, mate
     character(len=19) :: excit

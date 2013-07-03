@@ -1,14 +1,14 @@
 subroutine alligr(char, oper, noma, fonree, ligrcz)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/alcar1.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ligecp.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/alcar1.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ligecp.h"
+#include "asterfort/wkvect.h"
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=16) :: oper

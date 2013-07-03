@@ -4,11 +4,11 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
                   ddls, ddlm, idepl, pb, vtmp)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xadher.h'
-    include 'asterfort/xmafr1.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xadher.h"
+#include "asterfort/xmafr1.h"
     integer :: ndim, nno, nnos, ddls, ddlm, nfh, singu, idepl
     integer :: algofr
     real(kind=8) :: vtmp(400), rr, nd(3)

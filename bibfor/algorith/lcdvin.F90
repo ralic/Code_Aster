@@ -44,10 +44,10 @@ subroutine lcdvin(fami, kpg, ksp, comp, mod,&
 !         IRET    :  CODE RETOUR
 !     ----------------------------------------------------------------
 !
-    include 'asterfort/norton.h'
-    include 'asterfort/rkdcha.h'
-    include 'asterfort/rkdhay.h'
-    include 'asterfort/rkdvec.h'
+#include "asterfort/norton.h"
+#include "asterfort/rkdcha.h"
+#include "asterfort/rkdhay.h"
+#include "asterfort/rkdvec.h"
     integer :: kpg, ksp, imat, nmat, nvi, iret
     character(len=16) :: loi, comp(*)
     character(len=8) :: mod

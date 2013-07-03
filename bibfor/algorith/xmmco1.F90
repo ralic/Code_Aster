@@ -2,9 +2,9 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
                   nd, nfh, ddls, jac, ffp,&
                   singu, rr, tau1, tau2, mmat)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/matcox.h'
-    include 'asterfort/matini.h'
+#include "jeveux.h"
+#include "asterfort/matcox.h"
+#include "asterfort/matini.h"
     integer :: ndim, nno, nfh, ddls, singu
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac, nd(3)

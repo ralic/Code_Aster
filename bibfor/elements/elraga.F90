@@ -2,10 +2,10 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
                   poipg)
 ! aslint: disable=W1501
     implicit  none
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/elraca.h"
+#include "asterfort/u2mesk.h"
     integer :: nbpg, ndim
     real(kind=8) :: coopg(*), poipg(*)
     character(len=*) :: elrefz, fapz

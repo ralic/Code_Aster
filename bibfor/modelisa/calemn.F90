@@ -49,13 +49,13 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: motfaz, nomaz, lisi1z, lisi2z
 ! -----  VARIABLES LOCALES
     character(len=8) :: k8bid, noma, typem

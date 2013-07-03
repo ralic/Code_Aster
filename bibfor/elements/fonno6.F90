@@ -3,25 +3,25 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
                   vnor, vdir, basseg, vect, sens)
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterc/getvtx.h"
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     character(len=8) :: resu, noma
     integer :: ndim, ina, nbnose, iseg, noe(4, 4)
     integer :: indr(2), nbnoel, nseg

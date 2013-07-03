@@ -35,13 +35,13 @@ subroutine caltra(np1, np4, nbm, nfour, ttrans,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/algint.h'
-    include 'asterfort/intfor.h'
-    include 'asterfort/intftr.h'
-    include 'asterfort/matran.h'
-    include 'asterfort/parmat.h'
-    include 'asterfort/parmtr.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/algint.h"
+#include "asterfort/intfor.h"
+#include "asterfort/intftr.h"
+#include "asterfort/matran.h"
+#include "asterfort/parmat.h"
+#include "asterfort/parmtr.h"
+#include "asterfort/vecini.h"
     integer :: np1, np4, nbm, nfour
     real(kind=8) :: ttrans, ttran0, vitgtr(*), depgtr(*), vitg0(*), depg0(*)
     real(kind=8) :: masgi(*), amor(*), puls(*), pulsd(*), mtrans(2, 2, *)

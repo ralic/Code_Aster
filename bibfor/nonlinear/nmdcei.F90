@@ -20,14 +20,14 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     real(kind=8) :: newins(nbins)
     real(kind=8) :: dt0

@@ -3,10 +3,10 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr,&
                   u1, u2, u3, u4, n,&
                   solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/mrmult.h'
-    include 'asterfort/resoud.h'
+#include "asterfort/mrmult.h"
+#include "asterfort/resoud.h"
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*), sr
     real(kind=8) :: si2
     integer :: ldrf, lmasse, lamor, lraide, n

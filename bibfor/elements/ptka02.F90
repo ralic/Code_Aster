@@ -3,10 +3,10 @@ subroutine ptka02(id, sk, e, a1, a2,&
                   xjx, xjx2, g, alfay1, alfay2,&
                   alfaz1, alfaz2, ey, ez, ist)
     implicit    none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/fun1.h'
-    include 'asterfort/fun2.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/fun1.h"
+#include "asterfort/fun2.h"
+#include "asterfort/u2mess.h"
     integer :: id, ist
     real(kind=8) :: sk(*), e, a1, a2, xl, xiy, xiy2
     real(kind=8) :: xiz, xiz2, xjx, xjx2, g, alfay1, alfay2

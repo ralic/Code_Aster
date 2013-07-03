@@ -3,24 +3,24 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/celfpg.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/celfpg.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: modele
     character(len=19) :: chin, cesout, cespoi
     character(len=4) :: tych, dejain

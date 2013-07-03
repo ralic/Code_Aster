@@ -20,13 +20,13 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmextv.h'
-    include 'asterfort/posddl.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmextv.h"
+#include "asterfort/posddl.h"
     real(kind=8) :: valres(*)
     character(len=8) :: nomnoe
     integer :: nbcmp

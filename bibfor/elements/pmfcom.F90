@@ -21,25 +21,25 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/comp1d.h'
-    include 'asterfort/mazu1d.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/nm1dci.h'
-    include 'asterfort/nm1dco.h'
-    include 'asterfort/nm1dis.h'
-    include 'asterfort/nm1dpm.h'
-    include 'asterfort/nm1tra.h'
-    include 'asterfort/nm1vil.h'
-    include 'asterfort/nmcb1d.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verifm.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/vmci1d.h'
-    include 'blas/dcopy.h'
+#include "asterfort/comp1d.h"
+#include "asterfort/mazu1d.h"
+#include "asterfort/moytem.h"
+#include "asterfort/nm1dci.h"
+#include "asterfort/nm1dco.h"
+#include "asterfort/nm1dis.h"
+#include "asterfort/nm1dpm.h"
+#include "asterfort/nm1tra.h"
+#include "asterfort/nm1vil.h"
+#include "asterfort/nmcb1d.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verifm.h"
+#include "asterfort/verift.h"
+#include "asterfort/vmci1d.h"
+#include "blas/dcopy.h"
     integer :: nf, icdmat, nbvalc, isecan, kpg, npg, nspg
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)

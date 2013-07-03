@@ -1,9 +1,9 @@
 subroutine zmvpy(uplo, n, alpha, a, lda,&
                  x, incx, beta, y, incy)
     implicit none
-    include 'asterfort/zinit.h'
-    include 'asterfort/zmult.h'
-    include 'blas/zaxpy.h'
+#include "asterfort/zinit.h"
+#include "asterfort/zmult.h"
+#include "blas/zaxpy.h"
     integer :: n, lda, incx, incy
     complex(kind=8) :: alpha, beta, a(lda, *), x(*), y(*)
     character(len=*) :: uplo

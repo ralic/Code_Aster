@@ -30,14 +30,14 @@ subroutine caveis(chargz)
 !.========================= DEBUT DES DECLARATIONS ====================
 !
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chargz
 ! ------ VARIABLES LOCALES
     character(len=8) :: charge, maille

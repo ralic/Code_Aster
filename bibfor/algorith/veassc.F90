@@ -18,21 +18,21 @@ subroutine veassc(lischa, vecele)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/liscva.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lisllc.h'
-    include 'asterfort/lisnbg.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/corich.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/liscva.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lisllc.h"
+#include "asterfort/lisnbg.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/reajre.h"
     character(len=19) :: lischa
     character(len=19) :: vecele
 !

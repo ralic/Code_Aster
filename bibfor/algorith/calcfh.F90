@@ -59,8 +59,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     implicit none
 !
 !
-    include 'asterfort/hmderp.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/hmderp.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: valcen(14, 6)
     integer :: maxfa
     parameter    (maxfa=6)

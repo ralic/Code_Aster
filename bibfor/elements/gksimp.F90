@@ -46,7 +46,7 @@ subroutine gksimp(result, nnoff, absc, iadrgk, numero,&
 !    UNIT         --> UNITE DU FICHIER D'AFFICHAGE
 ! ......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nnoff, unit, numero, ndeg, iordr, i, i1, imod
     integer :: iadrgk, iadgks, iadgki, ndimte

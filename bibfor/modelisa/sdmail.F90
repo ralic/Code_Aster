@@ -25,7 +25,7 @@ subroutine sdmail(nomu, nommai, nomnoe, cooval, coodsc,&
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !     CONSTRUCTION DES NOMS JEVEUX POUR L OBJET-MAILLAGE
 !

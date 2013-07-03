@@ -38,7 +38,7 @@ subroutine matnor(fami, kpg, ksp, imat, nmat,&
 !         NVI    :  NB DE VARIABLES INTERNES
 !         NR     :  NB DE COMPOSANTES SYSTEME NL
 !     ----------------------------------------------------------------
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, nmat, ndt, nvi, nr, imat, cerr(5)
     real(kind=8) :: coefel(nmat), coefpl(nmat)
     character(len=*) :: fami, poum

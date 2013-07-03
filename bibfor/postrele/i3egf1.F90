@@ -2,9 +2,9 @@ subroutine i3egf1(desc, desctm, conek1, conek2, im1,&
                   if1, iao1, iae1, im2, if2,&
                   iao2, legfa)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: desc(*), desctm(*), conek1(*), conek2(*), im1, if1, iao1, iae1
     integer :: im2, if2, iao2
     logical :: legfa

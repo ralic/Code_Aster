@@ -24,18 +24,18 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
 ! --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 ! =====================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ncomel, k
     integer :: nbnvi(4)
     character(len=16) :: comp, moclef, comel(*)

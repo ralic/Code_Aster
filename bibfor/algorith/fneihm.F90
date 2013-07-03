@@ -25,8 +25,8 @@ subroutine fneihm(fnoevo, deltat, perman, nno1, nno2,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterfort/fonoei.h'
-    include 'asterfort/matthm.h'
+#include "asterfort/fonoei.h"
+#include "asterfort/matthm.h"
     logical :: fnoevo, perman, axi
     integer :: dimdef, dimcon, nno1, nno2
     integer :: dimuel, ndim

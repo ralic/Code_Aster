@@ -1,30 +1,30 @@
 subroutine dktnli(nomte, opt, xyzl, ul, dul,&
                   btsig, ktan, codret)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dkqbf.h'
-    include 'asterfort/dktbf.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/dxqloc.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/dxtloc.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/pmrvec.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utctab.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/dkqbf.h"
+#include "asterfort/dktbf.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/dxqloc.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/dxtloc.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/pmrvec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utctab.h"
+#include "blas/dcopy.h"
     integer :: codret
     real(kind=8) :: xyzl(3, *), ul(6, *), dul(6, *)
     real(kind=8) :: ktan(*), btsig(6, *)

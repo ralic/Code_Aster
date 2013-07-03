@@ -1,7 +1,7 @@
 subroutine rc36sa(nommat, mati, matj, snpq, spij,&
                   typeke, spmeca, spther, saltij, sm)
     implicit   none
-    include 'asterfort/prccm3.h'
+#include "asterfort/prccm3.h"
     real(kind=8) :: mati(*), matj(*), snpq, spij, saltij, sm
     real(kind=8) :: typeke, spmeca, spther
     character(len=8) :: nommat

@@ -1,17 +1,17 @@
 subroutine te0234(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/defgen.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/effi.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytpg.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/defgen.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/effi.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytpg.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

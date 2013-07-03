@@ -19,23 +19,23 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 ! ======================================================================
 ! aslint: disable=W1501,C1002
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/gtopti.h'
-    include 'asterc/gtoptk.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/jxecro.h'
-    include 'asterfort/jxlibd.h'
-    include 'asterfort/jxlir1.h'
-    include 'asterfort/jxliro.h'
-    include 'asterfort/jxouvr.h'
-    include 'asterfort/lxmins.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterc/gtopti.h"
+#include "asterc/gtoptk.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/jxecro.h"
+#include "asterfort/jxlibd.h"
+#include "asterfort/jxlir1.h"
+#include "asterfort/jxliro.h"
+#include "asterfort/jxouvr.h"
+#include "asterfort/lxmins.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: nrep, nbloc, lbloc
     character(len=*) :: sti, sto, nomf, clas
 ! ----------------------------------------------------------------------

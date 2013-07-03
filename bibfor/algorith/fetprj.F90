@@ -59,22 +59,22 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetrex.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dgemv.h'
-    include 'blas/dsptrs.h'
+#include "asterc/matfpe.h"
+#include "asterfort/assert.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetrex.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dgemv.h"
+#include "blas/dsptrs.h"
     integer :: nbsd, nbi, dimgi, option, vsdf(nbsd), vddl(nbsd), ipiv, irex
     integer :: iprj, rang, nbproc
     real(kind=8) :: vi(nbi), vo(nbi), rbid

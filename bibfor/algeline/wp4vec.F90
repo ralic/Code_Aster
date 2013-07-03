@@ -2,18 +2,18 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
                   vecp, mxresf, resufi, resufr, lagr,&
                   vauc, omecor)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wpordc.h'
-    include 'asterfort/wptest.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wpordc.h"
+#include "asterfort/wptest.h"
     integer :: mxresf, neq, nbfreq, nbvect, lagr(*), resufi(mxresf, *)
     complex(kind=8) :: vecp(neq, *), shift, vauc(2*neq, *), vp(*)
     real(kind=8) :: resufr(mxresf, *), omecor

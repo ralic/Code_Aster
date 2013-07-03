@@ -25,9 +25,9 @@ subroutine nmcb1d(e0, labord, sigm, varm, epsm,&
 !
 ! ----------------------------------------------------------------------
     implicit       none
-    include 'asterc/r8prem.h'
-    include 'asterfort/nmcb13.h'
-    include 'asterfort/nmcb2.h'
+#include "asterc/r8prem.h"
+#include "asterfort/nmcb13.h"
+#include "asterfort/nmcb2.h"
     character(len=*) :: option
     real(kind=8) :: e0, sigm, epsm, deps, esout, sigp
     real(kind=8) :: labord(*), varm(*), varp(*), crit(*)

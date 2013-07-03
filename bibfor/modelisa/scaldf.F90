@@ -35,7 +35,7 @@ subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
 ! OUT : B      : MATRICE DES PRODUITS SCALAIRES (NBFONC,NBMR)
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbfonc, nbp, nbmr
     real(kind=8) :: disc(nbp), vale(nbp, nbfonc), defm(nbp, nbmr)
     real(kind=8) :: b(nbfonc, nbmr)

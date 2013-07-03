@@ -22,19 +22,19 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmpial.h'
-    include 'asterfort/nmpidd.h'
-    include 'asterfort/nmpila.h'
-    include 'asterfort/nmpipe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmpial.h"
+#include "asterfort/nmpidd.h"
+#include "asterfort/nmpila.h"
+#include "asterfort/nmpipe.h"
     integer :: nbatte, nbeffe
     integer :: pilcvg
     real(kind=8) :: deltat, rho, eta(nbatte)

@@ -22,26 +22,26 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/meamme.h'
-    include 'asterfort/mecgm2.h'
-    include 'asterfort/mecgme.h'
-    include 'asterfort/medime.h'
-    include 'asterfort/memame.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/merige.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmelcm.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/meamme.h"
+#include "asterfort/mecgm2.h"
+#include "asterfort/mecgme.h"
+#include "asterfort/medime.h"
+#include "asterfort/memame.h"
+#include "asterfort/memare.h"
+#include "asterfort/merige.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmelcm.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: modelz
     character(len=*) :: mate, carele
     character(len=24) :: compor, carcri

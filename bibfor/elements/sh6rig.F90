@@ -20,16 +20,16 @@ subroutine sh6rig(xetemp, para, re)
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterfort/assebg.h'
-    include 'asterfort/klocgl.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s6calb.h'
-    include 'asterfort/s6ksib.h'
-    include 'asterfort/sh6ksi.h'
+#include "asterfort/assebg.h"
+#include "asterfort/klocgl.h"
+#include "asterfort/matini.h"
+#include "asterfort/matinv.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s6calb.h"
+#include "asterfort/s6ksib.h"
+#include "asterfort/sh6ksi.h"
     integer :: irdc
 !
     real(kind=8) :: xe(18), re(18, 18), xetemp(18)

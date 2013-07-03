@@ -1,7 +1,7 @@
 subroutine rc32fs(nbsigr, nocc, situ, fuijs, fuij,&
                   fuse, ns, nscy, ug)
     implicit   none
-    include 'asterfort/infniv.h'
+#include "asterfort/infniv.h"
     integer :: nbsigr, nocc(*), situ(*), ns, nscy
     real(kind=8) :: fuijs(*), fuij(*), fuse, ug
 !     ------------------------------------------------------------------

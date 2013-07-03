@@ -6,8 +6,8 @@ subroutine dgendo(em, ef, h, syt, syc,&
     implicit   none
 !
 ! PARAMETRES ENTRANTS
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/zerop3.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/zerop3.h"
     integer :: iendo, icompr, icisai, ipente
     real(kind=8) :: em, ef, h, syt, syc, num, nuf, np, dxp
     real(kind=8) :: pendt, pendc, pelast, pendf, pelasf

@@ -3,9 +3,9 @@ subroutine vafcar(tpgz, mclfz, nmobjz, npo, ndi,&
                   nmb, nutyel, ntyele, car, ncar,&
                   ivr, kioc, ier)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: ntyele(*), ivr(*)
     character(len=6) :: kioc
     character(len=8) :: tpg, nomobj, carz

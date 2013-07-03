@@ -21,15 +21,15 @@ subroutine alchlo(opt, ligrel, nin, lpain, lchin,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/dchlmx.h'
-    include 'asterfort/grdeur.h'
-    include 'asterfort/mecoe1.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterfort/dchlmx.h"
+#include "asterfort/grdeur.h"
+#include "asterfort/mecoe1.h"
+#include "asterfort/scalai.h"
+#include "asterfort/typele.h"
+#include "asterfort/wkvect.h"
     integer :: opt, nin, nout
     character(len=8) :: lpain(nin), lpaout(nout)
     character(len=19) :: ligrel

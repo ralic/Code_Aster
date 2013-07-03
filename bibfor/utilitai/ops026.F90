@@ -20,19 +20,19 @@ subroutine ops026()
 !    OPERATEUR DEFI_FICHIER
 !
 !     ------------------------------------------------------------------
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/putvir.h'
-    include 'asterc/rmfile.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uldefi.h'
-    include 'asterfort/ulimpr.h'
-    include 'asterfort/ulnomf.h'
-    include 'asterfort/ulnume.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterc/putvir.h"
+#include "asterc/rmfile.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uldefi.h"
+#include "asterfort/ulimpr.h"
+#include "asterfort/ulnomf.h"
+#include "asterfort/ulnume.h"
+#include "asterfort/ulopen.h"
     integer :: unite, ifm, niv, n1, nf, nu
     logical :: sortie
     character(len=1) :: kacc, ktyp

@@ -62,24 +62,24 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/splin1.h'
-    include 'asterfort/splin2.h'
-    include 'asterfort/spline.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8maem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/splin1.h"
+#include "asterfort/splin2.h"
+#include "asterfort/spline.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: mailla
     character(len=19) :: xnoca, ynoca, znoca, tablca
     character(len=24) :: comima, gromai

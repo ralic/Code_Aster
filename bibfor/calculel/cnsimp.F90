@@ -17,18 +17,18 @@ subroutine cnsimp(cnsz, unite)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: cnsz
     integer :: unite
 ! ---------------------------------------------------------------------

@@ -28,20 +28,20 @@ subroutine gverlc(resuco, compor, iord)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/carces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: iord
     character(len=8) :: resuco
     character(len=24) :: compor

@@ -2,8 +2,8 @@ subroutine i3dch2(epsi, seuil, maxitr, fk, m,&
                   r, s, iret)
     implicit none
 !
-    include 'asterfort/i3efk2.h'
-    include 'asterfort/rvegal.h'
+#include "asterfort/i3efk2.h"
+#include "asterfort/rvegal.h"
     integer :: maxitr, iret
     real(kind=8) :: epsi, seuil, fk(4, *), m(*), r(*), s(*)
 !

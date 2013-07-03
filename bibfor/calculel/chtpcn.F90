@@ -18,21 +18,21 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/antece.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/antece.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: chno1, base, chno2
     real(kind=8) :: tgeom(6), tmin, epsi, tailmi, val
 !

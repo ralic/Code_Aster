@@ -28,8 +28,8 @@ subroutine lcverr(dy, ddy, nr, typ, err)
 !                               2 = IIDDYI/DYIII   < EPS
 !       OUT ERR    :    VECTEUR ERREUR
 !       ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcnrvn.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcnrvn.h"
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     integer :: i

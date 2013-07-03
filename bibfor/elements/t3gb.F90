@@ -1,11 +1,11 @@
 subroutine t3gb(carat3, xyzl, bmat)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bcoqaf.h'
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/t3gbc.h'
+#include "jeveux.h"
+#include "asterfort/bcoqaf.h"
+#include "asterfort/dstbfb.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/t3gbc.h"
     real(kind=8) :: xyzl(3, 1), carat3(*), bmat(8, 1)
 !
 ! ======================================================================

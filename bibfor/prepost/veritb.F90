@@ -1,14 +1,14 @@
 subroutine veritb(nk1d, ndim, oridef)
 !
     implicit     none
-    include 'asterc/getvid.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verinr.h'
+#include "asterc/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verinr.h"
     integer :: nk1d, ndim
     character(len=8) :: oridef
 ! ======================================================================

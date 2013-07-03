@@ -1,13 +1,13 @@
 subroutine cetran(lima1, lima2, nbma, chs1, chs2)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: lima1(*), lima2(*), nbma
     character(len=*) :: chs1, chs2
 ! ----------------------------------------------------------------------

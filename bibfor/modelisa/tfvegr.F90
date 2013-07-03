@@ -28,15 +28,15 @@ subroutine tfvegr(nommcf, ocgril)
 !                  VERIFIE LES ARGUMENTS FOURNIS SOUS LES OPERANDES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: nommcf
     integer :: ocgril, ntypg
     integer :: iarg

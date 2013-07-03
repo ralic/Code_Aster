@@ -19,17 +19,17 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
 ! person_in_charge: jean.angles at edf.fr
 ! aslint: disable=W1501
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/cer3pt.h'
-    include 'asterfort/dimax1.h'
-    include 'asterfort/dimax2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/cer3pt.h"
+#include "asterfort/dimax1.h"
+#include "asterfort/dimax2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: jvecpg, jdtau, jvecn, nbordr, nbvec
     character(len=16) :: nommet
 ! ---------------------------------------------------------------------

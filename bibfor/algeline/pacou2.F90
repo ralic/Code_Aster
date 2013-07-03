@@ -24,8 +24,8 @@ function pacou2(x, fvec, vecr1, vecr2, typflu,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/pacouf.h'
+#include "jeveux.h"
+#include "asterfort/pacouf.h"
     integer :: n
     real(kind=8) :: x(*), fvec(*), amor(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)

@@ -29,33 +29,33 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 ! IN NOMCMD  : NOMS DE LA COMMANDE
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterc/lctest.h'
-    include 'asterc/zaswri.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/crcmel.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imvari.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmdocp.h'
-    include 'asterfort/nmdogd.h'
-    include 'asterfort/nmdoki.h'
-    include 'asterfort/nmdovd.h'
-    include 'asterfort/nmdovm.h'
-    include 'asterfort/nmdpmf.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lctest.h"
+#include "asterc/zaswri.h"
+#include "asterfort/alcart.h"
+#include "asterfort/crcmel.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imvari.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmdocp.h"
+#include "asterfort/nmdogd.h"
+#include "asterfort/nmdoki.h"
+#include "asterfort/nmdovd.h"
+#include "asterfort/nmdovm.h"
+#include "asterfort/nmdpmf.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesg.h"
     integer :: icmp, k, jma, nbma, iret, i, ibid, n1, jvalv, ncmpma, jncmp
     integer :: nbmo1, nbocc, dimaki, dimanv, nbkit, numlc, nbvari, icpri
     integer :: nbvarz, nunit, ii, inv, iarg, indimp

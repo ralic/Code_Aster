@@ -1,15 +1,15 @@
 subroutine pjfuco(c1, c2, base, c3)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: c1, c2, c3
     character(len=1) :: base
 ! ----------------------------------------------------------------------

@@ -19,8 +19,8 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: mxchin, nchin
     character(len=*) :: modele, option, lpain(mxchin), lchin(mxchin)
 !

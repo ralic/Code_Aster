@@ -24,22 +24,22 @@ subroutine debut()
 !        IBBASE  IBCATA
 !     ------------------------------------------------------------------
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/prhead.h'
-    include 'asterfort/foint0.h'
-    include 'asterfort/fozero.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/ibbase.h'
-    include 'asterfort/ibcata.h'
-    include 'asterfort/ibdbgs.h'
-    include 'asterfort/ibfhdf.h'
-    include 'asterfort/ibtcpu.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterc/prhead.h"
+#include "asterfort/foint0.h"
+#include "asterfort/fozero.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/ibbase.h"
+#include "asterfort/ibcata.h"
+#include "asterfort/ibdbgs.h"
+#include "asterfort/ibfhdf.h"
+#include "asterfort/ibtcpu.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulopen.h"
     character(len=8) :: k8b, repons
     character(len=16) :: nomcmd, k16b, cmpdef, cmput, cmpout
     character(len=80) :: fichdf

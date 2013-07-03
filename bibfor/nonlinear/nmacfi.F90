@@ -19,15 +19,15 @@ subroutine nmacfi(fonact, veasse, cnffdo, cndfdo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/vtaxpy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
     character(len=19) :: cnffdo, cndfdo
     character(len=19) :: veasse(*)
     integer :: fonact(*)

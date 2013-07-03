@@ -23,24 +23,24 @@ subroutine op0179()
 !
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/irmifr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/irmifr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, n1, n2, n4, nbmode, jscde
     real(kind=8) :: partr, parti, coef, dpi
     character(len=8) :: nomres, basemo, numgen, k8bid

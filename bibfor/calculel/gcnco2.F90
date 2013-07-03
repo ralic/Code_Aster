@@ -1,6 +1,6 @@
 subroutine gcnco2(nomk8)
     implicit none
-    include 'asterfort/codent.h'
+#include "asterfort/codent.h"
     character(len=8) :: nomk8
 !     ------------------------------------------------------------------
 !     CALCUL D'UN NOUVEAU NOM PAR INCREMENTATION DU NOM DE +1

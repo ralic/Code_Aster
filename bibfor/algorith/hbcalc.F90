@@ -19,7 +19,7 @@ subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: nbmat
     real(kind=8) :: fmoins, incrg, gamma, dg, i1e, sigeqe, derive(5)
     real(kind=8) :: vp(3), materf(nbmat, 2), etap, vh, vg, parame(4)

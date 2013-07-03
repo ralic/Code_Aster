@@ -20,13 +20,13 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacex.h'
-    include 'asterfort/nmlerr.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacex.h"
+#include "asterfort/nmlerr.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: sddisc
     integer :: iterat, nbrpas, retdec
     real(kind=8) :: ratio

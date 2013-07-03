@@ -81,8 +81,8 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/dfort3.h'
-    include 'asterfort/dzonfg.h'
+#include "asterfort/dfort3.h"
+#include "asterfort/dzonfg.h"
     integer :: nelem, nnoem, degre, nsommx, nelcom
     integer :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
     integer :: nalpha

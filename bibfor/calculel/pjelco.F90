@@ -22,13 +22,13 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
 ! BUT : CALCULER LA STRUCTURE DE DONNEE CORRESP_2_MAILLA
 !       DANS LE CAS OU IL Y A UN CHAM_ELGA A TRAITER (CHAM1)
 ! ----------------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/pjefco.h'
-    include 'asterfort/pjma1p.h'
-    include 'asterfort/pjma2p.h'
-    include 'asterfort/u2mesi.h'
+#include "asterfort/assert.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/pjefco.h"
+#include "asterfort/pjma1p.h"
+#include "asterfort/pjma2p.h"
+#include "asterfort/u2mesi.h"
     character(len=8) :: moa1, moa2
     character(len=16) :: corres
     character(len=19) :: cham1

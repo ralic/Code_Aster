@@ -25,30 +25,30 @@ subroutine op0112()
 ! aslint: disable=W1304
     implicit none
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/cpldb.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/cpldb.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alcart.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !
     integer :: nbval, icmp, ibid, idecal, ino2
     integer :: ino1, ii, jj, icmpg, iocc, ima, nbnog1, nbmag1

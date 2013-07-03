@@ -19,9 +19,9 @@ subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/proax0.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/proax0.h"
     integer :: nptsec(4), nbordr
     real(kind=8) :: vsec1(2*nbordr), vsec2(2*nbordr), vsec3(2*nbordr)
     real(kind=8) :: vsec4(2*nbordr), umin, umax, vmin, vmax

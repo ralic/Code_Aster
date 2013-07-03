@@ -1,18 +1,18 @@
 subroutine exlima(motfaz, iocc, base, modelz, ligrel)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/gnoms2.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/gnoms2.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: motfaz, base, modelz, ligrel
     integer :: iocc
 !     -----------------------------------------------------------------

@@ -18,7 +18,7 @@ subroutine infdbg(optioz, ifm, niv)
 ! ======================================================================
 !
     implicit      none
-    include 'asterfort/infniv.h'
+#include "asterfort/infniv.h"
     character(len=*) :: optioz
     integer :: ifm, niv
     character(len=16) :: czcont, czmeca, czpilo, czfact, czappa

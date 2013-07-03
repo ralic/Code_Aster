@@ -1,17 +1,17 @@
 subroutine cglecc(typfis, resu, vecord, calsig)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: typfis, resu, calsig
     character(len=19) :: vecord
 !

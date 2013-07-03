@@ -1,16 +1,16 @@
 subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elrfd2.h'
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/inmat4.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/elraca.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elrfd2.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/inmat4.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: elrefa
 ! ----------------------------------------------------------------------
 ! ======================================================================

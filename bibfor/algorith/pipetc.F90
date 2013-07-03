@@ -19,10 +19,10 @@ subroutine pipetc(mat, sup, sud, mup, mud,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/zerop2.h'
+#include "asterc/r8vide.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/zerop2.h"
     integer :: mat
     real(kind=8) :: sup(3), sud(3), mup(3), mud(3), tau, vim(*), copilo(5)
 !

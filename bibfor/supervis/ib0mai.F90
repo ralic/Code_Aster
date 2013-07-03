@@ -20,19 +20,19 @@ subroutine ib0mai()
 !     MAIN D'ANALYSE DE LA COMMANDE DE DEMARRAGE
 !     ------------------------------------------------------------------
 !     UTILISATION DU COMMON POUR L'AFFICHAGE
-    include 'asterc/gtopti.h'
-    include 'asterc/gtoptr.h'
-    include 'asterc/ismaem.h'
-    include 'asterc/loisem.h'
-    include 'asterfort/entete.h'
-    include 'asterfort/ib1mai.h'
-    include 'asterfort/ibimpr.h'
-    include 'asterfort/jedebu.h'
-    include 'asterfort/jeinif.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utgtme.h'
+#include "asterc/gtopti.h"
+#include "asterc/gtoptr.h"
+#include "asterc/ismaem.h"
+#include "asterc/loisem.h"
+#include "asterfort/entete.h"
+#include "asterfort/ib1mai.h"
+#include "asterfort/ibimpr.h"
+#include "asterfort/jedebu.h"
+#include "asterfort/jeinif.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utgtme.h"
     integer :: lfic, mfic
     common /fenvje/  lfic,mfic
 !

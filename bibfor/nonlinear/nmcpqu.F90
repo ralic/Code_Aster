@@ -19,14 +19,14 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: compor
     character(len=*) :: nomcmz
     character(len=*) :: nompaz

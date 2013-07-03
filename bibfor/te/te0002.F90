@@ -29,10 +29,10 @@ subroutine te0002(option, nomte)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
     real(kind=8) :: k(10, 10), valpar(4), result
     integer :: i, ier, j, ndl, ip, jalpha, jmat, jdimp, jdmul, jgeom, jlagr
     integer :: jvec, jtime, nbpar

@@ -22,20 +22,20 @@ subroutine op0017()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getltx.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getltx.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
     integer :: nivo, n3, n1, ifi, n2, nbocc, ialico, ncon, ipos, long, n4
     integer :: i, iocc
     logical :: lattr, lcont

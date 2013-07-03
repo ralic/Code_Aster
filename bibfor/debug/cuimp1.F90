@@ -16,12 +16,12 @@ subroutine cuimp1(deficu, resocu, ifm)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cudisd.h'
-    include 'asterfort/cudisi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cudisd.h"
+#include "asterfort/cudisi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: deficu
     character(len=24) :: resocu
     integer :: ifm

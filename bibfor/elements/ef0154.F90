@@ -1,17 +1,17 @@
 subroutine ef0154(nomte)
 ! ======================================================================
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/lonele.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/verift.h'
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/verift.h"
     character(len=16) :: nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

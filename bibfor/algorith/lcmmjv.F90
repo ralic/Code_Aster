@@ -33,12 +33,12 @@ subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
 !         TBSYSG : SYSTEMES DE GLISSEMENT DONNES PAR L'UTILISATEUR
 !     ----------------------------------------------------------------
 !     ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     integer :: nmat, icompi, irota, itbint, icompo, nbfsys, i, j, nfs, nsg
     integer :: icompr, nbsyst, nbtbsy, ifa, nbsysi, idecal
     real(kind=8) :: hsr(nsg, nsg), tbsysg

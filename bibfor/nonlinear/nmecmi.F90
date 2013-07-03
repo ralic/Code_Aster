@@ -21,19 +21,19 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
 !
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/nmcri5.h'
-    include 'asterfort/radial.h'
-    include 'asterfort/rcfon2.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerofr.h'
+#include "asterfort/nmcri5.h"
+#include "asterfort/radial.h"
+#include "asterfort/rcfon2.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerofr.h"
     integer :: kpg, ksp, ndim, imate, iret, iret0, iret1, iret2
     character(len=*) :: fami
     character(len=8) :: typmod(*)

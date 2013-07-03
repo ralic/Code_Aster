@@ -21,8 +21,8 @@ function modatt(opt, te, statut, ipar)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: opt, te, ipar
     character(len=3) :: statut
 ! ----------------------------------------------------------------------

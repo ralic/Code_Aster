@@ -22,13 +22,13 @@ subroutine nmfint(modele, mate, carele, comref, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/merimo.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/merimo.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
     integer :: ldccvg
     integer :: iterat
     integer :: fonact(*)

@@ -18,9 +18,9 @@ subroutine sigela(typmod, ndim, e, nu, epse,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/bptobg.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/bptobg.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/r8inir.h"
     character(len=8) :: typmod(1)
     integer :: ndim
     real(kind=8) :: epse(6), e, nu

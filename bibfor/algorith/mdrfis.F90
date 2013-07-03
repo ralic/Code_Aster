@@ -31,13 +31,13 @@ subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
 ! IN  : ANGINI : ANGLE INITIAL ENTRE FISSURE ET AXE
 ! IN  : VROTAT : VITESSE DE ROTATION AXIALE
 ! ----------------------------------------------------------------------
-    include 'asterc/getvtx.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/locglo.h'
-    include 'asterfort/togene.h'
-    include 'asterfort/tophys.h'
+#include "asterc/getvtx.h"
+#include "asterc/r8depi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/locglo.h"
+#include "asterfort/togene.h"
+#include "asterfort/tophys.h"
     integer :: nbmode, nbnli, nbrfis
     real(kind=8) :: depgen(*), fexgen(*), temps, angini, vrotat
     real(kind=8) :: dplmod(nbnli, nbmode, *), parcho(nbnli, *)

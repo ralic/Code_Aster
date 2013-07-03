@@ -25,11 +25,11 @@ subroutine preml2(n1, diag, col, delg, xadj1,&
 ! ======================================================================
 ! aslint: disable=W1304,W1504
     implicit none
-    include 'asterfort/facsmb.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/mltblc.h'
-    include 'asterfort/mltpas.h'
-    include 'asterfort/mltpos.h'
+#include "asterfort/facsmb.h"
+#include "asterfort/infniv.h"
+#include "asterfort/mltblc.h"
+#include "asterfort/mltpas.h"
+#include "asterfort/mltpos.h"
     integer :: col(*)
     integer :: n1, diag(0:n1), adpile(n1), estim, lgind
     integer :: xadj1(n1+1), adjnc1(*), decal(*), mxfact

@@ -84,21 +84,21 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !         INDI   :  INDICATEURS DES MECANISMES POT.ACTIFS (HUJEUX)
 !         YE     : VECTEUR SOLUTIONS APRES LCINIT
 !
-    include 'asterfort/lcafyd.h'
-    include 'asterfort/lccaga.h'
-    include 'asterfort/lcconv.h'
-    include 'asterfort/lceqmn.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinit.h'
-    include 'asterfort/lcjacb.h'
-    include 'asterfort/lcjacp.h'
-    include 'asterfort/lcplnf.h'
-    include 'asterfort/lcreli.h'
-    include 'asterfort/lcresi.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/utlcal.h'
+#include "asterfort/lcafyd.h"
+#include "asterfort/lccaga.h"
+#include "asterfort/lcconv.h"
+#include "asterfort/lceqmn.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinit.h"
+#include "asterfort/lcjacb.h"
+#include "asterfort/lcjacp.h"
+#include "asterfort/lcplnf.h"
+#include "asterfort/lcreli.h"
+#include "asterfort/lcresi.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utlcal.h"
     integer :: imat, nmat, icomp
     integer :: typess, itmax, iret, kpg, ksp
     integer :: nr, ndt, ndi, nvi, iter

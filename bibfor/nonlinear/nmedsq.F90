@@ -22,8 +22,8 @@ subroutine nmedsq(sg, qg, dsdug, d, npg,&
 !
     implicit none
 !
-    include 'asterfort/nmedel.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/nmedel.h"
+#include "asterfort/r8inir.h"
     integer :: nno, npg, kpg, imate, lgpg
     real(kind=8) :: sg(2), qg(2, *), dsdug(2, 8), d(4, *), sign(*)
     real(kind=8) :: geom(2, nno)

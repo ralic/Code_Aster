@@ -1,9 +1,9 @@
 subroutine cesvar(carele, compor, ligrel, dcel)
     implicit none
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jeexin.h'
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jeexin.h"
     character(len=*) :: carele, compor, ligrel, dcel
 ! ----------------------------------------------------------------------
 ! ======================================================================

@@ -21,11 +21,11 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/mmtrpr.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/mmtrpr.h"
     integer :: ndim
     real(kind=8) :: dlagrf(2), djeut(3)
     logical :: loptf, lpenaf, leltf

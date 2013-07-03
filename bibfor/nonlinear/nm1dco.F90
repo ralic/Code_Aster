@@ -47,9 +47,9 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), epspm, corrm
     real(kind=8) :: sigp, dsde, resi, crildc(*)
     character(len=16) :: option

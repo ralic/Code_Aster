@@ -1,9 +1,9 @@
 subroutine lirlig(ifl, cnl, lig, ilec)
     implicit   none
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ifl, ilec
     character(len=14) :: cnl
     character(len=80) :: lig

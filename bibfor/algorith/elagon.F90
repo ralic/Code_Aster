@@ -29,9 +29,9 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
 !       DANS CETTE VERSION SIP=-biot*Pgaz
 ! ======================================================================
     implicit none
-    include 'asterfort/dpgfp1.h'
-    include 'asterfort/prgonf.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/dpgfp1.h"
+#include "asterfort/prgonf.h"
+#include "asterfort/rcvalb.h"
     integer :: ndim, imate
     character(len=16) :: option
     real(kind=8) :: crit(*), tm, tp, alpha

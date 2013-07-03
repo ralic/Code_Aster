@@ -2,16 +2,16 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
                   nume, iddl, coef, neq, nbmode,&
                   zrmod)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/ddllag.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/ddllag.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: lmatm, iddl(*), neq, nbmode
     real(kind=8) :: coef(*), zrmod(neq, *)
     character(len=*) :: motcle, nume, matfac, matpre, solveu

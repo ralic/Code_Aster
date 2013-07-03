@@ -21,15 +21,15 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/eneven.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmevcx.h'
-    include 'asterfort/nmevdg.h'
-    include 'asterfort/nmevin.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/eneven.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmevcx.h"
+#include "asterfort/nmevdg.h"
+#include "asterfort/nmevin.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc, vale(*)
     character(len=4) :: nombcl
     character(len=24) :: defico, resoco

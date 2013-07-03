@@ -21,8 +21,8 @@ subroutine mmmtex(ndexfr, ndim, nnl, nne, nnm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/isdeco.h'
-    include 'asterfort/mmmte2.h'
+#include "asterfort/isdeco.h"
+#include "asterfort/mmmte2.h"
     integer :: ndim, nne, nnl, nnm, nbcps
     integer :: ndexfr
     real(kind=8) :: matrff(18, 18)

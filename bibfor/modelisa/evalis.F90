@@ -35,18 +35,18 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 ! IN      : LVALE  : ADRESSE DES INTERSPECTRES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/evali2.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/evali2.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: ima, nma, nbpg, nbsp, idpg, ivpg, ipg, posma, lvale
     integer :: im1, im2, ivfi, ivsfi, nbval, iphi, isphi, nbm, icmp, idfi, ilfi
     integer :: iret, nbcmp, ival, ind, iff

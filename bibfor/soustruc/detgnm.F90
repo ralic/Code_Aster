@@ -1,25 +1,25 @@
 subroutine detgnm(ma)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cpclma.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cpclma.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: ma
 !
 ! ======================================================================

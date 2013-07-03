@@ -2,11 +2,11 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
                   ndeg)
     implicit none
 !
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: lnoff, ndeg
     character(len=8) :: typfis
     character(len=16) :: option, cas

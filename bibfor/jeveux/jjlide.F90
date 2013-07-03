@@ -18,12 +18,12 @@ subroutine jjlide(nomap, nomlu, itype)
 ! ======================================================================
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jxecro.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jxecro.h"
     character(len=*) :: nomap, nomlu
     integer :: itype
 ! ----------------------------------------------------------------------

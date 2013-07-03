@@ -18,19 +18,19 @@ subroutine rvrepm(mailla, courbe, repere, sdnewr)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvnchm.h'
-    include 'asterfort/rvrlln.h'
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvnchm.h"
+#include "asterfort/rvrlln.h"
     character(len=19) :: sdnewr
     character(len=8) :: courbe, mailla, repere
 !

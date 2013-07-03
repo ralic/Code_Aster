@@ -2,7 +2,7 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
                   ndim)
 ! aslint: disable=W1501
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: dimd, nno, ndim
     real(kind=8) :: x(*), dff(3, *)
     character(len=*) :: elrefz

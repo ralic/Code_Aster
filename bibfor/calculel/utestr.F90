@@ -2,23 +2,23 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
                   refi, refr, refc, typres, epsi,&
                   crit, ific, llab, ssigne)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utites.h'
+#include "asterc/indik8.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utites.h"
     character(len=19) :: cham19
     character(len=33) :: nonoeu
     character(len=8) :: nocmp

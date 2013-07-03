@@ -20,9 +20,9 @@ subroutine shaksg(k, r)
 !-------------------------------------------------------
 ! TOURNE KSTAB VERS LE REPERE GLOBAL
     implicit none
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     real(kind=8) :: k(24, 24), r(3, 3), krt(24, 24), tmp(24, 24), kr(24, 24)
     integer :: i, j, kk
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

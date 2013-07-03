@@ -1,19 +1,19 @@
 subroutine presup(iunv, imod, lgrcou)
     implicit none
-    include 'asterfort/ecrelt.h'
-    include 'asterfort/ecrneu.h'
-    include 'asterfort/inistb.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jjmmaa.h'
-    include 'asterfort/slecol.h'
-    include 'asterfort/slecor.h'
-    include 'asterfort/sleelt.h'
-    include 'asterfort/slegeo.h'
-    include 'asterfort/slegro.h'
-    include 'asterfort/sleneu.h'
-    include 'asterfort/snecol.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/ecrelt.h"
+#include "asterfort/ecrneu.h"
+#include "asterfort/inistb.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jjmmaa.h"
+#include "asterfort/slecol.h"
+#include "asterfort/slecor.h"
+#include "asterfort/sleelt.h"
+#include "asterfort/slegeo.h"
+#include "asterfort/slegro.h"
+#include "asterfort/sleneu.h"
+#include "asterfort/snecol.h"
+#include "asterfort/u2mess.h"
     logical :: lgrcou
 ! ======================================================================
 ! ======================================================================

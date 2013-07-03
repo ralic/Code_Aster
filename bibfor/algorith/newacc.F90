@@ -38,9 +38,9 @@ subroutine newacc(neq, c1, c2, c3, d0,&
 !   E.D.F DER   JACQUART G. 47-65-49-41      LE 19 JUILLET 1990
 !**********************************************************************
 !
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     real(kind=8) :: d0(*), d1(*), v0(*), a0(*), a1(*)
     real(kind=8) :: c1, c2, c3
     real(kind=8) :: scal

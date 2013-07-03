@@ -6,10 +6,10 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/indent.h"
+#include "asterfort/vecini.h"
     integer :: ndim, nno, nnos
     integer :: nfh, ddls, ddlm
     integer :: singu, nvec, nddl, jfisno, nfiss, ifiss, jheafa, ncomph, ifa

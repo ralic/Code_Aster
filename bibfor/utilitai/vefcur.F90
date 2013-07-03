@@ -28,11 +28,11 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale,&
 !  OUT: VEC2    : I  POINTEURS D INDICE DE NOEUDS
 !  IN : NBVALE  :    DIMENSION DES VECTEURS KNOM ET VEC2
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mess.h"
     integer :: nbn, vec1(nbn), nbvale, vec2(nbvale)
     character(len=8) :: knom(nbvale), nomnd
     character(len=24) :: nomnoe

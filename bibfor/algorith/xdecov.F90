@@ -6,19 +6,19 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xpente.h'
-    include 'asterfort/xxmmvd.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/provec.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xpente.h"
+#include "asterfort/xxmmvd.h"
+#include "blas/ddot.h"
     real(kind=8) :: lsn(*), pintt(*), pinter(*), ainter(*)
     integer :: ndim, nnop, nnose, it, cnset(*), heavt(*), ncomp, igeom
     integer :: ninter, npts, nfiss, ifiss, nse, cnse(6, 6), fisco(*), nfisc

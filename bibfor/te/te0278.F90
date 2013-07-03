@@ -1,12 +1,12 @@
 subroutine te0278(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
     character(len=16) :: nomte, option
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

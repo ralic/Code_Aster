@@ -25,22 +25,22 @@ subroutine expcar(carte)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mecumu.h'
-    include 'asterfort/melima.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/scalai.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mecumu.h"
+#include "asterfort/melima.h"
+#include "asterfort/nbec.h"
+#include "asterfort/scalai.h"
     character(len=19) :: carte
 ! ----------------------------------------------------------------------
 !     ENTREES:

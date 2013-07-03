@@ -18,18 +18,18 @@ subroutine dylech(nomo, lischa, nbexre, exreco, exresu)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lischk.h'
-    include 'asterfort/lisimp.h'
-    include 'asterfort/lislec.h'
-    include 'asterfort/lisnbg.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lischk.h"
+#include "asterfort/lisimp.h"
+#include "asterfort/lislec.h"
+#include "asterfort/lisnbg.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomo
     character(len=19) :: lischa
     character(len=24) :: exreco, exresu

@@ -34,16 +34,16 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm2.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm2.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     integer :: option, rang, nbproc, kxmps, ietdeb, ietrat
     character(len=1) :: type
     character(len=24) :: kmonit(12)
@@ -52,8 +52,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !
 #ifdef _HAVE_MUMPS
 #   include "aster_mumps.h"
-    include 'mpif.h'
-    include 'jeveux.h'
+#include "mpif.h"
+#include "jeveux.h"
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
     type (DMUMPS_STRUC) , pointer :: dmpsk

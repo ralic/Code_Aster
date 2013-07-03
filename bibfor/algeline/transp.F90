@@ -28,7 +28,7 @@ subroutine transp(a, nlamax, dimal, dimac, b,&
 !    OUT : B(DIMAC,DIMAL): MATRICE TRANSPOSEE DE A
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: dimal, dimac
     real(kind=8) :: a(nlamax, *), b(nlbmax, *)
 !-----------------------------------------------------------------------

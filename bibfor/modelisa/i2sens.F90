@@ -19,7 +19,7 @@ subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/i2extf.h'
+#include "asterfort/i2extf.h"
     integer :: nbrma, nbrma2
     integer :: chemin(nbrma2), limail(nbrma)
     character(len=*) :: connex, typmai

@@ -19,16 +19,16 @@ subroutine cfjefi(noma, defico, resoco, ddepla)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/caladu.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfimp1.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/caladu.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfimp1.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: ddepla

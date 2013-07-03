@@ -2,7 +2,7 @@ subroutine dilsga(dimdef, dimuel, poids, poids2, b,&
                   r, vectu)
 ! ======================================================================
     implicit none
-    include 'blas/dgemv.h'
+#include "blas/dgemv.h"
     integer :: dimdef, dimuel
     real(kind=8) :: poids, poids2, r(dimdef), b(dimdef, dimuel)
     real(kind=8) :: vectu(dimuel)

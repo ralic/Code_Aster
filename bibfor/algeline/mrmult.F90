@@ -2,20 +2,20 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
                   prepos)
 ! aslint: disable=W1304
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mrmmvr.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/mtmchc.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mrmmvr.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/mtmchc.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=*) :: cumul
     integer :: lmat, nbvect
     real(kind=8) :: vect(*), xsol(*)

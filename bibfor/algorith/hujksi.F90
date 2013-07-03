@@ -30,8 +30,8 @@ subroutine hujksi(carac, mater, r, ksi, iret)
 !    KSI (R)    :  VALEUR DE KSI OU DKSIDR
 !     --------------------------------------------------------
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/infniv.h"
+#include "asterfort/u2mess.h"
     integer :: ifm, niv, iret
     real(kind=8) :: mater(22, 2), r, ksi, rhys, rmob, xm, xm1
     real(kind=8) :: zero, un

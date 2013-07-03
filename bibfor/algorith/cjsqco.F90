@@ -45,12 +45,12 @@ subroutine cjsqco(gamma, sig, x, pref, epssig,&
 !          HTQ      : FONCTION H(TETHA_Q)
 !          DETQ     : DETERMINANT DE Q
 ! ======================================================================
-    include 'asterfort/cjsqij.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/lcdete.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcprsc.h'
+#include "asterfort/cjsqij.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/hlode.h"
+#include "asterfort/lcdete.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcprsc.h"
     integer :: ndt, ndi
     real(kind=8) :: gamma, pref, epssig
     real(kind=8) :: sig(6), x(6), s(6), q(6)

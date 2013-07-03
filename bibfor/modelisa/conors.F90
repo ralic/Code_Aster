@@ -49,14 +49,14 @@ subroutine conors(i1, i2, i3, macoc, nbcoc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     integer :: i1, i2, i3
     character(len=8) :: mailla
     integer :: nbcoc

@@ -19,10 +19,10 @@ function cfdisl(deficz, questz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/mminfl.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/mminfl.h"
     logical :: cfdisl
     character(len=*) :: deficz
     character(len=*) :: questz

@@ -1,24 +1,24 @@
 subroutine rscopi(base, sd1, sd2)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/copich.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsnopa.h'
+#include "asterfort/copich.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsnopa.h"
     character(len=*) :: base, sd1, sd2
 ! ----------------------------------------------------------------------
 ! ======================================================================

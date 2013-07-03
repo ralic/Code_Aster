@@ -26,58 +26,58 @@ subroutine op0100()
 ! aslint: disable=W1501
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cakg2d.h'
-    include 'asterfort/cakg3d.h'
-    include 'asterfort/ccbcop.h'
-    include 'asterfort/cgcrio.h'
-    include 'asterfort/cgcrtb.h'
-    include 'asterfort/cglecc.h'
-    include 'asterfort/cgleco.h'
-    include 'asterfort/cglect.h'
-    include 'asterfort/cglemu.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcou2d.h'
-    include 'asterfort/gcour2.h'
-    include 'asterfort/gcour3.h'
-    include 'asterfort/gcouro.h'
-    include 'asterfort/gver2d.h'
-    include 'asterfort/gveri3.h'
-    include 'asterfort/gverig.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mbilgl.h'
-    include 'asterfort/mebilg.h'
-    include 'asterfort/mecagl.h'
-    include 'asterfort/mecalg.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/memaxg.h'
-    include 'asterfort/mmaxgl.h'
-    include 'asterfort/mmaxkl.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsmena.h'
-    include 'asterfort/rsrusd.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xcourb.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cakg2d.h"
+#include "asterfort/cakg3d.h"
+#include "asterfort/ccbcop.h"
+#include "asterfort/cgcrio.h"
+#include "asterfort/cgcrtb.h"
+#include "asterfort/cglecc.h"
+#include "asterfort/cgleco.h"
+#include "asterfort/cglect.h"
+#include "asterfort/cglemu.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcou2d.h"
+#include "asterfort/gcour2.h"
+#include "asterfort/gcour3.h"
+#include "asterfort/gcouro.h"
+#include "asterfort/gver2d.h"
+#include "asterfort/gveri3.h"
+#include "asterfort/gverig.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mbilgl.h"
+#include "asterfort/mebilg.h"
+#include "asterfort/mecagl.h"
+#include "asterfort/mecalg.h"
+#include "asterfort/medom1.h"
+#include "asterfort/memaxg.h"
+#include "asterfort/mmaxgl.h"
+#include "asterfort/mmaxkl.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsmena.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xcourb.h"
     integer :: nbord, iord, ibid, i, iad, jnord, ivec, iret, icha, nbpara
     integer :: lnoff, jinst, ndeg, iadnum, nbropt, iadrco, iadrno, j, ipuls
     integer :: iord0

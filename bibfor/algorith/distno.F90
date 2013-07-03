@@ -1,15 +1,15 @@
 subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                   dist2, dnorm, cost, sint)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: xlocal(6), signe(*)
     character(len=8) :: typeob
 !---------------------------------------------------------------------

@@ -20,18 +20,18 @@ subroutine op0181()
 !     REALISATION N.GREFFET
 !     OPERATEUR "REST_SPEC_TEMP"
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ecresu.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/prefft.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ecresu.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/prefft.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
     integer :: nbva, nval, nsens, ngrand, i, ier, ngran0
     character(len=4) :: grand(3), grand0(3), cham
     character(len=16) :: type, cmd, symetr, method

@@ -37,8 +37,8 @@ subroutine vpzhea(n, k, l, a, ia,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/vpztr1.h'
-    include 'asterfort/vpztr2.h'
+#include "asterfort/vpztr1.h"
+#include "asterfort/vpztr2.h"
     integer :: n, k, l, ia
     real(kind=8) :: a(ia, n)
     integer :: intger(n)

@@ -19,9 +19,9 @@ subroutine cfdeco(defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/cfsvfr.h'
-    include 'asterfort/cfsvmu.h'
-    include 'asterfort/jedupo.h'
+#include "asterfort/cfsvfr.h"
+#include "asterfort/cfsvmu.h"
+#include "asterfort/jedupo.h"
     character(len=24) :: defico, resoco
 !
 ! ----------------------------------------------------------------------

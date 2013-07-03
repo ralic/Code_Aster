@@ -27,17 +27,17 @@ subroutine op0098()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/calc98.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imbint.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/calc98.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imbint.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomres, mailla, nomgd, k8bid
     character(len=19) :: numddl
     character(len=16) :: nomope, nomcon

@@ -2,8 +2,8 @@ subroutine mudirx(nbsom, geom, idim, al1, al2,&
                   axe, ang)
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
     real(kind=8) :: geom(idim, nbsom), axe(3, 3), ang(2), al1, al2
 !
 ! ======================================================================

@@ -16,15 +16,15 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: ma
     integer :: nbma, jcoor, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
     real(kind=8) :: n1(3), n(3), ab(3), ac(3), nn, n1n, n1n1

@@ -22,7 +22,7 @@ subroutine angvx(gx, alpha, beta)
 !       IN      GX
 !       OUT     ALPHA , BETA
 !       ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     real(kind=8) :: gx(3), alpha, beta, p, tst
 !
 !-----------------------------------------------------------------------

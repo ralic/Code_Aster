@@ -19,8 +19,8 @@ subroutine postsm(option, fm, df, sigm, sigp,&
 ! ======================================================================
 !
     implicit none
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     character(len=16) :: option
     real(kind=8) :: fm(3, 3), df(3, 3), sigm(6), sigp(6), dsidep(6, 3, 3)
 !

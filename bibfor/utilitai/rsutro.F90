@@ -1,10 +1,10 @@
 subroutine rsutro(nomsd, iordg, iordr, ierr)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: iordg, iordr, ierr
     character(len=*) :: nomsd
 ! ----------------------------------------------------------------------

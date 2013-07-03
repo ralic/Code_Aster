@@ -17,9 +17,9 @@ subroutine nmamab(modele, carele, lamor)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
+#include "asterfort/dismoi.h"
     character(len=24) :: modele, carele
     logical :: lamor
 !

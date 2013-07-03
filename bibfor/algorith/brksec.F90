@@ -25,7 +25,7 @@ subroutine brksec(h66, bt3, bc, nu, e,&
 !     CALCUL DE LA MATRICE SECANTE ORTHOTROPE EN
 !       BASE PRINCIPALE D ENDOMMAGEMENT
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     real(kind=8) :: h66(6, 6), b(3), s3(3), nu, e, bt3(3)
     integer :: i, j
     real(kind=8) :: bc, t1, t17, t2, t21, t24, t26

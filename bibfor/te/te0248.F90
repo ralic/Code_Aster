@@ -1,24 +1,24 @@
 subroutine te0248(optioz, nomtez)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/comp1d.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/nmasym.h'
-    include 'asterfort/nmiclb.h'
-    include 'asterfort/nmmaba.h'
-    include 'asterfort/nmpime.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/angvx.h"
+#include "asterfort/comp1d.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/nmasym.h"
+#include "asterfort/nmiclb.h"
+#include "asterfort/nmmaba.h"
+#include "asterfort/nmpime.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
     character(len=*) :: optioz, nomtez
 ! ----------------------------------------------------------------------

@@ -35,10 +35,10 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: mxval
     parameter (mxval=6*3*4)
 !     EN 2D :

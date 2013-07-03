@@ -19,8 +19,8 @@ subroutine dfllpe(mcfact, iechec, even, penmax, nocham,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
     character(len=16) :: mcfact
     integer :: iechec
     character(len=16) :: even

@@ -35,17 +35,17 @@ subroutine mdchof(np1, np2, np3, nbm, impr,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/caljac.h'
-    include 'asterfort/calres.h'
-    include 'asterfort/deimpj.h'
-    include 'asterfort/disbut.h'
-    include 'asterfort/ftest1.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/locglo.h'
-    include 'asterfort/projgm.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/caljac.h"
+#include "asterfort/calres.h"
+#include "asterfort/deimpj.h"
+#include "asterfort/disbut.h"
+#include "asterfort/ftest1.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/locglo.h"
+#include "asterfort/projgm.h"
+#include "asterfort/projmg.h"
+#include "asterfort/vecini.h"
     integer :: np1, np2, np3, nbm, impr
     real(kind=8) :: tc
     integer :: nbnl, typch(*), nbseg(*)

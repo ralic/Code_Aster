@@ -19,50 +19,50 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 ! ======================================================================
 ! aslint: disable=W1501
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/chrpan.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/manopg.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ut2vgl.h'
-    include 'asterfort/utpsgl.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/chrpan.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/manopg.h"
+#include "asterfort/matrot.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ut2vgl.h"
+#include "asterfort/utpsgl.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbcmp, icham
     character(len=*) :: champ1, champ0, repere, type, nomch, modele, carele
 ! ----------------------------------------------------------------------

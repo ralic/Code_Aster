@@ -30,11 +30,11 @@ subroutine lrmmeq(fid, nomamd, infmed)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jemarq.h"
     integer :: fid
     integer :: infmed
 !

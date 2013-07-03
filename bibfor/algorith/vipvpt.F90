@@ -6,10 +6,10 @@ subroutine vipvpt(nbvari, vintm, vintp, advico, vicpvp,&
                   pvpm, retcom)
 ! aslint: disable=W1504
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/tecael.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/tecael.h"
     integer :: nbvari, advico, vicpvp, adcp11, adcp12, ndim, dimcon
     integer :: yate, retcom
     real(kind=8) :: vintm(nbvari), vintp(nbvari), congem(dimcon), pvp0, dp1

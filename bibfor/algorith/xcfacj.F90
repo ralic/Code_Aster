@@ -20,18 +20,18 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/xajpin.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/confac.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
+#include "asterfort/reereg.h"
+#include "asterfort/xajpin.h"
     integer :: ptmax, ipt, igeom, nno, ndim
     real(kind=8) :: lsn(*), ptint(*), ainter(*)
     integer :: nfiss, ifiss, fisco(*), nfisc

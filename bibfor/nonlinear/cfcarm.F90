@@ -21,18 +21,18 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/cftypm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmtypm.h'
+#include "asterfort/assert.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cftypm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmtypm.h"
     character(len=8) :: noma, alias
     character(len=24) :: defico
     character(len=19) :: newgeo

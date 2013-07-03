@@ -40,28 +40,28 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/appmas.h'
-    include 'asterfort/calor.h'
-    include 'asterfort/capaca.h'
-    include 'asterfort/dhdt.h'
-    include 'asterfort/dhwdp1.h'
-    include 'asterfort/dileau.h'
-    include 'asterfort/dmdepv.h'
-    include 'asterfort/dmwdp1.h'
-    include 'asterfort/dmwdt.h'
-    include 'asterfort/dqdeps.h'
-    include 'asterfort/dqdp.h'
-    include 'asterfort/dqdt.h'
-    include 'asterfort/dspdp1.h'
-    include 'asterfort/enteau.h'
-    include 'asterfort/inithm.h'
-    include 'asterfort/netbis.h'
-    include 'asterfort/sigmap.h'
-    include 'asterfort/thmrcp.h'
-    include 'asterfort/viemma.h'
-    include 'asterfort/viporo.h'
-    include 'asterfort/virhol.h'
-    include 'asterfort/visatu.h'
+#include "asterfort/appmas.h"
+#include "asterfort/calor.h"
+#include "asterfort/capaca.h"
+#include "asterfort/dhdt.h"
+#include "asterfort/dhwdp1.h"
+#include "asterfort/dileau.h"
+#include "asterfort/dmdepv.h"
+#include "asterfort/dmwdp1.h"
+#include "asterfort/dmwdt.h"
+#include "asterfort/dqdeps.h"
+#include "asterfort/dqdp.h"
+#include "asterfort/dqdt.h"
+#include "asterfort/dspdp1.h"
+#include "asterfort/enteau.h"
+#include "asterfort/inithm.h"
+#include "asterfort/netbis.h"
+#include "asterfort/sigmap.h"
+#include "asterfort/thmrcp.h"
+#include "asterfort/viemma.h"
+#include "asterfort/viporo.h"
+#include "asterfort/virhol.h"
+#include "asterfort/visatu.h"
     integer :: ndim, dimdef, dimcon, nbvari, imate, retcom, yamec
     integer :: yate, adcome, adcp11, adcote, addeme, addep1, addete
     integer :: advihy, advico, vihrho, vicphi, vicsat

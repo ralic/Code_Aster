@@ -26,7 +26,7 @@ function coyang(dist, dteta, rayon, omega, uc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: dist, dteta, rayon, omega, uc, uct, l, lt
 !
 !

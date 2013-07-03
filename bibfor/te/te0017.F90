@@ -1,11 +1,11 @@
 subroutine te0017(option, nomte)
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

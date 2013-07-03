@@ -28,13 +28,13 @@ subroutine te0187(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
+#include "asterc/r8pi.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
     integer :: icodre
     character(len=16) :: nomte, option
     character(len=8) :: fami, poum

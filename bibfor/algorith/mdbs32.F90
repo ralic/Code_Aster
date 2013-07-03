@@ -32,15 +32,15 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/mdacce.h'
-    include 'asterfort/mdfext.h'
-    include 'asterfort/mdfnli.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8prem.h"
+#include "asterfort/fointe.h"
+#include "asterfort/mdacce.h"
+#include "asterfort/mdfext.h"
+#include "asterfort/mdfnli.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     character(len=16) :: typbas
     integer :: ee, ss, nbconv, nbmxcv, descmm, descmr, descma, palmax, im, iff
     integer :: nbrede, nbrevi, nbrfis, saredi(*), netag, neqgen, nbexci

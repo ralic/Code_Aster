@@ -1,7 +1,7 @@
 subroutine barqua(i1, i2, coor, poin)
     implicit   none
-    include 'asterfort/barso1.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/barso1.h"
+#include "asterfort/u2mesk.h"
     integer :: i1, i2, poin(*)
     real(kind=8) :: coor(*)
 !-----------------------------------------------------------------------

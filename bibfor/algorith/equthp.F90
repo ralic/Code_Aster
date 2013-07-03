@@ -136,7 +136,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
 !       SQRT.
 !   -------------------------------------------------------------------
 !
-    include 'asterfort/comthm.h'
+#include "asterfort/comthm.h"
     integer :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom, ibid
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: yamec, addeme, adcome, yate, addete, adcote, i, j

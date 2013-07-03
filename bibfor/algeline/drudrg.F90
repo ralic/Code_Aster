@@ -2,9 +2,9 @@ subroutine drudrg(parame, derpar, h0, sigc, rgdev,&
                   invar1, dudg)
 !
     implicit  none
-    include 'asterfort/derpro.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/derpro.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     real(kind=8) :: parame(5), derpar(4), h0, sigc, rgdev, invar1, dudg
 ! ======================================================================
 ! ======================================================================

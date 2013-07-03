@@ -16,11 +16,11 @@ subroutine xthpoc(modele, chtn, chtpg)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
     character(len=19) :: chtn, chtpg
     character(len=24) :: modele
 ! ----------------------------------------------------------------------

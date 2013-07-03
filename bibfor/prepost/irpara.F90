@@ -2,16 +2,16 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
                   nbpa, nompar, cecr)
 ! aslint: disable=W1303
     implicit none
-    include 'jeveux.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nompar(*)
     character(len=*) :: cecr
     character(len=*) :: resu, form

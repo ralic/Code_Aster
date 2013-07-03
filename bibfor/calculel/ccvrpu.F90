@@ -1,16 +1,16 @@
 subroutine ccvrpu(resuin, lisord, nbordr)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbordr
     character(len=8) :: resuin
     character(len=19) :: lisord

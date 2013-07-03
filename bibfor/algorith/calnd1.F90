@@ -31,9 +31,9 @@ subroutine calnd1(ic, np1, np2, np3, nbm,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/ftest2.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/projmg.h'
+#include "asterfort/ftest2.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/projmg.h"
     integer :: ic, np1, np2, np3, nbm
     real(kind=8) :: alpha(2, *), beta(2, *), gamma(2, *), orig(6, *), rc(np3, *)
     real(kind=8) :: theta(np3, *)

@@ -1,10 +1,10 @@
 subroutine chgrep(type, pgl1, pgl2, matl, matg)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/tmat.h'
-    include 'asterfort/vecma.h'
+#include "asterfort/assert.h"
+#include "asterfort/mavec.h"
+#include "asterfort/pmat.h"
+#include "asterfort/tmat.h"
+#include "asterfort/vecma.h"
     character(len=2) :: type
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), matl(*), matg(*)
 !     ------------------------------------------------------------------

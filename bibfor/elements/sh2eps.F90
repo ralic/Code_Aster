@@ -19,13 +19,13 @@ subroutine sh2eps(xetemp, xidepp, deploc, propel)
 !               ELEMENT SHB20
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chrp3d.h'
-    include 'asterfort/dsdx3d.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/rloshb.h'
-    include 'asterfort/s2calb.h'
-    include 'asterfort/sh2ksi.h'
+#include "jeveux.h"
+#include "asterfort/chrp3d.h"
+#include "asterfort/dsdx3d.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/rloshb.h"
+#include "asterfort/s2calb.h"
+#include "asterfort/sh2ksi.h"
     integer :: lag
     real(kind=8) :: xe(60), xidepp(*)
     real(kind=8) :: xcoq(3, 4), bksip(3, 20, 20), b(3, 20)

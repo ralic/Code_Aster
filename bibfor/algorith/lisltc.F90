@@ -18,11 +18,11 @@ subroutine lisltc(lischa, ichar, typech)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lisnnb.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     integer :: ichar
     character(len=8) :: typech

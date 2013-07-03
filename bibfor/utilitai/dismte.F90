@@ -19,19 +19,19 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(TYPE_ELEM)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismtm.h'
-    include 'asterfort/indiis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismtm.h"
+#include "asterfort/indiis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz

@@ -45,18 +45,18 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !.......................................................................
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/d1mamc.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/nrsmt1.h'
-    include 'asterfort/nrsmtb.h'
-    include 'asterfort/nrsmtt.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerop3.h'
-    include 'blas/dcopy.h'
+#include "asterfort/d1mamc.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/nrsmt1.h"
+#include "asterfort/nrsmtb.h"
+#include "asterfort/nrsmtt.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerop3.h"
+#include "blas/dcopy.h"
     integer :: nbsig, nbvari, nsol, i, iadmat, igau, icodre(2), isig, jsig
     real(kind=8) :: c1, c2, deux, vari(*), enelas, trt, un, undemi, zero
     real(kind=8) :: sol(3), sigma(6), jzero, uzero, mzero, instan, epsi(6)

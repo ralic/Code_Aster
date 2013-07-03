@@ -21,16 +21,16 @@ subroutine meama2(modele, nchar, lchar, mate, matel,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     character(len=8) :: modele, lchar(*)
     character(len=19) :: matel, prefch
     character(len=*) :: mate

@@ -28,15 +28,15 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
 ! IN : IAD : ADRESSE DU VECTEUR DES NOMS DES CHAMNOS STOCKES
 ! IN : NBVALE,NBREFE,NBDESC : DIMENSIONS DE VECTEURS POUR UN CHAMNO
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: ivale, idesc, irefe, ivalp, idesp, irefp, j, k
     integer :: nbrefe, nbvale, nbdesc, iad, nbvec
     character(len=1) :: k1bid

@@ -25,8 +25,8 @@ subroutine pacou3(xold, fold, g, p, x,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/pacou2.h'
+#include "jeveux.h"
+#include "asterfort/pacou2.h"
     real(kind=8) :: f, fold, stpmax, tolx, amor(*)
     real(kind=8) :: g(*), p(*), x(*), xold(*), fvec(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)

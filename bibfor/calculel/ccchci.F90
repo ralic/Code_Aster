@@ -16,7 +16,7 @@ subroutine ccchci(critz, questz, repi)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: critz, questz
     integer :: repi
 ! person_in_charge: mathieu.courtois at edf.fr

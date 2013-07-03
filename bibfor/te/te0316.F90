@@ -27,12 +27,12 @@ subroutine te0316(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/vff2dn.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/vff2dn.h"
     character(len=16) :: nomte, option
     real(kind=8) :: poids, nx, ny, norm(2)
     integer :: ipoids, ivf, idfde, igeom

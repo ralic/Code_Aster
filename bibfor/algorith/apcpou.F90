@@ -20,16 +20,16 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/apzoni.h'
-    include 'asterfort/apzonv.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesk.h"
+#include "blas/dcopy.h"
     character(len=19) :: sdappa
     character(len=4) :: typzon
     integer :: izone

@@ -17,10 +17,10 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: nno
     real(kind=8) :: dfrdk(1), coor(*), dfdx(1)
     real(kind=8) :: dxdk, dydk, cour, jac, jacp, poids, sina, cosa

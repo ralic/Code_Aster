@@ -65,31 +65,31 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !     ------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/amumph.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/diagav.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imppiv.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mlfc16.h'
-    include 'asterfort/mtmchc.h'
-    include 'asterfort/mulfr8.h'
-    include 'asterfort/rgndas.h'
-    include 'asterfort/tldlc8.h'
-    include 'asterfort/tldlr8.h'
-    include 'asterfort/tlduc8.h'
-    include 'asterfort/tldur8.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ualfcr.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/amumph.h"
+#include "asterfort/assert.h"
+#include "asterfort/diagav.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imppiv.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mlfc16.h"
+#include "asterfort/mtmchc.h"
+#include "asterfort/mulfr8.h"
+#include "asterfort/rgndas.h"
+#include "asterfort/tldlc8.h"
+#include "asterfort/tldlr8.h"
+#include "asterfort/tlduc8.h"
+#include "asterfort/tldur8.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ualfcr.h"
     character(len=1) :: codmes, kbid
     character(len=19) :: noma19, ligrel, stolci, solvop
     character(len=14) :: nu

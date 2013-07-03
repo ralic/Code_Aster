@@ -21,7 +21,7 @@ subroutine pacou6(r, qt, n, i, a,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: n, i
     real(kind=8) :: a, b, r(n, *), qt(n, *)
 ! ---------------------------------------------------------------------

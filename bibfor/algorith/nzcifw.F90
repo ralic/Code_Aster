@@ -21,12 +21,12 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
 ! ======================================================================
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/nzcalc.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/verift.h'
+#include "asterc/r8prem.h"
+#include "asterfort/matini.h"
+#include "asterfort/nzcalc.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/verift.h"
     integer :: ndim, imat, iret, kpg, ksp
     character(len=16) :: compor(*), option
     character(len=*) :: fami

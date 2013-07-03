@@ -2,15 +2,15 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
                   incr)
     implicit none
 !
-    include 'asterc/getfac.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gverlc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdorc.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gverlc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
     integer :: iord0
     character(len=8) :: resu, modele, typfis
     character(len=24) :: compor

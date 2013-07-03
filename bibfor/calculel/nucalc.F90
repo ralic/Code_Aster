@@ -21,11 +21,11 @@ function nucalc(opt, te, memoir)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
     integer :: opt, te, memoir
 ! ----------------------------------------------------------------------
 !     ENTREES:

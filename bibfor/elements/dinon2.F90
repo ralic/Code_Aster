@@ -3,8 +3,8 @@ subroutine dinon2(neq, ul, dul, utl, nno,&
                   okdire, varipl, dt)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/u2mesr.h'
+#include "asterc/r8miem.h"
+#include "asterfort/u2mesr.h"
     integer :: neq, nbcomp, nno, nbpar
     real(kind=8) :: ul(neq), dul(neq), utl(neq), dt
     real(kind=8) :: varimo(nbcomp*2), varipl(nbcomp*2)

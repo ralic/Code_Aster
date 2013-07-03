@@ -1,13 +1,13 @@
 subroutine coecis(napcis, foncis)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/foston.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/codent.h"
+#include "asterfort/foston.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: napcis, foncis
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

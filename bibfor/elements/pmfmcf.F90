@@ -21,7 +21,7 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/pmfcom.h'
+#include "asterfort/pmfcom.h"
     integer :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat, isecan
     character(len=16) :: option
     character(len=24) :: sdcomp(*)

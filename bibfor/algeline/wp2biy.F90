@@ -3,7 +3,7 @@ subroutine wp2biy(lm, lc, lk, s2, dsr,&
                   lbloq, u1, u2, u3, u4,&
                   n)
     implicit none
-    include 'asterfort/mrmult.h'
+#include "asterfort/mrmult.h"
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*)
     real(kind=8) :: s2, dsr, isi
     integer :: lm, lc, lk, n, lbloq(*)

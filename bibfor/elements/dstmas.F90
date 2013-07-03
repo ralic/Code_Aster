@@ -1,26 +1,26 @@
 subroutine dstmas(xyzl, option, pgl, mas, ener)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/dialum.h'
-    include 'asterfort/dstci2.h'
-    include 'asterfort/dstcis.h'
-    include 'asterfort/dstnib.h'
-    include 'asterfort/dstniw.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/dxtloc.h'
-    include 'asterfort/dxtloe.h'
-    include 'asterfort/dxtnim.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/dialum.h"
+#include "asterfort/dstci2.h"
+#include "asterfort/dstcis.h"
+#include "asterfort/dstnib.h"
+#include "asterfort/dstniw.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/dxtloc.h"
+#include "asterfort/dxtloe.h"
+#include "asterfort/dxtnim.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), mas(*), ener(*)
     character(len=16) :: option
 ! ======================================================================

@@ -19,13 +19,13 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: noesup, defico
     integer :: nbexcl
     integer :: nzoco

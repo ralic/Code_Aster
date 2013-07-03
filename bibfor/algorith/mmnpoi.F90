@@ -19,12 +19,12 @@ subroutine mmnpoi(noma, nommae, numnoe, iptm, nompt)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: noma
     character(len=8) :: nommae
     integer :: iptm, numnoe

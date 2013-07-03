@@ -27,8 +27,8 @@ subroutine ftest2(np3, rc, theta, xloc, ic,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/disbut.h"
+#include "asterfort/u2mess.h"
     integer :: np3
     real(kind=8) :: rc(np3, *), theta(np3, *), xloc(*)
     integer :: ic, typch(*), nbseg(*)

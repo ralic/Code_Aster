@@ -24,7 +24,7 @@ subroutine rhoequ(rho, rhos, rhofi, rhofe, cm,&
 !     -----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     real(kind=8) :: cm, phie, phieq, phii, pi, rho
     real(kind=8) :: rhofe, rhofi, rhos
 !-----------------------------------------------------------------------

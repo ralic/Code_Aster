@@ -19,24 +19,24 @@ subroutine op0161()
 ! ======================================================================
 !     COMBINAISON FOURIER
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/refode.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/refode.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/wkvect.h"
     complex(kind=8) :: cbid
     character(len=8) :: k8b, resu, resuin, modele, mate, carele
     character(len=16) :: concep, nomcmd, nsymb

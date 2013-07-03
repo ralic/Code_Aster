@@ -19,8 +19,8 @@ subroutine nmsuiy(sdimpr, valr, isuiv)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/impfoi.h'
-    include 'asterfort/nmimcr.h'
+#include "asterfort/impfoi.h"
+#include "asterfort/nmimcr.h"
     character(len=24) :: sdimpr
     real(kind=8) :: valr
     integer :: isuiv

@@ -3,16 +3,16 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                   noma, nmaabs)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/intfac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/xajpin.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/confac.h"
+#include "asterfort/elref1.h"
+#include "asterfort/intfac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
+#include "asterfort/xajpin.h"
     integer :: ptmax, ipt, igeom, nno, ndim, nmaabs
     real(kind=8) :: lsn(nno), lst(nno), ptint(*), ainter(*)
     character(len=8) :: typma, noma

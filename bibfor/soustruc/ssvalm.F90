@@ -21,17 +21,17 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/ssrone.h'
-    include 'asterfort/ssvaro.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matrot.h"
+#include "asterfort/ssrone.h"
+#include "asterfort/ssvaro.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: mo, ma
     character(len=*) :: option, statut
     integer :: isma, jresl

@@ -1,16 +1,16 @@
 subroutine te0103(option, nomte)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cq3d2d.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/cq3d2d.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/r8inir.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

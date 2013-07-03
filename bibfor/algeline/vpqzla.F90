@@ -83,44 +83,44 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8depi.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mcmult.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpgskp.h'
-    include 'asterfort/vpordc.h'
-    include 'asterfort/vpordo.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dggev.h'
-    include 'blas/dggevx.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dsygv.h'
-    include 'blas/dznrm2.h'
-    include 'blas/zaxpy.h'
-    include 'blas/zcopy.h'
-    include 'blas/zggev.h'
-    include 'blas/zggevx.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mcmult.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpgskp.h"
+#include "asterfort/vpordc.h"
+#include "asterfort/vpordo.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dggev.h"
+#include "blas/dggevx.h"
+#include "blas/dnrm2.h"
+#include "blas/dsygv.h"
+#include "blas/dznrm2.h"
+#include "blas/zaxpy.h"
+#include "blas/zcopy.h"
+#include "blas/zggev.h"
+#include "blas/zggevx.h"
     integer :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, ibscal, qrba
     integer :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
     integer :: ddlexc(*), nfreq, lmasse, lraide, lamor

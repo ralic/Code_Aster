@@ -59,9 +59,9 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
 ! CORPS DU PROGRAMME
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indiis.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/indiis.h"
     integer :: noe(9, 6, 4), ifa, tymvol, nnof
     integer :: iref1, ivois, isig, nbcmp
     real(kind=8) :: dsg11(9), dsg22(9), dsg33(9), dsg12(9), dsg13(9), dsg23(9)

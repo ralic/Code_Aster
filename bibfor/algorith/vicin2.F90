@@ -17,7 +17,7 @@ subroutine vicin2(ndim, g, npg, lgpg, vim,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/utbtab.h'
+#include "asterfort/utbtab.h"
     integer :: ndim, g, npg, lgpg, i, nbcin, numcin(2)
     real(kind=8) :: vim(lgpg, npg), rpt(3, 3), vimm(3, 3)
     real(kind=8) :: vari(3, 3), esp(9)

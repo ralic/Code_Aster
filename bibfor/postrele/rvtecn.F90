@@ -3,26 +3,26 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
                   nomtab, iocc, xnovar, ncheff, i1,&
                   ioc, isd)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/rvtec2.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/rvtec2.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/wkvect.h"
     integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1, ioc, isd
     real(kind=8) :: releve(*), absc(*), coor(*)
     character(len=4) :: docu

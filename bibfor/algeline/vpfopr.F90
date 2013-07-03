@@ -100,23 +100,23 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     implicit none
 !
 ! PARAMETRES D'APPEL
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecint.h'
-    include 'asterfort/vpecst.h'
-    include 'asterfort/vpstur.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecint.h"
+#include "asterfort/vpecst.h"
+#include "asterfort/vpstur.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: option
     character(len=16) :: typres
     character(len=19) :: solveu

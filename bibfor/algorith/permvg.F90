@@ -25,9 +25,9 @@ subroutine permvg(vg, s, krl, dklds, krg,&
     implicit none
 !
 ! IN
-    include 'asterfort/kfomvg.h'
-    include 'asterfort/regup1.h'
-    include 'asterfort/regup2.h'
+#include "asterfort/kfomvg.h"
+#include "asterfort/regup1.h"
+#include "asterfort/regup2.h"
     real(kind=8) :: vg(5), s
 ! OUT
     real(kind=8) :: krl, dklds, krg, dkgds

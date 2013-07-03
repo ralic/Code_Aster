@@ -69,20 +69,20 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! ----------------------------------------------------------------------
 ! DECLARATION PARAMETRES D'APPELS
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ddlphy.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/ddlphy.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     character(len=19) :: valinc(*), masse, amort, rigid, sdener
     real(kind=8) :: dep0(*), vit0(*), depl1(*), vite1(*)
     real(kind=8) :: fexte(*), famor(*), fliai(*), fnoda(*), fcine(*)

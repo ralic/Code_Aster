@@ -19,7 +19,7 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit     none
-    include 'asterfort/rcvala.h'
+#include "asterfort/rcvala.h"
     integer :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=8) :: mod

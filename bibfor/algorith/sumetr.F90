@@ -18,7 +18,7 @@ subroutine sumetr(cova, metr, jac)
 !
     implicit none
 !
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     real(kind=8) :: cova(3, 3), metr(2, 2), jac
 !
 !.......................................................................

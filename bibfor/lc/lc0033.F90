@@ -22,10 +22,10 @@ subroutine lc0033(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/iisnan.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/plasti.h'
-    include 'asterfort/rcvarc.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8vide.h"
+#include "asterfort/plasti.h"
+#include "asterfort/rcvarc.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)

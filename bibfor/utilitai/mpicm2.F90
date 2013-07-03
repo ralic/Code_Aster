@@ -33,32 +33,32 @@ subroutine mpicm2(optmpi, nomjev)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/loisem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mpichk.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
-    include 'blas/zcopy.h'
+#include "asterc/loisem.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mpichk.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
+#include "blas/zcopy.h"
     character(len=32) :: jexnom, jexatr
     character(len=*) :: optmpi
     character(len=24) :: nomjev
 !
 #ifdef _USE_MPI
-    include 'mpif.h'
+#include "mpif.h"
 ! DECLARATION VARIABLES LOCALES
     integer :: jnomjv, iexi
     integer :: ibid

@@ -41,13 +41,13 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/marota.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/vectan.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/marota.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/vectan.h"
     character(len=16) :: nomte
     real(kind=8) :: sigmau(ncmp, 1), sigrtg(ncmp, 1)
     integer :: ncmp

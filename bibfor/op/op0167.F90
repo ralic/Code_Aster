@@ -22,63 +22,63 @@ subroutine op0167()
 !     OPERATEUR CREA_MAILLAGE
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/chckma.h'
-    include 'asterfort/chcoma.h'
-    include 'asterfort/chcomb.h'
-    include 'asterfort/cm1518.h'
-    include 'asterfort/cm2027.h'
-    include 'asterfort/cmcovo.h'
-    include 'asterfort/cmcrea.h'
-    include 'asterfort/cmdgma.h'
-    include 'asterfort/cmlqlq.h'
-    include 'asterfort/cmmoma.h'
-    include 'asterfort/cmqlql.h'
-    include 'asterfort/cmqutr.h'
-    include 'asterfort/cocali.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/cpclma.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/eclpgm.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/infoma.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/palim2.h'
-    include 'asterfort/palim3.h'
-    include 'asterfort/rdtmai.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/chckma.h"
+#include "asterfort/chcoma.h"
+#include "asterfort/chcomb.h"
+#include "asterfort/cm1518.h"
+#include "asterfort/cm2027.h"
+#include "asterfort/cmcovo.h"
+#include "asterfort/cmcrea.h"
+#include "asterfort/cmdgma.h"
+#include "asterfort/cmlqlq.h"
+#include "asterfort/cmmoma.h"
+#include "asterfort/cmqlql.h"
+#include "asterfort/cmqutr.h"
+#include "asterfort/cocali.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/cpclma.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eclpgm.h"
+#include "asterfort/exlima.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/infoma.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/palim2.h"
+#include "asterfort/palim3.h"
+#include "asterfort/rdtmai.h"
+#include "asterfort/reliem.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, nbmst, iqtr, nbvolu
     integer :: n1, numma, nbjoin, nbrest, n1a, n1b
 !

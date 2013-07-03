@@ -2,14 +2,14 @@ subroutine fonno5(noma, indic, nbnoff, noe, na,&
                   nb, ndim, nbnoel, indr, vnor,&
                   vdir)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/gdire3.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/gdire3.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/vecini.h"
     character(len=8) :: noma
     integer :: indic(4), nbnoff, noe(4, 4), na, nb, ndim, nbnoel, indr(2)
     real(kind=8) :: vnor(2, 3), vdir(2, 3)

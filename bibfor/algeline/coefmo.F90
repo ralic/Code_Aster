@@ -22,23 +22,23 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/bijmoc.h'
-    include 'asterfort/bmocca.h'
-    include 'asterfort/cajgr2.h'
-    include 'asterfort/cfrott.h'
-    include 'asterfort/coefam.h'
-    include 'asterfort/coefra.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/kajgr2.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterfort/bijmoc.h"
+#include "asterfort/bmocca.h"
+#include "asterfort/cajgr2.h"
+#include "asterfort/cfrott.h"
+#include "asterfort/coefam.h"
+#include "asterfort/coefra.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/kajgr2.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: typflu
     real(kind=8) :: xsi0, vgap, x(2), pulsc, xmf, xcf, rkf
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)

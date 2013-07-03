@@ -34,16 +34,16 @@ subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
 !                 VALEURS R,I DES FONCTIONS INTERSPECTRALES  DE
 !                 L EXCITATION RECALCULEES SUR DISCR REPONSE
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fointr.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/fointr.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/wkvect.h"
     integer :: ij1, i1, i2, ireim1, ireim2
     integer :: ilong1
     character(len=8) :: chlist(5), kbid

@@ -1,11 +1,11 @@
 subroutine ccnett(nobase, nopout)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
     integer :: nopout
     character(len=8) :: nobase
 ! ======================================================================

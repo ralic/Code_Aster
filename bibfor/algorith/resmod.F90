@@ -36,21 +36,21 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dcapno.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/orient.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/dcapno.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/orient.h"
+#include "asterfort/posddl.h"
+#include "asterfort/wkvect.h"
 !
 !
     integer :: nbmode, ddl(6), neq

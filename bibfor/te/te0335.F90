@@ -1,11 +1,11 @@
 subroutine te0335(option, nomte)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fgequi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fgequi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -57,7 +57,7 @@ subroutine te0335(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !
     integer :: neeqmx, nceqmx

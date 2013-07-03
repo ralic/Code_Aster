@@ -24,7 +24,7 @@ subroutine matect(materd, materf, nmat, macst)
 !     OUT MATCST :  'OUI' SI  MATERIAU A T = MATERIAU A T+DT
 !                   'NON' SINON
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: nmat, i
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsi
     character(len=3) :: macst

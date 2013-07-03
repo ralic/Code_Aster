@@ -23,13 +23,13 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfllvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: lisifr, lisevr, lisevk, lisesu
     integer :: isauve
     real(kind=8) :: pasmin, pcplus, penmax

@@ -1,9 +1,9 @@
 subroutine cgvedo(ndim, option)
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ndim
     character(len=16) :: option
 !

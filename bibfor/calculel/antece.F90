@@ -38,12 +38,12 @@ subroutine antece(ino2, mail, tgeom, tailmi, epsi,&
 !     OUT: INTEGER : NBANTE : NOMBRE D ANTECEDENTS TROUVES
 !     OUT: INTEGER : NUNO1 : NUMERO DU NOEUD ANTECEDENT
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: mail
     integer :: nuno1, ino2, nbante
     real(kind=8) :: tgeom(6), tailmi, epsi

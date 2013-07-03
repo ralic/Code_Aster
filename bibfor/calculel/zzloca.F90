@@ -1,9 +1,9 @@
 subroutine zzloca(modele, ligrel, matez, sigma, signo,&
                   chvarc, resu)
     implicit none
-    include 'asterfort/calcul.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcul.h"
+#include "asterfort/megeom.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: modele, ligrel, matez, sigma, signo, chvarc, resu
 ! ----------------------------------------------------------------------
 ! ======================================================================

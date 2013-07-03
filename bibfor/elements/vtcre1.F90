@@ -46,15 +46,15 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sdchgd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdchgd.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: classe, type
     character(len=24) :: champ, numedd, method, sdfeti
     integer :: neq

@@ -29,13 +29,13 @@ subroutine deflog(ndim, f, epsl, gn, lamb,&
 !     OUT   LAMB  valeurs propres du tenseur F
 !     OUT   LOGL  log des valeurs propres du tenseur F
 ! ----------------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/diago2.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tnsvec.h'
+#include "asterc/r8miem.h"
+#include "asterfort/diago2.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/lctr2m.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tnsvec.h"
     real(kind=8) :: tr(6), gn(3, 3), epsl33(3, 3), tr2(3), ft(3, 3), gn2(2, 2)
     real(kind=8) :: f(3, 3), epsl(6), lamb(3), logl(3), f33(3, 3)
     integer :: nbvec, i, j, k, ndim, iret

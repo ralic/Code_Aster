@@ -7,24 +7,24 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexis.h'
-    include 'asterfort/vpermc.h'
-    include 'asterfort/vpermo.h'
-    include 'asterfort/vpnorx.h'
-    include 'asterfort/vppcom.h'
-    include 'asterfort/vppfac.h'
-    include 'asterfort/vppgec.h'
-    include 'asterfort/vppgen.h'
-    include 'asterfort/vpstor.h'
-    include 'asterfort/wpermo.h'
-    include 'asterfort/wpnorx.h'
-    include 'asterfort/wppgen.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexis.h"
+#include "asterfort/vpermc.h"
+#include "asterfort/vpermo.h"
+#include "asterfort/vpnorx.h"
+#include "asterfort/vppcom.h"
+#include "asterfort/vppfac.h"
+#include "asterfort/vppgec.h"
+#include "asterfort/vppgen.h"
+#include "asterfort/vpstor.h"
+#include "asterfort/wpermo.h"
+#include "asterfort/wpnorx.h"
+#include "asterfort/wppgen.h"
     character(len=4) :: mod45
     character(len=8) :: modes, knega
     character(len=1) :: ktyp

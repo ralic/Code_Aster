@@ -1,12 +1,12 @@
 subroutine dxefnt(nomte, pgl, sigt)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dxmath.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dxmath.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: pgl(3, 3), sigt(1)
     character(len=16) :: nomte
 ! ======================================================================

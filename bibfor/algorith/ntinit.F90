@@ -22,22 +22,22 @@ subroutine ntinit(result, modele, mate, carele, lischa,&
 ! person_in_charge: Christophe-mmn.durand at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/gcucon.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ntcrch.h'
-    include 'asterfort/ntcrcv.h'
-    include 'asterfort/ntetcr.h'
-    include 'asterfort/numero.h'
-    include 'asterfort/nxdoet.h'
-    include 'asterfort/nxnoli.h'
-    include 'asterfort/rsnume.h'
-    include 'asterfort/tiinit.h'
+#include "jeveux.h"
+#include "asterc/gcucon.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ntcrch.h"
+#include "asterfort/ntcrcv.h"
+#include "asterfort/ntetcr.h"
+#include "asterfort/numero.h"
+#include "asterfort/nxdoet.h"
+#include "asterfort/nxnoli.h"
+#include "asterfort/rsnume.h"
+#include "asterfort/tiinit.h"
     logical :: lostat, levol, lnonl
     character(len=19) :: lischa, lisch2, solveu
     character(len=19) :: sddisc, sdcrit

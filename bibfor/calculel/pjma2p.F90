@@ -30,31 +30,31 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 ! IN/JXOUT MA2P : MAILLAGE 2 PRIME (OBTENU A PARTIR DES PG DU MODELE 2)
 ! IN/JXVAR : ON COMPLETE LA SD_CORRESP_2_MAILLA AVEC L'OBJET .PJEL
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/utflmd.h'
-    include 'asterfort/utmamo.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utflmd.h"
+#include "asterfort/utmamo.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: corres
     character(len=8) :: ma2p, moa2
     integer :: ndim

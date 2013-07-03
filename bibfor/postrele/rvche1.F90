@@ -1,22 +1,22 @@
 subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dgmode.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpsgl.h'
+#include "asterfort/dgmode.h"
+#include "asterfort/digdel.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpsgl.h"
     integer :: nbel, numail(*)
     character(len=*) :: chelez, nomjv
     real(kind=8) :: pgl(3, 3)

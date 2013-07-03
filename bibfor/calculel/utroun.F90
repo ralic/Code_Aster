@@ -1,8 +1,8 @@
 subroutine utroun(ch1, idec, ch2, isup)
     implicit   none
-    include 'asterfort/assert.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/lxliis.h'
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/lxliis.h"
     integer :: idec, isup
     character(len=24) :: ch1, ch2
 ! ======================================================================

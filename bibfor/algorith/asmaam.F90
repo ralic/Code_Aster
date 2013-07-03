@@ -19,7 +19,7 @@ subroutine asmaam(meamor, numedd, solveu, lischa, matamo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/asmatr.h'
+#include "asterfort/asmatr.h"
     character(len=19) :: meamor
     character(len=24) :: numedd
     character(len=19) :: matamo

@@ -2,15 +2,15 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec,&
                   mtrmas, numer, nbddl, noexit, cpexit,&
                   nvasex, vecass)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/posddl.h"
+#include "asterfort/wkvect.h"
     integer :: napexc, nbmode, nbddl, nvasex
     character(len=4) :: excmod
     character(len=8) :: mtrmas, numer, tymmec, vecass(*), noexit(*), cpexit(*)

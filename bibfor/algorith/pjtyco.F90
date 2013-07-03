@@ -27,17 +27,17 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno,&
 ! 0.1. ==> ARGUMENTS
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsutc4.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsutc4.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: resuin
     character(len=19) :: cham1
     logical :: isole

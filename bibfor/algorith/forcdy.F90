@@ -47,9 +47,9 @@ subroutine forcdy(masse, amort, lamort, neq, c0,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
-    include 'asterfort/mrmult.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
+#include "asterfort/mrmult.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
     integer :: masse, amort
     integer :: neq
 !

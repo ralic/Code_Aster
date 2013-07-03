@@ -1,11 +1,11 @@
 subroutine te0301(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================

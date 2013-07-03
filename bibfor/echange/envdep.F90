@@ -230,14 +230,14 @@ subroutine envdep(numpas, nbpal, dt, dtsto, temps,&
 !
 !     ARGUMENTS
 !     =========
-    include 'jeveux.h'
-    include 'asterc/cpedb.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/errcou.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/cpedb.h"
+#include "asterc/r8pi.h"
+#include "asterfort/errcou.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: numpas, nbpal
     real(kind=8) :: temps, dep(nbpal, *), vit(nbpal, *), dt, dtsto, vrotat
     logical :: prdeff

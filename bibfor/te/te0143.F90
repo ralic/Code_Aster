@@ -1,22 +1,22 @@
 subroutine te0143(option, nomte)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chgrep.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jspgno.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/ptkg00.h'
-    include 'asterfort/ptkg20.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/chgrep.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jspgno.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/ptkg00.h"
+#include "asterfort/ptkg20.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

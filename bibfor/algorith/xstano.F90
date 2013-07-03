@@ -2,25 +2,25 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                   cnsln, cnslj, rayon, cnxinv, stano)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/panbno.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/panbno.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     real(kind=8) :: rayon
     integer :: nmafis, jmafis
     character(len=8) :: noma

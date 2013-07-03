@@ -2,19 +2,19 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
                  numord, iouf, numode, masgen, amrge,&
                  prchno)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8depi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsexpa.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8depi.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/infniv.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsexpa.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesg.h"
     integer :: numord, numode
     real(kind=8) :: iouf, masgen, amrge
     character(len=*) :: resu, chs, nocham, ligrel, tychas

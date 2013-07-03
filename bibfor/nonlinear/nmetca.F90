@@ -19,24 +19,24 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
 ! ======================================================================
 !
     implicit     none
-    include      'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/cetule.h'
-    include 'asterfort/dbgcal.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mechti.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/calcul.h"
+#include "asterfort/cetule.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mechti.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma
     character(len=24) :: modele, mate, sdcriq
     character(len=19) :: valinc(*)

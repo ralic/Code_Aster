@@ -22,32 +22,32 @@ subroutine op0054()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcou2d.h'
-    include 'asterfort/gcouro.h'
-    include 'asterfort/gimpte.h'
-    include 'asterfort/gver2d.h'
-    include 'asterfort/gverig.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcou2d.h"
+#include "asterfort/gcouro.h"
+#include "asterfort/gimpte.h"
+#include "asterfort/gver2d.h"
+#include "asterfort/gverig.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
     real(kind=8) :: module
 !
     integer :: nbv, nbr8, nbno, nocc2d, nocc3d, iadrt1

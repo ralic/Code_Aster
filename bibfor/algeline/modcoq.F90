@@ -55,21 +55,21 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 ! OUT : TCOEF  : TABLEAU DES COEFFICIENTS DES DEFORMEES AXIALES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/coedef.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extmod.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ordcoq.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/coedef.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extmod.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ordcoq.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: base, mater1, mater2, noma
     integer :: nbm, nuor(nbm), iaxe, kec, vicoq(nbm)
     real(kind=8) :: geom(9), torco(4, nbm), tcoef(10, nbm)

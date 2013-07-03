@@ -20,19 +20,19 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/exiscp.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/exiscp.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: char
     character(len=8) :: noma
     character(len=8) :: nomo

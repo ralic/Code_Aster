@@ -24,15 +24,15 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmcvec.h'
-    include 'asterfort/nmxvec.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
     character(len=4) :: mode
     character(len=*) :: phasez
     character(len=19) :: lischa

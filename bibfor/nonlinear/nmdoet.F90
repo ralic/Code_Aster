@@ -21,29 +21,29 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndloam.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdoin.h'
-    include 'asterfort/nmetl1.h'
-    include 'asterfort/nmetl2.h'
-    include 'asterfort/nmetl3.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcopy.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndloam.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdoin.h"
+#include "asterfort/nmetl1.h"
+#include "asterfort/nmetl2.h"
+#include "asterfort/nmetl3.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcopy.h"
     real(kind=8) :: instin
     character(len=24) :: modele, compor, sdcriq
     character(len=24) :: numedd

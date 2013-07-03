@@ -29,13 +29,13 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !     OUT D2SHDS :  DERIVEE 2NDE SII*H PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lkd2hs.h'
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lkd2hs.h"
     integer :: iret, nmat
     real(kind=8) :: materf(nmat, 2), varh(3), d2shds(6, 6), dhds(6)
     real(kind=8) :: devsig(6), rcos3t

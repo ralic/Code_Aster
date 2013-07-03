@@ -19,10 +19,10 @@ function modat2(iopt, ite, nompar)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: iopt, ite
     character(len=8) :: nompar
 ! ----------------------------------------------------------------------

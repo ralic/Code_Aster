@@ -16,8 +16,8 @@ subroutine ntdomt(parmer)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/getvr8.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvr8.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: parmer(1)
 ! ----------------------------------------------------------------------
 ! SAISIE DES PARAMETRES DE LA METHODE DE RESOLUTION

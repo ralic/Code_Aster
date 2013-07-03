@@ -100,16 +100,16 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/mcmult.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpordc.h'
-    include 'asterfort/znaupd.h'
-    include 'asterfort/zneupd.h'
+#include "asterfort/mcmult.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpordc.h"
+#include "asterfort/znaupd.h"
+#include "asterfort/zneupd.h"
     integer :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
     integer :: maxitr, ifm, niv, priram(8), nconv
     real(kind=8) :: tolsor, alpha, rwork(*)

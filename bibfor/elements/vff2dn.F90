@@ -17,8 +17,8 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: ndim, nno, ipoids, idfde, ipg, i, k
     real(kind=8) :: dx, coor(1), nx, ny, jac, dxds, dyds
 ! ......................................................................

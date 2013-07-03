@@ -32,17 +32,17 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbimex.h'
-    include 'asterfort/tbimta.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbimex.h"
+#include "asterfort/tbimta.h"
+#include "asterfort/u2mess.h"
     integer :: nparim, nparpg, ifr
     character(len=*) :: table
     character(len=*) :: formaz, lipaim(*)

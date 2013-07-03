@@ -4,18 +4,18 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1501
     implicit none
-    include 'asterfort/dicor0.h'
-    include 'asterfort/dicor2.h'
-    include 'asterfort/dicor3.h'
-    include 'asterfort/dicor4.h'
-    include 'asterfort/dicor5.h'
-    include 'asterfort/dikfin.h'
-    include 'asterfort/dikini.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecma.h'
+#include "asterfort/dicor0.h"
+#include "asterfort/dicor2.h"
+#include "asterfort/dicor3.h"
+#include "asterfort/dicor4.h"
+#include "asterfort/dicor5.h"
+#include "asterfort/dikfin.h"
+#include "asterfort/dikini.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecma.h"
     integer :: irmetg, nbt, neq, iterat, icodma
     real(kind=8) :: ul(neq), dul(neq), utl(neq)
     real(kind=8) :: sim(neq), varim(7)

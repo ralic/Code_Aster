@@ -18,16 +18,16 @@ subroutine ntcrch(modele, numedd, hydr0, vhydr)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/vtcreb.h'
+#include "jeveux.h"
+#include "asterfort/carces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/vtcreb.h"
     character(len=24) :: modele
     character(len=24) :: numedd
     character(len=24) :: hydr0, vhydr

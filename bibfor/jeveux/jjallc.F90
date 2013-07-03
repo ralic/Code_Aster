@@ -16,11 +16,11 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jxliro.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jxliro.h"
+#include "asterfort/u2mesk.h"
     integer :: iclasi, idatci, ibacol
     character(len=*) :: cel
 ! ----------------------------------------------------------------------

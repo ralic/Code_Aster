@@ -19,27 +19,27 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/compr8.h'
-    include 'asterfort/diadap.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/nmcadt.h'
-    include 'asterfort/nmdcei.h'
-    include 'asterfort/nmjalo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/compr8.h"
+#include "asterfort/diadap.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/nmcadt.h"
+#include "asterfort/nmdcei.h"
+#include "asterfort/nmjalo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: valinc(*)
     character(len=19) :: sddisc
     integer :: numins, nbiter

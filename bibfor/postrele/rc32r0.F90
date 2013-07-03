@@ -1,14 +1,14 @@
 subroutine rc32r0(nomres, pmpb, sn, snet)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
     character(len=8) :: nomres
     logical :: pmpb, sn, snet
 !     ------------------------------------------------------------------

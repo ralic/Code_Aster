@@ -76,13 +76,13 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma,&
 !
 ! ---> DECLARATION DES VARIABLES POUR LE TYPE D'ECRITURE
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/codnop.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jjmmaa.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/codnop.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jjmmaa.h"
     character(len=1) :: prfnoe, prfnsy
 !
 !

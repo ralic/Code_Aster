@@ -19,8 +19,8 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/matini.h'
-    include 'asterfort/nmtacr.h'
+#include "asterfort/matini.h"
+#include "asterfort/nmtacr.h"
     integer :: ndimsi, type
     real(kind=8) :: mat(14), sigel(ndimsi), vim(9), epm(ndimsi), dp, sp, xi
     real(kind=8) :: dsidep(6, 6)

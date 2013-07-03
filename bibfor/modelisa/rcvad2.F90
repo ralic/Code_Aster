@@ -19,11 +19,11 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rcfode.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcfode.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, imat, nbres, jmat
     character(len=*) :: fami, poum
     integer :: icodre(nbres)

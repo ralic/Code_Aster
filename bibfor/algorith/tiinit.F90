@@ -21,12 +21,12 @@ subroutine tiinit(mailla, modele, resulz, lostat, lreuse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterc/getvid.h'
-    include 'asterfort/nmcrob.h'
-    include 'asterfort/ntcra0.h'
-    include 'asterfort/ntcrar.h'
-    include 'asterfort/ntcrli.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterfort/nmcrob.h"
+#include "asterfort/ntcra0.h"
+#include "asterfort/ntcrar.h"
+#include "asterfort/ntcrli.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: instin
     character(len=8) :: mailla
     character(len=19) :: sddisc

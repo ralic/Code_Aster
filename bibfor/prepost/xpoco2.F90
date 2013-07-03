@@ -22,18 +22,18 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/gettco.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/xismec.h'
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/xismec.h"
     character(len=8) :: malini, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2
     character(len=19) :: comps1, comps2

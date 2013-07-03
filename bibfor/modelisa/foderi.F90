@@ -1,11 +1,11 @@
 subroutine foderi(nomfon, temp, f, df)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nomfon
     real(kind=8) :: temp, f, df
 !     ------------------------------------------------------------------

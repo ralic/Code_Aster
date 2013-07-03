@@ -30,34 +30,34 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
 ! aslint: disable=W1501,W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/etausr.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/concrk.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdacce.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/mdarnl.h'
-    include 'asterfort/mdbs32.h'
-    include 'asterfort/mddp54.h'
-    include 'asterfort/mdfext.h'
-    include 'asterfort/mdfnli.h'
-    include 'asterfort/mdinit.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/trlds.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "asterc/etausr.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/codent.h"
+#include "asterfort/concrk.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdacce.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/mdarnl.h"
+#include "asterfort/mdbs32.h"
+#include "asterfort/mddp54.h"
+#include "asterfort/mdfext.h"
+#include "asterfort/mdfnli.h"
+#include "asterfort/mdinit.h"
+#include "asterfort/preres.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/trlds.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: descmm, descmr, descma, palmax, nbrede, nbrevi, dimnas, nbpas
     integer :: neqgen, nbsauv, nbchoc, nbrfis, nbexci, logcho(nbchoc, *)
     integer :: liad(*), inumor(*), idescf(*), nbpal, nbobjs, iapp, iarchi, isto1

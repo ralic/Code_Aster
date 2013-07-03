@@ -33,9 +33,9 @@ subroutine gdfint(kp, nno, ajacob, pjacob, en,&
 !     OUT : FINT      : FORCES INT. (CUMUL DES CONTRIB. DES PTS DE GAUS)
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/gdmb.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/transp.h'
+#include "asterfort/gdmb.h"
+#include "asterfort/promat.h"
+#include "asterfort/transp.h"
     real(kind=8) :: en(3, 2), enprim(3, 2), x0pg(3), pn(3), pm(3), fint(6, 3)
     real(kind=8) :: b(6, 6), bt(6, 6), vect(6), fors(6)
     integer :: i, k, kp, ne, nno

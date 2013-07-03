@@ -2,29 +2,29 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
                   lonvec, nnoff, result)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/tbfutb.h'
-    include 'asterfort/tbtrtb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/tbfutb.h"
+#include "asterfort/tbtrtb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nborn, lonvec, nnoff
     real(kind=8) :: born(*), gbil(*), abcur(*)
     character(len=8) :: result, noeu(*)

@@ -45,11 +45,11 @@ subroutine lcumef(option, dep, depm, an, bn,&
     implicit none
 ! MODIFI DU 18 DECEMBRE 2002 - YLP SUPPRESSION DE LA DECLARATION DE
 ! LA VARIABLE ISING APPELEE DANS INVERMAT (RESORBEE PAR MGAUSS)
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
     integer :: i, j, k, nstrs
 ! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESSION DES DECLARATIONS
 ! IMPLICITES DE TABLEAUX

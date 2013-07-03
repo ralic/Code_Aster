@@ -24,24 +24,24 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascavc.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/medith.h'
-    include 'asterfort/mertth.h'
-    include 'asterfort/metnth.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/vechth.h'
-    include 'asterfort/vedith.h'
+#include "asterfort/asasve.h"
+#include "asterfort/ascavc.h"
+#include "asterfort/ascova.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/medith.h"
+#include "asterfort/mertth.h"
+#include "asterfort/metnth.h"
+#include "asterfort/preres.h"
+#include "asterfort/vechth.h"
+#include "asterfort/vedith.h"
     logical :: reasvt, reasmt
     real(kind=8) :: tpsthe(6), tpsnp1
     character(len=1) :: creas

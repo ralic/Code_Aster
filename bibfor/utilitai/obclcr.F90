@@ -20,15 +20,15 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obcrea.h'
-    include 'asterfort/oblgen.h'
-    include 'asterfort/obsetb.h'
-    include 'asterfort/obseti.h'
-    include 'asterfort/obsetk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obcrea.h"
+#include "asterfort/oblgen.h"
+#include "asterfort/obsetb.h"
+#include "asterfort/obseti.h"
+#include "asterfort/obsetk.h"
     character(len=6) :: subccn
     character(len=15) :: typcol
     integer :: larcol, tithau

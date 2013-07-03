@@ -21,16 +21,16 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/panbno.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/panbno.h"
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma
     integer :: stano(*), mafis(nmafis)
     integer :: mafon(nmafis), maen1(nbma), maen2(nbma), maen3(nbma)

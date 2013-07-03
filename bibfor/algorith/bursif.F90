@@ -35,13 +35,13 @@ subroutine bursif(materd, materf, nmat, an, bn,&
 !_______________________________________________________________________
 !
     implicit none
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/lcdive.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/mgauss.h"
     integer :: i, j, ndt, ndi, nmat, iret, nr
     real(kind=8) :: an(6), bn(6, 6), cn(6, 6)
     real(kind=8) :: yd(nr), sigf(6), deps(6)

@@ -1,21 +1,21 @@
 subroutine cachei(char, ligrmo, noma, fonree, param,&
                   motcl)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alcart.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=4) :: fonree
     character(len=5) :: param
     character(len=8) :: char, noma

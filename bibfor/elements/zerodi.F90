@@ -17,7 +17,7 @@ subroutine zerodi(x, y)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: x(4), y(4)
 ! ----------------------------------------------------------------------
 !  RESOLUTION D'EQUATIONS SCALAIRES PAR UNE METHODE DE DICHOTOMIE

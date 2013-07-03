@@ -19,9 +19,9 @@ subroutine matbsr(nb1, vectt, dudxrc, intsr, jdn1rc,&
 !
     implicit none
 !
-    include 'asterfort/hsash.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/hsash.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
     integer :: i, j
 !
     integer :: nb1

@@ -17,27 +17,27 @@ subroutine ordlrl(charge, lisrel, nomgd)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterc/r8gaem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/ordrel.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/ordrel.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: lisrel
     character(len=8) :: charge, nomgd
 ! -----------------------------------------------------------------

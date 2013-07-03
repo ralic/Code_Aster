@@ -39,7 +39,7 @@ subroutine genecy(cmod1, cmod2, neq, lmat, para,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/mcmult.h'
+#include "asterfort/mcmult.h"
     real(kind=8) :: para(2), zero
     complex(kind=8) :: cmod1(neq), cmod2(neq), ctrav(neq), cfact1, cfact2
 !

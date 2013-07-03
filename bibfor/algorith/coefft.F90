@@ -33,7 +33,7 @@ subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
 !       OUT COEFT  :  COEFFICIENTS MATERIAU INELASTIQUE A T+DT
 !C          COEL   :  COEFFICIENTS  ELASTIQUES ELASTIQUE A T+DT
 !       ---------------------------------------------------------------
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: nmat, i, ncoe, ncoel
     real(kind=8) :: cothe(nmat), dcothe(nmat), coel(nmat)
     real(kind=8) :: hsdt, dtime, x

@@ -23,34 +23,34 @@ subroutine op0039()
 !       IMPRIMER DES RESULTATS ET DES MAILLAGE
 !       PROCEDURE IMPR_RESU
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/irmail.h'
-    include 'asterfort/irmfac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdexma.h'
-    include 'asterfort/rdtmai.h'
-    include 'asterfort/rdtres.h'
-    include 'asterfort/rscrmo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/w039ca.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/irmail.h"
+#include "asterfort/irmfac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdexma.h"
+#include "asterfort/rdtmai.h"
+#include "asterfort/rdtres.h"
+#include "asterfort/rscrmo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulisog.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/w039ca.h"
+#include "asterfort/wkvect.h"
     integer :: nocc, iocc, ioc2, nbrest, ifc, ifi, versio, infmai, nive, ier
     integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret, ndim
     integer :: jlast, jmodl, iarg, nmo, nn, nmod, nforma, ngibi, ifimed, codret

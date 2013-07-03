@@ -27,8 +27,8 @@ subroutine calfmn(np1, nbm, testc, fmod0, fmod00,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/prmave.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/prmave.h"
+#include "asterfort/u2mess.h"
     integer :: np1, nbm, testc
     real(kind=8) :: fmod0(*), fmod00(*), cmod(np1, *), kmod(np1, *), vitg0(*)
     real(kind=8) :: depg0(*)

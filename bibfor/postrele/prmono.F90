@@ -21,15 +21,15 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 !
 ! ----------------------------------------------------------------------
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     integer :: ioc, nbcmp
     real(kind=8) :: som(1)
     character(len=8) :: nocmp(1)

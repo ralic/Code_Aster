@@ -17,9 +17,9 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jeveuo.h"
     integer :: indsur, ipntrl, nbterm, irela
     character(len=24) :: licoef, liddl, linoeu, libeta
 !

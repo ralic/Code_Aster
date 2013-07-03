@@ -26,18 +26,18 @@ subroutine capesa(char, noma, ipesa, ndim, ligrmo)
 !      NDIM  : DIMENSIOn DU PROBLEME
 !      LIGRMO: NOM DU LIGREL DE MODELE
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vetyma.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8miem.h"
+#include "asterfort/alcart.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vetyma.h"
     real(kind=8) :: pesa(4), norme, pes(3)
     complex(kind=8) :: cbid
     character(len=8) :: char, noma, licmp(4)

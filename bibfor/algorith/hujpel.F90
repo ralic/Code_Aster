@@ -35,11 +35,11 @@ subroutine hujpel(etatd, mod, crit, imat, nmat,&
 !           VINF   :  VARIABLES INTERNES A T+DT
 !           IRET   :  CODE RETOUR (O-->OK / 1-->NOOK)
 !       ----------------------------------------------------------------
-    include 'asterc/r8vide.h'
-    include 'asterfort/hujori.h'
-    include 'asterfort/hujpre.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8vide.h"
+#include "asterfort/hujori.h"
+#include "asterfort/hujpre.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/u2mess.h"
     integer :: nvi, imat, iret, nmat
     real(kind=8) :: materf(nmat, 2), sigd(6), sigf(6), angmas(3)
     real(kind=8) :: vind(*), vinf(*), deps(6), crit(*)

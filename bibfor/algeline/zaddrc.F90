@@ -1,7 +1,7 @@
 subroutine zaddrc(m, n, alpha, x, incx,&
                   y, incy, a, lda)
     implicit none
-    include 'blas/zaxpy.h'
+#include "blas/zaxpy.h"
     integer :: m, n, incx, incy, lda
     complex(kind=8) :: alpha, x(*), y(*)
     complex(kind=8) :: a(*)

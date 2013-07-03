@@ -19,25 +19,25 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/wkvect.h"
     integer :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
     logical :: lcumul(nbchs), lcoc

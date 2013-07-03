@@ -18,16 +18,16 @@ subroutine surfun(char, noma)
 ! ======================================================================
 !
     implicit    none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cudisi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/cudisi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: char
     character(len=8) :: noma
 !

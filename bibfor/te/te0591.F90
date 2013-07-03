@@ -17,18 +17,18 @@ subroutine te0591(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nifnlg.h'
-    include 'asterfort/nifnpd.h'
-    include 'asterfort/nifnsm.h'
-    include 'asterfort/niinit.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nifnlg.h"
+#include "asterfort/nifnpd.h"
+#include "asterfort/nifnsm.h"
+#include "asterfort/niinit.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION FORC_NODA POUR LES ELEMENTS

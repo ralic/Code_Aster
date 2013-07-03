@@ -2,8 +2,8 @@ function prjsom(nbmat, mater, invare, invars, b,&
                 siie, type)
 !
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/cosphi.h'
+#include "asterfort/assert.h"
+#include "asterfort/cosphi.h"
     logical :: prjsom
     integer :: nbmat
     real(kind=8) :: invare, invars, mater(nbmat, 2), b, siie

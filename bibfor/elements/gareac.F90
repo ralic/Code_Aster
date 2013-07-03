@@ -16,19 +16,19 @@ subroutine gareac(xdm, xdp, dgamma)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/angvx.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/promat.h"
+#include "asterfort/provec.h"
+#include "asterfort/trigom.h"
+#include "asterfort/vdiff.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     real(kind=8) :: xdm(3), xdp(3), dgamma
 !
     real(kind=8) :: xdmnor(3), xdpnor(3), dd(3)

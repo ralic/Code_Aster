@@ -1,11 +1,11 @@
 subroutine prekpr(modmec, mtrmas, nbddl, numer, mailla,&
                   chamat, celem)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbddl
     character(len=8) :: modmec, mtrmas, numer, mailla, chamat, celem
 !-----------------------------------------------------------------------

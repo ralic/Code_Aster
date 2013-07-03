@@ -31,18 +31,18 @@ subroutine imbint(nomres, ifm)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/bmnodi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/bmnodi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !-----------------------------------------------------------------------
     integer :: i, ibid, idau, idcb, idda, idha, idmn
     integer :: ifau, ifcb, ifha, ifmn, ino, ipoin, iret

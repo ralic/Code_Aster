@@ -21,8 +21,8 @@ function digde3(modelo, louc)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: modelo
     character(len=1) :: louc
 ! ----------------------------------------------------------------------

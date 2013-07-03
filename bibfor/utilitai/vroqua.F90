@@ -18,7 +18,7 @@ subroutine vroqua(theta, quater)
 ! ======================================================================
 !
     implicit none
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     real(kind=8) :: quater(4), theta(3)
 !
 ! ----------------------------------------------------------------------

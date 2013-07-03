@@ -26,16 +26,16 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterc/r8nnem.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/lcdetf.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/nmgrtg.h'
-    include 'asterfort/pk2sig.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesr.h'
+#include "asterc/r8nnem.h"
+#include "asterfort/codere.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/nmgrtg.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesr.h"
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
 !
     character(len=8) :: typmod(*)

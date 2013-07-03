@@ -5,17 +5,17 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xajpin.h'
-    include 'asterfort/xxmmvd.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xajpin.h"
+#include "asterfort/xxmmvd.h"
     real(kind=8) :: lsn(*), pintt(*), lonref, pinter(*), ainter(*)
     integer :: ndim, nnop, nnose, it, cnset(*), ninter, igeom, npts
     integer :: nfiss, ifiss, fisco(*), nfisc

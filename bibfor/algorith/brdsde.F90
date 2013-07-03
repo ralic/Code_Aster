@@ -20,11 +20,11 @@ subroutine brdsde(e0, nu0, dsidep, vim, sigm)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/brchre.h'
-    include 'asterfort/brksec.h'
-    include 'asterfort/brvp33.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/brchre.h"
+#include "asterfort/brksec.h"
+#include "asterfort/brvp33.h"
+#include "asterfort/transp.h"
+#include "asterfort/utbtab.h"
     real(kind=8) :: e0, nu0
     real(kind=8) :: vim(65), sigm(6)
     real(kind=8) :: dsidep(6, 6), h66(6, 6)

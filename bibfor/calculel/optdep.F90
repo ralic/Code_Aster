@@ -17,11 +17,11 @@ subroutine optdep(option, lisopt, nopout)
 ! ======================================================================
     implicit none
 !     --- ARGUMENTS IN ---
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/ccliop.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/ccliop.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
     character(len=16) :: option
 !     --- ARGUMENTS OUT ---
     integer :: nopout

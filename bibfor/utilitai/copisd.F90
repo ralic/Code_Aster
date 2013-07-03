@@ -1,23 +1,23 @@
 subroutine copisd(typesd, base, sd1, sd2)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copich.h'
-    include 'asterfort/copis2.h'
-    include 'asterfort/cpclma.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedup1.h'
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rscopi.h'
-    include 'asterfort/tbcopi.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copich.h"
+#include "asterfort/copis2.h"
+#include "asterfort/cpclma.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jedupc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rscopi.h"
+#include "asterfort/tbcopi.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: typesd, base, sd1, sd2
 ! ----------------------------------------------------------------------
 ! ======================================================================

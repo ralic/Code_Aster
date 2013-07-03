@@ -19,22 +19,22 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgetk.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/obgetr.h'
-    include 'asterfort/obpara.h'
-    include 'asterfort/obsetb.h'
-    include 'asterfort/obseti.h'
-    include 'asterfort/obsetk.h'
-    include 'asterfort/obseto.h'
-    include 'asterfort/obsetr.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgetk.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/obgetr.h"
+#include "asterfort/obpara.h"
+#include "asterfort/obsetb.h"
+#include "asterfort/obseti.h"
+#include "asterfort/obsetk.h"
+#include "asterfort/obseto.h"
+#include "asterfort/obsetr.h"
     character(len=24) :: nomst1, nomst2
     character(len=*) :: nompa1, nompa2
 !

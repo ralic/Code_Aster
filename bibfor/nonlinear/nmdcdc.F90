@@ -19,14 +19,14 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmdcei.h'
-    include 'asterfort/nmdcen.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmdcei.h"
+#include "asterfort/nmdcen.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     character(len=24) :: nomlis
     integer :: nbrpas, numins

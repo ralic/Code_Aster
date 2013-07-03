@@ -29,8 +29,8 @@ subroutine gdmd(x0pg, pn, pm, d)
 !     OUT : D         : MATRICE 9*9
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/antisy.h'
-    include 'blas/ddot.h'
+#include "asterfort/antisy.h"
+#include "blas/ddot.h"
     real(kind=8) :: x0pg(3), pn(3), pm(3), d(9, 9), pntild(3, 3), pmtild(3, 3)
 !
 !-----------------------------------------------------------------------

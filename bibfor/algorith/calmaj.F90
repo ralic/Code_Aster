@@ -25,9 +25,9 @@ subroutine calmaj(option, max, may, maz, model,&
 ! IN : VECSOL : VECTEUR SOLUTION K*
 ! OUT : VESTO : VECTEUR STOCKE K*
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/calcin.h'
-    include 'asterfort/ploint.h'
+#include "jeveux.h"
+#include "asterfort/calcin.h"
+#include "asterfort/ploint.h"
     logical :: vrai
     integer :: i, j
     character(len=*) :: modmec, chamno, model

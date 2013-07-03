@@ -18,11 +18,11 @@ subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fgequi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/fgequi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp), veteq(nbordr)
 ! ----------------------------------------------------------------------

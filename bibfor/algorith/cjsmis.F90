@@ -44,13 +44,13 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !          EPSCON   :  VALEUR ERR FINALE
 !     ------------------------------------------------------------------
 !
-    include 'asterfort/cjsjis.h'
-    include 'asterfort/cjsncv.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrvn.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/cjsjis.h"
+#include "asterfort/cjsncv.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrvn.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/mgauss.h"
     integer :: ndt, ndi, nr, nmod, niter, nvi, iret
     integer :: nitimp
     parameter     (nmod = 8 )

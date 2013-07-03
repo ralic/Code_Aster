@@ -35,18 +35,18 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
     integer :: i1, i2, ibid1, iderex, ij2, ilcmpi
     integer :: ilcmpj, ilcpex, ilfex, ilindi, ilindj, illex, ilnoex

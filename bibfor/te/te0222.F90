@@ -29,11 +29,11 @@ subroutine te0222(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
     real(kind=8) :: undemi
     integer :: itab1(3), itab2(3)

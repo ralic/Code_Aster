@@ -1,7 +1,7 @@
 subroutine fclose(unit)
 ! aslint: disable=
     implicit   none
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: unit
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

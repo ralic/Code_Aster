@@ -22,22 +22,22 @@ subroutine nmdata(result, modele, mate, carele, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/getres.h'
-    include 'asterfort/eninit.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndcrdy.h'
-    include 'asterfort/ndlect.h'
-    include 'asterfort/nmcrer.h'
-    include 'asterfort/nmcrga.h'
-    include 'asterfort/nmdocn.h'
-    include 'asterfort/nmdoim.h'
-    include 'asterfort/nmdomt.h'
-    include 'asterfort/nmdopo.h'
-    include 'asterfort/nmdorc.h'
-    include 'asterfort/nmetdo.h'
-    include 'asterfort/nmlect.h'
+#include "asterc/getres.h"
+#include "asterfort/eninit.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndcrdy.h"
+#include "asterfort/ndlect.h"
+#include "asterfort/nmcrer.h"
+#include "asterfort/nmcrga.h"
+#include "asterfort/nmdocn.h"
+#include "asterfort/nmdoim.h"
+#include "asterfort/nmdomt.h"
+#include "asterfort/nmdopo.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/nmetdo.h"
+#include "asterfort/nmlect.h"
     character(len=8) :: result
     character(len=19) :: lischa, solveu, sddyna, sdpost, sdener
     character(len=24) :: modele, mate, carele, compor

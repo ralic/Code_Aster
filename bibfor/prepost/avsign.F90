@@ -18,9 +18,9 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp), vsign(nbvec*nbordr)

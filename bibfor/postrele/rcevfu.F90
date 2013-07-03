@@ -1,14 +1,14 @@
 subroutine rcevfu(cnoc, cfat, fut)
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: fut
     character(len=24) :: cnoc, cfat
 !     ------------------------------------------------------------------

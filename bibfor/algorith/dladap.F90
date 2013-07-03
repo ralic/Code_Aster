@@ -62,40 +62,40 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1501,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dlarch.h'
-    include 'asterfort/dlfdyn.h'
-    include 'asterfort/dlfext.h'
-    include 'asterfort/dltcrr.h'
-    include 'asterfort/enerca.h'
-    include 'asterfort/extdia.h'
-    include 'asterfort/frqapp.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmarpc.h'
-    include 'asterfort/recpar.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dlarch.h"
+#include "asterfort/dlfdyn.h"
+#include "asterfort/dlfext.h"
+#include "asterfort/dltcrr.h"
+#include "asterfort/enerca.h"
+#include "asterfort/extdia.h"
+#include "asterfort/frqapp.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmarpc.h"
+#include "asterfort/recpar.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
 !
     character(len=8) :: masse, rigid, amort, result

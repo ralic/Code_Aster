@@ -38,29 +38,29 @@ subroutine te0497(option, nomte)
 ! aslint: disable=W1501
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/caethm.h'
-    include 'asterfort/calnor.h'
-    include 'asterfort/erhmb2.h'
-    include 'asterfort/erhms2.h'
-    include 'asterfort/erhmv2.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/resrot.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uthk.h'
-    include 'asterfort/utjac.h'
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/caethm.h"
+#include "asterfort/calnor.h"
+#include "asterfort/erhmb2.h"
+#include "asterfort/erhms2.h"
+#include "asterfort/erhmv2.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/resrot.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uthk.h"
+#include "asterfort/utjac.h"
     character(len=16) :: option, nomte
 !
 ! DECLARATION VARIABLES LOCALES

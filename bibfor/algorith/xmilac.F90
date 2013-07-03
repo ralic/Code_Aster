@@ -3,20 +3,20 @@ subroutine xmilac(ndim, igeom, ptint, tabco, tabdir,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/milfic.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/pdsca1.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/milfic.h"
+#include "asterfort/normev.h"
+#include "asterfort/pdsca1.h"
+#include "asterfort/provec.h"
+#include "asterfort/reereg.h"
+#include "asterfort/vecini.h"
     integer :: ndim, igeom, r, p
     integer :: jgrlsn, tabdir(4)
     real(kind=8) :: milac(ndim), ptint(*), ptmil(*), tabco(*)

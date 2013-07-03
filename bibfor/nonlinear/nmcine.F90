@@ -19,12 +19,12 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/radial.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/verift.h'
+#include "asterc/r8miem.h"
+#include "asterfort/matini.h"
+#include "asterfort/radial.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/verift.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=16) :: compor(*), option

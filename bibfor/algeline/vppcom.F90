@@ -2,21 +2,21 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                   resuk, nbpari, nbparr, nbpark, mxresf,&
                   vectr, nconv, neq, typres)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/comatr.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/maxint.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/somint.h'
-    include 'asterfort/vecink.h'
-    include 'asterfort/vecint.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/comatr.h"
+#include "asterfort/comcou.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/maxint.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/somint.h"
+#include "asterfort/vecink.h"
+#include "asterfort/vecint.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     logical :: lcomod
     integer :: icom1, icom2, nbpari, nbparr, nbpark, nconv, neq, mxresf
     integer :: resui(*)
@@ -54,7 +54,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !     IN NEQ          :  IN   : TAILLE DU PROBLEME
 !     IN TYPRES       :  IN   : TYPE DE RESULTATS (DYNAMIQUE OU FLAMB)
 !     ----------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !     --- VARIABLES LOCALES
     integer :: nconvl, nconvg, nconvm, rangl, rangll, mpicow, mpicou, mpico0

@@ -1,14 +1,14 @@
 subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
                   cdg, inerti)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
     integer :: nnoe
     real(kind=8) :: xyzg1(3, *), rho, epais, mass, cdg(*), inerti(*)
 !     ------------------------------------------------------------------

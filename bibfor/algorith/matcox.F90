@@ -18,7 +18,7 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/matini.h'
+#include "asterfort/matini.h"
     real(kind=8) :: ddt1(3, 3), ddt2(3, 3), ddt3(3, 3), ddt4(3, 3), pp(3, 3)
     real(kind=8) :: p(3, 3), mmat(216, 216)
     real(kind=8) :: jac, ffp(27), rr

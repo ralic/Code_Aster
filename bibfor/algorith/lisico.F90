@@ -19,11 +19,11 @@ function lisico(genchz, codcha)
 !
     implicit none
     logical :: lisico
-    include 'jeveux.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisdef.h'
+#include "jeveux.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisdef.h"
     character(len=*) :: genchz
     integer :: codcha
 !

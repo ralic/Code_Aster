@@ -39,14 +39,14 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/loisem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/uttcpu.h'
+#include "jeveux.h"
+#include "asterc/loisem.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/uttcpu.h"
     character(len=*) :: optmpi, typsca
     integer :: nbv, vi(*)
     integer(kind=4) :: vi4(*)
@@ -54,7 +54,7 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
     integer :: nudest, numess
 !
 #ifdef _USE_MPI
-    include 'mpif.h'
+#include "mpif.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
     integer :: iret

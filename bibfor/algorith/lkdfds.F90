@@ -1,10 +1,10 @@
 subroutine lkdfds(nbmat, mater, s, para, var,&
                   ds2hds, ucri, dfdsig)
     implicit      none
-    include 'asterc/r8prem.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lkhtet.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8prem.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lkhtet.h"
+#include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2)
     real(kind=8) :: s(6), para(3), var(4), ucri

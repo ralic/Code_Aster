@@ -1,20 +1,20 @@
 subroutine te0042(option, nomte)
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/infdis.h'
-    include 'asterfort/infted.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ut2mgl.h'
-    include 'asterfort/ut2pgl.h'
-    include 'asterfort/ut2vgl.h'
-    include 'asterfort/utppgl.h'
-    include 'asterfort/utpsgl.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vecma.h'
-    include 'asterfort/vecmap.h'
+#include "jeveux.h"
+#include "asterfort/infdis.h"
+#include "asterfort/infted.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/ut2mgl.h"
+#include "asterfort/ut2pgl.h"
+#include "asterfort/ut2vgl.h"
+#include "asterfort/utppgl.h"
+#include "asterfort/utpsgl.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
+#include "asterfort/vecmap.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

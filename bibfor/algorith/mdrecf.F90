@@ -3,27 +3,27 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                   neq, typbas, basemo, nbmode, riggen,&
                   nommot, nomres)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/trmult.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/trmult.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
     integer :: nexci, nexcir, neq, nbmode
     integer :: idescf(*), inumor(*), iadvec(*)
     real(kind=8) :: coefm(*), riggen(nbmode)

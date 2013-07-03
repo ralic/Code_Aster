@@ -9,9 +9,9 @@ subroutine dgplas(ea, sya, eb, nub, sytb,&
     implicit none
 !
 ! PARAMETRES ENTRANTS
-    include 'asterfort/dgmmax.h'
-    include 'asterfort/dgmpla.h'
-    include 'asterfort/u2mesr.h'
+#include "asterfort/dgmmax.h"
+#include "asterfort/dgmpla.h"
+#include "asterfort/u2mesr.h"
     integer :: nnap, ilit, icisai, ipente
 !
     real(kind=8) :: ea(*), sya(*), eb, nub, num, nuf, w, emaxm, emaxf

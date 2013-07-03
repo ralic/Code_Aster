@@ -37,25 +37,25 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/daxpy.h'
-    include 'blas/ddot.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/zerlag.h"
+#include "blas/daxpy.h"
+#include "blas/ddot.h"
     character(len=1) :: listyp(2)
     character(len=4) :: k4bid
     character(len=8) :: modgen, kb, rest1, mraid, mmass

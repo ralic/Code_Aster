@@ -1,20 +1,20 @@
 subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cgmaal.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cgmaal.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 ! ======================================================================

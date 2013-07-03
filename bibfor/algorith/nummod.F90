@@ -1,12 +1,12 @@
 subroutine nummod(nugene, modmec)
     implicit    none
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nummo1.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nummo1.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: modmec
     character(len=14) :: nugene
 !-----------------------------------------------------------------------

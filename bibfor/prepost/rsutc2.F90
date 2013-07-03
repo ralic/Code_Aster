@@ -1,6 +1,6 @@
 subroutine rsutc2(typres, nomch, nomgd, typsd)
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=*) :: typres, nomch, nomgd, typsd
 !
 ! person_in_charge: jacques.pellet at edf.fr

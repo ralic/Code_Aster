@@ -48,7 +48,7 @@ subroutine lcdehy(fami, kpg, ksp, nmat, materd,&
 !       VAR     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 !               EPSDM   DEFORMATION MECANIQUE A T
 !       ----------------------------------------------------------------
-    include 'asterfort/rcvarc.h'
+#include "asterfort/rcvarc.h"
     integer :: ndt, ndi, nmat, k, iret, kpg, ksp
     character(len=*) :: fami
     real(kind=8) :: hd, hf, sd, sf, sref

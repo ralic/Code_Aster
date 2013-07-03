@@ -1,7 +1,7 @@
 subroutine orien1(xp, xq, angl)
     implicit none
-    include 'asterc/r8pi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: xp(*), xq(*), angl(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================

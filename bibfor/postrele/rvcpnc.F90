@@ -4,28 +4,28 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 ! aslint: disable=W1501
     implicit   none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/i2trgi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/num2k8.h'
-    include 'asterfort/numek8.h'
-    include 'asterfort/rvopti.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utncmp.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/i2trgi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/num2k8.h"
+#include "asterfort/numek8.h"
+#include "asterfort/rvopti.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utncmp.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: mcf
     character(len=24) :: nlscpc, nomojb, quant
     character(len=19) :: nch19

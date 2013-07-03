@@ -16,12 +16,12 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: vala, valb, coefpa
     character(len=8) :: nommat
     character(len=16) :: nomcri

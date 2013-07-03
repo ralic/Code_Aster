@@ -96,21 +96,21 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !       ----------------------------------------------------------------
-    include 'asterc/iisnan.h'
-    include 'asterfort/cjsela.h'
-    include 'asterfort/cjsinp.h'
-    include 'asterfort/cjsmat.h'
-    include 'asterfort/cjspla.h'
-    include 'asterfort/cjssmd.h'
-    include 'asterfort/cjssmi.h'
-    include 'asterfort/cjstde.h'
-    include 'asterfort/cjstel.h'
-    include 'asterfort/cjstid.h'
-    include 'asterfort/cjstis.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterfort/cjsela.h"
+#include "asterfort/cjsinp.h"
+#include "asterfort/cjsmat.h"
+#include "asterfort/cjspla.h"
+#include "asterfort/cjssmd.h"
+#include "asterfort/cjssmi.h"
+#include "asterfort/cjstde.h"
+#include "asterfort/cjstel.h"
+#include "asterfort/cjstid.h"
+#include "asterfort/cjstis.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/u2mess.h"
     integer :: imat, ndt, ndi, nvi, iret
 !
     real(kind=8) :: crit(*)

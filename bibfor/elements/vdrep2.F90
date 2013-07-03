@@ -38,8 +38,8 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
     real(kind=8) :: matevn(2, 2, 1), matevg(2, 2, 1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: pgl(3, 3), zrlzr(*)

@@ -4,16 +4,16 @@ subroutine lkgamp(val, varv, im, sm, ucrip,&
                   retcom)
 !
     implicit    none
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lkbpri.h'
-    include 'asterfort/lkcalg.h'
-    include 'asterfort/lkcaln.h'
-    include 'asterfort/lkdfds.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkdlam.h'
-    include 'asterfort/lkds2h.h'
-    include 'asterfort/lkvacp.h'
-    include 'asterfort/lkvarp.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lkbpri.h"
+#include "asterfort/lkcalg.h"
+#include "asterfort/lkcaln.h"
+#include "asterfort/lkdfds.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkdlam.h"
+#include "asterfort/lkds2h.h"
+#include "asterfort/lkvacp.h"
+#include "asterfort/lkvarp.h"
     integer :: nbmat, val, varv, retcom
     real(kind=8) :: im, sm(6), mater(nbmat, 2), vinm(7)
     real(kind=8) :: depsp(6), deps(6), depsv(6)

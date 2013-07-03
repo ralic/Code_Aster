@@ -19,9 +19,9 @@ subroutine xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: jpcpi, jpccf
     integer :: ndim, nfaes, npte
     real(kind=8) :: geopi(9)

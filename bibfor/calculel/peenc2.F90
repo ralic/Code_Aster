@@ -1,15 +1,15 @@
 subroutine peenc2(champ, rcoef)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/celver.h"
+#include "asterfort/digdel.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: champ
     real(kind=8) :: rcoef
 !     ------------------------------------------------------------------

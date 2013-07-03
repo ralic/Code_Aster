@@ -1,27 +1,27 @@
 subroutine te0038(option, nomte)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vdiff.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/carcou.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/provec.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vdiff.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

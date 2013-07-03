@@ -40,12 +40,12 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/assert.h'
-    include 'asterfort/d1pa3d.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/assert.h"
+#include "asterfort/d1pa3d.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utbtab.h"
     character(len=*) :: poum, fami
     integer :: kpg, ksp
     real(kind=8) :: repere(7), xyzgau(3), d1(6, 6), instan

@@ -41,20 +41,20 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/daxpy.h'
-    include 'blas/ddot.h'
-    include 'blas/dgemm.h'
-    include 'blas/dgesvd.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/matfpe.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "blas/daxpy.h"
+#include "blas/ddot.h"
+#include "blas/dgemm.h"
+#include "blas/dgesvd.h"
     integer :: lvec, nbl, nbc, nindep, lwork, jwork, lmat, ltrav1, ltrav2
     integer :: ltrav3, jnsta, i1, k1, l1, info, lcopy, force, indnz, vecnz
     integer :: ideeq

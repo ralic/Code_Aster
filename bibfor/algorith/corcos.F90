@@ -25,7 +25,7 @@ function corcos(d1, d2, mes1, uc, kt,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: d1, d2, omega, kt, uc, kl, mes1
 !
 !

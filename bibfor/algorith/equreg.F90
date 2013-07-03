@@ -21,9 +21,9 @@ subroutine equreg(imate, option, compor, regula, dimdef,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit      none
-    include 'asterfort/reg2gr.h'
-    include 'asterfort/regcge.h'
-    include 'asterfort/regder.h'
+#include "asterfort/reg2gr.h"
+#include "asterfort/regcge.h"
+#include "asterfort/regder.h"
     integer :: imate, dimdef, dimcon, regula(6), ndim
     real(kind=8) :: defgep(dimdef), contp(dimcon), r(dimcon)
     real(kind=8) :: drde(dimcon, dimdef)

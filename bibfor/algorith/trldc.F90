@@ -34,8 +34,8 @@ subroutine trldc(a, nordre, ierr)
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/u2mess.h"
     complex(kind=8) :: a(*), r8val
     real(kind=8) :: epsi, xmod, xmax, zero
 !

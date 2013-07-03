@@ -18,7 +18,7 @@ subroutine chlici(chaine, long)
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: chaine
     integer :: long
 ! ----------------------------------------------------------------------

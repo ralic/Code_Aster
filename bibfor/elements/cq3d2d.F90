@@ -1,6 +1,6 @@
 subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     implicit none
-    include 'asterfort/trigom.h'
+#include "asterfort/trigom.h"
     integer :: nno
     real(kind=8) :: coor3d(*), coteta, siteta, coor2d(*)
 ! ......................................................................

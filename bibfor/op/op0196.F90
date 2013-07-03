@@ -25,31 +25,31 @@ subroutine op0196()
 !     =================================================================
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/xpodim.h'
-    include 'asterfort/xpofon.h'
-    include 'asterfort/xpoini.h'
-    include 'asterfort/xpomac.h'
-    include 'asterfort/xpomax.h'
-    include 'asterfort/xposep.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/xpodim.h"
+#include "asterfort/xpofon.h"
+#include "asterfort/xpoini.h"
+#include "asterfort/xpomac.h"
+#include "asterfort/xpomax.h"
+#include "asterfort/xposep.h"
     integer :: jlicha, nbordr, ior, jord, iord, jinst1, jinst2, nbcham
     integer :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv, ic
     integer :: jmod, mftot, nftot, nfcomf, ngfon

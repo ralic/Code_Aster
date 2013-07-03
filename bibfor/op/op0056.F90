@@ -46,33 +46,33 @@ subroutine op0056()
 !.......................................................................
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utctab.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/codent.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utctab.h"
+#include "asterfort/wkvect.h"
     integer :: ifr, nbcou, icou, n, iadr, jepor, jrela, k, lonobj, jmate, jobme
     integer :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
     integer :: nv, n1

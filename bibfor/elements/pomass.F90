@@ -2,12 +2,12 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
                   mlv)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ptma01.h'
-    include 'asterfort/ptma10.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ptma01.h"
+#include "asterfort/ptma10.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomte
     real(kind=8) :: mlv(*)
 !     ------------------------------------------------------------------

@@ -43,16 +43,16 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
     implicit   none
 ! DECLARATION PARAMETRES D'APPELS
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vtcrem.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vtcrem.h"
     integer :: neq, istoc, iarchi, alarm, ifm
     integer :: nbtyar
 !

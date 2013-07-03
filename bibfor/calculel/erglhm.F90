@@ -1,11 +1,11 @@
 subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
                   longt, nbgr, resuc1)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/rsadpa.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/rsadpa.h"
     integer :: jceld, iavale, iord, longt, nbgr
     character(len=19) :: ligrel, resuc1
     logical :: perman

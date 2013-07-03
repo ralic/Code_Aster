@@ -20,38 +20,38 @@ subroutine op0107()
 !     OPERATEUR   POST_ELEM
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/chpve2.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/medomp.h'
-    include 'asterfort/peaire.h'
-    include 'asterfort/pecage.h'
-    include 'asterfort/pecapo.h'
-    include 'asterfort/pechli.h'
-    include 'asterfort/peecin.h'
-    include 'asterfort/peeint.h'
-    include 'asterfort/peepot.h'
-    include 'asterfort/peingl.h'
-    include 'asterfort/pemain.h'
-    include 'asterfort/pemima.h'
-    include 'asterfort/penorm.h'
-    include 'asterfort/peritr.h'
-    include 'asterfort/pevolu.h'
-    include 'asterfort/peweib.h'
-    include 'asterfort/pewext.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/chpve2.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/medomp.h"
+#include "asterfort/peaire.h"
+#include "asterfort/pecage.h"
+#include "asterfort/pecapo.h"
+#include "asterfort/pechli.h"
+#include "asterfort/peecin.h"
+#include "asterfort/peeint.h"
+#include "asterfort/peepot.h"
+#include "asterfort/peingl.h"
+#include "asterfort/pemain.h"
+#include "asterfort/pemima.h"
+#include "asterfort/penorm.h"
+#include "asterfort/peritr.h"
+#include "asterfort/pevolu.h"
+#include "asterfort/peweib.h"
+#include "asterfort/pewext.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
     integer :: nh, iret, jordr, n1, n2, nbocc, nbordr, nc, np, nr, ier
     real(kind=8) :: prec
     character(len=8) :: k8b, modele, carele, deform, resuco, crit

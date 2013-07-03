@@ -2,24 +2,24 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
                   mexpic, mcompt, mdomag, nbord, nbpt,&
                   ntcmp, nbcmp, numcmp, impr, vdomag)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/fgcota.h'
-    include 'asterfort/fgdomg.h'
-    include 'asterfort/fgpic2.h'
-    include 'asterfort/fgrain.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/codent.h"
+#include "asterfort/fgcota.h"
+#include "asterfort/fgdomg.h"
+#include "asterfort/fgpic2.h"
+#include "asterfort/fgrain.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nommat, nomnap, nomfon
     character(len=16) :: nomsym
     character(len=19) :: nomsd

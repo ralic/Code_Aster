@@ -23,15 +23,15 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/verstp.h'
-    include 'asterfort/vethbt.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/verstp.h"
+#include "asterfort/vethbt.h"
     integer :: parmei(2), lonch
     real(kind=8) :: parmer(2), rho
     character(len=24) :: modele, mate, carele, charge, infoch, numedd, time

@@ -32,11 +32,11 @@ subroutine lcpopl(loi, angmas, nmat, materd, materf,&
 !         VINF   :  VARIABLES INTERNES A T+DT
 !     ----------------------------------------------------------------
 !
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/hujori.h'
-    include 'asterfort/lgldcm.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/hujori.h"
+#include "asterfort/lgldcm.h"
+#include "asterfort/u2mess.h"
     integer :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), sigf(*), vind(*), vinf(*)
     real(kind=8) :: angmas(3), sigd(6), deps(6)

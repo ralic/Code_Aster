@@ -1,37 +1,37 @@
 subroutine te0033(option, nomte)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/dkqedg.h'
-    include 'asterfort/dkqsie.h'
-    include 'asterfort/dktedg.h'
-    include 'asterfort/dktsie.h'
-    include 'asterfort/dsqedg.h'
-    include 'asterfort/dsqsie.h'
-    include 'asterfort/dstedg.h'
-    include 'asterfort/dstsie.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxsiro.h'
-    include 'asterfort/dxsit2.h'
-    include 'asterfort/dxsith.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/q4gedg.h'
-    include 'asterfort/q4gsie.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/t3gedg.h'
-    include 'asterfort/t3gsie.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/dkqedg.h"
+#include "asterfort/dkqsie.h"
+#include "asterfort/dktedg.h"
+#include "asterfort/dktsie.h"
+#include "asterfort/dsqedg.h"
+#include "asterfort/dsqsie.h"
+#include "asterfort/dstedg.h"
+#include "asterfort/dstsie.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxsiro.h"
+#include "asterfort/dxsit2.h"
+#include "asterfort/dxsith.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/q4gedg.h"
+#include "asterfort/q4gsie.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/t3gedg.h"
+#include "asterfort/t3gsie.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

@@ -62,22 +62,22 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenca.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ncharp, nchard
     integer :: tabido(5)
     character(len=8) :: modele, lcharp(1), lchard(1)

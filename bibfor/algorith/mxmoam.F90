@@ -19,25 +19,25 @@ subroutine mxmoam(sddyna, nbmodp)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mginfo.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/dcopy.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mginfo.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "blas/dcopy.h"
     character(len=19) :: sddyna
     integer :: nbmodp
 !

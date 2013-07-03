@@ -16,14 +16,14 @@ subroutine te0007(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/bsigmc.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/bsigmc.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION FORC_NODA

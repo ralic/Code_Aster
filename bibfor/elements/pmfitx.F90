@@ -17,15 +17,15 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rhoequ.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rhoequ.h"
+#include "asterfort/u2mess.h"
     integer :: icdmat, isw
     real(kind=8) :: casect(6), gto
 !     ------------------------------------------------------------------

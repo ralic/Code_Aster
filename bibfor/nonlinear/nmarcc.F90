@@ -19,14 +19,14 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assde2.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
+#include "jeveux.h"
+#include "asterfort/assde2.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
     character(len=8) :: result
     character(len=*) :: typchz, nomchz
     integer :: numarc

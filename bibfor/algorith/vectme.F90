@@ -17,23 +17,23 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/nmvcd2.h'
-    include 'asterfort/nmvcex.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/xajcin.h'
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/nmvcd2.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/reajre.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/xajcin.h"
     character(len=*) :: modelz, carelz, complz, vecelz, mate
     character(len=24) :: compor
 !

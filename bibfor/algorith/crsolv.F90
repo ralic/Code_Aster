@@ -1,11 +1,11 @@
 subroutine crsolv(method, renum, solve, bas)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevtbl.h'
-    include 'asterfort/sdsolv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevtbl.h"
+#include "asterfort/sdsolv.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: method, renum, solve, bas
 ! ----------------------------------------------------------------------
 ! ======================================================================

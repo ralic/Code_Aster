@@ -44,7 +44,7 @@ subroutine sigimc(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/dmatmc.h'
+#include "asterfort/dmatmc.h"
     character(len=4) :: fami
     real(kind=8) :: ni(1), xyz(1), repere(7), epsini(1)
     real(kind=8) :: sigma(1), instan

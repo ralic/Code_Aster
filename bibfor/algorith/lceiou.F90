@@ -21,8 +21,8 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     character(len=16) :: option
     integer :: mat, kpg, ksp
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), r

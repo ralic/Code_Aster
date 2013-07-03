@@ -30,16 +30,16 @@ subroutine cpdepl(melflu, base, nuor, nbm)
 !  IN : NBM    : NOMBRE DE MODES PRIS EN COMPTE POUR LE COUPLAGE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extmod.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extmod.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: nbm, nuor(nbm)
     character(len=8) :: base
     character(len=19) :: melflu

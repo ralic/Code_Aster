@@ -4,28 +4,28 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/chpond.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/chpond.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbcmp, nuord, iocc, ichagd
     character(len=8) :: nomcmp(nbcmp), nomcp2(nbcmp), modele, lieu
     character(len=19) :: chpost, resu

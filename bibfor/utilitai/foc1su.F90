@@ -1,20 +1,20 @@
 subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
                   type, ccplx, fcplx, lpara, base)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/focoat.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/fointr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/uttrir.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/focoat.h"
+#include "asterfort/fointc.h"
+#include "asterfort/fointr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/uttrir.h"
+#include "asterfort/wkvect.h"
     integer :: nbfon
     character(len=*) :: sortie, nomfon(*), lpara
     real(kind=8) :: coef(*)

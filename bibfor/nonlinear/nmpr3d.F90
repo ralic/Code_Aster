@@ -19,11 +19,11 @@ subroutine nmpr3d(mode, nno, npg, poidsg, vff,&
 !
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/subaco.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
     integer :: mode, nno, npg
     real(kind=8) :: poidsg(npg), vff(nno, npg), dff(2, nno, npg)
     real(kind=8) :: geom(3, nno), p(npg)

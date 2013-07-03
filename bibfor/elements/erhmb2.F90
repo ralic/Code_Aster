@@ -92,10 +92,10 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
 ! DECLARATION PARAMETRES D'APPEL
 !
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
     logical :: perman
     integer :: ino, nbs, ndim
     real(kind=8) :: jac(3), nx(3), ny(3), tx(3), ty(3)

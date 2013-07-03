@@ -21,9 +21,9 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmmalu.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmmalu.h"
+#include "asterfort/r8inir.h"
     integer :: ndim, nno1, nno2, npg, iw, idff1
     integer :: vu(3, 27), vp(27)
     real(kind=8) :: geomi(ndim, nno1)

@@ -18,16 +18,16 @@ subroutine te0505(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/ntfcma.h'
-    include 'asterfort/projet.h'
-    include 'asterfort/rcfode.h'
-    include 'asterfort/rcfodi.h'
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/ntfcma.h"
+#include "asterfort/projet.h"
+#include "asterfort/rcfode.h"
+#include "asterfort/rcfodi.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES

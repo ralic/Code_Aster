@@ -17,9 +17,9 @@ subroutine affich(nomfic, texte)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/isjvup.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/uldefi.h'
+#include "asterc/isjvup.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/uldefi.h"
     character(len=*) :: texte
     character(len=*) :: nomfic
     integer :: ifm, ier

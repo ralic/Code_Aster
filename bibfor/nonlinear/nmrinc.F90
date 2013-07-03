@@ -19,7 +19,7 @@ subroutine nmrinc(sdstat, phasez)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/nmrvai.h'
+#include "asterfort/nmrvai.h"
     character(len=*) :: phasez
     character(len=24) :: sdstat
 !

@@ -19,13 +19,13 @@ subroutine sh2for(xetemp, para, xidepm, sigma, xivect)
 !               ELEMENT SHB20
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chrp3d.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rloshb.h'
-    include 'asterfort/s2calb.h'
-    include 'asterfort/sh2ksi.h'
+#include "jeveux.h"
+#include "asterfort/chrp3d.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rloshb.h"
+#include "asterfort/s2calb.h"
+#include "asterfort/sh2ksi.h"
     integer :: lag
     real(kind=8) :: para(*)
     real(kind=8) :: xivect(*), xetemp(*)

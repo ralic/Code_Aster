@@ -3,11 +3,11 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
     integer :: ndim, nnop
     real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
     character(len=8) :: elrefp

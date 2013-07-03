@@ -1,6 +1,6 @@
 subroutine mtexis(mat, ier)
     implicit none
-    include 'asterfort/exisd.h'
+#include "asterfort/exisd.h"
     character(len=*) :: mat
     integer :: ier
 !     ------------------------------------------------------------------

@@ -2,18 +2,18 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
                   lk, code, irepe, inema, nbno,&
                   typlaz)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/poslag.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/poslag.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: ligrz, lk(*), typlaz
     character(len=8) :: typlag
     character(len=19) :: ligr

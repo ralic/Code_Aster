@@ -24,9 +24,9 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
 ! aslint: disable=W1504
     implicit none
 ! ----ARGUMENTS
-    include 'asterc/r8prem.h'
-    include 'asterfort/matini.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/matini.h"
+#include "blas/ddot.h"
     integer :: memo, visc, nbvar, idelta
     real(kind=8) :: mat(*), matel(*), sigmdv(6), dsidep(6, 6), plast, dp, pm
     real(kind=8) :: rpvp

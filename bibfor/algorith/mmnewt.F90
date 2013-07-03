@@ -21,11 +21,11 @@ subroutine mmnewt(alias, nno, ndim, coorma, coorpt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/mmfonf.h'
-    include 'asterfort/mmreli.h'
-    include 'asterfort/mmtang.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/mmfonf.h"
+#include "asterfort/mmreli.h"
+#include "asterfort/mmtang.h"
     character(len=8) :: alias
     integer :: nno
     integer :: ndim

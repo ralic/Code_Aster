@@ -20,21 +20,21 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndasva.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmasdi.h'
-    include 'asterfort/nmasfi.h'
-    include 'asterfort/nmasva.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/vtaxpy.h'
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndasva.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
     character(len=24) :: sdtime
     character(len=19) :: cnpilo, cndonn
     integer :: fonact(*)

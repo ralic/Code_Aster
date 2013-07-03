@@ -21,19 +21,19 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, modele, malini, resuco, resux, modvis
     character(len=24) :: licham, nogrfi

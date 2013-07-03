@@ -20,10 +20,10 @@ subroutine nmgrtg(ndim, nno, poids, kpg, vff,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/nmfdff.h'
-    include 'asterfort/nmgrt2.h'
-    include 'asterfort/nmgrt3.h'
-    include 'blas/dcopy.h'
+#include "asterfort/nmfdff.h"
+#include "asterfort/nmgrt2.h"
+#include "asterfort/nmgrt3.h"
+#include "blas/dcopy.h"
     integer :: ndim, nno, kpg
     character(len=16) :: option
     real(kind=8) :: pff(*), def(*), r, dsidep(6, 6), poids, vectu(*)

@@ -17,10 +17,10 @@ subroutine cale(ndim, fd, id, fdm, fdmt,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lctr2m.h"
+#include "asterfort/matinv.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
     integer :: ndim, i, j
     real(kind=8) :: fd(3, 3), det
 !

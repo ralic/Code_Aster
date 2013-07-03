@@ -17,20 +17,20 @@ subroutine cesgno(ces1, celfpg, base, ces2)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jni002.h'
-    include 'asterfort/nuelrf.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elraca.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jni002.h"
+#include "asterfort/nuelrf.h"
     character(len=*) :: base
     character(len=24) :: celfpg
     character(len=19) :: ces2, ces1

@@ -5,21 +5,21 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
                   cmamin, vaamin)
 ! aslint: disable=W1504
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterc/r8vide.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ioc, ispmax, ispmin, isamax, isamin
     real(kind=8) :: valmin, valmax, vaamin, vaamax
     character(len=8) :: mamax, nomax, cmpmax, mamin, nomin, cmpmin

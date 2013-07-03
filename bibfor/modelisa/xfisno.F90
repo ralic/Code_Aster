@@ -17,19 +17,19 @@ subroutine xfisno(noma, modelx)
 ! ======================================================================
 ! person_in_charge: patrick.massin at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
     character(len=8) :: noma, modelx
 !
 !----------------------------------------------------------------------

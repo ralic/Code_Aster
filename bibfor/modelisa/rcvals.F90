@@ -1,9 +1,9 @@
 subroutine rcvals(iarret, icodre, nbres, nomres)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: iarret, nbres
     integer :: icodre(nbres)
     character(len=*) :: nomres(nbres)

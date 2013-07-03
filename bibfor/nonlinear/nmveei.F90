@@ -21,22 +21,22 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/lcdvmi.h'
-    include 'asterfort/lceqmn.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcmate.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/nmvecd.h'
-    include 'asterfort/nmvend.h'
-    include 'asterfort/nmveot.h'
-    include 'asterfort/nmveso.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/lcdvmi.h"
+#include "asterfort/lceqmn.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcmate.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/nmvecd.h"
+#include "asterfort/nmvend.h"
+#include "asterfort/nmveot.h"
+#include "asterfort/nmveso.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ndim, imate, iret, kpg, ksp
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)

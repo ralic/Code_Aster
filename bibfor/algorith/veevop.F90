@@ -18,21 +18,21 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lischk.h'
-    include 'asterfort/liscrs.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lisgen.h'
-    include 'asterfort/lisnnl.h'
-    include 'asterfort/lissav.h'
-    include 'asterfort/rsinch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lischk.h"
+#include "asterfort/liscrs.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisgen.h"
+#include "asterfort/lisnnl.h"
+#include "asterfort/lissav.h"
+#include "asterfort/rsinch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: fnocal, nomo
     real(kind=8) :: instan
     character(len=19) :: lisch2

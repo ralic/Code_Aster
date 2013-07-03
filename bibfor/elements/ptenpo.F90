@@ -1,7 +1,7 @@
 subroutine ptenpo(n, x, mat, ep, itype,&
                   iform)
     implicit none
-    include 'asterfort/vtmv.h'
+#include "asterfort/vtmv.h"
     integer :: n, itype, iform
     real(kind=8) :: x(*), mat(n, n), ep(*)
 !     ------------------------------------------------------------------

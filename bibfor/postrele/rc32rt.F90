@@ -1,8 +1,8 @@
 subroutine rc32rt(lieu, pi, pj, simpij)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rctres.h'
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rctres.h"
     real(kind=8) :: pi, pj, simpij
     character(len=4) :: lieu
 !     ------------------------------------------------------------------

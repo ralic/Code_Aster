@@ -18,8 +18,8 @@ subroutine gdcltg(df, e)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'blas/dscal.h'
+#include "asterfort/r8inir.h"
+#include "blas/dscal.h"
     real(kind=8) :: df(3, 3), e(6)
 !
 ! ----------------------------------------------------------------------

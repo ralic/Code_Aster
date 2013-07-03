@@ -2,9 +2,9 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg,&
                   mu, k, dfdl)
 !
     implicit      none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'blas/ddot.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "blas/ddot.h"
     real(kind=8) :: devg(6), devgii, traceg, dfds(6), dfdg, mu, k, dfdl
 ! ======================================================================
 ! ======================================================================

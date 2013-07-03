@@ -1,8 +1,8 @@
 function ulexis(iul)
     implicit none
     logical :: ulexis
-    include 'asterfort/codent.h'
-    include 'asterfort/ulopen.h'
+#include "asterfort/codent.h"
+#include "asterfort/ulopen.h"
     integer :: iul, i, unit
 !     ------------------------------------------------------------------
 ! ======================================================================

@@ -19,8 +19,8 @@ subroutine ntobsv(noma, sdieto, sdobse, numins, inst)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/lobs.h'
-    include 'asterfort/nmobse.h'
+#include "asterfort/lobs.h"
+#include "asterfort/nmobse.h"
     integer :: numins
     character(len=8) :: noma
     character(len=19) :: sdobse

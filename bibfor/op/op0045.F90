@@ -42,82 +42,82 @@ subroutine op0045()
     implicit none
 !
 ! VARIABLES LOCALES
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/r8depi.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/ajlagr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/rectfc.h'
-    include 'asterfort/rectfr.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/sspace.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/tldlg2.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcp.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/vecink.h'
-    include 'asterfort/vecint.h'
-    include 'asterfort/vp2ini.h'
-    include 'asterfort/vp2trd.h'
-    include 'asterfort/vpbosc.h'
-    include 'asterfort/vpbost.h'
-    include 'asterfort/vpcntl.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/vpddl.h'
-    include 'asterfort/vpfopc.h'
-    include 'asterfort/vpfopr.h'
-    include 'asterfort/vpordi.h'
-    include 'asterfort/vpordo.h'
-    include 'asterfort/vppara.h'
-    include 'asterfort/vpqzla.h'
-    include 'asterfort/vpreco.h'
-    include 'asterfort/vpsorc.h'
-    include 'asterfort/vpsorn.h'
-    include 'asterfort/vptabl.h'
-    include 'asterfort/vpwecf.h'
-    include 'asterfort/vrrefe.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wp2ini.h'
-    include 'asterfort/wp2vec.h'
-    include 'asterfort/wp3vec.h'
-    include 'asterfort/wp4vec.h'
-    include 'asterfort/wp5vec.h'
-    include 'asterfort/wpfopc.h'
-    include 'asterfort/wpfopr.h'
-    include 'asterfort/wpsorc.h'
-    include 'asterfort/wpsorn.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/ajlagr.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/cresol.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/omega2.h"
+#include "asterfort/rectfc.h"
+#include "asterfort/rectfr.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/sspace.h"
+#include "asterfort/titre.h"
+#include "asterfort/tldlg2.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcp.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vecini.h"
+#include "asterfort/vecink.h"
+#include "asterfort/vecint.h"
+#include "asterfort/vp2ini.h"
+#include "asterfort/vp2trd.h"
+#include "asterfort/vpbosc.h"
+#include "asterfort/vpbost.h"
+#include "asterfort/vpcntl.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/vpddl.h"
+#include "asterfort/vpfopc.h"
+#include "asterfort/vpfopr.h"
+#include "asterfort/vpordi.h"
+#include "asterfort/vpordo.h"
+#include "asterfort/vppara.h"
+#include "asterfort/vpqzla.h"
+#include "asterfort/vpreco.h"
+#include "asterfort/vpsorc.h"
+#include "asterfort/vpsorn.h"
+#include "asterfort/vptabl.h"
+#include "asterfort/vpwecf.h"
+#include "asterfort/vrrefe.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wp2ini.h"
+#include "asterfort/wp2vec.h"
+#include "asterfort/wp3vec.h"
+#include "asterfort/wp4vec.h"
+#include "asterfort/wp5vec.h"
+#include "asterfort/wpfopc.h"
+#include "asterfort/wpfopr.h"
+#include "asterfort/wpsorc.h"
+#include "asterfort/wpsorn.h"
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter    ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
     parameter    ( mxddl=1 )

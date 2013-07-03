@@ -19,16 +19,16 @@ subroutine nmimr0(sdimpr, nombcl)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmimca.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgetk.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/oblgai.h'
-    include 'asterfort/oblgoi.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmimca.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgetk.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/oblgai.h"
+#include "asterfort/oblgoi.h"
     character(len=24) :: sdimpr
     character(len=4) :: nombcl
 !

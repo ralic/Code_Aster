@@ -19,13 +19,13 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacto.h'
-    include 'asterfort/nmevac.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmevac.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: sddisc
     character(len=24) :: sderro
     real(kind=8) :: parcri(*)

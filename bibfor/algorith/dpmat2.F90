@@ -20,16 +20,16 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/betaps.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/betaps.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: mater(5, 2), dp, beta, se(6), seq, dsde(6, 6)
     real(kind=8) :: plas, alpha, pplus, dpdeno
     character(len=8) :: mod

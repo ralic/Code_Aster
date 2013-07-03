@@ -20,11 +20,11 @@ subroutine mmvalp(ndim, alias, nno, ncmp, ksi1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmnonf.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmnonf.h"
     integer :: ndim, nno, ncmp
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2

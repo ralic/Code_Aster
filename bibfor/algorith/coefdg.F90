@@ -19,7 +19,7 @@ subroutine coefdg(compor, mat, dpida2)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     character(len=16) :: compor
     integer :: mat
     real(kind=8) :: dpida2

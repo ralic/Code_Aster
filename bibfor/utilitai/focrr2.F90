@@ -2,34 +2,34 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                   noeud, cmp, npoint, nusp, ivari,&
                   ier)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/focrrs.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/rsbary.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/rsutro.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utch19.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/focrrs.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/posddl.h"
+#include "asterfort/rsbary.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/rsutro.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utch19.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=8) :: maille, noeud, cmp
     character(len=16) :: nomcha

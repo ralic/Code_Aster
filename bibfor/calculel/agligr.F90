@@ -19,12 +19,12 @@ subroutine agligr(long, ligrch)
 ! ======================================================================
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jeagco.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/juveca.h'
+#include "jeveux.h"
+#include "asterfort/jeagco.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/juveca.h"
     integer :: long
     character(len=19) :: ligrch
 ! --------------------------------------------------------------------

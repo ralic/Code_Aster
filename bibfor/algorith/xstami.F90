@@ -20,14 +20,14 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesi.h'
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesi.h"
     integer :: nmafon, nmaen1, nmaen2, nmaen3
     integer :: jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: noma

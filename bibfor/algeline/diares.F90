@@ -1,9 +1,9 @@
 subroutine diares(n, nevec, a, lda, tau,&
                   evec, ldevec, work)
     implicit none
-    include 'asterfort/zaddrc.h'
-    include 'asterfort/zmulmv.h'
-    include 'asterfort/zmult.h'
+#include "asterfort/zaddrc.h"
+#include "asterfort/zmulmv.h"
+#include "asterfort/zmult.h"
     integer :: n, nevec, lda, ldevec
     complex(kind=8) :: a(lda, *), tau(*), evec(ldevec, *), work(*)
 ! ======================================================================

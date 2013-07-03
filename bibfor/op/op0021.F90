@@ -38,14 +38,14 @@ subroutine op0021()
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/fetcrf.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterfort/fetcrf.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ifm, niv, ibid
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd

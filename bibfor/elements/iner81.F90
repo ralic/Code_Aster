@@ -30,23 +30,23 @@ subroutine iner81(nomres, classe, basmod, nommat)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterfort/copmod.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/mtexis.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/copmod.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/mtexis.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     integer :: i, ia, iad, ibid, idbase, iddeeq, ieq
     integer :: ier, if, iret, ldref, ldres, lmat, ltvec1
     integer :: ltvec2, ltvec3, mxddl, nbdef, neq

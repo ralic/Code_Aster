@@ -16,18 +16,18 @@ subroutine te0403(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fcent.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/fpesa.h'
-    include 'asterfort/fpres.h'
-    include 'asterfort/fsurf.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trnflg.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vectan.h'
+#include "jeveux.h"
+#include "asterfort/fcent.h"
+#include "asterfort/fointe.h"
+#include "asterfort/fpesa.h"
+#include "asterfort/fpres.h"
+#include "asterfort/fsurf.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trnflg.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vectan.h"
     character(len=16) :: option, nomte
 !
 !

@@ -20,15 +20,15 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/ggpgmo.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/vpagm1.h'
-    include 'asterfort/zerofr.h'
+#include "asterfort/ggpgmo.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/matini.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "asterfort/vpagm1.h"
+#include "asterfort/zerofr.h"
     integer :: ndim, imate, iret, kpg, ksp
     character(len=*) :: fami
     character(len=8) :: typmod(*)

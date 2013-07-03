@@ -1,7 +1,7 @@
 subroutine wpordc(type, shift, vp, x, m,&
                   neq)
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: type, neq, m
     complex(kind=8) :: x(neq, m), shift, vp(*)
 !     ------------------------------------------------------------------

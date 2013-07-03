@@ -41,22 +41,22 @@ subroutine ddlact(nomres, numddl)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/actiau.h'
-    include 'asterfort/acticb.h'
-    include 'asterfort/actimn.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/recddl.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/actiau.h"
+#include "asterfort/acticb.h"
+#include "asterfort/actimn.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/recddl.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: pgc
     character(len=8) :: nomres, typint
     character(len=8) :: k8bid

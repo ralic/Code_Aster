@@ -2,12 +2,12 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
                   spij, typeke, spmeca, spther, kemeca,&
                   kether, saltij, sm, fuij)
     implicit   none
-    include 'asterc/r8maem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/prccm3.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/limend.h"
+#include "asterfort/prccm3.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: mati(*), matj(*), snpq, spij(2), saltij(2), sm
     real(kind=8) :: typeke, spmeca(2), spther(2), fuij(2)
     character(len=8) :: nommat

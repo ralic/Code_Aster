@@ -16,11 +16,11 @@ subroutine te0112(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - BUT :  CALCUL DES MATRICES DE RAIDEUR GEOMETRIQUE ELEMENTAIRES

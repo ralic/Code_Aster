@@ -19,15 +19,15 @@ subroutine nmaffm(sderro, sdimpr, nombcl)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmerge.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/obtsdm.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/obtsdm.h"
     character(len=4) :: nombcl
     character(len=24) :: sdimpr, sderro
 !

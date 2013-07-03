@@ -19,7 +19,7 @@ subroutine usubis(type, para, crit, epsi, x1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    include 'asterfort/usufon.h'
+#include "asterfort/usufon.h"
     real(kind=8) :: para(*)
     character(len=*) :: type, crit
 !-----------------------------------------------------------------------

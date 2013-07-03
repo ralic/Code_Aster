@@ -23,7 +23,7 @@ subroutine jeveut(nomlu, cel, jctab)
 ! OUT JCTAB  : ADRESSE DANS LE COMMUN DE REFERENCE ASSOCIE
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/jeveuo.h'
+#include "asterfort/jeveuo.h"
     integer :: jctab
     character(len=*) :: nomlu, cel
 !     ------------------------------------------------------------------

@@ -22,14 +22,14 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 ! person_in_charge: Christophe-mmn.durand at edf.fr
 !
     implicit none
-    include 'asterc/getres.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/nmdorc.h'
-    include 'asterfort/ntdcom.h'
-    include 'asterfort/ntdomt.h'
-    include 'asterfort/ntdoth.h'
-    include 'asterfort/nxdocn.h'
-    include 'asterfort/nxdomt.h'
+#include "asterc/getres.h"
+#include "asterfort/cresol.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/ntdcom.h"
+#include "asterfort/ntdomt.h"
+#include "asterfort/ntdoth.h"
+#include "asterfort/nxdocn.h"
+#include "asterfort/nxdomt.h"
     character(len=8) :: evolsc
     logical :: matcst, coecst
     integer :: parmei(2), parcri(3)

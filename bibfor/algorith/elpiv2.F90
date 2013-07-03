@@ -21,20 +21,20 @@ subroutine elpiv2(xjvmax, ndim, indic, nbliac, ajliai,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfimp2.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/cftyli.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/cftyli.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     integer :: ndim
     integer :: indic
     integer :: nbliac, llf, llf1, llf2

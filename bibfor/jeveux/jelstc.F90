@@ -18,8 +18,8 @@ subroutine jelstc(clas, souch, ipos, maxval, klst,&
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: clas, souch, klst(*)
     integer :: ipos, maxval, nbval
 ! ----------------------------------------------------------------------

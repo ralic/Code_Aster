@@ -24,18 +24,18 @@ subroutine ibdbgs()
 !            1 ERREUR DANS LA LECTURE DE LA COMMANDE
 !     ------------------------------------------------------------------
 !     ----- DEBUT COMMON DE DEBUG JEVEUX
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/jdcset.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/impvem.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/jdcset.h"
+#include "asterfort/assert.h"
+#include "asterfort/impvem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: lundef, idebug
     common /undfje/  lundef,idebug
     real(kind=8) :: tbloc, tgrel

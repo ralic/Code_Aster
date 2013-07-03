@@ -17,36 +17,36 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/indk32.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/manopx.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbptca.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elraca.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/indk32.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/manopx.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbptca.h"
+#include "asterfort/typele.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: ligrez, mnogaz, optioz, paramz
 ! ------------------------------------------------------------------
 ! BUT: CREER LE CHAM_ELEM_S MNOGAZ QUI CONTIENDRA LA MATRICE

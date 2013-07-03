@@ -18,8 +18,8 @@ subroutine prmadj(nbnd, neq, n2, adjncy, xadj,&
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    include 'asterfort/prmade.h'
-    include 'asterfort/prmadl.h'
+#include "asterfort/prmade.h"
+#include "asterfort/prmadl.h"
     integer :: nbnd, neq, n2
     integer :: adjncy(*), xadj(neq+1), xadjd(*), liste(neq), q(n2)
     integer :: noeud(*), nbnoeu, ndi, ndj, deb, fin, deblis, i, j, ndsuiv

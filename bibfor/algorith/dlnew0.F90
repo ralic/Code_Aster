@@ -79,38 +79,38 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dlarch.h'
-    include 'asterfort/dlfext.h'
-    include 'asterfort/enerca.h'
-    include 'asterfort/fimped.h'
-    include 'asterfort/fmodam.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/fondpl.h'
-    include 'asterfort/forcdy.h'
-    include 'asterfort/fteta.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/newacc.h'
-    include 'asterfort/newdep.h'
-    include 'asterfort/newvit.h'
-    include 'asterfort/nmarpc.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dlarch.h"
+#include "asterfort/dlfext.h"
+#include "asterfort/enerca.h"
+#include "asterfort/fimped.h"
+#include "asterfort/fmodam.h"
+#include "asterfort/fointe.h"
+#include "asterfort/fondpl.h"
+#include "asterfort/forcdy.h"
+#include "asterfort/fteta.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/newacc.h"
+#include "asterfort/newdep.h"
+#include "asterfort/newvit.h"
+#include "asterfort/nmarpc.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nbexci, nondp, nmodam, iinteg, neq
     integer :: istoc, iarchi, ifm, imat(3), nchar, nveca, liad(*)
     integer :: iforc2, archiv, nbtyar, mltap(nbexci)

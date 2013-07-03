@@ -20,8 +20,8 @@ subroutine cuacat(indic, nbliac, ajliai, spliai, lmat,&
 ! ======================================================================
 !
     implicit      none
-    include 'asterfort/cuaca1.h'
-    include 'asterfort/cuaca2.h'
+#include "asterfort/cuaca1.h"
+#include "asterfort/cuaca2.h"
     integer :: indic
     integer :: nbliac
     integer :: ajliai

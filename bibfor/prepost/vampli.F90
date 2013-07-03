@@ -18,14 +18,14 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rvinvt.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rvinvt.h"
     integer :: tdisp, nbp, liste(nbp), nbt, nbordr, numini
     integer :: tspaq
     real(kind=8) :: vwork(tdisp)

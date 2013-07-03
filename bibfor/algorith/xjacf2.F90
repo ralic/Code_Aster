@@ -4,23 +4,23 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                   ffp, ffpc, dfdi, nd, tau1)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/abscvf.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/elelin.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/reerel.h'
-    include 'asterfort/vecini.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/abscvf.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/elelin.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/normev.h"
+#include "asterfort/reeref.h"
+#include "asterfort/reereg.h"
+#include "asterfort/reerel.h"
+#include "asterfort/vecini.h"
+#include "blas/ddot.h"
     integer :: jinter, ifa, cface(5, 3), ipg, nno, igeom, jbasec, nptf, ndim
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
     real(kind=8) :: nd(3), tau1(3), g(3)

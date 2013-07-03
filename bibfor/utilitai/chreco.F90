@@ -23,23 +23,23 @@ subroutine chreco(chou)
 !    - SA PARTIE REELLE CORRESPOND AUX VALEURS DU CHAMP REEL
 !    - SA PARTIE IMAGINAIRE EST NULLE.
 !     -----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sdchgd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8pi.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdchgd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: iret, ibid, jvale, nbval, jvalin, i
     character(len=3) :: tsca
     character(len=4) :: docu

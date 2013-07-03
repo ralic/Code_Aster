@@ -1,7 +1,7 @@
 subroutine rvinfa(ifm, mcf, iocc, qnt, opt,&
                   opr, rep)
     implicit   none
-    include 'asterc/getvr8.h'
+#include "asterc/getvr8.h"
     integer :: ifm
     character(len=*) :: mcf, qnt, opt, opr, rep
 !     ------------------------------------------------------------------

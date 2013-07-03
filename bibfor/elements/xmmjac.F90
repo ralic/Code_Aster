@@ -18,8 +18,8 @@ subroutine xmmjac(alias, geom, dff, jac)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     character(len=8) :: alias
     real(kind=8) :: dff(3, 9), geom(9), jac
 !

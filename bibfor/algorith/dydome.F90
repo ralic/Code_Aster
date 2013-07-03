@@ -18,7 +18,7 @@ subroutine dydome(nomo, mate, carele)
 ! ======================================================================
 !
     implicit      none
-    include 'asterfort/ledome.h'
+#include "asterfort/ledome.h"
     character(len=8) :: nomo
     character(len=24) :: mate, carele
 !

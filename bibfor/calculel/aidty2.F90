@@ -23,16 +23,16 @@ subroutine aidty2(impr)
 !       1  LES COUPLES (OPTION, TYPE_ELEMENT) REALISES AUJOURD'HUI
 !          (POUR VERIFIER LA COMPLETUDE)
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/aidtyp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/aidtyp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: kbid
     character(len=16) :: nomte, noop
     integer :: iaopte, nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc

@@ -19,10 +19,10 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jean-luc.flejou at edf.fr
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesr.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesr.h"
     character(len=*) :: fami
     integer :: kpg, ksp, nmat
     real(kind=8) :: mater(nmat, 2), sig(6), vin(*), seuil

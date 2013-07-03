@@ -19,19 +19,19 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/knindi.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/knindi.h"
+#include "asterfort/wkvect.h"
     integer :: nbma, nbcmp
     integer :: lima(nbma)
     character(len=*) :: ces1z, ces2z, base

@@ -2,8 +2,8 @@ subroutine drfdrs(q, parame, h0, sigc, rgdev,&
                   duds, dfds)
 !
     implicit    none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     real(kind=8) :: q(6), parame(5), h0, sigc, rgdev, duds(6), dfds(6)
 ! ======================================================================
 ! ======================================================================

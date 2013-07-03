@@ -17,7 +17,7 @@ subroutine jjmzat(iclas, idat)
 ! ======================================================================
     implicit none
 !     ==================================================================
-    include 'jeveux_private.h'
+#include "jeveux_private.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------

@@ -25,7 +25,7 @@ subroutine gldloc(lambda, deuxmu, deumuf, seuil, alf,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterfort/ceps33.h'
+#include "asterfort/ceps33.h"
     integer :: kdmax, codret
     real(kind=8) :: vim(*), gmt, gmc, gf, tr2d, eps33
     real(kind=8) :: lambda, deuxmu, deumuf, seuil, alf, qff(2), told

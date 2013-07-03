@@ -1,7 +1,7 @@
 subroutine calint(i, j, vect1, nbpts, vect2,&
                   long, tt)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: i, j, nbpts
     real(kind=8) :: vect2(nbpts)
     complex(kind=8) :: vect1(long)

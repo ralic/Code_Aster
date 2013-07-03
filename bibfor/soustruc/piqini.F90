@@ -1,16 +1,16 @@
 subroutine piqini(mailla)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/ordgmn.h'
-    include 'asterfort/piquag.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/ordgmn.h"
+#include "asterfort/piquag.h"
     character(len=8) :: mailla
 !-----------------------------------------------------------------------
 ! ======================================================================

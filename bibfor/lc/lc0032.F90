@@ -22,9 +22,9 @@ subroutine lc0032(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmvprk.h'
-    include 'asterfort/plasti.h'
-    include 'asterfort/utlcal.h'
+#include "asterfort/nmvprk.h"
+#include "asterfort/plasti.h"
+#include "asterfort/utlcal.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
     real(kind=8) :: crit(12), angmas(3), instam, instap, tampon(*)
     real(kind=8) :: epsm(neps), deps(neps), sigm(6), sigp(6), vim(*), vip(*)

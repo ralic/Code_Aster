@@ -18,12 +18,12 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, mate
     character(len=*) :: fami, poum
 !

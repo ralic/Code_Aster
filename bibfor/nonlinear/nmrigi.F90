@@ -22,12 +22,12 @@ subroutine nmrigi(modelz, mate, carele, compor, carcri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/isfonc.h'
-    include 'asterfort/merimo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdep0.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
+#include "asterfort/isfonc.h"
+#include "asterfort/merimo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdep0.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
     character(len=*) :: optioz
     character(len=*) :: modelz
     character(len=*) :: mate

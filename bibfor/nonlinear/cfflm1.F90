@@ -18,15 +18,15 @@ subroutine cfflm1(resoco, ndim, nesmax, nbliai, nbliac)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
     character(len=24) :: resoco
     integer :: nbliac, nesmax, ndim, nbliai
 !

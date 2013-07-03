@@ -21,7 +21,7 @@ subroutine lc0049(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lceitr.h'
+#include "asterfort/lceitr.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(3)
     real(kind=8) :: instam, instap, tampon(*),r

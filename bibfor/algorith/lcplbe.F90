@@ -56,15 +56,15 @@ subroutine lcplbe(toler, itmax, nmat, materf, nvi,&
 !       OUT VINF   :  VARIABLES INTERNES A T+DT
 !           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 !       ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/betfpp.h'
-    include 'asterfort/betinc.h'
-    include 'asterfort/betini.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/codree.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/betfpp.h"
+#include "asterfort/betinc.h"
+#include "asterfort/betini.h"
+#include "asterfort/codent.h"
+#include "asterfort/codree.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, nseuil
 !
     integer :: itmax, nprojs, nessai, osci

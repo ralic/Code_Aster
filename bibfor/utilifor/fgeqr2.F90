@@ -88,10 +88,10 @@ subroutine fgeqr2(m, n, a, lda, tau,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'asterfort/flarfg.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/dlarf.h'
+#include "asterc/matfpe.h"
+#include "asterfort/flarfg.h"
+#include "asterfort/xerbla.h"
+#include "blas/dlarf.h"
     integer :: info, lda, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..

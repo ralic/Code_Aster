@@ -38,30 +38,30 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/axdipo.h'
-    include 'asterfort/deffen.h'
-    include 'asterfort/discax.h'
-    include 'asterfort/discff.h'
-    include 'asterfort/fenexc.h'
-    include 'asterfort/ffgra1.h'
-    include 'asterfort/fointr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/pha180.h'
-    include 'asterfort/pha300.h'
-    include 'asterfort/scaldf.h'
-    include 'asterfort/scalff.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/veriff.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/axdipo.h"
+#include "asterfort/deffen.h"
+#include "asterfort/discax.h"
+#include "asterfort/discff.h"
+#include "asterfort/fenexc.h"
+#include "asterfort/ffgra1.h"
+#include "asterfort/fointr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/pha180.h"
+#include "asterfort/pha300.h"
+#include "asterfort/scaldf.h"
+#include "asterfort/scalff.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/veriff.h"
+#include "asterfort/wkvect.h"
     logical :: casint, ltable, exiind
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
     character(len=8) :: nomu, k8b, caelem, modele, table, nomnoa, noma

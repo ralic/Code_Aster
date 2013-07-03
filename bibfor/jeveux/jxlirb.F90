@@ -18,10 +18,10 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/readdr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux_private.h"
+#include "asterc/readdr.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesg.h"
     integer :: ic, iaddi, iadmo, lso
 ! ----------------------------------------------------------------------
 ! LECTURE D'UN BLOC DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE

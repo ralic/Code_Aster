@@ -23,8 +23,8 @@ function prgonf(biot, betam, pref, p1)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8pi.h'
-    include 'asterfort/erfcfo.h'
+#include "asterc/r8pi.h"
+#include "asterfort/erfcfo.h"
     real(kind=8) :: biot, betam, pref, p1, prgonf, derf
     real(kind=8) :: pi, rpi, s, rbetam
 !

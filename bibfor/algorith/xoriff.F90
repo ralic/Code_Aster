@@ -21,18 +21,18 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xffcr.h'
-    include 'asterfort/xffext.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/padist.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xffcr.h"
+#include "asterfort/xffext.h"
     integer :: nfon, jfono, jbaso, jtailo, nmafon, jfon, jbas, jtail
     integer :: nbfond
     character(len=19) :: info, listpt

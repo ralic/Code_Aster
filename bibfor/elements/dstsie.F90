@@ -1,19 +1,19 @@
 subroutine dstsie(option, fami, xyzl, pgl, depl,&
                   nbcou, cdl)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dstbfa.h'
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dstcis.h'
-    include 'asterfort/dstlxy.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dsxhlt.h'
-    include 'asterfort/dxdmul.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/dstbfa.h"
+#include "asterfort/dstbfb.h"
+#include "asterfort/dstcis.h"
+#include "asterfort/dstlxy.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dsxhlt.h"
+#include "asterfort/dxdmul.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
     character(len=4) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)

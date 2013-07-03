@@ -1,23 +1,23 @@
 subroutine orvlse(noma, listma, nbmail, norien, vect,&
                   noeud)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/indiis.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/iorim1.h'
-    include 'asterfort/ioriv3.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utmavo.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/indiis.h"
+#include "asterfort/infniv.h"
+#include "asterfort/iorim1.h"
+#include "asterfort/ioriv3.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utmavo.h"
+#include "asterfort/wkvect.h"
     integer :: listma(*), nbmail, noeud, norien
     character(len=8) :: noma
     real(kind=8) :: vect(*)

@@ -19,12 +19,12 @@ subroutine nmgrot(iran, deldet, theta, chamaj)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/proqua.h'
-    include 'asterfort/quavro.h'
-    include 'asterfort/vroqua.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/proqua.h"
+#include "asterfort/quavro.h"
+#include "asterfort/vroqua.h"
     real(kind=8) :: theta(3), deldet(3)
     integer :: iran(3)
     real(kind=8) :: chamaj(*)

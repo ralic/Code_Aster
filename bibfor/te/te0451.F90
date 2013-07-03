@@ -1,13 +1,13 @@
 subroutine te0451(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/excent.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/excent.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

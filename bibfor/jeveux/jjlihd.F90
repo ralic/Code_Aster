@@ -19,14 +19,14 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei,ltypi, ic, ido, idc, jmarq,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'jeveux_private.h'
-    include 'asterc/hdfrsv.h'
-    include 'asterc/hdftsd.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "jeveux_private.h"
+#include "asterc/hdfrsv.h"
+#include "asterc/hdftsd.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/u2mess.h"
     integer :: idts, nbval, lonoi, ltypi, ic, ido, idc, iadmi, jmarq(2)
     character(len=*) :: genri, typei
 ! ----------------------------------------------------------------------

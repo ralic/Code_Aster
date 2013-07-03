@@ -29,13 +29,13 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
 !                     S      = (3/2(D-X1-X2) (D-X1-X2))
 !                     D      = SIG - 1/3 TR(SIG) I
 !       ----------------------------------------------------------------
-    include 'asterfort/chbfs.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprte.h'
+#include "asterfort/chbfs.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprte.h"
     integer :: n, nd
     real(kind=8) :: dfds(6), sig(6), x1(6), x2(6), dev(6), s
     real(kind=8) :: ddfdsx(6, 6), dfds2(6, 6)

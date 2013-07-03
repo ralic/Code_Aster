@@ -18,13 +18,13 @@ subroutine te0561(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elrefv.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nmfogn.h'
-    include 'asterfort/nmforn.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefv.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmfogn.h"
+#include "asterfort/nmforn.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FORCES NODALES

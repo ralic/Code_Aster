@@ -31,7 +31,7 @@ subroutine gdmb(ne, kp, ajacob, en, enprim,&
 !     OUT : B         : MATRICE DE DEFORMATION 6*6
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/antisy.h'
+#include "asterfort/antisy.h"
     real(kind=8) :: en(3, 2), enprim(3, 2), x0pg(3), b(6, 6), amat(3, 3)
 !
 !-----------------------------------------------------------------------

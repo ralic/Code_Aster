@@ -1,19 +1,19 @@
 subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
                   vc, vk, nume)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/ismaem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/ismaem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nbpar, vi(*), nume
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)

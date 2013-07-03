@@ -31,7 +31,7 @@ subroutine cdnfon(zimat, kfonc, xx, dn, fxx,&
 ! OUT FXX : VALEURS DES RESULTATS APRES RECUPERATION ET INTERPOLATION
 ! OUT IER : CODE RETOUR
 !
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: dn, ier, zimat, kpg, spt
 !
     real(kind=8) :: xx, fxx

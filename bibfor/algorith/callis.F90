@@ -36,32 +36,32 @@ subroutine callis(nomres)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/inclis.h'
-    include 'asterfort/inilag.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/liacar.h'
-    include 'asterfort/liared.h'
-    include 'asterfort/lipsrb.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/prjlis.h'
-    include 'asterfort/rotlir.h'
-    include 'asterfort/rotlis.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vecomo.h'
-    include 'asterfort/verili.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/inclis.h"
+#include "asterfort/inilag.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/liacar.h"
+#include "asterfort/liared.h"
+#include "asterfort/lipsrb.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/prjlis.h"
+#include "asterfort/rotlir.h"
+#include "asterfort/rotlis.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vecomo.h"
+#include "asterfort/verili.h"
+#include "asterfort/wkvect.h"
 !
 !
     character(len=1) :: k1bid

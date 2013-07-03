@@ -53,10 +53,10 @@ function erfcfo(x)
 !***END PROLOGUE  DERFC
     implicit none
     real(kind=8) :: erfcfo
-    include 'asterc/rminem.h'
-    include 'asterc/rmirem.h'
-    include 'asterfort/csevl.h'
-    include 'asterfort/inits.h'
+#include "asterc/rminem.h"
+#include "asterc/rmirem.h"
+#include "asterfort/csevl.h"
+#include "asterfort/inits.h"
     real(kind=8) :: x, erfcs(21), erfccs(59), erc2cs(49), sqeps, sqrtpi, xmax
     real(kind=8) :: txmax, xsml, y
     logical :: first

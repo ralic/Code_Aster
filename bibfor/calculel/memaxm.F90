@@ -2,20 +2,20 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                   vr, nbmail, numail)
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm1.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm1.h"
     character(len=*) :: typmx
     character(len=*) :: champ, nocmp, lcmp(*)
     integer :: nbcmp, nbmail, numail(*)

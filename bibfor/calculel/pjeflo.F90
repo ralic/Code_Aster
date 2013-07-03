@@ -18,12 +18,12 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, alarm,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: alarm, elrefa
     character(len=8) :: ma1, ma2
     integer :: ipb, ima1, ndim, ino2

@@ -16,12 +16,12 @@ subroutine te0415(optioz, nomtz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: optioz, nomtz
     character(len=16) :: option, nomte
 !     ----------------------------------------------------------------

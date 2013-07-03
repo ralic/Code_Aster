@@ -44,10 +44,10 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari,&
 !_______________________________________________________________________
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcumfb.h'
-    include 'asterfort/lcumfd.h'
-    include 'asterfort/lcumfs.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcumfb.h"
+#include "asterfort/lcumfd.h"
+#include "asterfort/lcumfs.h"
     integer :: i, icou, ifou, ifpo, ides, isph, j, nmat, nstrs, nvari
     real(kind=8) :: ersp, eisp
     real(kind=8) :: varf(20), cmat(15), sigf(nstrs), sigi(nstrs)

@@ -19,9 +19,9 @@ subroutine matbmr(nb1, vectt, dudxri, intsr, jdn1ri,&
 !
     implicit none
 !
-    include 'asterfort/hsame.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/hsame.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
     integer :: i, j
 !
     integer :: nb1

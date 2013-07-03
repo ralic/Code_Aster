@@ -2,11 +2,11 @@ subroutine mtcrog(a, b, nmax, n, nbsc,&
                   c, wks, ier)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/mtcro1.h'
-    include 'asterfort/mtcro2.h'
-    include 'asterfort/mtcro3.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/mtcro1.h"
+#include "asterfort/mtcro2.h"
+#include "asterfort/mtcro3.h"
+#include "asterfort/u2mess.h"
     integer :: nmax, n, nbsc, ier
     real(kind=8) :: a(nmax, n), b(nmax, nbsc), c(nmax, nbsc), wks(nmax)
 ! ----------------------------------------------------------------------

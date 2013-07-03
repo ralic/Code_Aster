@@ -3,13 +3,13 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
                   klv, varip, fono, sip)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvlg.h'
+#include "jeveux.h"
+#include "asterfort/moytem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvlg.h"
     integer :: neq, icodma, nc
     real(kind=8) :: ulm(neq), dul(neq), sim(neq), sip(neq), varim(6)
     real(kind=8) :: pgl(3, 3), varip(6), fono(neq), klv(78)

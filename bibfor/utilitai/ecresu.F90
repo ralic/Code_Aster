@@ -1,27 +1,27 @@
 subroutine ecresu(resin, vectot, nbva, grand, resou,&
                   ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/mdarch.h'
-    include 'asterfort/mdarnl.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/vtcrem.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/mdarch.h"
+#include "asterfort/mdarnl.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/wkvect.h"
     integer :: npara, nbva
     character(len=*) :: resin, resou, grand
     character(len=19) :: vectot

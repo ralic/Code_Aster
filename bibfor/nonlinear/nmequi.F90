@@ -20,16 +20,16 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndthet.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmfext.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndthet.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmfext.h"
     real(kind=8) :: eta
     integer :: fonact(*)
     character(len=19) :: sddyna

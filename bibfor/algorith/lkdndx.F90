@@ -31,11 +31,11 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 !         DPARDX   : DERIVEE DE A(XI),S(XI),M(XI) PAR RAPPORT A XI
 !     OUT DNDXI    :  DN/DXI
 !     --------------------------------------------------------------
-    include 'asterc/r8pi.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkhtet.h'
+#include "asterc/r8pi.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkhtet.h"
     integer :: nmat, val
     real(kind=8) :: i1, devsig(6), dndxi(6), bprime, mater(nmat, 2)
     real(kind=8) :: para(3), dpardx(3), xi

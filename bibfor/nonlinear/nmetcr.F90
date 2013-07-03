@@ -20,21 +20,21 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmetac.h'
-    include 'asterfort/nmetc0.h'
-    include 'asterfort/nmetcc.h'
-    include 'asterfort/nmetci.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmetac.h"
+#include "asterfort/nmetc0.h"
+#include "asterfort/nmetcc.h"
+#include "asterfort/nmetci.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: sdieto, modele, compor
     integer :: fonact(*)
     character(len=19) :: sddyna, sdpost

@@ -19,7 +19,7 @@ subroutine nmcb13(eps, sig, esec, e, dd,&
 ! ======================================================================
     implicit none
 ! --- CALCUL DE SIGMA DANS LE CAS 1 & 3 PAR DICHOTOMIE
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: eps, sig, esec, e, dd, d, beta, a, b, y, y00, z, crit(*)
     real(kind=8) :: xg, xd, fctd, erreur, tol
     integer :: nmaxit, iterat

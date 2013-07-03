@@ -1,13 +1,13 @@
 subroutine motubn(tabpus, dinst, nbsect)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tbacce.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/tbnuli.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tbacce.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/tbnuli.h"
+#include "asterfort/u2mesg.h"
     integer :: nbsect
     real(kind=8) :: dinst
     character(len=*) :: tabpus

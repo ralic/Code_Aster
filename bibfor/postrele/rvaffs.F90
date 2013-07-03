@@ -2,16 +2,16 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy,&
                   quant, option, rep, nomtab, ncheff,&
                   i1, isd)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvinfa.h'
-    include 'asterfort/rvtaso.h'
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvinfa.h"
+#include "asterfort/rvtaso.h"
     integer :: iocc, i1, isd
     character(len=16) :: ncheff
     character(len=19) :: sdeval, nomtab

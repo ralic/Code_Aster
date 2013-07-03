@@ -32,29 +32,29 @@ subroutine op0025()
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detmat.h'
-    include 'asterfort/didern.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/medith.h'
-    include 'asterfort/ntarch.h'
-    include 'asterfort/ntinit.h'
-    include 'asterfort/ntreso.h'
-    include 'asterfort/nxlect.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/xthpos.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterfort/assert.h"
+#include "asterfort/detmat.h"
+#include "asterfort/didern.h"
+#include "asterfort/diinst.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/medith.h"
+#include "asterfort/ntarch.h"
+#include "asterfort/ntinit.h"
+#include "asterfort/ntreso.h"
+#include "asterfort/nxlect.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/xthpos.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0025' )
 !

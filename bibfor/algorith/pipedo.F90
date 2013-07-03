@@ -21,14 +21,14 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/criteo.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerod2.h'
-    include 'asterfort/zerog2.h'
+#include "asterc/r8vide.h"
+#include "asterfort/criteo.h"
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerod2.h"
+#include "asterfort/zerog2.h"
     character(len=8) :: typmod(*)
     integer :: ndim, mate
     real(kind=8) :: vim(7), epsm(6), epspc(6), epsdc(6)

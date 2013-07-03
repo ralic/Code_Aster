@@ -43,8 +43,8 @@ subroutine liritm(ifl, icl, iv, rv, cv,&
 !           CV                  >  CHAINE LUE
 !           CNL                 >  NUMERO LIGNE (CHAINE)
 !       ----------------------------------------------------------------
-    include 'asterfort/lirlig.h'
-    include 'asterfort/lxscan.h'
+#include "asterfort/lirlig.h"
+#include "asterfort/lxscan.h"
     integer :: ifl, icl, iv, ideb, deblig, ilec
     real(kind=8) :: rv
     character(len=*) :: cv

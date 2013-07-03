@@ -29,7 +29,7 @@ subroutine scalff(nbfonc, nbp, disc, vale, a)
 ! OUT : A      : MATRICE DES PRODUITS SCALAIRES  - DIM : (NBFONC,NBFONC)
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbfonc, nbp
     real(kind=8) :: disc(nbp), vale(nbp, nbfonc), a(nbfonc, nbfonc)
     integer :: ifo1, ifo2, ip

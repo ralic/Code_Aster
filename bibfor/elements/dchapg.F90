@@ -1,7 +1,7 @@
 subroutine dchapg(sig1, sig2, npg, nbsig, decha)
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/norsig.h'
+#include "asterc/r8prem.h"
+#include "asterfort/norsig.h"
     integer :: npg, nbsig
     real(kind=8) :: sig1(*), sig2(*), decha(*)
 ! ----------------------------------------------------------------------

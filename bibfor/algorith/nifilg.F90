@@ -25,20 +25,20 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 ! aslint: disable=W1306,W1501,W1504
     implicit none
 !
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/dsde2d.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmmalu.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/poslog.h'
-    include 'asterfort/prelog.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/dsde2d.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmmalu.h"
+#include "asterfort/pmat.h"
+#include "asterfort/poslog.h"
+#include "asterfort/prelog.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     logical :: resi, rigi, matsym
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1, lgpg
     integer :: mate

@@ -1,26 +1,26 @@
 subroutine diag99(nomres)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/copmod.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/vpgskp.h'
-    include 'asterfort/vtcrem.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/copisd.h"
+#include "asterfort/copmod.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/vecini.h"
+#include "asterfort/vpgskp.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     character(len=8) :: nomres
 !----------------------------------------------------------------------
 ! ======================================================================

@@ -17,11 +17,11 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/matini.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: ipg, ipoids, idfde, nno
     real(kind=8) :: coor(1), dfdx(1), dfdy(1), dfdz(1), jac
 ! ......................................................................

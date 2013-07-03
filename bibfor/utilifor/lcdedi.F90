@@ -54,10 +54,10 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
 !       OUT     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 !               EPSDM   DEFORMATION MECANIQUE A T
 !       ----------------------------------------------------------------
-    include 'asterc/iisnan.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8vide.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, ndt, ndi, nmat, k, iret
     character(len=*) :: fami
     real(kind=8) :: td, tf, tr, tempd, tempf, tref

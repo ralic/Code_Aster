@@ -21,24 +21,24 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 !
 ! aslint: disable=W1501
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndmuap.h'
-    include 'asterfort/ndpred.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmdebg.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndmuap.h"
+#include "asterfort/ndpred.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmdebg.h"
+#include "blas/dcopy.h"
     integer :: numins
     character(len=24) :: numedd
     character(len=19) :: sddyna, sddisc

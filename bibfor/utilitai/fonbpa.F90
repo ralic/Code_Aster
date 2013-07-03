@@ -1,13 +1,13 @@
 subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
                   nompf)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
     integer :: mxpf, nbpf
     character(len=*) :: nomf, vec(*), typfon, nompf(*)
 !     ------------------------------------------------------------------

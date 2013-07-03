@@ -36,23 +36,23 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsprj.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpjeft.h'
-    include 'asterfort/mpmod3.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsprj.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpjeft.h"
+#include "asterfort/mpmod3.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: basemo, nommes
     character(len=24) :: vnoeud, vrange, basepr, vcham
     integer :: nbmesu, nbmtot

@@ -25,7 +25,7 @@ function dspprs(k, u, d, rho, f,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: k, u, d, rho, f, dspprs, fcoup
 !
 !

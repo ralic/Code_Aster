@@ -29,20 +29,20 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/rvpara.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/rvpara.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: mcf
     character(len=8) :: nomtab
     integer :: nbpost

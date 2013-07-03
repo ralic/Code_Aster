@@ -1,20 +1,20 @@
 subroutine gchs2f(char1, char2, char3)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/nbec.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: char1, char2, char3
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

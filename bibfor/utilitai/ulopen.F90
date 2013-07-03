@@ -1,11 +1,11 @@
 subroutine ulopen(unit, fichie, name, acces, autor)
 ! aslint: disable=
     implicit   none
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulposi.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulposi.h"
     integer :: unit
     character(len=*) :: fichie, name, acces, autor
 !     ------------------------------------------------------------------

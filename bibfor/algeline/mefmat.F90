@@ -7,18 +7,18 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mefin1.h'
-    include 'asterfort/mefin2.h'
-    include 'asterfort/mefin3.h'
-    include 'asterfort/mefin4.h'
-    include 'asterfort/mefin5.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/matini.h"
+#include "asterfort/mefin1.h"
+#include "asterfort/mefin2.h"
+#include "asterfort/mefin3.h"
+#include "asterfort/mefin4.h"
+#include "asterfort/mefin5.h"
+#include "asterfort/wkvect.h"
     integer :: ndim(14), numgrp(*), nbmod
     real(kind=8) :: matma(*), dcent(*)
     real(kind=8) :: cp(*), cf(*), vit(0:*), rho(0:*), pstat(*), dpstat(*)

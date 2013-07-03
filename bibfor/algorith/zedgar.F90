@@ -19,12 +19,12 @@ subroutine zedgar(matos, tm, tp, instp, dinst,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterc/r8t0.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zevolu.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8t0.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zevolu.h"
     integer :: matos
     real(kind=8) :: tm, tp, instp, dinst, vim(4), vip(4)
 !

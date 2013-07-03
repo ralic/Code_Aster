@@ -19,12 +19,12 @@ subroutine nmdide(lreuse, result, numder, insder)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsorac.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
     character(len=8) :: result
     logical :: lreuse
     integer :: numder

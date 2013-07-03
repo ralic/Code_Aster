@@ -37,17 +37,17 @@ subroutine te0250(option, nomte)
     implicit none
 !
 ! PARAMETRES D'APPEL
-    include 'jeveux.h'
-    include 'asterc/r8t0.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/connec.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/vff2dn.h'
+#include "jeveux.h"
+#include "asterc/r8t0.h"
+#include "asterfort/assert.h"
+#include "asterfort/connec.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/teattr.h"
+#include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
 !
 !

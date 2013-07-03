@@ -1,32 +1,32 @@
 subroutine i2segm(nomail, nbpars, nbpara)
 ! aslint: disable=W1501
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/i2cpcx.h'
-    include 'asterfort/i2imac.h'
-    include 'asterfort/i2imas.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcono.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/i2cpcx.h"
+#include "asterfort/i2imac.h"
+#include "asterfort/i2imas.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/padist.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcono.h"
+#include "asterfort/wkvect.h"
     integer :: nbpars, nbpara
     character(len=8) :: nomail
 ! ----------------------------------------------------------------------

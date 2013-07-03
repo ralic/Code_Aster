@@ -1,9 +1,9 @@
 subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                   epsi, crit)
     implicit   none
-    include 'asterc/getres.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: nbpas, nbinst, arch(*)
     real(kind=8) :: epsi, instc(*), insta(*)
     character(len=8) :: crit

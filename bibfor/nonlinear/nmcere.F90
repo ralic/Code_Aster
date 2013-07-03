@@ -24,30 +24,30 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/majour.h'
-    include 'asterfort/nmadir.h'
-    include 'asterfort/nmaint.h'
-    include 'asterfort/nmbudi.h'
-    include 'asterfort/nmcha0.h'
-    include 'asterfort/nmchai.h'
-    include 'asterfort/nmchcp.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmchso.h'
-    include 'asterfort/nmdiri.h'
-    include 'asterfort/nmfext.h'
-    include 'asterfort/nmfint.h'
-    include 'asterfort/nmpilr.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/majour.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmcha0.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/nmchcp.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchso.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfext.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmpilr.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
     integer :: fonact(*)
     integer :: iterat, ldccvg
     real(kind=8) :: eta, rho, offset, residu

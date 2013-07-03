@@ -21,15 +21,15 @@ subroutine vrcdec()
 ! BUT: CALCULER LE DECALAGE DES DIFFERENTES FAMILLES DE PG UTILISEES
 !      DANS LA FAMILLE "LISTE" MATER.
 !      CECI PERMET DE GAGNER DU TEMPS DANS RCVARC
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/indk32.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/indk32.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     integer :: nbcvrc, jvcnom
     common /caii14/nbcvrc,jvcnom
 !

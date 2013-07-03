@@ -195,14 +195,14 @@ subroutine recfor(numpas, nbpal, force, typal, finpal,&
 !
 !     ARGUMENTS
 !     =========
-    include 'jeveux.h'
-    include 'asterc/cpldb.h'
-    include 'asterfort/errcou.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/cpldb.h"
+#include "asterfort/errcou.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: numpas, nbpal
     real(kind=8) :: force(nbpal, *), conv
 !

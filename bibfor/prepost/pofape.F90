@@ -1,7 +1,7 @@
 subroutine pofape()
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,32 +24,32 @@ subroutine pofape()
 !              CHARGEMENT PERIODIQUE
 !     -----------------------------------------------------------------
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/anacri.h'
-    include 'asterfort/avgrno.h'
-    include 'asterfort/dtauno.h'
-    include 'asterfort/fgdoba.h'
-    include 'asterfort/fgdohs.h'
-    include 'asterfort/fgdowh.h'
-    include 'asterfort/fmcros.h'
-    include 'asterfort/fmpapa.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbnuli.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/anacri.h"
+#include "asterfort/avgrno.h"
+#include "asterfort/dtauno.h"
+#include "asterfort/fgdoba.h"
+#include "asterfort/fgdohs.h"
+#include "asterfort/fgdowh.h"
+#include "asterfort/fmcros.h"
+#include "asterfort/fmpapa.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbnuli.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, nbc, ibid, iordo
     integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract (30), nbeps
     integer :: ifonc2, ifonce, iordoe, ifonc3, ifoncp, iordop, nbepsp

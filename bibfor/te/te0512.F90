@@ -1,15 +1,15 @@
 subroutine te0512(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/psvari.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/psvari.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

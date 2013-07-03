@@ -35,8 +35,8 @@ subroutine isgeco(icod1, icod2, ndim, iopt, icod)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/iscode.h'
-    include 'asterfort/isdeco.h'
+#include "asterfort/iscode.h"
+#include "asterfort/isdeco.h"
     integer :: i, ik, iopt, nbcpmx, ndim
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)

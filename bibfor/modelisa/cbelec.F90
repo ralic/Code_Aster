@@ -1,7 +1,7 @@
 subroutine cbelec(char, ligrmo, noma)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterfort/caelec.h'
+#include "asterc/getfac.h"
+#include "asterfort/caelec.h"
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
 !-----------------------------------------------------------------------

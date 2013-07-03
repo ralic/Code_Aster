@@ -17,7 +17,7 @@ subroutine matvec(nordre, amat, nombv, v1, v2,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: amat(*), v1(*), v2(*), vecres(*)
     real(kind=8) :: vsom(9)
 ! ---------------------------------------------

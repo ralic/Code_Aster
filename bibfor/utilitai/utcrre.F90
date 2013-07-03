@@ -26,12 +26,12 @@ subroutine utcrre(result, nbval)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterc/getres.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsrusd.h'
+#include "asterc/getres.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsrusd.h"
     integer :: nbval
     character(len=8) :: result
 !

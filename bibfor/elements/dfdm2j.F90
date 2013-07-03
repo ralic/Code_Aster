@@ -1,6 +1,6 @@
 subroutine dfdm2j(nno, ipg, idfde, coor, jac)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nno, ipg, idfde
     real(kind=8) :: coor(1), jac
 ! ======================================================================

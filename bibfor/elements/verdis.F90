@@ -1,11 +1,11 @@
 subroutine verdis(model, nomail, foue, i3d, i2d,&
                   ndim, ier)
     implicit          none
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/modexi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/modexi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=1) :: foue
     character(len=8) :: model, nomail
     integer :: i3d, i2d, ndim, ier

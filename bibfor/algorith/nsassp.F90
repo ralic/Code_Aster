@@ -21,21 +21,21 @@ subroutine nsassp(modele, numedd, lischa, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmadir.h'
-    include 'asterfort/nmasdi.h'
-    include 'asterfort/nmasfi.h'
-    include 'asterfort/nmasva.h'
-    include 'asterfort/nmbudi.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdiri.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/vtaxpy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, matass
     character(len=24) :: modele, numedd, mate, carele, defico, sdtime

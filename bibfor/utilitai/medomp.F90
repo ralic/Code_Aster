@@ -18,22 +18,22 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterc/getexm.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: modele, carele, result
     character(len=24) :: mate
     integer :: nh

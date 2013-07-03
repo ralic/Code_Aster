@@ -1,13 +1,13 @@
 subroutine te0397(option, nomte)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================

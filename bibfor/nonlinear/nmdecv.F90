@@ -19,14 +19,14 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dinins.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dinins.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: numins, ievdac, retdec
     real(kind=8) :: dtmin

@@ -1,25 +1,25 @@
 subroutine mesomm(champ, long, vi, vr, vc,&
                   nbmail, numail)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jaexin.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/celver.h"
+#include "asterfort/digdel.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jaexin.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/scalai.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: champ
     integer :: long, vi(*), nbmail, numail(*)
     real(kind=8) :: vr(*)

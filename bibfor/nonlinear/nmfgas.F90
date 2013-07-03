@@ -22,18 +22,18 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8t0.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/granac.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/nmcri4.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/verifm.h'
-    include 'asterfort/zerofr.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8t0.h"
+#include "asterfort/assert.h"
+#include "asterfort/granac.h"
+#include "asterfort/matela.h"
+#include "asterfort/moytem.h"
+#include "asterfort/nmcri4.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/verifm.h"
+#include "asterfort/zerofr.h"
+#include "blas/dcopy.h"
     integer :: nno, nc, neq, nbt, ncoeff, nitmax, iret
 !-----------------------------------------------------------------------
     integer :: icodma, itemp, iter, npg

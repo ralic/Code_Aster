@@ -20,15 +20,15 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss, cncte,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/xxmmvd.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/xxmmvd.h"
     character(len=24) :: cncte
     integer :: jcesd(10), jcesv(10), jcesl(10)
     integer :: ndim, nummae, iface, ifiss

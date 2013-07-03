@@ -19,27 +19,27 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
     character(len=24) :: mate, carele
     character(len=19) :: sddyna, sddisc
 !

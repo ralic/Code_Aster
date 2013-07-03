@@ -20,19 +20,19 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/dplitg.h'
-    include 'asterfort/dpmata.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/majsig.h'
-    include 'asterfort/resdp1.h'
-    include 'asterfort/trace.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/dplitg.h"
+#include "asterfort/dpmata.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/majsig.h"
+#include "asterfort/resdp1.h"
+#include "asterfort/trace.h"
+#include "blas/ddot.h"
     integer :: iret, nvi
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
     real(kind=8) :: sigm(6), materf(5, 2), dsidep(6, 6)

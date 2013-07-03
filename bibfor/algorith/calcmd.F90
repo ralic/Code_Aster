@@ -33,17 +33,17 @@ subroutine calcmd(np1, a, a0, n, m,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/indexx.h'
-    include 'asterfort/prmama.h'
-    include 'asterfort/trvpmd.h'
-    include 'asterfort/tstjac.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpzbaa.h'
-    include 'asterfort/vpzbab.h'
-    include 'asterfort/vpzhea.h'
-    include 'asterfort/vpzheb.h'
-    include 'asterfort/vpzqrs.h'
-    include 'asterfort/vpzvph.h'
+#include "asterfort/indexx.h"
+#include "asterfort/prmama.h"
+#include "asterfort/trvpmd.h"
+#include "asterfort/tstjac.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpzbaa.h"
+#include "asterfort/vpzbab.h"
+#include "asterfort/vpzhea.h"
+#include "asterfort/vpzheb.h"
+#include "asterfort/vpzqrs.h"
+#include "asterfort/vpzvph.h"
     integer :: np1
     real(kind=8) :: a(np1, *), a0(np1, *)
     integer :: n, m, typj

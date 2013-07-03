@@ -19,16 +19,16 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmacto.h'
-    include 'asterfort/nmerge.h'
-    include 'asterfort/nmimpx.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
     character(len=24) :: sdimpr, sderro
     character(len=19) :: sddisc
     character(len=4) :: nombcl

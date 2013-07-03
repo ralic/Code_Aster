@@ -83,8 +83,8 @@ subroutine dsortc(which, apply, n, xreal, ximag,&
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'blas/dlapy2.h'
+#include "asterc/matfpe.h"
+#include "blas/dlapy2.h"
     character(len=2) :: which
     logical :: apply
     integer :: n

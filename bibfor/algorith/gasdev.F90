@@ -21,7 +21,7 @@ function gasdev()
 !
 !     GENERATEUR DE VARIABLE ALEATOIRE DE LOI GAUSSIENNE
 ! ----------------------------------------------------------------------
-    include 'asterc/getran.h'
+#include "asterc/getran.h"
     integer :: iset
     real(kind=8) :: fac, gset, rsq, v1, v2, u, v
     save    iset, gset

@@ -73,8 +73,8 @@ subroutine flanv2(a, b, c, d, rt1r,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'blas/dlapy2.h'
+#include "asterc/matfpe.h"
+#include "blas/dlapy2.h"
     real(kind=8) :: a, b, c, cs, d, rt1i, rt1r, rt2i, rt2r, sn
 !
 !     ..

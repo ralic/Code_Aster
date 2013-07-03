@@ -18,14 +18,14 @@ subroutine te0518(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elrefv.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ngpipe.h'
-    include 'asterfort/nmgvmb.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/elrefv.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ngpipe.h"
+#include "asterfort/nmgvmb.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !   CALCUL DES COEFFICIENTS A0 ET A1 POUR LE PILOTAGE PAR CRITERE

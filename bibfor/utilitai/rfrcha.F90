@@ -19,31 +19,31 @@ subroutine rfrcha()
 ! ======================================================================
 !     OPERATEUR "RECU_FONCTION"
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/foattr.h'
-    include 'asterfort/focste.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/ordonn.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utch19.h'
-    include 'asterfort/utcmp1.h'
-    include 'asterfort/utnono.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/foattr.h"
+#include "asterfort/focste.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/ordonn.h"
+#include "asterfort/posddl.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utch19.h"
+#include "asterfort/utcmp1.h"
+#include "asterfort/utnono.h"
     integer :: lvale, lg1, lg2, iddl, inoeud, nch
     integer :: n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn

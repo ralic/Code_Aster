@@ -19,15 +19,15 @@ subroutine te0322(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/ejinit.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nmfihm.h'
-    include 'asterfort/tecach.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/ejinit.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmfihm.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte, option
 !
 !-----------------------------------------------------------------------

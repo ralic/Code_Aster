@@ -19,17 +19,17 @@ subroutine te0359(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/eiangl.h'
-    include 'asterfort/eiinit.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/pipeei.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/eiangl.h"
+#include "asterfort/eiinit.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/pipeei.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------

@@ -19,13 +19,13 @@ subroutine nmobno(sdobse, motfac, nbocc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nbocc
     character(len=19) :: sdobse
     character(len=16) :: motfac

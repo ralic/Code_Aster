@@ -2,10 +2,10 @@ subroutine comp1d(fami, kpg, ksp, option, sigx,&
                   epsx, depx, angmas, vim, vip,&
                   sigxp, etan, codret)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
     character(len=*) :: fami
     character(len=16) :: option
     integer :: codret, kpg, ksp

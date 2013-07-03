@@ -3,10 +3,10 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
                   i, nomcri, nomfor, fordef, fatsoc,&
                   vectra)
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/anacri.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/anacri.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, kwork
     integer :: sommw, tdisp, tspaq, i
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)

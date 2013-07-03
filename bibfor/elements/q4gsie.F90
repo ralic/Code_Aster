@@ -1,18 +1,18 @@
 subroutine q4gsie(option, fami, xyzl, pgl, depl,&
                   nbcou, cdl)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dsxhlt.h'
-    include 'asterfort/dxdmul.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/q4gbc.h'
-    include 'asterfort/q4glxy.h'
+#include "jeveux.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dsxhlt.h"
+#include "asterfort/dxdmul.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/q4gbc.h"
+#include "asterfort/q4glxy.h"
     character(len=4) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)

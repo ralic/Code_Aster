@@ -27,10 +27,10 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 ! aslint: disable=W1504
     implicit none
 ! --  IN
-    include 'asterc/r8prem.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tanmgl.h'
+#include "asterc/r8prem.h"
+#include "asterfort/matinv.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tanmgl.h"
     logical :: resi, rigi, coup, elas, elas1, elas2
 !
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, alf, treps, gmt, gmc, gf

@@ -23,23 +23,23 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/ecpuis.h'
-    include 'asterfort/nmcri1.h'
-    include 'asterfort/nmcri2.h'
-    include 'asterfort/radial.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/rupmat.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerofr.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/ecpuis.h"
+#include "asterfort/nmcri1.h"
+#include "asterfort/nmcri2.h"
+#include "asterfort/radial.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/rupmat.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerofr.h"
     integer :: ndim, imate, kpg, ksp, iret
     character(len=*) :: fami
     character(len=8) :: typmod(*)

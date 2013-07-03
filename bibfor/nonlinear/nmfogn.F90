@@ -22,11 +22,11 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw,&
 !
     implicit none
 !
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmgvdn.h'
-    include 'asterfort/nmmabu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmgvdn.h"
+#include "asterfort/nmmabu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     character(len=8) :: typmod(*)
     integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mat
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)

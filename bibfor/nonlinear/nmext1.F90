@@ -24,8 +24,8 @@ subroutine nmext1(noma, champ, typcha, nomcha, nomchs,&
 !
 ! aslint: disable=W1504
     implicit      none
-    include 'asterfort/nmext2.h'
-    include 'asterfort/nmext3.h'
+#include "asterfort/nmext2.h"
+#include "asterfort/nmext3.h"
     character(len=8) :: noma
     character(len=24) :: nomcha, nomchs
     integer :: nbcmp, nbno, nbma

@@ -17,10 +17,10 @@ subroutine op0137()
 ! ======================================================================
     implicit none
 !     OPERATEUR :     DEBUG
-    include 'asterc/getvtx.h'
-    include 'asterc/jdcset.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvtx.h"
+#include "asterc/jdcset.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: lundef, idebug
     common /undfje/  lundef,idebug
 ! ----------------------------------------------------------------------

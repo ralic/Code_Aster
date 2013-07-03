@@ -7,15 +7,15 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     integer :: nbocc(*), nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbtel
     integer :: ntyele(*), npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill
     integer :: ngribt, nmembr

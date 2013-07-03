@@ -20,17 +20,17 @@ subroutine nmextp(motfac, iocc, nomcha, champ, nomchs,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/celces.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: motfac
     character(len=24) :: nomcha, nomchs
     integer :: iocc

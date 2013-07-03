@@ -21,22 +21,22 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterc/r8t0.h'
-    include 'asterfort/ggplem.h'
-    include 'asterfort/granac.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/nmasse.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/vpalem.h'
-    include 'asterfort/zerofr.h'
+#include "asterc/r8t0.h"
+#include "asterfort/ggplem.h"
+#include "asterfort/granac.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/matini.h"
+#include "asterfort/nmasse.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "asterfort/vpalem.h"
+#include "asterfort/zerofr.h"
     integer :: ndim, imate, kpg, ksp, iret, nvi
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option

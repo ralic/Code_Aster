@@ -33,13 +33,13 @@ subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
 !     GI           --> VALEUR DE GI
 ! ......................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/wkvect.h"
     integer :: istok, nchthe, nnoff
     integer :: i, j, k, iret
 !

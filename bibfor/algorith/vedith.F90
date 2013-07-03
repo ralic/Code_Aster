@@ -28,19 +28,19 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     character(len=24) :: modele, charge, infcha, inst, vecelz
 !
 ! 0.2. ==> COMMUNS

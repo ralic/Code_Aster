@@ -1,12 +1,12 @@
 subroutine te0416(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/forngr.h'
-    include 'asterfort/fornpd.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/forngr.h"
+#include "asterfort/fornpd.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

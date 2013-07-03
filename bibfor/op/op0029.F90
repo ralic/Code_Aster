@@ -35,13 +35,13 @@ subroutine op0029()
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/fetskp.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterfort/fetskp.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ifm, niv, ibid
     integer :: iarg
 !

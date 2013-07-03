@@ -1,9 +1,9 @@
 subroutine allir8(base, nolir8, nbr8, lr8)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nbr8
     real(kind=8) :: lr8(*)
     character(len=8) :: nolir8

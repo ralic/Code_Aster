@@ -19,27 +19,27 @@ subroutine nminim(sdsuiv, sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/obclcr.h'
-    include 'asterfort/obcrea.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/oblcre.h'
-    include 'asterfort/oblgen.h'
-    include 'asterfort/oblgoi.h'
-    include 'asterfort/oblsoi.h'
-    include 'asterfort/obsetb.h'
-    include 'asterfort/obseti.h'
-    include 'asterfort/obseto.h'
-    include 'asterfort/obtran.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/ulopen.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/obclcr.h"
+#include "asterfort/obcrea.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/oblcre.h"
+#include "asterfort/oblgen.h"
+#include "asterfort/oblgoi.h"
+#include "asterfort/oblsoi.h"
+#include "asterfort/obsetb.h"
+#include "asterfort/obseti.h"
+#include "asterfort/obseto.h"
+#include "asterfort/obtran.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/ulopen.h"
     character(len=24) :: sdimpr, sdsuiv
 !
 ! ----------------------------------------------------------------------

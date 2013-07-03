@@ -18,8 +18,8 @@ subroutine ptka01(sk, e, a, xl, xiy,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: sk(*)
     real(kind=8) :: e, a, xl, xiy, xiz, xjx, g, alfay, alfaz, ey, ez
     integer :: ist

@@ -19,9 +19,9 @@ subroutine cdatrc(vr, xsi, coefcd, cd)
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/routhc.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/routhc.h"
     real(kind=8) :: vr, xsi, coefcd(1, 11), cd
 !
     integer :: ior

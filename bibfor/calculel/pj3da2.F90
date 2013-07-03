@@ -1,9 +1,9 @@
 subroutine pj3da2(ino2, geom2, i, geom1, tetr4,&
                   cobary, d2, volu)
     implicit none
-    include 'asterc/r8maem.h'
-    include 'asterfort/pj3da3.h'
-    include 'asterfort/pj3da4.h'
+#include "asterc/r8maem.h"
+#include "asterfort/pj3da3.h"
+#include "asterfort/pj3da4.h"
     real(kind=8) :: cobary(4), geom1(*), geom2(*), d2, volu
     integer :: ino2, i, tetr4(*)
 ! ----------------------------------------------------------------------

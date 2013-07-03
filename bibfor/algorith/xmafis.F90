@@ -2,14 +2,14 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
                   lisma)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/panbno.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/panbno.h"
     integer :: nxmafi, nmafis
     character(len=8) :: noma
     character(len=19) :: cnsln

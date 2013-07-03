@@ -68,24 +68,24 @@ subroutine conori(ma)
     implicit none
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/chkmsg.h'
-    include 'asterfort/conini.h'
-    include 'asterfort/contac.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/chkmsg.h"
+#include "asterfort/conini.h"
+#include "asterfort/contac.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: idum, ic, ifm, niv, ichk
     integer :: io8gco, nbgco, igco
     integer :: imigma, nbgma, igma

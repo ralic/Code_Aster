@@ -19,9 +19,9 @@ subroutine ckatrc(vr, xsi, coefck, ck)
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/routhc.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/routhc.h"
     real(kind=8) :: vr, xsi, coefck(1, 11), ck
 !
     integer :: ior

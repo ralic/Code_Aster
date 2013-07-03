@@ -34,15 +34,15 @@ subroutine facmtr(matin, matout, ier)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mtcopy.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/mtexis.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtcopy.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/mtexis.h"
+#include "asterfort/preres.h"
+#include "asterfort/u2mesg.h"
     character(len=19) :: matin, matout, matpre, solveu
     character(len=24) :: valk
     logical :: hplog

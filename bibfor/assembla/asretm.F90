@@ -1,9 +1,9 @@
 subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                   jsmdi, i1, i2)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/juveca.h'
+#include "jeveux.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/juveca.h"
     logical :: lmasym
     integer :: jtmp2, lgtmp2, nbterm, jsmhc, jsmdi, i1, i2
     integer :: ideb, ifin, imil

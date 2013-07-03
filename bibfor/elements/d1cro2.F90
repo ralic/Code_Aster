@@ -45,14 +45,14 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 ! OUT CIER : NOUVEAU CODE ERREUR
 ! OUT CDEPSP : NOUVEL INCREMENT DE DEF PLASTIQUE DANS LE REPERE ORTHO
 !
-    include 'asterfort/dfplgl.h'
-    include 'asterfort/dfuuss.h'
-    include 'asterfort/draac2.h'
-    include 'asterfort/fplass.h'
-    include 'asterfort/hplass.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/nmnet1.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfplgl.h"
+#include "asterfort/dfuuss.h"
+#include "asterfort/draac2.h"
+#include "asterfort/fplass.h"
+#include "asterfort/hplass.h"
+#include "asterfort/matmul.h"
+#include "asterfort/nmnet1.h"
+#include "asterfort/r8inir.h"
     integer :: bend, nbxx, i, j
     integer :: nmprox(2), cief, cier, zimat
 !

@@ -21,11 +21,11 @@ function nbelem(ligrlz, igrel)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jexnum.h"
     character(len=*) :: ligrlz
     integer :: igrel
 ! ----------------------------------------------------------------------

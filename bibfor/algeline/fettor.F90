@@ -37,11 +37,11 @@ subroutine fettor(option, infofe, rang, nbi, irg1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "blas/ddot.h"
     integer :: option, rang, nbi, irg1, irg, irp, irz, ifm
     character(len=24) :: infofe
 !

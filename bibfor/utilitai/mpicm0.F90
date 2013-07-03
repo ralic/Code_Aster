@@ -28,12 +28,12 @@ subroutine mpicm0(rang, nbproc)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterfort/comcou.h'
-    include 'asterfort/mpierr.h'
+#include "asterfort/comcou.h"
+#include "asterfort/mpierr.h"
     integer :: rang, nbproc
 !
 #ifdef _USE_MPI
-    include   'mpif.h'
+#include "mpif.h"
 ! DECLARATION VARIABLES LOCALES
     integer(kind=4) :: rang4, nbpro4, iermpi, mpicou
 !

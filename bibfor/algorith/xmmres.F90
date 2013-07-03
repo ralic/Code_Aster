@@ -19,31 +19,31 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xmafr1.h'
-    include 'asterfort/xmmred.h'
-    include 'asterfort/xxmmvd.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/conare.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/normev.h"
+#include "asterfort/vecini.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xmafr1.h"
+#include "asterfort/xmmred.h"
+#include "asterfort/xxmmvd.h"
+#include "blas/ddot.h"
     character(len=19) :: cnsinr
     character(len=19) :: veasse(*)
     character(len=19) :: depdel

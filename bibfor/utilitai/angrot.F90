@@ -25,11 +25,11 @@ subroutine angrot(v1, v2, axe, angle)
 !     ATTENTION L'ORDRE V1, V2 EST IMPORTANT POUR LE SIGNE DE ANGLE
 !     L'ANGLE RETOURNE EST COMPRIS ENTRE -PI ET PI (ATAN2)
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/angvec.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/angvec.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: v1(3), v2(3), angle, v1v2(3), nv3
     real(kind=8) :: verif(3), pscal, axe(3), axe2(3)
     real(kind=8) :: epsi

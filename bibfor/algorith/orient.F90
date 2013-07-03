@@ -34,18 +34,18 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/intet0.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pmppr.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/assert.h"
+#include "asterfort/intet0.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pmppr.h"
+#include "asterfort/r8inir.h"
 !
 !
 !-----------------------------------------------------------------------

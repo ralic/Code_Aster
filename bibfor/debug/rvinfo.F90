@@ -1,12 +1,12 @@
 subroutine rvinfo(ifm, iocc, i1, i2, c,&
                   sdchef)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: ifm, iocc, i1, i2
     character(len=1) :: c
     character(len=16) :: sdchef

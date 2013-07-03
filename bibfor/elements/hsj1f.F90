@@ -17,7 +17,7 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/jacbm1.h'
+#include "asterfort/jacbm1.h"
     integer :: intsn, kwgt
     real(kind=8) :: xr(*)
     real(kind=8) :: vectg(2, 3), vectt(3, 3), matj(3, 3), jm1(3, 3), epais, detj

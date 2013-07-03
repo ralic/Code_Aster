@@ -2,9 +2,9 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
                   option)
     implicit none
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
+#include "asterc/getexm.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
     character(len=*) :: mcf
     character(len=19) :: nch19
     character(len=16) :: option

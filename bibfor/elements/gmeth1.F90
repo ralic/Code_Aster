@@ -36,13 +36,13 @@ subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur,&
 !   GI      --> VALEUR DE GI
 ! ......................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/glegen.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/glegen.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nnoff, ndeg, iadrt3, i, j
     real(kind=8) :: xl, som, gthi(1), gs(1), gi(1)
     character(len=24) :: objcur

@@ -1,11 +1,11 @@
 subroutine cbsour(char, noma, ligrmo, ndim, fonree)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/casour.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/casour.h"
+#include "asterfort/copisd.h"
+#include "asterfort/u2mess.h"
     integer :: ndim
     character(len=4) :: fonree
     character(len=8) :: char, noma

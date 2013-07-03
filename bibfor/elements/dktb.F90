@@ -1,10 +1,10 @@
 subroutine dktb(carat3, igau, jacgau, bmat)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bcoqaf.h'
-    include 'asterfort/dktbf.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/elref5.h'
+#include "jeveux.h"
+#include "asterfort/bcoqaf.h"
+#include "asterfort/dktbf.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/elref5.h"
     integer :: igau
     real(kind=8) :: bmat(8, 1), carat3(*), jacgau
 ! ======================================================================

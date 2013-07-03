@@ -21,14 +21,14 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: optdez
     character(len=24) :: nomlis
     character(len=4) :: typdec

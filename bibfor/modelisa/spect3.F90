@@ -43,7 +43,7 @@ function spect3(x, a, b, f, tol,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     interface
     function f(xx, y, xlc, vitn, rhoe,&
                defm, nbp, im, jm)

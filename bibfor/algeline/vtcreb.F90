@@ -36,13 +36,13 @@ subroutine vtcreb(champz, numedz, basez, typcz, neq)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/vtcre1.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/vtcre1.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: champz, numedz, basez, typcz
     integer :: neq
 !

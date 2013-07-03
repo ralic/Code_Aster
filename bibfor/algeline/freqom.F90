@@ -1,6 +1,6 @@
 function freqom(omega)
     implicit none
-    include 'asterc/r8depi.h'
+#include "asterc/r8depi.h"
     real(kind=8) :: freqom, omega
 !     ------------------------------------------------------------------
 ! ======================================================================

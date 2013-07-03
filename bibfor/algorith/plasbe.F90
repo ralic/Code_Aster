@@ -148,25 +148,25 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/iisnan.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/betcvx.h'
-    include 'asterfort/betimp.h'
-    include 'asterfort/betjpl.h'
-    include 'asterfort/betmat.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/lcdedi.h'
-    include 'asterfort/lcdehy.h'
-    include 'asterfort/lcelin.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcplbe.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/iisnan.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/betcvx.h"
+#include "asterfort/betimp.h"
+#include "asterfort/betjpl.h"
+#include "asterfort/betmat.h"
+#include "asterfort/codent.h"
+#include "asterfort/lcdedi.h"
+#include "asterfort/lcdehy.h"
+#include "asterfort/lcelin.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcplbe.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imat, ndt, ndi, nr, nvi
     integer :: itmax, icomp
     integer :: nmat, irtet, irteti, nseui4

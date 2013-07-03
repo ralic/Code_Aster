@@ -22,28 +22,28 @@ subroutine op0155()
 ! ----------------------------------------------------------------------
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedup1.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/w155ce.h'
-    include 'asterfort/w155ex.h'
-    include 'asterfort/w155mx.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/w155ce.h"
+#include "asterfort/w155ex.h"
+#include "asterfort/w155mx.h"
     integer :: ifm, niv, n0, iret, jordr, nbordr, ie, nuordr
     integer :: i, j, jnompa, iadin, iadou, nbac, nbpa, nbpara
     character(len=1) :: k1bid

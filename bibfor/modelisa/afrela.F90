@@ -80,18 +80,18 @@ subroutine afrela(coefr, coefc, ddl, noeud, ndim,&
 !.========================= DEBUT DES DECLARATIONS ====================
 !
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crelrl.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/crelrl.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: coefr(nbterm), dble, dimag, epsi
     real(kind=8) :: direct(3, nbterm), betar2
 !

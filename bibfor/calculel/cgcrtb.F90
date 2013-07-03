@@ -3,8 +3,8 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
 !
     implicit none
 !
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
     integer :: nbprup
     logical :: lmelas, lmoda
     character(len=8) :: table, typrup(nbprup), typfis

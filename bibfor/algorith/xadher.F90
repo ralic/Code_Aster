@@ -21,10 +21,10 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/utbtab.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
+#include "asterfort/matini.h"
+#include "asterfort/utbtab.h"
     integer :: algofr
     real(kind=8) :: p(3, 3), saut(3), lamb1(3), cstafr, cpenfr, pboul(3)
     real(kind=8) :: vitang(3), ptknp(3, 3), ik(3, 3), kn(3, 3)

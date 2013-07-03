@@ -1,12 +1,12 @@
 subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                   basemo, typref, typbas, tousno, multap)
     implicit   none
-    include 'asterc/getvtx.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvtx.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nbcham, itresu(*), nfonct
     character(len=8) :: basemo
     character(len=16) :: typea(*), typbas(*)

@@ -4,8 +4,8 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
                   conv, fsauv)
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/envdep.h'
-    include 'asterfort/recfor.h'
+#include "asterfort/envdep.h"
+#include "asterfort/recfor.h"
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*)
     real(kind=8) :: dplmod(nbpal, nbmode, *), dt, dtsto, tcf
     real(kind=8) :: vrotat, conv

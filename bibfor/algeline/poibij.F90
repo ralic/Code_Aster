@@ -50,16 +50,16 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm,&
 !                              DECOMPOSES SUR LA BASE DES MODES EN AIR
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/bmocca.h'
-    include 'asterfort/cfrott.h'
-    include 'asterfort/cripoi.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/bmocca.h"
+#include "asterfort/cfrott.h"
+#include "asterfort/cripoi.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: npv
     real(kind=8) :: vabs(npv), geom(9), fsvr(7)
     integer :: nbm, vicoq(nbm)

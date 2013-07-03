@@ -19,7 +19,7 @@ subroutine granac(fami, kpg, ksp, icdmat, materi,&
 ! ======================================================================
 !     RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT
     implicit none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: icdmat, kpg, ksp, nbpar, codret
     real(kind=8) :: irram, irrap, tm, tp, valres
     real(kind=8) :: depsgm, depsgp, depsgr, valpar(2)

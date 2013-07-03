@@ -44,11 +44,11 @@ subroutine betcvx(nmat, mater, sig, vind, vinf,&
 !                     LOIS DE COMPORTEMENT
 !       VAR NSEUIL :  SEUIL ELASTIQUE PRECEDENT / NOUVEAU SEUIL CALCULE
 !       ----------------------------------------------------------------
-    include 'asterfort/betfpp.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/betfpp.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lchydr.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/u2mess.h"
     integer :: nvi, nmat, nseuil
     real(kind=8) :: pc, pt, sig(6), dev(6), vind(*), vinf(*)
     real(kind=8) :: mater(nmat, 2), elgeom(*)

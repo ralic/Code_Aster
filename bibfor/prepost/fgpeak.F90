@@ -1,10 +1,10 @@
 subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: nomfon
     real(kind=8) :: pseuil, valpoi(*), coemul
     integer :: nbpoin

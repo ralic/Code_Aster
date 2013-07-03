@@ -1,23 +1,23 @@
 subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                   materi, codi)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/isnnem.h'
-    include 'asterfort/alfint.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/tbexlr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/isnnem.h"
+#include "asterfort/alfint.h"
+#include "asterfort/codent.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/tbexlr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: chmat, materi
     character(len=19) :: codi
     integer :: indmat, nbmat, imate, igrp

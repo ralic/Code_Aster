@@ -25,27 +25,27 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmconv.h'
-    include 'asterfort/ndiner.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmequi.h'
-    include 'asterfort/nmfeti.h'
-    include 'asterfort/nmigno.h'
-    include 'asterfort/nmimre.h'
-    include 'asterfort/nmpcin.h'
-    include 'asterfort/nmrede.h'
-    include 'asterfort/nmvcmx.h'
-    include 'asterfort/rescmp.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmconv.h"
+#include "asterfort/ndiner.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmequi.h"
+#include "asterfort/nmfeti.h"
+#include "asterfort/nmigno.h"
+#include "asterfort/nmimre.h"
+#include "asterfort/nmpcin.h"
+#include "asterfort/nmrede.h"
+#include "asterfort/nmvcmx.h"
+#include "asterfort/rescmp.h"
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico, resoco

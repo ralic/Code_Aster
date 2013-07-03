@@ -4,18 +4,18 @@ subroutine irdrsr(ifi, nbno, desc, nec, dg,&
                   nbcmp, ncmps, nocmpl)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/ecrtes.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/irgags.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/lxliis.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/ecrtes.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/irgags.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, nbno, desc(*), nec, dg(*), ncmpmx
     integer :: ir, numnoe(*), nbcmp, ncmps(*), ncmp
     real(kind=8) :: vale(*)

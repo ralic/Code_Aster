@@ -20,17 +20,17 @@ subroutine op0090()
 ! person_in_charge: mathieu.courtois at edf.fr
 !     OPERATEUR "RECU_FONCTION"
 !     ------------------------------------------------------------------
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/chpve2.h'
-    include 'asterfort/rfbefl.h'
-    include 'asterfort/rfinte.h'
-    include 'asterfort/rfnapp.h'
-    include 'asterfort/rfnoch.h'
-    include 'asterfort/rfrcha.h'
-    include 'asterfort/rfresu.h'
-    include 'asterfort/rfrgen.h'
-    include 'asterfort/rftabl.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/chpve2.h"
+#include "asterfort/rfbefl.h"
+#include "asterfort/rfinte.h"
+#include "asterfort/rfnapp.h"
+#include "asterfort/rfnoch.h"
+#include "asterfort/rfrcha.h"
+#include "asterfort/rfresu.h"
+#include "asterfort/rfrgen.h"
+#include "asterfort/rftabl.h"
     integer :: nreg, nrb, nch, ng, ier
     integer :: nta, nres, nc, nna
     character(len=8) :: k8b

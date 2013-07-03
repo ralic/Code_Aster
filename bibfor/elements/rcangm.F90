@@ -1,13 +1,13 @@
 subroutine rcangm(ndim, coor, angmas)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utrcyl.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utrcyl.h"
     integer :: ndim
     real(kind=8) :: angmas(7), coor(3)
 ! ======================================================================

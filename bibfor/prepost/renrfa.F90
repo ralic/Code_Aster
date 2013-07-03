@@ -1,14 +1,14 @@
 subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fointe.h'
-    include 'asterfort/fonbpa.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/fointe.h"
+#include "asterfort/fonbpa.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: nomfor
     integer :: icodre
     real(kind=8) :: valgrd, nrupt

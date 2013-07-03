@@ -7,7 +7,7 @@ subroutine mdarnl(isto1, ipas, t, dt, nbmode,&
                   vint, iredst, dredst, irevst, drevst)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/mdarch.h'
+#include "asterfort/mdarch.h"
     integer :: iorsto(*), iredst(*), saredi(*), irevst(*), sarevi(*)
     integer :: ichost(*)
     real(kind=8) :: depgen(*), vitgen(*), accgen(*), depsto(*), vitsto(*)

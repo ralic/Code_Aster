@@ -17,27 +17,27 @@ subroutine op0036()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ----- OPERATEUR CREA_TABLE              --------------------------
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ctresu.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/tbajco.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsv.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ctresu.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/tbajco.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsv.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, ibid, ni, nr, nk, i, j, ir, jvale, jp, ndim, jt
     integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jprol, jd
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jtrav5, npar

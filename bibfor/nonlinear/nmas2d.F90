@@ -24,14 +24,14 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calsta.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/dfda2d.h'
-    include 'asterfort/iniqs4.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
+#include "jeveux.h"
+#include "asterfort/calsta.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfda2d.h"
+#include "asterfort/iniqs4.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9), npgs
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami

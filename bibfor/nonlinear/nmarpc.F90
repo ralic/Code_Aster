@@ -19,13 +19,13 @@ subroutine nmarpc(result, sdener, numrep, instan)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbajli.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbajli.h"
     real(kind=8) :: instan
     character(len=8) :: result
     character(len=19) :: sdener

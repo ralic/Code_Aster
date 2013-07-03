@@ -36,7 +36,7 @@ subroutine depsh6(loop, bloc, ueloc, deps, d)
 !      AVEC EVENTUELLEMENT LES TERMES DU 2EME  ORDRE
 !
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: loop, i
     real(kind=8) :: bloc(6, 18), ueloc(3, 6)
     real(kind=8) :: d(9), deps(6), utemp(18)

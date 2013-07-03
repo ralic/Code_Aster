@@ -23,7 +23,7 @@ subroutine lcdetf(ndim, fr, det)
 ! OUT DETF    : DETERMINANT
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: fr(3, 3), det
 !

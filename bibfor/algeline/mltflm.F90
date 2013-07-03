@@ -18,9 +18,9 @@ subroutine mltflm(nb, n, p, front, adper,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/mltfld.h'
-    include 'asterfort/mltflj.h'
-    include 'blas/dgemv.h'
+#include "asterfort/mltfld.h"
+#include "asterfort/mltflj.h"
+#include "blas/dgemv.h"
     integer :: n, p, adper(*), ad(*), ier
     real(kind=8) :: front(*), t1(*), eps, c(nb, nb, *), alpha, beta
     integer :: nb, i, kb, adk, adki, decal, l

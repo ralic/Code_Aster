@@ -19,17 +19,17 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/c3drep.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/mpglcp.h'
-    include 'asterfort/typele.h'
+#include "asterfort/assert.h"
+#include "asterfort/c3drep.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/matrot.h"
+#include "asterfort/mpglcp.h"
+#include "asterfort/typele.h"
     integer :: jcesdd, numma, jrepe, jconx2, jconx1, jcoord
     integer :: ialpha, ibeta, iepais, jalpha, adcar1(3), adcar2(3)
     integer :: jbeta, jgamma, codret, ino

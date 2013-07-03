@@ -20,10 +20,10 @@ subroutine lcdrpr(typmod, option, imate, compor, sigm,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/dpmate.h'
-    include 'asterfort/dpvpdi.h'
-    include 'asterfort/lcdpli.h'
-    include 'asterfort/lcdppa.h'
+#include "asterfort/dpmate.h"
+#include "asterfort/dpvpdi.h"
+#include "asterfort/lcdpli.h"
+#include "asterfort/lcdppa.h"
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
     real(kind=8) :: sigm(6), td, tf, tr

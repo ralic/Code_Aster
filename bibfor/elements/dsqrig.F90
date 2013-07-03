@@ -1,30 +1,30 @@
 subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
                   ener)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/bsthpl.h'
-    include 'asterfort/dsqbfa.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dsqcis.h'
-    include 'asterfort/dsqdi2.h'
-    include 'asterfort/dsqdis.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxhmft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/dxqloc.h'
-    include 'asterfort/dxqloe.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utctab.h'
-    include 'asterfort/utdtab.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/bsthpl.h"
+#include "asterfort/dsqbfa.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dsqcis.h"
+#include "asterfort/dsqdi2.h"
+#include "asterfort/dsqdis.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxhmft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/dxqloc.h"
+#include "asterfort/dxqloe.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utctab.h"
+#include "asterfort/utdtab.h"
+#include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*), ener(*)
     character(len=16) :: option, nomte
 ! ======================================================================

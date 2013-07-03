@@ -1,16 +1,16 @@
 subroutine porea1(nno, nc, deplm, deplp, geom,&
                   gamma, vecteu, pgl, xl, angp)
     implicit    none
-    include 'jeveux.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/gareac.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/gareac.h"
+#include "asterfort/matrot.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     integer :: nno, nc
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
 !

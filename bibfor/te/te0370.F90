@@ -27,11 +27,11 @@ subroutine te0370(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
     character(len=8) :: fami
     character(len=16) :: nomte, option
     real(kind=8) :: a(2, 2, 27, 27)

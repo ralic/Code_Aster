@@ -24,15 +24,15 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmchht.h'
-    include 'asterfort/nmvcex.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchht.h"
+#include "asterfort/nmvcex.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, sdnume
     character(len=19) :: lischa

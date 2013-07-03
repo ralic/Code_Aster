@@ -18,20 +18,20 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/typddl.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/typddl.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: masse, raide
     integer :: neq, nblagr, nbcine, neqact, dlagr(neq), dbloq(neq), ier
 !

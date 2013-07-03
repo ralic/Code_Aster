@@ -2,17 +2,17 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
                   riggen, descr, fexgen, lamor, amogen,&
                   desca, work1, depgen, vitgen, accgen)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rrlds.h'
-    include 'asterfort/trlds.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rrlds.h"
+#include "asterfort/trlds.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: neqgen, descm, descr, desca
     real(kind=8) :: masgen(*), riggen(*), fexgen(*), amogen(*)
     real(kind=8) :: depgen(*), vitgen(*), accgen(*)

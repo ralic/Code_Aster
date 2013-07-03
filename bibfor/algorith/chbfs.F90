@@ -29,10 +29,10 @@ subroutine chbfs(sig, x1, x2, dfds)
 !                             S    = (3/2(D-X1-X2) (D-X1-X2))
 !                       ET    D    = SIG - 1/3 TR(SIG) I
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsv.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsv.h"
     integer :: n, nd
     real(kind=8) :: dfds(6), sig(6), x1(6), x2(6), dev(6), s
     common /tdim/   n , nd

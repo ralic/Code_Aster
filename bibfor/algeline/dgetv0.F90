@@ -144,13 +144,13 @@ subroutine dgetv0(ido, bmat, itry, initv, n,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/dvout.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dgemv.h'
-    include 'blas/dlarnv.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterfort/dvout.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dgemv.h"
+#include "blas/dlarnv.h"
+#include "blas/dnrm2.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

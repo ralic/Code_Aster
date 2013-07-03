@@ -2,22 +2,22 @@ subroutine memam2(option, modele, nchar, lchar, mate,&
                   cara, compor, exitim, time, chacce,&
                   vecel, basez, ligrez)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecham.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
     integer :: nchar
     real(kind=8) :: time
     character(len=8) :: lchar(*)

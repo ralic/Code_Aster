@@ -22,8 +22,8 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/zbinte.h'
+#include "asterc/r8prem.h"
+#include "asterfort/zbinte.h"
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
     real(kind=8) :: rhom, rho, rhoopt
     real(kind=8) :: fm, f, fopt, fcvg

@@ -19,26 +19,26 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/nmvgme.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/copisd.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/nmvgme.h"
+#include "asterfort/reajre.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: mate, ligrez, vecelz, depmoz, depdez, vitez
     character(len=19) :: vecele
     character(len=24) :: modele, carele, charge, infcha, compor, carcri

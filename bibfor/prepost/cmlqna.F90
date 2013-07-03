@@ -20,14 +20,14 @@ subroutine cmlqna(nbma, nbno, lima, connez, typema,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     integer :: nbma, nbno, lima(*), mxar, mxnomi, typema(*)
     integer :: milieu(2, mxar, nbno), nomima(12, nbma), nomipe(2, *), nbtyma
     integer :: defare(2, 0:12, nbtyma)

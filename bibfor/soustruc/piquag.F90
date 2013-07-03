@@ -5,19 +5,19 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
                   nogrno, typsou)
 ! aslint: disable=W1504
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/piqall.h'
-    include 'asterfort/piqpiq.h'
-    include 'asterfort/piqpla.h'
-    include 'asterfort/piqrot.h'
-    include 'asterfort/piqsym.h'
+#include "asterc/r8pi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/piqall.h"
+#include "asterfort/piqpiq.h"
+#include "asterfort/piqpla.h"
+#include "asterfort/piqrot.h"
+#include "asterfort/piqsym.h"
     integer :: nt
     real(kind=8) :: epsi, rip, rep, rit, ret, bet, eso, hso, h2, h3, l3, l4, l5
     real(kind=8) :: l6, tetaf, xmax, ymax, lmax

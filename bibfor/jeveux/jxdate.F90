@@ -1,6 +1,6 @@
 subroutine jxdate(idate)
     implicit none
-    include 'asterc/datetoi.h'
+#include "asterc/datetoi.h"
     integer :: idate
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

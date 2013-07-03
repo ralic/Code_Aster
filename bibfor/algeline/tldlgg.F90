@@ -19,12 +19,12 @@ subroutine tldlgg(istop, lmat, ildeb, ilfin, ndigit,&
 ! ======================================================================
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/tldlg3.h'
-    include 'asterfort/uttcpu.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/tldlg3.h"
+#include "asterfort/uttcpu.h"
     character(len=8) :: renum
     character(len=16) :: metres
     character(len=19) :: noma19, solveu

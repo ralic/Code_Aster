@@ -2,18 +2,18 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
                   vinf, dsde)
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/irrfss.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/mgauss.h'
+#include "asterc/r8prem.h"
+#include "asterfort/irrfss.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/mgauss.h"
     character(len=8) :: model
     integer :: nmat
     real(kind=8) :: mater(nmat, 2), dsde(6, 6), sigf(6)

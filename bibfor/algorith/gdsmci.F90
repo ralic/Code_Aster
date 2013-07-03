@@ -18,9 +18,9 @@ subroutine gdsmci(fm, df, em)
 ! ======================================================================
 !
     implicit none
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     real(kind=8) :: fm(3, 3), df(3, 3), em(6)
 !
 ! ----------------------------------------------------------------------

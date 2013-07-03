@@ -1,30 +1,30 @@
 subroutine cafond(char, ligrmo, ialloc, noma, fonree)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/foc1su.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/peair1.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/alcart.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/foc1su.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/nocart.h"
+#include "asterfort/peair1.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: ialloc
     character(len=4) :: fonree
     character(len=8) :: char, noma

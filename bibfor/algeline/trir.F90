@@ -32,9 +32,9 @@ subroutine trir(clef, tab, ntab, n)
     implicit none
 !
 ! --- PARAMETRES
-    include 'asterfort/assert.h'
-    include 'asterfort/trinsr.h'
-    include 'asterfort/trrapr.h'
+#include "asterfort/assert.h"
+#include "asterfort/trinsr.h"
+#include "asterfort/trrapr.h"
     integer :: blocmx, npile
     parameter (blocmx = 14)
     parameter (npile = 59)

@@ -38,9 +38,9 @@ subroutine contac(macor, nbcor, macoc, nbcoc, lface,&
 !
 !     ------------------------------------------------------------------
 !
-    include 'asterfort/conhex.h'
-    include 'asterfort/conpen.h'
-    include 'asterfort/conqua.h'
+#include "asterfort/conhex.h"
+#include "asterfort/conpen.h"
+#include "asterfort/conqua.h"
     character(len=8) :: ktyc, ktyr
     character(len=8) :: macor(nbcor+2), macoc(nbcoc+2), ma
 !

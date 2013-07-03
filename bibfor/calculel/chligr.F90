@@ -20,21 +20,21 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/chvepg.h'
-    include 'asterfort/chveva.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/chvepg.h"
+#include "asterfort/chveva.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: ligr2z, chel2z, chel1z, base2, optioz, paramz
 !
 ! ----------------------------------------------------------------------

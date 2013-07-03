@@ -1,11 +1,11 @@
 subroutine c3drep(nomte, epais, alpha, beta, coord,&
                   numnoe, pgl)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/vdrep2.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/vdrep2.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     integer :: numnoe
     character(len=16) :: nomte
     real(kind=8) :: epais, alpha, beta, coord(3, 9), pgl(3, 3)

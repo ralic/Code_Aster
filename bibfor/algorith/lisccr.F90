@@ -18,11 +18,11 @@ subroutine lisccr(lischa, nchar, base)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: lischa
     integer :: nchar
     character(len=1) :: base

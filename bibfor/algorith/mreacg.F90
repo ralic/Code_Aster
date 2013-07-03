@@ -19,11 +19,11 @@ subroutine mreacg(noma, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vtgpld.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vtgpld.h"
     character(len=8) :: noma
     character(len=24) :: resoco
 !

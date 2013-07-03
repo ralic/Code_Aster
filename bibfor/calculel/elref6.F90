@@ -2,16 +2,16 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
                   nnos, npg, ipoids, jcoopg, ivf,&
                   idfde, jdfd2, jgano)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/indk32.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/elraca.h"
+#include "asterfort/indk32.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: elrz, nomtz, famiz
     integer :: ndim, nno, nnos, npg, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
 ! ======================================================================

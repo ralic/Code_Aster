@@ -19,12 +19,12 @@ subroutine cazouu(motfac, nzoco, nommcz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/getmjm.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getmjm.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: motfac
     integer :: nzoco
     character(len=*) :: nommcz

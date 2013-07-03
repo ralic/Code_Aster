@@ -16,13 +16,13 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/dxbmat.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvlg.h'
+#include "jeveux.h"
+#include "asterfort/btsig.h"
+#include "asterfort/dxbmat.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvlg.h"
     character(len=16) :: nomte
     real(kind=8) :: xyzl(3, 1), pgl(3, 1)
     real(kind=8) :: sigma(1), bsigma(1)

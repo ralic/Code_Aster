@@ -19,14 +19,14 @@ subroutine nmtime(sdtime, phasez, timerz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmrtim.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmrtim.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     character(len=24) :: sdtime
     character(len=*) :: phasez
     character(len=*) :: timerz

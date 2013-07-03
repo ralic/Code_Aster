@@ -28,7 +28,7 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
 ! IN  : DPLREV : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE REV
 ! IN  : FONREV : FONCTIONS DE NON-LINEARITE
 ! ----------------------------------------------------------------------
-    include 'asterfort/fointe.h'
+#include "asterfort/fointe.h"
     integer :: ier, icomp, nbmode, nbrevi
     real(kind=8) :: force, vitess, vitgen(*), fexgen(*)
     real(kind=8) :: dplrev(nbrevi, nbmode, *)

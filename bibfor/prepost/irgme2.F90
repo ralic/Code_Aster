@@ -2,14 +2,14 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                   tabl, tabv, partie, jtype, nbno,&
                   listno, nbcmp, ifi, iadmax)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
     integer :: listno(*), nbcmp, ifi, ima, nbord2, iadmax, jtype
     character(len=24) :: connex

@@ -19,25 +19,25 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liglma.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/w155ma.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liglma.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/w155ma.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: carele
     character(len=3) :: nicou
     character(len=16) :: motfac

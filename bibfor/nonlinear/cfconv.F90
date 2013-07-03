@@ -20,19 +20,19 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfcgeo.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmimci.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmimcr.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmrvai.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfcgeo.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmrvai.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco, sdimpr, sderro, sdstat
     character(len=19) :: solalg(*)

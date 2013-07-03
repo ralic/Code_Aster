@@ -37,12 +37,12 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
 !          VINF   :  VARIABLES INTERNES A T+DT
 !     OUT  IRET   :  CODE RETOUR
 !     ----------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), icp, ndim, iret, ifl
     integer :: indfa, nuecou
     integer :: nbphas, ifa, indpha, iphas, nbsys, nsfv, nbfsys

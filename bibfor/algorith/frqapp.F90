@@ -2,9 +2,9 @@ subroutine frqapp(dt, neq, dep1, dep2, acc1,&
                   acc2, vmin, freq)
 !
     implicit none
-    include 'asterc/r8depi.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
+#include "asterc/r8depi.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
     integer :: i
     real(kind=8) :: dep1(*), dep2(*), acc1(*), acc2(*), vmin(*)
     real(kind=8) :: freq, dt, a, b, temp

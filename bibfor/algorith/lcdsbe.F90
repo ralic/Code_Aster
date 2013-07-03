@@ -18,11 +18,11 @@ subroutine lcdsbe(fami, ndim, typmod, imate, compor,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/bptobg.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/lceib1.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/bptobg.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/lceib1.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     character(len=*) :: fami
     character(len=8) :: typmod(2)
     character(len=16) :: option, compor(*)

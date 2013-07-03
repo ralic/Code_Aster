@@ -20,14 +20,14 @@ subroutine te0201(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nmfi2d.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'blas/dcopy.h'
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmfi2d.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "blas/dcopy.h"
     character(len=16) :: nomte, option
 !
 !-----------------------------------------------------------------------

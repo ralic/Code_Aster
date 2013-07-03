@@ -19,10 +19,10 @@ subroutine numddl(nu, base, nbmat, tlimat, method)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/nueffe.h'
-    include 'asterfort/numoch.h'
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/nueffe.h"
+#include "asterfort/numoch.h"
     character(len=2) :: base
     character(len=*) :: nu, tlimat(*), method
     integer :: nbmat

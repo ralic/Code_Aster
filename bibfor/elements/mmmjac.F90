@@ -20,11 +20,11 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/sumetr.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/subaco.h"
+#include "asterfort/sumetr.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: alias
     integer :: jgeom
     real(kind=8) :: ff(9), dff(2, 9)

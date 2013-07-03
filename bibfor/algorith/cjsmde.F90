@@ -39,16 +39,16 @@ subroutine cjsmde(mod, crit, mater, nvi, epsd,&
 !          EPSCON   :  VALEUR ERR FINALE
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/cjside.h'
-    include 'asterfort/cjsjde.h'
-    include 'asterfort/cjsncn.h'
-    include 'asterfort/cjsncv.h'
-    include 'asterfort/cjsnor.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrvn.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/cjside.h"
+#include "asterfort/cjsjde.h"
+#include "asterfort/cjsncn.h"
+#include "asterfort/cjsncv.h"
+#include "asterfort/cjsnor.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrvn.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/mgauss.h"
     integer :: ndt, ndi, nvi, nr, nmod
     parameter ( nmod = 14 )
     integer :: iter, niter, iret

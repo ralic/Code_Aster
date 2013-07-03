@@ -19,15 +19,15 @@ subroutine nmsigi(ligrmo, compor, sigini)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterfort/calcul.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=24) :: ligrmo, compor
     character(len=19) :: sigini
 !

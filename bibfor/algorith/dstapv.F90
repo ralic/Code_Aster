@@ -24,12 +24,12 @@ subroutine dstapv(nbpt, d, t, dmin, dmax,&
 !
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/trapez.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/trapez.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: d(*), t(*), dmoy, detyp, drms, dmax, dmin, sd, sde, sd2
 !
 !

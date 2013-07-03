@@ -18,9 +18,9 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/assert.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/vecini.h"
     character(len=8) :: elrefp
     integer :: nnop, ndim
     real(kind=8) :: coor(ndim*nnop)

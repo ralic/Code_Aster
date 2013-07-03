@@ -1,19 +1,19 @@
 subroutine gilir2(nfic, niv, ndim, nbobo)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/gicnx2.h'
-    include 'asterfort/gidoma.h'
-    include 'asterfort/gilig0.h'
-    include 'asterfort/gilig1.h'
-    include 'asterfort/gilig2.h'
-    include 'asterfort/gilig3.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/gicnx2.h"
+#include "asterfort/gidoma.h"
+#include "asterfort/gilig0.h"
+#include "asterfort/gilig1.h"
+#include "asterfort/gilig2.h"
+#include "asterfort/gilig3.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nfic, niv, ndim, nbobo
 ! ----------------------------------------------------------------------
 ! ======================================================================

@@ -20,13 +20,13 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerop2.h'
-    include 'blas/ddot.h'
+#include "asterc/r8vide.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerop2.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod(*)
     character(len=16) :: compor
     integer :: ndim, mate

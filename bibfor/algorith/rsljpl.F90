@@ -31,17 +31,17 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !           VIN    :  VARIABLES INTERNES
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcnrte.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsomh.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/rsliso.h'
+#include "asterfort/lchydr.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcnrte.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsomh.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/rsliso.h"
     integer :: kpg, ksp, imat, nmat
 !
     real(kind=8) :: v1(6), v2(6), i2(6)

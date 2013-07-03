@@ -19,52 +19,52 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cordd2.h'
-    include 'asterfort/corddl.h'
-    include 'asterfort/crelil.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fettsd.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jaexin.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mpicm2.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/nbno.h'
-    include 'asterfort/parti0.h'
-    include 'asterfort/ssvalv.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cordd2.h"
+#include "asterfort/corddl.h"
+#include "asterfort/crelil.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/digdel.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/fettsd.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jaexin.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mpicm2.h"
+#include "asterfort/nbec.h"
+#include "asterfort/nbno.h"
+#include "asterfort/parti0.h"
+#include "asterfort/ssvalv.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: vec, tlivec(*), vecpro, base, nu
     character(len=4) :: motcle
     integer :: nbvec, type

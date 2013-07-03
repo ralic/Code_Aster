@@ -1,13 +1,13 @@
 subroutine xprali(p1, p2, vnele, nelcou, poifis,&
                   trifis, libre, vin)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
     real(kind=8) :: vnele(3), vin(3)
     character(len=19) :: poifis, trifis
     logical :: libre

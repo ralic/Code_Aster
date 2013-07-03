@@ -36,17 +36,17 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 !     OUT  R      :  VECTEUR RESIDU DU SYSTEME NL A RESOUDRE
 !          IRET   :  CODE RETOUR (>0 -> PB)
 !     ----------------------------------------------------------------
-    include 'asterfort/hujddd.h'
-    include 'asterfort/hujksi.h'
-    include 'asterfort/hujpic.h'
-    include 'asterfort/hujprc.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/hujpxd.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/hujddd.h"
+#include "asterfort/hujksi.h"
+#include "asterfort/hujpic.h"
+#include "asterfort/hujprc.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/hujpxd.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: mod
     real(kind=8) :: mater(nmat, 2), deps(6), yd(nr), yf(nr), vind(nvi), r(*)
     integer :: indi(7), nr, nvi, iret, nmat

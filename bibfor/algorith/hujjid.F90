@@ -49,21 +49,21 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 !                           DANS STAT_NON_LINE, IL Y A SUBDIVISION
 ! =====================================================================
 ! =====================================================================
-    include 'jeveux.h'
-    include 'asterfort/hujddd.h'
-    include 'asterfort/hujksi.h'
-    include 'asterfort/hujpic.h'
-    include 'asterfort/hujprc.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/hujpxd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/hujddd.h"
+#include "asterfort/hujksi.h"
+#include "asterfort/hujpic.h"
+#include "asterfort/hujprc.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/hujpxd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nmod, i, j, k, kk, l
     integer :: indi(7), nbmeca, iret, iadzi, iazk24
     integer :: ifm, niv, nbmect

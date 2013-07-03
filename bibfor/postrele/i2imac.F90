@@ -25,25 +25,25 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
 !
 !--------------ENTREES----------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/i2appm.h'
-    include 'asterfort/i2fini.h'
-    include 'asterfort/i2iacs.h'
-    include 'asterfort/i2nbrf.h'
-    include 'asterfort/i2rgel.h'
-    include 'asterfort/i2rgma.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/i2appm.h"
+#include "asterfort/i2fini.h"
+#include "asterfort/i2iacs.h"
+#include "asterfort/i2nbrf.h"
+#include "asterfort/i2rgel.h"
+#include "asterfort/i2rgma.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     integer :: nbm, numail(*)
     real(kind=8) :: xc, yc, r, epsi, alfinf, alfsup
     character(len=24) :: conec, coord, typ

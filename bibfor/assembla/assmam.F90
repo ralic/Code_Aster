@@ -7,53 +7,53 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 ! aslint: disable=W1501
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/cheksd.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assma1.h'
-    include 'asterfort/assma2.h'
-    include 'asterfort/assma3.h'
-    include 'asterfort/crelil.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fettsd.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jaexin.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedbg2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/nbno.h'
-    include 'asterfort/parti0.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/typmat.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerobj.h'
+#include "asterc/cheksd.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/assma1.h"
+#include "asterfort/assma2.h"
+#include "asterfort/assma3.h"
+#include "asterfort/crelil.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/digdel.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fettsd.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jaexin.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedbg2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/nbec.h"
+#include "asterfort/nbno.h"
+#include "asterfort/parti0.h"
+#include "asterfort/teattr.h"
+#include "asterfort/typmat.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerobj.h"
     character(len=*) :: base, matas, tlimat(*), nu
     integer :: nbmat, itysca
     real(kind=8) :: licoef(*)

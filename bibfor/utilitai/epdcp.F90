@@ -29,7 +29,7 @@ subroutine epdcp(tc, td, sigi, epsi)
 !
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/jacobi.h'
+#include "asterfort/jacobi.h"
     real(kind=8) :: tc(6), td(6), tr(6), tu(6), vecp(3, 3), vecint(3)
     real(kind=8) :: equi(3), sigi, epsi, jacaux(3), t(3, 3)
 !

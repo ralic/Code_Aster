@@ -19,10 +19,10 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/writdr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux_private.h"
+#include "asterc/writdr.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesg.h"
     integer :: ic, iaddi, iadmo, lso, idco, idos
 ! ----------------------------------------------------------------------
 ! ECRITURE DISQUE D'UN OU PLUSIEURS ENREGISTREMENTS SUR LE FICHIER

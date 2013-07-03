@@ -2,14 +2,14 @@ subroutine xajpmi(list, long, ipt, cpt, newpt,&
                   longar)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/tecael.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
+#include "asterfort/tecael.h"
     integer :: long, ipt, cpt
     real(kind=8) :: newpt(3), longar, list(*)
 !

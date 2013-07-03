@@ -19,11 +19,11 @@ subroutine impsdr(sdcolo, valk, valr, vali)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/obseti.h'
-    include 'asterfort/obsetk.h'
-    include 'asterfort/obsetr.h'
+#include "asterfort/assert.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/obseti.h"
+#include "asterfort/obsetk.h"
+#include "asterfort/obsetr.h"
     character(len=24) :: sdcolo
     character(len=*) :: valk
     real(kind=8) :: valr

@@ -19,32 +19,32 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
-    include 'jeveux.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/apalmc.h'
-    include 'asterfort/apalmd.h'
-    include 'asterfort/apksp.h'
-    include 'asterfort/apmamc.h'
-    include 'asterfort/apmamd.h'
-    include 'asterfort/appcpr.h'
-    include 'asterfort/appcrs.h'
-    include 'asterfort/apsolu.h'
-    include 'asterfort/apvsmb.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/csmbgg.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrconl.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/matfpe.h"
+#include "asterfort/apalmc.h"
+#include "asterfort/apalmd.h"
+#include "asterfort/apksp.h"
+#include "asterfort/apmamc.h"
+#include "asterfort/apmamd.h"
+#include "asterfort/appcpr.h"
+#include "asterfort/appcrs.h"
+#include "asterfort/apsolu.h"
+#include "asterfort/apvsmb.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/csmbgg.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrconl.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: action
     integer :: kptsc
     real(kind=8) :: rsolu(*)

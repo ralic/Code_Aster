@@ -2,11 +2,11 @@ subroutine i3qpsp(epsi, k, f, sgt, coorsm,&
                   res, nbpt)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3crad.h'
-    include 'asterfort/i3crqp.h'
-    include 'asterfort/i3pdm2.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/i3crad.h"
+#include "asterfort/i3crqp.h"
+#include "asterfort/i3pdm2.h"
+#include "asterfort/u2mesi.h"
     integer :: k, f, nbpt
     real(kind=8) :: epsi, sgt(*), coorsm(3, *), res(3, *)
 !

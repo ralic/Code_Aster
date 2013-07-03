@@ -18,11 +18,11 @@ subroutine ssdmrc(mag)
     implicit none
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: mag
 ! ----------------------------------------------------------------------
 !     BUT:

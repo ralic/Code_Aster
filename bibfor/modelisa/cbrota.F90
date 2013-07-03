@@ -23,8 +23,8 @@ subroutine cbrota(char, noma, ndim, ligrmo)
 !      NOMA   : NOM DU MAILLAGE
 !      LIGRMO  : NOM DU LIGREL DE MODELE
 !
-    include 'asterc/getfac.h'
-    include 'asterfort/carota.h'
+#include "asterc/getfac.h"
+#include "asterfort/carota.h"
     character(len=*) :: ligrmo
     character(len=8) :: char, noma
     integer :: irota, ndim

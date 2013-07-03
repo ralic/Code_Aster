@@ -1,14 +1,14 @@
 subroutine eclau1(nomte, famil, elrefa, fapg)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/indk32.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/indk32.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: famil, elrefa, fapg
     character(len=16) :: nomte
 ! ======================================================================

@@ -2,17 +2,17 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
                   nusp, ivari, nocmp, typres, valr,&
                   valc, vali, ier)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utchdl.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utchdl.h"
     integer :: nupo, ivari, ier, nusp, vali
     real(kind=8) :: valr
     complex(kind=8) :: valc

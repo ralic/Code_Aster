@@ -19,12 +19,12 @@ subroutine cfmmvs(resoco, npt, jeux, loca)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     character(len=24) :: jeux, loca
     integer :: npt

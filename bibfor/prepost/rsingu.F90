@@ -2,7 +2,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                   prec, erreur, alpha, types, re)
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndim, nelem, nbr(nelem), nalpha, degre
     real(kind=8) :: prec, erreur(nelem), alpha(nelem), re(nelem)
     character(len=16) :: types

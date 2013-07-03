@@ -25,15 +25,15 @@ subroutine pipepe(pilo, ndim, nno, npg, ipoids,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/pidefo.h'
-    include 'asterfort/pielas.h'
-    include 'asterfort/pipdef.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/pidefo.h"
+#include "asterfort/pielas.h"
+#include "asterfort/pipdef.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     integer :: ndim, nno, npg
     integer :: mate, ipoids, ivf, idfde
     integer :: lgpg, iborne, ictau

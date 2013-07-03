@@ -18,13 +18,13 @@ subroutine nmondp(lischa, londe, chondp, nondp)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: nondp
     character(len=24) :: chondp
     character(len=19) :: lischa

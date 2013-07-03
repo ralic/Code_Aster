@@ -27,7 +27,7 @@ subroutine estitr(nbm, amori, masgi, eps, ttrans,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: nbm
     real(kind=8) :: amori(*), masgi(*), eps, ttrans
     integer :: npf, npfmax

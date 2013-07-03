@@ -3,15 +3,15 @@ subroutine irdrca(ifi, nbno, desc, nec, dg,&
                   numnoe, lresu, nbcput, ncmput, nive)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, nbno, desc(*), nec, dg(*), ncmpmx, numnoe(*), nbcput, nive
     real(kind=8) :: vale(*)
     character(len=*) :: nomgd, ncmpgd(*), ncmput(*)

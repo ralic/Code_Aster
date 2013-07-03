@@ -17,8 +17,8 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux_private.h"
+#include "asterfort/u2mesi.h"
     integer :: jadm, iclas, ius, ist
 ! ----------------------------------------------------------------------
 !     RELIT LES ENTIERS ENCADRANT UN SEGMENT DE VALEURS

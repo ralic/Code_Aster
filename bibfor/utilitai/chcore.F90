@@ -23,21 +23,21 @@ subroutine chcore(chou)
 !    - SA PARTIE REELLE CORRESPOND AUX VALEURS DU CHAMP REEL
 !    - SA PARTIE IMAGINAIRE EST NULLE.
 !     -----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sdchgd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdchgd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: iret, ibid, jvale, nbval, jvalin, i
     real(kind=8) :: zero
     parameter(zero=0.d0)

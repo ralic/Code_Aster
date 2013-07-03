@@ -1,14 +1,14 @@
 subroutine te0165(option, nomte)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fpouli.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/kpouli.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verift.h'
-    include 'blas/ddot.h'
+#include "asterfort/fpouli.h"
+#include "asterfort/jevech.h"
+#include "asterfort/kpouli.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verift.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================

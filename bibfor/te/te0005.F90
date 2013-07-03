@@ -18,13 +18,13 @@ subroutine te0005(option, nomte)
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dilcar.h'
-    include 'asterfort/dilele.h'
-    include 'asterfort/dilini.h'
-    include 'asterfort/epsdil.h'
-    include 'asterfort/fnodil.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dilcar.h"
+#include "asterfort/dilele.h"
+#include "asterfort/dilini.h"
+#include "asterfort/epsdil.h"
+#include "asterfort/fnodil.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! --- BUT : ROUTINE ELEMENTAIRE DE CALCUL DU MODELE --------------------

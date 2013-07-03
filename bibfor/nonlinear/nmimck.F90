@@ -19,10 +19,10 @@ subroutine nmimck(sdimpr, typcoz, valk, laffe)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/impsdr.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/oblgop.h'
-    include 'asterfort/obsetb.h'
+#include "asterfort/impsdr.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/oblgop.h"
+#include "asterfort/obsetb.h"
     character(len=24) :: sdimpr
     character(len=*) :: typcoz, valk
     logical :: laffe

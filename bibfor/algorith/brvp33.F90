@@ -19,9 +19,9 @@ subroutine brvp33(x33, x3, v33)
 !        DIAGONALISAGION 33 A PARTIR DE JACOBI + QUELQUES CONTROLES
 !
     implicit none
-    include 'asterfort/jacobi.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/jacobi.h"
+#include "asterfort/matini.h"
+#include "asterfort/utbtab.h"
     real(kind=8) :: x33(3, 3), x3(3), v33(3, 3)
     real(kind=8) :: epsv, y33(3, 3), trav(3, 3)
     real(kind=8) :: xv(6), xid(6), valaux(3)

@@ -19,16 +19,16 @@ subroutine cfprch(defico, resoco, ddepla, depdel)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
     character(len=24) :: defico, resoco
     character(len=19) :: ddepla, depdel
 !

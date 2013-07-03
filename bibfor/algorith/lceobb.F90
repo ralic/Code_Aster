@@ -21,12 +21,12 @@ subroutine lceobb(intmax, toler, epsm, deps, bm,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/lceob1.h'
-    include 'asterfort/lceob2.h'
-    include 'asterfort/lceob3.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8prem.h"
+#include "asterfort/diago3.h"
+#include "asterfort/lceob1.h"
+#include "asterfort/lceob2.h"
+#include "asterfort/lceob3.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: bm(6), dm, b(6), d, mult
     real(kind=8) :: lambda, mu, alpha, rk, rk1, rk2, ecrob, ecrod

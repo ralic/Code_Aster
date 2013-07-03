@@ -4,16 +4,16 @@ subroutine digouj(option, compor, nno, nbt, neq,&
                   sip, nomte)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/mavec.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ut2vlg.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vecma.h'
+#include "asterfort/mavec.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/ut2vlg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecma.h"
     integer :: nbt, neq, icodma, nc
     real(kind=8) :: dul(neq), sim(neq), sip(neq), varim(*)
     real(kind=8) :: pgl(3, 3), klv(nbt), varip(*), fono(neq), klc(neq, neq)

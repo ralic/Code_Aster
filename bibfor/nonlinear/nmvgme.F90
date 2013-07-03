@@ -18,33 +18,33 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
 ! ======================================================================
 ! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/gettco.h'
-    include 'asterfort/barych.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/chpnua.h'
-    include 'asterfort/cnocre.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/nuachp.h'
-    include 'asterfort/pronua.h'
-    include 'asterfort/rsinch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtgpld.h'
+#include "asterc/gettco.h"
+#include "asterfort/barych.h"
+#include "asterfort/calcul.h"
+#include "asterfort/chpnua.h"
+#include "asterfort/cnocre.h"
+#include "asterfort/copisd.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/nuachp.h"
+#include "asterfort/pronua.h"
+#include "asterfort/rsinch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtgpld.h"
     character(len=*) :: modele, carele, resufv(1), ligrel, charge
     character(len=*) :: depmoi, depdel, vites
     real(kind=8) :: instan

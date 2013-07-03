@@ -1,6 +1,6 @@
 subroutine diago3(tens, vecp, valp)
     implicit none
-    include 'asterfort/jacobi.h'
+#include "asterfort/jacobi.h"
     real(kind=8) :: tens(6), valp(3), vecp(3, 3)
 ! ======================================================================
 ! ======================================================================

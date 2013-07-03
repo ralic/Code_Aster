@@ -19,16 +19,16 @@ subroutine nmcrot(result, sdobse)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltcrsd.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: result
     character(len=19) :: sdobse
 !

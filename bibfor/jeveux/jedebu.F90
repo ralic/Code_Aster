@@ -18,28 +18,28 @@ subroutine jedebu(nbfi, mxzon, idb)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'jeveux_private.h'
-    include 'asterc/gtoptk.h'
-    include 'asterc/gtoptr.h'
-    include 'asterc/ismaem.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/ispbem.h'
-    include 'asterc/lbisem.h'
-    include 'asterc/loc8em.h'
-    include 'asterc/lofiem.h'
-    include 'asterc/loisem.h'
-    include 'asterc/lolsem.h'
-    include 'asterc/lor8em.h'
-    include 'asterc/mofiem.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jermxd.h'
-    include 'asterfort/jxdate.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/utgtme.h'
-    include 'asterfort/utptme.h'
+#include "jeveux.h"
+#include "jeveux_private.h"
+#include "asterc/gtoptk.h"
+#include "asterc/gtoptr.h"
+#include "asterc/ismaem.h"
+#include "asterc/isnnem.h"
+#include "asterc/ispbem.h"
+#include "asterc/lbisem.h"
+#include "asterc/loc8em.h"
+#include "asterc/lofiem.h"
+#include "asterc/loisem.h"
+#include "asterc/lolsem.h"
+#include "asterc/lor8em.h"
+#include "asterc/mofiem.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jermxd.h"
+#include "asterfort/jxdate.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/utgtme.h"
+#include "asterfort/utptme.h"
     integer :: nbfi, mxzon, idb
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'INITIALISATION GENERALE POUR LE GESTIONNAIRE

@@ -194,22 +194,22 @@ subroutine znaup2(ido, bmat, n, which, nev,&
 !     | INCLUDE FILES FOR DEBUGGING AND TIMING INFORMATION |
 !     %----------------------------------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/ivout.h'
-    include 'asterfort/zgetv0.h'
-    include 'asterfort/zmout.h'
-    include 'asterfort/znaitr.h'
-    include 'asterfort/znapps.h'
-    include 'asterfort/zneigh.h'
-    include 'asterfort/zngets.h'
-    include 'asterfort/zsortc.h'
-    include 'asterfort/zvout.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dznrm2.h'
-    include 'blas/zcopy.h'
-    include 'blas/zdotc.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dvout.h"
+#include "asterfort/ivout.h"
+#include "asterfort/zgetv0.h"
+#include "asterfort/zmout.h"
+#include "asterfort/znaitr.h"
+#include "asterfort/znapps.h"
+#include "asterfort/zneigh.h"
+#include "asterfort/zngets.h"
+#include "asterfort/zsortc.h"
+#include "asterfort/zvout.h"
+#include "blas/dlapy2.h"
+#include "blas/dznrm2.h"
+#include "blas/zcopy.h"
+#include "blas/zdotc.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

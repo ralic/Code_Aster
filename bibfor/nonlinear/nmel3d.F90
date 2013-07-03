@@ -22,9 +22,9 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/nmcpel.h'
-    include 'asterfort/nmgeom.h'
+#include "jeveux.h"
+#include "asterfort/nmcpel.h"
+#include "asterfort/nmgeom.h"
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(4)

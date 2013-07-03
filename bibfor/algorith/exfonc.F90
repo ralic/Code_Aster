@@ -20,17 +20,17 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: fonact(*)
     character(len=19) :: solveu, sddyna
     character(len=24) :: defico

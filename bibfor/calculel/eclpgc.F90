@@ -51,35 +51,35 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !           C'EST LE CAS EN GENERAL POUR LA BOUCLE SUR LES NUME_ORDRE
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celcel.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/chligr.h'
-    include 'asterfort/cmpcha.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/eclaty.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celver.h"
+#include "asterfort/chligr.h"
+#include "asterfort/cmpcha.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eclaty.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/typele.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !
 ! ---------------------------------------------------------------------
 !     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :

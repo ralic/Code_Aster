@@ -39,9 +39,9 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
 !         COEL    :  COEFFICENT DE L'OPERATEUR D'ELASTICITE ORTHOTROPE
 !     OUT SIGI    :  CONTRAINTES A L'INSTANT COURANT
 !     ----------------------------------------------------------------
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/rcvarc.h"
     character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: loi, comp(*)

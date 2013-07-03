@@ -30,21 +30,21 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/xpoajd.h'
-    include 'asterfort/xpoajn.h'
-    include 'asterfort/xpolsn.h'
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/xpoajd.h"
+#include "asterfort/xpoajn.h"
+#include "asterfort/xpolsn.h"
     integer :: nfiss, nnn, inn, inntot, ndim, jconx1, jconx2
     integer :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2
     integer :: nbnoc, nbnofi, inofi

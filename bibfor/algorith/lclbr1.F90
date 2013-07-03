@@ -18,11 +18,11 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/diago2.h'
-    include 'asterfort/lclbr2.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
+#include "asterfort/diago2.h"
+#include "asterfort/lclbr2.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
     character(len=*) :: fami
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option

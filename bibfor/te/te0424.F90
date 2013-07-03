@@ -19,13 +19,13 @@ subroutine te0424(option, nomte)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmpr3d.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmpr3d.h"
+#include "blas/dcopy.h"
     character(len=16) :: nomte, option
 !
 ! ----------------------------------------------------------------------

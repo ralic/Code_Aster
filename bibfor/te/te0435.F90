@@ -16,18 +16,18 @@ subroutine te0435(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/mbcine.h'
-    include 'asterfort/mbrigi.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/verift.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/codere.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/mbcine.h"
+#include "asterfort/mbrigi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/verift.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE COMPORTEMENT :

@@ -45,14 +45,14 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
 !     OUT R      :  SYSTEME NL A T + DT
 !     ----------------------------------------------------------------
 !
-    include 'asterfort/calsig.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lcdvin.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcprmv.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/calsig.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lcdvin.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprmv.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: imat, nmat, nr, nvi, kpg, ksp, iret, itens, ndt, ndi
     real(kind=8) :: deps(6), epsd(6), r(nr), yf(nr), dy(nr), x, theta, yd(*)
     real(kind=8) :: crit(*)

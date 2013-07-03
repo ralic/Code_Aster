@@ -23,28 +23,28 @@ subroutine mpjeft(corres)
 !
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pacoa2.h'
-    include 'asterfort/pj2dco.h'
-    include 'asterfort/pj3dco.h'
-    include 'asterfort/pj4dco.h'
-    include 'asterfort/pj5dco.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pacoa2.h"
+#include "asterfort/pj2dco.h"
+#include "asterfort/pj3dco.h"
+#include "asterfort/pj4dco.h"
+#include "asterfort/pj5dco.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: corres
 !
 !

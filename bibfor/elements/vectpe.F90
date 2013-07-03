@@ -19,7 +19,7 @@ subroutine vectpe(nb1, nb2, vecu, vectn, vecnph,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: nb1, nb2
 !
     integer :: ii

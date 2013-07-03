@@ -25,18 +25,18 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'asterfort/calkbb.h'
-    include 'asterfort/calkbp.h'
-    include 'asterfort/calkce.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tanbul.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterfort/calkbb.h"
+#include "asterfort/calkbp.h"
+#include "asterfort/calkce.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tanbul.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     logical :: resi, rigi, mini
     integer :: ndim, nno1, nno2, npg, iw, idff1, lgpg
     integer :: mate

@@ -1,9 +1,9 @@
 subroutine acevca(nbocc, nlm, nlg, ier)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/u2mess.h"
     integer :: nbocc, nlm, nlg, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================

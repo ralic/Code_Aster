@@ -1,25 +1,25 @@
 subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                   nbmst)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/juveca.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: iocc, nbmst
     character(len=*) :: mcfact, nomaz, nomvei, nomvek
 !-----------------------------------------------------------------------

@@ -18,9 +18,9 @@ subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, npoin(nbvec), valord(nbvec*nbordr)
     integer :: iflag(nbvec)
     real(kind=8) :: valaxe(nbvec*nbordr), pseuil, valpoi(nbvec*nbordr)

@@ -23,7 +23,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/xplma2.h'
+#include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)
     real(kind=8) :: hpg, ffc(9), jacobi, coefcr
     real(kind=8) :: dlagrf(2)

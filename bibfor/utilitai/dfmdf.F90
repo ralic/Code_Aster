@@ -19,9 +19,9 @@ subroutine dfmdf(dim, f, dsidep)
 !
     implicit none
 !
-    include 'asterfort/diago2.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/diago2.h"
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
     integer :: dim
     real(kind=8) :: f(dim), dsidep(dim, dim)
 !

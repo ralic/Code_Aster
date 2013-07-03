@@ -4,27 +4,27 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
                   depsv, dside, retcom)
 !
     implicit   none
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lctrma.h'
-    include 'asterfort/lkbpri.h'
-    include 'asterfort/lkcalg.h'
-    include 'asterfort/lkcaln.h'
-    include 'asterfort/lkdepp.h'
-    include 'asterfort/lkdepv.h'
-    include 'asterfort/lkdfds.h'
-    include 'asterfort/lkdfdx.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkdphi.h'
-    include 'asterfort/lkds2h.h'
-    include 'asterfort/lkdvds.h'
-    include 'asterfort/lkvacp.h'
-    include 'asterfort/lkvacv.h'
-    include 'asterfort/lkvarp.h'
-    include 'asterfort/lkvarv.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lctrma.h"
+#include "asterfort/lkbpri.h"
+#include "asterfort/lkcalg.h"
+#include "asterfort/lkcaln.h"
+#include "asterfort/lkdepp.h"
+#include "asterfort/lkdepv.h"
+#include "asterfort/lkdfds.h"
+#include "asterfort/lkdfdx.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkdphi.h"
+#include "asterfort/lkds2h.h"
+#include "asterfort/lkdvds.h"
+#include "asterfort/lkvacp.h"
+#include "asterfort/lkvacv.h"
+#include "asterfort/lkvarp.h"
+#include "asterfort/lkvarv.h"
+#include "asterfort/r8inir.h"
     integer :: val, dum, nbmat, retcom
     real(kind=8) :: dt, invar, s(6), iel, sel(6), mater(nbmat, 2), vinm(7)
     real(kind=8) :: dside(6, 6), de(6, 6)

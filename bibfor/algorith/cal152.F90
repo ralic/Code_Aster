@@ -26,10 +26,10 @@ subroutine cal152(option, max, may, maz, model,&
 !  ET LA RIGIDITE AJOUTEE EN THEORIE POTENTIELLE : CALC_MATR_AJOU
 !     SUR BASE MODALE DE LA STRUCTURE DANS LE VIDE
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/calamr.h'
-    include 'asterfort/calmaj.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/calamr.h"
+#include "asterfort/calmaj.h"
+#include "asterfort/u2mesg.h"
     logical :: vrai
     integer :: i, j
     integer :: imade

@@ -21,30 +21,30 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cengra.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/intfac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xextre.h'
-    include 'asterfort/xfabor.h'
-    include 'asterfort/xnorme.h'
-    include 'asterfort/xtailm.h'
+#include "asterfort/assert.h"
+#include "asterfort/cengra.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/confac.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/intfac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/normev.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xextre.h"
+#include "asterfort/xfabor.h"
+#include "asterfort/xnorme.h"
+#include "asterfort/xtailm.h"
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
     character(len=19) :: cnslt, cnsln, cnxinv, listpt

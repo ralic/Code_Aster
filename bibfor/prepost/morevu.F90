@@ -1,17 +1,17 @@
 subroutine morevu(tabpus, dinst, nbsect, sect, voltub,&
                   volobs)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: nbsect
     real(kind=8) :: dinst, voltub(*), volobs(*), sect(*)
     character(len=*) :: tabpus

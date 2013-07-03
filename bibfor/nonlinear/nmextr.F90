@@ -20,22 +20,22 @@ subroutine nmextr(noma, nomo, sdextz, sdieto, motfac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmextc.h'
-    include 'asterfort/nmextd.h'
-    include 'asterfort/nmextf.h'
-    include 'asterfort/nmextk.h'
-    include 'asterfort/nmextl.h'
-    include 'asterfort/nmextn.h'
-    include 'asterfort/nmextp.h'
-    include 'asterfort/nmextt.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmextc.h"
+#include "asterfort/nmextd.h"
+#include "asterfort/nmextf.h"
+#include "asterfort/nmextk.h"
+#include "asterfort/nmextl.h"
+#include "asterfort/nmextn.h"
+#include "asterfort/nmextp.h"
+#include "asterfort/nmextt.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma, nomo
     character(len=*) :: sdextz
     character(len=24) :: sdieto

@@ -24,21 +24,21 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/crirup.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmgpin.h'
-    include 'asterfort/nmmalu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/codere.h"
+#include "asterfort/crirup.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmgpin.h"
+#include "asterfort/nmmalu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: ndim, nno, npg, mate, lgpg, codret, iw, idff
     character(len=8) :: typmod(*)
     character(len=*) :: fami

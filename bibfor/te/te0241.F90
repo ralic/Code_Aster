@@ -1,15 +1,15 @@
 subroutine te0241(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/ptmtfv.h'
-    include 'asterfort/ptmtuf.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/ptmtfv.h"
+#include "asterfort/ptmtuf.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

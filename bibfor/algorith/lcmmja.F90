@@ -50,18 +50,18 @@ subroutine lcmmja(comp, typmod, nmat, materf, timed,&
 !       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 !           IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
-    include 'asterfort/calcfe.h'
-    include 'asterfort/caldfe.h'
-    include 'asterfort/caldto.h'
-    include 'asterfort/caltau.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcmmjb.h'
-    include 'asterfort/lcmmjg.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/calcfe.h"
+#include "asterfort/caldfe.h"
+#include "asterfort/caldto.h"
+#include "asterfort/caltau.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcmmjb.h"
+#include "asterfort/lcmmjg.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/r8inir.h"
     integer :: nmat, nr, nbfsys, ndt, ndi, nsfa, nsfv, nbsys, is, ir
     integer :: nbcomm(nmat, 3), ifa, i, j, k, l, iret, ifl, itmax, nuvr, nuvs
     integer :: nuecou, ind(3, 3), nvi, nfs, nsg, iexp

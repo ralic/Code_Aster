@@ -26,16 +26,16 @@ subroutine te0011(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterfort/bmatmc.h'
-    include 'asterfort/btdbmc.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/rccoma.h'
+#include "asterfort/bmatmc.h"
+#include "asterfort/btdbmc.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/rccoma.h"
     integer :: i, idecno, idecpg, igau, imate, imatuu, j
     integer :: jgano, k, nbinco, nbres, nbsig, ndim, nno
     integer :: nnos, npg1

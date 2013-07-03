@@ -32,9 +32,9 @@ subroutine hujprc(kk, k, tin, vin, mater,&
 !      Q     :  NORME DEVIATEUR CYCLIQUE K
 !      TOUD  :  TENSEUR DEVIATOIRE CYCLIQUE DES CONTRAINTES
 !  --------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/tecael.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/tecael.h"
     integer :: ndt, ndi, i, j, k, kk, nmod
     parameter (nmod = 18)
     integer :: ifm, niv, iadzi, iazk24

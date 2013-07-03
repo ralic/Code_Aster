@@ -19,12 +19,12 @@ subroutine apforc(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/aprema.h'
-    include 'asterfort/aprend.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/aprema.h"
+#include "asterfort/aprend.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=19) :: sdappa
 !
 ! ----------------------------------------------------------------------

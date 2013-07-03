@@ -20,34 +20,34 @@ subroutine op0131()
 !     CALCUL DE REPONSE DYNAMIQUE SOUS FORME D INTERSPECTRE
 !     EXCITATION ET REPONSES SONT DES INTERSPECTRES.
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/caldis.h'
-    include 'asterfort/calpim.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mlmatc.h'
-    include 'asterfort/preflx.h'
-    include 'asterfort/prekpr.h'
-    include 'asterfort/reciex.h'
-    include 'asterfort/recire.h'
-    include 'asterfort/recmod.h'
-    include 'asterfort/recmst.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/transf.h'
-    include 'asterfort/vriale.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/r8depi.h"
+#include "asterfort/caldis.h"
+#include "asterfort/calpim.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mlmatc.h"
+#include "asterfort/preflx.h"
+#include "asterfort/prekpr.h"
+#include "asterfort/reciex.h"
+#include "asterfort/recire.h"
+#include "asterfort/recmod.h"
+#include "asterfort/recmst.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/titre.h"
+#include "asterfort/transf.h"
+#include "asterfort/vriale.h"
+#include "asterfort/wkvect.h"
     integer :: iderex, iderre, iret, ilnoex, ilcpex, i1, ilvaex, napexc, nindex
     integer :: nnoeex, ncmpex, nvasex, i2, nbptmd, iadfrq, ilamor, ij1, igim
     integer :: igre, ilmode, ilamsc, nmost1, iadpim, iadsc3, n1, iadhii, imoddy

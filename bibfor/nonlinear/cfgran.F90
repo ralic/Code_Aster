@@ -18,11 +18,11 @@ subroutine cfgran(resoco, nbliac, kkliai, kkliac)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: nbliac, kkliai, kkliac
 !

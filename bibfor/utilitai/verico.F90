@@ -37,16 +37,16 @@ subroutine verico(nbmato, nbpart, val)
 !
 !
 ! DECLARATION VARIABLES D'APPEL
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
     integer :: nbmato, nbpart, co, idco, renum2, renum3, numsdm, val
 !
 ! DECLARATION VARIABLES LOCALES

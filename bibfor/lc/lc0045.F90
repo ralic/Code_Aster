@@ -23,7 +23,7 @@ subroutine lc0045(fami, kpg, ksp, ndim, imate,&
 ! person_in_charge: jerome.laverne at edf.fr
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcejmr.h'
+#include "asterfort/lcejmr.h"
     integer :: kpg, ksp, ndim, imate, codret, icomp, nvi
     character(len=*) :: fami
     character(len=8) :: typmod(*)

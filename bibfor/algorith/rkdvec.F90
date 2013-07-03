@@ -28,9 +28,9 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
 !     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
 !     INTERNES DU MODELE
 !     ----------------------------------------------------------------
-    include 'asterfort/calcj0.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/calcj0.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
     character(len=8) :: nomcoe, nompar(2)
     character(len=3) :: matcst
     character(len=*) :: fami

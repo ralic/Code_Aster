@@ -35,16 +35,16 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nbordr
 !
     character(len=*) :: noresz, nomsyz, tabord

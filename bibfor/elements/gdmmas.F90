@@ -34,8 +34,8 @@ subroutine gdmmas(kp, nno, pjacob, en, grani,&
 !                       POINTS DE GAUSS)
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/cumuma.h'
-    include 'asterfort/promat.h'
+#include "asterfort/cumuma.h"
+#include "asterfort/promat.h"
     real(kind=8) :: en(3, 2), grani(4), rot0(3, 3), mass(18, 18), imas(6, 6)
     real(kind=8) :: iro(3, 3), amat1(3, 3)
 !

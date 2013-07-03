@@ -22,19 +22,19 @@ subroutine merit1(modele, nchar, lchar, mate, cara,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/meharm.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/meharm.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     character(len=8) :: modele, cara, lcharz
     character(len=19) :: matel, prefch
     character(len=*) :: lchar(*), mate

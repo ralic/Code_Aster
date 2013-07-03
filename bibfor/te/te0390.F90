@@ -18,26 +18,26 @@ subroutine te0390(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/gddyng.h'
-    include 'asterfort/gdecva.h'
-    include 'asterfort/gdfine.h'
-    include 'asterfort/gdfint.h'
-    include 'asterfort/gdjrg0.h'
-    include 'asterfort/gdliva.h'
-    include 'asterfort/gdmine.h'
-    include 'asterfort/gdmrig.h'
-    include 'asterfort/gdpetk.h'
-    include 'asterfort/gdsig.h'
-    include 'asterfort/gdstag.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/gddyng.h"
+#include "asterfort/gdecva.h"
+#include "asterfort/gdfine.h"
+#include "asterfort/gdfint.h"
+#include "asterfort/gdjrg0.h"
+#include "asterfort/gdliva.h"
+#include "asterfort/gdmine.h"
+#include "asterfort/gdmrig.h"
+#include "asterfort/gdpetk.h"
+#include "asterfort/gdsig.h"
+#include "asterfort/gdstag.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - ELEMENT:  MECA_POU_D_T_GD

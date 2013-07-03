@@ -2,11 +2,11 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
                   jconx1, jconx2, ipt, jtail)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/conare.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "blas/ddot.h"
     integer :: ndim, numa, jcoor, jconx1, jconx2, ipt, jtail
     real(kind=8) :: vecdir(ndim)
     character(len=8) :: typma

@@ -1,24 +1,24 @@
 subroutine memaxg(nborn, born, gbil, lonvec, result)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/tbtrtb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/tbtrtb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nborn, lonvec
     real(kind=8) :: born(*), gbil(*)
     character(len=8) :: result

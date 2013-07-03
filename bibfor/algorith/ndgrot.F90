@@ -20,18 +20,18 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/marota.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/proqua.h'
-    include 'asterfort/quavro.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/vroqua.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/marota.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/promat.h"
+#include "asterfort/proqua.h"
+#include "asterfort/quavro.h"
+#include "asterfort/transp.h"
+#include "asterfort/vroqua.h"
     real(kind=8) :: theta2(3), theta1(3), deldet(3)
     character(len=19) :: sddyna
     character(len=19) :: solalg(*), valinc(*)

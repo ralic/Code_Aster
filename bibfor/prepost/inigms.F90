@@ -31,10 +31,10 @@ subroutine inigms(nomail, nbnoma, nuconn)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
     integer :: nuconn(19, 32), nbnoma(19)
     character(len=8) :: nomail(*)
 !

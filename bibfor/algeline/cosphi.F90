@@ -1,9 +1,9 @@
 function cosphi(coefb, gamcjs, type)
 !
     implicit     none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: coefb, gamcjs, cosphi
     character(len=3) :: type
 ! ======================================================================

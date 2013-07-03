@@ -28,20 +28,20 @@ subroutine te0051(option, nomte)
 !.......................................................................
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/utrcyl.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/utrcyl.h"
     integer :: icamas, ij, l, n1, n2, nbres, ndim
     integer :: nnos, nuno
     real(kind=8) :: alpha, beta

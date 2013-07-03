@@ -19,24 +19,24 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmco.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmimp3.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfr.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
+#include "jeveux.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmimp3.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc, sddyna

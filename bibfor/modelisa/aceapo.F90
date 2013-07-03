@@ -2,39 +2,39 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                   mclf, nbepo, ntyele, ivr, ifm,&
                   jdlm)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! aslint: disable=W1501
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/acedat.h'
-    include 'asterfort/affdef.h'
-    include 'asterfort/affgen.h'
-    include 'asterfort/affpou.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/coecis.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/tecart.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/acedat.h"
+#include "asterfort/affdef.h"
+#include "asterfort/affgen.h"
+#include "asterfort/affpou.h"
+#include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/coecis.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/tecart.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: lmax, npoutr, nbocc, nbepo, ifm, jdlm
     integer :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo

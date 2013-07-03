@@ -1,10 +1,10 @@
 subroutine xmoajo(jj, nfiss, itypx, ntypx)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: jj, nfiss, itypx(*), ntypx(*)
 !
 ! ======================================================================

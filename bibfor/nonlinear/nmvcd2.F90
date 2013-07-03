@@ -17,12 +17,12 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: indez
     character(len=*) :: chmat
     logical :: exivc, exiref

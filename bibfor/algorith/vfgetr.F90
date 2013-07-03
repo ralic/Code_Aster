@@ -35,8 +35,8 @@ subroutine vfgetr(maxdim, ndim, nbnos, xs, t,&
 !     XGF BARYCENTRE FACE
 !     D = (XGF-XG).N
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/provec.h'
+#include "asterfort/assert.h"
+#include "asterfort/provec.h"
     integer :: maxdim, ndim, nbnos, idim, is
     real(kind=8) :: xs(1:maxdim, nbnos), t(1:maxdim, 2)
     real(kind=8) :: xg(1:maxdim), surf, norm(1:maxdim), xgf(1:maxdim), d

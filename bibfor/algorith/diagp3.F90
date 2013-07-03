@@ -17,12 +17,12 @@ subroutine diagp3(tens, vecp, valp)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerop3.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerop3.h"
     real(kind=8) :: tens(6), valp(3), vecp(3, 3)
 !
 ! ----------------------------------------------------------------------

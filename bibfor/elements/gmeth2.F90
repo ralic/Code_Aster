@@ -37,18 +37,18 @@ subroutine gmeth2(modele, nnoff, ndeg, chthet, fond,&
 !      GI      --> VALEUR DE GI
 !......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/detrsd.h'
-    include 'asterfort/glegen.h'
-    include 'asterfort/gsyste.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/detrsd.h"
+#include "asterfort/glegen.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/wkvect.h"
     integer :: nnoff, ndeg, iadrt3, i, j, k, l, m, inorme
     integer :: iabsc, iadint, iadpol, istok, iadnor, iadrno
     integer :: iadnum, iadrma, iadrco, iter1, iter2

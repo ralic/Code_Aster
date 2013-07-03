@@ -7,12 +7,12 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/prmave.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
+#include "asterfort/matini.h"
+#include "asterfort/prmave.h"
+#include "asterfort/transp.h"
+#include "asterfort/vecini.h"
     integer :: ndim, nno, nnol
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu

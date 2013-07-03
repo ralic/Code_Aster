@@ -19,26 +19,26 @@ subroutine mmpoin(noma, defico, newgeo, sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/apzoni.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmex.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mcomce.h'
-    include 'asterfort/mmelin.h'
-    include 'asterfort/mmgaus.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mmnpoi.h'
-    include 'asterfort/mmnumn.h'
-    include 'asterfort/mmvalp.h'
+#include "asterfort/apzoni.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmex.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mcomce.h"
+#include "asterfort/mmelin.h"
+#include "asterfort/mmgaus.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mmnpoi.h"
+#include "asterfort/mmnumn.h"
+#include "asterfort/mmvalp.h"
     character(len=8) :: noma
     character(len=19) :: sdappa
     character(len=24) :: defico

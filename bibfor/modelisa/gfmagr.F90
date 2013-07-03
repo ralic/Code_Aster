@@ -20,13 +20,13 @@ subroutine gfmagr(noma, nomgrf, nbfigr)
 !
     implicit none
 !     IN
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jexnom.h"
     integer :: nbfigr
     character(len=8) :: noma
     character(len=24) :: nomgrf

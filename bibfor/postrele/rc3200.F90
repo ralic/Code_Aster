@@ -1,14 +1,14 @@
 subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
                   mater, symax)
     implicit   none
-    include 'asterfort/jedetc.h'
-    include 'asterfort/rc32ac.h'
-    include 'asterfort/rc32cm.h'
-    include 'asterfort/rc32ma.h'
-    include 'asterfort/rc32mu.h'
-    include 'asterfort/rc32rs.h'
-    include 'asterfort/rc32si.h'
-    include 'asterfort/rc32th.h'
+#include "asterfort/jedetc.h"
+#include "asterfort/rc32ac.h"
+#include "asterfort/rc32cm.h"
+#include "asterfort/rc32ma.h"
+#include "asterfort/rc32mu.h"
+#include "asterfort/rc32rs.h"
+#include "asterfort/rc32si.h"
+#include "asterfort/rc32th.h"
     real(kind=8) :: symax
     logical :: pmpb, sn, snet, fatigu, lrocht
     character(len=8) :: mater

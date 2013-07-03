@@ -25,7 +25,7 @@ subroutine calcj0(t, sigpri, valp)
 !            ON EST EN DIMENSION ESPACE = 3
 !     OUT    VALP  VECTEUR DES GRANDEURS EQUIVALENTES
 ! ----------------------------------------------------------------------
-    include 'asterfort/jacobi.h'
+#include "asterfort/jacobi.h"
     real(kind=8) :: t(6), tb(6), ts(6), tu(6), vecp(3, 3)
     real(kind=8) :: valp(3), jacaux(3)
     real(kind=8) :: tol, toldyn

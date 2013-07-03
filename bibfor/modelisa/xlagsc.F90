@@ -19,14 +19,14 @@ subroutine xlagsc(ndim, nbno, nbarto, mxar, algola,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xrell1.h'
-    include 'asterfort/xrell2.h'
-    include 'asterfort/xsella.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xrell1.h"
+#include "asterfort/xrell2.h"
+#include "asterfort/xsella.h"
     integer :: jtabno, jtabin, jtabcr
     integer :: nbno, nbarto, ndim, mxar
     integer :: algola

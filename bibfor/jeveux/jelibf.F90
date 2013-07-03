@@ -30,16 +30,16 @@ subroutine jelibf(cond, clas, info)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/rmfile.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jxecrb.h'
-    include 'asterfort/jxecro.h'
-    include 'asterfort/jxferm.h'
-    include 'asterfort/lxmins.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux_private.h"
+#include "asterc/rmfile.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jxecrb.h"
+#include "asterfort/jxecro.h"
+#include "asterfort/jxferm.h"
+#include "asterfort/lxmins.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: cond, clas
     integer :: info
 ! ----------------------------------------------------------------------

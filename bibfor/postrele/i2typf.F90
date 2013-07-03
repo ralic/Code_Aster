@@ -33,7 +33,7 @@ subroutine i2typf(epsi, x1, y1, x2, y2,&
 !
 !******************************************************************
 !
-    include 'asterfort/rvdet2.h'
+#include "asterfort/rvdet2.h"
     character(len=*) :: tm
     logical :: droi
     real(kind=8) :: epsi, d, l2, x1, x2, x3, y1, y2, y3, crit

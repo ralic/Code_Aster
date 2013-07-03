@@ -19,16 +19,16 @@ subroutine nmiret(codret, tabret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/u2mesg.h"
     logical :: tabret(0:10)
     character(len=19) :: codret
 !

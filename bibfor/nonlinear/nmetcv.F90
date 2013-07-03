@@ -20,13 +20,13 @@ subroutine nmetcv(nomchs, chrefe, lochin, locout, chain,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/chpchd.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
     character(len=24) :: chain, chaout
     character(len=24) :: nomchs, chrefe
     character(len=24) :: lochin, locout

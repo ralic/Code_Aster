@@ -6,8 +6,8 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
     integer :: ndim, nno, nnol
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu

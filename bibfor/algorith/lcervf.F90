@@ -19,8 +19,8 @@ subroutine lcervf(mode, ndimsi, eps, treps, epsdv,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     integer :: mode, ndimsi
     real(kind=8) :: eps(ndimsi), treps, epsdv(ndimsi), gameps, dgamde(ndimsi)
 ! ----------------------------------------------------------------------

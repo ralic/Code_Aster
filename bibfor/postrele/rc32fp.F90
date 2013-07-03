@@ -1,17 +1,17 @@
 subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
                   ug, factus)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rc32f0.h'
-    include 'asterfort/rc32f1.h'
-    include 'asterfort/rc32f2.h'
-    include 'asterfort/rc32f3.h'
-    include 'asterfort/rc32f4.h'
-    include 'asterfort/rc32f5.h'
-    include 'asterfort/rc32f6.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rc32f0.h"
+#include "asterfort/rc32f1.h"
+#include "asterfort/rc32f2.h"
+#include "asterfort/rc32f3.h"
+#include "asterfort/rc32f4.h"
+#include "asterfort/rc32f5.h"
+#include "asterfort/rc32f6.h"
     integer :: nbsigr, nocc(*), situ(*), sigr(*)
     real(kind=8) :: fuij(*), ug, factus(*)
 !     ------------------------------------------------------------------

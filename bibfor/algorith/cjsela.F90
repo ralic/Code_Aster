@@ -30,12 +30,12 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ECHEC
 !       ---------------------------------------------------------------
-    include 'asterfort/cjsci1.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cjsci1.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, iret
     real(kind=8) :: coef, e, nu, al, la, mu, hook(6, 6), i1
     real(kind=8) :: deps(6), dsig(6), sigd(6), sigf(6)

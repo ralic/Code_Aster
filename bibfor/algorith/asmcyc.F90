@@ -52,11 +52,11 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/acyel1.h'
-    include 'asterfort/acyel2.h'
-    include 'asterfort/acyel4.h'
-    include 'asterfort/acyelt.h'
+#include "jeveux.h"
+#include "asterfort/acyel1.h"
+#include "asterfort/acyel2.h"
+#include "asterfort/acyel4.h"
+#include "asterfort/acyelt.h"
     character(len=24) :: soumat
     complex(kind=8) :: cmass(*)
     integer :: libid(*), liax(nbliax)

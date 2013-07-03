@@ -1,29 +1,29 @@
 subroutine afvarc(chmat, nomail, nomode)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8nnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/afva01.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8nnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/afva01.h"
+#include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/juveca.h"
+#include "asterfort/mecact.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: chmat, nomail, nomode
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -47,7 +47,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !     TRAITEMENT DE AFFE_MATERIAU / AFFE_VARC
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     complex(kind=8) :: cbid
 !
     integer :: n1, n2, nboccv, nbma, k, ncmp

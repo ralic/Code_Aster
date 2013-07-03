@@ -51,27 +51,27 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetrex.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/ddot.h'
-    include 'blas/dgemv.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dsptrf.h'
-    include 'blas/dsptrs.h'
+#include "asterc/matfpe.h"
+#include "asterfort/assert.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetrex.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/ddot.h"
+#include "blas/dgemv.h"
+#include "blas/dnrm2.h"
+#include "blas/dsptrf.h"
+#include "blas/dsptrs.h"
     integer :: nbi, dimgi, nbsd, vsdf(nbsd), vddl(nbsd), ipiv, itps, irex, ifm
     integer :: nbproc, rang
     real(kind=8) :: vlagi(nbi)

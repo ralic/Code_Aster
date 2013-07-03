@@ -32,11 +32,11 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 ! IN  : K1,K2 : INDICES DANS NOOJB DE LA SOUS-CHAINE "NUMERO"
 !     -----------------------------------------------------------------
 !
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/u2mesi.h'
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/u2mesi.h"
     integer :: iret, k1, k2, nmaxsd, ndigit, iessai, inum, n1, n2
     character(len=*) :: nomres
     character(len=8) :: nomu, nomre2

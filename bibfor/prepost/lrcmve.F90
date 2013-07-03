@@ -69,15 +69,15 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nmatyp, nbnoma, lgproa, ntypel, npgmax
     integer :: ncmprf, nbcmpv, jnumma, nbma
     integer :: indpg(ntypel, npgmax), npgma(nbma), npgmm(nbma)

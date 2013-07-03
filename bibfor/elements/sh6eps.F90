@@ -19,13 +19,13 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
 !               ELEMENT SHB6
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assebg.h'
-    include 'asterfort/depsh6.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s6calb.h'
-    include 'asterfort/sh6ksi.h'
+#include "jeveux.h"
+#include "asterfort/assebg.h"
+#include "asterfort/depsh6.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s6calb.h"
+#include "asterfort/sh6ksi.h"
     integer :: lag
     real(kind=8) :: xe(18), xidepp(*)
     real(kind=8) :: xxg5(5), xcoq(3, 3), bksip(3, 6, 5), b(3, 6)

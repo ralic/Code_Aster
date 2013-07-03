@@ -19,14 +19,14 @@ subroutine cfmmci(defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mminfr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mminfr.h"
     character(len=24) :: defico, resoco
 !
 ! ----------------------------------------------------------------------

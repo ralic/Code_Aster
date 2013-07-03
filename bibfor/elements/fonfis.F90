@@ -1,14 +1,14 @@
 subroutine fonfis(noma, nbnoff, fonoeu, fondfi)
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/wkvect.h"
     integer :: nbnoff
     character(len=8) :: noma
     character(len=24) :: fondfi, fonoeu

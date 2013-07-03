@@ -24,14 +24,14 @@ subroutine nmctcd(modele, mate, carele, fonact, compor,&
 !
 ! aslint: disable=W1504
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcvec.h'
-    include 'asterfort/nmxvec.h'
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
     integer :: fonact(*)
     character(len=24) :: modele
     character(len=24) :: mate, carele

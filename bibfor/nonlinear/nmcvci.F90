@@ -26,19 +26,19 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !       MAIS POUR L'INSTANT "-", IL FAUT PARTIR DU "VRAI" CHAMP
 !       DE DEPLACEMENT.
 !----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/ascavc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/vtcmbl.h'
-    include 'asterfort/vtcreb.h'
+#include "jeveux.h"
+#include "asterfort/ascavc.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/vtcmbl.h"
+#include "asterfort/vtcreb.h"
     character(len=24) :: charge, infoch, fomult, numedd, cncine
     character(len=19) :: depmoi
     character(len=24) :: l2cnci(2), cncinm, cncinp

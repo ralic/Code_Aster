@@ -18,20 +18,20 @@ subroutine te0519(option, nomte)
 ! ======================================================================
 !
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xteini.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/indent.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xteini.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !  XFEM GRANDS GLISSEMENTS

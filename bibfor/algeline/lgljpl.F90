@@ -2,28 +2,28 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
                   devgii, vin, dsde, codret)
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/calcds.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/dervar.h'
-    include 'asterfort/drfdrg.h'
-    include 'asterfort/drfdrs.h'
-    include 'asterfort/drudrg.h'
-    include 'asterfort/drudrs.h'
-    include 'asterfort/gdev.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/solren.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/varecr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/calcds.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/dervar.h"
+#include "asterfort/drfdrg.h"
+#include "asterfort/drfdrs.h"
+#include "asterfort/drudrg.h"
+#include "asterfort/drudrs.h"
+#include "asterfort/gdev.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/solren.h"
+#include "asterfort/trace.h"
+#include "asterfort/varecr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbmat, codret
     real(kind=8) :: mater(nbmat, 2), sig(6), vin(*), dsde(6, 6)
     real(kind=8) :: devg(6), devgii

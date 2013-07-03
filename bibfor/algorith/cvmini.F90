@@ -46,18 +46,18 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !                            OU  ( SIG  X1  X2  P  R  Q  XXI  (EPS3))
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/chbfs.h'
-    include 'asterfort/cvmcvx.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/chbfs.h"
+#include "asterfort/cvmcvx.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/vecini.h"
     integer :: ndt, ndi, typess, nmat
     integer :: ioptio, idnr, nopt
 !

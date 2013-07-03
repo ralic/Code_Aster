@@ -6,12 +6,12 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
                   toler, iret)
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterfort/calsig.h'
-    include 'asterfort/lcloca.h'
-    include 'asterfort/lcmmec.h'
-    include 'asterfort/lcmmfe.h'
-    include 'asterfort/lcmmfi.h'
-    include 'asterfort/lcnrts.h'
+#include "asterfort/calsig.h"
+#include "asterfort/lcloca.h"
+#include "asterfort/lcmmec.h"
+#include "asterfort/lcmmfe.h"
+#include "asterfort/lcmmfi.h"
+#include "asterfort/lcnrts.h"
     integer :: kpg, ksp, nmat, nbcomm(nmat, 3), nvi, nbphas, itmax, iret
     integer :: nfs, nsg, nhsr, numhsr(*)
     real(kind=8) :: vini(*), dvin(*), nu, e, x, dtime, coeft(nmat), coel(nmat)

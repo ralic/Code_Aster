@@ -150,18 +150,18 @@ subroutine gtrevc(side, howmny, select, n, t,&
 !
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/dzasum.h'
-    include 'blas/izamax.h'
-    include 'blas/lsame.h'
-    include 'blas/zcopy.h'
-    include 'blas/zdscal.h'
-    include 'blas/zgemv.h'
-    include 'blas/zlatrs.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/xerbla.h"
+#include "blas/dzasum.h"
+#include "blas/izamax.h"
+#include "blas/lsame.h"
+#include "blas/zcopy.h"
+#include "blas/zdscal.h"
+#include "blas/zgemv.h"
+#include "blas/zlatrs.h"
     character(len=1) :: howmny, side
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..

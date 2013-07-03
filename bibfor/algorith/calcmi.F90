@@ -32,12 +32,12 @@ subroutine calcmi(np1, nbm, dt0, dt, vitg,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/algint.h'
-    include 'asterfort/intfor.h'
-    include 'asterfort/matran.h'
-    include 'asterfort/parmat.h'
-    include 'asterfort/tstpar.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/algint.h"
+#include "asterfort/intfor.h"
+#include "asterfort/matran.h"
+#include "asterfort/parmat.h"
+#include "asterfort/tstpar.h"
+#include "asterfort/vecini.h"
     integer :: np1, nbm
     real(kind=8) :: dt0, dt, vitg(*), depg(*), vitg0(*), depg0(*), fmod(*)
     real(kind=8) :: fmod0(*), amor(*), amor0(*), puls(*), puls0(*)

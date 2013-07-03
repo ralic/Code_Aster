@@ -31,9 +31,9 @@ subroutine calvol(np1, nbm, icoupl, indic, kmod00,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/coefmo.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/coefmo.h"
+#include "asterfort/matini.h"
+#include "asterfort/vecini.h"
     integer :: np1, nbm, icoupl, indic
     real(kind=8) :: kmod00(np1, *), cmod00(np1, *), amor00(*), puls00(*)
     real(kind=8) :: pulsi(*), amori(*), masgi(*)

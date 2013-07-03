@@ -3,19 +3,19 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha,&
                   nrval, resu, nomtb, nsymb, nival,&
                   niord)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/indiis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/indiis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/wkvect.h"
     integer :: nbcmp, nbno, ndim, nbval
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb

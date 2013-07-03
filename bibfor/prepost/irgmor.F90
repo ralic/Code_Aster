@@ -1,10 +1,10 @@
 subroutine irgmor(tord, vers)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/assert.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
     integer :: ntyele, neletr
     parameter (ntyele = 28)
     parameter (neletr =  8)

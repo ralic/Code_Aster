@@ -19,14 +19,14 @@ subroutine sh6mek(xetemp, sigma, re)
 !               ELEMENT SHB6
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chrp3d.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s6calb.h'
-    include 'asterfort/sh6ksi.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/chrp3d.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s6calb.h"
+#include "asterfort/sh6ksi.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: iprope
     real(kind=8) :: xe(18), re(18, 18)
     real(kind=8) :: xxg5(5), pxg5(5), xcoq(3, 3), bksip(3, 6, 5)

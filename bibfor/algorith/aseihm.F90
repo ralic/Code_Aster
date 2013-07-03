@@ -91,8 +91,8 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
 !
 !
 ! - VARIABLES ENTREE
-    include 'asterfort/coeihm.h'
-    include 'asterfort/matthm.h'
+#include "asterfort/coeihm.h"
+#include "asterfort/matthm.h"
     integer :: ndim, nno1, nno2, npi, npg, dimuel, dimdef, dimcon, nbvari
     integer :: mecani(8), press1(9), press2(9), tempe(5)
     integer :: imate

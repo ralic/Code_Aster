@@ -2,11 +2,11 @@ subroutine vphqrp(mat, neq, mxeq, icode, w,&
                   z, iz, wk, mxiter, ier,&
                   nitqr)
     implicit none
-    include 'asterfort/vpzbal.h'
-    include 'asterfort/vpzech.h'
-    include 'asterfort/vpzhes.h'
-    include 'asterfort/vpzqrh.h'
-    include 'asterfort/vpzrbk.h'
+#include "asterfort/vpzbal.h"
+#include "asterfort/vpzech.h"
+#include "asterfort/vpzhes.h"
+#include "asterfort/vpzqrh.h"
+#include "asterfort/vpzrbk.h"
     integer :: neq, mxeq, icode, iz, ier, nitqr
     real(kind=8) :: mat(mxeq, 1), wk(neq, 1), w(1), z(1)
 !     ------------------------------------------------------------------

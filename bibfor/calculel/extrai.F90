@@ -21,10 +21,10 @@ subroutine extrai(nin, lchin, lpain, opt, nute,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/assert.h'
-    include 'asterfort/extra1.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/typele.h'
+#include "asterfort/assert.h"
+#include "asterfort/extra1.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/typele.h"
     integer :: nin, opt, nute
     character(len=*) :: lchin(*), init
     character(len=8) :: lpain(*)

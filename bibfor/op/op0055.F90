@@ -23,33 +23,33 @@ subroutine op0055()
 !-----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/fonbas.h'
-    include 'asterfort/fonfis.h'
-    include 'asterfort/fonimp.h'
-    include 'asterfort/foninf.h'
-    include 'asterfort/fonlev.h'
-    include 'asterfort/fonmai.h'
-    include 'asterfort/fonnoe.h'
-    include 'asterfort/fonnof.h'
-    include 'asterfort/fonvec.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/fonbas.h"
+#include "asterfort/fonfis.h"
+#include "asterfort/fonimp.h"
+#include "asterfort/foninf.h"
+#include "asterfort/fonlev.h"
+#include "asterfort/fonmai.h"
+#include "asterfort/fonnoe.h"
+#include "asterfort/fonnof.h"
+#include "asterfort/fonvec.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: iadr1, ifm, niv
     integer :: nbocc, nbnoff
     integer :: ibas, ibid, iocc, idon, idonn, ifonoe, ndonn

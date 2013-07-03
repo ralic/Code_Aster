@@ -31,7 +31,7 @@ subroutine matmul(a, b, n1, n2, n3,&
 ! OUT AB : PRODUIT DES MATRICES A x B
 !
 !
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: n1, n2, n3, i, j, k
 !      REAL*8 A(N1,*),B(N2,*),AB(N1,*)
     real(kind=8) :: a(n1, n2), b(n2, n3), ab(n1, n3)

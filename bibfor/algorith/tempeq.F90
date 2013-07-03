@@ -19,7 +19,7 @@ subroutine tempeq(z, tdeq, tfeq, k, n,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     real(kind=8) :: z, tdeq, tfeq, k, n, teq, dvteq
     real(kind=8) :: zero
 !

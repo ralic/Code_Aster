@@ -4,37 +4,37 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
                   lmelas, nomcas, lmoda, puls, compor)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcharg.h'
-    include 'asterfort/impfic.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajvi.h'
-    include 'asterfort/tbajvk.h'
-    include 'asterfort/tbajvr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcharg.h"
+#include "asterfort/impfic.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvk.h"
+#include "asterfort/tbajvr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: modele, lchar(*), fondf, result, symech
     character(len=8) :: noeud
     character(len=16) :: optioz, noprup(*), nomcas

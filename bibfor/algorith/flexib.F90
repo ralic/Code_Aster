@@ -44,24 +44,24 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/bmnodi.h'
-    include 'asterfort/bmradi.h'
-    include 'asterfort/dcapno.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/dcopy.h'
+#include "asterfort/bmnodi.h"
+#include "asterfort/bmradi.h"
+#include "asterfort/dcapno.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
+#include "blas/dcopy.h"
     real(kind=8) :: flex(nl, nc)
     character(len=6) :: pgc
     character(len=8) :: basmod, typint, intf, kbid, k8bid

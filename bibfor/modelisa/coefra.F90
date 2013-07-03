@@ -31,15 +31,15 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 !  OUT  : CK        : COEFFICIENT DE MASSE AJOUTEE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/ckatrc.h'
-    include 'asterfort/coefrl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/ckatrc.h"
+#include "asterfort/coefrl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: ipas, ires
     integer :: jborne, jcoeff, jvired
     real(kind=8) :: ck, xsi0

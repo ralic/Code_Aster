@@ -50,7 +50,7 @@ subroutine vdefro(np, matev, tensel, tenloc)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/utbtab.h'
+#include "asterfort/utbtab.h"
     real(kind=8) :: matev(2, 2, 1), tensel(1), tenloc(1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: nelem(4), melem(4), xab(2, 2)

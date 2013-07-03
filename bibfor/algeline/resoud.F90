@@ -67,30 +67,30 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !-----------------------------------------------------------------------
     implicit none
 !
-    include 'asterc/cheksd.h'
-    include 'asterfort/amumph.h'
-    include 'asterfort/apetsc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dbgobj.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jedbg2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/resfet.h'
-    include 'asterfort/resgra.h'
-    include 'asterfort/resldl.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtdefs.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/cheksd.h"
+#include "asterfort/amumph.h"
+#include "asterfort/apetsc.h"
+#include "asterfort/assert.h"
+#include "asterfort/dbgobj.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jedbg2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/resfet.h"
+#include "asterfort/resgra.h"
+#include "asterfort/resldl.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtdefs.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: matass, matpre, solveu, chcine
     integer :: nsecm
     character(len=*) :: chsecm, chsolu, base
@@ -100,7 +100,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     logical :: prepos
     integer :: istop, iret
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: ibid, ifm, niv
     character(len=3) :: kmpic, type, typ1, kbid

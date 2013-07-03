@@ -19,12 +19,12 @@ subroutine gmeth3(nnoff, fond, gthi, milieu, gs,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/gsyste.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: nnoff, num
     real(kind=8) :: gthi(1), gs(1), gi(1)
     character(len=24) :: fond, objcur

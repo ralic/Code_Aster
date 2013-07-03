@@ -42,7 +42,7 @@ subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/bmatmc.h'
+#include "asterfort/bmatmc.h"
     real(kind=8) :: xyz(1), depl(1), eps1(1)
     real(kind=8) :: nharm
 ! -----  VARIABLES LOCALES

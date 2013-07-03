@@ -3,7 +3,7 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
                   dsg22, dsg12)
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ndim, nbnase, cpt, in, ivois, jsigse, nno, nbcmp, jcnset
     real(kind=8) :: dsg11(nbnase), dsg22(nbnase), dsg12(nbnase)
 ! ----------------------------------------------------------------------

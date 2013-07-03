@@ -20,9 +20,9 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/mmelty.h'
+#include "asterfort/assert.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/mmelty.h"
     character(len=8) :: noma
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: coefno(9)

@@ -1,6 +1,6 @@
 subroutine ortloc(dsidep, i1, j1, r)
     implicit none
-    include 'asterfort/utbtab.h'
+#include "asterfort/utbtab.h"
     real(kind=8) :: trav(3, 3), xab(3, 3), dsidep(6, 6), r(9)
     integer :: i, j, i1, j1
 !-----------------------------------------------------------------------

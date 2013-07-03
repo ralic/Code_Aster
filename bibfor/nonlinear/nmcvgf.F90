@@ -19,14 +19,14 @@ subroutine nmcvgf(sddisc, sderro, valinc, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacto.h'
-    include 'asterfort/nmeceb.h'
-    include 'asterfort/nmevev.h'
-    include 'asterfort/nmleeb.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmevev.h"
+#include "asterfort/nmleeb.h"
     character(len=19) :: sddisc, valinc(*)
     character(len=24) :: sderro
     character(len=24) :: defico, resoco

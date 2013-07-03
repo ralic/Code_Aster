@@ -25,12 +25,12 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lcpsvn.h'
-    include 'asterfort/lcresi.h'
-    include 'asterfort/lcsovn.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/lcpsvn.h"
+#include "asterfort/lcresi.h"
+#include "asterfort/lcsovn.h"
+#include "blas/ddot.h"
     real(kind=8) :: ddy(*)
 !
 !     VARIABLES EN ARGUMENT DE LCRESI

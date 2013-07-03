@@ -21,9 +21,9 @@ subroutine equdil(imate, option, compor, regula, dimdef,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit      none
-    include 'asterfort/dil2gr.h'
-    include 'asterfort/dilcge.h'
-    include 'asterfort/dilder.h'
+#include "asterfort/dil2gr.h"
+#include "asterfort/dilcge.h"
+#include "asterfort/dilder.h"
     integer :: imate, dimdef, dimcon, regula(6), ndim
     real(kind=8) :: defgep(dimdef), contp(dimcon), r(dimcon), rpena
     real(kind=8) :: drde(dimcon, dimdef)

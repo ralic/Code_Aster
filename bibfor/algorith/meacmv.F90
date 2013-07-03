@@ -20,28 +20,28 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascavc.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/fetccn.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/merime.h'
-    include 'asterfort/nmvcd2.h'
-    include 'asterfort/nmvcex.h'
-    include 'asterfort/nmvcle.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vechme.h'
-    include 'asterfort/vectme.h'
-    include 'asterfort/vecvme.h'
-    include 'asterfort/vedime.h'
-    include 'asterfort/velame.h'
-    include 'asterfort/vrcref.h'
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascavc.h"
+#include "asterfort/ascova.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/fetccn.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/merime.h"
+#include "asterfort/nmvcd2.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/nmvcle.h"
+#include "asterfort/preres.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vechme.h"
+#include "asterfort/vectme.h"
+#include "asterfort/vecvme.h"
+#include "asterfort/vedime.h"
+#include "asterfort/velame.h"
+#include "asterfort/vrcref.h"
     logical :: assmat
     character(len=1) :: base
     character(len=19) :: lischa, solveu, vecass, matass, maprec

@@ -25,13 +25,13 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmceta.h'
-    include 'asterfort/nmpilo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmceta.h"
+#include "asterfort/nmpilo.h"
     integer :: fonact(*)
     integer :: iterat, pilcvg, ldccvg
     real(kind=8) :: deltat, eta, rho, offset

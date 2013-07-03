@@ -19,11 +19,11 @@ subroutine te0530(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvarc.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvarc.h"
     character(len=16) :: option, nomte
 !
 ! ......................................................................

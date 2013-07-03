@@ -18,8 +18,8 @@ subroutine kndoub(long, lkn, nbkn, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/knindi.h'
+#include "asterfort/assert.h"
+#include "asterfort/knindi.h"
     integer :: long, iret, nbkn
     character(len=*) :: lkn(nbkn)
 ! ---------------------------------------------------------------------

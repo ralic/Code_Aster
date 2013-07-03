@@ -32,11 +32,11 @@ subroutine vecgcy(nomres, numeg)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomres, numeg, modgen
     character(len=19) :: nomnum, nomsto
     integer :: llref, iavale, iarefe, iadesc, j, neq

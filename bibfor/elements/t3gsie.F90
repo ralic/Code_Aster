@@ -1,16 +1,16 @@
 subroutine t3gsie(option, fami, xyzl, pgl, depl,&
                   nbcou, cdl)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dxdmul.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/t3gbc.h'
+#include "asterfort/dstbfb.h"
+#include "asterfort/dxdmul.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/t3gbc.h"
     character(len=4) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)

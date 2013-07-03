@@ -19,14 +19,14 @@ subroutine surfc1(char, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfr.h'
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfr.h"
     character(len=8) :: char
     integer :: ifm
 !

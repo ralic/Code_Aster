@@ -26,7 +26,7 @@ subroutine tstjac(np1, n, typj, kmod, kmod0)
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: np1, n, typj
     real(kind=8) :: kmod(np1, *), kmod0(np1, *)
 !

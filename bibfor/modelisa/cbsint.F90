@@ -1,14 +1,14 @@
 subroutine cbsint(char, noma, ligrmo, fonree)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterfort/alcart.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrmo

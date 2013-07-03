@@ -16,11 +16,11 @@ subroutine crsint(solveu)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/sdsolv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/sdsolv.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: solveu
 !-----------------------------------------------------------------------
 !     CREATION D'UNE SD SOLVEUR MUMPS POUR LA ROUTINE CONINT (OPERATEUR

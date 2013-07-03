@@ -16,20 +16,20 @@ subroutine caliel(fonrez, chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/aflrch.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nueffe.h'
-    include 'asterfort/rapo2d.h'
-    include 'asterfort/rapo3d.h'
-    include 'asterfort/rapoco.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/aflrch.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nueffe.h"
+#include "asterfort/rapo2d.h"
+#include "asterfort/rapo3d.h"
+#include "asterfort/rapoco.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chargz, fonrez
 ! -------------------------------------------------------
 !     MODELISATION DU RACCORD ENTRE DES ELEMENTS

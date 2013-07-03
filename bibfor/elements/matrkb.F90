@@ -18,7 +18,7 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
 ! ======================================================================
     implicit none
 !
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: nb1, nb2
     integer :: ndimx, nddlx, nddlet
 !     REAL*8 KTDC(NDDLE,NDDLE),RIG1(NDDLET,NDDLET)

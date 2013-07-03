@@ -6,18 +6,18 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/epstmc.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalf2.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/epstmc.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/reeref.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf2.h"
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
     integer :: nfh, ddlc, nfe, nfiss, fisno(nnop, nfiss)
     character(len=8) :: elrefp, elrese, typmod(*)

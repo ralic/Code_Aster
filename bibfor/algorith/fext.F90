@@ -1,10 +1,10 @@
 subroutine fext(t, neq, nvect, liad, lifo,&
                 f)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
     integer :: neq, nvect, liad(*)
     real(kind=8) :: t, f(*)
     character(len=24) :: lifo(*)

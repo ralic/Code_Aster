@@ -56,7 +56,7 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
 !         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 !     ----------------------------------------------------------------
 !
-    include 'asterfort/rdif01.h'
+#include "asterfort/rdif01.h"
     integer :: kpg, ksp, nmat, imat, nbcomm(nmat, 3), kp, nvi, i, nfs, nsg
     integer :: nbphas, itmax, iret, nhsr, numhsr(*), neps
     character(len=16) :: comp(*)

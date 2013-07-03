@@ -27,12 +27,12 @@ subroutine melima(chin, ma, icode, ient, lima,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: ma
     character(len=19) :: chin
     integer :: icode, ient, lima, nb

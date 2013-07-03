@@ -18,39 +18,39 @@ subroutine jelihd(nomf, fichdf, clas)
 ! ======================================================================
 ! aslint: disable=W1501,C1002
     implicit none
-    include 'jeveux.h'
-    include 'jeveux_private.h'
-    include 'asterc/gtoptk.h'
-    include 'asterc/hdfcld.h'
-    include 'asterc/hdfclf.h'
-    include 'asterc/hdfclg.h'
-    include 'asterc/hdfnbo.h'
-    include 'asterc/hdfnom.h'
-    include 'asterc/hdfopd.h'
-    include 'asterc/hdfopf.h'
-    include 'asterc/hdfopg.h'
-    include 'asterc/hdfrat.h'
-    include 'asterc/hdfrsv.h'
-    include 'asterc/hdftsd.h'
-    include 'asterc/hdftyp.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjhrsv.h'
-    include 'asterfort/jjlchd.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jjlihd.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/jxecro.h'
-    include 'asterfort/jxouvr.h'
-    include 'asterfort/lxmins.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "jeveux_private.h"
+#include "asterc/gtoptk.h"
+#include "asterc/hdfcld.h"
+#include "asterc/hdfclf.h"
+#include "asterc/hdfclg.h"
+#include "asterc/hdfnbo.h"
+#include "asterc/hdfnom.h"
+#include "asterc/hdfopd.h"
+#include "asterc/hdfopf.h"
+#include "asterc/hdfopg.h"
+#include "asterc/hdfrat.h"
+#include "asterc/hdfrsv.h"
+#include "asterc/hdftsd.h"
+#include "asterc/hdftyp.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjhrsv.h"
+#include "asterfort/jjlchd.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jjlihd.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/jxecro.h"
+#include "asterfort/jxouvr.h"
+#include "asterfort/lxmins.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomf, fichdf, clas
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'OUVERTURE D'UNE BASE AVEC LECTURE SUR

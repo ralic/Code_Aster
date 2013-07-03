@@ -39,8 +39,8 @@ subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono,&
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/iscode.h'
-    include 'asterfort/isgeco.h'
+#include "asterfort/iscode.h"
+#include "asterfort/isgeco.h"
     integer :: i, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !-----------------------------------------------------------------------
     parameter (nbcpmx = 300)

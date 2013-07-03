@@ -40,14 +40,14 @@ subroutine dmatdp(fami, mater, instan, poum, igau,&
 !.========================= DEBUT DES DECLARATIONS ====================
     implicit none
 ! -----  ARGUMENTS
-    include 'asterfort/assert.h'
-    include 'asterfort/dpao2d.h'
-    include 'asterfort/hypmat.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/assert.h"
+#include "asterfort/dpao2d.h"
+#include "asterfort/hypmat.h"
+#include "asterfort/matini.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utbtab.h"
     character(len=*) :: fami, poum
     real(kind=8) :: repere(7), d(4, 4), instan
     integer :: mater, igau, isgau

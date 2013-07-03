@@ -2,7 +2,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
                   offset, t, elapse, nbchoc, fnmaxa,&
                   fnmmoy, fnmety, npari, lpari, valek)
     implicit   none
-    include 'asterfort/tbajli.h'
+#include "asterfort/tbajli.h"
     integer :: nbpt, nbchoc, npari
     real(kind=8) :: fn(*), t(*), vn(*), offset, elapse, wk3(*), fnmaxa, fnmety
     real(kind=8) :: fnmmoy

@@ -233,14 +233,14 @@ subroutine ftrsen(job, compq, select, n, t,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'asterfort/flacon.h'
-    include 'asterfort/flrsyl.h'
-    include 'asterfort/ftrexc.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/dlacpy.h'
-    include 'blas/dlange.h'
-    include 'blas/lsame.h'
+#include "asterc/matfpe.h"
+#include "asterfort/flacon.h"
+#include "asterfort/flrsyl.h"
+#include "asterfort/ftrexc.h"
+#include "asterfort/xerbla.h"
+#include "blas/dlacpy.h"
+#include "blas/dlange.h"
+#include "blas/lsame.h"
     character(len=1) :: compq, job
     integer :: info, ldq, ldt, liwork, lwork, m, n
     real(kind=8) :: s, sep

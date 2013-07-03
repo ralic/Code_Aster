@@ -18,8 +18,8 @@ subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
     logical :: lelpiv
     integer :: numlia
     integer :: nbliai

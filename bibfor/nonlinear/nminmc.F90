@@ -24,14 +24,14 @@ subroutine nminmc(fonact, lischa, sddyna, modele, compor,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmcmat.h'
-    include 'asterfort/nmxmat.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcmat.h"
+#include "asterfort/nmxmat.h"
+#include "asterfort/u2mess.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, solveu
     character(len=24) :: numedd, numfix, resoco, defico

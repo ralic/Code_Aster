@@ -19,14 +19,14 @@ subroutine nmcrdd(noma, nomo, sdieto, sdsuiv)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcrdn.h'
-    include 'asterfort/nmextr.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcrdn.h"
+#include "asterfort/nmextr.h"
     character(len=8) :: noma, nomo
     character(len=24) :: sdieto, sdsuiv
 !

@@ -19,15 +19,15 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/extdch.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/extdch.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
     integer :: iadapt, numins
     character(len=19) :: valinc(*)
     character(len=19) :: sddisc

@@ -1,15 +1,15 @@
 subroutine meamac(modelz, ncha, lcha, mate, matelz)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/meama2.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/meama2.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     integer :: ncha
     character(len=*) :: modelz, mate, matelz
     character(len=8) :: lcha(*)

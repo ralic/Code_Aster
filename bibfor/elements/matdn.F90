@@ -31,7 +31,7 @@ subroutine matdn(nb1, xr, intsn, madn, nks1,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     real(kind=8) :: madn ( 3 , 51 )
     real(kind=8) :: nks1 ( 3 , 51 )
     real(kind=8) :: nks2 ( 3 , 51 )

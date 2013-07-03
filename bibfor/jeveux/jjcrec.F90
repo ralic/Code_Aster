@@ -18,13 +18,13 @@ subroutine jjcrec(icl, ida, genri, typei, nb,&
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallt.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallt.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: icl, ida, nb, iadmi
     character(len=*) :: genri, typei
 ! ----------------------------------------------------------------------

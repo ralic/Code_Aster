@@ -20,39 +20,39 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! ======================================================================
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/corddl.h'
-    include 'asterfort/crelil.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jaexin.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/nbno.h'
-    include 'asterfort/parti0.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/corddl.h"
+#include "asterfort/crelil.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/digdel.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jaexin.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/nbec.h"
+#include "asterfort/nbno.h"
+#include "asterfort/parti0.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: vec, tlivec(*), vecpro, base
     character(len=*) :: nu
     character(len=4) :: motcle

@@ -41,11 +41,11 @@ subroutine utlicm(nbcmpv, nomcmp, nomgd, ncmprf, nomcmr,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/irccmp.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/irccmp.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: ncmprf, nbcmpv, ncmpve
 !
     character(len=8) :: nomgd

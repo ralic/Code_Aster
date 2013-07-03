@@ -17,12 +17,12 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dxefg2.h'
-    include 'asterfort/dxefgm.h'
-    include 'asterfort/dxefgt.h'
-    include 'asterfort/dxefn2.h'
-    include 'asterfort/dxefnt.h'
+#include "jeveux.h"
+#include "asterfort/dxefg2.h"
+#include "asterfort/dxefgm.h"
+#include "asterfort/dxefgt.h"
+#include "asterfort/dxefn2.h"
+#include "asterfort/dxefnt.h"
     character(len=16) :: nomte
     character(len=*) :: option
     real(kind=8) :: xyzl(3, 1), pgl(3, 3)

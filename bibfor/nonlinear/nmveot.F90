@@ -20,9 +20,9 @@ subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/lcicma.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcicma.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
     integer :: np, nb, nr
     real(kind=8) :: drbdb(nb, nb), drbdp(nb, np)
     real(kind=8) :: drpdp(np, np), drpdb(np, nb)

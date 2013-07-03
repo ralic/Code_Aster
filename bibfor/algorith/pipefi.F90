@@ -20,12 +20,12 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/nmfisa.h'
-    include 'asterfort/pipeba.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8vide.h"
+#include "asterfort/nmfisa.h"
+#include "asterfort/pipeba.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: mate, npg, lgpg
     real(kind=8) :: geom(2, 4), vim(lgpg, npg), ddepl(2, 4), deplm(2, 4)
     real(kind=8) :: ddepl0(2, 4), ddepl1(2, 4), dtau, copilo(5, npg)

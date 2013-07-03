@@ -21,22 +21,22 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/digde2.h'
-    include 'asterfort/grdeur.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/modatt.h'
-    include 'asterfort/nbpara.h'
-    include 'asterfort/nopara.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/digde2.h"
+#include "asterfort/grdeur.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/modatt.h"
+#include "asterfort/nbpara.h"
+#include "asterfort/nopara.h"
     integer :: opt, nout, te2, igr2
     character(len=19) :: ch19
     character(len=*) :: lchout(*)

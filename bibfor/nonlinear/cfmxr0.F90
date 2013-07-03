@@ -19,21 +19,21 @@ subroutine cfmxr0(defico, resoco, noma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: defico, resoco
     character(len=8) :: noma
 !

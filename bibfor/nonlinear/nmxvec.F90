@@ -24,11 +24,11 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 !
 ! aslint: disable=W1504
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/nmassv.h'
-    include 'asterfort/nmcalv.h'
-    include 'asterfort/nmchex.h'
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/nmassv.h"
+#include "asterfort/nmcalv.h"
+#include "asterfort/nmchex.h"
     integer :: nbvect
     character(len=6) :: ltypve(20)
     logical :: lcalve(20), lassve(20)

@@ -2,7 +2,7 @@ subroutine dinonc(nomte, icodre, valre, klv, raide,&
                   nbpar, param, nploi, okdire)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     character(len=16) :: nomte
     integer :: icodre(*)
     integer :: nbpar, nploi

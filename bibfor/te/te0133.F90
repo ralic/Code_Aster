@@ -18,13 +18,13 @@ subroutine te0133(option, nomte)
 !
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/rcangm.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/rcangm.h"
     character(len=16) :: option, nomte
 !----------------------------------------------------------------------
 !

@@ -5,9 +5,9 @@ subroutine lc0002(fami, kpg, ksp, ndim, imate,&
                   dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcpivm.h'
-    include 'asterfort/nmisex.h'
-    include 'asterfort/nmisot.h'
+#include "asterfort/lcpivm.h"
+#include "asterfort/nmisex.h"
+#include "asterfort/nmisot.h"
     integer :: imate, ndim, kpg, ksp, codret, neps, nsig, ndsde
     real(kind=8) :: crit(*), instam, instap, vim(*), vip(*), dsidep(ndsde)
     real(kind=8) :: r8bid

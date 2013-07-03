@@ -20,8 +20,8 @@ function nmcri3(depsv)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterc/r8gaem.h'
-    include 'asterc/r8prem.h'
+#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
     real(kind=8) :: nmcri3, depsv
 ! ----------------------------------------------------------------------
 !    BUT:  EVALUER LA FONCTION DONT ON CHERCHE LE ZERO

@@ -19,14 +19,14 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include     'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/cnomax.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
+#include "asterc/r8vide.h"
+#include "asterfort/cnomax.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: noma
     character(len=19) :: depplu, ddepla
     character(len=16) :: ngeom

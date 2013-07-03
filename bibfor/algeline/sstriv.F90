@@ -1,6 +1,6 @@
 subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: rdiak(neq), rdiam(neq)
     integer :: lprod(neq), ipos(neq), neq
 ! ======================================================================

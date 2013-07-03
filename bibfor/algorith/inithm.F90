@@ -2,7 +2,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
                   alpha0, k0, cs, biot, t,&
                   epsv, depsv, epsvm)
     implicit      none
-    include 'asterfort/rcvala.h'
+#include "asterfort/rcvala.h"
     logical :: yachai
     integer :: imate, yamec
     real(kind=8) :: phi0, em, alpha0, k0, cs, biot, epsvm, epsv, depsv

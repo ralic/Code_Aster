@@ -45,10 +45,10 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mess.h"
     character(len=64) :: nomamd
     character(len=8) :: nomast
 !

@@ -4,7 +4,7 @@ subroutine dikini(nbt, nu1, mu1, dxu1, dryu1,&
                   rbid)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: nbt
     real(kind=8) :: nu1, mu1, dxu1, dryu1
     real(kind=8) :: nu2, mu2, dxu2, dryu2

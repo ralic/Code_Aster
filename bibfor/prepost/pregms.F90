@@ -1,17 +1,17 @@
 subroutine pregms(igmsh, imod)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/gmeelt.h'
-    include 'asterfort/gmeneu.h'
-    include 'asterfort/gmlelt.h'
-    include 'asterfort/gmlneu.h'
-    include 'asterfort/inigms.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jjmmaa.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/gmeelt.h"
+#include "asterfort/gmeneu.h"
+#include "asterfort/gmlelt.h"
+#include "asterfort/gmlneu.h"
+#include "asterfort/inigms.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jjmmaa.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     integer :: igmsh, imod
 ! ----------------------------------------------------------------------
 ! ======================================================================

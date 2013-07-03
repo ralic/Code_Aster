@@ -39,30 +39,30 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 ! OPTION  /I/ : INDIQUE SI ON EST EN CLASSIQUE OU EN REDUIT
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/intet0.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/pmppr.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/intet0.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/pmppr.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
 !
 !
 !   PARAMETRE REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR

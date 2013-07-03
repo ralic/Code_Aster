@@ -1,9 +1,9 @@
 subroutine utest3(mclfac, iocc, tbref)
     implicit   none
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxnoac.h'
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxnoac.h"
     integer :: iocc
     character(len=16) :: tbref(2)
     character(len=*) :: mclfac

@@ -20,612 +20,612 @@ subroutine te0000(numc, opt, te)
 ! ======================================================================
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/te0001.h'
-    include 'asterfort/te0002.h'
-    include 'asterfort/te0003.h'
-    include 'asterfort/te0004.h'
-    include 'asterfort/te0005.h'
-    include 'asterfort/te0006.h'
-    include 'asterfort/te0007.h'
-    include 'asterfort/te0008.h'
-    include 'asterfort/te0009.h'
-    include 'asterfort/te0010.h'
-    include 'asterfort/te0011.h'
-    include 'asterfort/te0012.h'
-    include 'asterfort/te0013.h'
-    include 'asterfort/te0014.h'
-    include 'asterfort/te0015.h'
-    include 'asterfort/te0016.h'
-    include 'asterfort/te0017.h'
-    include 'asterfort/te0018.h'
-    include 'asterfort/te0019.h'
-    include 'asterfort/te0020.h'
-    include 'asterfort/te0021.h'
-    include 'asterfort/te0022.h'
-    include 'asterfort/te0023.h'
-    include 'asterfort/te0024.h'
-    include 'asterfort/te0025.h'
-    include 'asterfort/te0026.h'
-    include 'asterfort/te0027.h'
-    include 'asterfort/te0028.h'
-    include 'asterfort/te0029.h'
-    include 'asterfort/te0030.h'
-    include 'asterfort/te0031.h'
-    include 'asterfort/te0032.h'
-    include 'asterfort/te0033.h'
-    include 'asterfort/te0034.h'
-    include 'asterfort/te0035.h'
-    include 'asterfort/te0036.h'
-    include 'asterfort/te0037.h'
-    include 'asterfort/te0038.h'
-    include 'asterfort/te0039.h'
-    include 'asterfort/te0040.h'
-    include 'asterfort/te0041.h'
-    include 'asterfort/te0042.h'
-    include 'asterfort/te0043.h'
-    include 'asterfort/te0044.h'
-    include 'asterfort/te0045.h'
-    include 'asterfort/te0046.h'
-    include 'asterfort/te0047.h'
-    include 'asterfort/te0048.h'
-    include 'asterfort/te0049.h'
-    include 'asterfort/te0050.h'
-    include 'asterfort/te0051.h'
-    include 'asterfort/te0052.h'
-    include 'asterfort/te0053.h'
-    include 'asterfort/te0054.h'
-    include 'asterfort/te0055.h'
-    include 'asterfort/te0056.h'
-    include 'asterfort/te0057.h'
-    include 'asterfort/te0058.h'
-    include 'asterfort/te0059.h'
-    include 'asterfort/te0060.h'
-    include 'asterfort/te0061.h'
-    include 'asterfort/te0062.h'
-    include 'asterfort/te0063.h'
-    include 'asterfort/te0064.h'
-    include 'asterfort/te0065.h'
-    include 'asterfort/te0066.h'
-    include 'asterfort/te0067.h'
-    include 'asterfort/te0068.h'
-    include 'asterfort/te0069.h'
-    include 'asterfort/te0070.h'
-    include 'asterfort/te0071.h'
-    include 'asterfort/te0072.h'
-    include 'asterfort/te0073.h'
-    include 'asterfort/te0074.h'
-    include 'asterfort/te0075.h'
-    include 'asterfort/te0076.h'
-    include 'asterfort/te0077.h'
-    include 'asterfort/te0078.h'
-    include 'asterfort/te0079.h'
-    include 'asterfort/te0080.h'
-    include 'asterfort/te0081.h'
-    include 'asterfort/te0082.h'
-    include 'asterfort/te0083.h'
-    include 'asterfort/te0084.h'
-    include 'asterfort/te0085.h'
-    include 'asterfort/te0086.h'
-    include 'asterfort/te0087.h'
-    include 'asterfort/te0088.h'
-    include 'asterfort/te0089.h'
-    include 'asterfort/te0090.h'
-    include 'asterfort/te0091.h'
-    include 'asterfort/te0092.h'
-    include 'asterfort/te0093.h'
-    include 'asterfort/te0094.h'
-    include 'asterfort/te0095.h'
-    include 'asterfort/te0096.h'
-    include 'asterfort/te0097.h'
-    include 'asterfort/te0098.h'
-    include 'asterfort/te0099.h'
-    include 'asterfort/te0100.h'
-    include 'asterfort/te0101.h'
-    include 'asterfort/te0102.h'
-    include 'asterfort/te0103.h'
-    include 'asterfort/te0104.h'
-    include 'asterfort/te0105.h'
-    include 'asterfort/te0106.h'
-    include 'asterfort/te0107.h'
-    include 'asterfort/te0108.h'
-    include 'asterfort/te0109.h'
-    include 'asterfort/te0110.h'
-    include 'asterfort/te0111.h'
-    include 'asterfort/te0112.h'
-    include 'asterfort/te0113.h'
-    include 'asterfort/te0114.h'
-    include 'asterfort/te0115.h'
-    include 'asterfort/te0116.h'
-    include 'asterfort/te0117.h'
-    include 'asterfort/te0118.h'
-    include 'asterfort/te0119.h'
-    include 'asterfort/te0120.h'
-    include 'asterfort/te0121.h'
-    include 'asterfort/te0122.h'
-    include 'asterfort/te0123.h'
-    include 'asterfort/te0124.h'
-    include 'asterfort/te0125.h'
-    include 'asterfort/te0126.h'
-    include 'asterfort/te0127.h'
-    include 'asterfort/te0128.h'
-    include 'asterfort/te0129.h'
-    include 'asterfort/te0130.h'
-    include 'asterfort/te0131.h'
-    include 'asterfort/te0132.h'
-    include 'asterfort/te0133.h'
-    include 'asterfort/te0134.h'
-    include 'asterfort/te0135.h'
-    include 'asterfort/te0136.h'
-    include 'asterfort/te0137.h'
-    include 'asterfort/te0138.h'
-    include 'asterfort/te0139.h'
-    include 'asterfort/te0140.h'
-    include 'asterfort/te0141.h'
-    include 'asterfort/te0142.h'
-    include 'asterfort/te0143.h'
-    include 'asterfort/te0144.h'
-    include 'asterfort/te0145.h'
-    include 'asterfort/te0146.h'
-    include 'asterfort/te0147.h'
-    include 'asterfort/te0148.h'
-    include 'asterfort/te0149.h'
-    include 'asterfort/te0150.h'
-    include 'asterfort/te0151.h'
-    include 'asterfort/te0152.h'
-    include 'asterfort/te0153.h'
-    include 'asterfort/te0154.h'
-    include 'asterfort/te0155.h'
-    include 'asterfort/te0156.h'
-    include 'asterfort/te0157.h'
-    include 'asterfort/te0158.h'
-    include 'asterfort/te0159.h'
-    include 'asterfort/te0160.h'
-    include 'asterfort/te0161.h'
-    include 'asterfort/te0162.h'
-    include 'asterfort/te0163.h'
-    include 'asterfort/te0164.h'
-    include 'asterfort/te0165.h'
-    include 'asterfort/te0166.h'
-    include 'asterfort/te0167.h'
-    include 'asterfort/te0168.h'
-    include 'asterfort/te0169.h'
-    include 'asterfort/te0170.h'
-    include 'asterfort/te0171.h'
-    include 'asterfort/te0172.h'
-    include 'asterfort/te0173.h'
-    include 'asterfort/te0174.h'
-    include 'asterfort/te0175.h'
-    include 'asterfort/te0176.h'
-    include 'asterfort/te0177.h'
-    include 'asterfort/te0178.h'
-    include 'asterfort/te0179.h'
-    include 'asterfort/te0180.h'
-    include 'asterfort/te0181.h'
-    include 'asterfort/te0182.h'
-    include 'asterfort/te0183.h'
-    include 'asterfort/te0184.h'
-    include 'asterfort/te0185.h'
-    include 'asterfort/te0186.h'
-    include 'asterfort/te0187.h'
-    include 'asterfort/te0188.h'
-    include 'asterfort/te0189.h'
-    include 'asterfort/te0190.h'
-    include 'asterfort/te0191.h'
-    include 'asterfort/te0192.h'
-    include 'asterfort/te0193.h'
-    include 'asterfort/te0194.h'
-    include 'asterfort/te0195.h'
-    include 'asterfort/te0196.h'
-    include 'asterfort/te0197.h'
-    include 'asterfort/te0198.h'
-    include 'asterfort/te0199.h'
-    include 'asterfort/te0200.h'
-    include 'asterfort/te0201.h'
-    include 'asterfort/te0202.h'
-    include 'asterfort/te0203.h'
-    include 'asterfort/te0204.h'
-    include 'asterfort/te0205.h'
-    include 'asterfort/te0206.h'
-    include 'asterfort/te0207.h'
-    include 'asterfort/te0208.h'
-    include 'asterfort/te0209.h'
-    include 'asterfort/te0210.h'
-    include 'asterfort/te0211.h'
-    include 'asterfort/te0212.h'
-    include 'asterfort/te0213.h'
-    include 'asterfort/te0214.h'
-    include 'asterfort/te0215.h'
-    include 'asterfort/te0216.h'
-    include 'asterfort/te0217.h'
-    include 'asterfort/te0218.h'
-    include 'asterfort/te0219.h'
-    include 'asterfort/te0220.h'
-    include 'asterfort/te0221.h'
-    include 'asterfort/te0222.h'
-    include 'asterfort/te0223.h'
-    include 'asterfort/te0224.h'
-    include 'asterfort/te0225.h'
-    include 'asterfort/te0226.h'
-    include 'asterfort/te0227.h'
-    include 'asterfort/te0228.h'
-    include 'asterfort/te0229.h'
-    include 'asterfort/te0230.h'
-    include 'asterfort/te0231.h'
-    include 'asterfort/te0232.h'
-    include 'asterfort/te0233.h'
-    include 'asterfort/te0234.h'
-    include 'asterfort/te0235.h'
-    include 'asterfort/te0236.h'
-    include 'asterfort/te0237.h'
-    include 'asterfort/te0238.h'
-    include 'asterfort/te0239.h'
-    include 'asterfort/te0240.h'
-    include 'asterfort/te0241.h'
-    include 'asterfort/te0242.h'
-    include 'asterfort/te0243.h'
-    include 'asterfort/te0244.h'
-    include 'asterfort/te0245.h'
-    include 'asterfort/te0246.h'
-    include 'asterfort/te0247.h'
-    include 'asterfort/te0248.h'
-    include 'asterfort/te0249.h'
-    include 'asterfort/te0250.h'
-    include 'asterfort/te0251.h'
-    include 'asterfort/te0252.h'
-    include 'asterfort/te0253.h'
-    include 'asterfort/te0254.h'
-    include 'asterfort/te0255.h'
-    include 'asterfort/te0256.h'
-    include 'asterfort/te0257.h'
-    include 'asterfort/te0258.h'
-    include 'asterfort/te0259.h'
-    include 'asterfort/te0260.h'
-    include 'asterfort/te0261.h'
-    include 'asterfort/te0262.h'
-    include 'asterfort/te0263.h'
-    include 'asterfort/te0264.h'
-    include 'asterfort/te0265.h'
-    include 'asterfort/te0266.h'
-    include 'asterfort/te0267.h'
-    include 'asterfort/te0268.h'
-    include 'asterfort/te0269.h'
-    include 'asterfort/te0270.h'
-    include 'asterfort/te0271.h'
-    include 'asterfort/te0272.h'
-    include 'asterfort/te0273.h'
-    include 'asterfort/te0274.h'
-    include 'asterfort/te0275.h'
-    include 'asterfort/te0276.h'
-    include 'asterfort/te0277.h'
-    include 'asterfort/te0278.h'
-    include 'asterfort/te0279.h'
-    include 'asterfort/te0280.h'
-    include 'asterfort/te0281.h'
-    include 'asterfort/te0282.h'
-    include 'asterfort/te0283.h'
-    include 'asterfort/te0284.h'
-    include 'asterfort/te0285.h'
-    include 'asterfort/te0286.h'
-    include 'asterfort/te0287.h'
-    include 'asterfort/te0288.h'
-    include 'asterfort/te0289.h'
-    include 'asterfort/te0290.h'
-    include 'asterfort/te0291.h'
-    include 'asterfort/te0292.h'
-    include 'asterfort/te0293.h'
-    include 'asterfort/te0294.h'
-    include 'asterfort/te0295.h'
-    include 'asterfort/te0296.h'
-    include 'asterfort/te0297.h'
-    include 'asterfort/te0298.h'
-    include 'asterfort/te0299.h'
-    include 'asterfort/te0300.h'
-    include 'asterfort/te0301.h'
-    include 'asterfort/te0302.h'
-    include 'asterfort/te0303.h'
-    include 'asterfort/te0304.h'
-    include 'asterfort/te0305.h'
-    include 'asterfort/te0306.h'
-    include 'asterfort/te0307.h'
-    include 'asterfort/te0308.h'
-    include 'asterfort/te0309.h'
-    include 'asterfort/te0310.h'
-    include 'asterfort/te0311.h'
-    include 'asterfort/te0312.h'
-    include 'asterfort/te0313.h'
-    include 'asterfort/te0314.h'
-    include 'asterfort/te0315.h'
-    include 'asterfort/te0316.h'
-    include 'asterfort/te0317.h'
-    include 'asterfort/te0318.h'
-    include 'asterfort/te0319.h'
-    include 'asterfort/te0320.h'
-    include 'asterfort/te0321.h'
-    include 'asterfort/te0322.h'
-    include 'asterfort/te0323.h'
-    include 'asterfort/te0324.h'
-    include 'asterfort/te0325.h'
-    include 'asterfort/te0326.h'
-    include 'asterfort/te0327.h'
-    include 'asterfort/te0328.h'
-    include 'asterfort/te0329.h'
-    include 'asterfort/te0330.h'
-    include 'asterfort/te0331.h'
-    include 'asterfort/te0332.h'
-    include 'asterfort/te0333.h'
-    include 'asterfort/te0334.h'
-    include 'asterfort/te0335.h'
-    include 'asterfort/te0336.h'
-    include 'asterfort/te0337.h'
-    include 'asterfort/te0338.h'
-    include 'asterfort/te0339.h'
-    include 'asterfort/te0340.h'
-    include 'asterfort/te0341.h'
-    include 'asterfort/te0342.h'
-    include 'asterfort/te0343.h'
-    include 'asterfort/te0344.h'
-    include 'asterfort/te0345.h'
-    include 'asterfort/te0346.h'
-    include 'asterfort/te0347.h'
-    include 'asterfort/te0348.h'
-    include 'asterfort/te0349.h'
-    include 'asterfort/te0350.h'
-    include 'asterfort/te0351.h'
-    include 'asterfort/te0352.h'
-    include 'asterfort/te0353.h'
-    include 'asterfort/te0354.h'
-    include 'asterfort/te0355.h'
-    include 'asterfort/te0356.h'
-    include 'asterfort/te0357.h'
-    include 'asterfort/te0358.h'
-    include 'asterfort/te0359.h'
-    include 'asterfort/te0360.h'
-    include 'asterfort/te0361.h'
-    include 'asterfort/te0362.h'
-    include 'asterfort/te0363.h'
-    include 'asterfort/te0364.h'
-    include 'asterfort/te0365.h'
-    include 'asterfort/te0366.h'
-    include 'asterfort/te0367.h'
-    include 'asterfort/te0368.h'
-    include 'asterfort/te0369.h'
-    include 'asterfort/te0370.h'
-    include 'asterfort/te0371.h'
-    include 'asterfort/te0372.h'
-    include 'asterfort/te0373.h'
-    include 'asterfort/te0374.h'
-    include 'asterfort/te0375.h'
-    include 'asterfort/te0376.h'
-    include 'asterfort/te0377.h'
-    include 'asterfort/te0378.h'
-    include 'asterfort/te0379.h'
-    include 'asterfort/te0380.h'
-    include 'asterfort/te0381.h'
-    include 'asterfort/te0382.h'
-    include 'asterfort/te0383.h'
-    include 'asterfort/te0384.h'
-    include 'asterfort/te0385.h'
-    include 'asterfort/te0386.h'
-    include 'asterfort/te0387.h'
-    include 'asterfort/te0388.h'
-    include 'asterfort/te0389.h'
-    include 'asterfort/te0390.h'
-    include 'asterfort/te0391.h'
-    include 'asterfort/te0392.h'
-    include 'asterfort/te0393.h'
-    include 'asterfort/te0394.h'
-    include 'asterfort/te0395.h'
-    include 'asterfort/te0396.h'
-    include 'asterfort/te0397.h'
-    include 'asterfort/te0398.h'
-    include 'asterfort/te0399.h'
-    include 'asterfort/te0400.h'
-    include 'asterfort/te0401.h'
-    include 'asterfort/te0402.h'
-    include 'asterfort/te0403.h'
-    include 'asterfort/te0404.h'
-    include 'asterfort/te0405.h'
-    include 'asterfort/te0406.h'
-    include 'asterfort/te0407.h'
-    include 'asterfort/te0408.h'
-    include 'asterfort/te0409.h'
-    include 'asterfort/te0410.h'
-    include 'asterfort/te0411.h'
-    include 'asterfort/te0412.h'
-    include 'asterfort/te0413.h'
-    include 'asterfort/te0414.h'
-    include 'asterfort/te0415.h'
-    include 'asterfort/te0416.h'
-    include 'asterfort/te0417.h'
-    include 'asterfort/te0418.h'
-    include 'asterfort/te0419.h'
-    include 'asterfort/te0420.h'
-    include 'asterfort/te0421.h'
-    include 'asterfort/te0422.h'
-    include 'asterfort/te0423.h'
-    include 'asterfort/te0424.h'
-    include 'asterfort/te0425.h'
-    include 'asterfort/te0426.h'
-    include 'asterfort/te0427.h'
-    include 'asterfort/te0428.h'
-    include 'asterfort/te0429.h'
-    include 'asterfort/te0430.h'
-    include 'asterfort/te0431.h'
-    include 'asterfort/te0432.h'
-    include 'asterfort/te0433.h'
-    include 'asterfort/te0434.h'
-    include 'asterfort/te0435.h'
-    include 'asterfort/te0436.h'
-    include 'asterfort/te0437.h'
-    include 'asterfort/te0438.h'
-    include 'asterfort/te0439.h'
-    include 'asterfort/te0440.h'
-    include 'asterfort/te0441.h'
-    include 'asterfort/te0442.h'
-    include 'asterfort/te0443.h'
-    include 'asterfort/te0444.h'
-    include 'asterfort/te0445.h'
-    include 'asterfort/te0446.h'
-    include 'asterfort/te0447.h'
-    include 'asterfort/te0448.h'
-    include 'asterfort/te0449.h'
-    include 'asterfort/te0450.h'
-    include 'asterfort/te0451.h'
-    include 'asterfort/te0452.h'
-    include 'asterfort/te0453.h'
-    include 'asterfort/te0454.h'
-    include 'asterfort/te0455.h'
-    include 'asterfort/te0456.h'
-    include 'asterfort/te0457.h'
-    include 'asterfort/te0458.h'
-    include 'asterfort/te0459.h'
-    include 'asterfort/te0460.h'
-    include 'asterfort/te0461.h'
-    include 'asterfort/te0462.h'
-    include 'asterfort/te0463.h'
-    include 'asterfort/te0464.h'
-    include 'asterfort/te0465.h'
-    include 'asterfort/te0466.h'
-    include 'asterfort/te0467.h'
-    include 'asterfort/te0468.h'
-    include 'asterfort/te0469.h'
-    include 'asterfort/te0470.h'
-    include 'asterfort/te0471.h'
-    include 'asterfort/te0472.h'
-    include 'asterfort/te0473.h'
-    include 'asterfort/te0474.h'
-    include 'asterfort/te0475.h'
-    include 'asterfort/te0476.h'
-    include 'asterfort/te0477.h'
-    include 'asterfort/te0478.h'
-    include 'asterfort/te0479.h'
-    include 'asterfort/te0480.h'
-    include 'asterfort/te0481.h'
-    include 'asterfort/te0482.h'
-    include 'asterfort/te0483.h'
-    include 'asterfort/te0484.h'
-    include 'asterfort/te0485.h'
-    include 'asterfort/te0486.h'
-    include 'asterfort/te0487.h'
-    include 'asterfort/te0488.h'
-    include 'asterfort/te0489.h'
-    include 'asterfort/te0490.h'
-    include 'asterfort/te0491.h'
-    include 'asterfort/te0492.h'
-    include 'asterfort/te0493.h'
-    include 'asterfort/te0494.h'
-    include 'asterfort/te0495.h'
-    include 'asterfort/te0496.h'
-    include 'asterfort/te0497.h'
-    include 'asterfort/te0498.h'
-    include 'asterfort/te0499.h'
-    include 'asterfort/te0500.h'
-    include 'asterfort/te0501.h'
-    include 'asterfort/te0502.h'
-    include 'asterfort/te0503.h'
-    include 'asterfort/te0504.h'
-    include 'asterfort/te0505.h'
-    include 'asterfort/te0506.h'
-    include 'asterfort/te0507.h'
-    include 'asterfort/te0508.h'
-    include 'asterfort/te0509.h'
-    include 'asterfort/te0510.h'
-    include 'asterfort/te0511.h'
-    include 'asterfort/te0512.h'
-    include 'asterfort/te0513.h'
-    include 'asterfort/te0514.h'
-    include 'asterfort/te0515.h'
-    include 'asterfort/te0516.h'
-    include 'asterfort/te0517.h'
-    include 'asterfort/te0518.h'
-    include 'asterfort/te0519.h'
-    include 'asterfort/te0520.h'
-    include 'asterfort/te0521.h'
-    include 'asterfort/te0522.h'
-    include 'asterfort/te0523.h'
-    include 'asterfort/te0524.h'
-    include 'asterfort/te0525.h'
-    include 'asterfort/te0526.h'
-    include 'asterfort/te0527.h'
-    include 'asterfort/te0528.h'
-    include 'asterfort/te0529.h'
-    include 'asterfort/te0530.h'
-    include 'asterfort/te0531.h'
-    include 'asterfort/te0532.h'
-    include 'asterfort/te0533.h'
-    include 'asterfort/te0534.h'
-    include 'asterfort/te0535.h'
-    include 'asterfort/te0536.h'
-    include 'asterfort/te0537.h'
-    include 'asterfort/te0538.h'
-    include 'asterfort/te0539.h'
-    include 'asterfort/te0540.h'
-    include 'asterfort/te0541.h'
-    include 'asterfort/te0542.h'
-    include 'asterfort/te0543.h'
-    include 'asterfort/te0544.h'
-    include 'asterfort/te0545.h'
-    include 'asterfort/te0546.h'
-    include 'asterfort/te0547.h'
-    include 'asterfort/te0548.h'
-    include 'asterfort/te0549.h'
-    include 'asterfort/te0550.h'
-    include 'asterfort/te0551.h'
-    include 'asterfort/te0552.h'
-    include 'asterfort/te0553.h'
-    include 'asterfort/te0554.h'
-    include 'asterfort/te0555.h'
-    include 'asterfort/te0556.h'
-    include 'asterfort/te0557.h'
-    include 'asterfort/te0558.h'
-    include 'asterfort/te0559.h'
-    include 'asterfort/te0560.h'
-    include 'asterfort/te0561.h'
-    include 'asterfort/te0562.h'
-    include 'asterfort/te0563.h'
-    include 'asterfort/te0564.h'
-    include 'asterfort/te0565.h'
-    include 'asterfort/te0566.h'
-    include 'asterfort/te0567.h'
-    include 'asterfort/te0568.h'
-    include 'asterfort/te0569.h'
-    include 'asterfort/te0570.h'
-    include 'asterfort/te0571.h'
-    include 'asterfort/te0572.h'
-    include 'asterfort/te0573.h'
-    include 'asterfort/te0574.h'
-    include 'asterfort/te0575.h'
-    include 'asterfort/te0576.h'
-    include 'asterfort/te0577.h'
-    include 'asterfort/te0578.h'
-    include 'asterfort/te0579.h'
-    include 'asterfort/te0580.h'
-    include 'asterfort/te0581.h'
-    include 'asterfort/te0582.h'
-    include 'asterfort/te0583.h'
-    include 'asterfort/te0584.h'
-    include 'asterfort/te0585.h'
-    include 'asterfort/te0586.h'
-    include 'asterfort/te0587.h'
-    include 'asterfort/te0588.h'
-    include 'asterfort/te0589.h'
-    include 'asterfort/te0590.h'
-    include 'asterfort/te0591.h'
-    include 'asterfort/te0592.h'
-    include 'asterfort/te0593.h'
-    include 'asterfort/te0594.h'
-    include 'asterfort/te0595.h'
-    include 'asterfort/te0596.h'
-    include 'asterfort/te0597.h'
-    include 'asterfort/te0598.h'
-    include 'asterfort/te0599.h'
-    include 'asterfort/te0600.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/uttcpu.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/te0001.h"
+#include "asterfort/te0002.h"
+#include "asterfort/te0003.h"
+#include "asterfort/te0004.h"
+#include "asterfort/te0005.h"
+#include "asterfort/te0006.h"
+#include "asterfort/te0007.h"
+#include "asterfort/te0008.h"
+#include "asterfort/te0009.h"
+#include "asterfort/te0010.h"
+#include "asterfort/te0011.h"
+#include "asterfort/te0012.h"
+#include "asterfort/te0013.h"
+#include "asterfort/te0014.h"
+#include "asterfort/te0015.h"
+#include "asterfort/te0016.h"
+#include "asterfort/te0017.h"
+#include "asterfort/te0018.h"
+#include "asterfort/te0019.h"
+#include "asterfort/te0020.h"
+#include "asterfort/te0021.h"
+#include "asterfort/te0022.h"
+#include "asterfort/te0023.h"
+#include "asterfort/te0024.h"
+#include "asterfort/te0025.h"
+#include "asterfort/te0026.h"
+#include "asterfort/te0027.h"
+#include "asterfort/te0028.h"
+#include "asterfort/te0029.h"
+#include "asterfort/te0030.h"
+#include "asterfort/te0031.h"
+#include "asterfort/te0032.h"
+#include "asterfort/te0033.h"
+#include "asterfort/te0034.h"
+#include "asterfort/te0035.h"
+#include "asterfort/te0036.h"
+#include "asterfort/te0037.h"
+#include "asterfort/te0038.h"
+#include "asterfort/te0039.h"
+#include "asterfort/te0040.h"
+#include "asterfort/te0041.h"
+#include "asterfort/te0042.h"
+#include "asterfort/te0043.h"
+#include "asterfort/te0044.h"
+#include "asterfort/te0045.h"
+#include "asterfort/te0046.h"
+#include "asterfort/te0047.h"
+#include "asterfort/te0048.h"
+#include "asterfort/te0049.h"
+#include "asterfort/te0050.h"
+#include "asterfort/te0051.h"
+#include "asterfort/te0052.h"
+#include "asterfort/te0053.h"
+#include "asterfort/te0054.h"
+#include "asterfort/te0055.h"
+#include "asterfort/te0056.h"
+#include "asterfort/te0057.h"
+#include "asterfort/te0058.h"
+#include "asterfort/te0059.h"
+#include "asterfort/te0060.h"
+#include "asterfort/te0061.h"
+#include "asterfort/te0062.h"
+#include "asterfort/te0063.h"
+#include "asterfort/te0064.h"
+#include "asterfort/te0065.h"
+#include "asterfort/te0066.h"
+#include "asterfort/te0067.h"
+#include "asterfort/te0068.h"
+#include "asterfort/te0069.h"
+#include "asterfort/te0070.h"
+#include "asterfort/te0071.h"
+#include "asterfort/te0072.h"
+#include "asterfort/te0073.h"
+#include "asterfort/te0074.h"
+#include "asterfort/te0075.h"
+#include "asterfort/te0076.h"
+#include "asterfort/te0077.h"
+#include "asterfort/te0078.h"
+#include "asterfort/te0079.h"
+#include "asterfort/te0080.h"
+#include "asterfort/te0081.h"
+#include "asterfort/te0082.h"
+#include "asterfort/te0083.h"
+#include "asterfort/te0084.h"
+#include "asterfort/te0085.h"
+#include "asterfort/te0086.h"
+#include "asterfort/te0087.h"
+#include "asterfort/te0088.h"
+#include "asterfort/te0089.h"
+#include "asterfort/te0090.h"
+#include "asterfort/te0091.h"
+#include "asterfort/te0092.h"
+#include "asterfort/te0093.h"
+#include "asterfort/te0094.h"
+#include "asterfort/te0095.h"
+#include "asterfort/te0096.h"
+#include "asterfort/te0097.h"
+#include "asterfort/te0098.h"
+#include "asterfort/te0099.h"
+#include "asterfort/te0100.h"
+#include "asterfort/te0101.h"
+#include "asterfort/te0102.h"
+#include "asterfort/te0103.h"
+#include "asterfort/te0104.h"
+#include "asterfort/te0105.h"
+#include "asterfort/te0106.h"
+#include "asterfort/te0107.h"
+#include "asterfort/te0108.h"
+#include "asterfort/te0109.h"
+#include "asterfort/te0110.h"
+#include "asterfort/te0111.h"
+#include "asterfort/te0112.h"
+#include "asterfort/te0113.h"
+#include "asterfort/te0114.h"
+#include "asterfort/te0115.h"
+#include "asterfort/te0116.h"
+#include "asterfort/te0117.h"
+#include "asterfort/te0118.h"
+#include "asterfort/te0119.h"
+#include "asterfort/te0120.h"
+#include "asterfort/te0121.h"
+#include "asterfort/te0122.h"
+#include "asterfort/te0123.h"
+#include "asterfort/te0124.h"
+#include "asterfort/te0125.h"
+#include "asterfort/te0126.h"
+#include "asterfort/te0127.h"
+#include "asterfort/te0128.h"
+#include "asterfort/te0129.h"
+#include "asterfort/te0130.h"
+#include "asterfort/te0131.h"
+#include "asterfort/te0132.h"
+#include "asterfort/te0133.h"
+#include "asterfort/te0134.h"
+#include "asterfort/te0135.h"
+#include "asterfort/te0136.h"
+#include "asterfort/te0137.h"
+#include "asterfort/te0138.h"
+#include "asterfort/te0139.h"
+#include "asterfort/te0140.h"
+#include "asterfort/te0141.h"
+#include "asterfort/te0142.h"
+#include "asterfort/te0143.h"
+#include "asterfort/te0144.h"
+#include "asterfort/te0145.h"
+#include "asterfort/te0146.h"
+#include "asterfort/te0147.h"
+#include "asterfort/te0148.h"
+#include "asterfort/te0149.h"
+#include "asterfort/te0150.h"
+#include "asterfort/te0151.h"
+#include "asterfort/te0152.h"
+#include "asterfort/te0153.h"
+#include "asterfort/te0154.h"
+#include "asterfort/te0155.h"
+#include "asterfort/te0156.h"
+#include "asterfort/te0157.h"
+#include "asterfort/te0158.h"
+#include "asterfort/te0159.h"
+#include "asterfort/te0160.h"
+#include "asterfort/te0161.h"
+#include "asterfort/te0162.h"
+#include "asterfort/te0163.h"
+#include "asterfort/te0164.h"
+#include "asterfort/te0165.h"
+#include "asterfort/te0166.h"
+#include "asterfort/te0167.h"
+#include "asterfort/te0168.h"
+#include "asterfort/te0169.h"
+#include "asterfort/te0170.h"
+#include "asterfort/te0171.h"
+#include "asterfort/te0172.h"
+#include "asterfort/te0173.h"
+#include "asterfort/te0174.h"
+#include "asterfort/te0175.h"
+#include "asterfort/te0176.h"
+#include "asterfort/te0177.h"
+#include "asterfort/te0178.h"
+#include "asterfort/te0179.h"
+#include "asterfort/te0180.h"
+#include "asterfort/te0181.h"
+#include "asterfort/te0182.h"
+#include "asterfort/te0183.h"
+#include "asterfort/te0184.h"
+#include "asterfort/te0185.h"
+#include "asterfort/te0186.h"
+#include "asterfort/te0187.h"
+#include "asterfort/te0188.h"
+#include "asterfort/te0189.h"
+#include "asterfort/te0190.h"
+#include "asterfort/te0191.h"
+#include "asterfort/te0192.h"
+#include "asterfort/te0193.h"
+#include "asterfort/te0194.h"
+#include "asterfort/te0195.h"
+#include "asterfort/te0196.h"
+#include "asterfort/te0197.h"
+#include "asterfort/te0198.h"
+#include "asterfort/te0199.h"
+#include "asterfort/te0200.h"
+#include "asterfort/te0201.h"
+#include "asterfort/te0202.h"
+#include "asterfort/te0203.h"
+#include "asterfort/te0204.h"
+#include "asterfort/te0205.h"
+#include "asterfort/te0206.h"
+#include "asterfort/te0207.h"
+#include "asterfort/te0208.h"
+#include "asterfort/te0209.h"
+#include "asterfort/te0210.h"
+#include "asterfort/te0211.h"
+#include "asterfort/te0212.h"
+#include "asterfort/te0213.h"
+#include "asterfort/te0214.h"
+#include "asterfort/te0215.h"
+#include "asterfort/te0216.h"
+#include "asterfort/te0217.h"
+#include "asterfort/te0218.h"
+#include "asterfort/te0219.h"
+#include "asterfort/te0220.h"
+#include "asterfort/te0221.h"
+#include "asterfort/te0222.h"
+#include "asterfort/te0223.h"
+#include "asterfort/te0224.h"
+#include "asterfort/te0225.h"
+#include "asterfort/te0226.h"
+#include "asterfort/te0227.h"
+#include "asterfort/te0228.h"
+#include "asterfort/te0229.h"
+#include "asterfort/te0230.h"
+#include "asterfort/te0231.h"
+#include "asterfort/te0232.h"
+#include "asterfort/te0233.h"
+#include "asterfort/te0234.h"
+#include "asterfort/te0235.h"
+#include "asterfort/te0236.h"
+#include "asterfort/te0237.h"
+#include "asterfort/te0238.h"
+#include "asterfort/te0239.h"
+#include "asterfort/te0240.h"
+#include "asterfort/te0241.h"
+#include "asterfort/te0242.h"
+#include "asterfort/te0243.h"
+#include "asterfort/te0244.h"
+#include "asterfort/te0245.h"
+#include "asterfort/te0246.h"
+#include "asterfort/te0247.h"
+#include "asterfort/te0248.h"
+#include "asterfort/te0249.h"
+#include "asterfort/te0250.h"
+#include "asterfort/te0251.h"
+#include "asterfort/te0252.h"
+#include "asterfort/te0253.h"
+#include "asterfort/te0254.h"
+#include "asterfort/te0255.h"
+#include "asterfort/te0256.h"
+#include "asterfort/te0257.h"
+#include "asterfort/te0258.h"
+#include "asterfort/te0259.h"
+#include "asterfort/te0260.h"
+#include "asterfort/te0261.h"
+#include "asterfort/te0262.h"
+#include "asterfort/te0263.h"
+#include "asterfort/te0264.h"
+#include "asterfort/te0265.h"
+#include "asterfort/te0266.h"
+#include "asterfort/te0267.h"
+#include "asterfort/te0268.h"
+#include "asterfort/te0269.h"
+#include "asterfort/te0270.h"
+#include "asterfort/te0271.h"
+#include "asterfort/te0272.h"
+#include "asterfort/te0273.h"
+#include "asterfort/te0274.h"
+#include "asterfort/te0275.h"
+#include "asterfort/te0276.h"
+#include "asterfort/te0277.h"
+#include "asterfort/te0278.h"
+#include "asterfort/te0279.h"
+#include "asterfort/te0280.h"
+#include "asterfort/te0281.h"
+#include "asterfort/te0282.h"
+#include "asterfort/te0283.h"
+#include "asterfort/te0284.h"
+#include "asterfort/te0285.h"
+#include "asterfort/te0286.h"
+#include "asterfort/te0287.h"
+#include "asterfort/te0288.h"
+#include "asterfort/te0289.h"
+#include "asterfort/te0290.h"
+#include "asterfort/te0291.h"
+#include "asterfort/te0292.h"
+#include "asterfort/te0293.h"
+#include "asterfort/te0294.h"
+#include "asterfort/te0295.h"
+#include "asterfort/te0296.h"
+#include "asterfort/te0297.h"
+#include "asterfort/te0298.h"
+#include "asterfort/te0299.h"
+#include "asterfort/te0300.h"
+#include "asterfort/te0301.h"
+#include "asterfort/te0302.h"
+#include "asterfort/te0303.h"
+#include "asterfort/te0304.h"
+#include "asterfort/te0305.h"
+#include "asterfort/te0306.h"
+#include "asterfort/te0307.h"
+#include "asterfort/te0308.h"
+#include "asterfort/te0309.h"
+#include "asterfort/te0310.h"
+#include "asterfort/te0311.h"
+#include "asterfort/te0312.h"
+#include "asterfort/te0313.h"
+#include "asterfort/te0314.h"
+#include "asterfort/te0315.h"
+#include "asterfort/te0316.h"
+#include "asterfort/te0317.h"
+#include "asterfort/te0318.h"
+#include "asterfort/te0319.h"
+#include "asterfort/te0320.h"
+#include "asterfort/te0321.h"
+#include "asterfort/te0322.h"
+#include "asterfort/te0323.h"
+#include "asterfort/te0324.h"
+#include "asterfort/te0325.h"
+#include "asterfort/te0326.h"
+#include "asterfort/te0327.h"
+#include "asterfort/te0328.h"
+#include "asterfort/te0329.h"
+#include "asterfort/te0330.h"
+#include "asterfort/te0331.h"
+#include "asterfort/te0332.h"
+#include "asterfort/te0333.h"
+#include "asterfort/te0334.h"
+#include "asterfort/te0335.h"
+#include "asterfort/te0336.h"
+#include "asterfort/te0337.h"
+#include "asterfort/te0338.h"
+#include "asterfort/te0339.h"
+#include "asterfort/te0340.h"
+#include "asterfort/te0341.h"
+#include "asterfort/te0342.h"
+#include "asterfort/te0343.h"
+#include "asterfort/te0344.h"
+#include "asterfort/te0345.h"
+#include "asterfort/te0346.h"
+#include "asterfort/te0347.h"
+#include "asterfort/te0348.h"
+#include "asterfort/te0349.h"
+#include "asterfort/te0350.h"
+#include "asterfort/te0351.h"
+#include "asterfort/te0352.h"
+#include "asterfort/te0353.h"
+#include "asterfort/te0354.h"
+#include "asterfort/te0355.h"
+#include "asterfort/te0356.h"
+#include "asterfort/te0357.h"
+#include "asterfort/te0358.h"
+#include "asterfort/te0359.h"
+#include "asterfort/te0360.h"
+#include "asterfort/te0361.h"
+#include "asterfort/te0362.h"
+#include "asterfort/te0363.h"
+#include "asterfort/te0364.h"
+#include "asterfort/te0365.h"
+#include "asterfort/te0366.h"
+#include "asterfort/te0367.h"
+#include "asterfort/te0368.h"
+#include "asterfort/te0369.h"
+#include "asterfort/te0370.h"
+#include "asterfort/te0371.h"
+#include "asterfort/te0372.h"
+#include "asterfort/te0373.h"
+#include "asterfort/te0374.h"
+#include "asterfort/te0375.h"
+#include "asterfort/te0376.h"
+#include "asterfort/te0377.h"
+#include "asterfort/te0378.h"
+#include "asterfort/te0379.h"
+#include "asterfort/te0380.h"
+#include "asterfort/te0381.h"
+#include "asterfort/te0382.h"
+#include "asterfort/te0383.h"
+#include "asterfort/te0384.h"
+#include "asterfort/te0385.h"
+#include "asterfort/te0386.h"
+#include "asterfort/te0387.h"
+#include "asterfort/te0388.h"
+#include "asterfort/te0389.h"
+#include "asterfort/te0390.h"
+#include "asterfort/te0391.h"
+#include "asterfort/te0392.h"
+#include "asterfort/te0393.h"
+#include "asterfort/te0394.h"
+#include "asterfort/te0395.h"
+#include "asterfort/te0396.h"
+#include "asterfort/te0397.h"
+#include "asterfort/te0398.h"
+#include "asterfort/te0399.h"
+#include "asterfort/te0400.h"
+#include "asterfort/te0401.h"
+#include "asterfort/te0402.h"
+#include "asterfort/te0403.h"
+#include "asterfort/te0404.h"
+#include "asterfort/te0405.h"
+#include "asterfort/te0406.h"
+#include "asterfort/te0407.h"
+#include "asterfort/te0408.h"
+#include "asterfort/te0409.h"
+#include "asterfort/te0410.h"
+#include "asterfort/te0411.h"
+#include "asterfort/te0412.h"
+#include "asterfort/te0413.h"
+#include "asterfort/te0414.h"
+#include "asterfort/te0415.h"
+#include "asterfort/te0416.h"
+#include "asterfort/te0417.h"
+#include "asterfort/te0418.h"
+#include "asterfort/te0419.h"
+#include "asterfort/te0420.h"
+#include "asterfort/te0421.h"
+#include "asterfort/te0422.h"
+#include "asterfort/te0423.h"
+#include "asterfort/te0424.h"
+#include "asterfort/te0425.h"
+#include "asterfort/te0426.h"
+#include "asterfort/te0427.h"
+#include "asterfort/te0428.h"
+#include "asterfort/te0429.h"
+#include "asterfort/te0430.h"
+#include "asterfort/te0431.h"
+#include "asterfort/te0432.h"
+#include "asterfort/te0433.h"
+#include "asterfort/te0434.h"
+#include "asterfort/te0435.h"
+#include "asterfort/te0436.h"
+#include "asterfort/te0437.h"
+#include "asterfort/te0438.h"
+#include "asterfort/te0439.h"
+#include "asterfort/te0440.h"
+#include "asterfort/te0441.h"
+#include "asterfort/te0442.h"
+#include "asterfort/te0443.h"
+#include "asterfort/te0444.h"
+#include "asterfort/te0445.h"
+#include "asterfort/te0446.h"
+#include "asterfort/te0447.h"
+#include "asterfort/te0448.h"
+#include "asterfort/te0449.h"
+#include "asterfort/te0450.h"
+#include "asterfort/te0451.h"
+#include "asterfort/te0452.h"
+#include "asterfort/te0453.h"
+#include "asterfort/te0454.h"
+#include "asterfort/te0455.h"
+#include "asterfort/te0456.h"
+#include "asterfort/te0457.h"
+#include "asterfort/te0458.h"
+#include "asterfort/te0459.h"
+#include "asterfort/te0460.h"
+#include "asterfort/te0461.h"
+#include "asterfort/te0462.h"
+#include "asterfort/te0463.h"
+#include "asterfort/te0464.h"
+#include "asterfort/te0465.h"
+#include "asterfort/te0466.h"
+#include "asterfort/te0467.h"
+#include "asterfort/te0468.h"
+#include "asterfort/te0469.h"
+#include "asterfort/te0470.h"
+#include "asterfort/te0471.h"
+#include "asterfort/te0472.h"
+#include "asterfort/te0473.h"
+#include "asterfort/te0474.h"
+#include "asterfort/te0475.h"
+#include "asterfort/te0476.h"
+#include "asterfort/te0477.h"
+#include "asterfort/te0478.h"
+#include "asterfort/te0479.h"
+#include "asterfort/te0480.h"
+#include "asterfort/te0481.h"
+#include "asterfort/te0482.h"
+#include "asterfort/te0483.h"
+#include "asterfort/te0484.h"
+#include "asterfort/te0485.h"
+#include "asterfort/te0486.h"
+#include "asterfort/te0487.h"
+#include "asterfort/te0488.h"
+#include "asterfort/te0489.h"
+#include "asterfort/te0490.h"
+#include "asterfort/te0491.h"
+#include "asterfort/te0492.h"
+#include "asterfort/te0493.h"
+#include "asterfort/te0494.h"
+#include "asterfort/te0495.h"
+#include "asterfort/te0496.h"
+#include "asterfort/te0497.h"
+#include "asterfort/te0498.h"
+#include "asterfort/te0499.h"
+#include "asterfort/te0500.h"
+#include "asterfort/te0501.h"
+#include "asterfort/te0502.h"
+#include "asterfort/te0503.h"
+#include "asterfort/te0504.h"
+#include "asterfort/te0505.h"
+#include "asterfort/te0506.h"
+#include "asterfort/te0507.h"
+#include "asterfort/te0508.h"
+#include "asterfort/te0509.h"
+#include "asterfort/te0510.h"
+#include "asterfort/te0511.h"
+#include "asterfort/te0512.h"
+#include "asterfort/te0513.h"
+#include "asterfort/te0514.h"
+#include "asterfort/te0515.h"
+#include "asterfort/te0516.h"
+#include "asterfort/te0517.h"
+#include "asterfort/te0518.h"
+#include "asterfort/te0519.h"
+#include "asterfort/te0520.h"
+#include "asterfort/te0521.h"
+#include "asterfort/te0522.h"
+#include "asterfort/te0523.h"
+#include "asterfort/te0524.h"
+#include "asterfort/te0525.h"
+#include "asterfort/te0526.h"
+#include "asterfort/te0527.h"
+#include "asterfort/te0528.h"
+#include "asterfort/te0529.h"
+#include "asterfort/te0530.h"
+#include "asterfort/te0531.h"
+#include "asterfort/te0532.h"
+#include "asterfort/te0533.h"
+#include "asterfort/te0534.h"
+#include "asterfort/te0535.h"
+#include "asterfort/te0536.h"
+#include "asterfort/te0537.h"
+#include "asterfort/te0538.h"
+#include "asterfort/te0539.h"
+#include "asterfort/te0540.h"
+#include "asterfort/te0541.h"
+#include "asterfort/te0542.h"
+#include "asterfort/te0543.h"
+#include "asterfort/te0544.h"
+#include "asterfort/te0545.h"
+#include "asterfort/te0546.h"
+#include "asterfort/te0547.h"
+#include "asterfort/te0548.h"
+#include "asterfort/te0549.h"
+#include "asterfort/te0550.h"
+#include "asterfort/te0551.h"
+#include "asterfort/te0552.h"
+#include "asterfort/te0553.h"
+#include "asterfort/te0554.h"
+#include "asterfort/te0555.h"
+#include "asterfort/te0556.h"
+#include "asterfort/te0557.h"
+#include "asterfort/te0558.h"
+#include "asterfort/te0559.h"
+#include "asterfort/te0560.h"
+#include "asterfort/te0561.h"
+#include "asterfort/te0562.h"
+#include "asterfort/te0563.h"
+#include "asterfort/te0564.h"
+#include "asterfort/te0565.h"
+#include "asterfort/te0566.h"
+#include "asterfort/te0567.h"
+#include "asterfort/te0568.h"
+#include "asterfort/te0569.h"
+#include "asterfort/te0570.h"
+#include "asterfort/te0571.h"
+#include "asterfort/te0572.h"
+#include "asterfort/te0573.h"
+#include "asterfort/te0574.h"
+#include "asterfort/te0575.h"
+#include "asterfort/te0576.h"
+#include "asterfort/te0577.h"
+#include "asterfort/te0578.h"
+#include "asterfort/te0579.h"
+#include "asterfort/te0580.h"
+#include "asterfort/te0581.h"
+#include "asterfort/te0582.h"
+#include "asterfort/te0583.h"
+#include "asterfort/te0584.h"
+#include "asterfort/te0585.h"
+#include "asterfort/te0586.h"
+#include "asterfort/te0587.h"
+#include "asterfort/te0588.h"
+#include "asterfort/te0589.h"
+#include "asterfort/te0590.h"
+#include "asterfort/te0591.h"
+#include "asterfort/te0592.h"
+#include "asterfort/te0593.h"
+#include "asterfort/te0594.h"
+#include "asterfort/te0595.h"
+#include "asterfort/te0596.h"
+#include "asterfort/te0597.h"
+#include "asterfort/te0598.h"
+#include "asterfort/te0599.h"
+#include "asterfort/te0600.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/uttcpu.h"
     integer :: numc, opt, te
 ! ----------------------------------------------------------------------
 !     ENTREES:

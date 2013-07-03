@@ -29,14 +29,14 @@ subroutine cetucr(motfac, model0)
 !
 ! DECLARATION PARAMETRES D'APPELS
 ! -------------------------------
-    include 'asterc/getvr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltcrsd.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
+#include "asterc/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
     character(len=*) :: motfac, model0
 !     ------------------------------------------------------------------
 !

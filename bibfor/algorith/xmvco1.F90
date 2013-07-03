@@ -5,9 +5,9 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/vecini.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/vecini.h"
+#include "blas/ddot.h"
     integer :: ndim, nno, nnol
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu

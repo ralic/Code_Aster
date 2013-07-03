@@ -30,9 +30,9 @@ subroutine fetcpu(option, temps, infofe, rang, ifm)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterfort/assert.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "asterfort/assert.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     integer :: option, rang, ifm
     real(kind=8) :: temps(6)
     character(len=24) :: infofe

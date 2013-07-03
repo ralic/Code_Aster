@@ -2,21 +2,21 @@ subroutine lglite(yf, nbmat, mater, f0, devg,&
                   devgii, traceg, dy, codret)
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/calcdr.h'
-    include 'asterfort/calcdy.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/dervar.h'
-    include 'asterfort/gdev.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/solren.h'
-    include 'asterfort/varecr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/calcdr.h"
+#include "asterfort/calcdy.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/dervar.h"
+#include "asterfort/gdev.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/solren.h"
+#include "asterfort/varecr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbmat, codret
     real(kind=8) :: yf(10), mater(nbmat, 2), f0
     real(kind=8) :: devg(6), devgii, traceg, dy(10)

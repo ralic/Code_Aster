@@ -23,29 +23,29 @@ subroutine op9999()
 !-----------------------------------------------------------------------
 !     FIN OP9999
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/gettyp.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/jdcset.h'
-    include 'asterfort/fin999.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jefini.h'
-    include 'asterfort/jeimhd.h'
-    include 'asterfort/jeliad.h'
-    include 'asterfort/jelibf.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jetass.h'
-    include 'asterfort/jxcopy.h'
-    include 'asterfort/jxveri.h'
-    include 'asterfort/rsinfo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uimpba.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettyp.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterc/jdcset.h"
+#include "asterfort/fin999.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jefini.h"
+#include "asterfort/jeimhd.h"
+#include "asterfort/jeliad.h"
+#include "asterfort/jelibf.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jetass.h"
+#include "asterfort/jxcopy.h"
+#include "asterfort/jxveri.h"
+#include "asterfort/rsinfo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uimpba.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     integer :: info, nbenre, nboct
     integer :: ifm, iunerr, iunres, iunmes
     integer :: i, l, jco, nbco

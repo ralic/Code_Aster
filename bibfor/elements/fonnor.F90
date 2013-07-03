@@ -1,30 +1,30 @@
 subroutine fonnor(resu, noma, cnxinv)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fonext.h'
-    include 'asterfort/fonno1.h'
-    include 'asterfort/fonno2.h'
-    include 'asterfort/fonno3.h'
-    include 'asterfort/fonno4.h'
-    include 'asterfort/fonno5.h'
-    include 'asterfort/fonno6.h'
-    include 'asterfort/fonno7.h'
-    include 'asterfort/fonno8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fonext.h"
+#include "asterfort/fonno1.h"
+#include "asterfort/fonno2.h"
+#include "asterfort/fonno3.h"
+#include "asterfort/fonno4.h"
+#include "asterfort/fonno5.h"
+#include "asterfort/fonno6.h"
+#include "asterfort/fonno7.h"
+#include "asterfort/fonno8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/normev.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: resu, noma
     character(len=19) :: cnxinv
 ! ======================================================================

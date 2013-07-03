@@ -25,26 +25,26 @@ subroutine op0027()
 ! ----------------------------------------------------------------------
     implicit   none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/iniran.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/gematg.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/iniran.h"
+#include "asterfort/copisd.h"
+#include "asterfort/gematg.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: iret, n1, n, i, m, iak, iadr, iadr1, iadr2
     integer :: idesc, ialime, iaconl, jrefa2, jrefa1
     integer :: jump, iret2

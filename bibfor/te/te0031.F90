@@ -1,40 +1,40 @@
 subroutine te0031(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/dkqmas.h'
-    include 'asterfort/dkqrig.h'
-    include 'asterfort/dktmas.h'
-    include 'asterfort/dktnli.h'
-    include 'asterfort/dktrig.h'
-    include 'asterfort/dsqmas.h'
-    include 'asterfort/dsqrig.h'
-    include 'asterfort/dstmas.h'
-    include 'asterfort/dstrig.h'
-    include 'asterfort/dxbsig.h'
-    include 'asterfort/dxeffi.h'
-    include 'asterfort/dxiner.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/q4gmas.h'
-    include 'asterfort/q4grig.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/t3grig.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vecma.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/dkqmas.h"
+#include "asterfort/dkqrig.h"
+#include "asterfort/dktmas.h"
+#include "asterfort/dktnli.h"
+#include "asterfort/dktrig.h"
+#include "asterfort/dsqmas.h"
+#include "asterfort/dsqrig.h"
+#include "asterfort/dstmas.h"
+#include "asterfort/dstrig.h"
+#include "asterfort/dxbsig.h"
+#include "asterfort/dxeffi.h"
+#include "asterfort/dxiner.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/q4gmas.h"
+#include "asterfort/q4grig.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/t3grig.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecma.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

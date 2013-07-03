@@ -51,19 +51,19 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 ! ----
 ! IVECTT --> ADRESSE DU VECTEUR ELEMENTAIRE
 !.......................................................................
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/xjacf2.h'
-    include 'asterfort/xjacff.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/confac.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/tecael.h"
+#include "asterfort/xjacf2.h"
+#include "asterfort/xjacff.h"
+#include "asterfort/xxmmvd.h"
     character(len=4) :: fonree
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jaint, jcface

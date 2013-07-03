@@ -1,9 +1,9 @@
 subroutine matinv(stop, ndim, mat, inv, det)
 ! aslint: disable=W1306
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mess.h"
     integer :: ndim
     real(kind=8) :: mat(ndim, ndim), inv(ndim, ndim), det
     character(len=1) :: stop

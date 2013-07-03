@@ -68,12 +68,12 @@ subroutine calsvd(nm, m, n, a, w,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dgesdd.h'
-    include 'blas/dgesvd.h'
+#include "jeveux.h"
+#include "asterc/matfpe.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
+#include "blas/dgesdd.h"
+#include "blas/dgesvd.h"
     integer :: nm, m, n, ierr
     real(kind=8) :: a(nm, n), w(n), u(nm, m), v(nm, n)
     logical :: matu, matv

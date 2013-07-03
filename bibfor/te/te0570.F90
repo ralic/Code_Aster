@@ -55,21 +55,21 @@ subroutine te0570(option, nomte)
 !
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     character(len=8) :: elrefe
     character(len=16) :: nomte, option
     real(kind=8) :: jac, jacpoi, jacpo2, zero, e1(3), e2(3), e3(3), gn1(3)

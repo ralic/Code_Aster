@@ -20,7 +20,7 @@ subroutine nirela(irela, jp, gm, gp, am,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: irela
     real(kind=8) :: jp, gm, gp
     real(kind=8) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa

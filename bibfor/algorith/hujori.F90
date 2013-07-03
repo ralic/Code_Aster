@@ -42,8 +42,8 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
 !                                   POUR LE TENSEUR D'ELASTICITE
 !
 !========================= DEBUT DES DECLARATIONS ====================
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmat.h'
+#include "asterfort/matrot.h"
+#include "asterfort/pmat.h"
     integer :: i, j, nmat
     real(kind=8) :: zero, deux, dsqr, isqr
     real(kind=8) :: angl(3), p(3, 3), passag(6, 6), passal(6, 6)

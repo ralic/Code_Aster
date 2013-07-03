@@ -30,12 +30,12 @@ subroutine lcrksg(comp, nvi, vinf, fd, df,&
 !         COEFEL  :  COEFFICENT DE L'OPERATEUR D'ELASTICITE
 !     OUT SIGI    :  CONTRAINTES A L'INSTANT COURANT
 !     ----------------------------------------------------------------
-    include 'asterfort/lcgrla.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmat.h'
-    include 'blas/dcopy.h'
+#include "asterfort/lcgrla.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/matinv.h"
+#include "asterfort/pmat.h"
+#include "blas/dcopy.h"
     character(len=8) :: mod
     character(len=16) :: loi, comp(*)
     integer :: nmat, nvi

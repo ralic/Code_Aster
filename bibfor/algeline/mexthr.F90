@@ -1,6 +1,6 @@
 subroutine mexthr(n, a, lda)
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: n, lda
     complex(kind=8) :: a(lda, *)
 ! ======================================================================

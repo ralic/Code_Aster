@@ -29,9 +29,9 @@ subroutine infmaj()
 !      NIVPGM    :NIVEAU ACCESSIBLE AU PROGRAMMEUR  : 0 , 1 OU 2
 !      UNITE     :UNITE LOGIQUE DU FICHIER MESSAGE
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/iunifi.h'
+#include "asterc/getexm.h"
+#include "asterc/getvis.h"
+#include "asterfort/iunifi.h"
     integer :: nivuti, nivpgm, unite
     common / inf001 / nivuti , nivpgm , unite
 !-----FIN DE INF001-----------------------------------------------------

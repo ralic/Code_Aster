@@ -30,8 +30,8 @@ subroutine i2iacs(epsi, xc, yc, r, alfinf,&
 !
 !*********************************************************************
 !
-    include 'asterfort/i2req2.h'
-    include 'asterfort/trigom.h'
+#include "asterfort/i2req2.h"
+#include "asterfort/trigom.h"
     integer :: npi
     real(kind=8) :: epsi, xc, yc, x1, y1, x2, y2, r, alfinf, alfsup, a1, a2, r1
     real(kind=8) :: r2

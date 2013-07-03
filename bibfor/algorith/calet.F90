@@ -17,10 +17,10 @@ subroutine calet(ndim, fm, fma, fmp, edpn1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/matinv.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utbtab.h"
     integer :: ndim
     real(kind=8) :: fma(3, 3), fmp(3, 3)
     real(kind=8) :: edpn1(3, 3)

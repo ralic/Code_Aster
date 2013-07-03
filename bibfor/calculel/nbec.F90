@@ -25,14 +25,14 @@ function nbec(gd)
 !     _SIMPLE
 !     _ELEMENTAIRE
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
     integer :: gd, code
     character(len=8) :: nomgd, nomgd1, nomgd2
 !     INCLUDE($FUNJEV)

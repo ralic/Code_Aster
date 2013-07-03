@@ -20,7 +20,7 @@ function nmfedd(dr)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     real(kind=8) :: nmfedd, dr
 ! ----------------------------------------------------------------------
 !    BUT:  EVALUER LA DERIVEE DE LA FONCTION DONT ON CHERCHE LE ZERO

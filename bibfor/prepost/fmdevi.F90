@@ -1,7 +1,7 @@
 subroutine fmdevi(nbfonc, nbptot, sigm, dev)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(nbfonc*nbptot)
     real(kind=8) :: dev(nbfonc*nbptot)

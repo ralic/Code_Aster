@@ -29,10 +29,10 @@ subroutine caljac(np3, ic, typch, nbseg, chockc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/jacbci.h'
-    include 'asterfort/jacbpy.h'
-    include 'asterfort/jacbpz.h'
-    include 'asterfort/jacbqu.h'
+#include "asterfort/jacbci.h"
+#include "asterfort/jacbpy.h"
+#include "asterfort/jacbpz.h"
+#include "asterfort/jacbqu.h"
     integer :: np3, ic, typch(*), nbseg(*)
     real(kind=8) :: chockc(*), rc(np3, *), theta(np3, *), vloc(*), xloc(*)
     real(kind=8) :: vloc0(*), xloc0(*), tetaj, jacobc(3, *), jacobk(3, *)

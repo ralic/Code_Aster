@@ -301,28 +301,28 @@ subroutine zneupd(rvec, howmny, select, d, z,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/gtrevc.h'
-    include 'asterfort/gtrsen.h'
-    include 'asterfort/ivout.h'
-    include 'asterfort/zmout.h'
-    include 'asterfort/zngets.h'
-    include 'asterfort/zvout.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dznrm2.h'
-    include 'blas/zcopy.h'
-    include 'blas/zdotc.h'
-    include 'blas/zdscal.h'
-    include 'blas/zgeqr2.h'
-    include 'blas/zgeru.h'
-    include 'blas/zlacpy.h'
-    include 'blas/zlahqr.h'
-    include 'blas/zlaset.h'
-    include 'blas/zscal.h'
-    include 'blas/ztrmm.h'
-    include 'blas/zunm2r.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/gtrevc.h"
+#include "asterfort/gtrsen.h"
+#include "asterfort/ivout.h"
+#include "asterfort/zmout.h"
+#include "asterfort/zngets.h"
+#include "asterfort/zvout.h"
+#include "blas/dlapy2.h"
+#include "blas/dznrm2.h"
+#include "blas/zcopy.h"
+#include "blas/zdotc.h"
+#include "blas/zdscal.h"
+#include "blas/zgeqr2.h"
+#include "blas/zgeru.h"
+#include "blas/zlacpy.h"
+#include "blas/zlahqr.h"
+#include "blas/zlaset.h"
+#include "blas/zscal.h"
+#include "blas/ztrmm.h"
+#include "blas/zunm2r.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

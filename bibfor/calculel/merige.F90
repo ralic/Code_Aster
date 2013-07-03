@@ -1,15 +1,15 @@
 subroutine merige(modele, cara, sigg, strx, matel,&
                   base, nh)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecham.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/u2mess.h"
     integer :: nh
     character(len=1) :: base
     character(len=8) :: modele, cara

@@ -19,9 +19,9 @@ subroutine nmextf(motfac, iocc, extrcp)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
     character(len=16) :: motfac
     integer :: iocc
     character(len=8) :: extrcp

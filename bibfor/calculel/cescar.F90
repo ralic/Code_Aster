@@ -17,18 +17,18 @@ subroutine cescar(cesz, cartz, basz)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: cartz, cesz, basz
 ! ------------------------------------------------------------------
 ! BUT: TRANSFORMER UN CHAM_ELEM_S (DE TYPE ELEM)  EN CARTE

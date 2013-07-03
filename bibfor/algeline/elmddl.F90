@@ -20,12 +20,12 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pteddl.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pteddl.h"
     character(len=19) :: raide
     character(len=14) :: option
     integer :: neq, nbddl, vecddl(neq), nddle

@@ -1,22 +1,22 @@
 subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
                   linoeu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/oreino.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/oreino.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, nbtrou, linoeu(*)
     character(len=*) :: mcf
     character(len=8) :: nmaila

@@ -17,9 +17,9 @@ subroutine ef0039(nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit       none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte
 ! ----------------------------------------------------------------------
 !     CALCUL DE EFGE_ELNO

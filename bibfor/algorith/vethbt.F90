@@ -17,18 +17,18 @@ subroutine vethbt(modele, charge, infcha, carele, mate,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: modele, charge, infcha, carele, mate, chtni, vebtla
 ! ----------------------------------------------------------------------
 ! CALCUL DES TERMES DE DIRICHLET EN THERMIQUE NON LINEAIRE

@@ -3,8 +3,8 @@ subroutine diarme(nbt, neq, icodma, ul, dul,&
                   kty2, duly)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: nbt, neq, icodma
     real(kind=8) :: ul(neq), dul(neq), utl(neq), sim(neq), varim
     real(kind=8) :: klv(nbt), varip, kty2, duly

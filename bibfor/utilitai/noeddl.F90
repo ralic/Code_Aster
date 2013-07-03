@@ -1,16 +1,16 @@
 subroutine noeddl(nume, nbnoe, lnonoe, neq, ivec)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mesg.h"
     integer :: nbnoe, neq, ivec(neq)
     character(len=14) :: nume
     character(len=*) :: lnonoe(nbnoe)

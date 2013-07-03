@@ -2,7 +2,7 @@ subroutine lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
                   htheta)
 !
     implicit none
-    include 'asterfort/lkhlod.h'
+#include "asterfort/lkhlod.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), rcos3t, htheta
 ! =================================================================

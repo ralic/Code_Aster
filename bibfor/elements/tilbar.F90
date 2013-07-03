@@ -18,9 +18,9 @@ subroutine tilbar(stild, vectt, bars)
 !
     implicit none
 !
-    include 'asterfort/btkb.h'
-    include 'asterfort/sigbar.h'
-    include 'asterfort/sigvte.h'
+#include "asterfort/btkb.h"
+#include "asterfort/sigbar.h"
+#include "asterfort/sigvte.h"
     real(kind=8) :: stild ( 5 )
     real(kind=8) :: vectt ( 3 , 3 )
     real(kind=8) :: bars ( 9 , 9 )

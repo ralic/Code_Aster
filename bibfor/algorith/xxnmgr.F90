@@ -8,22 +8,22 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalf2.h'
-    include 'asterfort/xcalfe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/indent.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/matinv.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/reeref.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf2.h"
+#include "asterfort/xcalfe.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfiss, fisno(nnop, nfiss), idecpg
     integer :: nfh, ddlc, ddlm, nfe

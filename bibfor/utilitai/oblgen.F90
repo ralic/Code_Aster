@@ -19,8 +19,8 @@ subroutine oblgen(subccn, idnvaz, nomstr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/lxlgut.h'
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
     character(len=*) :: idnvaz
     character(len=6) :: subccn
     character(len=24) :: nomstr

@@ -20,7 +20,7 @@ subroutine shbpkc(sigpk, sigca, dusdx, npg)
 ! ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 !-------------------------------------------------------
     implicit none
-    include 'asterfort/mulmat.h'
+#include "asterfort/mulmat.h"
     real(kind=8) :: sigpk(*), sigca(*), sig(6), sig33(3, 3)
     real(kind=8) :: sigtmp(120)
     real(kind=8) :: dusdx(*), f(3, 3), tmptab(3, 3), ft(3, 3)

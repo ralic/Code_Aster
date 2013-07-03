@@ -3,12 +3,12 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
                   rela, alpha, dsidep, delta, p,&
                   am, r)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/lceiou.h'
-    include 'asterfort/lceitc.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/prmave.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/lceiou.h"
+#include "asterfort/lceitc.h"
+#include "asterfort/matini.h"
+#include "asterfort/prmave.h"
+#include "asterfort/vecini.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: saut(3), am(3), dsidep(6, 6)
     real(kind=8) :: tau1(3), tau2(3), nd(3)

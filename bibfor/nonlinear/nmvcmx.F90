@@ -19,22 +19,22 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/iisnan.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmvcex.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8maem.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: mate, comref
     character(len=19) :: comval
     character(len=8) :: mailla

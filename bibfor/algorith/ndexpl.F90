@@ -25,12 +25,12 @@ subroutine ndexpl(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/ndxcvg.h'
-    include 'asterfort/ndxdec.h'
-    include 'asterfort/ndxdep.h'
-    include 'asterfort/ndxnpa.h'
-    include 'asterfort/ndxpre.h'
-    include 'asterfort/nmchar.h'
+#include "asterfort/ndxcvg.h"
+#include "asterfort/ndxdec.h"
+#include "asterfort/ndxdep.h"
+#include "asterfort/ndxnpa.h"
+#include "asterfort/ndxpre.h"
+#include "asterfort/nmchar.h"
     integer :: numins
     integer :: fonact(*)
     character(len=16) :: method(*)

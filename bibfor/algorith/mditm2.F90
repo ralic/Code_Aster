@@ -60,43 +60,43 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getres.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/accele.h'
-    include 'asterfort/adimve.h'
-    include 'asterfort/alitmi.h'
-    include 'asterfort/caltol.h'
-    include 'asterfort/calvol.h'
-    include 'asterfort/defmcf.h'
-    include 'asterfort/defttr.h'
-    include 'asterfort/ecrbas.h'
-    include 'asterfort/ecrcho.h'
-    include 'asterfort/ecrgen.h'
-    include 'asterfort/inialg.h'
-    include 'asterfort/inipar.h'
-    include 'asterfort/inipct.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/mdchof.h'
-    include 'asterfort/mdicho.h'
-    include 'asterfort/mditm3.h'
-    include 'asterfort/projmp.h'
-    include 'asterfort/projvd.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/sommve.h'
-    include 'asterfort/transi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vardep.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getres.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/accele.h"
+#include "asterfort/adimve.h"
+#include "asterfort/alitmi.h"
+#include "asterfort/caltol.h"
+#include "asterfort/calvol.h"
+#include "asterfort/defmcf.h"
+#include "asterfort/defttr.h"
+#include "asterfort/ecrbas.h"
+#include "asterfort/ecrcho.h"
+#include "asterfort/ecrgen.h"
+#include "asterfort/inialg.h"
+#include "asterfort/inipar.h"
+#include "asterfort/inipct.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/mdchof.h"
+#include "asterfort/mdicho.h"
+#include "asterfort/mditm3.h"
+#include "asterfort/projmp.h"
+#include "asterfort/projvd.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/sommve.h"
+#include "asterfort/transi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vardep.h"
     integer :: np2, np3, np4, n2, nbm, nbmcd, nbmp, nbnl, indic, impr, itrans
     real(kind=8) :: epst, parcho(nbnl, *)
     integer :: icoupl

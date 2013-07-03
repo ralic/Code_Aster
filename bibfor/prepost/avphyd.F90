@@ -18,9 +18,9 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp), vphydr(nbordr)
 ! ----------------------------------------------------------------------

@@ -18,14 +18,14 @@ subroutine cfcpes(resoco, jsecmb)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/calatm.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: jsecmb
 !

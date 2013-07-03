@@ -2,10 +2,10 @@ subroutine majpad(p2, pvp, r, t, kh,&
                   dp2, pvpm, dt, padp, padm,&
                   dpad)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     real(kind=8) :: p2, pvp, r, t, kh, dp2, pvpm, dt, padp, padm, dpad
 ! ======================================================================
 ! ======================================================================

@@ -24,48 +24,48 @@ subroutine op0197()
 !     RECA_WEIBULL        ---------
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/chmrck.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/interp.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/optimw.h'
-    include 'asterfort/peweib.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/tbfutb.h'
-    include 'asterfort/tbimpr.h'
-    include 'asterfort/tbtrtb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttrir.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/chmrck.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/interp.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/optimw.h"
+#include "asterfort/peweib.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/tbfutb.h"
+#include "asterfort/tbimpr.h"
+#include "asterfort/tbtrtb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttrir.h"
+#include "asterfort/wkvect.h"
     integer :: nbparr, nbpark, nbpars, nbpart, info, kk
     integer :: valii
     parameter    ( nbparr = 4, nbpark = 3, nbpars=3, nbpart=3 )

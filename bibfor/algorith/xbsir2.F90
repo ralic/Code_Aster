@@ -6,7 +6,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 !
 ! aslint: disable=W1504
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,15 +48,15 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! CALCUL RESIDU DE REFERENCE ELEMENTS COHESIF MIXTE XFEM
 ! TERMES D INTERFACE
 ! -------------------
-    include 'asterfort/elelin.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xmprep.h'
-    include 'asterfort/xmulco.h'
-    include 'asterfort/xmvco3.h'
+#include "asterfort/elelin.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xmprep.h"
+#include "asterfort/xmulco.h"
+#include "asterfort/xmvco3.h"
     integer :: cface(5, 3), contac, ddlc, ddlm, ddls
     integer :: i, iadzi, iazk24, ib, ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface

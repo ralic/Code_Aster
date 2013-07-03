@@ -20,15 +20,15 @@ subroutine exchml(imodat, iparg)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/chloet.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/chloet.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: iparg, imodat
 ! ----------------------------------------------------------------------
 !     ENTREES:

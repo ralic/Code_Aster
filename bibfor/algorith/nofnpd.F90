@@ -23,12 +23,12 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tanbul.h'
-    include 'asterfort/uthk.h'
-    include 'blas/ddot.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tanbul.h"
+#include "asterfort/uthk.h"
+#include "blas/ddot.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: mate
     integer :: vu(3, 27), vp(27), vpi(3, 27)

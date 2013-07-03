@@ -16,32 +16,32 @@ subroutine te0535(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmfbkb.h'
-    include 'asterfort/pmfbts.h'
-    include 'asterfort/pmfdef.h'
-    include 'asterfort/pmfdge.h'
-    include 'asterfort/pmffft.h'
-    include 'asterfort/pmfite.h'
-    include 'asterfort/pmfits.h'
-    include 'asterfort/pmfmcf.h'
-    include 'asterfort/pmfpti.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8prem.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matela.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmfbkb.h"
+#include "asterfort/pmfbts.h"
+#include "asterfort/pmfdef.h"
+#include "asterfort/pmfdge.h"
+#include "asterfort/pmffft.h"
+#include "asterfort/pmfite.h"
+#include "asterfort/pmfits.h"
+#include "asterfort/pmfmcf.h"
+#include "asterfort/pmfpti.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: option, nomte
 ! --- ------------------------------------------------------------------
 !

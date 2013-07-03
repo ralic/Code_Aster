@@ -1,14 +1,14 @@
 subroutine juvinn(ojb)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/iisnan.h'
-    include 'asterc/r8nnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/iisnan.h"
+#include "asterc/r8nnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: ojb
 !     ------------------------------------------------------------------
 ! ======================================================================

@@ -1,13 +1,13 @@
 subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
                   epsmat, mixpre, kmd)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: istop, nprec
     real(kind=8) :: epsmat
     character(len=3) :: syme, mixpre, kmd

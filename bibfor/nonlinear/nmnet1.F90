@@ -36,9 +36,9 @@ subroutine nmnet1(zimat, nmnbn, cnbn, cplas, czef,&
 ! OUT CDEPSP : NOUVEL INCREMENT DE DEF PLASTIQUE DANS LE REPERE ORTHO
 ! OUT NORMM : NORME SUR LA FONCTION MP = F(N)
 !
-    include 'asterfort/gplass.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/mppffn.h'
+#include "asterfort/gplass.h"
+#include "asterfort/matmul.h"
+#include "asterfort/mppffn.h"
     integer :: j, cief, zimat, cier
 !
     real(kind=8) :: nmnbn(6), cnbn(6), cplas(2, 3), czef, czeg, normm

@@ -23,30 +23,30 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! aslint: disable=W1501
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/gcucon.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exfonc.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/ischar.h'
-    include 'asterfort/isdiri.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmcpqu.h'
-    include 'asterfort/nmlssv.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/gcucon.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exfonc.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/ischar.h"
+#include "asterfort/isdiri.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcpqu.h"
+#include "asterfort/nmlssv.h"
+#include "asterfort/u2mess.h"
     integer :: fonact(*)
     logical :: lunil, lcont
     character(len=16) :: method(*)

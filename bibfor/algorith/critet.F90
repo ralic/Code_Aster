@@ -19,10 +19,10 @@ subroutine critet(epsp, epsd, eta, lambda, deuxmu,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/bptobg.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/bptobg.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     real(kind=8) :: epsp(6), epsd(6)
     real(kind=8) :: lambda, deuxmu
     real(kind=8) :: eta, fpd, seuil

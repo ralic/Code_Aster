@@ -1,8 +1,8 @@
 subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
                   v0, f, f0)
     implicit none
-    include 'asterfort/mrmult.h'
-    include 'blas/daxpy.h'
+#include "asterfort/mrmult.h"
+#include "blas/daxpy.h"
     real(kind=8) :: d0(*), v0(*), f(*), f0(*)
     integer :: rigid, amort, neq
     logical :: lamort

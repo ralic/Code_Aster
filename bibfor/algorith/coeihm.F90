@@ -33,13 +33,13 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 ! ======================================================================
 !
 ! - VARIABLES ENTREE
-    include 'asterfort/calcco.h'
-    include 'asterfort/calcfh.h'
-    include 'asterfort/coeime.h'
-    include 'asterfort/kitdec.h'
-    include 'asterfort/nvithm.h'
-    include 'asterfort/thmlec.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/calcco.h"
+#include "asterfort/calcfh.h"
+#include "asterfort/coeime.h"
+#include "asterfort/kitdec.h"
+#include "asterfort/nvithm.h"
+#include "asterfort/thmlec.h"
+#include "asterfort/u2mesk.h"
     integer :: dimdef, dimcon, npg, kpi, npi, ndim, nbpha1, nbpha2
     integer :: nbvari, yamec, yate, yap1, yap2, imate
     integer :: addeme, addep1, addep2, addete, adcop1, adcop2, addlh1

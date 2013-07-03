@@ -2,19 +2,19 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
                   nomin, cmpmin, valmin, noamax, cmamax,&
                   vaamax, noamin, cmamin, vaamin)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     integer :: ioc
     real(kind=8) :: valmin, valmax, vaamin, vaamax
     character(len=8) :: nomax, nomin, cmpmax, cmpmin

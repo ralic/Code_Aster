@@ -19,10 +19,10 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: unit
     integer :: iadmi, ideci, idatoc, lt, lonoi
     character(len=*) :: mess, genri, typei

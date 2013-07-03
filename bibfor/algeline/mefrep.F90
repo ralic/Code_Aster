@@ -2,13 +2,13 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
                   z, freq0, rho, visc, rint,&
                   phix, phiy, dcent, matma)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mefin1.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mefin1.h"
+#include "asterfort/wkvect.h"
     integer :: nbz, nbmod, nbcyl, nbgrp, numgrp(*)
     real(kind=8) :: z(*), freq0(*), rho(*), visc(*), rint(*), phix(*), phiy(*)
     real(kind=8) :: dcent(*), matma(*)

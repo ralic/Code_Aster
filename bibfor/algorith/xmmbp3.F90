@@ -4,9 +4,9 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
                   rr, lact, ddls, ddlm, mmat)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/matini.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
+#include "asterfort/matini.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8)

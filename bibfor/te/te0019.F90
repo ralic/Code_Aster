@@ -29,12 +29,12 @@ subroutine te0019(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmpr3d.h'
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmpr3d.h"
     character(len=8) :: nompar(4)
     character(len=16) :: nomte, option
     integer :: ier, ndim, nno, npg, nnos, jgano, kpg, kdec, n

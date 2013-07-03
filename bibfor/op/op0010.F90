@@ -32,46 +32,46 @@ subroutine op0010()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xajuls.h'
-    include 'asterfort/xbaslo.h'
-    include 'asterfort/xenrch.h'
-    include 'asterfort/xlenri.h'
-    include 'asterfort/xpraju.h'
-    include 'asterfort/xprdis.h'
-    include 'asterfort/xprdom.h'
-    include 'asterfort/xprgeo.h'
-    include 'asterfort/xprini.h'
-    include 'asterfort/xprls.h'
-    include 'asterfort/xprmil.h'
-    include 'asterfort/xprpls.h'
-    include 'asterfort/xprrei.h'
-    include 'asterfort/xprreo.h'
-    include 'asterfort/xprtor.h'
-    include 'asterfort/xprupw.h'
-    include 'asterfort/xprvit.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xajuls.h"
+#include "asterfort/xbaslo.h"
+#include "asterfort/xenrch.h"
+#include "asterfort/xlenri.h"
+#include "asterfort/xpraju.h"
+#include "asterfort/xprdis.h"
+#include "asterfort/xprdom.h"
+#include "asterfort/xprgeo.h"
+#include "asterfort/xprini.h"
+#include "asterfort/xprls.h"
+#include "asterfort/xprmil.h"
+#include "asterfort/xprpls.h"
+#include "asterfort/xprrei.h"
+#include "asterfort/xprreo.h"
+#include "asterfort/xprtor.h"
+#include "asterfort/xprupw.h"
+#include "asterfort/xprvit.h"
     integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jconx1, jconx2, nbma, i
     integer :: j
     integer :: iadrma

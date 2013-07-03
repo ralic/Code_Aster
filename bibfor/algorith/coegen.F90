@@ -25,7 +25,7 @@ function coegen(d1, d2, d3, l, omega,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: d1, d2, d3, omega, l, uc
 !
 !

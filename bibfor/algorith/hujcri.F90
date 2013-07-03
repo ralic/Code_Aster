@@ -24,8 +24,8 @@ subroutine hujcri(mater, sig, vin, seuili)
 !           VIN    :  VARIABLES INTERNES = (R4,R1,R2,R3,EPSVP...)
 !       OUT SEUILI :  SEUIL DU MECANISME MONOTONE DE CONSOLIDATION
 !       ---------------------------------------------------------------
-    include 'asterc/r8maem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8maem.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i
     real(kind=8) :: mater(22, 2), r4, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, seuili, pc, epsvpm

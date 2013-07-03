@@ -1,31 +1,31 @@
 subroutine pemain(resu, modele, mate, cara, nh,&
                   nbocc, deform)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exlim3.h'
-    include 'asterfort/getvem.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/pemica.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vtgpld.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exlim3.h"
+#include "asterfort/getvem.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mecham.h"
+#include "asterfort/pemica.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vtgpld.h"
+#include "asterfort/wkvect.h"
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara, deform
 !     ------------------------------------------------------------------

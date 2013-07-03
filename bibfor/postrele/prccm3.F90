@@ -1,10 +1,10 @@
 subroutine prccm3(nommat, para, sm, sn, sp,&
                   ke, salt, nadm)
     implicit   none
-    include 'asterc/r8maem.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8maem.h"
+#include "asterfort/limend.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: para(*), sm, sn, sp, ke, salt, nadm
     character(len=*) :: nommat
 !     ------------------------------------------------------------------

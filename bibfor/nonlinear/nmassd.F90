@@ -20,16 +20,16 @@ subroutine nmassd(modele, numedd, lischa, fonact, depest,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmbudi.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/vtaxpy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/vtaxpy.h"
     integer :: fonact(*)
     character(len=19) :: lischa
     character(len=24) :: modele, numedd

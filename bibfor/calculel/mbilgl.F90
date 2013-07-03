@@ -7,33 +7,33 @@ subroutine mbilgl(option, result, modele, depla1, depla2,&
 ! aslint: disable=W1504
     implicit  none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcharg.h'
-    include 'asterfort/gimpgs.h'
-    include 'asterfort/gmeth1.h'
-    include 'asterfort/gmeth3.h'
-    include 'asterfort/gmeth4.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajvi.h'
-    include 'asterfort/tbajvk.h'
-    include 'asterfort/tbajvr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcharg.h"
+#include "asterfort/gimpgs.h"
+#include "asterfort/gmeth1.h"
+#include "asterfort/gmeth3.h"
+#include "asterfort/gmeth4.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvk.h"
+#include "asterfort/tbajvr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/wkvect.h"
     integer :: nchar, nnoff, indi, indj, ndeg
     integer :: nbprup, ndimte
 !

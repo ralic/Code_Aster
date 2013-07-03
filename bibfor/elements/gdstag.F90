@@ -44,7 +44,7 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en,&
 !           ROTK      : MATRICE DE ROTATION ACTUELLE
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/marota.h'
+#include "asterfort/marota.h"
     real(kind=8) :: en(3, 2), enprim(3, 2), x0k(3, 3), tetak(3, 3), qim(3, 3)
     real(kind=8) :: qikm1(3, 3), qik(3, 3), x0pg(3), tetag(3), tetapg(3)
     real(kind=8) :: rotm(3, 3), rotkm1(3, 3), rotk(3, 3), qigm(3), qigkm1(3)

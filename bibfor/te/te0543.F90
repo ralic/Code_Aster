@@ -17,17 +17,17 @@ subroutine te0543(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/pipeed.h'
-    include 'asterfort/pipepe.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/pipeed.h"
+#include "asterfort/pipepe.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES COEFFICIENTS A0 ET A1

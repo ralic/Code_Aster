@@ -1,6 +1,6 @@
 subroutine irmac2(ktype, ityca, gtype, nnoe)
     implicit   none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ityca, nnoe
     character(len=8) :: ktype, gtype
 !     ------------------------------------------------------------------

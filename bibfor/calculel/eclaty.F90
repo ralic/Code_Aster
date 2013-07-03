@@ -3,13 +3,13 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                   nbsel, corsel)
     implicit   none
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/ecla2d.h'
-    include 'asterfort/ecla3d.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/ecla2d.h"
+#include "asterfort/ecla3d.h"
+#include "asterfort/elraca.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
     integer :: ndim, npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
     integer :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)

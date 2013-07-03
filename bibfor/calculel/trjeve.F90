@@ -1,11 +1,11 @@
 subroutine trjeve(ific, nocc)
     implicit   none
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/utest3.h'
-    include 'asterfort/utesto.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/utest3.h"
+#include "asterfort/utesto.h"
     integer :: ific, nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================

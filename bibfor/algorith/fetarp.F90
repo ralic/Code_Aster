@@ -30,15 +30,15 @@ subroutine fetarp(infofe, ifm, niter, nbi, nbreor,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/dnaupd.h'
-    include 'asterfort/dneupd.h'
-    include 'asterfort/fetfiv.h'
-    include 'asterfort/fetprj.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/dnaupd.h"
+#include "asterfort/dneupd.h"
+#include "asterfort/fetfiv.h"
+#include "asterfort/fetprj.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: ifm, niter, nbi, nbreor, dimgi, ipiv, nbsd, ifetf, ifeth, irex
     integer :: iprj, ir2, ifiv, rang, nbproc
     logical :: lrigid, lstogi

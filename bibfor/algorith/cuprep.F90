@@ -19,15 +19,15 @@ subroutine cuprep(mailla, neq, deficu, resocu, deptot,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/cudisi.h'
-    include 'asterfort/cusign.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/caladu.h"
+#include "asterfort/cudisi.h"
+#include "asterfort/cusign.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: mailla
     integer :: neq
     character(len=24) :: deficu, resocu

@@ -20,17 +20,17 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/xxmmvd.h"
     character(len=24) :: defico
     real(kind=8) :: geom(3)
     integer :: ndim, mmait, amait, nmait, statue, izone

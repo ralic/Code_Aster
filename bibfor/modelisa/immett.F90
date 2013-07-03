@@ -54,10 +54,10 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/r8prem.h'
-    include 'asterfort/cotfac.h'
-    include 'asterfort/tstbar.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/cotfac.h"
+#include "asterfort/tstbar.h"
+#include "asterfort/u2mess.h"
     integer :: nbcnx, itetra, immer
     real(kind=8) :: xyzma(3, *), x3dca(*), xbar(*)
 !

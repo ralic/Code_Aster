@@ -21,14 +21,14 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/bmatmc.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/pmat.h'
-    include 'blas/dscal.h'
+#include "asterfort/bmatmc.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/pmat.h"
+#include "blas/dscal.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: mate
     integer :: vu(3, 27), vg(27), vp(27)

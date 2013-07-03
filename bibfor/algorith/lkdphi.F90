@@ -2,8 +2,8 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
                   dphi)
 !
     implicit    none
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcprmv.h"
+#include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), de(6, 6)
     real(kind=8) :: dphi(6), dfdsv(6), seuilv

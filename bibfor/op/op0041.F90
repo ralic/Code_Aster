@@ -57,40 +57,40 @@ subroutine op0041()
 !         FISS//'.INFO'
 !         FISS//'.MODELE'
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/cnsprj.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pj2dco.h'
-    include 'asterfort/pj3dco.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xbaslo.h'
-    include 'asterfort/xenrch.h'
-    include 'asterfort/xgrals.h'
-    include 'asterfort/xinils.h'
-    include 'asterfort/xinlsj.h'
-    include 'asterfort/xlenri.h'
-    include 'asterfort/xlorie.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/cnsprj.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pj2dco.h"
+#include "asterfort/pj3dco.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xbaslo.h"
+#include "asterfort/xenrch.h"
+#include "asterfort/xgrals.h"
+#include "asterfort/xinils.h"
+#include "asterfort/xinlsj.h"
+#include "asterfort/xlenri.h"
+#include "asterfort/xlorie.h"
     integer :: ifm, niv, ibid, mxval, iret
     integer :: me1, me2, me3, iadrma, me4
     integer :: ndim, jinfo, jmod

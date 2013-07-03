@@ -23,13 +23,13 @@ subroutine op0059()
 !
 !     COMMANDE:  DEFI_COMPOR
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/op5901.h'
-    include 'asterfort/op5902.h'
-    include 'asterfort/op5903.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/op5901.h"
+#include "asterfort/op5902.h"
+#include "asterfort/op5903.h"
     integer :: nboccp, nboccm, nbocci, ifm, niv
     character(len=8) :: compor
     character(len=16) :: oper, typres

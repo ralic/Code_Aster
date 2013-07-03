@@ -19,23 +19,23 @@ subroutine aprema(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apcopt.h'
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apnomk.h'
-    include 'asterfort/aporth.h'
-    include 'asterfort/appari.h'
-    include 'asterfort/apparr.h'
-    include 'asterfort/approj.h'
-    include 'asterfort/apsauv.h'
-    include 'asterfort/apzoni.h'
-    include 'asterfort/apzonl.h'
-    include 'asterfort/apzonr.h'
-    include 'asterfort/apzonv.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apnomk.h"
+#include "asterfort/aporth.h"
+#include "asterfort/appari.h"
+#include "asterfort/apparr.h"
+#include "asterfort/approj.h"
+#include "asterfort/apsauv.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/apzonr.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=19) :: sdappa
 !
 ! ----------------------------------------------------------------------

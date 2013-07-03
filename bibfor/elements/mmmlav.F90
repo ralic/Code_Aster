@@ -20,8 +20,8 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
     logical :: lfovit, ldyna
     real(kind=8) :: jeusup
     integer :: ndexfr

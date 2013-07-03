@@ -3,17 +3,17 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                   parmod, spectr, nomsup, reasup, recmor,&
                   recmop)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nbsup, nsupp(*), neq, nbmode, id
     real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
     real(kind=8) :: reasup(nbsup, nbmode, *), recmop(nbsup, neq, *)

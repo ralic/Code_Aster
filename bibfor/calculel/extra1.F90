@@ -19,16 +19,16 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/excart.h'
-    include 'asterfort/exchml.h'
-    include 'asterfort/exchno.h'
-    include 'asterfort/exresl.h'
-    include 'asterfort/nbpara.h'
-    include 'asterfort/nopara.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/excart.h"
+#include "asterfort/exchml.h"
+#include "asterfort/exchno.h"
+#include "asterfort/exresl.h"
+#include "asterfort/nbpara.h"
+#include "asterfort/nopara.h"
+#include "asterfort/u2mesk.h"
     integer :: nin, opt, nute
     character(len=*) :: lchin(*)
     character(len=8) :: lpain(*)

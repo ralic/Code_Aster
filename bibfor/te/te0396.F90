@@ -17,17 +17,17 @@ subroutine te0396(option, nomte)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/gdfint.h'
-    include 'asterfort/gdjrg0.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/marota.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/verift.h'
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/gdfint.h"
+#include "asterfort/gdjrg0.h"
+#include "asterfort/jevech.h"
+#include "asterfort/marota.h"
+#include "asterfort/promat.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/verift.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  OPTION : 'CHAR_MECA_TEMP_R'

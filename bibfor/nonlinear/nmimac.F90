@@ -19,21 +19,21 @@ subroutine nmimac(sdimpr, sdsuiv, fonact)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/oblgoi.h'
-    include 'asterfort/oblraz.h'
-    include 'asterfort/oblsap.h'
-    include 'asterfort/obsetb.h'
-    include 'asterfort/obtcla.h'
+#include "jeveux.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/oblgoi.h"
+#include "asterfort/oblraz.h"
+#include "asterfort/oblsap.h"
+#include "asterfort/obsetb.h"
+#include "asterfort/obtcla.h"
     character(len=24) :: sdimpr, sdsuiv
     integer :: fonact(*)
 !

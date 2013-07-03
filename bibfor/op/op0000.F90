@@ -20,8 +20,8 @@ subroutine op0000()
 !     CONTROLE QU'UNE COMMANDE DE DEMARRAGE N'EST PAS APPELEE EN COURS
 !     D'EXECUTION
 !     ------------------------------------------------------------------
-    include 'asterc/getres.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: nomcmd, concep
     character(len=8) :: nomres
 !-----------------------------------------------------------------------

@@ -17,13 +17,13 @@ subroutine ccchcr(crit, nomgd, nbcmp, valin, licmp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lciv2e.h'
-    include 'asterfort/lciv2s.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lciv2e.h"
+#include "asterfort/lciv2s.h"
+#include "asterfort/u2mesk.h"
     integer :: nbcmp, nbcmpr, iret
     real(kind=8) :: valin(nbcmp), valres(nbcmpr)
     character(len=8) :: nomgd, licmp(nbcmp)

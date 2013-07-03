@@ -19,7 +19,7 @@ subroutine shvrot(rr, x, nn)
 ! ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 !-------------------------------------------------------
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: rr(3, 3)
     integer :: nn
     real(kind=8) :: x(24)

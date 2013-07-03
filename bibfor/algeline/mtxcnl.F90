@@ -1,8 +1,8 @@
 subroutine mtxcnl(cumul, typcst, const, typmat, lmat,&
                   typres, lres, neq)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/u2mesg.h"
     integer :: lmat, lres
     character(len=*) :: cumul, typcst
     character(len=1) :: typmat, typres

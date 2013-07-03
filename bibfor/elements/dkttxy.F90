@@ -1,6 +1,6 @@
 subroutine dkttxy(codi, lcot, hft2, depf, vt)
     implicit  none
-    include 'asterfort/matini.h'
+#include "asterfort/matini.h"
     real(kind=8) :: codi(*), lcot(*), hft2(2, 6), depf(9), vt(2)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

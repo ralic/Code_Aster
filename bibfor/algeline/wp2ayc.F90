@@ -2,10 +2,10 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
                   yh, yb, zh, zb, u1,&
                   u2, u3, n, solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/mcmult.h'
-    include 'asterfort/resoud.h'
+#include "asterfort/mcmult.h"
+#include "asterfort/resoud.h"
     complex(kind=8) :: sigma, u1(*), u2(*), u3(*), yh(*), yb(*), zh(*), zb(*)
     integer :: lmatra, lmasse, lamor, n, lbloq(*)
     character(len=19) :: solveu

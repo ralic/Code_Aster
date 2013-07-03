@@ -30,8 +30,8 @@ function distfo(zimat, kfonc, xx, yy, normx,&
 ! OUT NORMX :
 ! OUT NORMY :
 !
-    include 'asterfort/cdnfon.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/cdnfon.h"
+#include "asterfort/rcvalb.h"
     integer :: i, itmax, ier, zimat, kpg, spt
 !
     real(kind=8) :: distfo, xx, yy, normx, normy, x0, y0

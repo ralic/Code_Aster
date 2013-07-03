@@ -3,30 +3,30 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                   nbpark, nopara, mod45, resufi, resufr,&
                   resufk, iprec)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/indk24.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsexis.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/vtcrem.h'
-    include 'blas/dcopy.h'
-    include 'blas/zcopy.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/indk24.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/juveca.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsexis.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/vtcrem.h"
+#include "blas/dcopy.h"
+#include "blas/zcopy.h"
     integer :: ineg, nbmode, neq, mxresf, nbpari, nbparr, nbpark
     integer :: iprec, resufi(mxresf, *)
     character(len=4) :: mod45

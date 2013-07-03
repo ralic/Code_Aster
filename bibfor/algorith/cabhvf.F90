@@ -49,15 +49,15 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 ! T(1:MAXDIM,J) :  COORD DU VECTEUR DE L J EME ARETE
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/pdvc2d.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vfgefa.h'
-    include 'asterfort/vfimat.h'
-    include 'asterfort/vfnulo.h'
+#include "asterfort/assert.h"
+#include "asterfort/pdvc2d.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vfgefa.h"
+#include "asterfort/vfimat.h"
+#include "asterfort/vfnulo.h"
     integer :: ndim, nno, nnos
     logical :: axi
     real(kind=8) :: geom(1:ndim, 1:nno)

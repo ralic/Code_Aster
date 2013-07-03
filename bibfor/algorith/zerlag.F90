@@ -41,7 +41,7 @@ subroutine zerlag(typc, vectr, vectz, nbddl, ideeq)
 !  | IN > IDEEQ  : VECTEUR DES DESCRIPTEURS D'EQUATIONS DU NUME_DDL [I]|
 !   ___________________________________________________________________
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !   ___________________________________________________________________
 !
 !  - 0 - INITIALISATIONS DIVERSES

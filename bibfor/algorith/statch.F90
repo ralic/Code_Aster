@@ -3,20 +3,20 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho,&
                   iwk4, tdebut, tfin, nbloc, offset,&
                   trepos, noecho, intitu, nomres)
     implicit none
-    include 'asterc/r8rddg.h'
-    include 'asterfort/compt.h'
-    include 'asterfort/dstat0.h'
-    include 'asterfort/fstat0.h'
-    include 'asterfort/impc0.h'
-    include 'asterfort/impdep.h'
-    include 'asterfort/impfn0.h'
-    include 'asterfort/impft0.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/statpu.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/compt.h"
+#include "asterfort/dstat0.h"
+#include "asterfort/fstat0.h"
+#include "asterfort/impc0.h"
+#include "asterfort/impdep.h"
+#include "asterfort/impfn0.h"
+#include "asterfort/impft0.h"
+#include "asterfort/infniv.h"
+#include "asterfort/statpu.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "blas/dcopy.h"
     integer :: nbobst, nbpt, nbloc, iadh(*), iwk4(*)
     real(kind=8) :: temps(*), dloc(*), fcho(*), vgli(*), trepos, wk1(*), wk2(*)
     real(kind=8) :: wk3(*), tdebut, tfin, offset

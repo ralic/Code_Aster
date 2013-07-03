@@ -21,8 +21,8 @@ function nbpara(opt, te, statut)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: opt, te
     character(len=3) :: statut
 ! ----------------------------------------------------------------------

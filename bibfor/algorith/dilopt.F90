@@ -3,7 +3,7 @@ subroutine dilopt(dimdef, dimuel, poids, poids2, b,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit none
-    include 'blas/dgemm.h'
+#include "blas/dgemm.h"
     integer :: dimdef, dimuel
     real(kind=8) :: poids, poids2, drde(dimdef, dimdef), b(dimdef, dimuel)
     real(kind=8) :: matuu(dimuel*dimuel)

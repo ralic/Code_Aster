@@ -5,11 +5,11 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                   ifiss, rr, mmat)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/transp.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
+#include "asterfort/matini.h"
+#include "asterfort/promat.h"
+#include "asterfort/transp.h"
     integer :: ndim, nno, nfh, ddls, singu
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac

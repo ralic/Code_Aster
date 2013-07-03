@@ -51,22 +51,22 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
 ! VAR VINF   :  VARIABLES INTERNES A L'INSTANT ACTUEL
 !
 !     ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/calcfe.h'
-    include 'asterfort/caltau.h'
-    include 'asterfort/lcgrla.h'
-    include 'asterfort/lcmcli.h'
-    include 'asterfort/lcmmlc.h'
-    include 'asterfort/lcmmro.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/lcnrte.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/pk2sig.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterc/r8miem.h"
+#include "asterfort/calcfe.h"
+#include "asterfort/caltau.h"
+#include "asterfort/lcgrla.h"
+#include "asterfort/lcmcli.h"
+#include "asterfort/lcmmlc.h"
+#include "asterfort/lcmmro.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/lcnrte.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nmat, ndt, i, j, nbcomm(nmat, 3), nbsys, ifa, is, nbfsys, itmax
     integer :: nuvi, iter, nvi, iret, ir, nr, nsfa, nsfv, ifl, nuecou, codret
     integer :: nfs, nsg, ns, indtau, iei, is3, iv, iv3

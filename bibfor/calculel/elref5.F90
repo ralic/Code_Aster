@@ -2,10 +2,10 @@ subroutine elref5(elrz, famil, ndim, nno, nnos,&
                   npg, ipoids, jcoopg, ivf, idfde,&
                   jdfd2, jgano)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref6.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref6.h"
     character(len=*) :: elrz, famil
     integer :: ndim, nno, nnos, npg, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
 ! ======================================================================

@@ -25,11 +25,11 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterfort/ejcine.h'
-    include 'asterfort/gedisc.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/ejcine.h"
+#include "asterfort/gedisc.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
     integer :: ip(4)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), dffr2(ndim-1, nno2, npg)

@@ -20,9 +20,9 @@ subroutine nmlect(result, modele, mate, carele, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterc/getres.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/nmdome.h'
+#include "asterc/getres.h"
+#include "asterfort/cresol.h"
+#include "asterfort/nmdome.h"
     character(len=8) :: result
     character(len=19) :: lischa, solveu
     character(len=24) :: modele, mate, carele, compor

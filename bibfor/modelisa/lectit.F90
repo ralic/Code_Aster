@@ -34,11 +34,11 @@ subroutine lectit(ifl, icl, iv, rv, cv,&
 !               (RETURN 2)      = LIGNE SUIVANTE  (MOT CLE FINSF TROUVE)
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lirlig.h'
-    include 'asterfort/lxscan.h'
-    include 'asterfort/tesfin.h'
-    include 'asterfort/tesmcl.h'
+#include "asterfort/iunifi.h"
+#include "asterfort/lirlig.h"
+#include "asterfort/lxscan.h"
+#include "asterfort/tesfin.h"
+#include "asterfort/tesmcl.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm)

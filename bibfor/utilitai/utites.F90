@@ -2,9 +2,9 @@ subroutine utites(label1, label2, type, nbref, refi,&
                   refr, refc, vali, valr, valc,&
                   epsi, crit, ific, llab, ssigne)
     implicit       none
-    include 'asterfort/assert.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/utcovt.h'
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/utcovt.h"
     integer :: vali, nbref, refi(nbref), ific
     character(len=*) :: label1, label2, type, crit, ssigne
     real(kind=8) :: valr, refr(nbref), epsi

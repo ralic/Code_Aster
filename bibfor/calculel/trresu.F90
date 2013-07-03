@@ -1,36 +1,36 @@
 subroutine trresu(ific, nocc)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/trprec.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcmp1.h'
-    include 'asterfort/utest1.h'
-    include 'asterfort/utest2.h'
-    include 'asterfort/utest3.h'
-    include 'asterfort/utest4.h'
-    include 'asterfort/utestr.h'
-    include 'asterfort/utites.h'
-    include 'asterfort/utnono.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/trprec.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcmp1.h"
+#include "asterfort/utest1.h"
+#include "asterfort/utest2.h"
+#include "asterfort/utest3.h"
+#include "asterfort/utest4.h"
+#include "asterfort/utestr.h"
+#include "asterfort/utites.h"
+#include "asterfort/utnono.h"
+#include "asterfort/wkvect.h"
     integer :: ific, nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================

@@ -44,14 +44,14 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/hmgazp.h'
-    include 'asterfort/hmladg.h'
-    include 'asterfort/hmlgat.h'
-    include 'asterfort/hmliga.h'
-    include 'asterfort/hmlisa.h'
-    include 'asterfort/hmliva.h'
-    include 'asterfort/hmlvag.h'
-    include 'asterfort/hmlvga.h'
+#include "asterfort/hmgazp.h"
+#include "asterfort/hmladg.h"
+#include "asterfort/hmlgat.h"
+#include "asterfort/hmliga.h"
+#include "asterfort/hmlisa.h"
+#include "asterfort/hmliva.h"
+#include "asterfort/hmlvag.h"
+#include "asterfort/hmlvga.h"
     integer :: ndim, dimdef, dimcon, nbvari, imate
     integer :: yamec, yate
     integer :: adcome, adcp11, bdcp11, adcp12, adcp21, adcp22, adcote

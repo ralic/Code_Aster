@@ -28,7 +28,7 @@ subroutine estivd(nbm, dt, vitg, depg, accg0,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: nbm
     real(kind=8) :: dt, vitg(*), depg(*), accg0(*), vitg0(*), depg0(*), tetaes
     real(kind=8) :: maxvit

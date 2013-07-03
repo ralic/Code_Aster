@@ -1,9 +1,9 @@
 subroutine elelin(nconta, elref1, elref2, nnop, nnops)
     implicit none
 !
-    include 'asterfort/elraca.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/elraca.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: elref1, elref2
     integer :: nnop, nnops, nconta
 !

@@ -116,17 +116,17 @@ subroutine flrsyl(trana, tranb, isgn, m, n,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/flaln2.h'
-    include 'asterfort/flasy2.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/ddot.h'
-    include 'blas/dlange.h'
-    include 'blas/dscal.h'
-    include 'blas/lsame.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/flaln2.h"
+#include "asterfort/flasy2.h"
+#include "asterfort/xerbla.h"
+#include "blas/ddot.h"
+#include "blas/dlange.h"
+#include "blas/dscal.h"
+#include "blas/lsame.h"
     character(len=1) :: trana, tranb
     integer :: info, isgn, lda, ldb, ldc, m, n
     real(kind=8) :: scale

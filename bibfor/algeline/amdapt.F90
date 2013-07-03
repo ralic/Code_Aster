@@ -55,8 +55,8 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
 !
     implicit none
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesg.h"
     integer :: neq, invp(neq), pe(neq+1), nv(neq)
     integer :: nbnd, nbsn, lgind, fctnzs
     real(kind=8) :: fctops

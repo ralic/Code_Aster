@@ -3,16 +3,16 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                   vectmp, prepos)
 ! aslint: disable=W1304
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mrconl.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mrconl.h"
     character(len=*) :: cumul
     integer(kind=4) :: smhc(*)
     integer :: smdi(*), neq, nbvect, neql, lmat

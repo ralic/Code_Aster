@@ -52,38 +52,38 @@ subroutine op0151()
 !                                                      /DOMA_ELGA_EPME
 !                                                      /DOMA_ELNO_EPME
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/anacri.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dmgmod.h'
-    include 'asterfort/fgvdmg.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeimpo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/paqmai.h'
-    include 'asterfort/paqnoe.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alchml.h"
+#include "asterfort/anacri.h"
+#include "asterfort/assert.h"
+#include "asterfort/dmgmod.h"
+#include "asterfort/fgvdmg.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/paqmai.h"
+#include "asterfort/paqnoe.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !       ---------------------------------------------------------------
     integer :: icodre, icodwo, icodba, icodhs, icodma
     character(len=8) :: nomu, nomres, nommai, k8b, nommat

@@ -17,10 +17,10 @@ subroutine uttcp0(indi, para, nbv, temps)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'asterc/uttcsm.h'
-    include 'asterc/uttrst.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/uttcsm.h"
+#include "asterc/uttrst.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: indi, nbv
     real(kind=8) :: temps(nbv)
     character(len=*) :: para

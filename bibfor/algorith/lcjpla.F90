@@ -50,10 +50,10 @@ subroutine lcjpla(fami, kpg, ksp, loi, mod,&
 !                    = 0, TOUT VA BIEN PAS DE REDECOUPAGE
 !                    = 1 ou 2, CORRESPOND AU CODE RETOUR DE PLASTI.F
 !       ----------------------------------------------------------------
-    include 'asterfort/hbrjpl.h'
-    include 'asterfort/irrjpl.h'
-    include 'asterfort/lgljpl.h'
-    include 'asterfort/rsljpl.h'
+#include "asterfort/hbrjpl.h"
+#include "asterfort/irrjpl.h"
+#include "asterfort/lgljpl.h"
+#include "asterfort/rsljpl.h"
     integer :: imat, nmat, nvi, nr, kpg, ksp, codret
     real(kind=8) :: dsde(6, 6), devg(*), devgii, sigf(6), deps(6)
     real(kind=8) :: vin(*), vind(*), theta, dt, mater(nmat, 2)

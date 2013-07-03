@@ -19,8 +19,8 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/iposdg.h'
+#include "asterc/r8vide.h"
+#include "asterfort/iposdg.h"
     integer :: descn(*), tcmp(*), nbc, taber(*), numn, tnueq(*)
     real(kind=8) :: tvale(*), valcmp(*)
     logical :: b

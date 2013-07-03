@@ -3,8 +3,8 @@ subroutine mefgec(ndim, nbcyl, som, xint, yint,&
 ! aslint: disable=
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8pi.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim(14), nbcyl
     real(kind=8) :: som(9), xint(*), yint(*), rint(*), dcent(*), ficent(*)
     real(kind=8) :: d(nbcyl, nbcyl), fi(nbcyl, nbcyl)

@@ -19,10 +19,10 @@ subroutine ledome(option, nomo, materi, mate, carele)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomo
     character(len=24) :: mate, carele
     character(len=8) :: materi

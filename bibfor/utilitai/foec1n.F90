@@ -1,6 +1,6 @@
 subroutine foec1n(iuni, nomf, vec, nbfonc, verif)
     implicit none
-    include 'asterfort/fopro1.h'
+#include "asterfort/fopro1.h"
     integer :: iuni, nbfonc
     character(len=*) :: nomf, vec(*), verif
 !     ------------------------------------------------------------------

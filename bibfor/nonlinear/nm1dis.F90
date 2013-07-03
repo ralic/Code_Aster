@@ -47,12 +47,12 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: em, ep, et, sigy
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), resu
     real(kind=8) :: sigp, dsde, rbid

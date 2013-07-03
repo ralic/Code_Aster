@@ -17,15 +17,15 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/stati1.h'
+#include "asterfort/assert.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/stati1.h"
     character(len=*) :: nommes, typimp
     integer :: ifm
 ! ----------------------------------------------------------------------

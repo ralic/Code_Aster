@@ -31,13 +31,13 @@ subroutine te0469(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/vff3d.h'
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/vff3d.h"
     integer :: i, idecno, idecpg, idfdk, idflin, ier, igau
     integer :: igeom, ino, ipoids, itemps, ivectu, ivf, jgano
     integer :: nbnomx, ndim, nno, nnos, npg

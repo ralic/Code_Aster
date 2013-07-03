@@ -18,17 +18,17 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/comp1d.h'
-    include 'asterfort/nm1dci.h'
-    include 'asterfort/nm1dis.h'
-    include 'asterfort/nm1dpm.h'
-    include 'asterfort/nmmaba.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/vmci1d.h'
+#include "jeveux.h"
+#include "asterfort/comp1d.h"
+#include "asterfort/nm1dci.h"
+#include "asterfort/nm1dis.h"
+#include "asterfort/nm1dpm.h"
+#include "asterfort/nmmaba.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verift.h"
+#include "asterfort/vmci1d.h"
     integer :: imate, codret, kpg, ksp
     character(len=16) :: compor(*), option, valkm(3)
     character(len=*) :: fami

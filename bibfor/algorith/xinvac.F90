@@ -2,12 +2,12 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xnewto.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xnewto.h"
     integer :: ndim
     real(kind=8) :: s, ksi(ndim), tabar(*)
     character(len=8) :: elp

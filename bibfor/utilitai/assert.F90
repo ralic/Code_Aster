@@ -1,6 +1,6 @@
 subroutine assert(cond)
     implicit   none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     logical :: cond
 !     ------------------------------------------------------------------
 ! ======================================================================

@@ -29,10 +29,10 @@ subroutine coeime(meca, imate, nomail, option, resi,&
     implicit none
 !
 ! VARIABLES D'ENTREE
-    include 'asterfort/lcejex.h'
-    include 'asterfort/lcejli.h'
-    include 'asterfort/lcjohm.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/lcejex.h"
+#include "asterfort/lcejli.h"
+#include "asterfort/lcjohm.h"
+#include "asterfort/rcvalb.h"
     integer :: imate, ndim, dimcon, addeme, addep1, addep2, npg, kpi, npi
     integer :: retcom, dimdef, yap1, yap2, yate, advime, nbvari, advico, vicphi
     real(kind=8) :: defgem(dimdef), defgep(dimdef), sigm(dimcon), varim(nbvari)

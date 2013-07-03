@@ -22,15 +22,15 @@ subroutine afddli(valr, valk, valc, prnm, nddla,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/afrela.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/xddlim.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/indik8.h"
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xddlim.h"
     integer :: prnm(*), nddla, ino, ddlimp(nddla), dimens
     integer :: nbcmp, icompt(nddla)
     real(kind=8) :: valr(*), valimr(nddla), direct(3)

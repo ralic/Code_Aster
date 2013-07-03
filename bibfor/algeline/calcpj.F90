@@ -3,17 +3,17 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
                   invars, b)
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/bprime.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/varecr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/bprime.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/trace.h"
+#include "asterfort/varecr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), gamp, evp, sigd(6), sige(6), epssig
     real(kind=8) :: invare, gamps, invars, evps, b

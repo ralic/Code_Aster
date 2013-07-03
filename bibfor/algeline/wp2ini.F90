@@ -5,21 +5,21 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                   yb, solveu)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/ggubs.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wp2ayl.h'
-    include 'asterfort/wp2biy.h'
-    include 'asterfort/wp2bry.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/ggubs.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wp2ayl.h"
+#include "asterfort/wp2biy.h"
+#include "asterfort/wp2bry.h"
     character(len=1) :: appr
     integer :: lmasse, lamor, lraide, lmatra, lmtpsc
     complex(kind=8) :: sigma

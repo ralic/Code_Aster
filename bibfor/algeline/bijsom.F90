@@ -53,9 +53,9 @@ subroutine bijsom(umoy, rhof, r1, r2, long,&
 ! OUT : BIJ    : TERME (I,J) DE LA MATRICE B, COMPLEXE
 !-----------------------------------------------------------------------
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/defaxe.h'
-    include 'asterfort/profpr.h'
+#include "asterc/r8pi.h"
+#include "asterfort/defaxe.h"
+#include "asterfort/profpr.h"
     real(kind=8) :: umoy, rhof, r1, r2, long, cf0
     integer :: icoq, jcoq, jmod, nbm
     real(kind=8) :: rki, thetai, thetaj, tcoef(10, nbm)

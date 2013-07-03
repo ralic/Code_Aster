@@ -55,18 +55,18 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenca.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/resvoi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
+#include "asterfort/resvoi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nchar
     character(len=8) :: modele, lchar(1), ma, psourc
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt

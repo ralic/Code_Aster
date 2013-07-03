@@ -44,12 +44,12 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/rslnvi.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/rslnvi.h"
+#include "asterfort/u2mess.h"
     integer :: i, imat, nmat, ndt, ndi, nr, nvi, kpg, ksp
     integer :: jprol, jvale, nbvale, iret
 !

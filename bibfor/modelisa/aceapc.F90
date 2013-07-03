@@ -1,34 +1,34 @@
 subroutine aceapc(nomu, noma, lmax, nbocc)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/acnoce.h'
-    include 'asterfort/acnoex.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/orien2.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcono.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/acnoce.h"
+#include "asterfort/acnoex.h"
+#include "asterfort/alcart.h"
+#include "asterfort/getvem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/orien2.h"
+#include "asterfort/padist.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcono.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================

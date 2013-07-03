@@ -21,18 +21,18 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/mmcycl.h'
-    include 'asterfort/mmmbca.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/xmmbca.h'
-    include 'asterfort/xmtbca.h'
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mmcycl.h"
+#include "asterfort/mmmbca.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/xmmbca.h"
+#include "asterfort/xmtbca.h"
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco

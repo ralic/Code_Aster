@@ -1,10 +1,10 @@
 subroutine dfdm2d(nno, ipg, ipoids, idfde, coor,&
                   dfdx, dfdy, jac)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: nno, ipg, ipoids, idfde
     real(kind=8) :: coor(1), dfdx(1), dfdy(1), jac
 ! ======================================================================

@@ -19,9 +19,9 @@ subroutine obpara(nomstr, nompaz, indice, typpar)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: nomstr
     integer :: indice
     character(len=1) :: typpar

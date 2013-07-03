@@ -19,14 +19,14 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfpcdi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfpcdi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     character(len=24) :: resoco
     character(len=16) :: precon
     integer :: neq, nbliai

@@ -27,9 +27,9 @@ function entcod(admodl, lcmodl, nec, mode, k,&
 !     ENTCOD: KEME ENTIER CODE.
 !
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
     integer :: admodl, lcmodl, mode, m1, m2, code, code1
     character(len=8) :: k8b1, k8b2, k8b3, k8b4
     character(len=24) :: valk(4)

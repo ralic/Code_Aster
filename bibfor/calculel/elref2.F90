@@ -19,12 +19,12 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/assert.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
     character(len=16) :: nomte
     integer :: dim
     character(len=8) :: lielrf(dim)

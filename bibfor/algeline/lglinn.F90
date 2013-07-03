@@ -3,16 +3,16 @@ subroutine lglinn(nbmat, mater, parame, derive, ge,&
                   devg, devgii, traceg, dy)
 !
     implicit      none
-    include 'asterfort/calcdy.h'
-    include 'asterfort/calcg.h'
-    include 'asterfort/drfdrg.h'
-    include 'asterfort/drfdrs.h'
-    include 'asterfort/drfnew.h'
-    include 'asterfort/drudrg.h'
-    include 'asterfort/drudrs.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/calcdy.h"
+#include "asterfort/calcg.h"
+#include "asterfort/drfdrg.h"
+#include "asterfort/drfdrs.h"
+#include "asterfort/drfnew.h"
+#include "asterfort/drudrg.h"
+#include "asterfort/drudrs.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), derive(4), ge, ie
     real(kind=8) :: q(6), vecn(6), f0, delta, devg(6), devgii

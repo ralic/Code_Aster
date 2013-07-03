@@ -32,8 +32,8 @@ subroutine s6calb(bksip, xnoe, b, ajac)
 !
     implicit none
 !
-    include 'asterfort/matini.h'
-    include 'asterfort/matinv.h'
+#include "asterfort/matini.h"
+#include "asterfort/matinv.h"
     real(kind=8) :: xnoe(18), bksip(3, 6)
     real(kind=8) :: b(3, 6), ajac
 !

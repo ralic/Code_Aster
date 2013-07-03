@@ -1,13 +1,13 @@
 subroutine te0109(option, nomte)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/cq3d2d.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/cq3d2d.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -34,7 +34,7 @@ subroutine te0109(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !
     integer :: nbres

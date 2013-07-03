@@ -19,13 +19,13 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(INCONNU)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsdocu.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsdocu.h"
     integer :: repi, ierd
     character(len=19) :: nomob
     character(len=*) :: questi

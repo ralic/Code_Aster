@@ -19,7 +19,7 @@ subroutine pipere(npg, a, tau, nsol, eta)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8maem.h'
+#include "asterc/r8maem.h"
     integer :: npg, nsol
     real(kind=8) :: a(0:1, npg), tau
     real(kind=8) :: eta(2)

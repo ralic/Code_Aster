@@ -18,12 +18,12 @@ subroutine dfllne(mcfact, nechec, nerreu)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: mcfact
     integer :: nechec, nerreu
 !

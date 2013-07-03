@@ -438,11 +438,11 @@ subroutine dnaups(ido, bmat, n, which, nev,&
 !     | INCLUDE FILES FOR DEBUGGING AND INFO |
 !     %--------------------------------------%
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/dnaup3.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/ivout.h'
-    include 'asterfort/u2mesi.h'
+#include "asterc/r8prem.h"
+#include "asterfort/dnaup3.h"
+#include "asterfort/dvout.h"
+#include "asterfort/ivout.h"
+#include "asterfort/u2mesi.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common /debug/&
      &  logfil, ndigit, mgetv0,&

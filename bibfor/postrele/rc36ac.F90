@@ -1,27 +1,27 @@
 subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                   listma, chresu)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rc3601.h'
-    include 'asterfort/rc36sa.h'
-    include 'asterfort/rc36sn.h'
-    include 'asterfort/rc36sp.h'
-    include 'asterfort/rcma01.h'
-    include 'asterfort/rcmo01.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/limend.h"
+#include "asterfort/rc3601.h"
+#include "asterfort/rc36sa.h"
+#include "asterfort/rc36sn.h"
+#include "asterfort/rc36sp.h"
+#include "asterfort/rcma01.h"
+#include "asterfort/rcmo01.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nbma, listma(*)
     character(len=8) :: noma
     character(len=24) :: ncncin, chindi, chcara, chresu

@@ -27,49 +27,49 @@ subroutine op0150()
 ! ......................................................................
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carcha.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/lect58.h'
-    include 'asterfort/lrcomm.h'
-    include 'asterfort/lrensi.h'
-    include 'asterfort/lrfmed.h'
-    include 'asterfort/lridea.h'
-    include 'asterfort/lrrefd.h'
-    include 'asterfort/lrvema.h'
-    include 'asterfort/lrvemo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexpa.h'
-    include 'asterfort/rsmode.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/uttrii.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/assert.h"
+#include "asterfort/carcha.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/lect58.h"
+#include "asterfort/lrcomm.h"
+#include "asterfort/lrensi.h"
+#include "asterfort/lrfmed.h"
+#include "asterfort/lridea.h"
+#include "asterfort/lrrefd.h"
+#include "asterfort/lrvema.h"
+#include "asterfort/lrvemo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexpa.h"
+#include "asterfort/rsmode.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/uttrii.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter (nompro='OP0150')
     integer :: ndim

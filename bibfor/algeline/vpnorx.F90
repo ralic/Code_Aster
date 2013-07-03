@@ -1,8 +1,8 @@
 subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
 ! aslint: disable=W1304
     implicit   none
-    include 'asterfort/vecink.h'
-    include 'blas/dscal.h'
+#include "asterfort/vecink.h"
+#include "blas/dscal.h"
     integer :: nbmode, neq, exclus(*)
     real(kind=8) :: vecp(neq, *)
     character(len=*) :: resufk(*)

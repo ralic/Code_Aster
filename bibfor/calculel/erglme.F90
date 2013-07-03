@@ -1,19 +1,19 @@
 subroutine erglme(jceld, iavale, option, iord, ligrel,&
                   longt, nbgr, resuco, resuc1)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltcrsd.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
     integer :: jceld, iavale, iord, longt, nbgr
     character(len=*) :: resuco
     character(len=19) :: resuc1, ligrel

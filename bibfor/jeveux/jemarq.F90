@@ -22,10 +22,10 @@ subroutine jemarq()
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjlidy.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjlidy.h"
     integer :: k, n
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )

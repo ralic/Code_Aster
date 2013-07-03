@@ -6,11 +6,11 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
                   dsidep, nwkout, wkout, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/eibex.h'
-    include 'asterfort/lcdsbe.h'
-    include 'asterfort/lceigv.h'
-    include 'asterfort/lcldsb.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/eibex.h"
+#include "asterfort/lcdsbe.h"
+#include "asterfort/lceigv.h"
+#include "asterfort/lcldsb.h"
+#include "asterfort/rcvarc.h"
     integer :: imate, ndim, kpg, ksp
     integer :: neps, nsig, nwkin, nwkout, ndsde
     integer :: icomp, nvi

@@ -17,10 +17,10 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, vnormx(2)
     real(kind=8) :: domtot(nbvec), cudomx
 ! ----------------------------------------------------------------------

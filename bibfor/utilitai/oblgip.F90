@@ -19,14 +19,14 @@ subroutine oblgip(sdlist, idnvaz, indice)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgetk.h'
-    include 'asterfort/obgett.h'
-    include 'asterfort/oblgoi.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgetk.h"
+#include "asterfort/obgett.h"
+#include "asterfort/oblgoi.h"
     character(len=24) :: sdlist
     character(len=*) :: idnvaz
     integer :: indice

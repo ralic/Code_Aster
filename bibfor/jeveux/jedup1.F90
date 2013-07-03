@@ -16,8 +16,8 @@ subroutine jedup1(o1z, base, o2z)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
     character(len=*) :: o1z, base, o2z
 ! ----------------------------------------------------------------------
 !     RECOPIE L'OBJET JEVEUX "O1" SUR LA BASE "BASE" SOUS LE NOM "O2"

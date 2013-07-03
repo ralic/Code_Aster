@@ -1,14 +1,14 @@
 subroutine dxeffi(option, nomte, pgl, cont, ind,&
                   effint)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dxdmul.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dxdmul.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: pgl(3, 3), cont(*), effint(*)
     character(len=16) :: nomte
     character(len=*) :: option

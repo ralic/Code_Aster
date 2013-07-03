@@ -23,41 +23,41 @@ subroutine op0191()
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesfus.h'
-    include 'asterfort/chrpel.h'
-    include 'asterfort/chrpno.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsinfo.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesfus.h"
+#include "asterfort/chrpel.h"
+#include "asterfort/chrpno.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsinfo.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: n0, nbordr, iret, nocc, i, j, np, iordr
     integer :: n1, nbcmp, iord, ioc, ibid, nc
     integer :: jordr, nbnosy, jpa, iadin, iadou

@@ -18,8 +18,8 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/ordre1.h'
+#include "asterc/indik8.h"
+#include "asterfort/ordre1.h"
     integer :: numnoe(nbterm), nbocno(nbterm)
     real(kind=8) :: coef(nbterm)
     complex(kind=8) :: coefc(nbterm)

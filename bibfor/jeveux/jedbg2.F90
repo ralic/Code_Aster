@@ -1,6 +1,6 @@
 subroutine jedbg2(dbgav, dbgap)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: dbgav, dbgap
 !-----------------------------------------------------------------------
 ! ======================================================================

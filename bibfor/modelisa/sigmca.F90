@@ -40,12 +40,12 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
     character(len=19) :: carsig, numaca, tablca
     integer :: icabl, nbnoca(*)
 !

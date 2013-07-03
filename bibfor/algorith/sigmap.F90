@@ -1,7 +1,7 @@
 function sigmap(net, bishop, sat, signe, biot,&
                 dp2, dp1)
     implicit      none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: signe, sat, biot, dp2, dp1, sigmap
     logical :: net, bishop
 ! ======================================================================

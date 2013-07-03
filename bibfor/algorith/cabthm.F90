@@ -70,10 +70,10 @@ subroutine cabthm(nddls, nddlm, nno, nnos, nnom,&
 !
 ! ======================================================================
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/matini.h'
+#include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/matini.h"
     logical :: axi
     integer :: nddls, nddlm, nmec, np1, np2, ndim, nno, i, n, kk, yamec
     integer :: nnos, nnom, kpi, dimdef, dimuel, ipoids, idfde, ivf

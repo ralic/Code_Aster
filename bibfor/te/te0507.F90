@@ -18,15 +18,15 @@ subroutine te0507(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/connec.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/vff2dn.h'
+#include "jeveux.h"
+#include "asterfort/connec.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/teattr.h"
+#include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES

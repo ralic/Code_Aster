@@ -21,16 +21,16 @@ subroutine gfmama(noma, numagl, nutyma, jcnx, nttri3,&
 !
     implicit none
 !     IN
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     integer :: numagl, jcnx, nutyma, nttri3, ntqua4, nbnoeu, numagr
     character(len=8) :: noma
     character(len=24) :: nomgrf

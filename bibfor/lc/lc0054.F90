@@ -5,9 +5,9 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmtevp.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/nmtevp.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/u2mess.h"
     integer :: imate, ndim, kpg, ksp, codret
     real(kind=8) :: crit(*), angmas(3)
     real(kind=8) :: instam, instap, tampon(*)

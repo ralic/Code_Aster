@@ -19,21 +19,21 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdcax.h'
-    include 'asterfort/nmdcdc.h'
-    include 'asterfort/nmdcex.h'
-    include 'asterfort/nmdeca.h'
-    include 'asterfort/nmdecm.h'
-    include 'asterfort/nmdecv.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdcax.h"
+#include "asterfort/nmdcdc.h"
+#include "asterfort/nmdcex.h"
+#include "asterfort/nmdeca.h"
+#include "asterfort/nmdecm.h"
+#include "asterfort/nmdecv.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
     integer :: ievdac
     integer :: numins, iterat
     character(len=19) :: sddisc

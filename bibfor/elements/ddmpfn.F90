@@ -27,8 +27,8 @@ subroutine ddmpfn(zimat, nmnbn, nmddpl)
 !
 ! OUT NMDDPL : DERIVEES SECONDES DES MOMENTS LIMITES DE PLASTICITE
 !
-    include 'asterfort/cdnfon.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cdnfon.h"
+#include "asterfort/u2mess.h"
     integer :: i, ier0, ier1, ier2, zimat
 !
     real(kind=8) :: nmnbn(6), nmddpl(2, 2)

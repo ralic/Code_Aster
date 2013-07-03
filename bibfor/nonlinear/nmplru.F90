@@ -20,13 +20,13 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rcvad2.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rcvad2.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)

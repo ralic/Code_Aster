@@ -1,13 +1,13 @@
 subroutine rc32r8(nomres, mater, symax)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcmcrt.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcmcrt.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: symax
     character(len=8) :: nomres, mater
 !     ------------------------------------------------------------------

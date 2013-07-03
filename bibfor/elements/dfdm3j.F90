@@ -16,7 +16,7 @@ subroutine dfdm3j(nno, ipg, idfde, coor, jac)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ipg, idfde, nno
     real(kind=8) :: coor(1), jac
 ! ......................................................................

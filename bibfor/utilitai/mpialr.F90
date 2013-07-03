@@ -23,16 +23,16 @@ subroutine mpialr()
 !       EN FIN D'EXECUTION, LE PROCESSEUR #0 DONNE A L'UTILISATEUR
 !       LA LISTE DES ALARMES QUI ONT ETE EMISES PAR PROCESSEUR.
 !-----------------------------------------------------------------------
-    include 'asterc/gtalrm.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/gtstat.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/gtalrm.h"
+#include "asterfort/comcou.h"
+#include "asterfort/gtstat.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
 #ifdef _USE_MPI
 !
-    include 'mpif.h'
-    include 'aster_constant.h'
+#include "mpif.h"
+#include "aster_constant.h"
 !
     integer(kind=4) :: rank, nbpro4, iermpi, ival, mpst(MPI_STATUS_SIZE), mpicou
     integer :: i, np1, vali(2)

@@ -5,7 +5,7 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
                   passto, iorsto, discst)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: iorsto(*)
     real(kind=8) :: depger(*), vitger(*), accger(*), depstr(*), vitstr(*)
     real(kind=8) :: accstr(*), passto(*), discst(*)

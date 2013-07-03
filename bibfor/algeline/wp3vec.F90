@@ -2,17 +2,17 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
                   shift, vpr, vpi, vecp, mxresf,&
                   resufi, resufr, lagr, vauc, omecor)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wpordo.h'
-    include 'asterfort/wptest.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wpordo.h"
+#include "asterfort/wptest.h"
     character(len=1) :: appr
     character(len=*) :: opt
     integer :: mxresf, neq, nbfreq, nbvect, lagr(*), resufi(mxresf, *)

@@ -3,11 +3,11 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
                   nvi)
 !
     implicit     none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lglnvi.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lglnvi.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nr, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=3) :: matcst

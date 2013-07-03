@@ -1,11 +1,11 @@
 subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
                   rke, lhaigh, rcorr, dom)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rcvale.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/limend.h"
+#include "asterfort/rcvale.h"
     character(len=*) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)

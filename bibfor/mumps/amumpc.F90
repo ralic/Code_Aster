@@ -49,24 +49,24 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/amumpi.h'
-    include 'asterfort/amumpm.h'
-    include 'asterfort/amumpp.h'
-    include 'asterfort/amumpt.h'
-    include 'asterfort/amumpu.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'mumps/cmumps.h'
+#include "asterc/matfpe.h"
+#include "asterfort/amumpi.h"
+#include "asterfort/amumpm.h"
+#include "asterfort/amumpp.h"
+#include "asterfort/amumpt.h"
+#include "asterfort/amumpu.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "mumps/cmumps.h"
     character(len=*) :: action
     character(len=14) :: impr
     character(len=19) :: vcine, nosolv
@@ -76,8 +76,8 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !
 #ifdef _HAVE_MUMPS
 #   include "aster_mumps.h"
-    include 'mpif.h'
-    include 'jeveux.h'
+#include "mpif.h"
+#include "jeveux.h"
     type (CMUMPS_STRUC) , pointer :: cmpsk
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm
     integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, vali(4), pcpi

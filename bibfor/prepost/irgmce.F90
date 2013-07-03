@@ -3,27 +3,27 @@ subroutine irgmce(chamsy, partie, ifi, nomcon, ordr,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   nomaou, nomain, versio, tycha)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/irgme2.h'
-    include 'asterfort/irgmec.h'
-    include 'asterfort/irgmor.h'
-    include 'asterfort/irgmpv.h'
-    include 'asterfort/irgmtb.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/irgme2.h"
+#include "asterfort/irgmec.h"
+#include "asterfort/irgmor.h"
+#include "asterfort/irgmpv.h"
+#include "asterfort/irgmtb.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
     character(len=8) :: nomaou, nomain, tycha
     real(kind=8) :: coord(*), para(*)

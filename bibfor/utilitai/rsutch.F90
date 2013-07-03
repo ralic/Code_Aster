@@ -1,14 +1,14 @@
 subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsutrg.h'
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsutrg.h"
     integer :: iordr
     character(len=*) :: nomsd, nomsy, nomcha
     logical :: lverif

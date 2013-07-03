@@ -16,36 +16,36 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsces.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/indk80.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/manopg.h'
-    include 'asterfort/rsinch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsces.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/indk80.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/manopg.h"
+#include "asterfort/rsinch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=2) :: codret
     character(len=8) :: modele, chmat, carele
     real(kind=8) :: inst

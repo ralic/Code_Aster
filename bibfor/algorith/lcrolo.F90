@@ -20,21 +20,21 @@ subroutine lcrolo(fami, kpg, ksp, mate, option,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/gdclci.h'
-    include 'asterfort/gdclco.h'
-    include 'asterfort/gdclel.h'
-    include 'asterfort/gdclin.h'
-    include 'asterfort/gdcltg.h'
-    include 'asterfort/lcrofg.h'
-    include 'asterfort/lcrohy.h'
-    include 'asterfort/lcroma.h'
-    include 'asterfort/lcrotg.h'
-    include 'asterfort/lcroy1.h'
-    include 'asterfort/lcroy2.h'
-    include 'asterfort/lcroyi.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/gdclci.h"
+#include "asterfort/gdclco.h"
+#include "asterfort/gdclel.h"
+#include "asterfort/gdclin.h"
+#include "asterfort/gdcltg.h"
+#include "asterfort/lcrofg.h"
+#include "asterfort/lcrohy.h"
+#include "asterfort/lcroma.h"
+#include "asterfort/lcrotg.h"
+#include "asterfort/lcroy1.h"
+#include "asterfort/lcroy2.h"
+#include "asterfort/lcroyi.h"
+#include "blas/dcopy.h"
     integer :: kpg, ksp, mate, iret
     character(len=*) :: fami
     character(len=16) :: option

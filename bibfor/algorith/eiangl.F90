@@ -16,7 +16,7 @@ subroutine eiangl(ndim, nno2, angnau, ang)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8dgrd.h'
+#include "asterc/r8dgrd.h"
     integer :: ndim, nno2
     real(kind=8) :: angnau(3), ang(24)
 !

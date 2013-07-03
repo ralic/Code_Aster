@@ -19,17 +19,17 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/d1ma3d.h'
-    include 'asterfort/d1mamc.h'
-    include 'asterfort/dmat3d.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/verift.h'
+#include "asterc/r8vide.h"
+#include "asterfort/d1ma3d.h"
+#include "asterfort/d1mamc.h"
+#include "asterfort/dmat3d.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/matrot.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/verift.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp, ndim, imate
     real(kind=8) :: deps(6), sigm(6), sigp(6)

@@ -69,11 +69,11 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy,&
 !
 !***************************************************************
 !
-    include 'asterfort/mmdelm.h'
-    include 'asterfort/mmdint.h'
-    include 'asterfort/mmdnum.h'
-    include 'asterfort/mmdpar.h'
-    include 'asterfort/mmdupd.h'
+#include "asterfort/mmdelm.h"
+#include "asterfort/mmdint.h"
+#include "asterfort/mmdnum.h"
+#include "asterfort/mmdpar.h"
+#include "asterfort/mmdupd.h"
     integer :: neqns, neqp1, nadj
     integer :: adjncy(nadj), dhead(neqns), invp(neqns), llist(neqns)
     integer :: marker(neqns), perm(neqns), qsize(neqns)

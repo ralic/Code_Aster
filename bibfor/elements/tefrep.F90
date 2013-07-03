@@ -1,11 +1,11 @@
 subroutine tefrep(option, nomte, param, iforc)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
     character(len=*) :: param
 !

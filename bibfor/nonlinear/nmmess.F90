@@ -20,9 +20,9 @@ subroutine nmmess(code, dp0, dp1, dp, f,&
 !
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
     interface
     function f(x)
         real(kind=8) :: f, x

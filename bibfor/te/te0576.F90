@@ -1,17 +1,17 @@
 subroutine te0576(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/enelpg.h'
-    include 'asterfort/eps1mc.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/enelpg.h"
+#include "asterfort/eps1mc.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================

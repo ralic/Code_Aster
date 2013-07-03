@@ -1,9 +1,9 @@
 subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax,&
                   cu1max, cv1max, cu2max, cv2max)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: jvec1, jvec2, nbp1, nbp2
     real(kind=8) :: dismax, cu1max, cv1max, cu2max, cv2max
 ! ======================================================================

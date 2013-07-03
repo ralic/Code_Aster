@@ -23,7 +23,7 @@ subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi,&
 !  DUMP EN CAS NON CONVERGENCE ITE INTERNES CJS
 !
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=*) :: roucjs
     integer :: nitimp, iter, ndt, nvi, umess
     real(kind=8) :: erimp(nitimp, 3)

@@ -1,12 +1,12 @@
 subroutine gchfus(fonct1, fonct2, fonct3)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: fonct1, fonct2, fonct3
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

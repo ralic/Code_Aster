@@ -1,9 +1,9 @@
 subroutine confac(typma, ft, nbft, f, nbf)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
     integer :: ft(12, 3), nbft, f(6, 4), nbf
     character(len=8) :: typma
 !     ------------------------------------------------------------------

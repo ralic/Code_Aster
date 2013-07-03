@@ -36,9 +36,9 @@ subroutine pmfite(nf, ncf, vf, ve, vs)
 !          VS(5) : INT(E.Z.Z.DS)
 !          VS(6) : INT(E.Y.Z.DS)
 ! -----------------------------------------------------------
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nf, ncf, i
     real(kind=8) :: vf(ncf, nf), ve(nf), vs(6), zero, esf
 !-----------------------------------------------------------------------

@@ -1,8 +1,8 @@
 subroutine lkelas(ndi, ndt, mod, nmat, mater,&
                   deps, sigd, de, k, mu)
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/trace.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/trace.h"
     integer :: ndi, ndt, nmat
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: sigd(6)

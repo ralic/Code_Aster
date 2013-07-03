@@ -19,10 +19,10 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/zerop2.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/zerop2.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
     integer :: neps
     real(kind=8) :: tau, epsm(neps), epsd(neps), epsp(neps)
     real(kind=8) :: copilo(2, 2)

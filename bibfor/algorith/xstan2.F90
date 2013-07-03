@@ -19,33 +19,33 @@ subroutine xstan2(crimax, noma, modele)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/ismali.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/panbno.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xcrvol.h'
-    include 'asterfort/xpheop.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elref2.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/ismali.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/panbno.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xcrvol.h"
+#include "asterfort/xpheop.h"
     character(len=8) :: modele, noma
     real(kind=8) :: crimax
 !

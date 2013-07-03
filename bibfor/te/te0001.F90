@@ -1,11 +1,11 @@
 subroutine te0001(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 !     -----------------------------------------------------------------
 ! ======================================================================

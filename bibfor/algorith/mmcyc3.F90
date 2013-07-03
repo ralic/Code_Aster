@@ -21,15 +21,15 @@ subroutine mmcyc3(resoco, iptc, nompt, indco, indfr,&
 !
 ! aslint: disable=
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/normev.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/normev.h"
+#include "blas/ddot.h"
     character(len=24) :: resoco
     integer :: iptc
     character(len=16) :: nompt

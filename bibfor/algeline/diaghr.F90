@@ -1,16 +1,16 @@
 subroutine diaghr(n, a, lda, eval, evec,&
                   ldevec, acopy, rwk, cwk)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/cvrmzm.h'
-    include 'asterfort/diares.h'
-    include 'asterfort/diatri.h'
-    include 'asterfort/mexthr.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tridia.h'
-    include 'asterfort/zmult.h'
-    include 'blas/izamax.h'
-    include 'blas/zcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/cvrmzm.h"
+#include "asterfort/diares.h"
+#include "asterfort/diatri.h"
+#include "asterfort/mexthr.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tridia.h"
+#include "asterfort/zmult.h"
+#include "blas/izamax.h"
+#include "blas/zcopy.h"
     integer :: n, lda, ldevec
     real(kind=8) :: eval(*), rwk(*)
 ! ======================================================================

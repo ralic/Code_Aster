@@ -40,10 +40,10 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/matini.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
     integer :: ipg, idfde, niv, ifm, nno, ia1, ia2
     real(kind=8) :: jacob, geom(*)
     logical :: l2d

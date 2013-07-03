@@ -1,48 +1,48 @@
 subroutine penorm(resu, modele)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/chpchd.h'
-    include 'asterfort/chsut1.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismlg.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/nopar2.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utflmd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesred.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/chsut1.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismlg.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/nopar2.h"
+#include "asterfort/reliem.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utflmd.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: modele
     character(len=19) :: resu
 ! ======================================================================

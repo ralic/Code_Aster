@@ -51,7 +51,7 @@ subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
 ! ......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nno, ipg, ivf, isig, nbcmp
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), dsx, dsy, dsz, norme
 !

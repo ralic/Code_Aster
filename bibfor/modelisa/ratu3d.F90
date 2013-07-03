@@ -2,21 +2,21 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                   ligrel, mod, cara, numddl, typlag,&
                   lisrel, coorig, sectio)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/afretu.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/raorfi.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/afretu.h"
+#include "asterfort/assvec.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/raorfi.h"
+#include "asterfort/reajre.h"
+#include "asterfort/wkvect.h"
     integer :: lonlis, iprno(*)
     character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod

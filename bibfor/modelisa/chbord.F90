@@ -1,14 +1,14 @@
 subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
                   nbmabo)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/teattr.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/teattr.h"
     integer :: nbmail, listma(*), mabord(*), nbmapr, nbmabo
     character(len=*) :: nomo
 ! ======================================================================

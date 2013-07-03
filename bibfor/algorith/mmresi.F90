@@ -18,8 +18,8 @@ subroutine mmresi(alias, nno, ndim, coorma, coorpt,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
     implicit none
-    include 'asterfort/mmfonf.h'
-    include 'asterfort/mmtang.h'
+#include "asterfort/mmfonf.h"
+#include "asterfort/mmtang.h"
     character(len=8) :: alias
     integer :: nno, ndim
     real(kind=8) :: coorma(27), coorpt(3)

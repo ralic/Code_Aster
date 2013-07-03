@@ -21,8 +21,8 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: nno, npg, mate
     character(len=8) :: typmod(*)
     real(kind=8) :: spg(2), sdg(2), qg(2, 2), d(4, 2)

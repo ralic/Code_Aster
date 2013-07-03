@@ -1,7 +1,7 @@
 subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
                   mxiter, ier, nitqr)
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: neq, mxcmp, mxiter, ier, nitqr
     real(kind=8) :: diag(1), surdia(1), vecpro(mxcmp, 1)
 !     ------------------------------------------------------------------

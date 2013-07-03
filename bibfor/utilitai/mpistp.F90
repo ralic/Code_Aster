@@ -19,12 +19,12 @@ subroutine mpistp(imode)
 !
     implicit none
 !     ARGUMENT IN
-    include 'asterfort/assert.h'
-    include 'asterfort/gtstat.h'
-    include 'asterfort/jefini.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/ststat.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/gtstat.h"
+#include "asterfort/jefini.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/ststat.h"
+#include "asterfort/u2mess.h"
     integer :: imode
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI COMM STOP
@@ -40,7 +40,7 @@ subroutine mpistp(imode)
 !     L'APPELANT NE DEVRAIT RIEN EXECUTER APRES L'APPEL A MPISTP.
 !-----------------------------------------------------------------------
 !
-    include 'aster_constant.h'
+#include "aster_constant.h"
     integer :: lout, imod2
     character(len=16) :: compex
     logical :: labort

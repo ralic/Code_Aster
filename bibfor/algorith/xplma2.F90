@@ -19,7 +19,7 @@ subroutine xplma2(ndim, nne, nnes, ndls, n,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim, nne, nnes, n, pl, ndls, nfhe
 !
 ! ----------------------------------------------------------------------

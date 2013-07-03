@@ -2,7 +2,7 @@ subroutine xmmaa4(nnol, pla, ffc, jac, cstaco,&
                   mmat)
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nnol, pla(27)
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), jac, cstaco

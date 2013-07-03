@@ -1,11 +1,11 @@
 subroutine fgequi(tz, typz, ndim, equi)
     implicit none
-    include 'asterfort/jacobi.h'
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lciv2e.h'
-    include 'asterfort/lciv2s.h'
-    include 'asterfort/lcqeqv.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/jacobi.h"
+#include "asterfort/lchydr.h"
+#include "asterfort/lciv2e.h"
+#include "asterfort/lciv2s.h"
+#include "asterfort/lcqeqv.h"
+#include "asterfort/r8inir.h"
     integer :: ndim
     real(kind=8) :: tz(*), equi(*)
     character(len=*) :: typz

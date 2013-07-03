@@ -16,36 +16,36 @@ subroutine te0477(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterc/r8vide.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/idsshb.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/sh1eps.h'
-    include 'asterfort/sh1for.h'
-    include 'asterfort/sh1mek.h'
-    include 'asterfort/sh1rig.h'
-    include 'asterfort/sh2eps.h'
-    include 'asterfort/sh2for.h'
-    include 'asterfort/sh2mek.h'
-    include 'asterfort/sh2rig.h'
-    include 'asterfort/sh6eps.h'
-    include 'asterfort/sh6for.h'
-    include 'asterfort/sh6mek.h'
-    include 'asterfort/sh6rig.h'
-    include 'asterfort/sh8eps.h'
-    include 'asterfort/sh8for.h'
-    include 'asterfort/sh8mek.h'
-    include 'asterfort/sh8rig.h'
-    include 'asterfort/shbpkc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8vide.h"
+#include "asterfort/elref4.h"
+#include "asterfort/idsshb.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/sh1eps.h"
+#include "asterfort/sh1for.h"
+#include "asterfort/sh1mek.h"
+#include "asterfort/sh1rig.h"
+#include "asterfort/sh2eps.h"
+#include "asterfort/sh2for.h"
+#include "asterfort/sh2mek.h"
+#include "asterfort/sh2rig.h"
+#include "asterfort/sh6eps.h"
+#include "asterfort/sh6for.h"
+#include "asterfort/sh6mek.h"
+#include "asterfort/sh6rig.h"
+#include "asterfort/sh8eps.h"
+#include "asterfort/sh8for.h"
+#include "asterfort/sh8mek.h"
+#include "asterfort/sh8rig.h"
+#include "asterfort/shbpkc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
     integer :: i, icarcr, icompo, icontm, icontp, ideplm, ideplp
     integer :: idfde, igeom, imate, imatuu, ipg, ipoids, ivarim
     integer :: ivarip, ivectu, ivf, j, jcret, jgano, k

@@ -5,11 +5,11 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
                   iret)
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/lcmmdc.h'
-    include 'asterfort/lcmmdh.h'
-    include 'asterfort/lcmmfe.h'
-    include 'asterfort/lcmmfi.h'
+#include "asterfort/assert.h"
+#include "asterfort/lcmmdc.h"
+#include "asterfort/lcmmdh.h"
+#include "asterfort/lcmmfe.h"
+#include "asterfort/lcmmfi.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: taur, materf(nmat*2), rr, dt, vind(36), dy(12)
     real(kind=8) :: dpdtau, dprdas, hsr(nsg, nsg), hr

@@ -1,7 +1,7 @@
 function iunifi(name)
     implicit none
     integer :: iunifi
-    include 'asterfort/ulinit.h'
+#include "asterfort/ulinit.h"
     character(len=*) :: name
 !
 !     ------------------------------------------------------------------

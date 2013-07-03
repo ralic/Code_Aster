@@ -26,7 +26,7 @@ subroutine verdbl(deblig, cnl, ier, irteti)
 !       OUT     IER     =       0 > VRAI ( RETURN )
 !                       =       1 > FAUX ( RETURN 1 )
 !       ----------------------------------------------------------------
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: ier, deblig
     character(len=14) :: cnl
     character(len=16) :: cmd

@@ -17,22 +17,22 @@ subroutine jeimhd(fichdf, clas)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/gtoptk.h'
-    include 'asterc/hdfclf.h'
-    include 'asterc/hdfclg.h'
-    include 'asterc/hdfcrf.h'
-    include 'asterc/hdfcrg.h'
-    include 'asterc/hdfopg.h'
-    include 'asterc/hdfwat.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjalty.h'
-    include 'asterfort/jjimhd.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterc/gtoptk.h"
+#include "asterc/hdfclf.h"
+#include "asterc/hdfclg.h"
+#include "asterc/hdfcrf.h"
+#include "asterc/hdfcrg.h"
+#include "asterc/hdfopg.h"
+#include "asterc/hdfwat.h"
+#include "asterfort/enlird.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjalty.h"
+#include "asterfort/jjimhd.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: fichdf, clas
 ! ----------------------------------------------------------------------
 ! IMPRESSION DE L'ENSEMBLE DES OBJETS JEVEUX AU FORMAT HDF

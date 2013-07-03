@@ -2,13 +2,13 @@ subroutine focrrs(nomfon, resu, base, nomcha, maille,&
                   noeud, cmp, npoint, nusp, ivari,&
                   ier)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/focrr0.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsutn2.h'
+#include "jeveux.h"
+#include "asterfort/focrr0.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsutn2.h"
     integer :: npoint, nusp, ivari, ier
     character(len=1) :: base
     character(len=8) :: maille, noeud, cmp

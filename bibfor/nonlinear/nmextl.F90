@@ -21,10 +21,10 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma, nomo
     character(len=16) :: motfac
     integer :: iocc

@@ -4,14 +4,14 @@ subroutine ccchel(option, modele, resuin, resuou, numord,&
                   suropt, basopt, resout)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
-    include 'asterfort/ccaccl.h'
-    include 'asterfort/cclpci.h'
-    include 'asterfort/cclpco.h'
-    include 'asterfort/ccpara.h'
-    include 'asterfort/ccpoux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/meceuc.h'
+#include "jeveux.h"
+#include "asterfort/ccaccl.h"
+#include "asterfort/cclpci.h"
+#include "asterfort/cclpco.h"
+#include "asterfort/ccpara.h"
+#include "asterfort/ccpoux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/meceuc.h"
     logical :: exipou, exitim
     integer :: nbchre, ioccur, numord, nordm1
     character(len=1) :: basopt

@@ -37,15 +37,15 @@ subroutine recuno(mailla, nbno, nbgr, nomno, nomgr,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
     character(len=8) :: mailla, nomno(nbno)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
     integer :: numnot(nbto)

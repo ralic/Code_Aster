@@ -51,17 +51,17 @@ subroutine vpcntl(cty, mode, option, omemin, omemax,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpfopr.h'
+#include "asterc/getres.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infniv.h"
+#include "asterfort/omega2.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpfopr.h"
     integer :: nfreq, ipos(*), lmat(3), ier, nblagr, nbrssa, ibid2(2)
     real(kind=8) :: vpinf, vpmax, omemin, omemax, seuil, precdc, omecor, charge(nfreq)
     real(kind=8) :: freq(nfreq), err(nfreq), precsh

@@ -3,45 +3,45 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 ! aslint: disable=W1501
     implicit none
 !     IN
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/ismaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeimpo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/leccoo.h'
-    include 'asterfort/lecdbg.h'
-    include 'asterfort/lecgrp.h'
-    include 'asterfort/lecint.h'
-    include 'asterfort/lecmai.h'
-    include 'asterfort/lectit.h'
-    include 'asterfort/liritm.h'
-    include 'asterfort/sdmail.h'
-    include 'asterfort/stkcoo.h'
-    include 'asterfort/stkgrp.h'
-    include 'asterfort/stkmai.h'
-    include 'asterfort/stktit.h'
-    include 'asterfort/tesfin.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/ismaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/enlird.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/leccoo.h"
+#include "asterfort/lecdbg.h"
+#include "asterfort/lecgrp.h"
+#include "asterfort/lecint.h"
+#include "asterfort/lecmai.h"
+#include "asterfort/lectit.h"
+#include "asterfort/liritm.h"
+#include "asterfort/sdmail.h"
+#include "asterfort/stkcoo.h"
+#include "asterfort/stkgrp.h"
+#include "asterfort/stkmai.h"
+#include "asterfort/stktit.h"
+#include "asterfort/tesfin.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     integer :: ifm, ifl
     character(len=24) :: cooval, coodsc, cooref, grpnoe, grpmai, connex
     character(len=24) :: titre, nommai, nomnoe, typmai

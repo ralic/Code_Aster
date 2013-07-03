@@ -17,21 +17,21 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vrcin1.h'
-    include 'asterfort/vrcin2.h'
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vrcin1.h"
+#include "asterfort/vrcin2.h"
     character(len=2) :: codret
     character(len=19) :: chvarc
     character(len=*) :: chmatz, carelz, modelz

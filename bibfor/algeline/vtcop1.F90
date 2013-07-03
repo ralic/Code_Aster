@@ -1,19 +1,19 @@
 subroutine vtcop1(chin, chout, kstop, codret)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrrefe.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrrefe.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chin, chout
     character(len=1) :: kstop
     integer :: codret

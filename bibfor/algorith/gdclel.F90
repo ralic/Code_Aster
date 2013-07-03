@@ -19,7 +19,7 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/verift.h'
+#include "asterfort/verift.h"
     real(kind=8) :: young, nu
     character(len=*) :: fami
     integer :: kpg, ksp, imate

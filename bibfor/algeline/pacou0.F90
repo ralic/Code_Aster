@@ -27,13 +27,13 @@ subroutine pacou0(x, fvec, qt, r, c,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/pacou1.h'
-    include 'asterfort/pacou2.h'
-    include 'asterfort/pacou3.h'
-    include 'asterfort/pacou4.h'
-    include 'asterfort/pacou5.h'
-    include 'asterfort/pacou7.h'
+#include "jeveux.h"
+#include "asterfort/pacou1.h"
+#include "asterfort/pacou2.h"
+#include "asterfort/pacou3.h"
+#include "asterfort/pacou4.h"
+#include "asterfort/pacou5.h"
+#include "asterfort/pacou7.h"
     real(kind=8) :: qt(nt, *), r(nt, *), x(*), fvec(*)
     real(kind=8) :: c(*), d(*), fvcold(*), g(*), p(*)
     real(kind=8) :: s(*), t(*), w(*), xold(*), work(*)

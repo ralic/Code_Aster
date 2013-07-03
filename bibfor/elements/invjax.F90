@@ -20,8 +20,8 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 !
 ! aslint: disable=W1306
     implicit   none
-    include 'asterfort/assert.h'
-    include 'asterfort/matinv.h'
+#include "asterfort/assert.h"
+#include "asterfort/matinv.h"
     integer :: nno, ndim, nderiv, ipb
     real(kind=8) :: coor(ndim*nno)
     real(kind=8) :: dff(3, nno), invjac(3, 3), inv(ndim, ndim)

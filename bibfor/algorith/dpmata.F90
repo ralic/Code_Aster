@@ -19,14 +19,14 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsove.h'
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
     real(kind=8) :: mater(5, 2), dp, dpdeno, se(6), seq, dsde(6, 6)
     real(kind=8) :: plas, alpha, pplus
     character(len=8) :: mod

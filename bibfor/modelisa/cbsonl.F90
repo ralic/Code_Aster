@@ -17,8 +17,8 @@ subroutine cbsonl(char, noma, ligrmo, ndim, fonree)
 ! ======================================================================
 !
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterfort/casonl.h'
+#include "asterc/getfac.h"
+#include "asterfort/casonl.h"
     integer :: ndim
     character(len=4) :: fonree
     character(len=8) :: char, noma

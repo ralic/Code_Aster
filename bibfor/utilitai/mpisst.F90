@@ -19,13 +19,13 @@ subroutine mpisst(istat, resp0)
 !
     implicit none
 !     ARGUMENTS          IN     OUT
-    include 'asterc/uttrst.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/mpistp.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/uttrst.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/mpistp.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
     integer :: istat, resp0
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI SEND STAT
@@ -34,8 +34,8 @@ subroutine mpisst(istat, resp0)
 !-----------------------------------------------------------------------
 #ifdef _USE_MPI
 !
-    include 'mpif.h'
-    include 'aster_constant.h'
+#include "mpif.h"
+#include "aster_constant.h"
 !
     logical(kind=4) :: term
     integer(kind=4) :: rank, iermpi

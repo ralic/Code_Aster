@@ -19,21 +19,21 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/barych.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmchex.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/barych.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
     real(kind=8) :: dval
     character(len=8) :: typext
     character(len=16) :: nocham, nocmp

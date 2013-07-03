@@ -25,13 +25,13 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lcdvmi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/nmvekx.h'
-    include 'asterfort/nmvexi.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/lcdvmi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/nmvekx.h"
+#include "asterfort/nmvexi.h"
+#include "asterfort/r8inir.h"
     integer :: imate, nmat, np, nb, ier
     real(kind=8) :: mate(nmat, 2), hook(6, 6)
     real(kind=8) :: p(np), beta(nb), ep(*), rm, dm

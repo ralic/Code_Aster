@@ -25,15 +25,15 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !      - STOCKAGE .SLCS
 ! ET REMPLISSAGE DE SES OBJETS AUTRES QUE LE .UALF
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: indice, imodeg
     integer :: jrefa, i, iscbl, iaconl
     integer :: ialime, iblo

@@ -19,10 +19,10 @@ subroutine nmdivr(sddisc, sderro, iterat)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit     none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmlere.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmlere.h"
     integer :: iterat
     character(len=19) :: sddisc
     character(len=24) :: sderro

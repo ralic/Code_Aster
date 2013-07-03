@@ -1,10 +1,10 @@
 subroutine recire(typopt, iderre, frexci, fremin, fremax,&
                   pas, nbptmd)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
     integer :: iderre, nbptmd
     real(kind=8) :: fremin, fremax, pas
     character(len=4) :: typopt, frexci

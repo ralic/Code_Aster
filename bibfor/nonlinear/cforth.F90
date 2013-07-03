@@ -19,10 +19,10 @@ subroutine cforth(ndimg, tau1, tau2, iret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterc/r8prem.h'
-    include 'asterfort/mmmron.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmtann.h'
+#include "asterc/r8prem.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmtann.h"
     integer :: ndimg
     real(kind=8) :: tau1(3), tau2(3)
     integer :: iret

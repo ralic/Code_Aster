@@ -55,9 +55,9 @@ subroutine simtep(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/sigmmc.h'
-    include 'asterfort/sigtmc.h'
+#include "jeveux.h"
+#include "asterfort/sigmmc.h"
+#include "asterfort/sigtmc.h"
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami
     real(kind=8) :: xyz(1), depl(1), repere(7), sigma(1)

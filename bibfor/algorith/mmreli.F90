@@ -18,9 +18,9 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/mmresi.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/mmresi.h"
     character(len=8) :: alias
     integer :: nno, ndim
     real(kind=8) :: coorma(27), coorpt(3)

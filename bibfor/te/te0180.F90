@@ -28,11 +28,11 @@ subroutine te0180(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
     character(len=16) :: nomte, option
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
     integer :: ipoids, ivf, idfde, igeom

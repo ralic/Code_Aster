@@ -24,12 +24,12 @@ subroutine detmat()
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/detlsp.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelstc.h'
+#include "asterfort/assert.h"
+#include "asterfort/detlsp.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelstc.h"
     integer :: nbmat, i, ibid, ier
     character(len=19) :: matass, solveu
     character(len=24) :: lirefa(100)

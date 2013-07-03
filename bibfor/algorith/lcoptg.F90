@@ -30,12 +30,12 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
 ! aslint: disable=W1306
     implicit none
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
     common /tdim/   ndt  , ndi
 !     ----------------------------------------------------------------
     integer :: nmat, nr, iret, ndt, ndi, i, j, k, nvi, norm, sigeps

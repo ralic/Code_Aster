@@ -65,19 +65,19 @@ subroutine te0118(option, nomte)
 !
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 !
     integer :: iadzi, iazk24, igeom, ndim, nno, nnos, npg, ipoids, ivf, idfde

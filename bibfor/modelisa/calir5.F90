@@ -1,13 +1,13 @@
 subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
                   idecal, jconb, jcocf, jconu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/afrela.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/imprel.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/imprel.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
     character(len=19) :: lisrel
     character(len=8) :: nono2, noma
     integer :: nuno2, jconb, jcocf, jconu, jcoor

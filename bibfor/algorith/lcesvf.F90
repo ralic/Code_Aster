@@ -19,7 +19,7 @@ function lcesvf(mode, a)
 !
     implicit none
     real(kind=8) :: lcesvf
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: mode
     real(kind=8) :: a
 ! ----------------------------------------------------------------------

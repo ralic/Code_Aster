@@ -57,30 +57,30 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascavc.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/memsth.h'
-    include 'asterfort/mergth.h'
-    include 'asterfort/merxth.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/vechnl.h'
-    include 'asterfort/vechth.h'
-    include 'asterfort/vedith.h'
-    include 'asterfort/vetnth.h'
-    include 'asterfort/vrcins.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascavc.h"
+#include "asterfort/ascova.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memsth.h"
+#include "asterfort/mergth.h"
+#include "asterfort/merxth.h"
+#include "asterfort/preres.h"
+#include "asterfort/vechnl.h"
+#include "asterfort/vechth.h"
+#include "asterfort/vedith.h"
+#include "asterfort/vetnth.h"
+#include "asterfort/vrcins.h"
     logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas

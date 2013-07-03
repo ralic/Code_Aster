@@ -19,11 +19,11 @@ subroutine op0117()
 ! person_in_charge: nicolas.greffet at edf.fr
 !     BUT: RECUPERER LE NUMERO DE COMPONENT VENANT DE YACS
 !     ON LE MET DANS UN OBJET JEVEUX &ADR_YACS
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: icompo
     integer :: ibid
 !

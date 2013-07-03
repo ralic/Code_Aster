@@ -5,7 +5,7 @@ subroutine lc0013(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcjoba.h'
+#include "asterfort/lcjoba.h"
     integer :: kpg, ksp, ndim, imate, iret
     character(len=*) :: fami
     character(len=8) :: typmod(*)

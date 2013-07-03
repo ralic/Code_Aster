@@ -1,18 +1,18 @@
 subroutine modopt(resuco, modele, lesopt, nbopt)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/exithm.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/indk16.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rschex.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/exithm.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/indk16.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rschex.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbopt
     character(len=8) :: resuco, modele
     character(len=24) :: lesopt

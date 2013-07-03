@@ -54,13 +54,13 @@ subroutine lrmmf1(fid, nomamd, nbrfam, carafa, nbnoeu,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lrmmf2.h'
-    include 'asterfort/lrmmf3.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lrmmf2.h"
+#include "asterfort/lrmmf3.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !

@@ -19,11 +19,11 @@ subroutine oblsap(sdlist, idnvaz, lacti)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/oblgip.h'
-    include 'asterfort/oblsai.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/oblgip.h"
+#include "asterfort/oblsai.h"
     character(len=24) :: sdlist
     character(len=*) :: idnvaz
     logical :: lacti

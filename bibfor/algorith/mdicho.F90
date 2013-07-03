@@ -1,16 +1,16 @@
 subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
                   vitcho, nbchto, nbchoc, parcho, noecho)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/titre.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/titre.h"
     integer :: nbstoc, nbchoc, nbchto
     real(kind=8) :: parcho(nbchto, *)
     real(kind=8) :: temps(*), forcho(*), deploc(*), vitcho(*)

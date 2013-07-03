@@ -20,7 +20,7 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8gaem.h'
+#include "asterc/r8gaem.h"
     integer :: n, posopt
     real(kind=8) :: r(*), g(*)
     real(kind=8) :: gu, rmin, rmax, rexm, rexp

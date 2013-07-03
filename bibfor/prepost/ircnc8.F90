@@ -6,14 +6,14 @@ subroutine ircnc8(ifi, nbno, prno, nueq, nec,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx
     integer :: ndim, numnoe(*), nbcmpt, nucmpu(*)
     character(len=*) :: nomcmp(*), nomnoe(*), formr

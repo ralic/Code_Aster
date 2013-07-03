@@ -48,11 +48,11 @@ subroutine askcyc(craid, ndim, soumat, beta, ni,&
 ! LIBID    /I/: LISTE BIDON LIBID(I)=I DE DIM >=MAX(NI,NJ)
 !
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/acyel1.h'
-    include 'asterfort/acyel2.h'
-    include 'asterfort/acyel4.h'
-    include 'asterfort/acyelt.h'
+#include "jeveux.h"
+#include "asterfort/acyel1.h"
+#include "asterfort/acyel2.h"
+#include "asterfort/acyel4.h"
+#include "asterfort/acyelt.h"
 
     character(len=24) :: soumat
     complex(kind=8) :: craid(*)

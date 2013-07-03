@@ -18,7 +18,7 @@ subroutine vfcdet(maxdim, ndim, a, deta)
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: maxdim, ndim
     real(kind=8) :: a(1:maxdim, 1:maxdim), deta
 !

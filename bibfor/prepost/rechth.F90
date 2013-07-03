@@ -2,15 +2,15 @@ subroutine rechth(temps, nval2, tbinth, tabthr, tempa,&
                   tempb)
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbextb.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbextb.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/u2mesk.h"
     integer :: nval2
     real(kind=8) :: temps, tempa, tempb
     character(len=8) :: tabthr

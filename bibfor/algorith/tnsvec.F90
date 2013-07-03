@@ -16,7 +16,7 @@ subroutine tnsvec(choix, ndim, mat, vec, r)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim, i, choix
     real(kind=8) :: mat(3, 3), vec(2*ndim), r
 !     FONCTION TRANSFORMANT UNE MATRICE SYMETRIQUE (TENSEUR) 3,3

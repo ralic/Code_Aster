@@ -1,19 +1,19 @@
 subroutine matloc(noma, ncncin, motfac, ioc, ino,&
                   nbma, listma, pgl)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvr8.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/angvx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/matrot.h"
+#include "asterfort/u2mess.h"
     integer :: ioc, ino, nbma, listma(*)
     real(kind=8) :: pgl(3, 3)
     character(len=8) :: noma

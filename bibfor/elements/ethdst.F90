@@ -47,13 +47,13 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/epthmc.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/sigtmc.h'
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/epthmc.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/sigtmc.h"
     integer :: ipoids, ivf, idfde
     character(len=16) :: option
     character(len=*) :: fami

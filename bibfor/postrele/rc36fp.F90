@@ -1,20 +1,20 @@
 subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
                   nommat, ug, factus)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rc36f0.h'
-    include 'asterfort/rc36f1.h'
-    include 'asterfort/rc36f2.h'
-    include 'asterfort/rc36f3.h'
-    include 'asterfort/rc36f4.h'
-    include 'asterfort/rc36f5.h'
-    include 'asterfort/rc36f6.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/limend.h"
+#include "asterfort/rc36f0.h"
+#include "asterfort/rc36f1.h"
+#include "asterfort/rc36f2.h"
+#include "asterfort/rc36f3.h"
+#include "asterfort/rc36f4.h"
+#include "asterfort/rc36f5.h"
+#include "asterfort/rc36f6.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
     integer :: nbsigr, nocc(*), situ(*), sigr(*)
     real(kind=8) :: saltij(*), ug, factus(*)
     character(len=*) :: nommat

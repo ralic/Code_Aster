@@ -1,16 +1,16 @@
 subroutine nugrco(nu, base)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm2.h'
-    include 'asterfort/mpippv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm2.h"
+#include "asterfort/mpippv.h"
+#include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
 ! ======================================================================

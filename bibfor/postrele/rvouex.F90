@@ -1,35 +1,35 @@
 subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                   lstnac, iret)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/celcel.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/i2fnoe.h'
-    include 'asterfort/i2trgi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/rvfmai.h'
-    include 'asterfort/rvgnoe.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utmach.h'
-    include 'asterfort/utncmp.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celver.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/i2fnoe.h"
+#include "asterfort/i2trgi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/reliem.h"
+#include "asterfort/rvfmai.h"
+#include "asterfort/rvgnoe.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utmach.h"
+#include "asterfort/utncmp.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: lstcmp, lstmac, lstnac
     character(len=*) :: mcf, nchpt
     integer :: iocc, iret

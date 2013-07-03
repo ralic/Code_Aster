@@ -26,12 +26,12 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/codere.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/u2mess.h"
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
 !
     character(len=8) :: typmod(*)

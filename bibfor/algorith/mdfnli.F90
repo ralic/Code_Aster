@@ -10,11 +10,11 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
                   conv, fsauv)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/mdfcho.h'
-    include 'asterfort/mdfedy.h'
-    include 'asterfort/mdfred.h'
-    include 'asterfort/mdfrev.h'
-    include 'asterfort/mdrfis.h'
+#include "asterfort/mdfcho.h"
+#include "asterfort/mdfedy.h"
+#include "asterfort/mdfred.h"
+#include "asterfort/mdfrev.h"
+#include "asterfort/mdrfis.h"
     integer :: nbmode, nbrede, nbrevi, nbexci, logcho(*), saredi(*)
     integer :: nbpal, nbchoc
     integer :: numpas

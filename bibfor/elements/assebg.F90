@@ -19,7 +19,7 @@ subroutine assebg(bglob, b, xff)
 ! Transformer B(3,6) dans global en BGLOB(6,18) en global
 !
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     real(kind=8) :: bglob(6, 18), b(3, 6), xff(18)
     integer :: j
 !

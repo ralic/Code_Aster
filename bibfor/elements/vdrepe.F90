@@ -37,11 +37,11 @@ subroutine vdrepe(nomtez, matevn, matevg)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
     character(len=*) :: nomtez
     real(kind=8) :: matevn(2, 2, 1), matevg(2, 2, 1)
 ! -----  VARIABLES LOCALES

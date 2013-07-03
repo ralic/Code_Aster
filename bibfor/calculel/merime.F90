@@ -22,25 +22,25 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 !                          DE MERIME...  PROSPER YOUP-LA-BOUM!
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/inical.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/redetr.h'
-    include 'asterfort/vrcins.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecham.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/redetr.h"
+#include "asterfort/vrcins.h"
     integer :: nchar, nh
     real(kind=8) :: time
     character(len=*) :: modelz, carelz, matelz

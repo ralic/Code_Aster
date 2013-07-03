@@ -20,12 +20,12 @@ subroutine eicine(ndim, axi, nno1, nno2, vff1,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/sumetr.h'
-    include 'blas/ddot.h'
+#include "asterfort/dfdm1d.h"
+#include "asterfort/matrot.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/subaco.h"
+#include "asterfort/sumetr.h"
+#include "blas/ddot.h"
     logical :: axi
     integer :: ndim, nno1, nno2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2), ang(*)

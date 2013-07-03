@@ -50,21 +50,21 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 ! ----
 ! MATTT  --> MATRICE DE MASSE ELEMENTAIRE
 !.......................................................................
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/reeret.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalf2.h'
-    include 'asterfort/xcalfe.h'
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref5.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/reeret.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf2.h"
+#include "asterfort/xcalfe.h"
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
     integer :: lonch(10), cnset(4*32), heavt(36)

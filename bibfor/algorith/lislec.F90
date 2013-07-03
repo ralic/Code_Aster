@@ -18,18 +18,18 @@ subroutine lislec(motfac, phenoz, base, lischa)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/liscrs.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lisgen.h'
-    include 'asterfort/lislef.h'
-    include 'asterfort/lisnnl.h'
-    include 'asterfort/lisnnn.h'
-    include 'asterfort/lissav.h'
-    include 'asterfort/listap.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/liscrs.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisgen.h"
+#include "asterfort/lislef.h"
+#include "asterfort/lisnnl.h"
+#include "asterfort/lisnnn.h"
+#include "asterfort/lissav.h"
+#include "asterfort/listap.h"
     character(len=*) :: phenoz
     character(len=16) :: motfac
     character(len=19) :: lischa

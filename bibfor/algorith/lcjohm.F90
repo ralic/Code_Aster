@@ -28,8 +28,8 @@ subroutine lcjohm(imate, resi, rigi, kpi, npg,&
 ! ======================================================================
 ! - VARIABLES D'ENTREE
 !
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesg.h"
     integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
     real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
     character(len=8) :: nomail

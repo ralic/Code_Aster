@@ -41,12 +41,12 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/matini.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: xyz(1), nharm, jacob, b(nbsig, 1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), b3j(9), nharay

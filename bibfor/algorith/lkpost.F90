@@ -17,11 +17,11 @@ subroutine lkpost(imate, tempd, sigf, nvi, vip)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkcrit.h'
-    include 'asterfort/rcvala.h'
+#include "asterfort/cos3t.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkcrit.h"
+#include "asterfort/rcvala.h"
     integer :: imate, nvi
     real(kind=8) :: tempd, sigf(6), vip(nvi)
 ! =================================================================

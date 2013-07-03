@@ -1,6 +1,6 @@
 subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: dim, nbmesu
     character(len=1) :: prpal(dim)
     character(len=24) :: nomc(dim)

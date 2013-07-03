@@ -1,24 +1,24 @@
 subroutine te0041(option, nomte)
     implicit          none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdis.h'
-    include 'asterfort/infted.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ut2mlg.h'
-    include 'asterfort/ut2plg.h'
-    include 'asterfort/utpplg.h'
-    include 'asterfort/utpsgl.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/vecma.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdis.h"
+#include "asterfort/infted.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/ut2mlg.h"
+#include "asterfort/ut2plg.h"
+#include "asterfort/utpplg.h"
+#include "asterfort/utpsgl.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/vecma.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

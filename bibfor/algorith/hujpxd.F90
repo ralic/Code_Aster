@@ -30,8 +30,8 @@ subroutine hujpxd(k, mater, sig, vin, prox,&
 !                  .TRUE. MECANISMES ASSEZ PROCHES POUR ACTIVER
 !                  LE MECANISME MONOTONE
 !    ---------------------------------------------------------------
-    include 'asterfort/hujprj.h'
-    include 'asterfort/infniv.h'
+#include "asterfort/hujprj.h"
+#include "asterfort/infniv.h"
     integer :: k, ndt, ndi
     integer :: ifm, niv
     real(kind=8) :: mater(22, 2), sig(6), vin(*)

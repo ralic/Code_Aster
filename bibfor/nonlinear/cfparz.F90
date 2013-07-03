@@ -21,12 +21,12 @@ subroutine cfparz(resoco, iliai, coefff, coefpn, coefpt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     real(kind=8) :: coefff, coefpn, coefpt, coefte, dissup
     integer :: iliai, ip, izone, numnoe, posnoe

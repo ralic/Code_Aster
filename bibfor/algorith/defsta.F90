@@ -45,25 +45,25 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterfort/convnu.h'
-    include 'asterfort/copcvn.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/inivec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcrea.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/convnu.h"
+#include "asterfort/copcvn.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/inivec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcrea.h"
+#include "asterfort/wkvect.h"
     integer :: i, iadval, ibid, ier, inord, irt, lmat
     integer :: ltcham, ltcvn, nbdef, nbfor, nbpabm, neq, neqr
 !

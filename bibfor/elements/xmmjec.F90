@@ -21,10 +21,10 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/indent.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/indent.h"
+#include "asterfort/vecini.h"
     integer :: ndim
     real(kind=8) :: norm(3)
     real(kind=8) :: ffe(20), ffm(20)

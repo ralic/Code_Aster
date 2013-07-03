@@ -1,12 +1,12 @@
 subroutine cgcrio(resu, vecord)
     implicit none
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsutnu.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsutnu.h"
     character(len=8) :: resu
     character(len=19) :: vecord
 !

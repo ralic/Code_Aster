@@ -37,10 +37,10 @@ subroutine tstvec(perm, iad, nlong, type, sommi,&
 !                       (UNDEF OU TRES GRAND )
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/iisnan.h'
-    include 'asterfort/tstk2i.h'
+#include "asterc/iisnan.h"
+#include "asterfort/tstk2i.h"
     character(len=3) :: type
     real(kind=8) :: sommr
     integer :: sommi, nbign

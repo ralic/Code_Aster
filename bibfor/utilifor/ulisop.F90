@@ -1,8 +1,8 @@
 function ulisop(unit, name)
     implicit none
     integer :: ulisop
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ulinit.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/ulinit.h"
     integer :: unit
     character(len=16) :: name
 !     ------------------------------------------------------------------

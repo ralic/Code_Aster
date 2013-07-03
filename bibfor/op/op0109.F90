@@ -22,41 +22,41 @@ subroutine op0109()
 !     COMMANDE : COMB_SISM_MODAL
 !
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/ascalc.h'
-    include 'asterfort/asenap.h'
-    include 'asterfort/asexci.h'
-    include 'asterfort/asimpr.h'
-    include 'asterfort/asmsup.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/asveri.h'
-    include 'asterfort/copmat.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vprecu.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/ascalc.h"
+#include "asterfort/asenap.h"
+#include "asterfort/asexci.h"
+#include "asterfort/asimpr.h"
+#include "asterfort/asmsup.h"
+#include "asterfort/assert.h"
+#include "asterfort/asveri.h"
+#include "asterfort/copmat.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vprecu.h"
+#include "asterfort/wkvect.h"
     integer :: vali(2)
 !-----------------------------------------------------------------------
     integer :: iam, ibid, id, ierd, ifm, ifu, ii

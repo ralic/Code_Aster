@@ -37,13 +37,13 @@ subroutine gmeth4(nnoff, ndimte, fond, gthi, milieu,&
 !   GI      --> VALEUR DE GI
 ! ......................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/gsyste.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: i, i1, iabsc, iadrno, imatr
     integer :: kk, ndimte, nn, nnoff, nump
     real(kind=8) :: gthi(1), gs(1), gi(1), s1, s2, s3, delta

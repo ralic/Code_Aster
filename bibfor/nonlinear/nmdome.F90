@@ -20,17 +20,17 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdoch.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdoch.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nuord
     character(len=8) :: result
     character(len=19) :: lischa

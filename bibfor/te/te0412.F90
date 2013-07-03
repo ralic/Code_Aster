@@ -1,34 +1,34 @@
 subroutine te0412(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/dkqbf.h'
-    include 'asterfort/dkqedg.h'
-    include 'asterfort/dktbf.h'
-    include 'asterfort/dktedg.h'
-    include 'asterfort/dsqedg.h'
-    include 'asterfort/dstedg.h'
-    include 'asterfort/dxeffi.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/pmrvec.h'
-    include 'asterfort/q4gedg.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/t3gedg.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/dkqbf.h"
+#include "asterfort/dkqedg.h"
+#include "asterfort/dktbf.h"
+#include "asterfort/dktedg.h"
+#include "asterfort/dsqedg.h"
+#include "asterfort/dstedg.h"
+#include "asterfort/dxeffi.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/pmrvec.h"
+#include "asterfort/q4gedg.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/t3gedg.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

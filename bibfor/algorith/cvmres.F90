@@ -43,17 +43,17 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !           DEPS   :  INCREMENT DE DEFORMATION
 !       OUT RES    :  SYSTEME NL A T + DT
 !       ----------------------------------------------------------------
-    include 'asterfort/chbfs.h'
-    include 'asterfort/cvmcvx.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsove.h'
+#include "asterfort/chbfs.h"
+#include "asterfort/cvmcvx.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsove.h"
     integer :: ndt, ndi, nmat
     integer :: ioptio, idnr, nopt
 !

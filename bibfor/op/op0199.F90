@@ -21,28 +21,28 @@ subroutine op0199()
 ! OPERATEUR CALCULANT LA FORCE AJOUTEE : CALC_FORC_AJOU
 !
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cal152.h'
-    include 'asterfort/calmdg.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mat152.h'
-    include 'asterfort/phi199.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rigflu.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cal152.h"
+#include "asterfort/calmdg.h"
+#include "asterfort/cresol.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mat152.h"
+#include "asterfort/phi199.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rigflu.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, nbmo, nbmode, ndble, indice, ifm, niv
     integer :: tabad(5), iadesc, iarefe, i, iadirg, imade
     integer :: iphi1, iphi2, iprsto, iret, itxsto

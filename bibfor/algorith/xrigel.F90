@@ -4,15 +4,15 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, ddlm,&
                   jpmilt)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/xrige2.h'
-    include 'asterfort/xrige3.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/iselli.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/xrige2.h"
+#include "asterfort/xrige3.h"
     integer :: nnop, igeom, ddlm
     integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
     integer :: jpintt, jpmilt

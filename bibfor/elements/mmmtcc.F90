@@ -20,7 +20,7 @@ subroutine mmmtcc(phasep, nnl, wpg, ffl, jacobi,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=9) :: phasep
     integer :: nnl
     real(kind=8) :: wpg, ffl(9), jacobi

@@ -49,17 +49,17 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 ! OUT DESPIT : INCREMENT DE DEFORMATION PLASTIQUE
 ! OUT DDISIT : INCREMENT DE DISSIPATION PLASTIQUE
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/d0mpfn.h'
-    include 'asterfort/d1crit.h'
-    include 'asterfort/d1cro2.h'
-    include 'asterfort/d2crit.h'
-    include 'asterfort/d2cro2.h'
-    include 'asterfort/ddmpfn.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/mppffn.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/restzo.h'
+#include "asterfort/assert.h"
+#include "asterfort/d0mpfn.h"
+#include "asterfort/d1crit.h"
+#include "asterfort/d1cro2.h"
+#include "asterfort/d2crit.h"
+#include "asterfort/d2cro2.h"
+#include "asterfort/ddmpfn.h"
+#include "asterfort/matmul.h"
+#include "asterfort/mppffn.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/restzo.h"
     integer :: newief, nmprox(*)
     integer :: ncrit, zimat, ier, cief
     integer :: cier, i, j, ipara(4)

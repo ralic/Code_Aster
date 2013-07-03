@@ -27,16 +27,16 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !           DRDY   :  MATRICE JACOBIENNE (NR*NR)
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/prmama.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/prmama.h"
+#include "asterfort/r8inir.h"
     integer :: nmat, nr
     real(kind=8) :: dsde(6, 6), mater(nmat, 2)
     real(kind=8) :: drdy(nr, nr), sigf(6)

@@ -22,8 +22,8 @@ subroutine mmmtuf(phasep, ndim, nnl, nne, nnm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mmmtef.h'
-    include 'asterfort/mmmtmf.h'
+#include "asterfort/mmmtef.h"
+#include "asterfort/mmmtmf.h"
     character(len=9) :: phasep
     integer :: ndim, nne, nnl, nnm, nbcps
     real(kind=8) :: ffe(9), ffl(9), ffm(9)

@@ -19,28 +19,28 @@ subroutine eclpgr()
 ! ======================================================================
 !   - TRAITEMENT DU MOT CLE CREA_RESU/ECLA_PG
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/celfpg.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/eclpgc.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/celfpg.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eclpgc.h"
+#include "asterfort/exlima.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: noojb
 !
 ! ---------------------------------------------------------------------

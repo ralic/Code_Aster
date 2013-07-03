@@ -8,18 +8,18 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elelin.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xdeffe.h'
-    include 'asterfort/xlacti.h'
-    include 'asterfort/xmoffc.h'
-    include 'asterfort/xpoffo.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elelin.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xdeffe.h"
+#include "asterfort/xlacti.h"
+#include "asterfort/xmoffc.h"
+#include "asterfort/xpoffo.h"
     integer :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
     integer :: nbcmp, cmp(nbcmp), nfe, ima, jconx1, jconx2, jcnsv1
     integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac

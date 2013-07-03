@@ -18,10 +18,10 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: cupn0, cvpn0, cupn1, cvpn1, cupn2, cvpn2
     real(kind=8) :: cuon, cvon, rayon
 ! ---------------------------------------------------------------------

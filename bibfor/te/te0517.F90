@@ -1,23 +1,23 @@
 subroutine te0517(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jsd1ff.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/porea2.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jsd1ff.h"
+#include "asterfort/matela.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/porea2.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

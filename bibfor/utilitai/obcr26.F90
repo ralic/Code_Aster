@@ -20,10 +20,10 @@ subroutine obcr26(nomobj, nbparb, nbpari, nbparr, nbpark,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obcrcr.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obcrcr.h"
     character(len=24) :: nomobj
     integer :: nbparb, nbpari, nbparr, nbpark, nbparo
 !

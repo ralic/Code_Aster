@@ -96,18 +96,18 @@ subroutine flaexc(wantq, n, t, ldt, q,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/flanv2.h'
-    include 'asterfort/flarfg.h'
-    include 'asterfort/flartg.h'
-    include 'asterfort/flasy2.h'
-    include 'blas/dlacpy.h'
-    include 'blas/dlange.h'
-    include 'blas/dlarfx.h'
-    include 'blas/drot.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/flanv2.h"
+#include "asterfort/flarfg.h"
+#include "asterfort/flartg.h"
+#include "asterfort/flasy2.h"
+#include "blas/dlacpy.h"
+#include "blas/dlange.h"
+#include "blas/dlarfx.h"
+#include "blas/drot.h"
     logical :: wantq
     integer :: info, j1, ldq, ldt, n, n1, n2
 !     ..

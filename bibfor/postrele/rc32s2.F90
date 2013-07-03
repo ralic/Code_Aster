@@ -1,6 +1,6 @@
 subroutine rc32s2(sijm, sijth, sn)
     implicit   none
-    include 'asterfort/rctres.h'
+#include "asterfort/rctres.h"
     real(kind=8) :: sijm(6), sijth(6), sn(2)
 !     ------------------------------------------------------------------
 ! ======================================================================

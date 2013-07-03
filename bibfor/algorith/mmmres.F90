@@ -21,29 +21,29 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 !
 ! aslint: disable=W1501
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/iseven.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/mcopco.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfm.h'
-    include 'asterfort/mmmred.h'
-    include 'asterfort/mmmreg.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/iseven.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/mcopco.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmmred.h"
+#include "asterfort/mmmreg.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noma
     real(kind=8) :: inst(*)
     character(len=19) :: cnsinr, cnsper, sddisc

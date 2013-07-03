@@ -22,12 +22,12 @@ subroutine nminvc(modelz, mate, carele, compor, carcri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcvec.h'
-    include 'asterfort/nmxvec.h'
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele

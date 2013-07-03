@@ -34,25 +34,25 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
 !-----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsces.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/manopg.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterfort/alchml.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsces.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlima.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/manopg.h"
+#include "asterfort/megeom.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: iret, idm, ibid, nbm, inocha, isncha, nbchin, nbchou, iarg
     character(len=6) :: chaine
     character(len=8) :: moint, modmec

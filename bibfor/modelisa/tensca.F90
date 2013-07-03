@@ -83,21 +83,21 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/tensk1.h'
-    include 'asterfort/tensk2.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/tensk1.h"
+#include "asterfort/tensk2.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: tablca
     character(len=4) :: regl
     character(len=24) :: typrel

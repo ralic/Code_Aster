@@ -20,17 +20,17 @@ subroutine elimco(char, noma, nomo, indqua, nzoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cflecq.h'
-    include 'asterfort/cflema.h'
-    include 'asterfort/cfleno.h'
-    include 'asterfort/cfmema.h'
-    include 'asterfort/cfmeno.h'
-    include 'asterfort/elimcq.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cflecq.h"
+#include "asterfort/cflema.h"
+#include "asterfort/cfleno.h"
+#include "asterfort/cfmema.h"
+#include "asterfort/cfmeno.h"
+#include "asterfort/elimcq.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: char
     character(len=8) :: noma, nomo
     integer :: indqua

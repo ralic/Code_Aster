@@ -1,6 +1,6 @@
 subroutine conare(typma, ar, nbar)
     implicit none
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: ar(12, 3), nbar
     character(len=8) :: typma
 ! ----------------------------------------------------------------------

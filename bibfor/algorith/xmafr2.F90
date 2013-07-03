@@ -19,8 +19,8 @@ subroutine xmafr2(tau1, tau2, b, abc)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
     real(kind=8) :: tau1(3), tau2(3), b(3, 3), abc(2, 2)
 !
 ! ----------------------------------------------------------------------

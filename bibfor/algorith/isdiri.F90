@@ -20,11 +20,11 @@ function isdiri(lischa, soutyp)
 !
     implicit none
     logical :: isdiri
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/ischar.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/ischar.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=19) :: lischa
     character(len=4) :: soutyp
 !

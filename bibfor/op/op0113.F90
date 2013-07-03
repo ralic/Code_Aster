@@ -30,34 +30,34 @@ subroutine op0113()
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/adalig.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedup1.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xcodec.h'
-    include 'asterfort/xmolig.h'
-    include 'asterfort/xtyele.h'
-    include 'asterfort/xvermo.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/adalig.h"
+#include "asterfort/assert.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/initel.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xcodec.h"
+#include "asterfort/xmolig.h"
+#include "asterfort/xtyele.h"
+#include "asterfort/xvermo.h"
     real(kind=8) :: crimax
     integer :: ibid, iel, ima
     integer :: i, j2

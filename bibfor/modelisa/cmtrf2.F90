@@ -1,7 +1,7 @@
 subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
                   ltrf, nbma, codint, lint, nint)
     implicit   none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: codcm1, codtrf, codint, ncm1, ntrf, nint, nbma
     integer :: lint(nbma), lcm1(ncm1), ltrf(ntrf)
 ! ----------------------------------------------------------------------

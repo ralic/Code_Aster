@@ -22,17 +22,17 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/iisnan.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/bptobg.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/lcumvi.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/bptobg.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/lcumvi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
     character(len=*) :: fami

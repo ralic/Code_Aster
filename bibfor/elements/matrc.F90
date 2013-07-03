@@ -17,17 +17,17 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utbtab.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utbtab.h"
     integer :: nno
     real(kind=8) :: kcis, matc(5, 5), vectt(3, 3)
 !

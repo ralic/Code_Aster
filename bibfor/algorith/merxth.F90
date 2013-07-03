@@ -18,19 +18,19 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     character(len=24) :: modele, charge, infcha, carele, inst, chtni, merigi
     character(len=24) :: mate, compor, tmpchi, tmpchf
 ! ----------------------------------------------------------------------

@@ -34,8 +34,8 @@ subroutine fetrex(option, idd, ni, vi, no,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/u2mess.h"
     integer :: option, idd, ni, no, irex
     real(kind=8) :: vi(ni), vo(no)
 !

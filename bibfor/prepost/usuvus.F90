@@ -29,13 +29,13 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp,&
 !                = 2, CALCULE LE VOLUME USE OBSTACLE
 !                NE CALCULE PAS LE VOLUME USE OBSTACLE, ISUPP = 0
 !-----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/usuban.h'
-    include 'asterfort/usukwu.h'
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/usuban.h"
+#include "asterfort/usukwu.h"
     real(kind=8) :: vusur(*), temps(*), para(7), fn(*), vg(*)
     character(len=8) :: k8b
     character(len=24) :: loi, mate

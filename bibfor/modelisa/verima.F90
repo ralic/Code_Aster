@@ -1,11 +1,11 @@
 subroutine verima(nomz, limanz, lonlim, typz)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     integer :: lonlim
     character(len=*) :: nomz, limanz(lonlim), typz
 ! ----------------------------------------------------------------------

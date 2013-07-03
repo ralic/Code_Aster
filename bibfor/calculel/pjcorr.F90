@@ -20,20 +20,20 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: cns1z, ces2z
     character(len=8) :: nomo2, nompar
     character(len=16) :: corres, option

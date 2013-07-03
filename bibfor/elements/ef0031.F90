@@ -1,18 +1,18 @@
 subroutine ef0031(nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/dxeffi.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ppgan2.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/dxeffi.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ppgan2.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

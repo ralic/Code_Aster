@@ -57,27 +57,27 @@ subroutine gcpc(m, in, ip, ac, inpc,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/amumph.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crsmsp.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcax.h'
-    include 'asterfort/gcldm1.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/matfpe.h"
+#include "asterfort/amumph.h"
+#include "asterfort/assert.h"
+#include "asterfort/crsmsp.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcax.h"
+#include "asterfort/gcldm1.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
     integer(kind=4) :: ip(*), ippc(*)
     integer :: m, in(m), inpc(m), irep, niter
     real(kind=8) :: ac(m), acpc(m), bf(m), xp(m), r(m), rr(m), p(m), epsi

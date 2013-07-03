@@ -1,13 +1,13 @@
 subroutine dxefg2(pgl, sigt)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dxmat1.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dxmat1.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: pgl(3, 3), sigt(1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

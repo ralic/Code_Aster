@@ -21,42 +21,42 @@ subroutine op0153()
 !     OPERATEUR  "POST_USURE"
 !
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/motubn.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbextb.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/usupru.h'
-    include 'asterfort/usupus.h'
-    include 'asterfort/usuvu2.h'
-    include 'asterfort/usuvus.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/motubn.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbextb.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/usupru.h"
+#include "asterfort/usupus.h"
+#include "asterfort/usuvu2.h"
+#include "asterfort/usuvus.h"
+#include "asterfort/wkvect.h"
     integer :: i, ibid, idangt, idcotu, idvcob, idvctu, ifires
     integer :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
     integer :: ipus, ire1, ire2, iret, itube, ivuso

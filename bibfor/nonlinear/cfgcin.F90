@@ -18,15 +18,15 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/resoud.h'
-    include 'blas/daxpy.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/calatm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/resoud.h"
+#include "blas/daxpy.h"
+#include "blas/ddot.h"
     character(len=24) :: resoco
     integer :: neq, nbliai
     character(len=19) :: matass, solveu

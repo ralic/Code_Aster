@@ -3,29 +3,29 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
                   npv, nivpar, nivdef)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extmod.h'
-    include 'asterfort/fluimp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mefcen.h'
-    include 'asterfort/mefgmn.h'
-    include 'asterfort/mefgri.h'
-    include 'asterfort/mefint.h'
-    include 'asterfort/mefist.h'
-    include 'asterfort/mefrac.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8pi.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extmod.h"
+#include "asterfort/fluimp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mefcen.h"
+#include "asterfort/mefgmn.h"
+#include "asterfort/mefgri.h"
+#include "asterfort/mefint.h"
+#include "asterfort/mefist.h"
+#include "asterfort/mefrac.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbm, npv, nivpar, nivdef, nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), vite(*), fact(*)
     character(len=8) :: typflu, base

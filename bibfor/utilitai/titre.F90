@@ -19,8 +19,8 @@ subroutine titre()
 ! ======================================================================
 !     CREATION D'UN TITRE ATTACHE A UN CONCEPT
 !     ------------------------------------------------------------------
-    include 'asterc/getres.h'
-    include 'asterfort/titrea.h'
+#include "asterc/getres.h"
+#include "asterfort/titrea.h"
     character(len=8) :: nomcon, cbid
     character(len=24) :: nomobj
 !

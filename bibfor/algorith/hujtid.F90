@@ -26,18 +26,18 @@ subroutine hujtid(mod, imat, sigr, vin, dsde,&
 !      VIN     :  VARIABLES INTERNES
 ! OUT  DSDE    :  MATRICE TANGENTE
 ! ======================================================================
-    include 'asterfort/hujddd.h'
-    include 'asterfort/hujksi.h'
-    include 'asterfort/hujmat.h'
-    include 'asterfort/hujpic.h'
-    include 'asterfort/hujprc.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/hujddd.h"
+#include "asterfort/hujksi.h"
+#include "asterfort/hujmat.h"
+#include "asterfort/hujpic.h"
+#include "asterfort/hujprc.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i, j, k, kk, l, ll, nvi
     integer :: nbmeca, ind(7), iret, imat, nbmect
     real(kind=8) :: n, beta, dhuj, m, pco, pref, pc

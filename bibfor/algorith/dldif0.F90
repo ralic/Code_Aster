@@ -56,16 +56,16 @@ subroutine dldif0(result, force1, neq, istoc, iarchi,&
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 !
-    include 'jeveux.h'
-    include 'asterfort/dlarch.h'
-    include 'asterfort/dlfdyn.h'
-    include 'asterfort/dlfext.h'
-    include 'asterfort/enerca.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmarpc.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/dlarch.h"
+#include "asterfort/dlfdyn.h"
+#include "asterfort/dlfext.h"
+#include "asterfort/enerca.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmarpc.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: neq, istoc, iarchi, ifm, ivit0r
     integer :: ifnobi, ifcibi
     integer :: archiv, nbtyar

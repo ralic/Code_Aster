@@ -17,13 +17,13 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ve,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/codent.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matini.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/utbtab.h"
     logical :: lcalct
     integer :: icou
     integer :: iniv

@@ -2,28 +2,28 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   mater)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rc3201.h'
-    include 'asterfort/rc32pm.h'
-    include 'asterfort/rc32rt.h'
-    include 'asterfort/rc32sa.h'
-    include 'asterfort/rc32sn.h'
-    include 'asterfort/rc32sp.h'
-    include 'asterfort/rcma02.h'
-    include 'asterfort/rcmo02.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rc3201.h"
+#include "asterfort/rc32pm.h"
+#include "asterfort/rc32rt.h"
+#include "asterfort/rc32sa.h"
+#include "asterfort/rc32sn.h"
+#include "asterfort/rc32sp.h"
+#include "asterfort/rcma02.h"
+#include "asterfort/rcmo02.h"
+#include "asterfort/wkvect.h"
     logical :: lpmpb, lsn, lsnet, lfatig, lrocht
     character(len=8) :: mater
 !     ------------------------------------------------------------------

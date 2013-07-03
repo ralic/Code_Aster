@@ -18,14 +18,14 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mrconl.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mrconl.h"
     integer :: kptsc
     logical :: lmd
     real(kind=8) :: rsolu(*)

@@ -1,7 +1,7 @@
 subroutine zader2(uplo, n, alpha, x, incx,&
                   y, incy, a, lda)
     implicit none
-    include 'blas/zaxpy.h'
+#include "blas/zaxpy.h"
     integer :: n, incx, incy, lda
     complex(kind=8) :: alpha, x(*), y(*), a(lda, *)
     character(len=*) :: uplo

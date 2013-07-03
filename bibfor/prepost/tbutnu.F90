@@ -1,19 +1,19 @@
 subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
                   prec, crit)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsindi.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsindi.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, nbinst
     real(kind=8) :: prec
     character(len=8) :: crit

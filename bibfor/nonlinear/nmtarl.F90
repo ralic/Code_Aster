@@ -19,8 +19,8 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/nmtacr.h'
-    include 'asterfort/zeroco.h'
+#include "asterfort/nmtacr.h"
+#include "asterfort/zeroco.h"
     integer :: mode, ndimsi
     real(kind=8) :: mat(*), sigel(*), vim(*), epm(*), dp, sp, xi
     real(kind=8) :: dirdp, dirsp, dirxi, min

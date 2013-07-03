@@ -1,12 +1,12 @@
 subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     character(len=*) :: nomc, nooc
     integer :: nuoc, dim, ldec
 !     ------------------------------------------------------------------

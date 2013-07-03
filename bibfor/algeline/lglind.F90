@@ -3,13 +3,13 @@ subroutine lglind(nbmat, mater, parame, ge, q,&
                   dy)
 !
     implicit      none
-    include 'asterfort/calcg.h'
-    include 'asterfort/drfdrs.h'
-    include 'asterfort/drudrs.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lceqvn.h'
+#include "asterfort/calcg.h"
+#include "asterfort/drfdrs.h"
+#include "asterfort/drudrs.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lceqvn.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), q(6), vecn(6), ge
     real(kind=8) :: deps(6), devg(6), devgii, traceg, dy(10)

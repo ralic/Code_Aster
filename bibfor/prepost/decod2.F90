@@ -1,11 +1,11 @@
 subroutine decod2(rec, irec, ifield, itype, ilu,&
                   rlu, trouve)
     implicit  none
-    include 'asterc/ismaem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/lxliis.h'
-    include 'asterfort/lxlir8.h'
-    include 'asterfort/trfmot.h'
+#include "asterc/ismaem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/lxlir8.h"
+#include "asterfort/trfmot.h"
     character(len=*) :: rec(20)
     integer :: irec, ifield, itype, ilu
     real(kind=8) :: rlu

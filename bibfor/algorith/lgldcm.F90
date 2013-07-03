@@ -1,19 +1,19 @@
 subroutine lgldcm(nbmat, mater, sig, vin)
 !
     implicit    none
-    include 'jeveux.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/gdev.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/ucritp.h'
-    include 'asterfort/varecr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/gdev.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/trace.h"
+#include "asterfort/ucritp.h"
+#include "asterfort/varecr.h"
+#include "asterfort/wkvect.h"
     integer :: nbmat
     real(kind=8) :: sig(6), mater(nbmat, 2), vin(*)
 ! =================================================================

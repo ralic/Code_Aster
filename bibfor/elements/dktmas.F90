@@ -1,25 +1,25 @@
 subroutine dktmas(xyzl, option, pgl, mas, ener,&
                   multic)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/diaexp.h'
-    include 'asterfort/dialum.h'
-    include 'asterfort/dktnib.h'
-    include 'asterfort/dktniw.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/dxtloc.h'
-    include 'asterfort/dxtloe.h'
-    include 'asterfort/dxtnim.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/diaexp.h"
+#include "asterfort/dialum.h"
+#include "asterfort/dktnib.h"
+#include "asterfort/dktniw.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/dxtloc.h"
+#include "asterfort/dxtloe.h"
+#include "asterfort/dxtnim.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), mas(*), ener(*)
     character(len=16) :: option
 ! ======================================================================

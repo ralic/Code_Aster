@@ -17,27 +17,27 @@ subroutine te0100(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nmdlog.h'
-    include 'asterfort/nmed2d.h'
-    include 'asterfort/nmel2d.h'
-    include 'asterfort/nmgpfi.h'
-    include 'asterfort/nmgr2d.h'
-    include 'asterfort/nmgz2d.h'
-    include 'asterfort/nmpl2d.h'
-    include 'asterfort/nmsh1.h'
-    include 'asterfort/nmtstm.h'
-    include 'asterfort/rcangm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tgveri.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmdlog.h"
+#include "asterfort/nmed2d.h"
+#include "asterfort/nmel2d.h"
+#include "asterfort/nmgpfi.h"
+#include "asterfort/nmgr2d.h"
+#include "asterfort/nmgz2d.h"
+#include "asterfort/nmpl2d.h"
+#include "asterfort/nmsh1.h"
+#include "asterfort/nmtstm.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tgveri.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES

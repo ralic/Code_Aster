@@ -34,25 +34,25 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calsvd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdtrib.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/calsvd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdtrib.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/posddl.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbchoc, info, nbmode, irigi, indic(nbmode), ibid
     integer :: vali
     integer :: neq, nbnli, istoav, iret, ifac

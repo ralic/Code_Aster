@@ -20,13 +20,13 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmassm.h'
-    include 'asterfort/nmchex.h'
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmassm.h"
+#include "asterfort/nmchex.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, solveu
     character(len=24) :: numedd, numfix

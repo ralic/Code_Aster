@@ -1,19 +1,19 @@
 subroutine te0032(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dxqfor.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/dxtfor.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
+#include "asterfort/dxqfor.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/dxtfor.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

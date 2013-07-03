@@ -26,9 +26,9 @@ subroutine discrt(ff0, ff1, ff2, nbpt, amor,&
 ! IN  :NBPT      INT :NOMBRE DE POINTS DESIRES
 ! OUT :F(*)      R8  :DICRETISATION
 !     -----------------------------------------------------------------
-    include 'asterfort/fitof.h'
-    include 'asterfort/phase.h'
-    include 'asterfort/transf.h'
+#include "asterfort/fitof.h"
+#include "asterfort/phase.h"
+#include "asterfort/transf.h"
     integer :: nbpt, i1
     real(kind=8) :: ff0, ff1, ff2, f1, f2, f(*), amor, phi, phi1, phi2
     complex(kind=8) :: icmplx, horig, hbid

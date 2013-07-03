@@ -1,25 +1,25 @@
 subroutine foimpr(nomf, impr, iul, ind, fonins)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/foec1c.h'
-    include 'asterfort/foec1f.h'
-    include 'asterfort/foec1n.h'
-    include 'asterfort/foec2c.h'
-    include 'asterfort/foec2f.h'
-    include 'asterfort/foec2n.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/foec1c.h"
+#include "asterfort/foec1f.h"
+#include "asterfort/foec1n.h"
+#include "asterfort/foec2c.h"
+#include "asterfort/foec2f.h"
+#include "asterfort/foec2n.h"
+#include "asterfort/fointc.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nomf, fonins
     integer :: impr, iul, ind
 !     ------------------------------------------------------------------

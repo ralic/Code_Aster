@@ -51,13 +51,13 @@ subroutine betimp(nmat, mater, sig, vind, vinf,&
 !       IN  SIGE   :  CONTRAINTE ELASTIQUE
 !       IN  SIGD   :  CONTRAINTE A L'INSTANT PRECEDENT
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/betfpp.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/tecael.h'
+#include "jeveux.h"
+#include "asterfort/betfpp.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lchydr.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/tecael.h"
     integer :: nmat, nseui4, ifm, niv
     integer :: nseui1, nseui2, nseui3
     real(kind=8) :: pc, pt, sig(6), sige(6), sigd(6), dev(6), lc

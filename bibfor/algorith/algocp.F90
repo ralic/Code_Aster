@@ -19,17 +19,17 @@ subroutine algocp(sdstat, resoco, numedd, matass)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfcpem.h'
-    include 'asterfort/cfcpes.h'
-    include 'asterfort/cfcpma.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmrvai.h'
+#include "jeveux.h"
+#include "asterfort/cfcpem.h"
+#include "asterfort/cfcpes.h"
+#include "asterfort/cfcpma.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmrvai.h"
     character(len=24) :: sdstat, resoco
     character(len=19) :: matass
     character(len=14) :: numedd

@@ -19,20 +19,20 @@ subroutine mmmcpt(noma, sdstat, defico, resoco, cnsinr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfm.h'
-    include 'asterfort/nmrvai.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/nmrvai.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma
     character(len=19) :: cnsinr
     character(len=24) :: defico, resoco, sdstat

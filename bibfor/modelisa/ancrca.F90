@@ -62,8 +62,8 @@ subroutine ancrca(icabl, nbno, s, alpha, f0,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wdefca.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/wdefca.h"
     integer :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, d, f(*)
 !

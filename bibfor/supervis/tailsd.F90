@@ -16,9 +16,9 @@ subroutine tailsd(nom, nomsd, val, nbval)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/rsorac.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/rsorac.h"
     integer :: nbval, val(nbval)
     character(len=*) :: nom, nomsd
 ! ---------------------------------------------------------------

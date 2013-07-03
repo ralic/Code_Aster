@@ -17,7 +17,7 @@ function jxhcod(chain, lrep)
 ! ======================================================================
 ! aslint: disable=W1304
     implicit none
-    include 'asterc/strmov.h'
+#include "asterc/strmov.h"
     integer :: jxhcod, lrep
     integer :: i1
     character(len=*) :: chain

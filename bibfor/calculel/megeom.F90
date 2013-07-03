@@ -19,11 +19,11 @@ subroutine megeom(modelz, chgeoz)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: modelz, chgeoz
     character(len=8) :: modele
 ! ----------------------------------------------------------------------

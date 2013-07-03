@@ -19,9 +19,9 @@ subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph,&
 !
     implicit none
 !
-    include 'asterfort/marota.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/marota.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
     integer :: nb2
 !
     integer :: ii, jj

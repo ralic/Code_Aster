@@ -18,18 +18,18 @@ subroutine numer2(nuposs, nbligr, vligr, moloc, solveu,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/idenob.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nueffe.h'
-    include 'asterfort/nugllo.h'
-    include 'asterfort/profma.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/idenob.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nueffe.h"
+#include "asterfort/nugllo.h"
+#include "asterfort/profma.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: moloc, vligr(*), solveu, base, nu, nuposs
     integer :: nbligr
     integer :: nequa

@@ -17,8 +17,8 @@ subroutine klocgl(k, r)
 ! ======================================================================
 ! TOURNE KSTAB VERS LE REPERE GLOBAL
     implicit none
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: k(18, 18), r(3, 3), krt(18, 18), tmp(18, 18), kr(18, 18)
     integer :: i, j, kk
 !

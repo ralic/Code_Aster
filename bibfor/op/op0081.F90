@@ -37,27 +37,27 @@ subroutine op0081()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/calamo.h'
-    include 'asterfort/calprc.h'
-    include 'asterfort/calpro.h'
-    include 'asterfort/comp81.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/impe81.h'
-    include 'asterfort/iner81.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/refe81.h'
-    include 'asterfort/remp81.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8pi.h"
+#include "asterfort/calamo.h"
+#include "asterfort/calprc.h"
+#include "asterfort/calpro.h"
+#include "asterfort/comp81.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/impe81.h"
+#include "asterfort/iner81.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/refe81.h"
+#include "asterfort/remp81.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: ioc, n1, nbval, imod, iret
 !
     real(kind=8) :: rbid, pi

@@ -2,8 +2,8 @@ subroutine mefger(ndim, som, xint, yint, rint,&
                   sgn, orig, beta)
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/trigom.h'
+#include "asterc/r8pi.h"
+#include "asterfort/trigom.h"
     integer :: ndim(14), sgn(*), orig(*)
     real(kind=8) :: som(9), xint(*), yint(*), rint(*), beta(*)
 ! ----------------------------------------------------------------------

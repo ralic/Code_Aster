@@ -20,18 +20,18 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cast3d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/invjac.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cast3d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elref4.h"
+#include "asterfort/invjac.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: nno, nbpg1, imate
     integer :: ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2

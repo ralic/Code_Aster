@@ -20,23 +20,23 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/mmmcri.h'
-    include 'asterfort/mmreas.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmimcr.h'
-    include 'asterfort/xreacl.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mmmcri.h"
+#include "asterfort/mmreas.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/xreacl.h"
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco

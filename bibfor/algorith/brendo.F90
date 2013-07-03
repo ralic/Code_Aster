@@ -28,12 +28,12 @@ subroutine brendo(sige6, bt6, sut, bc1, suc,&
 !
 ! aslint: disable=W1501,W1504
     implicit none
-    include 'asterfort/brindz.h'
-    include 'asterfort/brtail.h'
-    include 'asterfort/brvp33.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/brindz.h"
+#include "asterfort/brtail.h"
+#include "asterfort/brvp33.h"
+#include "asterfort/matini.h"
+#include "asterfort/transp.h"
+#include "asterfort/utbtab.h"
     integer :: i, j, k, l
     real(kind=8) :: sige6(6), sige33(3, 3), sige3(3), vse33(3, 3)
     real(kind=8) :: vse33t(3, 3)

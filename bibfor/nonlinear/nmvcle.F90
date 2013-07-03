@@ -20,16 +20,16 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: modelz, matz, carelz, lischz, comz
     real(kind=8) :: instan
 !

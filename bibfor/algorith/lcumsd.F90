@@ -50,8 +50,8 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
 !_______________________________________________________________________
 !
     implicit none
-    include 'asterfort/lcumfd.h'
-    include 'asterfort/lcumfs.h'
+#include "asterfort/lcumfd.h"
+#include "asterfort/lcumfs.h"
     integer :: i, ifou, isph, nmat, nstrs, nvari
     real(kind=8) :: vari(nvari), cmat(nmat)
 ! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESSION DES DECLARATIONS

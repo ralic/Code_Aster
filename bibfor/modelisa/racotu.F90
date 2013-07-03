@@ -2,25 +2,25 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                   ligrel, mod, cara, numddl, typlag,&
                   lisrel, coorig)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/afretu.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/raorfi.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/vdiff.h'
+#include "asterfort/afretu.h"
+#include "asterfort/assvec.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/normev.h"
+#include "asterfort/raorfi.h"
+#include "asterfort/reajre.h"
+#include "asterfort/vdiff.h"
     integer :: lonlis, iprno(*)
     character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod

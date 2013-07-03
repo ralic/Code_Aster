@@ -19,12 +19,12 @@ subroutine dinuar(sddisc, numins, force, numarc, numrep)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmcrpo.h'
+#include "jeveux.h"
+#include "asterfort/diinst.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcrpo.h"
     character(len=19) :: sddisc
     integer :: numins, numarc, numrep
     logical :: force

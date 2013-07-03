@@ -1,25 +1,25 @@
 subroutine cresol(solveu)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crsvfe.h'
-    include 'asterfort/crsvgc.h'
-    include 'asterfort/crsvld.h'
-    include 'asterfort/crsvmf.h'
-    include 'asterfort/crsvmu.h'
-    include 'asterfort/crsvpe.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/sdsolv.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/crsvfe.h"
+#include "asterfort/crsvgc.h"
+#include "asterfort/crsvld.h"
+#include "asterfort/crsvmf.h"
+#include "asterfort/crsvmu.h"
+#include "asterfort/crsvpe.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/sdsolv.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: solveu
 ! ----------------------------------------------------------------------
 ! ======================================================================

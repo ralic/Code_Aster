@@ -20,34 +20,34 @@ subroutine execop()
 !     EXECUTION DE LA COMMANDE
 !     ------------------------------------------------------------------
 !     COMMON POUR LE NIVEAU D'"INFO"
-    include 'asterc/etausr.h'
-    include 'asterc/gcecdu.h'
-    include 'asterc/uttrst.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/detmat.h'
-    include 'asterfort/ex0000.h'
-    include 'asterfort/ex0100.h'
-    include 'asterfort/foint0.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedetv.h'
-    include 'asterfort/jelibz.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/jereou.h'
-    include 'asterfort/jermxd.h'
-    include 'asterfort/jevema.h'
-    include 'asterfort/mecoel.h'
-    include 'asterfort/op9999.h'
-    include 'asterfort/opsexe.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/utgtme.h'
-    include 'asterfort/utptme.h'
-    include 'asterfort/uttcpg.h'
+#include "asterc/etausr.h"
+#include "asterc/gcecdu.h"
+#include "asterc/uttrst.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/comcou.h"
+#include "asterfort/detmat.h"
+#include "asterfort/ex0000.h"
+#include "asterfort/ex0100.h"
+#include "asterfort/foint0.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedetv.h"
+#include "asterfort/jelibz.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jereou.h"
+#include "asterfort/jermxd.h"
+#include "asterfort/jevema.h"
+#include "asterfort/mecoel.h"
+#include "asterfort/op9999.h"
+#include "asterfort/opsexe.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/utgtme.h"
+#include "asterfort/utptme.h"
+#include "asterfort/uttcpg.h"
     integer :: nivuti, nivpgm, unite
     common /inf001/ nivuti,nivpgm,unite
 !

@@ -20,37 +20,37 @@ subroutine op0008()
 !     COMMANDE:  CALC_VECT_ELEM
 !
 ! ......................................................................
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/me2mac.h'
-    include 'asterfort/me2mme.h'
-    include 'asterfort/me2mth.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/ss2mme.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vefnme.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/chpver.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/me2mac.h"
+#include "asterfort/me2mme.h"
+#include "asterfort/me2mth.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/ss2mme.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vefnme.h"
+#include "asterfort/wkvect.h"
     logical :: fnoevo
     integer :: nbchme, ibid, ich, icha, ied, ierd, jlmat, jlvf, ncha, nh
     integer :: nbss, n1, n3, n4, n5, n6, n7, n9, iad, iresu, jrelr, iexi, nbresu

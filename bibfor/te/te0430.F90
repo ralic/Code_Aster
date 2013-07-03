@@ -16,20 +16,20 @@ subroutine te0430(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cargri.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmgrib.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verift.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cargri.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmgrib.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/terefe.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verift.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE CHARGEMENT :

@@ -29,8 +29,8 @@ subroutine projmd(testc, np1, nb1, nb2, mat,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/prmama.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/prmama.h"
+#include "asterfort/u2mess.h"
     integer :: testc, np1, nb1, nb2
     real(kind=8) :: mat(np1, *), vg(np1, *), vd(np1, *), matpr(*), mtmp1(np1, *)
     real(kind=8) :: mtmp2(np1, *)

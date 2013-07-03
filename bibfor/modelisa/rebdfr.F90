@@ -43,9 +43,9 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
 !     IN  : NPV   : NOMBRE DE VITESSES ETUDIEES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/u2mess.h"
     integer :: nfi, nff, nmodi, nmodf
     real(kind=8) :: freqi, freqf, freq(2, nbm, npv)
 !

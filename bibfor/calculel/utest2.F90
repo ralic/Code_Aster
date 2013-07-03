@@ -3,9 +3,9 @@ subroutine utest2(cham19, nomail, nonoeu, nupo, nusp,&
                   refr, refc, typres, epsi, crit,&
                   ific, llab, ssigne)
     implicit none
-    include 'asterfort/dismoi.h'
-    include 'asterfort/utch19.h'
-    include 'asterfort/utites.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/utch19.h"
+#include "asterfort/utites.h"
     integer :: nbref, refi(nbref), nupo, ivari, ific, nusp
     real(kind=8) :: refr(nbref), epsi
     character(len=*) :: cham19, nomail, nonoeu, typres, nocmp, crit, ssigne

@@ -17,19 +17,19 @@ subroutine jedupo(schin, claout, schout, dupcol)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjallt.h'
-    include 'asterfort/jjcrec.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jxdeps.h'
-    include 'asterfort/jxliro.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjallt.h"
+#include "asterfort/jjcrec.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jxdeps.h"
+#include "asterfort/jxliro.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: schin, claout, schout
     logical :: dupcol
 ! ----------------------------------------------------------------------

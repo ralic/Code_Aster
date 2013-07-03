@@ -45,10 +45,10 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 !
 ! OUT BBOK : CRITERE DE CV DE L ALGO BRINGBACK
 !
-    include 'asterfort/critnu.h'
-    include 'asterfort/dndiss.h'
-    include 'asterfort/fplass.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/critnu.h"
+#include "asterfort/dndiss.h"
+#include "asterfort/fplass.h"
+#include "asterfort/r8inir.h"
     logical :: bbok
 !
 !      INTEGER NEWPRO(2)

@@ -16,18 +16,18 @@ subroutine te0342(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jsd1ff.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jsd1ff.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 !     CALCUL

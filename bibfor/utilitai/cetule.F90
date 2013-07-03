@@ -39,11 +39,11 @@ subroutine cetule(model0, tbgrca, codret)
 !
 ! DECLARATION PARAMETRES
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbliva.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbliva.h"
     integer :: nbmcle
     parameter  ( nbmcle = 3 )
 !

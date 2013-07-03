@@ -33,14 +33,14 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 ! OUT DSIDEP : MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 !
-    include 'asterfort/dfplas.h'
-    include 'asterfort/dxprd1.h'
-    include 'asterfort/dxprd2.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/pmavec.h'
-    include 'blas/dcopy.h'
+#include "asterfort/dfplas.h"
+#include "asterfort/dxprd1.h"
+#include "asterfort/dxprd2.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmavec.h"
+#include "blas/dcopy.h"
     integer :: ncrit, i, j, n, nd
 !
     real(kind=8) :: mp1(3), mp2(3), nbackn(6)

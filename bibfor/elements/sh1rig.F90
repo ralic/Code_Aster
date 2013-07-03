@@ -19,14 +19,14 @@ subroutine sh1rig(xetemp, para, re)
 !               ELEMENT SHB15
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asbgl1.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s1calb.h'
-    include 'asterfort/sh1ksi.h'
-    include 'asterfort/tran63.h'
+#include "jeveux.h"
+#include "asterfort/asbgl1.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s1calb.h"
+#include "asterfort/sh1ksi.h"
+#include "asterfort/tran63.h"
     integer :: p, q, irdc
     real(kind=8) :: para(11)
     real(kind=8) :: xe(45), re(45, 45), lambda

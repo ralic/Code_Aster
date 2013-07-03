@@ -20,14 +20,14 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/invjax.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/invjax.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "blas/ddot.h"
     character(len=1) :: stop
     character(len=8) :: elrefp
     integer :: nnop, ndim

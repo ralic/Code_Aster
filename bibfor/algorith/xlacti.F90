@@ -17,11 +17,11 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/xxmmvd.h'
+#include "jeveux.h"
+#include "asterfort/conare.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xxmmvd.h"
     character(len=8) :: typma
     integer :: ninter, jaint, lact(8), nlact
 !

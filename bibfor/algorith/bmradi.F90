@@ -44,19 +44,19 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cheddl.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/cheddl.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
 !
 !
 !-----------------------------------------------------------------------

@@ -1,13 +1,13 @@
 subroutine vpermc(lmasse, lraide, nbprop, vecp, fr,&
                   am, excl, omecor, ernorm)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mcmult.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mcmult.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/wkvect.h"
     integer :: lmasse, lraide, nbprop, excl(*)
     complex(kind=8) :: vecp(*)
     real(kind=8) :: fr(*), am(*), omecor, ernorm(*)

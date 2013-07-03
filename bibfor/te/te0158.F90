@@ -1,18 +1,18 @@
 subroutine te0158(option, nomte)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jpd1ff.h'
-    include 'asterfort/jsd1ff.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmfdge.h'
-    include 'asterfort/pmfpti.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/verifm.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jpd1ff.h"
+#include "asterfort/jsd1ff.h"
+#include "asterfort/matela.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfdge.h"
+#include "asterfort/pmfpti.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/verifm.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

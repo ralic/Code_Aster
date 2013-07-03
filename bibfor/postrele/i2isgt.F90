@@ -3,7 +3,7 @@ subroutine i2isgt(epsi, xa, ya, xb, yb,&
                   s1, s2, r1, r2)
     implicit  none
 !
-    include 'asterfort/rvdet2.h'
+#include "asterfort/rvdet2.h"
     integer :: npi
     real(kind=8) :: epsi, xa, ya, xb, yb, xc, yc, xd, yd, s1, s2, r1, r2
 !

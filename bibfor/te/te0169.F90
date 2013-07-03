@@ -17,12 +17,12 @@ subroutine te0169(option, nomte)
 ! ======================================================================
 ! SUPPRESSION D'INSTRUCTIONS INUTILES
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'blas/ddot.h'
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MEPOULI

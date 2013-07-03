@@ -29,7 +29,7 @@ subroutine vermot(icl, iv, cv, cnl, ier,&
 !       OUT     IER     =       0       > VRAI  ( RETURN )
 !                       =       1       > FAUX  ( RETURN 1 )
 !       ----------------------------------------------------------------
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: icl, iv, ier
     character(len=14) :: cnl
     character(len=16) :: cmd, nom

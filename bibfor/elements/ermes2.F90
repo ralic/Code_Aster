@@ -1,8 +1,8 @@
 subroutine ermes2(ino, typema, typmav, iref1, ivois,&
                   isig, nbcmp, dsg11, dsg22, dsg12)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indiis.h'
+#include "jeveux.h"
+#include "asterfort/indiis.h"
     integer :: ino, iref1, ivois, isig, nbcmp
     real(kind=8) :: dsg11(3), dsg22(3), dsg12(3)
     character(len=8) :: typema, typmav

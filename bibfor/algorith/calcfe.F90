@@ -29,13 +29,13 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !       OUT FE     :  Gradient de tranformation elastique
 !           FP     :  Gradient de tranformation plastique
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcdetf.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmat.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/matinv.h"
+#include "asterfort/pmat.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     real(kind=8) :: fe(3, 3), df(3, 3), gamsns(3, 3), dffe(3, 3), dfpm(3, 3)
     real(kind=8) :: fem(3, 3)
     real(kind=8) :: vind(*), id(3, 3), det, coef, dfp(3, 3), expo, fp(3, 3)

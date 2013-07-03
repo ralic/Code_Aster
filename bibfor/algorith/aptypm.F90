@@ -20,13 +20,13 @@ subroutine aptypm(sdappa, noma, numma, ndim, nnosd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmtypm.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmtypm.h"
     character(len=19) :: sdappa
     character(len=8) :: noma
     character(len=8) :: alias

@@ -37,20 +37,20 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pjefco.h'
-    include 'asterfort/pjeftc.h'
-    include 'asterfort/pjelco.h'
-    include 'asterfort/pjngco.h'
-    include 'asterfort/pjspco.h'
-    include 'asterfort/pjtyco.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pjefco.h"
+#include "asterfort/pjeftc.h"
+#include "asterfort/pjelco.h"
+#include "asterfort/pjngco.h"
+#include "asterfort/pjspco.h"
+#include "asterfort/pjtyco.h"
+#include "asterfort/u2mesk.h"
     logical :: isole
     character(len=4) :: typcal
     character(len=8) :: resuin

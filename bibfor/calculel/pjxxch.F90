@@ -1,14 +1,14 @@
 subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
                   prol0, ligrez, base, iret)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pjefch.h'
-    include 'asterfort/pjngch.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pjefch.h"
+#include "asterfort/pjngch.h"
     character(len=*) :: correz, ch1z, ch2z, prfchz, ligrez
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

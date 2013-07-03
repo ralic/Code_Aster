@@ -18,18 +18,18 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmarex.h'
-    include 'asterfort/nmarnr.h'
-    include 'asterfort/nmarpr.h'
-    include 'asterfort/nmcrpx.h'
-    include 'asterfort/nmdide.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarex.h"
+#include "asterfort/nmarnr.h"
+#include "asterfort/nmarpr.h"
+#include "asterfort/nmcrpx.h"
+#include "asterfort/nmdide.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=8) :: result
     logical :: lreuse

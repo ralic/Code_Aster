@@ -1,11 +1,11 @@
 subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                   table, specmr, specmi)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: napexc, nbmode, nbpf
     real(kind=8) :: specmr(nbpf, *), specmi(nbpf, *)
     logical :: intmod

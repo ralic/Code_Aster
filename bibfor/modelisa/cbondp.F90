@@ -23,20 +23,20 @@ subroutine cbondp(char, noma)
 !      NOMA   : NOM DU MAILLAGE
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alcart.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: dir(4)
     character(len=24) :: signal, mesmai
     character(len=8) :: char, noma, typmcl(2), modele, k8b

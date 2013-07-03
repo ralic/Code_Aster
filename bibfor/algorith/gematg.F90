@@ -1,12 +1,12 @@
 subroutine gematg(n, delta, matmoy, mat, mat1,&
                   mat2)
     implicit   none
-    include 'asterc/getres.h'
-    include 'asterfort/gamdev.h'
-    include 'asterfort/gasdev.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterfort/gamdev.h"
+#include "asterfort/gasdev.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: n
     real(kind=8) :: delta, matmoy(*), mat(*), mat1(*), mat2(*)
 ! ----------------------------------------------------------------------

@@ -3,14 +3,14 @@ subroutine acmata(jvectn, jvectu, jvectv, nbordr, kwork,&
                   jdtaum, jresun, nommet, vrespc)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/raycir.h'
-    include 'asterfort/taurlo.h'
-    include 'asterfort/vecnuv.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8pi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/raycir.h"
+#include "asterfort/taurlo.h"
+#include "asterfort/vecnuv.h"
+#include "asterfort/wkvect.h"
     integer :: jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jdtaum, jresun
     character(len=16) :: nommet

@@ -1,19 +1,19 @@
 subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
                   iret)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rvegal.h'
-    include 'asterfort/rvrepc.h'
-    include 'asterfort/rvrepm.h'
-    include 'asterfort/rvrepn.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rvegal.h"
+#include "asterfort/rvrepc.h"
+#include "asterfort/rvrepm.h"
+#include "asterfort/rvrepn.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: nlsnac
     character(len=19) :: sdnewr
     character(len=8) :: courbe, mailla, repere

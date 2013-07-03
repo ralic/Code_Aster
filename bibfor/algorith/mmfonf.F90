@@ -20,9 +20,9 @@ subroutine mmfonf(ndim, nno, alias, ksi1, ksi2,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mm2onf.h'
-    include 'asterfort/mmdonf.h'
-    include 'asterfort/mmnonf.h'
+#include "asterfort/mm2onf.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/mmnonf.h"
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: ff(9)

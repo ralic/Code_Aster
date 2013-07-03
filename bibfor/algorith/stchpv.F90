@@ -3,20 +3,20 @@ subroutine stchpv(nbobst, nbpt, temps, dloc, fcho,&
                   iwk4, tdebut, tfin, nbloc, offset,&
                   noecho, intitu, nomres)
     implicit none
-    include 'asterc/r8rddg.h'
-    include 'asterfort/comptv.h'
-    include 'asterfort/dstapv.h'
-    include 'asterfort/fstapv.h'
-    include 'asterfort/impc0.h'
-    include 'asterfort/impdep.h'
-    include 'asterfort/impfn0.h'
-    include 'asterfort/impftv.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/statpu.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/comptv.h"
+#include "asterfort/dstapv.h"
+#include "asterfort/fstapv.h"
+#include "asterfort/impc0.h"
+#include "asterfort/impdep.h"
+#include "asterfort/impfn0.h"
+#include "asterfort/impftv.h"
+#include "asterfort/infniv.h"
+#include "asterfort/statpu.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "blas/dcopy.h"
     integer :: nbobst, nbpt, nbloc, iadh(*), iwk4(*)
     real(kind=8) :: temps(*), dloc(*), fcho(*), vgli(*), wk1(*), wk2(*), wk3(*)
     real(kind=8) :: tdebut, tfin, offset

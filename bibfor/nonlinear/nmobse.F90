@@ -19,21 +19,21 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmext0.h'
-    include 'asterfort/nmext1.h'
-    include 'asterfort/nmextd.h'
-    include 'asterfort/nmextt.h'
-    include 'asterfort/nmobs2.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmext0.h"
+#include "asterfort/nmext1.h"
+#include "asterfort/nmextd.h"
+#include "asterfort/nmextt.h"
+#include "asterfort/nmobs2.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noma
     character(len=19) :: sdobse
     character(len=24) :: sdieto

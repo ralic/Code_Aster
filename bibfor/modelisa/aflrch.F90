@@ -17,31 +17,31 @@ subroutine aflrch(lisrez, chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cragch.h'
-    include 'asterfort/craglc.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elimdi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/impre2.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/noligr.h'
-    include 'asterfort/ordlrl.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cragch.h"
+#include "asterfort/craglc.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elimdi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/impre2.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/nocart.h"
+#include "asterfort/noligr.h"
+#include "asterfort/ordlrl.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: lisrel
     character(len=8) :: charge
     character(len=*) :: lisrez, chargz

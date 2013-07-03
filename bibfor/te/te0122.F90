@@ -1,11 +1,11 @@
 subroutine te0122(option, nomte)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ppgan2.h'
-    include 'asterfort/tecach.h'
+#include "jeveux.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ppgan2.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

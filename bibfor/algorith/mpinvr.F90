@@ -35,17 +35,17 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mtcrog.h'
-    include 'asterfort/rslsvd.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtcrog.h"
+#include "asterfort/rslsvd.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: nbmesu, nbmode, nbabs
     integer :: vali
     real(kind=8) :: phi(nbmesu, nbmode), xabs(nbabs), coef(*)

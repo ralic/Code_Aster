@@ -25,20 +25,20 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmceai.h'
-    include 'asterfort/nmceni.h'
-    include 'asterfort/nmcere.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmrcyc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmceai.h"
+#include "asterfort/nmceni.h"
+#include "asterfort/nmcere.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrcyc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
     integer :: fonact(*)
     integer :: iterat
     real(kind=8) :: rho, offset, eta(2)

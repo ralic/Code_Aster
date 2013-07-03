@@ -20,22 +20,22 @@ subroutine op5902(nboccp, compor)
 !
 !     COMMANDE:  DEFI_COMPOR MOT-CLE POLYCRISTAL
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/eulnau.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/eulnau.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: compor, mono, chaine
     character(len=16) :: kbid, loca, noms(6), nomvar(100)
     real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt

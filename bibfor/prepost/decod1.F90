@@ -1,7 +1,7 @@
 subroutine decod1(rec, irec, ifield, valatt, trouve)
     implicit  none
-    include 'asterfort/lxliis.h'
-    include 'asterfort/trfmot.h'
+#include "asterfort/lxliis.h"
+#include "asterfort/trfmot.h"
     character(len=*) :: rec(20)
     integer :: irec, ifield, valatt
     logical :: trouve

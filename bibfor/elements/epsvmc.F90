@@ -49,14 +49,14 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/eps1mc.h'
-    include 'asterfort/eps2mc.h'
-    include 'asterfort/epthmc.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/eps1mc.h"
+#include "asterfort/eps2mc.h"
+#include "asterfort/epthmc.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option
     character(len=4) :: fami
     real(kind=8) :: xyz(1), depl(1), epsm(1), repere(7)

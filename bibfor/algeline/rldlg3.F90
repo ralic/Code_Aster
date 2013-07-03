@@ -1,18 +1,18 @@
 subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/rldlc8.h'
-    include 'asterfort/rldlr8.h'
-    include 'asterfort/rlduc8.h'
-    include 'asterfort/rldur8.h'
-    include 'asterfort/rlfc16.h'
-    include 'asterfort/rltfr8.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/rldlc8.h"
+#include "asterfort/rldlr8.h"
+#include "asterfort/rlduc8.h"
+#include "asterfort/rldur8.h"
+#include "asterfort/rlfc16.h"
+#include "asterfort/rltfr8.h"
     character(len=*) :: metres
     integer :: lmat, nbsol
     real(kind=8) :: xsol(*)

@@ -22,17 +22,17 @@ subroutine mltdrb(nbloc, ncbloc, decal, seq, nbsn,&
 ! ======================================================================
 ! aslint: disable=W1304,W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/llbloc.h'
-    include 'asterc/mlnbpr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mlfmlt.h'
-    include 'asterfort/mlfmul.h'
+#include "asterc/llbloc.h"
+#include "asterc/mlnbpr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mlfmlt.h"
+#include "asterfort/mlfmul.h"
     integer :: nbsn, nbnd, nbloc, ncbloc(nbnd), decal(nbsn)
     integer(kind=4) :: global(*)
     integer :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)

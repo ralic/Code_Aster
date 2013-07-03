@@ -36,8 +36,8 @@ subroutine rogllo(nb1, nb2, vrg, blam, ctor,&
 !
 ! ......................................................................
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/btkb.h'
+#include "asterc/r8prem.h"
+#include "asterfort/btkb.h"
     integer :: in
     integer :: ii, jj
     integer :: i, j

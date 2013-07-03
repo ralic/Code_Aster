@@ -60,15 +60,15 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tstbar.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dscal.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tstbar.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
     real(kind=8) :: x3dca(*), x3d1(*), x3d2(*), normal(*), x3dp(*), xbar(*)
     real(kind=8) :: excent
     integer :: iproj

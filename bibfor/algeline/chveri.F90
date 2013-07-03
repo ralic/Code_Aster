@@ -30,18 +30,18 @@ subroutine chveri(np1, np2, np3, nbm, nbmcd,&
 !
 !
 ! ARGUMENTS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/disbut.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/disbut.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/projmg.h"
+#include "asterfort/u2mesk.h"
     integer :: np1, np2, np3
     integer :: nbm, nbmcd
     integer :: nbnl, typch(*), nbseg(*)

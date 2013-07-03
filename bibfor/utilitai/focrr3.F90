@@ -1,18 +1,18 @@
 subroutine focrr3(nomfon, resu, nopara, base, ier)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutn1.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutn1.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ier
     character(len=1) :: base
     character(len=16) :: nopara

@@ -27,13 +27,13 @@ subroutine te0174(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
     integer :: icodre, kpg, spt
     character(len=8) :: nompar(4), fami, poum
     character(len=16) :: nomte, option

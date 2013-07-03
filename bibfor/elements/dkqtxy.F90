@@ -1,7 +1,7 @@
 subroutine dkqtxy(qsi, eta, hft2, depf, codi,&
                   lcot, vt)
     implicit  none
-    include 'asterfort/matini.h'
+#include "asterfort/matini.h"
     real(kind=8) :: qsi, eta, hft2(2, 6), depf(12), codi(*), lcot(*), vt(2)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

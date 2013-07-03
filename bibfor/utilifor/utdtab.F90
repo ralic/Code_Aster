@@ -17,7 +17,7 @@ subroutine utdtab(raz, na, nb, mb, md,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: na, mb, md
     character(len=*) :: raz
     real(kind=8) :: a(na, nb), b(nb, mb), d(na, md), xab(na, mb)

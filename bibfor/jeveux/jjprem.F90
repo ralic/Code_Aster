@@ -16,7 +16,7 @@ function jjprem(nombre, iret)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/u2mesi.h'
+#include "asterfort/u2mesi.h"
     integer :: jjprem, nombre, iret
 !     ==================================================================
     integer :: npre

@@ -19,35 +19,35 @@ subroutine mmligr(noma, nomo, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/adalig.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmeltc.h'
-    include 'asterfort/mmeltf.h'
-    include 'asterfort/mmeltm.h'
-    include 'asterfort/mmimp2.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mmlige.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/adalig.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/initel.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmeltc.h"
+#include "asterfort/mmeltf.h"
+#include "asterfort/mmeltm.h"
+#include "asterfort/mmimp2.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mmlige.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma, nomo
     character(len=24) :: defico, resoco
 !

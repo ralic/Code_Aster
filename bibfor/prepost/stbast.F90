@@ -1,10 +1,10 @@
 subroutine stbast(nfie, nfis, lgrcou)
 ! aslint: disable=
     implicit  none
-    include 'asterfort/presup.h'
-    include 'asterfort/uldefi.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
+#include "asterfort/presup.h"
+#include "asterfort/uldefi.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
     integer :: nfie, nfis
     logical :: lgrcou
 ! ======================================================================

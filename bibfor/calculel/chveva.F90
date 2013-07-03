@@ -19,13 +19,13 @@ subroutine chveva(nbma, ligr1, ligr2, iret)
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liglma.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liglma.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ligr1, ligr2
     integer :: nbma, iret
 !

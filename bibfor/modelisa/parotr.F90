@@ -1,8 +1,8 @@
 subroutine parotr(nomma, iageom, ima, nbno, o,&
                   mrot, t, coor)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/pacoor.h'
+#include "jeveux.h"
+#include "asterfort/pacoor.h"
     character(len=8) :: nomma
     integer :: ima, nbno
     real(kind=8) :: o(3), mrot(3, 3), t(3), coor(*)

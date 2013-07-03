@@ -1,15 +1,15 @@
 subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
                   re, he, chelem)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nelem, nbr(nelem)
     real(kind=8) :: alpha(nelem), re(nelem), he(nelem)
     character(len=8) :: nomail

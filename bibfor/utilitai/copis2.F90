@@ -1,6 +1,6 @@
 subroutine copis2(typesd, base, sd1, sd2)
     implicit none
-    include 'asterfort/copisd.h'
+#include "asterfort/copisd.h"
     character(len=*) :: typesd, base, sd1, sd2
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

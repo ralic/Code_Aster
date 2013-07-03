@@ -17,16 +17,16 @@ subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mlnmin.h'
-    include 'asterfort/mltdrb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mlnmin.h"
+#include "asterfort/mltdrb.h"
+#include "asterfort/wkvect.h"
     integer :: neq, nbsm, typsym
 !
     character(len=*) :: nommat

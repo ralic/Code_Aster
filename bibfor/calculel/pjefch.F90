@@ -26,21 +26,21 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
 !                = 1    : PB : ON N' A PAS PU PROJETER LE CHAMP
 !                = 10   : ON NE SAIT PAS ENCORE FAIRE
 !-------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cescns.h'
-    include 'asterfort/cesprj.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnsprj.h'
-    include 'asterfort/cnsprm.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescns.h"
+#include "asterfort/cesprj.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnsprj.h"
+#include "asterfort/cnsprm.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: ch1, ch2, ch0s, ch1s, ch2s, ch3s, prfchn, ligrel
     character(len=16) :: option, corres
     character(len=4) :: tych, tychv

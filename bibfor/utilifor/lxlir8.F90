@@ -1,6 +1,6 @@
 subroutine lxlir8(chaine, rval, ier)
     implicit none
-    include 'asterfort/lxscan.h'
+#include "asterfort/lxscan.h"
     character(len=*) :: chaine
     real(kind=8) :: rval
     integer :: ier

@@ -19,14 +19,14 @@ subroutine nmdidi(modele, lischa, depmoi, vedidi)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vecdid.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vecdid.h"
     character(len=19) :: lischa, vedidi
     character(len=24) :: modele
     character(len=19) :: depmoi

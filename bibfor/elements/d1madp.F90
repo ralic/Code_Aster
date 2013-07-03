@@ -36,12 +36,12 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/assert.h'
-    include 'asterfort/d1pa2d.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/assert.h"
+#include "asterfort/d1pa2d.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utbtab.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp
     real(kind=8) :: repere(7), d1(4, *), instan

@@ -20,11 +20,11 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: mcfact, even
     integer :: iechec
     real(kind=8) :: pasmin, dtmin, subins, subdur

@@ -26,7 +26,7 @@ subroutine prfcur(vec1, nbn, vec2, nbp, interp,&
 !     IN  : NBP    : DIMENSION DU VECTEUR VEC2
 !     IN  : INTERP : TYPE INTERPOLATION DE LA FONCTION
 !     IN  : PROLGD : TYPE DE PROLONGEMENT DE LA FONCTION
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: vec1(nbn)
     real(kind=8) :: vec2(nbp)
     character(len=2) :: prolgd

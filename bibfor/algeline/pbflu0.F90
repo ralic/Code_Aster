@@ -41,7 +41,7 @@ subroutine pbflu0(rhof, hmoy, rmoy, long, icoq,&
 !                LORSQUE UMOY = 0
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: rhof, hmoy, rmoy, long
     integer :: icoq, imod, nbm
     real(kind=8) :: rkip, tcoef(10, nbm), d(6)

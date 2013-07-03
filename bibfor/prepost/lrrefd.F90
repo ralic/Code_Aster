@@ -1,14 +1,14 @@
 subroutine lrrefd(resu, prchnd)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/idensd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/idensd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: resu
     character(len=19) :: prchnd
 ! ----------------------------------------------------------------------

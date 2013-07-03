@@ -101,108 +101,108 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
 !
 !    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
 !       ----------------------------------------------------------------
-    include 'asterfort/lc0001.h'
-    include 'asterfort/lc0002.h'
-    include 'asterfort/lc0003.h'
-    include 'asterfort/lc0004.h'
-    include 'asterfort/lc0005.h'
-    include 'asterfort/lc0006.h'
-    include 'asterfort/lc0007.h'
-    include 'asterfort/lc0008.h'
-    include 'asterfort/lc0009.h'
-    include 'asterfort/lc0010.h'
-    include 'asterfort/lc0011.h'
-    include 'asterfort/lc0012.h'
-    include 'asterfort/lc0013.h'
-    include 'asterfort/lc0014.h'
-    include 'asterfort/lc0015.h'
-    include 'asterfort/lc0016.h'
-    include 'asterfort/lc0017.h'
-    include 'asterfort/lc0018.h'
-    include 'asterfort/lc0019.h'
-    include 'asterfort/lc0020.h'
-    include 'asterfort/lc0021.h'
-    include 'asterfort/lc0022.h'
-    include 'asterfort/lc0023.h'
-    include 'asterfort/lc0024.h'
-    include 'asterfort/lc0025.h'
-    include 'asterfort/lc0026.h'
-    include 'asterfort/lc0027.h'
-    include 'asterfort/lc0028.h'
-    include 'asterfort/lc0029.h'
-    include 'asterfort/lc0030.h'
-    include 'asterfort/lc0031.h'
-    include 'asterfort/lc0032.h'
-    include 'asterfort/lc0033.h'
-    include 'asterfort/lc0034.h'
-    include 'asterfort/lc0035.h'
-    include 'asterfort/lc0036.h'
-    include 'asterfort/lc0037.h'
-    include 'asterfort/lc0038.h'
-    include 'asterfort/lc0039.h'
-    include 'asterfort/lc0040.h'
-    include 'asterfort/lc0041.h'
-    include 'asterfort/lc0042.h'
-    include 'asterfort/lc0043.h'
-    include 'asterfort/lc0044.h'
-    include 'asterfort/lc0045.h'
-    include 'asterfort/lc0046.h'
-    include 'asterfort/lc0047.h'
-    include 'asterfort/lc0048.h'
-    include 'asterfort/lc0049.h'
-    include 'asterfort/lc0050.h'
-    include 'asterfort/lc0051.h'
-    include 'asterfort/lc0052.h'
-    include 'asterfort/lc0053.h'
-    include 'asterfort/lc0054.h'
-    include 'asterfort/lc0055.h'
-    include 'asterfort/lc0056.h'
-    include 'asterfort/lc0057.h'
-    include 'asterfort/lc0058.h'
-    include 'asterfort/lc0059.h'
-    include 'asterfort/lc0060.h'
-    include 'asterfort/lc0061.h'
-    include 'asterfort/lc0062.h'
-    include 'asterfort/lc0063.h'
-    include 'asterfort/lc0064.h'
-    include 'asterfort/lc0065.h'
-    include 'asterfort/lc0066.h'
-    include 'asterfort/lc0067.h'
-    include 'asterfort/lc0068.h'
-    include 'asterfort/lc0069.h'
-    include 'asterfort/lc0070.h'
-    include 'asterfort/lc0071.h'
-    include 'asterfort/lc0072.h'
-    include 'asterfort/lc0073.h'
-    include 'asterfort/lc0074.h'
-    include 'asterfort/lc0075.h'
-    include 'asterfort/lc0076.h'
-    include 'asterfort/lc0077.h'
-    include 'asterfort/lc0078.h'
-    include 'asterfort/lc0079.h'
-    include 'asterfort/lc0080.h'
-    include 'asterfort/lc0081.h'
-    include 'asterfort/lc0082.h'
-    include 'asterfort/lc0083.h'
-    include 'asterfort/lc0084.h'
-    include 'asterfort/lc0085.h'
-    include 'asterfort/lc0086.h'
-    include 'asterfort/lc0087.h'
-    include 'asterfort/lc0088.h'
-    include 'asterfort/lc0089.h'
-    include 'asterfort/lc0090.h'
-    include 'asterfort/lc0091.h'
-    include 'asterfort/lc0092.h'
-    include 'asterfort/lc0093.h'
-    include 'asterfort/lc0094.h'
-    include 'asterfort/lc0095.h'
-    include 'asterfort/lc0096.h'
-    include 'asterfort/lc0097.h'
-    include 'asterfort/lc0098.h'
-    include 'asterfort/lc0099.h'
-    include 'asterfort/lc0100.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vrcpto.h'
+#include "asterfort/lc0001.h"
+#include "asterfort/lc0002.h"
+#include "asterfort/lc0003.h"
+#include "asterfort/lc0004.h"
+#include "asterfort/lc0005.h"
+#include "asterfort/lc0006.h"
+#include "asterfort/lc0007.h"
+#include "asterfort/lc0008.h"
+#include "asterfort/lc0009.h"
+#include "asterfort/lc0010.h"
+#include "asterfort/lc0011.h"
+#include "asterfort/lc0012.h"
+#include "asterfort/lc0013.h"
+#include "asterfort/lc0014.h"
+#include "asterfort/lc0015.h"
+#include "asterfort/lc0016.h"
+#include "asterfort/lc0017.h"
+#include "asterfort/lc0018.h"
+#include "asterfort/lc0019.h"
+#include "asterfort/lc0020.h"
+#include "asterfort/lc0021.h"
+#include "asterfort/lc0022.h"
+#include "asterfort/lc0023.h"
+#include "asterfort/lc0024.h"
+#include "asterfort/lc0025.h"
+#include "asterfort/lc0026.h"
+#include "asterfort/lc0027.h"
+#include "asterfort/lc0028.h"
+#include "asterfort/lc0029.h"
+#include "asterfort/lc0030.h"
+#include "asterfort/lc0031.h"
+#include "asterfort/lc0032.h"
+#include "asterfort/lc0033.h"
+#include "asterfort/lc0034.h"
+#include "asterfort/lc0035.h"
+#include "asterfort/lc0036.h"
+#include "asterfort/lc0037.h"
+#include "asterfort/lc0038.h"
+#include "asterfort/lc0039.h"
+#include "asterfort/lc0040.h"
+#include "asterfort/lc0041.h"
+#include "asterfort/lc0042.h"
+#include "asterfort/lc0043.h"
+#include "asterfort/lc0044.h"
+#include "asterfort/lc0045.h"
+#include "asterfort/lc0046.h"
+#include "asterfort/lc0047.h"
+#include "asterfort/lc0048.h"
+#include "asterfort/lc0049.h"
+#include "asterfort/lc0050.h"
+#include "asterfort/lc0051.h"
+#include "asterfort/lc0052.h"
+#include "asterfort/lc0053.h"
+#include "asterfort/lc0054.h"
+#include "asterfort/lc0055.h"
+#include "asterfort/lc0056.h"
+#include "asterfort/lc0057.h"
+#include "asterfort/lc0058.h"
+#include "asterfort/lc0059.h"
+#include "asterfort/lc0060.h"
+#include "asterfort/lc0061.h"
+#include "asterfort/lc0062.h"
+#include "asterfort/lc0063.h"
+#include "asterfort/lc0064.h"
+#include "asterfort/lc0065.h"
+#include "asterfort/lc0066.h"
+#include "asterfort/lc0067.h"
+#include "asterfort/lc0068.h"
+#include "asterfort/lc0069.h"
+#include "asterfort/lc0070.h"
+#include "asterfort/lc0071.h"
+#include "asterfort/lc0072.h"
+#include "asterfort/lc0073.h"
+#include "asterfort/lc0074.h"
+#include "asterfort/lc0075.h"
+#include "asterfort/lc0076.h"
+#include "asterfort/lc0077.h"
+#include "asterfort/lc0078.h"
+#include "asterfort/lc0079.h"
+#include "asterfort/lc0080.h"
+#include "asterfort/lc0081.h"
+#include "asterfort/lc0082.h"
+#include "asterfort/lc0083.h"
+#include "asterfort/lc0084.h"
+#include "asterfort/lc0085.h"
+#include "asterfort/lc0086.h"
+#include "asterfort/lc0087.h"
+#include "asterfort/lc0088.h"
+#include "asterfort/lc0089.h"
+#include "asterfort/lc0090.h"
+#include "asterfort/lc0091.h"
+#include "asterfort/lc0092.h"
+#include "asterfort/lc0093.h"
+#include "asterfort/lc0094.h"
+#include "asterfort/lc0095.h"
+#include "asterfort/lc0096.h"
+#include "asterfort/lc0097.h"
+#include "asterfort/lc0098.h"
+#include "asterfort/lc0099.h"
+#include "asterfort/lc0100.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vrcpto.h"
     integer :: imate, ndim, nvi, kpg, ksp
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !

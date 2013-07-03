@@ -27,7 +27,7 @@ subroutine dclhoa(n, tab, iran)
 !
 ! OUT IRAN : RANG DE LA RACINE
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: i, j, ia, ib, ir, iq, ira, irb, iaux, n
     integer :: lgpile, kopf, ipil1(100), ipil2(100), iran(*)
 !

@@ -24,12 +24,12 @@ subroutine pipeei(ndim, axi, nno1, nno2, npg,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/eicine.h'
-    include 'asterfort/pipeou.h'
-    include 'asterfort/pipetc.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8vide.h"
+#include "asterfort/eicine.h"
+#include "asterfort/pipeou.h"
+#include "asterfort/pipetc.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
     logical :: axi
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 18), im(3, 9)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)

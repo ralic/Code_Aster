@@ -1,9 +1,9 @@
 subroutine rvinvt(tensor, vonm, tres, trac, detr)
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/fgequi.h'
-    include 'asterfort/rsvnmi.h'
-    include 'asterfort/rvdet3.h'
+#include "asterc/r8vide.h"
+#include "asterfort/fgequi.h"
+#include "asterfort/rsvnmi.h"
+#include "asterfort/rvdet3.h"
     real(kind=8) :: tensor(*), vonm, tres, trac, detr
 !
 !*********************************************************************

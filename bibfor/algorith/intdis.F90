@@ -37,12 +37,12 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 !     ------------------------------------------------------------------
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: nnoint, nbsst
     character(len=24) :: coint, noddli, ddlsst
 !

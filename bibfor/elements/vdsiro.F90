@@ -57,10 +57,10 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/assert.h"
+#include "asterfort/utbtab.h"
     real(kind=8) :: matev(2, 2, 1), tens1(1), tens2(1)
     character(len=2) :: sens
     character(len=1) :: goun

@@ -18,19 +18,19 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/cpfile.h'
-    include 'asterc/readdr.h'
-    include 'asterc/rmfile.h'
-    include 'asterc/writdr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jeinif.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jxferm.h'
-    include 'asterfort/jxouvr.h'
-    include 'asterfort/lxmins.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterc/cpfile.h"
+#include "asterc/readdr.h"
+#include "asterc/rmfile.h"
+#include "asterc/writdr.h"
+#include "asterfort/codent.h"
+#include "asterfort/jeinif.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jxferm.h"
+#include "asterfort/jxouvr.h"
+#include "asterfort/lxmins.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: clsinz, nominz, clsouz, nmoutz
     character(len=1) :: clasin, clasou
     character(len=8) :: nomin, nomout

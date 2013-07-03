@@ -21,18 +21,18 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/merit1.h'
-    include 'asterfort/merit2.h'
-    include 'asterfort/merit3.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/merit1.h"
+#include "asterfort/merit2.h"
+#include "asterfort/merit3.h"
+#include "asterfort/reajre.h"
     character(len=*) :: lchar(*), mate
     character(len=*) :: modelz, caraz, matelz, basez, timez
     character(len=8) :: modele, cara

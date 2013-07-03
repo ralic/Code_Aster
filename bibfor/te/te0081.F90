@@ -16,16 +16,16 @@ subroutine te0081(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/bmatmc.h'
-    include 'asterfort/btdbmc.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/rccoma.h'
+#include "asterfort/bmatmc.h"
+#include "asterfort/btdbmc.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/rccoma.h"
     character(len=16) :: option, nomte, phenom
 ! ......................................................................
 !    - FONCTION REALISEE:

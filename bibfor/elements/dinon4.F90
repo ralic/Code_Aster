@@ -3,7 +3,7 @@ subroutine dinon4(neq, ul, dul, utl, nno,&
                   okdire, varipl)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     integer :: neq, nbcomp, nno, nbpar
     real(kind=8) :: ul(neq), dul(neq), utl(neq)
     real(kind=8) :: varimo(nbcomp*1), varipl(nbcomp*1)

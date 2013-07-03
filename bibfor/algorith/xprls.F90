@@ -2,22 +2,22 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
                  cnsvn, cnsvt, cnsbl, deltat, nodtor,&
                  eletor, liggrd, delta)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     real(kind=8) :: deltat
     character(len=8) :: noma
     character(len=19) :: cnsln, cnslt, grln, grlt, cnsvn, cnsvt, cnsbl, nodtor

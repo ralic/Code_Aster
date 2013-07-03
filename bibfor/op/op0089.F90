@@ -18,25 +18,25 @@ subroutine op0089()
     implicit none
 !     COMMANDE:  DEPL_INTERNE
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/pjxxpr.h'
-    include 'asterfort/ssdein.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/chpver.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/pjxxpr.h"
+#include "asterfort/ssdein.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: ul, ug, mail, nocas
     character(len=16) :: kbi1, kbi2, corres, tysd
     character(len=8) :: ouiri, ouima, affick(2)

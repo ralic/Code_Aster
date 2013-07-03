@@ -61,7 +61,7 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp,&
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ! aslint: disable=W1304
     implicit none
-    include 'asterfort/pctrii.h'
+#include "asterfort/pctrii.h"
     integer :: n
     integer(kind=4) :: icpc(*)
     integer :: icpl(0:n), icpd(n)

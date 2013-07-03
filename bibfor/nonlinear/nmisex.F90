@@ -20,16 +20,16 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/nmcri1.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerofr.h'
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmcri1.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerofr.h"
     integer :: imate, ndim, kpg, ksp, iret
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: deps(6), sigm(6), sigp(6), vim(*), vip(*)

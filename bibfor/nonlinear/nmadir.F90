@@ -20,16 +20,16 @@ subroutine nmadir(numedd, fonact, defico, veasse, vediri,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmasco.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/vtaxpy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/assvec.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmasco.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
     integer :: fonact(*)
     character(len=24) :: numedd
     character(len=19) :: veasse(*)

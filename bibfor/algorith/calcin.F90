@@ -30,18 +30,18 @@ subroutine calcin(option, max, may, maz, model,&
 ! IN: MODX,MODY,MODZ : DEPLACEMENTS PROJETES
 ! OUT : MIJ : MASSE AJOUTEE
 !-------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: ipres, i, j
     real(kind=8) :: mij
     character(len=*) :: model, option

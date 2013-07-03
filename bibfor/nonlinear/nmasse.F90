@@ -3,7 +3,7 @@ subroutine nmasse(fami, kpg, ksp, poum, icodma,&
                   troisk)
 !
     implicit none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, icodma
     real(kind=8) :: inst
     real(kind=8) :: e, nu, deuxmu, troisk

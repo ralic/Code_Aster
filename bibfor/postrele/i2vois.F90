@@ -45,7 +45,7 @@ subroutine i2vois(conec, type, maille, n, v1,&
 !
 !**********************************************************************
 !
-    include 'asterfort/i2extf.h'
+#include "asterfort/i2extf.h"
     integer :: n, v1(*), v2(*), maille(*)
     character(len=24) :: conec, type
 !

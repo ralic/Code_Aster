@@ -25,23 +25,23 @@ subroutine te0239(option, nomte)
 ! ......................................................................
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/comcq1.h'
-    include 'asterfort/defgen.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/effi.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matdtd.h'
-    include 'asterfort/mattge.h'
-    include 'asterfort/moytpg.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/comcq1.h"
+#include "asterfort/defgen.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/effi.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matdtd.h"
+#include "asterfort/mattge.h"
+#include "asterfort/moytpg.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     integer :: icompo, nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
     integer :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
     integer :: icarcr, nbvari, jcret, codret

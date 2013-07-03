@@ -43,25 +43,25 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rotchm.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/vtcrea.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/r8depi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rotchm.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/vtcrea.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomres, modcyc, mailsk, k8b, modcys
     character(len=16) :: depl, typsd
     character(len=19) :: chamva, profno, chamno

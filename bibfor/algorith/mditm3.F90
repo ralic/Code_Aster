@@ -30,12 +30,12 @@ subroutine mditm3(chain1, chain2, chain3, chain4, chain5,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: ilong, np1, nbnl, i, ilongg
     integer :: kordre, ktemps, kdepg, kvitg, kaccg, kdep, kfor, kvit, kptem
     integer :: jordre, jtemps, jdepg, jvitg, jaccg, jdep, jfor, jvit, jptem

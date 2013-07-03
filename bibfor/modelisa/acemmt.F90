@@ -1,13 +1,13 @@
 subroutine acemmt(noma, nmmt)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
     character(len=8) :: noma
     integer :: nmmt(*)
 ! ----------------------------------------------------------------------

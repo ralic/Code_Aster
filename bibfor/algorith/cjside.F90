@@ -36,18 +36,18 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 !                LES VARIABLES INTERNES :  R, X
 !                LE MULTIPLICATEUR PLASTIQUE :  LAMBD
 ! ======================================================================
-    include 'asterfort/calcq.h'
-    include 'asterfort/cjsqco.h'
-    include 'asterfort/cjst.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcq.h"
+#include "asterfort/cjsqco.h"
+#include "asterfort/cjst.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i, j, codret
     real(kind=8) :: epsd(6), deps(6), depse(6), trdeps, kron(6)
     real(kind=8) :: dsig(6), sigd(6), sige(6), yd(*), dy(*), dqe(6)

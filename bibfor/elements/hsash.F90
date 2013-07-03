@@ -18,8 +18,8 @@ subroutine hsash(vectt, dudx, hss1, hss2)
 !
     implicit none
 !
-    include 'asterfort/matsa.h'
-    include 'asterfort/promat.h'
+#include "asterfort/matsa.h"
+#include "asterfort/promat.h"
     real(kind=8) :: vectt ( 3 , 3 )
 !
     real(kind=8) :: dudx ( 9 )

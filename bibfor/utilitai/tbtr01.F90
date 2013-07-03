@@ -1,15 +1,15 @@
 subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbtrii.h'
-    include 'asterfort/tbtrik.h'
-    include 'asterfort/tbtrir.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbtrii.h"
+#include "asterfort/tbtrik.h"
+#include "asterfort/tbtrir.h"
+#include "asterfort/wkvect.h"
     integer :: nbpara, nblign, nume(*)
     character(len=*) :: tabin, nopara
 ! ----------------------------------------------------------------------

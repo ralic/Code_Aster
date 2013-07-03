@@ -1,15 +1,15 @@
 subroutine te0087(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/epsvmc.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/elref4.h"
+#include "asterfort/epsvmc.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================

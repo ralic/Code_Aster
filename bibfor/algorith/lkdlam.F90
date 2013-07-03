@@ -4,11 +4,11 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
                   varpl, dfdsp, dlam)
 !
     implicit   none
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkdepp.h'
-    include 'asterfort/lkdfdx.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkdepp.h"
+#include "asterfort/lkdfdx.h"
+#include "asterfort/r8inir.h"
     integer :: varv, nbmat
     real(kind=8) :: sm(6), im, deps(6), depsv(6), mater(nbmat, 2)
     real(kind=8) :: dgamv, gp(6), devgii, paraep(3), varpl(4), dfdsp(6)

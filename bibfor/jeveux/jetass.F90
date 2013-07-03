@@ -17,15 +17,15 @@ subroutine jetass(clas)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jxecrb.h'
-    include 'asterfort/jxecro.h'
-    include 'asterfort/jxlibd.h'
-    include 'asterfort/jxliro.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jxecrb.h"
+#include "asterfort/jxecro.h"
+#include "asterfort/jxlibd.h"
+#include "asterfort/jxliro.h"
     character(len=1) :: clas
 ! ----------------------------------------------------------------------
 ! COMPRESSION D'UNE BASE DE DONNEES PAR RECUPERATION DES ENREGISTREMENTS

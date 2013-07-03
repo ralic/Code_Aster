@@ -1,8 +1,8 @@
 subroutine trprec(mcf, iocc, epsi, crit, prec,&
                   crit2)
     implicit   none
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
     character(len=*) :: mcf
 ! ----------------------------------------------------------------------
 ! ======================================================================

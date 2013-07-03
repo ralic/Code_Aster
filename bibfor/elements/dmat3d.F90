@@ -39,14 +39,14 @@ subroutine dmat3d(fami, mater, instan, poum, igau,&
     implicit none
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/assert.h'
-    include 'asterfort/dpassa.h'
-    include 'asterfort/hypmat.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/assert.h"
+#include "asterfort/dpassa.h"
+#include "asterfort/hypmat.h"
+#include "asterfort/matini.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utbtab.h"
     character(len=*) :: fami, poum
     integer :: mater, igau, isgau
     real(kind=8) :: repere(7), xyzgau(3), d(6, 6), instan

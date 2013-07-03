@@ -26,7 +26,7 @@ subroutine hujmed(k, mater, vin, sig)
 !   OUT VIN    :  VARIABLES INTERNES MODIFIEES
 !         (VARIABLES MEMOIRES + COMPOSANTES DE LA NORMALE A LA SURFACE)
 !   --------------------------------------------------------------------
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: ndt, ndi, k, i, j, kp
     real(kind=8) :: dd, beta, b, m, pcr, rc
     real(kind=8) :: sig(6), phi, pcref, ptrac

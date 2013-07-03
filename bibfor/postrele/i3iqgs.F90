@@ -3,17 +3,17 @@ subroutine i3iqgs(epsi, k, f, desc, desctm,&
                   fink)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3afk2.h'
-    include 'asterfort/i3crqp.h'
-    include 'asterfort/i3efk2.h'
-    include 'asterfort/i3icfp.h'
-    include 'asterfort/i3icfs.h'
-    include 'asterfort/i3ptrv.h'
-    include 'asterfort/i3qpsp.h'
-    include 'asterfort/i3rpqp.h'
-    include 'asterfort/i3sl3r.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/i3afk2.h"
+#include "asterfort/i3crqp.h"
+#include "asterfort/i3efk2.h"
+#include "asterfort/i3icfp.h"
+#include "asterfort/i3icfs.h"
+#include "asterfort/i3ptrv.h"
+#include "asterfort/i3qpsp.h"
+#include "asterfort/i3rpqp.h"
+#include "asterfort/i3sl3r.h"
+#include "asterfort/u2mesi.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink

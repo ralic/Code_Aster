@@ -1,9 +1,9 @@
 subroutine orien2(xp, xq, xr, angl)
     implicit none
-    include 'asterfort/matrot.h'
-    include 'asterfort/orien1.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/matrot.h"
+#include "asterfort/orien1.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: xp(*), xq(*), xr(*), angl(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================

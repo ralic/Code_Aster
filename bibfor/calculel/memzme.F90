@@ -24,16 +24,16 @@ subroutine memzme(modele, matel)
 ! IN  : MATEL  : NOM DU MATR_ELEM RESULTAT
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: matel
     character(len=8) :: lpain(1), lpaout(1), modele
     character(len=24) :: ligrmo, lchin(1), lchout(1), option, chgeom

@@ -2,28 +2,28 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
                   fiss, cnsln, cnslt, cnsgls, noesom,&
                   noresi, vcn, grlr, lcmin)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xprcfl.h'
-    include 'asterfort/xprcnu.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/padist.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xprcfl.h"
+#include "asterfort/xprcnu.h"
     character(len=8) :: model, noma, fispre, fiss
     character(len=19) :: cnsln, cnslt, cnsgls, noesom, noresi, cnxinv
     character(len=24) :: vcn, grlr

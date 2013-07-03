@@ -1,7 +1,7 @@
 subroutine i3pdm2(epsi, n, s, nbs, p,&
                   dedans)
     implicit   none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: nbs
     real(kind=8) :: n(*), s(3, *), p(*), epsi
     logical :: dedans

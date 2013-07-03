@@ -5,12 +5,12 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
                   jcviv2)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
     integer :: nnm, inm, inmtot, nbmac, ise, ndime, npg
     integer :: jcesd1, jcesd2, ima, ndim, iadc, jcesv1, jcesl2, jcesv2
     integer :: jcvid1, jcvid2, jcviv1, jcvil2, jcviv2, idcalv, iadv

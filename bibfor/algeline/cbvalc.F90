@@ -26,7 +26,7 @@ subroutine cbvalc(rouc, neq, smhc, smdi, idlexc,&
 !        /'CR' : ON UTILISE VALMC ET COEFR
 !        /'CC' : ON UTILISE VALMC ET COEFC
 !-------------------------------------------------------------------
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=2) :: rouc
     integer(kind=4) :: smhc(*)
     integer :: neq, smdi(*), idlexc(*)

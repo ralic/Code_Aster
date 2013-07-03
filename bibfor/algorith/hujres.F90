@@ -36,15 +36,15 @@ subroutine hujres(mod, crit, mater, imat, nvi,&
 !                    IRET=1 => ECHEC
 !       ETATF  :  ETAT PLASTIQUE OU ELASTIQUE DU POINT DE GAUSS
 !   ------------------------------------------------------------------
-    include 'asterfort/hujact.h'
-    include 'asterfort/hujmid.h'
-    include 'asterfort/hujpot.h'
-    include 'asterfort/hujpre.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lceqve.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/hujact.h"
+#include "asterfort/hujmid.h"
+#include "asterfort/hujpot.h"
+#include "asterfort/hujpre.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, ndec, iret
     integer :: i, k, ifm, niv, nsubd, maj
     integer :: nvimax, idec, imat, indi(7)

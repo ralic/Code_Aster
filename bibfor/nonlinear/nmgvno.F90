@@ -26,16 +26,16 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/coefdg.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmgvdn.h'
-    include 'asterfort/nmmabu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "jeveux.h"
+#include "asterfort/codere.h"
+#include "asterfort/coefdg.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmgvdn.h"
+#include "asterfort/nmmabu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: option, compor(*)

@@ -1,21 +1,21 @@
 subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/conare.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xxmmvd.h"
     character(len=8) :: noma, nomo, fiss
     character(len=19) :: faclon, ainter
 ! ======================================================================

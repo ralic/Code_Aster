@@ -35,11 +35,11 @@ subroutine lecdbg(ifl, icl, iv, rv, cv,&
 !                                                  OU ERREUR DETECTE)
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/iunifi.h'
-    include 'asterfort/liritm.h'
-    include 'asterfort/tesfin.h'
-    include 'asterfort/tesmcl.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/iunifi.h"
+#include "asterfort/liritm.h"
+#include "asterfort/tesfin.h"
+#include "asterfort/tesmcl.h"
+#include "asterfort/u2mesk.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), deblig

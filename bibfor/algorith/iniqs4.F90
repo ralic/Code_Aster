@@ -1,10 +1,10 @@
 subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nno
     real(kind=8) :: sdfde(4, 4), sdfdk(4, 4), coopg(8), poipg(4)
 !

@@ -23,21 +23,21 @@ subroutine rc32mu()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rc32my.h'
-    include 'asterfort/rcver1.h'
-    include 'asterfort/rcveri.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rc32my.h"
+#include "asterfort/rcver1.h"
+#include "asterfort/rcveri.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
     integer :: jcont, ncmp, jcorp
     parameter  ( ncmp = 6 )

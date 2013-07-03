@@ -1,22 +1,22 @@
 subroutine asstoc(mome, resu, nomsy, neq, repdir,&
                   ndir, comdir, typcdi, glob, prim)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsexis.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vtdefs.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsexis.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vtdefs.h"
     integer :: neq, ndir(*)
     real(kind=8) :: repdir(neq, *)
     logical :: comdir, glob, prim

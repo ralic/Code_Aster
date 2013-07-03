@@ -1,15 +1,15 @@
 subroutine xprcfl(model, lcmin)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memaxm.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memaxm.h"
     real(kind=8) :: lcmin
     character(len=8) :: model
 !

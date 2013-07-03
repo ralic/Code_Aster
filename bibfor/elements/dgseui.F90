@@ -6,7 +6,7 @@ subroutine dgseui(em, num, ef, nuf, eb,&
     implicit none
 !
 ! PARAMETRES ENTRANTS
-    include 'asterfort/u2mesr.h'
+#include "asterfort/u2mesr.h"
     integer :: icompr, icisai
     real(kind=8) :: em, num, ef, nuf, h
     real(kind=8) :: eb, nub, sytb, syc

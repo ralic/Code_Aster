@@ -2,9 +2,9 @@ subroutine vfgefa(maxdim, ndim, nbnos, xs, t,&
                   xg, surf, norm, xgf, d,&
                   iret)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/vfgetr.h'
+#include "asterfort/assert.h"
+#include "asterfort/provec.h"
+#include "asterfort/vfgetr.h"
     integer :: maxdim, ndim, nbnos, iret
     real(kind=8) :: xs(maxdim, nbnos), t(maxdim, nbnos)
     real(kind=8) :: xg(ndim), surf, norm(maxdim), xgf(maxdim), d

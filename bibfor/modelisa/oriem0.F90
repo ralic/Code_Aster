@@ -3,12 +3,12 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
                   imai)
     implicit   none
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'asterfort/assert.h'
-    include 'asterfort/indiis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/provec.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/indiis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/provec.h"
+#include "blas/ddot.h"
     integer :: lino1(*), nbno1, lino2(*), nbno2, lino3(*), nbno3
     integer :: ier, imai
     real(kind=8) :: coor(*)

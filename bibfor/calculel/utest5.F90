@@ -2,10 +2,10 @@ subroutine utest5(cham19, nomail, nocmp, tbtxt, refi,&
                   refr, refc, typres, epsi, crit,&
                   ific, llab)
     implicit none
-    include 'asterfort/dismoi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utchca.h'
-    include 'asterfort/utites.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utchca.h"
+#include "asterfort/utites.h"
     integer :: refi, ific
     real(kind=8) :: refr, epsi
     character(len=*) :: cham19, nomail, typres, nocmp, crit

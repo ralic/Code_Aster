@@ -18,21 +18,21 @@ subroutine te0140(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chgrep.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmfrig.h'
-    include 'asterfort/porigi.h'
-    include 'asterfort/ptka21.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpslg.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/chgrep.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfrig.h"
+#include "asterfort/porigi.h"
+#include "asterfort/ptka21.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpslg.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 !     CALCULE LA MATRICE DE RIGIDITE ELEMENTAIRE DES ELEMENTS DE POUTRE

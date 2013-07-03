@@ -19,13 +19,13 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/mecoor.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/mecoor.h"
     integer :: nbin, lastin
     character(len=8) :: lpain(nbin)
     character(len=19) :: lchin(nbin)

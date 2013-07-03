@@ -7,8 +7,8 @@ subroutine dicor5(k0, sim, p1, pi, ui,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/dicor3.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dicor3.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: k0(78), sim(12), p1, pi, ui, ti, dxu1, dxu2, dryu1, dryu2
     real(kind=8) :: nu1, nu2, mu1, mu2, c1, dbar2, uu, tt, dur, dryr
     real(kind=8) :: dnsdu, dmsdt, dnsdt, dnsdu2, dmsdt2, dnsdt2

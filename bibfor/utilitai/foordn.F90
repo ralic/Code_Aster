@@ -1,11 +1,11 @@
 subroutine foordn(vecpar, vecnom, ne, ns, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
     integer :: ne, ns, ier
     real(kind=8) :: vecpar(ne)
     character(len=*) :: vecnom(ne)

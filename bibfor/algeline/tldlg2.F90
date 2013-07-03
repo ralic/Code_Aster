@@ -19,35 +19,35 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/copma2.h'
-    include 'asterfort/csmbgg.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/diagav.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/mtmchc.h'
-    include 'asterfort/mulfr8.h'
-    include 'asterfort/rgndas.h'
-    include 'asterfort/rldlg3.h'
-    include 'asterfort/rltfr8.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcrem.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/copma2.h"
+#include "asterfort/csmbgg.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/diagav.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/mtmchc.h"
+#include "asterfort/mulfr8.h"
+#include "asterfort/rgndas.h"
+#include "asterfort/rldlg3.h"
+#include "asterfort/rltfr8.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/wkvect.h"
     integer :: lmat, nprec, nmrig
     character(len=*) :: vemrig, feti, veinpn
 !

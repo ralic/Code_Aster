@@ -24,9 +24,9 @@ subroutine marota(tetag, drot)
 !     OUT : DROT      : MATRICE ORTHOGONALE D'ORDRE 3
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/antisy.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/antisy.h"
+#include "blas/ddot.h"
     real(kind=8) :: tetag(3), drot(3, 3), amat1(3, 3), amat2(3, 3)
 !
 !-----------------------------------------------------------------------

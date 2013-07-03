@@ -22,7 +22,7 @@ subroutine lc0048(fami, kpg, ksp, ndim, imate,&
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcejfr.h'
+#include "asterfort/lcejfr.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=8) :: typmod(*)

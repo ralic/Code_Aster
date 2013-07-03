@@ -31,15 +31,15 @@ subroutine op0126()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/arg126.h'
-    include 'asterfort/callis.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/vecomo.h'
-    include 'asterfort/versst.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/arg126.h"
+#include "asterfort/callis.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/vecomo.h"
+#include "asterfort/versst.h"
     integer :: ival, ibid, nblia, i, iinc, irep11, irep12, irep21, irep22, iopt
     integer :: iret
     character(len=3) :: rep

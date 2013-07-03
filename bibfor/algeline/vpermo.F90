@@ -1,15 +1,15 @@
 subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
                   excl, omecor, ernorm)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dscal.h"
     integer :: lmasse, lraide, nbprop, excl(*)
     real(kind=8) :: vecp(*), valp(*), omecor, ernorm(*)
 !     ------------------------------------------------------------------

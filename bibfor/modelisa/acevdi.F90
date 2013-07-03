@@ -1,24 +1,24 @@
 subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                   nlg, nln, nlj, ier)
     implicit          none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/acevd2.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verdis.h'
-    include 'asterfort/verima.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/acevd2.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verdis.h"
+#include "asterfort/verima.h"
+#include "asterfort/wkvect.h"
     integer :: nbocc, nlm, nlg, nln, nlj, ier
     character(len=*) :: nomaz, nomoz, mcf
 ! ----------------------------------------------------------------------

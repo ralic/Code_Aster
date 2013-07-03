@@ -1,11 +1,11 @@
 subroutine te0549(option, nomte)
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/posvar.h'
+#include "asterc/r8vide.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/posvar.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! ======================================================================

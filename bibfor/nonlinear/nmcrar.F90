@@ -19,19 +19,19 @@ subroutine nmcrar(result, sddisc, fonact, numreo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmarex.h'
-    include 'asterfort/nmarnr.h'
-    include 'asterfort/nmarpr.h'
-    include 'asterfort/nmcrpx.h'
-    include 'asterfort/nmdide.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarex.h"
+#include "asterfort/nmarnr.h"
+#include "asterfort/nmarpr.h"
+#include "asterfort/nmcrpx.h"
+#include "asterfort/nmdide.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     character(len=8) :: result
     integer :: fonact(*)

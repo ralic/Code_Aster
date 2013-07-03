@@ -2,11 +2,11 @@ subroutine i3idfs(epsi, k, f, nba, sgt,&
                   coorsm, nbpt, lstpt, fink)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3crad.h'
-    include 'asterfort/i3ptrv.h'
-    include 'asterfort/i3sl32.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/i3crad.h"
+#include "asterfort/i3ptrv.h"
+#include "asterfort/i3sl32.h"
+#include "asterfort/u2mesk.h"
     integer :: k, f, nbpt, lstpt(*), nba
     real(kind=8) :: epsi, sgt(*), coorsm(3, *)
     logical :: fink

@@ -37,23 +37,23 @@ subroutine te0027(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmelnl.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/nmplru.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmelnl.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/nmplru.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 !
 !

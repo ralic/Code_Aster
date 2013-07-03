@@ -37,24 +37,24 @@ subroutine phi152(model, option, mate, phibar, ma,&
 !                                 : 2 : AMORTISSEMENT ET RAIDEUR
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/cal2m.h'
-    include 'asterfort/calflu.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/majou.h'
-    include 'asterfort/prstoc.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/tabcor.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/cal2m.h"
+#include "asterfort/calflu.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/majou.h"
+#include "asterfort/prstoc.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/tabcor.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, nbvale, nbrefe, nbdesc, nbmode, iret, ierd
     integer :: ilires, j, nbid, ivalk, indice, tabad(5)
     integer :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble

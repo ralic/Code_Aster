@@ -23,7 +23,7 @@ function dcargu(c)
 !-----------------------------------------------------------------------
 !  IN : C : NOMBRE COMPLEXE DONT ON VEUT CALCULER L'ARGUMENT
 !-----------------------------------------------------------------------
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     real(kind=8) :: dcargu
     complex(kind=8) :: c
 !-----------------------------------------------------------------------

@@ -25,16 +25,16 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmcere.h'
-    include 'asterfort/nmcese.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcere.h"
+#include "asterfort/nmcese.h"
     integer :: fonact(*)
     logical :: irecli
     integer :: iterat, nbeffe

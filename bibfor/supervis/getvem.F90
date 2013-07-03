@@ -1,8 +1,8 @@
 subroutine getvem(noma, typent, motfac, motcle, iocc,&
                   iarg, mxval, vk, nbval)
     implicit none
-    include 'asterc/getvtx.h'
-    include 'asterfort/verima.h'
+#include "asterc/getvtx.h"
+#include "asterfort/verima.h"
     character(len=*) :: noma, typent, motfac, motcle, vk(*)
     integer :: iocc, iarg, mxval, nbval
 !     ------------------------------------------------------------------

@@ -18,11 +18,11 @@ function jexatr(nomc, noma)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
     character(len=32) :: jexatr
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nomc, noma
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon

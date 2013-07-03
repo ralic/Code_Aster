@@ -1,10 +1,10 @@
 subroutine utesto(nomobj, type, tbtxt, refi, refr,&
                   epsi, crit, ific, llab, ssigne)
     implicit none
-    include 'asterfort/jeexin.h'
-    include 'asterfort/tstobj.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utites.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/tstobj.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utites.h"
     character(len=24) :: nomobj
     real(kind=8) :: refr, epsi
     character(len=*) :: crit, type, ssigne

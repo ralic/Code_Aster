@@ -1,10 +1,10 @@
 subroutine jni092(elrefe, nmaxob, liobj, nbobj)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/pgyty.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/pgyty.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: elrefe
 ! ----------------------------------------------------------------------
 ! ======================================================================

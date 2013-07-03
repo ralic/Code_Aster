@@ -19,24 +19,24 @@ subroutine initel(ligrel)
 ! ======================================================================
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterfort/creprn.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/inigrl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterfort/creprn.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/inigrl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/typele.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ligrel
 ! ----------------------------------------------------------------------
 !     BUT:

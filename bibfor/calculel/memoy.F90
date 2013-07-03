@@ -1,18 +1,18 @@
 subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                  nbmail, numail)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/celver.h"
+#include "asterfort/digdel.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/scalai.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: champa, champb
     integer :: ncpa, ncpb, nbmail, numail(*)
     real(kind=8) :: vr(2)

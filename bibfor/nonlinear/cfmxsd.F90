@@ -20,21 +20,21 @@ subroutine cfmxsd(noma, nomo, numedd, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cfcrsd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmap.h'
-    include 'asterfort/cfmmci.h'
-    include 'asterfort/cfmmma.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfmxme.h'
-    include 'asterfort/cfmxr0.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xxmxme.h'
+#include "jeveux.h"
+#include "asterfort/cfcrsd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmap.h"
+#include "asterfort/cfmmci.h"
+#include "asterfort/cfmmma.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfmxme.h"
+#include "asterfort/cfmxr0.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xxmxme.h"
     character(len=8) :: noma, nomo
     character(len=24) :: numedd
     integer :: fonact(*)

@@ -59,12 +59,12 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 ! 0.1. ==> ARGUMENTS
 !
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irchml.h'
-    include 'asterfort/irdepl.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcmp3.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/irchml.h"
+#include "asterfort/irdepl.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcmp3.h"
     character(len=*) :: cham19, nomsd, nomsym
     character(len=*) :: form, formr, titre, nomcmp(*), partie
     real(kind=8) :: borsup, borinf

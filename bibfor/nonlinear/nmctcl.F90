@@ -20,17 +20,17 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmchml.h'
-    include 'asterfort/mmligr.h'
-    include 'asterfort/xmcart.h'
-    include 'asterfort/xmelem.h'
-    include 'asterfort/xmligr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmchml.h"
+#include "asterfort/mmligr.h"
+#include "asterfort/xmcart.h"
+#include "asterfort/xmelem.h"
+#include "asterfort/xmligr.h"
     logical :: loptin
     character(len=8) :: noma
     character(len=24) :: modele

@@ -20,32 +20,32 @@ subroutine op0004()
 !     OPERATEUR DEFI_NAPPE
 !     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 !     -----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/foordn.h'
-    include 'asterfort/foston.h'
-    include 'asterfort/foverf.h'
-    include 'asterfort/fovern.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/ordon1.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttrif.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/foordn.h"
+#include "asterfort/foston.h"
+#include "asterfort/foverf.h"
+#include "asterfort/fovern.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/ordon1.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttrif.h"
+#include "asterfort/wkvect.h"
     character(len=4) :: interp(2)
     character(len=24) :: valk
     character(len=8) :: k8b

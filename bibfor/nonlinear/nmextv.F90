@@ -20,10 +20,10 @@ subroutine nmextv(neff, formul, nomcmp, valcmp, nvalcp,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: neff, nvalcp
     character(len=8) :: formul
     character(len=8) :: nomcmp(*)

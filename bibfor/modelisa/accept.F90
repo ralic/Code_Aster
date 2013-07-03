@@ -30,14 +30,14 @@ subroutine accept(f, nbm, method, imode, jmode,&
 !         IER > 0 => NOMBRE D ERREURS RENCONTREES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/coegen.h'
-    include 'asterfort/corcos.h'
-    include 'asterfort/coyang.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/coegen.h"
+#include "asterfort/corcos.h"
+#include "asterfort/coyang.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbm, i, ind, jnd, ipg, jpg, iad1, iad2, itab, imode, jmode
     integer :: ispe, jspe, iorig, jorig, ntail, ntail1, ntail2
     integer :: jpgini, jpgfin

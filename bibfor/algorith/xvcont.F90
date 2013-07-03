@@ -8,7 +8,7 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
                   tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,16 +61,16 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
 ! OUT VTMP  : VECTEUR DE TRAVAIL SECOND MEMBRE
-    include 'asterfort/assert.h'
-    include 'asterfort/xmmsa2.h'
-    include 'asterfort/xmmsa3.h'
-    include 'asterfort/xmmsa5.h'
-    include 'asterfort/xmvco1.h'
-    include 'asterfort/xmvco2.h'
-    include 'asterfort/xmvec2.h'
-    include 'asterfort/xmvec3.h'
-    include 'asterfort/xmvep2.h'
-    include 'asterfort/xxlag2.h'
+#include "asterfort/assert.h"
+#include "asterfort/xmmsa2.h"
+#include "asterfort/xmmsa3.h"
+#include "asterfort/xmmsa5.h"
+#include "asterfort/xmvco1.h"
+#include "asterfort/xmvco2.h"
+#include "asterfort/xmvec2.h"
+#include "asterfort/xmvec3.h"
+#include "asterfort/xmvep2.h"
+#include "asterfort/xxlag2.h"
     integer :: algocr
     integer :: ddlm, ddls
     integer :: idepl, idepm, ifa, ifiss

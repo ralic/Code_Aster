@@ -22,8 +22,8 @@ subroutine cfacat(ndim, indic, nbliac, ajliai, spliai,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/cfaca1.h'
-    include 'asterfort/cfaca2.h'
+#include "asterfort/cfaca1.h"
+#include "asterfort/cfaca2.h"
     integer :: nbliai, nbliac, llf, llf1, llf2
     integer :: ndim, indic, ajliai, spliai
     integer :: indfac, nesmax, lmat

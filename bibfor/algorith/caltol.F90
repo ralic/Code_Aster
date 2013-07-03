@@ -27,8 +27,8 @@ subroutine caltol(np3, nbnl, typch, nbseg, rc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/r8pi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/u2mess.h"
     integer :: np3, nbnl, typch(*), nbseg(*)
     real(kind=8) :: rc(np3, *), theta(np3, *), tol, tolc, toln, tolv
 !

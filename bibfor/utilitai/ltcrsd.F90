@@ -1,8 +1,8 @@
 subroutine ltcrsd(litab, base)
     implicit   none
-    include 'asterfort/assert.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: litab, base
 !     ------------------------------------------------------------------
 ! ======================================================================

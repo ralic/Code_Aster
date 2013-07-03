@@ -1,13 +1,13 @@
 subroutine porigi(nomte, e, xnu, klv)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ptka01.h'
-    include 'asterfort/ptka02.h'
-    include 'asterfort/ptka10.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ptka01.h"
+#include "asterfort/ptka02.h"
+#include "asterfort/ptka10.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomte
     real(kind=8) :: e, xnu, klv(*)
 !     ------------------------------------------------------------------

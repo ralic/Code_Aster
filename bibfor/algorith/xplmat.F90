@@ -2,8 +2,8 @@ subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
                   nnos, nnom, n, pl)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: ndim, nfh, nfe, ddlc, nnos, nnom, n, pl, ddlm
 !
 ! ======================================================================

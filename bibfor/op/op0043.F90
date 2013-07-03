@@ -26,14 +26,14 @@ subroutine op0043()
 !   - OUT :
 !       IERR   : NON UTILISE
 !     ------------------------------------------------------------
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/precou.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/precou.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
     integer :: nfis
     character(len=8) :: typema
     character(len=16) :: k16nom

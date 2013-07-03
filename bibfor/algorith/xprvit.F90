@@ -6,23 +6,23 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 ! aslint: disable=W1501,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xprfon.h'
-    include 'asterfort/xprvir.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xprfon.h"
+#include "asterfort/xprvir.h"
     character(len=8) :: noma, fiss
 !
     character(len=19) :: cnsvt, cnsvn, vpoint, disfr, cnsbl, cnsdis, cnsbet

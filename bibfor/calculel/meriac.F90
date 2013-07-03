@@ -1,15 +1,15 @@
 subroutine meriac(modelz, nchar, lchar, mate, matelz)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/meria1.h'
-    include 'asterfort/reajre.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/meria1.h"
+#include "asterfort/reajre.h"
     integer :: nchar
     character(len=8) :: lchar(*)
     character(len=*) :: modelz, mate

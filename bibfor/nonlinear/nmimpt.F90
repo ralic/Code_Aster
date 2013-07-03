@@ -19,17 +19,17 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dinins.h'
-    include 'asterfort/nmimcr.h'
-    include 'asterfort/nmimen.h'
-    include 'asterfort/nmimr0.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dinins.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/nmimen.h"
+#include "asterfort/nmimr0.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/utdidt.h"
     integer :: numins
     character(len=24) :: sdimpr
     character(len=19) :: sddisc

@@ -1,14 +1,14 @@
 subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
                   noe, nbnoff, indic)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: noma
     character(len=19) :: macofo
     integer :: ndim, nbmac, tablev(2), noe(4, 4), nbnoff, indic(4)

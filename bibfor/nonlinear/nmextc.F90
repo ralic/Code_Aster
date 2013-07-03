@@ -19,12 +19,12 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmetob.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmetob.h"
     character(len=16) :: motfac
     integer :: iocc
     character(len=24) :: nomcha, sdieto

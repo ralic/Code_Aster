@@ -2,12 +2,12 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
                   dsde)
 !
     implicit   none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lglpma.h'
-    include 'asterfort/lglpmv.h'
-    include 'blas/ddot.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lglpma.h"
+#include "asterfort/lglpmv.h"
+#include "blas/ddot.h"
     real(kind=8) :: hook(6, 6), devg(6), devgii, dfds(6), dfdg, dsde(6, 6)
 ! ======================================================================
 ! ======================================================================

@@ -23,7 +23,7 @@ subroutine viemma(nbvari, vintm, vintp, advico, vicphi,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbvari, advico, vicphi, retcom
     real(kind=8) :: vintm(nbvari), vintp(nbvari), phi0, em
     real(kind=8) :: dp1, dp2, signe, sat, phi, phim

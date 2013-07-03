@@ -1,14 +1,14 @@
 subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/fgtaep.h'
-    include 'asterfort/fgtaes.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/fgtaep.h"
+#include "asterfort/fgtaes.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: kdomm
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)

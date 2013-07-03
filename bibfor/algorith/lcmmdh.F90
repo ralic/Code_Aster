@@ -2,9 +2,9 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
                   nfs, nsg, hsr, nbsys, is,&
                   nuecou, hs, soms1, soms2, soms3)
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lcmmdc.h'
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/lcmmdc.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), is, nbsys, nfs, nsg
     real(kind=8) :: coeft(*), alphap(12), hs, hsr(nsg, nsg), soms1, soms2, soms3
 ! ----------------------------------------------------------------------

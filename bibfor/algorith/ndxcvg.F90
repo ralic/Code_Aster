@@ -19,14 +19,14 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacto.h'
-    include 'asterfort/nmeceb.h'
-    include 'asterfort/nmevel.h'
-    include 'asterfort/nmltev.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmevel.h"
+#include "asterfort/nmltev.h"
     character(len=19) :: sddisc, valinc(*)
     character(len=24) :: sderro
 !

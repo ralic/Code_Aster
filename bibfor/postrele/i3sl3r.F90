@@ -1,7 +1,7 @@
 subroutine i3sl3r(a, b, ez, cs)
 ! aslint: disable=
     implicit none
-    include 'asterfort/provec.h'
+#include "asterfort/provec.h"
     real(kind=8) :: a(*), b(*), ez(*), cs(3, *)
 !     ------------------------------------------------------------------
 ! ======================================================================

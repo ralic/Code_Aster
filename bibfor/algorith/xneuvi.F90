@@ -3,10 +3,10 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: narz, nar, nbno
     integer :: tabdir(narz, 2), scorno(2*narz), noeud(2*narz)
     character(len=19) :: nliseq

@@ -17,19 +17,19 @@ subroutine te0442(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxsiro.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesi.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxsiro.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesi.h"
     character(len=16) :: option, nomte
 !......................................................................
 !

@@ -1,18 +1,18 @@
 subroutine fonvec(resu, noma, cnxinv)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/fonnor.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterc/getvr8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/fonnor.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     character(len=8) :: resu, noma
     character(len=19) :: cnxinv
 ! ======================================================================

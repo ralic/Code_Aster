@@ -19,15 +19,15 @@ subroutine nmimpx(sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/impfok.h'
-    include 'asterfort/implis.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgeto.h'
+#include "jeveux.h"
+#include "asterfort/impfok.h"
+#include "asterfort/implis.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgeto.h"
     character(len=24) :: sdimpr
 !
 ! ----------------------------------------------------------------------

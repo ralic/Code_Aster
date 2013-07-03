@@ -16,7 +16,7 @@ subroutine diaexp(nno, nddl, ldim, masco, masdi)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     real(kind=8) :: masco(*), masdi(*)
     integer :: nno, nddl, ldim
 !     ------------------------------------------------------------------

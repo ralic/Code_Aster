@@ -4,13 +4,13 @@ subroutine dichoc(nbt, neq, nno, nc, icodma,&
                   varmo, varpl, dimele)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/ut2vgl.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8prem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/ut2vgl.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vdiff.h"
+#include "blas/dcopy.h"
     integer :: nbt, neq, nno, nc, icodma, dimele
     real(kind=8) :: dul(neq), utl(neq), dvl(neq)
     real(kind=8) :: dpe(neq), dve(neq)

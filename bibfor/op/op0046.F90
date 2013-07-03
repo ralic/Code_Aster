@@ -30,37 +30,37 @@ subroutine op0046()
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/allir8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cochre.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detmat.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecalc.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/mechti.h'
-    include 'asterfort/mestat.h'
-    include 'asterfort/nmlect.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rssepa.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/allir8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cochre.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detmat.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecalc.h"
+#include "asterfort/mecham.h"
+#include "asterfort/mechti.h"
+#include "asterfort/mestat.h"
+#include "asterfort/nmlect.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rssepa.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0046' )
 !

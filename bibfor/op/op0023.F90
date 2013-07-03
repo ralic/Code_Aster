@@ -26,20 +26,20 @@ subroutine op0023()
 !     PREC1 ET CRIT1 SONT LA PRECISION ET LE CRITERE DU TEST
 !     PREC2 ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
 ! ----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/iisnan.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/trcart.h'
-    include 'asterfort/trchel.h'
-    include 'asterfort/trchno.h'
-    include 'asterfort/trgene.h'
-    include 'asterfort/trjeve.h'
-    include 'asterfort/trresu.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterc/iisnan.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/trcart.h"
+#include "asterfort/trchel.h"
+#include "asterfort/trchno.h"
+#include "asterfort/trgene.h"
+#include "asterfort/trjeve.h"
+#include "asterfort/trresu.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
     real(kind=8) :: tstnan, resnan
     integer :: ific, nocc, n
     logical :: nfac

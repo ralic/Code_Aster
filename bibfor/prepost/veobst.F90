@@ -1,8 +1,8 @@
 subroutine veobst(arete, rcarte, angdeb, angfin, angva,&
                   angare, angmax, profon, volume, epais)
     implicit   none
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8rddg.h'
+#include "asterc/r8dgrd.h"
+#include "asterc/r8rddg.h"
     real(kind=8) :: arete, rcarte, angdeb, angfin, angva, angare, angmax, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------

@@ -17,9 +17,9 @@ subroutine zeroco(x, y)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8maem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerodi.h'
+#include "asterc/r8maem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerodi.h"
     real(kind=8) :: x(4), y(4)
 ! ----------------------------------------------------------------------
 !  RESOLUTION D'EQUATIONS SCALAIRES PAR UNE METHODE DE CORDES

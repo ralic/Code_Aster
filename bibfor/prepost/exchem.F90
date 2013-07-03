@@ -19,17 +19,17 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/iposdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ncpact.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/iposdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ncpact.h"
+#include "asterfort/wkvect.h"
     integer :: modloc(*), tcmp(*), nbc, taberr(*), nbsp
     real(kind=8) :: tvale(*), valcmp(*)
 !

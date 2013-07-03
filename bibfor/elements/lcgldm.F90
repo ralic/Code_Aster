@@ -22,12 +22,12 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
 !
     implicit none
 !
-    include 'asterfort/ceps33.h'
-    include 'asterfort/cntmat.h'
-    include 'asterfort/cstgld.h'
-    include 'asterfort/diago2.h'
-    include 'asterfort/gldloc.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/ceps33.h"
+#include "asterfort/cntmat.h"
+#include "asterfort/cstgld.h"
+#include "asterfort/diago2.h"
+#include "asterfort/gldloc.h"
+#include "asterfort/r8inir.h"
     integer :: codret
     real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), seuil, alfmc
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, alf, gmt, gmc, gf

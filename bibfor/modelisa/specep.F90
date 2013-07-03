@@ -39,26 +39,26 @@ subroutine specep(casint, nomu, spectr, base, vite,&
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/axdipo.h'
-    include 'asterfort/deelpo.h'
-    include 'asterfort/exmano.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/scalep.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/axdipo.h"
+#include "asterfort/deelpo.h"
+#include "asterfort/exmano.h"
+#include "asterfort/fointc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/scalep.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     logical :: casint
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
     character(len=8) :: nomu

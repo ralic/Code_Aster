@@ -57,19 +57,19 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/cmatve.h'
-    include 'asterfort/ctescv.h'
-    include 'asterfort/cvalea.h'
-    include 'asterfort/cvnorm.h'
-    include 'asterfort/rrldc.h'
-    include 'asterfort/sepavp.h'
-    include 'asterfort/sesqui.h'
-    include 'asterfort/trldc.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/zcopy.h'
+#include "asterfort/cmatve.h"
+#include "asterfort/ctescv.h"
+#include "asterfort/cvalea.h"
+#include "asterfort/cvnorm.h"
+#include "asterfort/rrldc.h"
+#include "asterfort/sepavp.h"
+#include "asterfort/sesqui.h"
+#include "asterfort/trldc.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "blas/zcopy.h"
     integer :: ndim, nbmod, niter, ndimax
     complex(kind=8) :: ck(*), cm(*)
     complex(kind=8) :: ceigen(nbmod), cmod(ndimax, nbmod), cmod0(ndim)

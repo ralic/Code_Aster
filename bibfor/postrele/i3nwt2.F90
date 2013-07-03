@@ -2,7 +2,7 @@ subroutine i3nwt2(epsi, seuil, maxitr, fk, x,&
                   iret)
     implicit none
 !
-    include 'asterfort/i3efk2.h'
+#include "asterfort/i3efk2.h"
     integer :: maxitr, iret
     real(kind=8) :: epsi, seuil, fk(4, *), x(*)
 !

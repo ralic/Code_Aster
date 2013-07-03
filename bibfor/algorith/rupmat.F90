@@ -18,7 +18,7 @@ subroutine rupmat(fami, kpg, ksp, imat, vim,&
 ! ======================================================================
 ! =================================================================
     implicit     none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, imat, lgpg, cerr, i
     real(kind=8) :: e, vim(*), sigd(6), coef
     character(len=*) :: fami

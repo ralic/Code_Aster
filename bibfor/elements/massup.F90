@@ -42,14 +42,14 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
 !        RESULTATS: ICODRE -->  CODE RETOUR
 ! ......................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2j.h'
-    include 'asterfort/dfdm3j.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2j.h"
+#include "asterfort/dfdm3j.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
 !
     integer :: i, j, k, l, kpg, ik, ijkl, dlns
     integer :: ndim, nno, nnos, npg, mate, ipoids, idfde, imatuu

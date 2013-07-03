@@ -17,16 +17,16 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcvals.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcvals.h"
+#include "asterfort/u2mesk.h"
     integer :: nbpar, nbres
     character(len=*) :: phenom
     integer :: iarret

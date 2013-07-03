@@ -36,7 +36,7 @@ subroutine tophy3(icho, ia, dplmod, nbchoc, nbmode,&
 !    IN  : COEF      :   INTENSITE DE L'EXCITATION A L'INSTANT T
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: icho, ia, nbmode, nbchoc
     real(kind=8) :: xgene(nbmode), dplmod(nbchoc, nbmode, *)
     real(kind=8) :: psidel(nbchoc, nbexci, *), ux, uy, uz, coef(nbexci)

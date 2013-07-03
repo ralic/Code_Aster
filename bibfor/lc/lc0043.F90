@@ -21,7 +21,7 @@ subroutine lc0043(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lceifa.h'
+#include "asterfort/lceifa.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(3)
     real(kind=8) :: instam, instap, tampon(*),r

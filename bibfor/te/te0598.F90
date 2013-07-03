@@ -17,18 +17,18 @@ subroutine te0598(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/niinit.h'
-    include 'asterfort/nurfgd.h'
-    include 'asterfort/nurfpd.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/niinit.h"
+#include "asterfort/nurfgd.h"
+#include "asterfort/nurfpd.h"
+#include "asterfort/terefe.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION FORC_REFE POUR LES ELEMENTS

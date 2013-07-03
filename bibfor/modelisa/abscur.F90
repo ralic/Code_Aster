@@ -18,26 +18,26 @@ subroutine abscur(nomu, it)
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/alcart.h'
-    include 'asterfort/i2extf.h'
-    include 'asterfort/i2sens.h'
-    include 'asterfort/i2tgrm.h'
-    include 'asterfort/i2vois.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/sdmail.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/alcart.h"
+#include "asterfort/i2extf.h"
+#include "asterfort/i2sens.h"
+#include "asterfort/i2tgrm.h"
+#include "asterfort/i2vois.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/sdmail.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomu
 !-----------------------------------------------------------------------
 !     CALCUL D'UNE ABSCISSE CURVILIGNE POUR UN GROUPE DE MAILLES

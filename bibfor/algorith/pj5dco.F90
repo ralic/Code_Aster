@@ -1,23 +1,23 @@
 subroutine pj5dco(mo1, mo2, corres)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exmano.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pacoa2.h'
-    include 'asterfort/pj3da4.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8maem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exmano.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pacoa2.h"
+#include "asterfort/pj3da4.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: corres
     character(len=8) :: mo1, mo2
 ! ----------------------------------------------------------------------

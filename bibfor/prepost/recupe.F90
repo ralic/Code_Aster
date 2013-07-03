@@ -1,14 +1,14 @@
 subroutine recupe(noma, ndim, nk1d, lrev, matrev,&
                   deklag, prodef, londef, oridef)
     implicit     none
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: ndim, nk1d
     real(kind=8) :: lrev, deklag, prodef, londef
     character(len=8) :: noma, matrev, oridef

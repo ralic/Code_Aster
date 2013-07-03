@@ -21,12 +21,12 @@ function diadap(sddisc, iadapt)
 !
     implicit none
     logical :: diadap
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
     integer :: iadapt
     character(len=19) :: sddisc
 !

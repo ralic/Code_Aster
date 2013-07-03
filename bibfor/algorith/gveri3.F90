@@ -50,18 +50,18 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !        MODULE(THETA) ( OBJET TRAV3 )
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/glegen.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/fointe.h"
+#include "asterfort/glegen.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: trav0, trav1, trav2, trav3, chfond, absgam, taillr
     character(len=8) :: config, nompar(1), rinff, rsupf
 !

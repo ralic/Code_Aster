@@ -22,13 +22,13 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pacou0.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pacou0.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: typflu
     integer :: nbno, indic, nbpv, veci1(*), ier, jtrav1, jtrav2
     real(kind=8) :: vecr1(*), vecr2(*), vite(*), vecr3(*), masg(*), freq(*)

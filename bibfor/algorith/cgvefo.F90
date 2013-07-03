@@ -1,13 +1,13 @@
 subroutine cgvefo(option, typfis, nomfis)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: typfis, nomfis
     character(len=16) :: option
 !

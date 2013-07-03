@@ -1,7 +1,7 @@
 subroutine dimthm(nomte, ndlno, ndlnm, ndim)
     implicit none
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mess.h"
     integer :: ndlno, ndlnm, ndim
     integer :: iaux
     character(len=16) :: nomte

@@ -19,9 +19,9 @@ subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
 ! person_in_charge: patrick.massin at edf.fr
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nfiss, ifiss, ima, nno, nbheav
     integer :: jconx1, jconx2, jstnl(nfiss), jstnv(nfiss)
 ! ----------------------------------------------------------------------

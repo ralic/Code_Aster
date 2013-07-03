@@ -18,12 +18,12 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: modmec
     integer :: nbmode, neq
     character(len=14) :: numddl

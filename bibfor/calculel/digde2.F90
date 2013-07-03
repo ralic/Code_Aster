@@ -21,7 +21,7 @@ function digde2(modelo)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: modelo
 ! ----------------------------------------------------------------------
 ! ROUTINE IDENTIQUE A DIGDEL MAIS AVEC UN COMMON POUR ETRE PLUS RAPIDE

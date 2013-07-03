@@ -1,10 +1,10 @@
 subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rcvale.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rcvale.h"
     character(len=*) :: nommat
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)

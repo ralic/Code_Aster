@@ -3,7 +3,7 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
                   lact, cstafr, mu, vtmp)
 !
     implicit none
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     integer :: ndim, nnol, pla(27)
     integer :: lact(8)
     real(kind=8) :: vtmp(400), tau1(3), tau2(3)

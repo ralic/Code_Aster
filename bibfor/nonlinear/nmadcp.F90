@@ -19,17 +19,17 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
     integer :: ievdac
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc

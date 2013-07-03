@@ -1,10 +1,10 @@
 subroutine cbpres(char, noma, ligrmo, ndim, fonree)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterfort/cafond.h'
-    include 'asterfort/cafotu.h'
-    include 'asterfort/cafthm.h'
-    include 'asterfort/capres.h'
+#include "asterc/getfac.h"
+#include "asterfort/cafond.h"
+#include "asterfort/cafotu.h"
+#include "asterfort/cafthm.h"
+#include "asterfort/capres.h"
     integer :: ndim
     character(len=4) :: fonree
     character(len=8) :: char, noma

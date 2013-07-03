@@ -19,12 +19,12 @@ subroutine terefe(nomref, typele, valref)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/iisnan.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/iisnan.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomref, typele
     real(kind=8) :: valref
 !

@@ -20,9 +20,9 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/jelstc.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/utimsd.h'
+#include "asterfort/jelstc.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/utimsd.h"
     character(len=*) :: optioz
     integer :: ifm
     integer :: nbin, nbout

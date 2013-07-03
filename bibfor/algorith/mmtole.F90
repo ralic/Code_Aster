@@ -20,9 +20,9 @@ subroutine mmtole(alias, nno, ndim, coorma, toleou,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/cfadju.h'
-    include 'asterfort/mmdonf.h'
-    include 'asterfort/mmtang.h'
+#include "asterfort/cfadju.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/mmtang.h"
     character(len=8) :: alias
     integer :: nno
     integer :: ndim

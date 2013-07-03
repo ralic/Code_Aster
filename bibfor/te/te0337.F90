@@ -54,15 +54,15 @@ subroutine te0337(option, nomte)
 !
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     character(len=16) :: nomte, option
     real(kind=8) :: jacpoi, e1(3), e2(3)
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), zero

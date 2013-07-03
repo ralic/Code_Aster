@@ -36,22 +36,22 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/btkb.h'
-    include 'asterfort/jacbm1.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/jm1dn1.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
-    include 'asterfort/vectpe.h'
-    include 'asterfort/vectrn.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/btkb.h"
+#include "asterfort/jacbm1.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/jm1dn1.h"
+#include "asterfort/promat.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
+#include "asterfort/vectpe.h"
+#include "asterfort/vectrn.h"
     character(len=16) :: nomte
     real(kind=8) :: pk2(ncmp, 1), sigma(ncmp, 1)
     integer :: ncmp, jnbspi

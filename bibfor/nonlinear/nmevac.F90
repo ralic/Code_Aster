@@ -20,20 +20,20 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmadcp.h'
-    include 'asterfort/nmdeco.h'
-    include 'asterfort/nmecev.h'
-    include 'asterfort/nmeraz.h'
-    include 'asterfort/nmerge.h'
-    include 'asterfort/nmevdp.h'
-    include 'asterfort/nmitsp.h'
-    include 'asterfort/nmrepc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmadcp.h"
+#include "asterfort/nmdeco.h"
+#include "asterfort/nmecev.h"
+#include "asterfort/nmeraz.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmevdp.h"
+#include "asterfort/nmitsp.h"
+#include "asterfort/nmrepc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
     character(len=24) :: sdimpr, sderro
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc, solveu

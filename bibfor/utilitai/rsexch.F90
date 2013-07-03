@@ -1,20 +1,20 @@
 subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
                   icode)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsutch.h'
-    include 'asterfort/rsutrg.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsutch.h"
+#include "asterfort/rsutrg.h"
+#include "asterfort/u2mesg.h"
     integer :: iordr, icode
     character(len=*) :: kstop, nomsd, nomsy, chextr
 ! ----------------------------------------------------------------------

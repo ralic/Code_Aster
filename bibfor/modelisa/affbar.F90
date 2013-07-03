@@ -2,18 +2,18 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
                   car, val, exp, nbo, kioc,&
                   ier)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8pi.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     integer :: isec, nbo, ier
     real(kind=8) :: val(*)
     character(len=6) :: kioc

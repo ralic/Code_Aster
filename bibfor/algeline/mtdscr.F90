@@ -1,18 +1,18 @@
 subroutine mtdscr(nommat)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/ismaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/ismaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nommat
 !     ------------------------------------------------------------------
 ! ======================================================================

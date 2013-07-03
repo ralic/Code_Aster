@@ -28,42 +28,42 @@ subroutine op0186()
 ! 0.2  ==> ARGUMENTS
 !
 ! 0.3. ==> VARIABLES LOCALES
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detmat.h'
-    include 'asterfort/didern.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/impfot.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/medith.h'
-    include 'asterfort/ntarch.h'
-    include 'asterfort/ntobsv.h'
-    include 'asterfort/nxacmv.h'
-    include 'asterfort/nxinit.h'
-    include 'asterfort/nxlect.h'
-    include 'asterfort/nxnewt.h'
-    include 'asterfort/nxpred.h'
-    include 'asterfort/nxrech.h'
-    include 'asterfort/rsinch.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detmat.h"
+#include "asterfort/didern.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/impfot.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/medith.h"
+#include "asterfort/ntarch.h"
+#include "asterfort/ntobsv.h"
+#include "asterfort/nxacmv.h"
+#include "asterfort/nxinit.h"
+#include "asterfort/nxlect.h"
+#include "asterfort/nxnewt.h"
+#include "asterfort/nxpred.h"
+#include "asterfort/nxrech.h"
+#include "asterfort/rsinch.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
     logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
     logical :: force, lnonl

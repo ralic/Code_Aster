@@ -16,9 +16,9 @@ subroutine te0167(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE: OPTION BIDON : 'CHAR_MECA_TEMP_R' POUR MEPOULI

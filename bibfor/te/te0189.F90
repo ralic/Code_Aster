@@ -24,11 +24,11 @@ subroutine te0189(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
     integer :: idino, ino, nno, nnos, ndim, jgano, npg1
     integer :: ipdeb, ipres, ipoids, ivf, idfde

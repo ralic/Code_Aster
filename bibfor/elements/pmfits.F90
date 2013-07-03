@@ -33,9 +33,9 @@ subroutine pmfits(nf, ncf, vf, vsig, vs)
 !          VS(2) : INT(SIG.Y.DS)    = -MFZ0
 !          VS(3) : INT(SIG.Z.DS)    = MFY0
 ! -----------------------------------------------------------
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nf, ncf, i
     real(kind=8) :: vf(ncf, nf), vsig(nf), vs(3), zero, sigsf
     parameter (zero=0.0d+0)

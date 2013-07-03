@@ -17,46 +17,46 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/afrela.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/imprel.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/malin1.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/ratu3d.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/veripl.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/assvec.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/getvem.h"
+#include "asterfort/imprel.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/malin1.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/ratu3d.h"
+#include "asterfort/reajre.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/veripl.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: charge
     character(len=14) :: numddl
     character(len=19) :: lisrel

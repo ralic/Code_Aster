@@ -18,15 +18,15 @@ subroutine liscpy(lischa, lisch2, base)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liscad.h'
-    include 'asterfort/lisccr.h'
-    include 'asterfort/liscli.h'
-    include 'asterfort/lisnch.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liscad.h"
+#include "asterfort/lisccr.h"
+#include "asterfort/liscli.h"
+#include "asterfort/lisnch.h"
     character(len=19) :: lischa, lisch2
     character(len=1) :: base
 !

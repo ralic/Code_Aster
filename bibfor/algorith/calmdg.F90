@@ -4,27 +4,27 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
                   iadirg)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/delat.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rangen.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/tabcor.h'
-    include 'asterfort/trprot.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/delat.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rangen.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/tabcor.h"
+#include "asterfort/trprot.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: mate
 !
 !---------------------------------------------------------------------

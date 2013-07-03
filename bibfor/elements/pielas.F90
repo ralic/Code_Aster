@@ -21,16 +21,16 @@ subroutine pielas(ndim, npg, kpg, compor, typmod,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/pipedo.h'
-    include 'asterfort/pipedp.h'
-    include 'asterfort/pipeds.h'
-    include 'asterfort/pipeef.h'
-    include 'asterfort/pipepl.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/pipedo.h"
+#include "asterfort/pipedp.h"
+#include "asterfort/pipeds.h"
+#include "asterfort/pipeef.h"
+#include "asterfort/pipepl.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "blas/daxpy.h"
     integer :: ndim, kpg, npg
     integer :: mate
     character(len=8) :: typmod(*)

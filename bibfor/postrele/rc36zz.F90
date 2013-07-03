@@ -1,12 +1,12 @@
 subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma,&
                   listma, chelem)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cescre.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbcmp, nbma, listma(*)
     character(len=8) :: noma, nomgd
     character(len=16) :: nocmp(*)

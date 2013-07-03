@@ -21,22 +21,22 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/cfaddm.h'
-    include 'asterfort/cfcorn.h'
-    include 'asterfort/cfnewj.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cftanr.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterfort/apvect.h"
+#include "asterfort/cfaddm.h"
+#include "asterfort/cfcorn.h"
+#include "asterfort/cfnewj.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cftanr.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo

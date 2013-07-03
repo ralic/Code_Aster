@@ -3,11 +3,11 @@ subroutine pj4dap(ino2, geom2, ma2, geom1, tria3,&
                   btnb, btlc, btco, ifm, niv,&
                   ldmax, distma, loin, dmin)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/pj3dgb.h'
-    include 'asterfort/pj4da2.h'
+#include "asterc/r8maem.h"
+#include "asterfort/pj3dgb.h"
+#include "asterfort/pj4da2.h"
     real(kind=8) :: cobary(3), geom1(*), geom2(*), btvr(*)
     integer :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*)
     integer :: tria3(*), ifm, niv

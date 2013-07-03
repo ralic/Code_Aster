@@ -1,15 +1,15 @@
 subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
                   nbtrou)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     integer :: nbvale, tabord(*), nbtrou
     character(len=*) :: nomsd, nomsy, tabnom(*)
 ! ----------------------------------------------------------------------

@@ -53,20 +53,20 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/cpdepl.h'
-    include 'asterfort/fluimp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdconf.h'
-    include 'asterfort/pacouc.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/cpdepl.h"
+#include "asterfort/fluimp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdconf.h"
+#include "asterfort/pacouc.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: melflu
     character(len=8) :: typflu, base, noma
     integer :: nuor(*)

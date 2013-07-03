@@ -22,25 +22,25 @@ subroutine op0118()
 !     ------------------------------------------------------------------
     implicit   none
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/iniran.h'
-    include 'asterfort/fft.h'
-    include 'asterfort/gefact.h'
-    include 'asterfort/genale.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/iniran.h"
+#include "asterfort/fft.h"
+#include "asterfort/gefact.h"
+#include "asterfort/genale.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: npfft, dim, dim2, l, nbtir
     integer :: ifm, niv, nbpar, nbval, lvale, ldesc, nbfreq, k
     integer :: nbfc, long, ln, ln2, lonv, lvalf, lvalc, lr, lv

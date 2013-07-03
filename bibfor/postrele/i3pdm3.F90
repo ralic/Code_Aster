@@ -1,11 +1,11 @@
 subroutine i3pdm3(epsi, k, desc, desctm, conexk,&
                   coordo, pt, dedans)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/i3afk2.h'
-    include 'asterfort/i3tstf.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/i3afk2.h"
+#include "asterfort/i3tstf.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/u2mesi.h"
     integer :: k, desc(*), desctm(*), conexk(*)
     real(kind=8) :: epsi, pt(*), coordo(*)
     logical :: dedans

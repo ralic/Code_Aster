@@ -1,7 +1,7 @@
 subroutine xmelin(typma, typint, nnint)
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=8) :: typma
     integer :: typint
     integer :: nnint

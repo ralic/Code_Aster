@@ -26,9 +26,9 @@ subroutine caldto(s6, fkooh, msns, dtods)
 !     IN  MSNS  :  MS * NS
 !     OUT DTODS :  dTau/dS
 !
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tnsvec.h'
-    include 'blas/dcopy.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/tnsvec.h"
+#include "blas/dcopy.h"
     integer :: i, j, k, l, ind(3, 3), a, b, m, n
     real(kind=8) :: s6(6), fkooh(6, 6), msns(3, 3), dtods(3, 3)
     real(kind=8) :: s(3, 3), l4(3, 3, 3, 3)

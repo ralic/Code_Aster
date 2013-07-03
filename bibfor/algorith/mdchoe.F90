@@ -35,19 +35,19 @@ subroutine mdchoe(np1, np2, np3, nbm, nbmcd,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/caljac.h'
-    include 'asterfort/calres.h'
-    include 'asterfort/deimpj.h'
-    include 'asterfort/disbut.h'
-    include 'asterfort/ftest1.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/locglo.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/prlgma.h'
-    include 'asterfort/projac.h'
-    include 'asterfort/projgm.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/caljac.h"
+#include "asterfort/calres.h"
+#include "asterfort/deimpj.h"
+#include "asterfort/disbut.h"
+#include "asterfort/ftest1.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/locglo.h"
+#include "asterfort/matini.h"
+#include "asterfort/prlgma.h"
+#include "asterfort/projac.h"
+#include "asterfort/projgm.h"
+#include "asterfort/projmg.h"
+#include "asterfort/vecini.h"
     integer :: np1, np2, np3, nbm, nbmcd, nbnl, typch(*), nbseg(*)
     real(kind=8) :: phii(np2, np1, *), choc(6, *), alpha(2, *), beta(2, *)
     real(kind=8) :: gamma(2, *), orig(6, *), rc(np3, *), theta(np3, *)

@@ -70,11 +70,11 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
 !                                        LOI
 !    ITER           OUT    I   NOMBRE D'ITERATIONS POUR CONVERGER
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/nmchcr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utlcal.h'
-    include 'asterfort/zerofr.h'
+#include "asterfort/infniv.h"
+#include "asterfort/nmchcr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utlcal.h"
+#include "asterfort/zerofr.h"
     integer :: ndimsi, nbvar, visc, memo, niter, i, iter, ifm, niv, nbp, iret
     integer :: idelta
     real(kind=8) :: mat(18), pm, sigedv(6), alfam(6), deuxmu, dp, dt, qp

@@ -17,9 +17,9 @@ subroutine ef0156(nomte)
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
+#include "asterfort/jevech.h"
     character(len=16) :: nomte
 !-----------------------------------------------------------------------
 ! REALISE  EFGE_ELNO

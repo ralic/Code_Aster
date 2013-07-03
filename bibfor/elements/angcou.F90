@@ -19,16 +19,16 @@ subroutine angcou(coor, zk1, izk, icoude, zk2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     real(kind=8) :: coor(9), rayon, theta, epsi, t1(3), t2(3), coo1(3), coo2(3)
     real(kind=8) :: coo3(3), norme1, norme2, normez, x3(3), x1(3), x2(3), ct2
     real(kind=8) :: st2

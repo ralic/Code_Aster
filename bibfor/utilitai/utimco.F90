@@ -19,15 +19,15 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeimpa.h'
-    include 'asterfort/jeimpo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeprat.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/jeimpa.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeprat.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: obin
     integer :: nivo, unit
     logical :: lattr, lcont

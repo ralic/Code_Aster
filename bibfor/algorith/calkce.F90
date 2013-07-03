@@ -20,10 +20,10 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'asterfort/matinv.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/transp.h'
+#include "asterfort/matinv.h"
+#include "asterfort/matmul.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/transp.h"
     integer :: nno, ndim
     real(kind=8) :: kbp(ndim, nno), kbb(ndim, ndim), rce(nno)
     real(kind=8) :: kce(nno, nno), pm(nno), dp(nno)

@@ -3,8 +3,8 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                   ficent, d, fi, a, b)
     implicit none
 !
-    include 'asterfort/mefac1.h'
-    include 'asterfort/mefac2.h'
+#include "asterfort/mefac1.h"
+#include "asterfort/mefac2.h"
     integer :: ndim(14), nbcyl, nbgrp, nbtron, numgrp(*), idir, igrp
     real(kind=8) :: dcent(nbcyl), ficent(nbcyl), rint(*), som(9)
     real(kind=8) :: d(nbcyl, nbcyl), fi(nbcyl, nbcyl)

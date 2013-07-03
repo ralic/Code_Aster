@@ -28,26 +28,26 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 !                    FONCTION.
 !     IN  : MONMAI : NOM DU MAILLAGE.
 !     IN  : NM     : NOMBRE DE MAILLES.
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/i2extf.h'
-    include 'asterfort/i2sens.h'
-    include 'asterfort/i2tgrm.h'
-    include 'asterfort/i2vois.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/prfcur.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vefcur.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/i2extf.h"
+#include "asterfort/i2sens.h"
+#include "asterfort/i2tgrm.h"
+#include "asterfort/i2vois.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/prfcur.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vefcur.h"
+#include "asterfort/wkvect.h"
     integer :: ptch, pnoe
     real(kind=8) :: vecr1(nb), vecr2(nv)
     character(len=2) :: prolgd

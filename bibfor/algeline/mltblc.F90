@@ -27,10 +27,10 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
 !                   LGBLOC(NBLOC) : NBRE DE COEFFICIENTS DE CHAQUE BLOC
 !                   DECAL(NBSN) :  DEBUT DE CHAQUE SNOEUD DANS LE TABLEA
 !                                    FACTOR QUI CONTIENT LES BLOCS
-    include 'asterc/ismaem.h'
-    include 'asterc/lor8em.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
+#include "asterc/ismaem.h"
+#include "asterc/lor8em.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
     integer :: nbsn, seq(nbsn), debfsn(nbsn+1), mxbloc, nbloc, decal(nbsn)
     integer :: lgbloc(*), ncbloc(*)
     integer :: i, l, i0, long

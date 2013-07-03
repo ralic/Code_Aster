@@ -1,12 +1,12 @@
 subroutine ccvrch(resuin, numor0)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: resuin
     integer :: numor0
 ! ======================================================================

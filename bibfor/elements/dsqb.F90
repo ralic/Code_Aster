@@ -1,18 +1,18 @@
 subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau,&
                 bmat)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bcoqaf.h'
-    include 'asterfort/dsqbfa.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dsqcis.h'
-    include 'asterfort/dsqdis.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxhmft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jquad4.h'
+#include "jeveux.h"
+#include "asterfort/bcoqaf.h"
+#include "asterfort/dsqbfa.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dsqcis.h"
+#include "asterfort/dsqdis.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxhmft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jquad4.h"
     integer :: igau
     real(kind=8) :: xyzl(3, 1), pgl(3, 3), bmat(8, 1), jacgau, caraq4(*)
 ! ======================================================================

@@ -6,29 +6,29 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dgmode.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/ecrtes.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/irgags.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/lxliis.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dgmode.h"
+#include "asterfort/digdel.h"
+#include "asterfort/ecrtes.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/irgags.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), nbnoma(*)
     integer :: permut(maxnod, *), typma(*), nbmat, nummai(*), ncmpu, nucmp(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, titr, nomsym, nomsd

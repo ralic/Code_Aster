@@ -37,11 +37,11 @@ subroutine calfnl(np1, np2, np3, np4, nbm,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/adimeq.h'
-    include 'asterfort/defext.h'
-    include 'asterfort/mdchoe.h'
-    include 'asterfort/sommve.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/adimeq.h"
+#include "asterfort/defext.h"
+#include "asterfort/mdchoe.h"
+#include "asterfort/sommve.h"
+#include "asterfort/vecini.h"
     integer :: np1, np2, np3, np4, nbm, nbmcd, npfts
     real(kind=8) :: tc
     integer :: nbnl, typch(*), nbseg(*)

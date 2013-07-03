@@ -1,12 +1,12 @@
 subroutine rcmo02(etat, numsit, vale)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/codent.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
     integer :: numsit
     real(kind=8) :: vale(*)
     character(len=1) :: etat

@@ -22,19 +22,19 @@ subroutine nmcore(sdcrit, sderro, sdconv, defico, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmcoru.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmevcv.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcoru.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmevcv.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     integer :: fonact(*)
     real(kind=8) :: parcri(*)
     integer :: numins, iterat, relite

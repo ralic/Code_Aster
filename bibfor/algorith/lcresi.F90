@@ -48,14 +48,14 @@ subroutine lcresi(fami, kpg, ksp, loi, typmod,&
 !       OUT R      :  SYSTEME NL A T + DT
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/burres.h'
-    include 'asterfort/cvmres.h'
-    include 'asterfort/hayres.h'
-    include 'asterfort/huresi.h'
-    include 'asterfort/irrres.h'
-    include 'asterfort/lcmmre.h'
-    include 'asterfort/lcresa.h'
-    include 'asterfort/lkresi.h'
+#include "asterfort/burres.h"
+#include "asterfort/cvmres.h"
+#include "asterfort/hayres.h"
+#include "asterfort/huresi.h"
+#include "asterfort/irrres.h"
+#include "asterfort/lcmmre.h"
+#include "asterfort/lcresa.h"
+#include "asterfort/lkresi.h"
     integer :: imat, nmat, nr, nvi, kpg, ksp, itmax, iret
     integer :: nfs, nsg, indi(7)
     real(kind=8) :: deps(6), epsd(6), vind(*), toler

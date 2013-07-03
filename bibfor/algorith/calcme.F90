@@ -47,19 +47,19 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
 ! aslint: disable=W1501,W1504
     implicit      none
-    include 'asterfort/dpvplc.h'
-    include 'asterfort/dsipdp.h'
-    include 'asterfort/elagon.h'
-    include 'asterfort/lcdrpr.h'
-    include 'asterfort/lchbr2.h'
-    include 'asterfort/lcldsb.h'
-    include 'asterfort/lcmaza.h'
-    include 'asterfort/nmbarc.h'
-    include 'asterfort/nmccam.h'
-    include 'asterfort/nmcjs.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/redece.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dpvplc.h"
+#include "asterfort/dsipdp.h"
+#include "asterfort/elagon.h"
+#include "asterfort/lcdrpr.h"
+#include "asterfort/lchbr2.h"
+#include "asterfort/lcldsb.h"
+#include "asterfort/lcmaza.h"
+#include "asterfort/nmbarc.h"
+#include "asterfort/nmccam.h"
+#include "asterfort/nmcjs.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/redece.h"
+#include "asterfort/u2mess.h"
     logical :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom

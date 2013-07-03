@@ -19,13 +19,13 @@ subroutine xdefco(noma, nomo, fiss, algola, ndim,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/xlagsp.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xlagsp.h"
     integer :: ndim, i, ier
     character(len=8) :: fiss, noma, nomo
     integer :: algola

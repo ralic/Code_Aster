@@ -20,32 +20,32 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/loisem.h'
-    include 'asterc/lor8em.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/acgrdo.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedisp.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/recofa.h'
-    include 'asterfort/rnomat.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vecnuv.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/loisem.h"
+#include "asterc/lor8em.h"
+#include "asterc/r8pi.h"
+#include "asterfort/acgrdo.h"
+#include "asterfort/carces.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/recofa.h"
+#include "asterfort/rnomat.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vecnuv.h"
+#include "asterfort/wkvect.h"
     integer :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
     integer :: tspaq, ordini
     logical :: post

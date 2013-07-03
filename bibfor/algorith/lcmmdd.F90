@@ -3,9 +3,9 @@ subroutine lcmmdd(taus, coeft, ifa, nmat, nbcomm,&
                   vind, dy, dt, rp, nuecou,&
                   dalpha, dgamma, dp, iret)
     implicit none
-    include 'asterc/r8maem.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/lcmmdh.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+#include "asterfort/lcmmdh.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), iret
     integer :: ifl, is, ir, nbsys, nfs, nsg, nuecou
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, vind(*), dalpha

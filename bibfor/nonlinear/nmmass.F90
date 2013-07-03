@@ -19,12 +19,12 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
 ! ======================================================================
 ! person_in_charge: ludovic.idoux at edf.fr
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmassm.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmassm.h"
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, solveu
     character(len=24) :: numedd, numfix

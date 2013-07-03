@@ -2,11 +2,11 @@ subroutine i3idks(epsi, k, desc, desctm, sgt,&
                   conexk, coordo, nbpt, lstpt)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3ctpv.h'
-    include 'asterfort/i3ifqs.h'
-    include 'asterfort/i3ifts.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/i3ctpv.h"
+#include "asterfort/i3ifqs.h"
+#include "asterfort/i3ifts.h"
+#include "asterfort/u2mesi.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*)
     real(kind=8) :: epsi, sgt(*), coordo(*)
 !

@@ -20,18 +20,18 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
     character(len=24) :: numedd
     character(len=19) :: sddisc, incest
     character(len=19) :: solalg(*), depmoi, depest

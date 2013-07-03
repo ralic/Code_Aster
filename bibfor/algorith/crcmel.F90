@@ -32,20 +32,20 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
 ! OUT NT      : NOMBRE D'OCCURRENCES DE COMP_INCR / COMP_ELAS
 ! ---------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/alcart.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/u2mess.h"
     integer :: iret, nbmo1, i, nt, n1, ncmpma, ibid, irepe
     integer :: jncmp, jvalv, icmp, iexi
     character(len=16) :: moclef(2)

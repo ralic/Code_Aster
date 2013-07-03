@@ -2,17 +2,17 @@ subroutine te0313(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/ismaem.h'
-    include 'asterfort/aseihm.h'
-    include 'asterfort/caeihm.h'
-    include 'asterfort/eiangl.h'
-    include 'asterfort/fneihm.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/poeihm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterfort/aseihm.h"
+#include "asterfort/caeihm.h"
+#include "asterfort/eiangl.h"
+#include "asterfort/fneihm.h"
+#include "asterfort/jevech.h"
+#include "asterfort/poeihm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

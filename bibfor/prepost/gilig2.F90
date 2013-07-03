@@ -1,9 +1,9 @@
 subroutine gilig2(nfic, nbnono, niv)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nfic, nbnono, niv
 ! ----------------------------------------------------------------------
 ! ======================================================================

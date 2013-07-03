@@ -17,14 +17,14 @@ subroutine jxveuo(cel, itab, inat, jitab)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjlirs.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/jxliro.h'
-    include 'asterfort/jxlocs.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjlirs.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/jxliro.h"
+#include "asterfort/jxlocs.h"
+#include "asterfort/u2mess.h"
     integer :: itab(*), inat, jitab
     character(len=*) :: cel
 ! ----------------------------------------------------------------------

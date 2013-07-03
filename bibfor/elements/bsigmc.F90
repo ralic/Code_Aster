@@ -42,8 +42,8 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/bmatmc.h'
-    include 'asterfort/btsig.h'
+#include "asterfort/bmatmc.h"
+#include "asterfort/btsig.h"
     real(kind=8) :: xyz(1), sigma(1), bsigma(1), nharm
 ! -----  VARIABLES LOCALES
     real(kind=8) :: b(486), jacgau

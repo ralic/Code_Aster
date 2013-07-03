@@ -19,8 +19,8 @@ subroutine apnumm(sdappa, defico, posma, numma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cfnumm.h'
+#include "jeveux.h"
+#include "asterfort/cfnumm.h"
     character(len=19) :: sdappa
     character(len=24) :: defico
     integer :: posma, numma

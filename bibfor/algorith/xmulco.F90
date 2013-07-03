@@ -5,7 +5,7 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
                   pla, typma)
 ! aslint: disable=W1504
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,8 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
 !
 ! --- LISTE DES LAMBDAS ACTIFS
 !
-    include 'asterfort/xlacti.h'
-    include 'asterfort/xplmat.h'
+#include "asterfort/xlacti.h"
+#include "asterfort/xplmat.h"
     integer :: contac, ddlc, ddlm, iaint, ifiss, jheano, vstnc(*)
     integer :: lact(8), ndim, nfe, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, pla(27)

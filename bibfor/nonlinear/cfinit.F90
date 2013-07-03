@@ -20,15 +20,15 @@ subroutine cfinit(noma, fonact, defico, resoco, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/mminit.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mminit.h"
+#include "asterfort/vtzero.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     integer :: numins

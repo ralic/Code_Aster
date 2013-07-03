@@ -18,10 +18,10 @@ subroutine rcvada(jmat, phenom, temp, nbres, nomres,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rcfode.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcfode.h"
+#include "asterfort/u2mess.h"
     integer :: imat, nbres, jmat
     integer :: icodre(nbres)
     character(len=8) :: nomres(nbres)

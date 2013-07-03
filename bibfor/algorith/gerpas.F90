@@ -55,11 +55,11 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
 !         NSG     :  NOMBRE MAX DE DE SYSTEMES DE GLISSEMENT MONOCRISTAL
 !     OUT X       :  INSTANT COURANT
 !     -
-    include 'asterfort/calcmm.h'
-    include 'asterfort/calcms.h'
-    include 'asterfort/rk21co.h'
-    include 'asterfort/rkcah1.h'
-    include 'asterfort/rkcah2.h'
+#include "asterfort/calcmm.h"
+#include "asterfort/calcms.h"
+#include "asterfort/rk21co.h"
+#include "asterfort/rkcah1.h"
+#include "asterfort/rkcah2.h"
     integer :: nmat, imat, nbcomm(nmat, 3), ne, ny, na, nvi, kpok, ip, i, neps
     integer :: nbphas, nfs, kpg, ksp, itmax, iret, nsg, nhsr, numhsr(*), irota
     character(len=16) :: loi, comp(*)

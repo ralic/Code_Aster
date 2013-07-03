@@ -1,9 +1,9 @@
 subroutine gmsast(nfie, nfis)
 ! aslint: disable=
     implicit none
-    include 'asterfort/pregms.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
+#include "asterfort/pregms.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
     integer :: nfie, nfis
 ! ----------------------------------------------------------------------
 ! ======================================================================

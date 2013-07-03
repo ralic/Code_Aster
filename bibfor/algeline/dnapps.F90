@@ -168,24 +168,24 @@ subroutine dnapps(n, kev, np, shiftr, shifti,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dmout.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/flarfg.h'
-    include 'asterfort/flartg.h'
-    include 'asterfort/ivout.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dgemv.h'
-    include 'blas/dlacpy.h'
-    include 'blas/dlanhs.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dlarf.h'
-    include 'blas/dlaset.h'
-    include 'blas/dscal.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dmout.h"
+#include "asterfort/dvout.h"
+#include "asterfort/flarfg.h"
+#include "asterfort/flartg.h"
+#include "asterfort/ivout.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dgemv.h"
+#include "blas/dlacpy.h"
+#include "blas/dlanhs.h"
+#include "blas/dlapy2.h"
+#include "blas/dlarf.h"
+#include "blas/dlaset.h"
+#include "blas/dscal.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

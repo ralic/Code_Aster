@@ -17,14 +17,14 @@ subroutine pjfuc2(c1, c2, base, c3)
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: c1, c2, c3
     character(len=1) :: base
 ! ======================================================================

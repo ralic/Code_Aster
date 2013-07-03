@@ -19,19 +19,19 @@ subroutine cfllm2(resoco, resigr, neq, nesmax, nbliai,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/calapr.h'
-    include 'asterfort/cfelpv.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8prem.h"
+#include "asterfort/caladu.h"
+#include "asterfort/calapr.h"
+#include "asterfort/cfelpv.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
     character(len=24) :: resoco
     integer :: neq, nesmax
     integer :: nbliac, nbliai, llf, llf1, llf2

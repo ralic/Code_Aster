@@ -28,15 +28,15 @@ subroutine te0261(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/xsidep.h'
-    include 'asterfort/xteini.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/teattr.h"
+#include "asterfort/xsidep.h"
+#include "asterfort/xteini.h"
     character(len=16) :: nomte, option
     character(len=8) :: enr, typmod(2)
     character(len=16) :: compor(4)

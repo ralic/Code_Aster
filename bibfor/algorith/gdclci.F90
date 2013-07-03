@@ -19,7 +19,7 @@ subroutine gdclci(fm, df, em)
 !
     implicit none
 !
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     real(kind=8) :: fm(3, 3), df(3, 3), em(6)
 ! ----------------------------------------------------------------------
 !       INTEGRATION DES LOIS EN GRANDES DEFORMATIONS CANO-LORENTZ

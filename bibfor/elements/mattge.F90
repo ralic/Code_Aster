@@ -18,8 +18,8 @@ subroutine mattge(nomte, dtild, sina, cosa, r,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/btkb.h'
-    include 'blas/dscal.h'
+#include "asterfort/btkb.h"
+#include "blas/dscal.h"
     character(len=16) :: nomte
     real(kind=8) :: sina, cosa, r, jacp, vf(*), dfds(*)
     real(kind=8) :: mats(5, 9), mats1(3, 9), dtild(5, 5), dtild1(3, 3)

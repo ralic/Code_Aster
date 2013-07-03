@@ -21,8 +21,8 @@ subroutine lc0022(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmccam.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/nmccam.h"
+#include "asterfort/rcvarc.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*), tm, tp, tref
     real(kind=8) :: instam, instap, tampon(*)

@@ -19,10 +19,10 @@ subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/indent.h"
+#include "asterfort/vecini.h"
     integer :: ndim, nno, nnos
     integer :: nfh, ddls, ddlm
     integer :: singu, nvec, nddl

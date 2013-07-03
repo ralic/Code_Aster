@@ -25,35 +25,35 @@ subroutine nmconv(noma, modele, mate, numedd, sdnume,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include      'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfmmcv.h'
-    include 'asterfort/dierre.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmadev.h'
-    include 'asterfort/nmcore.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmdivr.h'
-    include 'asterfort/nmeceb.h'
-    include 'asterfort/nmerge.h'
-    include 'asterfort/nmevcv.h'
-    include 'asterfort/nmimr0.h'
-    include 'asterfort/nmimrv.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmlerr.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/nmnkft.h'
-    include 'asterfort/nmresi.h'
-    include 'asterfort/nmrvai.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8vide.h"
+#include "asterfort/cfmmcv.h"
+#include "asterfort/dierre.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmadev.h"
+#include "asterfort/nmcore.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmdivr.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmevcv.h"
+#include "asterfort/nmimr0.h"
+#include "asterfort/nmimrv.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmlerr.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmnkft.h"
+#include "asterfort/nmresi.h"
+#include "asterfort/nmrvai.h"
+#include "asterfort/u2mess.h"
     integer :: fonact(*)
     integer :: iterat, numins
     real(kind=8) :: eta, conv(*), parcri(*), parmet(*)

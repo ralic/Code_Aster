@@ -19,12 +19,12 @@ subroutine te0207(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmfifn.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmfifn.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: nomte, option
 !
 ! ----------------------------------------------------------------------

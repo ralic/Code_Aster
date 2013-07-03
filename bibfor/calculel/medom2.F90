@@ -2,20 +2,20 @@ subroutine medom2(modele, mate, cara, kcha, ncha,&
                   ctyp, result, nuord, nbordr, base,&
                   npass, ligrel)
     implicit none
-    include 'asterc/getexm.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/utmamo.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getexm.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/exlima.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/medom1.h"
+#include "asterfort/utmamo.h"
+#include "asterfort/wkvect.h"
     integer :: ncha, nuord
     character(len=1) :: base
     character(len=4) :: ctyp
@@ -60,7 +60,7 @@ subroutine medom2(modele, mate, cara, kcha, ncha,&
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nbmxba
     parameter (nbmxba=2)

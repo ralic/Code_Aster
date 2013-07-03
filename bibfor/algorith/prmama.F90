@@ -64,7 +64,7 @@ subroutine prmama(iprod, amat, na, na1, na2,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     integer :: iprod, na, na1, na2, nb, nb1, nb2, nc, nc1, nc2, ier
     real(kind=8) :: amat(na, *), bmat(nb, *), cmat(nc, *)
 !

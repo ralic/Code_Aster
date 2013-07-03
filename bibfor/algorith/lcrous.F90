@@ -46,16 +46,16 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 !           VINF   :  VARIABLES INTERNES A T+DT
 !           IRTET  :  CONTROLE DU REDECOUPAGE INTERNE DU PAS DE TEMPS
 !
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcnrte.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsomh.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/rsliso.h'
-    include 'asterfort/rslphi.h'
-    include 'asterfort/utexcp.h'
+#include "asterfort/lchydr.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcnrte.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsomh.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/rsliso.h"
+#include "asterfort/rslphi.h"
+#include "asterfort/utexcp.h"
     integer :: kpg, ksp, imat, nmat, irtet, itmax, ncompt, nvi
     integer :: nint, testcv, convp
 !

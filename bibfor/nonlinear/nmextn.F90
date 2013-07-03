@@ -20,7 +20,7 @@ subroutine nmextn(typcha, extrcp, extrga, extrch, nbno,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/nmexto.h'
+#include "asterfort/nmexto.h"
     integer :: nbext
     character(len=4) :: typcha
     integer :: nbno, nbma, nbcmp, nbpi, nbspi

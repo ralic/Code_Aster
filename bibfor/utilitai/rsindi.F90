@@ -2,8 +2,8 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival,&
                   rval, kval, cval, epsi, crit,&
                   nbordr, nbtrou, nutrou, ndim)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/u2mesk.h"
     integer :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
     real(kind=8) :: rval, epsi
     character(len=4) :: tysca

@@ -10,9 +10,9 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nh8(14), nh20(7), np6(14), np15(7), np5(14), np13(7)
     integer :: nt4(14), nt10(7)
     integer :: ncpq4(14), ncpq8(7), ncpt3(14), ncpt6(7), ndpq4(14)

@@ -24,14 +24,14 @@ subroutine te0328(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm2j.h'
-    include 'asterfort/dfdm3j.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/dfdm2j.h"
+#include "asterfort/dfdm3j.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: nomte, option
 !
     logical :: posi, nega

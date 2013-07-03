@@ -21,15 +21,15 @@ subroutine gfmafi(noma, numagl, centre, nunoeu, nomgrf,&
 !
     implicit none
 !     IN
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     integer :: nunoeu, numagl, numagr
     character(len=8) :: noma
     character(len=24) :: nomgrf

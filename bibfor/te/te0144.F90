@@ -1,19 +1,19 @@
 subroutine te0144(option, nomte)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/porigi.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vecma.h'
-    include 'asterfort/verifm.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/porigi.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/trigom.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
+#include "asterfort/verifm.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

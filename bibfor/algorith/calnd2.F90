@@ -31,10 +31,10 @@ subroutine calnd2(ic, np1, np2, np3, nbm,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/disbut.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/projmg.h"
+#include "asterfort/u2mess.h"
     integer :: ic, np1, np2, np3, nbm, typch(*), nbseg(*)
     real(kind=8) :: alpha(2, *), beta(2, *), gamma(2, *), orig(6, *), rc(np3, *)
     real(kind=8) :: theta(np3, *), phii(np2, np1, *), depg(*), vitgc(*), ddist2

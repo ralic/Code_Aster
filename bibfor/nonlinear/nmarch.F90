@@ -22,23 +22,23 @@ subroutine nmarch(result, numins, modele, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dinuar.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmarc0.h'
-    include 'asterfort/nmarce.h'
-    include 'asterfort/nmarpc.h'
-    include 'asterfort/nmfinp.h'
-    include 'asterfort/nmleeb.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttcpg.h'
+#include "jeveux.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dinuar.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarc0.h"
+#include "asterfort/nmarce.h"
+#include "asterfort/nmarpc.h"
+#include "asterfort/nmfinp.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttcpg.h"
     character(len=8) :: result
     integer :: fonact(*)
     integer :: numins

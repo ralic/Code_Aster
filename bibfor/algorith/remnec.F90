@@ -35,31 +35,31 @@ subroutine remnec(nomres, typesd, basmod, modcyc, numsec)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8depi.h'
-    include 'asterfort/bmnodi.h'
-    include 'asterfort/ctetgd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/flexib.h'
-    include 'asterfort/genecy.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/mtexis.h'
-    include 'asterfort/ordr8.h'
-    include 'asterfort/remnbn.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vtcrem.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
+#include "asterc/r8depi.h"
+#include "asterfort/bmnodi.h"
+#include "asterfort/ctetgd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/flexib.h"
+#include "asterfort/genecy.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/mtexis.h"
+#include "asterfort/ordr8.h"
+#include "asterfort/remnbn.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
     character(len=8) :: nomres, basmod, modcyc, kbid, k8b
     character(len=16) :: depl, typesd, typsup(1)
     character(len=19) :: chamva, numddl, matrix, mass

@@ -2,15 +2,15 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr,&
                   suropt, lpain, lchin, nbopt, typcoe,&
                   alpha, calpha)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fozero.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fozero.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
     character(len=*) :: souche, charge, modele, chdep2, chdynr, suropt, lpain(*)
     character(len=*) :: lchin(*), typcoe
     integer :: nbopt

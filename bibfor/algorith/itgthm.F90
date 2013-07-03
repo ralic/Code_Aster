@@ -6,11 +6,11 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
                   npi2, jgano)
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     logical :: vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5)

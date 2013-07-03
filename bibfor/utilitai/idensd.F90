@@ -1,11 +1,11 @@
 function idensd(typesd, sd1, sd2)
     implicit none
     logical :: idensd
-    include 'jeveux.h'
-    include 'asterfort/idenob.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/idenob.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: sd1, sd2, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================

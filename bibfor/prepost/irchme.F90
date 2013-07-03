@@ -58,21 +58,21 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/utflsh.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/irceme.h'
-    include 'asterfort/ircnme.h'
-    include 'asterfort/irvari.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/utflsh.h"
+#include "asterfort/infniv.h"
+#include "asterfort/irceme.h"
+#include "asterfort/ircnme.h"
+#include "asterfort/irvari.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noresu, typech, sdcarm
     character(len=16) :: nomsym
     character(len=19) :: chanom

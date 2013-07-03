@@ -39,18 +39,18 @@ subroutine exmali(basmod, nomint, numint, nommat, base,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/bmrdda.h'
-    include 'asterfort/dcapno.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/bmrdda.h"
+#include "asterfort/dcapno.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=6) :: pgc
     character(len=8) :: basmod, nomint, lintf, kbid

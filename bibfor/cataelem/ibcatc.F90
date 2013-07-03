@@ -1,8 +1,8 @@
 subroutine ibcatc(type, iunit, ier)
     implicit none
-    include 'asterfort/ibcael.h'
-    include 'asterfort/inccat.h'
-    include 'asterfort/lccata.h'
+#include "asterfort/ibcael.h"
+#include "asterfort/inccat.h"
+#include "asterfort/lccata.h"
     character(len=*) :: type
     integer :: iunit, ier
 !     -----------------------------------------------------------------

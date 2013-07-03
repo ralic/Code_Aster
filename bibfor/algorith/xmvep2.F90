@@ -6,8 +6,8 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
     integer :: ndim, nno, nnos, nnol
     integer :: pla(27), nfh
     integer :: singu, ddls, ddlm, jfisno, nfiss, ifiss, jheafa, ncomph, ifa

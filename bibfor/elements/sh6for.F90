@@ -19,13 +19,13 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
 !               ELEMENT SHB6
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assebg.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s6calb.h'
-    include 'asterfort/sh6ksi.h'
+#include "jeveux.h"
+#include "asterfort/assebg.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s6calb.h"
+#include "asterfort/sh6ksi.h"
     integer :: lag
     real(kind=8) :: para(*)
     real(kind=8) :: xivect(*), xetemp(*)

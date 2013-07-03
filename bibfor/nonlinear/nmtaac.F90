@@ -20,7 +20,7 @@ subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/nmtacr.h'
+#include "asterfort/nmtacr.h"
     integer :: ndimsi, type
     real(kind=8) :: mat(14), sigel(ndimsi), vim(9), epm(ndimsi), dp, sp, xi
     real(kind=8) :: sigp(ndimsi), vip(9)

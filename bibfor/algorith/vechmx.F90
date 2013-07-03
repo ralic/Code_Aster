@@ -19,20 +19,20 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lisllc.h'
-    include 'asterfort/lisltc.h'
-    include 'asterfort/lisopt.h'
-    include 'asterfort/reajre.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/corich.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lisllc.h"
+#include "asterfort/lisltc.h"
+#include "asterfort/lisopt.h"
+#include "asterfort/reajre.h"
     integer :: nbin, lastin
     character(len=8) :: lpain(nbin)
     character(len=19) :: lchin(nbin)

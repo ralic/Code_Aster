@@ -2,24 +2,24 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
                   lifo, charge, infoch, fomult, modele,&
                   mate, carele, numedd, f)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fext.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vechme.h'
-    include 'asterfort/vedime.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/assert.h"
+#include "asterfort/fext.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vechme.h"
+#include "asterfort/vedime.h"
+#include "blas/dcopy.h"
     integer :: nveca, nchar, neq, liad(*)
     real(kind=8) :: temps, f(*)
     character(len=24) :: lifo(*), infoch, fomult

@@ -50,52 +50,52 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/fetacc.h'
-    include 'asterfort/fetarp.h'
-    include 'asterfort/fetcpu.h'
-    include 'asterfort/fetfiv.h'
-    include 'asterfort/fetggt.h'
-    include 'asterfort/feting.h'
-    include 'asterfort/fetinl.h'
-    include 'asterfort/fetmon.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetprc.h'
-    include 'asterfort/fetprj.h'
-    include 'asterfort/fetreo.h'
-    include 'asterfort/fetrin.h'
-    include 'asterfort/fetsca.h'
-    include 'asterfort/fettor.h'
-    include 'asterfort/fettsd.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/fetacc.h"
+#include "asterfort/fetarp.h"
+#include "asterfort/fetcpu.h"
+#include "asterfort/fetfiv.h"
+#include "asterfort/fetggt.h"
+#include "asterfort/feting.h"
+#include "asterfort/fetinl.h"
+#include "asterfort/fetmon.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetprc.h"
+#include "asterfort/fetprj.h"
+#include "asterfort/fetreo.h"
+#include "asterfort/fetrin.h"
+#include "asterfort/fetsca.h"
+#include "asterfort/fettor.h"
+#include "asterfort/fettsd.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
     integer :: niter, nbreor, nbreoi, reacre
     real(kind=8) :: epsi, testco
     character(len=*) :: criter

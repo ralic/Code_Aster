@@ -19,7 +19,7 @@ subroutine zbinit(f0, coef, dimmem, mem)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: dimmem
     real(kind=8) :: f0, coef, mem(2, dimmem)
 !

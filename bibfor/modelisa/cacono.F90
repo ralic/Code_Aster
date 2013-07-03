@@ -1,16 +1,16 @@
 subroutine cacono(noma, ndim, llist1, llist2, no1,&
                   no2, norm1, norm2, inoma)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/canorm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pacoor.h'
-    include 'asterfort/panbno.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/canorm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pacoor.h"
+#include "asterfort/panbno.h"
+#include "asterfort/u2mess.h"
     integer :: ndim, no1, no2
     character(len=8) :: noma
     character(len=24) :: llist1, llist2

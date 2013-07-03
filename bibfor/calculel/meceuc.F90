@@ -5,21 +5,21 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assach.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/barych.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/chlici.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/sepach.h'
+#include "asterfort/assach.h"
+#include "asterfort/assert.h"
+#include "asterfort/barych.h"
+#include "asterfort/calcul.h"
+#include "asterfort/chlici.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/sepach.h"
     integer :: nin, nou
     character(len=1) :: stop
     character(len=8) :: poux, carael

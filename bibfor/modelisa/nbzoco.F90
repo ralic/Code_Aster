@@ -19,10 +19,10 @@ subroutine nbzoco(motfac, noma, izone, jzone, nsuco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: noma
     character(len=16) :: motfac
     integer :: izone

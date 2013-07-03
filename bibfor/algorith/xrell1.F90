@@ -21,10 +21,10 @@ subroutine xrell1(tabnoz, ndim, nar, pickno, nbpino,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: ndim, nar, nbpino
     integer :: tabnoz(3, nar), pickno(nbpino)
     real(kind=8) :: tabco(ndim, nar)

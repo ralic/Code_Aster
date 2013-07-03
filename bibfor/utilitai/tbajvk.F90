@@ -1,6 +1,6 @@
 subroutine tbajvk(table, nbpara, nompar, vk, livk)
     implicit none
-    include 'asterfort/tbajva.h'
+#include "asterfort/tbajva.h"
     integer :: nbpara
     character(len=*) :: table, nompar, vk, livk(*)
 ! ----------------------------------------------------------------------

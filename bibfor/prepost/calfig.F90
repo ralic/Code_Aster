@@ -2,22 +2,22 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
                   tubuse)
 ! aslint: disable=
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fo0182.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/assert.h"
+#include "asterfort/fo0182.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/wkvect.h"
     integer :: no, dimobs, dimtub
     real(kind=8) :: obsuse(*), tubuse(*)
     character(len=8) :: guidag

@@ -18,11 +18,11 @@ subroutine cfcglt(resoco, iliai, glis)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: iliai
     real(kind=8) :: glis

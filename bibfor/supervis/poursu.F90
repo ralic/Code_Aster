@@ -17,6 +17,6 @@ subroutine poursu()
 ! ======================================================================
     implicit none
 !     --- CHARGEMENT DE LA MEMOIRE JEVEUX ------------------------------
-    include 'asterfort/debut.h'
+#include "asterfort/debut.h"
     call debut()
 end subroutine

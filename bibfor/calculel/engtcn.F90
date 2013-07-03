@@ -1,14 +1,14 @@
 subroutine engtcn(ific, chamno, typtes, preci, formr)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/ismaem.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
     integer :: ific
     character(len=8) :: typtes
     character(len=10) :: preci, formr

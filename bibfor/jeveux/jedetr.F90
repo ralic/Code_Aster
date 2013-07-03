@@ -16,16 +16,16 @@ subroutine jedetr(nomlu)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jjmzat.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/jxlibd.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jjmzat.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/jxlibd.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu
 ! ----------------------------------------------------------------------
 ! DESTRUCTION D'UN OBJET JEVEUX

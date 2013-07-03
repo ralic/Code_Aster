@@ -32,7 +32,7 @@ subroutine dinter(coorc, ray, coor1, coor2, coorin)
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: coorc(2), ray, coor1(2), coor2(2), coorin(2)
 !
 ! DECLARATION LOCALE

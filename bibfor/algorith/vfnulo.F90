@@ -34,9 +34,9 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface,&
 !     (EN NUMEROTATION LOCALE)
 !
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/u2mesk.h"
     integer :: maxfa, maxar, ndim, nnos, nface
     integer :: nbnofa(1:nface)
     integer :: nosar(1:maxar, 2)

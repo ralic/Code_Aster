@@ -1,7 +1,7 @@
 function dimge1(ige1, ige2)
     implicit none
     integer :: dimge1
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ige1, ige2
 ! ----------------------------------------------------------------------
 ! ======================================================================

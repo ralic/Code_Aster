@@ -16,22 +16,22 @@ subroutine te0419(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/btldth.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/matrth.h'
-    include 'asterfort/trnflg.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vexpan.h'
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/btldth.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/matrth.h"
+#include "asterfort/trnflg.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vexpan.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES

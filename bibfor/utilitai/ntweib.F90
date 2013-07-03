@@ -2,9 +2,9 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                   nt, nbres, x1, x2, xacc,&
                   rtsafe, impr, ifm, indtp, nbtp)
     implicit none
-    include 'asterfort/fcweib.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/fcweib.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp, ifm
     real(kind=8) :: sigw(*), x1, x2, xacc, rtsafe, sk(*)
     logical :: cals, impr

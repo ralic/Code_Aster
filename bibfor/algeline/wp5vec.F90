@@ -1,13 +1,13 @@
 subroutine wp5vec(opt, nbfreq, nbvect, neq, vp,&
                   vecp, mxresf, resufi, resufr, vauc)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wpordc.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wpordc.h"
     character(len=*) :: opt
     integer :: nbfreq, nbvect, neq, resufi(mxresf, *), mxresf
     complex(kind=8) :: vecp(neq, *), vauc(2*neq, *), vp(*)

@@ -19,24 +19,24 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liscpp.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislch.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lislnf.h'
-    include 'asterfort/lisltc.h'
-    include 'asterfort/lisltf.h'
-    include 'asterfort/lisnbg.h'
-    include 'asterfort/lisnnb.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/fointc.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liscpp.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislch.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lislnf.h"
+#include "asterfort/lisltc.h"
+#include "asterfort/lisltf.h"
+#include "asterfort/lisnbg.h"
+#include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     character(len=19) :: cnvass
     character(len=1) :: typres

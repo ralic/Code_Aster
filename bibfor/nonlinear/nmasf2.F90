@@ -19,10 +19,10 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/dfda2d.h'
-    include 'asterfort/iniqs4.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfda2d.h"
+#include "asterfort/iniqs4.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/r8inir.h"
     integer :: nno, npg
     character(len=8) :: typmod(*)
     integer :: ipoids, ivf, idfde

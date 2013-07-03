@@ -19,16 +19,16 @@ subroutine renuno(nu, renum)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reexi1.h'
-    include 'asterfort/relagm.h'
-    include 'asterfort/rercmk.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reexi1.h"
+#include "asterfort/relagm.h"
+#include "asterfort/rercmk.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=*) :: renum
 !     -------------------------------------------------

@@ -20,13 +20,13 @@ function diinst(sddisc, numins)
 !
     implicit none
     real(kind=8) :: diinst
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: numins
     character(len=19) :: sddisc
 !

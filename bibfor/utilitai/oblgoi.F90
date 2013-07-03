@@ -19,11 +19,11 @@ subroutine oblgoi(sdlist, istru, nomstz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/obgeto.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/obgeto.h"
     character(len=24) :: sdlist
     integer :: istru
     character(len=*) :: nomstz

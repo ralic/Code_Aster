@@ -1,13 +1,13 @@
 subroutine te0423(option, nomte)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dxbsig.h'
-    include 'asterfort/dxefg2.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterfort/dxbsig.h"
+#include "asterfort/dxefg2.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

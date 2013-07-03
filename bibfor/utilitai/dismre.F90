@@ -1,19 +1,19 @@
 subroutine dismre(questi, nomobz, repi, repkz, ierd)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismgd.h'
-    include 'asterfort/dismlg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/zerosd.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismgd.h"
+#include "asterfort/dismlg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/zerosd.h"
     integer :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 ! ----------------------------------------------------------------------

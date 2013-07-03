@@ -22,23 +22,23 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/loncar.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xstam1.h'
+#include "asterc/r8maem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/loncar.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xstam1.h"
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
     integer :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: nomo, noma

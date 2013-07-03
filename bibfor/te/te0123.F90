@@ -27,22 +27,22 @@ subroutine te0123(option, nomte)
 ! ----------------------------------------------------------------------
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/massup.h'
-    include 'asterfort/nmplgs.h'
-    include 'asterfort/rcangm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/voiuti.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/massup.h"
+#include "asterfort/nmplgs.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/voiuti.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 !
     integer :: dlns

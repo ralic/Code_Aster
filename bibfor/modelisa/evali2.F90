@@ -43,15 +43,15 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
 !-----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/fointc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: icmpi, icmpj, ier, ifo, itblp, itbnp
     integer :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg, idpg, jma
     integer :: modj, nbcmp, nbm, nbsp, nma, iphi, posma, ivfi, idfi, ilfi

@@ -19,10 +19,10 @@ subroutine dismli(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(INTERF_DYNA)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk

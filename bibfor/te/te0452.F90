@@ -1,11 +1,11 @@
 subroutine te0452(option, nomte)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/excent.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/assert.h"
+#include "asterfort/excent.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

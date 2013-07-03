@@ -35,12 +35,12 @@ subroutine glegen(nbre, lobj2, xl, absgam, legen)
 !     ------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: lobj2, nbre, iadabs, iadpo
 !
     real(kind=8) :: xl, s1, coef

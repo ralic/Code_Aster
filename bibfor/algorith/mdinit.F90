@@ -1,16 +1,16 @@
 subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                   vint, ier, tinit)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/extrac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/extrac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: nbmode, ier
     real(kind=8) :: depgen(*), vitgen(*), vint(*)
     character(len=8) :: basemo

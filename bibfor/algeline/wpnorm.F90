@@ -1,19 +1,19 @@
 subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
                   ddlexc, vecpro, resufr, coef)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mcmult.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mcmult.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: norm, para
     integer :: nbmode, neq, lmatr(*), ddlexc(*)
     complex(kind=8) :: vecpro(neq, *)

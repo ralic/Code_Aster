@@ -39,33 +39,33 @@ subroutine te0036(option, nomte)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/abscvf.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jevecd.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/tefrep.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xdeffe.h'
-    include 'asterfort/xteddl.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/abscvf.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jevecd.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/reeref.h"
+#include "asterfort/reereg.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/tefrep.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xdeffe.h"
+#include "asterfort/xteddl.h"
+#include "blas/ddot.h"
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
     character(len=8) :: k8bid, elref
     character(len=16) :: nomte, option

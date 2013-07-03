@@ -35,14 +35,14 @@ subroutine recyec(nmresz, mdcycz, numsec, typsdz)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/recbec.h'
-    include 'asterfort/remnec.h'
-    include 'asterfort/titre.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/recbec.h"
+#include "asterfort/remnec.h"
+#include "asterfort/titre.h"
     character(len=8) :: nomres, modcyc, basmod, typint
     character(len=*) :: nmresz, mdcycz, typsdz
     character(len=16) :: typsd

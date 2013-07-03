@@ -36,8 +36,8 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
 !         NR     :  NB DE COMPOSANTES SYSTEME NL
 !         NVI    :  NB DE VARIABLES INTERNES
 !     ----------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/matnor.h'
+#include "asterfort/assert.h"
+#include "asterfort/matnor.h"
     integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, imat
     real(kind=8) :: coefel(nmat), coefpl(nmat)
     character(len=*) :: fami, poum

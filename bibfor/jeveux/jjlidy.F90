@@ -17,9 +17,9 @@ subroutine jjlidy(iadyn, iadmi)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/hpdeallc.h'
-    include 'asterfort/assert.h'
+#include "jeveux_private.h"
+#include "asterc/hpdeallc.h"
+#include "asterfort/assert.h"
     integer :: iadyn, iadmi
 ! ----------------------------------------------------------------------
 ! MISE A JOUR DU COMPTEUR DES SEGMENTS DE VALEURS U ET LIBERATION

@@ -19,12 +19,12 @@ subroutine lisopt(prefob, nomo, typech, indxch, option,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lislic.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lislic.h"
     integer :: indxch
     character(len=8) :: nomo
     character(len=16) :: option

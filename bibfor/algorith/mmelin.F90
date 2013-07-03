@@ -19,8 +19,8 @@ subroutine mmelin(noma, numa, typint, nnint)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/mmelty.h'
+#include "asterfort/assert.h"
+#include "asterfort/mmelty.h"
     character(len=8) :: noma
     integer :: numa
     integer :: typint

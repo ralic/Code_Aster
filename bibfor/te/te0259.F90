@@ -19,15 +19,15 @@ subroutine te0259(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pogyro.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/upletr.h'
-    include 'asterfort/utpalg.h'
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pogyro.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/upletr.h"
+#include "asterfort/utpalg.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------

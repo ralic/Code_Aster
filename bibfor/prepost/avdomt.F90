@@ -17,9 +17,9 @@ subroutine avdomt(nbvec, nbordr, ncycl, domel, domtot)
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, ncycl(nbvec)
     real(kind=8) :: domel(nbvec*nbordr), domtot(nbvec)
 ! ----------------------------------------------------------------------

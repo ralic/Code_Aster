@@ -19,9 +19,9 @@ subroutine mlnflj(nb, n, ll, m, it,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/mlnbpr.h'
-    include 'asterc/mlnump.h'
-    include 'blas/dgemm.h'
+#include "asterc/mlnbpr.h"
+#include "asterc/mlnump.h"
+#include "blas/dgemm.h"
     integer :: n, p, adper(*)
     real(kind=8) :: frontl(*), frnl(*), frontu(*), frnu(*)
     integer :: nb, decal, add, ind, nmb, i, j, kb, ia, ib, nlb, ll

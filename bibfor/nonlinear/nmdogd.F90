@@ -2,8 +2,8 @@ subroutine nmdogd(moclef, comp, k, ncomel, lcomel,&
                   defo)
 ! person_in_charge: jean-michel.proix at edf.fr
     implicit none
-    include 'asterc/getexm.h'
-    include 'asterc/getvtx.h'
+#include "asterc/getexm.h"
+#include "asterc/getvtx.h"
     integer :: ncomel, k
     character(len=*) :: comp
     character(len=16) :: lcomel(5), defo, moclef

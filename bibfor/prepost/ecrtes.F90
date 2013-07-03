@@ -2,21 +2,21 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
                   nbcmp, ityp, entete, lcmp)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexpa.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexpa.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/u2mesk.h"
     integer :: numor, ityp
     character(len=*) :: nomsd, titre, nomgds
     character(len=*) :: fitype

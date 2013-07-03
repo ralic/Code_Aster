@@ -36,29 +36,29 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/conint.h'
-    include 'asterfort/ddllag.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/modint.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/tri.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dgelss.h'
+#include "asterc/getvr8.h"
+#include "asterc/matfpe.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/conint.h"
+#include "asterfort/ddllag.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/modint.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/tri.h"
+#include "asterfort/wkvect.h"
+#include "blas/dgelss.h"
 !
 !
 !

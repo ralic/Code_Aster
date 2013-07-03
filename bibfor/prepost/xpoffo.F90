@@ -3,17 +3,17 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reere3.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/reere3.h"
+#include "asterfort/vecini.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: ndim, ndime, nnop, igeom
     real(kind=8) :: co(ndim), ff(nnop)
     character(len=8) :: elrefp

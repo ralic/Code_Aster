@@ -20,7 +20,7 @@ subroutine mmmtcm(phasep, ndim, nnl, nnm, norm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=9) :: phasep
     integer :: ndim, nnm, nnl
     real(kind=8) :: ffm(9), ffl(9)

@@ -1,7 +1,7 @@
 subroutine elrfd2(elrefz, x, dimd, dff2, nno,&
                   ndim)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: dimd, nno, ndim
     real(kind=8) :: x(*), dff2(3, 3, *)
     character(len=*) :: elrefz

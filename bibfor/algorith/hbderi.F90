@@ -18,7 +18,7 @@ subroutine hbderi(gamma, nbmat, materf, vg, eta,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     integer :: nbmat
     real(kind=8) :: gamma, materf(nbmat, 2), parame(5), vg, eta, param2(4)
 ! ======================================================================

@@ -21,18 +21,18 @@ subroutine op0124()
 !     COMMANDE:  CREA_RESU
 !
 ! ----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterfort/crasse.h'
-    include 'asterfort/crperm.h'
-    include 'asterfort/crprol.h'
-    include 'asterfort/crtype.h'
-    include 'asterfort/crvrc1.h'
-    include 'asterfort/crvrc2.h'
-    include 'asterfort/eclpgr.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ve0124.h'
+#include "asterc/getfac.h"
+#include "asterfort/crasse.h"
+#include "asterfort/crperm.h"
+#include "asterfort/crprol.h"
+#include "asterfort/crtype.h"
+#include "asterfort/crvrc1.h"
+#include "asterfort/crvrc2.h"
+#include "asterfort/eclpgr.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ve0124.h"
     integer :: nbfac
 !     ------------------------------------------------------------------
 !

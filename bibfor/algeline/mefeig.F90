@@ -3,12 +3,12 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                   mat1, mavi, w, z, ind)
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/mtcrog.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vphqrp.h'
+#include "asterc/r8pi.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/mtcrog.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vphqrp.h"
     integer :: nbmod, ndim(14), ind(2*nbmod)
     real(kind=8) :: matm(nbmod, nbmod), matr(nbmod, nbmod)
     real(kind=8) :: mat1(2*nbmod, 2*nbmod), mavi(2*nbmod, 2*nbmod)

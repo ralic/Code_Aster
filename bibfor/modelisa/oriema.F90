@@ -2,11 +2,11 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d,&
                   lnm3d, ndim, coor, reorie, norien,&
                   ifm, niv)
     implicit   none
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     integer :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
     real(kind=8) :: coor(*)
     logical :: reorie

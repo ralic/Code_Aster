@@ -23,39 +23,39 @@ subroutine op0077()
 ! ----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/excygl.h'
-    include 'asterfort/harm75.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/recyec.h'
-    include 'asterfort/recygl.h'
-    include 'asterfort/regeec.h'
-    include 'asterfort/regegl.h'
-    include 'asterfort/regene.h'
-    include 'asterfort/regres.h'
-    include 'asterfort/rehaec.h'
-    include 'asterfort/rehagl.h'
-    include 'asterfort/retrec.h'
-    include 'asterfort/retrgl.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/tran77.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/excygl.h"
+#include "asterfort/harm75.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/recyec.h"
+#include "asterfort/recygl.h"
+#include "asterfort/regeec.h"
+#include "asterfort/regegl.h"
+#include "asterfort/regene.h"
+#include "asterfort/regres.h"
+#include "asterfort/rehaec.h"
+#include "asterfort/rehagl.h"
+#include "asterfort/retrec.h"
+#include "asterfort/retrgl.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/tran77.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
 !
 !
     character(len=8) :: k8b, nomres, resin, nomsst, mailsk, mode

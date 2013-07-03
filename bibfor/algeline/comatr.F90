@@ -49,16 +49,16 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     implicit none
 !
 ! PARAMETRES D'APPEL
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/vecinc.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/vecint.h'
-    include 'blas/dnrm2.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/vecinc.h"
+#include "asterfort/vecini.h"
+#include "asterfort/vecint.h"
+#include "blas/dnrm2.h"
     integer :: nbproc, rang, dim1i, dim2i, dim1r, dim2r, dim1c, dim2c
     integer :: vnconv(nbproc), vecti(dim1i, *)
     real(kind=8) :: vectr(dim1r, *)

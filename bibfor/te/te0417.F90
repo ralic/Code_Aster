@@ -1,14 +1,14 @@
 subroutine te0417(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectci.h'
+#include "asterc/r8prem.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectci.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

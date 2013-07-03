@@ -5,9 +5,9 @@ subroutine lc0016(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcdpnl.h'
-    include 'asterfort/lcdrpr.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/lcdpnl.h"
+#include "asterfort/lcdrpr.h"
+#include "asterfort/rcvarc.h"
     integer :: imate, ndim, kpg, ksp, codret, iret, icomp, nvi
     real(kind=8) :: crit(*), tp, tm, tref, angmas(*)
     real(kind=8) :: instam, instap, tampon(*)

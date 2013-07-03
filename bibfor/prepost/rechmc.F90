@@ -2,16 +2,16 @@ subroutine rechmc(ndim, temps, oridef, tabrev, tabmdb,&
                   norev, sigmrv, nomdb, sigmdb)
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbextb.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbextb.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: ndim, norev, nomdb
     real(kind=8) :: temps
     character(len=8) :: oridef, tabrev, tabmdb

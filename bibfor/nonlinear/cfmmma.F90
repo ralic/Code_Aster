@@ -19,14 +19,14 @@ subroutine cfmmma(defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: defico, resoco
 !
 ! ----------------------------------------------------------------------

@@ -26,7 +26,7 @@ subroutine carand(randd, gr)
 !
     implicit none
 !
-    include 'asterc/kloklo.h'
+#include "asterc/kloklo.h"
     integer :: hvlue, lvlue, testv, nextn, time(9)
     real(kind=8) :: randd, gr
     integer :: ind, mplier, modlus, mobymp, momdmp

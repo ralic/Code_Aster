@@ -3,11 +3,11 @@ subroutine disief(nbt, neq, nno, nc, pgl,&
                   sip, fono, force, dimele)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/ut2vlg.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vecma.h'
+#include "asterc/r8prem.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/ut2vlg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecma.h"
     integer :: nbt, neq, ilogic, nno, nc, dimele
     real(kind=8) :: pgl(3, 3), klv(nbt), dul(neq), sim(neq), duly
     real(kind=8) :: sip(neq), fono(neq), force(3)

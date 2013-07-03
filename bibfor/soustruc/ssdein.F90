@@ -29,28 +29,28 @@ subroutine ssdein(ul, ug, mail, nocas)
 ! IN_F     : NOCAS: NOM DU CHARGEMENT CORRESPONDANT (EN PRINCIPE) A UG.
 !                   (EVENTUELLEMENT : ' ')
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/ssrone.h'
-    include 'asterfort/ssvaro.h'
-    include 'asterfort/ssvau1.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/matrot.h"
+#include "asterfort/ssrone.h"
+#include "asterfort/ssvaro.h"
+#include "asterfort/ssvau1.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: ul, ug, mail, nocas, mag, mal, nomgd, kbid, nomacr
     character(len=14) :: nul
     character(len=19) :: nug2, nul2

@@ -64,21 +64,21 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/utflsh.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/ircmpe.h'
-    include 'asterfort/ircmpn.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/utflsh.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ircmpe.h"
+#include "asterfort/ircmpn.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nbvato, ncmprf, ncmpve
     integer :: nbenec, adtyp2
     integer :: lienec(*)

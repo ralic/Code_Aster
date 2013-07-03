@@ -25,23 +25,23 @@ subroutine cmpcar(carte)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/meiden.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/scalai.h'
+#include "asterfort/exisdg.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/meiden.h"
+#include "asterfort/nbec.h"
+#include "asterfort/scalai.h"
     character(len=19) :: carte
 ! ----------------------------------------------------------------------
 !     ENTREES:

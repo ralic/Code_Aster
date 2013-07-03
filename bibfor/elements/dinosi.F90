@@ -3,10 +3,10 @@ subroutine dinosi(nbt, neq, nno, nc, pgl,&
                   numloi, varint)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/pmavec.h'
-    include 'asterfort/ut2vlg.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vecma.h'
+#include "asterfort/pmavec.h"
+#include "asterfort/ut2vlg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecma.h"
     integer :: nbt, neq, nno, nc, numloi
     real(kind=8) :: pgl(3, 3), klv(nbt), dul(neq), sim(neq)
     real(kind=8) :: sip(neq), fono(neq), varint(*)

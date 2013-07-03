@@ -26,8 +26,8 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/verift.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/verift.h"
     real(kind=8) :: em, ep, et, sigy, tmoins, tplus
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), dt, p
     real(kind=8) :: sigp, dsde

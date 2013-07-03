@@ -1,29 +1,29 @@
 subroutine dsqmas(xyzl, option, pgl, mas, ener)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/dialum.h'
-    include 'asterfort/dsqcis.h'
-    include 'asterfort/dsqdi2.h'
-    include 'asterfort/dsqdis.h'
-    include 'asterfort/dsqnib.h'
-    include 'asterfort/dsqniw.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxhmft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqloc.h'
-    include 'asterfort/dxqloe.h'
-    include 'asterfort/dxqnim.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/dialum.h"
+#include "asterfort/dsqcis.h"
+#include "asterfort/dsqdi2.h"
+#include "asterfort/dsqdis.h"
+#include "asterfort/dsqnib.h"
+#include "asterfort/dsqniw.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxhmft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqloc.h"
+#include "asterfort/dxqloe.h"
+#include "asterfort/dxqnim.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
     real(kind=8) :: xyzl(3, *), pgl(*), mas(*), ener(*)
     character(len=16) :: option
 ! ======================================================================

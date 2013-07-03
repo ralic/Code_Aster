@@ -1,31 +1,31 @@
 subroutine te0150(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/pmfitx.h'
-    include 'asterfort/pmfk01.h'
-    include 'asterfort/ptfocp.h'
-    include 'asterfort/ptforp.h'
-    include 'asterfort/ptka01.h'
-    include 'asterfort/ptka02.h'
-    include 'asterfort/ptka10.h'
-    include 'asterfort/ptka21.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/verifm.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/pmfk01.h"
+#include "asterfort/ptfocp.h"
+#include "asterfort/ptforp.h"
+#include "asterfort/ptka01.h"
+#include "asterfort/ptka02.h"
+#include "asterfort/ptka10.h"
+#include "asterfort/ptka21.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/verifm.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

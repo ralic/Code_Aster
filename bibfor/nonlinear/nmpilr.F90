@@ -20,15 +20,15 @@ subroutine nmpilr(fonact, numedd, matass, veasse, residu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmpcin.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmpcin.h"
     character(len=24) :: numedd
     character(len=19) :: matass, veasse(*)
     integer :: fonact(*)

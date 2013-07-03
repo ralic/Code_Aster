@@ -1,6 +1,6 @@
 subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
     implicit   none
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     integer :: nbmode, neq, exclus(*)
     complex(kind=8) :: vecp(neq, nbmode)
     character(len=*) :: resufk(*)

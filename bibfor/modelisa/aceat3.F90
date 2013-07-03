@@ -3,20 +3,20 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
                   nozk, cozk, isens, coor, epsi,&
                   crit, nno, nmmt)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/angco4.h'
-    include 'asterfort/angcou.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/angco4.h"
+#include "asterfort/angcou.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/normev.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noma, nomu, crit
     integer :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(3)
     integer :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm

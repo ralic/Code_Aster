@@ -1,8 +1,8 @@
 subroutine runge6(ipif, deltat, tpgp, tpgm, hpgm,&
                   hpgp, err)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fointa.h'
+#include "jeveux.h"
+#include "asterfort/fointa.h"
     integer :: ipif
     real(kind=8) :: deltat, tpgp, tpgm, hpgm, hpgp, err
 ! ======================================================================

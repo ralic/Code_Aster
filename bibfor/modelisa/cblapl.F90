@@ -1,7 +1,7 @@
 subroutine cblapl(char, ligrmo, noma)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterfort/calapl.h'
+#include "asterc/getfac.h"
+#include "asterfort/calapl.h"
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
 !-----------------------------------------------------------------------

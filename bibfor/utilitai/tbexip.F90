@@ -1,11 +1,11 @@
 subroutine tbexip(nomta, para, exist, typpar)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomta, para, typpar
     logical :: exist
 ! ----------------------------------------------------------------------

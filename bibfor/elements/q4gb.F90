@@ -1,12 +1,12 @@
 subroutine q4gb(caraq4, xyzl, igau, jacgau, bmat)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bcoqaf.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/q4gbc.h'
+#include "jeveux.h"
+#include "asterfort/bcoqaf.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/q4gbc.h"
     integer :: igau
     real(kind=8) :: xyzl(3, 1), caraq4(*), bmat(8, 1), jacgau
 ! ======================================================================

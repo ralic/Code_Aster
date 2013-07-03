@@ -20,7 +20,7 @@ subroutine mmjeux(alias, nno, ndim, coorma, ksi1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mmcoor.h'
+#include "asterfort/mmcoor.h"
     character(len=8) :: alias
     integer :: nno, ndim
     real(kind=8) :: coorma(27)

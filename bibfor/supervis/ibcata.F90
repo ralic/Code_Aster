@@ -1,18 +1,18 @@
 subroutine ibcata(ier)
     implicit none
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ibcatc.h'
-    include 'asterfort/lxcadr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uldefi.h'
-    include 'asterfort/utremt.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ibcatc.h"
+#include "asterfort/lxcadr.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uldefi.h"
+#include "asterfort/utremt.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     integer :: ier
 !     ------------------------------------------------------------------
 ! ======================================================================

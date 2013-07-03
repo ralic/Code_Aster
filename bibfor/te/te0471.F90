@@ -17,18 +17,18 @@ subroutine te0471(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/chmalg.h'
-    include 'asterfort/dpfch3.h'
-    include 'asterfort/dsfch3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
+#include "asterfort/chmalg.h"
+#include "asterfort/dpfch3.h"
+#include "asterfort/dsfch3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/matrot.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte, phenom
 ! .....................................................................C
 ! .....................................................................C

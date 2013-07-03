@@ -36,7 +36,7 @@ subroutine vpzheb(kl, l, m, a, ia,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/vpztr3.h'
+#include "asterfort/vpztr3.h"
     integer :: ia, iz, kl, l, m, n
     real(kind=8) :: a(ia, n), zvps(iz, m)
     integer :: intger(n)

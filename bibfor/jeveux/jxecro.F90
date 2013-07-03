@@ -18,12 +18,12 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jxdeps.h'
-    include 'asterfort/jxecrb.h'
-    include 'asterfort/jxlirb.h'
-    include 'asterfort/jxouvr.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux_private.h"
+#include "asterfort/jxdeps.h"
+#include "asterfort/jxecrb.h"
+#include "asterfort/jxlirb.h"
+#include "asterfort/jxouvr.h"
+#include "asterfort/u2mesg.h"
     integer :: ic, iadmi, iaddi(2), lso, idco, idos
 ! ----------------------------------------------------------------------
 ! ECRITURE D'UN SEGMENT DE VALEUR

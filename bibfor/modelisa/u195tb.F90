@@ -26,19 +26,19 @@ subroutine u195tb(chou)
 !     ------------------------------------------------------------------
 ! 0.1. ==> ARGUMENT
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tabchs.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tabchs.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: chou
 !
 ! 0.2. ==> COMMUNS

@@ -26,11 +26,11 @@ subroutine rsliso(fami, kpg, ksp, poum, imat,&
 !       OUT RP     :  R (P,TEMP)
 !       OUT DRDP   :  DRDP ( P,TEMP) = INTERPOLATION LINEAIRE SUR P,TEMP
 !       ----------------------------------------------------------------
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: temp, p, rp, e, drdp, airerp, dum, resu
     integer :: imat, jprol, jvale, nbvale, kpg, ksp, iret
     character(len=*) :: fami

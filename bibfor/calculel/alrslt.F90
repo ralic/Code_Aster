@@ -22,21 +22,21 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/alchml.h'
-    include 'asterfort/alresl.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/grdeur.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/alchml.h"
+#include "asterfort/alresl.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/grdeur.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     integer :: iopt, nout
     character(len=19) :: ligrel
     character(len=*) :: base, lchout(*)

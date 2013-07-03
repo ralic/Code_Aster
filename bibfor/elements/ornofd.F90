@@ -1,21 +1,21 @@
 subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
                   ndextr, base, vecori)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/i2extf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/i2extf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbma
     character(len=24) :: mafour
     character(len=8) :: nomail, ndorig, ndextr

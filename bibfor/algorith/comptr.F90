@@ -30,9 +30,9 @@ subroutine comptr(np1, np2, np3, nbm, nbnl,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/projmg.h'
+#include "asterfort/disbut.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/projmg.h"
     integer :: np1, np2, np3, nbm, nbnl
     integer :: ichtr
     real(kind=8) :: depg(*), vitg(*), phii(np2, np1, *)

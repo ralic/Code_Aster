@@ -18,13 +18,13 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/codree.h'
-    include 'asterfort/hbvaec.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codree.h"
+#include "asterfort/hbvaec.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nmat
     real(kind=8) :: sig(6), vid(3), materf(nmat, 2), seuil, vp(3), vecp(3, 3)
 ! =====================================================================

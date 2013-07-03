@@ -16,19 +16,19 @@ subroutine te0319(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/utrcyl.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/utrcyl.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! CALCUL DES FLUX AU CARRE AUX POINTS DE GAUSS

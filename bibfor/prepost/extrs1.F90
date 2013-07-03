@@ -1,24 +1,24 @@
 subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/isnnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/extrs3.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsmena.h'
-    include 'asterfort/rsutch.h'
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/extrs3.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsmena.h"
+#include "asterfort/rsutch.h"
     integer :: nbrang, nuordr(*), nbarch, nbpara, nuarch(*), nbexcl, nbnosy
     character(len=16) :: nompar(*), chexcl(*)
     character(len=*) :: resu0

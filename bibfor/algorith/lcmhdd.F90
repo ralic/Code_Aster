@@ -26,9 +26,9 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh,&
 !         COEFH  :  COEFFICIENTS H1 A H6
 !     OUT HSR    :  MATRICE D'INTERACTION
 !     ----------------------------------------------------------------
-    include 'asterfort/lcicma.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcicma.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
     integer :: nbcoef, nbsys, i, j, nn(12), idbg, nsg
     real(kind=8) :: coefh(6), hsr(nsg, nsg), hgm(12, 12)
     real(kind=8) :: a1(3, 3), a2(3, 3), a3(3, 3), a4(3, 3), a0(3, 3), a5(3, 3)

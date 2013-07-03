@@ -1,7 +1,7 @@
 subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
                   cninv, cvoise)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nvois
     parameter (nvois=3)
     integer :: nnotot, nse, nnop, nno, jcnset

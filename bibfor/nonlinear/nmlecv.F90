@@ -19,8 +19,8 @@ subroutine nmlecv(sderro, nombcl, lconv)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/nmleeb.h'
+#include "jeveux.h"
+#include "asterfort/nmleeb.h"
     character(len=24) :: sderro
     character(len=4) :: nombcl
     logical :: lconv

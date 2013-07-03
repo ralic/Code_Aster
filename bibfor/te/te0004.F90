@@ -1,9 +1,9 @@
 subroutine te0004(option, nomte)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/ppgan2.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/ppgan2.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -30,7 +30,7 @@ subroutine te0004(option, nomte)
 !
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !
     integer :: ndim, nno, nnos, npg, nbsp

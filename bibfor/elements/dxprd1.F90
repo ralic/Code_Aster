@@ -22,8 +22,8 @@ subroutine dxprd1(dfpla1, dfpla2, dc, dfpla3, dfpla4,&
 !     CALCUL DE TANGENTE DANS LE CAS DE LA LOI DE COMPORTEMENT GLRC
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/lcprte.h'
-    include 'asterfort/pmat.h'
+#include "asterfort/lcprte.h"
+#include "asterfort/pmat.h"
     common /tdim/ n, nd
     real(kind=8) :: dfpla1(6), dfpla2(6), dfpla3(6), dfpla4(6)
     real(kind=8) :: mata(6, 6), matb(6, 6), matc(6, 6), mat(6, 6)

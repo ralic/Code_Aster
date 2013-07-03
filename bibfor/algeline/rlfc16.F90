@@ -1,14 +1,14 @@
 subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mlnmin.h'
-    include 'asterfort/mltdca.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mlnmin.h"
+#include "asterfort/mltdca.h"
+#include "asterfort/wkvect.h"
     integer :: neq, nbsol, typsym
     character(len=*) :: nommat
     complex(kind=8) :: cxsol(neq, *)

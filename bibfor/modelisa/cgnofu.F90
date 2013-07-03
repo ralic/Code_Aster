@@ -1,22 +1,22 @@
 subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! aslint: disable=
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/cgnoor.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gmgnre.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ornofd.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8maem.h"
+#include "asterfort/cgnoor.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gmgnre.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ornofd.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 ! ======================================================================

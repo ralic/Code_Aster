@@ -2,8 +2,8 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                   nt, nbres, indtp, nbtp, m,&
                   fc, dfc)
     implicit none
-    include 'asterc/r8maem.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8maem.h"
+#include "asterfort/u2mesg.h"
     integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp
     real(kind=8) :: sigw(*), m, fc, dfc, s1, s2, sk(*)
     logical :: cals

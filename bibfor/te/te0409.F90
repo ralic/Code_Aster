@@ -18,36 +18,36 @@ subroutine te0409(option, nomte)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/dkqmas.h'
-    include 'asterfort/dkqrig.h'
-    include 'asterfort/dktmas.h'
-    include 'asterfort/dktrig.h'
-    include 'asterfort/dxbsig.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxglrc.h'
-    include 'asterfort/dxiner.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/q4grig.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/t3grig.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vecma.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/dkqmas.h"
+#include "asterfort/dkqrig.h"
+#include "asterfort/dktmas.h"
+#include "asterfort/dktrig.h"
+#include "asterfort/dxbsig.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxglrc.h"
+#include "asterfort/dxiner.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/q4grig.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/t3grig.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecma.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 !
 !   CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE POUR LA MODELISATION DKTG

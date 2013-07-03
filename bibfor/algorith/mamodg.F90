@@ -37,24 +37,24 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !            SOUS-STRUCTURES - DEFORMEES STATIQUES + MODES
 !             NORMAUX
 !---------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto, idelat
     integer :: ivx, ivy, itpx, itpy, ipres, iprsto, iadia, ihcol, imatz
     integer :: iablo, irang, jrang, i, j, iblo, ldblo, ivz, itpz, iadirg

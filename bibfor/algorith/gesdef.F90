@@ -49,18 +49,18 @@ subroutine gesdef(nomres, numddl)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/maskau.h'
-    include 'asterfort/maskcb.h'
-    include 'asterfort/maskmn.h'
-    include 'asterfort/recddl.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/maskau.h"
+#include "asterfort/maskcb.h"
+#include "asterfort/maskmn.h"
+#include "asterfort/recddl.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: pgc
     character(len=8) :: nomres
     character(len=19) :: numddl

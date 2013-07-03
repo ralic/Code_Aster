@@ -2,9 +2,9 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
                   nomat, phenom, nbpar, nompar, valpar,&
                   nbres, nomres, valres, codret, iarret)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvarc.h'
+#include "jeveux.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvarc.h"
     integer :: jmat, nbpar, nbres, kpg, ksp, iarret
     real(kind=8) :: valpar(nbpar), valres(nbres)
     integer :: codret(nbres)

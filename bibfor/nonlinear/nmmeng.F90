@@ -19,12 +19,12 @@ subroutine nmmeng(fonact)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/alfeti.h'
-    include 'asterfort/detmat.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/alfeti.h"
+#include "asterfort/detmat.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: fonact(*)
 !
 ! ----------------------------------------------------------------------

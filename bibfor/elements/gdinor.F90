@@ -37,10 +37,10 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
 !        ZR(IN2): NORMALE UNITAIRE EN TOUT NOEUD DE GAMMA0
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: norm, coorn
 !
     real(kind=8) :: dir1x, dir1y, dir1z

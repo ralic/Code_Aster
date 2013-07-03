@@ -25,17 +25,17 @@ subroutine te0404(option, nomte)
 !
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/teattr.h'
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/teattr.h"
     character(len=16) :: option, nomte
 !
     character(len=4) :: fami

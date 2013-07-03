@@ -46,10 +46,10 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
     implicit none
 !
 !
-    include 'asterfort/clcels.h'
-    include 'asterfort/clcelu.h'
-    include 'asterfort/clcopt.h'
-    include 'asterfort/trgfct.h'
+#include "asterfort/clcels.h"
+#include "asterfort/clcelu.h"
+#include "asterfort/clcopt.h"
+#include "asterfort/trgfct.h"
     real(kind=8) :: ht
     real(kind=8) :: enrobg
     integer :: typcmb

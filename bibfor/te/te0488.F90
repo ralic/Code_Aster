@@ -16,20 +16,20 @@ subroutine te0488(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/sumetr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/subaco.h"
+#include "asterfort/sumetr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS

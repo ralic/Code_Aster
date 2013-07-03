@@ -22,7 +22,7 @@ subroutine mmform(ndim, nommae, nommam, nne, nnm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mmfonf.h'
+#include "asterfort/mmfonf.h"
     character(len=8) :: nommae, nommam
     real(kind=8) :: xpc, ypc, xpr, ypr
     integer :: ndim, nne, nnm

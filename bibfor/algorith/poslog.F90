@@ -45,17 +45,17 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterfort/d1macp.h'
-    include 'asterfort/deflg2.h'
-    include 'asterfort/deflg3.h'
-    include 'asterfort/lcdetf.h'
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/pk2sig.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/symt46.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/d1macp.h"
+#include "asterfort/deflg2.h"
+#include "asterfort/deflg3.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/lctr2m.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/symt46.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: ndim, i, j, kl, g, lgpg, ivtn, mate, codret
     character(len=*) :: fami
     real(kind=8) :: dtde(6, 6), trav(6, 6), trav2(6, 6)

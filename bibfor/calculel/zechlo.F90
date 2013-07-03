@@ -18,11 +18,11 @@ subroutine zechlo(opt, te)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/nbpara.h'
-    include 'asterfort/nopara.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/nbpara.h"
+#include "asterfort/nopara.h"
     integer :: opt, te
 ! ----------------------------------------------------------------------
 !     BUT:

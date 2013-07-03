@@ -25,15 +25,15 @@ subroutine op0078()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tran78.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tran78.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomres, resin
     character(len=16) :: nomcmd, typres, champ(4)
     integer :: i, j

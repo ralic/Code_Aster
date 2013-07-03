@@ -2,29 +2,29 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                   b, ktild, effint, pass, vtemp,&
                   codret)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/bcoudc.h'
-    include 'asterfort/bcoude.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/epsett.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/kcoude.h'
-    include 'asterfort/klg.h'
-    include 'asterfort/klgcou.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vlggl.h'
-    include 'asterfort/vlgglc.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/bcoudc.h"
+#include "asterfort/bcoude.h"
+#include "asterfort/carcou.h"
+#include "asterfort/elref5.h"
+#include "asterfort/epsett.h"
+#include "asterfort/jevech.h"
+#include "asterfort/kcoude.h"
+#include "asterfort/klg.h"
+#include "asterfort/klgcou.h"
+#include "asterfort/matini.h"
+#include "asterfort/mavec.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vlggl.h"
+#include "asterfort/vlgglc.h"
+#include "blas/dcopy.h"
     character(len=16) :: option
 ! ......................................................................
 ! ======================================================================

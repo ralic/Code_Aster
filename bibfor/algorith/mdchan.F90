@@ -1,17 +1,17 @@
 subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
                   repere, xjeu, nbnli, noecho, parcho)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/orient.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/angvx.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/normev.h"
+#include "asterfort/orient.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ioc, iliai, nbnli
     real(kind=8) :: xjeu, parcho(nbnli, *)
     character(len=8) :: repere, noecho(nbnli, *)

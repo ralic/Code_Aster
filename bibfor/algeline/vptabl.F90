@@ -1,18 +1,18 @@
 subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
                   nfreq, effmin, effmax)
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbextb.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbextb.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     real(kind=8) :: fmin, fmax, precdc, effmin, effmax
     integer :: nfreq
     character(len=9) :: typevp
@@ -59,7 +59,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc,&
     character(len=19) :: tabmof
     character(len=24) :: valk(2), nomob1, nomob2, nomob3, nomob4, nomob5
     logical :: lexist
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !
 ! --- INITS.

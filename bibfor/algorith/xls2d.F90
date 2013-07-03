@@ -4,15 +4,15 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
     integer :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
     logical :: callst, grille

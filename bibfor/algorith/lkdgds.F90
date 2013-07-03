@@ -40,14 +40,14 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
 !     OUT DGDS   : DERIVEE DU POTENTIEL G PAR RAPPORT A SIGMA (NDTXNDT)
 !         IRET   : CODE RETOUR
 !     ------------------------------------------------------------------
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lkd2fs.h'
-    include 'asterfort/lkd2sh.h'
-    include 'asterfort/lkdnds.h'
-    include 'asterfort/lkhtet.h'
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lkd2fs.h"
+#include "asterfort/lkd2sh.h"
+#include "asterfort/lkdnds.h"
+#include "asterfort/lkhtet.h"
     integer :: iret, nmat, nvi, val
     real(kind=8) :: materf(nmat, 2), dgds(6, 6), vecn(6), dfds(6), vint(nvi)
     real(kind=8) :: para(3), vara(4), ds2hds(6), devsig(6), i1, bprimp

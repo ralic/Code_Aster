@@ -81,10 +81,10 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/r8prem.h'
-    include 'asterfort/mtcrog.h'
-    include 'asterfort/rslsvd.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8prem.h"
+#include "asterfort/mtcrog.h"
+#include "asterfort/rslsvd.h"
+#include "blas/dcopy.h"
     integer :: nbsom, itest
     real(kind=8) :: x3d1(*), x3d2(*), x3d3(*), x3d4(*), x3dp(*), xbar(*)
 !

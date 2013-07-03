@@ -18,11 +18,11 @@ subroutine ef0347(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
     character(len=16) :: nomte
     integer :: nc, i, npg
     integer :: icgp, icontn, iplouf

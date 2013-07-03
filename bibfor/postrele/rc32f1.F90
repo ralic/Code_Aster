@@ -2,10 +2,10 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
                   nk, nl, n0, nbp12, nbp23,&
                   nbp13, sigr, yapass, typass, nsitup)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: nbsigr, nocc(*), isk, isl, nk, nl, n0, nsitup, nbp12, nbp23
     integer :: nbp13, sigr(*)
     real(kind=8) :: saltij(*)

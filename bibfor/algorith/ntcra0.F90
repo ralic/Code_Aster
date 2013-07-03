@@ -18,11 +18,11 @@ subroutine ntcra0(sddisc)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcrpx.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcrpx.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------

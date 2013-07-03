@@ -35,9 +35,9 @@ subroutine pmfitg(nf, ncf, vf, vs)
 !   VS(5) : MOMENT QUADRATIQUE / OY   (POUR FLEXION XOZ) = INT(Z.Z.DS)
 !   VS(6) : MOMENT PRODUIT  = INT(Y.Z.DS)
 ! -----------------------------------------------------------
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nf, ncf, i
     real(kind=8) :: vf(ncf, nf), vs(6), zero
 !-----------------------------------------------------------------------

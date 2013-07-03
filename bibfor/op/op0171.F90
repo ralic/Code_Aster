@@ -24,47 +24,47 @@ subroutine op0171()
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/etausr.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/medith.h'
-    include 'asterfort/ntdoth.h'
-    include 'asterfort/nttain.h'
-    include 'asterfort/nttcmv.h'
-    include 'asterfort/numero.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rssepa.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/utexcp.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/etausr.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/cresol.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/medith.h"
+#include "asterfort/ntdoth.h"
+#include "asterfort/nttain.h"
+#include "asterfort/nttcmv.h"
+#include "asterfort/numero.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rssepa.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/utexcp.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     logical :: matcst, coecst, prem, reasmt, reasvt
     integer :: parcri(9), iifm, jlagpp, jlagpm, jlagp, jinst
     integer :: ibid, k, neq, iret

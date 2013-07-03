@@ -19,18 +19,18 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(MATR_ASSE) (MARCHE AUSSI PARFOIS SUR MATR_ASSE_GENE)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismgd.h'
-    include 'asterfort/dismme.h'
-    include 'asterfort/dismnu.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismgd.h"
+#include "asterfort/dismme.h"
+#include "asterfort/dismnu.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz

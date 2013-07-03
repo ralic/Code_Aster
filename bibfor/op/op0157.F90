@@ -19,32 +19,32 @@ subroutine op0157()
 ! ======================================================================
 !     PROCEDURE IMPR_GENE
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/irgene.h'
-    include 'asterfort/irtitr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsinfo.h'
-    include 'asterfort/rstran.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/irgene.h"
+#include "asterfort/irtitr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsinfo.h"
+#include "asterfort/rstran.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     character(len=3) :: toucha, toucmp, toupar, interp
     character(len=4) :: motfac
     character(len=8) :: k8b, form

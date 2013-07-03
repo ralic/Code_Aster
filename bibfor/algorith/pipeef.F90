@@ -20,10 +20,10 @@ subroutine pipeef(ndim, typmod, tau, mate, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/zerop2.h'
-    include 'blas/ddot.h'
+#include "asterc/r8vide.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/zerop2.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod(2)
     integer :: ndim, mate
     real(kind=8) :: epsp(6), epsd(6), tau

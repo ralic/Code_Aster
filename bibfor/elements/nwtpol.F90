@@ -26,8 +26,8 @@ subroutine nwtpol(deg, coef, rac)
 !
 ! OUT RAC : VALEUR DE LA RACINE TROUVEE
 !
-    include 'asterfort/dpolyh.h'
-    include 'asterfort/dpolyn.h'
+#include "asterfort/dpolyh.h"
+#include "asterfort/dpolyn.h"
     integer :: deg, itermx, i
     real(kind=8) :: coef(deg+1), rac
     real(kind=8) :: rac0, tole, fx, dfx, err, fx0

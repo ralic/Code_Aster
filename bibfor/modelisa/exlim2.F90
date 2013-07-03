@@ -36,30 +36,30 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/adalig.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/adalig.h"
+#include "asterfort/assert.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
     integer :: nbcha, numsd, nbsd, nbproc
     character(len=8) :: nomsd
     character(len=19) :: ligrsd, ligrcf

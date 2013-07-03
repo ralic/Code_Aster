@@ -33,8 +33,8 @@ subroutine hujcvx(mod, nmat, materf, vinf, deps,&
 !       SEUIL  :  POSITIF SI PLASTICITE A PRENDRE EN COMPTE
 !       IRET   :  CODE RETOUR
 !   ------------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujpot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujpot.h"
     integer :: iret, nmat
     real(kind=8) :: materf(nmat, 2), vinf(*), deps(6), sigd(6), sigf(6)
     real(kind=8) :: seuil

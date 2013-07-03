@@ -1,7 +1,7 @@
 subroutine carcha(noch, nomgd, typcha, option, param)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: nomgd, typcha, param
     character(len=16) :: noch
     character(len=24) :: option

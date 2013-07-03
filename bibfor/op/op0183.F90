@@ -23,42 +23,42 @@ subroutine op0183()
 !     COMMANDE :  CALC_FORC_NONL
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmdome.h'
-    include 'asterfort/nmdorc.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vefnme.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/asasve.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infmue.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmdome.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vefnme.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     integer :: ibid
     integer :: i, iachar, iad, ichar
     integer :: iordr, iret, iret2, j

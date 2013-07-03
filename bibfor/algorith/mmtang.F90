@@ -20,7 +20,7 @@ subroutine mmtang(ndim, nno, coorma, dff, tau1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim, nno
     real(kind=8) :: coorma(27)
     real(kind=8) :: dff(2, 9)

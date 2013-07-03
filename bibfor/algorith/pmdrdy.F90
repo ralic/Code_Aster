@@ -31,8 +31,8 @@ subroutine pmdrdy(dsidep, coef, cimpo, valimp, y,&
 ! OUT R       : VECTEUR RESIDU ADIMENSIONNALISE
 ! OUT DRDY    : MATRICE JACOBIENNE ADIMENSIONNALISEE
     implicit none
-    include 'asterfort/infniv.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/infniv.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: y(12), id(6, 6), sigp(6), dsidep(6, 6), cimpo(6, 12)
     real(kind=8) :: valimp(6)
     real(kind=8) :: r(12), drdy(12, 12), coef

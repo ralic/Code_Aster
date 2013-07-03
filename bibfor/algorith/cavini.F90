@@ -26,10 +26,10 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
 ! VIM(4,GG) = CONTRAINTE DE PROPAGATION AU PT DE GAUSS GG
 !
     implicit none
-    include 'asterfort/carand.h'
-    include 'asterfort/casurf.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/carand.h"
+#include "asterfort/casurf.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: ndim, nno, npg, lgpg, imate, zz, zzz, zzzz, nono, nitert, ntirmx
     real(kind=8) :: geom(1:ndim, 1:nno)
     real(kind=8) :: vim(1:lgpg, 1:npg), gr

@@ -40,7 +40,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater,&
 !                       =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
 !                       =3 ITMAX ATTEINT REDECOUPAGE
 !       ----------------------------------------------------------------
-    include 'asterfort/u2mesr.h'
+#include "asterfort/u2mesr.h"
     integer :: itmax, iter, nr, irteti, ii, nmat
     real(kind=8) :: toler, ddy(nr), dy(nr), r(nr), rini(nr), mater(nmat, 2)
 !

@@ -19,22 +19,22 @@ subroutine debca1(nomop, ligrel, nin)
     implicit none
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8nnem.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mecoel.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8nnem.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mecoel.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: nomop
     character(len=19) :: ligrel
     integer :: nin

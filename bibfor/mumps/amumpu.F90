@@ -56,25 +56,25 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jjldyn.h'
-    include 'asterfort/mpicm2.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utgtme.h'
-    include 'asterfort/wkvect.h'
-    include 'mumps/cmumps.h'
-    include 'mumps/dmumps.h'
-    include 'mumps/smumps.h'
-    include 'mumps/zmumps.h'
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jjldyn.h"
+#include "asterfort/mpicm2.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utgtme.h"
+#include "asterfort/wkvect.h"
+#include "mumps/cmumps.h"
+#include "mumps/dmumps.h"
+#include "mumps/smumps.h"
+#include "mumps/zmumps.h"
     integer :: option, kxmps, nprec
     character(len=1) :: type
     character(len=12) :: usersm
@@ -83,8 +83,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !
 #ifdef _HAVE_MUMPS
 #   include "aster_mumps.h"
-    include 'mpif.h'
-    include 'jeveux.h'
+#include "mpif.h"
+#include "jeveux.h"
     type (SMUMPS_STRUC) , pointer :: smpsk
     type (CMUMPS_STRUC) , pointer :: cmpsk
     type (DMUMPS_STRUC) , pointer :: dmpsk

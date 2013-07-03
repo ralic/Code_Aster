@@ -1,6 +1,6 @@
 subroutine reslgn(ligrel, option, erree, erren)
     implicit none
-    include 'asterfort/calcul.h'
+#include "asterfort/calcul.h"
     character(len=*) :: ligrel, erree, erren
 !----------------------------------------------------------------------
 ! ======================================================================

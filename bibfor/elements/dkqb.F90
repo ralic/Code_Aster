@@ -1,11 +1,11 @@
 subroutine dkqb(caraq4, xyzl, igau, jacgau, bmat)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bcoqaf.h'
-    include 'asterfort/dkqbf.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jquad4.h'
+#include "jeveux.h"
+#include "asterfort/bcoqaf.h"
+#include "asterfort/dkqbf.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jquad4.h"
     integer :: igau
     real(kind=8) :: caraq4(*), xyzl(3, 1), bmat(8, 1), jacgau
 ! ======================================================================

@@ -2,14 +2,14 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                   minord, maxord, resuin, resuou, lisout)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/wkvect.h"
     logical :: optdem
     integer :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase

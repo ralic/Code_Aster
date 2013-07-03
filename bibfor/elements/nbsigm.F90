@@ -1,8 +1,8 @@
 function nbsigm()
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/teattr.h"
+#include "asterfort/u2mess.h"
     integer :: nbsigm
 !-----------------------------------------------------------------------
 ! ======================================================================

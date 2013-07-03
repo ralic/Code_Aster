@@ -5,14 +5,14 @@ subroutine irgnal(ifi, nbordr, coord, connex, point,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     integer :: numel, nbel, ifi, nbordr, nbcmp
     integer :: connex(*), point(*), cnsc(*), cnsl(*), cnsv(*), cnsd(*), jtype
     real(kind=8) :: coord(*)

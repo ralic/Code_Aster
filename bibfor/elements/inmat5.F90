@@ -1,8 +1,8 @@
 subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
                   mgano2)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: nnos, npg, nno, nbpgmx, nbnomx
     parameter (nbpgmx=1000,nbnomx=27)
     real(kind=8) :: mganos(nbpgmx, nbnomx), mgano2(nbpgmx, nbnomx)

@@ -31,13 +31,13 @@ subroutine coefal(nom1, nom2, nom3, ncdmax, ipas,&
 !  OUT   : IRES1     : A RENSEIGNER
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     integer :: ipas, ires, ncdmax, nborcd
     real(kind=8) :: borncd(20), coefcd(20, 11)
     character(len=24) :: nom1, nom2, nom3

@@ -52,29 +52,29 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/ircam1.h'
-    include 'asterfort/ircmpr.h'
-    include 'asterfort/irelst.h'
-    include 'asterfort/irmail.h'
-    include 'asterfort/irmpga.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lrmtyp.h'
-    include 'asterfort/mdexch.h'
-    include 'asterfort/mdexma.h'
-    include 'asterfort/mdnoma.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/utlicm.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ircam1.h"
+#include "asterfort/ircmpr.h"
+#include "asterfort/irelst.h"
+#include "asterfort/irmail.h"
+#include "asterfort/irmpga.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lrmtyp.h"
+#include "asterfort/mdexch.h"
+#include "asterfort/mdexma.h"
+#include "asterfort/mdnoma.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulisog.h"
+#include "asterfort/utlicm.h"
     character(len=8) :: typech, modele, sdcarm
     character(len=19) :: chanom
     character(len=64) :: nochmd

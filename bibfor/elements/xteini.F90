@@ -3,15 +3,15 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
                   contac)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/ismali.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
+#include "asterfort/ismali.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
     character(len=16) :: nomte
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ddlm
     integer :: nfiss, contac

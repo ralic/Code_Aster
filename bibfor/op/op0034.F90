@@ -19,13 +19,13 @@ subroutine op0034()
 !      OPERATEURS :     AFFE_CHAR_THER AFFE_CHAR_THER_F
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/charth.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/charth.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=4) :: type
     character(len=8) :: char
     character(len=16) :: concep, oper

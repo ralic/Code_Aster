@@ -1,7 +1,7 @@
 subroutine rcma02(etat, iocc, vale)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
     integer :: iocc
     real(kind=8) :: vale(*)
     character(len=1) :: etat

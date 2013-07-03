@@ -2,15 +2,15 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
                   iassmx)
     implicit none
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/indik8.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     integer :: nbgd, iassef, iassmx
     real(kind=8) :: valres(nbgd*iassef)
     character(len=8) :: nomcmp(nbgd)
@@ -46,7 +46,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
 ! OUT : VALRES : VALEURS DES COMPOSANTES.
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: icard, icarv, icmp, icode, nbec, ier
     integer :: ii, irang, iranv, jj, ll, nbcmp

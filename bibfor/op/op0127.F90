@@ -27,19 +27,19 @@ subroutine op0127()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/crnslv.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jevtbl.h'
-    include 'asterfort/nugeel.h'
-    include 'asterfort/numgcy.h'
-    include 'asterfort/numgen.h'
-    include 'asterfort/nummod.h'
-    include 'asterfort/smosli.h'
-    include 'asterfort/strmag.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/crnslv.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jevtbl.h"
+#include "asterfort/nugeel.h"
+#include "asterfort/numgcy.h"
+#include "asterfort/numgen.h"
+#include "asterfort/nummod.h"
+#include "asterfort/smosli.h"
+#include "asterfort/strmag.h"
     character(len=8) :: nomres, modgen, modmec, option
     character(len=16) :: nomcon, nomope
     character(len=14) :: nugene

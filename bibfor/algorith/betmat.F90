@@ -46,11 +46,11 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    include 'asterc/iisnan.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/betnvi.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/betnvi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: nmat, ndt, ndi, nr, nvi, kpg, ksp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: valpaf

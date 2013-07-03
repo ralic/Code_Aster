@@ -24,15 +24,15 @@ subroutine jeimpo(unit, nomlu, mess)
 ! IN  MESS  : MESSAGE D'INFORMATION IMPRIME
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjalty.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjimpo.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjalty.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjimpo.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: unit
     character(len=*) :: nomlu, mess
 !     ------------------------------------------------------------------

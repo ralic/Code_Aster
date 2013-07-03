@@ -24,7 +24,7 @@ function lcnrts(d)
 !                                           T  1/2
 !       OUT LCNRTS :  NORME DE    D = (3/2 D D)
 !       ----------------------------------------------------------------
-    include 'asterfort/lcprsc.h'
+#include "asterfort/lcprsc.h"
     integer :: n, nd
     real(kind=8) :: d(6), p, lcnrts
     common /tdim/   n , nd

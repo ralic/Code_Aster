@@ -20,10 +20,10 @@ subroutine mmstac(indcoi, lvites, jeu, jeuvit, lambdc,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: indcoi, indcon
     logical :: lvites
     real(kind=8) :: jeu, jeuvit, lambdc, coefac

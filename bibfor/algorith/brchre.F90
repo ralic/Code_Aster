@@ -23,9 +23,9 @@ subroutine brchre(x066, v33, v33t, x166)
 !     DE LA BASE DE REFERENCE A LA BASE PRINCIPALE
 !     DES ENDOMMAGEMENTS DE RANKINE ET DE SON INVERSE RM1
     implicit none
-    include 'asterfort/brindz.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/brindz.h"
+#include "asterfort/matini.h"
+#include "asterfort/utbtab.h"
     real(kind=8) :: x33(3, 3), z33(3, 3), v33(3, 3), v33t(3, 3)
     real(kind=8) :: x066(6, 6), x166(6, 6), a66(6, 6)
     integer :: i, j, k, m, n

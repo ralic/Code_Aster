@@ -19,12 +19,12 @@ subroutine xthini(nomte, nfh, nfe)
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte
     integer :: nfh, nfe, nddl
 !

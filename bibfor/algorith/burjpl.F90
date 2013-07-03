@@ -28,13 +28,13 @@ subroutine burjpl(nmat, mater, nr, drdy, dsde)
 !     ----------------------------------------------------------------
     implicit none
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/mgauss.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/mgauss.h"
     common /tdim/   ndt  , ndi
 !     ----------------------------------------------------------------
     integer :: nmat, nr, iret, ndt, ndi, i, j

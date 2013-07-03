@@ -58,11 +58,11 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/lrceme.h'
-    include 'asterfort/lrcnme.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterfort/lrceme.h"
+#include "asterfort/lrcnme.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: chanom
     character(len=*) :: ncmpva, ncmpvm
     character(len=8) :: nomaas

@@ -23,13 +23,13 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 !
 ! aslint: disable=W1504
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/nxacmv.h'
-    include 'asterfort/resoud.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/nxacmv.h"
+#include "asterfort/resoud.h"
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas
     character(len=19) :: lischa, solveu, maprec

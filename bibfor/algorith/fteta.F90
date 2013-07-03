@@ -16,8 +16,8 @@ subroutine fteta(theta, neq, f0, f1)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'blas/daxpy.h'
-    include 'blas/dscal.h'
+#include "blas/daxpy.h"
+#include "blas/dscal.h"
     real(kind=8) :: theta, f0(*), f1(*)
 !**********************************************************************
 !

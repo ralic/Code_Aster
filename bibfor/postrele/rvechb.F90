@@ -19,7 +19,7 @@ subroutine rvechb(epsi, typmai, ndfac, r, valcpm,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterc/r8vide.h'
+#include "asterc/r8vide.h"
     character(len=8) :: typmai
     integer :: ndfac(*), nbcp, nbso, nbsi
     real(kind=8) :: epsi, r(*), valcpm(*), valcp(*)

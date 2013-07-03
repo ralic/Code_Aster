@@ -2,12 +2,12 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
                   imate, pintt, cnset, heavt, lonch,&
                   basloc, lsn, lst, matuu)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/xmase2.h'
-    include 'asterfort/xmase3.h'
+#include "jeveux.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/xmase2.h"
+#include "asterfort/xmase3.h"
     integer :: nnop, imate, igeom
     integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
     real(kind=8) :: pintt(3*11), lsn(nnop)

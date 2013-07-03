@@ -103,9 +103,9 @@ subroutine ftrexc(compq, n, t, ldt, q,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterfort/flaexc.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/lsame.h'
+#include "asterfort/flaexc.h"
+#include "asterfort/xerbla.h"
+#include "blas/lsame.h"
     character(len=1) :: compq
     integer :: ifst, ilst, info, ldq, ldt, n
 !     ..

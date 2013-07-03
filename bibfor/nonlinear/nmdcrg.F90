@@ -20,9 +20,9 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: depart, iterat
     real(kind=8) :: vresi(*)
     real(kind=8) :: xa0, xa1, xdet

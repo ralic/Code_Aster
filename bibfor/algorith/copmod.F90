@@ -50,7 +50,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !  |OUT < BMODZ  : VECTEUR DE TRAVAIL (COMPLEXE) DE SORTIE        [C16]|
 !   ___________________________________________________________________
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !   ___________________________________________________________________
 !
 !  - 0 - INITIALISATIONS DIVERSES
@@ -58,21 +58,21 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !
 !     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
 !
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtcrea.h'
-    include 'asterfort/zerlag.h'
-    include 'blas/dcopy.h'
-    include 'blas/zcopy.h'
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcrea.h"
+#include "asterfort/zerlag.h"
+#include "blas/dcopy.h"
+#include "blas/zcopy.h"
     character(len=1) :: typc
     character(len=8) :: basemo
     character(len=*) :: numer

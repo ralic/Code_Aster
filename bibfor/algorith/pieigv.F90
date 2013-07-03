@@ -22,15 +22,15 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/critev.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerod2.h'
-    include 'blas/ddot.h'
+#include "asterc/r8vide.h"
+#include "asterfort/critev.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/infniv.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerod2.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod(2)
     integer :: neps, imate
     real(kind=8) :: epsm(neps), epspc(neps), epsdc(neps), etamin, etamax, tau

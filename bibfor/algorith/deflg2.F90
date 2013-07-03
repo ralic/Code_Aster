@@ -30,9 +30,9 @@ subroutine deflg2(gn, lamb, logl, pes, feta,&
 !     OUT  XI    utilitaires pour DEFLG3 : xi_ij
 !     OUT  ME    utilitaires pour DEFLG3 : tenseur M d'ordre 4
 ! ----------------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/symt46.h'
+#include "asterc/r8miem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/symt46.h"
     real(kind=8) :: gn(3, 3), lamb(3), logl(3)
     real(kind=8) :: di(3), theta(3, 3)
     real(kind=8) :: pe(3, 3, 3, 3), me(3, 3, 3, 3), xi(3, 3), feta(4), pes(6, 6)

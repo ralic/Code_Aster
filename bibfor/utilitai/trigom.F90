@@ -19,8 +19,8 @@ function trigom(fonc, x)
 ! aslint: disable=
     implicit none
     real(kind=8) :: trigom
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/u2mess.h"
     character(len=4) :: fonc
 ! ----------------------------------------------------------------------
 !  BUT : CALCULER ASIN(X) OU ACOS(X) SANS RISQUER DE SE PLANTER SI

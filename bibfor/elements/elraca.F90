@@ -2,7 +2,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
                   fapg, nbpg, x, vol)
 ! aslint: disable=W1501
     implicit none
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: nbfamx
     parameter (nbfamx=20)
     integer :: ndim, nno, nnos, nbfpg, nbpg(nbfamx)

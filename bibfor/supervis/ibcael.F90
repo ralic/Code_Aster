@@ -1,9 +1,9 @@
 subroutine ibcael(type)
     implicit none
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeinif.h'
-    include 'asterfort/jelibf.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedupc.h"
+#include "asterfort/jeinif.h"
+#include "asterfort/jelibf.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: type
 !     -----------------------------------------------------------------
 ! ======================================================================

@@ -1,14 +1,14 @@
 subroutine mtcopy(matin, matout, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vrrefe.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vrrefe.h"
     character(len=*) :: matin, matout
     integer :: ier
 !     ------------------------------------------------------------------

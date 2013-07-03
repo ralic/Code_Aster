@@ -20,11 +20,11 @@ subroutine mecoe1(opt, te)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/modatt.h'
-    include 'asterfort/nbpara.h'
-    include 'asterfort/nopara.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/modatt.h"
+#include "asterfort/nbpara.h"
+#include "asterfort/nopara.h"
     integer :: opt, te
 ! ----------------------------------------------------------------------
 !     ENTREES:

@@ -40,11 +40,11 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
 !        NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 !        NVI    :  NB DE VARIABLES INTERNES
 !    ------------------------------------------------------------
-    include 'asterfort/hujnvi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvala.h'
+#include "asterfort/hujnvi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvala.h"
     integer :: ndt, ndi, nvi, imat, i
     real(kind=8) :: materf(22, 2), tempf, nu21, nu31, nu32
     character(len=16) :: phenom

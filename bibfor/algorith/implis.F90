@@ -19,10 +19,10 @@ subroutine implis(sdtabc, ligsep)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obgeti.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obgeti.h"
     character(len=24) :: sdtabc
     character(len=255) :: ligsep
 !

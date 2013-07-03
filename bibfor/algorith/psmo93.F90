@@ -24,18 +24,18 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/modsta.h'
-    include 'asterfort/mstget.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/modsta.h"
+#include "asterfort/mstget.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, neq, lmatm
     real(kind=8) :: r8b, zero, un, coef(3), xnorm
     character(len=8) :: k8b, monaxe

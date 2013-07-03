@@ -1,17 +1,17 @@
 subroutine exlim3(motfaz, base, modelz, ligrel)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: motfaz, base, modelz, ligrel
 !     -----------------------------------------------------------------
 ! ======================================================================

@@ -1,16 +1,16 @@
 subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
                   type)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/csmbc8.h'
-    include 'asterfort/csmbmc.h'
-    include 'asterfort/csmbmd.h'
-    include 'asterfort/csmbr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/csmbc8.h"
+#include "asterfort/csmbmc.h"
+#include "asterfort/csmbmd.h"
+#include "asterfort/csmbr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     real(kind=8) :: vsmb(*), vcine(*)
     complex(kind=8) :: cvsmb(*), cvcine(*)
     integer :: lmat

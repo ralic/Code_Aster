@@ -22,16 +22,16 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem
     integer :: jdirno, nnn, inn, inntot, nbnoc, ino

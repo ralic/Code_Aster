@@ -33,7 +33,7 @@ subroutine nomcod(nom, num, ic, nc)
 !  CALL NOMCOD(NOMNOE,IND,3,8)
 !
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: nom
     character(len=4) :: format
     integer :: num, ic, nc

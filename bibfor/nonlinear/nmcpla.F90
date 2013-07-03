@@ -81,22 +81,22 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ABSENCE DE CONVERGENCE
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/iisnan.h'
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/betnvi.h'
-    include 'asterfort/granvi.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/nmgran.h'
-    include 'asterfort/nmisot.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/redece.h'
-    include 'asterfort/rslnvi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/iisnan.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/r8vide.h"
+#include "asterfort/betnvi.h"
+#include "asterfort/granvi.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/nmgran.h"
+#include "asterfort/nmisot.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/redece.h"
+#include "asterfort/rslnvi.h"
+#include "asterfort/u2mess.h"
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !

@@ -19,15 +19,15 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtcreb.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
     character(len=24) :: exreco, exresu
     integer :: nbexre
     character(len=14) :: numddl

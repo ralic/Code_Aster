@@ -1,17 +1,17 @@
 subroutine fointa(ipif, nbpu, nompu, valpu, resu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/fiintf.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/focoli.h'
-    include 'asterfort/fointn.h'
-    include 'asterfort/folocx.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/fiintf.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/focoli.h"
+#include "asterfort/fointn.h"
+#include "asterfort/folocx.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ipif, nbpu
     real(kind=8) :: valpu(*), resu
     character(len=*) :: nompu(*)

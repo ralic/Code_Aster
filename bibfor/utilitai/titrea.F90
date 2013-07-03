@@ -1,19 +1,19 @@
 subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
                   motfac, iocc, base, formr)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getltx.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/titre1.h'
-    include 'asterfort/titred.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getltx.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/titre1.h"
+#include "asterfort/titred.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: niv, st, base
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
     integer :: iocc

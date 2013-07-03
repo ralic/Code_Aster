@@ -1,7 +1,7 @@
 subroutine xxlag2(ffc, idepl, idepm, lact, ndim,&
                   nnol, pla, lamb, nvec)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ subroutine xxlag2(ffc, idepl, idepm, lact, ndim,&
 ! OUT LAMB12: LAMBTION DE FROTTEMENT AU POINT DE GAUSS
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
-    include 'asterfort/vecini.h'
+#include "asterfort/vecini.h"
     integer :: i, idepl, idepm
     integer :: j, lact(8), ndim, nli, nnol
     integer :: pla(27), pli, nvec

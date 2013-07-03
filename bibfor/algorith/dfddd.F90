@@ -19,8 +19,8 @@ subroutine dfddd(eps, endo, ndim, lambda, mu,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
     integer :: ndim
     real(kind=8) :: eps(6), lambda, mu
     real(kind=8) :: dfd, endo, ecrod

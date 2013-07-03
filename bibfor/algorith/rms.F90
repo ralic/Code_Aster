@@ -1,7 +1,7 @@
 subroutine rms(imatr, vect1, long1, vect2, long2,&
                nbpts, nfcod, df, nfonc)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: imatr, long1, long2, nbpts, nfcod
     real(kind=8) :: vect1(long1), vect2(long2)
 !     ------------------------------------------------------------------

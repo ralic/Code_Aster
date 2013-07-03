@@ -26,31 +26,31 @@ subroutine op0038()
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterc/utalrm.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/mechti.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterc/utalrm.h"
+#include "asterfort/calcul.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/chpver.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlima.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecham.h"
+#include "asterfort/mechti.h"
+#include "asterfort/medom1.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ibid, ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh, iarg
 !
     real(kind=8) :: time, rundf

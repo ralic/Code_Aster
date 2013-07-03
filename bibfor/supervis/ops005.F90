@@ -20,12 +20,12 @@ subroutine ops005()
 !     ------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: kbid
     character(len=8) :: nomres, nompar
     character(len=16) :: typres, nomcmd

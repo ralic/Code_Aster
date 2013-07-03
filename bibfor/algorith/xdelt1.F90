@@ -3,11 +3,11 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fcthyp.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/fcthyp.h"
+#include "asterfort/vecini.h"
     real(kind=8) :: ksi, tabar(*)
     real(kind=8) :: delta, s
     integer :: num, ndim

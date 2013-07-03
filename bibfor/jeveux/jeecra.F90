@@ -17,15 +17,15 @@ subroutine jeecra(nomlu, catr, ival, cval)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu, catr, cval
     integer :: ival
 ! ----------------------------------------------------------------------

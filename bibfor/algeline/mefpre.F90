@@ -6,12 +6,12 @@ subroutine mefpre(ndim, alpha, z, cf, dh,&
 ! aslint: disable=W1504
     implicit   none
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: ndim(14)
     real(kind=8) :: alpha, z(*), cf(*), dh, vit(*), rho(*), pstat(*)
     real(kind=8) :: dpstat(*), dvit(*)

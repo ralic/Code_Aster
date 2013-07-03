@@ -19,15 +19,15 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/ascomb.h'
-    include 'asterfort/cnvesl.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/zinit.h'
+#include "jeveux.h"
+#include "asterfort/ascomb.h"
+#include "asterfort/cnvesl.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/zinit.h"
     character(len=19) :: lischa
     integer :: neq, j2nd
     real(kind=8) :: freq

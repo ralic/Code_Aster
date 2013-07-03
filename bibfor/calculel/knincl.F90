@@ -19,8 +19,8 @@ subroutine knincl(long, lk1, l1, lk2, l2,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/knindi.h'
+#include "asterfort/assert.h"
+#include "asterfort/knindi.h"
     integer :: l1, l2, iret, long
     character(len=*) :: lk1(l1), lk2(l2)
 ! ---------------------------------------------------------------------

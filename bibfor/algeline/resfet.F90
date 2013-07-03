@@ -43,20 +43,20 @@ subroutine resfet(matas, chcine, chsecm, chsol, niter,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/alfeti.h'
-    include 'asterfort/assde2.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/idensd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "asterfort/alfeti.h"
+#include "asterfort/assde2.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/idensd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     real(kind=8) :: epsi, testco
     character(len=19) :: matas, chcine, chsecm, chsol
     character(len=19) :: criter

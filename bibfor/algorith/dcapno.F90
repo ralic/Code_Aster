@@ -30,12 +30,12 @@ subroutine dcapno(resuz, typchz, iord, chavaz)
 ! CHAVAZ   /0/: NOM K24 DE L'OBJET JEVEUX DEMANDE
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
     character(len=*) :: chavaz
     character(len=*) :: resuz, typchz
 !

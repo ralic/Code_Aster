@@ -25,8 +25,8 @@ subroutine mmtgeo(phasep, ndim, nne, nnm, mprojn,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/matini.h'
-    include 'asterfort/mmmtuu.h'
+#include "asterfort/matini.h"
+#include "asterfort/mmmtuu.h"
     character(len=9) :: phasep
     integer :: ndim, nne, nnm
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)

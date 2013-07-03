@@ -71,7 +71,7 @@ subroutine lecelt(iunv, maxnod, nbtyma, indic, permut,&
 !     =============================================================
 !
 !  --> DECLARATION DES ARGUMENTS
-    include 'asterfort/iunifi.h'
+#include "asterfort/iunifi.h"
     integer :: maxnod, nbtyma
     integer :: codgra, node(maxnod), nbnode
     integer :: permut(maxnod, nbtyma), indic(nbtyma)

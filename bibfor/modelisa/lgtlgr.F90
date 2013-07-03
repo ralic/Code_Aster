@@ -34,25 +34,25 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !-------------------------------------------------------------
 !
 ! ====================== DEBUT DES DECLARATIONS ========================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/adalig.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/adalig.h"
+#include "asterfort/assert.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/initel.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
 !
 ! ----- ARGUMENTS
     character(len=*) :: basez, ligrey, ligrez

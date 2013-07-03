@@ -3,14 +3,14 @@ subroutine i3ifts(epsi, k, f, desc, desctm,&
                   fink)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3crtp.h'
-    include 'asterfort/i3idfs.h'
-    include 'asterfort/i3pdm2.h'
-    include 'asterfort/i3ptrv.h'
-    include 'asterfort/i3sl33.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/i3crtp.h"
+#include "asterfort/i3idfs.h"
+#include "asterfort/i3pdm2.h"
+#include "asterfort/i3ptrv.h"
+#include "asterfort/i3sl33.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink

@@ -1,8 +1,8 @@
 subroutine mechnc(noma, motcle, iocc, chnumc)
     implicit none
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/mecact.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/mecact.h"
     integer :: iocc
     character(len=*) :: noma, motcle
     character(len=24) :: chnumc

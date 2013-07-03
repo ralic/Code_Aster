@@ -1,20 +1,20 @@
 subroutine iredsu(macr, form, ifc, versio)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irecri.h'
-    include 'asterfort/irmad0.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/irecri.h"
+#include "asterfort/irmad0.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/wkvect.h"
     integer :: ifc, versio
     character(len=*) :: macr, form
 ! ----------------------------------------------------------------------

@@ -20,17 +20,17 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdcdc.h'
-    include 'asterfort/nmdecc.h'
-    include 'asterfort/nmdecv.h'
-    include 'asterfort/nmfinp.h'
-    include 'asterfort/u2mesr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdcdc.h"
+#include "asterfort/nmdecc.h"
+#include "asterfort/nmdecv.h"
+#include "asterfort/nmfinp.h"
+#include "asterfort/u2mesr.h"
     character(len=19) :: sddisc
     integer :: ievdac, retdex
     real(kind=8) :: durdec, insref, deltac

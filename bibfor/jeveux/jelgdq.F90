@@ -27,11 +27,11 @@ subroutine jelgdq(nomlu, rlong, nbsv)
 !
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu
     real(kind=8) :: rlong
     integer :: nbsv

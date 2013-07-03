@@ -31,7 +31,7 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
 !          VIND   :  IMAGE DE VINF (COHERENCE AVEC ROUTINE HUJMID.F)
 !          NR     :  DIMENSION DU SYSTEME NL A RESOUDRE
 !     ----------------------------------------------------------------
-    include 'asterfort/lceqvn.h'
+#include "asterfort/lceqvn.h"
     integer :: nvi, nr, nmat
     real(kind=8) :: vind(nvi), vinf(nvi), yd(nr), mater(nmat, 2)
     logical :: bnews(3), mtrac

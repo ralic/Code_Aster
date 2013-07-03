@@ -20,7 +20,7 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: dlagrf(2)
     real(kind=8) :: coefaf

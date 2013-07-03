@@ -1,7 +1,7 @@
 subroutine mtcro2(n, a, nmax, x)
     implicit none
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: nmax, n
     real(kind=8) :: a(nmax, *), x(*)
 ! ----------------------------------------------------------------------

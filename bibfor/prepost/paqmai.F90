@@ -20,36 +20,36 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! person_in_charge: jean.angles at edf.fr
 ! aslint: disable=W1501
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/loisem.h'
-    include 'asterc/lor8em.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/anacri.h'
-    include 'asterfort/avgrma.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/deltau.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedisp.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vampli.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/loisem.h"
+#include "asterc/lor8em.h"
+#include "asterc/r8prem.h"
+#include "asterfort/alchml.h"
+#include "asterfort/anacri.h"
+#include "asterfort/avgrma.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cesred.h"
+#include "asterfort/deltau.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vampli.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
     logical :: fordef

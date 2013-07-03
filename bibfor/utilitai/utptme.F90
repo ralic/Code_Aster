@@ -1,6 +1,6 @@
 subroutine utptme(nbarg, nomarg, valarg, iret)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: nbarg, iret
     character(len=8) :: nomarg(*)
     real(kind=8) :: valarg(*)

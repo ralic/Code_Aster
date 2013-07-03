@@ -20,11 +20,11 @@ subroutine dfllac(mcfact, iechec, dtmin, even, action,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfllae.h'
-    include 'asterfort/dflldc.h'
-    include 'asterfort/dfllin.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfllae.h"
+#include "asterfort/dflldc.h"
+#include "asterfort/dfllin.h"
     character(len=16) :: mcfact, even
     integer :: iechec
     real(kind=8) :: pasmin, dtmin

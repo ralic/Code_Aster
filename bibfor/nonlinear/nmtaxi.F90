@@ -19,9 +19,9 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/nmtacr.h'
-    include 'asterfort/zeroco.h'
+#include "asterfort/assert.h"
+#include "asterfort/nmtacr.h"
+#include "asterfort/zeroco.h"
     integer :: ndimsi, iret
     real(kind=8) :: crit(3), mat(14), sigel(*), vim(9), epm(*), dp, sp
     real(kind=8) :: xi, g

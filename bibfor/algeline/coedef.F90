@@ -56,16 +56,16 @@ subroutine coedef(imod, fremod, nbm, young, poiss,&
 ! OUT : TCOEF  : TABLEAU CONTENANT LES COEFFICIENTS DES DEFORMEES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: imod, nbm, icoq, nbno, numno(nbno), nunoe0, nbnoto, iaxe, kec
     integer :: iret
     real(kind=8) :: fremod, young, poiss, rho, coordo(3, nbnoto), geom(9), det

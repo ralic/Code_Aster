@@ -19,9 +19,9 @@ subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ipre, ider, n, k, dim
     real(kind=8) :: gamma, phinit, dphi, vectn(dim), vectu(dim)
     real(kind=8) :: vectv(dim)

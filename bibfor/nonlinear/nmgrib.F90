@@ -21,12 +21,12 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1306
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/subaco.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
+#include "asterfort/u2mess.h"
     logical :: lexc
     integer :: nno
     real(kind=8) :: geom(3, nno), dff(2, nno), dir11(3)

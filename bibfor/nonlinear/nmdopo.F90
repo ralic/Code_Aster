@@ -19,22 +19,22 @@ subroutine nmdopo(sddyna, method, sdpost)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmcrpx.h'
-    include 'asterfort/nmcrsd.h'
-    include 'asterfort/nmecsd.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcrpx.h"
+#include "asterfort/nmcrsd.h"
+#include "asterfort/nmecsd.h"
+#include "asterfort/omega2.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: method(*)
     character(len=19) :: sddyna, sdpost
 !

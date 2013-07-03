@@ -1,6 +1,6 @@
 function dhw2p2(dp11p2, alpliq, t, rho11)
     implicit      none
-    include 'asterfort/dhwdp2.h'
+#include "asterfort/dhwdp2.h"
     real(kind=8) :: dp11p2, alpliq, t, rho11, dhw2p2
 ! ======================================================================
 ! ======================================================================

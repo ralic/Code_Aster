@@ -4,9 +4,9 @@ subroutine rvchl3(vale, padr, pnsp, pnbn, ma,&
                   conec, vlccnc, val, ptadr, tabaux)
     implicit none
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/i3nloc.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8vide.h"
+#include "asterfort/i3nloc.h"
+#include "asterfort/u2mess.h"
     integer :: padr(*), pnbn(*), pnsp(*)
     integer :: ma(*), face(*), conec(*), vlccnc(*), nbndf(6, *)
     integer :: nbco, nbsp, nbpt, nbma, nbcp, ptadr, itypm, clocf(6, 4, *)

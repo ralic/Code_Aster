@@ -27,8 +27,8 @@ subroutine genale(vec1, vec2, r, v, x,&
 !           DIM   : DIMENSION DE LA MATRICE DE TRAVAIL
 !           LN    : NOMBRE DE POINTS DE LA DISCRETISATION
 !           NALEA : NOMBRE ALEATOIRE POUR INITIALISER LE GENERATEUR
-    include 'jeveux.h'
-    include 'asterfort/genere.h'
+#include "jeveux.h"
+#include "asterfort/genere.h"
     integer :: dim
     real(kind=8) :: vec1(long), vec2(lonv)
     complex(kind=8) :: r(dim, dim), v(dim), x(dim)

@@ -33,14 +33,14 @@ subroutine stktit(ifl, icl, iv, rv, cv,&
 !                                                  OU ERREUR DETECTE)
 !       ----------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lirlig.h'
-    include 'asterfort/lxscan.h'
-    include 'asterfort/tesfin.h'
-    include 'asterfort/tesmcl.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lirlig.h"
+#include "asterfort/lxscan.h"
+#include "asterfort/tesfin.h"
+#include "asterfort/tesmcl.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     character(len=14) :: cnl

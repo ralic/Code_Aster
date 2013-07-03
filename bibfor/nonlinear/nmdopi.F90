@@ -19,34 +19,34 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8gaem.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/nmcoef.h'
-    include 'asterfort/nmdire.h'
-    include 'asterfort/nmmein.h'
-    include 'asterfort/nueqch.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/exlima.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/nmcoef.h"
+#include "asterfort/nmdire.h"
+#include "asterfort/nmmein.h"
+#include "asterfort/nueqch.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: modelz
     character(len=24) :: numedd
     character(len=16) :: method(*)

@@ -18,8 +18,8 @@ function jjcodn(icre, nomrep, nomec, irep, crep,&
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'asterfort/jxhcod.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jxhcod.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomrep, nomec, crep(*)
     integer :: icre, irep(*), nmax, nuti
 ! ----------------------------------------------------------------------

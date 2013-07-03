@@ -19,13 +19,13 @@ subroutine nmadev(sddisc, sderro, iterat)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmerge.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/utdidt.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     character(len=24) :: sderro
     integer :: iterat

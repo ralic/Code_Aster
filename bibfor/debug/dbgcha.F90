@@ -17,12 +17,12 @@ subroutine dbgcha(valinc, instap, iterat)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/codent.h'
-    include 'asterfort/codree.h'
-    include 'asterfort/irchmd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
+#include "asterfort/codent.h"
+#include "asterfort/codree.h"
+#include "asterfort/irchmd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
     real(kind=8) :: instap
     integer :: iterat
     character(len=19) :: valinc(*)

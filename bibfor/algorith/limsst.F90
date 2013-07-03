@@ -29,12 +29,12 @@ subroutine limsst(nomcmd)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/u2mesg.h"
     integer :: nbchoc, nbrede, nbrevi
     character(len=24) :: valk(2)
     character(len=16) :: nomcmd, method

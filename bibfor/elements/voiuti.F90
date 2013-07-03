@@ -44,9 +44,9 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
 !       LISOCO   :  LISTE DE CES SOMMETS
 !                  (IMA,IS,1) EN NUMEROTATION LOCALE MAILLE NUMA
 !                  (IMA,IS,2) EN NUMEROTATION LOCALE MAILLE VOISINE
-    include 'jeveux.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesg.h"
     integer :: numa, nvoima, nscoma, iarepe, iaddvo, iadvoi, nbvois
 !     PARAMETER(NVOIMA=100,NSCOMA=4)
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)

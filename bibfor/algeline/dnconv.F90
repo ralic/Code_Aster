@@ -83,9 +83,9 @@ subroutine dnconv(n, ritzr, ritzi, bounds, tol,&
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'blas/dlapy2.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "blas/dlapy2.h"
     integer :: n, nconv
     real(kind=8) :: tol
 !

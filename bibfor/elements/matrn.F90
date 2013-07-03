@@ -31,8 +31,8 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais,&
 !
     implicit none
 !
-    include 'asterfort/antisy.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/antisy.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: matn ( 3 , 51 )
     real(kind=8) :: xr ( * )
     real(kind=8) :: vectn ( 9 , 3 )

@@ -27,19 +27,19 @@ subroutine te0078(option, nomte)
     implicit none
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/connec.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/connec.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/teattr.h"
+#include "asterfort/u2mess.h"
     integer :: nbres
     parameter     (nbres=3)
     integer :: icodre(nbres)

@@ -21,18 +21,18 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndaram.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmarcp.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rssepa.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndaram.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmarcp.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rssepa.h"
     character(len=8) :: result
     integer :: numarc
     integer :: fonact(*)

@@ -1,7 +1,7 @@
 subroutine dffno(elrefe, ndim, nno, nnos, dff)
     implicit none
-    include 'asterfort/elraca.h'
-    include 'asterfort/elrfdf.h'
+#include "asterfort/elraca.h"
+#include "asterfort/elrfdf.h"
     character(len=*) :: elrefe
     integer :: ndim, nno, nnos
     real(kind=8) :: dff(*)

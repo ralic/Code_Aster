@@ -27,7 +27,7 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
 !          SMIN  CONTRAINTES MINIMALES DES CYCLES APRES RAINFLOW
 !       ----------------------------------------------------------------
     implicit none
-    include 'asterfort/infniv.h'
+#include "asterfort/infniv.h"
     real(kind=8) :: sigmax(*), sigmin(*)
     real(kind=8) :: ampmax, smax(*), smin(*)
     integer :: ncyc, cycmax

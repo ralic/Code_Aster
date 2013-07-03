@@ -17,16 +17,16 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/masstg.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/pmfitx.h'
-    include 'asterfort/pmfm01.h'
-    include 'asterfort/ptma01.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jevech.h"
+#include "asterfort/masstg.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/pmfm01.h"
+#include "asterfort/ptma01.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomte, option
     real(kind=8) :: mlv(*), rhoflu
     integer :: kanl, icdmat

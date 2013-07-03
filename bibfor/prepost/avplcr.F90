@@ -6,13 +6,13 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                   nzm)
 ! aslint: disable=W1306,W1501,W1504
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/avcipr.h'
-    include 'asterfort/avgrdo.h'
-    include 'asterfort/vecnuv.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/avcipr.h"
+#include "asterfort/avgrdo.h"
+#include "asterfort/vecnuv.h"
     integer :: nbordr, kwork, i, nbvec
     integer :: somnow, tdisp, tspaq
     logical :: fordef, post

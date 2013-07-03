@@ -18,19 +18,19 @@ subroutine xcodec(noma, modelx, ndim, crimax, linter)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/xaint2.h'
-    include 'asterfort/xconno.h'
-    include 'asterfort/xfisco.h'
-    include 'asterfort/xfisno.h'
-    include 'asterfort/xoripe.h'
-    include 'asterfort/xpheop.h'
-    include 'asterfort/xstan2.h'
-    include 'asterfort/xtopoc.h'
-    include 'asterfort/xtopoi.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xaint2.h"
+#include "asterfort/xconno.h"
+#include "asterfort/xfisco.h"
+#include "asterfort/xfisno.h"
+#include "asterfort/xoripe.h"
+#include "asterfort/xpheop.h"
+#include "asterfort/xstan2.h"
+#include "asterfort/xtopoc.h"
+#include "asterfort/xtopoi.h"
     character(len=8) :: noma, modelx
     integer :: ndim
     real(kind=8) :: crimax

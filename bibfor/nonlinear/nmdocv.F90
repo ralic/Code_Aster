@@ -1,13 +1,13 @@
 subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
     implicit none
 !
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=14) :: nommc
     character(len=16) :: mcfact, algo
     integer :: iocc

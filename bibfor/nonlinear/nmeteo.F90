@@ -20,16 +20,16 @@ subroutine nmeteo(result, sdimpr, sddisc, sdieto, force,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/diincl.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmarcc.h'
-    include 'asterfort/nmetnc.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/diincl.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmarcc.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/u2mesg.h"
     character(len=24) :: sdieto, sdimpr
     character(len=19) :: sddisc
     character(len=8) :: result

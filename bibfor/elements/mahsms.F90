@@ -18,8 +18,8 @@ subroutine mahsms(ind1, nb1, xi, ksi3s2, intsr,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/hfmss.h'
-    include 'asterfort/vectgt.h'
+#include "asterfort/hfmss.h"
+#include "asterfort/vectgt.h"
     integer :: nb1, intsr
     real(kind=8) :: xi(3, *), xr(*), vectn(9, 3)
     real(kind=8) :: epais, ksi3s2

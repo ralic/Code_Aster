@@ -40,9 +40,9 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/nbval.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/nbval.h"
+#include "asterfort/u2mesg.h"
     integer :: ndim, nbmod
     complex(kind=8) :: ck(*), cm(*), cmat(*)
     real(kind=8) :: alpha(ndim+1), beta(ndim+1)

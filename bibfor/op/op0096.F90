@@ -24,45 +24,45 @@ subroutine op0096()
 !     REPERAGE DE SEGMENT DE DROITE PAR RAPPORT AUX HEXA TETRA ET PENTA
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/i3chgr.h'
-    include 'asterfort/i3crdm.h'
-    include 'asterfort/i3ctpv.h'
-    include 'asterfort/i3drdm.h'
-    include 'asterfort/i3egfa.h'
-    include 'asterfort/i3imas.h'
-    include 'asterfort/i3lchi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcono.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/i3chgr.h"
+#include "asterfort/i3crdm.h"
+#include "asterfort/i3ctpv.h"
+#include "asterfort/i3drdm.h"
+#include "asterfort/i3egfa.h"
+#include "asterfort/i3imas.h"
+#include "asterfort/i3lchi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/reliem.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcono.h"
+#include "asterfort/wkvect.h"
 !
     integer :: tetra, penta, hexa, i, j, n, m, l, long, ifm, info, j1, j2
     integer :: asds1, asds2, asds3, asds4, asds5, asds6, asds7, asds8

@@ -19,13 +19,13 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
 ! ======================================================================
 ! aslint: disable=C1002
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/hpalloc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeimpm.h'
-    include 'asterfort/jjldyn.h'
-    include 'asterfort/jxlocs.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux_private.h"
+#include "asterc/hpalloc.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeimpm.h"
+#include "asterfort/jjldyn.h"
+#include "asterfort/jxlocs.h"
+#include "asterfort/u2mesi.h"
     integer :: lonoi, lty, itab(*), jitab, iadmi, iadyn
     character(len=*) :: genri, typei, ci
 ! ----------------------------------------------------------------------

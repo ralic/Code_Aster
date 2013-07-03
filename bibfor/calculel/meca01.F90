@@ -49,44 +49,44 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 !     --- ARGUMENTS ---
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/erglob.h'
-    include 'asterfort/ernozz.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/exithm.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/mechti.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/qintzz.h'
-    include 'asterfort/qires1.h'
-    include 'asterfort/reslgn.h'
-    include 'asterfort/reslo2.h'
-    include 'asterfort/resloc.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexc1.h'
-    include 'asterfort/rsexc2.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/r8vide.h"
+#include "asterfort/alchml.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/erglob.h"
+#include "asterfort/ernozz.h"
+#include "asterfort/exisd.h"
+#include "asterfort/exithm.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/mechti.h"
+#include "asterfort/medom1.h"
+#include "asterfort/qintzz.h"
+#include "asterfort/qires1.h"
+#include "asterfort/reslgn.h"
+#include "asterfort/reslo2.h"
+#include "asterfort/resloc.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexc1.h"
+#include "asterfort/rsexc2.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
     integer :: nbordr, jordr, nchar, jcha
     integer :: codret
     real(kind=8) :: tbgrca(3)

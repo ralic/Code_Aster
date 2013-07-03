@@ -23,17 +23,17 @@ subroutine nmvmpo(fami, npg, option, nomte, nc,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/jpd1ff.h'
-    include 'asterfort/jsd1ff.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/nmvmpm.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utlcal.h'
-    include 'asterfort/verifm.h'
-    include 'blas/dscal.h'
+#include "asterfort/jpd1ff.h"
+#include "asterfort/jsd1ff.h"
+#include "asterfort/mavec.h"
+#include "asterfort/moytem.h"
+#include "asterfort/nmvmpm.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utlcal.h"
+#include "asterfort/verifm.h"
+#include "blas/dscal.h"
     character(len=*) :: fami, option, nomte
     character(len=16) :: compor(*)
     integer :: npg, nc, icodma, itemp, iret

@@ -1,12 +1,12 @@
 subroutine acevor(nbocc, nlm, nlg, nln, nlj,&
                   ier)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nbocc, nlm, nlg, nln, nlj, ier
 ! ----------------------------------------------------------------------
 ! ======================================================================

@@ -2,17 +2,17 @@ subroutine calyrg(iocc, ndim, noma, lnuno2, geom2,&
                   mrota, lrota)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/parotr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matrot.h"
+#include "asterfort/parotr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, ndim
     real(kind=8) :: mrota(3, 3)
     logical :: lrota

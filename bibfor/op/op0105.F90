@@ -22,20 +22,20 @@ subroutine op0105()
 !
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/asmaco.h'
-    include 'asterfort/asmael.h'
-    include 'asterfort/asmasu.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/asmaco.h"
+#include "asterfort/asmael.h"
+#include "asterfort/asmasu.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: mag, dm(2)
     character(len=16) :: kbi1, kbi2
     character(len=8) :: oper

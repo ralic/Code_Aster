@@ -20,17 +20,17 @@ subroutine nmcrob(noma, nomo, result, numreo, sdieto,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcroi.h'
-    include 'asterfort/nmcrot.h'
-    include 'asterfort/nmextr.h'
-    include 'asterfort/nmobno.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcroi.h"
+#include "asterfort/nmcrot.h"
+#include "asterfort/nmextr.h"
+#include "asterfort/nmobno.h"
+#include "asterfort/u2mesi.h"
     character(len=8) :: result, noma, nomo
     integer :: numreo
     character(len=19) :: sdobse

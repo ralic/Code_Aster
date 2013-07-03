@@ -20,8 +20,8 @@ subroutine u2mesi(ch1, idmess, ni, vali)
 !
 !     ------------------------------------------------------------------
     implicit none
-    include 'asterc/r8nnem.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8nnem.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: ch1, idmess
     integer :: ni, vali(*)
 !     ------------------------------------------------------------------

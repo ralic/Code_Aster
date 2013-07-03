@@ -2,7 +2,7 @@ subroutine mdsize(nomres, nbsauv, nbmode, nbchoc, nbrede,&
                   nbrevi)
 !
     implicit none
-    include 'asterfort/jeecra.h'
+#include "asterfort/jeecra.h"
     character(len=8) :: nomres
 !-----------------------------------------------------------------------
 ! ======================================================================

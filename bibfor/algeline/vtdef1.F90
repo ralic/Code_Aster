@@ -42,16 +42,16 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sdchgd.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sdchgd.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: chpout, chpin, base, typc
 !
 ! DECLARATION VARIABLES LOCALES

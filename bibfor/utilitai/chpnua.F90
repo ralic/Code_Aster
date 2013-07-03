@@ -1,8 +1,8 @@
 subroutine chpnua(nx, chpt, lno, nuage)
     implicit none
-    include 'asterfort/cnonua.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cnonua.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/u2mess.h"
     integer :: nx
     character(len=*) :: chpt, lno, nuage
 !     ------------------------------------------------------------------

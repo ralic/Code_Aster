@@ -23,14 +23,14 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     implicit   none
 !
 ! PARAMETRES D'APPEL
-    include 'asterc/isnnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     integer :: nfreq, mxfreq, resufi(mxfreq, *), lamor
     real(kind=8) :: resufr(mxfreq, *)
     character(len=*) :: option, resufk(mxfreq, *), typres

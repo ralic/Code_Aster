@@ -66,11 +66,11 @@ subroutine uthk(nomte, geom, hk, ndim, noe,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/uttgel.h'
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/uttgel.h"
     integer :: ndim, noe(9, 6, 4), nsomm, ifa, tymvol, niv, ifm
     character(len=16) :: nomte
     real(kind=8) :: hk, geom(*)

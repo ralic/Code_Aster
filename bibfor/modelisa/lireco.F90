@@ -21,11 +21,11 @@ subroutine lireco(motfac, noma, nomo, izone, listme,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reliem.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reliem.h"
     character(len=16) :: motfac
     character(len=8) :: noma, nomo
     integer :: izone

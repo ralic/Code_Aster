@@ -1,7 +1,7 @@
 subroutine uttrif(vale, nb, typfon)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterfort/u2mess.h"
     integer :: nb
     real(kind=8) :: vale(*)
     character(len=*) :: typfon

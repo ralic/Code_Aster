@@ -19,17 +19,17 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdcrg.h'
-    include 'asterfort/nmlere.h'
-    include 'asterfort/nmlerr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdcrg.h"
+#include "asterfort/nmlere.h"
+#include "asterfort/nmlerr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddisc
     integer :: iterat
     logical :: lextra

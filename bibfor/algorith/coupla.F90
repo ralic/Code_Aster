@@ -31,8 +31,8 @@ subroutine coupla(np1, nbm, indic, tpfl, veci1,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/coefmo.h'
-    include 'asterfort/matini.h'
+#include "asterfort/coefmo.h"
+#include "asterfort/matini.h"
     integer :: np1, nbm, indic
     character(len=8) :: tpfl
     integer :: veci1(*)

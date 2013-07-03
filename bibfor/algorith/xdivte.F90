@@ -1,10 +1,10 @@
 subroutine xdivte(ndim, elp, cnset, nse, nnose)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ndim, cnset(*), nse, nnose
     character(len=8) :: elp
 !     ------------------------------------------------------------------

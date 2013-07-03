@@ -20,8 +20,8 @@ subroutine pacou5(r, qt, n, u, v)
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/pacou6.h'
+#include "jeveux.h"
+#include "asterfort/pacou6.h"
     integer :: n
     real(kind=8) :: r(n, *), qt(n, *), u(*), v(*)
     integer :: i, j, k

@@ -1,18 +1,18 @@
 subroutine tbimfi(nparfi, table, newtab, iret)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbextb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbextb.h"
+#include "asterfort/wkvect.h"
     integer :: nparfi, iret
     character(len=19) :: table, newtab
 !     ------------------------------------------------------------------

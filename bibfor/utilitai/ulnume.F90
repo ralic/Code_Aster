@@ -25,8 +25,8 @@ function ulnume()
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulinit.h'
+#include "asterfort/u2mess.h"
+#include "asterfort/ulinit.h"
     integer :: mxf
     parameter       (mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)

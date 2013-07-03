@@ -27,12 +27,12 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !     TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/assert.h"
+#include "asterfort/indent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ndim, jnnm(3), nddl, stano(*), lact(8)
     character(len=16) :: option
     real(kind=8) :: mmat(336, 336), vtmp(336)

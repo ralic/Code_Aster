@@ -19,25 +19,25 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/conlag.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/dbgcal.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/inical.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/reajre.h'
+#include "asterfort/calcul.h"
+#include "asterfort/conlag.h"
+#include "asterfort/corich.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
     character(len=*) :: modelz, matasz, deplaz, vecelz
     character(len=19) :: lischa
 !

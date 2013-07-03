@@ -70,22 +70,22 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    include 'asterfort/amumpc.h'
-    include 'asterfort/amumpd.h'
-    include 'asterfort/amumps.h'
-    include 'asterfort/amumpu.h'
-    include 'asterfort/amumpz.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/amumpc.h"
+#include "asterfort/amumpd.h"
+#include "asterfort/amumps.h"
+#include "asterfort/amumpu.h"
+#include "asterfort/amumpz.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: action, matasz, vcinez, solvez
     integer :: iret, nbsol
     real(kind=8) :: rsolu(*)
@@ -94,8 +94,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
 #ifdef _HAVE_MUMPS
 #   include "aster_mumps.h"
-    include 'mpif.h'
-    include 'jeveux.h'
+#include "mpif.h"
+#include "jeveux.h"
 !
     integer :: iprem
     type (SMUMPS_STRUC) , pointer :: smpsk

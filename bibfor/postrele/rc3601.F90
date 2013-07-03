@@ -3,24 +3,24 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
                   cara, nommat, snmax, samax, utot,&
                   sm, factus)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rc36fp.h'
-    include 'asterfort/rc36fs.h'
-    include 'asterfort/rc36fu.h'
-    include 'asterfort/rc36sa.h'
-    include 'asterfort/rc36sn.h'
-    include 'asterfort/rc36sp.h'
-    include 'asterfort/rcma01.h'
-    include 'asterfort/rcmo01.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rc36fp.h"
+#include "asterfort/rc36fs.h"
+#include "asterfort/rc36fu.h"
+#include "asterfort/rc36sa.h"
+#include "asterfort/rc36sn.h"
+#include "asterfort/rc36sp.h"
+#include "asterfort/rcma01.h"
+#include "asterfort/rcmo01.h"
+#include "asterfort/wkvect.h"
     integer :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
     real(kind=8) :: c(*), k(*), cara(*), snmax, samax, utot, sm, factus(*)
     logical :: seisme

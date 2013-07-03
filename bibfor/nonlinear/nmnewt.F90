@@ -28,38 +28,38 @@ subroutine nmnewt(noma, modele, numins, numedd, numfix,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/isfonc.h'
-    include 'asterfort/nmactf.h'
-    include 'asterfort/nmactn.h'
-    include 'asterfort/nmaffi.h'
-    include 'asterfort/nmchar.h'
-    include 'asterfort/nmconv.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmcvgf.h'
-    include 'asterfort/nmcvgn.h'
-    include 'asterfort/nmdcin.h'
-    include 'asterfort/nmdepl.h'
-    include 'asterfort/nmdesc.h'
-    include 'asterfort/nmeceb.h'
-    include 'asterfort/nmeraz.h'
-    include 'asterfort/nmevdt.h'
-    include 'asterfort/nmevr0.h'
-    include 'asterfort/nmfcon.h'
-    include 'asterfort/nmfcor.h'
-    include 'asterfort/nmible.h'
-    include 'asterfort/nmimci.h'
-    include 'asterfort/nmimcr.h'
-    include 'asterfort/nmimr0.h'
-    include 'asterfort/nmleeb.h'
-    include 'asterfort/nmnble.h'
-    include 'asterfort/nmnpas.h'
-    include 'asterfort/nmpred.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmstat.h'
-    include 'asterfort/nmsuiv.h'
-    include 'asterfort/nmtble.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/nmtimr.h'
+#include "asterfort/isfonc.h"
+#include "asterfort/nmactf.h"
+#include "asterfort/nmactn.h"
+#include "asterfort/nmaffi.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmconv.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmcvgf.h"
+#include "asterfort/nmcvgn.h"
+#include "asterfort/nmdcin.h"
+#include "asterfort/nmdepl.h"
+#include "asterfort/nmdesc.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmeraz.h"
+#include "asterfort/nmevdt.h"
+#include "asterfort/nmevr0.h"
+#include "asterfort/nmfcon.h"
+#include "asterfort/nmfcor.h"
+#include "asterfort/nmible.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmimcr.h"
+#include "asterfort/nmimr0.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmnble.h"
+#include "asterfort/nmnpas.h"
+#include "asterfort/nmpred.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmstat.h"
+#include "asterfort/nmsuiv.h"
+#include "asterfort/nmtble.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmtimr.h"
     integer :: numins
     integer :: fonact(*)
     character(len=16) :: method(*)

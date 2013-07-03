@@ -1,9 +1,9 @@
 subroutine kndiff(long, lk1, l1, lk2, l2,&
                   lk3, l3)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/kndif2.h'
-    include 'asterfort/knindi.h'
+#include "asterfort/assert.h"
+#include "asterfort/kndif2.h"
+#include "asterfort/knindi.h"
     integer :: long, l1, l2, l3
     character(len=*) :: lk1(l1), lk2(l2), lk3(l3)
 ! ---------------------------------------------------------------------

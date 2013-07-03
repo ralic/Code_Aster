@@ -1,7 +1,7 @@
 subroutine fmprhm(nbfonc, nbptot, sigm, rphmax)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(nbfonc*nbptot)
     real(kind=8) :: rphmax

@@ -27,7 +27,7 @@ subroutine cjstis(mod, mater, sig, vin, dsde)
 !     OUT  DSDE    :  MATRICE TANGENTE
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi
 !
     real(kind=8) :: sig(6), dsde(6, 6), mater(14, 2), vin(*), i1

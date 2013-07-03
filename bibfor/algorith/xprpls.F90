@@ -3,24 +3,24 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
                   ndim, ndomp, edomg)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnsprj.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pj2dco.h'
-    include 'asterfort/pj3dco.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnsprj.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pj2dco.h"
+#include "asterfort/pj3dco.h"
     character(len=8) :: dnomo, nomo, noma
     character(len=16) :: corres
     character(len=19) :: dcnsln, dcnslt, cnsln, cnslt, grln, grlt, ndomp, edomg

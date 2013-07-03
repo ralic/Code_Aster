@@ -2,9 +2,9 @@ subroutine fmcros(nbfonc, nbptot, sigm, rd0, rtau0,&
                   rcrit, rphmax, rtaua)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/fmampc.h'
-    include 'asterfort/fmprhm.h'
+#include "jeveux.h"
+#include "asterfort/fmampc.h"
+#include "asterfort/fmprhm.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: rphmax, rtaua, sigm(nbfonc*nbptot)
     real(kind=8) :: rd0, rtau0, rcrit

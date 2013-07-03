@@ -18,22 +18,22 @@ subroutine ssdege(nomu)
     implicit none
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jevtbl.h'
-    include 'asterfort/ssdeu1.h'
-    include 'asterfort/ssdeu2.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jevtbl.h"
+#include "asterfort/ssdeu1.h"
+#include "asterfort/ssdeu2.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
 !     BUT:

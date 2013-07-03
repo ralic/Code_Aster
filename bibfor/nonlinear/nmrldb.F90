@@ -18,11 +18,11 @@ subroutine nmrldb(solveu, lmat, resu, nbsm, cncine)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/resoud.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/resoud.h"
     integer :: lmat, nbsm
     real(kind=8) :: resu(*)
     character(len=19) :: solveu, cncine

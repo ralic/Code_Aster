@@ -17,8 +17,8 @@ subroutine jeprsg(cunit, tgr, info)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/iunifi.h'
+#include "jeveux_private.h"
+#include "asterfort/iunifi.h"
     character(len=*) :: cunit
     real(kind=8) :: tgr
     integer :: info

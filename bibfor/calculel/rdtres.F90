@@ -1,32 +1,32 @@
 subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                   corrm, iocc)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rdtchp.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutc4.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/gettco.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlima.h"
+#include "asterfort/initel.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rdtchp.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutc4.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma1, noma2, resu1, resu2
     character(len=24) :: corrn, corrm
     integer :: iocc

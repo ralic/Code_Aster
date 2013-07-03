@@ -19,7 +19,7 @@ subroutine pipeou(mat, sup, sud, mup, mud,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: mat
     real(kind=8) :: sup(3), sud(3), mup(3), mud(3), tau, vim(*), copilo(5)
 ! ----------------------------------------------------------------------

@@ -43,9 +43,9 @@ subroutine betini(materf, nmat, sig, sigeq, sigh,&
 !           CONETR :  LIMITE SUPERIEURE DE FT POUR LA PROJECTION AU
 !                     SOMMET DU CONE DE TRACTION
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcprsc.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lchydr.h"
+#include "asterfort/lcprsc.h"
     integer :: nmat
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: coefa(2, 2), coefb(2), coefar(2, 2), coefbr(2)

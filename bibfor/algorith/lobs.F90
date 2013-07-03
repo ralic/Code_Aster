@@ -19,12 +19,12 @@ subroutine lobs(sdobse, numins, inst, lobsv)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmcrpo.h'
+#include "jeveux.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcrpo.h"
     integer :: numins
     real(kind=8) :: inst
     character(len=19) :: sdobse

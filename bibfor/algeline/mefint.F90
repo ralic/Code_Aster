@@ -3,7 +3,7 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                   phix, phiy, z, num)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbz, nbgrp, nbmod, nbnoe, nbddl
     integer :: irot(3), numnog(nbgrp), nbnog(nbgrp), num(nbz)
     real(kind=8) :: zint(nbz, nbgrp), defm(6*nbnoe, nbmod), z(*)

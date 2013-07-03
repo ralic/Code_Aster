@@ -17,14 +17,14 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjalty.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjimpo.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjalty.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjimpo.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
     integer :: unit
     character(len=*) :: nomlu, cidatr, mess
 ! ----------------------------------------------------------------------

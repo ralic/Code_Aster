@@ -19,7 +19,7 @@ subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/isdeco.h'
+#include "asterfort/isdeco.h"
     integer :: ndexfr
     integer :: nnl, nbcps
     real(kind=8) :: vectff(18)

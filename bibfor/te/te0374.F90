@@ -29,11 +29,11 @@ subroutine te0374(option, nomte)
 !.......................................................................
 !
 !!
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
     integer :: icodre(2)
 !!
     character(len=8) :: nomres(2), fami, poum

@@ -24,8 +24,8 @@ function lciv2s(a)
 !       OUT EQUIV  :  EQUIVALENT DE A = (3/2 D D)
 !                     AVEC          D = A - 1/3 TR(A) I
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcnrts.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcnrts.h"
     integer :: n, nd
     real(kind=8) :: a(6), dev(6)
     real(kind=8) :: lciv2s

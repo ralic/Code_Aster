@@ -35,7 +35,7 @@ subroutine pk2sig(ndim, f, jac, pk2, sig,&
 ! IN  IND     : CHOIX
 !
     implicit none
-    include 'asterfort/matinv.h'
+#include "asterfort/matinv.h"
     integer :: ndim, indi(6), indj(6), ind, pq, kl
     real(kind=8) :: f(3, 3), jac, pk2(2*ndim), sig(2*ndim), ftf, rind1(6)
     real(kind=8) :: fmm(3, 3)

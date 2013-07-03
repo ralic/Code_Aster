@@ -21,7 +21,7 @@ subroutine lc0028(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmvpir.h'
+#include "asterfort/nmvpir.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap, tampon(*)

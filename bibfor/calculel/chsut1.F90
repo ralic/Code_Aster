@@ -18,16 +18,16 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verigd.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verigd.h"
     integer :: ncmp
     character(len=*) :: chs1, nomgd2, base, chs2
     character(len=8) :: lcmp1(ncmp), lcmp2(ncmp)

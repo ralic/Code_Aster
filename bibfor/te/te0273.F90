@@ -29,13 +29,13 @@ subroutine te0273(option, nomte)
 ! CORPS DU PROGRAMME
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/foderi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
+#include "asterfort/elref4.h"
+#include "asterfort/foderi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta, tpg
     real(kind=8) :: alpha, rbid

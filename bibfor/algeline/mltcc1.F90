@@ -28,20 +28,20 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils,&
 !
 ! aslint: disable=W1304,W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mlnclm.h'
-    include 'asterfort/mlncmj.h'
-    include 'asterfort/mltacf.h'
-    include 'asterfort/mltacp.h'
-    include 'asterfort/mltc21.h'
-    include 'asterfort/mltclm.h'
-    include 'asterfort/mltcmj.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mlnclm.h"
+#include "asterfort/mlncmj.h"
+#include "asterfort/mltacf.h"
+#include "asterfort/mltacp.h"
+#include "asterfort/mltc21.h"
+#include "asterfort/mltclm.h"
+#include "asterfort/mltcmj.h"
     integer :: pmin, nbb
     parameter (pmin=10)
     integer :: nbloc, ncbloc(*), decal(*)

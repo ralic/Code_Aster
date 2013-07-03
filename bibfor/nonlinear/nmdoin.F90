@@ -19,16 +19,16 @@ subroutine nmdoin(evol, evonol, instin, numein)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mesk.h"
     character(len=24) :: evol
     logical :: evonol
     integer :: numein

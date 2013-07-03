@@ -33,12 +33,12 @@ subroutine inialg(nbm, np2, np3, np4, nbmc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/accele.h'
-    include 'asterfort/disbut.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/accele.h"
+#include "asterfort/disbut.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/matini.h"
+#include "asterfort/projmg.h"
+#include "asterfort/vecini.h"
     integer :: nbm, np2, np3, np4, nbmc, nbnl, npf, npfmax, npfts
     real(kind=8) :: depg(*), vitg(*), depg0(*), vitg0(*), accg0(*), amor00(*)
     real(kind=8) :: puls00(*), fexttr(*), fext(np4, *), text(*), fextts(np4, *)

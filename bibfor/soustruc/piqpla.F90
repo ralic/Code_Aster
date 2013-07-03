@@ -2,7 +2,7 @@ subroutine piqpla(x1, y1, z1, xp, yp,&
                   zp, zone7, zone8, l4, l6,&
                   epsi)
     implicit   none
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     real(kind=8) :: x1, y1, z1, xp, yp, zp, l4, l6, epsi
     logical :: zone7, zone8
 !-----------------------------------------------------------------------

@@ -1,11 +1,11 @@
 subroutine memres(limpr, ldyn, titre, prec, tmax)
     implicit none
-    include 'asterc/hpalloc.h'
-    include 'asterc/hpdeallc.h'
-    include 'asterc/loisem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjldyn.h'
-    include 'asterfort/utgtme.h'
+#include "asterc/hpalloc.h"
+#include "asterc/hpdeallc.h"
+#include "asterc/loisem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjldyn.h"
+#include "asterfort/utgtme.h"
     character(len=*) :: titre, limpr, ldyn
     real(kind=8) :: tmax, prec
 ! ======================================================================

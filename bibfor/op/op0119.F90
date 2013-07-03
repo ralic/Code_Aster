@@ -23,38 +23,38 @@ subroutine op0119()
 ! --- ------------------------------------------------------------------
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/gfmaco.h'
-    include 'asterfort/gfmacr.h'
-    include 'asterfort/gfmafi.h'
-    include 'asterfort/gfmagr.h'
-    include 'asterfort/gfmama.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pmfsce.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/codent.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/gfmaco.h"
+#include "asterfort/gfmacr.h"
+#include "asterfort/gfmafi.h"
+#include "asterfort/gfmagr.h"
+#include "asterfort/gfmama.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pmfsce.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
 !
     integer :: nbval, ncarfi, itrois
     parameter  (nbval=999,ncarfi=3,itrois=3)

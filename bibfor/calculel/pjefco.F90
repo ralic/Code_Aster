@@ -26,27 +26,27 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pj2dco.h'
-    include 'asterfort/pj3dco.h'
-    include 'asterfort/pj4dco.h'
-    include 'asterfort/pj6dco.h'
-    include 'asterfort/pjefca.h'
-    include 'asterfort/pjeftg.h'
-    include 'asterfort/pjfuco.h'
-    include 'asterfort/reliem.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pj2dco.h"
+#include "asterfort/pj3dco.h"
+#include "asterfort/pj4dco.h"
+#include "asterfort/pj6dco.h"
+#include "asterfort/pjefca.h"
+#include "asterfort/pjeftg.h"
+#include "asterfort/pjfuco.h"
+#include "asterfort/reliem.h"
     character(len=8) :: moa1, moa2
     character(len=16) :: corres
     character(len=1) :: base

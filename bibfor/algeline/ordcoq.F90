@@ -49,19 +49,19 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
 ! OUT : TORCO  : TABLEAU CONTENANT LES ORDRES DE COQUE ET DEPHASAGES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dcabs2.h'
-    include 'asterfort/fft.h'
-    include 'asterfort/fointr.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dcabs2.h"
+#include "asterfort/fft.h"
+#include "asterfort/fointr.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: imod, nbm, icoq, nbno, numno(nbno), inomax, nbnoto, iaxe
     real(kind=8) :: coordo(3, nbnoto), defm(2, nbnoto, nbm)
     integer :: nunoe0

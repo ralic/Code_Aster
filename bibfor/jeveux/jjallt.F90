@@ -18,8 +18,8 @@ subroutine jjallt(lonoi, ic, gi, typei, ltypi,&
 ! ======================================================================
 ! aslint: disable=C1002,W0405
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jjalls.h'
+#include "jeveux.h"
+#include "asterfort/jjalls.h"
     integer :: lonoi, ic, ltypi, jctab
     character(len=*) :: gi, typei, ci
 !-----------------------------------------------------------------------

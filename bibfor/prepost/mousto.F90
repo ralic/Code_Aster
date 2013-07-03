@@ -3,21 +3,21 @@ subroutine mousto(guidag, dimtub, voltub, tubuse, dimobs,&
                   arete, arete2, ns, obcont, epais,&
                   ecray, resu, denc, perce)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lunule.h'
-    include 'asterfort/mouveo.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/usobce.h'
-    include 'asterfort/usoben.h'
-    include 'asterfort/ustuen.h'
-    include 'asterfort/veobst.h'
-    include 'asterfort/vetube.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lunule.h"
+#include "asterfort/mouveo.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/usobce.h"
+#include "asterfort/usoben.h"
+#include "asterfort/ustuen.h"
+#include "asterfort/veobst.h"
+#include "asterfort/vetube.h"
     integer :: dimtub, dimobs, ns
     real(kind=8) :: volobs(*), obsuse(*), rcray, rcarte, sect(*), arete, arete2
     real(kind=8) :: epais, ecray, denc, perce, voltub(*), tubuse(*)

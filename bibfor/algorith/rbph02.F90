@@ -2,18 +2,18 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
                   nbnoeu, objve1, ncmp, objve2, objve3,&
                   objve4)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/posddl.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     integer :: nbnoeu, neq
     character(len=8) :: mailla
     character(len=14) :: numddl

@@ -23,11 +23,11 @@ subroutine lcfrge(ndim, typmod, imate, epsm, deps,&
 !
 !
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option
     integer :: ndim, imate

@@ -1,11 +1,11 @@
 subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
                   nbsg2, nbsg3, sigr, nocc, saltij)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rc36f4.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rc36f4.h"
+#include "asterfort/u2mess.h"
     integer :: nbp12, nbp23, nbp13, nbsigr, nocc(*), nbsg1, nbsg2, nbsg3
     integer :: sigr(*)
     real(kind=8) :: saltij(*)

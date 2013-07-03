@@ -23,17 +23,17 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 ! aslint: disable=W1304,W1504
     implicit none
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/nmfedd.h'
-    include 'asterfort/nmfend.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utlcal.h'
-    include 'asterfort/zerofr.h'
+#include "asterc/r8miem.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/nmfedd.h"
+#include "asterfort/nmfend.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utlcal.h"
+#include "asterfort/zerofr.h"
     integer :: kpg, ksp, nmat, np, nb, ier, ndim
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: p(np), beta(nb), vim(*), dt1, crit(*)

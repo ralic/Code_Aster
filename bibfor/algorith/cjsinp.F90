@@ -67,11 +67,11 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
 !                     DEPLACEMENT SURFACE PLASTIQUE DEVIATOIRE /
 !                        POSITION SURFACE LIMITE DEVIATOIRE
 ! ======================================================================
-    include 'asterfort/cjsqco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/trace.h'
+#include "asterfort/cjsqco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/trace.h"
     integer :: ndt, ndi, nvi, niter, ndec, i
     real(kind=8) :: epsd(6), deps(6), sigf(6), vinf(nvi), epscon
     real(kind=8) :: mater(14, 2), rm, rc, pco, pa, pc

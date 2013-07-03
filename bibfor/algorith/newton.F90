@@ -53,25 +53,25 @@ subroutine newton(np1, np2, np3, np4, nbm,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/adimve.h'
-    include 'asterfort/calcmd.h'
-    include 'asterfort/calcmi.h'
-    include 'asterfort/calfmn.h'
-    include 'asterfort/calfnl.h'
-    include 'asterfort/calnd1.h'
-    include 'asterfort/calnd2.h'
-    include 'asterfort/coupla.h'
-    include 'asterfort/dtcycl.h'
-    include 'asterfort/estivd.h'
-    include 'asterfort/inipan.h'
-    include 'asterfort/projmd.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/projvd.h'
-    include 'asterfort/sommma.h'
-    include 'asterfort/testch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/adimve.h"
+#include "asterfort/calcmd.h"
+#include "asterfort/calcmi.h"
+#include "asterfort/calfmn.h"
+#include "asterfort/calfnl.h"
+#include "asterfort/calnd1.h"
+#include "asterfort/calnd2.h"
+#include "asterfort/coupla.h"
+#include "asterfort/dtcycl.h"
+#include "asterfort/estivd.h"
+#include "asterfort/inipan.h"
+#include "asterfort/projmd.h"
+#include "asterfort/projmg.h"
+#include "asterfort/projvd.h"
+#include "asterfort/sommma.h"
+#include "asterfort/testch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
     integer :: np1, np2, np3, np4, nbm, n2, nbmcd, icoupl
     real(kind=8) :: tc, dt, dtc, vecdt(*)
     integer :: nbnl, typch(*), nbseg(*)

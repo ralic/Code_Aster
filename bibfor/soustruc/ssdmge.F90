@@ -18,7 +18,7 @@ subroutine ssdmge(geo1, geo2, para, dimgeo)
     implicit none
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/matrot.h'
+#include "asterfort/matrot.h"
     integer :: dimgeo
     real(kind=8) :: geo1(*), geo2(*), para(*)
 ! ----------------------------------------------------------------------

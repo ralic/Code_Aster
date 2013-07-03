@@ -1,14 +1,14 @@
 subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
                   nopara)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/fointc.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/wkvect.h"
     integer :: nbval
     real(kind=8) :: vale(*)
     logical :: compl

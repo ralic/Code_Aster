@@ -27,13 +27,13 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
 !     OUT : PETIK     : VECTEUR-COURBURE ACTUEL
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/antisy.h'
-    include 'asterfort/axial.h'
-    include 'asterfort/marota.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/transp.h'
-    include 'blas/ddot.h'
+#include "asterfort/antisy.h"
+#include "asterfort/axial.h"
+#include "asterfort/marota.h"
+#include "asterfort/promat.h"
+#include "asterfort/provec.h"
+#include "asterfort/transp.h"
+#include "blas/ddot.h"
     real(kind=8) :: tetag(3), tetapg(3), petikm(3), petik(3), petik1(3)
     real(kind=8) :: petik2(3), v1(3), amat1(3, 3), amat2(3, 3), amat3(3, 3)
 !

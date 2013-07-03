@@ -50,17 +50,17 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/mppsta.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/mppsta.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/wkvect.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
     integer :: ddlsta(n), ddlexc(n)
     real(kind=8) :: h(ldh, ldh), v(ldv, ldh)
     real(kind=8) :: vectp(ldv)

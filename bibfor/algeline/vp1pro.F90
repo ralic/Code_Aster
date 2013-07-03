@@ -31,17 +31,17 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq,&
     implicit none
 !
 ! PARAMETRES D'APPEL
-    include 'jeveux.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/rectfr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vp1ite.h'
-    include 'asterfort/vpstur.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/freqom.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/omega2.h"
+#include "asterfort/rectfr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vp1ite.h"
+#include "asterfort/vpstur.h"
+#include "asterfort/wkvect.h"
     integer :: nbpari, nbparr, nbpark, nitv, iexcl(*), nbrssa, lraide, lmasse
     integer :: ldynam, neq, nfreq, nfreqb, resufi(nfreqb, nbpari)
     real(kind=8) :: tolv, vec(neq, *), resufr(nfreqb, nbparr), fcorig

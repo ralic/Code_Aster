@@ -3,19 +3,19 @@ subroutine cclpci(option, modele, resuin, resuou, mateco,&
                   lichin, codret)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/alchml.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/alchml.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesk.h"
     integer :: nbpain, numord, codret
     character(len=8) :: modele, resuin, resuou, mateco, carael
     character(len=8) :: lipain(*)

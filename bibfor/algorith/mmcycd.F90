@@ -19,25 +19,25 @@ subroutine mmcycd(noma, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmcyc1.h'
-    include 'asterfort/mmcyc2.h'
-    include 'asterfort/mmcyc3.h'
-    include 'asterfort/mmcyc4.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfm.h'
-    include 'asterfort/mmnpoi.h'
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmcyc1.h"
+#include "asterfort/mmcyc2.h"
+#include "asterfort/mmcyc3.h"
+#include "asterfort/mmcyc4.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmnpoi.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
 !

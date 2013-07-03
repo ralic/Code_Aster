@@ -36,11 +36,11 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 !           VERIFT :  TEST DE VALIDITE DE LA PROJECTION AU SOMMET DU
 !                     CONE TRACTION
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsv.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lchydr.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsv.h"
     integer :: nmat, nseuil, i
     real(kind=8) :: materf(nmat, 2), dpc, dpt
     real(kind=8) :: un, d23, rac2, deux, trois

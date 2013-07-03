@@ -1,11 +1,11 @@
 subroutine te0119(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jevech.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

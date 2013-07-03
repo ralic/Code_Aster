@@ -8,20 +8,20 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cabhvf.h'
-    include 'asterfort/cacdsu.h'
-    include 'asterfort/cafmes.h'
-    include 'asterfort/cafves.h'
-    include 'asterfort/comthm.h'
-    include 'asterfort/inices.h'
-    include 'asterfort/nvithm.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vfcfks.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cabhvf.h"
+#include "asterfort/cacdsu.h"
+#include "asterfort/cafmes.h"
+#include "asterfort/cafves.h"
+#include "asterfort/comthm.h"
+#include "asterfort/inices.h"
+#include "asterfort/nvithm.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vfcfks.h"
     integer :: maxfa
     parameter (maxfa=6)
 !

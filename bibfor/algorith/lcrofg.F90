@@ -16,7 +16,7 @@ subroutine lcrofg(y, dp, s, seuil, dseuil)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lcrofs.h'
+#include "asterfort/lcrofs.h"
     real(kind=8) :: y, dp, s, seuil, dseuil
 !
 ! **********************************************************

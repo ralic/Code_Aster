@@ -86,9 +86,9 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/u2mesk.h"
     character(len=2) :: chdim
 !
     integer :: iare, nnos, nnoa

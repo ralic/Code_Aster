@@ -26,41 +26,41 @@ subroutine sscgno(ma, nbgnin)
 !          NBGNP : NOMBRE DE GROUP_NO A CREER
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cgnoec.h'
-    include 'asterfort/cgnoes.h'
-    include 'asterfort/cgnofu.h'
-    include 'asterfort/cgnoin.h'
-    include 'asterfort/cgnoiv.h'
-    include 'asterfort/cgnoor.h'
-    include 'asterfort/cgnopl.h'
-    include 'asterfort/cgnoso.h'
-    include 'asterfort/cgnoxf.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ornofd.h'
-    include 'asterfort/ssgngm.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utlisi.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cgnoec.h"
+#include "asterfort/cgnoes.h"
+#include "asterfort/cgnofu.h"
+#include "asterfort/cgnoin.h"
+#include "asterfort/cgnoiv.h"
+#include "asterfort/cgnoor.h"
+#include "asterfort/cgnopl.h"
+#include "asterfort/cgnoso.h"
+#include "asterfort/cgnoxf.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ornofd.h"
+#include "asterfort/ssgngm.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utlisi.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: vecori(3)
 !
     integer :: nalar, nbma

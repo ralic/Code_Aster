@@ -25,16 +25,16 @@ subroutine op0080()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/argu80.h'
-    include 'asterfort/calcyc.h'
-    include 'asterfort/desccy.h'
-    include 'asterfort/immocy.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/projcy.h'
-    include 'asterfort/refe80.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/argu80.h"
+#include "asterfort/calcyc.h"
+#include "asterfort/desccy.h"
+#include "asterfort/immocy.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/projcy.h"
+#include "asterfort/refe80.h"
     character(len=8) :: nomres
     character(len=16) :: nomope, nomcon
 !

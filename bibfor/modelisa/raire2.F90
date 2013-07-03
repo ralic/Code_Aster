@@ -1,26 +1,26 @@
 subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                   nbno, tabnoe, rignoe)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/compma.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/compma.h"
+#include "asterfort/fointe.h"
+#include "asterfort/getvem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
     character(len=8) :: noma
     character(len=24) :: ligrma(nbgr)

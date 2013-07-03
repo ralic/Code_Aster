@@ -2,7 +2,7 @@ subroutine i3icfp(epsi, fglo, sgt, floc1, floc2,&
                   floc3, typf, nbpt, iret)
     implicit none
 !
-    include 'asterfort/i3icfs.h'
+#include "asterfort/i3icfs.h"
     integer :: nbpt, typf, iret
     real(kind=8) :: epsi, fglo(3, *), sgt(*), floc1(*), floc2(*), floc3(*)
 !

@@ -33,35 +33,35 @@ subroutine te0382(option, nomte)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calnor.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/ermeb2.h'
-    include 'asterfort/ermes2.h'
-    include 'asterfort/ermev2.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/intenc.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/uthk.h'
-    include 'asterfort/utjac.h'
-    include 'asterfort/xrmes2.h'
-    include 'asterfort/xrmev2.h'
+#include "asterfort/calnor.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/ermeb2.h"
+#include "asterfort/ermes2.h"
+#include "asterfort/ermev2.h"
+#include "asterfort/infniv.h"
+#include "asterfort/intenc.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/uthk.h"
+#include "asterfort/utjac.h"
+#include "asterfort/xrmes2.h"
+#include "asterfort/xrmev2.h"
     character(len=16) :: option, nomte
 !
 !

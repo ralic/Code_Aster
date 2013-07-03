@@ -36,8 +36,8 @@ subroutine permea(imate, hydr, phi, t, sat,&
 !
     implicit none
 !
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     integer :: imate, ncon, nc
     parameter     ( nc = 1)
     real(kind=8) :: t, phi, valpar(2), sat

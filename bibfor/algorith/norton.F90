@@ -32,10 +32,10 @@ subroutine norton(nvi, vini, coeft, nmat, sigi,&
 !           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 !           IRET    :  CODE RETOUR =0 SI OK, =1 SI PB
 !     ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8miem.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/r8inir.h"
     integer :: iret, itens, ndi, nmat, nvi, ndt
     real(kind=8) :: coeft(nmat), vini(nvi), dvin(nvi), smx(6), sigi(6)
     real(kind=8) :: dp, n, unsurk, grj2v, epsi, deps(6)

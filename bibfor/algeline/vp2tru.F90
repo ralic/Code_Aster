@@ -2,10 +2,10 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
                   a, nbvect, w, z, wk,&
                   mxiter, ier, nitqr)
     implicit none
-    include 'asterfort/matini.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vphqrp.h'
+#include "asterfort/matini.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vphqrp.h"
     character(len=1) :: ty
     character(len=8) :: method
     integer :: nbvect, mxiter, ier, nitqr

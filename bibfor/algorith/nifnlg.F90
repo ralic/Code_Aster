@@ -23,15 +23,15 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nirela.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmmalu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nirela.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmmalu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: idff2, mate
     integer :: vu(3, 27), vg(27), vp(27)

@@ -21,12 +21,12 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
 !
 ! aslint: disable=W1501
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfllvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: iocc, vali
     real(kind=8) :: valr
     character(len=1) :: getset

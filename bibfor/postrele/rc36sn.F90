@@ -3,9 +3,9 @@ subroutine rc36sn(nbm, adrm, ipt, c, cara,&
                   mj, mse, nbthp, nbthq, ioc1,&
                   ioc2, snij)
     implicit   none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rcsn01.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rcsn01.h"
     integer :: nbm, adrm(*), ipt, nbthp, nbthq
     real(kind=8) :: c(*), cara(*), mati(*), matj(*), pi, mi(*), pj, mj(*)
     real(kind=8) :: mse(*), snij

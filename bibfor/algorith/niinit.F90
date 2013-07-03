@@ -20,8 +20,8 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
 !
-    include 'asterfort/teattr.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/teattr.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim, nno1, nno2, nno3, nno4
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27), iret, iefm
     character(len=8) :: typmod(*)

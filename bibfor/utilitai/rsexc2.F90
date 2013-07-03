@@ -2,11 +2,11 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
                   chextr, option, iret)
     implicit none
 !-----------------------------------------------------------------------
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: i1, i2, icode, iret, j, nmax
 !-----------------------------------------------------------------------
     parameter (nmax=10)

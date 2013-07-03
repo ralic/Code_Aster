@@ -1,10 +1,10 @@
 subroutine gilig1(nfic, ndim, nbval, nbpoin)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nfic, ndim, nbval, nbpoin
 ! ----------------------------------------------------------------------
 ! ======================================================================

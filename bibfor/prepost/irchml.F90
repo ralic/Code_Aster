@@ -7,40 +7,40 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvis.h'
-    include 'asterfort/celcel.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/cesimp.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/i2trgi.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/iradhs.h'
-    include 'asterfort/irccmp.h'
-    include 'asterfort/irceca.h'
-    include 'asterfort/ircecl.h'
-    include 'asterfort/ircecs.h'
-    include 'asterfort/ircerl.h'
-    include 'asterfort/ircers.h'
-    include 'asterfort/irsspt.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxcaps.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvis.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celces.h"
+#include "asterfort/celver.h"
+#include "asterfort/cesimp.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/i2trgi.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/iradhs.h"
+#include "asterfort/irccmp.h"
+#include "asterfort/irceca.h"
+#include "asterfort/ircecl.h"
+#include "asterfort/ircecs.h"
+#include "asterfort/ircerl.h"
+#include "asterfort/ircers.h"
+#include "asterfort/irsspt.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxcaps.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chamel, nomcmp(*), form, titre, loc, nomsd, nomsym
     character(len=*) :: formr, partie
     real(kind=8) :: borsup, borinf

@@ -117,12 +117,12 @@ subroutine flasy2(ltranl, ltranr, isgn, n1, n2,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'blas/dcopy.h'
-    include 'blas/dswap.h'
-    include 'blas/idamax.h'
+#include "asterc/isbaem.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "blas/dcopy.h"
+#include "blas/dswap.h"
+#include "blas/idamax.h"
     logical :: ltranl, ltranr
     integer :: info, isgn, ldb, ldtl, ldtr, ldx, n1, n2
     real(kind=8) :: scale, xnorm

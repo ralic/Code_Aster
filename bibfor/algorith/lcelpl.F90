@@ -51,10 +51,10 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
 !     DRDY   :  MATRICE JACOBIENNE POUR BETON_BURGER_FP
 ! ----------------------------------------------------------------
 !     ------------------------------------------------------------
-    include 'asterfort/burjac.h'
-    include 'asterfort/burlnf.h'
-    include 'asterfort/irrlnf.h'
-    include 'asterfort/lceqvn.h'
+#include "asterfort/burjac.h"
+#include "asterfort/burlnf.h"
+#include "asterfort/irrlnf.h"
+#include "asterfort/lceqvn.h"
     common /tdim/   ndt  , ndi
 !     ------------------------------------------------------------
     character(len=16) :: loi

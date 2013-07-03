@@ -35,7 +35,7 @@ subroutine locglo(xlocal, sina, cosa, sinb, cosb,&
 !    XGLOBA          -->  COORDONEES DANS LE REPERE GLOBAL
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/rot3di.h'
+#include "asterfort/rot3di.h"
     real(kind=8) :: xgloba(3), xlocal(3)
 !
 !-----------------------------------------------------------------------

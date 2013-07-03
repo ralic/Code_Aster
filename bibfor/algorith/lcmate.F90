@@ -56,22 +56,22 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
 !           HSR    : MATRICE D'INTERACTION POUR L'ECROUISSAGE ISOTROPE
 !                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 !       ----------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/burmat.h'
-    include 'asterfort/cvmmat.h'
-    include 'asterfort/haymat.h'
-    include 'asterfort/hbrmat.h'
-    include 'asterfort/hujma2.h'
-    include 'asterfort/irrmat.h'
-    include 'asterfort/lcmatt.h'
-    include 'asterfort/lcmmap.h'
-    include 'asterfort/lcmmat.h'
-    include 'asterfort/lglmat.h'
-    include 'asterfort/lkimat.h'
-    include 'asterfort/matect.h'
-    include 'asterfort/rslmat.h'
-    include 'asterfort/rsvmat.h'
-    include 'asterfort/vecmat.h'
+#include "asterfort/assert.h"
+#include "asterfort/burmat.h"
+#include "asterfort/cvmmat.h"
+#include "asterfort/haymat.h"
+#include "asterfort/hbrmat.h"
+#include "asterfort/hujma2.h"
+#include "asterfort/irrmat.h"
+#include "asterfort/lcmatt.h"
+#include "asterfort/lcmmap.h"
+#include "asterfort/lcmmat.h"
+#include "asterfort/lglmat.h"
+#include "asterfort/lkimat.h"
+#include "asterfort/matect.h"
+#include "asterfort/rslmat.h"
+#include "asterfort/rsvmat.h"
+#include "asterfort/vecmat.h"
     integer :: imat, nmat, ndt, ndi, nr, nvi, i, itmax, kpg, ksp, impexp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: vind(*), pgl(3, 3), angmas(3), toler, crit(*), sigd(6)

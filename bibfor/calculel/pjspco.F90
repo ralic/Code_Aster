@@ -21,11 +21,11 @@ subroutine pjspco(moa1, moa2, corres, base, noca)
 ! BUT : CALCULER LA STRUCTURE DE DONNEE CORRESP_2_MAILLA
 !
 ! ----------------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pjefco.h'
-    include 'asterfort/pjmasp.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pjefco.h"
+#include "asterfort/pjmasp.h"
     character(len=8) :: moa1, moa2, noca
     character(len=16) :: corres
     character(len=1) :: base

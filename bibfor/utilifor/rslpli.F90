@@ -29,8 +29,8 @@ subroutine rslpli(typ, mod, mater, hook, nmat,&
 !       OUT HOOK   :  OPERATEUR RIGIDITE ELASTIQUE LINEAIRE
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprsm.h'
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprsm.h"
     integer :: nmat
 !
     real(kind=8) :: un, rho, f, f0

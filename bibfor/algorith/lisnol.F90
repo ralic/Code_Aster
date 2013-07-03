@@ -18,11 +18,11 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lisnnb.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     character(len=24) :: nomlis
     integer :: nbch

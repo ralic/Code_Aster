@@ -35,8 +35,8 @@ subroutine burafr(vin, nvi, materd, materf, nmat,&
 !     CFR      : MATRICE LIEE A LA DEFOR. REV. DE FLUAGE PROPRE
 !=======================================================================
     implicit none
-    include 'asterfort/burard.h'
-    include 'asterfort/burars.h'
+#include "asterfort/burard.h"
+#include "asterfort/burars.h"
     integer :: nvi, nmat, ndt, ndi, i, j
     real(kind=8) :: vin(*)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

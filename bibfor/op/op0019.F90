@@ -31,61 +31,61 @@ subroutine op0019()
 !     NBEMA  53 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
 !     NBEGB   6 : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
 !     NBEMB   4 : NOMBRE D'ELEMENTS DE TYPE "MEMBRANE"
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/aceaba.h'
-    include 'asterfort/aceaca.h'
-    include 'asterfort/aceaco.h'
-    include 'asterfort/aceadi.h'
-    include 'asterfort/aceagb.h'
-    include 'asterfort/aceama.h'
-    include 'asterfort/aceamb.h'
-    include 'asterfort/aceamr.h'
-    include 'asterfort/aceaor.h'
-    include 'asterfort/aceapc.h'
-    include 'asterfort/aceapf.h'
-    include 'asterfort/aceapo.h'
-    include 'asterfort/acearm.h'
-    include 'asterfort/acearp.h'
-    include 'asterfort/acecel.h'
-    include 'asterfort/aceinc.h'
-    include 'asterfort/acevba.h'
-    include 'asterfort/acevca.h'
-    include 'asterfort/acevco.h'
-    include 'asterfort/acevdi.h'
-    include 'asterfort/acevgb.h'
-    include 'asterfort/acevma.h'
-    include 'asterfort/acevmb.h'
-    include 'asterfort/acevmr.h'
-    include 'asterfort/acevor.h'
-    include 'asterfort/acevpc.h'
-    include 'asterfort/acevpf.h'
-    include 'asterfort/acevpo.h'
-    include 'asterfort/acevrm.h'
-    include 'asterfort/acevrp.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/coqucf.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/pmfd00.h'
-    include 'asterfort/tecart.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verima.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/aceaba.h"
+#include "asterfort/aceaca.h"
+#include "asterfort/aceaco.h"
+#include "asterfort/aceadi.h"
+#include "asterfort/aceagb.h"
+#include "asterfort/aceama.h"
+#include "asterfort/aceamb.h"
+#include "asterfort/aceamr.h"
+#include "asterfort/aceaor.h"
+#include "asterfort/aceapc.h"
+#include "asterfort/aceapf.h"
+#include "asterfort/aceapo.h"
+#include "asterfort/acearm.h"
+#include "asterfort/acearp.h"
+#include "asterfort/acecel.h"
+#include "asterfort/aceinc.h"
+#include "asterfort/acevba.h"
+#include "asterfort/acevca.h"
+#include "asterfort/acevco.h"
+#include "asterfort/acevdi.h"
+#include "asterfort/acevgb.h"
+#include "asterfort/acevma.h"
+#include "asterfort/acevmb.h"
+#include "asterfort/acevmr.h"
+#include "asterfort/acevor.h"
+#include "asterfort/acevpc.h"
+#include "asterfort/acevpf.h"
+#include "asterfort/acevpo.h"
+#include "asterfort/acevrm.h"
+#include "asterfort/acevrp.h"
+#include "asterfort/alcart.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/coqucf.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/pmfd00.h"
+#include "asterfort/tecart.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verima.h"
+#include "asterfort/wkvect.h"
     integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb
     integer :: nbtel, nbmcf, nbel1, nbel2, nbel3
     parameter  (      nbepo=13,nbedi=8,nbeco=29,nbeca=2,nbeba=2)

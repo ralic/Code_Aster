@@ -30,47 +30,47 @@ subroutine op0091()
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/arch93.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/libint.h'
-    include 'asterfort/lipsrb.h'
-    include 'asterfort/modexp.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rotlir.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/traint.h'
-    include 'asterfort/trasst.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vecind.h'
-    include 'asterfort/vecomo.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/r8pi.h"
+#include "asterfort/arch93.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/libint.h"
+#include "asterfort/lipsrb.h"
+#include "asterfort/modexp.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rotlir.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/titre.h"
+#include "asterfort/traint.h"
+#include "asterfort/trasst.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vecind.h"
+#include "asterfort/vecomo.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/wkvect.h"
 !
 !
     character(len=1) :: k1bid

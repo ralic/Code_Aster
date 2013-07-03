@@ -19,7 +19,7 @@ function lteatt(typel, noattr, vattr)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'asterfort/teattr.h'
+#include "asterfort/teattr.h"
     character(len=*) :: typel, noattr, vattr
 !---------------------------------------------------------------------
 ! BUT : TESTER SI L'ATTRIBUT NOATTR EXISTE ET A LA VALEUR VATTR

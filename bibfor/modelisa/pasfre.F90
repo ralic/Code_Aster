@@ -46,8 +46,8 @@ subroutine pasfre(disc, freq, pasf, dim, nbm,&
 !     IN  : DISC  : TABLEAU DE TRAVAIL
 !
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
     integer :: dim
     real(kind=8) :: freq(2, nbm, *), pasf(dim*nb), disc(2, *)
 !-----------------------------------------------------------------------

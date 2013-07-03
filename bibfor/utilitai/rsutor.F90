@@ -1,12 +1,12 @@
 subroutine rsutor(nomsd, champ, nomsym, iordr)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: iordr
     character(len=*) :: nomsd, champ, nomsym
 ! ----------------------------------------------------------------------

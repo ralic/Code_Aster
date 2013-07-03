@@ -3,17 +3,17 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                   heav, nsemax)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndcent.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndcent.h"
+#include "asterfort/tecael.h"
+#include "asterfort/xxmmvd.h"
     integer :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 6)
     integer :: nsemax
     real(kind=8) :: lsn(*), ainter(*), heav(*)

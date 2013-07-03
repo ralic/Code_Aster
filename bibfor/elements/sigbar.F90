@@ -34,7 +34,7 @@ subroutine sigbar(sigma, barsig)
 !
 ! ......................................................................
 !
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: i
 !
     integer :: ii, jj

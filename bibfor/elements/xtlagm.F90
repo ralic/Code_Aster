@@ -22,8 +22,8 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/xtlagc.h'
-    include 'asterfort/xtlagf.h'
+#include "asterfort/xtlagc.h"
+#include "asterfort/xtlagf.h"
     integer :: ndim, nnc, jnn(3), nddls, nconta, nfhe, heavno(8)
     integer :: jdepde, jpcai
     real(kind=8) :: ffc(9)

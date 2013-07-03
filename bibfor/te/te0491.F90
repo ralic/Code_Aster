@@ -110,26 +110,26 @@ subroutine te0491(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/enelpg.h'
-    include 'asterfort/eps1mc.h'
-    include 'asterfort/epsvmc.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/enelpg.h"
+#include "asterfort/eps1mc.h"
+#include "asterfort/epsvmc.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: idconm, idene1, idene2, idepl, ideplm, idepmm
     integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, icodre(5)
     integer :: ipoids, ivf, jgano, jprol, jvale, mxcmel, nbsgm, itemps

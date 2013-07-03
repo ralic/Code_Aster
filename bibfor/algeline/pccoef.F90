@@ -29,9 +29,9 @@ subroutine pccoef(n, in, ip, ac, icpl,&
 !--------------------------------------------------------
 ! aslint: disable=W1304
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: ac(*)
     integer :: in(n)
     integer(kind=4) :: ip(*), icpc(*)

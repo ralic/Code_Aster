@@ -20,9 +20,9 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/assert.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
     integer :: ndim, nno
     real(kind=8) :: w, def(2*ndim, nno, ndim)
     real(kind=8) :: kbb(ndim, ndim), dsidep(2*ndim, 2*ndim)

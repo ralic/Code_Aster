@@ -2,8 +2,8 @@ subroutine sigeob(eps, bt, endo, ndim, lambda,&
                   mu, sigm)
 !
     implicit none
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
     integer :: ndim
     real(kind=8) :: eps(6), bt(6), lambda, mu
     real(kind=8) :: sigm(6), endo

@@ -27,55 +27,55 @@ subroutine mdtr74(nomres)
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/copmat.h'
-    include 'asterfort/copmod.h'
-    include 'asterfort/cricho.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dyarch.h'
-    include 'asterfort/extdia.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/inicou.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/lecdon.h'
-    include 'asterfort/mdadap.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/mdchoc.h'
-    include 'asterfort/mddevo.h'
-    include 'asterfort/mdeul1.h'
-    include 'asterfort/mdgene.h'
-    include 'asterfort/mdicho.h'
-    include 'asterfort/mdinit.h'
-    include 'asterfort/mditm1.h'
-    include 'asterfort/mditmi.h'
-    include 'asterfort/mdnewm.h'
-    include 'asterfort/mdptem.h'
-    include 'asterfort/mdrecf.h'
-    include 'asterfort/mdrede.h'
-    include 'asterfort/mdrevi.h'
-    include 'asterfort/mdruku.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
+#include "asterfort/copisd.h"
+#include "asterfort/copmat.h"
+#include "asterfort/copmod.h"
+#include "asterfort/cricho.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dyarch.h"
+#include "asterfort/extdia.h"
+#include "asterfort/infniv.h"
+#include "asterfort/inicou.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/lecdon.h"
+#include "asterfort/mdadap.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/mdchoc.h"
+#include "asterfort/mddevo.h"
+#include "asterfort/mdeul1.h"
+#include "asterfort/mdgene.h"
+#include "asterfort/mdicho.h"
+#include "asterfort/mdinit.h"
+#include "asterfort/mditm1.h"
+#include "asterfort/mditmi.h"
+#include "asterfort/mdnewm.h"
+#include "asterfort/mdptem.h"
+#include "asterfort/mdrecf.h"
+#include "asterfort/mdrede.h"
+#include "asterfort/mdrevi.h"
+#include "asterfort/mdruku.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: niv, k1bid
     character(len=4) :: k4bid(3), intk
     character(len=8) :: k8b, k8var, nomres, masgen, riggen, amogen, gyogen

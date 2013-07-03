@@ -20,7 +20,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 !
     implicit none
 !
-    include 'asterfort/rcvala.h'
+#include "asterfort/rcvala.h"
     integer :: imate
     real(kind=8) :: xhi, kxhi, dkxidx
 !

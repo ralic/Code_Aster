@@ -27,14 +27,14 @@ subroutine op0049()
 ! ......................................................................
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/giecas.h'
-    include 'asterfort/gilir2.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulisop.h'
-    include 'asterfort/ulopen.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterfort/giecas.h"
+#include "asterfort/gilir2.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulisop.h"
+#include "asterfort/ulopen.h"
     character(len=6) :: kbid6
     character(len=8) :: kbid1
     character(len=9) :: kbid9

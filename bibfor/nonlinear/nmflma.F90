@@ -26,27 +26,27 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/ascoma.h'
-    include 'asterfort/asmama.h'
-    include 'asterfort/asmari.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matide.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmcha0.h'
-    include 'asterfort/nmchai.h'
-    include 'asterfort/nmchcp.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcmat.h'
-    include 'asterfort/nmxmat.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/ascoma.h"
+#include "asterfort/asmama.h"
+#include "asterfort/asmari.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matide.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcha0.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/nmchcp.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcmat.h"
+#include "asterfort/nmxmat.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: typmat, modrig
     character(len=4) :: mod45
     integer :: defo

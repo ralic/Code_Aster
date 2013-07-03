@@ -1,7 +1,7 @@
 subroutine lxscan(chin, ideb, iclass, ival, rval,&
                   cval)
     implicit none
-    include 'asterc/ismaem.h'
+#include "asterc/ismaem.h"
     character(len=*) :: chin, cval
     integer :: ideb, iclass, ival
     real(kind=8) :: rval

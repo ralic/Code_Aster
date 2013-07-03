@@ -1,11 +1,11 @@
 subroutine te0090(option, nomte)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/tefrep.h'
-    include 'asterfort/vff2dn.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/tefrep.h"
+#include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================

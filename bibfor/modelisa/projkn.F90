@@ -72,18 +72,18 @@ subroutine projkn(mailla, x3dca, lnuma, licnx, numail,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dscal.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
     character(len=8) :: mailla
     character(len=19) :: lnuma, licnx
     integer :: numail, nbcnx, cxma(*), itria, iproj

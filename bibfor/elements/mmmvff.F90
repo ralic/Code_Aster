@@ -22,8 +22,8 @@ subroutine mmmvff(phasep, ndim, nnl, nbcps, wpg,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/normev.h'
+#include "asterfort/assert.h"
+#include "asterfort/normev.h"
     character(len=9) :: phasep
     integer :: ndim, nnl, nbcps
     real(kind=8) :: wpg, ffl(9), jacobi, dlagrf(2)

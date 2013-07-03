@@ -2,19 +2,19 @@ subroutine asveri(knomsy, nbopt, meca, psmo, stat,&
                   tronc, monoap, nbsup, nsupp, nomsup,&
                   ndir, nordr, nbmode)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/rsutnc.h'
-    include 'asterfort/rsvpar.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrdesc.h'
-    include 'asterfort/vrnoli.h'
-    include 'asterfort/vrrefe.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/rsutnc.h"
+#include "asterfort/rsvpar.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrdesc.h"
+#include "asterfort/vrnoli.h"
+#include "asterfort/vrrefe.h"
     integer :: ndir(*), nordr(*), nsupp(*)
     integer :: vali
     character(len=*) :: knomsy(*), meca, psmo, stat, nomsup(nbsup, *)

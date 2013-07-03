@@ -20,12 +20,12 @@ subroutine mpierr(iermpi)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer(kind=4) :: iermpi
 !
 #ifdef _USE_MPI
 !
-    include 'mpif.h'
+#include "mpif.h"
 !
 ! VARIABLES LOCALES
     character(len=512) :: serr

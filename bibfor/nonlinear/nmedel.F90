@@ -20,8 +20,8 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: ndim, imate
     character(len=8) :: typmod(*)
     character(len=16) :: option

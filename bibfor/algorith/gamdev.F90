@@ -1,10 +1,10 @@
 function gamdev(alpha)
     implicit none
     real(kind=8) :: gamdev
-    include 'asterc/getran.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/getran.h"
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: alpha
 ! ----------------------------------------------------------------------
 ! ======================================================================

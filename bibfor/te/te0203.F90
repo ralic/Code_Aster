@@ -20,12 +20,12 @@ subroutine te0203(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/pipefi.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/pipefi.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte, option
 !
 !-----------------------------------------------------------------------

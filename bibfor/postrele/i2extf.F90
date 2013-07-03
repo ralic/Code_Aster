@@ -37,15 +37,15 @@ subroutine i2extf(m, f, conec, type, n1,&
 !
 !**********************************************************************
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/i2nbrf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/i2nbrf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=*) :: conec
     character(len=*) :: type
     integer :: m, f, n1, n2

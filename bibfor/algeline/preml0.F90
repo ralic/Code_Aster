@@ -20,10 +20,10 @@ subroutine preml0(n1, n2, diag, col, delg,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: n1, diag(0:*), col(*)
     integer :: delg(*), prno(*), deeq(*), nec, lbd1(n1), lbd2(n1)
     integer :: rl(4, *), rl1(*), rl2(*)

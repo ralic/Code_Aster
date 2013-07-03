@@ -1,18 +1,18 @@
 subroutine mtdorc(modelz, compoz, carcri)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alcart.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
     character(len=*) :: modelz, compoz
     character(len=24) :: carcri
 ! ----------------------------------------------------------------------

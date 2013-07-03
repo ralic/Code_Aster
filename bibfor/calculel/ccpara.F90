@@ -2,21 +2,21 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
                   nordm1, exitim, mateco, carael)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mearcc.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
+#include "asterc/getvtx.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mearcc.h"
+#include "asterfort/mecact.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
     integer :: numord, nordm1
     character(len=8) :: modele, resuin, resuou, mateco, carael
     character(len=16) :: option

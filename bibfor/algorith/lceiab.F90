@@ -19,8 +19,8 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: mat, kpg, ksp, codret
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6)
     real(kind=8) :: vim(*), vip(*), r

@@ -30,10 +30,10 @@ subroutine gnoms2(noojb, k1, k2)
 ! IN  : K1,K2 : INDICES DANS NOOJB DE LA SOUS-CHAINE "NUMERO"
 !     -----------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/u2mess.h"
     integer :: inum, iret, k1, k2, nessai, ndigit, iessai
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------

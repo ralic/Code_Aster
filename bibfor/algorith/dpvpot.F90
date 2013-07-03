@@ -2,22 +2,22 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
                   sig, dt, dp, plas, dsidep)
 !
     implicit      none
-    include 'asterfort/dpvpdv.h'
-    include 'asterfort/dpvpva.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/lctrma.h'
-    include 'asterfort/trace.h'
+#include "asterfort/dpvpdv.h"
+#include "asterfort/dpvpva.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/lctrma.h"
+#include "asterfort/trace.h"
     integer :: ndt, ndi
     integer :: nbmat
     real(kind=8) :: dt, dp, plas

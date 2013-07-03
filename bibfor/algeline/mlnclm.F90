@@ -24,9 +24,9 @@ subroutine mlnclm(nb, n, p, frontl, frontu,&
 !     NECESSITE DES ARGUMENTS ENTIER INTEGER*4 REFUSES PAR ASTER
 !
     implicit none
-    include 'asterfort/mlncld.h'
-    include 'asterfort/mlnclj.h'
-    include 'blas/zgemv.h'
+#include "asterfort/mlncld.h"
+#include "asterfort/mlnclj.h"
+#include "blas/zgemv.h"
     integer :: nb, n, p
     integer :: adper(*), ad(*), ier
     real(kind=8) :: eps

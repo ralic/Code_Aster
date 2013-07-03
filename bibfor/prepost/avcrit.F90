@@ -22,22 +22,22 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 ! person_in_charge: jean.angles at edf.fr
 ! aslint: disable=W1306
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterfort/anacri.h'
-    include 'asterfort/aveppr.h'
-    include 'asterfort/aveteq.h'
-    include 'asterfort/avetpr.h'
-    include 'asterfort/avphyd.h'
-    include 'asterfort/avsieq.h'
-    include 'asterfort/avsign.h'
-    include 'asterfort/avsipr.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/fonbpa.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterc/getvr8.h"
+#include "asterfort/anacri.h"
+#include "asterfort/aveppr.h"
+#include "asterfort/aveteq.h"
+#include "asterfort/avetpr.h"
+#include "asterfort/avphyd.h"
+#include "asterfort/avsieq.h"
+#include "asterfort/avsign.h"
+#include "asterfort/avsipr.h"
+#include "asterfort/fointe.h"
+#include "asterfort/fonbpa.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbvec, nbordr, ncycl(nbvec)
     integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     integer :: tdisp, kwork, sommw, tspaq, i

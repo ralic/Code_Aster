@@ -24,8 +24,8 @@ subroutine mmmvuu(phasez, ndim, nne, nnm, norm,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/mmmvee.h'
-    include 'asterfort/mmmvmm.h'
+#include "asterfort/mmmvee.h"
+#include "asterfort/mmmvmm.h"
     character(len=*) :: phasez
     integer :: ndim, nne, nnm
     real(kind=8) :: wpg, ffe(9), ffm(9), jacobi

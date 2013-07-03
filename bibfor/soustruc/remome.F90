@@ -27,18 +27,18 @@ subroutine remome(promes, modmes, nommac)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/scalai.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: promes, modmes, nommac
 !
     logical :: zcmplx

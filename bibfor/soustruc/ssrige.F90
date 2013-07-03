@@ -19,22 +19,22 @@ subroutine ssrige(nomu)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assmam.h'
-    include 'asterfort/crnslv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/merime.h'
-    include 'asterfort/numddl.h'
-    include 'asterfort/promor.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/smosli.h'
-    include 'asterfort/ssriu1.h'
-    include 'asterfort/ssriu2.h'
+#include "jeveux.h"
+#include "asterfort/assmam.h"
+#include "asterfort/crnslv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/merime.h"
+#include "asterfort/numddl.h"
+#include "asterfort/promor.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/smosli.h"
+#include "asterfort/ssriu1.h"
+#include "asterfort/ssriu2.h"
     character(len=8) :: nomu
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT CLEF "RIGI_MECA" DE L'OPERATEUR MACR_ELEM_STAT

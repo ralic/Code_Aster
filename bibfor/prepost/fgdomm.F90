@@ -1,6 +1,6 @@
 subroutine fgdomm(nbcycl, dom, rdomm)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: dom(*), rdomm
     integer :: nbcycl
 !     ------------------------------------------------------------------

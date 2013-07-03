@@ -1,7 +1,7 @@
 subroutine ulisog(unit, fname, etat)
     implicit none
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ulinit.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/ulinit.h"
     integer :: unit
     character(len=255) :: fname
     character(len=1) :: etat

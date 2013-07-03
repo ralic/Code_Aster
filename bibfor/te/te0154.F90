@@ -16,21 +16,21 @@ subroutine te0154(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lonele.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/ptenci.h'
-    include 'asterfort/ptenpo.h'
-    include 'asterfort/ptenth.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/verift.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/ptenci.h"
+#include "asterfort/ptenpo.h"
+#include "asterfort/ptenth.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/verift.h"
     character(len=*) :: option, nomte
 ! ----------------------------------------------------------------------
 !     CALCUL

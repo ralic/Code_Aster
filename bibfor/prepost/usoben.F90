@@ -2,14 +2,14 @@ subroutine usoben(guidag, dimobs, obsuse, nco, rayo,&
                   thet, nbsect, parusu, typusu, nomt19,&
                   arete, arete2, rcarte, denc)
     implicit   none
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/usenco.h'
-    include 'asterfort/usvect.h'
+#include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/usenco.h"
+#include "asterfort/usvect.h"
     integer :: dimobs, nco, nbsect, typusu(*)
     real(kind=8) :: obsuse(*), parusu(20, *), rayo(*), thet(*), arete, arete2
     real(kind=8) :: rcarte, denc

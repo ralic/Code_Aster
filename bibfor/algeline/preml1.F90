@@ -26,22 +26,22 @@ subroutine preml1(neq, n2, diag, delg, col,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/ismaem.h'
-    include 'asterc/onmetl.h'
-    include 'asterfort/amdapt.h'
-    include 'asterfort/amdbar.h'
-    include 'asterfort/genmmd.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/prmadj.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterc/onmetl.h"
+#include "asterfort/amdapt.h"
+#include "asterfort/amdbar.h"
+#include "asterfort/genmmd.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/prmadj.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: neq, diag(0:neq), lgind, lgadjn
     integer :: col(*), xadj(neq+1), adjncy(lgadjn)
     integer :: delg(neq), nbsn, adress(neq), parent(neq)

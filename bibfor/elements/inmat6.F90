@@ -21,12 +21,12 @@ subroutine inmat6(elrefa, fapg, mganos)
 !----------------------------------------------------------------------
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elraca.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/assert.h"
+#include "asterfort/elraca.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
     integer :: nbpgmx, nbnomx, nbfamx
     parameter (nbpgmx=1000, nbnomx=27, nbfamx=20)
     integer :: ndim, nno, nnos, nbfpg, nbpg(nbfamx)

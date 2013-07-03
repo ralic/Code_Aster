@@ -3,7 +3,7 @@ function i3egfa(desc, desctm, conex, vlc, im1,&
                 iao2)
     implicit none
     logical :: i3egfa
-    include 'asterfort/i3egf1.h'
+#include "asterfort/i3egf1.h"
     integer :: desc(*), desctm(*), conex(*), vlc(*), im1, if1, iao1, iae1, im2
     integer :: if2, iao2
 !     ------------------------------------------------------------------

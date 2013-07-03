@@ -50,11 +50,11 @@ subroutine rdif01(fami, kpg, ksp, comp, mod,&
 !         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 !         DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 !     ----------------------------------------------------------------
-    include 'asterfort/calsig.h'
-    include 'asterfort/coefft.h'
-    include 'asterfort/lcdvin.h'
-    include 'asterfort/lcmmon.h'
-    include 'asterfort/lcmmop.h'
+#include "asterfort/calsig.h"
+#include "asterfort/coefft.h"
+#include "asterfort/lcdvin.h"
+#include "asterfort/lcmmon.h"
+#include "asterfort/lcmmop.h"
     integer :: kpg, ksp, imat, nmat, nvi, nbcomm(nmat, 3), itens
     integer :: nbphas, nfs, iret, itmax, nsg, nhsr, numhsr(*), neps
     character(len=16) :: loi, comp(*)

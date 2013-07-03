@@ -23,33 +23,33 @@ subroutine op0093()
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/arch93.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/modsta.h'
-    include 'asterfort/moin93.h'
-    include 'asterfort/mstget.h'
-    include 'asterfort/mtcopy.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/psmo93.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/arch93.h"
+#include "asterfort/cresol.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/modsta.h"
+#include "asterfort/moin93.h"
+#include "asterfort/mstget.h"
+#include "asterfort/mtcopy.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/psmo93.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, ierd, nbmodd
     integer :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
     integer :: nbmoda, nbmoin, nbmodi, massfa

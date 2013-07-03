@@ -1,8 +1,8 @@
 subroutine fgcorr(nbcycl, sigmin, sigmax, method, su,&
                   rcorr)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: method
     real(kind=8) :: sigmin(*), sigmax(*), su, rcorr(*)
     integer :: nbcycl

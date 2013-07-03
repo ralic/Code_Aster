@@ -20,7 +20,7 @@ subroutine cfresa(ndim, fctc, norm, rnx, rny,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ndim
     real(kind=8) :: fctc(3)
     real(kind=8) :: norm(3)

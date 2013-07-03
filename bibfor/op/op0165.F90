@@ -23,19 +23,19 @@ subroutine op0165()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/rc3200.h'
-    include 'asterfort/rc3600.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcevol.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/rc3200.h"
+#include "asterfort/rc3600.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcevol.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
     integer :: n1, nbopt, iopt, nbther
     real(kind=8) :: symax
     logical :: pmpb, sn, snet, fatigu, lrocht

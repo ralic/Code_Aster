@@ -18,7 +18,7 @@ subroutine lisnnl(phenoz, charge, prefob)
 ! ======================================================================
 !
     implicit      none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: phenoz
     character(len=8) :: charge
     character(len=13) :: prefob

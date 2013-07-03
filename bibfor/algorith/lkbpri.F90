@@ -3,10 +3,10 @@ function lkbpri(val, vin, nbmat, mater, para,&
 !
 ! aslint: disable=
     implicit  none
-    include 'asterc/r8pi.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkhtet.h'
+#include "asterc/r8pi.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkhtet.h"
     integer :: val, nbmat
     real(kind=8) :: vin(7), mater(nbmat, 2), para(3), invar, s(6), lkbpri
 ! =====================================================================

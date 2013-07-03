@@ -97,15 +97,15 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
 !
 !     ----------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/calsig.h'
-    include 'asterfort/gerpas.h'
-    include 'asterfort/lcdpeq.h'
-    include 'asterfort/lcmate.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcrkin.h'
-    include 'asterfort/lcrksg.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/calsig.h"
+#include "asterfort/gerpas.h"
+#include "asterfort/lcdpeq.h"
+#include "asterfort/lcmate.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcrkin.h"
+#include "asterfort/lcrksg.h"
+#include "blas/dcopy.h"
     character(len=*) :: fami
     integer :: imat, ndim, ndt, ndi, nr, nvi, kpg, ksp, i, nbphas, itmax
     integer :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps

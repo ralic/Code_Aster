@@ -17,10 +17,10 @@ subroutine lchbvp(sigd, vp, vecp)
 ! ======================================================================
 ! =====================================================================
     implicit none
-    include 'asterfort/codree.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/codree.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/u2mesk.h"
     real(kind=8) :: sigd(6), vp(3), vecp(3, 3)
 ! =====================================================================
 ! --- HOEK-BROWN : VALEURS ET VECTEURS PROPRES DU DEVIATEUR DE SIGD ---

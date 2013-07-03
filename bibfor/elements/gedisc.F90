@@ -18,7 +18,7 @@ subroutine gedisc(ndim, nno, npg, vff, geom,&
 ! ======================================================================
 !
     implicit none
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     integer :: ndim, nno, npg
     real(kind=8) :: vff(nno, npg), geom(ndim, nno), pg(ndim+1, npg)
 ! ----------------------------------------------------------------------

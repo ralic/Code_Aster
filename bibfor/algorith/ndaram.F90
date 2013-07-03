@@ -19,16 +19,16 @@ subroutine ndaram(result, sddyna, numarc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     character(len=8) :: result
     integer :: numarc
     character(len=19) :: sddyna

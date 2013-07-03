@@ -3,12 +3,12 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
                   alpha, dsidep, sigma, pp, dnor,&
                   dtang, p, am)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/lcejex.h'
-    include 'asterfort/lcejli.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xmafr1.h'
+#include "jeveux.h"
+#include "asterfort/lcejex.h"
+#include "asterfort/lcejli.h"
+#include "asterfort/matini.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xmafr1.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: saut(3), am(3), pp(3, 3), dsidep(6, 6)
     real(kind=8) :: tau1(3), tau2(3), nd(3)

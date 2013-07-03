@@ -17,23 +17,23 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/btkb.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/matrc.h'
-    include 'asterfort/matrkb.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/vectan.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/btkb.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/matrc.h"
+#include "asterfort/matrkb.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/vectan.h"
+#include "blas/dscal.h"
     character(len=16) :: nomte
     integer :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8)
     real(kind=8) :: xi(3, 9)

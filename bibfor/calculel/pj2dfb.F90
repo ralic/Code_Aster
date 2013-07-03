@@ -1,15 +1,15 @@
 subroutine pj2dfb(boite, tria3, geom1, geom2)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: geom1(*), geom2(*)
     integer :: tria3(*)
     character(len=14) :: boite

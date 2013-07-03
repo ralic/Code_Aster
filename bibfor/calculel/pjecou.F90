@@ -21,20 +21,20 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 ! ----------------------------------------------------------------------
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elraca.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pj3da3.h'
-    include 'asterfort/pj3da4.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/elraca.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pj3da3.h"
+#include "asterfort/pj3da4.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: ma1, ma2
     character(len=16) :: nomgma, nomgno, corres
 ! ======================================================================

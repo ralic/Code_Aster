@@ -19,21 +19,21 @@ subroutine nmfext(eta, fonact, sddyna, veasse, cnfext)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndasva.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmasfi.h'
-    include 'asterfort/nmasva.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/vtaxpy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndasva.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
     real(kind=8) :: eta
     integer :: fonact(*)
     character(len=19) :: sddyna

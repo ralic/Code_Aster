@@ -19,11 +19,11 @@ subroutine nmacto(sddisc, ievdac)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/dieven.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/dieven.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: ievdac
 !

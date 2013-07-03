@@ -1,6 +1,6 @@
 subroutine t3gbc(xyzl, qsi, eta, bc)
     implicit  none
-    include 'asterfort/matmul.h'
+#include "asterfort/matmul.h"
     real(kind=8) :: qsi, eta
     real(kind=8) :: bc(2, 9), xyzl(3, *)
 !

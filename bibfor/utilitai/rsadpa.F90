@@ -1,21 +1,21 @@
 subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
                   itype, ljeveu, ctype)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extrs3.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeimpo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsutrg.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extrs3.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsutrg.h"
+#include "asterfort/u2mesg.h"
     integer :: npara, iordr, itype, ljeveu(*)
     character(len=1) :: cel
     character(len=*) :: nomsd, lpara(*), ctype(*)

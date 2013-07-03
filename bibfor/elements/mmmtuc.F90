@@ -24,8 +24,8 @@ subroutine mmmtuc(phasep, ndim, nnl, nne, nnm,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/mmmtec.h'
-    include 'asterfort/mmmtmc.h'
+#include "asterfort/mmmtec.h"
+#include "asterfort/mmmtmc.h"
     character(len=9) :: phasep
     integer :: ndim, nne, nnl, nnm
     real(kind=8) :: ffe(9), ffl(9), ffm(9)

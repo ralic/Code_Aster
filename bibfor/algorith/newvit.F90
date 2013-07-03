@@ -37,8 +37,8 @@ subroutine newvit(neq, c1, c2, v0, a0,&
 !   E.D.F DER   JACQUART G. 47-65-49-41      LE 19 JUILLET 1990
 !**********************************************************************
 !
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     real(kind=8) :: v0(*), a0(*), v1(*), a1(*)
     real(kind=8) :: c1, c2
 !-----------------------------------------------------------------------

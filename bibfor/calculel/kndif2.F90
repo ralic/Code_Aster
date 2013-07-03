@@ -1,15 +1,15 @@
 subroutine kndif2(long, lk1, l1, lk2, l2,&
                   lk3, l3)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/assert.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
     integer :: long, l1, l2, l3
     character(len=*) :: lk1(l1), lk2(l2), lk3(l3)
 ! ---------------------------------------------------------------------

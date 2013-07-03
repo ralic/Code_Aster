@@ -19,17 +19,17 @@ subroutine mpichk(nbpro4, iret)
 !
     implicit none
 !     ARGUMENT IN
-    include 'asterc/uttrst.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/gtstat.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/mpisst.h'
-    include 'asterfort/mpistp.h'
-    include 'asterfort/ststat.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/uttrst.h"
+#include "asterfort/comcou.h"
+#include "asterfort/gtstat.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/mpisst.h"
+#include "asterfort/mpistp.h"
+#include "asterfort/ststat.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     integer(kind=4) :: nbpro4
 !     ARGUMENT OUT
     integer :: iret
@@ -48,8 +48,8 @@ subroutine mpichk(nbpro4, iret)
     iret = 0
 # else
 !
-    include 'mpif.h'
-    include 'aster_constant.h'
+#include "mpif.h"
+#include "aster_constant.h"
 !
     logical :: isterm(nbpro4), lcont
     logical(kind=4) :: term

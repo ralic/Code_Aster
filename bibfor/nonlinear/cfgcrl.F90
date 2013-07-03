@@ -19,16 +19,16 @@ subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/calatm.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     character(len=24) :: resoco
     integer :: neq, nbliai
     character(len=19) :: matass, solveu

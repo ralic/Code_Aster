@@ -25,17 +25,17 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/mmdepm.h'
-    include 'asterfort/mmform.h'
-    include 'asterfort/mmgeom.h'
-    include 'asterfort/mmlagm.h'
-    include 'asterfort/mmmjac.h'
-    include 'asterfort/mmmjeu.h'
-    include 'asterfort/mmreac.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/mmdepm.h"
+#include "asterfort/mmform.h"
+#include "asterfort/mmgeom.h"
+#include "asterfort/mmlagm.h"
+#include "asterfort/mmmjac.h"
+#include "asterfort/mmmjeu.h"
+#include "asterfort/mmreac.h"
     character(len=8) :: typmae, typmam
     integer :: ndim, nne, nnm, nnl, nbdm
     integer :: iresog

@@ -1,14 +1,14 @@
 subroutine porea2(nno, nc, geom, gamma, pgl,&
                   xl)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/matrot.h"
+#include "asterfort/tecach.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     integer :: nno, nc
     real(kind=8) :: geom(3, nno), gamma
 !

@@ -1,15 +1,15 @@
 subroutine te0520(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/ismaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assvsu.h'
-    include 'asterfort/caethm.h'
-    include 'asterfort/fnovsu.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/voiuti.h'
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/assvsu.h"
+#include "asterfort/caethm.h"
+#include "asterfort/fnovsu.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/voiuti.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 ! ======================================================================

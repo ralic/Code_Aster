@@ -18,14 +18,14 @@ subroutine ef0410(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/vdefro.h'
-    include 'asterfort/vdrepe.h'
-    include 'asterfort/vdxsig.h'
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/vdefro.h"
+#include "asterfort/vdrepe.h"
+#include "asterfort/vdxsig.h"
     character(len=16) :: nomte
 !
     integer :: npgt, ncoumx, vali(2)

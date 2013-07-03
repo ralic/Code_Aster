@@ -27,13 +27,13 @@ subroutine coeneu(imod, nbnode)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/codnop.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jjmmaa.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/codnop.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jjmmaa.h"
     integer :: imod, nbnode
 ! -----  VARIABLES LOCALES
     integer :: jinfo, jdetr, jcoor, inode, node

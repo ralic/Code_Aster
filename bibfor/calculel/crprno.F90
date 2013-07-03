@@ -33,8 +33,8 @@ subroutine crprno(champ, base, nbnoeu, nequa)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    include 'asterfort/crprn2.h'
-    include 'asterfort/dismoi.h'
+#include "asterfort/crprn2.h"
+#include "asterfort/dismoi.h"
     integer :: nbnoeu, nequa, nec, ibid, ie
     character(len=*) :: champ, base
     character(len=8) :: cbid, gran

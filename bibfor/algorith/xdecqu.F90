@@ -4,27 +4,27 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/infoar.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/loncar.h'
-    include 'asterfort/ndcent.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xajpin.h'
-    include 'asterfort/xajpmi.h'
-    include 'asterfort/xerfis.h'
-    include 'asterfort/xintar.h'
-    include 'asterfort/xmilac.h'
-    include 'asterfort/xmilar.h'
-    include 'asterfort/xmilfi.h'
-    include 'asterfort/xxmmvd.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/conare.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/infoar.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/loncar.h"
+#include "asterfort/ndcent.h"
+#include "asterfort/padist.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xajpin.h"
+#include "asterfort/xajpmi.h"
+#include "asterfort/xerfis.h"
+#include "asterfort/xintar.h"
+#include "asterfort/xmilac.h"
+#include "asterfort/xmilar.h"
+#include "asterfort/xmilfi.h"
+#include "asterfort/xxmmvd.h"
     integer :: nnose, it, ndim, cnset(*), ninter, igeom, npts, nmilie, mfis
     integer :: jgrlsn, jlsn
     real(kind=8) :: pinter(*), ainter(*), pmilie(*)

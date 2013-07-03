@@ -19,11 +19,11 @@ subroutine cfreso(resoco, ldscon, ndim, nbliac, llf,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rldlgg.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rldlgg.h"
     character(len=24) :: resoco
     integer :: ndim
     integer :: nbliac, llf, llf1, llf2

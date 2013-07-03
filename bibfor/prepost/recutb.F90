@@ -1,10 +1,10 @@
 subroutine recutb(ik1d, nomgrn, tabrev, tabmdb, tabthr)
 !
     implicit      none
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ik1d
     character(len=8) :: tabrev, tabmdb, tabthr
     character(len=32) :: nomgrn

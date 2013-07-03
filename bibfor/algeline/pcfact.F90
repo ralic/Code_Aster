@@ -28,7 +28,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !
 !  REMARQUE: A L'APPEL AC ET PRC PEUVENT ETRE CONFONDUS
 !-----------------------------------------------------------------------
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     real(kind=8) :: ac(*), prc(*), vect(nequ)
     character(len=19) :: matas
     integer :: in(nequ)

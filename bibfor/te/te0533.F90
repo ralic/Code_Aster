@@ -1,26 +1,26 @@
 subroutine te0533(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/elelin.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xdocon.h'
-    include 'asterfort/xmcont.h'
-    include 'asterfort/xmfrot.h'
-    include 'asterfort/xmprep.h'
-    include 'asterfort/xmulco.h'
-    include 'asterfort/xteddl.h'
-    include 'asterfort/xteini.h'
+#include "asterfort/assert.h"
+#include "asterfort/confac.h"
+#include "asterfort/elelin.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matini.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xdocon.h"
+#include "asterfort/xmcont.h"
+#include "asterfort/xmfrot.h"
+#include "asterfort/xmprep.h"
+#include "asterfort/xmulco.h"
+#include "asterfort/xteddl.h"
+#include "asterfort/xteini.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

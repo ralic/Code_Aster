@@ -18,7 +18,7 @@ subroutine dfllin(mcfact, iechec, cmmaxi)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/getvr8.h'
+#include "asterc/getvr8.h"
     character(len=16) :: mcfact
     integer :: iechec
     real(kind=8) :: cmmaxi

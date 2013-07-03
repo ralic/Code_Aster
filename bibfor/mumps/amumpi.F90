@@ -28,23 +28,23 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    include 'asterc/r4maem.h'
-    include 'asterfort/amumpu.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r4maem.h"
+#include "asterfort/amumpu.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     integer :: kxmps, option
     logical :: lquali, ldist
     character(len=1) :: type
 !
 #ifdef _HAVE_MUMPS
 #   include "aster_mumps.h"
-    include 'mpif.h'
-    include 'jeveux.h'
+#include "mpif.h"
+#include "jeveux.h"
     integer :: nicntl, ncntl
     parameter (nicntl=40,ncntl=15)
     type (SMUMPS_STRUC) , pointer :: smpsk

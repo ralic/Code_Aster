@@ -7,7 +7,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                   seuil, singu, tau1, tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,11 +57,11 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
 ! OUT VTMP  : VECTEUR DE TRAVAIL SECOND MEMBRE
-    include 'asterfort/assert.h'
-    include 'asterfort/xmmsa3.h'
-    include 'asterfort/xmvef2.h'
-    include 'asterfort/xmvef3.h'
-    include 'asterfort/xmvef4.h'
+#include "asterfort/assert.h"
+#include "asterfort/xmmsa3.h"
+#include "asterfort/xmvef2.h"
+#include "asterfort/xmvef3.h"
+#include "asterfort/xmvef4.h"
     integer :: algofr, ddlm, ddls
     integer :: idepl, idepm, ifa, ifiss
     integer :: indco, jfisno

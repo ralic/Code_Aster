@@ -19,14 +19,14 @@ subroutine jeveuo(nomlu, cel, jctab)
 ! aslint: disable=C1002
     implicit none
 !
-    include 'jeveux.h'
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjalty.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/jxlocs.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjalty.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/jxlocs.h"
+#include "asterfort/u2mesk.h"
     integer :: jctab
     character(len=*) :: nomlu, cel
 !     ==================================================================

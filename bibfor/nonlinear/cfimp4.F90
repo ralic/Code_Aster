@@ -20,26 +20,26 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 !
 ! aslint: disable=W1501
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apnomp.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfcald.h'
-    include 'asterfort/cfconn.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/cfnoap.h'
-    include 'asterfort/cfnomm.h'
-    include 'asterfort/cftypn.h'
-    include 'asterfort/cfzonn.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmnorm.h'
+#include "jeveux.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apnomp.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfcald.h"
+#include "asterfort/cfconn.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnoap.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/cftypn.h"
+#include "asterfort/cfzonn.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmnorm.h"
     character(len=24) :: defico
     character(len=24) :: resoco
     integer :: ifm

@@ -20,19 +20,19 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmacfi.h'
-    include 'asterfort/nmacva.h'
-    include 'asterfort/nmbudi.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtaxpy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmacfi.h"
+#include "asterfort/nmacva.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtaxpy.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
     character(len=24) :: numedd, modele

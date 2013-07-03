@@ -18,11 +18,11 @@ subroutine mazacp(option, ndimsi, epsm, deps, epsane,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/bptobg.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/sgmxve.h'
+#include "asterc/r8prem.h"
+#include "asterfort/bptobg.h"
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/sgmxve.h"
     character(len=16) :: option
     integer :: ndimsi
     real(kind=8) :: epsm(*), deps(*), varm(*), varp(*), sigp(*), dsidep(6, 6)

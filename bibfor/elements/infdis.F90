@@ -1,12 +1,12 @@
 subroutine infdis(quest, ivale, rvale, kvale)
     implicit       none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
     character(len=4) :: quest
     character(len=*) :: kvale
     integer :: ivale

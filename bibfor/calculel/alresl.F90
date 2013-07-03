@@ -20,31 +20,31 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/digde2.h'
-    include 'asterfort/digde3.h'
-    include 'asterfort/digde4.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/grdeur.h'
-    include 'asterfort/inpara.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/modatt.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/digde2.h"
+#include "asterfort/digde3.h"
+#include "asterfort/digde4.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/grdeur.h"
+#include "asterfort/inpara.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/modatt.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/scalai.h"
+#include "asterfort/teattr.h"
+#include "asterfort/typele.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: opt
     character(len=19) :: ligrel, nochou
     character(len=8) :: nompar

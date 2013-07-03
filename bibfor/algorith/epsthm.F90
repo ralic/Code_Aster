@@ -10,7 +10,7 @@ subroutine epsthm(nddls, nddlm, nno, nnos, nnom,&
 !
 ! DECLARATION PARAMETRES D'APPEL
 !
-    include 'asterfort/cabthm.h'
+#include "asterfort/cabthm.h"
     integer :: nddls, nddlm, nno, nnos, nnom, nmec
     integer :: dimdef, dimuel, ndim, npi
     integer :: ipoids, ipoid2, ivf, ivf2

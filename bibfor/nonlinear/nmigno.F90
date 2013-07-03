@@ -20,9 +20,9 @@ function nmigno(jdiri, lndepl, ieq)
 !
     implicit none
     logical :: nmigno
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: jdiri, ieq
     logical :: lndepl
 !

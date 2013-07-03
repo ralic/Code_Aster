@@ -5,8 +5,8 @@ subroutine rc36sp(nbm, ima, ipt, c, k,&
                   spther)
 ! aslint: disable=W1504
     implicit   none
-    include 'asterfort/rcsp01.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcsp01.h"
+#include "asterfort/u2mess.h"
     integer :: nbm, ima(*), ipt, nbthp, nbthq
     real(kind=8) :: c(*), k(*), cara(*), mati(*), matj(*), pi, mi(*), pj, mj(*)
     real(kind=8) :: mse(*), spij, typeke, spmeca, spther

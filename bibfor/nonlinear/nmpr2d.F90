@@ -20,12 +20,12 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
 !
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/subac1.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/subac1.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
+#include "asterfort/u2mess.h"
     logical :: laxi
     integer :: mode, nno, npg
     real(kind=8) :: poidsg(npg), vff(nno, npg), dff(nno, npg)

@@ -20,11 +20,11 @@ subroutine nmarce(sdieto, result, sdimpr, sddisc, instan,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmeteo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmeteo.h"
     character(len=24) :: sdieto, sdimpr
     character(len=8) :: result
     character(len=19) :: sddisc

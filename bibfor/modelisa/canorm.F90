@@ -1,12 +1,12 @@
 subroutine canorm(coor, normal, ndim, ityp, inorm)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mess.h"
     integer :: ndim, ityp, inorm
     real(kind=8) :: coor(*), normal(3)
 ! ======================================================================

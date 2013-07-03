@@ -16,9 +16,9 @@ subroutine fft(s, n, ifft)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/veri32.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/veri32.h"
     complex(kind=8) :: s(n)
 !-----------------------------------------------------------------------
 ! IN,OUT : S    FONCTION A TRANSFORMER

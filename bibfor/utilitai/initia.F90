@@ -19,7 +19,7 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     logical :: lgrot
     integer :: neq, indro(*)
     real(kind=8) :: chamro(*), chamin(*)

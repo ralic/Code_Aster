@@ -21,37 +21,37 @@ subroutine fropgd(sdstat, defico, resoco, solveu, numedd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfacat.h'
-    include 'asterfort/cfaduf.h'
-    include 'asterfort/cfatmu.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/cffact.h'
-    include 'asterfort/cffllf.h'
-    include 'asterfort/cfflm1.h'
-    include 'asterfort/cfflm2.h'
-    include 'asterfort/cffrot.h'
-    include 'asterfort/cfimp2.h'
-    include 'asterfort/cfmajf.h'
-    include 'asterfort/cfmata.h'
-    include 'asterfort/cfneg.h'
-    include 'asterfort/cfpeti.h'
-    include 'asterfort/cfpppg.h'
-    include 'asterfort/cfreso.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/elpiv1.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdsc3.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nmrvai.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/cfacat.h"
+#include "asterfort/cfaduf.h"
+#include "asterfort/cfatmu.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cffact.h"
+#include "asterfort/cffllf.h"
+#include "asterfort/cfflm1.h"
+#include "asterfort/cfflm2.h"
+#include "asterfort/cffrot.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/cfmajf.h"
+#include "asterfort/cfmata.h"
+#include "asterfort/cfneg.h"
+#include "asterfort/cfpeti.h"
+#include "asterfort/cfpppg.h"
+#include "asterfort/cfreso.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/elpiv1.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdsc3.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmrvai.h"
+#include "blas/daxpy.h"
     real(kind=8) :: resigr
     character(len=8) :: noma
     character(len=24) :: sdstat

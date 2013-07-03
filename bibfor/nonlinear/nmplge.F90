@@ -25,17 +25,17 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsb.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmmabu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsb.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmmabu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
 !

@@ -1,6 +1,6 @@
 subroutine fgordo(nbextr, ext, ord)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: ext(*), ord(*)
     integer :: nbextr
 !     ------------------------------------------------------------------

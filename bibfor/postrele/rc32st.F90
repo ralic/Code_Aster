@@ -1,6 +1,6 @@
 subroutine rc32st(sijm, nbinst, sth, sn)
     implicit   none
-    include 'asterfort/rctres.h'
+#include "asterfort/rctres.h"
     integer :: nbinst
     real(kind=8) :: sijm(6), sth(6*nbinst), sn
 !     ------------------------------------------------------------------

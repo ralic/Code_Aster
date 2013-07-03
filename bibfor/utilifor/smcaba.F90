@@ -1,10 +1,10 @@
 subroutine smcaba(ftrc, trc, nbhist, x, dz,&
                   ind)
     implicit   none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rslsvd.h'
-    include 'asterfort/smcosl.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/rslsvd.h"
+#include "asterfort/smcosl.h"
     integer :: ind(6), nbhist
     real(kind=8) :: ftrc((3*nbhist), 3), trc((3*nbhist), 5), x(5), dz(4)
 !-----------------------------------------------------------------------

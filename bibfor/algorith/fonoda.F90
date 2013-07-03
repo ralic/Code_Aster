@@ -20,7 +20,7 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 ! ======================================================================
 ! ======================================================================
     implicit     none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     logical :: fnoevo
     logical :: perman
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimdef, dimcon

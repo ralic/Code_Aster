@@ -18,11 +18,11 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisdef.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisdef.h"
     character(len=8) :: nomo
     character(len=13) :: prefob
     integer :: indxch

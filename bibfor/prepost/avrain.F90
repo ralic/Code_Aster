@@ -19,10 +19,10 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, itrv(2*(nbordr+2)), npic(nbvec)
     integer :: opic(nbvec*(nbordr+2)), ncycl(nbvec)
     integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))

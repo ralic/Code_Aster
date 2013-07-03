@@ -66,27 +66,27 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetprj.h'
-    include 'asterfort/fetrex.h'
-    include 'asterfort/fettsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rltfr8.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
+#include "asterfort/assert.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetprj.h"
+#include "asterfort/fetrex.h"
+#include "asterfort/fettsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rltfr8.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
     integer :: nbsd, nbi, vddl(nbsd), vsdf(nbsd), option, dimgi, irr, ipiv, irex
     integer :: iprj, ifm, ifiv, nbproc, rang
     real(kind=8) :: vdo(nbi), vd1(nbi), vlagi(nbi), testco

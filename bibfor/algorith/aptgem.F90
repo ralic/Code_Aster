@@ -21,25 +21,25 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/apcoma.h'
-    include 'asterfort/apcond.h'
-    include 'asterfort/apcpoi.h'
-    include 'asterfort/apcpou.h'
-    include 'asterfort/apnndm.h'
-    include 'asterfort/apnumm.h'
-    include 'asterfort/aptypm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmctan.h'
-    include 'asterfort/mmtann.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8maem.h"
+#include "asterfort/apcoma.h"
+#include "asterfort/apcond.h"
+#include "asterfort/apcpoi.h"
+#include "asterfort/apcpou.h"
+#include "asterfort/apnndm.h"
+#include "asterfort/apnumm.h"
+#include "asterfort/aptypm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmctan.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/u2mesk.h"
     character(len=24) :: defico
     character(len=19) :: sdappa, newgeo
     character(len=8) :: noma

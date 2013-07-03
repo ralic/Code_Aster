@@ -24,18 +24,18 @@ subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
 !
 ! aslint: disable=W1504
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmobsz.h'
-    include 'asterfort/sdmpic.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmobsz.h"
+#include "asterfort/sdmpic.h"
     character(len=8) :: noma
     character(len=24) :: nomcha, nomchs
     character(len=19) :: sdobse, nomtab

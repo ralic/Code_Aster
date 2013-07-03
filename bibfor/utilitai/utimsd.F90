@@ -20,17 +20,17 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !     --
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/dbgobj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jelstc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utimob.h'
-    include 'asterfort/uttr24.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dbgobj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jelstc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utimob.h"
+#include "asterfort/uttr24.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: sch1, base
     integer :: ipos, niveau, unit
     logical :: lattr, lcont

@@ -52,17 +52,17 @@ subroutine creso1(solveu, method, preco, renum, syme,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/sdsolv.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/sdsolv.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
     integer :: zslvk, zslvr, zslvi
     integer :: nprec, nmaxit, istop, niremp, ifm, numsd, nbma, nbreor, inumsd
     integer :: imail, nbreoi, reacre

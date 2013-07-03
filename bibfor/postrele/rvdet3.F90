@@ -18,7 +18,7 @@ subroutine rvdet3(t, d)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/rvdet2.h'
+#include "asterfort/rvdet2.h"
     real(kind=8) :: t(*), d
 !
 !*********************************************************************

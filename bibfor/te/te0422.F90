@@ -1,16 +1,16 @@
 subroutine te0422(option, nomte)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/dxefgv.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/dxefgv.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

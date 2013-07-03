@@ -21,7 +21,7 @@ subroutine chauxi(ndim, mu, ka, r, t,&
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'asterc/r8depi.h'
+#include "asterc/r8depi.h"
     integer :: ndim
     real(kind=8) :: mu, ka, r, t, invp(3, 3), courb(3, 3, 3)
     real(kind=8) :: du1dm(3, 3), du2dm(3, 3), du3dm(3, 3)

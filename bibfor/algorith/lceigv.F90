@@ -18,14 +18,14 @@ subroutine lceigv(fami, kpg, ksp, neps, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/diagp3.h'
-    include 'asterfort/lceib1.h'
-    include 'asterfort/lcgrad.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/zerop3.h'
-    include 'blas/ddot.h'
+#include "asterfort/diagp3.h"
+#include "asterfort/lceib1.h"
+#include "asterfort/lcgrad.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/zerop3.h"
+#include "blas/ddot.h"
     character(len=16) :: compor(*), option
     character(len=*) :: fami
     integer :: neps, imate, ksp, kpg

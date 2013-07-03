@@ -19,8 +19,8 @@ subroutine quavro(quater, theta)
 !
 ! aslint: disable=
     implicit none
-    include 'asterc/r8prem.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "blas/ddot.h"
     real(kind=8) :: quater(4), theta(3)
 !
 ! ----------------------------------------------------------------------

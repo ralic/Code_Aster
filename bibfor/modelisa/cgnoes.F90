@@ -39,15 +39,15 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DES DECLARATIONS ====================
 !
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcono.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcono.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: mofaz, nomaz, lisnoz
 !
 ! --------- VARIABLES LOCALES ---------------------------

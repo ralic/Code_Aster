@@ -19,11 +19,11 @@ subroutine nmextd(nomcha, sdieto, champ)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmetnc.h'
-    include 'asterfort/nmetob.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/nmetob.h"
     character(len=24) :: nomcha, sdieto
     character(len=19) :: champ
 !

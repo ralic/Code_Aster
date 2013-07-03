@@ -19,8 +19,8 @@ subroutine dfbdb(dim, b, e, deuxmu, lambda,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/dfpdf.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfpdf.h"
+#include "asterfort/r8inir.h"
     integer :: dim
     real(kind=8) :: b(6), e(6), deuxmu, lambda, dsidep(6, 6), ecrob
 ! ----------------------------------------------------------------------

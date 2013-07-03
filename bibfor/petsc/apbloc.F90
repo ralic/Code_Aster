@@ -18,11 +18,11 @@ subroutine apbloc(matass, solveu, tbloc)
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: matass, solveu
     integer :: tbloc
 !----------------------------------------------------------------

@@ -19,18 +19,18 @@ subroutine utims3(comm, sch1, ipos, base)
 !     --
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dbgobj.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelstc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttr24.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/dbgobj.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelstc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttr24.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: comm, sch1, base
     integer :: ipos
 ! ----------------------------------------------------------------------

@@ -2,26 +2,26 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
                   masgen, amogen, lflu, nbnli, noecho,&
                   logcho, parcho, intitu, ddlcho, ier)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mdchan.h'
-    include 'asterfort/mdchdl.h'
-    include 'asterfort/mdchre.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/orient.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utnono.h'
-    include 'asterfort/vechbn.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mdchan.h"
+#include "asterfort/mdchdl.h"
+#include "asterfort/mdchre.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/orient.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utnono.h"
+#include "asterfort/vechbn.h"
     integer :: nbnli, iamor, imode, ier, logcho(nbnli, *), ddlcho(*)
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
     logical :: lflu

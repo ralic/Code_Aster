@@ -27,7 +27,7 @@ subroutine betnvi(mod, ndt, ndi, nr, nvi)
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nr, nvi
     character(len=8) :: mod
 !       ----------------------------------------------------------------

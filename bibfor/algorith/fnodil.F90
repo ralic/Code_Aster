@@ -24,12 +24,12 @@ subroutine fnodil(dimuel, dimdef, nno, nnos, nnom,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit     none
-    include 'asterfort/cabrp0.h'
-    include 'asterfort/cabrp1.h'
-    include 'asterfort/cabrsl.h'
-    include 'asterfort/dilcge.h'
-    include 'asterfort/dilpen.h'
-    include 'asterfort/dilsga.h'
+#include "asterfort/cabrp0.h"
+#include "asterfort/cabrp1.h"
+#include "asterfort/cabrsl.h"
+#include "asterfort/dilcge.h"
+#include "asterfort/dilpen.h"
+#include "asterfort/dilsga.h"
     logical :: axi
     integer :: dimuel, dimdef, nno, nnos, nnom, ndim, npi, dimcon, ipoids
     integer :: ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm, imate

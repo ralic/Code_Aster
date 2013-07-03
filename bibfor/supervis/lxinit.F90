@@ -30,7 +30,7 @@ subroutine lxinit()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/lxdeli.h'
+#include "asterfort/lxdeli.h"
     integer :: i, mxchar, mxclas, mxcols, mxdeli, nbdeli
 !-----------------------------------------------------------------------
     parameter ( mxclas = 10 , mxchar = 255 , mxdeli = 15 )

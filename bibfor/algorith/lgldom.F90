@@ -1,19 +1,19 @@
 subroutine lgldom(nbmat, mater, yf, fiter)
 !
     implicit    none
-    include 'jeveux.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/domrev.h'
-    include 'asterfort/gdev.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/ucritp.h'
-    include 'asterfort/varecr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/domrev.h"
+#include "asterfort/gdev.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/ucritp.h"
+#include "asterfort/varecr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), yf(10), fiter
 ! =================================================================

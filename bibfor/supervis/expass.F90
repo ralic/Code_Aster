@@ -1,11 +1,11 @@
 subroutine expass(jxvrf)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/execop.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jxveri.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/execop.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jxveri.h"
     logical :: jxvrf
 !     ------------------------------------------------------------------
 ! ======================================================================

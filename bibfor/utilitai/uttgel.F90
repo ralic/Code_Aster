@@ -29,8 +29,8 @@ subroutine uttgel(nomte, ndim, typgeo)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim
     character(len=2) :: typgeo
     character(len=16) :: nomte

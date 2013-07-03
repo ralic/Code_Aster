@@ -1,21 +1,21 @@
 subroutine medom1(modele, mate, cara, kcha, ncha,&
                   ctyp, result, nuord)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ncha, nuord
     character(len=4) :: ctyp
     character(len=8) :: modele, cara, result

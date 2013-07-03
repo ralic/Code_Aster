@@ -20,10 +20,10 @@ subroutine vdesga(nomte, kwgt, inte, intsn, nb1,&
     implicit none
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrc.h'
+#include "asterfort/jevech.h"
+#include "asterfort/matrc.h"
     character(len=*) :: nomte
     real(kind=8) :: xi(3, *), depl(*), btild(5, 42), matc(5, 5), tempga(*)
     real(kind=8) :: vectt(3, 3)

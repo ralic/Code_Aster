@@ -20,7 +20,7 @@ subroutine mmcoor(alias, nno, ndim, coorma, ksi1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mmnonf.h'
+#include "asterfort/mmnonf.h"
     integer :: ndim, nno
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2

@@ -1,107 +1,107 @@
 subroutine ex0000(nuoper)
     implicit none
-    include 'asterc/gtopti.h'
-    include 'asterfort/op0000.h'
-    include 'asterfort/op0001.h'
-    include 'asterfort/op0002.h'
-    include 'asterfort/op0003.h'
-    include 'asterfort/op0004.h'
-    include 'asterfort/op0005.h'
-    include 'asterfort/op0006.h'
-    include 'asterfort/op0007.h'
-    include 'asterfort/op0008.h'
-    include 'asterfort/op0009.h'
-    include 'asterfort/op0010.h'
-    include 'asterfort/op0011.h'
-    include 'asterfort/op0012.h'
-    include 'asterfort/op0013.h'
-    include 'asterfort/op0014.h'
-    include 'asterfort/op0015.h'
-    include 'asterfort/op0016.h'
-    include 'asterfort/op0017.h'
-    include 'asterfort/op0018.h'
-    include 'asterfort/op0019.h'
-    include 'asterfort/op0020.h'
-    include 'asterfort/op0021.h'
-    include 'asterfort/op0022.h'
-    include 'asterfort/op0023.h'
-    include 'asterfort/op0024.h'
-    include 'asterfort/op0025.h'
-    include 'asterfort/op0026.h'
-    include 'asterfort/op0027.h'
-    include 'asterfort/op0028.h'
-    include 'asterfort/op0029.h'
-    include 'asterfort/op0030.h'
-    include 'asterfort/op0031.h'
-    include 'asterfort/op0032.h'
-    include 'asterfort/op0033.h'
-    include 'asterfort/op0034.h'
-    include 'asterfort/op0035.h'
-    include 'asterfort/op0036.h'
-    include 'asterfort/op0037.h'
-    include 'asterfort/op0038.h'
-    include 'asterfort/op0039.h'
-    include 'asterfort/op0040.h'
-    include 'asterfort/op0041.h'
-    include 'asterfort/op0042.h'
-    include 'asterfort/op0043.h'
-    include 'asterfort/op0044.h'
-    include 'asterfort/op0045.h'
-    include 'asterfort/op0046.h'
-    include 'asterfort/op0047.h'
-    include 'asterfort/op0048.h'
-    include 'asterfort/op0049.h'
-    include 'asterfort/op0050.h'
-    include 'asterfort/op0051.h'
-    include 'asterfort/op0052.h'
-    include 'asterfort/op0053.h'
-    include 'asterfort/op0054.h'
-    include 'asterfort/op0055.h'
-    include 'asterfort/op0056.h'
-    include 'asterfort/op0057.h'
-    include 'asterfort/op0058.h'
-    include 'asterfort/op0059.h'
-    include 'asterfort/op0060.h'
-    include 'asterfort/op0061.h'
-    include 'asterfort/op0062.h'
-    include 'asterfort/op0063.h'
-    include 'asterfort/op0064.h'
-    include 'asterfort/op0065.h'
-    include 'asterfort/op0066.h'
-    include 'asterfort/op0067.h'
-    include 'asterfort/op0068.h'
-    include 'asterfort/op0069.h'
-    include 'asterfort/op0070.h'
-    include 'asterfort/op0071.h'
-    include 'asterfort/op0072.h'
-    include 'asterfort/op0073.h'
-    include 'asterfort/op0074.h'
-    include 'asterfort/op0075.h'
-    include 'asterfort/op0076.h'
-    include 'asterfort/op0077.h'
-    include 'asterfort/op0078.h'
-    include 'asterfort/op0079.h'
-    include 'asterfort/op0080.h'
-    include 'asterfort/op0081.h'
-    include 'asterfort/op0082.h'
-    include 'asterfort/op0083.h'
-    include 'asterfort/op0084.h'
-    include 'asterfort/op0085.h'
-    include 'asterfort/op0086.h'
-    include 'asterfort/op0087.h'
-    include 'asterfort/op0088.h'
-    include 'asterfort/op0089.h'
-    include 'asterfort/op0090.h'
-    include 'asterfort/op0091.h'
-    include 'asterfort/op0092.h'
-    include 'asterfort/op0093.h'
-    include 'asterfort/op0094.h'
-    include 'asterfort/op0095.h'
-    include 'asterfort/op0096.h'
-    include 'asterfort/op0097.h'
-    include 'asterfort/op0098.h'
-    include 'asterfort/op0099.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/gtopti.h"
+#include "asterfort/op0000.h"
+#include "asterfort/op0001.h"
+#include "asterfort/op0002.h"
+#include "asterfort/op0003.h"
+#include "asterfort/op0004.h"
+#include "asterfort/op0005.h"
+#include "asterfort/op0006.h"
+#include "asterfort/op0007.h"
+#include "asterfort/op0008.h"
+#include "asterfort/op0009.h"
+#include "asterfort/op0010.h"
+#include "asterfort/op0011.h"
+#include "asterfort/op0012.h"
+#include "asterfort/op0013.h"
+#include "asterfort/op0014.h"
+#include "asterfort/op0015.h"
+#include "asterfort/op0016.h"
+#include "asterfort/op0017.h"
+#include "asterfort/op0018.h"
+#include "asterfort/op0019.h"
+#include "asterfort/op0020.h"
+#include "asterfort/op0021.h"
+#include "asterfort/op0022.h"
+#include "asterfort/op0023.h"
+#include "asterfort/op0024.h"
+#include "asterfort/op0025.h"
+#include "asterfort/op0026.h"
+#include "asterfort/op0027.h"
+#include "asterfort/op0028.h"
+#include "asterfort/op0029.h"
+#include "asterfort/op0030.h"
+#include "asterfort/op0031.h"
+#include "asterfort/op0032.h"
+#include "asterfort/op0033.h"
+#include "asterfort/op0034.h"
+#include "asterfort/op0035.h"
+#include "asterfort/op0036.h"
+#include "asterfort/op0037.h"
+#include "asterfort/op0038.h"
+#include "asterfort/op0039.h"
+#include "asterfort/op0040.h"
+#include "asterfort/op0041.h"
+#include "asterfort/op0042.h"
+#include "asterfort/op0043.h"
+#include "asterfort/op0044.h"
+#include "asterfort/op0045.h"
+#include "asterfort/op0046.h"
+#include "asterfort/op0047.h"
+#include "asterfort/op0048.h"
+#include "asterfort/op0049.h"
+#include "asterfort/op0050.h"
+#include "asterfort/op0051.h"
+#include "asterfort/op0052.h"
+#include "asterfort/op0053.h"
+#include "asterfort/op0054.h"
+#include "asterfort/op0055.h"
+#include "asterfort/op0056.h"
+#include "asterfort/op0057.h"
+#include "asterfort/op0058.h"
+#include "asterfort/op0059.h"
+#include "asterfort/op0060.h"
+#include "asterfort/op0061.h"
+#include "asterfort/op0062.h"
+#include "asterfort/op0063.h"
+#include "asterfort/op0064.h"
+#include "asterfort/op0065.h"
+#include "asterfort/op0066.h"
+#include "asterfort/op0067.h"
+#include "asterfort/op0068.h"
+#include "asterfort/op0069.h"
+#include "asterfort/op0070.h"
+#include "asterfort/op0071.h"
+#include "asterfort/op0072.h"
+#include "asterfort/op0073.h"
+#include "asterfort/op0074.h"
+#include "asterfort/op0075.h"
+#include "asterfort/op0076.h"
+#include "asterfort/op0077.h"
+#include "asterfort/op0078.h"
+#include "asterfort/op0079.h"
+#include "asterfort/op0080.h"
+#include "asterfort/op0081.h"
+#include "asterfort/op0082.h"
+#include "asterfort/op0083.h"
+#include "asterfort/op0084.h"
+#include "asterfort/op0085.h"
+#include "asterfort/op0086.h"
+#include "asterfort/op0087.h"
+#include "asterfort/op0088.h"
+#include "asterfort/op0089.h"
+#include "asterfort/op0090.h"
+#include "asterfort/op0091.h"
+#include "asterfort/op0092.h"
+#include "asterfort/op0093.h"
+#include "asterfort/op0094.h"
+#include "asterfort/op0095.h"
+#include "asterfort/op0096.h"
+#include "asterfort/op0097.h"
+#include "asterfort/op0098.h"
+#include "asterfort/op0099.h"
+#include "asterfort/u2mesg.h"
     integer :: nuoper
 !     ------------------------------------------------------------------
 ! ======================================================================

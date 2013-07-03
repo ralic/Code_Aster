@@ -66,9 +66,9 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/r8inir.h"
     integer :: ino, iref1, iref2, ivois, igeom, isig, nbcmp
     real(kind=8) :: inst, nx(3), ny(3), tx(3), ty(3), sig11(3), sig22(3)
     real(kind=8) :: sig12(3)

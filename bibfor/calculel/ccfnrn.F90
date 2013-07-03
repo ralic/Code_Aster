@@ -2,42 +2,42 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                   lischa, ncharg, chtype, typesd)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/calcop.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mcmult.h'
-    include 'asterfort/memam2.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nmdome.h'
-    include 'asterfort/ntdoth.h'
-    include 'asterfort/numecn.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecgme.h'
-    include 'asterfort/vechme.h'
-    include 'asterfort/vefnme.h'
-    include 'asterfort/vefpme.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/calcop.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlima.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mcmult.h"
+#include "asterfort/memam2.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmdome.h"
+#include "asterfort/ntdoth.h"
+#include "asterfort/numecn.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecgme.h"
+#include "asterfort/vechme.h"
+#include "asterfort/vefnme.h"
+#include "asterfort/vefpme.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     integer :: nbordr, ncharg
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou

@@ -16,7 +16,7 @@ subroutine jeimpr(unit, clas, cmess)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
+#include "jeveux_private.h"
     integer :: unit
     character(len=*) :: clas, cmess
 ! ----------------------------------------------------------------------

@@ -20,8 +20,8 @@ subroutine mmdonf(ndim, nno, alias, ksi1, ksi2,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfdf.h'
+#include "asterfort/assert.h"
+#include "asterfort/elrfdf.h"
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: dff(2, 9)

@@ -1,11 +1,11 @@
 subroutine asdir(monoap, muapde, id, neq, nbsup,&
                  nsupp, tcosup, recmod, repdir)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: id, neq, nbsup, nsupp(*), tcosup(nbsup, *)
     real(kind=8) :: recmod(nbsup, neq, *), repdir(neq, *)
     logical :: monoap, muapde

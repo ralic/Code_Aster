@@ -19,12 +19,12 @@ subroutine nmdoim(sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/obsetb.h'
-    include 'asterfort/obseti.h'
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/obsetb.h"
+#include "asterfort/obseti.h"
     character(len=24) :: sdimpr
 !
 ! ----------------------------------------------------------------------

@@ -1,11 +1,11 @@
 subroutine alcar1(noma, moclef, nbmocs, mocles, typmcl,&
                   nbet)
     implicit none
-    include 'asterc/getfac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reliem.h'
+#include "asterc/getfac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reliem.h"
     integer :: nbmocs, nbet
     character(len=*) :: noma, moclef, mocles(*), typmcl(*)
 ! ----------------------------------------------------------------------

@@ -21,7 +21,7 @@ function cotsti(typsup)
 !     BUT : DETERMINER LE TYPE "INFORMATIQUE" CORRESPONDANT A
 !           UN TYPE "SUPERVISEUR"
 !======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     character(len=16) :: typinf
 !----------------------------------------------------------------------

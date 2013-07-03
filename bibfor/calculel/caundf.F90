@@ -19,18 +19,18 @@ subroutine caundf(code, opt, te)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/iisnan.h'
-    include 'asterc/indik8.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbpara.h'
-    include 'asterfort/nopara.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/iisnan.h"
+#include "asterc/indik8.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbpara.h"
+#include "asterfort/nopara.h"
+#include "asterfort/u2mesk.h"
     integer :: opt, te
     character(len=5) :: code
 ! ----------------------------------------------------------------------

@@ -22,29 +22,29 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcvh.h'
-    include 'asterfort/hbcalc.h'
-    include 'asterfort/hbcrel.h'
-    include 'asterfort/hbderi.h'
-    include 'asterfort/hbdsdp.h'
-    include 'asterfort/hbmajs.h'
-    include 'asterfort/hbmata.h'
-    include 'asterfort/hbrcvx.h'
-    include 'asterfort/hbrmat.h'
-    include 'asterfort/hbvaec.h'
-    include 'asterfort/lcdedi.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lchbvp.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcvh.h"
+#include "asterfort/hbcalc.h"
+#include "asterfort/hbcrel.h"
+#include "asterfort/hbderi.h"
+#include "asterfort/hbdsdp.h"
+#include "asterfort/hbmajs.h"
+#include "asterfort/hbmata.h"
+#include "asterfort/hbrcvx.h"
+#include "asterfort/hbrmat.h"
+#include "asterfort/hbvaec.h"
+#include "asterfort/lcdedi.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lchbvp.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sigp(6), dsidep(6, 6)
     real(kind=8) :: sigm(6), td, tf, tr, dsidp1(6), dsidp2(6), epsm(6)

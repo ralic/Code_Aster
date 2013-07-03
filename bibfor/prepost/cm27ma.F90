@@ -2,17 +2,17 @@ subroutine cm27ma(nbmato, nbma, nbno, nbnomi, lima,&
                   typema, conniz, connoz, nofils, nbtyma,&
                   nomast, reftyp, nbref, impmai)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     integer :: nbmato, nbma, nbno, lima(nbma), nbtyma, nbref(*), nofils(6, *)
     integer :: typema(*), reftyp(*), impmai(*), nbnomi
     character(len=8) :: nomast(*)

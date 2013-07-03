@@ -20,12 +20,12 @@ subroutine mmpnoe(defico, posmae, alias, typint, iptm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfconn.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfconn.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: alias
     character(len=24) :: defico
     integer :: iptm

@@ -51,16 +51,16 @@ subroutine lrmmf4(nbrfam, carafa, nbnoeu, nbmail, nomgro,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lrmgrp.h'
-    include 'asterfort/lrmngr.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lrmgrp.h"
+#include "asterfort/lrmngr.h"
+#include "asterfort/wkvect.h"
     integer :: nbrfam, carafa(3, nbrfam)
     integer :: nbnoeu, nbmail, nbgrno, nbgrma
     integer :: infmed

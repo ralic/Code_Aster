@@ -46,8 +46,8 @@ function csevl(x, cs, n)
 !***END PROLOGUE  DCSEVL
     implicit none
     real(kind=8) :: csevl
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
     real(kind=8) :: b0, b1, b2, cs(*), onepl, twox, x
     logical :: first
     save first, onepl

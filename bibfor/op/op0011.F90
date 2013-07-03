@@ -28,19 +28,19 @@ subroutine op0011()
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/crsolv.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/numddl.h'
-    include 'asterfort/numero.h'
-    include 'asterfort/promor.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/crsolv.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/numddl.h"
+#include "asterfort/numero.h"
+#include "asterfort/promor.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
     integer :: nlimat, imatel
     parameter   (nlimat=100)
     integer :: ifm, nbid, nbmat, niv, nbcha, iacha, jnslv, il

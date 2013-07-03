@@ -20,11 +20,11 @@ subroutine cazoco(char, nomo, motfac, iform, izone,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/cazocc.h'
-    include 'asterfort/cazocd.h'
-    include 'asterfort/cazocm.h'
-    include 'asterfort/cazocx.h'
+#include "asterfort/assert.h"
+#include "asterfort/cazocc.h"
+#include "asterfort/cazocd.h"
+#include "asterfort/cazocm.h"
+#include "asterfort/cazocx.h"
     character(len=8) :: char, nomo
     character(len=16) :: motfac
     integer :: iform, izone, nzoco

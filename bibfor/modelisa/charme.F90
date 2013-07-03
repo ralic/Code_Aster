@@ -17,56 +17,56 @@ subroutine charme(fonree)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterfort/adalig.h'
-    include 'asterfort/alligr.h'
-    include 'asterfort/caarei.h'
-    include 'asterfort/cachre.h'
-    include 'asterfort/caddli.h'
-    include 'asterfort/caddlp.h'
-    include 'asterfort/cafaci.h'
-    include 'asterfort/cafono.h'
-    include 'asterfort/cagene.h'
-    include 'asterfort/cagrou.h'
-    include 'asterfort/caimch.h'
-    include 'asterfort/caliag.h'
-    include 'asterfort/caliai.h'
-    include 'asterfort/calich.h'
-    include 'asterfort/calicp.h'
-    include 'asterfort/caliel.h'
-    include 'asterfort/calimc.h'
-    include 'asterfort/caliob.h'
-    include 'asterfort/calirc.h'
-    include 'asterfort/caliso.h'
-    include 'asterfort/calyrc.h'
-    include 'asterfort/caprec.h'
-    include 'asterfort/carbe3.h'
-    include 'asterfort/caveas.h'
-    include 'asterfort/caveis.h'
-    include 'asterfort/caxfem.h'
-    include 'asterfort/cbchei.h'
-    include 'asterfort/cbelec.h'
-    include 'asterfort/cbimpd.h'
-    include 'asterfort/cblapl.h'
-    include 'asterfort/cbonde.h'
-    include 'asterfort/cbondp.h'
-    include 'asterfort/cbpesa.h'
-    include 'asterfort/cbprca.h'
-    include 'asterfort/cbpres.h'
-    include 'asterfort/cbrota.h'
-    include 'asterfort/cbsint.h'
-    include 'asterfort/cbvitn.h'
-    include 'asterfort/chveno.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/adalig.h"
+#include "asterfort/alligr.h"
+#include "asterfort/caarei.h"
+#include "asterfort/cachre.h"
+#include "asterfort/caddli.h"
+#include "asterfort/caddlp.h"
+#include "asterfort/cafaci.h"
+#include "asterfort/cafono.h"
+#include "asterfort/cagene.h"
+#include "asterfort/cagrou.h"
+#include "asterfort/caimch.h"
+#include "asterfort/caliag.h"
+#include "asterfort/caliai.h"
+#include "asterfort/calich.h"
+#include "asterfort/calicp.h"
+#include "asterfort/caliel.h"
+#include "asterfort/calimc.h"
+#include "asterfort/caliob.h"
+#include "asterfort/calirc.h"
+#include "asterfort/caliso.h"
+#include "asterfort/calyrc.h"
+#include "asterfort/caprec.h"
+#include "asterfort/carbe3.h"
+#include "asterfort/caveas.h"
+#include "asterfort/caveis.h"
+#include "asterfort/caxfem.h"
+#include "asterfort/cbchei.h"
+#include "asterfort/cbelec.h"
+#include "asterfort/cbimpd.h"
+#include "asterfort/cblapl.h"
+#include "asterfort/cbonde.h"
+#include "asterfort/cbondp.h"
+#include "asterfort/cbpesa.h"
+#include "asterfort/cbprca.h"
+#include "asterfort/cbpres.h"
+#include "asterfort/cbrota.h"
+#include "asterfort/cbsint.h"
+#include "asterfort/cbvitn.h"
+#include "asterfort/chveno.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/initel.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=4) :: fonree
 !
 ! ----------------------------------------------------------------------

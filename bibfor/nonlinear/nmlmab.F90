@@ -22,14 +22,14 @@ subroutine nmlmab(pgl, nno, npg, nc, ugl,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/granac.h'
-    include 'asterfort/nmcri3.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/verifm.h'
-    include 'asterfort/zeroco.h'
-    include 'blas/dcopy.h'
+#include "asterfort/granac.h"
+#include "asterfort/nmcri3.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/verifm.h"
+#include "asterfort/zeroco.h"
+#include "blas/dcopy.h"
     integer :: nno, npg, nc, neq, nbt, ncoefl, niter, imate
 !-----------------------------------------------------------------------
     integer :: iret, it, nchan

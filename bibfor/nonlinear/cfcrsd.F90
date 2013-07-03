@@ -19,24 +19,24 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfcrje.h'
-    include 'asterfort/cfcrli.h'
-    include 'asterfort/cfcrma.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/cfcrje.h"
+#include "asterfort/cfcrli.h"
+#include "asterfort/cfcrma.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico, resoco

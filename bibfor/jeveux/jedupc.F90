@@ -17,9 +17,9 @@ subroutine jedupc(clain, schin, ipos, claout, schout,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: clain, schin, claout, schout
     integer :: ipos
     logical :: dupcol

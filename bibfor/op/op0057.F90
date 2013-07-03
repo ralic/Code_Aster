@@ -25,10 +25,10 @@ subroutine op0057()
 !       ET GLRC_DM A PARTIR DES PROPRIETES DU BETON ET DES COUCHES
 !       D ACIER
 !-----------------------------------------------------------------------
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dglrda.h'
-    include 'asterfort/dglrdm.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dglrda.h"
+#include "asterfort/dglrdm.h"
     integer :: ibid
     character(len=16) :: relat
     integer :: iarg

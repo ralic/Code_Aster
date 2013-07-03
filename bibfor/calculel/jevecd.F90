@@ -25,11 +25,11 @@ subroutine jevecd(nompar, jad, valdef)
 !         EMET UNE ERREUR FATALE
 !----------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/contex.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/contex.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     integer :: itab(8), jad, lonel, k, iret
     character(len=*) :: nompar
     real(kind=8) :: valdef

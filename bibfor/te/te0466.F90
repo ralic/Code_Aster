@@ -1,13 +1,13 @@
 subroutine te0466(option, nomte)
 ! aslint: disable=W1501
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/dimthm.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/dimthm.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 ! =====================================================================

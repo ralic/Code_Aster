@@ -19,8 +19,8 @@ subroutine calkbp(nno, ndim, w, dff1, kbp)
 ! aslint: disable=W1306
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
     integer :: ndim, nno
     real(kind=8) :: w, dff1(nno, ndim)
     real(kind=8) :: kbp(ndim, nno)

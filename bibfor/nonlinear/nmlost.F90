@@ -19,11 +19,11 @@ subroutine nmlost(sdtime)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmrtim.h'
-    include 'asterfort/nmtimr.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmrtim.h"
+#include "asterfort/nmtimr.h"
     character(len=24) :: sdtime
 !
 ! ----------------------------------------------------------------------

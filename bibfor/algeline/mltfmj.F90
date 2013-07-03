@@ -18,8 +18,8 @@ subroutine mltfmj(nb, n, p, front, frn,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/mlnump.h'
-    include 'blas/dgemm.h'
+#include "asterc/mlnump.h"
+#include "blas/dgemm.h"
     integer :: n, p, adper(*)
     real(kind=8) :: front(*), frn(*)
     integer :: nb, decal, add, ind, nmb, i, j, kb, ia, ib, restm

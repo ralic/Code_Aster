@@ -1,6 +1,6 @@
 subroutine elrfvf(elrefz, x, dimf, ff, nno)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: dimf, nno
     real(kind=8) :: x(*), ff(*)
     character(len=*) :: elrefz

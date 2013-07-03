@@ -1,14 +1,14 @@
 subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
                   char, mate, solvez, ma, nu)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/merith.h'
-    include 'asterfort/numero.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/mecact.h"
+#include "asterfort/merith.h"
+#include "asterfort/numero.h"
+#include "asterfort/preres.h"
+#include "asterfort/wkvect.h"
     integer :: nbchar
     character(len=*) :: mate, solvez
 !

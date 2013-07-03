@@ -29,7 +29,7 @@ subroutine fgpic2(method, rtrv, point, npoint, pic,&
 !       ----------------------------------------------------------------
 !
     implicit       none
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: i, npoint, npic, nmax, ntrv
     real(kind=8) :: point(*), pic(*), rtrv(*), pmax, pinter
     real(kind=8) :: dp1, dp2, epsi

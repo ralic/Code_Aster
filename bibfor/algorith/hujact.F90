@@ -33,16 +33,16 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 !       CHGMEC   = .TRUE. SI MODIFICATION DU DOMAINE POTENTIEL
 !                            DES MECANISMES ACTIFS
 !   ------------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujcdc.h'
-    include 'asterfort/hujcic.h'
-    include 'asterfort/hujcrd.h'
-    include 'asterfort/hujcri.h'
-    include 'asterfort/hujdrc.h'
-    include 'asterfort/hujmed.h'
-    include 'asterfort/hujmei.h'
-    include 'asterfort/hujrmo.h'
-    include 'asterfort/lceqvn.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujcdc.h"
+#include "asterfort/hujcic.h"
+#include "asterfort/hujcrd.h"
+#include "asterfort/hujcri.h"
+#include "asterfort/hujdrc.h"
+#include "asterfort/hujmed.h"
+#include "asterfort/hujmei.h"
+#include "asterfort/hujrmo.h"
+#include "asterfort/lceqvn.h"
     integer :: ndt, ndi, i, mono, indi(7)
     real(kind=8) :: tole1, sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*), vins(50), vint(50)

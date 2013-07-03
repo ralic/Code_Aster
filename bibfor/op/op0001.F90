@@ -41,28 +41,28 @@ subroutine op0001()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/abscur.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/chckma.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/infoma.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lrmast.h'
-    include 'asterfort/lrmhdf.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mavegr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/abscur.h"
+#include "asterfort/assert.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/chckma.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/infoma.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lrmast.h"
+#include "asterfort/lrmhdf.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/mavegr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: cmd
     common          /opmail/        cmd
 !

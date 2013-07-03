@@ -2,20 +2,20 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
                   lraide, lmasse, ldynam, solveu, lamor,&
                   lc, impr, ifapm, ind)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8miem.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdete.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/u2mesr.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdete.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/u2mesr.h"
     integer :: nk, lraide, lmasse, ldynam, lamor, ifapm, ind
     logical :: lc
     real(kind=8) :: theta

@@ -17,14 +17,14 @@ subroutine jjhrsv(idts, nbval, iadmi)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'jeveux_private.h'
-    include 'asterc/hdfcld.h'
-    include 'asterc/hdfrsv.h'
-    include 'asterc/hdftsd.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "jeveux_private.h"
+#include "asterc/hdfcld.h"
+#include "asterc/hdfrsv.h"
+#include "asterc/hdftsd.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/u2mess.h"
     integer :: idts, nbval, iadmi
 ! ----------------------------------------------------------------------
 ! RELIT UN SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX, LE TYPE INTEGER

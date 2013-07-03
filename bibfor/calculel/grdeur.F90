@@ -21,9 +21,9 @@ function grdeur(nompar)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: nompar
 ! ----------------------------------------------------------------------
 !     ENTREES:

@@ -20,9 +20,9 @@ subroutine utimob(unit, obin, nivo, lattr, lcont,&
 !     --
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utimco.h'
-    include 'asterfort/utimos.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/utimco.h"
+#include "asterfort/utimos.h"
     character(len=*) :: obin, xous
     integer :: nivo, unit
     logical :: lattr, lcont

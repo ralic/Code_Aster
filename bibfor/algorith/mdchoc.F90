@@ -6,19 +6,19 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
                   ier)
 ! aslint: disable=W1504
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdchge.h'
-    include 'asterfort/mdchst.h'
-    include 'asterfort/resmod.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdchge.h"
+#include "asterfort/mdchst.h"
+#include "asterfort/resmod.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbnli, nbchoc, nbflam, nbsism, nbmode, neq
     integer :: nbrfis, nbpal
     integer :: logcho(nbnli, *), ier, nexcit, info

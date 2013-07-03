@@ -20,20 +20,20 @@ function mmmaxi(modelz, lisma, nbma)
 !
     implicit none
     logical :: mmmaxi
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utmasu.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utmasu.h"
     character(len=8) :: modelz
     character(len=24) :: lisma
     integer :: nbma

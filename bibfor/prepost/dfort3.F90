@@ -50,15 +50,15 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dcalph.h'
-    include 'asterfort/dinttc.h'
-    include 'asterfort/drao12.h'
-    include 'asterfort/dvolu1.h'
-    include 'asterfort/dvolu2.h'
-    include 'asterfort/dvolu3.h'
-    include 'asterfort/dvolu4.h'
-    include 'asterfort/dvolu5.h'
+#include "asterfort/assert.h"
+#include "asterfort/dcalph.h"
+#include "asterfort/dinttc.h"
+#include "asterfort/drao12.h"
+#include "asterfort/dvolu1.h"
+#include "asterfort/dvolu2.h"
+#include "asterfort/dvolu3.h"
+#include "asterfort/dvolu4.h"
+#include "asterfort/dvolu5.h"
     integer :: nsommx, icnc(nsommx+2, *), noeu1, noeu2
     integer :: nbelt, nbnoe
     integer :: tbelzo(nbelt), tbnozo(nbnoe)

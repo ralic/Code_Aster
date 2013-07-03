@@ -23,38 +23,38 @@ subroutine tran77(nomres, typres, nomin, basemo)
 ! IN  : NOMIN  : NOM UTILISATEUR DU CONCEPT TRAN_GENE AMONT
 ! IN  : BASEMO : NOM UTILISATEUR DU CONCEPT MODE_MECA AMONT
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cnocre.h'
-    include 'asterfort/copmod.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extrac.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdgeph.h'
-    include 'asterfort/rbph01.h'
-    include 'asterfort/rbph02.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rstran.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/vtcrec.h'
-    include 'asterfort/vtdefs.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnocre.h"
+#include "asterfort/copmod.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extrac.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdgeph.h"
+#include "asterfort/rbph01.h"
+#include "asterfort/rbph02.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rstran.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/vtcrec.h"
+#include "asterfort/vtdefs.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
     integer :: i, j, itresu(8)

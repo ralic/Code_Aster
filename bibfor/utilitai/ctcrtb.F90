@@ -1,17 +1,17 @@
 subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                   toucmp, nbcmp, nbval, nkcmp, ndim)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbcrsv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbcrsv.h"
+#include "asterfort/wkvect.h"
     integer :: nbcmp, ndim, nbval
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu

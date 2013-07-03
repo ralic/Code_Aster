@@ -16,10 +16,10 @@ subroutine te0584(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/tusief.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/elref5.h"
+#include "asterfort/tusief.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !

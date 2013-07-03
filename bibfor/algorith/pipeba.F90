@@ -19,11 +19,11 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/zerop2.h'
-    include 'blas/ddot.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/zerop2.h"
+#include "blas/ddot.h"
     integer :: mate, ndim
     real(kind=8) :: sup(ndim), sud(ndim), vim, dtau, copilo(2, 3)
 !

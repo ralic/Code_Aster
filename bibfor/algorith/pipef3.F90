@@ -23,12 +23,12 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/nmfici.h'
-    include 'asterfort/pipeba.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8vide.h"
+#include "asterfort/nmfici.h"
+#include "asterfort/pipeba.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: mate, npg, lgpg, nno, ndim, nddl
     real(kind=8) :: geom(nddl), vim(lgpg, npg), ddepl(nddl), deplm(nddl)
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)

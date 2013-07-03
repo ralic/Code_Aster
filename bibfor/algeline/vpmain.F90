@@ -1,17 +1,17 @@
 subroutine vpmain(modele, mate, cara, xmastr, nbpara)
 ! aslint: disable=
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/pemica.h'
-    include 'asterfort/rcmfmc.h'
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/pemica.h"
+#include "asterfort/rcmfmc.h"
     character(len=*) :: modele, mate, cara
     real(kind=8) :: xmastr
 ! ======================================================================

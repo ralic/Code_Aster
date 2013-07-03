@@ -22,23 +22,23 @@ subroutine op0040()
 !             DE DONNEES RESULTAT
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/cmpcha.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/cmpcha.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
     integer :: ifm, niv, ibid, ncmp1, ncmpmx, icmp, jatach, nbcham
     integer :: jnocmp, isy, iord, ifi, n2
     character(len=8) :: k8b

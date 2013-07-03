@@ -2,17 +2,17 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
                   expo, pivot, ier, solveu, caldet,&
                   calfac)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/freqom.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdete.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpshif.h'
+#include "asterfort/freqom.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdete.h"
+#include "asterfort/preres.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpshif.h"
     real(kind=8) :: valshi, mantis
     integer :: lmatk, lmatm, lmatsh, expo, pivot, ier
     character(len=19) :: solveu

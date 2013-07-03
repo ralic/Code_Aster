@@ -16,11 +16,11 @@ subroutine jecroc(nomlu)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/jxveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jjallc.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/jxveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu
 !     ------------------------------------------------------------------
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc

@@ -19,8 +19,8 @@ subroutine apnndm(sdappa, defico, posmai, nnosdm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cfnben.h'
+#include "jeveux.h"
+#include "asterfort/cfnben.h"
     character(len=19) :: sdappa
     character(len=24) :: defico
     integer :: posmai, nnosdm

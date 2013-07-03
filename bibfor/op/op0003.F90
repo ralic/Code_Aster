@@ -21,29 +21,29 @@ subroutine op0003()
 !     LECTURE DE LA DEFINITION D'UNE FONCTION
 !     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/defcur.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/foverf.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/ordonn.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/defcur.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/foverf.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/ordonn.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: i, iret, ibid, ival, jval, jfon, ifm
     integer :: jpar, lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
     integer :: jnoe, n, nbval, lval, lfon

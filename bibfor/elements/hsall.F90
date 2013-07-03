@@ -29,7 +29,7 @@ subroutine hsall(vectt, hstout)
 !
     implicit none
 !
-    include 'asterfort/hfmss.h'
+#include "asterfort/hfmss.h"
     integer :: i, j
 !
     real(kind=8) :: vectt ( 3 , 3 )

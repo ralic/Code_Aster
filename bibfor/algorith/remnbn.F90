@@ -18,12 +18,12 @@ subroutine remnbn(basmod, nbmod, nbddr, nbdax, flexdr,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dcapno.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/dcapno.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbmod, nbddr, nbdax, neq
     real(kind=8) :: beta
     complex(kind=8) :: cmode(nbmod+nbddr+nbdax), vecmod(neq)

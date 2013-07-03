@@ -23,9 +23,9 @@ subroutine lc0031(fami, kpg, ksp, ndim, imate,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmveei.h'
-    include 'asterfort/nmvprk.h'
-    include 'asterfort/utlcal.h'
+#include "asterfort/nmveei.h"
+#include "asterfort/nmvprk.h"
+#include "asterfort/utlcal.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)

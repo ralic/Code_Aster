@@ -22,17 +22,17 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/ismali.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
+#include "asterfort/ismali.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: nomte
     character(len=8) :: typmai, elrees, elrema, elreco
     integer :: ndim, nddl, nnc

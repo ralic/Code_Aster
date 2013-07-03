@@ -8,40 +8,40 @@ subroutine mefist(melflu, ndim, som, alpha, ru,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/crnslv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jevtbl.h'
-    include 'asterfort/ltcrsd.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/mefcir.h'
-    include 'asterfort/mefeig.h'
-    include 'asterfort/mefgec.h'
-    include 'asterfort/mefger.h'
-    include 'asterfort/mefmat.h'
-    include 'asterfort/mefpre.h'
-    include 'asterfort/mefrec.h'
-    include 'asterfort/mefrep.h'
-    include 'asterfort/mefrot.h'
-    include 'asterfort/mefsma.h'
-    include 'asterfort/mefver.h'
-    include 'asterfort/nummo1.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/smosli.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/crnslv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jevtbl.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/mefcir.h"
+#include "asterfort/mefeig.h"
+#include "asterfort/mefgec.h"
+#include "asterfort/mefger.h"
+#include "asterfort/mefmat.h"
+#include "asterfort/mefpre.h"
+#include "asterfort/mefrec.h"
+#include "asterfort/mefrep.h"
+#include "asterfort/mefrot.h"
+#include "asterfort/mefsma.h"
+#include "asterfort/mefver.h"
+#include "asterfort/nummo1.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/smosli.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: ndim(14), numgrp(*), nuor(*)
     real(kind=8) :: fact(*), facpar(*), rtbloc
     real(kind=8) :: som(9), alpha, ru, matma(*), freq(*), masg(*), vite(*)

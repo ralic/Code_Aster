@@ -21,23 +21,23 @@ subroutine cfresu(noma, numins, inst, sddisc, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfimp3.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfresa.h'
-    include 'asterfort/cfresb.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/iseven.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/caladu.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfimp3.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfresa.h"
+#include "asterfort/cfresb.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/iseven.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/u2mess.h"
     integer :: numins
     real(kind=8) :: inst(*)
     character(len=8) :: noma

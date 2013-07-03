@@ -19,7 +19,7 @@ subroutine mkkvec(rese, nrese, ndim, vec, resu)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: rese(3), nrese, resu(3), vec(3)
     integer :: ndim
 !

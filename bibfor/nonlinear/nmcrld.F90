@@ -19,13 +19,13 @@ subroutine nmcrld(sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/dfllsv.h'
-    include 'asterfort/dfllvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/utdidt.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dfllsv.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------

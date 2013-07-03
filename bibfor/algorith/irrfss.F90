@@ -1,12 +1,12 @@
 subroutine irrfss(sig, ddfdds)
     implicit none
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
     real(kind=8) :: sig(6), ddfdds(6, 6)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

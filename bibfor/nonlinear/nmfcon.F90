@@ -21,8 +21,8 @@ subroutine nmfcon(modele, numedd, mate, fonact, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/isfonc.h'
-    include 'asterfort/nmfocc.h'
+#include "asterfort/isfonc.h"
+#include "asterfort/nmfocc.h"
     integer :: fonact(*)
     character(len=24) :: modele, numedd, mate
     character(len=19) :: veelem(*), veasse(*)

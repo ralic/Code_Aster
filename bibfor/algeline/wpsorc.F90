@@ -106,18 +106,18 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
 !
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpordc.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wp2ayc.h'
-    include 'asterfort/znaupd.h'
-    include 'asterfort/zneupd.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpordc.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wp2ayc.h"
+#include "asterfort/znaupd.h"
+#include "asterfort/zneupd.h"
     integer :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
     integer :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, alpha, rwork(*)

@@ -21,25 +21,25 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 ! person_in_charge: jean.angles at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/loisem.h'
-    include 'asterc/lor8em.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/avplcr.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedisp.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rnomat.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vecnuv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/loisem.h"
+#include "asterc/lor8em.h"
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/avplcr.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rnomat.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vecnuv.h"
+#include "asterfort/wkvect.h"
     integer :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
     integer :: numpaq, tspaq
     real(kind=8) :: vwork(tdisp)

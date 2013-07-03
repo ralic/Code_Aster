@@ -26,7 +26,7 @@ function dpolyh(n, a, x)
 !
 ! OUT DPOLYH : EVALUATION DU POLYNOME A X
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: i, n
     real(kind=8) :: dpolyh, a(*), x
 !

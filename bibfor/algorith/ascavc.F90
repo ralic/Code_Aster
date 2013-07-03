@@ -20,26 +20,26 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ascova.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calvci.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcnco2.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rgndas.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/ascova.h"
+#include "asterfort/assert.h"
+#include "asterfort/calvci.h"
+#include "asterfort/corich.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rgndas.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: lchar, infcha, fomult
     character(len=*) :: vci, numedd
     real(kind=8) :: inst

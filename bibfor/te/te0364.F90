@@ -19,25 +19,25 @@ subroutine te0364(option, nomte)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mmelem.h'
-    include 'asterfort/mmlagc.h'
-    include 'asterfort/mmmlav.h'
-    include 'asterfort/mmmlcf.h'
-    include 'asterfort/mmmpha.h'
-    include 'asterfort/mmmsta.h'
-    include 'asterfort/mmmtas.h'
-    include 'asterfort/mmmtdb.h'
-    include 'asterfort/mmmtex.h'
-    include 'asterfort/mmtape.h'
-    include 'asterfort/mmtfpe.h'
-    include 'asterfort/mmtgeo.h'
-    include 'asterfort/mmtppe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matini.h"
+#include "asterfort/mmelem.h"
+#include "asterfort/mmlagc.h"
+#include "asterfort/mmmlav.h"
+#include "asterfort/mmmlcf.h"
+#include "asterfort/mmmpha.h"
+#include "asterfort/mmmsta.h"
+#include "asterfort/mmmtas.h"
+#include "asterfort/mmmtdb.h"
+#include "asterfort/mmmtex.h"
+#include "asterfort/mmtape.h"
+#include "asterfort/mmtfpe.h"
+#include "asterfort/mmtgeo.h"
+#include "asterfort/mmtppe.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------

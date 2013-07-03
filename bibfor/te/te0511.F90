@@ -18,15 +18,15 @@ subroutine te0511(option, nomte)
 ! person_in_charge: alexandre.foucault at edf.fr
 ! =====================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/evala1.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/evala1.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 !    - FONCTION REALISEE:  CALCUL DU MODULE DE RIGIDITE

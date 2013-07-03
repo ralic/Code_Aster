@@ -3,20 +3,20 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
                   nbel, nbcmpi, nomcmp, lresu, para,&
                   versio, tycha)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/irgmor.h'
-    include 'asterfort/irgmpv.h'
-    include 'asterfort/irgnal.h'
-    include 'asterfort/irgnte.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/codent.h"
+#include "asterfort/irgmor.h"
+#include "asterfort/irgmpv.h"
+#include "asterfort/irgnal.h"
+#include "asterfort/irgnte.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, nbordr, nbcmpi, versio
     integer :: ordr(*), connx(*), point(*)
     real(kind=8) :: coord(*), para(*)

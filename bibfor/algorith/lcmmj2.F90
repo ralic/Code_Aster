@@ -48,8 +48,8 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
 !       OUT DKRDBS :  dkR/dBetaS
 !       OUT IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
-    include 'asterfort/lcmmfe.h'
-    include 'asterfort/lcmmjf.h'
+#include "asterfort/lcmmfe.h"
+#include "asterfort/lcmmjf.h"
     integer :: nmat, nuvr, nbcomm(nmat, 3), nuvi, ifa, nbsys, is, iret, nfs, nsg
     integer :: ir, nsfa, nsfv
     real(kind=8) :: vind(*), dgdtau, hsr(nsg, nsg), dgsdts, dksdts, dgrdbs

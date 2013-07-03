@@ -40,8 +40,8 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
 !                 0 - OK / 1 - ECHEC
 !                 2 - RE-INTEGRATION / 3 - REDECOUPAGE
 ! ----------------------------------------------------------------
-    include 'asterfort/hujact.h'
-    include 'asterfort/lceqvn.h'
+#include "asterfort/hujact.h"
+#include "asterfort/lceqvn.h"
     integer :: nvi, nr, iret, indi(7), nmat
     real(kind=8) :: toler, vind(nvi), mater(nmat, 2), sigf(6), sigd(6)
     real(kind=8) :: vins(nvi), vinf(nvi), yd(nr), yf(nr)

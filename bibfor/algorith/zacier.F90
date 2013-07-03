@@ -51,9 +51,9 @@ subroutine zacier(matos, nbhist, ftrc, trc, coef,&
 !-----------------------------------------------------------------------
 !
 !
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/smcarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/smcarc.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: metapg(7), tamp(7), tempo(7)
     integer :: matos, nbhist, nbtrc
     real(kind=8) :: ftrc((3*nbhist), 3), trc((3*nbhist), 5), fmod(*)

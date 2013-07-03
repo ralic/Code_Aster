@@ -20,10 +20,10 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
 !
     implicit none
 !
-    include 'asterfort/nmedal.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/nmedal.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: imate, npg, lgpg
     real(kind=8) :: s(2), q(2, 2), dalfs(2, 2), alphap(2)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)

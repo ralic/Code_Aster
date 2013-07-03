@@ -23,9 +23,9 @@ subroutine satuvg(vg, pc, sat, dsdpc)
     implicit none
 !
 ! IN
-    include 'asterfort/pcapvg.h'
-    include 'asterfort/reguh1.h'
-    include 'asterfort/satfvg.h'
+#include "asterfort/pcapvg.h"
+#include "asterfort/reguh1.h"
+#include "asterfort/satfvg.h"
     real(kind=8) :: vg(5), pc
 ! OUT
     real(kind=8) :: sat, dsdpc

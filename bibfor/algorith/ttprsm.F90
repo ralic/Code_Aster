@@ -21,7 +21,7 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: ddeple(3), ddeplm(3), dlagrf(2)
     real(kind=8) :: coeffr, coeffp

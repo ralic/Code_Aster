@@ -23,23 +23,23 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER LES MACRO-ELEMENTS DANS UNE MATR_ASSE
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/ascopr.h'
-    include 'asterfort/asretm.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cordd2.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/ssvalm.h'
+#include "asterc/indik8.h"
+#include "asterfort/ascopr.h"
+#include "asterfort/asretm.h"
+#include "asterfort/assert.h"
+#include "asterfort/cordd2.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/ssvalm.h"
     character(len=16) :: optio
 !-----------------------------------------------------------------------
     real(kind=8) :: c1

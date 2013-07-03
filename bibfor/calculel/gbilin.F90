@@ -45,9 +45,9 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
 ! OUT G      :
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/verift.h'
+#include "jeveux.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/verift.h"
     character(len=*) :: fami
     integer :: kp, imate
     real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4), dfdm(3, 4), tgdm(2)

@@ -21,9 +21,9 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/cftanr.h'
-    include 'asterfort/mmexfr.h'
+#include "asterfort/assert.h"
+#include "asterfort/cftanr.h"
+#include "asterfort/mmexfr.h"
     character(len=8) :: noma
     integer :: izone
     integer :: ndimg

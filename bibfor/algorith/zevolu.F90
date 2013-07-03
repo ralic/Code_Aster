@@ -20,7 +20,7 @@ subroutine zevolu(cine, z, zm, dinst, tp,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/tempeq.h'
+#include "asterfort/tempeq.h"
     real(kind=8) :: z, zm, dinst, tp
     real(kind=8) :: k, n, tdeq, tfeq, coeffc, m, ar, br
     real(kind=8) :: g, dg

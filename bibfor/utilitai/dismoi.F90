@@ -1,40 +1,40 @@
 subroutine dismoi(arret, questi, nomob, typeco, repi,&
                   repk, ierd)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismca.h'
-    include 'asterfort/dismce.h'
-    include 'asterfort/dismch.h'
-    include 'asterfort/dismcm.h'
-    include 'asterfort/dismcn.h'
-    include 'asterfort/dismco.h'
-    include 'asterfort/dismcp.h'
-    include 'asterfort/dismcr.h'
-    include 'asterfort/dismct.h'
-    include 'asterfort/dismes.h'
-    include 'asterfort/dismff.h'
-    include 'asterfort/dismgd.h'
-    include 'asterfort/dismic.h'
-    include 'asterfort/dismlg.h'
-    include 'asterfort/dismli.h'
-    include 'asterfort/dismma.h'
-    include 'asterfort/dismme.h'
-    include 'asterfort/dismml.h'
-    include 'asterfort/dismmo.h'
-    include 'asterfort/dismms.h'
-    include 'asterfort/dismne.h'
-    include 'asterfort/dismns.h'
-    include 'asterfort/dismnu.h'
-    include 'asterfort/dismph.h'
-    include 'asterfort/dismpm.h'
-    include 'asterfort/dismpn.h'
-    include 'asterfort/dismre.h'
-    include 'asterfort/dismrs.h'
-    include 'asterfort/dismte.h'
-    include 'asterfort/dismtm.h'
-    include 'asterfort/dismxf.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismca.h"
+#include "asterfort/dismce.h"
+#include "asterfort/dismch.h"
+#include "asterfort/dismcm.h"
+#include "asterfort/dismcn.h"
+#include "asterfort/dismco.h"
+#include "asterfort/dismcp.h"
+#include "asterfort/dismcr.h"
+#include "asterfort/dismct.h"
+#include "asterfort/dismes.h"
+#include "asterfort/dismff.h"
+#include "asterfort/dismgd.h"
+#include "asterfort/dismic.h"
+#include "asterfort/dismlg.h"
+#include "asterfort/dismli.h"
+#include "asterfort/dismma.h"
+#include "asterfort/dismme.h"
+#include "asterfort/dismml.h"
+#include "asterfort/dismmo.h"
+#include "asterfort/dismms.h"
+#include "asterfort/dismne.h"
+#include "asterfort/dismns.h"
+#include "asterfort/dismnu.h"
+#include "asterfort/dismph.h"
+#include "asterfort/dismpm.h"
+#include "asterfort/dismpn.h"
+#include "asterfort/dismre.h"
+#include "asterfort/dismrs.h"
+#include "asterfort/dismte.h"
+#include "asterfort/dismtm.h"
+#include "asterfort/dismxf.h"
+#include "asterfort/u2mesk.h"
     integer :: repi, ierd
     character(len=*) :: arret, questi, nomob, typeco, repk
 !     ------------------------------------------------------------------

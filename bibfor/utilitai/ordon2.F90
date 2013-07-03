@@ -1,8 +1,8 @@
 subroutine ordon2(vale, nb)
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/ordr8.h'
-    include 'blas/dcopy.h'
+#include "asterfort/ordr8.h"
+#include "blas/dcopy.h"
     integer :: nb
     real(kind=8) :: vale(*)
 ! ----------------------------------------------------------------------

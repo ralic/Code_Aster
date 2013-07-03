@@ -23,55 +23,55 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvli.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/alchlo.h'
-    include 'asterfort/alrslt.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/caldbg.h'
-    include 'asterfort/caundf.h'
-    include 'asterfort/debca1.h'
-    include 'asterfort/debcal.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/extrai.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/inigrl.h'
-    include 'asterfort/inpara.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/kndoub.h'
-    include 'asterfort/montee.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/nucalc.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/te0000.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vrcdec.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zechlo.h'
+#include "asterc/getres.h"
+#include "asterc/getvli.h"
+#include "asterc/indik8.h"
+#include "asterfort/alchlo.h"
+#include "asterfort/alrslt.h"
+#include "asterfort/assert.h"
+#include "asterfort/caldbg.h"
+#include "asterfort/caundf.h"
+#include "asterfort/debca1.h"
+#include "asterfort/debcal.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/extrai.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/inigrl.h"
+#include "asterfort/inpara.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/kndoub.h"
+#include "asterfort/montee.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/nucalc.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/te0000.h"
+#include "asterfort/typele.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vrcdec.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zechlo.h"
     integer :: nin, nou
     character(len=*) :: base, optio
     character(len=*) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrlz, mpic

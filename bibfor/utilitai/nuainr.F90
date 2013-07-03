@@ -18,8 +18,8 @@ subroutine nuainr(method, np1, nx1, nc1, ic1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterfort/mgauss.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/mgauss.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: method
     integer :: nx1, np1, ic1, nc1
     real(kind=8) :: nuax1(*), nuav1(*), x2(nx1), dref, dref2, val2

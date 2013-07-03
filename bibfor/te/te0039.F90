@@ -18,33 +18,33 @@ subroutine te0039(option, nomte)
 ! ======================================================================
 ! aslint: disable=W1501
     implicit       none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dichoc.h'
-    include 'asterfort/disief.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/infdis.h'
-    include 'asterfort/infted.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/pmfitx.h'
-    include 'asterfort/ptka10.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/ut2vgl.h'
-    include 'asterfort/ut2vlg.h'
-    include 'asterfort/utpsgl.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dichoc.h"
+#include "asterfort/disief.h"
+#include "asterfort/elref4.h"
+#include "asterfort/infdis.h"
+#include "asterfort/infted.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/ptka10.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/terefe.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/ut2vgl.h"
+#include "asterfort/ut2vlg.h"
+#include "asterfort/utpsgl.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! IN OPTION    : K16 :  OPTION DE CALCUL

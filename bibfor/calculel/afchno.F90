@@ -2,21 +2,21 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
                   nbcpno, desc, lonval, typval, rval,&
                   cval, kval)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cmpcha.h'
-    include 'asterfort/crchno.h'
-    include 'asterfort/crprno.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pteequ.h'
+#include "asterfort/cmpcha.h"
+#include "asterfort/crchno.h"
+#include "asterfort/crprno.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pteequ.h"
     integer :: nbcpno(*), desc(*)
     real(kind=8) :: rval(*)
     complex(kind=8) :: cval(*)

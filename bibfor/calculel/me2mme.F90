@@ -21,31 +21,31 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/meharm.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/nmdepr.h'
-    include 'asterfort/nmvcd2.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/meharm.h"
+#include "asterfort/memare.h"
+#include "asterfort/nmdepr.h"
+#include "asterfort/nmvcd2.h"
+#include "asterfort/reajre.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: modele, cara, kbid, lcmp(5)
     character(len=*) :: modelz, caraz, matelz, lchar(*), mate, basez
     character(len=19) :: matel

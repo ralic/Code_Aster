@@ -19,11 +19,11 @@ subroutine nmchra(sddyna, optamo, lcamor)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
     character(len=19) :: sddyna
     character(len=16) :: optamo
     logical :: lcamor

@@ -29,24 +29,24 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 ! ----------------------------------------------------------------------
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crnslv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/nummo1.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/vtcrem.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/crnslv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/nummo1.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/wkvect.h"
     integer :: nbmode, nbsauv, ldlim, imode, ier, ibid, lvale, i, jrefa
     logical :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ

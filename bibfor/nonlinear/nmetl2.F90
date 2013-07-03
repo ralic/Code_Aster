@@ -19,19 +19,19 @@ subroutine nmetl2(motfac, sdieto, icham)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmetcv.h'
-    include 'asterfort/nmetnc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vtcopy.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetcv.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vtcopy.h"
     character(len=24) :: sdieto
     character(len=16) :: motfac
     integer :: icham

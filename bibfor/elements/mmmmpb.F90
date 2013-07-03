@@ -19,8 +19,8 @@ subroutine mmmmpb(rese, nrese, ndim, matprb)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/matini.h'
+#include "asterfort/assert.h"
+#include "asterfort/matini.h"
     real(kind=8) :: rese(3), nrese
     integer :: ndim
     real(kind=8) :: matprb(3, 3)

@@ -29,12 +29,12 @@ subroutine hujela(mod, crit, mater, deps, sigd,&
 !                         IRET=0 => PAS DE PROBLEME
 !                         IRET=1 => ECHEC
 !       ---------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujci1.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujci1.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, iret, i, j
     real(kind=8) :: coef, e, nu, al, demu, i1, n, pref
     real(kind=8) :: deps(6), dsig(6), sigd(6), sigf(6)

@@ -20,12 +20,12 @@ subroutine btldth(fami, xi3, nb1, kpg, btild,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: nb1, kpg
     real(kind=8) :: wgt, young, nu, alpha, xi3
     real(kind=8) :: btild(5, 42), forthi(1), vecthr(2)

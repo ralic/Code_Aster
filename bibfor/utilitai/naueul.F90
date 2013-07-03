@@ -20,14 +20,14 @@ subroutine naueul(angnau, angeul)
 !     IN : ANGNAU(3) : 3 ANGLES NAUTIQUES
 !     OUT : ANGEUL(3) : 3 ANGLES D'EULER ENTRE 0 ET 2PI
 !
-    include 'asterc/r8miem.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/angrot.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/utpvlg.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8pi.h"
+#include "asterfort/angrot.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utpvlg.h"
     real(kind=8) :: angnau(3), pn(3, 3), angeul(3), xl(3), yl(3), zl(3)
     real(kind=8) :: xg(3), yg(3), zg(3), x1(3), phi, zlzg(3)
     real(kind=8) :: phi1, phi2, nv3

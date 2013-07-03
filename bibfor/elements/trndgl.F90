@@ -18,7 +18,7 @@ subroutine trndgl(nbx, vectn, vectpt, deplg, depll,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbx
     real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: deplg(*), depll(*), t(3, 3), rotfic(*)

@@ -3,11 +3,11 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
                   option, eps, sig, vi, dsidep,&
                   codret)
     implicit none
-    include 'asterfort/hypela.h'
-    include 'asterfort/nmelnl.h'
-    include 'asterfort/nmorth.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/hypela.h"
+#include "asterfort/nmelnl.h"
+#include "asterfort/nmorth.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, ndim, imate, codret
     real(kind=8) :: angmas(3), crit(3), eps(6), sig(6), vi(*), dsidep(6, 6)
     character(len=*) :: fami, poum

@@ -23,16 +23,16 @@ subroutine aidtyp(impr)
 !       LES COUPLES (OPTION, TYPE_ELEMENT) POSSIBLES DANS LES CATALOGUES
 !      (POUR VERIFIER LA COMPLETUDE)
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: kbid
     character(len=16) :: nophen, note, noop, nomodl
     character(len=80) :: ligne

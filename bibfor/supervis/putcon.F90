@@ -18,14 +18,14 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/jjvern.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jjvern.h"
     character(len=*) :: nomres
     integer :: ier, nbind, ind(nbind), num
     real(kind=8) :: valr(nbind), vali(nbind)

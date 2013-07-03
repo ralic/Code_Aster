@@ -21,13 +21,13 @@ subroutine te0329(option, nomte)
 !     OPTION : ACCEPTANCE
 !....................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/shl329.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/shl329.h"
+#include "asterfort/tecael.h"
+#include "asterfort/wkvect.h"
     character(len=7) :: ielem, imode
     character(len=16) :: nomte, option
     character(len=24) :: vetel

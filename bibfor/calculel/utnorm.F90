@@ -57,9 +57,9 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
     integer :: igeom, nsomm, naret, ino, jno, mno, ifm, niv
     real(kind=8) :: zrino2, zrino1, zrjno2, zrjno1, x3, y3, xn(9), yn(9), jac(9)
     real(kind=8) :: hf, poinc1, poinc2, jacob

@@ -21,7 +21,7 @@ subroutine tecach(stopz, nmparz, louez, nval, itab,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ROUTINE CHAPEAU DE TECAC2 POUR EVITER L'ARGUMENT NUMA=0
 !-----------------------------------------------------------------------
-    include 'asterfort/tecac2.h'
+#include "asterfort/tecac2.h"
     character(len=*) :: stopz, nmparz, louez
     integer :: nval, itab(nval), iret
 !

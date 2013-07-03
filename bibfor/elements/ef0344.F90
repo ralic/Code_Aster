@@ -18,20 +18,20 @@ subroutine ef0344(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/ptforp.h'
-    include 'asterfort/ptka21.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vecma.h'
-    include 'asterfort/verift.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/ptforp.h"
+#include "asterfort/ptka21.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
+#include "asterfort/verift.h"
     character(len=16) :: nomte
 !
 !

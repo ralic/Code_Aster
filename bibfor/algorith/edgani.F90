@@ -5,7 +5,7 @@ subroutine edgani(dim, y, pm, dvsitr, eqsitr,&
     implicit none
 !
 !
-    include 'asterfort/edgequ.h'
+#include "asterfort/edgequ.h"
     integer :: dim
     real(kind=8) :: y(dim), pm, dvsitr(dim-1), eqsitr
     real(kind=8) :: mu, ani(6, 6), gamma(3), m(3), n(3)

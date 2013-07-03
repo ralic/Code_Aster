@@ -19,17 +19,17 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
-    include 'asterfort/i2fccl.h'
-    include 'asterfort/i2fspl.h'
-    include 'asterfort/i2gccl.h'
-    include 'asterfort/i2gspl.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/i2fccl.h"
+#include "asterfort/i2fspl.h"
+#include "asterfort/i2gccl.h"
+#include "asterfort/i2gspl.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbm, voisn1(*), voisn2(*)
     integer :: nbchm, stchm(*), ptchm(*)
 !

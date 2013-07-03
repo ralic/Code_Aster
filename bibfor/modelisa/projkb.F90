@@ -85,19 +85,19 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/projsg.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/projsg.h"
+#include "asterfort/wkvect.h"
+#include "blas/dnrm2.h"
     character(len=8) :: mailla
     character(len=19) :: lnuma, licnx
     integer :: numail, nbcnx, cxma(*), itria, iproj

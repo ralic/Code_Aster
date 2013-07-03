@@ -19,16 +19,16 @@ subroutine reeret(elrefp, nnop, geom, xg, ndim,&
 ! person_in_charge: sam.cuvilliez at edf.fr
 !.......................................................................
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/invjax.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/reereg.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/invjax.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/matini.h"
+#include "asterfort/reereg.h"
     character(len=3) :: deriv
     character(len=8) :: elrefp
     integer :: nnop, ndim, idepl

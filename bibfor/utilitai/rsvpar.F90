@@ -1,13 +1,13 @@
 subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
                   kpar, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsnopa.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsnopa.h"
     integer :: iordr, ipar, ier
     real(kind=8) :: rpar
     character(len=*) :: nomsd, nompar, kpar

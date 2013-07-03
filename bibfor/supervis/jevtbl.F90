@@ -1,7 +1,7 @@
 function jevtbl(questi)
     implicit none
     real(kind=8) :: jevtbl
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: questi
 !     ------------------------------------------------------------------
 ! ======================================================================

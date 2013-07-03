@@ -35,20 +35,20 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 !                    IRET=0 => PAS DE PROBLEME
 !                    IRET=1 => ECHEC
 !   ------------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujcdc.h'
-    include 'asterfort/hujcic.h'
-    include 'asterfort/hujcrd.h'
-    include 'asterfort/hujcri.h'
-    include 'asterfort/hujddd.h'
-    include 'asterfort/hujmed.h'
-    include 'asterfort/hujmei.h'
-    include 'asterfort/hujpxd.h'
-    include 'asterfort/hujpxs.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujcdc.h"
+#include "asterfort/hujcic.h"
+#include "asterfort/hujcrd.h"
+#include "asterfort/hujcri.h"
+#include "asterfort/hujddd.h"
+#include "asterfort/hujmed.h"
+#include "asterfort/hujmei.h"
+#include "asterfort/hujpxd.h"
+#include "asterfort/hujpxs.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, elas, jj, iret
     integer :: i, indi(7), j, mono(7), hist(4, 2)
     real(kind=8) :: tole1, sigd(6), sige(6)

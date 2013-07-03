@@ -19,14 +19,14 @@ subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/cfelpv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/caladu.h"
+#include "asterfort/cfelpv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: neq, nbliai
     integer :: nbliac, llf, llf1, llf2

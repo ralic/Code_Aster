@@ -35,11 +35,11 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !     OUT NBVAL  :  NB DE COEFFICIENTS MATERIAU
 !     OUT HSR    :  MATRICE D'INTERACTION
 !     ----------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcmhsr.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/assert.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcmhsr.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, itbint, nfs, nsg
     integer :: nmat, nbval, imat, i, nbsys, ifa, nbcoef
     real(kind=8) :: valh(6)

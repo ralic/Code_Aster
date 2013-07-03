@@ -20,15 +20,15 @@ subroutine mmelel(ndim, ntyma1, ntyma2, iordr, nndel,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mmeltm.h'
-    include 'asterfort/mmeltn.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mmeltm.h"
+#include "asterfort/mmeltn.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim
     character(len=8) :: ntyma1, ntyma2
     integer :: nndel

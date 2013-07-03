@@ -26,14 +26,14 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/nmassm.h'
-    include 'asterfort/nmcalm.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmrigi.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/nmassm.h"
+#include "asterfort/nmcalm.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrigi.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
     integer :: nbmatr
     character(len=6) :: ltypma(20)
     character(len=16) :: loptme(20), loptma(20)

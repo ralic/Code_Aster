@@ -28,30 +28,30 @@ subroutine op0177()
 ! 0.2. ==> COMMUNS
 ! 0.3. ==> VARIABLES LOCALES
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/tbimfi.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/utest0.h'
-    include 'asterfort/utest3.h'
-    include 'asterfort/utites.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/tbimfi.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/utest0.h"
+#include "asterfort/utest3.h"
+#include "asterfort/utites.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter (nompro='OP0177')
 !

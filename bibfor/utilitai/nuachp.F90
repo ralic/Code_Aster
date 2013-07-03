@@ -1,8 +1,8 @@
 subroutine nuachp(nuage, lno, chpt)
     implicit none
-    include 'asterfort/dismoi.h'
-    include 'asterfort/nuacno.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/nuacno.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nuage, lno, chpt
 !     ------------------------------------------------------------------
 ! ======================================================================

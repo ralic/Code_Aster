@@ -1,16 +1,16 @@
 subroutine gcharm(fonc, charg, nomfon, nomf, time,&
                   iord, chargm)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=19) :: charg, chargm
     character(len=24) :: nomfon
     character(len=8) :: nomf

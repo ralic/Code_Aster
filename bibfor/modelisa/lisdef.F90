@@ -19,19 +19,19 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! aslint: disable=W1501
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/iscode.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/liscva.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/iscode.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/liscva.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: valkz, optkz
     character(len=4) :: oper
     integer :: vali, opti

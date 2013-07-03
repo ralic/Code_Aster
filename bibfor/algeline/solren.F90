@@ -1,9 +1,9 @@
 subroutine solren(sn, nbmat, mater, q, codret)
 !
     implicit   none
-    include 'asterfort/calcq.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/calcq.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbmat, codret
     real(kind=8) :: sn(6), mater(nbmat, 2), q(6)
 ! ======================================================================

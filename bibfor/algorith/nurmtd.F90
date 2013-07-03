@@ -21,16 +21,16 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calkbb.h'
-    include 'asterfort/calkbp.h'
-    include 'asterfort/calkce.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tanbul.h'
+#include "asterfort/calkbb.h"
+#include "asterfort/calkbp.h"
+#include "asterfort/calkce.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tanbul.h"
     logical :: mini
     integer :: ndim, nno1, nno2, npg, iw, idff1
     integer :: mate

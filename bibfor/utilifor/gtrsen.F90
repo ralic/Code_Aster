@@ -194,14 +194,14 @@ subroutine gtrsen(job, compq, select, n, t,&
 ! CORPS DU PROGRAMME
     implicit none
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'asterfort/gtrexc.h'
-    include 'asterfort/gtrsyl.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/lsame.h'
-    include 'blas/zlacon.h'
-    include 'blas/zlacpy.h'
-    include 'blas/zlange.h'
+#include "asterc/matfpe.h"
+#include "asterfort/gtrexc.h"
+#include "asterfort/gtrsyl.h"
+#include "asterfort/xerbla.h"
+#include "blas/lsame.h"
+#include "blas/zlacon.h"
+#include "blas/zlacpy.h"
+#include "blas/zlange.h"
     character(len=1) :: compq, job
     integer :: info, ldq, ldt, lwork, m, n
     real(kind=8) :: s, sep

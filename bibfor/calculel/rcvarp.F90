@@ -16,13 +16,13 @@ subroutine rcvarp(arret, novrc, poum, valvrc, iret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/iisnan.h'
-    include 'asterc/indik8.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/iisnan.h"
+#include "asterc/indik8.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: novrc, poum
     character(len=1) :: arret
     integer :: iret

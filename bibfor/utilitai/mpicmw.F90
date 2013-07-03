@@ -18,14 +18,14 @@ subroutine mpicmw(iexc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-    include 'asterfort/comcou.h'
-    include 'asterfort/gtstat.h'
-    include 'asterfort/mpichk.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/mpisst.h'
-    include 'asterfort/ststat.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/comcou.h"
+#include "asterfort/gtstat.h"
+#include "asterfort/mpichk.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/mpisst.h"
+#include "asterfort/ststat.h"
+#include "asterfort/u2mess.h"
     integer :: iexc
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI COMM WARN
@@ -34,8 +34,8 @@ subroutine mpicmw(iexc)
 !-----------------------------------------------------------------------
 #if defined(_USE_MPI) && !defined(ASTER_DISABLE_MPI_CHECK)
 !
-    include 'mpif.h'
-    include 'aster_constant.h'
+#include "mpif.h"
+#include "aster_constant.h"
 !
     integer(kind=4) :: iermpi, rank, nbpro4, mpicou, mpicow
     integer :: iret, ibid

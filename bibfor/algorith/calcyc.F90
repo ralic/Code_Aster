@@ -23,27 +23,27 @@ subroutine calcyc(nomres)
 ! NOMRES  /I/: NOM UTILISATEUR DU CONCEPT RESULTAT
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/askcyc.h'
-    include 'asterfort/asmcyc.h'
-    include 'asterfort/axacti.h'
-    include 'asterfort/cmphdi.h'
-    include 'asterfort/cmphii.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/shiftc.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/uttrii.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zconju.h'
-    include 'asterfort/zreord.h'
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/askcyc.h"
+#include "asterfort/asmcyc.h"
+#include "asterfort/axacti.h"
+#include "asterfort/cmphdi.h"
+#include "asterfort/cmphii.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/shiftc.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/uttrii.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zconju.h"
+#include "asterfort/zreord.h"
     integer :: vali(3)
 !
 !

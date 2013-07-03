@@ -17,19 +17,19 @@ subroutine utpplg(nn, nc, p, sl, sg)
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdi2m.h'
-    include 'asterfort/lcps2m.h'
-    include 'asterfort/lcso2m.h'
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/mapvec.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/upletr.h'
-    include 'asterfort/uplstr.h'
-    include 'asterfort/utpalg.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/vecmap.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdi2m.h"
+#include "asterfort/lcps2m.h"
+#include "asterfort/lcso2m.h"
+#include "asterfort/lctr2m.h"
+#include "asterfort/mapvec.h"
+#include "asterfort/mavec.h"
+#include "asterfort/upletr.h"
+#include "asterfort/uplstr.h"
+#include "asterfort/utpalg.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/vecmap.h"
     real(kind=8) :: p(3, 3), sl(*), sg(*)
     integer :: nn, nc, n, n1, nddl
     real(kind=8) :: matsy1(12, 12), matsy2(12, 12)

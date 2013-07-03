@@ -32,14 +32,14 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp,&
 !                = 2, CALCULE LE VOLUME USE OBSTACLE
 !                NE CALCULE PAS LE VOLUME USE OBSTACLE, ISUPP = 0
 !-----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/usuban.h'
-    include 'asterfort/usukwu.h'
-    include 'asterfort/usupu2.h'
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/usuban.h"
+#include "asterfort/usukwu.h"
+#include "asterfort/usupu2.h"
     real(kind=8) :: vusur(*), temps(*), para(7), fn(*), vg(*), coef(*), ang(*)
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)

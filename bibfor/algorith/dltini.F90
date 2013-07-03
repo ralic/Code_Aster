@@ -35,21 +35,21 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsrusd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtcreb.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterfort/chpver.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
+#include "blas/dcopy.h"
     real(kind=8) :: depini(*), vitini(*), accini(*)
     real(kind=8) :: fexini(*), famini(*), fliini(*)
     character(len=8) :: baseno, result

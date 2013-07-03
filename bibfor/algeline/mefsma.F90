@@ -1,12 +1,12 @@
 subroutine mefsma(matm, mata, matr, nugene, masgen,&
                   amogen, riggen)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mefsm1.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mefsm1.h"
     real(kind=8) :: matm(*), mata(*), matr(*)
     character(len=19) :: masgen, amogen, riggen
 !-----------------------------------------------------------------------

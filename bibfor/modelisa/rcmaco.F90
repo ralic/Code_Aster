@@ -1,16 +1,16 @@
 subroutine rcmaco(chmat, indmat, nbmat, imate)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/matcod.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/matcod.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: chmat
     integer :: indmat, nbmat, imate
 ! ----------------------------------------------------------------------

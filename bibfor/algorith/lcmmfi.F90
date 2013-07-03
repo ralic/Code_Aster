@@ -3,8 +3,8 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris,&
                   nfs, nsg, hsr, iexp, expbp,&
                   rp)
     implicit none
-    include 'asterfort/lcmmdc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcmmdc.h"
+#include "asterfort/u2mess.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), nbsys, is, iexp, nfs, nsg, nsfv
     real(kind=8) :: coeft(nmat), dy(*), vind(*), hsr(nsg, nsg), sq, expbp(*)
     character(len=16) :: necris

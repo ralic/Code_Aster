@@ -22,15 +22,15 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/cfconv.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmbclc.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmimcr.h'
+#include "jeveux.h"
+#include "asterfort/cfconv.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmbclc.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
     integer :: fonact(*)
     integer :: iterat, numins
     character(len=19) :: sddisc, sddyna

@@ -37,16 +37,16 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 ! aslint: disable=W1501,W1504
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/permea.h'
-    include 'asterfort/permvc.h'
-    include 'asterfort/permvg.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/satura.h'
-    include 'asterfort/satuvg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/permea.h"
+#include "asterfort/permvc.h"
+#include "asterfort/permvg.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/satura.h"
+#include "asterfort/satuvg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imate, retcom
     real(kind=8) :: t0, p10, p20, phi0, pvp0, t, p1, p2, phi, pvp
     real(kind=8) :: rgaz, rhod, cpd, biot, satm, satur, dsatur, pesa(3)

@@ -20,7 +20,7 @@ subroutine pacou7(a, n, d, b)
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: n
     real(kind=8) :: a(n, *), b(*), d(*)
 ! ---------------------------------------------------------------------

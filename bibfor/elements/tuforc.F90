@@ -1,27 +1,27 @@
 subroutine tuforc(option, nomte, nbrddl, b, f,&
                   vin, vout, mat, pass, vtemp)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/bcoudc.h'
-    include 'asterfort/bcoude.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/ppgan2.h'
-    include 'asterfort/prmave.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verifg.h'
-    include 'asterfort/vlggl.h'
-    include 'asterfort/vlgglc.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/bcoudc.h"
+#include "asterfort/bcoude.h"
+#include "asterfort/carcou.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/ppgan2.h"
+#include "asterfort/prmave.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verifg.h"
+#include "asterfort/vlggl.h"
+#include "asterfort/vlgglc.h"
+#include "blas/daxpy.h"
     character(len=16) :: nomte
     character(len=*) :: option
 ! ----------------------------------------------------------------------

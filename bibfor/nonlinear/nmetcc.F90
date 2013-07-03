@@ -20,12 +20,12 @@ subroutine nmetcc(sdieto, compor, sddyna, sdpost, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/nmlesd.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/nmlesd.h"
     integer :: nbcham, zioch
     character(len=24) :: sdieto, compor
     character(len=19) :: sddyna, sdpost

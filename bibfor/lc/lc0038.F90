@@ -20,7 +20,7 @@ subroutine lc0038(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lcsans.h'
+#include "asterfort/lcsans.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)

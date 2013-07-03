@@ -2,14 +2,14 @@ subroutine calcq(s, gamcjs, pref, epssig, q,&
                  codret)
 !
     implicit      none
-    include 'asterc/r8prem.h'
-    include 'asterfort/cjst.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/cjst.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "blas/ddot.h"
     integer :: codret
     real(kind=8) :: s(6), gamcjs, pref, epssig, q(6)
 ! ======================================================================

@@ -19,8 +19,8 @@ subroutine ldsp2(pc, x1, y, ierr)
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
 !
-    include 'asterfort/amumph.h'
-    include 'asterfort/assert.h'
+#include "asterfort/amumph.h"
+#include "asterfort/assert.h"
 #ifdef _HAVE_PETSC
 #   include "aster_petsc.h"
     complex(kind=8) :: cbid

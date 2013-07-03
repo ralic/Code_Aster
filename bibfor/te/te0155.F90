@@ -1,25 +1,25 @@
 subroutine te0155(option, nomte)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/pscvec.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/verift.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/provec.h"
+#include "asterfort/pscvec.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/verift.h"
+#include "blas/ddot.h"
     character(len=*) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

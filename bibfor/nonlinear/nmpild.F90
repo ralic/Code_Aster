@@ -20,15 +20,15 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmpilk.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmpilk.h"
     character(len=24) :: numedd
     character(len=19) :: solalg(*), sddyna
     real(kind=8) :: eta, rho, offset

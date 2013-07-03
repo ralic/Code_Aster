@@ -19,11 +19,11 @@ subroutine listun(noma, motfac, nzocu, nopono, nnocu,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/exnode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nbnode.h'
+#include "jeveux.h"
+#include "asterfort/exnode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nbnode.h"
     character(len=8) :: noma
     character(len=16) :: motfac
     integer :: nzocu

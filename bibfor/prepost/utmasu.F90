@@ -2,24 +2,24 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
                   coor, nbmavo, mailvo, coince)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indiis.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/oriem0.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utmavo.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/indiis.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/oriem0.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utmavo.h"
+#include "asterfort/wkvect.h"
     integer :: lima(*), nlima, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
     character(len=2) :: kdim

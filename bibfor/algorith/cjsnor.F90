@@ -38,8 +38,8 @@ subroutine cjsnor(mater, sig, x, nor, devnul,&
     implicit none
 !
 !
-    include 'asterfort/cjsc3q.h'
-    include 'asterfort/cjst.h'
+#include "asterfort/cjsc3q.h"
+#include "asterfort/cjst.h"
     real(kind=8) :: mater(14, 2), sig(6), x(6), nor(7)
     logical :: devnul, trac
     real(kind=8) :: zero, deux, six

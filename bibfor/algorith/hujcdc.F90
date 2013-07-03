@@ -27,7 +27,7 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
 !        VIN    :  VARIABLES INTERNES A T
 !    OUT SEUIL  :  SEUIL DU MECANISME DEVIATOIRE
 !   ------------------------------------------------------------------
-    include 'asterfort/infniv.h'
+#include "asterfort/infniv.h"
     integer :: k, ndt, ndi
     integer :: ifm, niv
     integer :: i, j

@@ -33,38 +33,38 @@ subroutine fetskp()
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/aplext.h'
-    include 'asterc/fetsco.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/gtoptk.h'
-    include 'asterfort/creaco.h'
-    include 'asterfort/creagm.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxcadr.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpicm2.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulnume.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/verico.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/aplext.h"
+#include "asterc/fetsco.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterc/gtoptk.h"
+#include "asterfort/creaco.h"
+#include "asterfort/creagm.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxcadr.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpicm2.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulnume.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/verico.h"
+#include "asterfort/wkvect.h"
     integer :: nbmama, idco, temp, sdb, nbmato, mail, renum2, nbma, nomsdm, masd
     integer :: nbmasd, idmasd, id, isd, renum1, err, co, renum, nbre, nbmabo
     integer :: mail2, velo, edlo, poids, numsdm, nmap, i, j, ima, nbbord, lrep

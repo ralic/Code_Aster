@@ -1,14 +1,14 @@
 subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
                   raideg, vect, neq, nbvect, iddl)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/vecini.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: lmasse, lamor, lraide, neq, nbvect, iddl(*)
     real(kind=8) :: masseg(*), amorg(*), raideg(*), vect(neq, *)
 !     ------------------------------------------------------------------

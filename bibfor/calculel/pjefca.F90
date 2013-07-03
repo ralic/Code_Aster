@@ -43,17 +43,17 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !  OUT NCAS : CAS DE FIGURE : 3D/2D/2.5D/1.5D
 !---------------------------------------------------------------------
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: moa1, ncas, lima1
     integer :: iocc
 !---------------- VARIABLES LOCALES  --------------------------

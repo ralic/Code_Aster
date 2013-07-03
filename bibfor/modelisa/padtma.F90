@@ -1,8 +1,8 @@
 subroutine padtma(coor1, coor2, nbnott, icoupl, dmin)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/padist.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: coor1(*), coor2(*), d
     integer :: icoupl(*), nbnott(3)
 !---------------------------------------------------------------------

@@ -19,17 +19,17 @@ subroutine te0361(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/eiangl.h'
-    include 'asterfort/eifono.h'
-    include 'asterfort/eifore.h'
-    include 'asterfort/eiinit.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/eiangl.h"
+#include "asterfort/eifono.h"
+#include "asterfort/eifore.h"
+#include "asterfort/eiinit.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/terefe.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  FORC_NODA ET REFE_FORC_NODA

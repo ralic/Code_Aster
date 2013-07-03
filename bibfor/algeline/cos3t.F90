@@ -1,8 +1,8 @@
 function cos3t(s, pref, epssig)
 !
     implicit none
-    include 'asterfort/lcdete.h'
-    include 'blas/ddot.h'
+#include "asterfort/lcdete.h"
+#include "blas/ddot.h"
     real(kind=8) :: s(6), pref, epssig, cos3t
 ! ======================================================================
 ! ======================================================================

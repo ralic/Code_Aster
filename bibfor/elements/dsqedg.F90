@@ -1,19 +1,19 @@
 subroutine dsqedg(xyzl, option, pgl, depl, edgl)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/dsqbfa.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dsqcis.h'
-    include 'asterfort/dsqdi2.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxhmft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/dsqbfa.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dsqcis.h"
+#include "asterfort/dsqdi2.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxhmft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), edgl(*)
     character(len=16) :: option
 ! ======================================================================

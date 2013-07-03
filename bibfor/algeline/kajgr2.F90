@@ -30,13 +30,13 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
 !                POUR UN MOUVEMENT DE ROTATION
 !-----------------------------------------------------------------------
 !     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: typflu
     common  / kop144 / typflu
 !

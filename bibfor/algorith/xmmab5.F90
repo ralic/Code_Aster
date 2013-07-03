@@ -3,7 +3,7 @@ subroutine xmmab5(ndim, nnol, pla, ffc, jac,&
                   ik, lact, mmat)
 !
     implicit none
-    include 'asterfort/xmafr2.h'
+#include "asterfort/xmafr2.h"
     integer :: ndim, nnol
     integer :: pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)

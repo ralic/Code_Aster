@@ -23,12 +23,12 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elelin.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elelin.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(nbcmp)
     integer :: ddlc
     logical :: lmeca

@@ -18,18 +18,18 @@ subroutine jjarep(iclas, nrmax)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjalls.h'
-    include 'asterfort/jjecrs.h'
-    include 'asterfort/jjldyn.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/jxecro.h'
-    include 'asterfort/jxhcod.h'
-    include 'asterfort/jxlibd.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjalls.h"
+#include "asterfort/jjecrs.h"
+#include "asterfort/jjldyn.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/jxecro.h"
+#include "asterfort/jxhcod.h"
+#include "asterfort/jxlibd.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: iclas, nrmax
 ! ----------------------------------------------------------------------
 !     PERMET D'AGRANDIR UN REPERTOIRE DE NOM

@@ -19,12 +19,12 @@ subroutine cfdism(defico, ldpou, ldcoq, posnoe, distst)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfinvm.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cfinvm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: defico
     integer :: posnoe
     real(kind=8) :: distst

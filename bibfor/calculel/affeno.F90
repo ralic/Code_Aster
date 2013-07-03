@@ -2,8 +2,8 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd,&
                   ncmpmx, val, kval, desc, valglo,&
                   kvalgl, type, nec)
     implicit  none
-    include 'asterc/indik8.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/indik8.h"
+#include "asterfort/u2mesg.h"
     integer :: ino, nbcmp, ncmpmx, nec, desc(*), ioc
     real(kind=8) :: valglo(*), val(*)
     character(len=*) :: type

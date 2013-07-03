@@ -115,16 +115,16 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
 !
 ! ----------------------------------------------------------------------
 !
-    include 'asterfort/lc0000.h'
-    include 'asterfort/lceqve.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lc0000.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imate, ndim, ndt, ndi, nvi, kpg, ksp, numlc
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !

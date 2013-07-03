@@ -30,8 +30,8 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
 ! OUT NMIEF : NMIEF > 0 : NBN HORS DE LA ZONE DE DEFINITION DE MP
 ! OUT NMPLAS : MOMENTS LIMITES DE PLASTICITE
 !
-    include 'asterfort/cdnfon.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/cdnfon.h"
+#include "asterfort/rcvalb.h"
     integer :: i, ier, nmief, zimat, icodre(4)
 !
     real(kind=8) :: nmnbn(6), nmplas(2, 3)

@@ -4,16 +4,16 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !
     implicit none
 !
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrve.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrve.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/vecini.h"
     integer :: typess, nmat, kpg, ksp
     real(kind=8) :: essai, materf(nmat, 2), yd(*), deps(6), dy(*)
     character(len=8) :: mod

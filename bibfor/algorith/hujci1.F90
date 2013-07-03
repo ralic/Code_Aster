@@ -39,9 +39,9 @@ subroutine hujci1(crit, mater, deps, sigd, i1f,&
 !                 IRET=0 => PAS DE PROBLEME
 !                 IRET=1 => ECHEC
 ! -----------------------------------------------------------------
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zeroco.h'
+#include "asterfort/infniv.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zeroco.h"
     integer :: ndt, ndi, iret, ifm, niv
     real(kind=8) :: mater(22, 2), crit(*), deps(6), sigd(6), i1d, i1f
     real(kind=8) :: trdeps, coef, prec, alpha, theta

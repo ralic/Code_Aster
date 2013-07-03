@@ -2,17 +2,17 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
                   ivar, car, ncar, val, tab,&
                   exp, nbo, ioc, ier)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8maem.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     real(kind=8) :: val(*)
     character(len=6) :: ioc
     character(len=8) :: fcx, car(*), tab(*), exp(*)

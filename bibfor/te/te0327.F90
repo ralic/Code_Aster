@@ -21,12 +21,12 @@ subroutine te0327(option, nomte)
 !     OPTION : AMOR_AJOU
 !....................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
     character(len=16) :: nomte, option
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac(9)
     real(kind=8) :: nx(9), ny(9), nz(9), norm(3, 9), acc(3, 9)

@@ -19,7 +19,7 @@ subroutine rvrlln(xy, tn, n, repere, v1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/rvrthe.h'
+#include "asterfort/rvrthe.h"
     character(len=8) :: repere
     integer :: tn(*), n
     real(kind=8) :: xy(*), v1(*), v2(*)

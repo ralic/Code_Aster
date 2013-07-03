@@ -21,7 +21,7 @@ subroutine ibimpr()
 !     ------------------------------------------------------------------
 !
 !     CONSERVER LA COHERENCE AVEC IUNIFI ET ULOPEN
-    include 'asterfort/uldefi.h'
+#include "asterfort/uldefi.h"
     integer :: mximpr
     parameter   ( mximpr = 3)
     character(len=16) :: nompr (mximpr)

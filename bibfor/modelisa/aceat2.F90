@@ -1,8 +1,8 @@
 subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
                   noex2, nbmap, elpar, nopar, nno)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: nbtuy, eltuy(nbtuy), notuy(nno*nbtuy), nbpart, noex1(nbpart)
     integer :: noex2(nbpart), nbmap(nbpart), elpar(nbpart, nbtuy)
     integer :: nopar(nbpart, nno, nbtuy)

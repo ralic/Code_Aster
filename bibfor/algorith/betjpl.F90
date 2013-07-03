@@ -34,19 +34,19 @@ subroutine betjpl(mod, nmat, mater, sig, vin,&
 !                     AUX LOIS DE COMPORTEMENT
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/betfpp.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/betfpp.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: nmat, nseuil
     real(kind=8) :: un, zero, rac2, deux, trois
     parameter       ( deux = 2.d0   )

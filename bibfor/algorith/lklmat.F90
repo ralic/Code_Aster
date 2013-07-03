@@ -3,10 +3,10 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
                   indal)
 !
     implicit     none
-    include 'asterfort/lklnvi.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lklnvi.h"
+#include "asterfort/matini.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=3) :: matcst

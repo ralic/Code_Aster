@@ -19,39 +19,39 @@ subroutine vdpnlr(option, nomte, codret)
 ! aslint: disable=W1501
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/antisy.h'
-    include 'asterfort/btdbma.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/gdt.h'
-    include 'asterfort/hsaco.h'
-    include 'asterfort/jacbm1.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/jm1dn1.h'
-    include 'asterfort/jm1dn2.h'
-    include 'asterfort/jm1dn3.h'
-    include 'asterfort/matbmn.h'
-    include 'asterfort/matbmr.h'
-    include 'asterfort/matbsr.h'
-    include 'asterfort/matbsu.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rogllo.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tilbar.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
-    include 'asterfort/vectpe.h'
-    include 'asterfort/vectrn.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/antisy.h"
+#include "asterfort/btdbma.h"
+#include "asterfort/btsig.h"
+#include "asterfort/gdt.h"
+#include "asterfort/hsaco.h"
+#include "asterfort/jacbm1.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/jm1dn1.h"
+#include "asterfort/jm1dn2.h"
+#include "asterfort/jm1dn3.h"
+#include "asterfort/matbmn.h"
+#include "asterfort/matbmr.h"
+#include "asterfort/matbsr.h"
+#include "asterfort/matbsu.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rogllo.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tilbar.h"
+#include "asterfort/transp.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
+#include "asterfort/vectpe.h"
+#include "asterfort/vectrn.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
     integer :: codret
 !

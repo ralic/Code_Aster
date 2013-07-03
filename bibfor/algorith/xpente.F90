@@ -2,9 +2,9 @@ subroutine xpente(pl, cnse, n1, n2, n3,&
                   n4, n5, n6)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: pl, n1, n2, n3, n4, n5, n6, cnse(6, 4)
 !     ------------------------------------------------------------------
 ! ======================================================================

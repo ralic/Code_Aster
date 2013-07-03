@@ -19,28 +19,28 @@ subroutine sschge(nomacr)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/me2mme.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/ss2mm2.h'
-    include 'asterfort/ssvau1.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/assvec.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/me2mme.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/ss2mm2.h"
+#include "asterfort/ssvau1.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomacr
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT CLEF "CAS_CHARGE"

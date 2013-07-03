@@ -33,20 +33,20 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 !
 !---------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/assmam.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/crnslv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/numddl.h'
-    include 'asterfort/promor.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assmam.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/crnslv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/memare.h"
+#include "asterfort/numddl.h"
+#include "asterfort/promor.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: moint
     character(len=3) :: incr
     character(len=8) :: k8bid, lpain(2), lpaout(1)

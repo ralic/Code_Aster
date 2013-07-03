@@ -42,9 +42,9 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/codent.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesk.h"
     integer :: numfam, typent, nbgf, nbaf
     integer :: valatt(nbaf)
     integer :: nbnofa, nbelfa

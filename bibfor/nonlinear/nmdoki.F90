@@ -3,11 +3,11 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
                   numlc, nbvari)
 ! person_in_charge: jean-michel.proix at edf.fr
     implicit none
-    include 'asterc/getvtx.h'
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/nmthmc.h'
+#include "asterc/getvtx.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmthmc.h"
     integer :: dimaki, nbkit, ncomel, k, nbnvi(*), numlc
     character(len=*) :: modele
     character(len=16) :: comp

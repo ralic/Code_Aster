@@ -16,9 +16,9 @@ subroutine jelibe(nomlu)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jjlide.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu
 !     ==================================================================
     character(len=6) :: pgma

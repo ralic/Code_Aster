@@ -47,13 +47,13 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr,&
 ! OUT : BIJ    : TERME (I,J) DE LA MATRICE B, COMPLEXE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/bijsom.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pbflui.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/bijsom.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pbflui.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: umoy, geom(9), cf0, mcf0, fsvr(7)
     integer :: imod, jmod, nbm, vicoq(nbm)
     real(kind=8) :: torco(4, nbm), tcoef(10, nbm), s1, s2

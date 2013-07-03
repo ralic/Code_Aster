@@ -27,11 +27,11 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
 !
 ! =====================================================================
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
     integer :: maxfa
     parameter   (maxfa=6)
     integer :: dimcon, dimuel

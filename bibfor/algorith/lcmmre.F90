@@ -55,21 +55,21 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
 !     OUT R      :  RESIDU DU SYSTEME NL A T + DT
 !         IRET   :  CODE RETOUR
 !     ----------------------------------------------------------------
-    include 'asterfort/calcfe.h'
-    include 'asterfort/caltau.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcgrla.h'
-    include 'asterfort/lcmmlc.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterfort/calcfe.h"
+#include "asterfort/caltau.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcgrla.h"
+#include "asterfort/lcmmlc.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     integer :: ndt, ndi, nmat, nr, nvi, nsfv, iret
     integer :: nbfsys, ifa, nbsys, is, itmax, nfs, nsg
     integer :: nbcomm(nmat, 3), nsfa, ifl, nuecou

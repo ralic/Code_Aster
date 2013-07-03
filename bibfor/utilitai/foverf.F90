@@ -1,9 +1,9 @@
 subroutine foverf(v, nc, ier)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesk.h"
     integer :: nc, ier, i, isens, ilarge, niv, ifm
     real(kind=8) :: v(nc)
     character(len=16) :: nomcmd, typfon

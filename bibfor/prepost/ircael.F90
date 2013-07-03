@@ -1,8 +1,8 @@
 subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
                   nbrcou, nbrsec, nbrfib, nbrgrf, nugrfi)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
     integer :: nmaxfi
     parameter (nmaxfi=10)
     integer :: jcesdi, jcesli, nummai, nbrcou, jcesvi
@@ -46,7 +46,7 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
 !   NBRGRF  I    NOMBRE DE GROUPES DE FIBRES
 !   NUGRFI  I    NUMERO DU GROUPE DE FIBRES
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nbrcmp, numgrf, icmp, iad, igfib
 !

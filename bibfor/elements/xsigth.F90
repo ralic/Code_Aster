@@ -19,18 +19,18 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/epstmc.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/assert.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref5.h"
+#include "asterfort/epstmc.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
+#include "asterfort/vecini.h"
     integer :: ndim, nnop, nfh, igeom, nbsig, lonch(10)
     real(kind=8) :: sigth(*), inst
 !

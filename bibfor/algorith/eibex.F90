@@ -22,12 +22,12 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 !
 ! aslint: disable=
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/lceib1.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvarc.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/lceib1.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvarc.h"
+#include "blas/ddot.h"
     character(len=16) :: compor(*), option
     character(len=*) :: fami
     integer :: ndim, imate, ksp, kpg

@@ -32,11 +32,11 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
 !       D'INFORMATIONS
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/liritm.h'
-    include 'asterfort/lirlig.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/liritm.h"
+#include "asterfort/lirlig.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     common/opmail/cmd
     character(len=16) :: cmd
     character(len=14) :: cnl

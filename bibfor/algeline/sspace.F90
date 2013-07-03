@@ -3,24 +3,24 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec,&
                   toldyn, vect, valpro, nitjac, nitbat,&
                   solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ggubs.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/sstriv.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpordi.h'
-    include 'asterfort/vpreco.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/ggubs.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/resoud.h"
+#include "asterfort/sstriv.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpordi.h"
+#include "asterfort/vpreco.h"
+#include "asterfort/wkvect.h"
     integer :: lraid, lmatra, lmass, neq, nbvec, nfreq
     integer :: lprod(neq), itemax, nperm, nitjac, nitbat
     real(kind=8) :: tol, toldyn, valpro(nbvec), vect(neq, nbvec)

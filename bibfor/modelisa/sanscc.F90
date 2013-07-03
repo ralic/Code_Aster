@@ -19,10 +19,10 @@ subroutine sanscc(char, motfac, noma)
 ! REPONSABLE
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/sansno.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/sansno.h"
     character(len=8) :: char, noma
     character(len=16) :: motfac
 !

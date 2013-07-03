@@ -33,7 +33,7 @@ function spect4(xx, y, xlc, vitn, rhoe,&
 ! IN  : IM,IM : NUMEROS D ORDRE DES MODES DU CONCEPT MELASFLU
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: defm(nbp, *), vitn(nbp, *), rhoe(nbp, *), xlc, xx, y
 !
 !-----------------------------------------------------------------------

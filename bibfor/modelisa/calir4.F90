@@ -2,14 +2,14 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
                   jconb1, jcocf1, jconu1, ideca1, jconb2,&
                   jcocf2, jconu2, ideca2)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/afrela.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/base3n.h'
-    include 'asterfort/imprel.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/base3n.h"
+#include "asterfort/imprel.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
     character(len=19) :: lisrel
     character(len=8) :: nono2, noma
     integer :: ino2, jconb1, jcocf1, jconu1, ideca1

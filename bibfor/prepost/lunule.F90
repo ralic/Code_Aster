@@ -2,8 +2,8 @@ subroutine lunule(r1, r2, angdeb, angfin, angmax,&
                   ansini, ansfin, profon, volume, epais)
 ! aslint: disable=
     implicit   none
-    include 'asterc/r8rddg.h'
-    include 'asterfort/usubis.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/usubis.h"
     real(kind=8) :: r1, r2, angdeb, angfin, angmax, ansini, ansfin, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------

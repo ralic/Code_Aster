@@ -1,12 +1,12 @@
 subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
                   ug, factus)
     implicit   none
-    include 'asterfort/infniv.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rc36f0.h'
-    include 'asterfort/rc36f2.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/infniv.h"
+#include "asterfort/limend.h"
+#include "asterfort/rc36f0.h"
+#include "asterfort/rc36f2.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
     integer :: nbsigr, nocc(*), situ(*)
     real(kind=8) :: saltij(*), ug, factus(*)
     character(len=*) :: nommat

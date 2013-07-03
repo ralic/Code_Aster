@@ -22,8 +22,8 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
 !     EST ADCO
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/u2mesi.h"
     integer :: m, adco, nbso, nusglo, nusloc
 !
     logical :: trouve

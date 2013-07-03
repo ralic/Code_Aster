@@ -1,9 +1,9 @@
 subroutine inmat4(elrefa, nno, nnos, npg, nofpg,&
                   mgano)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/inmat5.h'
-    include 'asterfort/inmat6.h'
+#include "asterfort/assert.h"
+#include "asterfort/inmat5.h"
+#include "asterfort/inmat6.h"
     character(len=8) :: elrefa, nofpg
     integer :: nno, nnos, npg
     real(kind=8) :: mgano(*)

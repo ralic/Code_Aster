@@ -19,11 +19,11 @@ subroutine obtsdm(lisnom, typcoz, marq)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/obsetk.h'
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/obsetk.h"
     character(len=24) :: lisnom
     character(len=*) :: typcoz
     character(len=1) :: marq

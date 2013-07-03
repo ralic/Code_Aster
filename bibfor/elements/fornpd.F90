@@ -1,26 +1,26 @@
 subroutine fornpd(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/epseff.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/trndgl.h'
-    include 'asterfort/trnflg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vexpan.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/epseff.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "asterfort/trndgl.h"
+#include "asterfort/trnflg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vexpan.h"
+#include "blas/daxpy.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

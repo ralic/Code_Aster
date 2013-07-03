@@ -19,8 +19,8 @@ subroutine lcmcli(comp, nomfam, nbsys, is, pgl,&
 ! ======================================================================
 !     CONTRAINTE DE CLIVAGE MAXI POUR LE MONOCRISTAL
 !     ----------------------------------------------------------------
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/tnsvec.h'
+#include "asterfort/lcmmsg.h"
+#include "asterfort/tnsvec.h"
     integer :: i, nbsys, is, ir, j
     real(kind=8) :: sigf(6), pgl(3, 3), ms(6), ng(3), si(3, 3), sing(3), sicl, p
     real(kind=8) :: lg(3)

@@ -21,20 +21,20 @@ subroutine mmbclc(noma, nomo, numedd, iterat, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmappa.h'
-    include 'asterfort/mmchml.h'
-    include 'asterfort/mmligr.h'
-    include 'asterfort/mmmbca.h'
-    include 'asterfort/mreacg.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmimci.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmappa.h"
+#include "asterfort/mmchml.h"
+#include "asterfort/mmligr.h"
+#include "asterfort/mmmbca.h"
+#include "asterfort/mreacg.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
     character(len=8) :: noma, nomo
     integer :: numins, iterat
     character(len=19) :: sddisc, sddyna

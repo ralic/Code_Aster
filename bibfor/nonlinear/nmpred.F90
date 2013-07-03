@@ -26,12 +26,12 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/nmcret.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/nmprde.h'
-    include 'asterfort/nmprta.h'
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmprde.h"
+#include "asterfort/nmprta.h"
     integer :: fonact(*)
     integer :: numins
     real(kind=8) :: parmet(*)

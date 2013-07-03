@@ -1,8 +1,8 @@
 subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
                   cninv)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: nnotot, nse, nnop, nno, jcnset
     integer :: cninv(nnotot, nse+1)
 ! ----------------------------------------------------------------------

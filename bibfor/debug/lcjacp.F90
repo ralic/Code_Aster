@@ -60,11 +60,11 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
 ! aslint: disable=W1306,W1504
     implicit none
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcresi.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8miem.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcresi.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/u2mesg.h"
     integer :: nmat, nbcomm(nmat, 3), nr, impr, vali(2), nfs, nsg
     integer :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac, indi(7)
 !

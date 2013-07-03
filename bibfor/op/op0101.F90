@@ -22,15 +22,15 @@ subroutine op0101()
 !                                        THER_IMPO
 !                                        ACOU_IMPO
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/charci.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/charci.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: n1, jafck
     character(len=8) :: chcine, mo, pheno, evoim
     character(len=16) :: type, oper

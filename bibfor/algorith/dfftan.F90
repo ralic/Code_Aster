@@ -2,10 +2,10 @@ subroutine dfftan(ndim, baslo, inoff, vtan)
 !
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dffdir.h'
-    include 'asterfort/dffnor.h'
-    include 'asterfort/provec.h'
+#include "asterfort/assert.h"
+#include "asterfort/dffdir.h"
+#include "asterfort/dffnor.h"
+#include "asterfort/provec.h"
     real(kind=8) :: baslo(*), vtan(3)
     integer :: ndim, inoff
 !

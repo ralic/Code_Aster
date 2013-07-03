@@ -37,13 +37,13 @@ subroutine lecmai(ifl, icl, iv, rv, cv,&
 !                                                  OU ERREUR DETECTE)
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/iunifi.h'
-    include 'asterfort/liritm.h'
-    include 'asterfort/lirtet.h'
-    include 'asterfort/tesfin.h'
-    include 'asterfort/tesmcl.h'
-    include 'asterfort/verdbl.h'
-    include 'asterfort/vermot.h'
+#include "asterfort/iunifi.h"
+#include "asterfort/liritm.h"
+#include "asterfort/lirtet.h"
+#include "asterfort/tesfin.h"
+#include "asterfort/tesmcl.h"
+#include "asterfort/verdbl.h"
+#include "asterfort/vermot.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig

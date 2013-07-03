@@ -28,12 +28,12 @@ subroutine aniver(mater)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/dortvp.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/dortvp.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: mater
 ! -----  VARIABLES LOCALES
     character(len=2) :: m2blan

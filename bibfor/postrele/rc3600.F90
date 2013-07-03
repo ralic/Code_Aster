@@ -27,31 +27,31 @@ subroutine rc3600()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cesimp.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rc36ac.h'
-    include 'asterfort/rc36ca.h'
-    include 'asterfort/rc36in.h'
-    include 'asterfort/rc36ma.h'
-    include 'asterfort/rc36rm.h'
-    include 'asterfort/rc36rs.h'
-    include 'asterfort/rc36si.h'
-    include 'asterfort/rc36zz.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cesimp.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rc36ac.h"
+#include "asterfort/rc36ca.h"
+#include "asterfort/rc36in.h"
+#include "asterfort/rc36ma.h"
+#include "asterfort/rc36rm.h"
+#include "asterfort/rc36rs.h"
+#include "asterfort/rc36si.h"
+#include "asterfort/rc36zz.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     integer :: n1, nbtou, ierd, nbma, jma, ima, nbcmp, nbmat, ibid, ifm, niv
     character(len=8) :: k8b, nomres, noma, carael, modele, nommat, motcls(2)
     character(len=8) :: typmcs(2), nomgd

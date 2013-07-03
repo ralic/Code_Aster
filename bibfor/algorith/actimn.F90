@@ -40,8 +40,8 @@ subroutine actimn(nbcmp, nbno, nbec, mcoddl, icodac)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/iscode.h'
-    include 'asterfort/isgeco.h'
+#include "asterfort/iscode.h"
+#include "asterfort/isgeco.h"
     integer :: i, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !-----------------------------------------------------------------------
     parameter (nbcpmx = 300)

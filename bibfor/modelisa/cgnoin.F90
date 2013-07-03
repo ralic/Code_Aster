@@ -1,23 +1,23 @@
 subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/pj2dco.h'
-    include 'asterfort/pj3dco.h'
-    include 'asterfort/pj4dco.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/pj2dco.h"
+#include "asterfort/pj3dco.h"
+#include "asterfort/pj4dco.h"
+#include "asterfort/reliem.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 ! ======================================================================

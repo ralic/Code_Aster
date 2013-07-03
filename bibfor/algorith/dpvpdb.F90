@@ -19,10 +19,10 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit      none
-    include 'asterfort/dpvpdf.h'
-    include 'asterfort/dpvpdv.h'
-    include 'asterfort/dpvpeq.h'
-    include 'asterfort/dpvpva.h'
+#include "asterfort/dpvpdf.h"
+#include "asterfort/dpvpdv.h"
+#include "asterfort/dpvpeq.h"
+#include "asterfort/dpvpva.h"
     integer :: nbmat, nvi, nbre, retcom
     real(kind=8) :: mater(nbmat, 2)
     real(kind=8) :: crit(3), dt

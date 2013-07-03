@@ -1,14 +1,14 @@
 subroutine affdef(tmp, nom, nel, ntel, tab,&
                   ier)
     implicit       none
-    include       'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8maem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     integer :: ntel(*)
     character(len=8) :: tab(*)
     character(len=24) :: nom, tmp

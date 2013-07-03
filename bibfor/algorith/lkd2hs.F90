@@ -28,11 +28,11 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
 !         DHDS   : DERIVEE DE H PAR RAPPORT A DEVSIG
 !     OUT D2HDS2 :  DERIVEE 2NDE H PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-    include 'asterfort/cjst.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lkd2de.h'
-    include 'asterfort/lkhlod.h'
+#include "asterfort/cjst.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lkd2de.h"
+#include "asterfort/lkhlod.h"
     integer :: nmat
     real(kind=8) :: devsig(6), rcos3t, sii, d2hds2(6, 6)
     real(kind=8) :: materf(nmat, 2), dhds(6)

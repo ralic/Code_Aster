@@ -2,10 +2,10 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
                   ddgamv)
 !
     implicit    none
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lctrma.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lctrma.h"
+#include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), depsv(6), ddepsv(6)
     real(kind=8) :: dgamv, ddgamv(6)

@@ -26,45 +26,45 @@ subroutine op0033()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dierre.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/lcdetf.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/nmadat.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmcpel.h'
-    include 'asterfort/nmcrcv.h'
-    include 'asterfort/nmdcin.h'
-    include 'asterfort/nmfinp.h'
-    include 'asterfort/pmactn.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/pmconv.h'
-    include 'asterfort/pmdorc.h'
-    include 'asterfort/pmdrdy.h'
-    include 'asterfort/pmimpr.h'
-    include 'asterfort/pminit.h'
-    include 'asterfort/pmmaco.h'
-    include 'asterfort/pmsta1.h'
-    include 'asterfort/pmstab.h'
-    include 'asterfort/pmvtgt.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tnsvec.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/vrcinp.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dierre.h"
+#include "asterfort/diinst.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/matinv.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/nmadat.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmcpel.h"
+#include "asterfort/nmcrcv.h"
+#include "asterfort/nmdcin.h"
+#include "asterfort/nmfinp.h"
+#include "asterfort/pmactn.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmconv.h"
+#include "asterfort/pmdorc.h"
+#include "asterfort/pmdrdy.h"
+#include "asterfort/pmimpr.h"
+#include "asterfort/pminit.h"
+#include "asterfort/pmmaco.h"
+#include "asterfort/pmsta1.h"
+#include "asterfort/pmstab.h"
+#include "asterfort/pmvtgt.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tnsvec.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/vrcinp.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: ndim, iret, n1, nbvari, nbpar, i, incela, ier
     integer :: imate, kpg, ksp, iter, pred, ncmp, imptgt, nbvrcm
     integer :: ntamax, matrel, irota, defimp, liccvg(5)

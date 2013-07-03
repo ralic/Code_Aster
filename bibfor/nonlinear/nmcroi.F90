@@ -19,11 +19,11 @@ subroutine nmcroi(sdobse, motfac, nbocc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcrpx.h'
+#include "jeveux.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcrpx.h"
     character(len=19) :: sdobse
     integer :: nbocc
     character(len=16) :: motfac

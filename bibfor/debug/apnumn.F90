@@ -19,7 +19,7 @@ subroutine apnumn(sdappa, defico, posno, numno)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/cfnumn.h'
+#include "asterfort/cfnumn.h"
     character(len=19) :: sdappa
     character(len=24) :: defico
     integer :: posno, numno

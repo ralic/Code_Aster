@@ -6,7 +6,7 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
                   singu, tau1, tau2)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,14 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
 ! IN SINGU  : ELEMENT ENRICHI CTIP OU ON
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
-    include 'asterfort/assert.h'
-    include 'asterfort/xmmab3.h'
-    include 'asterfort/xmmab4.h'
-    include 'asterfort/xmmab5.h'
-    include 'asterfort/xmmab6.h'
-    include 'asterfort/xmmbp3.h'
-    include 'asterfort/xmmbp5.h'
-    include 'asterfort/xmmsa1.h'
+#include "asterfort/assert.h"
+#include "asterfort/xmmab3.h"
+#include "asterfort/xmmab4.h"
+#include "asterfort/xmmab5.h"
+#include "asterfort/xmmab6.h"
+#include "asterfort/xmmbp3.h"
+#include "asterfort/xmmbp5.h"
+#include "asterfort/xmmsa1.h"
     integer :: algofr, ddlm, ddls
     integer :: idepd, idepm, indco
     integer :: lact(8), ndim

@@ -27,13 +27,13 @@ subroutine te0022(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/sigvmc.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/sigvmc.h"
     character(len=16) :: nomte, option
     real(kind=8) :: sigma(162), repere(7), instan, nharm
     real(kind=8) :: bary(3)

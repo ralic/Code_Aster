@@ -1,9 +1,9 @@
 subroutine jelst3(base, dest, nmax, ntotal)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelstc.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelstc.h"
+#include "asterfort/jemarq.h"
     character(len=1) :: base
     character(len=24) :: dest(*)
     integer :: nmax, ntotal

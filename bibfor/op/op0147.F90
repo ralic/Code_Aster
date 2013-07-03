@@ -22,22 +22,22 @@ subroutine op0147()
 !      LE CONCEPT PRODUIT EST UN INTERSPECTRE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/calcsp.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ordis.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/calcsp.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ordis.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: i, ibid, ifreq, im, imasg, imod1, inumo
     integer :: inuor, ivite, jnuor, nbm, nbmr
     integer :: nnn, npv, i1, i3, ivitef

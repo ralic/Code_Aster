@@ -50,14 +50,14 @@ subroutine hujpre(etat, mod, crit, imat, mater,&
 !                              IRET=0 => PAS DE PROBLEME
 !                              IRET=1 => ECHEC
 !
-    include 'jeveux.h'
-    include 'asterfort/hujela.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/hujtid.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trace.h'
+#include "jeveux.h"
+#include "asterfort/hujela.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/hujtid.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trace.h"
     integer :: ndt, ndi, imat, iret, iadzi, iazk24, i
     real(kind=8) :: crit(*), vind(*)
     real(kind=8) :: deps(6), dev(3), pf(3), q, pd(3), dp(3)

@@ -31,8 +31,8 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
 !     OUT VALRES :  COEFFICIENTS MATERIAU A T
 !         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 !     ----------------------------------------------------------------
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/lceqvn.h"
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, nmat, nbval, imat
     real(kind=8) :: valres(nmat), vallue(nmat)
     character(len=8) :: nomres(nmat)

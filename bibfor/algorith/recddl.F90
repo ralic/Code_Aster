@@ -38,7 +38,7 @@ subroutine recddl(nbcmp, lino, nbno, nbec, ideeq,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/iscode.h'
+#include "asterfort/iscode.h"
     integer :: lino(nbno), ideeq(2, neq), mcoddl(nbno*nbec, 2), idec(nbcmp, 2)
     integer :: i, ino, ityp, j, jno, k, nbcmp
     integer :: nbec, nbno, neq

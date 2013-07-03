@@ -22,24 +22,24 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/iisnan.h'
-    include 'asterfort/lceibt.h'
-    include 'asterfort/lcldsb.h'
-    include 'asterfort/lcmaza.h'
-    include 'asterfort/lcumef.h'
-    include 'asterfort/lcummd.h'
-    include 'asterfort/lcumme.h'
-    include 'asterfort/lcumsf.h'
-    include 'asterfort/lcumvi.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/sigela.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterc/iisnan.h"
+#include "asterfort/lceibt.h"
+#include "asterfort/lcldsb.h"
+#include "asterfort/lcmaza.h"
+#include "asterfort/lcumef.h"
+#include "asterfort/lcummd.h"
+#include "asterfort/lcumme.h"
+#include "asterfort/lcumsf.h"
+#include "asterfort/lcumvi.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/sigela.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: ndim, imate, kpg, ksp
     character(len=8) :: typmod(*)
     character(len=16) :: compor(3), option(2),option2

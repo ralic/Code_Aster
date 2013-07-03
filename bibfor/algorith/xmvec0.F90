@@ -21,7 +21,7 @@ subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/xplma2.h'
+#include "asterfort/xplma2.h"
     integer :: ndim, jnne(3), nnc, nfaes, cface(3, 5), jpcai, jddle(2), nconta
     integer :: nfhe, heavno(8)
     real(kind=8) :: dlagrc, hpg, ffc(9), jacobi, coefcr, coefcp

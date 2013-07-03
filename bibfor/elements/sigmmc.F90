@@ -45,11 +45,11 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/bmatmc.h'
-    include 'asterfort/dbudef.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/lteatt.h'
+#include "jeveux.h"
+#include "asterfort/bmatmc.h"
+#include "asterfort/dbudef.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/lteatt.h"
     real(kind=8) :: xyz(1), depl(1), repere(7), sigma(1)
     real(kind=8) :: instan, nharm
     character(len=*) :: fami

@@ -23,10 +23,10 @@ subroutine dgmode(mode, imodel, ilong, nec, dg)
 !      SORTIE:
 !          NEC   : NOMBRE D'ENTIERS-CODES
 !          DG    : DESCRIPTEUR GRANDEUR DIMENSIONNE A NEC
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nbec.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nbec.h"
     integer :: dg(*), nec, mode, ilong, imodel
 !
 !-----------------------------------------------------------------------

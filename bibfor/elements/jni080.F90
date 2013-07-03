@@ -18,18 +18,18 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-    include 'jeveux.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/fcepai.h'
-    include 'asterfort/fcesnd.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/mamagi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/fcepai.h"
+#include "asterfort/fcesnd.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/mamagi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: elrefe
     integer :: nmaxob, nbobj
 !

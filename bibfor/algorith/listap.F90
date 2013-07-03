@@ -18,12 +18,12 @@ subroutine listap(motfac, iexci, typapp)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=16) :: motfac
     integer :: iexci
     character(len=16) :: typapp

@@ -30,15 +30,15 @@ subroutine te0326(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !..................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/divgra.h'
-    include 'asterfort/e1e2nn.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
+#include "asterfort/divgra.h"
+#include "asterfort/e1e2nn.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
     integer :: icodre
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option

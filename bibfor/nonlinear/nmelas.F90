@@ -46,9 +46,9 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !
 !
     implicit none
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/verift.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/verift.h"
     logical :: cplan, inco
     integer :: ndim, imate, kpg, ksp, iret, ndimsi
     integer :: k, l, iret2, iret3, iret4, iret0, iret5, icodre(3)

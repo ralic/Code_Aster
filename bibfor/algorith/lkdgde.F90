@@ -3,15 +3,15 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
                   depsv, dgamv, retcom)
 !
     implicit    none
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lkbpri.h'
-    include 'asterfort/lkcalg.h'
-    include 'asterfort/lkcaln.h'
-    include 'asterfort/lkdfds.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkds2h.h'
-    include 'asterfort/lkvacv.h'
-    include 'asterfort/lkvarv.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lkbpri.h"
+#include "asterfort/lkcalg.h"
+#include "asterfort/lkcaln.h"
+#include "asterfort/lkdfds.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkds2h.h"
+#include "asterfort/lkvacv.h"
+#include "asterfort/lkvarv.h"
     integer :: nbmat, retcom, val
     real(kind=8) :: seuive, ucrim, im, sm(6), vintr
     real(kind=8) :: mater(nbmat, 2), vinm(7), depsv(6), dgamv

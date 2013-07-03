@@ -1,9 +1,9 @@
 subroutine dimax2(jdom, nbpt, cuon, cvon, rayon,&
                   cupn, cvpn, iret)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: jdom, nbpt, iret
     real(kind=8) :: cuon, cvon, rayon, cupn, cvpn
 ! ======================================================================

@@ -18,14 +18,14 @@ subroutine cfgccj(resoco, nbliai, conjug)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'blas/daxpy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "blas/daxpy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     character(len=24) :: resoco
     integer :: nbliai
     logical :: conjug

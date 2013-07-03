@@ -47,8 +47,8 @@ subroutine lc0047(fami, kpg, ksp, ndim, imate,&
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcbrgm.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcbrgm.h"
+#include "asterfort/u2mess.h"
     integer :: imate, ndim, ksp, kpg
     integer :: icomp, nvi
     integer :: codret

@@ -19,18 +19,18 @@ subroutine nmasfr(defico, resoco, matass)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcmbl.h'
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/infmue.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
     character(len=24) :: resoco
     character(len=19) :: matass
     character(len=24) :: defico

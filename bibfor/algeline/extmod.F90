@@ -33,11 +33,11 @@ subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
 ! OUT :DMODE  : VECTEUR => DEFORMEES MODALES
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
     integer :: nbddl, nbnumo, nbnoe, nume(nbnumo), iddl(nbddl)
     real(kind=8) :: dmode(nbddl*nbnoe*nbnumo)
     character(len=8) :: basemo

@@ -74,17 +74,17 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/calcul.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mecact.h"
+#include "asterfort/wkvect.h"
     integer :: niveau, ifm, niv, iaux
     real(kind=8) :: valthe, insold, inst
     logical :: evol

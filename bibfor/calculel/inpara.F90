@@ -21,7 +21,7 @@ function inpara(opt, te, statut, nopara)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
     character(len=8) :: nopara
     character(len=3) :: statut
     integer :: opt, te

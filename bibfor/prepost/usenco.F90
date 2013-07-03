@@ -1,7 +1,7 @@
 subroutine usenco(ai1, bi1, alphad, alphaf, ndim,&
                   vect)
     implicit   none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: ai1, bi1, vect(*), alphad, alphaf
 !-----------------------------------------------------------------------

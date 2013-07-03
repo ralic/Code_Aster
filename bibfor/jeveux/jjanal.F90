@@ -17,7 +17,7 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=*) :: condlu, cval(*)
     integer :: nval, nvalo, lval(*)
 !

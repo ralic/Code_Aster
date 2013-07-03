@@ -34,7 +34,7 @@ subroutine burafi(vin, nvi, materd, materf, nmat,&
 !     CFI      : MATRICE LIEE A LA DEFOR. IRREV. DE FLUAGE PROPRE
 !=======================================================================
     implicit none
-    include 'asterfort/burail.h'
+#include "asterfort/burail.h"
     integer :: nvi, nmat, ndt, ndi, i, j
     real(kind=8) :: vin(*)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

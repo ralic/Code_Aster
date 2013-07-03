@@ -20,13 +20,13 @@ subroutine nmnume(modele, result, lischa, lcont, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmprof.h'
-    include 'asterfort/nuendo.h'
-    include 'asterfort/nunuco.h'
-    include 'asterfort/nurota.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmprof.h"
+#include "asterfort/nuendo.h"
+#include "asterfort/nunuco.h"
+#include "asterfort/nurota.h"
     character(len=24) :: modele, numedd, compor, defico
     character(len=8) :: result
     character(len=19) :: lischa, solveu

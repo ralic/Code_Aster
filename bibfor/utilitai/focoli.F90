@@ -1,9 +1,9 @@
 subroutine focoli(ipt, coli, interp, x, y,&
                   rvar, resu, ier)
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: ipt, ier
     real(kind=8) :: x(*), y(*), rvar, resu
     character(len=1) :: coli

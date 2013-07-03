@@ -140,15 +140,15 @@ subroutine zgetv0(ido, bmat, initv, n, j,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/zvout.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dznrm2.h'
-    include 'blas/zcopy.h'
-    include 'blas/zdotc.h'
-    include 'blas/zgemv.h'
-    include 'blas/zlarnv.h'
+#include "asterc/matfpe.h"
+#include "asterfort/dvout.h"
+#include "asterfort/zvout.h"
+#include "blas/dlapy2.h"
+#include "blas/dznrm2.h"
+#include "blas/zcopy.h"
+#include "blas/zdotc.h"
+#include "blas/zgemv.h"
+#include "blas/zlarnv.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

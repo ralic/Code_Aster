@@ -1,11 +1,11 @@
 subroutine tridia(n, a, lda, d, e,&
                   tau, w)
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/zadder.h'
-    include 'asterfort/zader2.h'
-    include 'asterfort/zmvpy.h'
-    include 'blas/zdotc.h'
+#include "asterc/r8prem.h"
+#include "asterfort/zadder.h"
+#include "asterfort/zader2.h"
+#include "asterfort/zmvpy.h"
+#include "blas/zdotc.h"
     integer :: n, lda
     real(kind=8) :: d(*), e(*)
     complex(kind=8) :: a(lda, *), tau(*), w(*)

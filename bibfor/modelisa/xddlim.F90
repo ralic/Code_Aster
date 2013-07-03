@@ -3,22 +3,22 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                   ndim, direct, jnoxfv, ch1, ch2,&
                   ch3, cnxinv)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/afrela.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8pi.h"
+#include "asterfort/afrela.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
     integer :: ino, icompt, ndim, jnoxfv
     real(kind=8) :: valimr, direct(3)
     character(len=4) :: fonree

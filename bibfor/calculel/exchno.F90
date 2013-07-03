@@ -20,12 +20,12 @@ subroutine exchno(imodat, iparg)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/trigd.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/trigd.h"
+#include "asterfort/u2mess.h"
     integer :: imodat, iparg
 ! ----------------------------------------------------------------------
 !     ENTREES:

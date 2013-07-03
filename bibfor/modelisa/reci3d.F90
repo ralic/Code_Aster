@@ -71,19 +71,19 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/afrela.h'
-    include 'asterfort/ante3d.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/afrela.h"
+#include "asterfort/ante3d.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
 !
 ! ARGUMENTS
 ! ---------

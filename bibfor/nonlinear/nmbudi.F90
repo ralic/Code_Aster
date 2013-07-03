@@ -20,13 +20,13 @@ subroutine nmbudi(modele, numedd, lischa, veclag, vebudi,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/vebume.h'
+#include "jeveux.h"
+#include "asterfort/assvec.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vebume.h"
     character(len=19) :: lischa, matass
     character(len=24) :: modele, numedd
     character(len=19) :: veclag

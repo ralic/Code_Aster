@@ -26,13 +26,13 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 !       OUT NDEC   :  NOMBRE DE REDECOUPAGE DE DEPS
 !           IRET   :  CODE RETOUR
 !       ---------------------------------------------------------------
-    include 'asterfort/hujddd.h'
-    include 'asterfort/hujprc.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/hujddd.h"
+#include "asterfort/hujprc.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i, j, ndec, iret, indi(7), nbmeca, ni
     real(kind=8) :: di1d, i1d, n, pref, k0
     real(kind=8) :: deps(6), sigd(6), sigf(6)

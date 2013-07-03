@@ -27,8 +27,8 @@ subroutine prlgma(mati, sina, cosa, sinb, cosb,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/prmama.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/prmama.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: mati(3, 3), sina, cosa, sinb, cosb, sing, cosg, matf(3, 3)
 !
 ! VARIABLES LOCALES

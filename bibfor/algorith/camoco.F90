@@ -37,22 +37,22 @@ subroutine camoco(nomres, numref, intf, raid, raildl,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cheddl.h'
-    include 'asterfort/defsta.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/facmtr.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/cheddl.h"
+#include "asterfort/defsta.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/facmtr.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
     integer :: i, iad, ibid, ier, ik, ino, inord
     integer :: iret, j, jj, lldeeq, lldes, llncmp, llnoin

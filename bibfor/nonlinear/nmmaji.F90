@@ -20,12 +20,12 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/majour.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/majour.h"
     logical :: lgrot, lendo
     real(kind=8) :: coef
     character(len=*) :: incplz, incmoz, ddincz

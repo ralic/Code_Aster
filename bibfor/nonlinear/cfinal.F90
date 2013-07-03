@@ -20,15 +20,15 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: defico, resoco
     integer :: nbliac, llf, llf1, llf2
     logical :: reapre, reageo

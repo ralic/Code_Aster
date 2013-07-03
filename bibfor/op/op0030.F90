@@ -29,29 +29,29 @@ subroutine op0030()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/adalig.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cagene.h'
-    include 'asterfort/calico.h'
-    include 'asterfort/caliun.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/chveno.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lgtlgr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/adalig.h"
+#include "asterfort/assert.h"
+#include "asterfort/cagene.h"
+#include "asterfort/calico.h"
+#include "asterfort/caliun.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/chveno.h"
+#include "asterfort/copisd.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/initel.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lgtlgr.h"
+#include "asterfort/wkvect.h"
     integer :: ifm, niv
     integer :: iret, ibid, noc, ndim, iatype
     character(len=4) :: k4bid

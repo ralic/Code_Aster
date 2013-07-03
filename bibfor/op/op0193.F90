@@ -23,12 +23,12 @@ subroutine op0193()
 !     NUMERIQUE EN DYNAMIQUE
 !     ------------------------------------------------------------------
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mpmod2.h'
-    include 'asterfort/mptran.h'
+#include "asterc/getvid.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mpmod2.h"
+#include "asterfort/mptran.h"
     integer :: n1, nbmesu, nbmode
 !
     character(len=8) :: basemo, nommes

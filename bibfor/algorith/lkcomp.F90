@@ -5,25 +5,25 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
 ! aslint: disable=W1501
     implicit  none
-    include 'asterc/iisnan.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/lkcrip.h'
-    include 'asterfort/lkcriv.h'
-    include 'asterfort/lkdgde.h'
-    include 'asterfort/lkelas.h'
-    include 'asterfort/lkgamp.h'
-    include 'asterfort/lklmat.h'
-    include 'asterfort/lkoptg.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/lkcrip.h"
+#include "asterfort/lkcriv.h"
+#include "asterfort/lkdgde.h"
+#include "asterfort/lkelas.h"
+#include "asterfort/lkgamp.h"
+#include "asterfort/lklmat.h"
+#include "asterfort/lkoptg.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: retcom, imate, invi
     character(len=8) :: mod(*)
     character(len=16) :: option

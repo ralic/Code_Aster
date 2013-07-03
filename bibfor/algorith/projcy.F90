@@ -30,13 +30,13 @@ subroutine projcy(nomres)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/prcycb.h'
-    include 'asterfort/prcymn.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/prcycb.h"
+#include "asterfort/prcymn.h"
+#include "asterfort/u2mesg.h"
     character(len=8) :: nomres, typint
     character(len=24) :: repmat, soumat
     character(len=24) :: valk

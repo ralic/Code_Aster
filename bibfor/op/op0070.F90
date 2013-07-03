@@ -29,37 +29,37 @@ subroutine op0070()
 !
 ! --- PARAMETRES DE MECA_NON_LINE
 !
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/inidbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/ndexpl.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmactp.h'
-    include 'asterfort/nmaffi.h'
-    include 'asterfort/nmarch.h'
-    include 'asterfort/nmcvgc.h'
-    include 'asterfort/nmcvgp.h'
-    include 'asterfort/nmdata.h'
-    include 'asterfort/nmeceb.h'
-    include 'asterfort/nmerro.h'
-    include 'asterfort/nmevdt.h'
-    include 'asterfort/nmfpas.h'
-    include 'asterfort/nmini0.h'
-    include 'asterfort/nminit.h'
-    include 'asterfort/nmleeb.h'
-    include 'asterfort/nmlost.h'
-    include 'asterfort/nmmeng.h'
-    include 'asterfort/nmnewt.h'
-    include 'asterfort/nmpost.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmstat.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/titre.h'
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/inidbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/ndexpl.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmactp.h"
+#include "asterfort/nmaffi.h"
+#include "asterfort/nmarch.h"
+#include "asterfort/nmcvgc.h"
+#include "asterfort/nmcvgp.h"
+#include "asterfort/nmdata.h"
+#include "asterfort/nmeceb.h"
+#include "asterfort/nmerro.h"
+#include "asterfort/nmevdt.h"
+#include "asterfort/nmfpas.h"
+#include "asterfort/nmini0.h"
+#include "asterfort/nminit.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmlost.h"
+#include "asterfort/nmmeng.h"
+#include "asterfort/nmnewt.h"
+#include "asterfort/nmpost.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmstat.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/titre.h"
     integer :: zpmet, zpcri, zconv
     integer :: zpcon, znmeth
     parameter   (zpmet  = 9 ,zpcri  = 7 ,zconv = 4)

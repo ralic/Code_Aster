@@ -56,16 +56,16 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 !..............................................................
 !----------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/xside2.h'
-    include 'asterfort/xside3.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/iselli.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/xside2.h"
+#include "asterfort/xside3.h"
     character(len=8) :: elrefp, elrese(6), fami(6), typmod(*)
     character(len=16) :: compor(4)
     real(kind=8) :: he(nfiss), sig(*), lsn(nnop), lst(nnop), basloc(*)

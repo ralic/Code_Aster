@@ -19,23 +19,23 @@ subroutine surfcl(char, noma, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit    none
-    include     'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfr.h'
-    include 'asterfort/surfll.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/surfll.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: char
     character(len=8) :: noma
     integer :: ifm

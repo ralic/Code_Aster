@@ -93,13 +93,13 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 ! aslint: disable=W1501,W1504
     implicit none
 !      IMPLICIT REAL*8(A-Z)
-    include 'asterc/r8pi.h'
-    include 'asterfort/brdefv.h'
-    include 'asterfort/brendo.h'
-    include 'asterfort/brfluo.h'
-    include 'asterfort/brseff.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesr.h'
+#include "asterc/r8pi.h"
+#include "asterfort/brdefv.h"
+#include "asterfort/brendo.h"
+#include "asterfort/brfluo.h"
+#include "asterfort/brseff.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesr.h"
     integer :: ndim, imate
     character(len=16) :: compor(3), option
     character(len=8) :: typmod(*)

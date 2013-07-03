@@ -1,12 +1,12 @@
 subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
                   iarret)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rcvals.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcvals.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: phenom, nomres
     integer :: iarret
     integer :: icodre

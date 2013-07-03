@@ -2,9 +2,9 @@ subroutine smcarc(nbhist, ftrc, trc, coef, fmod,&
                   ctes, ckm, nbtrc, tempe, tpoint,&
                   dt, zin, zout)
     implicit   none
-    include 'asterfort/smcaba.h'
-    include 'asterfort/smcavo.h'
-    include 'asterfort/smcomo.h'
+#include "asterfort/smcaba.h"
+#include "asterfort/smcavo.h"
+#include "asterfort/smcomo.h"
     integer :: nbhist, nbtrc
     real(kind=8) :: ftrc((3*nbhist), 3), trc((3*nbhist), 5), fmod(*)
     real(kind=8) :: ctes(11), ckm(6*nbtrc), coef(*), tempe, tpoint

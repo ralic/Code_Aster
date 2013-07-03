@@ -19,16 +19,16 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apnomp.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfnoap.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apnomp.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfnoap.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=3) :: phase

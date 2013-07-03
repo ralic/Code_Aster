@@ -22,16 +22,16 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/nzcalc.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerop3.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/nzcalc.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerop3.h"
     integer :: ndim, imat, iret, kpg, ksp
     character(len=16) :: compor(3), option
     character(len=*) :: fami

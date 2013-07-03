@@ -20,9 +20,9 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     logical :: axi
     integer :: ndim, nno
     real(kind=8) :: vff(nno), dfdi(nno, ndim), deplg(*)

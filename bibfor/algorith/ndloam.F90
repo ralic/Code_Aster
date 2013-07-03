@@ -19,19 +19,19 @@ subroutine ndloam(sddyna, result, evonol, nume)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     character(len=19) :: sddyna
     character(len=8) :: result
     integer :: nume

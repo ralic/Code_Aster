@@ -20,8 +20,8 @@ subroutine affono(valr, valk, desc, prnm, nbcomp,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/exisdg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/exisdg.h"
+#include "asterfort/u2mesk.h"
     integer :: prnm(1), nbcomp, desc, ino, nsurch, forimp(nbcomp)
     real(kind=8) :: valr(1), valfor(nbcomp)
     logical :: verif

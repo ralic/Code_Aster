@@ -24,10 +24,10 @@ subroutine calamr(phib24, phi1j, bi, num, j,&
 ! IN : VECSOL : VECTEUR SOLUTION K*
 ! OUT : VESTO : VECTEUR STOCKE K*
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/calci.h'
-    include 'asterfort/chnucn.h'
-    include 'asterfort/codent.h'
+#include "jeveux.h"
+#include "asterfort/calci.h"
+#include "asterfort/chnucn.h"
+#include "asterfort/codent.h"
     character(len=3) :: incr
     character(len=8) :: k8bid
     character(len=14) :: num

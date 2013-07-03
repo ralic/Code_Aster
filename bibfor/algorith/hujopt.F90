@@ -34,19 +34,19 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
 ! aslint: disable=W1306
     implicit none
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/hujori.h'
-    include 'asterfort/hujtel.h'
-    include 'asterfort/hujtid.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/hujori.h"
+#include "asterfort/hujtel.h"
+#include "asterfort/hujtid.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, nr, nvi, iret, imat
     real(kind=8) :: drdy(nr, nr), dsde(6, 6), mater(nmat, 2), vinf(nvi)
     real(kind=8) :: angmas(3), sigf(6)

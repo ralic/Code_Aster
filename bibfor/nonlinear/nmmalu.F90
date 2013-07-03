@@ -20,9 +20,9 @@ subroutine nmmalu(nno, axi, r, vff, dfdi,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     logical :: axi
     integer :: nno, lij(3, 3)
     real(kind=8) :: dfdi(nno, 4), vff(nno), r

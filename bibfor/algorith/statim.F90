@@ -3,16 +3,16 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                   tfin, nbloc, offset, trepos, nbclas,&
                   noecho, intitu, nomres)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/histog.h'
-    include 'asterfort/impact.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/histog.h"
+#include "asterfort/impact.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     integer :: nbobst, nbpt, nbloc
     real(kind=8) :: temps(*), fcho(*), vgli(*), tdebut, tfin
     real(kind=8) :: wk1(*), wk2(*), wk3(*), fnmaxa, fnmety, fnmmoy

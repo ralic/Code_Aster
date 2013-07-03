@@ -82,9 +82,9 @@ subroutine flacon(n, v, x, isgn, est,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterfort/ldasum.h'
-    include 'blas/dcopy.h'
-    include 'blas/idamax.h'
+#include "asterfort/ldasum.h"
+#include "blas/dcopy.h"
+#include "blas/idamax.h"
     integer :: kase, n
     real(kind=8) :: est
 !     ..

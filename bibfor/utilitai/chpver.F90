@@ -30,11 +30,11 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
     integer :: ier, ie1, ie2
     character(len=1) :: arret
     character(len=*) :: nocham, locham, gdcham

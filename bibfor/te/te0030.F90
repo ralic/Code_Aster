@@ -18,17 +18,17 @@ subroutine te0030(option, nomte)
 ! ======================================================================
 ! =====================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cribif.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/hujtid.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/redrpr.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cribif.h"
+#include "asterfort/elref4.h"
+#include "asterfort/hujtid.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/redrpr.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 !    - FONCTION REALISEE:  CALCUL DE L'OPTIONS INDL_ELGA

@@ -25,12 +25,12 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
 !
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/trapez.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/trapez.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: fn(*), t(*), fnmoyt, fnmoyc, fnrmsc, fnrmst, fnmax, fnmin
     real(kind=8) :: sminr, smaxr, offset, fmaxmo, fminmo, sfn2, sfn, tchoc
 !

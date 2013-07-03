@@ -31,11 +31,11 @@ subroutine caldfe(df, nr, nvi, vind, dfpds,&
 !         MSDGDT :  SOMME DES MUS(I)*MUS(J)*DGAMMAS/DTAUS
 !       OUT DRDY :  BLOC ((1-6),(7-NS)) JACOBIEN DU SYSTEME NON LINEAIRE
 !
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nr, ndt, ndi, ns, i, j, k, l, m, ind(3, 3), nvi
     real(kind=8) :: fe(3, 3), df(3, 3), dfpds(3, 3, 3, 3), msdgdt(6, 6)
     real(kind=8) :: dfefdt(3, 3, 3, 3)

@@ -19,17 +19,17 @@ subroutine dismnu(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(NUME_DDL) (OU PARFOIS NUME_DDL_GENE)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismgd.h'
-    include 'asterfort/dismlg.h'
-    include 'asterfort/dismpn.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/dismgd.h"
+#include "asterfort/dismlg.h"
+#include "asterfort/dismpn.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=24) :: questl

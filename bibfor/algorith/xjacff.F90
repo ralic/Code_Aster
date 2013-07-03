@@ -5,21 +5,21 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elelin.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/vecini.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elelin.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/reeref.h"
+#include "asterfort/reereg.h"
+#include "asterfort/vecini.h"
+#include "blas/ddot.h"
     integer :: jinter, ifa, cface(5, 3), ipg, nno, igeom, jbasec, ndim
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nno, ndim)
     real(kind=8) :: nd(ndim), tau1(ndim), tau2(ndim)

@@ -1,20 +1,20 @@
 subroutine te0600(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/ismaem.h'
-    include 'asterfort/assthm.h'
-    include 'asterfort/caethm.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/epsthm.h'
-    include 'asterfort/fnothm.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/posthm.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/refthm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/thmevc.h'
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterfort/assthm.h"
+#include "asterfort/caethm.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/epsthm.h"
+#include "asterfort/fnothm.h"
+#include "asterfort/jevech.h"
+#include "asterfort/posthm.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/refthm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/thmevc.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 ! =====================================================================

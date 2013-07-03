@@ -1,13 +1,13 @@
 subroutine porigy(nomte, e, rho, xnu, icdmat,&
                   klv, nl)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/pmfitx.h'
-    include 'asterfort/ptgy02.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jevech.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/ptgy02.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: icdmat
     character(len=*) :: nomte
     real(kind=8) :: e, rho, xnu, klv(*)

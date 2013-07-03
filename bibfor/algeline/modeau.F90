@@ -54,25 +54,25 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !                EAU AU REPOS)
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/bmocca.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extmod.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/prmama.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vphqrp.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/bmocca.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extmod.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/prmama.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vphqrp.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     character(len=19) :: melflu
     character(len=8) :: noma
     real(kind=8) :: geom(9), fsvr(7)

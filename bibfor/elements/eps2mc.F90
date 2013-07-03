@@ -41,11 +41,11 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: xyz(1), depl(1), eps2(1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)

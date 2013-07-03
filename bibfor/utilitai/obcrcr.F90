@@ -21,11 +21,11 @@ subroutine obcrcr(nomstr, nbparb, nbpari, nbparr, nbpark,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: nomstr
     integer :: nbparb, nbpari, nbparr, nbpark, nbparo
     character(len=24) :: parab(nbparb)

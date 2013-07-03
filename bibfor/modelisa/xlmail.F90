@@ -21,11 +21,11 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: fiss
     integer :: nmaen1, nmaen2, nmaen3, nmafon
     integer :: jmaen1, jmaen2, jmaen3, jmafon

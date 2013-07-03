@@ -24,10 +24,10 @@ subroutine cabrp1(kpi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
     logical :: axi
     integer :: kpi, ipoids, ipoid2, idfde, idfde2, ndim, regula(6), dimdef, ivf
     integer :: ivf2, nno, nnos, nnom, nddls, nddlm, dimuel

@@ -24,12 +24,12 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dgemm.h'
-    include 'blas/dgemv.h'
+#include "asterfort/assert.h"
+#include "asterfort/codere.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "blas/dgemm.h"
+#include "blas/dgemv.h"
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: option, compor(*)

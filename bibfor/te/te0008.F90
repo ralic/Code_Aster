@@ -18,17 +18,17 @@ subroutine te0008(option, nomte)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/bsigmc.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'blas/daxpy.h'
+#include "asterfort/assert.h"
+#include "asterfort/bsigmc.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "blas/daxpy.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------

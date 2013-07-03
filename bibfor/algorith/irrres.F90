@@ -3,17 +3,17 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
                   dy, r)
     implicit none
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsove.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsove.h"
     character(len=8) :: mod
     character(len=*) :: fami
     integer :: nmat, kpg, ksp

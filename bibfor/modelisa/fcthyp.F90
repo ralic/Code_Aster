@@ -1,8 +1,8 @@
 subroutine fcthyp(typfct, x, y)
     implicit none
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
     real(kind=8) :: x, y
     character(len=8) :: typfct
 !

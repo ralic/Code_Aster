@@ -1,23 +1,23 @@
 subroutine rcevol(typtab, nommat, symax, nbopt, option)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcev22.h'
-    include 'asterfort/rcevfa.h'
-    include 'asterfort/rcevo0.h'
-    include 'asterfort/rcevo1.h'
-    include 'asterfort/rcevo2.h'
-    include 'asterfort/rcevoa.h'
-    include 'asterfort/rcevod.h'
-    include 'asterfort/rcevom.h'
-    include 'asterfort/rcevse.h'
-    include 'asterfort/rcevsn.h'
-    include 'asterfort/rcevsp.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcev22.h"
+#include "asterfort/rcevfa.h"
+#include "asterfort/rcevo0.h"
+#include "asterfort/rcevo1.h"
+#include "asterfort/rcevo2.h"
+#include "asterfort/rcevoa.h"
+#include "asterfort/rcevod.h"
+#include "asterfort/rcevom.h"
+#include "asterfort/rcevse.h"
+#include "asterfort/rcevsn.h"
+#include "asterfort/rcevsp.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: nbopt
     real(kind=8) :: symax
     character(len=8) :: nommat

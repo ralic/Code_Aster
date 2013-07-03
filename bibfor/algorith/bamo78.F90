@@ -1,46 +1,46 @@
 subroutine bamo78(nomres, trange, typres)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesfus.h'
-    include 'asterfort/copmod.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdgeph.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecalc.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/mechti.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/meharm.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/rstran.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesfus.h"
+#include "asterfort/copmod.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdgeph.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecalc.h"
+#include "asterfort/mecara.h"
+#include "asterfort/mechti.h"
+#include "asterfort/megeom.h"
+#include "asterfort/meharm.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/rstran.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomres
     character(len=16) :: typres
     character(len=19) :: trange

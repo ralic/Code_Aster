@@ -41,13 +41,13 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm,&
 !         TOUTMS :  TENSEURS D'ORIENTATION
 !     OUT SEUIL  :  SEUIL  ELASTICITE
 !     ----------------------------------------------------------------
-    include 'asterfort/lcmmfe.h'
-    include 'asterfort/lcmmfi.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/lcmmfe.h"
+#include "asterfort/lcmmfi.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     integer :: nmat, nvi, nsfa, nsfv, iexp, nfs, nsg
     integer :: nbfsys, i, nuvi, ifa, nbsys, is
     integer :: nbcomm(nmat, 3), iret

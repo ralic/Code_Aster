@@ -29,39 +29,39 @@ subroutine op0051()
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvcohe.h'
-    include 'asterfort/rvgacc.h'
-    include 'asterfort/rvgarg.h'
-    include 'asterfort/rvgchf.h'
-    include 'asterfort/rvmima.h'
-    include 'asterfort/rvmoye.h'
-    include 'asterfort/rvouex.h'
-    include 'asterfort/rvpar0.h'
-    include 'asterfort/rvpost.h'
-    include 'asterfort/rvvsup.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvcohe.h"
+#include "asterfort/rvgacc.h"
+#include "asterfort/rvgarg.h"
+#include "asterfort/rvgchf.h"
+#include "asterfort/rvmima.h"
+#include "asterfort/rvmoye.h"
+#include "asterfort/rvouex.h"
+#include "asterfort/rvpar0.h"
+#include "asterfort/rvpost.h"
+#include "asterfort/rvvsup.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0051' )
 !

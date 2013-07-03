@@ -20,30 +20,30 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfacat.h'
-    include 'asterfort/cfaduc.h'
-    include 'asterfort/cfatmu.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/cffact.h'
-    include 'asterfort/cfgran.h'
-    include 'asterfort/cfimp2.h'
-    include 'asterfort/cfmajc.h'
-    include 'asterfort/cfpeti.h'
-    include 'asterfort/cfreso.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/elpiv1.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdsc3.h'
-    include 'asterfort/nmrvai.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfacat.h"
+#include "asterfort/cfaduc.h"
+#include "asterfort/cfatmu.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cffact.h"
+#include "asterfort/cfgran.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/cfmajc.h"
+#include "asterfort/cfpeti.h"
+#include "asterfort/cfreso.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/elpiv1.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdsc3.h"
+#include "asterfort/nmrvai.h"
+#include "blas/daxpy.h"
     character(len=24) :: sdstat
     character(len=8) :: noma
     character(len=24) :: defico, resoco

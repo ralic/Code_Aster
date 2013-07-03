@@ -18,17 +18,17 @@ subroutine precou(imod, typema)
 ! person_in_charge: nicolas.greffet at edf.fr
 !.======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/coeelt.h'
-    include 'asterfort/coeneu.h'
-    include 'asterfort/colelt.h'
-    include 'asterfort/colneu.h'
-    include 'asterfort/inigms.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jjmmaa.h'
+#include "jeveux.h"
+#include "asterfort/coeelt.h"
+#include "asterfort/coeneu.h"
+#include "asterfort/colelt.h"
+#include "asterfort/colneu.h"
+#include "asterfort/inigms.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jjmmaa.h"
     integer :: imod
     character(len=8) :: typema
 !

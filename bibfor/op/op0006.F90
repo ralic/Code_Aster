@@ -22,18 +22,18 @@ subroutine op0006()
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/afvarc.h'
-    include 'asterfort/cmtref.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rccomp.h'
-    include 'asterfort/rcmate.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/afvarc.h"
+#include "asterfort/cmtref.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rccomp.h"
+#include "asterfort/rcmate.h"
     character(len=8) :: chmat, nomail, nomode
     character(len=16) :: nomcmd, type
     integer :: iarg, ifm, n1, niv

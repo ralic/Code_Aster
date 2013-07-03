@@ -19,18 +19,18 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/r8inir.h"
     integer :: numins
     character(len=24) :: numedd
     character(len=19) :: sddyna, sddisc

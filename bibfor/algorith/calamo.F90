@@ -34,15 +34,15 @@ subroutine calamo(nomres, classe, basmod)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: vali(3)
 !
 !

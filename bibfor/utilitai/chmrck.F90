@@ -1,12 +1,12 @@
 subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/utfk16.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utfk16.h"
     character(len=8) :: chmat, nommat(*)
     character(len=16) :: nomrc
     integer :: nbmtrc

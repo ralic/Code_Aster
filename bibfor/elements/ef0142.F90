@@ -1,15 +1,15 @@
 subroutine ef0142(nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmfrig.h'
-    include 'asterfort/poefgr.h'
-    include 'asterfort/porigi.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rhoequ.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecma.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfrig.h"
+#include "asterfort/poefgr.h"
+#include "asterfort/porigi.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rhoequ.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecma.h"
     character(len=16) :: nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

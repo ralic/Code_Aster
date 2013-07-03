@@ -20,12 +20,12 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 ! ======================================================================
 ! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/irrnvi.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesr.h'
+#include "asterfort/assert.h"
+#include "asterfort/irrnvi.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesr.h"
     character(len=8) :: model
     character(len=3) :: matcst
     character(len=*) :: fami

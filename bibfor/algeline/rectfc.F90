@@ -1,7 +1,7 @@
 subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr,&
                   valpro, nvpro, resufi, resufr, nfreq)
     implicit   none
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     integer :: nbmode, nbvect, npivot, nblagr, nvpro, nfreq
     integer :: resufi(nfreq, *)
     complex(kind=8) :: omeshi, valpro(nvpro)

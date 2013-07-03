@@ -21,39 +21,39 @@ subroutine op0142()
 !      EN FONCTION D'UNE ABSCISSE CURVILIGNE.
 !     STOCKAGE DANS UN OBJET DE TYPE FONCTION
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/i2extf.h'
-    include 'asterfort/i2sens.h'
-    include 'asterfort/i2tgrm.h'
-    include 'asterfort/i2vois.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/ordonn.h'
-    include 'asterfort/prvite.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/getvem.h"
+#include "asterfort/i2extf.h"
+#include "asterfort/i2sens.h"
+#include "asterfort/i2tgrm.h"
+#include "asterfort/i2vois.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/ordonn.h"
+#include "asterfort/prvite.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: pnoe, ptch, ier
     character(len=2) :: prolgd
     character(len=4) :: interp(2)

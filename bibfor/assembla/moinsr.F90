@@ -1,10 +1,10 @@
 subroutine moinsr(j, n, idil, idiich, idsuiv,&
                   nosuiv, idip, noip, iilib, iimax)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
     integer :: j, n, idil, idiich, idsuiv, idip, iilib, iimax
     integer :: k, idebch, ii1, kil, kip
     character(len=*) :: nosuiv, noip

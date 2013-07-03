@@ -1,38 +1,38 @@
 subroutine te0516(option, nomte)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/bsigma.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jsd1ff.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmfdef.h'
-    include 'asterfort/pmffor.h'
-    include 'asterfort/pmfite.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/pmfmcf.h'
-    include 'asterfort/pmftgt.h'
-    include 'asterfort/porea1.h'
-    include 'asterfort/pouex7.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vdiff.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterfort/bsigma.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jsd1ff.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/matela.h"
+#include "asterfort/matrot.h"
+#include "asterfort/mavec.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfdef.h"
+#include "asterfort/pmffor.h"
+#include "asterfort/pmfite.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfmcf.h"
+#include "asterfort/pmftgt.h"
+#include "asterfort/porea1.h"
+#include "asterfort/pouex7.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vdiff.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

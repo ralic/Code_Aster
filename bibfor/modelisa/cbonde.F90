@@ -1,7 +1,7 @@
 subroutine cbonde(char, noma, ligrmo, fonree)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterfort/caonde.h'
+#include "asterc/getfac.h"
+#include "asterfort/caonde.h"
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrmo

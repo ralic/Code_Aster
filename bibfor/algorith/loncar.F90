@@ -1,10 +1,10 @@
 subroutine loncar(ndim, typma, coord, l)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ndim
     real(kind=8) :: coord(*), l
     character(len=8) :: typma

@@ -2,12 +2,12 @@ function bprime(nbmat, mater, parame, invar1, s,&
                 epssig)
 !
     implicit  none
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lglord.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lglord.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), invar1, s(6), epssig, bprime
 ! ======================================================================

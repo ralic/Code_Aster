@@ -21,7 +21,7 @@ function nbgrel(ligrlz)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/jelira.h'
+#include "asterfort/jelira.h"
     character(len=19) :: ligrel
     character(len=*) :: ligrlz
 !

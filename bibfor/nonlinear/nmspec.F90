@@ -25,18 +25,18 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
 !
 ! aslint: disable=W1504
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/affich.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcrpo.h'
-    include 'asterfort/nmflam.h'
-    include 'asterfort/nmimpx.h'
-    include 'asterfort/nmlesd.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/affich.h"
+#include "asterfort/assert.h"
+#include "asterfort/diinst.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcrpo.h"
+#include "asterfort/nmflam.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlesd.h"
+#include "asterfort/u2mess.h"
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=19) :: meelem(*)

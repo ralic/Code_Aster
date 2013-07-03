@@ -23,17 +23,17 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/vetrth.h'
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/resoud.h"
+#include "asterfort/vetrth.h"
     integer :: lonch
     real(kind=8) :: epsr, testi
     character(len=1) :: ci1, ci2

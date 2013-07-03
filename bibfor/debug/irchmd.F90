@@ -2,9 +2,9 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irchme.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/irchme.h"
     character(len=19) :: chanom
     character(len=*) :: partie, nochmd
 !

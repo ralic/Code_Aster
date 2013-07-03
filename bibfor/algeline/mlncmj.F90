@@ -25,8 +25,8 @@ subroutine mlncmj(nb, n, p, frontl, frontu,&
 !     NECESSITE  DES ARGUMENTS ENTIER INTEGER*4 REFUSES PAR ASTER
 !
     implicit none
-    include 'asterc/mlnump.h'
-    include 'blas/zgemm.h'
+#include "asterc/mlnump.h"
+#include "blas/zgemm.h"
     integer :: n, p, adper(*), restm, decal
     complex(kind=8) :: frontl(*), frontu(*), frnl(*), frnu(*)
     integer :: nmb

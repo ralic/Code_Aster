@@ -17,9 +17,9 @@ subroutine mefor0(nomo, chfor0, fonc)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/fozerv.h'
-    include 'asterfort/mecact.h'
+#include "jeveux.h"
+#include "asterfort/fozerv.h"
+#include "asterfort/mecact.h"
     character(len=8) :: nomo
     character(len=*) :: chfor0
 !

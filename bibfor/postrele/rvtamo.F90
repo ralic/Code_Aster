@@ -2,25 +2,25 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
                   nomtab, iocc, xnovar, ncheff, i1,&
                   ioc, isd)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/u2mess.h"
     integer :: nbcp, nbco, nbsp, iocc, i1, ioc, isd
     real(kind=8) :: t(*)
     character(len=16) :: ncheff

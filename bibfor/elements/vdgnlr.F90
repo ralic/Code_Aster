@@ -1,37 +1,37 @@
 subroutine vdgnlr(option, nomte)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/antisy.h'
-    include 'asterfort/btdbma.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/gdt.h'
-    include 'asterfort/hsaco.h'
-    include 'asterfort/jacbm1.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/jm1dn1.h'
-    include 'asterfort/jm1dn2.h'
-    include 'asterfort/jm1dn3.h'
-    include 'asterfort/matbmn.h'
-    include 'asterfort/matbmr.h'
-    include 'asterfort/matbsr.h'
-    include 'asterfort/matbsu.h'
-    include 'asterfort/matrc2.h'
-    include 'asterfort/moytpg.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rogllo.h'
-    include 'asterfort/tilbar.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
-    include 'asterfort/vectpe.h'
-    include 'asterfort/vectrn.h'
-    include 'asterfort/verifg.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/antisy.h"
+#include "asterfort/btdbma.h"
+#include "asterfort/btsig.h"
+#include "asterfort/gdt.h"
+#include "asterfort/hsaco.h"
+#include "asterfort/jacbm1.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/jm1dn1.h"
+#include "asterfort/jm1dn2.h"
+#include "asterfort/jm1dn3.h"
+#include "asterfort/matbmn.h"
+#include "asterfort/matbmr.h"
+#include "asterfort/matbsr.h"
+#include "asterfort/matbsu.h"
+#include "asterfort/matrc2.h"
+#include "asterfort/moytpg.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rogllo.h"
+#include "asterfort/tilbar.h"
+#include "asterfort/transp.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
+#include "asterfort/vectpe.h"
+#include "asterfort/vectrn.h"
+#include "asterfort/verifg.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

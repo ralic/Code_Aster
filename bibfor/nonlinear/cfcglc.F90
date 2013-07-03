@@ -20,12 +20,12 @@ subroutine cfcglc(ndim, neq, nesmax, resoco, iliai,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/caladu.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/caladu.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: iliai, jdecal
     integer :: ndim, neq, nesmax, nbddl

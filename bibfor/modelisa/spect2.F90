@@ -59,8 +59,8 @@ function spect2(a, b, xlc, vitn, rhoe,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/spect3.h'
+#include "jeveux.h"
+#include "asterfort/spect3.h"
     interface
     function f(xx, y, xlc, vitn, rhoe,&
                defm, nbp, im, jm)

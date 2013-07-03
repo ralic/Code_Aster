@@ -18,19 +18,19 @@ subroutine sh8rig(xetemp, para, re)
 !               ELEMENT SHB8
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/houxgb.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rloshb.h'
-    include 'asterfort/shaksg.h'
-    include 'asterfort/shakst.h'
-    include 'asterfort/shasbg.h'
-    include 'asterfort/shbbar.h'
-    include 'asterfort/shbksi.h'
-    include 'asterfort/shbrot.h'
-    include 'asterfort/shcalb.h'
-    include 'asterfort/shvrot.h'
+#include "jeveux.h"
+#include "asterfort/houxgb.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rloshb.h"
+#include "asterfort/shaksg.h"
+#include "asterfort/shakst.h"
+#include "asterfort/shasbg.h"
+#include "asterfort/shbbar.h"
+#include "asterfort/shbksi.h"
+#include "asterfort/shbrot.h"
+#include "asterfort/shcalb.h"
+#include "asterfort/shvrot.h"
     integer :: irdc
     real(kind=8) :: eyg(5), para(11)
     real(kind=8) :: xe(24), re(24, 24)

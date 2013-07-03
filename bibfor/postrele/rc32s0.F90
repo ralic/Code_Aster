@@ -1,9 +1,9 @@
 subroutine rc32s0(option, mm, pr, mse, sigun,&
                   nbinst, sth, snp)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rctres.h'
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rctres.h"
     integer :: nbinst
     real(kind=8) :: mm(*), pr, mse(*), sigun(*), sth(6*nbinst), snp
     character(len=4) :: option

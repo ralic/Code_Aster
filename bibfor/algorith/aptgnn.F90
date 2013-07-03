@@ -20,27 +20,27 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/apatta.h'
-    include 'asterfort/apninv.h'
-    include 'asterfort/apnndm.h'
-    include 'asterfort/apnumm.h'
-    include 'asterfort/apnumn.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmmron.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmtann.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8prem.h"
+#include "asterfort/apatta.h"
+#include "asterfort/apninv.h"
+#include "asterfort/apnndm.h"
+#include "asterfort/apnumm.h"
+#include "asterfort/apnumn.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesk.h"
+#include "blas/dcopy.h"
     character(len=19) :: sdappa
     character(len=8) :: noma
     character(len=24) :: defico

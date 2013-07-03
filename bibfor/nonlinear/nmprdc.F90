@@ -20,19 +20,19 @@ subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsinch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vtcopy.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsinch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vtcopy.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=16) :: method(*)
     character(len=19) :: depmoi, depest
     character(len=24) :: numedd

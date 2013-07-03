@@ -1,9 +1,9 @@
 subroutine posthm(option, modint, jgano, ncmp, nvim,&
                   vpg, vno)
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/ppgan2.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/ppgan2.h"
     integer :: jgano, ncmp, nvim
     real(kind=8) :: vno(*), vpg(*)
     character(len=3) :: modint

@@ -3,16 +3,16 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
                   lmasse, ldynam, solveu, lamor, lc,&
                   impr, ifapm)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/apchar.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8pi.h"
+#include "asterfort/apchar.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     integer :: nbtetc, nk, pivot2, lraide, lmasse, ldynam, lamor, ifapm
     real(kind=8) :: rayonc
     complex(kind=8) :: centrc

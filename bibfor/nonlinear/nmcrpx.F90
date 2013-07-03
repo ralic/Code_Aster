@@ -19,14 +19,14 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcrpa.h'
-    include 'asterfort/nmcrpp.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcrpa.h"
+#include "asterfort/nmcrpp.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: motfaz, motpaz
     character(len=1) :: base
     integer :: iocc

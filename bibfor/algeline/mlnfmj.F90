@@ -21,8 +21,8 @@ subroutine mlnfmj(nb, n, p, frontl, frontu,&
 !
     implicit none
 !
-    include 'asterc/mlnump.h'
-    include 'blas/dgemm.h'
+#include "asterc/mlnump.h"
+#include "blas/dgemm.h"
     integer :: n, p, adper(*), restm, decal
     real(kind=8) :: frontl(*), frontu(*), frnl(*), frnu(*)
     integer :: nmb

@@ -57,10 +57,10 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 !     ETAFD                       MATERD(8,2)          MATERF(8,2)
 !     ----------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/burnvi.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/burnvi.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, imat, nmat, ndt, ndi, nr, nvi
     integer :: cerr(14), ii
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

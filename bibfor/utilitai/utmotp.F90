@@ -24,10 +24,10 @@ function utmotp(fonree, motfac, iocc, motcle)
 !
     implicit none
     integer :: utmotp
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/u2mess.h"
     character(len=4) :: fonree
     character(len=*) :: motfac, motcle
     character(len=8) :: kbid

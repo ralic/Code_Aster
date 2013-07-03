@@ -38,10 +38,10 @@ subroutine crirup(fami, imat, ndim, npg, lgpg,&
 !    INSTAP : INSTANT DE CALCUL
 !-------------------------------------------------------------------
 ! DECLALRATION DES VARIABLES UTILES
-    include 'asterc/r8prem.h'
-    include 'asterfort/fgequi.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterc/r8prem.h"
+#include "asterfort/fgequi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: npg, kpg, i, ndim, lgpg, imat, ivp, cerr
 !
     real(kind=8) :: sigmoy(6), sigp(2*ndim, npg), equi(20), sc, prin1

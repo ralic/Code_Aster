@@ -1,22 +1,22 @@
 subroutine drz13d(lisnoz, lonlis, chargz, typlaz, lisrez)
     implicit none
 !
-    include 'asterc/getres.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/afrela.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/indik8.h"
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: lonlis
     character(len=*) :: lisnoz, chargz, typlaz, lisrez
 !
@@ -60,7 +60,7 @@ subroutine drz13d(lisnoz, lonlis, chargz, typlaz, lisrez)
 !     LISREZ [K19]   : NOM DE LA SD LISTE DE RELATIONS
 !
 ! --- ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nmocl
     parameter     (nmocl=300)

@@ -24,13 +24,13 @@ subroutine mmstaf(noma, ndim, chdepd, coefaf, lpenaf,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mcopco.h'
-    include 'asterfort/mmvalp.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/matini.h"
+#include "asterfort/mcopco.h"
+#include "asterfort/mmvalp.h"
     character(len=8) :: noma, aliase
     integer :: ndim, nne
     real(kind=8) :: ksipc1, ksipc2

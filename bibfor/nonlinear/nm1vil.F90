@@ -23,13 +23,13 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/granac.h'
-    include 'asterfort/nmasse.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/granac.h"
+#include "asterfort/nmasse.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     integer :: icdmat, kpg, ksp, iret, nbvalc
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap

@@ -20,15 +20,15 @@ subroutine rvechd(dim, epsi, ssch19, nbcp, nbco,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rvchlo.h'
-    include 'asterfort/rvfcom.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rvchlo.h"
+#include "asterfort/rvfcom.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ssch19
     character(len=2) :: dim
     integer :: ma1(*), ma2(*), for(*), fex(*), n, nbcp, ptadr

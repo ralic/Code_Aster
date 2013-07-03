@@ -17,32 +17,32 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/btkb.h'
-    include 'asterfort/epseff.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/matrkb.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/trndgl.h'
-    include 'asterfort/trnflg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vexpan.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/btkb.h"
+#include "asterfort/epseff.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/matrkb.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/trndgl.h"
+#include "asterfort/trnflg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vexpan.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: jnbspi
     integer :: valret(26)
     character(len=8) :: nomres(26), typmod(2)

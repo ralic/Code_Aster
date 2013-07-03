@@ -20,25 +20,25 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/inical.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/nmvcd2.h'
-    include 'asterfort/nmvcex.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/xajcin.h'
+#include "jeveux.h"
+#include "asterfort/alchml.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/memare.h"
+#include "asterfort/nmvcd2.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/reajre.h"
+#include "asterfort/xajcin.h"
     character(len=*) :: modelz, vecelz
     character(len=24) :: mate, comref, carele, compor
     character(len=19) :: comval

@@ -1,7 +1,7 @@
 subroutine i3tstf(k, f, desc, desctm, conexk,&
                   coordo, gauche, epsi)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: k, f, desc(*), desctm(*), conexk(*)
     real(kind=8) :: coordo(*), epsi
     logical :: gauche

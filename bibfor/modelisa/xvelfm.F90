@@ -18,12 +18,12 @@ subroutine xvelfm(nfiss, fiss, modx)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/xvfimo.h'
+#include "jeveux.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/xvfimo.h"
     integer :: nfiss
     character(len=8) :: fiss(nfiss), modx
 !

@@ -19,9 +19,9 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! aslint: disable=
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jxdeps.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jxdeps.h"
+#include "asterfort/u2mess.h"
     integer :: itab(*), lty1, lon1, jadm, jitab
     logical :: ldeps
     character(len=*) :: gen1

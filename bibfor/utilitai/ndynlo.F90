@@ -20,12 +20,12 @@ function ndynlo(sddyna, chainz)
 !
     implicit none
     logical :: ndynlo
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynin.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynin.h"
     character(len=19) :: sddyna
     character(len=*) :: chainz
 !

@@ -19,14 +19,14 @@ subroutine te0206(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/gedisc.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmfi3d.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/elref4.h"
+#include "asterfort/gedisc.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmfi3d.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: nomte, option
 !
 ! ----------------------------------------------------------------------

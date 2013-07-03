@@ -19,8 +19,8 @@ subroutine nmdep0(oper, solalg)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/nmchso.h'
+#include "asterfort/assert.h"
+#include "asterfort/nmchso.h"
     character(len=3) :: oper
     character(len=19) :: solalg(*)
 !

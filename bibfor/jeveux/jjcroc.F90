@@ -17,11 +17,11 @@ subroutine jjcroc(knat, icre)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjcodn.h'
-    include 'asterfort/jjprem.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjcodn.h"
+#include "asterfort/jjprem.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     integer :: icre
     character(len=8) :: knat
 ! ----------------------------------------------------------------------

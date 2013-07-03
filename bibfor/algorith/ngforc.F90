@@ -19,7 +19,7 @@ subroutine ngforc(nddl, neps, npg, w, b,&
 ! ======================================================================
     implicit none
 !
-    include 'blas/dgemv.h'
+#include "blas/dgemv.h"
     integer :: nddl, neps, npg
     real(kind=8) :: w(0:npg-1), ni2ldc(0:neps-1), b(neps*npg*nddl)
     real(kind=8) :: sigmam(0:neps*npg-1), fint(nddl)

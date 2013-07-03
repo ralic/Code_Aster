@@ -1,15 +1,15 @@
 subroutine w039c3(carele, modele, ifi, form, titre)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/carelo.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/irceme.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/assert.h"
+#include "asterfort/carelo.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/irceme.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
     integer :: ifi
     character(len=8) :: carele, modele
     character(len=80) :: titre

@@ -36,10 +36,10 @@ function lcroy1()
 ! ----------------------------------------------------------------------
 !  COMMON LOI DE COMPORTEMENT ROUSSELIER
 !
-    include 'asterfort/lcrofg.h'
-    include 'asterfort/lcroty.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcrofg.h"
+#include "asterfort/lcroty.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/u2mess.h"
     integer :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi

@@ -18,10 +18,10 @@ subroutine nmdire(noeu1, noeu2, ndim, cnsln, grln,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/provec.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/provec.h"
     integer :: noeu1, noeu2, ndim
     character(len=19) :: cnsln, grln, grlt
     character(len=8) :: compo

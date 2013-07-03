@@ -19,8 +19,8 @@ subroutine parti0(nbvec, tlivec, partit)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: tlivec(*), partit
     integer :: nbvec
 ! ----------------------------------------------------------------------

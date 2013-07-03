@@ -19,11 +19,11 @@ subroutine nmfeti(numedd, ifm, lfeti, nivmpi, lfetip)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     logical :: lfeti, lfetip
     integer :: nivmpi
     integer :: ifm

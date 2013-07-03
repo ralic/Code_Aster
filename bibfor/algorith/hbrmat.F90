@@ -19,8 +19,8 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
 ! ======================================================================
 ! ======================================================================
     implicit     none
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, nr, imat, nbmat
     real(kind=8) :: materf(nbmat, 2), materd(nbmat, 2), tempd
     character(len=3) :: matcst

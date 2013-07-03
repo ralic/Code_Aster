@@ -21,17 +21,17 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmcrar.h'
-    include 'asterfort/nmcrdd.h'
-    include 'asterfort/nmcrli.h'
-    include 'asterfort/nmcrob.h'
-    include 'asterfort/nmcrsu.h'
-    include 'asterfort/pascom.h'
-    include 'asterfort/pascou.h'
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmcrar.h"
+#include "asterfort/nmcrdd.h"
+#include "asterfort/nmcrli.h"
+#include "asterfort/nmcrob.h"
+#include "asterfort/nmcrsu.h"
+#include "asterfort/pascom.h"
+#include "asterfort/pascou.h"
     real(kind=8) :: instin, parcri(*)
     character(len=8) :: result, noma, nomo
     character(len=19) :: sddisc, sddyna, sdobse, solveu

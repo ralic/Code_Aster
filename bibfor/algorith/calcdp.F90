@@ -17,8 +17,8 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/calcfp.h'
-    include 'asterfort/zeroco.h'
+#include "asterfort/calcfp.h"
+#include "asterfort/zeroco.h"
     real(kind=8) :: seuil, dt, rprim, mutrbe, crit(3)
     real(kind=8) :: sigm0, epsi0, coefm, dp
 !-------------------------------------------------------------

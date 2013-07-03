@@ -18,18 +18,18 @@ subroutine appcrs(kptsc, lmd)
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/crsmsp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ldsp1.h'
-    include 'asterfort/ldsp2.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/crsmsp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ldsp1.h"
+#include "asterfort/ldsp2.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/u2mess.h"
     integer :: kptsc
     logical :: lmd
 !----------------------------------------------------------------

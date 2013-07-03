@@ -1,10 +1,10 @@
 subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
                   alphaa, alphab, nbth, iocs, sn6)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
     integer :: nbm, adrm(*), ipt, nbth, iocs
     real(kind=8) :: sn3, sn4, alphaa, alphab, sn6
 !     ------------------------------------------------------------------

@@ -22,22 +22,22 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/caatdb.h'
-    include 'asterfort/calcdq.h'
-    include 'asterfort/cast3d.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/invjac.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/caatdb.h"
+#include "asterfort/calcdq.h"
+#include "asterfort/cast3d.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elref4.h"
+#include "asterfort/invjac.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/matini.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: nno, imate, lgpg, codret, nbpg1
     integer :: ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2

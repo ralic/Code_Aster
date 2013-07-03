@@ -1,29 +1,29 @@
 subroutine te0510(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcface.h'
-    include 'asterfort/xcfaq2.h'
-    include 'asterfort/xxmmvd.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/reeref.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcface.h"
+#include "asterfort/xcfaq2.h"
+#include "asterfort/xxmmvd.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

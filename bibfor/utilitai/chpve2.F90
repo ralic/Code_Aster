@@ -29,11 +29,11 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
     integer :: ier, nbtyp
     character(len=*) :: tabtyp(nbtyp), nomch
 !

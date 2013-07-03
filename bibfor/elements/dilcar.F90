@@ -20,9 +20,9 @@ subroutine dilcar(option, icompo, icontm, ideplm, ideplp,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterc/ismaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
+#include "asterc/ismaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
     integer :: icompo, icontm, ideplm, ideplp, igeom, imate, jcret, idefo
     integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip
     character(len=16) :: option

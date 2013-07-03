@@ -1,7 +1,7 @@
 subroutine cbflnl(char, noma, ligrmo, fonree)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterfort/caflnl.h'
+#include "asterc/getfac.h"
+#include "asterfort/caflnl.h"
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrmo

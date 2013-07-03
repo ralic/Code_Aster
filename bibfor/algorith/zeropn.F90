@@ -19,10 +19,10 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
 ! =====================================================================
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/vphqrp.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/vphqrp.h"
     integer :: degre
     real(kind=8) :: ai(degre), racine(2*degre)
     character(len=1) :: kstop

@@ -19,13 +19,13 @@ subroutine mmappa(loptin, noma, numedd, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apcalc.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmapre.h'
-    include 'asterfort/mmpoin.h'
+#include "jeveux.h"
+#include "asterfort/apcalc.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmapre.h"
+#include "asterfort/mmpoin.h"
     logical :: loptin
     character(len=8) :: noma
     character(len=24) :: numedd

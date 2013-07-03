@@ -43,17 +43,17 @@ subroutine fetfiv(nbsd, nbi, vd1, vd2, vdo,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetrex.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rltfr8.h'
-    include 'blas/daxpy.h'
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetrex.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rltfr8.h"
+#include "blas/daxpy.h"
     integer :: nbsd, nbi, vddl(nbsd), vsdf(nbsd), irex, ifiv, rang, nbproc
     real(kind=8) :: vd1(nbi), vd2(nbi), vdo(nbi)
     character(len=19) :: matas, sdfeti

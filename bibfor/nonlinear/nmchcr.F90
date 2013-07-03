@@ -59,11 +59,11 @@ function nmchcr(dp)
 !    F              OUT   R       VALEUR DU CRITERE DE PLASTICITE
 !                                 POUR LA VALEUR DP
 !
-    include 'asterc/r8miem.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterc/r8miem.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     integer :: ndimsi, nbvar, visc, memo, i, idelta
     real(kind=8) :: nmchcr, dp, critme, dq, dksi(6), gq
     real(kind=8) :: epspp(6), mat(18), pm, sigedv(6), alfam(6), deuxmu

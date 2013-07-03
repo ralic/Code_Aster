@@ -58,15 +58,15 @@ subroutine lcplnf(loi, vind, nbcomm, nmat, cpmono,&
 !  OUT
 !     VINF   :  VARIABLES INTERNES A T+DT
 ! ----------------------------------------------------------------
-    include 'asterfort/burlnf.h'
-    include 'asterfort/hujlnf.h'
-    include 'asterfort/irrlnf.h'
-    include 'asterfort/lcdpec.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lkilnf.h'
+#include "asterfort/burlnf.h"
+#include "asterfort/hujlnf.h"
+#include "asterfort/irrlnf.h"
+#include "asterfort/lcdpec.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lkilnf.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), iter, itmax, nr, codret
     integer :: nfs, nsg, indi(7), i
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), vins(nvi), timed, timef

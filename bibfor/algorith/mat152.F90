@@ -36,17 +36,17 @@ subroutine mat152(option, model, moint, nocham, ivalk,&
 ! OUT : K19 : MAX,MAY,MAZ : NOMS DES MATRICES POUR LE CALCUL DE MASSE
 ! OUT : K14 : NUM : NUMEROTATION DES DDLS THERMIQUES D 'INTERFACE
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/ca2mam.h'
-    include 'asterfort/calmaa.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getvid.h"
+#include "asterfort/ca2mam.h"
+#include "asterfort/calmaa.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/wkvect.h"
     integer :: nbmo, imode, imade, iret
     integer :: ivalk
     integer :: n5, n6, n7

@@ -31,7 +31,7 @@ function lexseg(connex, typmai, nbrma, n1, n2)
 ! IN : N1     : INTEGER , NUMERO DU NOEUD ORIGINE
 ! IN : N2     : INTEGER , NUMERO DU NOEUD EXTREMITE
 !-----------------------------------------------------------------------
-    include 'asterfort/i2extf.h'
+#include "asterfort/i2extf.h"
     character(len=24) :: connex, typmai
     integer :: nbrma, n1, n2
 !-----------------------------------------------------------------------

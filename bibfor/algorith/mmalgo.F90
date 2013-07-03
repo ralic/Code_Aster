@@ -21,7 +21,7 @@ subroutine mmalgo(indcoi, lvites, lglini, jeu, jeuvit,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mmstac.h'
+#include "asterfort/mmstac.h"
     integer :: indcoi, indcon, ctcsta
     logical :: lvites, mmcvca, lglini, scotch
     real(kind=8) :: jeu, jeuvit, lambdc, coefac

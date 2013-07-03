@@ -1,22 +1,22 @@
 subroutine iredmi(macr)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/iredm1.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8pi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/iredm1.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: macr
 !     ------------------------------------------------------------------
 ! ======================================================================

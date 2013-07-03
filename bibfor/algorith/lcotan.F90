@@ -74,11 +74,11 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !        DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !        CODRET  CODE RETOUR =0 OK, =1 => REDECOUPAGE DU PAS DE TEMPS
 !
-    include 'asterfort/burjpl.h'
-    include 'asterfort/lchbvp.h'
-    include 'asterfort/lcjela.h'
-    include 'asterfort/lcjpla.h'
-    include 'asterfort/lcjplc.h'
+#include "asterfort/burjpl.h"
+#include "asterfort/lchbvp.h"
+#include "asterfort/lcjela.h"
+#include "asterfort/lcjpla.h"
+#include "asterfort/lcjplc.h"
     integer :: nmat, nsg, nfs, nbcomm(nmat, 3)
 !
     character(len=*) :: fami

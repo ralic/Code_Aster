@@ -1,22 +1,22 @@
 subroutine te0539(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nmtstm.h'
-    include 'asterfort/rcangm.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/xnmel.h'
-    include 'asterfort/xnmgr.h'
-    include 'asterfort/xnmpl.h'
-    include 'asterfort/xteddl.h'
-    include 'asterfort/xteini.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmtstm.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/xnmel.h"
+#include "asterfort/xnmgr.h"
+#include "asterfort/xnmpl.h"
+#include "asterfort/xteddl.h"
+#include "asterfort/xteini.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

@@ -21,8 +21,8 @@ subroutine mmelem(nomte, ndim, nddl, typmae, nne,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/lteatt.h'
+#include "asterfort/assert.h"
+#include "asterfort/lteatt.h"
     integer :: ndim, nddl, nne, nnm, nnl
     integer :: nbcps, nbdm
     character(len=8) :: typmae, typmam

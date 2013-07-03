@@ -1,10 +1,10 @@
 subroutine cgverc(resu, nexci)
     implicit none
 !
-    include 'asterc/gettco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/gettco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: nexci
     character(len=8) :: resu
 !

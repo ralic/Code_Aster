@@ -33,22 +33,22 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/conint.h'
-    include 'asterfort/ddllag.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/modint.h'
-    include 'asterfort/mstget.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/conint.h"
+#include "asterfort/ddllag.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/modint.h"
+#include "asterfort/mstget.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, ierd, neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
     integer :: linddl, lddld, nbnoeu, lprno, nnoint, ipos1, ipos2, numno, nbcmpm
     integer :: nbec, nddlin, lnoint, connec, lconnc, sizeco, lintrf, linlag

@@ -18,11 +18,11 @@ subroutine jxlir1(ic, caralu)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterc/closdr.h'
-    include 'asterc/opendr.h'
-    include 'asterc/readdr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/closdr.h"
+#include "asterc/opendr.h"
+#include "asterc/readdr.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
     integer :: ic, caralu(*)
 ! ----------------------------------------------------------------------
 ! RELECTURE DU PREMIER ENREGISTREMENT D UNE BASE JEVEUX

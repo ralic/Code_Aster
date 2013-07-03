@@ -20,13 +20,13 @@ subroutine ve0124()
 !     COMMANDE: CREA_RESU
 !     VERIFICATION DE NIVEAU 1
 ! ----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: k8bid, resu
     character(len=16) :: type, oper, typres
     integer :: iarg

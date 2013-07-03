@@ -20,7 +20,7 @@ subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: nb1
 !
     integer :: intsn

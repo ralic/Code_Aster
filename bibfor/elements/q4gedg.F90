@@ -1,13 +1,13 @@
 subroutine q4gedg(xyzl, option, pgl, depl, edgl)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/q4gbc.h'
+#include "jeveux.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/q4gbc.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), edgl(*)
     character(len=16) :: option
 ! ======================================================================

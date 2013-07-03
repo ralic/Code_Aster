@@ -22,42 +22,42 @@ subroutine pofaun()
 !              CHARGEMENT PUREMENT UNIAXIAL
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/fgcoke.h'
-    include 'asterfort/fgcorr.h'
-    include 'asterfort/fgcota.h'
-    include 'asterfort/fgdoba.h'
-    include 'asterfort/fgdohs.h'
-    include 'asterfort/fgdoma.h'
-    include 'asterfort/fgdomm.h'
-    include 'asterfort/fgdowh.h'
-    include 'asterfort/fgordo.h'
-    include 'asterfort/fgpeak.h'
-    include 'asterfort/fgpic2.h'
-    include 'asterfort/fgrain.h'
-    include 'asterfort/fgrccm.h'
-    include 'asterfort/fgrmax.h'
-    include 'asterfort/fgtahe.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/fgcoke.h"
+#include "asterfort/fgcorr.h"
+#include "asterfort/fgcota.h"
+#include "asterfort/fgdoba.h"
+#include "asterfort/fgdohs.h"
+#include "asterfort/fgdoma.h"
+#include "asterfort/fgdomm.h"
+#include "asterfort/fgdowh.h"
+#include "asterfort/fgordo.h"
+#include "asterfort/fgpeak.h"
+#include "asterfort/fgpic2.h"
+#include "asterfort/fgrain.h"
+#include "asterfort/fgrccm.h"
+#include "asterfort/fgrmax.h"
+#include "asterfort/fgtahe.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
     integer :: ivke, ivcorr, ivpoin, nbpoin, ivmax, ivmin, ivtrav
     integer :: ibid, intrav, ivpics, nbpics, nbcycl, nbpar, ivdome

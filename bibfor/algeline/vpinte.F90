@@ -3,7 +3,7 @@ subroutine vpinte(option, nfreq, valp, det, idet,&
                   lmasse, ldynam, resufi, resufr, nfreqb,&
                   solveu)
     implicit none
-    include 'asterfort/vpstur.h'
+#include "asterfort/vpstur.h"
     character(len=16) :: option
     integer :: idet(*), ieme(*), npas(*)
     real(kind=8) :: tolf

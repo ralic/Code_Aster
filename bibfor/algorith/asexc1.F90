@@ -1,20 +1,20 @@
 subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                   corfre, ndir, valspe, asyspe)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8depi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     integer :: nbocc, nbmode, ndir(*)
     real(kind=8) :: parmod(nbmode, *), amort(*), valspe(3, *), asyspe(*)
     character(len=*) :: motfac

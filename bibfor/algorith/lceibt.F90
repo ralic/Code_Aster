@@ -17,7 +17,7 @@ subroutine lceibt(ndimsi, eps, epsf, dep, invn,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     real(kind=8) :: eps(6), epsf(6), dep(6, 12), dsidep(6, 6), invn(6, 6)
     real(kind=8) :: cn(6, 6)
     integer :: ndimsi

@@ -49,12 +49,12 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !                   = 3 REDECOUPAGE DU PAS DE TEMPS
 !          BNEWS  : INDICATEUR LIE A LA TRACTION MAJ
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/hujpxd.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrvn.h'
-    include 'asterfort/lcsovn.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/hujpxd.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrvn.h"
+#include "asterfort/lcsovn.h"
     real(kind=8) :: mater(nmat, 2), vind(nvi), vinf(nvi), vins(nvi)
     real(kind=8) :: yd(nr), dy(nr), r(nr), toler, ye(nr)
     integer :: nvi, nr, indi(7), iter, iret, itmax, intg, nmat

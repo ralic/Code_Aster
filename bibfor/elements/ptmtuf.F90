@@ -2,8 +2,8 @@ subroutine ptmtuf(m, rho, e, rof, ce,&
                   a, ai, xl, xiy, xiz,&
                   g, alfay, alfaz, ey, ez)
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: m(*)
     real(kind=8) :: rho, e, rof, ce, a, ai, xl, xiy, xiz, g, alfay, alfaz, ey
     real(kind=8) :: ez

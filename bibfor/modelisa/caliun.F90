@@ -19,18 +19,18 @@ subroutine caliun(charz, nomaz, nomoz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/caraun.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/creaun.h'
-    include 'asterfort/elimun.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/listun.h'
-    include 'asterfort/surfun.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/caraun.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/creaun.h"
+#include "asterfort/elimun.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/listun.h"
+#include "asterfort/surfun.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: charz
     character(len=*) :: nomaz
     character(len=*) :: nomoz

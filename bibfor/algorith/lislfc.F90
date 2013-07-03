@@ -19,18 +19,18 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/focstc.h'
-    include 'asterfort/focste.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/focstc.h"
+#include "asterfort/focste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     logical :: lfcplx, lacce
     integer :: ichar, indic
     integer :: iexcit, nexci

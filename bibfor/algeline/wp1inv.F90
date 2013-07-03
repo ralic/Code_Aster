@@ -2,22 +2,22 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
                   mxresf, nbfreq, neq, resufi, resufr,&
                   resufk, vecpro, solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/detrsd.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/ggubsc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mcmult.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/detrsd.h"
+#include "asterfort/freqom.h"
+#include "asterfort/ggubsc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mcmult.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/wkvect.h"
     integer :: lmasse, lamor, lraide, nitf, nbfreq, neq
     integer :: resufi(mxresf, *)
     complex(kind=8) :: vecpro(neq, *)

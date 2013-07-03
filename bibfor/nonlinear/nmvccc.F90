@@ -21,13 +21,13 @@ subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reajre.h'
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reajre.h"
     integer :: nbout, nbin
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)

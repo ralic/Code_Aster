@@ -3,39 +3,39 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                   acces, mfich, noma, ligrez, nbvari)
 ! aslint: disable=W1501
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/crsdfi.h'
-    include 'asterfort/decod1.h'
-    include 'asterfort/decod2.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/iradhs.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lrrefd.h'
-    include 'asterfort/numeok.h'
-    include 'asterfort/rsexpa.h'
-    include 'asterfort/rsutc2.h'
-    include 'asterfort/stock.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/codent.h"
+#include "asterfort/crsdfi.h"
+#include "asterfort/decod1.h"
+#include "asterfort/decod2.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/iradhs.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lrrefd.h"
+#include "asterfort/numeok.h"
+#include "asterfort/rsexpa.h"
+#include "asterfort/rsutc2.h"
+#include "asterfort/stock.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: typres, linoch(*), nomcmd
     character(len=8) :: resu
     character(len=*) :: listrz, listiz, crit, acces

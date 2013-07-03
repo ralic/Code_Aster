@@ -22,24 +22,24 @@ subroutine merimo(base, modele, carele, mate, comref,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/dbgcal.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/inical.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/merimp.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmiret.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/redetr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/inical.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/merimp.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmiret.h"
+#include "asterfort/reajre.h"
+#include "asterfort/redetr.h"
     integer :: iterat
     logical :: tabret(0:10)
     integer :: fonact(*)

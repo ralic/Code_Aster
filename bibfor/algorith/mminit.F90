@@ -19,20 +19,20 @@ subroutine mminit(noma, defico, resoco, sddyna, valinc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/misazl.h'
-    include 'asterfort/mmcycz.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/xmiszl.h'
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/misazl.h"
+#include "asterfort/mmcycz.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/xmiszl.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)

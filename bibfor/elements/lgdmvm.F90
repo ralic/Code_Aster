@@ -20,16 +20,16 @@ subroutine lgdmvm(imate, compor, epsm, deps, vim,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crgdm.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lcgldm.h'
-    include 'asterfort/nmcine.h'
-    include 'asterfort/nmisot.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rrlds.h'
-    include 'asterfort/trlds.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/crgdm.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lcgldm.h"
+#include "asterfort/nmcine.h"
+#include "asterfort/nmisot.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rrlds.h"
+#include "asterfort/trlds.h"
     character(len=16) :: option, compor
     real(kind=8) :: epsm(6), deps(6), vim(*), ep
     real(kind=8) :: r8bid(6), crit(*)

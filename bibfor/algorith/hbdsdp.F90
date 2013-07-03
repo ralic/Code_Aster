@@ -19,8 +19,8 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterfort/cadldp.h'
-    include 'asterfort/lcprsv.h'
+#include "asterfort/cadldp.h"
+#include "asterfort/lcprsv.h"
     integer :: nbmat
     real(kind=8) :: se(6), dg, etap, dsdsip(6)
     real(kind=8) :: vp(3), sigeqe, parame(4), derive(5), sig3

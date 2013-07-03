@@ -19,8 +19,8 @@ subroutine premla(neq, diag, col, lt, nrl,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/calajt.h'
-    include 'asterfort/infniv.h'
+#include "asterfort/calajt.h"
+#include "asterfort/infniv.h"
     integer :: neq, diag(0:neq), col(*), deb(neq)
     integer :: vois(*), suit(*), lt, nrl, rl(4, nrl), ier
 !     VARIABLES LOCALES

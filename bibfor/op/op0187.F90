@@ -25,25 +25,25 @@ subroutine op0187()
 !           DES MAILLES FISSUREES
 !     =================================================================
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xpocrf.h'
-    include 'asterfort/xpodim.h'
-    include 'asterfort/xpofon.h'
-    include 'asterfort/xpoini.h'
-    include 'asterfort/xpomac.h'
-    include 'asterfort/xpomax.h'
-    include 'asterfort/xposep.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/titre.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xpocrf.h"
+#include "asterfort/xpodim.h"
+#include "asterfort/xpofon.h"
+#include "asterfort/xpoini.h"
+#include "asterfort/xpomac.h"
+#include "asterfort/xpomax.h"
+#include "asterfort/xposep.h"
     integer :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv
     integer :: nbgma2, jnivgr, nftot, mftot, nfcomf, ngfon
     character(len=2) :: prefno(4)

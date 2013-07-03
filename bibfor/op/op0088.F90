@@ -18,17 +18,17 @@ subroutine op0088()
     implicit none
 !     COMMANDE:  DEFI_MAILLAGE
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/ssdmdm.h'
-    include 'asterfort/ssdmdn.h'
-    include 'asterfort/ssdmgn.h'
-    include 'asterfort/ssdmrc.h'
-    include 'asterfort/ssdmrg.h'
-    include 'asterfort/ssdmrm.h'
-    include 'asterfort/ssdmte.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/ssdmdm.h"
+#include "asterfort/ssdmdn.h"
+#include "asterfort/ssdmgn.h"
+#include "asterfort/ssdmrc.h"
+#include "asterfort/ssdmrg.h"
+#include "asterfort/ssdmrm.h"
+#include "asterfort/ssdmte.h"
     character(len=8) :: nomu
     character(len=16) :: kbi1, kbi2
 !

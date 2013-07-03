@@ -19,10 +19,10 @@ function knindi(long, kn, lkn, nbkn)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indk16.h'
-    include 'asterfort/indk24.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/indk16.h"
+#include "asterfort/indk24.h"
     integer :: nbkn, knindi, long
     character(len=*) :: kn, lkn(*)
 ! ----------------------------------------------------------------------

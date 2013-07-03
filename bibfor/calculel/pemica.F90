@@ -1,24 +1,24 @@
 subroutine pemica(champ, long, vr, nbmail, nummai,&
                   orig, iorig, icage)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8rddg.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/orien2.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/assert.h"
+#include "asterfort/celver.h"
+#include "asterfort/digdel.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/orien2.h"
+#include "asterfort/scalai.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: champ
     integer :: long, nbmail, nummai(*), iorig
     real(kind=8) :: vr(*), orig(3)

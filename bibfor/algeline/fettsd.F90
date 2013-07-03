@@ -62,24 +62,24 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetrex.h'
-    include 'asterfort/fetsca.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/daxpy.h'
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetrex.h"
+#include "asterfort/fetsca.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
     integer :: nbi, nbsd, vddl(nbsd), irex, nbi2, ifeti, ifm, itps, nivmpi, rang
     integer :: option
     character(len=19) :: sdfeti, chsol

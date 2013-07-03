@@ -3,24 +3,24 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
                   codret)
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/dervar.h'
-    include 'asterfort/gdev.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lglind.h'
-    include 'asterfort/lglinn.h'
-    include 'asterfort/solrei.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/varecr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/dervar.h"
+#include "asterfort/gdev.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lglind.h"
+#include "asterfort/lglinn.h"
+#include "asterfort/solrei.h"
+#include "asterfort/trace.h"
+#include "asterfort/varecr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: nbmat, codret
     real(kind=8) :: yd(10), mater(nbmat, 2), f0, sigd(6), deps(6)
     real(kind=8) :: devg(6), devgii, traceg, dy(10)

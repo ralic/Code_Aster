@@ -1,13 +1,13 @@
 subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
                   dom)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/rcvale.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/limend.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rcvale.h"
     character(len=*) :: nommat, nomnap
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)

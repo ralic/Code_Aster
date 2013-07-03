@@ -42,7 +42,7 @@ subroutine i2isgc(epsi, xa, ya, xb, yb,&
 !
 !*******************************************************************
 !
-    include 'asterfort/i2req2.h'
+#include "asterfort/i2req2.h"
     integer :: npi
     real(kind=8) :: epsi, xa, ya, xb, yb, x1, y1, x2, y2, x3, y3, s1, s2, r1, r2
     logical :: eli

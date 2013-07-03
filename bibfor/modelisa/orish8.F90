@@ -1,7 +1,7 @@
 subroutine orish8(coor, ps)
     implicit   none
-    include 'asterfort/provec.h'
-    include 'blas/ddot.h'
+#include "asterfort/provec.h"
+#include "blas/ddot.h"
     integer :: j
     real(kind=8) :: coor(24), ps
     real(kind=8) :: vec1(3), vec2(3), vec3(3), vect(3)

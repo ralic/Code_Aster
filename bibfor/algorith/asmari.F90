@@ -20,13 +20,13 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
+#include "jeveux.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
     character(len=19) :: meelem(*)
     character(len=24) :: numedd
     character(len=19) :: matrig, solveu, lischa

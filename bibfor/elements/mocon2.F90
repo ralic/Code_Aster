@@ -21,12 +21,12 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lsqpol.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lsqpol.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2, k8bid
     character :: dir
     integer :: nlit

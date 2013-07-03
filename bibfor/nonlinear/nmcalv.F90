@@ -22,30 +22,30 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmdep0.h'
-    include 'asterfort/nmdidi.h'
-    include 'asterfort/nmrefe.h'
-    include 'asterfort/nmsssv.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/nmvcex.h'
-    include 'asterfort/nmvcfo.h'
-    include 'asterfort/vecgme.h'
-    include 'asterfort/vechme.h'
-    include 'asterfort/vedime.h'
-    include 'asterfort/vedpme.h'
-    include 'asterfort/vefnme.h'
-    include 'asterfort/vefpme.h'
-    include 'asterfort/veimpd.h'
-    include 'asterfort/velame.h'
-    include 'asterfort/veondp.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmdep0.h"
+#include "asterfort/nmdidi.h"
+#include "asterfort/nmrefe.h"
+#include "asterfort/nmsssv.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/nmvcfo.h"
+#include "asterfort/vecgme.h"
+#include "asterfort/vechme.h"
+#include "asterfort/vedime.h"
+#include "asterfort/vedpme.h"
+#include "asterfort/vefnme.h"
+#include "asterfort/vefpme.h"
+#include "asterfort/veimpd.h"
+#include "asterfort/velame.h"
+#include "asterfort/veondp.h"
     character(len=*) :: modelz
     character(len=24) :: mate, carele, compor, carcri, numedd
     character(len=24) :: comref, sdtime

@@ -18,9 +18,9 @@ subroutine cusign(jcmpg, icmp, sign)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: jcmpg
     integer :: icmp
     real(kind=8) :: sign

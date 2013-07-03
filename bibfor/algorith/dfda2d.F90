@@ -20,12 +20,12 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: nno
     real(kind=8) :: poids, sdfrde(4, 4), sdfrdk(4, 4)
     real(kind=8) :: geom(2, 4), jac

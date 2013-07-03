@@ -21,15 +21,15 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xneuvi.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xneuvi.h"
     integer :: narz, ndim
     integer :: tabnoz(3, narz)
     real(kind=8) :: tabcoz(ndim, narz), tabcrz(narz)

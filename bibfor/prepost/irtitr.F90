@@ -1,14 +1,14 @@
 subroutine irtitr(cham, noma, form, ifi, titre)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterc/gtoptk.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterc/gtoptk.h"
+#include "asterfort/enlird.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: ifi
     character(len=*) :: cham, noma, form
     character(len=80) :: titre

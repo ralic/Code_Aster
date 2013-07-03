@@ -20,12 +20,12 @@ subroutine mmctan(nommai, alias, nno, ndim, coorma,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmnewt.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmnewt.h"
+#include "asterfort/u2mesg.h"
     character(len=8) :: nommai, alias
     integer :: itemax, ndim, nno
     real(kind=8) :: epsmax, coorno(3), coorma(27)

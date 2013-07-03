@@ -20,10 +20,10 @@ subroutine gfmaco(noma, nbnoeu, nbno, icoova, axep)
 !
     implicit none
 !     IN
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: nbnoeu, nbno, icoova
     character(len=8) :: noma
     real(kind=8) :: axep(2)

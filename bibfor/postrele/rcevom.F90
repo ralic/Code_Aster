@@ -6,18 +6,18 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                   cspte, cspmo, cspme)
 ! aslint: disable=W1501,W1501,W1504
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcevfu.h'
-    include 'asterfort/rcmcrt.h'
-    include 'asterfort/rctres.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcevfu.h"
+#include "asterfort/rcmcrt.h"
+#include "asterfort/rctres.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
     integer :: it, jt
     real(kind=8) :: sm, symax
     logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt

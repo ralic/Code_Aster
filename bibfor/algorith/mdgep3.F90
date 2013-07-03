@@ -29,9 +29,9 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
 ! OUT : TAB    : VALEUR DE PSIDEL*VALE_NOMFOM(TEMPS)
 ! .________________.____.______________________________________________.
     implicit none
-    include 'asterfort/fointe.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/fointe.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: tab(neq)
     real(kind=8) :: psidel(neq, nbexci), temps
     character(len=8) :: nomfon(2*nbexci)

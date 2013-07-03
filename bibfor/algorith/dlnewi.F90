@@ -69,44 +69,44 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/etausr.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dlarch.h'
-    include 'asterfort/dlnew0.h'
-    include 'asterfort/dltcrr.h'
-    include 'asterfort/dltins.h'
-    include 'asterfort/dyarch.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nmmoam.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/trmult.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zerlag.h'
+#include "asterc/etausr.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dlarch.h"
+#include "asterfort/dlnew0.h"
+#include "asterfort/dltcrr.h"
+#include "asterfort/dltins.h"
+#include "asterfort/dyarch.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmmoam.h"
+#include "asterfort/preres.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/trmult.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zerlag.h"
     integer :: iinteg, neq, imat(3), nchar, nveca, liad(*), nume, nondp
     integer :: numrep
 !

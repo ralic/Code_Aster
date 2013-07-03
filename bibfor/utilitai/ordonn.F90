@@ -1,19 +1,19 @@
 subroutine ordonn(nomfon, iret)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/foverf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ordon1.h'
-    include 'asterfort/ordon2.h'
-    include 'asterfort/ordonp.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttrif.h'
+#include "asterfort/foverf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ordon1.h"
+#include "asterfort/ordon2.h"
+#include "asterfort/ordonp.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttrif.h"
     character(len=19) :: nomfon
     integer :: iret
 ! ----------------------------------------------------------------------

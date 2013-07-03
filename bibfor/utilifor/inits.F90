@@ -45,7 +45,7 @@ function inits(os, nos, eta)
 !***END PROLOGUE  INITDS
     implicit none
     integer :: inits
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: os(*)
 !***FIRST EXECUTABLE STATEMENT  INITDS
 !-----------------------------------------------------------------------

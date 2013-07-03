@@ -22,22 +22,22 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndasva.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmasdi.h'
-    include 'asterfort/nmasfi.h'
-    include 'asterfort/nmasva.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdiri.h'
-    include 'asterfort/nmfint.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/vtaxpy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/assvec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndasva.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmasdi.h"
+#include "asterfort/nmasfi.h"
+#include "asterfort/nmasva.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna

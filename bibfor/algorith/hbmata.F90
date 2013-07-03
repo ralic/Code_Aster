@@ -19,11 +19,11 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterfort/calcdl.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsoma.h'
+#include "asterfort/calcdl.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsoma.h"
     integer :: nbmat
     real(kind=8) :: se(6), dg, etap, i1e, dsidep(6, 6), materf(nbmat, 2)
     real(kind=8) :: vp(3), vecp(3, 3), sigeqe, parame(4), derive(5), sig3

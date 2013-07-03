@@ -18,7 +18,7 @@ subroutine impfoi(unite, long, vali, chaine)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: unite
     integer :: long
     integer :: vali

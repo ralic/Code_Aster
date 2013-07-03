@@ -26,22 +26,22 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
 !
 ! aslint: disable=W1504
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchcc.h'
-    include 'asterfort/nmchoi.h'
-    include 'asterfort/nmchra.h'
-    include 'asterfort/nmchrm.h'
-    include 'asterfort/nmcmat.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmmatr.h'
-    include 'asterfort/nmrenu.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/nmxmat.h'
-    include 'asterfort/preres.h'
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchcc.h"
+#include "asterfort/nmchoi.h"
+#include "asterfort/nmchra.h"
+#include "asterfort/nmchrm.h"
+#include "asterfort/nmcmat.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmmatr.h"
+#include "asterfort/nmrenu.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmxmat.h"
+#include "asterfort/preres.h"
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     integer :: fonact(*)

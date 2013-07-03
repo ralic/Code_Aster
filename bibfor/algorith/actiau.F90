@@ -36,8 +36,8 @@ subroutine actiau(nbcmp, nbno, nbec, mcoddl, icodac)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/iscode.h'
-    include 'asterfort/isgeco.h'
+#include "asterfort/iscode.h"
+#include "asterfort/isgeco.h"
     integer :: i, iec, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !
 !-----------------------------------------------------------------------

@@ -20,19 +20,19 @@ subroutine mmconv(noma, sdimpr, defico, resoco, valinc,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmcycl.h'
-    include 'asterfort/mmmcrf.h'
-    include 'asterfort/mmmcrg.h'
-    include 'asterfort/mmreas.h'
-    include 'asterfort/mreacg.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmimck.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmcycl.h"
+#include "asterfort/mmmcrf.h"
+#include "asterfort/mmmcrg.h"
+#include "asterfort/mmreas.h"
+#include "asterfort/mreacg.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimck.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=24) :: sdimpr

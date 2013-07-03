@@ -220,25 +220,25 @@ subroutine dnaup3(ido, bmat, n, which, nev,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dgetv0.h'
-    include 'asterfort/dmout.h'
-    include 'asterfort/dnaitr.h'
-    include 'asterfort/dnapps.h'
-    include 'asterfort/dnconv.h'
-    include 'asterfort/dneigh.h'
-    include 'asterfort/dngets.h'
-    include 'asterfort/dsortc.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/ivout.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/unista.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dgetv0.h"
+#include "asterfort/dmout.h"
+#include "asterfort/dnaitr.h"
+#include "asterfort/dnapps.h"
+#include "asterfort/dnconv.h"
+#include "asterfort/dneigh.h"
+#include "asterfort/dngets.h"
+#include "asterfort/dsortc.h"
+#include "asterfort/dvout.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ivout.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/unista.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dlapy2.h"
+#include "blas/dnrm2.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

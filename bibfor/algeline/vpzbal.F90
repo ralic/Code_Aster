@@ -1,7 +1,7 @@
 subroutine vpzbal(mat, neq, mxeq, d, k,&
                   l)
     implicit none
-    include 'asterc/r8baem.h'
+#include "asterc/r8baem.h"
     integer :: neq, mxeq, k, l
     real(kind=8) :: mat(mxeq, 1), d(1)
 !     ------------------------------------------------------------------

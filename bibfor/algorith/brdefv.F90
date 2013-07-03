@@ -25,9 +25,9 @@ subroutine brdefv(e1i, e2i, a, t, b,&
 !     E2P(C OU T)=DEFORMATION PLASTIQUE ETAGE 2 EN +(T) OU -(C)
 !
     implicit none
-    include 'asterfort/bre1bl.h'
-    include 'asterfort/bre1ec.h'
-    include 'asterfort/bre2ec.h'
+#include "asterfort/bre1bl.h"
+#include "asterfort/bre1ec.h"
+#include "asterfort/bre2ec.h"
     logical :: h1, h2
 !
 !     EFLIM=3.0E-2

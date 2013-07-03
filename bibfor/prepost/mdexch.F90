@@ -52,10 +52,10 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/mdexcc.h'
-    include 'asterfort/mdexcv.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/mdexcc.h"
+#include "asterfort/mdexcv.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nofimd
     character(len=*) :: nochmd
     character(len=*) :: nomcmc, nmcmfi

@@ -5,9 +5,9 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/fragex.h'
-    include 'asterfort/lcfrge.h'
-    include 'asterfort/lcfrlo.h'
+#include "asterfort/fragex.h"
+#include "asterfort/lcfrge.h"
+#include "asterfort/lcfrlo.h"
     integer :: imate, ndim, ksp, kpg
     integer :: icomp, nvi
     integer :: codret

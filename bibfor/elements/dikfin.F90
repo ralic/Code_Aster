@@ -3,7 +3,7 @@ subroutine dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2,&
                   krz, klv, klv2)
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: nbt
     real(kind=8) :: dnsdu, dnsdt, dmsdt, dnsdu2, dnsdt2, dmsdt2, ky, kz, krx
     real(kind=8) :: krz

@@ -37,13 +37,13 @@ subroutine dbgmpi(ico)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterc/loisem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpierr.h'
+#include "asterc/loisem.h"
+#include "asterfort/assert.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpierr.h"
     integer :: ico
 #ifdef _USE_MPI
-    include 'mpif.h'
+#include "mpif.h"
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: rang, nbproc, icoin, icout

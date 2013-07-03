@@ -23,17 +23,17 @@ subroutine nxpred(modele, mate, carele, charge, infoch,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/verstp.h'
-    include 'asterfort/vethbt.h'
-    include 'asterfort/vethbu.h'
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/resoud.h"
+#include "asterfort/verstp.h"
+#include "asterfort/vethbt.h"
+#include "asterfort/vethbu.h"
     integer :: lonch
     character(len=19) :: solveu, maprec
     character(len=24) :: modele, mate, carele, charge, infoch, numedd, time

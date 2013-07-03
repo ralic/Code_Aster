@@ -35,11 +35,11 @@ subroutine nodoub(nbl, nbb, nol, nob, typl,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
     character(len=24) :: valk(3)
     character(len=8) :: nomnoe, mailla, typl, typb
     integer :: nol(nbl), nob(nbb)

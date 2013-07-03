@@ -2,33 +2,33 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                   iligs, icols, formr)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/gtoptk.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jjmmaa.h'
-    include 'asterfort/lxcaps.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/lxscan.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutor.h'
-    include 'asterfort/sndbg.h'
-    include 'asterfort/titrec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utremt.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/gtoptk.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/enlird.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jjmmaa.h"
+#include "asterfort/lxcaps.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/lxscan.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutor.h"
+#include "asterfort/sndbg.h"
+#include "asterfort/titrec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utremt.h"
     character(len=*) :: donnee(*), sortie(*), formr
     integer :: iligd, icold, nbtitr, iligs, icols
 !     ------------------------------------------------------------------

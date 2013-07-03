@@ -37,16 +37,16 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !          NITER    :  NOMBRE D ITERATIONS A CONVERGENCE
 !          EPSCON   :  VALEUR ERR FINALE
 !       ----------------------------------------------------------------
-    include 'asterfort/cjsiid.h'
-    include 'asterfort/cjsjid.h'
-    include 'asterfort/cjsncn.h'
-    include 'asterfort/cjsncv.h'
-    include 'asterfort/cjsnor.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrvn.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/cjsiid.h"
+#include "asterfort/cjsjid.h"
+#include "asterfort/cjsncn.h"
+#include "asterfort/cjsncv.h"
+#include "asterfort/cjsnor.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrvn.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/mgauss.h"
     integer :: ndt, ndi, nvi, nr, nmod, niter, iret
     integer :: nitimp
     parameter (nmod = 16)

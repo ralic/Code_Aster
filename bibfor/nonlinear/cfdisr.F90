@@ -19,10 +19,10 @@ function cfdisr(deficz, questz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mminfr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfr.h"
     real(kind=8) :: cfdisr
     character(len=*) :: deficz
     character(len=*) :: questz

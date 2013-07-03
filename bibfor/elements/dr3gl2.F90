@@ -27,7 +27,7 @@ subroutine dr3gl2(p, ag, al)
 !          AL    : MATRICE DANS LE REPERE LOCAL
     implicit none
 !---   VARIABLES GLOBALES
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     real(kind=8) :: p(3, 3), ag(3, 3), al(3, 3)
     integer :: l
     real(kind=8) :: ss

@@ -28,8 +28,8 @@ subroutine mechti(noma, inst, deltat, theta, chtime)
     implicit none
 !
 !     --- ARGUMENTS ---
-    include 'asterc/r8nnem.h'
-    include 'asterfort/mecact.h'
+#include "asterc/r8nnem.h"
+#include "asterfort/mecact.h"
     real(kind=8) :: inst, deltat, theta
     character(len=*) :: noma
     character(len=24) :: chtime

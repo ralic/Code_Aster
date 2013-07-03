@@ -21,7 +21,7 @@ subroutine mmcalg(ndim, nnm, ddffm, geomam, tau1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/matini.h'
+#include "asterfort/matini.h"
     integer :: ndim, nnm
     real(kind=8) :: ddffm(3, 9)
     real(kind=8) :: tau1(3), tau2(3)

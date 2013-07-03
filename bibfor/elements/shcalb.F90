@@ -32,8 +32,8 @@ subroutine shcalb(bksip, xnoe, b, ajac)
 !     B(NBLIB,NBN) : MATRICE B
 !     AJAC         : JACOBIEN
     implicit none
-    include 'asterfort/matini.h'
-    include 'asterfort/matinv.h'
+#include "asterfort/matini.h"
+#include "asterfort/matinv.h"
     real(kind=8) :: xnoe(24), bksip(3, 8)
     real(kind=8) :: b(3, 8), ajac
 !

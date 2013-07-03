@@ -20,11 +20,11 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     integer :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
     integer :: ndim
     integer :: ndimsi

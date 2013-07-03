@@ -22,14 +22,14 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/lcimpl.h'
-    include 'asterfort/nm1dci.h'
-    include 'asterfort/nm1dco.h'
-    include 'asterfort/nm1dis.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
+#include "asterfort/lcimpl.h"
+#include "asterfort/nm1dci.h"
+#include "asterfort/nm1dco.h"
+#include "asterfort/nm1dis.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
     integer :: imate, neq, nbt, kpg, ksp, codret
     parameter (neq=6,nbt=21)
 !

@@ -44,8 +44,8 @@ subroutine exithm(modele, yathm, perman)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: modele
 !
     logical :: yathm, perman

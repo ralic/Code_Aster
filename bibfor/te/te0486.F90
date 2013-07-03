@@ -1,21 +1,21 @@
 subroutine te0486(option, nomte)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/antisy.h'
-    include 'asterfort/b1tdb2.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/matdn.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
+#include "jeveux.h"
+#include "asterfort/antisy.h"
+#include "asterfort/b1tdb2.h"
+#include "asterfort/btsig.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/matdn.h"
+#include "asterfort/provec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

@@ -25,7 +25,7 @@ function norrm6(a)
 ! IN  A : VECTEUR DE DIM 6
 ! OUT NORRM3 : NORME EUCLIDIENNE
 !
-    include 'asterfort/norrm3.h'
+#include "asterfort/norrm3.h"
     real(kind=8) :: norrm6
     real(kind=8) :: a(6)
 !

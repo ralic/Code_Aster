@@ -20,9 +20,9 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit      none
-    include 'asterfort/dpvpdi.h'
-    include 'asterfort/dpvpma.h'
-    include 'asterfort/dpvpre.h'
+#include "asterfort/dpvpdi.h"
+#include "asterfort/dpvpma.h"
+#include "asterfort/dpvpre.h"
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
     real(kind=8) :: sigm(6), td, tf, tr

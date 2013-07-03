@@ -22,9 +22,9 @@ subroutine nirfpd(ndim, nno1, nno2, nno3, npg,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: vu(3, 27), vg(27), vp(27)
     real(kind=8) :: geomi(ndim, nno1)

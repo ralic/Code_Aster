@@ -44,22 +44,22 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !                LES VARIABLES D'ECROUISSAGE : R, EPSI_VOLU_P
 !                LES MULTIPLICATEURS PLASTIQUES : DLAMBDA
 ! ====================================================================
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujddd.h'
-    include 'asterfort/hujksi.h'
-    include 'asterfort/hujpic.h'
-    include 'asterfort/hujprc.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/hujddd.h"
+#include "asterfort/hujksi.h"
+#include "asterfort/hujpic.h"
+#include "asterfort/hujprc.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i, j, k, kk, l, ll, nbmect
     integer :: nbmeca, indi(7), iret, iadzi, iazk24
     integer :: ifm, niv

@@ -1,17 +1,17 @@
 subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     implicit none
-    include 'asterc/indik8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/indik8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noma, caelem
     character(len=24) :: nomgrp(*)
     integer :: iaxe
@@ -62,7 +62,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !       GEOM(9)= REXT  RAYON DE LA COQUE EXTERNE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: ias, iascqi, iascqx, iasedi, iasmax, icmp, icode
     integer :: icoor, idesc, idir1, idir2, idir3, ier

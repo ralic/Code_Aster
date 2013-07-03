@@ -20,7 +20,7 @@ subroutine cdnfo2(mater, kfonc, xx, dn, fxx,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/rcvale.h'
+#include "asterfort/rcvale.h"
     integer :: dn, ier
     character(len=8) :: kfonc, kaux, mater, k8b
     real(kind=8) :: xx, fxx

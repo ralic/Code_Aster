@@ -20,7 +20,7 @@ function mmeltm(ityp)
 !
     implicit none
     character(len=16) :: mmeltm
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ityp
 !
 ! ----------------------------------------------------------------------

@@ -4,7 +4,7 @@ subroutine cacdsu(maxfa, maxdim, alpha, ndim, nno,&
                   d)
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: maxfa, maxdim, ndim, nno, nface
     real(kind=8) :: alpha, vol
     real(kind=8) :: geom(ndim, nno)

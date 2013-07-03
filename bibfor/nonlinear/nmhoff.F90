@@ -18,12 +18,12 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/matfpe.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dnrm2.h"
     integer :: ndim, imate
     real(kind=8) :: inst, deps(6), epsm(6), sigp(6), dsidep(6, 6)
     character(len=16) :: option

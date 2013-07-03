@@ -1,7 +1,7 @@
 subroutine piqrot(x1, y1, tetax, nt, ret,&
                   rit, rep, tetaf, epsi)
     implicit   none
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     integer :: nt
     real(kind=8) :: x1, y1, tetax, ret, rit, rep, tetaf, epsi
 !-----------------------------------------------------------------------

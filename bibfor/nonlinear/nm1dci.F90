@@ -44,7 +44,7 @@ subroutine nm1dci(fami, kpg, ksp, imate, em,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     real(kind=8) :: ep, em, sigy
     real(kind=8) :: sigm, deps, vim(2)
     real(kind=8) :: sigp, vip(2), dsde, sieleq

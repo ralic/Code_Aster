@@ -19,24 +19,24 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(RESULTAT)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismcp.h'
-    include 'asterfort/dismrc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsdocu.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismcp.h"
+#include "asterfort/dismrc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsdocu.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk

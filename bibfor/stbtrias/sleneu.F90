@@ -74,16 +74,16 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma,&
 !     !                                                            !
 !     ==============================================================
 !  --> DECLARATION DES ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbnode, mix, man, ites, datset
     real(kind=8) :: ama, bma, cma, ami, bmi, cmi
 !  --> DECLARATION DES VARIABLES LOCALES

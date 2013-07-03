@@ -6,10 +6,10 @@ subroutine ascorm(monoap, typcmo, nbsup, nsupp, neq,&
                   f2gup)
 ! aslint: disable=W1504
     implicit  none
-    include 'asterc/r8pi.h'
-    include 'asterfort/ascarm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/r8pi.h"
+#include "asterfort/ascarm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbsup, nsupp(*), neq, nbmode, id, nintra, tcosup(nbsup, *)
     integer :: nbdis(nbsup)
     real(kind=8) :: vecmod(neq, *), spectr(*)

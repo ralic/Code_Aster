@@ -19,10 +19,10 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmelty.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmelty.h"
     integer :: numma
     integer :: nnosd, ndim
     character(len=8) :: noma

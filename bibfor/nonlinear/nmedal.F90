@@ -19,10 +19,10 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/diago2.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/diago2.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: alphap(2), seuil
     real(kind=8) :: s(2), q(2, 2)
     real(kind=8) :: sigmc, gc

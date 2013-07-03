@@ -16,15 +16,15 @@ subroutine jxveri()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
+#include "jeveux_private.h"
 ! ----------------------------------------------------------------------
 ! VERIFIE L'INTEGRITE DU CHAINAGE AVANT DES SEGMENTS DE VALEURS ET DE LA
 ! ZONE MEMOIRE UTILISEE
 ! ----------------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjvern.h'
+#include "asterfort/assert.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjvern.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 ! ----------------------------------------------------------------------

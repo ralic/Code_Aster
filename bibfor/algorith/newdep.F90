@@ -40,8 +40,8 @@ subroutine newdep(neq, c, dt, d0, v0,&
 !   E.D.F DER   JACQUART G. 47-65-49-41      LE 19 JUILLET 1990
 !**********************************************************************
 !
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     real(kind=8) :: d0(*), d1(*), v0(*), a0(*), a1(*), c, dt
 !-----------------------------------------------------------------------
     integer :: neq

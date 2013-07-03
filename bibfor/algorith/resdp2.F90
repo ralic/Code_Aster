@@ -19,8 +19,8 @@ subroutine resdp2(materf, seq, i1e, pmoins, dp,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/schdp2.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/schdp2.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: materf(5, 2), pmoins, dp, seq, i1e, plas
 ! =====================================================================
 ! --- RESOLUTION NUMERIQUE --------------------------------------------

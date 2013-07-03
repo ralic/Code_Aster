@@ -35,9 +35,9 @@ subroutine tri(clef, tab, ntab, n)
     implicit none
 !
 ! --- PARAMETRES
-    include 'asterfort/assert.h'
-    include 'asterfort/triins.h'
-    include 'asterfort/trirap.h'
+#include "asterfort/assert.h"
+#include "asterfort/triins.h"
+#include "asterfort/trirap.h"
     integer :: blocmx, npile
     parameter (blocmx = 14)
     parameter (npile = 59)

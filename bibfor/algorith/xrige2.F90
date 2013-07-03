@@ -5,15 +5,15 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalf2.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf2.h"
     integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe
     integer :: ddlm
     character(len=8) :: elrefp

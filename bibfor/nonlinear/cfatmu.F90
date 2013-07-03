@@ -19,13 +19,13 @@ subroutine cfatmu(neq, nesmax, ndim, nbliac, frot,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/cftyli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/calatm.h"
+#include "asterfort/cftyli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: neq
     integer :: nesmax
     integer :: ndim

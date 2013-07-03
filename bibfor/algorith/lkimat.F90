@@ -35,7 +35,7 @@ subroutine lkimat(mod, imat, nmat, materd, materf,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL (9 OU 10)
 !           NVI    :  NB DE VARIABLES INTERNES
 !       --------------------------------------------------------------
-    include 'asterfort/lklmat.h'
+#include "asterfort/lklmat.h"
     integer :: imat, nmat, ndt, ndi, nr, nvi
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     character(len=8) :: mod

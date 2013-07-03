@@ -67,12 +67,12 @@ subroutine rslsvd(nm, m, n, a, w,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/calsvd.h'
-    include 'asterfort/possvd.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/calsvd.h"
+#include "asterfort/possvd.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     integer :: nm, m, n, nb, ierr
     real(kind=8) :: a(nm, n), w(n), u(nm, m), v(nm, n), b(nm, nb), eps, rvnm(nm)
 !

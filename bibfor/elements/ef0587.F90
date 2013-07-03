@@ -1,14 +1,14 @@
 subroutine ef0587(nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ppgan2.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/carcou.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ppgan2.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

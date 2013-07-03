@@ -1,19 +1,19 @@
 subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
                   csolu, prepos)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/csmbgg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mcconl.h'
-    include 'asterfort/mrconl.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/rldlg3.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/csmbgg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mcconl.h"
+#include "asterfort/mrconl.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/rldlg3.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nommat, vcine
     integer :: nsecm
     real(kind=8) :: rsolu(*)

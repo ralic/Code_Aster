@@ -18,15 +18,15 @@ subroutine te0577(option, nomte)
 ! person_in_charge: sam.cuvilliez at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/xthddl.h'
-    include 'asterfort/xthini.h'
-    include 'asterfort/xvetth.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jevech.h"
+#include "asterfort/xthddl.h"
+#include "asterfort/xthini.h"
+#include "asterfort/xvetth.h"
     character(len=16) :: option, nomte
 !
 !-----------------------------------------------------------------------

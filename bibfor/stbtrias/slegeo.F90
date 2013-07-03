@@ -42,12 +42,12 @@ subroutine slegeo(iunv, imod)
 !
 !  --> DECLARATION DES VARIABLES LOCALES
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/codnop.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jjmmaa.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/codent.h"
+#include "asterfort/codnop.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jjmmaa.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesk.h"
     character(len=1) :: prfnoe, prfmai
     character(len=80) :: cbuf
     character(len=4) :: ct(3)

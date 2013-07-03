@@ -1,33 +1,33 @@
 subroutine phi199(model, mate, ma, nu, num,&
                   nbmode, solvez, indice, tabad)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/calflu.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/majou.h'
-    include 'asterfort/prstoc.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/rsvpar.h'
-    include 'asterfort/tabcor.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/calflu.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/majou.h"
+#include "asterfort/prstoc.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/reliem.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/rsvpar.h"
+#include "asterfort/tabcor.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     integer :: nbmode, indice, tabad(*)
     character(len=8) :: ma
     character(len=14) :: nu, num

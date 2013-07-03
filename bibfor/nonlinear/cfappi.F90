@@ -19,11 +19,11 @@ subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfnomm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma
     character(len=24) :: defico
     integer :: posapp

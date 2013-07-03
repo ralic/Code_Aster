@@ -19,10 +19,10 @@ subroutine brfluo(sut, sut6, xmt, sige6, eps0,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/brvp33.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/utbtab.h'
+#include "asterfort/brvp33.h"
+#include "asterfort/matini.h"
+#include "asterfort/transp.h"
+#include "asterfort/utbtab.h"
     real(kind=8) :: sige6(6), sige3(3), siged6(6)
     real(kind=8) :: evp06(6), evp16(6), evpd06(6)
     real(kind=8) :: sige33(3, 3), vse33(3, 3), vse33t(3, 3)

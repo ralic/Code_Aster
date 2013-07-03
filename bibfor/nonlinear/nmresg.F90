@@ -19,21 +19,21 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdgeph.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/vtzero.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdgeph.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/vtzero.h"
+#include "blas/ddot.h"
     real(kind=8) :: instap
     character(len=19) :: cndonn, sddyna
     character(len=24) :: numedd

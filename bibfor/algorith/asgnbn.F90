@@ -44,12 +44,12 @@ subroutine asgnbn(ibla, bloca, nbterm, inobl, iadbl,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=24) :: nomblo
     integer :: nbterm, inobl(nbterm), iadbl(nbterm)
     real(kind=8) :: fact, bloca(*)

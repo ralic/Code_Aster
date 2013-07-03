@@ -1,34 +1,34 @@
 subroutine te0247(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/carapo.h'
-    include 'asterfort/chgrep.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/nmfgas.h'
-    include 'asterfort/nmlmab.h'
-    include 'asterfort/nmpoel.h'
-    include 'asterfort/porea1.h'
-    include 'asterfort/ptka01.h'
-    include 'asterfort/ptka02.h'
-    include 'asterfort/ptka10.h'
-    include 'asterfort/ptkg00.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/verifm.h'
+#include "asterfort/assert.h"
+#include "asterfort/carapo.h"
+#include "asterfort/chgrep.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/matela.h"
+#include "asterfort/matro2.h"
+#include "asterfort/moytem.h"
+#include "asterfort/nmfgas.h"
+#include "asterfort/nmlmab.h"
+#include "asterfort/nmpoel.h"
+#include "asterfort/porea1.h"
+#include "asterfort/ptka01.h"
+#include "asterfort/ptka02.h"
+#include "asterfort/ptka10.h"
+#include "asterfort/ptkg00.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/verifm.h"
     character(len=*) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

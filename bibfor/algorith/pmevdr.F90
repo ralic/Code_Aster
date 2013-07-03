@@ -20,12 +20,12 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacto.h'
-    include 'asterfort/nmevel.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacto.h"
+#include "asterfort/nmevel.h"
     logical :: itemax, conver
     character(len=19) :: sddisc, tabinc(*)
     integer :: liccvg(*), actite

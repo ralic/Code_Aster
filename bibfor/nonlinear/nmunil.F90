@@ -21,15 +21,15 @@ subroutine nmunil(mailla, depplu, ddepla, solveu, matass,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/algocu.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cuprep.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdsc3.h'
+#include "jeveux.h"
+#include "asterfort/algocu.h"
+#include "asterfort/assert.h"
+#include "asterfort/cuprep.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdsc3.h"
     character(len=8) :: mailla
     character(len=19) :: depplu, ddepla, solveu, matass, cncine
     character(len=24) :: deficu

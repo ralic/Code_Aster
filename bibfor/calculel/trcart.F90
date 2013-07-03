@@ -1,20 +1,20 @@
 subroutine trcart(ific, nocc)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/utcmp1.h'
-    include 'asterfort/utest3.h'
-    include 'asterfort/utest5.h'
+#include "jeveux.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/utcmp1.h"
+#include "asterfort/utest3.h"
+#include "asterfort/utest5.h"
     integer :: ific, nocc
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------

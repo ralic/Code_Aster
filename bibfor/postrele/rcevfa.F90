@@ -2,17 +2,17 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
                   csne, cspo, cspe, kemixt, cspto,&
                   cspte, cspmo, cspme, cfao, cfae)
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/prccm3.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/limend.h"
+#include "asterfort/prccm3.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: para(3), sm
     character(len=8) :: nommat
     character(len=24) :: cnoc, csno, csne, cspo, cspe, cfao, cfae, cspto, cspte

@@ -20,9 +20,9 @@ subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
 !-----------------------------------------------------------------------
     implicit none
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/calcj0.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/calcj0.h"
+#include "asterfort/r8inir.h"
     integer :: nb, nmat
 !
     real(kind=8) :: mate(nmat, 2), sigi(nb)

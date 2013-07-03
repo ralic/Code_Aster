@@ -1,10 +1,10 @@
 subroutine crlinu(nonu, mlgnno, nbnoe, numnoe, nomnoe,&
                   nbmtrd, jdnw, nummai, kk)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
     integer :: nbnoe, numnoe(*), nummai(*), nbmtrd, jdnw(*), kk
     character(len=*) :: mlgnno, nonu, nomnoe(*)
 !     -----------------------------------------------------------------

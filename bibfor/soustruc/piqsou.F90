@@ -3,7 +3,7 @@ subroutine piqsou(alp, xc, yc, zc, zd,&
                   typsou)
 ! aslint: disable=
     implicit   none
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     real(kind=8) :: alp, xc, yc, zc, zd, rep, ret, rit, bet, iso
     character(len=8) :: typsou
 !-----------------------------------------------------------------------

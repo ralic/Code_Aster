@@ -18,14 +18,14 @@ subroutine jjimhd(idfic, inat, crnom, ngrp, kattr,&
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/hdfcld.h'
-    include 'asterc/hdfclg.h'
-    include 'asterc/hdfcrg.h'
-    include 'asterc/hdfopd.h'
-    include 'asterc/hdfwat.h'
-    include 'asterc/hdfwsv.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterc/hdfcld.h"
+#include "asterc/hdfclg.h"
+#include "asterc/hdfcrg.h"
+#include "asterc/hdfopd.h"
+#include "asterc/hdfwat.h"
+#include "asterc/hdfwsv.h"
+#include "asterfort/u2mesk.h"
     integer :: idfic, inat, iadmi, lt, lonoi
     character(len=*) :: crnom, ngrp, genri, typei
     character(len=24) :: kattr(*)

@@ -55,7 +55,7 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod,&
 ! OUT : YSOL   : TABLEAU SOLUTION (VECTEUR T(UI*,VI*,PI*) TABULE EN Z)
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/pbflkz.h'
+#include "asterfort/pbflkz.h"
     real(kind=8) :: umoy, rmoy, long
     integer :: icoq, imod, nbm
     real(kind=8) :: rkip, tcoef(10, nbm), harm(6)

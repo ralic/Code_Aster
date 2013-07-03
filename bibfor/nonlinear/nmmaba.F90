@@ -1,9 +1,9 @@
 subroutine nmmaba(icodma, compor, e, dsde, sigy,&
                   ncstpm, cstpm)
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: compor
     integer :: icodma
     integer :: ncstpm

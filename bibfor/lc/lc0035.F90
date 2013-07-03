@@ -5,11 +5,11 @@ subroutine lc0035(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lkcomp.h'
-    include 'asterfort/lkpost.h'
-    include 'asterfort/plasti.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/utlcal.h'
+#include "asterfort/lkcomp.h"
+#include "asterfort/lkpost.h"
+#include "asterfort/plasti.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/utlcal.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)

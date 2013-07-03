@@ -47,8 +47,8 @@ subroutine rslphi(fami, kpg, ksp, loi, imat,&
 !           RIGM   :  CONTRAINTE MOYENNE
 !           P      :  PLASTICITE CUMULE
 !       -------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/rsliso.h'
+#include "asterc/r8miem.h"
+#include "asterfort/rsliso.h"
     integer :: imat, kpg, ksp
 !
     character(len=16) :: loi

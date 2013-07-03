@@ -2,28 +2,28 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
                   nbno2, lino2, geom1, geom2, corres,&
                   ldmax, distma)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/inslri.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/pj2dap.h'
-    include 'asterfort/pj2dfb.h'
-    include 'asterfort/pj2dtr.h'
-    include 'asterfort/pjxxut.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/inslri.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/pj2dap.h"
+#include "asterfort/pj2dfb.h"
+#include "asterfort/pj2dtr.h"
+#include "asterfort/pjxxut.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: corres
     character(len=*) :: geom1, geom2
     character(len=8) :: moa1, moa2

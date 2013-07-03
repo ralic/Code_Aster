@@ -22,16 +22,16 @@ subroutine reere3(elrefp, nnop, igeom, xg, depl,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/invjax.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/invjax.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/matini.h"
+#include "asterfort/reereg.h"
+#include "asterfort/vecini.h"
     character(len=3) :: cinem
     character(len=8) :: elrefp
     integer :: igeom, nnop, ndim, nfh, nfe, ddlt

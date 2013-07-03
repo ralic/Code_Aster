@@ -17,12 +17,12 @@ subroutine jereou(clas, pcent)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'asterc/rmfile.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeinif.h'
-    include 'asterfort/jelibf.h'
-    include 'asterfort/lxmins.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/rmfile.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeinif.h"
+#include "asterfort/jelibf.h"
+#include "asterfort/lxmins.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: clas
     real(kind=8) :: pcent
 ! ----------------------------------------------------------------------

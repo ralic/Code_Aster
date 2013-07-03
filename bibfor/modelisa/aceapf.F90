@@ -1,15 +1,15 @@
 subroutine aceapf(nomu, noma, lmax, nbocc)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterfort/alcart.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/wkvect.h"
     integer :: lmax, nbocc
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------

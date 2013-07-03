@@ -18,8 +18,8 @@ subroutine carcou(orien, l, pgl, rayon, theta,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterfort/matrot.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/matrot.h"
+#include "asterfort/u2mess.h"
     integer :: icoude
     real(kind=8) :: orien(17), angl1(3), angl2(3), angl3(3), angl4(3)
     real(kind=8) :: pgl4(3, 3)

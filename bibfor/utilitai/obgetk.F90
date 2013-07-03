@@ -19,12 +19,12 @@ subroutine obgetk(nomstr, nompaz, valk)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/obpara.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/obpara.h"
     character(len=24) :: nomstr
     character(len=*) :: nompaz
     character(len=*) :: valk

@@ -19,11 +19,11 @@ subroutine apninv(sdappa, defico, posnom, questz, vali)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=19) :: sdappa
     character(len=24) :: defico
     character(len=*) :: questz

@@ -33,14 +33,14 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 ! BUT : ASSEMBLER UN ELEMENT FINI
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/ascopr.h'
-    include 'asterfort/asret2.h'
-    include 'asterfort/asretm.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/corddl.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/voiuti.h'
+#include "jeveux.h"
+#include "asterfort/ascopr.h"
+#include "asterfort/asret2.h"
+#include "asterfort/asretm.h"
+#include "asterfort/assert.h"
+#include "asterfort/corddl.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/voiuti.h"
     logical :: lmasym, lmesym
     character(len=19) :: ligre1, ligre2
     character(len=*) :: exivf

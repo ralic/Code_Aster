@@ -1,13 +1,13 @@
 subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
     integer :: jgano, nbsp, ncmp
     real(kind=8) :: vno(*), vpg(*)
 ! ----------------------------------------------------------------------

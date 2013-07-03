@@ -21,9 +21,9 @@ subroutine lrmngr(ngrmax, ngrp, numgrp, nomgrp, jnogrp,&
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     CREATION DES VECTEURS NOMS DE GROUPES DE MAILLES ET DE NOEUDS
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
     integer :: ngrp, numgrp, jnogrp, jlggrp, ngrmax, nbnufa
     character(len=*) :: nomjng, nomjlg
     character(len=24) :: nomgrp

@@ -58,28 +58,28 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !     ------------------------------------------------------------------
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    include 'jeveux.h'
-    include 'asterc/getran.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/intdis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
-    include 'blas/dgeev.h'
-    include 'blas/dggev.h'
+#include "jeveux.h"
+#include "asterc/getran.h"
+#include "asterc/getvr8.h"
+#include "asterc/matfpe.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/intdis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
+#include "blas/dgeev.h"
+#include "blas/dggev.h"
     integer :: nddlin, nbmod, nnoint, neq, switch
     real(kind=8) :: shift
     character(len=19) :: masse, raide, ssami, raiint

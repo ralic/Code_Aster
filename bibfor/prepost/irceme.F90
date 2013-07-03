@@ -49,14 +49,14 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/ircame.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/ircame.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: typech, modele, sdcarm
     character(len=19) :: chanom
     character(len=64) :: nochmd

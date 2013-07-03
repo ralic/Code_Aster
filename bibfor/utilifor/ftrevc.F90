@@ -173,18 +173,18 @@ subroutine ftrevc(side, howmny, select, n, t,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/flaln2.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dgemv.h'
-    include 'blas/dscal.h'
-    include 'blas/idamax.h'
-    include 'blas/lsame.h'
+#include "asterc/isbaem.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/flaln2.h"
+#include "asterfort/xerbla.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dgemv.h"
+#include "blas/dscal.h"
+#include "blas/idamax.h"
+#include "blas/lsame.h"
     character(len=1) :: howmny, side
     integer :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..

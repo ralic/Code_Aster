@@ -1,9 +1,9 @@
 subroutine utreno(mcf, mcs, iocc, ma, noeud)
     implicit   none
-    include 'asterc/getvtx.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utnono.h'
+#include "asterc/getvtx.h"
+#include "asterfort/getvem.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utnono.h"
     integer :: iocc
     character(len=8) :: ma, noeud
     character(len=*) :: mcf, mcs

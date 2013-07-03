@@ -17,11 +17,11 @@ subroutine gdsmhy(je, e)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8maem.h'
-    include 'asterfort/lcdete.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/zerop3.h'
-    include 'blas/ddot.h'
+#include "asterc/r8maem.h"
+#include "asterfort/lcdete.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/zerop3.h"
+#include "blas/ddot.h"
     real(kind=8) :: je, e(6)
 !
 ! ----------------------------------------------------------------------

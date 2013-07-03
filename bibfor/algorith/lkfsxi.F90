@@ -36,10 +36,10 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
 !         DSDX     : DERIVEE DE M(XI) PAR RAPPORT A XI
 !         DMDX     : DERIVEE DE S(XI) PAR RAPPORT A XI
 !     --------------------------------------------------------------
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkhtet.h'
+#include "asterfort/cos3t.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkhtet.h"
     integer :: nmat
     real(kind=8) :: i1, devsig(6), dshds(6), dfdsdx(6), materf(nmat, 2)
     real(kind=8) :: para(3), xi, vara(4), dpardx(3)

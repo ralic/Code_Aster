@@ -3,8 +3,8 @@ subroutine optimw(method, nrupt, x, y, prob,&
                   cals, mk, sk, mkp, skp,&
                   impr, ifm, dept, indtp, nbtp)
     implicit none
-    include 'asterfort/ntweib.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/ntweib.h"
+#include "asterfort/u2mess.h"
     integer :: nrupt, nt(*), nbres, nur(*), ir, indtp(*), nbtp, ifm
     real(kind=8) :: x(*), y(*), sigw(*), mk, sk(*), mkp, skp(*), prob(*)
     character(len=16) :: method

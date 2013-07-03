@@ -42,20 +42,20 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !  IN : CARAC   : DIAMETRE HYDRAULIQUE ET EPAISSEUR
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/codree.h'
-    include 'asterfort/irdepl.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/codent.h"
+#include "asterfort/codree.h"
+#include "asterfort/irdepl.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm), jvcn, jven
     integer :: nive, nbval, lfsvi, pas, jconn, jrap
     character(len=19) :: melflu

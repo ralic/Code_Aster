@@ -42,8 +42,8 @@ subroutine dpassa(xyzgau, repere, irep, passag)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/matrot.h'
-    include 'asterfort/utrcyl.h'
+#include "asterfort/matrot.h"
+#include "asterfort/utrcyl.h"
     real(kind=8) :: repere(7), xyzgau(3), passag(6, 6)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: angl(3), p(3, 3), dire(3), orig(3)

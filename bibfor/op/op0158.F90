@@ -22,19 +22,19 @@ subroutine op0158()
 !     BUT: APPLIQUER LES CHAR_CINE SUR LA MATRICE
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtmchc.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtmchc.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: mass
     character(len=16) :: concep, nomcmd
     character(len=8) :: matass, matfac

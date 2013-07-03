@@ -5,8 +5,8 @@ subroutine lc0007(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lceobg.h'
-    include 'asterfort/lceobl.h'
+#include "asterfort/lceobg.h"
+#include "asterfort/lceobl.h"
     integer :: imate, ndim, codret, ksp, kpg
     integer :: icomp, nvi
     real(kind=8) :: angmas(*), tampon(*)

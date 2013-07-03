@@ -19,24 +19,24 @@ subroutine cacoeq(chargz, nomaz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/aflrch.h'
-    include 'asterfort/afrela.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmex.h'
-    include 'asterfort/cfsuex.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/aflrch.h"
+#include "asterfort/afrela.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmex.h"
+#include "asterfort/cfsuex.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chargz, nomaz
 !
 ! ----------------------------------------------------------------------

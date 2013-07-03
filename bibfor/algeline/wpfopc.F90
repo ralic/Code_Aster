@@ -1,19 +1,19 @@
 subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma,&
                   matopa, raide, lqz, solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvr8.h"
+#include "asterc/r8depi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/preres.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: matopa, raide
     character(len=19) :: solveu
     integer :: lmasse, lamor, lraide

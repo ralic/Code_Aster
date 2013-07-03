@@ -27,7 +27,7 @@ subroutine ftest1(np3, rc, theta, typch, nbseg,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
+#include "asterfort/disbut.h"
     integer :: np3
     real(kind=8) :: rc(np3, *), theta(np3, *)
     integer :: typch(*), nbseg(*)

@@ -19,12 +19,12 @@ subroutine dismml(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(MACR_ELEM_STAT)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/dismmo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/dismmo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk

@@ -21,13 +21,13 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdcae.h'
-    include 'asterfort/nmdcco.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdcae.h"
+#include "asterfort/nmdcco.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: ievdac, iterat, retdec
     integer :: nbrpas

@@ -1,9 +1,9 @@
 subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
                   paraep, varpl, derpar, dfdxip)
     implicit      none
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkhtet.h'
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkhtet.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2)
     real(kind=8) :: ucrip, invar, s(6), paraep(3), varpl(4), derpar(3)

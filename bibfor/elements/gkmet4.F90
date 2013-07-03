@@ -4,13 +4,13 @@ subroutine gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/gsyste.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: nnoff, ndimte, iadrgk, iadgks, iadgki, num
     character(len=24) :: chfond, abscur
     logical :: pair, milieu, connex

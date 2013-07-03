@@ -1,13 +1,13 @@
 subroutine bsthpl(nomte, bsigth, indith)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dxbsig.h'
-    include 'asterfort/dxefgt.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
+#include "jeveux.h"
+#include "asterfort/dxbsig.h"
+#include "asterfort/dxefgt.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/jevech.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
     real(kind=8) :: bsigth(24)
     logical :: indith
     character(len=8) :: nomte

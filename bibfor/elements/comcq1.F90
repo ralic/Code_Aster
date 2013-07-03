@@ -22,14 +22,14 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
 !  VARIABLE ENTREE/SORTIE
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nm1dci.h'
-    include 'asterfort/nm1dis.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verifg.h'
-    include 'asterfort/verift.h'
+#include "asterfort/nm1dci.h"
+#include "asterfort/nm1dis.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verifg.h"
+#include "asterfort/verift.h"
     character(len=*) :: fami
     character(len=16) :: option, compor(*), valkm(2)
     integer :: codret, kpg, ksp, mod, imate

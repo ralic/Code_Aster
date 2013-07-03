@@ -28,11 +28,11 @@ subroutine cripoi(nbm, b, crit)
 !  IN : B    : MATRICE B(S)
 ! OUT : CRIT : CRITERE DE POIDS RELATIF DES TERMES EXTRADIAGONAUX
 !-----------------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterc/r8nnem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dcabs2.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8nnem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dcabs2.h"
+#include "asterfort/u2mess.h"
     integer :: nbm
     complex(kind=8) :: b(nbm, nbm)
     real(kind=8) :: crit

@@ -1,22 +1,22 @@
 subroutine dsqsie(option, fami, xyzl, pgl, depl,&
                   nbcou, cdl)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dsqbfa.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dsqcis.h'
-    include 'asterfort/dsqdis.h'
-    include 'asterfort/dsqlxy.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dsxhlt.h'
-    include 'asterfort/dxdmul.h'
-    include 'asterfort/dxhmft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
+#include "jeveux.h"
+#include "asterfort/dsqbfa.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dsqcis.h"
+#include "asterfort/dsqdis.h"
+#include "asterfort/dsqlxy.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dsxhlt.h"
+#include "asterfort/dxdmul.h"
+#include "asterfort/dxhmft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
     character(len=4) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)

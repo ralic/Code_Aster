@@ -17,7 +17,7 @@ subroutine permr8(tab, shift, nbr)
 ! ======================================================================
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: shift, nbr
     real(kind=8) :: tab(nbr)
 !

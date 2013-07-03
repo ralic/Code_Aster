@@ -33,7 +33,7 @@ subroutine rlosh6(xcoq, xcent, ppp, xl, xv2cen,&
     implicit none
 !
 !   VARIABLES GLOBALES
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: xcoq(3, 3), xcent(3), ppp(3, 3), xl(3, 3), xv1cen (3)
     real(kind=8) :: xv2cen(3)
     real(kind=8) :: xj

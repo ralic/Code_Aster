@@ -1,24 +1,24 @@
 subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
                   sigmpg, effgt)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/matrth.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/trndgl.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vdefge.h'
-    include 'asterfort/vdesga.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "jeveux.h"
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/matrth.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/trndgl.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vdefge.h"
+#include "asterfort/vdesga.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     real(kind=8) :: sigmpg(*)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -22,15 +22,15 @@ subroutine nmcoun(noma, fonact, solveu, numedz, matass,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcofr.h'
-    include 'asterfort/nmunil.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcofr.h"
+#include "asterfort/nmunil.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=24) :: deficu, resocu, sdtime, sdstat

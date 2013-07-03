@@ -40,14 +40,14 @@ subroutine hujma2(mod, imat, nmat, tempf, angmas,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/hujcrd.h'
-    include 'asterfort/hujcri.h'
-    include 'asterfort/hujmat.h'
-    include 'asterfort/hujori.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/hujcrd.h"
+#include "asterfort/hujcri.h"
+#include "asterfort/hujmat.h"
+#include "asterfort/hujori.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: mod
     character(len=3) :: matcst
     integer :: imat, nmat, ndt, ndi, nvi, nr

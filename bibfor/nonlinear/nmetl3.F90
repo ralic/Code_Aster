@@ -20,18 +20,18 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmetnc.h'
-    include 'asterfort/nmsigi.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vrcomp.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/chpver.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/nmsigi.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vrcomp.h"
     character(len=24) :: modele, compor
     character(len=24) :: sdieto
     character(len=8) :: result

@@ -1,8 +1,8 @@
 subroutine utgtme(nbarg, nomarg, valarg, iret)
     implicit none
-    include 'asterc/loisem.h'
-    include 'asterc/mempid.h'
-    include 'asterfort/assert.h'
+#include "asterc/loisem.h"
+#include "asterc/mempid.h"
+#include "asterfort/assert.h"
     integer :: nbarg, iret
     character(len=8) :: nomarg(*)
     real(kind=8) :: valarg(*)

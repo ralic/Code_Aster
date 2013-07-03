@@ -19,13 +19,13 @@ subroutine nmetdo(sdcriq)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: sdcriq
 !
 ! ----------------------------------------------------------------------

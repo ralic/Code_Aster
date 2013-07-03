@@ -27,15 +27,15 @@ subroutine te0175(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rcvalb.h'
+#include "asterc/r8pi.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rcvalb.h"
     integer :: idfde, igeom, idino, kpg, spt
     integer :: iinte, ipres, imate, ifreq, npg, ipoids, ivf
     integer :: nno, ino, i, ndim, nnos, jgano, mater

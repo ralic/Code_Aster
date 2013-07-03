@@ -22,14 +22,14 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 ! ======================================================================
 ! aslint: disable=W1304,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/inschn.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mltalc.h'
+#include "jeveux.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/infniv.h"
+#include "asterfort/inschn.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mltalc.h"
     integer :: nbnd, nbsn, lgind, nbnd1
     integer :: supnd(nbsn+1), invsup(nbnd), parent(nbsn)
     integer :: xadj(nbnd+1), adjncy(*)

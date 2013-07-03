@@ -20,21 +20,21 @@ subroutine nmstat(phase, fonact, sdstat, sdtime, sdimpr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/impfot.h'
-    include 'asterfort/impmem.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmrini.h'
-    include 'asterfort/nmrvai.h'
-    include 'asterfort/nmtimr.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/impfot.h"
+#include "asterfort/impmem.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmrini.h"
+#include "asterfort/nmrvai.h"
+#include "asterfort/nmtimr.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=1) :: phase
     character(len=24) :: sdtime, sdstat, sdimpr
     character(len=24) :: defico

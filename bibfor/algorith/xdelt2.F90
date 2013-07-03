@@ -3,11 +3,11 @@ subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
     integer :: ndim, nno, jtabls, ipp, ip
     real(kind=8) :: ksi(ndim), delta(ndim), ptint(*), tabco(*)
     character(len=8) :: elp

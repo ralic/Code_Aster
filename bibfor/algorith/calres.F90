@@ -31,13 +31,13 @@ subroutine calres(np3, ic, typch, nbseg, choc,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
-    include 'asterfort/fornor.h'
-    include 'asterfort/fortan.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/prmave.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/disbut.h"
+#include "asterfort/fornor.h"
+#include "asterfort/fortan.h"
+#include "asterfort/matini.h"
+#include "asterfort/prmave.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
     integer :: np3, ic, typch(*), nbseg(*)
     real(kind=8) :: choc(6, *), rc(np3, *), theta(np3, *), vloc(*), xloc(*)
     real(kind=8) :: vloc0(*), xloc0(*), excloc(*), tetaj, jacobc(3, *)

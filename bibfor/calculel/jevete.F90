@@ -19,10 +19,10 @@ subroutine jevete(nomobj, code, iad)
 ! ======================================================================
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/indk24.h'
+#include "asterfort/assert.h"
+#include "asterfort/indk24.h"
     character(len=*) :: nomobj
     character(len=1) :: code
     character(len=24) :: nomob2

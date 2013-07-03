@@ -1,14 +1,14 @@
 subroutine utmamo(modele, nbtrou, litrou)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/utmam2.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/juveca.h"
+#include "asterfort/utmam2.h"
+#include "asterfort/wkvect.h"
     integer :: nbtrou
     character(len=8) :: modele
     character(len=*) :: litrou

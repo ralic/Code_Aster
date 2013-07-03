@@ -18,7 +18,7 @@ subroutine dilpen(imate, rpena)
 ! ======================================================================
 ! ======================================================================
     implicit  none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: imate
     real(kind=8) :: rpena
 ! ======================================================================

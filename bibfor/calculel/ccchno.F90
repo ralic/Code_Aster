@@ -3,26 +3,26 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
                   ligrel, ligmod, codret)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ccvrrl.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescns.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/inigrl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexc1.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/ccvrrl.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescns.h"
+#include "asterfort/cesred.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/inigrl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexc1.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: numord, codret
     character(len=1) :: basopt
     character(len=8) :: resuin, resuou, nomail, modele, carael

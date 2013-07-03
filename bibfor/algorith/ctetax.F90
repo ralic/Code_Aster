@@ -43,22 +43,22 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/amppr.h'
-    include 'asterfort/bmnodi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/intet0.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/amppr.h"
+#include "asterfort/bmnodi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/intet0.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
 !-----------------------------------------------------------------------
     integer :: i, ibid, icomp, ier, iloci, ilocj, inoa
     integer :: iret, j, k, lldesc, llnoa, llref, nbcmp

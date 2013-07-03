@@ -19,14 +19,14 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmvcd2.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcref.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmvcd2.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcref.h"
     character(len=*) :: modelz, matz, carelz, comrez
 ! ----------------------------------------------------------------------
 !  CREATION DES VALEURS DE REFERENCE DES VARIABLES DE COMMANDE

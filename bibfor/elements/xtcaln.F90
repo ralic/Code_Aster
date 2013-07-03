@@ -19,12 +19,12 @@ subroutine xtcaln(ndim, tau1, tau2, norm, mprojt)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/matini.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
     integer :: ndim
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3)

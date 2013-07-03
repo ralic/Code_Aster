@@ -2,7 +2,7 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                   mxfreq, nfreq, valp, ieme, det,&
                   idet, nbpas, typres, nblagr, solveu)
     implicit none
-    include 'asterfort/vpstur.h'
+#include "asterfort/vpstur.h"
     integer :: lraide, lmasse, ldynam
     real(kind=8) :: tol
     integer :: mxfreq, nfreq, ieme(*), idet(*), nbpas(*), nblagr

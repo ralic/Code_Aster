@@ -19,10 +19,10 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imate, jprol, jvale, nbvale, jmat, nbmat
     real(kind=8) :: temp, e
     integer :: ktrac

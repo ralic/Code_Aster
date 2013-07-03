@@ -18,7 +18,7 @@ subroutine ops007()
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
 !
@@ -26,19 +26,19 @@ subroutine ops007()
 !
 ! ----------------------------------------------------------------------
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jvinfo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jvinfo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: klas
     character(len=8) :: k8bid
     character(len=32) :: kch

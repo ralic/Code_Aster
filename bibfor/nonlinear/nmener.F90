@@ -25,22 +25,22 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/enerca.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchai.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmfini.h'
-    include 'asterfort/nmmass.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/enerca.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmfini.h"
+#include "asterfort/nmmass.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddyna, sdener, valinc(*), veasse(*), measse(*)
     character(len=19) :: solveu, meelem(*), sddisc, solalg(*), lischa, veelem(*)
     character(len=24) :: numedd, numfix, modele, mate, carele, compor, carcri

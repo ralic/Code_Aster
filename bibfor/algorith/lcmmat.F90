@@ -58,24 +58,24 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !                    SYSTEMES DE GLISSEMENT
 !           IMPEXP : 0 IMPLICITE, 1 EXPLICITE
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/calcmm.h'
-    include 'asterfort/d1ma3d.h'
-    include 'asterfort/dmat3d.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcmaec.h'
-    include 'asterfort/lcmaei.h'
-    include 'asterfort/lcmafl.h'
-    include 'asterfort/lcmmjv.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/calcmm.h"
+#include "asterfort/d1ma3d.h"
+#include "asterfort/dmat3d.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcmaec.h"
+#include "asterfort/lcmaei.h"
+#include "asterfort/lcmafl.h"
+#include "asterfort/lcmmjv.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/matrot.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3), nbval, nvini
     integer :: kpg, ksp, irota, impexp, nfs, nsg
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

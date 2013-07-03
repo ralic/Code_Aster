@@ -23,8 +23,8 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf,&
 ! aslint: disable=W1504
     implicit none
 !      REAL*8 (A-H,O-Z)
-    include 'asterfort/matini.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/matini.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: valr
     integer :: nno, nnf
     real(kind=8) :: poids, dpdeg(1), dpdng(1), dpdkg(1), dsdeeg(1), dsdnng(1)

@@ -81,11 +81,11 @@ subroutine gtrexc(compq, n, t, ldt, q,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'asterfort/glartg.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/lsame.h'
-    include 'blas/zrot.h'
+#include "asterc/matfpe.h"
+#include "asterfort/glartg.h"
+#include "asterfort/xerbla.h"
+#include "blas/lsame.h"
+#include "blas/zrot.h"
     character(len=1) :: compq
     integer :: ifst, ilst, info, ldq, ldt, n
 !     ..

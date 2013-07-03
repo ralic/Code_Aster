@@ -20,7 +20,7 @@ function xxmmvd(vect)
 !
     implicit none
     integer :: xxmmvd
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=5) :: vect
 !
 ! ----------------------------------------------------------------------

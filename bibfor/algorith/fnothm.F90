@@ -28,8 +28,8 @@ subroutine fnothm(fnoevo, deltat, perman, nno, nnos,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/cabthm.h'
-    include 'asterfort/fonoda.h'
+#include "asterfort/cabthm.h"
+#include "asterfort/fonoda.h"
     logical :: fnoevo, perman, axi
     integer :: nno, nnos, npg, imate, dimdef, dimcon, nddls, nddlm, nnom
     integer :: dimuel, nmec, np1, np2, ndim, ipoids, ipoid2, ivf, ivf2

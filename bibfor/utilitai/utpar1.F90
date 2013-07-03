@@ -1,7 +1,7 @@
 subroutine utpar1(typsd, nbpamx, lipara, nbpara)
 ! aslint: disable=W1501
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: typsd
     integer :: nbpamx, nbpara
     character(len=32) :: lipara(nbpamx)

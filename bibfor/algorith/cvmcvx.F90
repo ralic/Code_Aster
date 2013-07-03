@@ -31,11 +31,11 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !       IN  MATER  :  COEFFICIENTS MATERIAU A TEMPERATURE
 !       OUT SEUIL  :  SEUIL  ELASTICITE
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsv.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsv.h"
     integer :: ndt, ndi, nmat
     real(kind=8) :: sig(6), x1(6), x2(6), dev(6), vin(*)
     real(kind=8) :: difc1, difc2

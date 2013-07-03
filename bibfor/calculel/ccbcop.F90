@@ -1,26 +1,26 @@
 subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
                   nbropt)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcop.h'
-    include 'asterfort/ccfnrn.h'
-    include 'asterfort/ccvrch.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcop.h"
+#include "asterfort/ccfnrn.h"
+#include "asterfort/ccvrch.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/medom1.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
     integer :: nbordr, nbropt
     character(len=8) :: resuou, resuin
     character(len=19) :: lisord, lisopt

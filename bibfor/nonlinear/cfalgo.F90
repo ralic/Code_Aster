@@ -21,25 +21,25 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/algocg.h'
-    include 'asterfort/algocl.h'
-    include 'asterfort/algoco.h'
-    include 'asterfort/algocp.h'
-    include 'asterfort/algogl.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfeven.h'
-    include 'asterfort/cfpost.h'
-    include 'asterfort/cfprep.h'
-    include 'asterfort/fro2gd.h'
-    include 'asterfort/frogdp.h'
-    include 'asterfort/frolgd.h'
-    include 'asterfort/fropgd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/algocg.h"
+#include "asterfort/algocl.h"
+#include "asterfort/algoco.h"
+#include "asterfort/algocp.h"
+#include "asterfort/algogl.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfeven.h"
+#include "asterfort/cfpost.h"
+#include "asterfort/cfprep.h"
+#include "asterfort/fro2gd.h"
+#include "asterfort/frogdp.h"
+#include "asterfort/frolgd.h"
+#include "asterfort/fropgd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     logical :: ctcfix
     character(len=8) :: noma
     real(kind=8) :: resigr

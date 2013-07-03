@@ -32,19 +32,19 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/celfpg.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/eclpgc.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pjcorr.h'
-    include 'asterfort/pjxxch.h'
-    include 'asterfort/titre.h'
+#include "asterfort/celfpg.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eclpgc.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pjcorr.h"
+#include "asterfort/pjxxch.h"
+#include "asterfort/titre.h"
     character(len=8) :: nomo2, prol0
     character(len=16) :: corres
     character(len=19) :: cham1, ligre1

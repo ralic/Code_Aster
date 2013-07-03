@@ -27,10 +27,10 @@ subroutine mmtfpe(phasep, iresof, ndim, nne, nnm,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/matini.h'
-    include 'asterfort/mmmtuc.h'
-    include 'asterfort/mmmtuf.h'
-    include 'asterfort/mmmtuu.h'
+#include "asterfort/matini.h"
+#include "asterfort/mmmtuc.h"
+#include "asterfort/mmmtuf.h"
+#include "asterfort/mmmtuu.h"
     character(len=9) :: phasep
     integer :: ndim, nne, nnm, nnl, nbcps
     integer :: iresof

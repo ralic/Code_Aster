@@ -18,19 +18,19 @@ subroutine mmexfr(noma, defico, izone, posmam, tau1,&
 ! ======================================================================
 ! person_in_charge: thomas.desoza at edf.fr
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfnomm.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfr.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesg.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterc/r8prem.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesg.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     character(len=8) :: noma
     character(len=24) :: defico
     integer :: izone, posmam

@@ -20,7 +20,7 @@ subroutine premld(n1, diag, col, xadj1, adjnc1,&
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    include 'asterfort/caladj.h'
+#include "asterfort/caladj.h"
     integer :: n1, diag(0:*), col(*)
     integer :: xadj1(n1+1), adjnc1(*)
     integer :: voisin(*), suiv(*)

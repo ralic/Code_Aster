@@ -5,16 +5,16 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
                   vmax, omin, omax)
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/avenca.h'
-    include 'asterfort/avpeak.h'
-    include 'asterfort/avpic2.h'
-    include 'asterfort/avrain.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/projax.h'
-    include 'asterfort/propla.h'
+#include "asterfort/avenca.h"
+#include "asterfort/avpeak.h"
+#include "asterfort/avpic2.h"
+#include "asterfort/avrain.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/projax.h"
+#include "asterfort/propla.h"
     integer :: nbvec, nbordr, kwork
     integer :: sommw, tdisp, tspaq, ipgn
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)

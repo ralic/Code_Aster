@@ -19,7 +19,7 @@ subroutine utlcal(typque, algo, valr)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=8) :: typque
     character(len=16) :: algo
     real(kind=8) :: valr

@@ -21,10 +21,10 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 !-----------------------------------------------------------------------
     implicit none
 !
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcpsvn.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcpsvn.h"
+#include "asterfort/mgauss.h"
     integer :: nb, np, nr
     logical :: cplan
     real(kind=8) :: rb(nb), rp(np), drbdb(nb, nb), drbdp(nb, np)

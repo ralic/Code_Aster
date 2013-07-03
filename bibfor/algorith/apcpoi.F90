@@ -20,17 +20,17 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/apzoni.h'
-    include 'asterfort/apzonv.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmmron.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/normev.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: sdappa
     character(len=8) :: nommai
     character(len=4) :: typzon

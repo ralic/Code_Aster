@@ -22,23 +22,23 @@ subroutine accel0(modele, numedd, numfix, fonact, lischa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detlsp.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lspini.h'
-    include 'asterfort/nmassi.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmprac.h'
-    include 'asterfort/nmreso.h'
-    include 'asterfort/nulvec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detlsp.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lspini.h"
+#include "asterfort/nmassi.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmprac.h"
+#include "asterfort/nmreso.h"
+#include "asterfort/nulvec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtzero.h"
     character(len=19) :: solveu, maprec, lischa
     character(len=19) :: sddyna
     character(len=24) :: sdtime, sdstat

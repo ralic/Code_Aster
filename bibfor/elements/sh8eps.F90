@@ -19,13 +19,13 @@ subroutine sh8eps(xetemp, xidepp, deploc, propel)
 !               ELEMENT SHB8
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chrp3d.h'
-    include 'asterfort/dsdx3d.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/rloshb.h'
-    include 'asterfort/shbksi.h'
-    include 'asterfort/shcalb.h'
+#include "jeveux.h"
+#include "asterfort/chrp3d.h"
+#include "asterfort/dsdx3d.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/rloshb.h"
+#include "asterfort/shbksi.h"
+#include "asterfort/shcalb.h"
     integer :: lag
     real(kind=8) :: xe(24), xidepp(*)
     real(kind=8) :: xxg5(5), xcoq(3, 4), bksip(3, 8, 5), b(3, 8)

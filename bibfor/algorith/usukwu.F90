@@ -20,9 +20,9 @@ subroutine usukwu(nbpt, fn, vg, para, w,&
 ! ======================================================================
 !----------------------------------------------------------------------
 !
-    include 'asterc/getvr8.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvr8.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: fn(*), vg(*), para(*)
     integer :: iarg
 !

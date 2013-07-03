@@ -45,24 +45,24 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !                 DU FLUIDE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/coesp1.h'
-    include 'asterfort/coesp4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/recude.h'
-    include 'asterfort/spect2.h'
-    include 'asterfort/spect4.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/coesp1.h"
+#include "asterfort/coesp4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/recude.h"
+#include "asterfort/spect2.h"
+#include "asterfort/spect4.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     logical :: casint
     character(len=8) :: nomu, nomzon, k8bid
     character(len=19) :: spectr, base

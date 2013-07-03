@@ -18,7 +18,7 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: maxent, nbent, indice, i
     character(len=*) :: para, cham, lpara(maxent), lcham(maxent), surch
 !

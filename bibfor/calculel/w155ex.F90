@@ -21,21 +21,21 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !     COMMANDE :  POST_CHAMP /EXTR_XXXX
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/w155ch.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/exlima.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/w155ch.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
 !

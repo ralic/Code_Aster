@@ -16,15 +16,15 @@ subroutine pmfrig(nomte, icdmat, klv)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/pmfitx.h'
-    include 'asterfort/pmfk01.h'
-    include 'asterfort/ptka21.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jevech.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/pmfk01.h"
+#include "asterfort/ptka21.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomte
     integer :: icdmat
     real(kind=8) :: klv(*)

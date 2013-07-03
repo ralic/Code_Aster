@@ -1,24 +1,24 @@
 subroutine rftabl(tabres)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/foattr.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ordonn.h'
-    include 'asterfort/tbexfo.h'
-    include 'asterfort/tbimfi.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/foattr.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ordonn.h"
+#include "asterfort/tbexfo.h"
+#include "asterfort/tbimfi.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: tabres
 !     ------------------------------------------------------------------
 ! ======================================================================

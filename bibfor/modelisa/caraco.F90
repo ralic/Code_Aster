@@ -19,14 +19,14 @@ subroutine caraco(char, nomo, motfac, nzoco, iform)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/caralv.h'
-    include 'asterfort/caramx.h'
-    include 'asterfort/cazoco.h'
-    include 'asterfort/cazocp.h'
-    include 'asterfort/cazofm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/caralv.h"
+#include "asterfort/caramx.h"
+#include "asterfort/cazoco.h"
+#include "asterfort/cazocp.h"
+#include "asterfort/cazofm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: char, nomo
     character(len=16) :: motfac
     integer :: nzoco, iform

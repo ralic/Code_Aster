@@ -2,9 +2,9 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
                   traceg, dfdl, delta, dy)
 !
     implicit      none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lceqvn.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lceqvn.h"
     real(kind=8) :: mu, k, f0, devg(6), devgii, traceg
     real(kind=8) :: dfdl, delta, dy(10)
 ! ======================================================================

@@ -26,7 +26,7 @@ subroutine jxdeps(iadini, iadfin, lso)
 !             ROUTINE AVEC ADHERENCE SYSTEME    CRAY
 !             FONCTION(S) UTILISEE(S) : IAND
 !
-    include 'jeveux_private.h'
+#include "jeveux_private.h"
     integer :: iadini, iadfin, lso
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon

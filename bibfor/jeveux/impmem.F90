@@ -20,10 +20,10 @@ subroutine impmem()
 !     RENVOIE LA VALEUR EN MEGA OCTETS DE LA MEMOIRE UTILISEE PAR JEVEUX
 !
 ! ======================================================================
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/utgtme.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/utgtme.h"
     real(kind=8) :: rval(4)
     character(len=8) :: k8tab(4)
     integer :: iret

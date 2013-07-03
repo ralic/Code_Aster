@@ -22,17 +22,17 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/impcmp.h'
-    include 'asterfort/impcom.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmimcr.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/impcmp.h"
+#include "asterfort/impcom.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
     character(len=24) :: numedd, sdimpr, sdconv
     integer :: irela, imaxi, irefe, icomp
     real(kind=8) :: vrela, vmaxi, vrefe, vcomp, vfrot, vgeom

@@ -2,7 +2,7 @@ subroutine i3ptrv(epsi, lstpt, nbpt, t, trouve,&
                   ipos)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbpt, lstpt(*), ipos
     real(kind=8) :: epsi, t
     logical :: trouve

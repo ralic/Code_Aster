@@ -36,12 +36,12 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
 !           MATER  :  COEFFICIENTS MATERIAU
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
-    include 'asterfort/burjpl.h'
-    include 'asterfort/cvmjpl.h'
-    include 'asterfort/hujopt.h'
-    include 'asterfort/lcmmjp.h'
-    include 'asterfort/lcoptg.h'
-    include 'asterfort/lkijpl.h'
+#include "asterfort/burjpl.h"
+#include "asterfort/cvmjpl.h"
+#include "asterfort/hujopt.h"
+#include "asterfort/lcmmjp.h"
+#include "asterfort/lcoptg.h"
+#include "asterfort/lkijpl.h"
     integer :: imat, nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
     real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler, angmas(3)
     real(kind=8) :: mater(nmat, 2)

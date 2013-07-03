@@ -21,8 +21,8 @@ subroutine montee(opt, ligrel, nout, lchout, lpaout,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/monte1.h'
-    include 'asterfort/typele.h'
+#include "asterfort/monte1.h"
+#include "asterfort/typele.h"
     integer :: opt, nout
     character(len=*) :: lchout(*), fin
     character(len=8) :: lpaout(*)

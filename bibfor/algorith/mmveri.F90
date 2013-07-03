@@ -20,36 +20,36 @@ subroutine mmveri(noma, defico, resoco, newgeo, sdappa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/apcopt.h'
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apinfr.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdist.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mcopco.h'
-    include 'asterfort/mmelty.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfm.h'
-    include 'asterfort/mmnewj.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmnpoi.h'
-    include 'asterfort/mmnumn.h'
-    include 'asterfort/mmpnoe.h'
-    include 'asterfort/mmtanr.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apinfr.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdist.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mcopco.h"
+#include "asterfort/mmelty.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmnewj.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmnpoi.h"
+#include "asterfort/mmnumn.h"
+#include "asterfort/mmpnoe.h"
+#include "asterfort/mmtanr.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo

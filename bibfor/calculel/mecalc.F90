@@ -53,22 +53,22 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     implicit none
 !
 ! PARAMETRES D'APPELS
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajchca.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/meceuc.h'
-    include 'asterfort/mechpo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvtx.h"
+#include "asterfort/ajchca.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/mecact.h"
+#include "asterfort/meceuc.h"
+#include "asterfort/mechpo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: option, modele, chdepl, chdynr, suropt, chelem, compor
     character(len=*) :: chgeom, chmate, chcara(*), chfreq, chmass, chsig, chtemp
     character(len=*) :: chtref, chtime, chnumc, chharm, charge, cheps, chmeta

@@ -5,8 +5,8 @@ subroutine piqpiq(xp, yp, zp, x, y,&
                   zone5, zone6, zone7, zone8, typsou)
 ! aslint: disable=W1504
     implicit   none
-    include 'asterc/r8pi.h'
-    include 'asterfort/piqsou.h'
+#include "asterc/r8pi.h"
+#include "asterfort/piqsou.h"
     real(kind=8) :: xp, yp, zp, x, y, z
     real(kind=8) :: rep, ret, rit, bet, hso, eso, h2, h3, l4, l5
     character(len=8) :: typsou

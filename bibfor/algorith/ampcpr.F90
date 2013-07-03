@@ -41,7 +41,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     real(kind=8) :: bmat(n1, n2)
     complex(kind=8) :: cmat(*)
 !

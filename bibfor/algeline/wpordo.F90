@@ -1,7 +1,7 @@
 subroutine wpordo(type, shift, vpr, vpi, x,&
                   m, neq)
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: type, neq, m
     real(kind=8) :: vpr(*), vpi(*)
     complex(kind=8) :: x(neq, m), shift

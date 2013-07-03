@@ -24,11 +24,11 @@ subroutine divgra(e1, e2, dfde, dfdk, vibarn,&
 !     ENTREES  ---> DERIVEES DE FONCTIONS DE FORME
 !...............................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
     real(kind=8) :: dfde(9, 9), dfdk(9, 9), vibarn(2, 9)
     real(kind=8) :: divsig(9)
     real(kind=8) :: cova(3, 3), metr(2, 2), a(2, 2), jc, cnva(3, 3)

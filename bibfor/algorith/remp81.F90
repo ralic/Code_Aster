@@ -32,10 +32,10 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: classe, typ1
     character(len=8) :: basmod, k8bid, blanc
     character(len=19) :: nommat

@@ -39,10 +39,10 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 !
 ! OUT TANMRP : MATRICE TANGENTE DANS LA BASE DES VECTEURS PROPRES
 !
-    include 'asterfort/d2diag.h'
-    include 'asterfort/damage.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/xifonc.h'
+#include "asterfort/d2diag.h"
+#include "asterfort/damage.h"
+#include "asterfort/matmul.h"
+#include "asterfort/xifonc.h"
     integer :: i, j
 !
     real(kind=8) :: tanma2(3, 3)

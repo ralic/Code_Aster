@@ -2,7 +2,7 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir,&
                   is, necrci, dgamms, alphmr, dalpha,&
                   sgnr, daldgr)
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), ir, is
     real(kind=8) :: coeft(nmat), daldgr, dgamms, alphmr, sgnr
     character(len=16) :: necrci

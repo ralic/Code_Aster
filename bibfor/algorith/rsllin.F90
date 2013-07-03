@@ -33,12 +33,12 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 !       OUT SIGF   :  CONTRAINTE A T+DT
 !           VINF   :  VARIABLES INTERNES A T+DT
 !       ----------------------------------------------------------------
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsove.h'
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsove.h"
     integer :: nmat
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

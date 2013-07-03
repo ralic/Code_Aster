@@ -6,8 +6,8 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), jfisno, nfiss, ifiss, jheafa, ncomph, ifa

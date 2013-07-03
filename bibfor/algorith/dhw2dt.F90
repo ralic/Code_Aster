@@ -1,6 +1,6 @@
 function dhw2dt(dp11t, alpliq, t, rho11, cp11)
     implicit      none
-    include 'asterfort/dhdt.h'
+#include "asterfort/dhdt.h"
     real(kind=8) :: dp11t, alpliq, t, rho11, cp11, dhw2dt
 ! ======================================================================
 ! ======================================================================

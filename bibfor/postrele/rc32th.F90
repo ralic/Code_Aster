@@ -23,31 +23,31 @@ subroutine rc32th()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/rc32my.h'
-    include 'asterfort/rctres.h'
-    include 'asterfort/rcver1.h'
-    include 'asterfort/rcveri.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/rc32my.h"
+#include "asterfort/rctres.h"
+#include "asterfort/rcver1.h"
+#include "asterfort/rcveri.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, n1, iocc, nbther, nume, nbinst, jinst, i, j, k, l, ndim
     integer :: nbabsc, jabsc, jorig, jextr, ncmp, jcont, iret, kk
     parameter  ( ncmp = 6 )

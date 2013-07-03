@@ -19,14 +19,14 @@ subroutine mvnume(depmoi, depdel, depplu)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vtcmbl.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vtcmbl.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtzero.h"
     character(len=19) :: depmoi, depdel, depplu
 !
 ! ----------------------------------------------------------------------

@@ -1,16 +1,16 @@
 subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
                   repere, nbnli, parcho, lnoue2)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/orient.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/orient.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ioc, iliai, nbnli
     real(kind=8) :: parcho(nbnli, *)
     logical :: lnoue2

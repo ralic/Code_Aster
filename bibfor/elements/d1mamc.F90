@@ -37,11 +37,11 @@ subroutine d1mamc(fami, mater, instan, poum, kpg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/d1ma3d.h'
-    include 'asterfort/d1macp.h'
-    include 'asterfort/d1madp.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/d1ma3d.h"
+#include "asterfort/d1macp.h"
+#include "asterfort/d1madp.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp
     real(kind=8) :: repere(7), xyzgau(1), d1(nbsig, 1), instan

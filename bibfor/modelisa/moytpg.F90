@@ -19,7 +19,7 @@ subroutine moytpg(fami, kp, nspg, poum, temp,&
 ! ======================================================================
 !
     implicit   none
-    include 'asterfort/rcvarc.h'
+#include "asterfort/rcvarc.h"
     integer :: kp, nspg, iret
     character(len=*) :: fami, poum
     real(kind=8) :: temp

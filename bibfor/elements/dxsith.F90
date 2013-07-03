@@ -1,13 +1,13 @@
 subroutine dxsith(nomte, mater, sigma)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dmatcp.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/verift.h'
+#include "jeveux.h"
+#include "asterfort/dmatcp.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/verift.h"
     integer :: mater
     real(kind=8) :: sigma(*)
     character(len=16) :: nomte

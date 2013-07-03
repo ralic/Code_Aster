@@ -20,23 +20,23 @@ subroutine rfnoch()
 !
 !     OPERATEUR "RECU_FONCTION"   MOT CLE "NOEUD_CHOC"
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/foattr.h'
-    include 'asterfort/focrch.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ordonn.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utnono.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/foattr.h"
+#include "asterfort/focrch.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ordonn.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utnono.h"
     integer :: ifm, niv
     integer :: ibid, n, nc, ng, int, ind, nsst, iret, jrefe1
     character(len=8) :: k8b, noma, sst, basemo, noeud, intitu

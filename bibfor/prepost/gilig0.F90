@@ -1,11 +1,11 @@
 subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/gilio2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/gilio2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nfic, nboblu, nbobno, nbobo, niv
 ! ----------------------------------------------------------------------
 ! ======================================================================

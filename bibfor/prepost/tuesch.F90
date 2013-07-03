@@ -18,9 +18,9 @@ subroutine tuesch(nssch)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
     character(len=19) :: nssch
 !
 !**********************************************************************

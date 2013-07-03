@@ -2,7 +2,7 @@ subroutine mtcro3(m, n, a, nmax, x,&
                   y)
     implicit none
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: nmax, m, n
     real(kind=8) :: a(nmax, *), x(*), y(*)
 ! ----------------------------------------------------------------------

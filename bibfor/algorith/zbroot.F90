@@ -19,7 +19,7 @@ subroutine zbroot(mem, rhonew, echec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     real(kind=8) :: mem(2, *), rhonew
     logical :: echec
 !

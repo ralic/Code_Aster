@@ -24,15 +24,15 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dimp0.h'
-    include 'asterfort/dimp1.h'
-    include 'asterfort/dimsl.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/dimp0.h"
+#include "asterfort/dimp1.h"
+#include "asterfort/dimsl.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/u2mesk.h"
     logical :: axi
     integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi, nnom
     integer :: ipoid2, dimdef, dimuel, dimcon, nno, nnos, nddls, nddlm

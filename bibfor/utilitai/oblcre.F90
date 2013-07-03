@@ -19,18 +19,18 @@ subroutine oblcre(sdlist, typstz, idnpaz, nbstru)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obcrea.h'
-    include 'asterfort/obseti.h'
-    include 'asterfort/obsetk.h'
-    include 'asterfort/obseto.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obcrea.h"
+#include "asterfort/obseti.h"
+#include "asterfort/obsetk.h"
+#include "asterfort/obseto.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: sdlist
     character(len=*) :: typstz
     character(len=*) :: idnpaz

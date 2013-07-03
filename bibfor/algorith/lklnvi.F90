@@ -1,7 +1,7 @@
 subroutine lklnvi(mod, ndt, ndi, nvi)
 !
     implicit     none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi
     character(len=8) :: mod
 ! =================================================================

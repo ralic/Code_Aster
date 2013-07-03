@@ -18,17 +18,17 @@ subroutine te0541(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/xbsig.h'
-    include 'asterfort/xsigth.h'
-    include 'asterfort/xteddl.h'
-    include 'asterfort/xteini.h'
+#include "jeveux.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "asterfort/xbsig.h"
+#include "asterfort/xsigth.h"
+#include "asterfort/xteddl.h"
+#include "asterfort/xteini.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION CHAR_MECA_TEMP_R POUR LES

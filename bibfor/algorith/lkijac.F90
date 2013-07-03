@@ -38,38 +38,38 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 !     OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 !         IRET   :  CODE RETOUR
 !     --------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/lkbpri.h'
-    include 'asterfort/lkcalg.h'
-    include 'asterfort/lkcaln.h'
-    include 'asterfort/lkcrip.h'
-    include 'asterfort/lkcriv.h'
-    include 'asterfort/lkdepp.h'
-    include 'asterfort/lkdfds.h'
-    include 'asterfort/lkdfdx.h'
-    include 'asterfort/lkdgde.h'
-    include 'asterfort/lkdgds.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkdndx.h'
-    include 'asterfort/lkds2h.h'
-    include 'asterfort/lkelas.h'
-    include 'asterfort/lkfsxi.h'
-    include 'asterfort/lkvacp.h'
-    include 'asterfort/lkvacv.h'
-    include 'asterfort/lkvarp.h'
-    include 'asterfort/lkvarv.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/lkbpri.h"
+#include "asterfort/lkcalg.h"
+#include "asterfort/lkcaln.h"
+#include "asterfort/lkcrip.h"
+#include "asterfort/lkcriv.h"
+#include "asterfort/lkdepp.h"
+#include "asterfort/lkdfds.h"
+#include "asterfort/lkdfdx.h"
+#include "asterfort/lkdgde.h"
+#include "asterfort/lkdgds.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkdndx.h"
+#include "asterfort/lkds2h.h"
+#include "asterfort/lkelas.h"
+#include "asterfort/lkfsxi.h"
+#include "asterfort/lkvacp.h"
+#include "asterfort/lkvacv.h"
+#include "asterfort/lkvarp.h"
+#include "asterfort/lkvarv.h"
     integer :: nr, nmat, iret, nvi
     real(kind=8) :: deps(6), drdy(nr, nr), yf(nr), dy(nr), yd(nr)
     real(kind=8) :: materf(nmat, 2)

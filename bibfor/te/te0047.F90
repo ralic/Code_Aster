@@ -1,39 +1,39 @@
 subroutine te0047(optioz, nomtez)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/diarme.h'
-    include 'asterfort/dichoc.h'
-    include 'asterfort/dicorn.h'
-    include 'asterfort/dicrgr.h'
-    include 'asterfort/digouj.h'
-    include 'asterfort/dinon2.h'
-    include 'asterfort/dinon3.h'
-    include 'asterfort/dinon4.h'
-    include 'asterfort/dinona.h'
-    include 'asterfort/dinonc.h'
-    include 'asterfort/dinosi.h'
-    include 'asterfort/disief.h'
-    include 'asterfort/infdis.h'
-    include 'asterfort/infted.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ut2mgl.h'
-    include 'asterfort/ut2mlg.h'
-    include 'asterfort/ut2vgl.h'
-    include 'asterfort/utpsgl.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/dcopy.h'
+#include "asterfort/diarme.h"
+#include "asterfort/dichoc.h"
+#include "asterfort/dicorn.h"
+#include "asterfort/dicrgr.h"
+#include "asterfort/digouj.h"
+#include "asterfort/dinon2.h"
+#include "asterfort/dinon3.h"
+#include "asterfort/dinon4.h"
+#include "asterfort/dinona.h"
+#include "asterfort/dinonc.h"
+#include "asterfort/dinosi.h"
+#include "asterfort/disief.h"
+#include "asterfort/infdis.h"
+#include "asterfort/infted.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ut2mgl.h"
+#include "asterfort/ut2mlg.h"
+#include "asterfort/ut2vgl.h"
+#include "asterfort/utpsgl.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vdiff.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
     character(len=*) :: optioz, nomtez
 ! ----------------------------------------------------------------------

@@ -23,8 +23,8 @@ subroutine angvec(v1, v2, angle)
 !     ATTENTION L'ORDRE V1, V2 EST IMPORTANT POUR LE SIGNE DE ANGLE
 !     L'ANGLE RETOURNE EST COMPRIS ENTRE -PI ET PI (ATAN2)
 !
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
     real(kind=8) :: v1(3), v2(3), angle, cosphi, sinphi, v1v2(3), nv1, nv2
     real(kind=8) :: norm(3), nv3
     integer :: i

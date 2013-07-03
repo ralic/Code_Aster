@@ -17,7 +17,7 @@ subroutine ppga1d(ndim, nno, npg, poids, vff,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ndim, nno, npg
     real(kind=8) :: poids(npg), vff(nno, npg), dff(nno, npg), geom(ndim, nno)
     real(kind=8) :: pg(ndim+1, npg)

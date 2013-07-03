@@ -2,10 +2,10 @@ subroutine mouveo(arete, rcarte, angdeb, angfin, angare,&
                   angmax, profon, volume, epais)
 ! aslint: disable=
     implicit   none
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8dgrd.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: arete, rcarte, angdeb, angfin, angare, angmax, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------

@@ -45,20 +45,20 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterc/r8prem.h'
-    include 'asterfort/ecpuis.h'
-    include 'asterfort/nmcri1.h'
-    include 'asterfort/nmcri2.h'
-    include 'asterfort/nmelru.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerofr.h'
+#include "asterc/r8prem.h"
+#include "asterfort/ecpuis.h"
+#include "asterfort/nmcri1.h"
+#include "asterfort/nmcri2.h"
+#include "asterfort/nmelru.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerofr.h"
     integer :: kpg, ksp, ndim, imate, iret, isec, ihyd
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)

@@ -1,11 +1,11 @@
 subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
                   coeft, angmas, nfs, nsg, toutms)
     implicit none
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/matrot.h"
+#include "asterfort/promat.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, nbcomm(nmat, 3), nfs, nbphas, nsg
     real(kind=8) :: pgl(3, 3), toutms(nbphas, nfs, nsg, 7), coeft(nmat)
     real(kind=8) :: q(3, 3)

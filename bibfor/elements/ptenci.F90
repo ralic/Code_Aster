@@ -1,7 +1,7 @@
 subroutine ptenci(neq, x, mat, omeg, en,&
                   itype, kanl, idis)
     implicit none
-    include 'asterfort/vtmv.h'
+#include "asterfort/vtmv.h"
     integer :: neq, itype, kanl, idis
     real(kind=8) :: x(*), mat(neq, neq), omeg, en(*)
 !     ------------------------------------------------------------------

@@ -21,27 +21,27 @@ subroutine op0174()
 !     COMMANDE:  RECU_TABLE
 !
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getltx.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexpa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getltx.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexpa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: iret, lonord, iord, ipara, i, n, numord, ibid
     integer :: nbpara, inom, ityp, ilong, itabi, itabr, itabc
     integer :: pi, pc, pr

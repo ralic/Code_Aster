@@ -26,14 +26,14 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     logical :: lrgm, ther
     character(len=16) :: compor, phenom
     integer :: imate, ipg

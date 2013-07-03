@@ -19,14 +19,14 @@ subroutine nmsssv(modelz, mate, carele, lischa, vesstf)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/memare.h'
-    include 'asterfort/ss2mme.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/memare.h"
+#include "asterfort/ss2mme.h"
     character(len=*) :: modelz
     character(len=24) :: mate, carele
     character(len=19) :: vesstf, lischa

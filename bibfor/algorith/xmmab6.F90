@@ -2,7 +2,7 @@ subroutine xmmab6(ndim, nnol, pla, ffc, jac,&
                   tau1, tau2, lact, mmat)
 !
     implicit none
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     integer :: ndim, nnol
     integer :: pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)

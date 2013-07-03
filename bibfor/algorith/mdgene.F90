@@ -1,11 +1,11 @@
 subroutine mdgene(basemo, nbmode, numgen, masgen, riggen,&
                   amogen, nexcit, jvec, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: nbmode, nexcit, jvec, ier
     character(len=8) :: basemo, masgen, riggen, amogen
     character(len=14) :: numgen

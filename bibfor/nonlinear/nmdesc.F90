@@ -26,19 +26,19 @@ subroutine nmdesc(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacin.h'
-    include 'asterfort/nmassc.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcoma.h'
-    include 'asterfort/nmcret.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/nmresd.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacin.h"
+#include "asterfort/nmassc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcoma.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmresd.h"
+#include "asterfort/vtzero.h"
     integer :: numins, iterat
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)

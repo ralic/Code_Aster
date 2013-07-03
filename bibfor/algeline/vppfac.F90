@@ -1,18 +1,18 @@
 subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                   mxvect, masmod, facpar)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: lmasse, neq, nbvect, mxvect
     real(kind=8) :: masgen(*), vect(neq, *)
     real(kind=8) :: masmod(mxvect, *), facpar(mxvect, *)

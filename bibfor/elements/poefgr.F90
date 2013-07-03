@@ -2,19 +2,19 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
                   rho, effo)
 ! aslint: disable=
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/pmfmas.h'
-    include 'asterfort/pomass.h'
-    include 'asterfort/ptforp.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vecma.h'
-    include 'asterfort/verifm.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/pmfmas.h"
+#include "asterfort/pomass.h"
+#include "asterfort/ptforp.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
+#include "asterfort/verifm.h"
     character(len=*) :: nomte
     real(kind=8) :: klc(12, 12), e, xnu, rho, effo(*)
 !     ------------------------------------------------------------------

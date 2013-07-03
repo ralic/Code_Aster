@@ -16,7 +16,7 @@ subroutine mamagi(nomte, xr, yr)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/mgauss.h'
+#include "asterfort/mgauss.h"
     character(len=8) :: nomte
     real(kind=8) :: xr(*), yr(*), det
     real(kind=8) :: psi3(3), bt(12, 27), btb(12, 12)

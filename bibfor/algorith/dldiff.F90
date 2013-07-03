@@ -62,32 +62,32 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dlarch.h'
-    include 'asterfort/dldif0.h'
-    include 'asterfort/dltcrr.h'
-    include 'asterfort/dltins.h'
-    include 'asterfort/dyarch.h'
-    include 'asterfort/extdia.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/r8depi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dlarch.h"
+#include "asterfort/dldif0.h"
+#include "asterfort/dltcrr.h"
+#include "asterfort/dltins.h"
+#include "asterfort/dyarch.h"
+#include "asterfort/extdia.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     integer :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
     character(len=8) :: masse, rigid, amort
     character(len=24) :: modele, carele, charge, fomult, mate, numedd

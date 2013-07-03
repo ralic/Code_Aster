@@ -20,10 +20,10 @@ subroutine critev(epsp, epsd, eta, lambda, deuxmu,&
 !
 !
     implicit none
-    include 'asterfort/bptobg.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/bptobg.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     real(kind=8) :: epsp(7), epsd(7), eta, lambda, deuxmu, fpd, seuil, rd
     real(kind=8) :: crit, critp
 ! ----------------------------------------------------------------------

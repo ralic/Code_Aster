@@ -25,7 +25,7 @@ subroutine impers()
 !
 ! ----------------------------------------------------------------------
 !
-    include 'asterfort/iunifi.h'
+#include "asterfort/iunifi.h"
     integer :: iunerr
 !
     iunerr = iunifi('ERREUR')

@@ -20,7 +20,7 @@ function nmcri9(dp)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/eccook.h'
+#include "asterfort/eccook.h"
     real(kind=8) :: nmcri9, dp
 ! ----------------------------------------------------------------------
 !   BUT: EVALUER LA FONCTION DONT ON CHERCHE LE ZERO POUR LA PLASTICITE

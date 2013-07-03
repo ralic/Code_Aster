@@ -25,36 +25,36 @@ subroutine op0014()
 !            GRADIENT CONJUGUE PRCONDITIONNE (SOLVEUR GCPC)
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/apetsc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtcopy.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/mtexis.h'
-    include 'asterfort/pcldlt.h'
-    include 'asterfort/pcmump.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/tldlgg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vrrefe.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/apetsc.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtcopy.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/mtexis.h"
+#include "asterfort/pcldlt.h"
+#include "asterfort/pcmump.h"
+#include "asterfort/titre.h"
+#include "asterfort/tldlgg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vrrefe.h"
     character(len=3) :: kstop
     character(len=4) :: klag2
     character(len=24) :: valk(2)

@@ -1,12 +1,12 @@
 subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
                   vale)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: ima, ipt, nbm, adrm(*)
     real(kind=8) :: vale(*)
     character(len=24) :: chmate

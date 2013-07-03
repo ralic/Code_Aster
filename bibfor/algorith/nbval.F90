@@ -36,7 +36,7 @@ subroutine nbval(ck, cm, cmat, ndim, lambda,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/trldc.h'
+#include "asterfort/trldc.h"
     integer :: ndim, nb
     complex(kind=8) :: ck(*), cm(*), cmat(*)
     real(kind=8) :: lambda

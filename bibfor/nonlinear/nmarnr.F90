@@ -19,17 +19,17 @@ subroutine nmarnr(result, typtaz, numreu)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexve.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexve.h"
     character(len=8) :: result
     character(len=*) :: typtaz
     integer :: numreu

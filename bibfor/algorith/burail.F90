@@ -34,8 +34,8 @@ subroutine burail(vin, nvi, materd, materf, nmat,&
 !     CN       : SCALAIRE LIE A LA DEFOR. IRREV. DE FLUAGE PROPRE SPH.
 !=======================================================================
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/lcprsc.h'
+#include "asterfort/assert.h"
+#include "asterfort/lcprsc.h"
     integer :: nvi, nmat, ndt, ndi, i
     real(kind=8) :: vin(nvi)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

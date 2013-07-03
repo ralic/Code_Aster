@@ -23,11 +23,11 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/iselli.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
     integer :: nse, ndim, jcnse, nnose, jpint, igeom, inoloc
     character(len=8) :: elrefp
     integer :: nbnoma, jcesd3, jcesl3, jcesv3, numa2, ifiss

@@ -41,9 +41,9 @@ subroutine cjsmat(mod, imat, tempf, materf, ndt,&
 !           NVI    :  NB DE VARIABLES INTERNES
 !           NIVCJS :  NIVEAU 1, 2 OU 3 DE LA LOI CJS
 !       ----------------------------------------------------------------
-    include 'asterfort/cjsnvi.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cjsnvi.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, imat
     real(kind=8) :: materf(14, 2), tempf
     character(len=8) :: mod, nomc(17)

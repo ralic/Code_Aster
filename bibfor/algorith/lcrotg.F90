@@ -17,8 +17,8 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcfonc.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcfonc.h"
     integer :: indice
     real(kind=8) :: dp, e(6), dtaudf(6, 3, 3)
 !

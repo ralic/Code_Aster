@@ -22,22 +22,22 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/apatta.h'
-    include 'asterfort/apchoi.h'
-    include 'asterfort/apcoma.h'
-    include 'asterfort/apdist.h'
-    include 'asterfort/apninv.h'
-    include 'asterfort/apnndm.h'
-    include 'asterfort/apnumm.h'
-    include 'asterfort/aptypm.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmproj.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/apatta.h"
+#include "asterfort/apchoi.h"
+#include "asterfort/apcoma.h"
+#include "asterfort/apdist.h"
+#include "asterfort/apninv.h"
+#include "asterfort/apnndm.h"
+#include "asterfort/apnumm.h"
+#include "asterfort/aptypm.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmproj.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=19) :: sdappa, newgeo
     character(len=8) :: noma
     character(len=24) :: defico

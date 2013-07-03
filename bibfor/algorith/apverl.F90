@@ -20,29 +20,29 @@ subroutine apverl(sdappa)
 !
 ! aslint: disable=
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/apatta.h'
-    include 'asterfort/apninv.h'
-    include 'asterfort/apnndm.h'
-    include 'asterfort/apnomk.h'
-    include 'asterfort/apnumm.h'
-    include 'asterfort/apnumn.h'
-    include 'asterfort/appari.h'
-    include 'asterfort/apzoni.h'
-    include 'asterfort/apzonl.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmnorm.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/apatta.h"
+#include "asterfort/apninv.h"
+#include "asterfort/apnndm.h"
+#include "asterfort/apnomk.h"
+#include "asterfort/apnumm.h"
+#include "asterfort/apnumn.h"
+#include "asterfort/appari.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmnorm.h"
+#include "blas/ddot.h"
     character(len=19) :: sdappa
 !
 ! ----------------------------------------------------------------------

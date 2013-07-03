@@ -4,30 +4,30 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                   camor)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/copmod.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/copmod.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     character(len=8) :: masse, noma, basemo
     real(kind=8) :: mass(*), rigi(*), smass(*), srigi(*), samor(*), cmass(*)
     real(kind=8) :: crigi(*), camor(*), amored(*), freq(*)

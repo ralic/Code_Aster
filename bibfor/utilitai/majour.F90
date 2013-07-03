@@ -19,12 +19,12 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmgrot.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmgrot.h"
     character(len=19) :: sdnume
     logical :: lgrot, lendo
     integer :: neq, ordre

@@ -1,15 +1,15 @@
 subroutine chcoma(tablez, nomaou)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomaou
     character(len=*) :: tablez
 !.======================================================================

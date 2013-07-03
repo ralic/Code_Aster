@@ -20,18 +20,18 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/apnndm.h'
-    include 'asterfort/apnumm.h'
-    include 'asterfort/aptypm.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cforth.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/apnndm.h"
+#include "asterfort/apnumm.h"
+#include "asterfort/aptypm.h"
+#include "asterfort/assert.h"
+#include "asterfort/cforth.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/normev.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=19) :: sdappa
     character(len=8) :: noma
     character(len=24) :: defico

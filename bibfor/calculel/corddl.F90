@@ -37,9 +37,9 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili,&
 !     POS    : TABLEAU DE CORRESPONDANCE AVEC LES DDL SUR LE NOEUD
 !          EN TANT QUE NOEUD GLOBAL
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterfort/entcod.h'
+#include "asterfort/entcod.h"
     integer :: i, idprn1, idprn2, iec, iecdg, iecdl, ili
     integer :: in, k, l, mode, n, nbecmx, ncmp
     integer :: nddloc, nec, nunoel

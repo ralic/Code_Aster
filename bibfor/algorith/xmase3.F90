@@ -3,15 +3,15 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                   npg, imate, lsn, lst, matuu)
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/reere3.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalfe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref5.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/reere3.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalfe.h"
     integer :: ndim, igeom, imate, nnop, npg, ddlh, ddlc, nfe
     character(len=8) :: elrefp
     real(kind=8) :: basloc(9*nnop), he, coorse(*)

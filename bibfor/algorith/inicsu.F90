@@ -1,6 +1,6 @@
 subroutine inicsu(valcen, valcev, valfac, valfav, maxfa)
     implicit none
-    include 'asterc/r8maem.h'
+#include "asterc/r8maem.h"
     integer :: maxfa
     real(kind=8) :: valcen(14, 6), valcev(14, 6, maxfa)
     real(kind=8) :: valfac(maxfa, 14, 6), valfav(maxfa, 14, 6, maxfa)

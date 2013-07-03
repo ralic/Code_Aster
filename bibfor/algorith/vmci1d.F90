@@ -20,7 +20,7 @@ subroutine vmci1d(fami, kpg, ksp, imate, em,&
 ! ======================================================================
 ! person_in_charge: jean-luc.flejou at edf.fr
     implicit none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, imate
     real(kind=8) :: ep, em, sigm, deps, sigp, dsde
     real(kind=8) :: vim(*), vip(*)

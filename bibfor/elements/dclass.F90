@@ -26,8 +26,8 @@ subroutine dclass(n, tab, iran)
 !
 ! OUT IRAN : RANG DE LA RACINE
 !
-    include 'asterfort/dclhoa.h'
-    include 'asterfort/dclsma.h'
+#include "asterfort/dclhoa.h"
+#include "asterfort/dclsma.h"
     integer :: n, iran(*), lim
 !
     real(kind=8) :: tab(*)

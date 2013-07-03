@@ -25,26 +25,26 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
 !
 !--------------ENTREES----------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/i2appm.h'
-    include 'asterfort/i2chax.h'
-    include 'asterfort/i2fini.h'
-    include 'asterfort/i2isgc.h'
-    include 'asterfort/i2isgt.h'
-    include 'asterfort/i2nbrf.h'
-    include 'asterfort/i2rgel.h'
-    include 'asterfort/i2rgma.h'
-    include 'asterfort/i2typf.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/i2appm.h"
+#include "asterfort/i2chax.h"
+#include "asterfort/i2fini.h"
+#include "asterfort/i2isgc.h"
+#include "asterfort/i2isgt.h"
+#include "asterfort/i2nbrf.h"
+#include "asterfort/i2rgel.h"
+#include "asterfort/i2rgma.h"
+#include "asterfort/i2typf.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: nbm, numail(*)
     real(kind=8) :: xa, ya, xb, yb, epsi
     character(len=24) :: conec, coord, typ

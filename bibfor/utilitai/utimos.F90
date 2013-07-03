@@ -19,10 +19,10 @@ subroutine utimos(unit, obin, lattr, lcont)
 !     --
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeimpa.h'
-    include 'asterfort/jeimpo.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/jeimpa.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: obin
     integer :: unit
     logical :: lattr, lcont

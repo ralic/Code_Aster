@@ -75,18 +75,18 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
 !
 ! ---------------------------------------------------------------
 !  --> DECLARATION DES ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/cov4v5.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/lecelt.h'
-    include 'asterfort/lect82.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cov4v5.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/lecelt.h"
+#include "asterfort/lect82.h"
+#include "asterfort/wkvect.h"
     integer :: maxnod, nbtyma, datset
     integer :: mint(nbtyma), mant(nbtyma)
     integer :: nbmail(nbtyma), indic(nbtyma), permut(maxnod, nbtyma)

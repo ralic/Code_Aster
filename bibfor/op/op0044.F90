@@ -44,46 +44,46 @@ subroutine op0044()
     implicit none
 !
 ! VARIABLES LOCALES
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/r8depi.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vp1pro.h'
-    include 'asterfort/vpcntl.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/vpddl.h'
-    include 'asterfort/vpdich.h'
-    include 'asterfort/vpfopr.h'
-    include 'asterfort/vpinte.h'
-    include 'asterfort/vppara.h'
-    include 'asterfort/vpwecf.h'
-    include 'asterfort/vrrefe.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wp1inv.h'
-    include 'asterfort/wp1mul.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cresol.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/omega2.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vp1pro.h"
+#include "asterfort/vpcntl.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/vpddl.h"
+#include "asterfort/vpdich.h"
+#include "asterfort/vpfopr.h"
+#include "asterfort/vpinte.h"
+#include "asterfort/vppara.h"
+#include "asterfort/vpwecf.h"
+#include "asterfort/vrrefe.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wp1inv.h"
+#include "asterfort/wp1mul.h"
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter     ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
     parameter     ( mxddl = 1 )

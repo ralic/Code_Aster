@@ -8,39 +8,39 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 ! aslint: disable=W1504
     implicit  none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcharg.h'
-    include 'asterfort/gkmet1.h'
-    include 'asterfort/gkmet3.h'
-    include 'asterfort/gkmet4.h'
-    include 'asterfort/gksimp.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajvi.h'
-    include 'asterfort/tbajvk.h'
-    include 'asterfort/tbajvr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcharg.h"
+#include "asterfort/gkmet1.h"
+#include "asterfort/gkmet3.h"
+#include "asterfort/gkmet4.h"
+#include "asterfort/gksimp.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvk.h"
+#include "asterfort/tbajvr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
+#include "asterfort/wkvect.h"
     integer :: iord, nchar, nbprup, ndimte
     real(kind=8) :: puls
     character(len=8) :: modele, thetai, lchar(*), fiss

@@ -1,18 +1,18 @@
 subroutine pacoa3(noeud1, noeud2, lonli1, lonli2, dmin0,&
                   nomaz, liso1z, liso2z, lonlis)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/padist.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: noeud1(*), noeud2(*), lonli1, lonli2, lonlis
     character(len=*) :: nomaz, liso1z, liso2z
     real(kind=8) :: dmin0

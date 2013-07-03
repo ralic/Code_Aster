@@ -21,7 +21,7 @@ subroutine shasbg(bglob, b, p)
 ! TRANSFORME B(6,24) DANS LOCAL EN BGLOB(6,24) DANS GLOBAL
 ! AVEC P(3,3) MATRICE DE PASSAGE
     implicit none
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     real(kind=8) :: bglob(6, 24), b(3, 8), p(3, 3), btmp(6, 24)
     integer :: j
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

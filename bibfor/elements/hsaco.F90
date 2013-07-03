@@ -18,8 +18,8 @@ subroutine hsaco(vectt, dudxnc, hsc)
 !
     implicit none
 !
-    include 'asterfort/hsame.h'
-    include 'asterfort/hsash.h'
+#include "asterfort/hsame.h"
+#include "asterfort/hsash.h"
     real(kind=8) :: vectt ( 3 , 3 )
 !
     real(kind=8) :: dudxnc ( 9 )

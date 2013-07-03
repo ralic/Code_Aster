@@ -1,19 +1,19 @@
 subroutine ibbase(ier, fichdf)
     implicit none
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/loisem.h'
-    include 'asterc/mofiem.h'
-    include 'asterc/rmfile.h'
-    include 'asterfort/jeinif.h'
-    include 'asterfort/jelibf.h'
-    include 'asterfort/jelihd.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utremt.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterc/loisem.h"
+#include "asterc/mofiem.h"
+#include "asterc/rmfile.h"
+#include "asterfort/jeinif.h"
+#include "asterfort/jelibf.h"
+#include "asterfort/jelihd.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utremt.h"
     integer :: ier
     character(len=*) :: fichdf
 !     ------------------------------------------------------------------

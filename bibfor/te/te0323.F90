@@ -19,16 +19,16 @@ subroutine te0323(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ejfono.h'
-    include 'asterfort/ejfore.h'
-    include 'asterfort/ejinit.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/terefe.h'
+#include "asterfort/ejfono.h"
+#include "asterfort/ejfore.h"
+#include "asterfort/ejinit.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/terefe.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !    OPTION FORC_NODA ET REFE_FORC_NODA POUR LES JOINTS QUADRA ET HYME

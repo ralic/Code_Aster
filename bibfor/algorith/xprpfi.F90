@@ -2,18 +2,18 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
                   fiss, ndim, lsn, lst)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/xprali.h'
-    include 'asterfort/xproj.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/xprali.h"
+#include "asterfort/xproj.h"
     real(kind=8) :: p(3), lsnp, lcmin, lsn, lst
     character(len=19) :: poifis, trifis
     character(len=8) :: fiss

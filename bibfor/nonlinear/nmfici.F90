@@ -21,10 +21,10 @@ subroutine nmfici(nno, nddl, wref, vff, dfde,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/subaco.h'
-    include 'asterfort/sumetr.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/subaco.h"
+#include "asterfort/sumetr.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nno, nddl
     real(kind=8) :: wref, vff(nno), dfde(2, nno), geom(3, nddl/3)
     real(kind=8) :: poids, b(3, 3, nddl/3)

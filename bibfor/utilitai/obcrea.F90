@@ -19,16 +19,16 @@ subroutine obcrea(typstz, nomstr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obcr26.h'
-    include 'asterfort/obcr27.h'
-    include 'asterfort/obcr28.h'
-    include 'asterfort/obcrlo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obcr26.h"
+#include "asterfort/obcr27.h"
+#include "asterfort/obcr28.h"
+#include "asterfort/obcrlo.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: typstz
     character(len=24) :: nomstr
 !

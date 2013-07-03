@@ -19,24 +19,24 @@ subroutine chckco(char, noma, ndimg)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cfcald.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cfposn.h'
-    include 'asterfort/cftypm.h'
-    include 'asterfort/cftypn.h'
-    include 'asterfort/cfzonn.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mmtypm.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/cfcald.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cfposn.h"
+#include "asterfort/cftypm.h"
+#include "asterfort/cftypn.h"
+#include "asterfort/cfzonn.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mmtypm.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: char, noma
     integer :: ndimg
 !

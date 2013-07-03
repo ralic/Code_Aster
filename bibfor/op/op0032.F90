@@ -23,45 +23,45 @@ subroutine op0032()
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvc8.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/apm012.h'
-    include 'asterfort/apm345.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecint.h'
-    include 'asterfort/vpddl.h'
-    include 'asterfort/vpecst.h'
-    include 'asterfort/vpfopr.h'
-    include 'asterfort/vrrefe.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvc8.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/apm012.h"
+#include "asterfort/apm345.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/cresol.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/omega2.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecint.h"
+#include "asterfort/vpddl.h"
+#include "asterfort/vpecst.h"
+#include "asterfort/vpfopr.h"
+#include "asterfort/vrrefe.h"
+#include "asterfort/wkvect.h"
     integer :: islvk, islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
     integer :: pivot2, mxddl, nbrss, ierd, ii, ifapm, k, nbmod, nblagr, nbcine
     integer :: neqact, neq, niterc, npivot(2), mpicou, l, lmasse, lraide, lddl

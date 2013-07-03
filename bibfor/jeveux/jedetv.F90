@@ -22,14 +22,14 @@ subroutine jedetv()
 !
     implicit none
 ! ----------------------------------------------------------------------
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jjmzat.h'
-    include 'asterfort/jxlibd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jjmzat.h"
+#include "asterfort/jxlibd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------

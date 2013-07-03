@@ -17,8 +17,8 @@ subroutine lcrohy(x, dp, em, ep)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/gdclhy.h'
-    include 'asterfort/lcdete.h'
+#include "asterfort/gdclhy.h"
+#include "asterfort/lcdete.h"
     real(kind=8) :: dp, em(6), ep(6), x
 !
 ! ----------------------------------------------------------------------

@@ -20,10 +20,10 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: ievdac, nbrpas, retdec
     real(kind=8) :: ratio, deltac, subdur

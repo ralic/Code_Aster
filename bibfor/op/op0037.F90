@@ -22,51 +22,51 @@ subroutine op0037()
 !     ------------------------------------------------------------------
 !
 !     PARAMETRES "MODE_MECA"
-    include 'jeveux.h'
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-    include 'asterc/gcucon.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsexis.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/rsvpar.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utnono.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/vpddl.h'
-    include 'asterfort/vpmain.h'
-    include 'asterfort/vpnor1.h'
-    include 'asterfort/vpnor2.h'
-    include 'asterfort/vpnorm.h'
-    include 'asterfort/vppfac.h'
-    include 'asterfort/vppgen.h'
-    include 'asterfort/vprecu.h'
-    include 'asterfort/vpstor.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/wpnorm.h'
+#include "asterc/gcucon.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/posddl.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsexis.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/rsvpar.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utnono.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/vpddl.h"
+#include "asterfort/vpmain.h"
+#include "asterfort/vpnor1.h"
+#include "asterfort/vpnor2.h"
+#include "asterfort/vpnorm.h"
+#include "asterfort/vppfac.h"
+#include "asterfort/vppgen.h"
+#include "asterfort/vprecu.h"
+#include "asterfort/vpstor.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/wpnorm.h"
     integer :: i, ib, ic, ideb, ie, ieq, ierd
     integer :: iex, ifin, ilgcon, im, ind, iprec, isign
     integer :: ival, l, ladpa, lcmp, lcoef, lg, lmod, lgr, ln

@@ -19,7 +19,7 @@ function houxgb(xx, n)
 ! ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 !-------------------------------------------------------
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: xx(24)
     integer :: n
     real(kind=8) :: houxgb

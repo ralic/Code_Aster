@@ -1,10 +1,10 @@
 subroutine te0496(option, nomte)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

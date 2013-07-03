@@ -27,10 +27,10 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano,&
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ppgan2.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ppgan2.h"
     integer :: mxval
     parameter (mxval=6*3*4)
 !     EN 2D :

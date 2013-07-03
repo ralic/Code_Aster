@@ -18,10 +18,10 @@ subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfmata.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/cfmata.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: neq, nbliai
     character(len=24) :: resoco
     character(len=14) :: numedd

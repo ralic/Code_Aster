@@ -23,11 +23,11 @@ subroutine ldsp1(pc, ierr)
 !  PRECONDITIONNEUR ISSU D'UNE FACTORISATION SIMPLE PRECISION
 !
 !----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pcmump.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pcmump.h"
 #ifdef _HAVE_PETSC
 #   include "aster_petsc.h"
 !----------------------------------------------------------------

@@ -48,8 +48,8 @@ subroutine utin3d(igeom, nsomm, ino, ityp, inst,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
     integer :: igeom, nsomm, ino, ityp, ifm, niv, option, noe(9, 6, 3)
     real(kind=8) :: inst, insold, valfp(9), valfm(9)
     character(len=8) :: k8cart

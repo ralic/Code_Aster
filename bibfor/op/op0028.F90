@@ -49,16 +49,16 @@ subroutine op0028()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/dfllad.h'
-    include 'asterfort/dflldb.h'
-    include 'asterfort/dfllec.h'
-    include 'asterfort/dfllty.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/dfllad.h"
+#include "asterfort/dflldb.h"
+#include "asterfort/dfllec.h"
+#include "asterfort/dfllty.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: sdlist
     character(len=16) :: k16bid
     character(len=16) :: metlis

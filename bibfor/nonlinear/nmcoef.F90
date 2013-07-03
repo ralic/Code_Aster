@@ -20,9 +20,9 @@ subroutine nmcoef(noeu1, noeu2, typpil, nbno, cnsln,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jeveuo.h"
     integer :: noeu1, noeu2, nbno, i, n
     real(kind=8) :: coef1, coef2, coefi
     character(len=8) :: compo

@@ -34,12 +34,12 @@ subroutine pmconv(r, rini, r1, inst, sigp,&
 !
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/pmimpr.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/pmimpr.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: ind, indimp(6), i, itmax, iter, irela
     real(kind=8) :: inst, parcri(*)
     real(kind=8) :: r(12), rini(12), r1(12), sigp(6), coef, r8b(12)

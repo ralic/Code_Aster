@@ -1,14 +1,14 @@
 subroutine ibtcpu(ier)
     implicit none
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/gtoptr.h'
-    include 'asterc/rdtmax.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/gtoptr.h"
+#include "asterc/rdtmax.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     integer :: ier
 !     ------------------------------------------------------------------
 ! ======================================================================

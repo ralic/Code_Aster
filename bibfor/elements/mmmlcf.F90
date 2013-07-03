@@ -20,8 +20,8 @@ subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefff, lambds
     logical :: lpenac, lpenaf

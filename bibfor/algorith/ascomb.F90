@@ -19,25 +19,25 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/corich.h'
-    include 'asterfort/fointc.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liscpp.h'
-    include 'asterfort/lislnf.h'
-    include 'asterfort/lisltf.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/vtcmbl.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/corich.h"
+#include "asterfort/fointc.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liscpp.h"
+#include "asterfort/lislnf.h"
+#include "asterfort/lisltf.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/vtcmbl.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: typres
     character(len=8) :: nompar
     real(kind=8) :: valpar

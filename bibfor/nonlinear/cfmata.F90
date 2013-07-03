@@ -19,11 +19,11 @@ subroutine cfmata(resoco, neq, nbliai, nmult, numedz,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/atasmo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/atasmo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     character(len=*) :: numedz, numecz, matriz, matelz
     integer :: neq, nbliai, nmult

@@ -1,19 +1,19 @@
 subroutine deelpo(caelem, noma, numail, phie)
     implicit none
-    include 'asterc/indik8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/indik8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: numail
     real(kind=8) :: phie
     character(len=8) :: caelem, noma
@@ -43,7 +43,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 !  OUT: PHIE   : DIAMETRE EXTERIEUR SUR L'ELEMENT
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: ias, iasbon, iasedi, iasmax, icad, icav, icmp, ier
     integer :: icode, iglma, igrand, ima, inomcp, irang1

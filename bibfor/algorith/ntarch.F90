@@ -20,20 +20,20 @@ subroutine ntarch(numins, modele, mate, carele, lnonl,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/didern.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dinuar.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmarce.h'
-    include 'asterfort/ntarc0.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttcpg.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/didern.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dinuar.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmarce.h"
+#include "asterfort/ntarc0.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttcpg.h"
     character(len=24) :: sdieto
     integer :: numins
     real(kind=8) :: para(*)

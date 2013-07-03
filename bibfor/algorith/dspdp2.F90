@@ -1,6 +1,6 @@
 function dspdp2(net, bishop, biot)
     implicit      none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: biot, dspdp2
     logical :: net, bishop
 ! ======================================================================

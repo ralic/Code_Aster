@@ -2,19 +2,19 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
                   mater, yf, dy, nmod, drdy)
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/irrfss.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/rcvarc.h'
+#include "asterc/r8prem.h"
+#include "asterfort/irrfss.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/rcvarc.h"
     character(len=*) :: fami
     character(len=8) :: mod
     integer :: nmat, nmod, kpg, ksp

@@ -5,11 +5,11 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xpoffo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xpoffo.h"
     integer :: n, jlsn, jlst, ndim, ndime, ino, nfiss
     integer :: iad, igeom, ima, jconx1, jconx2
     character(len=8) :: elrefp

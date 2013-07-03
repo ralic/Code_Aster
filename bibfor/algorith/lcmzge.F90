@@ -18,14 +18,14 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterc/r8nnem.h'
-    include 'asterfort/bptobg.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/lcumvi.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8nnem.h"
+#include "asterfort/bptobg.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/lcumvi.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: option

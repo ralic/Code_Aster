@@ -43,18 +43,18 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
 !
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dgeqrf.h'
-    include 'blas/dorgqr.h'
+#include "asterc/matfpe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
+#include "blas/dgeqrf.h"
+#include "blas/dorgqr.h"
     integer :: nindep, nbddl
     character(len=8) :: modgen
     character(len=24) :: seliai, sizlia, sst

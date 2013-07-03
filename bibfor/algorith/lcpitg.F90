@@ -37,7 +37,7 @@ subroutine lcpitg(compor, df, line, dp, dvbe,&
 ! IN  DVBE   : PARTIE DEVIATORIQUE DE LA DEFORMATION
 ! OUT DTAUDF : DERIVEE DE TAU PAR RAPPORT A DF * DFT
 ! ----------------------------------------------------------------------
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     character(len=16) :: compor
     integer :: line
     real(kind=8) :: df(3, 3), dp, dvbe(6), dtaudf(6, 3, 3)

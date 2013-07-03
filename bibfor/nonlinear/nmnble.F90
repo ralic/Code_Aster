@@ -21,21 +21,21 @@ subroutine nmnble(numins, modele, noma, numedd, sdstat,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmctcl.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmctcl.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/r8inir.h"
     integer :: fonact(*)
     character(len=8) :: noma
     character(len=24) :: modele

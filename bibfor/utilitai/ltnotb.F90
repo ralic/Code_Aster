@@ -1,15 +1,15 @@
 subroutine ltnotb(litab, nomtab, nomsd)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/gnoms2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/gnoms2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: litab, nomtab, nomsd
 !     -----------------------------------------------------------------
 ! ======================================================================

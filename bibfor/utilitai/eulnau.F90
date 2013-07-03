@@ -20,9 +20,9 @@ subroutine eulnau(angeul, angnau)
 !     IN : ANGEUL(3) : 3 ANGLES D'EULER EN DEGRES
 !     OUT : ANGNAU(3) : 3 ANGLES NAUTIQUES EN DEGRES
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/angvxy.h'
+#include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
+#include "asterfort/angvxy.h"
     real(kind=8) :: angnau(3), pe(3, 3), angeul(3)
     real(kind=8) :: costhe
     real(kind=8) :: xg(3), yg(3), cosphi, phi, sinphi, sinthe

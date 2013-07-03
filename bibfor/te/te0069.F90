@@ -1,13 +1,13 @@
 subroutine te0069(option, nomte)
     implicit none
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -34,7 +34,7 @@ subroutine te0069(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !
     integer :: icodre(2)

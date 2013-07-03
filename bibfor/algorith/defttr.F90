@@ -29,8 +29,8 @@ subroutine defttr(np1, np4, nbm, npf, nttr,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
     integer :: np1, np4, nbm, npf, nttr, ntrans
     real(kind=8) :: ttran0, ttrans, text(*), fext(np4, *), fextt0(*), fexttr(*)
     real(kind=8) :: dttr

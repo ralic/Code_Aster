@@ -1,6 +1,6 @@
 subroutine stati1(nval, serie, moyenn, ectype)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: nval
     real(kind=8) :: serie(nval), moyenn, ectype
 ! ======================================================================

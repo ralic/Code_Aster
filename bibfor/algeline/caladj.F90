@@ -36,7 +36,7 @@ subroutine caladj(col, diag, xadj, adjncy, n,&
 !             NNZ(1:N)
 ! ATTENTION : XADJ SERT DE TAB DE TRAVAIL DANS LA 1ERE PARTIE (DO 1 )
 !-----------
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     integer :: lmat, n, col(lmat), diag(0:n), adjncy(*)
     integer :: xadj(n+1), nnz(n), suiv(*), tab(*)
     integer :: nrl

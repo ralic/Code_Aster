@@ -50,11 +50,11 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dcalph.h'
-    include 'asterfort/dcqpri.h'
-    include 'asterfort/dcspri.h'
-    include 'asterfort/dinter.h'
+#include "asterfort/assert.h"
+#include "asterfort/dcalph.h"
+#include "asterfort/dcqpri.h"
+#include "asterfort/dcspri.h"
+#include "asterfort/dinter.h"
     integer :: nsommx, icnc(nsommx+2, *), noeu1
     integer :: nbnozo(3), nbelt, nbnoe
     integer :: tbelzo(nbelt), tbnozo(nbnoe)

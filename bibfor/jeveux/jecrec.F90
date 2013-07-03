@@ -17,14 +17,14 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjanal.h'
-    include 'asterfort/jjcrec.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/jxveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjanal.h"
+#include "asterfort/jjcrec.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/jxveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nomlu, listat, accelu, stoclu, longlu
     integer :: nmax
 !     ------------------------------------------------------------------

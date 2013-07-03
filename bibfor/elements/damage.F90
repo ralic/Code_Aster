@@ -35,7 +35,7 @@ subroutine damage(curvvp, bend, k, dmax, dam,&
 ! OUT TANMRP : TERME DE LA MATRICE TANGENTE LIEE A L ENDOMMAGEMENT
 !
 !
-    include 'asterfort/r8inir.h'
+#include "asterfort/r8inir.h"
     integer :: bend
 !
     real(kind=8) :: curvvp(2), k, dmax, alpha, beta, gamma

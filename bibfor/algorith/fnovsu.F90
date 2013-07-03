@@ -23,10 +23,10 @@ subroutine fnovsu(option, nface, congem, vectu, press1,&
 !
 ! =====================================================================
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/assert.h"
+#include "asterfort/u2mesg.h"
     integer :: maxfa
     parameter    (maxfa=6)
     integer :: dimcon, dimuel

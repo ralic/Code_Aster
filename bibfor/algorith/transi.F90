@@ -40,15 +40,15 @@ subroutine transi(np1, np2, np3, np4, nbm,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/adimve.h'
-    include 'asterfort/calfft.h'
-    include 'asterfort/caltra.h'
-    include 'asterfort/comptr.h'
-    include 'asterfort/defttr.h'
-    include 'asterfort/estitr.h'
-    include 'asterfort/inialg.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/adimve.h"
+#include "asterfort/calfft.h"
+#include "asterfort/caltra.h"
+#include "asterfort/comptr.h"
+#include "asterfort/defttr.h"
+#include "asterfort/estitr.h"
+#include "asterfort/inialg.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: np1, np2, np3, np4, nbm, nbnl, npfmax, npfts
     real(kind=8) :: dttr, ttrans, eps, fext(np4, *), text(*), fextts(np4, *)
     real(kind=8) :: textts(*), fexttr(*), fextt0(*), masgi(*), amori(*)

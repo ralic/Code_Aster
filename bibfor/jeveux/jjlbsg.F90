@@ -33,9 +33,9 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
 ! ----------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/hpdeallc.h'
-    include 'asterfort/jxecro.h'
+#include "jeveux_private.h"
+#include "asterc/hpdeallc.h"
+#include "asterfort/jxecro.h"
     integer :: ic, id, ioc, ibacol, iadmi, iadyn, ltot
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon

@@ -16,11 +16,11 @@ subroutine mtdsc2(matas, objet, eoul, adress)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: matas, objet, eoul
     integer :: adress
 !

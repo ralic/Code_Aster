@@ -19,22 +19,22 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynin.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/ndynre.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmhyst.h'
-    include 'asterfort/nminer.h'
-    include 'asterfort/vtaxpy.h'
-    include 'asterfort/vtzero.h'
-    include 'asterfort/zerlag.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynin.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmhyst.h"
+#include "asterfort/nminer.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
+#include "asterfort/zerlag.h"
     character(len=19) :: sddyna
     character(len=19) :: measse(*)
     character(len=19) :: vitplu, accplu

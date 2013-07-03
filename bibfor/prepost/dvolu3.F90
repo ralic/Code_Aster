@@ -31,7 +31,7 @@ function dvolu3(coord, norm, coord1)
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: norm(2, 4)
     real(kind=8) :: coord(3, 12), coord1(3), dvolu3
 !

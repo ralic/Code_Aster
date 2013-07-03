@@ -1,11 +1,11 @@
 subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
                   mater, symax)
     implicit   none
-    include 'asterc/getres.h'
-    include 'asterfort/rc32r0.h'
-    include 'asterfort/rc32r1.h'
-    include 'asterfort/rc32r8.h'
-    include 'asterfort/tbcrsd.h'
+#include "asterc/getres.h"
+#include "asterfort/rc32r0.h"
+#include "asterfort/rc32r1.h"
+#include "asterfort/rc32r8.h"
+#include "asterfort/tbcrsd.h"
     logical :: pmpb, sn, snet, fatigu, lrocht
     real(kind=8) :: symax
     character(len=8) :: mater

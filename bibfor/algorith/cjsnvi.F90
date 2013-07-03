@@ -29,7 +29,7 @@ subroutine cjsnvi(mod, ndt, ndi, nvi)
 !           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi
 !
 ! VARIABLES LOALES POUR SE PREMUNIR D APPELS DU TYPE

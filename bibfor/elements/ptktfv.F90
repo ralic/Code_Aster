@@ -5,10 +5,10 @@ subroutine ptktfv(itype, sk, e, rof, ce,&
                   alfaz2, ey, ez)
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/fun1.h'
-    include 'asterfort/fun2.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/fun1.h"
+#include "asterfort/fun2.h"
+#include "asterfort/u2mess.h"
     integer :: itype
     real(kind=8) :: sk(*)
     real(kind=8) :: e, rof, ce, a1, ai1, a2, ai2, xl, xiy1, xiy2, xiz1, xiz2

@@ -20,11 +20,11 @@ subroutine dismcr(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(CARA_ELEM)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismca.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/zerobj.h'
+#include "asterfort/dismca.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/zerobj.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz

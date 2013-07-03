@@ -26,24 +26,24 @@ subroutine pmdorc(compor, carcri, nbvari, k)
 ! OUT CARCRI  : OBJET CARCRI(13) CRITERES DE CONVERGENCE LOCAUX
 ! OUT NBVARI  : NOMBRE DE VARIABLE INTERNES
 ! OUT k       : =1 si COMP_INCR, =2 si COMP_ELAS
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/lcalgo.h'
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterc/lctest.h'
-    include 'asterc/zaswri.h'
-    include 'asterfort/imvari.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/utlcal.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/lcalgo.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lctest.h"
+#include "asterc/zaswri.h"
+#include "asterfort/imvari.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/utlcal.h"
     integer :: iret, n1, nbvari, k, icpri, typtgt, exits
     integer :: ncomel, numlc, iteint, itepas, itdebo, nbocc, irett
     integer :: nunit, iarg, indimp, ncmpma, dimaki, dimanv, ii

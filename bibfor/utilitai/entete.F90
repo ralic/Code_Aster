@@ -21,18 +21,18 @@ subroutine entete()
 ! ----------------------------------------------------------------------
 !     ECRITURE DE L'ENTETE
 ! ----------------------------------------------------------------------
-    include 'asterc/lihdfv.h'
-    include 'asterc/limedv.h'
-    include 'asterc/liscov.h'
-    include 'asterc/mlnbpr.h'
-    include 'asterc/prhead.h'
-    include 'asterfort/mpiexe.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/lihdfv.h"
+#include "asterc/limedv.h"
+#include "asterc/liscov.h"
+#include "asterc/mlnbpr.h"
+#include "asterc/prhead.h"
+#include "asterfort/mpiexe.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     integer :: vali(3)
 !
 #ifdef _USE_MPI
-    include 'mpif.h'
+#include "mpif.h"
     integer :: rang, nbproc, mpicow, ibid
 #endif
 #ifdef _USE_OPENMP

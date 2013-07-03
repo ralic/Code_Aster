@@ -3,15 +3,15 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/gsyste.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/gsyste.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: nnoff, iadrgk, iadgks, iadgki, num
     character(len=8) :: modele
     character(len=24) :: chfond, abscur

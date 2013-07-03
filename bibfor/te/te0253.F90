@@ -27,15 +27,15 @@ subroutine te0253(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: icompo, ideplm, ideplp, k, l, n1, n2
     integer :: nbres, nn, nno2, nt2
     real(kind=8) :: r, r8b

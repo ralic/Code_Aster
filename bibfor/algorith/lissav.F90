@@ -20,10 +20,10 @@ subroutine lissav(lischa, ichar, charge, typech, codcha,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: lischa
     character(len=13) :: prefob
     integer :: ichar

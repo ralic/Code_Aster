@@ -3,7 +3,7 @@ subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec,&
                   p1, q1, r1, p2, q2,&
                   r2)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: geom1(*), geom2(*), btvr(*)
     integer :: ino2, p1, q1, r1, p2, q2, r2, ndec
     integer :: btdi(*), btnb(*), btlc(*), btco(*), tetr4(*)

@@ -31,8 +31,8 @@ subroutine dortvp(ndim, nomrc, d, modeli)
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/infniv.h'
-    include 'asterfort/jacobi.h'
+#include "asterfort/infniv.h"
+#include "asterfort/jacobi.h"
     integer :: ndim
     real(kind=8) :: d(6, 6)
     character(len=2) :: modeli

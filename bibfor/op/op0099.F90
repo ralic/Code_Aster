@@ -41,19 +41,19 @@ subroutine op0099()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterfort/clas99.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/diag99.h'
-    include 'asterfort/imbamo.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/orth99.h'
-    include 'asterfort/refe99.h'
-    include 'asterfort/ritz99.h'
-    include 'asterfort/titre.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/clas99.h"
+#include "asterfort/cresol.h"
+#include "asterfort/diag99.h"
+#include "asterfort/imbamo.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/orth99.h"
+#include "asterfort/refe99.h"
+#include "asterfort/ritz99.h"
+#include "asterfort/titre.h"
     character(len=8) :: nomres
     character(len=16) :: nomope, nomcon
     character(len=19) :: solveu

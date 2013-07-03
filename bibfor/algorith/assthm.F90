@@ -33,16 +33,16 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     implicit none
 !
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/cabthm.h'
-    include 'asterfort/equthm.h'
-    include 'asterfort/equthp.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/pmathm.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/cabthm.h"
+#include "asterfort/equthm.h"
+#include "asterfort/equthp.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/matini.h"
+#include "asterfort/pmathm.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: dimmat, npg, ipoid2, ivf2, idfde2, dimuel, nnom
     parameter    (dimmat=120)
     integer :: nno, nnos, npi, ipoids, ivf, idfde, imate, dimdef, dimcon

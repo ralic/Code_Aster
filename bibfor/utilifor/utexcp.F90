@@ -22,9 +22,9 @@ subroutine utexcp(num, idmess)
 !        IDMESS = IDENTIFIANT DU MESSAGE
 !     ------------------------------------------------------------------
     implicit none
-    include 'asterc/isnnem.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/isnnem.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/u2mesg.h"
     integer :: num
     character(len=*) :: idmess
 !     ------------------------------------------------------------------

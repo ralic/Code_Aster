@@ -18,15 +18,15 @@ subroutine te0508(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elrefv.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ngforc.h'
-    include 'asterfort/ngfore.h'
-    include 'asterfort/nmgvmb.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/terefe.h'
+#include "asterfort/elrefv.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ngforc.h"
+#include "asterfort/ngfore.h"
+#include "asterfort/nmgvmb.h"
+#include "asterfort/teattr.h"
+#include "asterfort/terefe.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  OPTIONS FORC_NODA ET REFE_FORC_NODA

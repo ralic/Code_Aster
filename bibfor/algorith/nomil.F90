@@ -18,9 +18,9 @@ function nomil(typma, ia)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: typma
     integer :: nomil, ia
 !

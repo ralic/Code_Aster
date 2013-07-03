@@ -20,9 +20,9 @@ subroutine nmgeom(ndim, nno, axi, grand, geom,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
+#include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
     logical :: axi, grand
     integer :: ndim, nno, kpg
     real(kind=8) :: geom(ndim, nno), dfdi(nno, ndim), depl(ndim, nno)

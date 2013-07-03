@@ -49,13 +49,13 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
 !           DFPDGA :  derivee de Fp / dGamma_S pour tous les systemes S
 !       OUT IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/caldfp.h'
-    include 'asterfort/caltau.h'
-    include 'asterfort/lcmmlc.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
+#include "asterfort/assert.h"
+#include "asterfort/caldfp.h"
+#include "asterfort/caltau.h"
+#include "asterfort/lcmmlc.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
     integer :: nvi, nmat, nbfsys, nsfa, nsfv, nbsys, is, nfs, nsg
     integer :: nbcomm(nmat, 3), ifa, iret, itmax
     real(kind=8) :: vind(*), dy(*), materf(nmat*2)

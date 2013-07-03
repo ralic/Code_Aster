@@ -18,25 +18,25 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/indk32.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/modat2.h'
-    include 'asterfort/nucalc.h'
-    include 'asterfort/typele.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/calcul.h"
+#include "asterfort/celces.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/indk32.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/modat2.h"
+#include "asterfort/nucalc.h"
+#include "asterfort/typele.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ligrel, chsgeo
     character(len=16) :: option
     character(len=8) :: param

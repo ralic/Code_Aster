@@ -19,8 +19,8 @@ subroutine nmchai(tychap, tyvarz, vali)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
     character(len=6) :: tychap
     character(len=*) :: tyvarz
     integer :: vali

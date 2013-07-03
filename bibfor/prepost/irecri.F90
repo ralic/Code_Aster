@@ -8,27 +8,27 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irch19.h'
-    include 'asterfort/irgmsh.h'
-    include 'asterfort/irpaca.h'
-    include 'asterfort/irpara.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxcaps.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsutrg.h'
-    include 'asterfort/titre2.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/irch19.h"
+#include "asterfort/irgmsh.h"
+#include "asterfort/irpaca.h"
+#include "asterfort/irpara.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxcaps.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsutrg.h"
+#include "asterfort/titre2.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nomcon
     character(len=*) :: form, titre, cham(*), para(*)
     character(len=*) :: motfac, cecr

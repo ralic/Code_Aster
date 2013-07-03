@@ -30,15 +30,15 @@ subroutine symema(geomi, perp, pt)
 ! ----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterc/matfpe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
+#include "jeveux.h"
+#include "asterc/matfpe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
     character(len=24) :: coorjv
     character(len=19) :: geomi
     character(len=8) :: k8bid

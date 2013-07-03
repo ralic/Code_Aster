@@ -15,36 +15,36 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getvid.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/frqapp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdacce.h'
-    include 'asterfort/mdarnl.h'
-    include 'asterfort/mdfext.h'
-    include 'asterfort/mdfnli.h'
-    include 'asterfort/mdinit.h'
-    include 'asterfort/mdsize.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/recpar.h'
-    include 'asterfort/resu74.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/trlds.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getvid.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/frqapp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdacce.h"
+#include "asterfort/mdarnl.h"
+#include "asterfort/mdfext.h"
+#include "asterfort/mdfnli.h"
+#include "asterfort/mdinit.h"
+#include "asterfort/mdsize.h"
+#include "asterfort/preres.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/recpar.h"
+#include "asterfort/resu74.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/trlds.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: iorsto(*), iredst(*), itemax, descm, descr, desca
     integer :: logcho(nbchoc, *), ichost(*)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)

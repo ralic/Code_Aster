@@ -1,17 +1,17 @@
 subroutine mtdete(option, method, lmat, mantis, expo,&
                   cmod)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/almulr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/almulr.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     integer :: lmat, expo, option
     real(kind=8) :: mantis
     complex(kind=8) :: cmod

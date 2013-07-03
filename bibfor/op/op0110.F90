@@ -24,23 +24,23 @@ subroutine op0110()
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/cla110.h'
-    include 'asterfort/cyc110.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rec110.h'
-    include 'asterfort/titre.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/cla110.h"
+#include "asterfort/cyc110.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rec110.h"
+#include "asterfort/titre.h"
     integer :: ioc1, ioc2, ioc3, ioc11, llref, llnbs, nbsect, ioc12, ibid
     character(len=8) :: modelg, rescyc, nomres, noma, nomsqu
     character(len=16) :: nomope, nomcmd

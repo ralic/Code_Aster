@@ -1,12 +1,12 @@
 subroutine memare(base, matel, modele, mate, cara,&
                   suropt)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: base, matel, modele, mate, cara, suropt
 ! ----------------------------------------------------------------------
 ! ======================================================================

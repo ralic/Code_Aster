@@ -58,10 +58,10 @@ subroutine brag00(fami, kpg, ksp, ndim, typmod,&
 !       TRIDIMENSIONNEL DU BETON (MODELE SIMPLIFIE TOTALEMENT EXPLICITE)
 !
     implicit none
-    include 'asterfort/brag01.h'
-    include 'asterfort/brdsde.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/brag01.h"
+#include "asterfort/brdsde.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
     integer :: ndim, imate
     character(len=16) :: compor(3), option
     character(len=8) :: typmod(*)

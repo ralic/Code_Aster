@@ -1,9 +1,9 @@
 subroutine lkcalg(dfdsig, vecn, g, devgii)
 !
     implicit      none
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
 ! =================================================================
 ! ======================================================================

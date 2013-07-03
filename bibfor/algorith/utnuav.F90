@@ -1,9 +1,9 @@
 subroutine utnuav(noma, k, iocc, lno)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reliem.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reliem.h"
     integer :: k, iocc
     character(len=*) :: noma, lno
 ! ----------------------------------------------------------------------

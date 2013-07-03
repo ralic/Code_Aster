@@ -32,7 +32,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
 ! =====================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/thmrcp.h'
+#include "asterfort/thmrcp.h"
     integer :: imate, retcom
     real(kind=8) :: t, p1, p2, phi, pvp
     real(kind=8) :: rgaz, biot, satur, dsatur, pesa(3)

@@ -19,7 +19,7 @@ subroutine eneven(sddisc, ievent, lacti)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit   none
-    include 'asterfort/utdidt.h'
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: ievent
     logical :: lacti

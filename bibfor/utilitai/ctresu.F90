@@ -1,13 +1,13 @@
 subroutine ctresu(nomtb)
     implicit   none
-    include 'asterfort/ctacce.h'
-    include 'asterfort/ctcrtb.h'
-    include 'asterfort/ctdata.h'
-    include 'asterfort/cteltb.h'
-    include 'asterfort/ctnotb.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/ctacce.h"
+#include "asterfort/ctcrtb.h"
+#include "asterfort/ctdata.h"
+#include "asterfort/cteltb.h"
+#include "asterfort/ctnotb.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: nomtb
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

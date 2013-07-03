@@ -36,13 +36,13 @@ subroutine compma(mailla, nbgr, nomgr, nbto)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
     character(len=8) :: mailla
     character(len=24) :: valk(2), nomcou, nomgr(nbgr)
     character(len=1) :: k1bid

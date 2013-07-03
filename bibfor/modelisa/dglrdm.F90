@@ -63,26 +63,26 @@ subroutine dglrdm()
 !       NYC     : SEUIL D'ENDOMMAGEMENT EN COMPRESSION
 !       MYF     : SEUIL D'ENDOMMAGEMENT EN FLEXION
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dgelas.h'
-    include 'asterfort/dgendo.h'
-    include 'asterfort/dgplas.h'
-    include 'asterfort/dgseui.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dgelas.h"
+#include "asterfort/dgendo.h"
+#include "asterfort/dgplas.h"
+#include "asterfort/dgseui.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
 !
     integer :: na
     parameter (na=10)

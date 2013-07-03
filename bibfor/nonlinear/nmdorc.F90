@@ -20,13 +20,13 @@ subroutine nmdorc(modelz, compoz, carcri)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmdocc.h'
-    include 'asterfort/nmdocr.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmdocc.h"
+#include "asterfort/nmdocr.h"
     character(len=*) :: modelz, compoz
     character(len=24) :: carcri
 !

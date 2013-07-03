@@ -1,7 +1,7 @@
 function dis2no(geom, ino1, ino2)
     implicit none
     real(kind=8) :: dis2no
-    include 'asterfort/padist.h'
+#include "asterfort/padist.h"
     integer :: ino1, ino2
     real(kind=8) :: geom(*)
 !

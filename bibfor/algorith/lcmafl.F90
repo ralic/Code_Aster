@@ -32,12 +32,12 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
 !     OUT VALRES :  COEFFICIENTS MATERIAU A T
 !         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 !     ----------------------------------------------------------------
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcmhsr.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcmhsr.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesg.h"
     integer :: kpg, ksp, nmat, imat, nbval, nbcoef, itbint, nfs, nsg
     integer :: iret2, nbsys
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu

@@ -21,16 +21,16 @@ subroutine delat(modgen, nbsst, nbmo)
 !---------------------------------------------------------------------
 ! AUTEUR : G. ROUSSEAU
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, nbid, isst
     character(len=8) :: k8bid
     character(len=8) :: modgen, macel

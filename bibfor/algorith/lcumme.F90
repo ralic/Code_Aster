@@ -32,8 +32,8 @@ subroutine lcumme(youn, xnu, ifou, dep)
 !_______________________________________________________________________
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/matini.h'
+#include "asterfort/assert.h"
+#include "asterfort/matini.h"
     integer :: ifou
 ! MODIFI DU 6 JANVIER 2002 - YLP SUPPRESSION DES DECLARATIONS
 ! IMPLICITES DES TABLEAUX

@@ -43,8 +43,8 @@ subroutine epthmc(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/epstmc.h'
-    include 'asterfort/lteatt.h'
+#include "asterfort/epstmc.h"
+#include "asterfort/lteatt.h"
     character(len=*) :: fami
     character(len=16) :: k16bid, option
     integer :: ndim

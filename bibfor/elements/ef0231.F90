@@ -1,16 +1,16 @@
 subroutine ef0231(nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ppgan2.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ppgan2.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: nomte
 ! ......................................................................
 ! ======================================================================

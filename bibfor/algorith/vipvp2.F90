@@ -3,11 +3,11 @@ subroutine vipvp2(nbvari, vintm, vintp, advico, vicpvp,&
                   dt, kh, mamolv, r, rho11m,&
                   yate, pvp, pvpm, retcom)
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/tecael.h'
+#include "asterc/r8prem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/tecael.h"
     integer :: nbvari, advico, vicpvp, yate, retcom
     real(kind=8) :: vintm(nbvari), vintp(nbvari), pvp0, pvp1, p2, dp2, t, dt
     real(kind=8) :: mamolv, r, rho11m, pvp, pvpm, kh

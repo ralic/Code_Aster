@@ -24,11 +24,11 @@ subroutine mmmtmm(phasep, lnewtg, ndim, nnm, mprojn,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/matini.h'
-    include 'asterfort/mmmmpb.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/matini.h"
+#include "asterfort/mmmmpb.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/vecini.h"
     character(len=9) :: phasep
     logical :: lnewtg
     integer :: ndim, nnm

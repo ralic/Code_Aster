@@ -19,13 +19,13 @@ subroutine cfappa(noma, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apcalc.h'
-    include 'asterfort/cfapre.h'
-    include 'asterfort/cfpoin.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/apcalc.h"
+#include "asterfort/cfapre.h"
+#include "asterfort/cfpoin.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
 !

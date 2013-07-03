@@ -20,7 +20,7 @@ subroutine zerof2(f, x0, xap, epsi, nitmax,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     interface
     function f(x)
         real(kind=8) :: f, x

@@ -19,9 +19,9 @@ subroutine nmvmpm(compor, icodma, itemp, temp, e,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: icodma, itemp
     real(kind=8) :: temp, loi346(21)
     character(len=16) :: compor(*)

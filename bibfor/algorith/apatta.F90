@@ -19,8 +19,8 @@ subroutine apatta(sdappa, defico, jdeciv, ima, posma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cfinvm.h'
+#include "jeveux.h"
+#include "asterfort/cfinvm.h"
     character(len=19) :: sdappa
     character(len=24) :: defico
     integer :: jdeciv, ima, posma

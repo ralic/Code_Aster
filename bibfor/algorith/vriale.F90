@@ -23,13 +23,13 @@ subroutine vriale()
 !
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/u2mess.h"
     integer :: ibid, nbamor, nbmode, nindex, nbindi, nbindj, nbcmpi, nbcmpj
     integer :: nnoeex, nvasex, ncmpex, nmost1, napexc
     real(kind=8) :: r8b, fremin, fremax

@@ -36,11 +36,11 @@ subroutine pbflvp(umoy, hmoy, rmoy, cf0, mcf0,&
 ! OUT : LAMBDA : VALEURS PROPRES DE L'OPERATEUR DIFFERENTIEL
 !-----------------------------------------------------------------------
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/dcabs2.h'
-    include 'asterfort/dcargu.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/dcabs2.h"
+#include "asterfort/dcargu.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: umoy, hmoy, rmoy, cf0, mcf0, rkip, s1, s2
     complex(kind=8) :: lambda(3)
 !

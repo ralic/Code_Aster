@@ -29,7 +29,7 @@ subroutine parmtr(np4, nfour, nbm, ttrans, amor,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: np4, nfour, nbm
     real(kind=8) :: ttrans, amor(*), puls(*), pulsd(*)
     complex(kind=8) :: s0(*), z0(*)

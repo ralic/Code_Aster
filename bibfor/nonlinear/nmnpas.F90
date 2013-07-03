@@ -24,25 +24,25 @@ subroutine nmnpas(modele, noma, mate, carele, lischa,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include      'jeveux.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/cfinit.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/initia.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmapin.h'
-    include 'asterfort/ndnpas.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmimin.h'
-    include 'asterfort/nmnkft.h'
-    include 'asterfort/nmvcle.h'
+#include "jeveux.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/cfinit.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/initia.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmapin.h"
+#include "asterfort/ndnpas.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimin.h"
+#include "asterfort/nmnkft.h"
+#include "asterfort/nmvcle.h"
     integer :: fonact(*)
     character(len=8) :: noma
     character(len=19) :: sddyna, sdnume, sddisc, lischa, solveu

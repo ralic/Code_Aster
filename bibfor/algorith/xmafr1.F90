@@ -19,7 +19,7 @@ subroutine xmafr1(ndim, nd, p)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: nd(3), p(3, 3)
     integer :: ndim
 ! ----------------------------------------------------------------------

@@ -54,15 +54,15 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
 ! --- : IRET   :  CODE RETOUR = 1 -> ECHEC D'INTEGRATION
 ! ----------------------------------------------------------------------
 ! ======================================================================
-    include 'asterfort/burcvx.h'
-    include 'asterfort/cvmcvx.h'
-    include 'asterfort/hbrcvx.h'
-    include 'asterfort/hujcvx.h'
-    include 'asterfort/irrcvx.h'
-    include 'asterfort/lcmmvx.h'
-    include 'asterfort/lglcvx.h'
-    include 'asterfort/lkcnvx.h'
-    include 'asterfort/rslcvx.h'
+#include "asterfort/burcvx.h"
+#include "asterfort/cvmcvx.h"
+#include "asterfort/hbrcvx.h"
+#include "asterfort/hujcvx.h"
+#include "asterfort/irrcvx.h"
+#include "asterfort/lcmmvx.h"
+#include "asterfort/lglcvx.h"
+#include "asterfort/lkcnvx.h"
+#include "asterfort/rslcvx.h"
     integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg, nr, iret
     character(len=*) :: fami
     real(kind=8) :: materf(nmat, 2), materd(nmat, 2), seuil

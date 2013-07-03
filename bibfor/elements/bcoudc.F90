@@ -19,8 +19,8 @@ subroutine bcoudc(igau, icou, isect, h, a,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
     real(kind=8) :: h, a, b(4, *), ff(*), df1(*), df2(*), rayon, theta, omega
     integer :: nno, ncou, nsect, m, igau, icou, isect, mmt
 !

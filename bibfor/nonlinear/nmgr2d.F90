@@ -26,15 +26,15 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterfort/codere.h'
-    include 'asterfort/lcdetf.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/nmgrtg.h'
-    include 'asterfort/pk2sig.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesr.h'
+#include "asterfort/codere.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/nmgrtg.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesr.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami

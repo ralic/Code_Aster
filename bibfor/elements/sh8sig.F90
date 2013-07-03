@@ -19,14 +19,14 @@ subroutine sh8sig(xetemp, para, xidepp, dusx, sigma)
 !               ELEMENT SHB8
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chrp3d.h'
-    include 'asterfort/dsdx3d.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rloshb.h'
-    include 'asterfort/shbksi.h'
-    include 'asterfort/shcalb.h'
+#include "jeveux.h"
+#include "asterfort/chrp3d.h"
+#include "asterfort/dsdx3d.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rloshb.h"
+#include "asterfort/shbksi.h"
+#include "asterfort/shcalb.h"
     integer :: lag, irdc
     real(kind=8) :: sigma(*), para(11)
     real(kind=8) :: xe(24), dusx(*), xidepp(*)

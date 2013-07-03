@@ -1,29 +1,29 @@
 subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
                   eg1, eg2, eg3, typrac, rayon)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenca.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vdiff.h'
+#include "asterfort/assert.h"
+#include "asterfort/carcou.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/infniv.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mecact.h"
+#include "asterfort/normev.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vdiff.h"
     integer :: info, ifm
     character(len=8) :: noepou, noma, cara
     character(len=19) :: ligrel

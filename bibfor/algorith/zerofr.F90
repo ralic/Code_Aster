@@ -19,12 +19,12 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 ! aslint: disable=
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/encadr.h'
-    include 'asterfort/zerof2.h'
-    include 'asterfort/zerofb.h'
-    include 'asterfort/zerofc.h'
-    include 'asterfort/zerofo.h'
+#include "asterfort/assert.h"
+#include "asterfort/encadr.h"
+#include "asterfort/zerof2.h"
+#include "asterfort/zerofb.h"
+#include "asterfort/zerofc.h"
+#include "asterfort/zerofo.h"
     integer :: intini, itmax, iter, iret
     character(len=*) :: algo
     real(kind=8) :: solu, tol, x1, x2, func

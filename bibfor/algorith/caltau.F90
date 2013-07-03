@@ -32,11 +32,11 @@ subroutine caltau(comp, ifa, is, sigf, fkooh,&
 !     OUT  MUS   :  sym(MS * NS)
 !     OUT  MSNS  :  MS * NS
 !
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/tnsvec.h'
-    include 'blas/daxpy.h'
-    include 'blas/dscal.h'
+#include "asterfort/lcprmv.h"
+#include "asterfort/pmat.h"
+#include "asterfort/tnsvec.h"
+#include "blas/daxpy.h"
+#include "blas/dscal.h"
     integer :: j, i, is, ifa, nfs, nsg
     real(kind=8) :: taus, mus(6), msns(3, 3), id6(6), ns(3), ms(3), sigf(6)
     real(kind=8) :: fesig(3, 3), s(3, 3), fetfe(3, 3), fetfe6(6)

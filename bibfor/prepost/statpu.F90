@@ -33,9 +33,9 @@ subroutine statpu(nbobst, nbpt, temps, fcho, vgli,&
 ! OUT : PUSURN : PUISSANCE D'USURE MOYENNEE
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/impus.h'
-    include 'asterfort/pusure.h'
-    include 'blas/dcopy.h'
+#include "asterfort/impus.h"
+#include "asterfort/pusure.h"
+#include "blas/dcopy.h"
     real(kind=8) :: temps(*), fcho(*), vgli(*), wk1(*), wk2(*), wk3(*)
     integer :: iwk4(*), iadh(*)
 !

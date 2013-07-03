@@ -1,10 +1,10 @@
 subroutine te0585(option, nomte)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref5.h'
-    include 'asterfort/tuforc.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/elref5.h"
+#include "asterfort/tuforc.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

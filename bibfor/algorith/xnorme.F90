@@ -2,12 +2,12 @@ subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
                   nunob, nunoc, jcoor, coorg)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/provec.h'
-    include 'blas/ddot.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/provec.h"
+#include "blas/ddot.h"
     integer :: iptbor(2), nbfacb, jcoor
     integer :: nunoa, nunob, nunoc, indipt
     real(kind=8) :: vectn(12), coorg(3)

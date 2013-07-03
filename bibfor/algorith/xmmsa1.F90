@@ -7,13 +7,13 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xadher.h'
-    include 'asterfort/xmafr1.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
+#include "asterfort/matini.h"
+#include "asterfort/promat.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xadher.h"
+#include "asterfort/xmafr1.h"
     integer :: algofr, ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8), idepd, idepm

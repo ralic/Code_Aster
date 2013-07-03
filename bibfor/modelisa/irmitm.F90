@@ -17,14 +17,14 @@ subroutine irmitm(nbmode, ifmis, freq, tabrig)
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: tabrig, tabfrq, tabri2, tabri0
     real(kind=8) :: a(3), nins2
 !      INTEGER*8    LONG1,LONG2,LONG3

@@ -73,9 +73,9 @@ subroutine flartg(f, g, cs, sn, r)
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
+#include "asterc/isbaem.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
     real(kind=8) :: cs, f, g, r, sn
 !     ..
 !     .. PARAMETERS ..

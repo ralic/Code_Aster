@@ -36,12 +36,12 @@ subroutine caveas(chargz)
 !.========================= DEBUT DES DECLARATIONS ====================
 !
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/chpver.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chargz
 ! ------ VARIABLES LOCALES
     character(len=8) :: charge, vecass

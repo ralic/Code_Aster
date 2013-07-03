@@ -20,11 +20,11 @@ subroutine zbiter(rho, f, rhoopt, fopt, mem,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/zbarch.h'
-    include 'asterfort/zbborn.h'
-    include 'asterfort/zbopti.h'
-    include 'asterfort/zbproj.h'
-    include 'asterfort/zbroot.h'
+#include "asterfort/zbarch.h"
+#include "asterfort/zbborn.h"
+#include "asterfort/zbopti.h"
+#include "asterfort/zbproj.h"
+#include "asterfort/zbroot.h"
     real(kind=8) :: mem(2, *)
     real(kind=8) :: rho, rhoopt, rhonew
     real(kind=8) :: f, fopt

@@ -1,7 +1,7 @@
 subroutine rcmcrt(symax, sigm, stlin, stpar)
     implicit   none
-    include 'asterc/r8vide.h'
-    include 'asterfort/u2mesr.h'
+#include "asterc/r8vide.h"
+#include "asterfort/u2mesr.h"
     real(kind=8) :: symax, sigm, stlin, stpar
 !     ------------------------------------------------------------------
 ! ======================================================================

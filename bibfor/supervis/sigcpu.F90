@@ -21,6 +21,6 @@ subroutine sigcpu()
 ! ARRET DU CODE AVEC UNE ERREUR FATALE
 !
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     call u2mess('F', 'SUPERVIS_38')
 end subroutine

@@ -2,11 +2,11 @@ subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
                   tabv, partie, jtype, nbno, icmp,&
                   ifi, iwri, iadmax)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     integer :: numold(*), tabd(*), tabl(*), tabv(*), jtype
     integer :: icmp, ifi, ima, nbord2, iadmax, nbno
     logical :: iwri

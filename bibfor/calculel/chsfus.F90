@@ -19,10 +19,10 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'asterfort/cesfus.h'
-    include 'asterfort/cnsfus.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cesfus.h"
+#include "asterfort/cnsfus.h"
+#include "asterfort/exisd.h"
+#include "asterfort/u2mess.h"
     integer :: nbchs
     character(len=*) :: lichs(nbchs), chs3, base
     logical :: lcumul(nbchs), lcoc

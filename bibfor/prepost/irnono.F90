@@ -19,17 +19,17 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: nbno, nbgr, nbnot, nbnoe, indno(nbnoe)
     character(len=*) :: noma, nonoe(*), nogrn(*), numno, noltop
 ! ----------------------------------------------------------------------

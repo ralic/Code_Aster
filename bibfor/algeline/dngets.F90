@@ -114,9 +114,9 @@ subroutine dngets(ishift, which, kev, np, ritzr,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterfort/dsortc.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/ivout.h'
+#include "asterfort/dsortc.h"
+#include "asterfort/dvout.h"
+#include "asterfort/ivout.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

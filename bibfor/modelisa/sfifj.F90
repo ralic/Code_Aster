@@ -23,33 +23,33 @@ subroutine sfifj(nomres)
 !     AUTEUR : G. ROUSSEAU
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/accep1.h'
-    include 'asterfort/accep2.h'
-    include 'asterfort/accept.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/dspprs.h'
-    include 'asterfort/evalis.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8prem.h"
+#include "asterfort/accep1.h"
+#include "asterfort/accep2.h"
+#include "asterfort/accept.h"
+#include "asterfort/chpver.h"
+#include "asterfort/dspprs.h"
+#include "asterfort/evalis.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nfinit, nfin, nbm, nbpoin, nbid, iarg
     integer :: npoin, iff, ivare, lvale, ibid, in
     integer :: im1, im2, ivate, ivecx, ivecy, ivecz, nvecx, nvecy

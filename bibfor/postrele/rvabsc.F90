@@ -18,10 +18,10 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: mailla
     integer :: tnd(*), nbn
     real(kind=8) :: tabsc(*), tcoor(*)

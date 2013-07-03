@@ -1,16 +1,16 @@
 subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
     implicit none
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utflmd.h'
-    include 'asterfort/utmamo.h'
-    include 'asterfort/utmasu.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utflmd.h"
+#include "asterfort/utmamo.h"
+#include "asterfort/utmasu.h"
+#include "asterfort/wkvect.h"
     integer :: nbma2d
     character(len=8) :: mo
     character(len=24) :: mail2d, mail3d, mailto
@@ -46,7 +46,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: jtyma, jma2d, numa, jcoor, jma3d
     integer :: ima, ibid, iret

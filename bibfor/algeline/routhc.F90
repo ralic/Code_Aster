@@ -20,7 +20,7 @@ subroutine routhc(hr, hi, pr, a0, dr,&
 ! ======================================================================
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ior
     real(kind=8) :: hr, hi, a0(*), dr(*)
     complex(kind=8) :: pr

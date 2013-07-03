@@ -30,7 +30,7 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit      none
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: ndim, dimdef, dimcon, imate
     integer :: yamec, yap1, yap2
     integer :: addete, addeme, addep1, addep2, adcote

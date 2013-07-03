@@ -18,20 +18,20 @@ subroutine misazl(vecinc, defico)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cftypn.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/iposdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cftypn.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/iposdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     character(len=19) :: vecinc
     character(len=24) :: defico
 !

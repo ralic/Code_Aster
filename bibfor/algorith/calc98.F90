@@ -27,11 +27,11 @@ subroutine calc98(nomres, mailla, numddl)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/crlidd.h'
-    include 'asterfort/ddlact.h'
-    include 'asterfort/defint.h'
-    include 'asterfort/gesdef.h'
+#include "jeveux.h"
+#include "asterfort/crlidd.h"
+#include "asterfort/ddlact.h"
+#include "asterfort/defint.h"
+#include "asterfort/gesdef.h"
     character(len=8) :: nomres, mailla
     character(len=19) :: numddl
 !

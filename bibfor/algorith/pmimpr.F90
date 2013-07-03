@@ -39,7 +39,7 @@ subroutine pmimpr(ind, inst, indimp, fonimp, valimp,&
 ! IN  EINI   : ERREUR INITIALE
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/infniv.h'
+#include "asterfort/infniv.h"
     integer :: nbvari, niv, ifm, ind, i, iter, idbg, indimp(6)
     real(kind=8) :: inst, valimp(6), eps(6), sig(6), vi(nbvari), r(12), ee, eini
     character(len=8) :: fonimp(6)

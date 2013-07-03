@@ -24,19 +24,19 @@ subroutine resu60(resu1, resu2)
 !
 !     LA ROUTINE RESU74 FAIT LA MEME CHOSE MAIS POUR DES CALCULS TRANS.
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/copvis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
-    include 'blas/zcopy.h'
+#include "jeveux.h"
+#include "asterfort/copvis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
+#include "blas/zcopy.h"
     character(len=8) :: resu1, resu2
 !
 ! IN  : RESU1 : PREMIER CONCEPT DYNA_GENE HARMONIQUE

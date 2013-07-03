@@ -28,11 +28,11 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
 !
 ! OUT CRITNU : NOMBRE DE CRITERE DE PLASTICITE ACTIVE
 !
-    include 'asterfort/fplass.h'
-    include 'asterfort/gplass.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/mppffn.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/fplass.h"
+#include "asterfort/gplass.h"
+#include "asterfort/matmul.h"
+#include "asterfort/mppffn.h"
+#include "asterfort/u2mess.h"
     integer :: critnu, zimat, nmprif, j
 !
     real(kind=8) :: nmnbn(6), nprnbn(6), nmprpl(2, 3), nmprzf, nmprzg

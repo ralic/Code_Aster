@@ -37,8 +37,8 @@ subroutine typthm(nomte, axi, perman, vf, typvf,&
     implicit none
 !
 !     --- ARGUMENTS ---
-    include 'asterfort/lteatt.h'
-    include 'asterfort/lxlgut.h'
+#include "asterfort/lteatt.h"
+#include "asterfort/lxlgut.h"
     logical :: axi, perman, vf
     integer :: typvf
     integer :: ndim

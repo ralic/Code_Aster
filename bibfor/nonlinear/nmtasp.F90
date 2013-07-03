@@ -19,8 +19,8 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/nmtacr.h'
-    include 'asterfort/zeroco.h'
+#include "asterfort/nmtacr.h"
+#include "asterfort/zeroco.h"
     integer :: ndimsi
     real(kind=8) :: crit(3), mat(14), sigel(*), vim(9), epm(*), dp, xi
     real(kind=8) :: sp, f

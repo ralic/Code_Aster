@@ -1,19 +1,19 @@
 subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
                   numcmp, nbcmp)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/knincl.h'
-    include 'asterfort/lxliis.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/knincl.h"
+#include "asterfort/lxliis.h"
+#include "asterfort/u2mesk.h"
     integer :: iocc, dim, nbcmp, numcmp(*)
     character(len=*) :: nomgd, mcfac, nomcmp(*)
 ! ----------------------------------------------------------------------

@@ -6,12 +6,12 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 ! aslint: disable=W1306,W1504
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/avcdmx.h'
-    include 'asterfort/avcrit.h'
-    include 'asterfort/avdomt.h'
-    include 'asterfort/avdowh.h'
+#include "asterfort/avcdmx.h"
+#include "asterfort/avcrit.h"
+#include "asterfort/avdomt.h"
+#include "asterfort/avdowh.h"
     integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)

@@ -25,13 +25,13 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/lcumfe.h'
-    include 'asterfort/lcumfp.h'
-    include 'asterfort/lgdmvm.h'
-    include 'asterfort/nmcpla.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/lcumfe.h"
+#include "asterfort/lcumfp.h"
+#include "asterfort/lgdmvm.h"
+#include "asterfort/nmcpla.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !

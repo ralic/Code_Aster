@@ -21,20 +21,20 @@ subroutine ndxnpa(modele, mate, carele, lischa, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterc/isnnem.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/initia.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndnpas.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmimpa.h'
-    include 'asterfort/nmvcle.h'
+#include "jeveux.h"
+#include "asterc/isnnem.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/initia.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndnpas.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmimpa.h"
+#include "asterfort/nmvcle.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, sdnume, sddisc, lischa
     character(len=24) :: modele, mate, carele

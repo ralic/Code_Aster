@@ -22,18 +22,18 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xdeffe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/fointe.h"
+#include "asterfort/iselli.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xdeffe.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlh, ddlc, nfe, nnop

@@ -21,21 +21,21 @@ subroutine lceobg(ndim, typmod, imate, crit, epstm,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/dfmdf.h'
-    include 'asterfort/dfpdf.h'
-    include 'asterfort/diago2.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/lceob1.h'
-    include 'asterfort/lceob2.h'
-    include 'asterfort/lceob3.h'
-    include 'asterfort/lceobb.h'
-    include 'asterfort/meobg1.h'
-    include 'asterfort/meobg2.h'
-    include 'asterfort/meobg3.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/sigeob.h'
+#include "asterc/r8prem.h"
+#include "asterfort/dfmdf.h"
+#include "asterfort/dfpdf.h"
+#include "asterfort/diago2.h"
+#include "asterfort/diago3.h"
+#include "asterfort/lceob1.h"
+#include "asterfort/lceob2.h"
+#include "asterfort/lceob3.h"
+#include "asterfort/lceobb.h"
+#include "asterfort/meobg1.h"
+#include "asterfort/meobg2.h"
+#include "asterfort/meobg3.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/sigeob.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option
     integer :: ndim, imate, iret

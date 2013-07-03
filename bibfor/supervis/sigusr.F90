@@ -21,8 +21,8 @@ subroutine sigusr()
 ! L'ARRET FERME LES BASES JEVEUX
 !
     implicit none
-    include 'asterc/clrusr.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/clrusr.h"
+#include "asterfort/u2mesk.h"
     call clrusr()
     call u2mesk('S', 'SUPERVIS_39', 1, 'USR1')
 end subroutine

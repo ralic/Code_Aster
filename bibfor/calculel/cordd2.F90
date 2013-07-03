@@ -38,8 +38,8 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 !     POS    : TABLEAU DE CORRESPONDANCE AVEC LES DDL SUR LE NOEUD
 !              EN TANT QUE NOEUD GLOBAL
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: nbecmx, ncmp
     parameter (nbecmx = 10)
     integer :: ifin(nbecmx)

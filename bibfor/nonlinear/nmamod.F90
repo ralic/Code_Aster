@@ -20,15 +20,15 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fmodam.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/ndynlo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fmodam.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
     character(len=4) :: phase
     character(len=19) :: vitplu, vitkm1
     character(len=19) :: sddyna

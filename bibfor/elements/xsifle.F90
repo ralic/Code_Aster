@@ -24,27 +24,27 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chauxi.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xjacf2.h'
-    include 'asterfort/xjacff.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/chauxi.h"
+#include "asterfort/conare.h"
+#include "asterfort/confac.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/indent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xjacf2.h"
+#include "asterfort/xjacff.h"
+#include "asterfort/xxmmvd.h"
     character(len=8) :: nompar(4)
     character(len=16) :: option
     integer :: ndim, ifa, cface(5, 3), jaint, igeom, nfh, singu, jlst, ipres

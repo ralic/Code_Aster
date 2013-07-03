@@ -23,13 +23,13 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/teattr.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/indent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/teattr.h"
     integer :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
     logical :: matsym, lcontx
     character(len=16) :: option, nomte

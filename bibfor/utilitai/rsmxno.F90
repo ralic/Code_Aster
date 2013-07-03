@@ -1,11 +1,11 @@
 function rsmxno(nomsd)
     implicit none
     integer :: rsmxno
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: nomsd
 ! ----------------------------------------------------------------------
 ! ======================================================================

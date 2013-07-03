@@ -20,25 +20,25 @@ subroutine op0052()
 !  COMMANDE CALC_CHAMP
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/ccbcop.h'
-    include 'asterfort/ccchut.h'
-    include 'asterfort/cclopu.h'
-    include 'asterfort/ccvrpu.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/ccbcop.h"
+#include "asterfort/ccchut.h"
+#include "asterfort/cclopu.h"
+#include "asterfort/ccvrpu.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=6) :: nompro
     parameter  (nompro='OP0052')
 !

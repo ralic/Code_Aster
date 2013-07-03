@@ -67,10 +67,10 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, itria,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/tstbar.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/tstbar.h"
+#include "blas/dnrm2.h"
     integer :: nbcnx, icnx, itria, iproj
     real(kind=8) :: xyzma(3, *), x3dp(*), xbar(*)
 !

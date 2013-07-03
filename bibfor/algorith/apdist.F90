@@ -20,11 +20,11 @@ subroutine apdist(elrefe, coorma, nbno, ksi1, ksi2,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbno
     character(len=8) :: elrefe
     real(kind=8) :: coorma(27), coorpt(3)

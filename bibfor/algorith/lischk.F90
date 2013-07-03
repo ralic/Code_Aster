@@ -18,14 +18,14 @@ subroutine lischk(nomo, phenoz, nomcmz, lischa)
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisccm.h'
-    include 'asterfort/lisccp.h'
-    include 'asterfort/liscom.h'
-    include 'asterfort/lisdbl.h'
-    include 'asterfort/lisver.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisccm.h"
+#include "asterfort/lisccp.h"
+#include "asterfort/liscom.h"
+#include "asterfort/lisdbl.h"
+#include "asterfort/lisver.h"
     character(len=*) :: nomcmz, phenoz
     character(len=8) :: nomo
     character(len=19) :: lischa

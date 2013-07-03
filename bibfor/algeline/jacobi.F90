@@ -2,9 +2,9 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                   br, vecpro, valpro, valaux, nitjac,&
                   type, iordre)
     implicit none
-    include 'asterfort/matini.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpordo.h'
+#include "asterfort/matini.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpordo.h"
     integer :: nbvec, nperm, nitjac, type, iordre
     real(kind=8) :: ar(*), br(*), vecpro(nbvec, nbvec), valpro(nbvec)
     real(kind=8) :: valaux(nbvec), tol, toldyn

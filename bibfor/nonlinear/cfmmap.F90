@@ -19,14 +19,14 @@ subroutine cfmmap(noma, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/apcrsd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmar.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/apcrsd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmar.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
 !

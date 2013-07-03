@@ -22,9 +22,9 @@ subroutine apchoi(dist, distm, posmai, posmam, tau1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterc/r8prem.h'
-    include 'asterfort/infdbg.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8prem.h"
+#include "asterfort/infdbg.h"
+#include "blas/dcopy.h"
     integer :: iproj, iprojm
     real(kind=8) :: dist, distm
     integer :: posmai, posmam

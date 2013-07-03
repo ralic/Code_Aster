@@ -2,15 +2,15 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
                   refi, refr, refc, epsi, crit,&
                   ific, llab, ssigne)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utites.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utites.h"
     integer :: nbref, refi(nbref), ific
     real(kind=8) :: refr(nbref), epsi
     character(len=8) :: typtes

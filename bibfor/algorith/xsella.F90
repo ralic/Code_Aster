@@ -22,10 +22,10 @@ subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jeveuo.h"
     integer :: nbno, narz
     integer :: tabnoz(3, narz), pickno(narz), nbpino
     character(len=8) :: fiss

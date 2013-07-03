@@ -39,13 +39,13 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 !                  = 0   OK
 !                  = 1   NOOK
 ! =====================================================================
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/hujksi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/hujksi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, i, j, k, mod, kk, nbmect
     integer :: ind(7), nbmeca, iret, iadzi, iazk24
     integer :: ifm, niv

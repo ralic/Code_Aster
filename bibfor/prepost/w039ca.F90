@@ -1,17 +1,17 @@
 subroutine w039ca(ifi, form)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lgphmo.h'
-    include 'asterfort/w039c1.h'
-    include 'asterfort/w039c3.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lgphmo.h"
+#include "asterfort/w039c1.h"
+#include "asterfort/w039c3.h"
     integer :: ifi
     character(len=*) :: form
 ! ----------------------------------------------------------------------

@@ -2,9 +2,9 @@ subroutine mefver(ndim, som, xint, yint, rint)
 ! aslint: disable=
     implicit none
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ndim(14)
     real(kind=8) :: som(9), xint(*), yint(*), rint(*)
 ! ----------------------------------------------------------------------

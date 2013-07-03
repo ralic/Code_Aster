@@ -99,24 +99,24 @@ subroutine nmhuj(typmod, imat, comp, crit, instam,&
 !  PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 !
 !  ----------------------------------------------------------------
-    include 'asterc/iisnan.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/hujcrd.h'
-    include 'asterfort/hujcri.h'
-    include 'asterfort/hujdp.h'
-    include 'asterfort/hujmat.h'
-    include 'asterfort/hujori.h'
-    include 'asterfort/hujpre.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/hujres.h'
-    include 'asterfort/hujtel.h'
-    include 'asterfort/hujtid.h'
-    include 'asterfort/lceqve.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/hujcrd.h"
+#include "asterfort/hujcri.h"
+#include "asterfort/hujdp.h"
+#include "asterfort/hujmat.h"
+#include "asterfort/hujori.h"
+#include "asterfort/hujpre.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/hujres.h"
+#include "asterfort/hujtel.h"
+#include "asterfort/hujtid.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/u2mess.h"
     integer :: imat, ndt, ndi, nvi, iret, iret1
     integer :: i, inc, incmax, ndtt, limsup
     real(kind=8) :: crit(*), vind(50), vinf(50), vind0(50)

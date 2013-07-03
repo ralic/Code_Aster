@@ -1,8 +1,8 @@
 subroutine wkvect(nom, carac, dim, ldec)
     implicit none
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/jecreo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: nom, carac
     integer :: dim, ldec
 !     ------------------------------------------------------------------

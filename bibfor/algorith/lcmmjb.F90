@@ -52,10 +52,10 @@ subroutine lcmmjb(taur, materf, cpmono, ifa, nmat,&
 !       OUT DKRDBS :  dkR/dBetaS
 !       OUT IRET   :  CODE RETOUR
 !       ----------------------------------------------------------------
-    include 'asterfort/lcmmj1.h'
-    include 'asterfort/lcmmj2.h'
-    include 'asterfort/lcmmjd.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcmmj1.h"
+#include "asterfort/lcmmj2.h"
+#include "asterfort/lcmmjd.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, nbcomm(nmat, 3), ifa, nbsys, is, iret, nfs, nsg
     integer :: ir, nsfa, nsfv, nuecou, itmax, iexp
     real(kind=8) :: dgsdts, dksdts, dgrdbs, dkrdbs, vind(*), hsr(nsg, nsg)

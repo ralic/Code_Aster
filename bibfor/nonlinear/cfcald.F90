@@ -20,13 +20,13 @@ function cfcald(defico, izone, typnoe)
 !
     implicit none
     logical :: cfcald
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
     character(len=4) :: typnoe
     character(len=24) :: defico
     integer :: izone

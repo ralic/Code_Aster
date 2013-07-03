@@ -1,9 +1,9 @@
 subroutine ddllag(nume, iddl, neq, lagr1, lagr2)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: iddl, neq, lagr1, lagr2
     character(len=*) :: nume
 ! ----------------------------------------------------------------------

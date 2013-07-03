@@ -43,14 +43,14 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/cheddl.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cheddl.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=8) :: maiin, maiout
     character(len=8) :: k8bid

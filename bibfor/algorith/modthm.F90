@@ -1,6 +1,6 @@
 subroutine modthm(nomte, modint)
     implicit      none
-    include 'asterfort/lxlgut.h'
+#include "asterfort/lxlgut.h"
     character(len=3) :: modint
     character(len=16) :: nomte
 ! =====================================================================

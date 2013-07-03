@@ -22,11 +22,11 @@ subroutine pacouf(x, fvect, vecr1, vecr2, typflu,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/coefmo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterfort/coefmo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: typflu
     real(kind=8) :: xsi0
     real(kind=8) :: amor(*), vgap, fvect(2), x(2), masg(*), mi

@@ -19,32 +19,32 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apinfr.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfapma.h'
-    include 'asterfort/cfapno.h'
-    include 'asterfort/cfappi.h'
-    include 'asterfort/cfcorn.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfdist.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/cfmmco.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cfparz.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfr.h'
+#include "asterfort/apinfi.h"
+#include "asterfort/apinfr.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfapma.h"
+#include "asterfort/cfapno.h"
+#include "asterfort/cfappi.h"
+#include "asterfort/cfcorn.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdist.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cfparz.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfr.h"
     character(len=8) :: noma
     character(len=19) :: sdappa
     character(len=24) :: defico, resoco

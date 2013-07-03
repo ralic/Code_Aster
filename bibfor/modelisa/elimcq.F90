@@ -20,12 +20,12 @@ subroutine elimcq(char, noma, indqua, nzoco, nsuco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfleq8.h'
-    include 'asterfort/cfmeno.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/cfleq8.h"
+#include "asterfort/cfmeno.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: char
     character(len=8) :: noma
     integer :: indqua

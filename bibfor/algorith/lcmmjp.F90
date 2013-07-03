@@ -51,12 +51,12 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 !                   DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 !         IRET   :  CODE RETOUR
 !     ----------------------------------------------------------------
-    include 'asterfort/lcmmja.h'
-    include 'asterfort/lcmmkg.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "asterfort/lcmmja.h"
+#include "asterfort/lcmmkg.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     integer :: ndt, ndi, nmat, nvi, itmax, nfs, nsg
     integer :: k, j, nr, iret, ns, nbcomm(nmat, 3)
 ! DIMENSIONNEMENT DYNAMIQUE

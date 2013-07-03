@@ -24,10 +24,10 @@ subroutine angvxy(gx, gn, angl)
 !       IN      GX , GN
 !       OUT     ALPHA , BETA , GAMMA
 !       ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmavec.h'
+#include "asterc/r8miem.h"
+#include "asterfort/angvx.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmavec.h"
     real(kind=8) :: mro(3, 3), gx(3), gy(3), gn(3), angl(*)
 !
 !-----------------------------------------------------------------------

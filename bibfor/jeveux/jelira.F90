@@ -16,14 +16,14 @@ subroutine jelira(nomlu, catr, ival, cval)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjlirs.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/codent.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjlirs.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu, catr, cval
     integer :: ival
 !     ------------------------------------------------------------------

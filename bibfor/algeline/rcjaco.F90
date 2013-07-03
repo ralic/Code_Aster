@@ -1,6 +1,6 @@
 subroutine rcjaco(ar, br, valpro)
     implicit   none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: ar(*), br(*), valpro(3)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

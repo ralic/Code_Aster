@@ -1,11 +1,11 @@
 subroutine vtcrem(chamno, matass, base, typc)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/vtcrea.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/vtcrea.h"
     character(len=*) :: chamno, matass, base, typc
 !     ------------------------------------------------------------------
 ! ======================================================================

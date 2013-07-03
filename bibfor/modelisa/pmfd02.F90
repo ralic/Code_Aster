@@ -1,17 +1,17 @@
 subroutine pmfd02(noma, cesdec)
     implicit none
-    include 'asterc/getfac.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
+#include "asterc/getfac.h"
+#include "asterc/getvis.h"
+#include "asterfort/alcart.h"
+#include "asterfort/carces.h"
+#include "asterfort/cescre.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
     character(len=8) :: noma
     character(len=19) :: cesdec
 !
@@ -43,7 +43,7 @@ subroutine pmfd02(noma, cesdec)
 !           POUTRE / TUYAU_NSEC
 !
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
     integer :: nbap, k, i, jncmp, jvalv, jma, iarg

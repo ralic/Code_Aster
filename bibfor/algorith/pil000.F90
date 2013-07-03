@@ -20,12 +20,12 @@ subroutine pil000(typilo, compor, neps, tau, mat,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/pidegv.h'
-    include 'asterfort/pieigv.h'
-    include 'asterfort/piesgv.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/pidegv.h"
+#include "asterfort/pieigv.h"
+#include "asterfort/piesgv.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), typilo
     integer :: neps, mat

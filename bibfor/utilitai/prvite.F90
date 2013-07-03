@@ -20,7 +20,7 @@ subroutine prvite(vec1, long, ip1, ip2, itp)
 !      CALCUL DU PROFIL DE VITESSE
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: angle(71), vite(71), angl, vec1(long)
     integer :: ip(3)
 !

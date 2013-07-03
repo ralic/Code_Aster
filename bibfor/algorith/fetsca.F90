@@ -38,10 +38,10 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     integer :: nbi, nbi2, ifeti, ifm
     real(kind=8) :: vi(nbi), vo(nbi)
     character(len=24) :: scalin, infofe

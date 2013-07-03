@@ -50,15 +50,15 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0,&
 !                LORSQUE UMOY <> 0
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/defaxe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcsolz.h'
-    include 'asterfort/pbflkz.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/defaxe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcsolz.h"
+#include "asterfort/pbflkz.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: umoy, hmoy, rmoy, long, cf0, fsvr(7)
     integer :: icoq, imod, nbm
     real(kind=8) :: tcoef(10, nbm), s1, s2

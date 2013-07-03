@@ -36,12 +36,12 @@ subroutine ploint(vesto, modmec, chamno, num, i,&
 !
 !------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/chnucn.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
+#include "jeveux.h"
+#include "asterfort/chnucn.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
     logical :: vrai
     integer :: ipres, i, iret
     character(len=8) :: k8bid, tcorx(2), tcory(2), tcorz(2)

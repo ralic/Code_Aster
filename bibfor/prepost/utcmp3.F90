@@ -1,7 +1,7 @@
 subroutine utcmp3(nbcmp, nomcmp, numcmp)
     implicit   none
-    include 'asterfort/lxliis.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/lxliis.h"
+#include "asterfort/u2mesg.h"
     integer :: nbcmp, numcmp(*)
     character(len=*) :: nomcmp(*)
 ! ----------------------------------------------------------------------

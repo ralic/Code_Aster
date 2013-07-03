@@ -37,16 +37,16 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !     OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 !         IRET   :  CODE RETOUR
 !     --------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/fgequi.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dscal.h'
+#include "asterc/r8prem.h"
+#include "asterfort/fgequi.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/r8inir.h"
+#include "blas/dscal.h"
     integer :: nr, nmat, iret, nvi, i, j
     real(kind=8) :: deps(6), drdy(nr, nr), yf(nr), dy(nr), yd(nr)
     real(kind=8) :: coefel(nmat), coeft(nmat), crit(*)

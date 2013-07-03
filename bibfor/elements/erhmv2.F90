@@ -92,9 +92,9 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/cabthm.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterfort/cabthm.h"
+#include "asterfort/u2mess.h"
     logical :: axi, perman
     integer :: dimuel
     integer :: ndim, nno, nnos, nnom, dimdep, dimdef, nmec, np1, np2

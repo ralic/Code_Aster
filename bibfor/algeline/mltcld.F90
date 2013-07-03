@@ -17,8 +17,8 @@ subroutine mltcld(n, front, adper, t1, ad,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/sspmvc.h'
-    include 'blas/zgemv.h'
+#include "asterfort/sspmvc.h"
+#include "blas/zgemv.h"
     integer :: n, adper(*), ad(*), ier
     real(kind=8) :: eps
     complex(kind=8) :: front(*), t1(*), alpha, beta

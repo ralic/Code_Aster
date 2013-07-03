@@ -21,8 +21,8 @@ function meiden(scal, ncmp, i1, i3, nec,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     character(len=4) :: scal
     integer :: ncmp, i1, i3, nec, i2, i4
 ! ----------------------------------------------------------------------

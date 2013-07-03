@@ -42,19 +42,19 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxsiro.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/vdrepe.h'
-    include 'asterfort/vdsiro.h'
-    include 'asterfort/vdxrep.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxsiro.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
+#include "asterfort/vdrepe.h"
+#include "asterfort/vdsiro.h"
+#include "asterfort/vdxrep.h"
     character(len=*) :: param
     character(len=16) :: nomte
     character(len=2) :: sens

@@ -18,26 +18,26 @@ subroutine op5901(nboccm, ifm, niv, compor)
 ! ======================================================================
 ! person_in_charge: jean-michel.proix at edf.fr
 !     COMMANDE:  DEFI_COMPOR MONOCRISTAL
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbexlr.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexlr.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     character(len=8) :: compor, materi, typpar(5), chaine
     character(len=16) :: nompar(5), ecoule, ecrois, ecroci, elasti, nomvar(200)
     character(len=16) :: fasygl, noms(6), comdes, rota, tbinte, systgl

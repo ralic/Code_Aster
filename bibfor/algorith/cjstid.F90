@@ -29,19 +29,19 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 !          VIN     :  VARIABLES INTERNES
 !     OUT  DSDESY  :  MATRICE TANGENTE SYMETRISEE
 ! ======================================================================
-    include 'asterfort/calcq.h'
-    include 'asterfort/cjsqij.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcq.h"
+#include "asterfort/cjsqij.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/matini.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, i, j, codret
     real(kind=8) :: mater(14, 2), vin(*), sig(6), dsde(6, 6)
     real(kind=8) :: hook(6, 6), i1, s(6), sii, hts, siic, norm(6)

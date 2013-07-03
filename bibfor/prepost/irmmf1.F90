@@ -55,10 +55,10 @@ subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/irmmf2.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/irmmf2.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
     integer :: fid
     integer :: typent, nbrent, nbgrou
     integer :: nufaen(nbrent)

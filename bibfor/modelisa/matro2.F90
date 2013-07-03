@@ -39,8 +39,8 @@ subroutine matro2(angl, gamarc, theta, pgl1, pgl2)
 !     OUT     PGL1   : MATRICE PASSAGE REPERE GLOBAL > FINAL  NOEUD 1
 !     OUT     PGL2   : MATRICE PASSAGE REPERE GLOBAL > FINAL  NOEUD 2
 !     ------------------------------------------------------------------
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmat.h'
+#include "asterfort/matrot.h"
+#include "asterfort/pmat.h"
     real(kind=8) :: angl(*), ang1(3), pgl1(3, 3), pgl2(3, 3)
     real(kind=8) :: m21, m31, m22, m32, m23, m33
     real(kind=8) :: ro(3, 3), ni(3, 3), nf(3, 3)

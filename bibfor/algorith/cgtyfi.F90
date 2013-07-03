@@ -1,10 +1,10 @@
 subroutine cgtyfi(typfis, nomfis)
     implicit none
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: typfis, nomfis
 !
 ! ======================================================================

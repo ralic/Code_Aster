@@ -22,19 +22,19 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 ! ======================================================================
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/iisnan.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8miem.h"
+#include "asterfort/matini.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: ndim, imate, retcom
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option

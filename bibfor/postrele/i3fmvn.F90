@@ -3,8 +3,8 @@ subroutine i3fmvn(nil, desc, succ, prec, desctm,&
                   nbcher, nbtrou, matrou)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3inei.h'
+#include "jeveux.h"
+#include "asterfort/i3inei.h"
     integer :: nil, desc(*), succ(*), prec(*), desctm(*), ptmdep
     integer :: lnd(*), nbnd, nbcher, nbtrou, matrou(*), connec(*), vlc(*)
 !

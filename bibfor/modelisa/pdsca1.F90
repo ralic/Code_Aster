@@ -1,8 +1,8 @@
 subroutine pdsca1(a, b, p)
     implicit none
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     real(kind=8) :: a(3), b(3), p
 !
 ! ======================================================================

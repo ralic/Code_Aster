@@ -25,19 +25,19 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/merxth.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/verstp.h'
-    include 'asterfort/vethbt.h'
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/merxth.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/verstp.h"
+#include "asterfort/vethbt.h"
     integer :: lonch
     logical :: conver, reasma
     character(len=19) :: infcha, solveu, maprec

@@ -1,7 +1,7 @@
 subroutine vfimat(maxdim, ndim, a, am1)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/vfcdet.h'
+#include "asterfort/assert.h"
+#include "asterfort/vfcdet.h"
     integer :: maxdim, ndim
     real(kind=8) :: a(maxdim, maxdim)
     real(kind=8) :: am1(maxdim, maxdim)

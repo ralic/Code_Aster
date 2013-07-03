@@ -19,20 +19,20 @@ subroutine cfcrli(noma, numedd, defico, resoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfnomm.h'
-    include 'asterfort/cfverd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/cfverd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/posddl.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma
     character(len=24) :: numedd
     character(len=24) :: defico, resoco

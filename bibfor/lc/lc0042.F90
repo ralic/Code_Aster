@@ -21,8 +21,8 @@ subroutine lc0042(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/dpvplc.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/dpvplc.h"
+#include "asterfort/rcvarc.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), tp, tm, tref
     real(kind=8) :: instam, instap, tampon(*), angmas(3)

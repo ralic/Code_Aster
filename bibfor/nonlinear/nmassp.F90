@@ -24,15 +24,15 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndassp.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nsassp.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndassp.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nsassp.h"
+#include "asterfort/vtzero.h"
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, sdnume, matass

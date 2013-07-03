@@ -27,17 +27,17 @@ subroutine nmpost(modele, noma, numedd, numfix, carele,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfmxpo.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmener.h'
-    include 'asterfort/nmetca.h'
-    include 'asterfort/nmleeb.h'
-    include 'asterfort/nmobsv.h'
-    include 'asterfort/nmspec.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/cfmxpo.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmener.h"
+#include "asterfort/nmetca.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmobsv.h"
+#include "asterfort/nmspec.h"
+#include "asterfort/nmtime.h"
     integer :: numins
     character(len=8) :: noma
     real(kind=8) :: parmet(*), parcon(*), eta

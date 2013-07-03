@@ -54,7 +54,7 @@ subroutine xerbla(srname, info)
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     character(len=6) :: srname
     character(len=24) :: valk
     integer :: info

@@ -24,36 +24,36 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmadir.h'
-    include 'asterfort/nmaint.h'
-    include 'asterfort/nmcha0.h'
-    include 'asterfort/nmchai.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmchso.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmdiri.h'
-    include 'asterfort/nmfint.h'
-    include 'asterfort/nmmaji.h'
-    include 'asterfort/nmrebo.h'
-    include 'asterfort/nmrech.h'
-    include 'asterfort/nmrecz.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/vlaxpy.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/vtzero.h'
-    include 'asterfort/zbinit.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmcha0.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchso.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmmaji.h"
+#include "asterfort/nmrebo.h"
+#include "asterfort/nmrech.h"
+#include "asterfort/nmrecz.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/vlaxpy.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/vtzero.h"
+#include "asterfort/zbinit.h"
+#include "blas/daxpy.h"
     integer :: fonact(*)
     integer :: iterat, ldccvg
     real(kind=8) :: parmet(*), conv(*)

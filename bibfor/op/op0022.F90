@@ -23,16 +23,16 @@ subroutine op0022()
 !
 !
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dlidef.h'
-    include 'asterfort/dliext.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/liimpr.h'
-    include 'asterfort/titre.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/dlidef.h"
+#include "asterfort/dliext.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/liimpr.h"
+#include "asterfort/titre.h"
     integer :: nv, niv, ifm
     character(len=8) :: resu
     character(len=16) :: concep, nomcmd, opera

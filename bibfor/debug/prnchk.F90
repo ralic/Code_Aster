@@ -18,7 +18,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     integer(kind=4) :: global(*)
     integer :: adress(*), fils(*), frere(*), lgsn(*), lfront(*)
     integer :: invsup(*), seq(*), nbsn

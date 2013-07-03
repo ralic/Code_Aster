@@ -42,44 +42,44 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! aslint: disable=W1504,W1504
     implicit none
-    include 'asterfort/appmas.h'
-    include 'asterfort/calor.h'
-    include 'asterfort/capaca.h'
-    include 'asterfort/dhdt.h'
-    include 'asterfort/dhw2dt.h'
-    include 'asterfort/dhw2p1.h'
-    include 'asterfort/dhw2p2.h'
-    include 'asterfort/dileau.h'
-    include 'asterfort/dilgaz.h'
-    include 'asterfort/dmadp1.h'
-    include 'asterfort/dmadp2.h'
-    include 'asterfort/dmadt.h'
-    include 'asterfort/dmasdt.h'
-    include 'asterfort/dmasp1.h'
-    include 'asterfort/dmasp2.h'
-    include 'asterfort/dmdepv.h'
-    include 'asterfort/dmwdp1.h'
-    include 'asterfort/dmwdp2.h'
-    include 'asterfort/dmwdt.h'
-    include 'asterfort/dpladg.h'
-    include 'asterfort/dqdeps.h'
-    include 'asterfort/dqdp.h'
-    include 'asterfort/dqdt.h'
-    include 'asterfort/dspdp1.h'
-    include 'asterfort/dspdp2.h'
-    include 'asterfort/enteau.h'
-    include 'asterfort/entgaz.h'
-    include 'asterfort/inithm.h'
-    include 'asterfort/majpad.h'
-    include 'asterfort/majpas.h'
-    include 'asterfort/masvol.h'
-    include 'asterfort/netbis.h'
-    include 'asterfort/sigmap.h'
-    include 'asterfort/thmrcp.h'
-    include 'asterfort/viemma.h'
-    include 'asterfort/viporo.h'
-    include 'asterfort/virhol.h'
-    include 'asterfort/visatu.h'
+#include "asterfort/appmas.h"
+#include "asterfort/calor.h"
+#include "asterfort/capaca.h"
+#include "asterfort/dhdt.h"
+#include "asterfort/dhw2dt.h"
+#include "asterfort/dhw2p1.h"
+#include "asterfort/dhw2p2.h"
+#include "asterfort/dileau.h"
+#include "asterfort/dilgaz.h"
+#include "asterfort/dmadp1.h"
+#include "asterfort/dmadp2.h"
+#include "asterfort/dmadt.h"
+#include "asterfort/dmasdt.h"
+#include "asterfort/dmasp1.h"
+#include "asterfort/dmasp2.h"
+#include "asterfort/dmdepv.h"
+#include "asterfort/dmwdp1.h"
+#include "asterfort/dmwdp2.h"
+#include "asterfort/dmwdt.h"
+#include "asterfort/dpladg.h"
+#include "asterfort/dqdeps.h"
+#include "asterfort/dqdp.h"
+#include "asterfort/dqdt.h"
+#include "asterfort/dspdp1.h"
+#include "asterfort/dspdp2.h"
+#include "asterfort/enteau.h"
+#include "asterfort/entgaz.h"
+#include "asterfort/inithm.h"
+#include "asterfort/majpad.h"
+#include "asterfort/majpas.h"
+#include "asterfort/masvol.h"
+#include "asterfort/netbis.h"
+#include "asterfort/sigmap.h"
+#include "asterfort/thmrcp.h"
+#include "asterfort/viemma.h"
+#include "asterfort/viporo.h"
+#include "asterfort/virhol.h"
+#include "asterfort/visatu.h"
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec
     integer :: yate, retcom, adcome, adcp11, adcp12, advihy, advico
     integer :: vihrho, vicphi, vicpvp, vicsat

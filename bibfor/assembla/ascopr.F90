@@ -1,8 +1,8 @@
 subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
                   jresl, rcoef, jvalm)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     character(len=2) :: tt
     integer :: jtmp2, nrmax, jresl
     integer :: jvalm(2)

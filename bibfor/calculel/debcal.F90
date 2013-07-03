@@ -22,29 +22,29 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     implicit none
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/indik8.h'
-    include 'asterc/isnnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chlici.h'
-    include 'asterfort/chligr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenca.h'
-    include 'asterfort/grdeur.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mecoel.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/scalai.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/indik8.h"
+#include "asterc/isnnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/chlici.h"
+#include "asterfort/chligr.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/grdeur.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mecoel.h"
+#include "asterfort/nbec.h"
+#include "asterfort/scalai.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: nomop
     character(len=19) :: ligrel
     integer :: nin, nout

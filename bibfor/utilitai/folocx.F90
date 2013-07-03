@@ -1,10 +1,10 @@
 subroutine folocx(vale, n, x, prolgd, i,&
                   epsi, coli, ier)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: vale(n)
     real(kind=8) :: valr(2)
     character(len=*) :: prolgd

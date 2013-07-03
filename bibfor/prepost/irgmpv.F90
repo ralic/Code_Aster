@@ -3,11 +3,11 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
                   tens, versio)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/lxlgut.h'
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/lxlgut.h"
     integer :: ifi, nbordr, lch, ich, versio
     real(kind=8) :: para(*)
     logical :: lresu, scal, vect, tens

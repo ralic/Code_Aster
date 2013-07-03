@@ -3,11 +3,11 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
                   energi, mesu, alpha, nalpha)
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dalp2d.h'
-    include 'asterfort/dalp3d.h'
+#include "asterfort/assert.h"
+#include "asterfort/dalp2d.h"
+#include "asterfort/dalp3d.h"
     integer :: ndim, nelem, nnoem, nsommx, nelcom, degre
     integer :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
     real(kind=8) :: xy(3, nnoem), erreur(nelem), energi(nelem), mesu(nelem)

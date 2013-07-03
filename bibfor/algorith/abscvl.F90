@@ -1,13 +1,13 @@
 subroutine abscvl(ndim, tabar, xg, s)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/abscvf.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reereg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/abscvf.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reereg.h"
+#include "asterfort/u2mess.h"
     integer :: ndim
     real(kind=8) :: xg(ndim), s, tabar(*)
 !

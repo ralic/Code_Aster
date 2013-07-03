@@ -24,18 +24,18 @@ subroutine imvari(moclef, iocc, ncomel, lcomel, comcod,&
 ! OUT CARCRI  : OBJET CARCRI(9) CRITERES DE CONVERGENCE LOCAUX
 ! OUT NBVARI  : NOMBRE DE VARIABLE INTERNES
 ! OUT k       : =1 si COMP_INCR, =2 si COMP_ELAS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterc/lcvari.h'
-    include 'asterfort/indk16.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lcvari.h"
+#include "asterfort/indk16.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbvari, ncomel, iocc, ii, nums(2), lvari, icom, icomm
     integer :: nbvarm, nbvarl, numlc, numv
     character(len=16) :: comcod, lcomel(5), noms(2), moclef, comcom

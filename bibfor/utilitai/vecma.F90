@@ -1,6 +1,6 @@
 subroutine vecma(mv, n, mp, m)
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: n, m
     real(kind=8) :: mv(n), mp(m, m)
 !       ----------------------------------------------------------------

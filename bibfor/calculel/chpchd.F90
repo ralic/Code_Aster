@@ -1,23 +1,23 @@
 subroutine chpchd(chin, type, celmod, prol0, base,&
                   chou)
     implicit  none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/celfpg.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesces.h'
-    include 'asterfort/cescns.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsces.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/manopg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/celfpg.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesces.h"
+#include "asterfort/cescns.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsces.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/manopg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: chin, chou, base, celmod, type
 !     -----------------------------------------------------------------
 ! ======================================================================

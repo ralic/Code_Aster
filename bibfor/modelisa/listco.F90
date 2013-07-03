@@ -19,11 +19,11 @@ subroutine listco(char, motfac, noma, nomo, nzoco,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/liexco.h'
-    include 'asterfort/nbsuco.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/liexco.h"
+#include "asterfort/nbsuco.h"
     character(len=8) :: char
     character(len=16) :: motfac
     character(len=8) :: noma, nomo

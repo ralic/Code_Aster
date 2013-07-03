@@ -18,12 +18,12 @@ subroutine lispcp(motfac, iexci, phase, npuis)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=16) :: motfac
     integer :: iexci
     real(kind=8) :: phase

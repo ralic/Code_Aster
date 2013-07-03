@@ -1,23 +1,23 @@
 subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
                   nbocc)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8pi.h"
+#include "asterfort/alcart.h"
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/exisd.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/wkvect.h"
     integer :: lmax, nbocc
     logical :: locagb, locamb
     character(len=8) :: nomu, noma

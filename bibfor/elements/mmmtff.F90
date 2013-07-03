@@ -21,11 +21,11 @@ subroutine mmmtff(phasep, ndim, nbcps, nnl, wpg,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mmmmpb.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/assert.h"
+#include "asterfort/matini.h"
+#include "asterfort/mmmmpb.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/vecini.h"
     character(len=9) :: phasep
     integer :: ndim, nnl, nbcps
     real(kind=8) :: wpg, ffl(9), jacobi

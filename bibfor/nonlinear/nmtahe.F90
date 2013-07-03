@@ -19,15 +19,15 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/nmtaac.h'
-    include 'asterfort/nmtacr.h'
-    include 'asterfort/nmtadp.h'
-    include 'asterfort/nmtael.h'
-    include 'asterfort/nmtama.h'
-    include 'asterfort/nmtari.h'
-    include 'asterfort/nmtarl.h'
-    include 'asterfort/nmtasp.h'
-    include 'asterfort/nmtaxi.h'
+#include "asterfort/nmtaac.h"
+#include "asterfort/nmtacr.h"
+#include "asterfort/nmtadp.h"
+#include "asterfort/nmtael.h"
+#include "asterfort/nmtama.h"
+#include "asterfort/nmtari.h"
+#include "asterfort/nmtarl.h"
+#include "asterfort/nmtasp.h"
+#include "asterfort/nmtaxi.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=16) :: compor(*), option

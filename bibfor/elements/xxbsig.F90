@@ -6,18 +6,18 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalf2.h'
-    include 'asterfort/xcalfe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/indent.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf2.h"
+#include "asterfort/xcalfe.h"
     integer :: ddlc, ddlm, fisno(nnop, nfiss)
     integer :: codopt, idepl, igeom, ivectu
     integer :: ndim, nfe, nfh, nfiss, nnop, npg

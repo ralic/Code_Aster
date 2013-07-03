@@ -27,8 +27,8 @@ subroutine lksige(mod, nmat, materd, deps, sigd,&
 !           DEPS   :  INCREMENT DE DEFORMATION
 !       OUT SIGF   :  CONTRAINTE ELASTIQUE A T+DT
 !       --------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lkelas.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lkelas.h"
     integer :: nmat, ndt, ndi
     real(kind=8) :: materd(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)

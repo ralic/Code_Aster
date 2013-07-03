@@ -18,11 +18,11 @@ subroutine avenca(rvecpg, nbvec, nbordr, lsig0, iflag,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/r8maem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, iflag(nbvec)
     real(kind=8) :: rvecpg(2*nbvec*nbordr), rmima(4*nbvec)
     logical :: lsig0

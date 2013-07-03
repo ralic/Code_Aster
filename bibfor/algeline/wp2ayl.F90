@@ -3,10 +3,10 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma,&
                   u1, u2, u3, u4, v,&
                   n, solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/mrmult.h'
-    include 'asterfort/resoud.h'
+#include "asterfort/mrmult.h"
+#include "asterfort/resoud.h"
     character(len=1) :: appr
     complex(kind=8) :: v(*), sigma
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*)

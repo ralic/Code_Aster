@@ -19,7 +19,7 @@ subroutine op0026()
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
 !
@@ -29,42 +29,42 @@ subroutine op0026()
 ! ----------------------------------------------------------------------
 !
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/knindi.h'
-    include 'asterfort/medime.h'
-    include 'asterfort/merimo.h'
-    include 'asterfort/mvnume.h'
-    include 'asterfort/nmch1p.h'
-    include 'asterfort/nmch2p.h'
-    include 'asterfort/nmcha0.h'
-    include 'asterfort/nmchai.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdome.h'
-    include 'asterfort/nmdorc.h'
-    include 'asterfort/nmvcle.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vebtla.h'
-    include 'asterfort/vrcomp.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/chpver.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/knindi.h"
+#include "asterfort/medime.h"
+#include "asterfort/merimo.h"
+#include "asterfort/mvnume.h"
+#include "asterfort/nmch1p.h"
+#include "asterfort/nmch2p.h"
+#include "asterfort/nmcha0.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdome.h"
+#include "asterfort/nmdorc.h"
+#include "asterfort/nmvcle.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vebtla.h"
+#include "asterfort/vrcomp.h"
     integer :: nbpar, nblibl
     parameter       (nbpar=5,nblibl=6)
     character(len=19) :: nompar(nbpar), typpar(nbpar)

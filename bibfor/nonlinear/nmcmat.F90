@@ -21,7 +21,7 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=4) :: oper
     character(len=*) :: optcaz, optasz, typmaz
     logical :: lasse, lcalc

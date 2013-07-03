@@ -12,27 +12,27 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdarnl.h'
-    include 'asterfort/mdfext.h'
-    include 'asterfort/mdfnli.h'
-    include 'asterfort/mdinit.h'
-    include 'asterfort/mdsize.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/resu74.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdarnl.h"
+#include "asterfort/mdfext.h"
+#include "asterfort/mdfnli.h"
+#include "asterfort/mdinit.h"
+#include "asterfort/mdsize.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/resu74.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: logcho(*), iorsto(*), iredst(*), iparch(*), ichost(*), irevst(*)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), amogen(*), parcho(*)
     real(kind=8) :: parred(*), depsto(*), vitsto(*), accsto(*), temsto(*)

@@ -17,16 +17,16 @@ subroutine jjldyn(imode, lmin, ltot)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/hpdeallc.h'
-    include 'asterfort/jermxd.h'
-    include 'asterfort/jxecro.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/random.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/utgtme.h'
-    include 'asterfort/utptme.h'
-    include 'asterfort/uttcpu.h'
+#include "jeveux_private.h"
+#include "asterc/hpdeallc.h"
+#include "asterfort/jermxd.h"
+#include "asterfort/jxecro.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/random.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/utgtme.h"
+#include "asterfort/utptme.h"
+#include "asterfort/uttcpu.h"
     integer :: imode, lmin, ltot
 ! ----------------------------------------------------------------------
 ! LIBERE LES SEGMENTS DE VALEURS ALLOUES DYNAMIQUEMENT

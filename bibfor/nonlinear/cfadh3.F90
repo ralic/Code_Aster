@@ -21,15 +21,15 @@ subroutine cfadh3(resoco, defico, noma, ndim, indic,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfimp2.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: resoco, defico
     character(len=8) :: noma
     integer :: indic, ndim

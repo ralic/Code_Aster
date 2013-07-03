@@ -20,12 +20,12 @@ subroutine cfaduf(resoco, ndim, nbliai, nbliac, llf,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cftyli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/cftyli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
     integer :: ndim, nbliai
     integer :: nbliac, llf, llf1, llf2
     character(len=24) :: resoco

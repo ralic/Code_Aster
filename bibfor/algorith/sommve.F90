@@ -28,8 +28,8 @@ subroutine sommve(np, vec1, n1, vec2, n2,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
     integer :: np, n1, n2
     real(kind=8) :: vec1(*), vec2(*), vecres(*)
 !

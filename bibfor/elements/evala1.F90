@@ -32,10 +32,10 @@ subroutine evala1(mod, relcom, sig, vin, imat,&
 !                      ICODE   -->
 ! =====================================================================
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/hujtid.h'
-    include 'asterfort/redrpr.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/hujtid.h"
+#include "asterfort/redrpr.h"
     real(kind=8) :: module, sig(6), vin(50), dsde(6, 6), sigt(2, 2)
     real(kind=8) :: angle, rot(2, 2), degr, sigr1(2, 2), sigr2(2, 2), temp
     real(kind=8) :: sigf(6), ratio1, pi, value1, ratio2, value2, valeur

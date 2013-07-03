@@ -35,11 +35,11 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro,&
 !
     implicit none
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infniv.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     integer :: nbmode, nbvect, nvpro
     real(kind=8) :: valpro(nvpro), precdc, omeshi, omecor, vpinf, vpmax
     character(len=8) :: method

@@ -16,21 +16,21 @@ subroutine te0537(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/matela.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmfdef.h'
-    include 'asterfort/pmfdge.h'
-    include 'asterfort/pmfitg.h'
-    include 'asterfort/pmfpti.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utpvgl.h'
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/matela.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmfdef.h"
+#include "asterfort/pmfdge.h"
+#include "asterfort/pmfitg.h"
+#include "asterfort/pmfpti.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 !     POU_D_EM : POUTRE MULTIFIBRE EULER BERNOULLI

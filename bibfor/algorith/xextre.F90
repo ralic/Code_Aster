@@ -2,12 +2,12 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                   jdirol, jnvdir)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "blas/ddot.h"
     integer :: iptbor(2), nbfacb
     integer :: jbas, jborl, jdirol, jnvdir
     real(kind=8) :: vectn(12)

@@ -20,38 +20,38 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 ! ======================================================================
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterc/isnnem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/elmddl.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/rectfr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vpbost.h'
-    include 'asterfort/vpcrea.h'
-    include 'asterfort/vpddl.h'
-    include 'asterfort/vpfopr.h'
-    include 'asterfort/vpordi.h'
-    include 'asterfort/vpordo.h'
-    include 'asterfort/vppara.h'
-    include 'asterfort/vpsor1.h'
-    include 'asterfort/vpsorn.h'
-    include 'asterfort/vpwecf.h'
-    include 'asterfort/vrrefe.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/elmddl.h"
+#include "asterfort/freqom.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/omega2.h"
+#include "asterfort/rectfr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vpbost.h"
+#include "asterfort/vpcrea.h"
+#include "asterfort/vpddl.h"
+#include "asterfort/vpfopr.h"
+#include "asterfort/vpordi.h"
+#include "asterfort/vpordo.h"
+#include "asterfort/vppara.h"
+#include "asterfort/vpsor1.h"
+#include "asterfort/vpsorn.h"
+#include "asterfort/vpwecf.h"
+#include "asterfort/vrrefe.h"
+#include "asterfort/wkvect.h"
     character(len=4) :: mod45
     character(len=19) :: matrig, matgeo
     integer :: defo, nfreq, cdsp

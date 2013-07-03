@@ -3,9 +3,9 @@ subroutine xmmbp5(ndim, nnol, pla, ffc, jac,&
                   lact, mmat)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/xmafr2.h'
+#include "jeveux.h"
+#include "asterfort/matini.h"
+#include "asterfort/xmafr2.h"
     integer :: ndim, nnol
     integer :: pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)

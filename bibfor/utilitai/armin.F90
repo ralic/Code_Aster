@@ -17,13 +17,13 @@ function armin(nomaz)
 ! ======================================================================
     implicit none
     real(kind=8) :: armin
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomaz
 !
 ! ----------------------------------------------------------------------

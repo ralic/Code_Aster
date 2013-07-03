@@ -20,12 +20,12 @@ subroutine piesgv(neps, tau, mat, vim, epsm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lcerma.h'
-    include 'asterfort/lcervf.h'
-    include 'asterfort/lcesvf.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterfort/lcerma.h"
+#include "asterfort/lcervf.h"
+#include "asterfort/lcesvf.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod
     integer :: neps, mat
     real(kind=8) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax

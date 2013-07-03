@@ -1,18 +1,18 @@
 subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                   jconx2, clsm)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/ismali.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/conare.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/ismali.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     integer :: nbma, jconx1, jconx2, clsm
     character(len=8) :: noma
     character(len=19) :: cnslt, cnsln

@@ -20,11 +20,11 @@ subroutine cfinnl(defico, resoco, reageo, nbliac, llf,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=24) :: defico, resoco
     integer :: nbliac, llf, llf1, llf2
     logical :: reageo

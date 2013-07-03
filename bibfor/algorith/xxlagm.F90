@@ -2,7 +2,7 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
                   nnol, pla, reac, reac12, tau1,&
                   tau2, nvec)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
 ! OUT REAC12: REACTION DE FROTTEMENT AU POINT DE GAUSS
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
-    include 'asterfort/vecini.h'
+#include "asterfort/vecini.h"
     integer :: i, idepl, idepm
     integer :: j, lact(8), ndim, nli, nnol
     integer :: pla(27), pli, nvec

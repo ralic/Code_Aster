@@ -66,10 +66,10 @@ subroutine testch(np1, np2, np3, nbmcd, nbnl,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/disbut.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/projmg.h'
-    include 'asterfort/vardec.h'
+#include "asterfort/disbut.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/projmg.h"
+#include "asterfort/vardec.h"
     integer :: np1, np2, np3, nbmcd, nbnl
     real(kind=8) :: toln, tolc, tolv
     integer :: typch(*), nbseg(*)

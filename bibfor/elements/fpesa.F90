@@ -16,14 +16,14 @@ subroutine fpesa(nomte, xi, nb1, vecl)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dxroep.h'
-    include 'asterfort/forpes.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/vectci.h'
-    include 'asterfort/vexpan.h'
+#include "jeveux.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/forpes.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/vectci.h"
+#include "asterfort/vexpan.h"
     character(len=16) :: nomte
 !
 !

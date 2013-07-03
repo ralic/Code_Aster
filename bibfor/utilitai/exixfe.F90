@@ -1,9 +1,9 @@
 subroutine exixfe(modele, iret)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
     character(len=*) :: modele
     integer :: iret
 ! ----------------------------------------------------------------------

@@ -22,14 +22,14 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=
     implicit none
-    include 'asterfort/eccook.h'
-    include 'asterfort/nmcri9.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utlcal.h'
-    include 'asterfort/verift.h'
-    include 'asterfort/zerofr.h'
+#include "asterfort/eccook.h"
+#include "asterfort/nmcri9.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utlcal.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerofr.h"
     integer :: ndim, imate, kpg, ksp, iret
 !
     real(kind=8) :: crit(6), instam, instap

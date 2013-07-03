@@ -19,8 +19,8 @@ subroutine eninit(sdener)
 ! person_in_charge: ludovic.idoux at edf.fr
 !
     implicit none
-    include 'asterfort/infdbg.h'
-    include 'asterfort/nmcrsd.h'
+#include "asterfort/infdbg.h"
+#include "asterfort/nmcrsd.h"
     character(len=19) :: sdener
 !
 ! ----------------------------------------------------------------------

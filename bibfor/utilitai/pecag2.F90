@@ -1,9 +1,9 @@
 subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
                   vale, valpar)
     implicit none
-    include 'asterc/r8rddg.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/orien2.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/orien2.h"
     integer :: ndim, np
     real(kind=8) :: vale(*), valpar(*), xyp(2)
     logical :: nsymx, nsymy

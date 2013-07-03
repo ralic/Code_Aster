@@ -17,9 +17,9 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jxecrb.h'
-    include 'asterfort/jxlirb.h'
+#include "jeveux_private.h"
+#include "asterfort/jxecrb.h"
+#include "asterfort/jxlirb.h"
     integer :: idco, idos, ic, iaddi(2), lonoi
 ! ----------------------------------------------------------------------
 ! MARQUE LA PLACE DISQUE EN VUE D'UNE RECUPERATION ULTERIEURE

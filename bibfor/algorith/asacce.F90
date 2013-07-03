@@ -2,12 +2,12 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
                   nbmode, id, nume, vecmod, parmod,&
                   spectr, recmor, recmod, nbdis)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/wkvect.h"
     integer :: nbsup, neq, nbmode, id, nbdis(nbsup)
     real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
     real(kind=8) :: recmod(nbsup, neq, *), recmor(nbsup, neq, *)

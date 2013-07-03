@@ -18,9 +18,9 @@ subroutine nzcalc(crit, phasp, nz, fmel, seuil,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/nzfpri.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zeroco.h'
+#include "asterfort/nzfpri.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zeroco.h"
     integer :: nz, iret
     real(kind=8) :: seuil, dt, trans, rprim, deuxmu, crit(3), phasp(5), fmel
     real(kind=8) :: eta(5), unsurn(5), dp

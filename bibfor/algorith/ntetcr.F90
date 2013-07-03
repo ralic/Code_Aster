@@ -20,14 +20,14 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmetci.h'
-    include 'asterfort/nthydr.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmetci.h"
+#include "asterfort/nthydr.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: numedd, sdieto, compor
     character(len=24) :: vhydr
     logical :: lnonl

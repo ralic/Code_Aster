@@ -35,9 +35,9 @@ subroutine matint(kr, mr, direc, vtest, rayon)
 !     ------------------------------------------------------------------
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     real(kind=8) :: kr(12, 12), mr(12, 12), direc(3), vtest(3), rayon
 !
 !-- VARIABLES DE LA ROUTINE

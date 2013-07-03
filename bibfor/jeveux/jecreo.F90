@@ -24,10 +24,10 @@ subroutine jecreo(nomlu, listat)
 !
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjanal.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjanal.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu, listat
 !     ==================================================================
 !-----------------------------------------------------------------------

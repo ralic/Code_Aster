@@ -20,7 +20,7 @@ subroutine mmmpha(loptf, lcont, ladhe, ndexfr, lpenac,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     logical :: lpenaf, lpenac
     logical :: loptf, lcont, ladhe
     integer :: ndexfr

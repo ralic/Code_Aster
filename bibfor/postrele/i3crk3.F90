@@ -1,8 +1,8 @@
 subroutine i3crk3(typk, face, crf, crk)
     implicit none
 !
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: typk, face
     real(kind=8) :: crf(*), crk(*)
 !

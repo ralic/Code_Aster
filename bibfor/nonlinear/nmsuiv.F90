@@ -19,18 +19,18 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmext0.h'
-    include 'asterfort/nmext1.h'
-    include 'asterfort/nmextd.h'
-    include 'asterfort/nmextt.h'
-    include 'asterfort/nmsui3.h'
+#include "jeveux.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmext0.h"
+#include "asterfort/nmext1.h"
+#include "asterfort/nmextd.h"
+#include "asterfort/nmextt.h"
+#include "asterfort/nmsui3.h"
     character(len=24) :: sdimpr, sdsuiv
     character(len=8) :: noma
     character(len=24) :: sdieto

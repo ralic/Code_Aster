@@ -65,9 +65,9 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'jeveux.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/ircmpf.h'
+#include "jeveux.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ircmpf.h"
     integer :: nbvato, ncmprf, ncmpve
     integer :: numcmp(ncmprf), innoce(nbvato)
     integer :: nbnoec

@@ -1,20 +1,20 @@
 subroutine alimrs(mate, ma1, ma2, moint, ndble,&
                   num, cn1, chno, cmp, icor)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterfort/calflu.h'
-    include 'asterfort/crchno.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterc/getvr8.h"
+#include "asterfort/calflu.h"
+#include "asterfort/crchno.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     character(len=*) :: moint, cmp, chno, mate
 !---------------------------------------------------------------------
 ! ======================================================================

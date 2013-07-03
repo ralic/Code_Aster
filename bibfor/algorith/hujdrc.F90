@@ -29,7 +29,7 @@ subroutine hujdrc(k, mater, sig, vin, pst)
 !   OUT PST    : PRODUIT SCALAIRE ENTRE LA NORME DE LA SURFACE ET DR
 !       SEUIL  : SEUIL DE LA SURFACE DE CHARGE ANTERIEURE
 !   -------------------------------------------------------------------
-    include 'asterfort/hujprj.h'
+#include "asterfort/hujprj.h"
     integer :: ndt, ndi, i, k
     real(kind=8) :: mater(22, 2), sig(6), vin(*)
     real(kind=8) :: b, pco, beta, pc, epsvpm, ptrac

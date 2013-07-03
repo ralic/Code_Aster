@@ -21,13 +21,13 @@ subroutine op0050()
 !          OPERATEUR INTE_MAIL_2D
 !
 ! ----------------------------------------------------------------------
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/i2chem.h'
-    include 'asterfort/i2segm.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/i2chem.h"
+#include "asterfort/i2segm.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/u2mess.h"
     integer :: ibid, nbparm, nbpars, nbpara, n1
     character(len=8) :: k8b, nomail
     integer :: iarg

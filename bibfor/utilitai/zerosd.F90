@@ -1,9 +1,9 @@
 function zerosd(typesd, sd)
     implicit none
     logical :: zerosd
-    include 'jeveux.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/zerobj.h'
+#include "jeveux.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/zerobj.h"
     character(len=*) :: sd, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================

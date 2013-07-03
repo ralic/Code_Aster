@@ -24,12 +24,12 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmfici.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterc/r8vide.h"
+#include "asterfort/codere.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmfici.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     integer :: nno, nddl, npg, lgpg, mate, codret
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg), crit(*)
     real(kind=8) :: geom(nddl), deplm(nddl), ddepl(nddl), tm, tp

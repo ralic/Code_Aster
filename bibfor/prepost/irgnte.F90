@@ -3,11 +3,11 @@ subroutine irgnte(ifi, nbordr, coord, connex, point,&
                   cnsd)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: ifi, nbordr, connex(*), point(*), cnsv(*), cnsd(*), jtype
     real(kind=8) :: coord(*)
     character(len=*) :: njvmai, partie

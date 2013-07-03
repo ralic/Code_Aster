@@ -26,25 +26,25 @@ subroutine nmdepl(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dbgcha.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcoun.h'
-    include 'asterfort/nmcret.h'
-    include 'asterfort/nmfext.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/nmmajc.h'
-    include 'asterfort/nmpich.h'
-    include 'asterfort/nmpild.h'
-    include 'asterfort/nmreli.h'
-    include 'asterfort/nmrepl.h'
-    include 'asterfort/nmsolm.h'
-    include 'asterfort/nmsolu.h'
+#include "jeveux.h"
+#include "asterfort/dbgcha.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcoun.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmfext.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmmajc.h"
+#include "asterfort/nmpich.h"
+#include "asterfort/nmpild.h"
+#include "asterfort/nmreli.h"
+#include "asterfort/nmrepl.h"
+#include "asterfort/nmsolm.h"
+#include "asterfort/nmsolu.h"
     integer :: fonact(*)
     integer :: iterat, numins
     real(kind=8) :: parmet(*), conv(*), eta

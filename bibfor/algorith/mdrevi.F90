@@ -1,23 +1,23 @@
 subroutine mdrevi(numddl, nbrevi, nbmode, bmodal, neq,&
                   dplrev, fonrev, ier)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/posddl.h'
-    include 'asterfort/resmod.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/posddl.h"
+#include "asterfort/resmod.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbrevi, nbmode, neq, ier
     real(kind=8) :: dplrev(nbrevi, nbmode, *), bmodal(neq, *)
     character(len=8) :: fonrev(nbrevi, *)

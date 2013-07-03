@@ -21,17 +21,17 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfalgo.h'
-    include 'asterfort/cfgeom.h'
-    include 'asterfort/cfsvfr.h'
-    include 'asterfort/cfsvmu.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfalgo.h"
+#include "asterfort/cfgeom.h"
+#include "asterfort/cfsvfr.h"
+#include "asterfort/cfsvmu.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmtime.h"
     character(len=8) :: noma
     character(len=19) :: depplu
     character(len=19) :: depdel, ddepla

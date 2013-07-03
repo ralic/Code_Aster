@@ -19,11 +19,11 @@ function liscft(lischa, ichar)
 !
     implicit none
     logical :: liscft
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisltc.h'
-    include 'asterfort/lisltf.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisltc.h"
+#include "asterfort/lisltf.h"
     character(len=19) :: lischa
     integer :: ichar
 !

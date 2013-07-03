@@ -66,10 +66,10 @@ subroutine lcplas(fami, kpg, ksp, loi, toler,&
 !        CODRET :  CODE RETOUR. 0=OK, 1=ECHEC
 !        DRDY   :  MATRICE JACOBIENNE
 !       ----------------------------------------------------------------
-    include 'asterfort/lchobr.h'
-    include 'asterfort/lcpllg.h'
-    include 'asterfort/lcplnl.h'
-    include 'asterfort/lcrous.h'
+#include "asterfort/lchobr.h"
+#include "asterfort/lcpllg.h"
+#include "asterfort/lcplnl.h"
+#include "asterfort/lcrous.h"
     integer :: itmax, icomp, codret, irtet, kpg, ksp
     integer :: imat, nmat, nvi, nr
 !

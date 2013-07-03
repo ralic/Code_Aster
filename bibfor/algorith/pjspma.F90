@@ -29,16 +29,16 @@ subroutine pjspma(corres, cham1, cham2, prol0, ligre2,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/cescel.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pjcor2.h'
-    include 'asterfort/pjxxch.h'
-    include 'asterfort/titre.h'
+#include "asterfort/cescel.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pjcor2.h"
+#include "asterfort/pjxxch.h"
+#include "asterfort/titre.h"
     character(len=1) :: base
     character(len=8) :: prol0, noca
     character(len=16) :: corres

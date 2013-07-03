@@ -20,12 +20,12 @@ subroutine cfllaf(noma, defico, resoco, iliai, nbliai,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfelpv.h'
-    include 'asterfort/cfimp2.h'
-    include 'asterfort/cftabl.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/cfelpv.h"
+#include "asterfort/cfimp2.h"
+#include "asterfort/cftabl.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     integer :: iliai

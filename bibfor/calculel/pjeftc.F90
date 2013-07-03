@@ -23,19 +23,19 @@ subroutine pjeftc(ma1, ma2, resuou, base)
     implicit none
 !
 ! 0.1. ==> ARGUMENTS
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pjecou.h'
-    include 'asterfort/pjfuc2.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pjecou.h"
+#include "asterfort/pjfuc2.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: ma1, ma2
     character(len=16) :: resuou
     character(len=1) :: base

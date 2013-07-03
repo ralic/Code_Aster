@@ -20,31 +20,31 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8rddg.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/codree.h'
-    include 'asterfort/dffno.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/norlin.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8rddg.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/codree.h"
+#include "asterfort/dffno.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/norlin.h"
+#include "asterfort/provec.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbma, listi(*), ndim, nbno, nuno(*), l
     character(len=8) :: noma, listk(*)
 !

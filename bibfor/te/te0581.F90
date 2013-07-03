@@ -31,10 +31,10 @@ subroutine te0581(option, nomte)
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 !
 ! VARIABLES LOCALES

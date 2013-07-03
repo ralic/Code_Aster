@@ -18,12 +18,12 @@ subroutine fmodam(neq, vite, valmod, basmod, force)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
     integer :: neq
     character(len=24) :: valmod, basmod
     real(kind=8) :: vite(neq), force(neq)

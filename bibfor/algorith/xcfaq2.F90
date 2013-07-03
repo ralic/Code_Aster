@@ -3,28 +3,28 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                   nptf, cface, nbtot)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/abscvf.h'
-    include 'asterfort/abscvl.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xajpin.h'
-    include 'asterfort/xcfacf.h'
-    include 'asterfort/xintar.h'
-    include 'asterfort/xinvac.h'
-    include 'asterfort/xmilfi.h'
-    include 'asterfort/xxmmvd.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/abscvf.h"
+#include "asterfort/abscvl.h"
+#include "asterfort/assert.h"
+#include "asterfort/conare.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
+#include "asterfort/tecael.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xajpin.h"
+#include "asterfort/xcfacf.h"
+#include "asterfort/xintar.h"
+#include "asterfort/xinvac.h"
+#include "asterfort/xmilfi.h"
+#include "asterfort/xxmmvd.h"
+#include "blas/ddot.h"
     integer :: jgrlsn, igeom, ninter, nface, cface(5, 3), jlsn, jlst
     integer :: nptf, nbtot, nmaabs
     real(kind=8) :: ptint(*), ainter(*)

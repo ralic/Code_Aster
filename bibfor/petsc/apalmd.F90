@@ -18,19 +18,19 @@ subroutine apalmd(kptsc)
 !
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
-    include 'jeveux.h'
-    include 'asterfort/apbloc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpicm0.h'
-    include 'asterfort/mpippv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/apbloc.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/comcou.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpicm0.h"
+#include "asterfort/mpippv.h"
+#include "asterfort/wkvect.h"
     integer :: kptsc
 !----------------------------------------------------------------
 !

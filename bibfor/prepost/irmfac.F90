@@ -1,22 +1,22 @@
 subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                   modele, nomail, nomare, resure, lgmsh)
     implicit none
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irchor.h'
-    include 'asterfort/irecri.h'
-    include 'asterfort/iremed.h'
-    include 'asterfort/irmail.h'
-    include 'asterfort/irtitr.h'
-    include 'asterfort/irtopo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/irchor.h"
+#include "asterfort/irecri.h"
+#include "asterfort/iremed.h"
+#include "asterfort/irmail.h"
+#include "asterfort/irtitr.h"
+#include "asterfort/irtopo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: ioccur, ifichi, versio, niveau
     character(len=8) :: formaf, resure, modele, nomare, nomail
     logical :: lgmsh
@@ -56,7 +56,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 ! IN/OUT :
 !   LGMSH   L    LOGICAL SERVANT A ECRIRE L'ENTETE DU FICHIER GMSH
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nbnot, nvamin, nbpara, jpara, nbmat, nbcmp, nbnosy, nbordr
     integer :: nbcmdu, jnunot, jnosy, jordr, jcmp, jncmed, jnumat, nfor, nresu

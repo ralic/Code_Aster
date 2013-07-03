@@ -1,10 +1,10 @@
 subroutine calflu(chamno, modele, mate, nu, vectas,&
                   nd, nr, nv, opt)
     implicit none
-    include 'asterfort/assvec.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/vectfl.h'
+#include "asterfort/assvec.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/vectfl.h"
     integer :: nr, nd, nv
     character(len=*) :: chamno, modele, mate, nu, vectas, opt
 !----------------------------------------------------------------------

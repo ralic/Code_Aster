@@ -16,13 +16,13 @@ subroutine te0156(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/utpvlg.h'
+#include "jeveux.h"
+#include "asterfort/angvx.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/tecach.h"
+#include "asterfort/terefe.h"
+#include "asterfort/utpvlg.h"
     character(len=16) :: option, nomte
 !-----------------------------------------------------------------------
 ! REALISE LES OPTIONS :

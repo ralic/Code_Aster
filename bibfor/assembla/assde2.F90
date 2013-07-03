@@ -16,12 +16,12 @@ subroutine assde2(champ)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assde1.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assde1.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: champ
 ! ----------------------------------------------------------------------
 !    PENDANT DE ASSDE1, ROUTINE DE NETTOYAGE ADAPTEE A FETI POUR LIMITER

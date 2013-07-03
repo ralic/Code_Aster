@@ -30,7 +30,7 @@ subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/exigfa.h'
+#include "asterfort/exigfa.h"
     integer :: nbgf, nbgr
     integer :: dgf(*)
     character(len=80) :: nogrf(*)

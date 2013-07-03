@@ -1,12 +1,12 @@
 subroutine rc32pm(lieu, seisme, pi, mi, mse,&
                   pm, pb, pmpb)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rc32s0.h'
-    include 'asterfort/rc32st.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rc32s0.h"
+#include "asterfort/rc32st.h"
     real(kind=8) :: pi, mi(*), mse(*), pm, pb, pmpb
     logical :: seisme
     character(len=4) :: lieu

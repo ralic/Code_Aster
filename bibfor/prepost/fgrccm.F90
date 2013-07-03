@@ -1,7 +1,7 @@
 subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: ext(*), sigmin(*), sigmax(*)
     integer :: nbextr, ncyc
 !     ------------------------------------------------------------------

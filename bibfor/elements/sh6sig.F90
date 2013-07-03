@@ -19,14 +19,14 @@ subroutine sh6sig(xetemp, para, xidepp, dusx, sigma)
 !               ELEMENT SHB6
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assebg.h'
-    include 'asterfort/depsh6.h'
-    include 'asterfort/mulmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s6calb.h'
-    include 'asterfort/sh6ksi.h'
+#include "jeveux.h"
+#include "asterfort/assebg.h"
+#include "asterfort/depsh6.h"
+#include "asterfort/mulmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s6calb.h"
+#include "asterfort/sh6ksi.h"
     integer :: lag, irdc
     real(kind=8) :: sigma(*), para(11)
     real(kind=8) :: xe(18), dusx(*), xidepp(*)

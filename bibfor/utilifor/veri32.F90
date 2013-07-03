@@ -20,8 +20,8 @@ subroutine veri32()
 !----------------------------------------------------------------------
 ! BUT : ARRETER LE CODE SI L'ON EST SUR UNE MACHINE OU LES ENTIERS
 !       SONT STOCKES SUR 32 BITS OU MOINS
-    include 'asterc/loisem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/loisem.h"
+#include "asterfort/u2mess.h"
 !
     if (loisem() .le. 4) then
         call u2mess('F', 'UTILITAI_22')

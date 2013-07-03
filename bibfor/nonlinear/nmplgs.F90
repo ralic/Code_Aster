@@ -59,22 +59,22 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 ! aslint: disable=W1306,W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cavini.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmepsb.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/nmmabu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecac2.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
-    include 'blas/dspev.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cavini.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsb.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmmabu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecac2.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
+#include "blas/dspev.h"
     common  /trucit/iteamm
     character(len=8) :: typmod(*), fami, poum
     character(len=16) :: option, compor(*)

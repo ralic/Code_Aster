@@ -159,9 +159,9 @@ subroutine flaln2(ltrans, na, nw, smin, ca,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'blas/dladiv.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "blas/dladiv.h"
     logical :: ltrans
     integer :: info, lda, ldb, ldx, na, nw
     real(kind=8) :: ca, d1, d2, scale, smin, wi, wr, xnorm

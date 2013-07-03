@@ -4,7 +4,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat,&
                   dgamma, dp, crit, sgns, iret)
 !
     implicit none
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), iret, nfs, nsg
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, dt, taumu, tauv
     real(kind=8) :: sgns, hsr(nsg, nsg), dy(*)

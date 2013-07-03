@@ -28,10 +28,10 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
 ! VAR DEPS   :  INCREMENT DE DEFORMATION
 ! OUT SIGF   :  CONTRAINTE A T+DT
 ! ----------------------------------------------------------------
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
     integer :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)

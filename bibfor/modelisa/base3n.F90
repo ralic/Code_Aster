@@ -1,8 +1,8 @@
 subroutine base3n(x1, mat33)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
+#include "asterfort/assert.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
     real(kind=8) :: x1(3), mat33(3, 3)
     real(kind=8) :: norme
 ! ----------------------------------------------------------------------

@@ -26,12 +26,12 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !  IN   : NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLE FACTEUR UTILISE
 !  IN   : ITYPFL : INDICE CARACTERISTIQUE DE LA CONFIGURATION ETUDIEE
 !-----------------------------------------------------------------------
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/tfvegr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/tfvegr.h"
+#include "asterfort/u2mess.h"
     integer :: itypfl
     character(len=16) :: nommcf
 ! ----------------------------------------------------------------------

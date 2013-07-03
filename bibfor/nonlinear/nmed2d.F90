@@ -23,15 +23,15 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codere.h'
-    include 'asterfort/nmedco.h'
-    include 'asterfort/nmedel.h'
-    include 'asterfort/nmedsq.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/codere.h"
+#include "asterfort/nmedco.h"
+#include "asterfort/nmedel.h"
+#include "asterfort/nmedsq.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde, ivectu, ideplm, iddepl
     character(len=8) :: typmod(*)

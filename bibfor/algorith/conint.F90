@@ -42,26 +42,26 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !  SSAMI   /O/ : MATRICE DE MASSE DU MODELE D'INTERFACE
 !
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getran.h'
-    include 'asterfort/crsint.h'
-    include 'asterfort/crsolv.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/haslib.h'
-    include 'asterfort/inmain.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/matint.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getran.h"
+#include "asterfort/crsint.h"
+#include "asterfort/crsolv.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/haslib.h"
+#include "asterfort/inmain.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/matint.h"
+#include "asterfort/wkvect.h"
 !
 !-- VARIABLES EN ENTREES / SORTIE
     integer :: sizeco, connec, nnoint

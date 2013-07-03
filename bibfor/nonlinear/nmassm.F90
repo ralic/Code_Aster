@@ -20,18 +20,18 @@ subroutine nmassm(fonact, lischa, solveu, numedd, numfix,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asmaam.h'
-    include 'asterfort/asmama.h'
-    include 'asterfort/asmari.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
+#include "jeveux.h"
+#include "asterfort/asmaam.h"
+#include "asterfort/asmama.h"
+#include "asterfort/asmari.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
     character(len=19) :: lischa, solveu
     character(len=24) :: numedd, numfix
     character(len=6) :: typmat

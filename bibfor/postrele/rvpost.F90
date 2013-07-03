@@ -31,35 +31,35 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !     ------------------------------------------------------------------
     implicit   none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extche.h'
-    include 'asterfort/extchn.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvaffe.h'
-    include 'asterfort/rvaffm.h'
-    include 'asterfort/rvaffs.h'
-    include 'asterfort/rvcalq.h'
-    include 'asterfort/rvchgr.h'
-    include 'asterfort/rvcpnc.h'
-    include 'asterfort/rvinfo.h'
-    include 'asterfort/rvlieu.h'
-    include 'asterfort/rvpste.h'
-    include 'asterfort/rvpstm.h'
-    include 'asterfort/rvpsts.h'
-    include 'asterfort/tuesch.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extche.h"
+#include "asterfort/extchn.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvaffe.h"
+#include "asterfort/rvaffm.h"
+#include "asterfort/rvaffs.h"
+#include "asterfort/rvcalq.h"
+#include "asterfort/rvchgr.h"
+#include "asterfort/rvcpnc.h"
+#include "asterfort/rvinfo.h"
+#include "asterfort/rvlieu.h"
+#include "asterfort/rvpste.h"
+#include "asterfort/rvpstm.h"
+#include "asterfort/rvpsts.h"
+#include "asterfort/tuesch.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, i1, i2
     character(len=2) :: dim
     character(len=8) :: nresu

@@ -66,9 +66,9 @@ subroutine possvd(nm, m, n, w, matu,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
-    include 'blas/dswap.h'
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
+#include "blas/dswap.h"
     integer :: nm, m, n, rg
     real(kind=8) :: w(n), u(nm, n), v(nm, n), eps, rv1(n)
     logical :: matu, matv

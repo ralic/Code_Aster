@@ -8,24 +8,24 @@ subroutine ircecl(ifi, nbel, ligrel, nbgrel, longr,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/dgmode.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/codent.h"
+#include "asterfort/dgmode.h"
+#include "asterfort/digdel.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, nbel, ligrel(*), nbgrel, longr(*), ncmpmx, nbnot, nbcmpt
     integer :: nucmpu(*), celd(*), connex(*), point(*), numnoe(*), nbmat, ndim
     integer :: nummai(*), ncmpv, nucmp(*)

@@ -25,8 +25,8 @@ subroutine jeliad(clas, numr, nboct)
 !
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
     character(len=*) :: clas
     integer :: numr, nboct, n
 ! ----------------------------------------------------------------------

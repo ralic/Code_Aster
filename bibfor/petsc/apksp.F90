@@ -18,12 +18,12 @@ subroutine apksp(kptsc)
 !
     implicit none
 ! person_in_charge: thomas.desoza at edf.fr
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: kptsc
 !----------------------------------------------------------------
 !

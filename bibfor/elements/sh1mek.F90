@@ -19,14 +19,14 @@ subroutine sh1mek(xetemp, sigma, re)
 !               ELEMENT SHB15
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chrp3d.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rlosh6.h'
-    include 'asterfort/s1calb.h'
-    include 'asterfort/sh1ksi.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/chrp3d.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rlosh6.h"
+#include "asterfort/s1calb.h"
+#include "asterfort/sh1ksi.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: iprope
     real(kind=8) :: xe(45), re(45, 45)
     real(kind=8) :: xcoq(3, 3), bksip(3, 15, 15), b(3, 15)

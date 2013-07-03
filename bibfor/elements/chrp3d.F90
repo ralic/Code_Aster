@@ -36,9 +36,9 @@ subroutine chrp3d(ppp, siepin, siepoo, iop)
 !     [EPS] = [ E_11, E_22, E_33, 2*E_12, 2*E_23, 2*E_13 ]
     implicit none
 !---   VARIABLES GLOBALES
-    include 'asterfort/assert.h'
-    include 'asterfort/dr3gl1.h'
-    include 'asterfort/dr3gl2.h'
+#include "asterfort/assert.h"
+#include "asterfort/dr3gl1.h"
+#include "asterfort/dr3gl2.h"
     real(kind=8) :: ppp(3, 3), siepin(*), siepoo(*)
     integer :: iop
 !---   VARIABLES LOCALES

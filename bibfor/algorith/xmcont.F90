@@ -8,7 +8,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
                   tau1, tau2)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,15 +58,15 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
 ! IN SINGU  : ELEMENT ENRICHI CTIP OU ON
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
-    include 'asterfort/xmmaa3.h'
-    include 'asterfort/xmmaa4.h'
-    include 'asterfort/xmmco1.h'
-    include 'asterfort/xmmco2.h'
-    include 'asterfort/xmmpa3.h'
-    include 'asterfort/xmmsa2.h'
-    include 'asterfort/xmmsa3.h'
-    include 'asterfort/xmmsa5.h'
-    include 'asterfort/xxlag2.h'
+#include "asterfort/xmmaa3.h"
+#include "asterfort/xmmaa4.h"
+#include "asterfort/xmmco1.h"
+#include "asterfort/xmmco2.h"
+#include "asterfort/xmmpa3.h"
+#include "asterfort/xmmsa2.h"
+#include "asterfort/xmmsa3.h"
+#include "asterfort/xmmsa5.h"
+#include "asterfort/xxlag2.h"
     integer :: algocr, ddlm, ddls
     integer :: idepd, idepm, ifa, ifiss
     integer :: jmate, indco, ipgf, jfisno, jheafa

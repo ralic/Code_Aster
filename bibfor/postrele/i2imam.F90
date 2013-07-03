@@ -46,16 +46,16 @@ subroutine i2imam(conec, type, lstmai, nbmlst, chemin,&
 !
 !*********************************************************************
 !
-    include 'jeveux.h'
-    include 'asterfort/i2repr.h'
-    include 'asterfort/i2tgrm.h'
-    include 'asterfort/i2vois.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/i2repr.h"
+#include "asterfort/i2tgrm.h"
+#include "asterfort/i2vois.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: conec, type
     integer :: lstmai(*), nbmlst, chemin(*), ptchm(*), nbchm
     integer :: mail1(*), mail2(*)

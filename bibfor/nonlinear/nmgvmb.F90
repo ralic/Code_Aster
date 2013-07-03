@@ -20,9 +20,9 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/assert.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/r8inir.h"
     logical :: axi
     integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
     real(kind=8) :: geom(ndim, nno1), vff1(nno1, npg), vff2(nno2, npg)

@@ -22,21 +22,21 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfnomm.h'
-    include 'asterfort/cfnorm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmmron.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmtann.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/cfnorm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/u2mesk.h"
+#include "blas/dcopy.h"
     character(len=8) :: noma
     character(len=4) :: typenm
     integer :: ndimg

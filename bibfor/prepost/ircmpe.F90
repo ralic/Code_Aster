@@ -5,16 +5,16 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                   nroimp, chanom, sdcarm)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/celfpg.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/ircael.h'
-    include 'asterfort/ircmpf.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/celfpg.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ircael.h"
+#include "asterfort/ircmpf.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/wkvect.h"
     integer :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
     integer :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
     integer :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
@@ -84,7 +84,7 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
 !       NROIMP : NUMERO DE L'IMPRESSION ASSOCIEE A CHAQUE MAILLE
 !_______________________________________________________________________
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     character(len=80) :: ednopf, ednoga
     parameter (ednopf=' ')
     parameter (ednoga=' ')

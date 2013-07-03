@@ -20,15 +20,15 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/pmat.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/matinv.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/pmat.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: nno, npg, ipoids, ivf, idfde, ndim
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*)

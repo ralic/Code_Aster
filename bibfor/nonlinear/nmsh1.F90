@@ -23,28 +23,28 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cacina.h'
-    include 'asterfort/cale.h'
-    include 'asterfort/calet.h'
-    include 'asterfort/calgf.h'
-    include 'asterfort/calpf.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/nmgpin.h'
-    include 'asterfort/nmmalu.h'
-    include 'asterfort/prep2.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vicin0.h'
-    include 'asterfort/vicin2.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cacina.h"
+#include "asterfort/cale.h"
+#include "asterfort/calet.h"
+#include "asterfort/calgf.h"
+#include "asterfort/calpf.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/nmgpin.h"
+#include "asterfort/nmmalu.h"
+#include "asterfort/prep2.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vicin0.h"
+#include "asterfort/vicin2.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: ndim, nno, npg, mate, lgpg, codret, iw, idff
     character(len=8) :: typmod(*)
     character(len=*) :: fami

@@ -19,34 +19,34 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/confac.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/intfac.h'
-    include 'asterfort/ismali.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/panbno.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xtyhea.h'
-    include 'blas/ddot.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/codent.h"
+#include "asterfort/conare.h"
+#include "asterfort/confac.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/intfac.h"
+#include "asterfort/ismali.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/padist.h"
+#include "asterfort/panbno.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xtyhea.h"
+#include "blas/ddot.h"
     character(len=24) :: trav
     integer :: nfiss
     character(len=8) :: fiss(nfiss), noma

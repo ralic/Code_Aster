@@ -42,18 +42,18 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !      NDEC0   :  NOMBRE D'INCREMENTS DE SUBDIVISION LIE A SUBD
 !      IRET    :  CODE RETOUR
 !   -------------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujiid.h'
-    include 'asterfort/hujjid.h'
-    include 'asterfort/hujncv.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/lceqve.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcnrvn.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/mgauss.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujiid.h"
+#include "asterfort/hujjid.h"
+#include "asterfort/hujncv.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcnrvn.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/mgauss.h"
     integer :: ndt, ndi, nvi, nr, nmod, iret, nbmect
     integer :: i, j, k, kk, iter, indi(7), ndec0, ndec
     integer :: nitimp, nbmeca, compt, msup(2)

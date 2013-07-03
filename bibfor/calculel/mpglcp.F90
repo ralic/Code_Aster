@@ -17,15 +17,15 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/dxqpgl.h'
-    include 'asterfort/dxtpgl.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/vdiff.h'
+#include "jeveux.h"
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmat.h"
+#include "asterfort/vdiff.h"
     character(len=1) :: typecp
     integer :: nbnolo, iret
     real(kind=8) :: coordo(*), alpha, beta, gamma, pgl(3, 3)

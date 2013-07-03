@@ -19,29 +19,29 @@ subroutine rfresu()
 ! ======================================================================
 !     OPERATEUR "RECU_FONCTION"
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/foattr.h'
-    include 'asterfort/focrr2.h'
-    include 'asterfort/focrr3.h'
-    include 'asterfort/focrrs.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ordonn.h'
-    include 'asterfort/rsutnc.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcmp1.h'
-    include 'asterfort/utnono.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/foattr.h"
+#include "asterfort/focrr2.h"
+#include "asterfort/focrr3.h"
+#include "asterfort/focrrs.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ordonn.h"
+#include "asterfort/rsutnc.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcmp1.h"
+#include "asterfort/utnono.h"
     integer :: nbtrou, numer1, l, n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn, npr, ngn, ibid, ie
     integer :: nres, ifm, niv, nusp, iarg

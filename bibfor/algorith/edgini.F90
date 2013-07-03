@@ -3,7 +3,7 @@ subroutine edgini(itemax, prec, pm, eqsitr, mu,&
     implicit none
 !
 !
-    include 'asterfort/edgiso.h'
+#include "asterfort/edgiso.h"
     integer :: itemax
     real(kind=8) :: prec, pm, eqsitr
     real(kind=8) :: mu, gamma(3), m(3), n(3)

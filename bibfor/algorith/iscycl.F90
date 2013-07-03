@@ -20,7 +20,7 @@ function iscycl(ccycle, longcy)
 !
     implicit none
     logical :: iscycl
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ccycle, longcy
 !
 ! ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
 subroutine coqrep(pgl, alpha, beta, t2ev, t2ve,&
                   c, s)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: pgl(3, 3), t2ev(*), t2ve(*), alpha, beta, c, s
 !     ---------------------------------------------------
 ! ======================================================================

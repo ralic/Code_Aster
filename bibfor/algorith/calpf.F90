@@ -20,9 +20,9 @@ subroutine calpf(ndim, nno, axi, npg, geomm,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/r8inir.h"
     logical :: axi, grand
     integer :: ndim, nno, g, iw, idff, i, npg
     real(kind=8) :: geomm(ndim, nno), vff(nno, npg)

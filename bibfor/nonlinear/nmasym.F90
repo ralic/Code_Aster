@@ -21,9 +21,9 @@ subroutine nmasym(fami, kpg, ksp, icodma, option,&
 ! ======================================================================
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/nm1das.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/nm1das.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, neq, nbt, nvar, icodma
     parameter   (neq = 6,nbt = 21,nvar=4)
 !

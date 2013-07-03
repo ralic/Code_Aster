@@ -25,10 +25,10 @@ subroutine mmmtuu(phasep, lnewtg, ndim, nne, nnm,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'asterfort/mmmtee.h'
-    include 'asterfort/mmmtem.h'
-    include 'asterfort/mmmtme.h'
-    include 'asterfort/mmmtmm.h'
+#include "asterfort/mmmtee.h"
+#include "asterfort/mmmtem.h"
+#include "asterfort/mmmtme.h"
+#include "asterfort/mmmtmm.h"
     character(len=9) :: phasep
     logical :: lnewtg
     integer :: ndim, nne, nnm

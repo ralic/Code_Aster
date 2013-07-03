@@ -19,11 +19,11 @@ subroutine avpic2(method, nbvec, nbordr, rtrv, itrv,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesk.h"
     integer :: nbvec, nbordr, npoin(nbvec), valord(nbvec*nbordr)
     integer :: npic(nbvec), ordpic(nbvec*(nbordr+2))
     integer :: itrv(2*(nbordr+2))

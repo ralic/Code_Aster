@@ -57,17 +57,17 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/utflsh.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/irmase.h'
-    include 'asterfort/irmpg1.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uteref.h'
+#include "asterc/utflsh.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/irmase.h"
+#include "asterfort/irmpg1.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uteref.h"
     integer :: ntymax
     parameter (ntymax = 69)
 !

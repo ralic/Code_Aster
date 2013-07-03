@@ -1,15 +1,15 @@
 subroutine crchno(champ, prno, gran, noma, base,&
                   typc, nbnoeu, lonval)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: champ, prno, gran, noma, base, typc
     integer :: nbnoeu, lonval
 ! ======================================================================

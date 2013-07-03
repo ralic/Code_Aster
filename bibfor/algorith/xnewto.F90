@@ -4,13 +4,13 @@ subroutine xnewto(elp, name, num, nno, ndim,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xdelt1.h'
-    include 'asterfort/xdelt2.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xdelt1.h"
+#include "asterfort/xdelt2.h"
     integer :: num, ndim, ipp, ip, nno, jtabls
     real(kind=8) :: ksi(ndim), s, ptint(*), tabco(*)
     integer :: itemax

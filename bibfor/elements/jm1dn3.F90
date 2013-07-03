@@ -36,8 +36,8 @@ subroutine jm1dn3(nb2, xr, epais, ksi3s2, intsn,&
     implicit none
 !
 !
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
     integer :: jn
 !
     integer :: nb2

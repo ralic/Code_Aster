@@ -1,23 +1,23 @@
 subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
                   lres, ddlexc, matd)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cbvalc.h'
-    include 'asterfort/cbvalr.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cbvalc.h"
+#include "asterfort/cbvalr.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/wkvect.h"
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: ddlexc, typcst(*), typres
     real(kind=8) :: const(*)

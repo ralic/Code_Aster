@@ -2,8 +2,8 @@ subroutine nuno1(i, iligr, nunoel, n, inum21,&
                  inuno2, nlili)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: i, iligr
 !
 ! ======================================================================

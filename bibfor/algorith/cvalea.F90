@@ -35,7 +35,7 @@ subroutine cvalea(ndim, cmod, ndimax, nbmod)
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/ggubs.h'
+#include "asterfort/ggubs.h"
     integer :: ndim, nbmod
     complex(kind=8) :: cmod(ndimax, nbmod)
     real(kind=8) :: r(2), dseed

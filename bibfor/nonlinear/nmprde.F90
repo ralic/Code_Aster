@@ -26,17 +26,17 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmprca.h'
-    include 'asterfort/nmprdc.h'
-    include 'asterfort/nmprex.h'
-    include 'asterfort/vtcopy.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmprca.h"
+#include "asterfort/nmprdc.h"
+#include "asterfort/nmprex.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtzero.h"
     integer :: fonact(*)
     integer :: numins, ldccvg, faccvg, rescvg
     real(kind=8) :: parmet(*)

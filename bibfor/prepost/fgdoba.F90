@@ -1,8 +1,8 @@
 subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
                   rke, lhaigh, rcorr, dom)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/rcvale.h'
+#include "jeveux.h"
+#include "asterfort/rcvale.h"
     character(len=8) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)

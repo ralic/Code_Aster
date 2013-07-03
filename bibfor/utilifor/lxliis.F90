@@ -1,6 +1,6 @@
 subroutine lxliis(chaine, ival, ier)
     implicit none
-    include 'asterfort/lxscan.h'
+#include "asterfort/lxscan.h"
     character(len=*) :: chaine
     integer :: ival, ier
 !    -------------------------------------------------------------------

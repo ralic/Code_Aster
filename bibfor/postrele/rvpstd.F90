@@ -18,7 +18,7 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterc/r8vide.h'
+#include "asterc/r8vide.h"
     real(kind=8) :: valee(*), valeq(*), valdir(*)
     character(len=2) :: type
     integer :: codir, indir1(3), indir2(4), indir3(3)

@@ -25,8 +25,8 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/indent.h'
-    include 'asterfort/xplma2.h'
+#include "asterfort/indent.h"
+#include "asterfort/xplma2.h"
     integer :: ndim, jnne(3), jnnm(3), nnc, nfaes
     integer :: jpcai, cface(3, 5), nsinge, nsingm
     real(kind=8) :: hpg, ffc(9), jacobi, ffe(20), ffm(20)

@@ -27,10 +27,10 @@ subroutine mbrigi(fami, kpg, imate, rig)
 ! ----------------------------------------------------------------------
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
     integer :: codres(7)
     character(len=4) :: fami
     character(len=8) :: nomres(7)

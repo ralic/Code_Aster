@@ -1,6 +1,6 @@
 function omega2(freq)
     implicit none
-    include 'asterc/r8depi.h'
+#include "asterc/r8depi.h"
     real(kind=8) :: omega2, freq
 !     ------------------------------------------------------------------
 ! ======================================================================

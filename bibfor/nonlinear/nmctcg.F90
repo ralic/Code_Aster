@@ -20,14 +20,14 @@ subroutine nmctcg(modele, noma, defico, resoco, loptin,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/mmappa.h'
-    include 'asterfort/mreacg.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/xappar.h'
-    include 'asterfort/xreacg.h'
+#include "asterfort/cfdisi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/mmappa.h"
+#include "asterfort/mreacg.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/xappar.h"
+#include "asterfort/xreacg.h"
     character(len=8) :: noma
     character(len=24) :: modele
     character(len=24) :: defico, resoco

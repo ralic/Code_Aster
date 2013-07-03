@@ -1,6 +1,6 @@
 subroutine jermxd(rval, iret)
     implicit none
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     real(kind=8) :: rval
     integer :: iret
 ! ======================================================================

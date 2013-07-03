@@ -19,12 +19,12 @@ function lisnbg(lischa, genchz)
 !
     implicit none
     integer :: lisnbg
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lisnnb.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     character(len=*) :: genchz
 !

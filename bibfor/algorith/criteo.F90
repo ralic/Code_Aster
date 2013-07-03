@@ -20,11 +20,11 @@ subroutine criteo(epsp, epsd, eta, ba, d,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/dfbde.h'
-    include 'asterfort/dfdde.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/dfbde.h"
+#include "asterfort/dfdde.h"
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     real(kind=8) :: epsp(6), epsd(6), eta
     real(kind=8) :: ba(6), d
     real(kind=8) :: lambda, mu, alpha, seuil, ecrob, ecrod

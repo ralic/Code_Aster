@@ -2,13 +2,13 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
                   cspo, cspe, cspto, cspte, cspmo,&
                   cspme)
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rctres.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rctres.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: csiex, cinst, cspo, cspe, cstex, csmex, cspto, cspte
     character(len=24) :: cspmo, cspme
     logical :: kemixt

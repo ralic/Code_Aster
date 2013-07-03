@@ -52,27 +52,27 @@ subroutine preres(solvez, base, iret, matpre, matass,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/cheksd.h'
-    include 'asterfort/alfeti.h'
-    include 'asterfort/apetsc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/fetfac.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedbg2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/pcldlt.h'
-    include 'asterfort/pcmump.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/tldlg3.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
+#include "asterc/cheksd.h"
+#include "asterfort/alfeti.h"
+#include "asterfort/apetsc.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/fetfac.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedbg2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/pcldlt.h"
+#include "asterfort/pcmump.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/tldlg3.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
     integer :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solvez

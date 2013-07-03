@@ -19,11 +19,11 @@ subroutine poinco(char, motfac, noma, nzoco, nsuco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nbzoco.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nbzoco.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: char
     character(len=16) :: motfac
     character(len=8) :: noma

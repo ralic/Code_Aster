@@ -16,14 +16,14 @@ subroutine fpres(nomte, xi, nb1, vecl, vectpt)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/forsrg.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vectci.h'
-    include 'asterfort/vexpan.h'
+#include "jeveux.h"
+#include "asterfort/forsrg.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vectci.h"
+#include "asterfort/vexpan.h"
     integer :: nb1
     character(len=16) :: nomte
     real(kind=8) :: vecl(51), vectpt(9, 3, 3)

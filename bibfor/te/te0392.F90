@@ -25,22 +25,22 @@ subroutine te0392(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/caatdb.h'
-    include 'asterfort/cast3d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/elraga.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/invjac.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/caatdb.h"
+#include "asterfort/cast3d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/elraga.h"
+#include "asterfort/elref4.h"
+#include "asterfort/invjac.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: idecno, idecpg, idfde2, igau, imate, imatuu, ipoid2
     integer :: ivf2, nbres, nbsig, nno, npg1
 !-----------------------------------------------------------------------

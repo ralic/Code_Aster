@@ -29,12 +29,12 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
 !           NBSYS    : NOMBRE DE SYS GLIS
 !           MUS       : TENSEUR MUS POUR LE SYS GLIS NUMERO NUSYS
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/lcmmjs.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vecini.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/lcmmjs.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vecini.h"
+#include "blas/dcopy.h"
     character(len=16) :: nomfam
     real(kind=8) :: mus(6), n(30, 3), m(30, 3), pgl2(3, 3), ng(3), nl(3), mg(3)
     real(kind=8) :: ml(3)

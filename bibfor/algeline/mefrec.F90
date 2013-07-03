@@ -4,14 +4,14 @@ subroutine mefrec(ndim, nbcyl, nbgrp, numgrp, xint,&
                   vnxy, vnyx, vnyy, tmp)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mefasr.h'
-    include 'asterfort/mtcrog.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mefasr.h"
+#include "asterfort/mtcrog.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbcyl, ndim(14), numgrp(*), sgn(*), orig(*)
     real(kind=8) :: rint(*), xint(*), yint(*), beta(*)
     real(kind=8) :: ppxx(nbcyl, nbgrp), ppxy(nbcyl, nbgrp)

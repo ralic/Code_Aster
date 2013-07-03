@@ -20,21 +20,21 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmcoor.h'
-    include 'asterfort/mmmron.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmtann.h'
-    include 'asterfort/mmtypm.h'
-    include 'asterfort/normev.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmcoor.h"
+#include "asterfort/mmmron.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmtann.h"
+#include "asterfort/mmtypm.h"
+#include "asterfort/normev.h"
     integer :: posmai
     real(kind=8) :: tau1(3), tau2(3)
     character(len=8) :: noma

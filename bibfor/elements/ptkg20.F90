@@ -1,7 +1,7 @@
 subroutine ptkg20(sf, a, xiz, xiy, iyr,&
                   izr, l, ey, ez, dsm)
     implicit none
-    include 'asterfort/pouex7.h'
+#include "asterfort/pouex7.h"
     real(kind=8) :: a, xiz, xiy, ey, ez, l, iyr, izr, yrsiz, zrsiy
     real(kind=8) :: sf(*), dsm(*)
 !     ------------------------------------------------------------------

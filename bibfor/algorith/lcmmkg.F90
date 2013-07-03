@@ -18,16 +18,16 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tnsvec.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lctr2m.h"
+#include "asterfort/matinv.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tnsvec.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     real(kind=8) :: fep(3, 3), fem(3, 3), vinf(*), vind(*), dsde(6, 3, 3), det
     real(kind=8) :: dfedf(3, 3, 3, 3), fpp(3, 3), fppinv(3, 3), id(3, 3)
     real(kind=8) :: dr1df(3, 3, 3, 3), dr1df6(6, 3, 3), zinv(6, 6)

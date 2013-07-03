@@ -19,14 +19,14 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterfort/dplitg.h'
-    include 'asterfort/dpmata.h'
-    include 'asterfort/dpmate.h'
-    include 'asterfort/dppatg.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'blas/ddot.h'
+#include "asterfort/dplitg.h"
+#include "asterfort/dpmata.h"
+#include "asterfort/dpmate.h"
+#include "asterfort/dppatg.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "blas/ddot.h"
     integer :: imate, icode
     real(kind=8) :: vip(*), sigp(*), dsde(6, 6)
     character(len=8) :: mod

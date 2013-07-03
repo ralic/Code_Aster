@@ -19,16 +19,16 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/affich.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmacex.h'
-    include 'asterfort/nmimpx.h'
-    include 'asterfort/nmlerr.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/affich.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmacex.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlerr.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: sdimpr
     character(len=19) :: sddisc
     integer :: iterat, retsup

@@ -40,11 +40,11 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !          DRDY     :  JACOBIEN
 !     ------------------------------------------------------------------
 !
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcicma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nmod
     parameter     (nmod = 8 )
 !

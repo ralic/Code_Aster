@@ -38,15 +38,15 @@ subroutine refe81(nomres, basmod, raidf, massf, amorf,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: valk(2), typbas
     character(len=8) :: nomres, mailla, basmod, maillb, amor, blanc, lintf
     character(len=8) :: k8bid

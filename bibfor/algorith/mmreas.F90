@@ -19,24 +19,24 @@ subroutine mmreas(noma, defico, resoco, valinc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmelty.h'
-    include 'asterfort/mmextm.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfm.h'
-    include 'asterfort/mmvalp.h'
-    include 'asterfort/nmchex.h'
+#include "jeveux.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmelty.h"
+#include "asterfort/mmextm.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmvalp.h"
+#include "asterfort/nmchex.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)

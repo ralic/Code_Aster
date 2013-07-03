@@ -19,9 +19,9 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
 ! ======================================================================
     implicit     none
-    include 'asterc/r8vide.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8vide.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, imat, typedp
     real(kind=8) :: materf(5, 2)
     character(len=8) :: mod

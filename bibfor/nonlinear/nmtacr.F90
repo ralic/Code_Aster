@@ -20,7 +20,7 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim,&
 ! ======================================================================
 !
     implicit none
-    include 'blas/ddot.h'
+#include "blas/ddot.h"
     integer :: mode, ndimsi
     real(kind=8) :: mat(14), sigel(ndimsi), vim(9), epm(6), dp, sp, xi
     real(kind=8) :: f, g, fdp, fds, fdx, gdp, gds, gdx, dpmax, sig(ndimsi)

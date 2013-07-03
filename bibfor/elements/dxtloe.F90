@@ -17,8 +17,8 @@ subroutine dxtloe(flex, memb, mefl, ctor, coupmf,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/utvtsv.h'
+#include "jeveux.h"
+#include "asterfort/utvtsv.h"
     logical :: coupmf
     real(kind=8) :: flex(*), memb(*), mefl(*), ctor
     real(kind=8) :: depl(*), ener(*)

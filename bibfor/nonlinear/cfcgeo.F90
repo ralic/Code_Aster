@@ -20,25 +20,25 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/cfverl.h'
-    include 'asterfort/cnomax.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/cfverl.h"
+#include "asterfort/cnomax.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     logical :: dvgeom, geoerr

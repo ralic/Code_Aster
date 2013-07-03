@@ -2,13 +2,13 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
                   cosang, ind, compor, imate, nvi,&
                   vari1, vari2)
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/nmcham.h'
-    include 'asterfort/norsig.h'
-    include 'asterfort/radial.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterc/r8prem.h"
+#include "asterfort/nmcham.h"
+#include "asterfort/norsig.h"
+#include "asterfort/radial.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: npg, nbsig, ind, nvi, imate
     real(kind=8) :: sig1(*), sig2(*), radia(*), cosang(*)
     real(kind=8) :: vari1(*), vari2(*)

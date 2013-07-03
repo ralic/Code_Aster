@@ -44,17 +44,17 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/extmod.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8pi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/extmod.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: melflu
     character(len=8) :: typflu, base
     integer :: nbm

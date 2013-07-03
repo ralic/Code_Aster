@@ -19,17 +19,17 @@ subroutine surfco(char, noma)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/surfc1.h'
-    include 'asterfort/surfc2.h'
-    include 'asterfort/surfc3.h'
-    include 'asterfort/surfcl.h'
-    include 'asterfort/surfcp.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/surfc1.h"
+#include "asterfort/surfc2.h"
+#include "asterfort/surfc3.h"
+#include "asterfort/surfcl.h"
+#include "asterfort/surfcp.h"
     character(len=8) :: char
     character(len=8) :: noma
 !

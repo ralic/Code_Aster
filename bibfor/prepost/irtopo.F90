@@ -2,19 +2,19 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
                   nbmato, nonuma, nbnoto, nonuno, codret)
     implicit   none
 !
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irmama.h'
-    include 'asterfort/irmano.h'
-    include 'asterfort/irnono.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/irmama.h"
+#include "asterfort/irmano.h"
+#include "asterfort/irnono.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ioccur, nbnoto, nbmato, ifichi, codret
     character(len=8) :: formaf, leresu
     character(len=24) :: nonuma, nonuno
@@ -62,7 +62,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
 !                 JEVEUO SUR NONUNO EST FAISABLE)
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nbno, nbgrn, nbma, nbgrm, iarg, nbnofa, nbgnfa, nbmafa
     integer :: nbgmfa, jtopo, jlgrn, jngrn, ibid, jlno, jnno, jlgrm, jngrm

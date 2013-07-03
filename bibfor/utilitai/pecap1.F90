@@ -72,26 +72,26 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !    CT             OUT   R       CONSTANTE DE TORSION
 !
 !.========================= DEBUT DES DECLARATIONS ====================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/nbec.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
 ! -----  ARGUMENTS
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
 ! -----  VARIABLES LOCALES

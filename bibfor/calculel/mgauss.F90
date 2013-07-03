@@ -21,16 +21,16 @@ subroutine mgauss(cara, a, b, dim, nordre,&
 ! aslint: disable=W1304,W1306
     implicit none
 !
-    include 'asterc/matfpe.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lceqmn.h'
-    include 'asterfort/mgausw.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dgesv.h'
-    include 'blas/dgesvx.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lceqmn.h"
+#include "asterfort/mgausw.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "blas/dgesv.h"
+#include "blas/dgesvx.h"
     character(len=*) :: cara
     integer :: dim, nb, nordre, iret, idb
     real(kind=8) :: a(dim, dim), b(dim, nb), det

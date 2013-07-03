@@ -64,15 +64,15 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 !               -----------------------------------------------------
 !
-    include 'asterfort/nmcham.h'
-    include 'asterfort/nmchat.h'
-    include 'asterfort/nmchdp.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/radial.h'
-    include 'asterfort/trace.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/nmcham.h"
+#include "asterfort/nmchat.h"
+#include "asterfort/nmchdp.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/radial.h"
+#include "asterfort/trace.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: kpg, ksp, ndim, imate, nbvar, iret
     real(kind=8) :: depsth(6), pm, c2inf, gamm20
     real(kind=8) :: plast, depsmo, sigmmo, e, nu, troisk, deps(6), deuxmu

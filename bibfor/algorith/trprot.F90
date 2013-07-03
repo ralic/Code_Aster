@@ -58,32 +58,32 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 !     IN : I : NDBLE : INDICATEUR DE RECHERCHE DE NOEUD DOUBLE
 !
 !---------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/alimrs.h'
-    include 'asterfort/calflu.h'
-    include 'asterfort/chnucn.h'
-    include 'asterfort/chtpcn.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/prstoc.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vtcmbl.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8prem.h"
+#include "asterfort/alimrs.h"
+#include "asterfort/calflu.h"
+#include "asterfort/chnucn.h"
+#include "asterfort/chtpcn.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/prstoc.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vtcmbl.h"
+#include "asterfort/wkvect.h"
     logical :: test1, test2, test3
     integer :: nbvale, nbrefe, nbdesc, ibid, isst, iadrp
     integer :: i, iad(2), iad3d(3), icor(2), ndble

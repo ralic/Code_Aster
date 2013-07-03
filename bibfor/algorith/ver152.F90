@@ -27,9 +27,9 @@ subroutine ver152(option, moflui, moint, n12, model)
 ! IN : K* : MODEL : DIMENSION DU MODELE (3D, 2D OU AXI)
 ! IN : I  : N12 : PRESENCE DU POTENTIEL PERMANENT
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/u2mess.h"
     integer :: n12, ibid, ierd
     character(len=*) :: option, model, moflui, moint
     character(len=9) :: optio9

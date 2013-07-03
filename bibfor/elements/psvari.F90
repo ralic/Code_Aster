@@ -1,6 +1,6 @@
 subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
     implicit   none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=2) :: dimens
     character(len=16) :: compor
     integer :: ipop1, ipop2, nbvari

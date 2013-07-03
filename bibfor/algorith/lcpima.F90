@@ -34,17 +34,17 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/ecpuis.h'
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
-    include 'asterfort/rctype.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/rupmat.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
+#include "asterc/r8miem.h"
+#include "asterfort/ecpuis.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/rupmat.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
     integer :: mate, kpg, ksp
     character(len=16) :: compor
     character(len=*) :: fami

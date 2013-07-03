@@ -1,16 +1,16 @@
 subroutine tbajpa(nomta, nbpar, nompar, typpar)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
+#include "asterfort/u2mess.h"
     integer :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
 ! ----------------------------------------------------------------------

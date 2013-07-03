@@ -20,8 +20,8 @@ subroutine u2mesr(ch1, idmess, nr, valr)
 !
 !     ------------------------------------------------------------------
     implicit none
-    include 'asterc/isnnem.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/isnnem.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: ch1, idmess
     integer :: nr
     real(kind=8) :: valr(*)

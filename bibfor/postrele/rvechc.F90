@@ -2,22 +2,22 @@ subroutine rvechc(dim, ssch19, sdlieu, sdeval, nbndf,&
                   clocf)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvecha.h'
-    include 'asterfort/rvechd.h'
-    include 'asterfort/rvechs.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvecha.h"
+#include "asterfort/rvechd.h"
+#include "asterfort/rvechs.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ssch19, sdeval, sdlieu
     character(len=8) :: courbe
     character(len=2) :: dim

@@ -1,16 +1,16 @@
 subroutine fointr(nomfon, chprol, nbvar, var, fon,&
                   nbres, varres, fonres, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nomfon, chprol(*)
     integer :: nbvar, nbres, ier
     real(kind=8) :: var(*), fon(*), varres(*), fonres(*)

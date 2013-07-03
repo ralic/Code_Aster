@@ -31,45 +31,45 @@ subroutine op0018()
 !       - L AFFECTATION D ELEMENTS FINIS A TOUS LES NOEUDS DEMANDES
 !       - L AFFECTATION D ELEMENTS FINIS SUR UNE MAILLE AU MOINS
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/adalig.h'
-    include 'asterfort/ajlipa.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/cetucr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/cormgi.h'
-    include 'asterfort/crevge.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/initel.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/modexi.h'
-    include 'asterfort/ssafmo.h'
-    include 'asterfort/taxis.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/w18imp.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/adalig.h"
+#include "asterfort/ajlipa.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/cetucr.h"
+#include "asterfort/codent.h"
+#include "asterfort/cormgi.h"
+#include "asterfort/crevge.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/initel.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/modexi.h"
+#include "asterfort/ssafmo.h"
+#include "asterfort/taxis.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/w18imp.h"
+#include "asterfort/wkvect.h"
 !
     integer :: vali(4), d1, d2
     character(len=4) :: kioc, cdim

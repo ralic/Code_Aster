@@ -1,9 +1,9 @@
 subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/fmdevi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/fmdevi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rampmx
 !     ------------------------------------------------------------------

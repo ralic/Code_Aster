@@ -20,11 +20,11 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: numedd
     character(len=19) :: sdpilo, depdel, deppr1, deppr2
     real(kind=8) :: eta, rho, f

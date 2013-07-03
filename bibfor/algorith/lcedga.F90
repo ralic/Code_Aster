@@ -3,14 +3,14 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                   deps2, sigm2, vim, option, sigp,&
                   vip, dsidep, iret)
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/edgani.h'
-    include 'asterfort/edgequ.h'
-    include 'asterfort/edgini.h'
-    include 'asterfort/edgmat.h'
-    include 'asterfort/edgrep.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/rcvarc.h'
+#include "asterc/r8prem.h"
+#include "asterfort/edgani.h"
+#include "asterfort/edgequ.h"
+#include "asterfort/edgini.h"
+#include "asterfort/edgmat.h"
+#include "asterfort/edgrep.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/rcvarc.h"
     integer :: ndim, imat, iret, kpg, ksp
     character(len=16) :: option
     character(len=8) :: typmod(2)

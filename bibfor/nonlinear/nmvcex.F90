@@ -19,9 +19,9 @@ subroutine nmvcex(index, comz, chamz)
 !
     implicit none
 !
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=4) :: index
     character(len=*) :: comz, chamz
     character(len=14) :: com

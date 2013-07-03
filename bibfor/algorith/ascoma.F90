@@ -19,18 +19,18 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/reajre.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/reajre.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: solveu
     character(len=19) :: meelem(*)
     character(len=19) :: matass, lischa

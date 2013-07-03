@@ -37,16 +37,16 @@ subroutine gabscu(lobj2, coorn, nomno, fond, xl,&
 !        ABSGAM : ABSCISSE CURVILIGNE DES NOEUDS DU FOND DE FISSURE
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: nomno, coorn, numgam, absgam, fond
 !
     integer :: lobj2, iadrco, iadrno, iadnum, iadabs

@@ -88,8 +88,8 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterc/r8miem.h'
-    include 'asterfort/mrmult.h'
+#include "asterc/r8miem.h"
+#include "asterfort/mrmult.h"
     integer :: nbeq, nconv, lmatb, typeps, ddlexc(nbeq)
     real(kind=8) :: vect(nbeq, nconv), alpha, vaux(nbeq), delta(nconv)
 !

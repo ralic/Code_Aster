@@ -53,15 +53,15 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 !
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     integer :: iblo, nlilia, ncolia, nlipro, ncopro, taille(2), nbcol
     character(len=8) :: nomres
     character(len=24) :: fmli, liamod, promod, indcol

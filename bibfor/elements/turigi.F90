@@ -17,21 +17,21 @@ subroutine turigi(nomte, nbrddl, k)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/bcoudc.h'
-    include 'asterfort/bcoude.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/kcoude.h'
-    include 'asterfort/klg.h'
-    include 'asterfort/klgcou.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/bcoudc.h"
+#include "asterfort/bcoude.h"
+#include "asterfort/carcou.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/kcoude.h"
+#include "asterfort/klg.h"
+#include "asterfort/klgcou.h"
+#include "asterfort/matini.h"
+#include "asterfort/mavec.h"
+#include "asterfort/moytem.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mess.h"
     character(len=16) :: nomte
     integer :: nbrddl, nc
     integer :: ndim, nnos, idfdk, jdfd2, jgano

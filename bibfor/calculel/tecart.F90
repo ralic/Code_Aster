@@ -17,8 +17,8 @@ subroutine tecart(carte)
 ! ======================================================================
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/cmpcar.h'
-    include 'asterfort/expcar.h'
+#include "asterfort/cmpcar.h"
+#include "asterfort/expcar.h"
     character(len=*) :: carte
 ! ----------------------------------------------------------------------
 !     IN : CARTE (K19) : NOM DE LA CARTE A MODIFIER

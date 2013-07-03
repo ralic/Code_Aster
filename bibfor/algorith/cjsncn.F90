@@ -23,7 +23,7 @@ subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
 !  DUMP EN CAS NON CNVERGENCE RELAXATGION NORMALES CJS
 !
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=*) :: roucjs
     integer :: essmax, ndt, nvi, umess
     real(kind=8) :: relax(essmax), rotagd(essmax)

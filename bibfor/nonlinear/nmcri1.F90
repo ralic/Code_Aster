@@ -19,7 +19,7 @@ function nmcri1(dp)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/rcfonc.h'
+#include "asterfort/rcfonc.h"
     real(kind=8) :: nmcri1, dp
 ! ----------------------------------------------------------------------
 !    BUT:  EVALUER LA FONCTION DONT ON CHERCHE LE ZERO

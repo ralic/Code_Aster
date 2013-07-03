@@ -22,31 +22,31 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asasve.h'
-    include 'asterfort/ascova.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assmiv.h'
-    include 'asterfort/assvec.h'
-    include 'asterfort/assvss.h'
-    include 'asterfort/cffoco.h'
-    include 'asterfort/cffofr.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/cufoco.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndfdyn.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmamod.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcvci.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmmacv.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/nmvcpr.h'
-    include 'asterfort/nmviss.h'
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/assert.h"
+#include "asterfort/assmiv.h"
+#include "asterfort/assvec.h"
+#include "asterfort/assvss.h"
+#include "asterfort/cffoco.h"
+#include "asterfort/cffofr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/cufoco.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndfdyn.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmamod.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcvci.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmmacv.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmvcpr.h"
+#include "asterfort/nmviss.h"
     character(len=*) :: modelz, typvez
     character(len=19) :: lischa
     real(kind=8) :: instap, instam

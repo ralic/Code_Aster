@@ -1,10 +1,10 @@
 subroutine rldlgg(lmat, xsol, cxsol, nbsol)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/rldlg3.h'
-    include 'asterfort/uttcpu.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/rldlg3.h"
+#include "asterfort/uttcpu.h"
     integer :: lmat, nbsol
     real(kind=8) :: xsol(*)
     complex(kind=8) :: cxsol(*)

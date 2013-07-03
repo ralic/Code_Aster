@@ -16,7 +16,7 @@ subroutine dxsiro(ne, t2ve, tensav, tensap)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/utbtab.h'
+#include "asterfort/utbtab.h"
     integer :: ne
     real(kind=8) :: t2ve(2, 2)
     real(kind=8) :: tensav(*)

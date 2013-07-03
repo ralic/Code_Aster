@@ -25,11 +25,11 @@ subroutine mmtape(phasep, leltf, ndim, nnl, nne,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/mmmtcc.h'
-    include 'asterfort/mmmtcu.h'
-    include 'asterfort/mmmtff.h'
-    include 'asterfort/mmmtfu.h'
+#include "asterfort/assert.h"
+#include "asterfort/mmmtcc.h"
+#include "asterfort/mmmtcu.h"
+#include "asterfort/mmmtff.h"
+#include "asterfort/mmmtfu.h"
     character(len=9) :: phasep
     logical :: leltf
     integer :: ndim, nne, nnl, nnm, nbcps

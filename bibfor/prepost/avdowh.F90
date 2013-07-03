@@ -19,17 +19,17 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/renrfa.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/limend.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/renrfa.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: nbvec, nbordr, ncycl(nbvec)
     real(kind=8) :: gdeq(nbvec*nbordr)
     real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)

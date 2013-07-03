@@ -36,29 +36,29 @@ subroutine op0176()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/dyarc0.h'
-    include 'asterfort/extrs1.h'
-    include 'asterfort/extrs2.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/irecri.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsinfo.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/dyarc0.h"
+#include "asterfort/extrs1.h"
+#include "asterfort/extrs2.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/irecri.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsinfo.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=6) :: nompro
     parameter ( nompro = 'OP0176' )
 !

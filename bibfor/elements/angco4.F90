@@ -19,9 +19,9 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterc/r8prem.h'
-    include 'asterfort/angcou.h'
-    include 'asterfort/assert.h'
+#include "asterc/r8prem.h"
+#include "asterfort/angcou.h"
+#include "asterfort/assert.h"
     real(kind=8) :: coor(*), rayon, theta, epsi
     real(kind=8) :: coor3(12)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), valtes

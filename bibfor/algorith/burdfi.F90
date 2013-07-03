@@ -29,8 +29,8 @@ subroutine burdfi(bfi, cfi, nr, yd, dy)
 !_______________________________________________________________________
 !
     implicit none
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
     integer :: ndt, ndi, i, nr
     real(kind=8) :: bfi(6, 6), cfi(6, 6)
     real(kind=8) :: yd(nr), dy(nr)

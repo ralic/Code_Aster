@@ -6,7 +6,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat,&
                   petith, iret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8miem.h'
+#include "asterc/r8miem.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: taus, coeft(nmat), rp, dt, alphap, dalpha, gammap, dgamma
     real(kind=8) :: dgdtau

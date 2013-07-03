@@ -2,14 +2,14 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/vecini.h"
     character(len=16) :: option
     integer :: ndim, nnop
     real(kind=8) :: fno(ndim*nnop), rho

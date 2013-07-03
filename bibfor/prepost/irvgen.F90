@@ -1,14 +1,14 @@
 subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/u2mesk.h"
     integer :: cmpg(*)
     character(len=*) :: genein
     logical :: lhist

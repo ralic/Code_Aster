@@ -2,14 +2,14 @@ subroutine gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks,&
                   iadgki, abscur)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/glegen.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/glegen.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: ndeg, nnoff, iadrgk, iadgks, iadgki
     character(len=24) :: chfond, abscur
 !

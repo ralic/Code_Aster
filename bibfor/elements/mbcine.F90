@@ -39,12 +39,12 @@ subroutine mbcine(nno, geom, dff, alpha, beta,&
 ! ----------------------------------------------------------------------
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/subacv.h'
-    include 'asterfort/sumetr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/subaco.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
+#include "asterfort/u2mess.h"
     integer :: nno, i, n, gamma
     real(kind=8) :: geom(3, nno), dff(2, nno), vdirec(3), vortho(3)
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2), a(2, 2)

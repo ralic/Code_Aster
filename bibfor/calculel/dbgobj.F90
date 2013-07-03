@@ -32,9 +32,9 @@ subroutine dbgobj(ojbz, perm, iunit, mess)
 !           OUI : ON FAIT UNE "SOMME" QUI DONNE UN RESULTAT
 !                 DEPENDANT UN PEU DE L'ORDRE DES ELEMENTS DU VECTEUR
 ! ----------------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/tstobj.h'
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/tstobj.h"
     integer :: iunit, ni
     character(len=24) :: ojb
     character(len=3) :: type

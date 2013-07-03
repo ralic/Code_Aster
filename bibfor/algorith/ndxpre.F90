@@ -25,18 +25,18 @@ subroutine ndxpre(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndxprm.h'
-    include 'asterfort/nmassx.h'
-    include 'asterfort/nmchar.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcret.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/nmresd.h'
-    include 'asterfort/vtzero.h'
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndxprm.h"
+#include "asterfort/nmassx.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmresd.h"
+#include "asterfort/vtzero.h"
     integer :: fonact(*)
     integer :: numins
     character(len=16) :: method(*)

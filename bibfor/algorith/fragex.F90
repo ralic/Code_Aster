@@ -22,12 +22,12 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 ! VARIABLES ENTREE SORTIE NECESSAIRES A LA ROUTINE
 ! aslint: disable=
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option
     integer :: ndim, imate

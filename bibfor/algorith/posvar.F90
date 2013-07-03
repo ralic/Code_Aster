@@ -25,8 +25,8 @@ subroutine posvar(compor, ndim, vari, nume)
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/nvithm.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/nvithm.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: compor(*)
     character(len=24) :: vari
     character(len=24) :: valk(2)

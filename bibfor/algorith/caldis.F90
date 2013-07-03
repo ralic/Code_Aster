@@ -2,14 +2,14 @@ subroutine caldis(fremax, fremin, pas, frexci, nbptmd,&
                   nbmode, lismod, fremod, amomod, nindex,&
                   npdsc3, frefin)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/discrt.h'
-    include 'asterfort/disexc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ordr8.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/discrt.h"
+#include "asterfort/disexc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ordr8.h"
+#include "asterfort/wkvect.h"
     integer :: nbptmd, nbmode, nindex, npdsc3, lismod(*)
     real(kind=8) :: fremax, fremin, pas, fremod(*), amomod(*), frefin
     character(len=4) :: frexci

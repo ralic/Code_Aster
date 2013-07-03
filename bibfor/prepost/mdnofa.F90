@@ -41,8 +41,8 @@ subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/lxlgut.h'
+#include "asterfort/codent.h"
+#include "asterfort/lxlgut.h"
     integer :: numfam
     integer :: nbgf
     integer :: nbfaex

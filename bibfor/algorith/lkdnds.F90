@@ -32,15 +32,15 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 !     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lkdbds.h'
+#include "asterfort/lcdima.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lkdbds.h"
     integer :: nmat, nvi, val
     real(kind=8) :: materf(nmat, 2), dndsig(6, 6), devsig(6), i1
     real(kind=8) :: bprimp, vint(nvi), para(3)

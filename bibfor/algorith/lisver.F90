@@ -18,16 +18,16 @@ subroutine lisver(lischa)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/liscft.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislch.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lislta.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/liscft.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislch.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lislta.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/u2mesk.h"
     character(len=19) :: lischa
 !
 ! ----------------------------------------------------------------------

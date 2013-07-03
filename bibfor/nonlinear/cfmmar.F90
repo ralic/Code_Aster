@@ -20,23 +20,23 @@ subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/apmmvd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfcald.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfr.h'
+#include "asterfort/apmmvd.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfcald.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfr.h"
     character(len=8) :: noma
     character(len=19) :: sdappa
     character(len=24) :: defico

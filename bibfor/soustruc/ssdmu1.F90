@@ -19,7 +19,7 @@ subroutine ssdmu1(dref, crit, prec, geo1, geo2,&
     implicit none
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     character(len=*) :: crit
     real(kind=8) :: prec, geo1(3), geo2(3), dref
     character(len=8) :: crit2

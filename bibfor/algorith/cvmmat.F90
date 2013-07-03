@@ -45,8 +45,8 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rupmat.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/rupmat.h"
     integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, lgpg
     integer :: ioptio, idnr, i, j, imat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

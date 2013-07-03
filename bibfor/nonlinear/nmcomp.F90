@@ -25,13 +25,13 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/lcvali.h'
-    include 'asterfort/nmcoup.h'
-    include 'asterfort/nmcpl1.h'
-    include 'asterfort/nmcpl2.h'
-    include 'asterfort/nmcpl3.h'
-    include 'asterfort/redece.h'
+#include "asterc/r8vide.h"
+#include "asterfort/lcvali.h"
+#include "asterfort/nmcoup.h"
+#include "asterfort/nmcpl1.h"
+#include "asterfort/nmcpl2.h"
+#include "asterfort/nmcpl3.h"
+#include "asterfort/redece.h"
     integer :: kpg, ksp, ndim, imate, codret, icp, numlc
     integer :: neps, nsig, nwkin, nwkout, ndsde
     character(len=8) :: typmod(*)

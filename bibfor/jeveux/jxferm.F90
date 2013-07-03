@@ -17,9 +17,9 @@ subroutine jxferm(iclas)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterc/closdr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/closdr.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
     integer :: iclas
 !     ------------------------------------------------------------------
     integer :: n

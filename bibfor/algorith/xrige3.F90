@@ -5,14 +5,14 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xcalfe.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalfe.h"
     integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe
     character(len=8) :: elrefp
     real(kind=8) :: basloc(9*nnop), he, coorse(*)

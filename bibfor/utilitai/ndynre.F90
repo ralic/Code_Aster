@@ -20,11 +20,11 @@ function ndynre(sddyna, chaine)
 !
     implicit none
     real(kind=8) :: ndynre
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: sddyna
     character(len=*) :: chaine
 !

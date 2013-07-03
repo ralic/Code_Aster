@@ -2,7 +2,7 @@ subroutine vpzqrh(h, neq, ih, k, l,&
                   wr, wi, z, iz, mxiter,&
                   ier, nitqr)
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: neq, ih, k, l, iz, ier, nitqr
     real(kind=8) :: h(ih, neq), wr(neq), wi(neq), z(iz, neq)
 !     ------------------------------------------------------------------

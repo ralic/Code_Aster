@@ -2,10 +2,10 @@ subroutine mdfext(tinit, dt, neqgen, nbexci, idescf,&
                   nomfon, coefm, liad, inumor, nbpas,&
                   f)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: neqgen, nbexci, nbpas
     integer :: idescf(*), liad(*), inumor(*)
     real(kind=8) :: tinit, dt, t, coefm(*), f(neqgen, *)

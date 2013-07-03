@@ -20,8 +20,8 @@ subroutine nmchcc(fonact, nbmatr, ltypma, loptme, loptma,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/isfonc.h'
-    include 'asterfort/nmcmat.h'
+#include "asterfort/isfonc.h"
+#include "asterfort/nmcmat.h"
     integer :: fonact(*)
     integer :: nbmatr
     character(len=6) :: ltypma(20)

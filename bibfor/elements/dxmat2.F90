@@ -1,17 +1,17 @@
 subroutine dxmat2(pgl, icou, npg, ordi, epi,&
                   epais, dm, indith)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utbtab.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/codent.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utbtab.h"
     integer :: icou, npg, indith
     real(kind=8) :: pgl(3, 3), ordi, epi, epais, dm(3, 3)
 ! ----------------------------------------------------------------------

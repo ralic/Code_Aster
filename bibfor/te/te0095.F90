@@ -30,21 +30,21 @@ subroutine te0095(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/gbil3d.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmgeom.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvada.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gbil3d.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvada.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
     integer :: icodre(3)
     integer :: icorsv(3)
     character(len=8) :: nomres(3), nompar(4)

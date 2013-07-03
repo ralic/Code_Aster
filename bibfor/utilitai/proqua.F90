@@ -18,8 +18,8 @@ subroutine proqua(quat1, quat2, quat3)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/provec.h'
-    include 'blas/ddot.h'
+#include "asterfort/provec.h"
+#include "blas/ddot.h"
     real(kind=8) :: quat1(4), quat2(4), quat3(4)
 !
 ! ----------------------------------------------------------------------

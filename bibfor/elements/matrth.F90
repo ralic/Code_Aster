@@ -20,13 +20,13 @@ subroutine matrth(fami, npg, young, nu, alpha,&
     implicit none
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: iret
 !
     real(kind=8) :: valres(26), valpar

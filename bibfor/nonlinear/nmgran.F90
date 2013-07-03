@@ -20,15 +20,15 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/iisnan.h'
-    include 'asterc/r8t0.h'
-    include 'asterfort/ftprim.h'
-    include 'asterfort/granvi.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterc/r8t0.h"
+#include "asterfort/ftprim.h"
+#include "asterfort/granvi.h"
+#include "asterfort/matini.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imate, kpg, ksp
     character(len=8) :: typmod(*)
     character(len=16) :: compor(3), option

@@ -1,7 +1,7 @@
 subroutine titre2(nomcon, nomcha, nomobj, motfac, iocc,&
                   formr)
     implicit none
-    include 'asterfort/titrea.h'
+#include "asterfort/titrea.h"
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
     integer :: iocc
 !     ------------------------------------------------------------------

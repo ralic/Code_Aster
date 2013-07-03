@@ -1,10 +1,10 @@
 subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
                   bca, an, am)
     implicit  none
-    include 'asterfort/dstbfa.h'
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/mgauss.h'
+#include "asterfort/dstbfa.h"
+#include "asterfort/dstbfb.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/mgauss.h"
     real(kind=8) :: dci(2, 2), carat3(*), hft2(2, 6), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: bca(2, 3), an(3, 9), am(3, 6)
 ! ======================================================================

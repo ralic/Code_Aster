@@ -19,22 +19,22 @@ subroutine aprend(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8gaem.h'
-    include 'asterfort/apcopt.h'
-    include 'asterfort/apnomk.h'
-    include 'asterfort/appari.h'
-    include 'asterfort/apsauv.h'
-    include 'asterfort/apzoni.h'
-    include 'asterfort/apzonl.h'
-    include 'asterfort/apzonr.h'
-    include 'asterfort/apzonv.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8gaem.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/apnomk.h"
+#include "asterfort/appari.h"
+#include "asterfort/apsauv.h"
+#include "asterfort/apzoni.h"
+#include "asterfort/apzonl.h"
+#include "asterfort/apzonr.h"
+#include "asterfort/apzonv.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "blas/dcopy.h"
     character(len=19) :: sdappa
 !
 ! ----------------------------------------------------------------------

@@ -21,21 +21,21 @@ subroutine op0130()
 !     OPERATEUR "POST_DYNA_MODA_T"
 !
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pochoc.h'
-    include 'asterfort/pochpv.h'
-    include 'asterfort/porefd.h'
-    include 'asterfort/titre.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pochoc.h"
+#include "asterfort/pochpv.h"
+#include "asterfort/porefd.h"
+#include "asterfort/titre.h"
     integer :: nbbloc, nbclas, n1, n2, i, jdesc, nbind
     real(kind=8) :: tdebut, tfin, offset, trepos
     character(len=8) :: trange, noeu, cmp, nomres

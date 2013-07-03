@@ -18,13 +18,13 @@ subroutine te0521(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ntfcma.h'
-    include 'asterfort/rcfode.h'
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ntfcma.h"
+#include "asterfort/rcfode.h"
     character(len=16) :: nomte, option
 ! ----------------------------------------------------------------------
 !

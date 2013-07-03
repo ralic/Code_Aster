@@ -4,9 +4,9 @@ subroutine nmpoel(nomte, npg, klv, xl, nno,&
                   effl, angs2, rad)
 !
     implicit   none
-    include 'asterfort/pmavec.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vecma.h'
+#include "asterfort/pmavec.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
     character(len=*) :: nomte
     real(kind=8) :: klv(*), pgl(*), ugl(*), effl(*), effm(*), fl(*)
     real(kind=8) :: pgl1(*), pgl2(*), along, angs2, rad

@@ -21,14 +21,14 @@ subroutine pipeds(ndim, typmod, tau, mate, vim,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/critet.h'
-    include 'asterfort/diagp3.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerod2.h'
-    include 'blas/ddot.h'
+#include "asterc/r8vide.h"
+#include "asterfort/critet.h"
+#include "asterfort/diagp3.h"
+#include "asterfort/infniv.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerod2.h"
+#include "blas/ddot.h"
     character(len=8) :: typmod(*)
     integer :: ndim, mate
     real(kind=8) :: vim(2), epsm(6), epspc(6), epsdc(6)

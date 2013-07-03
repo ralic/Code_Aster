@@ -20,19 +20,19 @@ subroutine cfprep(noma, defico, resoco, matass, ddepla,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfdiag.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfjein.h'
-    include 'asterfort/cfliin.h'
-    include 'asterfort/cfprch.h'
-    include 'asterfort/cfrsmu.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cfdiag.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfjein.h"
+#include "asterfort/cfliin.h"
+#include "asterfort/cfprch.h"
+#include "asterfort/cfrsmu.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: matass

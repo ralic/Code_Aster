@@ -22,14 +22,14 @@ subroutine dlidef()
 !     COMMANDE : DEFI_LIST_ENTI/OPERATION='DEFI'
 !
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, idebut, irest, iii, ipdt
     integer :: vali(2)
     character(len=8) :: resu

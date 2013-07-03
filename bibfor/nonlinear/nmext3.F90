@@ -22,18 +22,18 @@ subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmextj.h'
-    include 'asterfort/sdmpic.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmextj.h"
+#include "asterfort/sdmpic.h"
     integer :: nbcmp, nbma, nbpi, nbspi
     character(len=8) :: noma
     character(len=24) :: nomcha, nomchs

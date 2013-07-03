@@ -21,32 +21,32 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8maem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xlag2c.h'
-    include 'asterfort/xlagsc.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterc/getexm.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8maem.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/conare.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xlag2c.h"
+#include "asterfort/xlagsc.h"
+#include "asterfort/xxmmvd.h"
     character(len=8) :: noma, nomo, fiss
     integer :: ndim
     integer :: algola

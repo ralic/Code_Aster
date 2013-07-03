@@ -30,18 +30,18 @@ subroutine te0138(option, nomte)
 ! CORPS DU PROGRAMME
     implicit none
 ! PARAMETRES D'APPEL
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/connec.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/foderi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/vff2dn.h'
+#include "asterfort/connec.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/foderi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/teattr.h"
+#include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
 !
 !

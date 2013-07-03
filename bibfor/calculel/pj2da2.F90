@@ -1,7 +1,7 @@
 subroutine pj2da2(ino2, geom2, i, geom1, tria3,&
                   cobary, d2, surf)
     implicit none
-    include 'asterc/r8maem.h'
+#include "asterc/r8maem.h"
     real(kind=8) :: cobary(3), geom1(*), geom2(*), d2, surf
     integer :: ino2, i, tria3(*)
 ! ----------------------------------------------------------------------

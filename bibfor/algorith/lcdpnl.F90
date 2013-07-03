@@ -3,13 +3,13 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
                   vim, vip, sig, dsidep, proj,&
                   iret)
     implicit      none
-    include 'asterfort/lcdrpr.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
+#include "asterfort/lcdrpr.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
     integer :: ndim, imate, iret, ksp, kpg, iret2
     real(kind=8) :: sigm(6), deps(6, 2), vim(*), vip(*), sig(6), proj(6, 6)
     real(kind=8) :: dsidep(6, 6, 2)

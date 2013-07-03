@@ -1,9 +1,9 @@
 subroutine eclapp(ndim, nno2, lonmin, coor)
 !
     implicit none
-    include 'asterc/matfpe.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterfort/r8inir.h"
+#include "blas/dnrm2.h"
     integer :: ndim, nno2
     real(kind=8) :: coor(ndim, nno2), lonmin
 ! ======================================================================

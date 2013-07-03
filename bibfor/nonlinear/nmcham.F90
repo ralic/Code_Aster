@@ -31,12 +31,12 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 !     MAT       OUT   R    COEF MATERIAU
 !
 ! ---- ARGUMENTS
-    include 'asterc/r8prem.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
+#include "asterc/r8prem.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
     integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad
     character(len=16) :: compor(3)
     real(kind=8) :: mat(18), matel(4)

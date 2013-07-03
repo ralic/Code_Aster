@@ -19,14 +19,14 @@ subroutine apcalc(sdappa)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/apcaln.h'
-    include 'asterfort/apforc.h'
-    include 'asterfort/apimpr.h'
-    include 'asterfort/apvepa.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/apcaln.h"
+#include "asterfort/apforc.h"
+#include "asterfort/apimpr.h"
+#include "asterfort/apvepa.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=19) :: sdappa
 !
 ! ----------------------------------------------------------------------

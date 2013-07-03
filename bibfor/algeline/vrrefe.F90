@@ -1,13 +1,13 @@
 subroutine vrrefe(objet1, objet2, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/idensd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/idensd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: objet1, objet2
     integer :: ier
 !     ------------------------------------------------------------------

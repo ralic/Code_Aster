@@ -19,21 +19,21 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterfort/caladu.h"
+#include "asterfort/calatm.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     character(len=24) :: resoco
     integer :: neq, nbliai, apddl(*), appoin(*), inliac(*), premax
     real(kind=8) :: apcoef(*), ssgrad(*), ssgrpr(*), mu(*)

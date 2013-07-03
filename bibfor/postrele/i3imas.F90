@@ -3,29 +3,29 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
                   vlc, coordo, sdrp1d, sdrpom, nbsgte)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/i3crk3.h'
-    include 'asterfort/i3fmvn.h'
-    include 'asterfort/i3idks.h'
-    include 'asterfort/i3lchs.h'
-    include 'asterfort/i3pdm3.h'
-    include 'asterfort/i3trip.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/juveca.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/i3crk3.h"
+#include "asterfort/i3fmvn.h"
+#include "asterfort/i3idks.h"
+#include "asterfort/i3lchs.h"
+#include "asterfort/i3pdm3.h"
+#include "asterfort/i3trip.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/juveca.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nil, tete, queue, succ(*), prec(*), desc(*), desctm(*)
     integer :: conex(*), vlc(*), nbsgte
     real(kind=8) :: coordo(*), sgt(*), epsi

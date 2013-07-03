@@ -1,9 +1,9 @@
 subroutine lkcaln(s, b, vecn, retcom)
 !
     implicit      none
-    include 'asterc/r8miem.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/u2mess.h"
     integer :: retcom
     real(kind=8) :: b, s(6), vecn(6)
 ! =================================================================

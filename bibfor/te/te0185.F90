@@ -17,27 +17,27 @@ subroutine te0185(option, nomte)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/ef0031.h'
-    include 'asterfort/ef0033.h'
-    include 'asterfort/ef0039.h'
-    include 'asterfort/ef0042.h'
-    include 'asterfort/ef0142.h'
-    include 'asterfort/ef0154.h'
-    include 'asterfort/ef0156.h'
-    include 'asterfort/ef0231.h'
-    include 'asterfort/ef0344.h'
-    include 'asterfort/ef0347.h'
-    include 'asterfort/ef0409.h'
-    include 'asterfort/ef0410.h'
-    include 'asterfort/ef0415.h'
-    include 'asterfort/ef0517.h'
-    include 'asterfort/ef0585.h'
-    include 'asterfort/ef0587.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/teattr.h'
+#include "asterfort/assert.h"
+#include "asterfort/ef0031.h"
+#include "asterfort/ef0033.h"
+#include "asterfort/ef0039.h"
+#include "asterfort/ef0042.h"
+#include "asterfort/ef0142.h"
+#include "asterfort/ef0154.h"
+#include "asterfort/ef0156.h"
+#include "asterfort/ef0231.h"
+#include "asterfort/ef0344.h"
+#include "asterfort/ef0347.h"
+#include "asterfort/ef0409.h"
+#include "asterfort/ef0410.h"
+#include "asterfort/ef0415.h"
+#include "asterfort/ef0517.h"
+#include "asterfort/ef0585.h"
+#include "asterfort/ef0587.h"
+#include "asterfort/jevech.h"
+#include "asterfort/teattr.h"
     character(len=16) :: option, nomte
 !     ----------------------------------------------------------------
 !     CALCUL DE L'OPTION EFGE_ELNO

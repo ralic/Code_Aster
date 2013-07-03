@@ -1,21 +1,21 @@
 subroutine te0548(option, nomte)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elelin.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/xjacf2.h'
-    include 'asterfort/xjacff.h'
-    include 'asterfort/xlacti.h'
-    include 'asterfort/xminte.h'
-    include 'asterfort/xmoffc.h'
-    include 'asterfort/xplmat.h'
-    include 'asterfort/xteini.h'
+#include "asterfort/elelin.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/xjacf2.h"
+#include "asterfort/xjacff.h"
+#include "asterfort/xlacti.h"
+#include "asterfort/xminte.h"
+#include "asterfort/xmoffc.h"
+#include "asterfort/xplmat.h"
+#include "asterfort/xteini.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

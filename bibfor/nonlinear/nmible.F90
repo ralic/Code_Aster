@@ -21,13 +21,13 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/nmctcg.h'
-    include 'asterfort/nmimci.h'
+#include "jeveux.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/nmctcg.h"
+#include "asterfort/nmimci.h"
     integer :: numins, niveau
     character(len=8) :: noma
     character(len=24) :: defico, resoco

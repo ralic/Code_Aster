@@ -20,16 +20,16 @@ subroutine cfmxpo(noma, modelz, defico, resoco, numins,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cfdeco.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmxre.h'
-    include 'asterfort/cfverl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmdeco.h'
-    include 'asterfort/xmdeco.h'
+#include "jeveux.h"
+#include "asterfort/cfdeco.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmxre.h"
+#include "asterfort/cfverl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmdeco.h"
+#include "asterfort/xmdeco.h"
     character(len=24) :: resoco, defico, sdstat
     character(len=8) :: noma
     character(len=19) :: sddisc

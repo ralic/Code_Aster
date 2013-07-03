@@ -1,17 +1,17 @@
 subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
                   geom2, corre1, corre2, jlisv1, iocc)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pj3dco.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pj3dco.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: mo
     character(len=16) :: corre1, corre2
     character(len=24) :: geom2

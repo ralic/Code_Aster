@@ -20,12 +20,12 @@ subroutine pipedp(kpg, ksp, ndim, typmod, mate,&
 ! ======================================================================
 !
     implicit none
-    include 'asterc/matfpe.h'
-    include 'asterfort/betfpp.h'
-    include 'asterfort/betmat.h'
-    include 'asterfort/zerop2.h'
-    include 'blas/ddot.h'
-    include 'blas/dnrm2.h'
+#include "asterc/matfpe.h"
+#include "asterfort/betfpp.h"
+#include "asterfort/betmat.h"
+#include "asterfort/zerop2.h"
+#include "blas/ddot.h"
+#include "blas/dnrm2.h"
     character(len=8) :: typmod(*)
     integer :: ndim, mate, kpg, ksp
     real(kind=8) :: epsp(6), epsd(6)

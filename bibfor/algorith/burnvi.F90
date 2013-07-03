@@ -30,7 +30,7 @@ subroutine burnvi(mod, ndt, ndi, nr, nvi)
 !     NVI   :  NB DE VARIABLES INTERNES
 !=====================================================================
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nr, nvi, nvint
     character(len=8) :: mod
 !

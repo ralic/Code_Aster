@@ -17,21 +17,21 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/trndgl.h'
-    include 'asterfort/vddege.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "jeveux.h"
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/trndgl.h"
+#include "asterfort/vddege.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     real(kind=8) :: edgpg(*)
 !
 ! CALCUL DE L'OPTION EDGE_ELGA POUR LES COQUE_3D

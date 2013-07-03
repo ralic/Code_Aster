@@ -21,8 +21,8 @@ subroutine xtform(ndim, typmae, typmam, typmac, nne,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/elrfdf.h'
-    include 'asterfort/elrfvf.h'
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
     character(len=8) :: typmae, typmam, typmac
     real(kind=8) :: coorc(2), coore(3), coorm(3)
     integer :: ndim, nnm, nnc, nne

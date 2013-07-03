@@ -36,10 +36,10 @@ subroutine jm1dn2(indn, indc, nb1, nb2, xr,&
 !
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/valfor.h'
+#include "asterfort/assert.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/valfor.h"
     integer :: jn
 !
     integer :: nb1, nb2

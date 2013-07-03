@@ -19,9 +19,9 @@ subroutine genere(r, dim, v, x)
 !       POUR CHAQUE POINT DE LA DISCRETISATION FREQUENTIELLE CALCULE
 !                   V = R*X
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getran.h'
-    include 'asterc/r8pi.h'
+#include "jeveux.h"
+#include "asterc/getran.h"
+#include "asterc/r8pi.h"
     integer :: dim, i, j
     real(kind=8) :: u, pi
     complex(kind=8) :: r(dim, dim), v(dim), phi, x(dim)

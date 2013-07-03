@@ -18,13 +18,13 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 ! ======================================================================
 ! =====================================================================
     implicit      none
-    include 'asterc/r8nnem.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/fbifur.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerop3.h'
-    include 'asterfort/zeropn.h'
+#include "asterc/r8nnem.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/fbifur.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zerop3.h"
+#include "asterfort/zeropn.h"
     integer :: nbrac4
     real(kind=8) :: dsidep(6, 6), racine(4), vbifur
     character(len=8) :: mod

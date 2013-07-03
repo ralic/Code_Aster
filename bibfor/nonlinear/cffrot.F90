@@ -19,13 +19,13 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 ! RESPONSBALE
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
     character(len=1) :: koper
     character(len=19) :: maf1
     character(len=19) :: maf2

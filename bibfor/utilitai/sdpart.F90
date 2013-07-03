@@ -29,7 +29,7 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! CORPS DU PROGRAMME
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterfort/mpicm0.h'
+#include "asterfort/mpicm0.h"
     integer :: sdloc (nbsd), nbsd, nbsdp0
 !
 ! DECLARATION VARIABLES LOCALES

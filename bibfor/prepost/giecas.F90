@@ -19,21 +19,21 @@ subroutine giecas(nfic, ndim, nbobj)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/giecma.h'
-    include 'asterfort/giinco.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/uttrii.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/giecma.h"
+#include "asterfort/giinco.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/uttrii.h"
+#include "asterfort/wkvect.h"
     integer :: nfic, ndim, nbobj
 ! ----------------------------------------------------------------------
 !     BUT: ECRIRE LE FICHIER DE MAILLAGE ASTER A PARTIR DES OBJETS

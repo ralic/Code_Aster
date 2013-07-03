@@ -1,7 +1,7 @@
 subroutine vpshif(lmatk, valshi, lmatm, lmatsh)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/mtcmbl.h'
+#include "jeveux.h"
+#include "asterfort/mtcmbl.h"
     real(kind=8) :: valshi
     integer :: lmatk, lmatm, lmatsh
 !     ------------------------------------------------------------------

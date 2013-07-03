@@ -20,7 +20,7 @@ subroutine cfresb(ndim, lag2d, typlia, fctf, tang,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ndim
     logical :: lag2d
     character(len=2) :: typlia

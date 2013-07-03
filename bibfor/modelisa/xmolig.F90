@@ -2,20 +2,20 @@ subroutine xmolig(liel1, trav)
 ! aslint: disable=W1501
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/xmoajo.h'
-    include 'asterfort/xmoimp.h'
-    include 'asterfort/xmoini.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/xmoajo.h"
+#include "asterfort/xmoimp.h"
+#include "asterfort/xmoini.h"
     character(len=24) :: liel1, trav
 !
 ! ======================================================================

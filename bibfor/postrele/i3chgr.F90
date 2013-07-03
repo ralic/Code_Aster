@@ -1,7 +1,7 @@
 subroutine i3chgr(a, b, t1, t2, n)
     implicit   none
-    include 'asterc/r8prem.h'
-    include 'asterfort/rvegal.h'
+#include "asterc/r8prem.h"
+#include "asterfort/rvegal.h"
     integer :: n
     real(kind=8) :: a(*), b(*), t1(*), t2(*)
 !     ------------------------------------------------------------------

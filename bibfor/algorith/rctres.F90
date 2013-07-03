@@ -1,7 +1,7 @@
 subroutine rctres(sigm, tresca)
     implicit   none
-    include 'asterfort/lcqeqv.h'
-    include 'asterfort/rcjaco.h'
+#include "asterfort/lcqeqv.h"
+#include "asterfort/rcjaco.h"
     real(kind=8) :: sigm(*), tresca
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG

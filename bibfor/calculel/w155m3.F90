@@ -19,10 +19,10 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
     integer :: numa, nucou, nusec, nufib, posic, posis, isp
     integer :: jce2l, jce2d, jce2v
     integer :: nbcou, nbsec, nbfib, isec, icou

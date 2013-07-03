@@ -21,11 +21,11 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
     integer :: ndim, jnnm(3), jnne(3)
     integer :: nsinge, nsingm
     real(kind=8) :: rre, rrm

@@ -25,11 +25,11 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
 !-----------------------------------------------------------------------
 !           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
 !-----------------------------------------------------------------------
-    include 'asterfort/fgequi.h'
-    include 'asterfort/tbajli.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/fgequi.h"
+#include "asterfort/tbajli.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nbvari, nbpar, i, iter, iforta, igrad, ncmp, imptgt, nbvita
     character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
     character(len=8) :: k8b, table, vk8(2), nomvi(*)

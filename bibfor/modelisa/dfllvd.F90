@@ -19,7 +19,7 @@ function dfllvd(vect)
 !
     implicit none
     integer :: dfllvd
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=5) :: vect
 !
 ! ----------------------------------------------------------------------

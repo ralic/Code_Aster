@@ -1,25 +1,25 @@
 subroutine te0141(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/chgrep.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/masstg.h'
-    include 'asterfort/matro2.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/pmfmas.h'
-    include 'asterfort/pomass.h'
-    include 'asterfort/ptma01.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rhoequ.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/vecma.h'
+#include "jeveux.h"
+#include "asterfort/chgrep.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/masstg.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/pmfmas.h"
+#include "asterfort/pomass.h"
+#include "asterfort/ptma01.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rhoequ.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/vecma.h"
     character(len=*) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================

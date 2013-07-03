@@ -17,19 +17,19 @@ subroutine jefini(cond)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterc/asabrt.h'
-    include 'asterc/xfini.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/enlird.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jeimpm.h'
-    include 'asterfort/jeimpr.h'
-    include 'asterfort/jelibf.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/ulclos.h'
-    include 'asterfort/utgtme.h'
+#include "jeveux_private.h"
+#include "asterc/asabrt.h"
+#include "asterc/xfini.h"
+#include "asterfort/assert.h"
+#include "asterfort/enlird.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jeimpm.h"
+#include "asterfort/jeimpr.h"
+#include "asterfort/jelibf.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/ulclos.h"
+#include "asterfort/utgtme.h"
     character(len=*) :: cond
 !     ==================================================================
 !-----------------------------------------------------------------------

@@ -21,12 +21,12 @@ subroutine shl329()
 !     OPTION : ACCEPTANCE
 !....................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/codent.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
+#include "asterfort/wkvect.h"
     character(len=7) :: ielem, imode
     character(len=24) :: vetel
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac(9)

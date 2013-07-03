@@ -1,18 +1,18 @@
 subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
                   lichar, chmome)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/cesfus.h'
-    include 'asterfort/cesqua.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/cesfus.h"
+#include "asterfort/cesqua.h"
+#include "asterfort/cesred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, nbma, listma(*), nbchar, lichar(*)
     character(len=1) :: etat
     character(len=24) :: chmome

@@ -19,14 +19,14 @@ subroutine dylach(nomo, mate, carele, lischa, numedd,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/asvepr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/veassc.h'
-    include 'asterfort/vechms.h'
-    include 'asterfort/vedimd.h'
-    include 'asterfort/veevoc.h'
+#include "jeveux.h"
+#include "asterfort/asvepr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/veassc.h"
+#include "asterfort/vechms.h"
+#include "asterfort/vedimd.h"
+#include "asterfort/veevoc.h"
     character(len=8) :: nomo
     character(len=24) :: mate, carele
     character(len=19) :: lischa

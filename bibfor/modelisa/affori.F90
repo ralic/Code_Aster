@@ -2,14 +2,14 @@ subroutine affori(typ, nomt, cara, val, jad,&
                   jdno, jdco, ivr, nutyma, ntseg,&
                   carori, nco, ier)
     implicit        none
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/angvxy.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vdiff.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vdiff.h"
     integer :: nco, ivr(*), nutyma, ntseg, jad, jdno, jdco, ier
     character(len=*) :: typ, nomt, cara, carori(nco)
     real(kind=8) :: val(6)

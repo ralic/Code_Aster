@@ -17,8 +17,8 @@ subroutine zerog2(x, y, z, i)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zerop2.h'
+#include "asterfort/u2mess.h"
+#include "asterfort/zerop2.h"
     real(kind=8) :: x(3), y(3), z(3)
 ! ----------------------------------------------------------------------
 !  RESOLUTION D'EQUATIONS SCALAIRES PAR APPROXIMATION P2

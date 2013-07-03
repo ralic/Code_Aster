@@ -21,16 +21,16 @@ subroutine nmresd(fonact, sddyna, sdstat, sdtime, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmresg.h'
-    include 'asterfort/nmreso.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmresg.h"
+#include "asterfort/nmreso.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
     integer :: fonact(*)
     character(len=19) :: solalg(*)
     character(len=19) :: maprec, matass

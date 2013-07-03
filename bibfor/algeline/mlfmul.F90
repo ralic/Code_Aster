@@ -20,7 +20,7 @@ subroutine mlfmul(b, f, y, ldb, n,&
 !
 !     B = B - F*Y PAR BLOCS
     implicit none
-    include 'blas/dgemm.h'
+#include "blas/dgemm.h"
     integer :: ldb, n, p, l, nb
     real(kind=8) :: b(ldb, l), f(n, p), y(ldb, l)
     integer :: m, nmb, restm, nlb, restl

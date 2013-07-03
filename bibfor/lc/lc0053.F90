@@ -23,8 +23,8 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/lckimp.h'
+#include "asterfort/assert.h"
+#include "asterfort/lckimp.h"
     integer :: imate, ndim, codret, kpg, ksp
     integer :: icomp, nvi
     real(kind=8) :: tampon(*), crit(*)

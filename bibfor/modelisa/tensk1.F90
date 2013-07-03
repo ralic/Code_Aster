@@ -61,7 +61,7 @@ subroutine tensk1(icabl, nbno, s, alpha, f0,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/ancrca.h'
+#include "asterfort/ancrca.h"
     integer :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, f(*)
 !

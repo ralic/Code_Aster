@@ -49,20 +49,20 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/lctrma.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tnsvec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'blas/dcopy.h'
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/lctr2m.h"
+#include "asterfort/lctrma.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tnsvec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "blas/dcopy.h"
     integer :: ndt, ndi, typess, nmat, nr, nvi, types0, nfs, nsg
 !
     real(kind=8) :: yd(nr), dy(nr), essai

@@ -21,30 +21,30 @@ subroutine algocu(deficu, resocu, solveu, lmat, ldscon,&
 !
 ! aslint: disable=W1501
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/caladu.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/cuacat.h'
-    include 'asterfort/cuadu.h'
-    include 'asterfort/cudisi.h'
-    include 'asterfort/cuelpv.h'
-    include 'asterfort/cuimp1.h'
-    include 'asterfort/cuimp2.h'
-    include 'asterfort/cupivo.h'
-    include 'asterfort/cutabl.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rldlgg.h'
-    include 'asterfort/tldlgg.h'
-    include 'blas/daxpy.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/caladu.h"
+#include "asterfort/calatm.h"
+#include "asterfort/cuacat.h"
+#include "asterfort/cuadu.h"
+#include "asterfort/cudisi.h"
+#include "asterfort/cuelpv.h"
+#include "asterfort/cuimp1.h"
+#include "asterfort/cuimp2.h"
+#include "asterfort/cupivo.h"
+#include "asterfort/cutabl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rldlgg.h"
+#include "asterfort/tldlgg.h"
+#include "blas/daxpy.h"
     character(len=24) :: deficu
     character(len=24) :: resocu
     character(len=19) :: solveu, cncine, resu

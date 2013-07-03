@@ -19,23 +19,23 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
 ! ======================================================================
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lisdef.h'
-    include 'asterfort/lisico.h'
-    include 'asterfort/lislco.h'
-    include 'asterfort/lisllc.h'
-    include 'asterfort/lisnbg.h'
-    include 'asterfort/lisnnb.h'
-    include 'asterfort/vechmp.h'
-    include 'asterfort/vechms.h'
-    include 'asterfort/veevop.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisico.h"
+#include "asterfort/lislco.h"
+#include "asterfort/lisllc.h"
+#include "asterfort/lisnbg.h"
+#include "asterfort/lisnnb.h"
+#include "asterfort/vechmp.h"
+#include "asterfort/vechms.h"
+#include "asterfort/veevop.h"
     character(len=24) :: mate, carele
     character(len=8) :: nomo
     real(kind=8) :: partps(3)

@@ -19,13 +19,13 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(CHARGE)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/dismmo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/dismmo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz

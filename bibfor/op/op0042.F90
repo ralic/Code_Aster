@@ -27,30 +27,30 @@ subroutine op0042()
 ! CORPS DU PROGRAMME
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ajrefd.h'
-    include 'asterfort/ccvrpu.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecalr.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/thcalr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ajrefd.h"
+#include "asterfort/ccvrpu.h"
+#include "asterfort/cresol.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecalr.h"
+#include "asterfort/medom1.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/thcalr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=6) :: nompro
     parameter  (nompro='OP0042')
 !

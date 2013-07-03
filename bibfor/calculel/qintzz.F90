@@ -1,10 +1,10 @@
 subroutine qintzz(modele, ligrel, matez, sigmap, sigmad,&
                   signop, signod, resu)
     implicit none
-    include 'asterfort/calcul.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcul.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: modele, ligrel, matez, sigmap, sigmad
     character(len=*) :: signop, signod, resu
     character(len=6) :: chtemp

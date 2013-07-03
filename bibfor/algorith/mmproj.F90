@@ -22,9 +22,9 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/mmnewd.h'
-    include 'asterfort/mmnewt.h'
-    include 'asterfort/mmtole.h'
+#include "asterfort/mmnewd.h"
+#include "asterfort/mmnewt.h"
+#include "asterfort/mmtole.h"
     character(len=8) :: alias
     integer :: ndim
     integer :: nno

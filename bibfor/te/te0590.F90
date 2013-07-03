@@ -17,23 +17,23 @@ subroutine te0590(option, nomte)
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/nifilg.h'
-    include 'asterfort/nifipd.h'
-    include 'asterfort/nifism.h'
-    include 'asterfort/niinit.h'
-    include 'asterfort/nmtstm.h'
-    include 'asterfort/rcangm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/tgverm.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nifilg.h"
+#include "asterfort/nifipd.h"
+#include "asterfort/nifism.h"
+#include "asterfort/niinit.h"
+#include "asterfort/nmtstm.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tgverm.h"
+#include "asterfort/u2mesk.h"
+#include "blas/dcopy.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DES FORCES INTERNES POUR LES ELEMENTS

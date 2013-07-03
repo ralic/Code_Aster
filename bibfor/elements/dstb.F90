@@ -1,14 +1,14 @@
 subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bcoqaf.h'
-    include 'asterfort/dstbfa.h'
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dstcis.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/elref5.h'
+#include "jeveux.h"
+#include "asterfort/bcoqaf.h"
+#include "asterfort/dstbfa.h"
+#include "asterfort/dstbfb.h"
+#include "asterfort/dstcis.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/elref5.h"
     integer :: igau
     real(kind=8) :: pgl(3, 3), bmat(8, 1), carat3(*), jacgau
 ! ======================================================================

@@ -18,7 +18,7 @@ subroutine dglrda()
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! ----------------------------------------------------------------------
 !
@@ -26,26 +26,26 @@ subroutine dglrda()
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/foimpr.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/interf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmfonc.h'
-    include 'asterfort/mocon2.h'
-    include 'asterfort/moconm.h'
-    include 'asterfort/parglr.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterfort/foimpr.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/interf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmfonc.h"
+#include "asterfort/mocon2.h"
+#include "asterfort/moconm.h"
+#include "asterfort/parglr.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: na
     parameter (na=10)
     integer :: nnap, nprec, nliner, ibid, ii, ilit, nlit, jlm, jmelk

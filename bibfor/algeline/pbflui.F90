@@ -46,17 +46,17 @@ subroutine pbflui(umoy, hmoy, rmoy, long, cf0,&
 ! OUT : YSOL   : TABLEAU SOLUTION (VECTEUR T(UI*,VI*,PI*) TABULE EN Z)
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/pbflga.h'
-    include 'asterfort/pbflkc.h'
-    include 'asterfort/pbflso.h'
-    include 'asterfort/pbflu0.h'
-    include 'asterfort/pbflvp.h'
-    include 'asterfort/profpr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/pbflga.h"
+#include "asterfort/pbflkc.h"
+#include "asterfort/pbflso.h"
+#include "asterfort/pbflu0.h"
+#include "asterfort/pbflvp.h"
+#include "asterfort/profpr.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: umoy, hmoy, rmoy, long, cf0, mcf0, fsvr(7)
     integer :: icoq, imod, nbm
     real(kind=8) :: rki, tcoef(10, nbm), s1, s2

@@ -17,13 +17,13 @@ subroutine disell(pz, az, bz, h)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/trigom.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/trigom.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: pz(2), az, bz, h
 !
 !      CALCUL DE H : DISTANCE SIGNEE ENTRE LE POINT P ET L'ELLIPSE

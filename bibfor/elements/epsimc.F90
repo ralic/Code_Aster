@@ -39,9 +39,9 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'jeveux.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
     character(len=16) :: option
     real(kind=8) :: xyz(1), ni(1), eps(1)
 ! -----  VARIABLES LOCALES

@@ -63,11 +63,11 @@ subroutine caeihm(nomte, axi, perman, mecani, press1,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/greihm.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/modthm.h'
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/greihm.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/modthm.h"
     logical :: axi, perman
     integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
     integer :: ndim, nnos, nno1, nno2, ntrou

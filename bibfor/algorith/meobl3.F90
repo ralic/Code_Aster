@@ -20,15 +20,15 @@ subroutine meobl3(eps, b, d, deltab, deltad,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/ceobfb.h'
-    include 'asterfort/ceobfd.h'
-    include 'asterfort/dfbdb.h'
-    include 'asterfort/dfbde.h'
-    include 'asterfort/dfddd.h'
-    include 'asterfort/dfdde.h'
-    include 'asterfort/dfmdf.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/ceobfb.h"
+#include "asterfort/ceobfd.h"
+#include "asterfort/dfbdb.h"
+#include "asterfort/dfbde.h"
+#include "asterfort/dfddd.h"
+#include "asterfort/dfdde.h"
+#include "asterfort/dfmdf.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: eps(6), b(6), d, dsidep(6, 6)
     real(kind=8) :: deltab(6), deltad, mult
     real(kind=8) :: lambda, mu, alpha, k1, k2, ecrob, ecrod

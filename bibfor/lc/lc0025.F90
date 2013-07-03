@@ -21,7 +21,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, numlc
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap, tampon(*)

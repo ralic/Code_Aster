@@ -21,8 +21,8 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
 ! aslint: disable=W1501
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
     character(len=8) :: alias
     integer :: typi, nord
     real(kind=8) :: xpg, ypg, hpg

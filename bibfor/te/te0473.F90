@@ -25,18 +25,18 @@ subroutine te0473(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/elref4.h'
-    include 'asterfort/idsshb.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/sh1rig.h'
-    include 'asterfort/sh2rig.h'
-    include 'asterfort/sh6rig.h'
-    include 'asterfort/sh8rig.h'
+#include "asterfort/elref4.h"
+#include "asterfort/idsshb.h"
+#include "asterfort/jevech.h"
+#include "asterfort/moytem.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/sh1rig.h"
+#include "asterfort/sh2rig.h"
+#include "asterfort/sh6rig.h"
+#include "asterfort/sh8rig.h"
     integer :: i, idfde, igeom, imate, imatuu, ipoids, iret
     integer :: ivf, j, jgano, k, lag, nbinco, nbres
     integer :: ndim, nno, nnos, npg

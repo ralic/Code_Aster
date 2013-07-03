@@ -6,7 +6,7 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
                   rela)
 ! aslint: disable=W1504
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,10 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 ! IN  NOMTE  : TYPE ELEMENT
 ! OUT NPGF   : NOMBRE DE POINTS DE GAUSS PAR FACETTE
 ! OUT SEUIL  : TABLEAU DES SEUILS DE FROTTEMENT
-    include 'asterfort/assert.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/xminte.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/teattr.h"
+#include "asterfort/xminte.h"
     integer :: algocr, algofr, cface(5, 3), contac
     integer :: i, ibid, idfdef, ifiss
     integer :: ipoidf, ivff, j, jcface

@@ -34,7 +34,7 @@ subroutine ffgra1(nbfonc, idebit, nbp1, nbp2, long,&
 !                - DIM : (NBP,NBFONC)
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbfonc, idebit, nbp1, nbp2
     real(kind=8) :: long, disc(nbp1+nbp2), vale(nbp1+nbp2, nbfonc)
 !

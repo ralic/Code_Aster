@@ -20,9 +20,9 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
 !
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
     logical :: grand, axi
     integer :: ndim, nno
     real(kind=8) :: dfdi(nno, ndim), b(6, 3, nno)

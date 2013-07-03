@@ -6,34 +6,34 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   factus, pmmax, pbmax, pmbmax)
 ! aslint: disable=W1501,W1501,W1504
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rc32fp.h'
-    include 'asterfort/rc32fs.h'
-    include 'asterfort/rc32fu.h'
-    include 'asterfort/rc32ms.h'
-    include 'asterfort/rc32pm.h'
-    include 'asterfort/rc32rt.h'
-    include 'asterfort/rc32sa.h'
-    include 'asterfort/rc32sn.h'
-    include 'asterfort/rc32sp.h'
-    include 'asterfort/rcma02.h'
-    include 'asterfort/rcmo02.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/codent.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/limend.h"
+#include "asterfort/rc32fp.h"
+#include "asterfort/rc32fs.h"
+#include "asterfort/rc32fu.h"
+#include "asterfort/rc32ms.h"
+#include "asterfort/rc32pm.h"
+#include "asterfort/rc32rt.h"
+#include "asterfort/rc32sa.h"
+#include "asterfort/rc32sn.h"
+#include "asterfort/rc32sp.h"
+#include "asterfort/rcma02.h"
+#include "asterfort/rcmo02.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ig, iocs, npass
     real(kind=8) :: snmax, snemax, spmax, kemax, samax, utot, sm, sigpm
     real(kind=8) :: resuas(*), resuss(*), resuca(*), resucs(*), factus(*), pmmax

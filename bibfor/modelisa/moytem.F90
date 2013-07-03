@@ -1,7 +1,7 @@
 subroutine moytem(fami, npg, nspg, poum, temp,&
                   iret)
     implicit   none
-    include 'asterfort/rcvarc.h'
+#include "asterfort/rcvarc.h"
     integer :: npg, nspg, iret
     real(kind=8) :: temp
     character(len=*) :: fami, poum

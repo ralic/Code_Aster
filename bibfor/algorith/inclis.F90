@@ -50,21 +50,21 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rotlis.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rotlis.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: k8bid, nomres, matprj, ssta, sstb, intfa, intfb, nomg
     character(len=24) :: fmlia, toto, fpliao, fplibo, fplian, fplibn
     integer :: iada(3), iadb(3), numlis, zit(3), nbec, ierd, nbnoea, nbnoeb

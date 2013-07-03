@@ -37,21 +37,21 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 !           NR     :  DIMENSION DU VECTEUR INCONNUES
 !       OUT R      :  SYSTEME NL A T+DT
 !       ----------------------------------------------------------------
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lkbpri.h'
-    include 'asterfort/lkcalg.h'
-    include 'asterfort/lkcaln.h'
-    include 'asterfort/lkcrip.h'
-    include 'asterfort/lkcriv.h'
-    include 'asterfort/lkdfds.h'
-    include 'asterfort/lkdgde.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkds2h.h'
-    include 'asterfort/lkelas.h'
-    include 'asterfort/lkvacp.h'
-    include 'asterfort/lkvarp.h'
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lkbpri.h"
+#include "asterfort/lkcalg.h"
+#include "asterfort/lkcaln.h"
+#include "asterfort/lkcrip.h"
+#include "asterfort/lkcriv.h"
+#include "asterfort/lkdfds.h"
+#include "asterfort/lkdgde.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkds2h.h"
+#include "asterfort/lkelas.h"
+#include "asterfort/lkvacp.h"
+#include "asterfort/lkvarp.h"
     integer :: nmat, nr, nvi, ndi, ndt
     real(kind=8) :: deps(6), vind(*), vinf(*)
     real(kind=8) :: r(nr), yd(nr), yf(nr), materf(nmat, 2)

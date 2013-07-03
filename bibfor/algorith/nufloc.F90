@@ -23,9 +23,9 @@ function nufloc(ndim, nsc, isc)
 ! SONT ISC
 !
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/u2mesk.h"
     integer :: ndim, nsc, isc(1:nsc)
 !
     character(len=8) :: elrefe

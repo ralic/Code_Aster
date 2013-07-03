@@ -35,9 +35,9 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb,&
 ! IN  RESI    : .TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
 !
     implicit none
-    include 'asterfort/deflog.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "asterfort/deflog.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     integer :: i, ndim, lgpg, ivtn, iret
     real(kind=8) :: vim(lgpg)
     real(kind=8) :: fm(3, 3), fp(3, 3), epsml(6), epspl(6)

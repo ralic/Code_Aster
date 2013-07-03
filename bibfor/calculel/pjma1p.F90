@@ -31,13 +31,13 @@ subroutine pjma1p(moa1, ma1p, cham1, corres)
 ! MA1P : EST LE MAILLAGE 1 PRIME
 ! CORRES : STRUCTURE DE DONNEES CORRES
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/eclpgm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eclpgm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: moa1, ma1p
     character(len=19) :: cham1
 ! ----------------------------------------------------------------------

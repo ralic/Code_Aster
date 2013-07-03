@@ -18,8 +18,8 @@ function xpheop(modele)
 !
     implicit none
     character(len=9) :: xpheop
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
     character(len=8) :: modele
 !
 ! ----------------------------------------------------------------------

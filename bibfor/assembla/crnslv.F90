@@ -1,8 +1,8 @@
 subroutine crnslv(nuz, metres, renum, base)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/crsolv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/crsolv.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nuz, base, metres, renum
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

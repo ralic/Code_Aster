@@ -23,17 +23,17 @@ subroutine tgverm(option, carcri, compor, nno1, nno2,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mavec.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mavec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     logical :: matsym
     character(len=16) :: option, compor(*)
     integer :: iret, nno1, nno2, nno3, ndim

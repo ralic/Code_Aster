@@ -20,7 +20,7 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
 !
     implicit none
 !
-    include 'asterfort/verift.h'
+#include "asterfort/verift.h"
     integer :: kpg, ksp, ndimsi, imate
     character(len=*) :: fami
     real(kind=8) :: matm(3), mat(3)

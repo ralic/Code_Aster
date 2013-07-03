@@ -20,12 +20,12 @@ subroutine op0136()
 !     ------------------------------------------------------------------
 !     COMMANDE POST_FATIGUE
 !     ------------------------------------------------------------------
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/pofape.h'
-    include 'asterfort/pofaqu.h'
-    include 'asterfort/pofaun.h'
-    include 'asterfort/titre.h'
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/pofape.h"
+#include "asterfort/pofaqu.h"
+#include "asterfort/pofaun.h"
+#include "asterfort/titre.h"
     integer :: n1
     character(len=8) :: typcha
     integer :: iarg

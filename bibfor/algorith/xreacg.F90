@@ -18,11 +18,11 @@ subroutine xreacg(nomo, resoco)
 ! ======================================================================
 !
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/xgecfi.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xgecfi.h"
     character(len=8) :: nomo
     character(len=24) :: resoco
 !

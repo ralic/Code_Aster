@@ -22,10 +22,10 @@ subroutine mmgeom(iresog, ndim, nne, nnm, ffe,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include     'jeveux.h'
-    include 'asterfort/mmcalg.h'
-    include 'asterfort/mmcaln.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/mmcalg.h"
+#include "asterfort/mmcaln.h"
+#include "asterfort/vecini.h"
     integer :: ndim, nne, nnm
     integer :: iresog
     real(kind=8) :: ffe(9), ffm(9), ddffm(3, 9)

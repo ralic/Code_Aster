@@ -41,18 +41,18 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTE DE LA GRANDEUR
 !   SOUS-JACENTE TRAITES
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/isdeco.h'
-    include 'asterfort/isgeco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/isdeco.h"
+#include "asterfort/isgeco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
 !-----------------------------------------------------------------------
     integer :: i, idim1, idim2, ierd, ii, iret, j
     integer :: lldesc, lllia, llncmp, llpl1, llpl2, nbcmpm, nbec

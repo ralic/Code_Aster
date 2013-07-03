@@ -19,7 +19,7 @@ subroutine zerop3(a, b, c, x, n)
 !
 ! aslint: disable=
     implicit none
-    include 'asterc/r8pi.h'
+#include "asterc/r8pi.h"
     real(kind=8) :: a, b, c, x(3)
     integer :: n
 !

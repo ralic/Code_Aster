@@ -36,9 +36,9 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik,&
 !           PM        : MOMENT RESULTANT AU PT DE GAUSS EN AXES GENERAUX
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/promat.h'
-    include 'asterfort/transp.h'
-    include 'asterfort/verift.h'
+#include "asterfort/promat.h"
+#include "asterfort/transp.h"
+#include "asterfort/verift.h"
     character(len=*) :: fami
     real(kind=8) :: x0pg(3), petik(3), rot0(3, 3), rotk(3, 3), granc(6), pn(3)
     real(kind=8) :: pm(3), gn(3), gm(3), rotabs(3, 3), rotabt(3, 3), granga(3)

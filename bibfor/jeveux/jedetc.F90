@@ -16,14 +16,14 @@ subroutine jedetc(clas, souch, ipos)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjcren.h'
-    include 'asterfort/jjlidy.h'
-    include 'asterfort/jjmzat.h'
-    include 'asterfort/jxlibd.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjcren.h"
+#include "asterfort/jjlidy.h"
+#include "asterfort/jjmzat.h"
+#include "asterfort/jxlibd.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: clas, souch
     integer :: ipos
 ! ----------------------------------------------------------------------

@@ -24,11 +24,11 @@ subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/nmchai.h'
-    include 'asterfort/obcrea.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmchai.h"
+#include "asterfort/obcrea.h"
     integer :: zpmet, zpcri, zconv
     integer :: zpcon, znmeth
     integer :: fonact(*)

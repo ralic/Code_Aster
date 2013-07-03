@@ -32,7 +32,7 @@ subroutine intet0(angle, tet0, iax)
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     real(kind=8) :: tet0(10, 10)
     integer :: i, iax, j, jj
     real(kind=8) :: a, angle, b

@@ -27,7 +27,7 @@ subroutine cjsdtd(mod, q, dtddq)
 !          DTDDQ(I,J) = D TD(I) / D Q(J)
 !     ------------------------------------------------------------------
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi
     real(kind=8) :: q(6), dtddq(6, 6)
     real(kind=8) :: zero, deux, trois, quatre, rc2

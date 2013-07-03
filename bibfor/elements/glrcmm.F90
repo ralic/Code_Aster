@@ -55,12 +55,12 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 !               1 => ABSENCE DE CONVERGENCE
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    include 'asterfort/glrcdd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/glrcdd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/matmul.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: i, zimat, kpg, spt
     integer :: codret
 !

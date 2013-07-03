@@ -31,7 +31,7 @@ subroutine inivec(vec, neq, id, nbcp)
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: i, j, nbcp, id(nbcp), neq
     real(kind=8) :: vec(neq)
 !

@@ -3,12 +3,12 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
                   al)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/xxmmvd.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/padist.h"
+#include "asterfort/xxmmvd.h"
     integer :: ndim, long, ipt, cpt, ia, in
     real(kind=8) :: newpt(3), longar, al, list(*), ainter(*)
 !     ------------------------------------------------------------------

@@ -17,7 +17,7 @@ subroutine imprel(titre, nbterm, coef, lisddl, lisno,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/infniv.h'
+#include "asterfort/infniv.h"
     character(len=*) :: titre
     integer :: info, nbterm, ifm, i
     character(len=8) :: lisddl(nbterm), lisno(nbterm)

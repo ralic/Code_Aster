@@ -1,29 +1,29 @@
 subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
                   renumz)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/ismaem.h'
-    include 'asterc/llbloc.h'
-    include 'asterc/loisem.h'
-    include 'asterc/lor8em.h'
-    include 'asterc/mlnbpr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedisp.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mlnmin.h'
-    include 'asterfort/mltasa.h'
-    include 'asterfort/mltfc1.h'
-    include 'asterfort/mltpre.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/ismaem.h"
+#include "asterc/llbloc.h"
+#include "asterc/loisem.h"
+#include "asterc/lor8em.h"
+#include "asterc/mlnbpr.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mlnmin.h"
+#include "asterfort/mltasa.h"
+#include "asterfort/mltfc1.h"
+#include "asterfort/mltpre.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: nommat, renumz
     integer :: npivot, neq
     real(kind=8) :: eps

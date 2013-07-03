@@ -1,15 +1,15 @@
 subroutine nmdpmf(compor)
     implicit none
-    include 'asterc/getvid.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cesfus.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvid.h"
+#include "asterfort/carces.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cesfus.h"
+#include "asterfort/cesred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: compor
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -35,7 +35,7 @@ subroutine nmdpmf(compor)
 !
 ! IN/OUT  COMPOR    carte de comportement
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: n1, ibid, iarg, iret
     logical :: lcumu(2), lcoc(2)
     character(len=6) :: nompro

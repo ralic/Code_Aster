@@ -18,7 +18,7 @@ subroutine teneps(jrwork, adr, sig, eps, epse,&
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: jrwork, adr
     real(kind=8) :: sig(6), eps(6), epse(6), epsp(6)

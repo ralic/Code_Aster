@@ -19,15 +19,15 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmaret.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xlagsp.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmaret.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xlagsp.h"
     character(len=8) :: fiss, noma
     integer :: nno, nbno, ndim
     character(len=24) :: gro1, gro2, numnod, liscmp

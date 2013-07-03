@@ -1,28 +1,28 @@
 subroutine w039c1(carte, ifi, form, ligrel, titre)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenca.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/irceme.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/w039c2.h'
-    include 'asterfort/w039c4.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/exisd.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/irceme.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/w039c2.h"
+#include "asterfort/w039c4.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form
     integer :: ifi

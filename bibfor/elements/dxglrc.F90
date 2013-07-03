@@ -73,40 +73,40 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 ! --------------------------------------------------------------------
 !            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 !            NC :    NOMBRE DE COTES DE L'ELEMENT
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/crgdm.h'
-    include 'asterfort/dkqbf.h'
-    include 'asterfort/dktbf.h'
-    include 'asterfort/dsqbfb.h'
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dxefro.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxqbm.h'
-    include 'asterfort/dxqloc.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/dxtloc.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/glrcmm.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/lcgldm.h'
-    include 'asterfort/maglrc.h'
-    include 'asterfort/nmcoup.h'
-    include 'asterfort/pmrvec.h'
-    include 'asterfort/q4gbc.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/t3gbc.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utctab.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/assert.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/crgdm.h"
+#include "asterfort/dkqbf.h"
+#include "asterfort/dktbf.h"
+#include "asterfort/dsqbfb.h"
+#include "asterfort/dstbfb.h"
+#include "asterfort/dxefro.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxqbm.h"
+#include "asterfort/dxqloc.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/dxtloc.h"
+#include "asterfort/elref5.h"
+#include "asterfort/glrcmm.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/lcgldm.h"
+#include "asterfort/maglrc.h"
+#include "asterfort/nmcoup.h"
+#include "asterfort/pmrvec.h"
+#include "asterfort/q4gbc.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/t3gbc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utctab.h"
     real(kind=8) :: poids
 !            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
 !            AIRE:   SURFACE DE L'ELEMENT

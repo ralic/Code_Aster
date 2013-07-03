@@ -45,18 +45,18 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/celver.h"
+#include "asterfort/digdel.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: inst
     integer :: niveau, iordr
     character(len=8) :: resuco

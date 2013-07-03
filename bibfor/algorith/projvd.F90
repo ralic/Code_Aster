@@ -28,8 +28,8 @@ subroutine projvd(testc, np1, nb1, nb2, mat,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/prmave.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/prmave.h"
+#include "asterfort/u2mess.h"
     integer :: testc, np1, nb1, nb2
     real(kind=8) :: mat(np1, *), u(*), v(*)
 !

@@ -52,10 +52,10 @@ subroutine gdmine(kp, nno, pjacob, en, grani,&
 !                       POINTS DE GAUSS)
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/antisy.h'
-    include 'asterfort/cumuma.h'
-    include 'asterfort/gdt.h'
-    include 'asterfort/promat.h'
+#include "asterfort/antisy.h"
+#include "asterfort/cumuma.h"
+#include "asterfort/gdt.h"
+#include "asterfort/promat.h"
     real(kind=8) :: inert(6, 6), iro(3, 3), iroomt(3, 3)
     real(kind=8) :: en(3, 2), grani(4), rot0(3, 3), rotm(3, 3), rotkm1(3, 3)
     real(kind=8) :: rotk(3, 3), rmkm1(3), rmk(3), omgkm(3), ompgkm(3), omgk(3)

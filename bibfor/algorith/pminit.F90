@@ -57,33 +57,33 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
 ! OUT  OPTION : FULL_MECA OU RAPH_MECA
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dmat3d.h'
-    include 'asterfort/eulnau.h'
-    include 'asterfort/fozero.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/nmcrga.h'
-    include 'asterfort/nmcrli.h'
-    include 'asterfort/nmcrsu.h'
-    include 'asterfort/nmdocn.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vrcinp.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8dgrd.h"
+#include "asterc/r8vide.h"
+#include "asterfort/codent.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dmat3d.h"
+#include "asterfort/eulnau.h"
+#include "asterfort/fozero.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/nmcrga.h"
+#include "asterfort/nmcrli.h"
+#include "asterfort/nmcrsu.h"
+#include "asterfort/nmdocn.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vrcinp.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     complex(kind=8) :: cbid
     character(len=24) :: k24bid
 !

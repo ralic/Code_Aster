@@ -4,8 +4,8 @@ function edgequ(ndimsi, tens, ani)
     real(kind=8) :: edgequ
 !
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/u2mess.h"
     integer :: ndimsi
     real(kind=8) :: tens(ndimsi), ani(6, 6)
 !

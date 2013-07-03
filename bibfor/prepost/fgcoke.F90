@@ -1,7 +1,7 @@
 subroutine fgcoke(nbcycl, sigmin, sigmax, n, m,&
                   sm, rke)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: n, m, sm, rke(*)
     integer :: nbcycl

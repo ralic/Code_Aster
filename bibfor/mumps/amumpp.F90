@@ -44,27 +44,27 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    include 'asterc/r4maem.h'
-    include 'asterc/r4miem.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/csmbgg.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mcconl.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/mrconl.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nudlg2.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'blas/dcopy.h'
-    include 'blas/zcopy.h'
+#include "asterc/r4maem.h"
+#include "asterc/r4miem.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/csmbgg.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mcconl.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/mrconl.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nudlg2.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "blas/dcopy.h"
+#include "blas/zcopy.h"
     integer :: option, nbsol, kxmps, ifmump
     logical :: ldist, eli2lg, prepos, lpreco
     character(len=1) :: type
@@ -75,8 +75,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
 #ifdef _HAVE_MUMPS
 #   include "aster_mumps.h"
-    include 'mpif.h'
-    include 'jeveux.h'
+#include "mpif.h"
+#include "jeveux.h"
     integer :: nicntl
     parameter (nicntl=26)
     type (SMUMPS_STRUC) , pointer :: smpsk

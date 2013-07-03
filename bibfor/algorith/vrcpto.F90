@@ -19,10 +19,10 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 !
 !
     implicit none
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: imate, kpg, ksp
     character(len=*) :: fami
     character(len=16) :: compor(*)

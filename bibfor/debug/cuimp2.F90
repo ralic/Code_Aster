@@ -18,9 +18,9 @@ subroutine cuimp2(ifm, iliai, typope, typeou, resocu)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
     integer :: ifm
     character(len=24) :: resocu
     character(len=1) :: typope

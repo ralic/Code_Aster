@@ -19,7 +19,7 @@ subroutine multsy(u22, a3, v22, msym)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterfort/matmul.h'
+#include "asterfort/matmul.h"
     real(kind=8) :: msym(*)
 !
     real(kind=8) :: u22(2, *), v22(2, *), a3(*), a22(2, 2), msym22(2, 2)

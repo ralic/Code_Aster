@@ -23,25 +23,25 @@ subroutine op0198()
 ! --- BUT : COMMANDE POST_K_BETA ---------------------------------------
 ! ======================================================================
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/calck1.h'
-    include 'asterfort/coplas.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rechmc.h'
-    include 'asterfort/rechth.h'
-    include 'asterfort/recupe.h'
-    include 'asterfort/recutb.h'
-    include 'asterfort/recuvl.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/veritb.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/calck1.h"
+#include "asterfort/coplas.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rechmc.h"
+#include "asterfort/rechth.h"
+#include "asterfort/recupe.h"
+#include "asterfort/recutb.h"
+#include "asterfort/recuvl.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/veritb.h"
+#include "asterfort/wkvect.h"
     integer :: ndim, nk1d, ik1d, jnogn, itime, nbval, jtbint, nbval2
     integer :: norev, nomdb, ibid
     real(kind=8) :: lrev, deklag, prodef, londef, temps, k1acp

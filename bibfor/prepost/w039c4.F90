@@ -1,21 +1,21 @@
 subroutine w039c4(carte, ifi, form)
     implicit   none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cesred.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/ircame.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesred.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/ircame.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: carte, form
     integer :: ifi
 ! ======================================================================
@@ -46,7 +46,7 @@ subroutine w039c4(carte, ifi, form)
 !
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: iret, ibid, nugd, n1, jnocmp
     integer :: jcesk, jcesd, jcesc, jcesv, jcesl, jdesc

@@ -3,16 +3,16 @@ subroutine i3iqps(epsi, k, f, desc, desctm,&
                   fink)
 ! aslint: disable=W1501
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/i3crqp.h'
-    include 'asterfort/i3idfs.h'
-    include 'asterfort/i3pdm2.h'
-    include 'asterfort/i3ptrv.h'
-    include 'asterfort/i3rpqp.h'
-    include 'asterfort/i3sl33.h'
-    include 'asterfort/i3sl3r.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/i3crqp.h"
+#include "asterfort/i3idfs.h"
+#include "asterfort/i3pdm2.h"
+#include "asterfort/i3ptrv.h"
+#include "asterfort/i3rpqp.h"
+#include "asterfort/i3sl33.h"
+#include "asterfort/i3sl3r.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
     integer :: k, desc(*), desctm(*), conexk(*), nbpt, lstpt(*), f
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink

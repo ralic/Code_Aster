@@ -19,7 +19,7 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
 ! ======================================================================
 ! =====================================================================
     implicit none
-    include 'asterfort/lcinma.h'
+#include "asterfort/lcinma.h"
     integer :: nbmat
     real(kind=8) :: ddlde(6), vecp(3, 3), materf(nbmat, 2), parame(4), derive(5)
     real(kind=8) :: vp(3), i1e, sigeqe, eta, se(6), dg, detadg, sig3, dgdl

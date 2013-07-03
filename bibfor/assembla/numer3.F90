@@ -16,15 +16,15 @@ subroutine numer3(modele, lischa, solveu, nu)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/idenob.h'
-    include 'asterfort/infbav.h'
-    include 'asterfort/infmue.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jeimpo.h'
-    include 'asterfort/numero.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/idenob.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jeimpo.h"
+#include "asterfort/numero.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: modele, solveu, lischa
     character(len=*) :: nu
 !

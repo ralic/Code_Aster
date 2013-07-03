@@ -2,23 +2,23 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
                   nbchre, ioccur, suropt, ligrel, exipou)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
-    include 'asterc/getexm.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cochre.h'
-    include 'asterfort/copich.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exlim1.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utmamo.h'
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterfort/assert.h"
+#include "asterfort/cochre.h"
+#include "asterfort/copich.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/exlima.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utmamo.h"
     logical :: exipou
     integer :: nbchre, ioccur, nbchar
     character(len=8) :: modele, resuin

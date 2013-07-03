@@ -6,20 +6,20 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
                   iret)
 ! aslint: disable=W1306,W1504,W1504
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/calsig.h'
-    include 'asterfort/caltau.h'
-    include 'asterfort/lcgrla.h'
-    include 'asterfort/lcmmlc.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcrksg.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterfort/assert.h"
+#include "asterfort/calsig.h"
+#include "asterfort/caltau.h"
+#include "asterfort/lcgrla.h"
+#include "asterfort/lcmmlc.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcrksg.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     integer :: kpg, ksp, nmat, nbcomm(nmat, 3), nvi, itmax, iret, nfs, nsg, neps
     real(kind=8) :: vini(*), dvin(*), x, dtime, coeft(nmat), coel(nmat)
     real(kind=8) :: sigi(6), epsd(neps), detot(neps), pgl(3, 3), toler

@@ -27,15 +27,15 @@ subroutine te0013(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    include 'jeveux.h'
-    include 'asterfort/bsigmc.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/metau2.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/ortrep.h'
-    include 'asterfort/sigtmc.h'
-    include 'asterfort/tecach.h'
+#include "jeveux.h"
+#include "asterfort/bsigmc.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/metau2.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/sigtmc.h"
+#include "asterfort/tecach.h"
     character(len=16) :: nomte, option
     real(kind=8) :: bsigma(81), sigth(162), repere(7), instan
     real(kind=8) :: nharm, bary(3)

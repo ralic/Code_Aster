@@ -18,7 +18,7 @@ subroutine i2trgi(t1, t2, n2, pt)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    include 'asterfort/i2rdli.h'
+#include "asterfort/i2rdli.h"
     integer :: t1(*), t2(*), n2, pt
 !
 !**********************************************************************

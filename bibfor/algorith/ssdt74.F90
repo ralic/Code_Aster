@@ -26,40 +26,40 @@ subroutine ssdt74(nomres, nomcmd)
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/ajlagr.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dyarch.h'
-    include 'asterfort/extdia.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/limsst.h'
-    include 'asterfort/mdadap.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/mdeul1.h'
-    include 'asterfort/mdgene.h'
-    include 'asterfort/mdptem.h'
-    include 'asterfort/mdrecf.h'
-    include 'asterfort/mdruku.h'
-    include 'asterfort/mgutdm.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8prem.h"
+#include "asterfort/ajlagr.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dyarch.h"
+#include "asterfort/extdia.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/limsst.h"
+#include "asterfort/mdadap.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/mdeul1.h"
+#include "asterfort/mdgene.h"
+#include "asterfort/mdptem.h"
+#include "asterfort/mdrecf.h"
+#include "asterfort/mdruku.h"
+#include "asterfort/mgutdm.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: descr, descm, desca
     integer :: vali(3)
     real(kind=8) :: xlambd, acrit, agene

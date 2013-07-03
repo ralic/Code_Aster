@@ -3,21 +3,21 @@ subroutine cglect(resu, modele, ndim, option, cas,&
                   taillr, conf, lnoff, liss, ndeg)
     implicit none
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cgleff.h'
-    include 'asterfort/cgtyfi.h'
-    include 'asterfort/cgveca.h'
-    include 'asterfort/cgvedo.h'
-    include 'asterfort/cgvefo.h'
-    include 'asterfort/cgveli.h'
-    include 'asterfort/cgvemf.h'
-    include 'asterfort/cgverc.h'
-    include 'asterfort/cgveth.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cgleff.h"
+#include "asterfort/cgtyfi.h"
+#include "asterfort/cgveca.h"
+#include "asterfort/cgvedo.h"
+#include "asterfort/cgvefo.h"
+#include "asterfort/cgveli.h"
+#include "asterfort/cgvemf.h"
+#include "asterfort/cgverc.h"
+#include "asterfort/cgveth.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ndim, lnoff, ndeg
     character(len=8) :: resu, modele, typfis, nomfis, conf
     character(len=16) :: option, cas

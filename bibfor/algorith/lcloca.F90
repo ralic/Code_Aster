@@ -3,10 +3,10 @@ subroutine lcloca(coeft, e, nu, nmat, nbcomm,&
                   loca, sigg)
 !
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8miem.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/u2mesk.h"
     integer :: nphas, nmat, nbcomm(nmat, 3), iphas
     real(kind=8) :: vini(*), coeft(nmat), e, nu
     real(kind=8) :: sigi(6), alpha, sigg(6)

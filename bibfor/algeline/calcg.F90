@@ -2,11 +2,11 @@ subroutine calcg(dfds, vecn, g, devg, traceg,&
                  devgii)
 !
     implicit      none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/trace.h'
-    include 'blas/ddot.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/trace.h"
+#include "blas/ddot.h"
     real(kind=8) :: dfds(6), vecn(6), g(6), devg(6), traceg, devgii
 ! ======================================================================
 ! ======================================================================

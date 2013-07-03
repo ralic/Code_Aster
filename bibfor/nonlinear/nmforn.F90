@@ -20,11 +20,11 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw,&
 !
     implicit none
 !
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmgvdn.h'
-    include 'asterfort/nmmabu.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/terefe.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmgvdn.h"
+#include "asterfort/nmmabu.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/terefe.h"
     integer :: ndim, nno1, nno2, npg, idfde1, iw
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: geom(ndim, nno1)

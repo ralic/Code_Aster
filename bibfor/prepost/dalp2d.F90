@@ -77,8 +77,8 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/dfort2.h'
-    include 'asterfort/dzonfg.h'
+#include "asterfort/dfort2.h"
+#include "asterfort/dzonfg.h"
     integer :: nelem, nnoem, degre, nsommx, nelcom
     integer :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
     integer :: nalpha

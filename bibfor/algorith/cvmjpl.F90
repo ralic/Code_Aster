@@ -52,25 +52,25 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
-    include 'asterfort/cvmjac.h'
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmm.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcprte.h'
-    include 'asterfort/lcptmv.h'
-    include 'asterfort/lcsoma.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/lctrma.h'
-    include 'asterfort/mgauss.h'
-    include 'blas/daxpy.h'
+#include "asterfort/cvmjac.h"
+#include "asterfort/lcdima.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmm.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcprte.h"
+#include "asterfort/lcptmv.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/lctrma.h"
+#include "asterfort/mgauss.h"
+#include "blas/daxpy.h"
     integer :: ndt, ndi, nmat, nr, nvi, iret
     integer :: ioptio, idnr, nopt
     real(kind=8) :: un, zero, det

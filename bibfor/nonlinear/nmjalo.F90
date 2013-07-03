@@ -19,13 +19,13 @@ subroutine nmjalo(sddisc, inst, prec, jalon)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/compr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/compr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: sddisc
     real(kind=8) :: inst, prec, jalon
 !

@@ -16,10 +16,10 @@ subroutine lccata(iunit)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/caver1.h'
-    include 'asterfort/lctel2.h'
-    include 'asterfort/lctel3.h'
-    include 'asterfort/lecojb.h'
+#include "asterfort/caver1.h"
+#include "asterfort/lctel2.h"
+#include "asterfort/lctel3.h"
+#include "asterfort/lecojb.h"
     integer :: iunit, mxobj, iret, i
     parameter        ( mxobj = 50 )
 !

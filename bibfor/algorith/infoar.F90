@@ -3,10 +3,10 @@ subroutine infoar(ndim, ar, ia, j, geom,&
                   lsnb, lsnm)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
     integer :: ar(12, 3), ndim, ia, j
     real(kind=8) :: a(ndim), b(ndim), m(ndim), lsna, lsnb, lsnm, geom(*), lsn(*)
 !

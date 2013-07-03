@@ -2,11 +2,11 @@ subroutine solrei(gamp, s, i1n, parame, nbmat,&
                   mater, q, vecn, codret)
 !
     implicit   none
-    include 'asterfort/bprime.h'
-    include 'asterfort/calcn.h'
-    include 'asterfort/calcq.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/bprime.h"
+#include "asterfort/calcn.h"
+#include "asterfort/calcq.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbmat, codret
     real(kind=8) :: s(6), i1n, parame(5), mater(nbmat, 2), q(6), vecn(6), gamp
 ! ======================================================================

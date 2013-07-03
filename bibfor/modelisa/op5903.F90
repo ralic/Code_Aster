@@ -1,23 +1,23 @@
 subroutine op5903(nbocci, compor)
     implicit none
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterc/lctest.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmdoki.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lctest.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmdoki.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbocci
     character(len=8) :: compor
 !
@@ -42,7 +42,7 @@ subroutine op5903(nbocci, compor)
 !
 !     COMMANDE:  DEFI_COMPOR MOT-CLE MULTIFIBRE
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: iarg, idbor, imi, imk, iocc, irett
     integer :: ibid, nbg, nbgmax, img, ig, ig1, jnfg, iaff

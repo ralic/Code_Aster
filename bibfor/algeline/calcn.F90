@@ -1,9 +1,9 @@
 subroutine calcn(s, b, vecn)
 !
     implicit      none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'blas/ddot.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "blas/ddot.h"
     real(kind=8) :: b, s(6), vecn(6)
 ! ======================================================================
 ! ======================================================================

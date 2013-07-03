@@ -26,21 +26,21 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmassp.h'
-    include 'asterfort/nmchar.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdep0.h'
-    include 'asterfort/nmfocc.h'
-    include 'asterfort/nmprma.h'
-    include 'asterfort/nmresd.h'
-    include 'asterfort/vtzero.h'
+#include "jeveux.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmassp.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdep0.h"
+#include "asterfort/nmfocc.h"
+#include "asterfort/nmprma.h"
+#include "asterfort/nmresd.h"
+#include "asterfort/vtzero.h"
     integer :: fonact(*)
     integer :: numins, faccvg, rescvg, ldccvg
     real(kind=8) :: parmet(*)

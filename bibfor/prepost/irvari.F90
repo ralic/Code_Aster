@@ -4,28 +4,28 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
                   codret)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/lccree.h'
-    include 'asterc/lcinfo.h'
-    include 'asterc/lcvari.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cescrm.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/irceme.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lcvari.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cescrm.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/irceme.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/wkvect.h"
     integer :: nbcmp, numpt, numord, nbmaec, ifi, limaec(*), codret
 !
     character(len=8) :: typech, modele, noresu, carael

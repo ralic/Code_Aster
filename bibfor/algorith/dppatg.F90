@@ -1,7 +1,7 @@
 function dppatg(mater, pplus, plas)
 !
     implicit      none
-    include 'asterc/r8nnem.h'
+#include "asterc/r8nnem.h"
     real(kind=8) :: mater(5, 2), pplus, plas, dppatg
 ! ======================================================================
 ! ======================================================================

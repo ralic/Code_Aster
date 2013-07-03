@@ -46,19 +46,19 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 !          SIGNE    :  SIGNE DE S:DEPSDP
 !          DRDY     :  JACOBIEN
 ! ======================================================================
-    include 'asterfort/calcq.h'
-    include 'asterfort/cjsdtd.h'
-    include 'asterfort/cjsqco.h'
-    include 'asterfort/cjst.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/calcq.h"
+#include "asterfort/cjsdtd.h"
+#include "asterfort/cjsqco.h"
+#include "asterfort/cjst.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi, nmod, i, j, k, codret
     parameter     (nmod = 16)
     real(kind=8) :: epsd(6), deps(6), depse(6), depsdp(6)

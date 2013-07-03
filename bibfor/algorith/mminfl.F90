@@ -20,7 +20,7 @@ function mminfl(defico, questz, izone)
 !
     implicit none
     logical :: mminfl
-    include 'asterfort/mminfp.h'
+#include "asterfort/mminfp.h"
     character(len=24) :: defico
     integer :: izone
     character(len=*) :: questz

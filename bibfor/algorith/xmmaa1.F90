@@ -7,8 +7,8 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                   mmat)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/indent.h'
-    include 'asterfort/xplma2.h'
+#include "asterfort/indent.h"
+#include "asterfort/xplma2.h"
     integer :: ndim, jnne(3), jnnm(3)
     integer :: nsinge, nsingm, nconta
     integer :: nfaes, jpcai, cface(5, 3), nfhe, nfhm, heavno(8), heavfa(*)

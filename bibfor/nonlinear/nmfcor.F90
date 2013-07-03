@@ -26,25 +26,25 @@ subroutine nmfcor(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmadir.h'
-    include 'asterfort/nmaint.h'
-    include 'asterfort/nmbudi.h'
-    include 'asterfort/nmchar.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmchfi.h'
-    include 'asterfort/nmcret.h'
-    include 'asterfort/nmctcd.h'
-    include 'asterfort/nmdiri.h'
-    include 'asterfort/nmfint.h'
-    include 'asterfort/nmfocc.h'
-    include 'asterfort/nmltev.h'
-    include 'asterfort/nmrigi.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmadir.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmbudi.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchfi.h"
+#include "asterfort/nmcret.h"
+#include "asterfort/nmctcd.h"
+#include "asterfort/nmdiri.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmfocc.h"
+#include "asterfort/nmltev.h"
+#include "asterfort/nmrigi.h"
+#include "asterfort/nmtime.h"
     integer :: fonact(*)
     integer :: iterat, numins
     real(kind=8) :: parmet(*)

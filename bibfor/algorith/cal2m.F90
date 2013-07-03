@@ -1,10 +1,10 @@
 subroutine cal2m(chamno, phibar, modele, mate, nu,&
                  vecas2, nd, nr, nv)
     implicit none
-    include 'asterfort/assvec.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/phi2el.h'
+#include "asterfort/assvec.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/phi2el.h"
     integer :: nr, nd, nv
     character(len=*) :: chamno, phibar, modele, mate, nu, vecas2
 !----------------------------------------------------------------------

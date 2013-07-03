@@ -18,20 +18,20 @@ subroutine op0086()
     implicit none
 !     COMMANDE:  MACR_ELEM_STAT
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/sschge.h'
-    include 'asterfort/ssdege.h'
-    include 'asterfort/ssmage.h'
-    include 'asterfort/ssrige.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/sschge.h"
+#include "asterfort/ssdege.h"
+#include "asterfort/ssmage.h"
+#include "asterfort/ssrige.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomu
     character(len=16) :: kbi1, kbi2
 !

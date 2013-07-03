@@ -36,10 +36,10 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
 !
 !     ------------------------------------------------------------------
 !
-    include 'asterfort/cjsqij.h'
-    include 'asterfort/lcdete.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lcprsc.h'
+#include "asterfort/cjsqij.h"
+#include "asterfort/lcdete.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lcprsc.h"
     integer :: ndt, ndi
 !
 !

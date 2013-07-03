@@ -6,33 +6,33 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
                   nomfon, coefm, liad, inumor, passto)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedisp.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mdacce.h'
-    include 'asterfort/mdarch.h'
-    include 'asterfort/mdfext.h'
-    include 'asterfort/mdinit.h'
-    include 'asterfort/mdsize.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/resu74.h'
-    include 'asterfort/rrlds.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/trlds.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/fointe.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mdacce.h"
+#include "asterfort/mdarch.h"
+#include "asterfort/mdfext.h"
+#include "asterfort/mdinit.h"
+#include "asterfort/mdsize.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/resu74.h"
+#include "asterfort/rrlds.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/trlds.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: iorsto(*), iparch(*), idescf(*)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
     real(kind=8) :: gyogen(*), depsto(*), vitsto(*), accsto(*), temsto(*)

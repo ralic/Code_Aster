@@ -42,19 +42,19 @@ subroutine i2repr(conec, type, maille, chemin, ptchm,&
 !
 !**********************************************************************
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/i2extf.h'
-    include 'asterfort/i2nbrf.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/i2extf.h"
+#include "asterfort/i2nbrf.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=24) :: type, conec
     integer :: maille(*), chemin(*), ptchm(*), nbchm, m1(*), m2(*)
 !

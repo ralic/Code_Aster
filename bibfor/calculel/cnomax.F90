@@ -16,13 +16,13 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: cnoz
     integer :: ncmp
     character(len=8) :: licmp(ncmp)

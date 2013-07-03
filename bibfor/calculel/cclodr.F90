@@ -2,12 +2,12 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
                   maxord, resuin, resuou, lacalc)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
     integer :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord

@@ -17,17 +17,17 @@ subroutine te0354(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/foderi.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'blas/daxpy.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/foderi.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "blas/daxpy.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------

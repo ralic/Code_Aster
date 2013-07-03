@@ -19,9 +19,9 @@ subroutine mmtann(ndim, tau1, tau2, iret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/normev.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/normev.h"
     integer :: ndim, iret
     real(kind=8) :: tau1(3), tau2(3)
 !

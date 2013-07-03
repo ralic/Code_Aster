@@ -67,15 +67,15 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm,&
 !  RANGEES DANS LE TABLEAU DEFM.
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/fointr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/fointr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: imodi, nbmr, nbm, nuor(nbm)
     integer :: iaxe, nbnfen, nofe(nbnfen), nbp1, nbp2
     real(kind=8) :: long, discfe(nbnfen), discff(nbp1+nbp2)

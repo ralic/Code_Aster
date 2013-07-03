@@ -2,12 +2,12 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds,&
                   retcom)
 !
     implicit      none
-    include 'asterc/r8miem.h'
-    include 'asterfort/cjst.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lkhlod.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterfort/cjst.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lkhlod.h"
+#include "asterfort/u2mess.h"
     integer :: nbmat, retcom
     real(kind=8) :: mater(nbmat, 2), invar, s(6), dhds(6)
 ! =================================================================

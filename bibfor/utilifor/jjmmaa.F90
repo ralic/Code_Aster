@@ -17,8 +17,8 @@ subroutine jjmmaa(ct, aut)
 ! ======================================================================
     implicit none
 !
-    include 'asterc/kloklo.h'
-    include 'asterfort/codent.h'
+#include "asterc/kloklo.h"
+#include "asterfort/codent.h"
     character(len=12) :: aut
     character(len=4) :: ct(3)
     integer :: t(9)

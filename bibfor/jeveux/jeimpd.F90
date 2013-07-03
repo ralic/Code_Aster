@@ -17,9 +17,9 @@ subroutine jeimpd(unit, clas, cmess)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjlide.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjlide.h"
     integer :: unit
     character(len=*) :: clas, cmess
 ! ---------------------------------------------------------------------

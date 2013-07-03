@@ -20,15 +20,15 @@ subroutine cmlqnd(nbno, nbnomi, prefix, ndinit, nomipe,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/codent.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/codent.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: nbno, nbnomi, nomipe(2, nbnomi), ndinit
     real(kind=8) :: coor(3, *)
     character(len=8) :: prefix

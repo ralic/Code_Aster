@@ -37,8 +37,8 @@ subroutine nm1tra(imate, tp, defm, deps, epspm,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-    include 'asterfort/rcfonc.h'
-    include 'asterfort/rctrac.h'
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
     real(kind=8) :: tp, defm
     real(kind=8) :: deps, epspm, pm
     real(kind=8) :: sig, epspp, pp, dsdep

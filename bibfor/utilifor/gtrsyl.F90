@@ -103,15 +103,15 @@ subroutine gtrsyl(trana, tranb, isgn, m, n,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/xerbla.h'
-    include 'blas/lsame.h'
-    include 'blas/zdotc.h'
-    include 'blas/zdotu.h'
-    include 'blas/zdscal.h'
-    include 'blas/zlange.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8prem.h"
+#include "asterfort/xerbla.h"
+#include "blas/lsame.h"
+#include "blas/zdotc.h"
+#include "blas/zdotu.h"
+#include "blas/zdscal.h"
+#include "blas/zlange.h"
     character(len=1) :: trana, tranb
     integer :: info, isgn, lda, ldb, ldc, m, n
     real(kind=8) :: scale

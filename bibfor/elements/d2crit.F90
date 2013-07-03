@@ -44,12 +44,12 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
 ! OUT CIER : NOUVEAU CODE ERREUR
 ! OUT CDEPSP : NOUVEL INCREMENT DE DEF PLASTIQUE DANS LE REPERE ORTHO
 !
-    include 'asterfort/dfplgl.h'
-    include 'asterfort/dfuuss.h'
-    include 'asterfort/fplass.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/nmnet2.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfplgl.h"
+#include "asterfort/dfuuss.h"
+#include "asterfort/fplass.h"
+#include "asterfort/matmul.h"
+#include "asterfort/nmnet2.h"
+#include "asterfort/r8inir.h"
     integer :: j, zimat, nmprox(2), cief, cier
 !
     real(kind=8) :: nmnbn(6), nmplas(2, 3), nmdpla(2, 2)

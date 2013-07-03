@@ -2,25 +2,25 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                   nlicmp, novcmp, nnopar, nbnosy, nbordr,&
                   nbrcmp, nbcmdu, nbpara, codret)
     implicit none
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/irparb.h'
-    include 'asterfort/irvcmp.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsutnu.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/irparb.h"
+#include "asterfort/irvcmp.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsutnu.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ioccur, nbnosy, nbordr, nbrcmp, nbcmdu, nbpara, codret
     character(len=8) :: leresu
     character(len=*) :: nchsym, nnuord, nlicmp, novcmp, nnopar
@@ -72,7 +72,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !   NPARAM  I    NOMBRE DE PARAMETRES (FORMAT 'RESULTAT')
 !   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 !
     integer :: jnosy, jncmed, jpa, jordr, iarg, n23, iret, n21, nvcmp

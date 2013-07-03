@@ -21,7 +21,7 @@ subroutine nmexto(typcpt, typcha, extrcp, extrga, extrch,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ncompt
     character(len=4) :: typcha, typcpt
     integer :: nbno, nbma, nbcmp, nbpi, nbspi

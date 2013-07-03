@@ -2,33 +2,33 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                   nbtel, ntyele, nomele, ivr, ifm,&
                   nbocc)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/aceatu.h'
-    include 'asterfort/affori.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vdiff.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/aceatu.h"
+#include "asterfort/affori.h"
+#include "asterfort/alcart.h"
+#include "asterfort/angvx.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vdiff.h"
+#include "asterfort/wkvect.h"
     integer :: lmax, nbepo, nbedi, ntyele(*), ivr(*), nbocc(*)
     character(len=8) :: noma, nomo
     character(len=16) :: nomele(*)

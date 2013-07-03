@@ -5,11 +5,11 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat,&
                   nfs, nsg, hsr, iret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/lcddcc.h'
-    include 'asterfort/lcmmdd.h'
-    include 'asterfort/lcmmkr.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterfort/lcddcc.h"
+#include "asterfort/lcmmdd.h"
+#include "asterfort/lcmmkr.h"
+#include "asterfort/u2mess.h"
     integer :: ifa, nmat, nbcomm(nmat, 3), iret
     integer :: ifl, is, nbsys, nuecou, nfs, nsg
     real(kind=8) :: taus, coeft(nmat), alphap, dgamma, dp, dt

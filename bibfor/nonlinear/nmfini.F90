@@ -22,19 +22,19 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
 ! person_in_charge: ludovic.idoux at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcvec.h'
-    include 'asterfort/nmxvec.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcvec.h"
+#include "asterfort/nmxvec.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddyna, valinc(*), measse(*)
     character(len=24) :: modele, mate, carele, compor, carcri, sdtime, comref
     character(len=24) :: resoco, resocu, numedd

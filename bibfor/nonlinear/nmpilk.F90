@@ -20,10 +20,10 @@ subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: neq
     real(kind=8) :: eta, rho, offset
     character(len=19) :: incpr1, incpr2, ddincc

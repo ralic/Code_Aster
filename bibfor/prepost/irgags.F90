@@ -3,9 +3,9 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 ! aslint: disable=W1501
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
     integer :: ncmpmx, nbchs, nbcmps(*), ipcmps(*)
     character(len=*) :: nomcmp(*), nomsym, nomchs(*), nomgds(*)
 !

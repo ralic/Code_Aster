@@ -18,7 +18,7 @@ function xismec()
 !
     implicit none
     logical :: xismec
-    include 'jeveux.h'
+#include "jeveux.h"
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL MECANIQUE?
 !
@@ -26,10 +26,10 @@ function xismec()
 !              FAUX SINON (ON VERIFIE ALORS QUE CE RESU EST THERMIQUE)
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=16) :: k16tmp
     character(len=24) :: licham
     integer :: jlicha

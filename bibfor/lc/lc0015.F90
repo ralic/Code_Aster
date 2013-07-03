@@ -5,14 +5,14 @@ subroutine lc0015(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcedga.h'
-    include 'asterfort/lcgdpm.h'
-    include 'asterfort/nzcifw.h'
-    include 'asterfort/nzcizi.h'
-    include 'asterfort/nzedga.h'
-    include 'asterfort/nzgdzi.h'
-    include 'asterfort/nzisfw.h'
-    include 'asterfort/postsm.h'
+#include "asterfort/lcedga.h"
+#include "asterfort/lcgdpm.h"
+#include "asterfort/nzcifw.h"
+#include "asterfort/nzcizi.h"
+#include "asterfort/nzedga.h"
+#include "asterfort/nzgdzi.h"
+#include "asterfort/nzisfw.h"
+#include "asterfort/postsm.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)

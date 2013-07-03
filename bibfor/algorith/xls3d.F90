@@ -5,24 +5,24 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/panbno.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xorima.h'
-    include 'blas/ddot.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/normev.h"
+#include "asterfort/padist.h"
+#include "asterfort/panbno.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xorima.h"
+#include "blas/ddot.h"
     character(len=8) :: noma
     integer :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
     logical :: callst, grille

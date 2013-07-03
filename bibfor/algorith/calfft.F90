@@ -30,10 +30,10 @@ subroutine calfft(np1, np4, nbm, n, dtext,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/r8depi.h'
-    include 'asterfort/fft.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/vecini.h'
+#include "asterc/r8depi.h"
+#include "asterfort/fft.h"
+#include "asterfort/matini.h"
+#include "asterfort/vecini.h"
     integer :: np1, np4, nbm, n
     real(kind=8) :: dtext
     real(kind=8) :: fext(np4, *), omegaf(*), aa(np4, *), bb(np4, *)

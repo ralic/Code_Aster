@@ -5,7 +5,7 @@ subroutine lc0012(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=8) :: typmod(*)

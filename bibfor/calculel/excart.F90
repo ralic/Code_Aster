@@ -20,12 +20,12 @@ subroutine excart(imodat, iparg)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/excar2.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/excar2.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
     integer :: imodat, iparg
 ! ----------------------------------------------------------------------
 !     ENTREES:

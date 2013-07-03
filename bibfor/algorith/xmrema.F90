@@ -25,26 +25,26 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8gaem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mminfr.h'
-    include 'asterfort/mmjeux.h'
-    include 'asterfort/mmproj.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/panbno.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/conare.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/mmjeux.h"
+#include "asterfort/mmproj.h"
+#include "asterfort/normev.h"
+#include "asterfort/panbno.h"
     character(len=8) :: alias, noma
     integer :: ndim, mmait, nmait, amait, statue, stamin
     character(len=24) :: defico

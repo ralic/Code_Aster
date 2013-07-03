@@ -61,11 +61,11 @@ subroutine utersa(ndim, iflup, iflum, ino, mno,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/indiis.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/indiis.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: iflup, iflum, ndim, ino, mno, jno, ivois, nsomm, ityp, iel, nbnv
     integer :: iavalp, iavalm, nbsv, jad, jadv, noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)

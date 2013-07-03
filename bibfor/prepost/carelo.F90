@@ -1,12 +1,12 @@
 subroutine carelo(modele, carele, base, chrel1, chrel2,&
                   chrel3)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calcul.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
+#include "asterfort/calcul.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
     character(len=1) :: base
     character(len=8) :: carele, modele
     character(len=19) :: chrel1, chrel2, chrel3

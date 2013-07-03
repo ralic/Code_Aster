@@ -33,7 +33,7 @@ subroutine cvnorm(mat, vect, ndim, iretou)
 ! IRETOU
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/sesqui.h'
+#include "asterfort/sesqui.h"
     integer :: ndim
     complex(kind=8) :: mat(*), vect(ndim)
     real(kind=8) :: zero

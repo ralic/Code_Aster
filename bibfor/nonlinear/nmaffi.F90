@@ -20,18 +20,18 @@ subroutine nmaffi(fonact, sdconv, sdimpr, sderro, sddisc,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmaffm.h'
-    include 'asterfort/nmerim.h'
-    include 'asterfort/nmevim.h'
-    include 'asterfort/nmimpr.h'
-    include 'asterfort/nmimps.h'
-    include 'asterfort/nmimpx.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmltev.h'
+#include "jeveux.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmaffm.h"
+#include "asterfort/nmerim.h"
+#include "asterfort/nmevim.h"
+#include "asterfort/nmimpr.h"
+#include "asterfort/nmimps.h"
+#include "asterfort/nmimpx.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
     character(len=4) :: nombcl
     character(len=24) :: sdimpr, sderro, sdconv
     character(len=19) :: sddisc

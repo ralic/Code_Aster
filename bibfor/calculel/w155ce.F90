@@ -20,24 +20,24 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 !     COMMANDE :  POST_CHAMP / COQU_EXCENT
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exlima.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
 !

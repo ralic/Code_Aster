@@ -17,14 +17,14 @@ subroutine te0578(option, nomte)
 ! ======================================================================
 ! person_in_charge: sam.cuvilliez at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/xtelga.h'
-    include 'asterfort/xthini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jevech.h"
+#include "asterfort/xtelga.h"
+#include "asterfort/xthini.h"
     character(len=16) :: option, nomte
 !
 !-----------------------------------------------------------------------

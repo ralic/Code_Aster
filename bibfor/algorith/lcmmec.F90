@@ -20,8 +20,8 @@ subroutine lcmmec(coeft, ifa, nmat, nbcomm, necrci,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-    include 'asterc/r8miem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, ifa, nbcomm(nmat, 3), iret, itmax
     real(kind=8) :: coeft(nmat), dgamma, dalpha, toler
     character(len=16) :: necrci

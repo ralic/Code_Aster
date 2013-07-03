@@ -21,18 +21,18 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ntarch.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsrusd.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/assert.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ntarch.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: para(*)
     logical :: lnonl, lostat, lreuse, levol
     character(len=19) :: sddisc, sdcrit

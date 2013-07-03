@@ -2,24 +2,24 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                   itypfl, imasse, nuor, nbnuor, numo,&
                   nbmfl)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pteddl.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/vpnor2.h'
-    include 'asterfort/vpnorm.h'
-    include 'asterfort/vprecu.h'
-    include 'asterfort/vpstor.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8depi.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/freqom.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pteddl.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/titre.h"
+#include "asterfort/vpnor2.h"
+#include "asterfort/vpnorm.h"
+#include "asterfort/vprecu.h"
+#include "asterfort/vpstor.h"
+#include "asterfort/wkvect.h"
     integer :: numvit, itypfl, imasse
     integer :: nbnuor, nuor(*), nbmfl, numo(*)
     character(len=8) :: nomres, basemo

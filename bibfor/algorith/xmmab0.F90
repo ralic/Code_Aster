@@ -21,7 +21,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/xplma2.h'
+#include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)
 !
     real(kind=8) :: hpg, ffc(8), jacobi, coefcr

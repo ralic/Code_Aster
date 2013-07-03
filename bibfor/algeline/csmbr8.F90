@@ -1,13 +1,13 @@
 subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
                   vsmb)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: nommat
     real(kind=8) :: vsmb(*), vcine(*)
     integer :: ccll(*), ccii(*), neq

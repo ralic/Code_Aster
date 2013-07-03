@@ -3,14 +3,14 @@ subroutine xmilar(ndim, pinter, tabar, areint, milara,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/abscvf.h'
-    include 'asterfort/abscvl.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reerel.h'
-    include 'asterfort/xinvac.h'
+#include "jeveux.h"
+#include "asterfort/abscvf.h"
+#include "asterfort/abscvl.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reerel.h"
+#include "asterfort/xinvac.h"
     integer :: ndim, areint
     real(kind=8) :: milara(ndim), milarb(ndim), pinter(*), tabar(*)
 !

@@ -28,7 +28,7 @@ subroutine trlds(a, nmax, nordre, ierr)
 !A    BUT :
 !A    ---
 !A    TRIANGULATION EN PLACE DE LA MATRICE CARREE A
-    include 'asterfort/iunifi.h'
+#include "asterfort/iunifi.h"
     real(kind=8) :: a(nmax, nordre), r8val
 !
 !-----------------------------------------------------------------------

@@ -21,11 +21,11 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/xdeffe.h'
-    include 'asterfort/xderfe.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/xdeffe.h"
+#include "asterfort/xderfe.h"
     real(kind=8) :: he, lsng, lstg, baslog(6), fe(4), dgdgl(4, 2)
     integer :: iret
 !

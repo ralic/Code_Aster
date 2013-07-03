@@ -20,10 +20,10 @@ subroutine mltf21(p, front, frn, n, t1,&
 !     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE
     implicit none
-    include 'asterfort/col11j.h'
-    include 'asterfort/col21j.h'
-    include 'asterfort/colni1.h'
-    include 'asterfort/colni2.h'
+#include "asterfort/col11j.h"
+#include "asterfort/col21j.h"
+#include "asterfort/colni1.h"
+#include "asterfort/colni2.h"
     integer :: p, n, ier
     real(kind=8) :: front(*), t1(*), t2(*), frn(*), eps
 !                                          VARIABLES LOCALES

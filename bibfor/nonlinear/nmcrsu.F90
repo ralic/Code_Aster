@@ -20,23 +20,23 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/crsvit.h'
-    include 'asterfort/crsvsi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedup1.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmcerr.h'
-    include 'asterfort/nmcrld.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utdidt.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/crsvit.h"
+#include "asterfort/crsvsi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmcerr.h"
+#include "asterfort/nmcrld.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: sddisc, lisins, solveu
     character(len=24) :: defico
     real(kind=8) :: parcri(*)

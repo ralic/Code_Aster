@@ -19,20 +19,20 @@ subroutine ssmage(nomu, option)
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assmam.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/memame.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/sdmpic.h'
-    include 'asterfort/ssmau2.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/ualfcr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/assmam.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memame.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/sdmpic.h"
+#include "asterfort/ssmau2.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/ualfcr.h"
     character(len=8) :: nomu
     character(len=9) :: option
 ! ----------------------------------------------------------------------

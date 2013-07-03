@@ -17,7 +17,7 @@ function lcroty(t, prec, itemax)
 ! ======================================================================
     implicit none
     real(kind=8) :: lcroty
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: itemax
     real(kind=8) :: t, prec
 !

@@ -6,36 +6,36 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imprsd.h'
-    include 'asterfort/irccmp.h'
-    include 'asterfort/ircnc8.h'
-    include 'asterfort/ircnrl.h'
-    include 'asterfort/ircrrl.h'
-    include 'asterfort/irdeca.h'
-    include 'asterfort/irdesc.h'
-    include 'asterfort/irdesr.h'
-    include 'asterfort/irdrca.h'
-    include 'asterfort/irdrsr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/lxcaps.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/nbec.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imprsd.h"
+#include "asterfort/irccmp.h"
+#include "asterfort/ircnc8.h"
+#include "asterfort/ircnrl.h"
+#include "asterfort/ircrrl.h"
+#include "asterfort/irdeca.h"
+#include "asterfort/irdesc.h"
+#include "asterfort/irdesr.h"
+#include "asterfort/irdrca.h"
+#include "asterfort/irdrsr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lxcaps.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/nbec.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: chamno, form, titre, nomsd, nomsym
     character(len=*) :: nomcmp(*), formr, partie
     integer :: nbnot, ifi, numnoe(*), nbcmp, nive

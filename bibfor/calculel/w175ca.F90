@@ -17,9 +17,9 @@ subroutine w175ca(modele, carele, chfer1, chefge, chfer2)
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'asterfort/calcul.h'
-    include 'asterfort/exlim3.h'
-    include 'asterfort/mecara.h'
+#include "asterfort/calcul.h"
+#include "asterfort/exlim3.h"
+#include "asterfort/mecara.h"
     character(len=8) :: modele, carele
     character(len=19) :: chfer1, chfer2, chefge
 !

@@ -3,23 +3,23 @@ subroutine ptforp(itype, option, nomte, a, a2,&
                   nc, pgl, pgl1, pgl2, fer,&
                   fei)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/pmfitx.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/pscvec.h'
-    include 'asterfort/ptfop1.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/angvx.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/provec.h"
+#include "asterfort/pscvec.h"
+#include "asterfort/ptfop1.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "blas/ddot.h"
     integer :: itype, ist, nno, nc
 !
     character(len=*) :: option, nomte

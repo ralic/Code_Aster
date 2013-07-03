@@ -17,9 +17,9 @@ subroutine jxouvr(iclas, idn)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterc/opendr.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/opendr.h"
+#include "asterfort/codent.h"
+#include "asterfort/u2mesg.h"
     integer :: iclas, idn
 !     ==================================================================
     character(len=2) :: dn2

@@ -22,8 +22,8 @@ subroutine mmmtec(phasep, ndim, nnl, nne, norm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/assert.h"
+#include "asterfort/vecini.h"
     character(len=9) :: phasep
     integer :: ndim, nne, nnl
     real(kind=8) :: ffe(9), ffl(9)

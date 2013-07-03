@@ -21,24 +21,24 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfchno.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfinvm.h'
-    include 'asterfort/cfnben.h'
-    include 'asterfort/cfnomm.h'
-    include 'asterfort/cfnors.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmelty.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfchno.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfinvm.h"
+#include "asterfort/cfnben.h"
+#include "asterfort/cfnomm.h"
+#include "asterfort/cfnors.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmelty.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: noma
     integer :: posenm, posnoe, numenm
     integer :: izone

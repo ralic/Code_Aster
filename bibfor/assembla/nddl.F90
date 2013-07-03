@@ -2,7 +2,7 @@ function nddl(ili, nunoel, nec, idprn1, idprn2)
 ! aslint: disable=
     implicit none
     integer :: nddl
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ili, nunoel
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

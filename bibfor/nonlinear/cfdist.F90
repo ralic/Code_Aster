@@ -20,14 +20,14 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdism.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mminfl.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdism.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mminfl.h"
     character(len=24) :: defico
     character(len=8) :: method
     integer :: izone

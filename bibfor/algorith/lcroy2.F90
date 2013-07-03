@@ -17,9 +17,9 @@ function lcroy2(ymin)
 ! ======================================================================
     implicit none
     real(kind=8) :: lcroy2
-    include 'asterfort/lcrofg.h'
-    include 'asterfort/lcroty.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcrofg.h"
+#include "asterfort/lcroty.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: ymin
 !
 ! *********************************************************************

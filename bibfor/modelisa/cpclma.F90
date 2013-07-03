@@ -1,20 +1,20 @@
 subroutine cpclma(nomain, nomaou, typcol, base)
     implicit none
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/assert.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
     character(len=1) :: base
     character(len=8) :: nomain, nomaou, typcol
 !
@@ -36,7 +36,7 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: nbgmai, igroup, jnuma1, jnuma2, nbmail, jmaill
     integer :: codret

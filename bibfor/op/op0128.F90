@@ -26,14 +26,14 @@ subroutine op0128()
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/asgeel.h'
-    include 'asterfort/assgcy.h'
-    include 'asterfort/assgen.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jeexin.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/asgeel.h"
+#include "asterfort/assgcy.h"
+#include "asterfort/assgen.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jeexin.h"
     integer :: iret
     character(len=8) :: nomres, numeg
     character(len=9) :: method

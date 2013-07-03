@@ -3,40 +3,40 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
                   codret)
     implicit none
 !     --- ARGUMENTS ---
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/ccchel.h'
-    include 'asterfort/ccchno.h'
-    include 'asterfort/ccliop.h'
-    include 'asterfort/cclodr.h'
-    include 'asterfort/cclord.h'
-    include 'asterfort/ccnett.h'
-    include 'asterfort/ccvepo.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/indk16.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/medom2.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rslesd.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/srmedo.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getexm.h"
+#include "asterc/getvtx.h"
+#include "asterfort/ccchel.h"
+#include "asterfort/ccchno.h"
+#include "asterfort/ccliop.h"
+#include "asterfort/cclodr.h"
+#include "asterfort/cclord.h"
+#include "asterfort/ccnett.h"
+#include "asterfort/ccvepo.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/indk16.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/medom2.h"
+#include "asterfort/reliem.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rslesd.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/srmedo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbordr, ncharg, codret
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou

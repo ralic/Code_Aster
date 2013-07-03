@@ -1,18 +1,18 @@
 subroutine pdadom(xm0, xm2, xm4, dom)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/erfcam.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/erfcam.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8vide.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/limend.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     real(kind=8) :: xm0, xm2, xm4, dom
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

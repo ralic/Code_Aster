@@ -1,16 +1,16 @@
 subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
                   iocc)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/palino.h'
+#include "asterc/getfac.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/palino.h"
     character(len=24) :: lvav, noma
     character(len=*) :: motfac, mcgrno, mcno, lvavz, nomaz
     integer :: iocc

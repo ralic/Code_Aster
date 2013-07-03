@@ -18,9 +18,9 @@ subroutine rrssm2(neq, smhcr, smhci, smdir, smdii,&
 ! ======================================================================
 ! aslint: disable=W1304
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
     integer(kind=4) :: smhci(*), smhcr(*)
     integer :: idlexc(*)
     integer :: smdir(*), smdii(*)

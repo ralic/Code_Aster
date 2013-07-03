@@ -17,7 +17,7 @@ function lkcrit(amat, mmat, smat, gamcjs, sigc,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lkhlod.h'
+#include "asterfort/lkhlod.h"
     real(kind=8) :: lkcrit, amat, mmat, smat, gamcjs, sigc, h0ext, rcos3t, invar
     real(kind=8) :: sii
 ! =================================================================

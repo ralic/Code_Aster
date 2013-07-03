@@ -1,22 +1,22 @@
 subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     implicit          none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/acevtr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crlinu.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/verdis.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/acevtr.h"
+#include "asterfort/assert.h"
+#include "asterfort/crlinu.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/verdis.h"
+#include "asterfort/wkvect.h"
     integer :: lmax, nbocc
     character(len=8) :: noma, nomo
     character(len=*) :: mcf

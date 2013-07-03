@@ -19,8 +19,8 @@ subroutine borthm(nomte, axi, vf, perman, typvf,&
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'asterfort/dimthm.h'
-    include 'asterfort/typthm.h'
+#include "asterfort/dimthm.h"
+#include "asterfort/typthm.h"
     logical :: axi, perman, vf
     integer :: ndim, ndlno, ndlnm
     character(len=8) :: typmod(2)

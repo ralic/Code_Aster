@@ -37,40 +37,40 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 ! IN  CTYP   : TYPE DE CHARGE
 ! ----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/calcop.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/erglth.h'
-    include 'asterfort/exlima.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jerecu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/medom1.h'
-    include 'asterfort/modopt.h'
-    include 'asterfort/reslgn.h'
-    include 'asterfort/resth2.h'
-    include 'asterfort/resthe.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsexc1.h'
-    include 'asterfort/rsexc2.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsnopa.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
+#include "asterfort/calcop.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/erglth.h"
+#include "asterfort/exlima.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jerecu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mecara.h"
+#include "asterfort/mecham.h"
+#include "asterfort/medom1.h"
+#include "asterfort/modopt.h"
+#include "asterfort/reslgn.h"
+#include "asterfort/resth2.h"
+#include "asterfort/resthe.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsexc1.h"
+#include "asterfort/rsexc2.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsnopa.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: nbordr, nchar
     integer :: vali
     character(len=4) :: ctyp

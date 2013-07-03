@@ -20,18 +20,18 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/vtzero.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/resoud.h"
+#include "asterfort/vtzero.h"
+#include "asterfort/wkvect.h"
     integer :: fonact(*)
     character(len=19) :: maprec, matass
     character(len=19) :: solveu, cndonn, cnpilo

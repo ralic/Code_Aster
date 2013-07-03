@@ -27,9 +27,9 @@ subroutine mecumu(scal, ncmp, iad1, iad2, nec,&
 !
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: scal
     integer :: ncmp, iad1, iad2, nec, dg1(nec), dg2(nec)
 ! ----------------------------------------------------------------------

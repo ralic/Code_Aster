@@ -118,15 +118,15 @@ subroutine flahqr(wantt, wantz, n, ilo, ihi,&
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/isbaem.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/flanv2.h'
-    include 'asterfort/flarfg.h'
-    include 'blas/dcopy.h'
-    include 'blas/dlanhs.h'
-    include 'blas/drot.h'
+#include "asterc/isbaem.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/flanv2.h"
+#include "asterfort/flarfg.h"
+#include "blas/dcopy.h"
+#include "blas/dlanhs.h"
+#include "blas/drot.h"
     logical :: wantt, wantz
     integer :: ihi, ihiz, ilo, iloz, info, ldh, ldz, n
 !     ..

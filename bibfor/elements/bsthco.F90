@@ -1,25 +1,25 @@
 subroutine bsthco(nomte, bsigth, indith)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/btdfn.h'
-    include 'asterfort/btdmsn.h'
-    include 'asterfort/btdmsr.h'
-    include 'asterfort/btsig.h'
-    include 'asterfort/hsj1f.h'
-    include 'asterfort/hsj1ms.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/mahsf.h'
-    include 'asterfort/mahsms.h'
-    include 'asterfort/matrc2.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/verifm.h'
-    include 'asterfort/vexpan.h'
+#include "jeveux.h"
+#include "asterfort/btdfn.h"
+#include "asterfort/btdmsn.h"
+#include "asterfort/btdmsr.h"
+#include "asterfort/btsig.h"
+#include "asterfort/hsj1f.h"
+#include "asterfort/hsj1ms.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/mahsf.h"
+#include "asterfort/mahsms.h"
+#include "asterfort/matrc2.h"
+#include "asterfort/moytem.h"
+#include "asterfort/promat.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vectan.h"
+#include "asterfort/verifm.h"
+#include "asterfort/vexpan.h"
     real(kind=8) :: bsigth(51)
     logical :: indith
     character(len=8) :: nomte

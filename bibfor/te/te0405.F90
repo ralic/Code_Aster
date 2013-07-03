@@ -26,9 +26,9 @@ subroutine te0405(option, nomte)
 !
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jevech.h'
+#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 !
     integer :: icour

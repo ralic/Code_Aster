@@ -5,10 +5,10 @@ subroutine ptmtfv(m, rho, e, rof, ce,&
                   ez, itype, isect)
 ! aslint: disable=W1504
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/fun1.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterc/r8pi.h"
+#include "asterfort/fun1.h"
+#include "asterfort/u2mess.h"
     integer :: itype, isect
     real(kind=8) :: m(*)
     real(kind=8) :: rho, e, rof, ce, a1, ai1, a2, ai2, xl, xiy1, xiy2, xiz1

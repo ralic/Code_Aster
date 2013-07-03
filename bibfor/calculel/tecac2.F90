@@ -23,12 +23,12 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
 !----------------------------------------------------------------------
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chloet.h'
-    include 'asterfort/contex.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/chloet.h"
+#include "asterfort/contex.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: stopz, nmparz, louez
     character(len=8) :: nompar, stop8
     character(len=1) :: loue

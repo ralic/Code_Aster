@@ -53,7 +53,7 @@ subroutine uterfl(ndim, iflup, iflum, ino, mno,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: iflup, iflum, ndim, ino, mno, jno, nsomm, ityp, noe(9, 6, 3), ifm
     integer :: niv
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)

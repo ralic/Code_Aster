@@ -1,9 +1,9 @@
 subroutine uttcpg(action, typimp)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/uttcpi.h'
-    include 'asterfort/uttcpl.h'
-    include 'asterfort/uttcpu.h'
+#include "jeveux.h"
+#include "asterfort/uttcpi.h"
+#include "asterfort/uttcpl.h"
+#include "asterfort/uttcpu.h"
     character(len=*) :: action, typimp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

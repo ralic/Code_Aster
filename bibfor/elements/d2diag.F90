@@ -27,7 +27,7 @@ subroutine d2diag(a, d, s, theta)
 ! OUT S : MATRICE DE PASSAGE
 ! OUT THETA : ANGLE DE ROTATION
 !
-    include 'asterfort/di2epx.h'
+#include "asterfort/di2epx.h"
     real(kind=8) :: zero, a(2, 2), d(2), s(2, 2), theta, b(3), aux
     real(kind=8) :: aux1
 !

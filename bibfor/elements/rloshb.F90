@@ -32,7 +32,7 @@ subroutine rloshb(xcoq, xcent, ppp, xl, xv24,&
     implicit none
 !
 !---   VARIABLES GLOBALES
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: xcoq(3, *), xcent(*), ppp(3, *), xl(3, *), xv13(3), xv24(3)
     real(kind=8) :: xj
 !

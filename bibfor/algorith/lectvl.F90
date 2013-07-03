@@ -33,10 +33,10 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas,&
 !     IN : LVALR : ADRESSE DU VECTEUR CONTENANT LES VALEURS REELLES
 !     ------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
     logical :: zcmplx
     integer :: itype, nbabs, inatur, ideas, nbmesu, labs, lvalc, lvalr
     real(kind=8) :: amin, apas

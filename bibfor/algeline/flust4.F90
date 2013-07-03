@@ -46,27 +46,27 @@ subroutine flust4(melflu, typflu, base, noma, nuor,&
 !  OUT: FACT   : PSEUDO FACTEUR DE PARTICIPATION
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/bijmoc.h'
-    include 'asterfort/cpdepl.h'
-    include 'asterfort/fluimp.h'
-    include 'asterfort/geocoq.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mefgmn.h'
-    include 'asterfort/modcoq.h'
-    include 'asterfort/modeau.h'
-    include 'asterfort/pacouc.h'
-    include 'asterfort/poibij.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rslipa.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/bijmoc.h"
+#include "asterfort/cpdepl.h"
+#include "asterfort/fluimp.h"
+#include "asterfort/geocoq.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mefgmn.h"
+#include "asterfort/modcoq.h"
+#include "asterfort/modeau.h"
+#include "asterfort/pacouc.h"
+#include "asterfort/poibij.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rslipa.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbm, npv, nivpar, nivdef, nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), vite(*), fact(*)
     character(len=8) :: typflu, base, noma

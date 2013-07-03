@@ -28,29 +28,29 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvtx.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/compma.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/recuma.h'
-    include 'asterfort/trnuli.h'
-    include 'asterfort/uttrii.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvtx.h"
+#include "asterc/r8depi.h"
+#include "asterfort/codent.h"
+#include "asterfort/compma.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/recuma.h"
+#include "asterfort/trnuli.h"
+#include "asterfort/uttrii.h"
+#include "asterfort/wkvect.h"
 !
 !
     integer :: ligne(2)

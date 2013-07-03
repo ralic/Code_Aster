@@ -28,12 +28,12 @@ subroutine te0018(option, nomte)
 !.......................................................................
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevecd.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nmpr3d.h'
+#include "asterfort/elref4.h"
+#include "asterfort/jevecd.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmpr3d.h"
     character(len=16) :: nomte, option
     integer :: ndim, nno, npg, nnos, jgano, kpg, kdec, n
     integer :: ipoids, ivf, idf, igeom, ipres, ires

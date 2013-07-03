@@ -22,19 +22,19 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include      'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/gnomsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmarch.h'
-    include 'asterfort/nmetpl.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/rsrusd.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/gnomsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmarch.h"
+#include "asterfort/nmetpl.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: sddisc, sdcrit, lisch2, sddyna, sdpost, sdpilo, sdener
     character(len=24) :: sderro, carcri
     character(len=24) :: modele, mate, carele

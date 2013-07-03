@@ -2,11 +2,11 @@ subroutine zmulmv(trans, m, n, alpha, a,&
                   lda, x, incx, beta, y,&
                   incy)
     implicit none
-    include 'asterfort/zinit.h'
-    include 'asterfort/zmult.h'
-    include 'blas/zaxpy.h'
-    include 'blas/zdotc.h'
-    include 'blas/zdotu.h'
+#include "asterfort/zinit.h"
+#include "asterfort/zmult.h"
+#include "blas/zaxpy.h"
+#include "blas/zdotc.h"
+#include "blas/zdotu.h"
     integer :: m, n, lda, incx, incy
     complex(kind=8) :: alpha, beta, x(*), y(*)
     character(len=*) :: trans

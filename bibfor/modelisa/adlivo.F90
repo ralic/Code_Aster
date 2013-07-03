@@ -17,7 +17,7 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     integer :: mv, is, nvtot
     integer :: nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)

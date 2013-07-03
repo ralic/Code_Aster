@@ -24,7 +24,7 @@ subroutine mmmvmm(phasez, ndim, nnm, norm, tau1,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: phasez
     integer :: ndim, nnm
     real(kind=8) :: wpg, ffm(9), jacobi

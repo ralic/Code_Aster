@@ -19,8 +19,8 @@ subroutine nmcha0(tychap, tyvarz, novarz, vachap)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/nmchai.h'
+#include "asterfort/assert.h"
+#include "asterfort/nmchai.h"
     character(len=19) :: vachap(*)
     character(len=6) :: tychap
     character(len=*) :: tyvarz, novarz

@@ -1,7 +1,7 @@
 subroutine posigr(nomte, efge, sigm)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
     character(len=*) :: nomte
     real(kind=8) :: sigm(*)
     real(kind=8) :: efge(12)

@@ -20,7 +20,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4)
     real(kind=8) :: dfudm(3, 4), dfvdm(3, 4), tgudm(3), tgvdm(3)
     real(kind=8) :: c1, c2, c3, poids, g, k3a, rho, puls, ttrgu, ttrgv, gcla

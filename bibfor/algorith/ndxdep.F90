@@ -20,17 +20,17 @@ subroutine ndxdep(numedd, fonact, numins, sddisc, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmdebg.h'
-    include 'asterfort/nmfext.h'
-    include 'asterfort/nmmajc.h'
-    include 'asterfort/nmsolu.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmfext.h"
+#include "asterfort/nmmajc.h"
+#include "asterfort/nmsolu.h"
     integer :: fonact(*)
     integer :: numins
     character(len=19) :: sddisc, sdnume, sddyna

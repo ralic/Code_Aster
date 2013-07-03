@@ -42,9 +42,9 @@ subroutine btdbmc(b, d, jacob, ndim, nno,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/btdbpr.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/btdbpr.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: phenoz
     real(kind=8) :: b(nbsig, *), d(nbsig, *), jacob, btdb(81, 81)
 ! -----  VARIABLES LOCALES

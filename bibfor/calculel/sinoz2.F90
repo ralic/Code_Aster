@@ -26,35 +26,35 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 ! ----------------------- DECLARATIONS --------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assvec.h'
-    include 'asterfort/celfpg.h'
-    include 'asterfort/celver.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/crcnct.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mecanb.h'
-    include 'asterfort/mtcrou.h'
-    include 'asterfort/predia.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utelvf.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zzappa.h'
-    include 'asterfort/zzcala.h'
-    include 'asterfort/zzcalb.h'
-    include 'asterfort/zzpoly.h'
+#include "asterfort/assvec.h"
+#include "asterfort/celfpg.h"
+#include "asterfort/celver.h"
+#include "asterfort/copisd.h"
+#include "asterfort/crcnct.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/matini.h"
+#include "asterfort/mecanb.h"
+#include "asterfort/mtcrou.h"
+#include "asterfort/predia.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utelvf.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zzappa.h"
+#include "asterfort/zzcala.h"
+#include "asterfort/zzcalb.h"
+#include "asterfort/zzpoly.h"
     character(len=1) :: k1bid
     character(len=8) :: modele, kbid, ma, typema, licmp(4), vecass, elrefe
     character(len=8) :: famil

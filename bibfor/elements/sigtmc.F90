@@ -43,10 +43,10 @@ subroutine sigtmc(fami, nno, ndim, nbsig, npg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterc/r8miem.h'
-    include 'asterfort/dmatmc.h'
-    include 'asterfort/epstmc.h'
-    include 'asterfort/lteatt.h'
+#include "asterc/r8miem.h"
+#include "asterfort/dmatmc.h"
+#include "asterfort/epstmc.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option
     real(kind=8) :: ni(1), xyz(1), repere(7), sigma(1)
     real(kind=8) :: instan

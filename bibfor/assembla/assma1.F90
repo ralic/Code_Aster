@@ -27,17 +27,17 @@ subroutine assma1(matas, ldist)
 ! IN LDIST (LOGICAL): INDIQUE SI LE CALCUL EST DISTRIBUE AU SENS
 !                     DONNEE INCOMPLETE PAR PROC
 !---------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/echmat.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/echmat.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: matas
 !---------------------------------------------------------------
     logical :: lmnsy, exilag, ldist

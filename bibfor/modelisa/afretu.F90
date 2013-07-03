@@ -2,19 +2,19 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
                   vale1, nbcoef, idec, coef, nomddl,&
                   typlag, lisrel)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/afrela.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/imprel.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/afrela.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/imprel.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
     character(len=2) :: typlag

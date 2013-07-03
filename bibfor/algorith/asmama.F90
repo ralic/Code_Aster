@@ -20,10 +20,10 @@ subroutine asmama(memasz, medirz, numedd, solveu, lischa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=24) :: numedd
     character(len=*) :: memasz, matmas, medirz
     character(len=19) :: solveu, lischa

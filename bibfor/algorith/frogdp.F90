@@ -19,24 +19,24 @@ subroutine frogdp(sdstat, resoco, numedd, matass, resigr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cfcpem.h'
-    include 'asterfort/cfcpes.h'
-    include 'asterfort/cfcpma.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/cffpfo.h'
-    include 'asterfort/cffpm1.h'
-    include 'asterfort/cffpm2.h'
-    include 'asterfort/cffrot.h'
-    include 'asterfort/cfmata.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nmrvai.h'
+#include "jeveux.h"
+#include "asterfort/cfcpem.h"
+#include "asterfort/cfcpes.h"
+#include "asterfort/cfcpma.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cffpfo.h"
+#include "asterfort/cffpm1.h"
+#include "asterfort/cffpm2.h"
+#include "asterfort/cffrot.h"
+#include "asterfort/cfmata.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmrvai.h"
     real(kind=8) :: resigr
     character(len=24) :: sdstat
     character(len=24) :: resoco

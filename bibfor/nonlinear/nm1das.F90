@@ -47,7 +47,7 @@ subroutine nm1das(fami, kpg, ksp, e, syc,&
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-    include 'asterfort/verift.h'
+#include "asterfort/verift.h"
     real(kind=8) :: e, epsthe, syc, syt, etc, ett, cr, tmoins, tplus
     real(kind=8) :: sigm, deps, pmt, pmc, xmt, xmc, xpt, xpc, vim(4), vip(4)
     real(kind=8) :: sig, ppt, ppc, dsdem, dsdep

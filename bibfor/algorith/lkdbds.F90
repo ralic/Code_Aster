@@ -33,12 +33,12 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 !     OUT DBETDI :  DERIVEE DE BPRIME PAR RAPPORT A I1 (TRACE SIGMA)
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    include 'asterc/r8pi.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lkdhds.h'
-    include 'asterfort/lkhtet.h'
+#include "asterc/r8pi.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lkdhds.h"
+#include "asterfort/lkhtet.h"
     integer :: nmat, nvi, iret, val
     real(kind=8) :: mater(nmat, 2), devsig(6), i1, para(3)
     real(kind=8) :: vint(nvi), dbetds(6), dbetdi

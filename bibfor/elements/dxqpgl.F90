@@ -1,11 +1,11 @@
 subroutine dxqpgl(xyzg, pgl, kstop, iret)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
     real(kind=8) :: xyzg(3, *), pgl(3, 3)
     character(len=1) :: kstop
     integer :: iret

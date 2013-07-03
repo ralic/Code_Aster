@@ -18,7 +18,7 @@ subroutine nmtstm(compor, imatri, matsym)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/jevech.h'
+#include "asterfort/jevech.h"
     character(len=16) :: compor(*)
     logical :: matsym
     integer :: imatri

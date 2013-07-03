@@ -1,13 +1,13 @@
 subroutine i3crdm(descm)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: descm
 !
 !     ------------------------------------------------------------------

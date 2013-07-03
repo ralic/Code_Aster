@@ -17,9 +17,9 @@ function vpagm1(poro)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterfort/ggpgmo.h'
-    include 'asterfort/vpagm2.h'
-    include 'asterfort/zerofr.h'
+#include "asterfort/ggpgmo.h"
+#include "asterfort/vpagm2.h"
+#include "asterfort/zerofr.h"
     integer :: iret
     real(kind=8) :: poro
     real(kind=8) :: vpagm1

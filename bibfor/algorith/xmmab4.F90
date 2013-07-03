@@ -3,8 +3,8 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
                   rr, coefbu, ddls, ddlm, mmat)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/indent.h'
+#include "jeveux.h"
+#include "asterfort/indent.h"
     integer :: ndim, nno, nnos
     integer :: nfh, ddls, ddlm
     integer :: singu

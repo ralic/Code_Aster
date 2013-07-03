@@ -18,17 +18,17 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calapr.h'
-    include 'asterfort/cfcglt.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/calapr.h"
+#include "asterfort/cfcglt.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
     character(len=24) :: resoco
     real(kind=8) :: resigr
     integer :: nbliai, nbliac, ndim

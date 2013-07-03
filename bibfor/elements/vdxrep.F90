@@ -27,10 +27,10 @@ subroutine vdxrep(nomte, epais, xi)
 !   NOMTE  IN : NOM TYPE_ELEMENT
 !   XI     IN : GEOMETRIE DES NOEUDS DE L'ELEMENT
 !
-    include 'jeveux.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "jeveux.h"
+#include "asterfort/jevete.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     character(len=16) :: nomte
     integer :: nb1, nb2, npgsr, i, j, k, ind, intsr, lzi, lzr
     real(kind=8) :: xi(3, 9)

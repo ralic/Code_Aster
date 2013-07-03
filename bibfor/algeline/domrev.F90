@@ -1,7 +1,7 @@
 function domrev(gamcjs, sigc, parame, rgdev, rucpla)
 !
     implicit      none
-    include 'asterfort/hlode.h'
+#include "asterfort/hlode.h"
     real(kind=8) :: gamcjs, sigc, parame(5), rgdev, rucpla, domrev
 ! ======================================================================
 ! ======================================================================

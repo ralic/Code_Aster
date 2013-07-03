@@ -17,7 +17,7 @@ subroutine lxnoac(chin, chout)
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterfort/lxlgut.h'
+#include "asterfort/lxlgut.h"
     character(len=*) :: chin, chout
 !
 ! ----------------------------------------------------------------------

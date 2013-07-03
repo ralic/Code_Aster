@@ -44,13 +44,13 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dlarch.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rscrsd.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dlarch.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rscrsd.h"
+#include "asterfort/titre.h"
+#include "asterfort/wkvect.h"
     integer :: neq, nbordr, iarchi, ifm
     integer :: nume, nbtyar
 !

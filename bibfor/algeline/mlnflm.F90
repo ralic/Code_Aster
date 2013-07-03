@@ -20,9 +20,9 @@ subroutine mlnflm(nb, n, p, frontl, frontu,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/mlnfld.h'
-    include 'asterfort/mlnflj.h'
-    include 'blas/dgemv.h'
+#include "asterfort/mlnfld.h"
+#include "asterfort/mlnflj.h"
+#include "blas/dgemv.h"
     integer :: nb, n, p
     integer :: adper(*), ad(*), ier
     real(kind=8) :: frontl(*), frontu(*), tu(*), eps, tl(*), cl(nb, nb, *)

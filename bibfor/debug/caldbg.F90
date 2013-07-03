@@ -20,12 +20,12 @@ subroutine caldbg(inout, ncham, lcham, lparam)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dbgobj.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/dbgobj.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ncham, i, iret
     character(len=*) :: inout
     character(len=19) :: lcham(*)

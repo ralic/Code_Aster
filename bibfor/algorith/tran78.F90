@@ -1,11 +1,11 @@
 subroutine tran78(nomres, typres, nomin)
     implicit none
-    include 'asterc/getvid.h'
-    include 'asterfort/bamo78.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/macr78.h'
-    include 'asterfort/titre.h'
+#include "asterc/getvid.h"
+#include "asterfort/bamo78.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/macr78.h"
+#include "asterfort/titre.h"
     character(len=8) :: nomres, nomin
     character(len=16) :: typres
 !

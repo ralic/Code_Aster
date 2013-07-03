@@ -42,10 +42,10 @@ subroutine betfpp(materf, nmat, elgeom, pc, pt,&
 !           KUC    :  ECROUISSAGE ULTIME EN COMPRESSION
 !           KUT    :  ECROUISSAGE ULTIME EN TRACTION
 !       ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: un, zero, d13, deux
     parameter       ( un    = 1.d0   )
     parameter       ( deux  = 2.d0   )

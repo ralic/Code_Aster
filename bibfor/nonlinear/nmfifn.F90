@@ -20,9 +20,9 @@ subroutine nmfifn(nno, nddl, npg, wref, vff,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/nmfici.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/ddot.h'
+#include "asterfort/nmfici.h"
+#include "asterfort/r8inir.h"
+#include "blas/ddot.h"
     integer :: nno, nddl, npg
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)
     real(kind=8) :: geom(nddl), fint(nddl), sigma(3, npg)

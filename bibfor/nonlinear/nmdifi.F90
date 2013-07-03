@@ -20,14 +20,14 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utacli.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utacli.h"
     character(len=16) :: motfac
     character(len=19) :: provli
     real(kind=8) :: tole

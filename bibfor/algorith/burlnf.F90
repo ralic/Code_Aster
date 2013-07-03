@@ -40,12 +40,12 @@ subroutine burlnf(nvi, vind, nmat, materd, materf,&
 !     SIGF   :  VECTEUR CONTRAINTES A T+DT
 ! ----------------------------------------------------------------
     implicit none
-    include 'asterfort/burafd.h'
-    include 'asterfort/burafr.h'
-    include 'asterfort/lceqve.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
+#include "asterfort/burafd.h"
+#include "asterfort/burafr.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
     integer :: i, ndt, ndi, nmat, nvi, nr
     real(kind=8) :: vind(nvi), materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: dt, yd(nr), yf(nr), vinf(nvi), esph, edev(6)

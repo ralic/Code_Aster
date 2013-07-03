@@ -23,14 +23,14 @@ subroutine op0092()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/simono.h'
-    include 'asterfort/simult.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/simono.h"
+#include "asterfort/simult.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: monmot
     integer :: iarg
 !     ------------------------------------------------------------------

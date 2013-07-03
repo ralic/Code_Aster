@@ -18,30 +18,30 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mmgaus.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/xcopco.h'
-    include 'asterfort/xmcoor.h'
-    include 'asterfort/xmrema.h'
-    include 'asterfort/xmrept.h'
-    include 'asterfort/xmrlst.h'
-    include 'asterfort/xpivit.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mmgaus.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/xcopco.h"
+#include "asterfort/xmcoor.h"
+#include "asterfort/xmrema.h"
+#include "asterfort/xmrept.h"
+#include "asterfort/xmrlst.h"
+#include "asterfort/xpivit.h"
+#include "asterfort/xxmmvd.h"
     logical :: loptin
     character(len=8) :: noma, modele
     character(len=24) :: defico, resoco

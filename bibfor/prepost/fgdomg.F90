@@ -3,17 +3,17 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 !       ================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/fgdoba.h'
-    include 'asterfort/fgdohs.h'
-    include 'asterfort/fgdoma.h'
-    include 'asterfort/fgdowh.h'
-    include 'asterfort/fgtaep.h'
-    include 'asterfort/fgtaes.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/fgdoba.h"
+#include "asterfort/fgdohs.h"
+#include "asterfort/fgdoma.h"
+#include "asterfort/fgdowh.h"
+#include "asterfort/fgtaep.h"
+#include "asterfort/fgtaes.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: method
     character(len=8) :: nommat, nomnap, nomfon
     real(kind=8) :: valmin(*), valmax(*), dommag

@@ -16,11 +16,11 @@ function typmat(nbmat, tlimat)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/mpicm1.h'
-    include 'asterfort/redetr.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/mpicm1.h"
+#include "asterfort/redetr.h"
     character(len=*) :: tlimat(*)
     integer :: nbmat
     character(len=1) :: typmat

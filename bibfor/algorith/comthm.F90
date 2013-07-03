@@ -96,13 +96,13 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'asterfort/calcco.h'
-    include 'asterfort/calcfh.h'
-    include 'asterfort/calcft.h'
-    include 'asterfort/calcme.h'
-    include 'asterfort/kitdec.h'
-    include 'asterfort/nvithm.h'
-    include 'asterfort/thmlec.h'
+#include "asterfort/calcco.h"
+#include "asterfort/calcfh.h"
+#include "asterfort/calcft.h"
+#include "asterfort/calcme.h"
+#include "asterfort/kitdec.h"
+#include "asterfort/nvithm.h"
+#include "asterfort/thmlec.h"
     logical :: yachai
     real(kind=8) :: valcen(14, 6)
     integer :: maxfa

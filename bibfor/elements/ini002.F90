@@ -35,18 +35,18 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
     implicit none
 !
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jni001.h'
-    include 'asterfort/jni002.h'
-    include 'asterfort/jni015.h'
-    include 'asterfort/jni080.h'
-    include 'asterfort/jni091.h'
-    include 'asterfort/jni092.h'
-    include 'asterfort/nuelrf.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jni001.h"
+#include "asterfort/jni002.h"
+#include "asterfort/jni015.h"
+#include "asterfort/jni080.h"
+#include "asterfort/jni091.h"
+#include "asterfort/jni092.h"
+#include "asterfort/nuelrf.h"
     character(len=16) :: nomte
     character(len=8) :: elrefe, lirefe(10)
     integer :: nmax, nval, itabl(nmax), nujni

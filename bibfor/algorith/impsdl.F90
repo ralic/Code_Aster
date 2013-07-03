@@ -19,20 +19,20 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/impfoi.h'
-    include 'asterfort/impfok.h'
-    include 'asterfort/impfor.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obgetb.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgetk.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/obgetr.h'
-    include 'asterfort/oblgai.h'
-    include 'asterfort/oblgoi.h'
-    include 'asterfort/obtlig.h'
+#include "asterfort/assert.h"
+#include "asterfort/impfoi.h"
+#include "asterfort/impfok.h"
+#include "asterfort/impfor.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obgetb.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgetk.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/obgetr.h"
+#include "asterfort/oblgai.h"
+#include "asterfort/oblgoi.h"
+#include "asterfort/obtlig.h"
     character(len=24) :: sdtabc
     character(len=1) :: sepcol
     integer :: uimpr

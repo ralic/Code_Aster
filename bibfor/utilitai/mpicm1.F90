@@ -45,25 +45,25 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterc/loisem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mpichk.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/loisem.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mpichk.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: optmpi, typsca
     integer :: vi(*), nbv, bcrank
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
 !
 #ifdef _USE_MPI
-    include 'mpif.h'
+#include "mpif.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=1) :: typsc1
     integer :: vi2(1000)

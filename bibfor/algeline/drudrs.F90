@@ -1,8 +1,8 @@
 subroutine drudrs(parame, q, h0, sigc, dudsig)
 !
     implicit      none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     real(kind=8) :: q(6), parame(5), h0, sigc, dudsig(6)
 ! ======================================================================
 ! ======================================================================

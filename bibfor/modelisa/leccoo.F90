@@ -36,15 +36,15 @@ subroutine leccoo(ifl, icl, iv, rv, cv,&
 !                                                  OU ERREUR DETECTE)
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/iunifi.h'
-    include 'asterfort/liritm.h'
-    include 'asterfort/lirtet.h'
-    include 'asterfort/tesfin.h'
-    include 'asterfort/tesmcl.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/verdbl.h'
-    include 'asterfort/vermot.h'
-    include 'asterfort/vernmb.h'
+#include "asterfort/iunifi.h"
+#include "asterfort/liritm.h"
+#include "asterfort/lirtet.h"
+#include "asterfort/tesfin.h"
+#include "asterfort/tesmcl.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/verdbl.h"
+#include "asterfort/vermot.h"
+#include "asterfort/vernmb.h"
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig

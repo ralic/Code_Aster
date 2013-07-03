@@ -18,16 +18,16 @@ subroutine te0393(option, nomte)
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/gdfint.h'
-    include 'asterfort/gdjrg0.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/marota.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/terefe.h'
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/gdfint.h"
+#include "asterfort/gdjrg0.h"
+#include "asterfort/jevech.h"
+#include "asterfort/marota.h"
+#include "asterfort/promat.h"
+#include "asterfort/terefe.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MECA_POU_D_T_GD

@@ -51,27 +51,27 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !    NUMATZ         OUT    K*     NOM DU NUME_DDL A CREER POUR ATAZ
 !                                 ON LE DETRUIT S'Il EXISTE DEJA
 !.========================= DEBUT DES DECLARATIONS ====================
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecrec.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedup1.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/moinip.h'
-    include 'asterfort/moinsr.h'
-    include 'asterfort/trir.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/moinip.h"
+#include "asterfort/moinsr.h"
+#include "asterfort/trir.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: ma
 ! -----  ARGUMENTS
     character(len=*) :: az, numedz, ataz, basez, numatz

@@ -16,10 +16,10 @@ subroutine ut2mgl(nn, nc, p, sg, sl)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/mavec.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/tmat.h'
-    include 'asterfort/vecma.h'
+#include "asterfort/mavec.h"
+#include "asterfort/pmat.h"
+#include "asterfort/tmat.h"
+#include "asterfort/vecma.h"
     real(kind=8) :: p(3, 3), sg(*), sl(*)
 !     ------------------------------------------------------------------
 !     PASSAGE EN 2D D'UNE MATRICE TRIANGULAIRE DE NN*NC LIGNES

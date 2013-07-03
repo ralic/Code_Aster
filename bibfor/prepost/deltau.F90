@@ -19,28 +19,28 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/loisem.h'
-    include 'asterc/lor8em.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/acgrdo.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jedisp.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rcpare.h'
-    include 'asterfort/rnomat.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vecnuv.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/loisem.h"
+#include "asterc/lor8em.h"
+#include "asterc/r8pi.h"
+#include "asterfort/acgrdo.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedisp.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcpare.h"
+#include "asterfort/rnomat.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vecnuv.h"
+#include "asterfort/wkvect.h"
     integer :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
     integer :: tspaq, ordini
     character(len=8) :: grdvie

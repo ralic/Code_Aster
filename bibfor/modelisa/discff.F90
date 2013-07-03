@@ -38,13 +38,13 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
 ! DISCRETISATIONS PASSENT DE (0,L) POUR LA PREMIERE FONCTION ET (0,L)
 ! POUR LA DEUXIEME A UNE SEULE FONCTION DEFINIE SUR (0,2L): (0,L),(L,2L)
 !
-    include 'jeveux.h'
-    include 'asterfort/fointr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/fointr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: nbfonc, nbp1, nbp2
     character(len=8) :: nomfon(nbfonc)
     character(len=19) :: tbfonc, fonc1, fonc2

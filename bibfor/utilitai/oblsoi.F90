@@ -19,16 +19,16 @@ subroutine oblsoi(sdlist, idnvaz, nomstr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/obgett.h'
+#include "asterfort/assert.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/obgett.h"
     character(len=24) :: sdlist
     character(len=*) :: idnvaz
     character(len=24) :: nomstr

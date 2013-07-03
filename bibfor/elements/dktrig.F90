@@ -1,22 +1,22 @@
 subroutine dktrig(nomte, xyzl, option, pgl, rig,&
                   ener, multic)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/bsthpl.h'
-    include 'asterfort/dktbf.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/dxtloc.h'
-    include 'asterfort/dxtloe.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/utbtab.h'
-    include 'asterfort/utctab.h'
-    include 'asterfort/utpvgl.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "jeveux.h"
+#include "asterfort/bsthpl.h"
+#include "asterfort/dktbf.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/dxtloc.h"
+#include "asterfort/dxtloe.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utbtab.h"
+#include "asterfort/utctab.h"
+#include "asterfort/utpvgl.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     real(kind=8) :: xyzl(3, *), pgl(*), rig(*), ener(*)
     character(len=16) :: option, nomte
 ! ======================================================================

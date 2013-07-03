@@ -2,8 +2,8 @@ subroutine ptenth(ul, xl, f, n, mat,&
                   itype, enerth)
 ! aslint: disable=
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
     integer :: itype, n
     real(kind=8) :: ul(12), f, mat(n, n), enerth
 !     ------------------------------------------------------------------

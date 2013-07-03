@@ -2,9 +2,9 @@ subroutine i3crqp(epsi, seuil, s, x, y,&
                   cr, iret)
     implicit none
 !
-    include 'asterfort/i3afk2.h'
-    include 'asterfort/i3dch2.h'
-    include 'asterfort/i3nwt2.h'
+#include "asterfort/i3afk2.h"
+#include "asterfort/i3dch2.h"
+#include "asterfort/i3nwt2.h"
     integer :: iret
     real(kind=8) :: epsi, seuil, s(3, *), x, y, cr(*)
 !

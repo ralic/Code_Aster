@@ -2,11 +2,11 @@ subroutine afdi2d(irep, eta, car, val, jdc,&
                   jdv, ivr, iv, kma, ncmp,&
                   ntp, jdcinf, jdvinf, isym, ifm)
     implicit       none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/impmv.h'
-    include 'asterfort/infdis.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/impmv.h"
+#include "asterfort/infdis.h"
     integer :: irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp, ifm
     integer :: isym, jdcinf, jdvinf
     real(kind=8) :: eta, val(*)

@@ -19,15 +19,15 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/jacopo.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdallo.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/codent.h"
+#include "asterfort/jacopo.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdallo.h"
+#include "blas/dcopy.h"
     integer :: parch, nbobjs, nbsaui, neqgen, nbchoc, nbrede, nbrevi, nbsauv
     integer :: loncum, ino, nbstoc, nbsto1
     integer :: jdeps, jvits, jaccs, jpass, jords, jinst, jfcho, jdcho, jvcho

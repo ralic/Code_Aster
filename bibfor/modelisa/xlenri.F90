@@ -18,14 +18,14 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reliem.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: fiss, noma
     character(len=24) :: lismae, lisnoe
     logical :: goinop

@@ -1,16 +1,16 @@
 subroutine diatri(n, d, e, vector, evec,&
                   ldevec)
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/r8rotg.h'
-    include 'asterfort/r8sqrt.h'
-    include 'blas/dcopy.h'
-    include 'blas/drot.h'
-    include 'blas/dscal.h'
-    include 'blas/dswap.h'
-    include 'blas/idamax.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/r8rotg.h"
+#include "asterfort/r8sqrt.h"
+#include "blas/dcopy.h"
+#include "blas/drot.h"
+#include "blas/dscal.h"
+#include "blas/dswap.h"
+#include "blas/idamax.h"
     integer :: n, ldevec
     real(kind=8) :: d(*), e(*), evec(ldevec, *)
     logical :: vector

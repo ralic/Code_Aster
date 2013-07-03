@@ -19,24 +19,24 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cescre.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/cestas.h'
-    include 'asterfort/cmpcha.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenc2.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/cescre.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/cestas.h"
+#include "asterfort/cmpcha.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenc2.h"
+#include "asterfort/exisd.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: cartz, cesz, base, cesmoz, typces
     character(len=1) :: kstop
 ! ------------------------------------------------------------------

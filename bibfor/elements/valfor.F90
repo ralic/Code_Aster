@@ -32,7 +32,7 @@ subroutine valfor(indn, lt1, lt2, l1, l2,&
 !
     implicit none
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: indn
 !
     integer :: lt1, lt2

@@ -49,29 +49,29 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/alchml.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/chpchd.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcharg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajvi.h'
-    include 'asterfort/tbajvk.h'
-    include 'asterfort/tbajvr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterfort/alchml.h"
+#include "asterfort/calcul.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/chpver.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcharg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvk.h"
+#include "asterfort/tbajvr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
     character(len=8) :: modele, lchar(*), result, symech
     character(len=8) :: kcalc
     character(len=16) :: optioz, noprup(*), nomcas

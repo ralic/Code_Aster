@@ -1,10 +1,10 @@
 subroutine poeihm(nomte, option, modint, jgao, nno1,&
                   nno2, ncmp, nvim, vpg, vno)
     implicit     none
-    include 'asterfort/assert.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/ppgan2.h'
+#include "asterfort/assert.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/ppgan2.h"
     integer :: jgao, ncmp, nvim
     real(kind=8) :: vno(*), vpg(*)
     character(len=3) :: modint

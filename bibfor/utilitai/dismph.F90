@@ -19,10 +19,10 @@ subroutine dismph(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(PHENOMENE)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismgd.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismgd.h"
+#include "asterfort/u2mesk.h"
     integer :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk

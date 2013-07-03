@@ -19,11 +19,11 @@ subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tldlgg.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tldlgg.h"
     integer :: ndim
     integer :: nbliac, llf, llf1, llf2, indfac
     integer :: ldscon

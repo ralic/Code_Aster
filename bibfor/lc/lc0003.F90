@@ -5,8 +5,8 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmcine.h'
-    include 'asterfort/nmecmi.h'
+#include "asterfort/nmcine.h"
+#include "asterfort/nmecmi.h"
     integer :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=16) :: compor(*), option

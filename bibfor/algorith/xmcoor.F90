@@ -21,12 +21,12 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
     integer :: jcesd(10), jcesv(10), jcesl(10)
     integer :: ndim, nummae, ifac, npte, ifiss
     real(kind=8) :: xp, yp

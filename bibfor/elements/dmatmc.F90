@@ -43,11 +43,11 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    include 'asterfort/assert.h'
-    include 'asterfort/dmat3d.h'
-    include 'asterfort/dmatcp.h'
-    include 'asterfort/dmatdp.h'
-    include 'asterfort/lteatt.h'
+#include "asterfort/assert.h"
+#include "asterfort/dmat3d.h"
+#include "asterfort/dmatcp.h"
+#include "asterfort/dmatdp.h"
+#include "asterfort/lteatt.h"
     character(len=*) :: fami, poum
     character(len=2) :: modeli
     integer :: mater, nbsig, igau, isgau

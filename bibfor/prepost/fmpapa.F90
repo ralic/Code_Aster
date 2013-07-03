@@ -2,9 +2,9 @@ subroutine fmpapa(nbfonc, nbptot, sigm, rd0, rtau0,&
                   rcrit, rphmax, rayon)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/fmprhm.h'
-    include 'asterfort/fmrayo.h'
+#include "jeveux.h"
+#include "asterfort/fmprhm.h"
+#include "asterfort/fmrayo.h"
     integer :: nbfonc, nbptot
     real(kind=8) :: rphmax, rayon, sigm(nbfonc*nbptot)
     real(kind=8) :: rd0, rtau0, rcrit

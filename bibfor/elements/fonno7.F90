@@ -1,20 +1,20 @@
 subroutine fonno7(noma, cnxinv, ndim, na, vecdir,&
                   hmax)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/conare.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/conare.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     integer :: na, ndim
     real(kind=8) :: vecdir(3), hmax
     character(len=8) :: noma

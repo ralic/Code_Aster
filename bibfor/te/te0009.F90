@@ -1,16 +1,16 @@
 subroutine te0009(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infdis.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/upletr.h'
-    include 'asterfort/utpalg.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdis.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/matrot.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/upletr.h"
+#include "asterfort/utpalg.h"
     character(len=16) :: option, nomte
 ! ------------------------------------------------------------------
 ! ======================================================================

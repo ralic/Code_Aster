@@ -21,12 +21,12 @@ subroutine nmchfi(parmet, method, fonact, sddisc, sddyna,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchrm.h'
+#include "jeveux.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchrm.h"
     real(kind=8) :: parmet(*)
     character(len=16) :: method(*)
     integer :: fonact(*)

@@ -23,7 +23,7 @@ subroutine chloet(iparg, etendu, jceld)
 !     UN CHAMP LOCAL ETENDU N'A PAS LA MEME LONGUEUR POUR TOUS SES
 !     ELEMENTS
 ! -----------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
     logical :: etendu
     integer :: iparg, jceld
 ! -----------------------------------------------------------------

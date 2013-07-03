@@ -1,6 +1,6 @@
 subroutine acevgb(nbocc, nlm, nlg)
     implicit  none
-    include 'asterc/getvtx.h'
+#include "asterc/getvtx.h"
     integer :: nbocc, nlm, nlg
 ! ----------------------------------------------------------------------
 ! ======================================================================

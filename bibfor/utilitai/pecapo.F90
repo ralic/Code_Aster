@@ -1,28 +1,28 @@
 subroutine pecapo(resu, modele, cara, nh)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecham.h'
-    include 'asterfort/pecap1.h'
-    include 'asterfort/pecap2.h'
-    include 'asterfort/pecap3.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcopi.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbliva.h'
-    include 'asterfort/tbnuli.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecham.h"
+#include "asterfort/pecap1.h"
+#include "asterfort/pecap2.h"
+#include "asterfort/pecap3.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcopi.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/tbnuli.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nh
     character(len=*) :: resu, modele, cara
 !     ------------------------------------------------------------------

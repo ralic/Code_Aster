@@ -21,14 +21,14 @@ subroutine cacina(ndim, nno, npg, lgpg, axi,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/lctr2m.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/pmat.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8miem.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/lctr2m.h"
+#include "asterfort/matinv.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/pmat.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=16) :: compor(*)
     integer :: ndim, nno, g, iw, idff, i, j, npg, lgpg, ivash2
     logical :: axi, grand

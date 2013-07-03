@@ -38,14 +38,14 @@ subroutine pcstru(n, in, ip, icpl, icpc,&
 !   ICPLX      : IDEM ICPL
 !----------------------------------------------------------------------
 !----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedetr.h'
-    include 'asterfort/pcdiag.h'
-    include 'asterfort/pcfalu.h'
-    include 'asterfort/pcfull.h'
-    include 'asterfort/pcinfe.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedetr.h"
+#include "asterfort/pcdiag.h"
+#include "asterfort/pcfalu.h"
+#include "asterfort/pcfull.h"
+#include "asterfort/pcinfe.h"
+#include "asterfort/wkvect.h"
     integer :: n, in(n)
     integer(kind=4) :: ip(*), icpc(*)
     integer :: icpl(0:n), icpd(n)

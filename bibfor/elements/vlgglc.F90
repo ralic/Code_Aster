@@ -22,7 +22,7 @@ subroutine vlgglc(nno, nbrddl, pgl1, pgl2, pgl3,&
 ! OU INVERSEMENT. ON AGIT UNIQUEMENT SUR LES DDL DE POUTRE,
 ! LES DDL DE COQUE RESTENT INCHANGES.***ELEMENT COURBE***
 !
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: i, j, l, nno, nbrddl, m
 !JMP      PARAMETER          (NBRDDL=63)
     real(kind=8) :: v(nbrddl), p(nbrddl, nbrddl)

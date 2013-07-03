@@ -1,7 +1,7 @@
 subroutine nthydr(hydrat)
     implicit   none
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
     logical :: hydrat
 ! ----------------------------------------------------------------------
 ! ======================================================================

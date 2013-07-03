@@ -18,9 +18,9 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     character(len=1) :: quest
     integer :: jprol, jvale, nbvale
     real(kind=8) :: e, nu, sigy, p, sieleq, rp, rprim, airerp, dp

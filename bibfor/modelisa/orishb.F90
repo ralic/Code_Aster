@@ -1,22 +1,22 @@
 subroutine orishb(noma)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/getvem.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/oris15.h'
-    include 'asterfort/oris20.h'
-    include 'asterfort/orish6.h'
-    include 'asterfort/orish8.h'
-    include 'asterfort/pacoor.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/getvem.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/oris15.h"
+#include "asterfort/oris20.h"
+#include "asterfort/orish6.h"
+#include "asterfort/orish8.h"
+#include "asterfort/pacoor.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: noma
 !.======================================================================
 ! ======================================================================

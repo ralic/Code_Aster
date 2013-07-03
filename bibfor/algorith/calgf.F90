@@ -20,9 +20,9 @@ subroutine calgf(ndim, nno, axi, npg, geomi,&
 ! ======================================================================
     implicit none
 !
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmepsi.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/r8inir.h"
     logical :: axi, grand
     integer :: ndim, nno, g, iw, idff, i, j, npg
     real(kind=8) :: geomi(ndim, nno), vff(nno, npg)

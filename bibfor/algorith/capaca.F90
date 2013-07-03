@@ -3,9 +3,9 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
                   cp21, cp22, k0, alpha0, t,&
                   coeps, retcom)
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/iunifi.h'
-    include 'asterfort/tecael.h'
+#include "jeveux.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/tecael.h"
     integer :: retcom
     real(kind=8) :: rho0, rho11, rho12, rho21, rho22, sat, phi, csigm, alpha0, t
     real(kind=8) :: k0, cp11, cp12, cp21, cp22, coeps

@@ -22,9 +22,9 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
 !
     implicit none
 !-----------------------------------------------------------------------
-    include 'asterfort/nm1dpm.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/verift.h'
+#include "asterfort/nm1dpm.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/verift.h"
     integer :: iret, nbt, neq, nvar
     real(kind=8) :: dsde
 !-----------------------------------------------------------------------

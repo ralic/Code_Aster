@@ -16,8 +16,8 @@ subroutine meharm(modele, nh, chharm)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/dismoi.h'
-    include 'asterfort/mecact.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/mecact.h"
     character(len=*) :: modele
     character(len=24) :: chharm
     character(len=8) :: mailla

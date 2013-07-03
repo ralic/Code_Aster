@@ -22,39 +22,39 @@ subroutine op0154()
 !
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/asccou.h'
-    include 'asterfort/asceli.h'
-    include 'asterfort/ascrep.h'
-    include 'asterfort/asctub.h'
-    include 'asterfort/cargeo.h'
-    include 'asterfort/chgref.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/conori.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/defapp.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/echell.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/momaba.h'
-    include 'asterfort/orilgm.h'
-    include 'asterfort/orishb.h'
-    include 'asterfort/piqeli.h'
-    include 'asterfort/piqini.h'
-    include 'asterfort/rotama.h'
-    include 'asterfort/symema.h'
-    include 'asterfort/tranma.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vdiff.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/vtgpld.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/asccou.h"
+#include "asterfort/asceli.h"
+#include "asterfort/ascrep.h"
+#include "asterfort/asctub.h"
+#include "asterfort/cargeo.h"
+#include "asterfort/chgref.h"
+#include "asterfort/chpver.h"
+#include "asterfort/conori.h"
+#include "asterfort/copisd.h"
+#include "asterfort/defapp.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/echell.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/momaba.h"
+#include "asterfort/orilgm.h"
+#include "asterfort/orishb.h"
+#include "asterfort/piqeli.h"
+#include "asterfort/piqini.h"
+#include "asterfort/rotama.h"
+#include "asterfort/symema.h"
+#include "asterfort/tranma.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vdiff.h"
+#include "asterfort/vecini.h"
+#include "asterfort/vtgpld.h"
     integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier, ibid
     logical :: bidim
     character(len=8) :: ma, ma2, depla, coutur, mab

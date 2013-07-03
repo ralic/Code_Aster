@@ -112,12 +112,12 @@ subroutine errcou(nomprg, numpas, nomvar, info, nprog,&
 !
 !     ARGUMENTS
 !     ==============
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: nomprg
     integer(kind=4) :: numpas, info, nprog, nlu, lenvar
     parameter (lenvar = 144)

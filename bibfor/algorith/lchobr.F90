@@ -20,17 +20,17 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterc/r8pi.h'
-    include 'asterfort/calcvh.h'
-    include 'asterfort/hbcalc.h'
-    include 'asterfort/hbcrel.h'
-    include 'asterfort/hbderi.h'
-    include 'asterfort/hbmajs.h'
-    include 'asterfort/hbvaec.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/trace.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/ddot.h'
+#include "asterc/r8pi.h"
+#include "asterfort/calcvh.h"
+#include "asterfort/hbcalc.h"
+#include "asterfort/hbcrel.h"
+#include "asterfort/hbderi.h"
+#include "asterfort/hbmajs.h"
+#include "asterfort/hbvaec.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/trace.h"
+#include "asterfort/u2mess.h"
+#include "blas/ddot.h"
     integer :: itmax, nbmat, nr, nvi, icomp, irtet
     real(kind=8) :: toler, materf(nbmat, 2), depsm(6), sigm(6)
     real(kind=8) :: vim(*), sigp(6), vip(*), seuil, vp(3), vecp(3, 3)

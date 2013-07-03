@@ -1,7 +1,7 @@
 subroutine ibfhdf(fichdf)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterc/getvtx.h'
+#include "asterc/getres.h"
+#include "asterc/getvtx.h"
     character(len=80) :: fichdf
 ! ----------------------------------------------------------------------
 ! ======================================================================

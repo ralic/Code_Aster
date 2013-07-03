@@ -20,19 +20,19 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cudisi.h'
-    include 'asterfort/cuimp2.h'
-    include 'asterfort/cutabl.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/cudisi.h"
+#include "asterfort/cuimp2.h"
+#include "asterfort/cutabl.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: resocu
     character(len=24) :: deficu
     real(kind=8) :: xjvmax

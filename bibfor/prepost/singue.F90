@@ -3,17 +3,17 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
                   types)
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cesexi.h'
-    include 'asterfort/dsingu.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsingu.h'
-    include 'asterfort/ssingu.h'
-    include 'asterfort/tsingu.h'
+#include "asterfort/cesexi.h"
+#include "asterfort/dsingu.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsingu.h"
+#include "asterfort/ssingu.h"
+#include "asterfort/tsingu.h"
     integer :: ndim, nnoem, nelem
     real(kind=8) :: xy(3, nnoem), prec
     character(len=8) :: nomail

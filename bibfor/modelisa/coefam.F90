@@ -28,15 +28,15 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
 !  OUT   : CD        : COEFFICIENT D AMORTISSEMENT AJOUTE
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterfort/cdatrc.h'
-    include 'asterfort/coefal.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/cdatrc.h"
+#include "asterfort/coefal.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: ipas, ires
     real(kind=8) :: cd, xsi0
 !

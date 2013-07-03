@@ -27,8 +27,8 @@ subroutine e1e2nn(nno, dfde, dfdk, e1n, e2n,&
 !                COORDONNES DES NOEUDS
 !                NOMBRE DE NOEUDS
 !...................................................................
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
     real(kind=8) :: jac(9), nxn(9), nyn(9), nzn(9), san(9)
     real(kind=8) :: normn(3, 9), e1n(3, 9), e2n(3, 9), uni1n(3, 9)
     real(kind=8) :: dfde(9, 9), dfdk(9, 9), j1n(9), j2n(9), can(9)

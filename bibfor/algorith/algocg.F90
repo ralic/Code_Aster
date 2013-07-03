@@ -18,27 +18,27 @@ subroutine algocg(sdstat, defico, resoco, solveu, matass,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/cfdisd.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisr.h'
-    include 'asterfort/cfecrd.h'
-    include 'asterfort/cfgcac.h'
-    include 'asterfort/cfgccj.h'
-    include 'asterfort/cfgcin.h'
-    include 'asterfort/cfgcpc.h'
-    include 'asterfort/cfgcpr.h'
-    include 'asterfort/cfgcrl.h'
-    include 'asterfort/cfgcsg.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmrvai.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cfdisd.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisr.h"
+#include "asterfort/cfecrd.h"
+#include "asterfort/cfgcac.h"
+#include "asterfort/cfgccj.h"
+#include "asterfort/cfgcin.h"
+#include "asterfort/cfgcpc.h"
+#include "asterfort/cfgcpr.h"
+#include "asterfort/cfgcrl.h"
+#include "asterfort/cfgcsg.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmrvai.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=24) :: sdstat
     character(len=24) :: defico, resoco
     character(len=19) :: matass, solveu

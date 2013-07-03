@@ -42,7 +42,7 @@ subroutine hujini(mod, nmat, mater, intg, deps,&
 !          NR     :  NR MIS A JOUR SI TRACTION PRESENTE
 !          IRET   :  IRET = 0 (OK) - 3 (NON CVG)
 !     ----------------------------------------------------------------
-    include 'asterfort/hujiid.h'
+#include "asterfort/hujiid.h"
     character(len=8) :: mod
     real(kind=8) :: mater(nmat, 2), deps(6), yd(18), vind(nvi), sigf(6)
     real(kind=8) :: dy(18), sigd(6)

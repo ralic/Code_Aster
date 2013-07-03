@@ -1,7 +1,7 @@
 function rgcmpg(icode, irgcmp)
     implicit none
     integer :: rgcmpg
-    include 'asterfort/exisdg.h'
+#include "asterfort/exisdg.h"
     integer :: icode, irgcmp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

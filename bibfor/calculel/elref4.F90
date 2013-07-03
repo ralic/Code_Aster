@@ -1,7 +1,7 @@
 subroutine elref4(elrz, famil, ndim, nno, nnos,&
                   npg, ipoids, ivf, idfde, jgano)
     implicit none
-    include 'asterfort/elref5.h'
+#include "asterfort/elref5.h"
     character(len=*) :: elrz, famil
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
 ! ======================================================================

@@ -2,20 +2,20 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
                   typaff, quant, option, rep, nomtab,&
                   xnovar, ncheff, i1, isd)
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8vide.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rvinfa.h'
-    include 'asterfort/rvtec0.h'
-    include 'asterfort/rvtecn.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8vide.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rvinfa.h"
+#include "asterfort/rvtec0.h"
+#include "asterfort/rvtecn.h"
+#include "asterfort/wkvect.h"
     integer :: iocc, isd
     character(len=1) :: typaff
     character(len=16) :: ncheff

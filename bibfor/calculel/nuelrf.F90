@@ -1,6 +1,6 @@
 subroutine nuelrf(elrefe, nujni)
     implicit  none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=8) :: elrefe
     integer :: nujni
 ! ======================================================================

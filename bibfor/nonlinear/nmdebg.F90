@@ -19,12 +19,12 @@ subroutine nmdebg(typobz, nomobz, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tstobj.h'
-    include 'asterfort/utimsd.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tstobj.h"
+#include "asterfort/utimsd.h"
     character(len=*) :: nomobz
     character(len=*) :: typobz
     integer :: ifm, niv

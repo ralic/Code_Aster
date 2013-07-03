@@ -52,14 +52,14 @@ subroutine fetreo(reorth, alphan, nbi, irg, iter,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     integer :: nbi, iter, nbreor, irp, irg, irh, rang, nbproc, itps, nbreoi
     integer :: option
     real(kind=8) :: alphan

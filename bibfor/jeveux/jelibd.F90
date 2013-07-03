@@ -29,12 +29,12 @@ subroutine jelibd(nomlu, ltot)
 ! PAR EQUIVALENCE
 ! aslint: disable=
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjcroc.h'
-    include 'asterfort/jjlbsg.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjcroc.h"
+#include "asterfort/jjlbsg.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu
 !
     integer :: lk1zon, jk1zon, liszon, jiszon

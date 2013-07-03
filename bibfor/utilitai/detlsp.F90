@@ -17,13 +17,13 @@ subroutine detlsp(matasz, solvez)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/amumph.h'
-    include 'asterfort/crsmsp.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/amumph.h"
+#include "asterfort/crsmsp.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=*) :: matasz, solvez
 !
 ! ----------------------------------------------------------------------

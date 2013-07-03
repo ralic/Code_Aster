@@ -17,21 +17,21 @@ subroutine te0583(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/jevecd.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/vlggl.h'
-    include 'asterfort/vlgglc.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/carcou.h"
+#include "asterfort/elref5.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevecd.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vlggl.h"
+#include "asterfort/vlgglc.h"
     character(len=16) :: option, nomte
 !    - FONCTION REALISEE:  CALCUL DU SECOND MEMBRE : TRAVAIL DE LA
 !                          PRESSION ET FORCES LINEIQUES TUYAUX

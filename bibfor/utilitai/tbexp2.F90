@@ -1,9 +1,9 @@
 subroutine tbexp2(nomta, para)
     implicit   none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/u2mesg.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: nomta, para
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG

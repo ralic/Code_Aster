@@ -16,12 +16,12 @@ subroutine dxqfor(global, xyzl, pgl, for, vecl)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/gquad4.h'
-    include 'asterfort/jevech.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/gquad4.h"
+#include "asterfort/jevech.h"
     logical :: global
     real(kind=8) :: xyzl(3, *), pgl(3, *)
     real(kind=8) :: for(6, *)

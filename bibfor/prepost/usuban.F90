@@ -1,8 +1,8 @@
 subroutine usuban(mater, isupp, para, ier)
     implicit none
-    include 'asterc/getvtx.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/getvtx.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mesg.h"
     real(kind=8) :: para(*)
     character(len=*) :: mater
 !-----------------------------------------------------------------------

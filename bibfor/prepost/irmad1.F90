@@ -3,15 +3,15 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                   chamno, nomcmp, nomsym, numnoe)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/exisdg.h'
-    include 'asterfort/irgags.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/irgags.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx, numnoe(*)
     integer :: versio, itype, nstat
     character(len=*) :: nomcmp(*), nomsym, chamno(*)

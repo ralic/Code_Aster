@@ -18,17 +18,17 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/alchml.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexatr.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/alchml.h"
+#include "asterfort/celces.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: ligrel, option, param, obnbpt, obnbno
 ! ------------------------------------------------------------------
 ! BUT: CREER L'OBJET OBNBPT QUI CONTIENDRA LE NOMBRE DE POINTS

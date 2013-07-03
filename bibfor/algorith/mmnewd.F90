@@ -21,11 +21,11 @@ subroutine mmnewd(alias, nno, ndim, coorma, coorpt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/mmfonf.h'
-    include 'asterfort/mmtang.h'
+#include "asterfort/assert.h"
+#include "asterfort/matini.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/mmfonf.h"
+#include "asterfort/mmtang.h"
     character(len=8) :: alias
     integer :: nno
     integer :: ndim

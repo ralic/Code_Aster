@@ -22,23 +22,23 @@ subroutine op0035()
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/uttrst.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/tbajco.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/ulisog.h'
-    include 'asterfort/ulnomf.h'
-    include 'asterfort/ulnume.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterc/uttrst.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/tbajco.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/titre.h"
+#include "asterfort/ulisog.h"
+#include "asterfort/ulnomf.h"
+#include "asterfort/ulnume.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: ketat
     character(len=8) :: result, k8bid, etat
     character(len=16) :: type, nomcmd, k16bid

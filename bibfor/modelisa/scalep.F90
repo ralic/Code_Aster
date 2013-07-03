@@ -40,17 +40,17 @@ subroutine scalep(spectr, noma, base, nuor, nbm,&
 ! OUT : SCAL   : TABLEAU DES PRODUITS SCALAIRES (NBEXCP,NBMR)
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/wkvect.h"
     integer :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
     logical :: ltable
     character(len=8) :: noma

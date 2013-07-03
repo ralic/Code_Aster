@@ -21,19 +21,19 @@ subroutine cfaca1(ndim, nbliac, ajliai, llf, llf1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calatm.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cftyli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nmrldb.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/calatm.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cftyli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nmrldb.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: defico, resoco
     character(len=19) :: solveu
     integer :: nbliai, nbliac, llf, llf1, llf2

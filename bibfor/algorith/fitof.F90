@@ -25,8 +25,8 @@ function fitof(phi, f1, f2, amor, horig)
 ! IN  :AMOR     R8  :AMORTISSEMENT REDUIT
 ! IN  :HORIG    C16 :DECALAGE DE L'ORIGINE POUR LES ANGLES
 !     ------------------------------------------------------------------
-    include 'asterfort/phase.h'
-    include 'asterfort/transf.h'
+#include "asterfort/phase.h"
+#include "asterfort/transf.h"
     real(kind=8) :: phi, f1, f2, f3, eps, phi1, phi2, phi3, df, fitof, amor, fx1
     real(kind=8) :: fx2
     complex(kind=8) :: h1, h2, h3, horig

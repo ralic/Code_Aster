@@ -1,7 +1,7 @@
 subroutine usvect(coef, alphad, alpham, alphaf, prof,&
                   ndim, vect)
     implicit   none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: ndim
     real(kind=8) :: coef, vect(*), alphad, alpham, alphaf, prof
 !-----------------------------------------------------------------------

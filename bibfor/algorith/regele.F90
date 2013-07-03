@@ -24,10 +24,10 @@ subroutine regele(option, typmod, npi, ndim, dimuel,&
 ! ======================================================================
 ! aslint: disable=W1306,W1504
     implicit      none
-    include 'asterfort/cabr2g.h'
-    include 'asterfort/dilopt.h'
-    include 'asterfort/dilsga.h'
-    include 'asterfort/equreg.h'
+#include "asterfort/cabr2g.h"
+#include "asterfort/dilopt.h"
+#include "asterfort/dilsga.h"
+#include "asterfort/equreg.h"
     logical :: axi
     integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, nddls, nddlm
     integer :: imate, dimdef, ndim, nno, nnom, nnos, dimuel, dimcon

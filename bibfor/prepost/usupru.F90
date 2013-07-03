@@ -25,15 +25,15 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 ! IN  : NBINST : NOMBRE D'INSTANTS
 ! OUT : PRUST  : PROFONDEUR D'USURE DU TUBE POUR CHAQUE INSTANT
 !-----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8depi.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/usubis.h'
-    include 'asterfort/usufon.h'
-    include 'asterfort/usunew.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8depi.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/usubis.h"
+#include "asterfort/usufon.h"
+#include "asterfort/usunew.h"
     real(kind=8) :: lsup, vusurt(*), vusuro(*), prust(*), para(7)
     character(len=4) :: crit
     character(len=24) :: type, typ1, typ2

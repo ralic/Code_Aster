@@ -17,16 +17,16 @@ subroutine te0401(optioz, nomtz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/bsthco.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/matpgl.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tranlg.h'
-    include 'asterfort/utvtsv.h'
-    include 'asterfort/vdxrig.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/bsthco.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/matpgl.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tranlg.h"
+#include "asterfort/utvtsv.h"
+#include "asterfort/vdxrig.h"
     character(len=*) :: optioz, nomtz
     character(len=16) :: option, nomte
 !     ----------------------------------------------------------------

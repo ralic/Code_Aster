@@ -2,10 +2,10 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
                   dfdx, dfdy, poids, poiaxi, dsx,&
                   dsy, norme)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/lteatt.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/lteatt.h"
     integer :: nno, igeom, nbcmp
     integer :: poiaxi
     real(kind=8) :: ff(nno), dfdx(9), dfdy(9), poids, dsx, dsy, norme, sig(*)

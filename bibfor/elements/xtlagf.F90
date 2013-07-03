@@ -21,10 +21,10 @@ subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/xplma2.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnn(3), nconta, nfhe
     integer :: jdepde, jpcai
     real(kind=8) :: ffc(9)

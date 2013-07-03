@@ -21,15 +21,15 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmsuiy.h'
-    include 'asterfort/sdmpic.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmsuiy.h"
+#include "asterfort/sdmpic.h"
     integer :: nbcmp, nbno, nbma
     integer :: nbpi, nbspi
     character(len=4) :: typcha

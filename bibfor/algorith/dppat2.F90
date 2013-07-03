@@ -1,8 +1,8 @@
 function dppat2(mater, pmoins, pplus, plas)
 !
     implicit      none
-    include 'asterfort/betaps.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/betaps.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: mater(5, 2), pmoins, pplus, plas, dppat2
 ! ======================================================================
 ! ======================================================================

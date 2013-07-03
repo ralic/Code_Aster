@@ -19,16 +19,16 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfmmex.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cfposn.h'
-    include 'asterfort/iscode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mminfi.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfmmex.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cfposn.h"
+#include "asterfort/iscode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mminfi.h"
     character(len=24) :: defico
     integer :: posmae
     integer :: ndexfr, izone

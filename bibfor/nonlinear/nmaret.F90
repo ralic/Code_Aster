@@ -3,16 +3,16 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/xrell2.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xrell2.h"
     integer :: nbarvz, nno, ndim, nbno
     character(len=19) :: nliseq
     character(len=24) :: gro1, gro2, numnod

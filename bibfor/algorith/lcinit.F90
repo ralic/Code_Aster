@@ -55,13 +55,13 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 !           INDI   :  INDICATEURS DES MECANISMES POT. ACTIFS (HUJEUX)
 !       ----------------------------------------------------------------
-    include 'asterfort/burini.h'
-    include 'asterfort/cvmini.h'
-    include 'asterfort/hujini.h'
-    include 'asterfort/irrini.h'
-    include 'asterfort/lcmmin.h'
-    include 'asterfort/lklini.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/burini.h"
+#include "asterfort/cvmini.h"
+#include "asterfort/hujini.h"
+#include "asterfort/irrini.h"
+#include "asterfort/lcmmin.h"
+#include "asterfort/lklini.h"
+#include "asterfort/vecini.h"
     integer :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
     integer :: nbcomm(nmat, 3), iret, indi(7), intg
     real(kind=8) :: deps(6), epsd(6), essai

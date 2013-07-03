@@ -27,38 +27,38 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !          NBGMP : NOMBRE DE GROUP_MA A CREER
 !     ------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cgmaal.h'
-    include 'asterfort/cgmaap.h'
-    include 'asterfort/cgmaba.h'
-    include 'asterfort/cgmacy.h'
-    include 'asterfort/cgmafn.h'
-    include 'asterfort/cgmasp.h'
-    include 'asterfort/cgmaxf.h'
-    include 'asterfort/cgmftm.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/getvem.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utlisi.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/assert.h"
+#include "asterfort/cgmaal.h"
+#include "asterfort/cgmaap.h"
+#include "asterfort/cgmaba.h"
+#include "asterfort/cgmacy.h"
+#include "asterfort/cgmafn.h"
+#include "asterfort/cgmasp.h"
+#include "asterfort/cgmaxf.h"
+#include "asterfort/cgmftm.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utlisi.h"
+#include "asterfort/wkvect.h"
 !
     character(len=8) :: ma, noma, kbid, kpos, nom1, tout
     character(len=8) :: alarm, tyma

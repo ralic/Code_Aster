@@ -18,13 +18,13 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/dismte.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/teattr.h'
+#include "asterfort/assert.h"
+#include "asterfort/dismte.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/teattr.h"
     integer :: ndim, jmail, jtymai, numae, numam
     integer :: imod, iatt(2), imail(2), nno(2)
 !

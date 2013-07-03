@@ -1,9 +1,9 @@
 subroutine rc32fu(nbsigr, nocc, situ, fuij, ug,&
                   factus)
     implicit   none
-    include 'asterfort/infniv.h'
-    include 'asterfort/rc32f0.h'
-    include 'asterfort/rc32f2.h'
+#include "asterfort/infniv.h"
+#include "asterfort/rc32f0.h"
+#include "asterfort/rc32f2.h"
     integer :: nbsigr, nocc(*), situ(*)
     real(kind=8) :: fuij(*), ug, factus(*)
 !     ------------------------------------------------------------------

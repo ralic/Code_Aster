@@ -62,12 +62,12 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 !
 !
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ddllag.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/ddllag.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     character(len=8) :: kb
     character(len=19) :: imped, nume91
     character(len=24) :: indin1

@@ -1,9 +1,9 @@
 subroutine dxtfor(global, xyzl, pgl, for, vecl)
     implicit  none
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/gtria3.h'
-    include 'asterfort/jevech.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/gtria3.h"
+#include "asterfort/jevech.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), for(6, *), vecl(*)
     logical :: global
 ! ======================================================================
@@ -31,7 +31,7 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
 !     IN  FOR    : FORCE APPLIQUEE SUR LA FACE
 !     OUT VECL   : CHARGEMENT NODAL RESULTANT
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: i, nno, jcara
     real(kind=8) :: aire, alpha, beta

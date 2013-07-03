@@ -1,6 +1,6 @@
 subroutine tbajvr(table, nbpara, nompar, vr, livr)
     implicit none
-    include 'asterfort/tbajva.h'
+#include "asterfort/tbajva.h"
     integer :: nbpara
     real(kind=8) :: vr, livr(*)
     character(len=*) :: table, nompar

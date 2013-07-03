@@ -1,17 +1,17 @@
 subroutine xcourb(basloc, noma, modele, courb)
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/cnscre.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
     character(len=8) :: modele, noma
     character(len=24) :: basloc, courb
 !

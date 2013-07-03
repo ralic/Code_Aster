@@ -28,9 +28,9 @@ subroutine gdt(teta, amat)
 !     OUT : AMAT      : MATRICE DE LINEARISATION
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/antisy.h'
-    include 'blas/ddot.h'
+#include "asterc/r8prem.h"
+#include "asterfort/antisy.h"
+#include "blas/ddot.h"
     real(kind=8) :: teta(3), eu(3), amat(3, 3), amat1(3, 3)
 !
 !-----------------------------------------------------------------------

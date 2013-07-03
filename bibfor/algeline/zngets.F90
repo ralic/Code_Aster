@@ -114,9 +114,9 @@ subroutine zngets(ishift, which, kev, np, ritz,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterfort/ivout.h'
-    include 'asterfort/zsortc.h'
-    include 'asterfort/zvout.h'
+#include "asterfort/ivout.h"
+#include "asterfort/zsortc.h"
+#include "asterfort/zvout.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

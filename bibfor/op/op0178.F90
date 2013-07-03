@@ -19,25 +19,25 @@ subroutine op0178()
 ! ======================================================================
 !     COMMANDE:  ENGENDRE_TEST
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/engtce.h'
-    include 'asterfort/engtcn.h'
-    include 'asterfort/engtrs.h'
-    include 'asterfort/engttb.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelstc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/tstobj.h'
-    include 'asterfort/ulexis.h'
-    include 'asterfort/ulopen.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterc/getvis.h"
+#include "asterc/getvtx.h"
+#include "asterfort/engtce.h"
+#include "asterfort/engtcn.h"
+#include "asterfort/engtrs.h"
+#include "asterfort/engttb.h"
+#include "asterfort/exisd.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelstc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/tstobj.h"
+#include "asterfort/ulexis.h"
+#include "asterfort/ulopen.h"
+#include "asterfort/wkvect.h"
     integer :: resume, sommi, lonuti, lonmax, ni
     real(kind=8) :: sommr
     character(len=3) :: type

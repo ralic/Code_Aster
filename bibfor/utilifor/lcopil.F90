@@ -28,7 +28,7 @@ subroutine lcopil(typ, mod, mater, kooh)
 !     OUT KOOH   :  OPERATEUR DE SOUPLESSE ELASTIQUE LINEAIRE
 !     ----------------------------------------------------------------
 !
-    include 'asterfort/lcinma.h'
+#include "asterfort/lcinma.h"
     integer :: ndt, ndi, i, j
     real(kind=8) :: un, zero
     parameter       ( un   = 1.d0   )

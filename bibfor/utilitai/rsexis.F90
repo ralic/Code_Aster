@@ -1,6 +1,6 @@
 subroutine rsexis(nomsd, ier)
     implicit none
-    include 'asterfort/jeexin.h'
+#include "asterfort/jeexin.h"
     character(len=*) :: nomsd
     integer :: ier
 !     ------------------------------------------------------------------

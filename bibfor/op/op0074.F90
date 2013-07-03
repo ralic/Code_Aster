@@ -25,19 +25,19 @@ subroutine op0074()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdtr74.h'
-    include 'asterfort/mdveri.h'
-    include 'asterfort/resu74.h'
-    include 'asterfort/ssdt74.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterfort/cresol.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdtr74.h"
+#include "asterfort/mdveri.h"
+#include "asterfort/resu74.h"
+#include "asterfort/ssdt74.h"
     character(len=8) :: matgen, nomres, tran
     character(len=14) :: numgen
     character(len=19) :: solveu

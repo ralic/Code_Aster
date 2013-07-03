@@ -20,13 +20,13 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/numer3.h'
+#include "jeveux.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/numer3.h"
     character(len=*) :: modelz
     character(len=24) :: numedd
     character(len=19) :: lischa, solveu

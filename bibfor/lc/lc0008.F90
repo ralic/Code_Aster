@@ -5,11 +5,11 @@ subroutine lc0008(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/lcmaza.h'
-    include 'asterfort/lcmzcp.h'
-    include 'asterfort/lcmzge.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/lcmaza.h"
+#include "asterfort/lcmzcp.h"
+#include "asterfort/lcmzge.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/u2mesk.h"
     integer :: imate, ndim, kpg, ksp
     integer :: icomp, nvi
     integer :: codret

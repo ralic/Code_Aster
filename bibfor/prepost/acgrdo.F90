@@ -5,27 +5,27 @@ subroutine acgrdo(jvectn, jvectu, jvectv, nbordr, ordini,&
                   forvie, valpar, vresu)
 ! aslint: disable=W1501,W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/r8maem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/acmata.h'
-    include 'asterfort/anacri.h'
-    include 'asterfort/fgequi.h'
-    include 'asterfort/fmrayo.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/fonbpa.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lciv2e.h'
-    include 'asterfort/limend.h'
-    include 'asterfort/rccome.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/renrfa.h'
-    include 'asterfort/teneps.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/getvr8.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/acmata.h"
+#include "asterfort/anacri.h"
+#include "asterfort/fgequi.h"
+#include "asterfort/fmrayo.h"
+#include "asterfort/fointe.h"
+#include "asterfort/fonbpa.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lciv2e.h"
+#include "asterfort/limend.h"
+#include "asterfort/rccome.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/renrfa.h"
+#include "asterfort/teneps.h"
+#include "asterfort/u2mess.h"
     integer :: jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jdtaum, jresun
     character(len=16) :: nommet, nomcri, nomfor, forvie

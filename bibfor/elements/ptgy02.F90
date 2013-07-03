@@ -19,12 +19,12 @@ subroutine ptgy02(sk, nl, xnu, rho, a,&
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     real(kind=8) :: sk(*)
     real(kind=8) :: xnu, rho, a, xl, xiy, xiz, xjx, ey, ez
     integer :: nl, ist

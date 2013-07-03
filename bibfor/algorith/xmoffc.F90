@@ -17,9 +17,9 @@ subroutine xmoffc(lact, nlact, nno, ffe, ffc)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: lact(*), nlact, nno
     real(kind=8) :: ffe(*), ffc(*)
 !

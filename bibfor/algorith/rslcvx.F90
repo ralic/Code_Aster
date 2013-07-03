@@ -37,11 +37,11 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
 !       IN  MATER  :  COEFFICIENTS MATERIAU A T+DT
 !       OUT SEUIL  :  SEUIL  ELASTICITE
 !       ----------------------------------------------------------------
-    include 'asterfort/lchydr.h'
-    include 'asterfort/lcnrts.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsomh.h'
-    include 'asterfort/rsliso.h'
+#include "asterfort/lchydr.h"
+#include "asterfort/lcnrts.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsomh.h"
+#include "asterfort/rsliso.h"
     integer :: nmat, imat, kpg, ksp
     character(len=*) :: fami
 !

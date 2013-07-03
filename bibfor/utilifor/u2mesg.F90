@@ -19,22 +19,22 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
 ! person_in_charge: mathieu.courtois at edf.fr
 !
     implicit none
-    include 'asterc/getres.h'
-    include 'asterc/isjvup.h'
-    include 'asterc/uexcep.h'
-    include 'asterc/utprin.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/ib1mai.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetv.h'
-    include 'asterfort/jefini.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevema.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/mpicmw.h'
-    include 'asterfort/onerrf.h'
-    include 'asterfort/trabck.h'
+#include "asterc/getres.h"
+#include "asterc/isjvup.h"
+#include "asterc/uexcep.h"
+#include "asterc/utprin.h"
+#include "asterfort/assert.h"
+#include "asterfort/ib1mai.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetv.h"
+#include "asterfort/jefini.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevema.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/mpicmw.h"
+#include "asterfort/onerrf.h"
+#include "asterfort/trabck.h"
     character(len=*) :: typ, idmess, valk(*)
     integer :: nk, ni, vali(*), nr
     real(kind=8) :: valr(*)

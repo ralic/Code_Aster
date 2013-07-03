@@ -50,10 +50,10 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
 ! OUT PROJ    : NE SERT PLUS A RIEN
 ! ----------------------------------------------------------------------
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option
     integer :: ndim, imate, cdrett

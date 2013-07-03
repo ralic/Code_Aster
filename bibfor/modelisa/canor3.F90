@@ -16,7 +16,7 @@ subroutine canor3(coor, a, b, c)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/u2mesg.h'
+#include "asterfort/u2mesg.h"
     real(kind=8) :: coor(3, *), a, b, c, x1, x2, x3, y1, y2, y3, z1, z2, z3, x12
     real(kind=8) :: y12, z12
     real(kind=8) :: x13, y13, z13, norme

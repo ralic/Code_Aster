@@ -35,15 +35,15 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
 !
 ! aslint: disable=W1306,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/xxnmgr.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/iselli.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/xxnmgr.h"
     integer :: nnop, imate, lgpg, codret, igeom, nfiss, jfisno
     integer :: cnset(4*32), heavt(36*nfiss), lonch(10), ndim
     integer :: nfh, nfe, ddlc, ddlm

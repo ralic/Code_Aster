@@ -42,10 +42,10 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
 !          MTRAC  :  INDICATEUR LIE A LA TRACTION
 !          IRET   :  CODE RETOUR (>0 -> PB)
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/hujjid.h'
-    include 'asterfort/hujprj.h'
-    include 'asterfort/lceqvn.h'
+#include "asterc/r8prem.h"
+#include "asterfort/hujjid.h"
+#include "asterfort/hujprj.h"
+#include "asterfort/lceqvn.h"
     character(len=8) :: mod
     real(kind=8) :: mater(nmat, 2), deps(6), yd(nr), yf(nr), vind(nvi)
     real(kind=8) :: drdy(nr, nr), vins(nr), ye(nr), vinf(nvi)

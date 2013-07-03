@@ -25,8 +25,8 @@ subroutine hujcrd(k, mater, sig, vin, seuild)
 !        VIN    :  VARIABLES INTERNES = ( Q, R, X )
 !    OUT SEUILD :  SEUIL DU MECANISME DEVIATOIRE K
 !    ---------------------------------------------------------------
-    include 'asterfort/hujprj.h'
-    include 'asterfort/infniv.h'
+#include "asterfort/hujprj.h"
+#include "asterfort/infniv.h"
     integer :: k, ndt, ndi
     integer :: ifm, niv
     real(kind=8) :: mater(22, 2), sig(6), vin(*), seuild

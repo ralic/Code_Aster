@@ -2,12 +2,12 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                   nbfre2, nbfreq, nblagr, typep, typcon,&
                   dimc1, zimc1)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/freqom.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/freqom.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
     integer :: ifm, nbfre1, nbfre2, nbfreq, nblagr
     real(kind=8) :: omgmin, omgmax, dimc1
     complex(kind=8) :: zimc1

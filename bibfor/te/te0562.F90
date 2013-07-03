@@ -18,13 +18,13 @@ subroutine te0562(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elrefv.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/massup.h'
-    include 'asterfort/teattr.h'
+#include "asterfort/assert.h"
+#include "asterfort/elrefv.h"
+#include "asterfort/jevech.h"
+#include "asterfort/massup.h"
+#include "asterfort/teattr.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  OPTION MASS_MECA_* POUR GRAD_VARI

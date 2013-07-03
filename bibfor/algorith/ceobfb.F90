@@ -18,10 +18,10 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob,&
 ! ======================================================================
 ! person_in_charge: ludovic.idoux at edf.fr
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/diago2.h'
-    include 'asterfort/diago3.h'
-    include 'asterfort/r8inir.h'
+#include "asterc/r8prem.h"
+#include "asterfort/diago2.h"
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: epsm(6), bm(6), fb(6), fbm(6), nofbm
     real(kind=8) :: lambda, mu, ecrob
     integer :: bdim

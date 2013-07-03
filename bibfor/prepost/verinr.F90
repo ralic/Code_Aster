@@ -1,10 +1,10 @@
 function verinr(nbval, tbins1, tbins2)
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
     logical :: verinr
     integer :: nbval
     character(len=19) :: tbins1, tbins2

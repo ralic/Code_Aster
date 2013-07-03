@@ -30,9 +30,9 @@ subroutine facint(nbpas, dim, longh, vec1, vec2,&
 !             S  : MATRICE DE TRAVAIL DE DIMENSION DIM, A FACTORISER
 !             R  : MATRICE DE TRAVAIL, RESULTAT DE LA FACTORISATION
 !             D  : VECTEUR DE TRAVAIL
-    include 'jeveux.h'
-    include 'asterfort/diaghr.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/diaghr.h"
+#include "asterfort/u2mess.h"
     integer :: dim
     complex(kind=8) :: s(dim, dim), r(dim, dim), u(*), w(*)
     real(kind=8) :: d(dim), vec1(long), vec2(longh), v(*)

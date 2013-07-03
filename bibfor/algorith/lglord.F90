@@ -1,8 +1,8 @@
 subroutine lglord(sig1, sig2, sig3)
 !
     implicit    none
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     real(kind=8) :: sig1, sig2, sig3
 ! =================================================================
 ! ======================================================================

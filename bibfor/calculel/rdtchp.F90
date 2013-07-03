@@ -1,20 +1,20 @@
 subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
                   noma, nomare, ligrel, cret)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/celces.h'
-    include 'asterfort/cescar.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnscno.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/rdtces.h'
-    include 'asterfort/rdtcns.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescar.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rdtces.h"
+#include "asterfort/rdtcns.h"
     integer :: cret
     character(len=1) :: base
     character(len=8) :: noma, nomare

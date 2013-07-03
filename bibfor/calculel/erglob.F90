@@ -1,18 +1,18 @@
 subroutine erglob(cheler, yathm, perman, option, iord,&
                   resuco, resuc1)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/celver.h'
-    include 'asterfort/digdel.h'
-    include 'asterfort/erglhm.h'
-    include 'asterfort/erglme.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nbgrel.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/celver.h"
+#include "asterfort/digdel.h"
+#include "asterfort/erglhm.h"
+#include "asterfort/erglme.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/u2mess.h"
     integer :: iord
     character(len=*) :: resuco
     character(len=19) :: resuc1

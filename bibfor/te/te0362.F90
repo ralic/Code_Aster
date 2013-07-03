@@ -19,14 +19,14 @@ subroutine te0362(option, nomte)
 ! person_in_charge: jerome.laverne at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/elref2.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/subaco.h'
-    include 'asterfort/sumetr.h'
+#include "jeveux.h"
+#include "asterfort/dfdm1d.h"
+#include "asterfort/elref2.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/subaco.h"
+#include "asterfort/sumetr.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 !     CALCUL DES COORDONNEES DES POINTS DE GAUSS

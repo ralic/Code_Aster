@@ -1,20 +1,20 @@
 subroutine acnoce(noma, type, liste, nb, coor,&
                   rc, xcen, tole, v1, ispv)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/padist.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/u2mesg.h'
-    include 'blas/ddot.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/padist.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesg.h"
+#include "blas/ddot.h"
     real(kind=8) :: coor(*), xcen(3), rc, tole, v1(3)
     character(len=8) :: noma
     character(len=24) :: liste(*)

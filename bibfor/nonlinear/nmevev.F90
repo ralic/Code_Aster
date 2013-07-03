@@ -20,13 +20,13 @@ subroutine nmevev(sddisc, numins, valinc, sderro, defico,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmerge.h'
-    include 'asterfort/nmevel.h'
-    include 'asterfort/nmlecv.h'
-    include 'asterfort/nmltev.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmerge.h"
+#include "asterfort/nmevel.h"
+#include "asterfort/nmlecv.h"
+#include "asterfort/nmltev.h"
     character(len=24) :: sderro, defico, resoco
     integer :: numins
     character(len=19) :: sddisc, valinc(*)

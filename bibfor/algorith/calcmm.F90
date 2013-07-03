@@ -2,8 +2,8 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
                   nsg, toutms, comp, nvi, vind,&
                   irota)
     implicit none
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/lcmmsg.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, nbcomm(nmat, 3), nvi, irota, nfs, nsg
     real(kind=8) :: pgl(3, 3), toutms(nfs, nsg, 6), vind(*)
     character(len=16) :: comp(*)

@@ -1,8 +1,8 @@
 subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
                   para, nbpara)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterfort/lxscan.h'
+#include "asterc/getres.h"
+#include "asterfort/lxscan.h"
     character(len=*) :: donnee(*), para(*)
     integer :: iligd, icold, nbtitr, mxpara, nbpara
 !     ------------------------------------------------------------------

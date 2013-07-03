@@ -1,8 +1,8 @@
 subroutine memver(action, prec, arret, titre)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/memres.h'
-    include 'asterfort/utgtme.h'
+#include "asterfort/assert.h"
+#include "asterfort/memres.h"
+#include "asterfort/utgtme.h"
     character(len=*) :: action, arret, titre
     real(kind=8) :: prec, precs
 ! ======================================================================

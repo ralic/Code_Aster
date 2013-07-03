@@ -42,30 +42,30 @@ subroutine majou(model, modmec, solveu, num, nu,&
 !              ET DE FLUIDE
 !     IN: I: NDBLE: INDICATEUR DE RECHERCHE DE NOEUDS DOUBLES
 !---------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterfort/alimrs.h'
-    include 'asterfort/calflu.h'
-    include 'asterfort/chnucn.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/prstoc.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vtcmbl.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterfort/alimrs.h"
+#include "asterfort/calflu.h"
+#include "asterfort/chnucn.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/prstoc.h"
+#include "asterfort/resoud.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vtcmbl.h"
+#include "asterfort/wkvect.h"
     integer :: nbvale, nbrefe, nbdesc, ibid, nbid, nbmode, ilires
     integer :: i, icor(2), ndble, tabad(5), jj, kk
     real(kind=8) :: const(2)

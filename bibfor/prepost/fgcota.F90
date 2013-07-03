@@ -26,7 +26,7 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
 !          SIGMIN  CONTRAINTES MINIMALES DES CYCLES
 !       ----------------------------------------------------------------
     implicit none
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: pic(*), e1, e2, sigmax(*), sigmin(*)
     integer :: npic, ncyc, k
     logical :: cyczer

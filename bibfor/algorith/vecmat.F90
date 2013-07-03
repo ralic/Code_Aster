@@ -53,9 +53,9 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !    ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/rcvalb.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi
     integer :: ioptio, idnr
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

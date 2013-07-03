@@ -51,20 +51,20 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 ! OUT DSIDEP : MATRICE TANGENTE
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/brbagl.h'
-    include 'asterfort/critnu.h'
-    include 'asterfort/d0mpfn.h'
-    include 'asterfort/ddmpfn.h'
-    include 'asterfort/dndiss.h'
-    include 'asterfort/dxktan.h'
-    include 'asterfort/fplass.h'
-    include 'asterfort/matmul.h'
-    include 'asterfort/mppffn.h'
-    include 'asterfort/norrm6.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/tanmat.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/brbagl.h"
+#include "asterfort/critnu.h"
+#include "asterfort/d0mpfn.h"
+#include "asterfort/ddmpfn.h"
+#include "asterfort/dndiss.h"
+#include "asterfort/dxktan.h"
+#include "asterfort/fplass.h"
+#include "asterfort/matmul.h"
+#include "asterfort/mppffn.h"
+#include "asterfort/norrm6.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/tanmat.h"
+#include "blas/dcopy.h"
     logical :: bbok
 !
     integer :: ncrit, ncrit2, ier, zimat

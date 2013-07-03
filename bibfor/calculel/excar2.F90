@@ -1,9 +1,9 @@
 subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/trigd.h'
+#include "jeveux.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/trigd.h"
     integer :: ngrmx, desc, dg(*), ncmp
 !
 ! ======================================================================

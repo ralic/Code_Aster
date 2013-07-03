@@ -18,33 +18,33 @@ subroutine te0367(option, nomte)
 ! ======================================================================
 !
     implicit   none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/elelin.h'
-    include 'asterfort/elrfvf.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/ttprsm.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xlacti.h'
-    include 'asterfort/xmelet.h'
-    include 'asterfort/xmmjac.h'
-    include 'asterfort/xmmjeu.h'
-    include 'asterfort/xmoffc.h'
-    include 'asterfort/xmpint.h'
-    include 'asterfort/xmvec0.h'
-    include 'asterfort/xmvec1.h'
-    include 'asterfort/xmvef0.h'
-    include 'asterfort/xmvef1.h'
-    include 'asterfort/xtcaln.h'
-    include 'asterfort/xtdepm.h'
-    include 'asterfort/xtedd2.h'
-    include 'asterfort/xtform.h'
-    include 'asterfort/xtlagm.h'
+#include "asterfort/assert.h"
+#include "asterfort/elelin.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/normev.h"
+#include "asterfort/ttprsm.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xlacti.h"
+#include "asterfort/xmelet.h"
+#include "asterfort/xmmjac.h"
+#include "asterfort/xmmjeu.h"
+#include "asterfort/xmoffc.h"
+#include "asterfort/xmpint.h"
+#include "asterfort/xmvec0.h"
+#include "asterfort/xmvec1.h"
+#include "asterfort/xmvef0.h"
+#include "asterfort/xmvef1.h"
+#include "asterfort/xtcaln.h"
+#include "asterfort/xtdepm.h"
+#include "asterfort/xtedd2.h"
+#include "asterfort/xtform.h"
+#include "asterfort/xtlagm.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------

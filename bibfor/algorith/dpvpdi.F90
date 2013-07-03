@@ -23,8 +23,8 @@ subroutine dpvpdi(nbmat, mater, td, tf, tr,&
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ---------
 ! =====================================================================
     implicit      none
-    include 'asterc/iisnan.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/iisnan.h"
+#include "asterfort/u2mess.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), td, tf, tr, depst(6), deps(6)
 ! =====================================================================

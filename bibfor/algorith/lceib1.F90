@@ -19,11 +19,11 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/verift.h'
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/verift.h"
     character(len=16) :: compor(*)
     character(len=*) :: fami
     integer :: imate, ndim, t(3, 3), kpg, ksp

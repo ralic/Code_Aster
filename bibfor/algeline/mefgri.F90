@@ -32,7 +32,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
 !  IN   : ZMIN   : COTE MIN DU FAISCEAU DE TUBES
 !  IN   : ZMAX   : COTE MAX DU FAISCEAU DE TUBES
 !-----------------------------------------------------------------------
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     integer :: ntypg, nbgtot, itypg(nbgtot)
     real(kind=8) :: zg(nbgtot), hg(ntypg), zmin, zmax
 !

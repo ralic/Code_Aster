@@ -17,9 +17,9 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'asterfort/cdnfo2.h'
-    include 'asterfort/rcvale.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cdnfo2.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/u2mess.h"
     character(len=8) :: kfonc1, kfonc2, mater, k8b
     real(kind=8) :: normf, x0
     real(kind=8) :: xrac

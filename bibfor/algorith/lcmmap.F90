@@ -112,25 +112,25 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !     ----------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/d1ma3d.h'
-    include 'asterfort/dmat3d.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lcmaec.h'
-    include 'asterfort/lcmaei.h'
-    include 'asterfort/lcmafl.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/d1ma3d.h"
+#include "asterfort/dmat3d.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lcmaec.h"
+#include "asterfort/lcmaei.h"
+#include "asterfort/lcmafl.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "blas/dcopy.h"
     integer :: nfs, nsg, kpg, ksp, nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3)
     integer :: nhsr
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), hook(6, 6)

@@ -1,9 +1,9 @@
 subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
                   signes, vect, ivecp, pkx, plx)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/u2mesi.h"
     integer :: ldynam, neq, nborto, nbvect, ivecp
     real(kind=8) :: prorto
     real(kind=8) :: signes(nbvect), vect(neq, nbvect), pkx(neq, nbvect)

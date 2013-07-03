@@ -3,8 +3,8 @@ subroutine affdis(ndim, irep, eta, car, val,&
                   ncmp, ntp, jdcinf, jdvinf, isym,&
                   ifm)
     implicit   none
-    include 'asterfort/afdi2d.h'
-    include 'asterfort/afdi3d.h'
+#include "asterfort/afdi2d.h"
+#include "asterfort/afdi3d.h"
     integer :: ndim, irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp, ifm
     integer :: isym, jdcinf, jdvinf
     real(kind=8) :: eta, val(*)

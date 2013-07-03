@@ -4,13 +4,13 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode,&
                   iquoti, solveu)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ggubs.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/vpmort.h'
-    include 'asterfort/vpstur.h'
+#include "asterfort/ggubs.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/resoud.h"
+#include "asterfort/vpmort.h"
+#include "asterfort/vpstur.h"
     real(kind=8) :: x(neq, 1), mx(neq, *), err, x0(neq)
     real(kind=8) :: valp
     integer :: place, iexcl(*), imode, neq, mxiter, iter

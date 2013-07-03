@@ -24,8 +24,8 @@ subroutine cbpesa(char, noma, ndim, ligrmo)
 !      NDIM   : DIMENSION DU PROBLEME
 !      LIGRMO : NOM DU LIGREL DE MODELE
 !
-    include 'asterc/getfac.h'
-    include 'asterfort/capesa.h'
+#include "asterc/getfac.h"
+#include "asterfort/capesa.h"
     character(len=8) :: char, noma
     character(len=*) :: ligrmo
     integer :: ipesa, ndim

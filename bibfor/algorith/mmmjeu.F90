@@ -22,7 +22,7 @@ subroutine mmmjeu(ndim, jeusup, norm, geome, geomm,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/matini.h'
+#include "asterfort/matini.h"
     integer :: ndim
     real(kind=8) :: jeusup
     real(kind=8) :: norm(3), tau1(3), tau2(3)

@@ -30,7 +30,7 @@ subroutine disbut(np3, ic, xloc, typobs, xjeu,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterc/r8depi.h'
+#include "asterc/r8depi.h"
     integer :: np3, ic
     real(kind=8) :: xloc(*)
     integer :: typobs

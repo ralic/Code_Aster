@@ -21,11 +21,11 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 !     --     DISMOI(XFEM)
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
     character(len=32) :: repk

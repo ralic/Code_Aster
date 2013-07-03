@@ -20,45 +20,45 @@ subroutine mmmbca(noma, sddyna, iterat, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfdist.h'
-    include 'asterfort/cfmmco.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mcomce.h'
-    include 'asterfort/mcopco.h'
-    include 'asterfort/mmalgo.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/mmcycd.h'
-    include 'asterfort/mmeven.h'
-    include 'asterfort/mmextm.h'
-    include 'asterfort/mmglis.h'
-    include 'asterfort/mmimp4.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mminfm.h'
-    include 'asterfort/mmmjev.h'
-    include 'asterfort/mmnewj.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmstaf.h'
-    include 'asterfort/mmvalp.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vtgpld.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfdist.h"
+#include "asterfort/cfmmco.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mcomce.h"
+#include "asterfort/mcopco.h"
+#include "asterfort/mmalgo.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mmcycd.h"
+#include "asterfort/mmeven.h"
+#include "asterfort/mmextm.h"
+#include "asterfort/mmglis.h"
+#include "asterfort/mmimp4.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mminfm.h"
+#include "asterfort/mmmjev.h"
+#include "asterfort/mmnewj.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmstaf.h"
+#include "asterfort/mmvalp.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vtgpld.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*), solalg(*)

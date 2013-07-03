@@ -19,11 +19,11 @@ subroutine mmbouc(resoco, nombcl, typope, valbcl)
 ! REPONSABLE
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     character(len=4) :: nombcl
     character(len=4) :: typope

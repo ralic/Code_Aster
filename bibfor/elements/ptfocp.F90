@@ -2,16 +2,16 @@ subroutine ptfocp(itype, option, nomte, xl, rad,&
                   angs2, nno, nc, pgl, pgl1,&
                   pgl2, fer, fei)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/pscvec.h'
-    include 'asterfort/ptfop1.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpvgl.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/provec.h"
+#include "asterfort/pscvec.h"
+#include "asterfort/ptfop1.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpvgl.h"
+#include "blas/ddot.h"
     integer :: itype
     character(len=*) :: option, nomte
     real(kind=8) :: fer(12), fei(12), pgl(3, 3), pgl1(3, 3), pgl2(3, 3)

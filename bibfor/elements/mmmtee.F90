@@ -21,11 +21,11 @@ subroutine mmmtee(phasep, ndim, nne, mprojn, mprojt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/matini.h'
-    include 'asterfort/mmmmpb.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/vecini.h'
+#include "asterfort/matini.h"
+#include "asterfort/mmmmpb.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/vecini.h"
     character(len=9) :: phasep
     integer :: ndim, nne
     real(kind=8) :: mprojn(3, 3), mprojt(3, 3)

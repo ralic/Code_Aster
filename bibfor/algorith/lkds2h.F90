@@ -2,14 +2,14 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
                   ds2hds, retcom)
 !
     implicit      none
-    include 'asterc/r8miem.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lctrma.h'
-    include 'asterfort/lkhtet.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8miem.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lctrma.h"
+#include "asterfort/lkhtet.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
     integer :: nbmat, retcom
     real(kind=8) :: invar, mater(nbmat, 2), s(6), dhds(6), ds2hds(6)
 ! =================================================================

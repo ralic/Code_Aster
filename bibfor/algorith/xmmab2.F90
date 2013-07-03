@@ -26,10 +26,10 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/indent.h'
-    include 'asterfort/mkkvec.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/xplma2.h'
+#include "asterfort/indent.h"
+#include "asterfort/mkkvec.h"
+#include "asterfort/normev.h"
+#include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnne(3), jnnm(3), nfaes, jpcai, cface(5, 3)
     integer :: nsinge, nsingm, nfhe
     integer :: nvit, nconta, ndeple, jddle(2), jddlm(2)

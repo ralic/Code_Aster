@@ -1,11 +1,11 @@
 subroutine aptest(nk, imata, itest, cbd)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nk, imata, itest
     complex(kind=8) :: cbd(100)
 !     ------------------------------------------------------------------

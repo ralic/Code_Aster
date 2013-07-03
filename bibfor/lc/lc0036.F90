@@ -20,7 +20,7 @@ subroutine lc0036(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'asterfort/lcrolo.h'
+#include "asterfort/lcrolo.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
     real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)

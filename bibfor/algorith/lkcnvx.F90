@@ -33,11 +33,11 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat,&
 ! ----  VINF(7):  0 OU 1 POUR PRISE EN COMPTE PLASTICITE DANS LCPLAS ---
 ! ----------------------------------------------------------------------
 ! ======================================================================
-    include 'asterc/r8prem.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lkcrip.h'
-    include 'asterfort/lkcriv.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lkcrip.h"
+#include "asterfort/lkcriv.h"
+#include "asterfort/u2mess.h"
     integer :: nmat, nvi
     real(kind=8) :: mater(nmat, 2), seuil
     real(kind=8) :: sigd(6), sigf(6), vind(nvi), vinf(nvi)

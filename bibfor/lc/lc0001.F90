@@ -3,10 +3,10 @@ subroutine lc0001(fami, kpg, ksp, ndim, imate,&
                   angmas, sigp, vip, typmod, ndsde,&
                   dsidep, codret)
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/nmelas.h'
-    include 'asterfort/nmorth.h'
-    include 'asterfort/rccoma.h'
+#include "asterfort/assert.h"
+#include "asterfort/nmelas.h"
+#include "asterfort/nmorth.h"
+#include "asterfort/rccoma.h"
     integer :: imate, ndim, kpg, ksp, codret, icodre
     integer :: neps, nsig, ndsde
     real(kind=8) :: angmas(3), deps(neps), sigm(nsig), sigp(nsig)

@@ -3,15 +3,15 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd,&
                   listno, icmp, ifi, iwri, iadmax,&
                   ordr, chamsy, nomcon, lresu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mess.h"
     integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
     integer :: listno(*), icmp, ifi, ima, nbord2, iadmax, jtype, ordr(nbord2)
     logical :: iwri, lresu

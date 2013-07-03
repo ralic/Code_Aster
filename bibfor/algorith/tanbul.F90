@@ -18,14 +18,14 @@ subroutine tanbul(option, ndim, g, mate, compor,&
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/epstmc.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8miem.h"
+#include "asterfort/epstmc.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mesk.h"
     logical :: resi, mini
     integer :: ndim, g, mate
     real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst

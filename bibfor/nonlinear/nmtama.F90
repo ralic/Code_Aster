@@ -19,8 +19,8 @@ subroutine nmtama(fami, kpg, ksp, imate, instam,&
 !
     implicit none
 !
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     integer :: kpg, ksp, imate
     character(len=*) :: fami
     real(kind=8) :: instam, instap, matm(3), mat(14)

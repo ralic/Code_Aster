@@ -103,16 +103,16 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !     POUR LE MONOCRISTAL, DIMENSIONS MAX
 !     NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
 !     NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
-    include 'asterfort/lccnvx.h'
-    include 'asterfort/lcdedi.h'
-    include 'asterfort/lcdehy.h'
-    include 'asterfort/lcelas.h'
-    include 'asterfort/lcelpl.h'
-    include 'asterfort/lcmate.h'
-    include 'asterfort/lcotan.h'
-    include 'asterfort/lcplas.h'
-    include 'asterfort/lcpopl.h'
-    include 'blas/dcopy.h'
+#include "asterfort/lccnvx.h"
+#include "asterfort/lcdedi.h"
+#include "asterfort/lcdehy.h"
+#include "asterfort/lcelas.h"
+#include "asterfort/lcelpl.h"
+#include "asterfort/lcmate.h"
+#include "asterfort/lcotan.h"
+#include "asterfort/lcplas.h"
+#include "asterfort/lcpopl.h"
+#include "blas/dcopy.h"
     integer :: nmat, nsg, nfs, nrm, iret, i, j
     parameter  ( nsg=30)
     parameter  ( nfs=5)

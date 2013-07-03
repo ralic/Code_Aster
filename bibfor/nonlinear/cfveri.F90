@@ -20,34 +20,34 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/apcopt.h'
-    include 'asterfort/apinfi.h'
-    include 'asterfort/apinfr.h'
-    include 'asterfort/apvect.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfcoor.h'
-    include 'asterfort/cfcorn.h'
-    include 'asterfort/cfdisi.h'
-    include 'asterfort/cfdist.h'
-    include 'asterfort/cfnewj.h'
-    include 'asterfort/cfnumm.h'
-    include 'asterfort/cfnumn.h'
-    include 'asterfort/cftanr.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mminfi.h'
-    include 'asterfort/mminfl.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmnpoi.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/apcopt.h"
+#include "asterfort/apinfi.h"
+#include "asterfort/apinfr.h"
+#include "asterfort/apvect.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfcoor.h"
+#include "asterfort/cfcorn.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/cfdist.h"
+#include "asterfort/cfnewj.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfnumn.h"
+#include "asterfort/cftanr.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mminfi.h"
+#include "asterfort/mminfl.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmnpoi.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: newgeo

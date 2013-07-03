@@ -20,13 +20,13 @@ subroutine nmchap(valinc, solalg, meelem, veelem, veasse,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/infdbg.h'
-    include 'asterfort/nmch1p.h'
-    include 'asterfort/nmch2p.h'
-    include 'asterfort/nmch3p.h'
-    include 'asterfort/nmch4p.h'
-    include 'asterfort/nmch5p.h'
-    include 'asterfort/nmch6p.h'
+#include "asterfort/infdbg.h"
+#include "asterfort/nmch1p.h"
+#include "asterfort/nmch2p.h"
+#include "asterfort/nmch3p.h"
+#include "asterfort/nmch4p.h"
+#include "asterfort/nmch5p.h"
+#include "asterfort/nmch6p.h"
     character(len=19) :: veelem(*), meelem(*)
     character(len=19) :: veasse(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)

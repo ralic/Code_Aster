@@ -19,17 +19,17 @@ subroutine cfflm2(resoco, resigr, ndim, neq, nesmax,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/calapr.h'
-    include 'asterfort/cfcglc.h'
-    include 'asterfort/cfmmvd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/calapr.h"
+#include "asterfort/cfcglc.h"
+#include "asterfort/cfmmvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
     character(len=24) :: resoco
     real(kind=8) :: resigr
     real(kind=8) :: glimin, glimax, glitol

@@ -31,59 +31,59 @@ subroutine op0060()
 !
 !
 !
-    include 'jeveux.h'
-    include 'asterc/etausr.h'
-    include 'asterc/gcucon.h'
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8depi.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dy2mbr.h'
-    include 'asterfort/dydome.h'
-    include 'asterfort/dyexre.h'
-    include 'asterfort/dylach.h'
-    include 'asterfort/dylech.h'
-    include 'asterfort/dylema.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/mdarch.h'
-    include 'asterfort/mtcmbl.h'
-    include 'asterfort/mtdefs.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/omega2.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/resu60.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsagsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsnoch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/sigusr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utcrre.h'
-    include 'asterfort/utexcm.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/vtcrem.h'
-    include 'asterfort/wkvect.h'
-    include 'asterfort/zinit.h'
-    include 'blas/zcopy.h'
+#include "jeveux.h"
+#include "asterc/etausr.h"
+#include "asterc/gcucon.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8depi.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/cresol.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dy2mbr.h"
+#include "asterfort/dydome.h"
+#include "asterfort/dyexre.h"
+#include "asterfort/dylach.h"
+#include "asterfort/dylech.h"
+#include "asterfort/dylema.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/mdarch.h"
+#include "asterfort/mtcmbl.h"
+#include "asterfort/mtdefs.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/omega2.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/resu60.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsagsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsnoch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utcrre.h"
+#include "asterfort/utexcm.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcrem.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/zinit.h"
+#include "blas/zcopy.h"
     integer :: ibid, nbold, isto1
     real(kind=8) :: r8bid
     complex(kind=8) :: c16bid

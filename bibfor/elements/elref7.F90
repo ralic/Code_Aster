@@ -21,7 +21,7 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
 !
     implicit none
 !
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     character(len=8) :: elrefv
     integer :: tymvol, ndegre
     integer :: nbf

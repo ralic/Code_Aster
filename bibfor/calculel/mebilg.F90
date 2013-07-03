@@ -4,24 +4,24 @@ subroutine mebilg(optioz, result, modele, depla1, depla2,&
                   nbprup, noprup)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvid.h'
-    include 'asterfort/calcul.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/gcharg.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/mesomm.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajvi.h'
-    include 'asterfort/tbajvr.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vrcins.h'
-    include 'asterfort/vrcref.h'
+#include "asterc/getvid.h"
+#include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcharg.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mesomm.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvr.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/vrcref.h"
     character(len=8) :: modele, lchar(*), result, symech
     character(len=16) :: optioz, noprup(*)
     character(len=24) :: depla1, depla2, mate, theta

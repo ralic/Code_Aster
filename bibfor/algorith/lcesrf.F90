@@ -18,7 +18,7 @@ function lcesrf(am, weps, r, v, prec,&
 ! ======================================================================
     implicit none
     real(kind=8) :: lcesrf
-    include 'asterfort/lcesvf.h'
+#include "asterfort/lcesvf.h"
     integer :: itemax, iret
     real(kind=8) :: weps, r, v, am, prec
 ! ----------------------------------------------------------------------

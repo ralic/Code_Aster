@@ -21,10 +21,10 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/exisdg.h'
+#include "asterfort/assert.h"
+#include "asterfort/exisdg.h"
     integer :: dg1(*), dg2(*), deb1, deb2, ino, nno
     logical :: cumul
 ! ----------------------------------------------------------------------

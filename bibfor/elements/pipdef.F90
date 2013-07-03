@@ -22,12 +22,12 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dfdmip.h'
-    include 'asterfort/nmepsb.h'
-    include 'asterfort/nmgeom.h'
-    include 'blas/daxpy.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/nmepsb.h"
+#include "asterfort/nmgeom.h"
+#include "blas/daxpy.h"
     integer :: ndim, nno, kpg
     integer :: ipoids, ivf, idfde
     character(len=8) :: typmod(*)

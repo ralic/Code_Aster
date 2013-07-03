@@ -45,30 +45,30 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 ! -------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/axdipo.h'
-    include 'asterfort/deelpo.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/exmano.h'
-    include 'asterfort/extmod.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/recude.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/r8prem.h"
+#include "asterfort/axdipo.h"
+#include "asterfort/deelpo.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exmano.h"
+#include "asterfort/extmod.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/recude.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: valk(4)
 !
 ! ARGUMENTS

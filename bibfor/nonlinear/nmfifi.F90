@@ -20,8 +20,8 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/nmfisa.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/nmfisa.h"
+#include "asterfort/r8inir.h"
     integer :: npg
     real(kind=8) :: geom(2, 4), sigma(2, npg), fint(8)
     character(len=8) :: typmod(2)

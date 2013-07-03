@@ -19,25 +19,25 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmdoin.h'
-    include 'asterfort/nmetl1.h'
-    include 'asterfort/nmetl2.h'
-    include 'asterfort/nmetnc.h'
-    include 'asterfort/ntetl3.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmdoin.h"
+#include "asterfort/nmetl1.h"
+#include "asterfort/nmetl2.h"
+#include "asterfort/nmetnc.h"
+#include "asterfort/ntetl3.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: modele
     logical :: lostat, lreuse
     character(len=24) :: numedd, sdieto

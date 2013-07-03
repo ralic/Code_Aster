@@ -18,9 +18,9 @@ subroutine lcmmro(tampon, omp, nvi, vind, vinf)
 ! ======================================================================
 !     Stockage variables internes rotation reseau
 !     ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/r8inir.h'
-    include 'blas/dcopy.h'
+#include "asterc/r8miem.h"
+#include "asterfort/r8inir.h"
+#include "blas/dcopy.h"
     integer :: i, j, nvi, k
     real(kind=8) :: omp(3), dtheta, iden(3, 3), nax(3, 3), q(3, 3)
     real(kind=8) :: tampon(*), omegap(3, 3), omegae(3, 3), omega(3, 3), dq(3, 3)

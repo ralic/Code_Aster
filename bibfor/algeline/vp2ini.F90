@@ -3,21 +3,21 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect,&
                   beta, signes, vect, prsudg, nstoc,&
                   omeshi, solveu)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ggubs.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/vplcor.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/ggubs.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/vplcor.h"
+#include "asterfort/wkvect.h"
     integer :: ldynam, lmasse, ldynfa, neq, nbvect, nborto, ddlexc(*), ddllag(*)
     integer :: nstoc
     real(kind=8) :: prsudg, prorto, omeshi

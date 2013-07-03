@@ -36,9 +36,9 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterfort/cvnorm.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/zconju.h'
+#include "asterfort/cvnorm.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/zconju.h"
     complex(kind=8) :: ca(*)
     complex(kind=8) :: cbas(ndimax, nbbas)
     complex(kind=8) :: cvec(ndim), ctrav1, ctrav2, cprod, cconj, cmodu

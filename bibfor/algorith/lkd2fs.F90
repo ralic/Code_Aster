@@ -33,11 +33,11 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 !     OUT D2FDS2 :  DERIVEE 2NDE F PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-    include 'asterfort/lcdima.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprte.h'
+#include "asterfort/lcdima.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprte.h"
     integer :: iret, nmat
     real(kind=8) :: d2fds2(6, 6), para(3), vara(4), materf(nmat, 2)
     real(kind=8) :: devsig(6), i1, ds2hds(6), varh(3), d2shds(6, 6)

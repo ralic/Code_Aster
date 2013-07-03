@@ -5,7 +5,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/nmchab.h'
+#include "asterfort/nmchab.h"
     integer :: kpg, ksp, ndim, imate, codret, icomp, nvi
     character(len=*) :: fami
     character(len=8) :: typmod(*)

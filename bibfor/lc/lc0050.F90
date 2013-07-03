@@ -59,24 +59,24 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 ! aslint: disable=W1504,W0104,W1306
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8nnem.h'
-    include 'asterc/umatwp.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcicma.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/pmat.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/verift.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterc/r8nnem.h"
+#include "asterc/umatwp.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/verift.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret, nprop2
     integer :: nprops, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
     integer :: kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, iret2

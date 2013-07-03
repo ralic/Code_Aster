@@ -21,10 +21,10 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
     integer :: ifm
     integer :: nummae
     character(len=8) :: noma

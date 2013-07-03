@@ -28,11 +28,11 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     integer :: kpi, yamec, yate, yap1, yap2
     logical :: yachai
     integer :: addeme, addep1, addep2, addete, ndim, retcom

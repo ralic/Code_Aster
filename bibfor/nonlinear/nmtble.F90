@@ -22,21 +22,21 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmbouc.h'
-    include 'asterfort/mmcycz.h'
-    include 'asterfort/nmaffi.h'
-    include 'asterfort/nmctcc.h'
-    include 'asterfort/nmctcf.h'
-    include 'asterfort/nmctgo.h'
-    include 'asterfort/nmevcv.h'
-    include 'asterfort/nmimci.h'
-    include 'asterfort/nmleeb.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
+#include "jeveux.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mmcycz.h"
+#include "asterfort/nmaffi.h"
+#include "asterfort/nmctcc.h"
+#include "asterfort/nmctcf.h"
+#include "asterfort/nmctgo.h"
+#include "asterfort/nmevcv.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmleeb.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
     integer :: niveau
     character(len=8) :: noma
     character(len=24) :: defico, resoco

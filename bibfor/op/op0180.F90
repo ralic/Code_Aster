@@ -29,47 +29,47 @@ subroutine op0180()
 !
 ! VARIABLES LOCALES
 ! -----------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/caelca.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/crelrl.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/etenca.h'
-    include 'asterfort/gromab.h'
-    include 'asterfort/immeca.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/ltcrsd.h'
-    include 'asterfort/ltnotb.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/projca.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/sigmca.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tensca.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/tomabe.h'
-    include 'asterfort/topoca.h'
-    include 'asterfort/trajca.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/voisca.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alcart.h"
+#include "asterfort/caelca.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/crelrl.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
+#include "asterfort/gromab.h"
+#include "asterfort/immeca.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/nocart.h"
+#include "asterfort/projca.h"
+#include "asterfort/reliem.h"
+#include "asterfort/sigmca.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tensca.h"
+#include "asterfort/titre.h"
+#include "asterfort/tomabe.h"
+#include "asterfort/topoca.h"
+#include "asterfort/trajca.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/voisca.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno, jncmp, jsief
     integer :: jvalv, n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
     integer :: ncaba, nsief, nbmabe, jlimab, nbnoca

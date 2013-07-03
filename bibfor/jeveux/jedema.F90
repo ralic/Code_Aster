@@ -21,9 +21,9 @@ subroutine jedema()
 ! ON OPERE EN DEUX TEMPS : -1 LIBERATION DES COLLECTION PAR JJLIDE
 !                          -2 LIBERATION DES OBJETS SIMPLES
 ! ----------------------------------------------------------------------
-    include 'jeveux_private.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux_private.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/u2mess.h"
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------

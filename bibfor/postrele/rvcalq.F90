@@ -4,24 +4,24 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 ! aslint: disable=W1501
     implicit   none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getvr8.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jacobi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/numek8.h'
-    include 'asterfort/rvinvt.h'
-    include 'asterfort/rvpstd.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getvr8.h"
+#include "asterc/r8vide.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jacobi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/numek8.h"
+#include "asterfort/rvinvt.h"
+#include "asterfort/rvpstd.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: sdeval, quant, sdlieu
     character(len=19) :: sdcalq
     character(len=16) :: option

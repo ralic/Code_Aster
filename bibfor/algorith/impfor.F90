@@ -18,8 +18,8 @@ subroutine impfor(unite, long, prec, valr, chaine)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
     integer :: unite
     integer :: long
     integer :: prec

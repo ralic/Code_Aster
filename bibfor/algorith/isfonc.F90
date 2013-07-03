@@ -20,7 +20,7 @@ function isfonc(fonact, nomfoz)
 !
     implicit none
     logical :: isfonc
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: fonact(*)
     character(len=*) :: nomfoz
 !

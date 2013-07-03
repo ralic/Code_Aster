@@ -43,9 +43,9 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=8) :: mailla
     character(len=19) :: nunobe, nunobi
     character(len=24) :: comima
@@ -53,7 +53,7 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
     integer :: jcoor
     real(kind=8) :: xmin, xmax, ymin, ymax, zmin, zmax, x, y, z

@@ -24,12 +24,12 @@ subroutine nmreli(modele, numedd, mate, carele, comref,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmrelp.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmrelp.h"
     integer :: fonact(*)
     integer :: iterat, ldccvg
     real(kind=8) :: parmet(*), conv(*)

@@ -18,7 +18,7 @@ subroutine impfok(messag, long, unite)
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: messag
     integer :: long
     integer :: unite

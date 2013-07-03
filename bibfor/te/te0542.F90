@@ -18,19 +18,19 @@ subroutine te0542(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/elref1.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/nbsigm.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/terefe.h'
-    include 'asterfort/xbsig.h'
-    include 'asterfort/xbsir.h'
-    include 'asterfort/xbsir2.h'
-    include 'asterfort/xteddl.h'
-    include 'asterfort/xteini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/teattr.h"
+#include "asterfort/terefe.h"
+#include "asterfort/xbsig.h"
+#include "asterfort/xbsir.h"
+#include "asterfort/xbsir2.h"
+#include "asterfort/xteddl.h"
+#include "asterfort/xteini.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DES OPTION FORC_NODA ET REFE_FORC_NODA

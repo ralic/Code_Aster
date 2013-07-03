@@ -1,10 +1,10 @@
 subroutine usobce(dimobs, obsuse, rcarte, nomt19, nbusur,&
                   parusu, typusu)
     implicit   none
-    include 'asterfort/assert.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/usvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/usvect.h"
     integer :: dimobs, nbusur, typusu(*)
     real(kind=8) :: obsuse(*), rcarte, parusu(20, *)
     character(len=19) :: nomt19

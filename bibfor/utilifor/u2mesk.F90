@@ -20,9 +20,9 @@ subroutine u2mesk(ch1, idmess, nk, valk)
 !
 !     ------------------------------------------------------------------
     implicit none
-    include 'asterc/isnnem.h'
-    include 'asterc/r8nnem.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/isnnem.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: ch1, idmess, valk(*)
     integer :: nk
 !     ------------------------------------------------------------------

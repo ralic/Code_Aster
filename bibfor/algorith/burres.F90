@@ -43,18 +43,18 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
 !=====================================================================
     implicit none
 !     ----------------------------------------------------------------
-    include 'asterc/r8prem.h'
-    include 'asterfort/burafd.h'
-    include 'asterfort/burafr.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcprsm.h'
-    include 'asterfort/lcprsv.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/mgauss.h'
+#include "asterc/r8prem.h"
+#include "asterfort/burafd.h"
+#include "asterfort/burafr.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/mgauss.h"
     common /tdim/   ndt ,ndi
 !     ----------------------------------------------------------------
     integer :: i, ndt, ndi, nmat, nvi, nr, iret

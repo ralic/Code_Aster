@@ -20,8 +20,8 @@ subroutine utlisi(motcle, a, na, b, nb,&
 ! ======================================================================
 !     ARGUMENTS:
 !     ----------
-    include 'asterfort/indiis.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/indiis.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: motcle
     integer :: a(*), b(*), c(*), na, nb, nc, ntrou
 ! ----------------------------------------------------------------------

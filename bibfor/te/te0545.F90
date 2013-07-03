@@ -18,18 +18,18 @@ subroutine te0545(option, nomte)
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/elrefv.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/ngfint.h'
-    include 'asterfort/nmgvmb.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcangm.h'
-    include 'asterfort/teattr.h'
-    include 'asterfort/tecach.h'
-    include 'blas/dcopy.h'
-    include 'blas/dgemv.h'
+#include "asterfort/elrefv.h"
+#include "asterfort/jevech.h"
+#include "asterfort/ngfint.h"
+#include "asterfort/nmgvmb.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "blas/dcopy.h"
+#include "blas/dgemv.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES

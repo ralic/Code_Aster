@@ -50,7 +50,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 !
 ! DECLARATION GLOBALE
 !
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     integer :: nsommx, icnc(nsommx+2, *), nelcom, numeli(nelcom+2, *)
     integer :: inno
     integer :: tbelzo(1000), nbelzo(3), tbnozo(1000), nbnozo(3)

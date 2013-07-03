@@ -64,8 +64,8 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 !
-    include 'jeveux.h'
-    include 'asterfort/indiis.h'
+#include "jeveux.h"
+#include "asterfort/indiis.h"
     logical :: perman
     integer :: ino, nbs
     integer :: ivois, nbcmp, adsip

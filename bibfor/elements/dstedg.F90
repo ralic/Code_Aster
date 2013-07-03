@@ -1,14 +1,14 @@
 subroutine dstedg(xyzl, option, pgl, depl, edgl)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dstbfa.h'
-    include 'asterfort/dstbfb.h'
-    include 'asterfort/dstcis.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/dxmate.h'
-    include 'asterfort/dxtbm.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gtria3.h'
+#include "jeveux.h"
+#include "asterfort/dstbfa.h"
+#include "asterfort/dstbfb.h"
+#include "asterfort/dstcis.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/dxmate.h"
+#include "asterfort/dxtbm.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gtria3.h"
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), edgl(*)
     character(len=16) :: option
 ! ======================================================================

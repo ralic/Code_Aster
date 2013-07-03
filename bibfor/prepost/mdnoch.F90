@@ -65,9 +65,9 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/lxlgut.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/lxlgut.h"
+#include "asterfort/u2mess.h"
     character(len=64) :: nochmd
     character(len=16) :: nomsym
     character(len=8) :: noresu

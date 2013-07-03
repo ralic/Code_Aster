@@ -20,13 +20,13 @@ subroutine calico(charz, nomaz, nomoz, ndim, iform,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterfort/caraco.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/limaco.h'
-    include 'asterfort/surfco.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterfort/caraco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/limaco.h"
+#include "asterfort/surfco.h"
     character(len=*) :: charz
     character(len=*) :: nomaz
     character(len=*) :: nomoz

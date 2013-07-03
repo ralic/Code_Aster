@@ -31,10 +31,10 @@ subroutine draacn(deg, poly, nbroot, root)
 ! OUT NBROOT : NOMBRE DE RACINE DU POLYNOME
 ! OUT ROOT : RACINE DU POLYNOME
 !
-    include 'asterfort/dclass.h'
-    include 'asterfort/draac2.h'
-    include 'asterfort/nwtpol.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/dclass.h"
+#include "asterfort/draac2.h"
+#include "asterfort/nwtpol.h"
+#include "asterfort/r8inir.h"
     integer :: i, j, k, n, nroot, iran(20)
     integer :: i2, kkk
     integer :: deg, nbroot

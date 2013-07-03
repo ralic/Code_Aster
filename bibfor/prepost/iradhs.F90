@@ -36,23 +36,23 @@ subroutine iradhs(versio)
 !
 !   IN:  VERSIO = VERSION D'IDEAS 4 OU 5(DEFAUT)
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/inistb.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/utidea.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/inistb.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utidea.h"
+#include "asterfort/wkvect.h"
     character(len=2) :: axdpcp(4)
     character(len=5) :: phe(2), mot
     integer :: versio

@@ -64,27 +64,27 @@ subroutine dltlec(result, modele, numedd, materi, mate,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/dltp0.h'
-    include 'asterfort/focste.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/nmarnr.h'
-    include 'asterfort/nmcrpc.h'
-    include 'asterfort/nmdome.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/chpver.h"
+#include "asterfort/codent.h"
+#include "asterfort/cresol.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/dltp0.h"
+#include "asterfort/focste.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/nmarnr.h"
+#include "asterfort/nmcrpc.h"
+#include "asterfort/nmdome.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: imat(3)
     integer :: nveca, nchar
     integer :: iaadve, ialifo, iondp, iener

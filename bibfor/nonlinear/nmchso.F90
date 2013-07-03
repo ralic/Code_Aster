@@ -19,7 +19,7 @@ subroutine nmchso(chapin, tychaz, typsoz, nomvaz, chapou)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/nmchai.h'
+#include "asterfort/nmchai.h"
     character(len=19) :: chapin(*), chapou(*)
     character(len=*) :: tychaz, typsoz
     character(len=*) :: nomvaz

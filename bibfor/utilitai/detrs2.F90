@@ -1,6 +1,6 @@
 subroutine detrs2(typesd, nomsd)
     implicit   none
-    include 'asterfort/detrsd.h'
+#include "asterfort/detrsd.h"
     character(len=*) :: typesd, nomsd
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

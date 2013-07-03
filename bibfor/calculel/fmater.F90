@@ -18,8 +18,8 @@ subroutine fmater(nbfmax, nftab, tab)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
     integer :: nbfmax, nftab
     character(len=8) :: tab(*)
 ! ----------------------------------------------------------------------

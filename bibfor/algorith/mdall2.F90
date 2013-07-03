@@ -1,12 +1,12 @@
 subroutine mdall2(nomres, basemo, numgen, res, nbo,&
                   nbmode)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mdallo.h'
-    include 'asterfort/rsadpa.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mdallo.h"
+#include "asterfort/rsadpa.h"
     character(len=8) :: basemo, nomres, numgen, res, blanc8
     character(len=16) :: blan16
 ! ----------------------------------------------------------------------

@@ -35,10 +35,10 @@ subroutine lcelas(loi, mod, imat, nmat, materd,&
 !           VINF   :  VARIABLES INTERNES A T+DT
 !           IRET   :  CODE RETOUR (O-->OK / 1-->NOOK)
 !       ----------------------------------------------------------------
-    include 'asterfort/hujpel.h'
-    include 'asterfort/lcelin.h'
-    include 'asterfort/lksige.h'
-    include 'asterfort/rsllin.h'
+#include "asterfort/hujpel.h"
+#include "asterfort/lcelin.h"
+#include "asterfort/lksige.h"
+#include "asterfort/rsllin.h"
     integer :: nmat, nvi, imat, iret
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)

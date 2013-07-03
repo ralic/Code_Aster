@@ -10,24 +10,24 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! aslint: disable=W1501,W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cabhvf.h'
-    include 'asterfort/cacdsu.h'
-    include 'asterfort/cafmsu.h'
-    include 'asterfort/cafvsu.h'
-    include 'asterfort/comthm.h'
-    include 'asterfort/inicsu.h'
-    include 'asterfort/mofick.h'
-    include 'asterfort/nufloc.h'
-    include 'asterfort/nvithm.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/tecac2.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/vfcfks.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/cabhvf.h"
+#include "asterfort/cacdsu.h"
+#include "asterfort/cafmsu.h"
+#include "asterfort/cafvsu.h"
+#include "asterfort/comthm.h"
+#include "asterfort/inicsu.h"
+#include "asterfort/mofick.h"
+#include "asterfort/nufloc.h"
+#include "asterfort/nvithm.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecac2.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/vecini.h"
+#include "asterfort/vfcfks.h"
     integer :: maxfa
     parameter (maxfa=6)
 !

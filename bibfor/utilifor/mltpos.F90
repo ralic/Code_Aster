@@ -20,8 +20,8 @@ subroutine mltpos(nbsn, parent, fils, frere, pile,&
 ! ======================================================================
 ! aslint: disable=
     implicit none
-    include 'asterfort/blimax.h'
-    include 'asterfort/tri.h'
+#include "asterfort/blimax.h"
+#include "asterfort/tri.h"
     integer :: nbsn, parent(*), fils(*), frere(*), pile(*), lfront(*)
     integer :: seq(*), estim
     integer :: flag(*)

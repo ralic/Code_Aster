@@ -1,11 +1,11 @@
 subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
                   jresv1, jresl1, jresd2, jresv2, jresl2)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbmac, ima, inmtot, jresd1, jresv1, jresl1, nbcmpc
     integer :: jresd2, jresv2, jresl2
 !

@@ -19,9 +19,9 @@ subroutine redpna(materf, seq, i1e, pmoins, dp,&
 ! ======================================================================
 ! ======================================================================
     implicit      none
-    include 'asterfort/betaps.h'
-    include 'asterfort/schdp2.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/betaps.h"
+#include "asterfort/schdp2.h"
+#include "asterfort/u2mess.h"
     integer :: iret
     real(kind=8) :: materf(5, 2), pmoins, dp, seq, i1e, plas
 ! =====================================================================

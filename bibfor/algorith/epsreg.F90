@@ -22,7 +22,7 @@ subroutine epsreg(npi, ipoids, ipoid2, ivf, ivf2,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit     none
-    include 'asterfort/cabr2g.h'
+#include "asterfort/cabr2g.h"
     logical :: axi
     integer :: npi, ipoids, ipoid2, ivf, ivf2, idfde, idfde2, dimdef, dimuel
     integer :: ndim, nddls, nddlm, nno, nnos, nnom, regula(6)

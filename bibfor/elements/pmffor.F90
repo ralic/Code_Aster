@@ -36,8 +36,8 @@ subroutine pmffor(nf, ncf, vf, se, ff)
 !                FF(2) = +INT(SE.Z.DS) = MY
 !                FF(3) = -INT(SE.Y.DS) = MZ
 ! -----------------------------------------------------------
-    include 'asterfort/codent.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/codent.h"
+#include "asterfort/u2mesk.h"
     integer :: nf, ncf, i
     real(kind=8) :: vf(ncf, nf), se(nf), ff(3), zero, sf
     parameter (zero=0.0d+0)

@@ -19,14 +19,14 @@ subroutine nmfinp(sddisc, numins, lstop)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/didern.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmjalo.h'
-    include 'asterfort/utdidt.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/didern.h"
+#include "asterfort/diinst.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmjalo.h"
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     integer :: numins
     logical :: lstop

@@ -20,12 +20,12 @@ subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
 ! ======================================================================
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmnonf.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmnonf.h"
     character(len=8) :: alias
     integer :: nummae, ndim, iface, npte, ifiss
     integer :: jcesd(10), jcesv(10), jcesl(10)

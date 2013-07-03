@@ -1,22 +1,22 @@
 subroutine te0346(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jspgno.h'
-    include 'asterfort/lcsovn.h'
-    include 'asterfort/matrot.h'
-    include 'asterfort/nmvmpo.h'
-    include 'asterfort/porea1.h'
-    include 'asterfort/pouex7.h'
-    include 'asterfort/ptkg20.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utpslg.h'
-    include 'asterfort/utpvgl.h'
-    include 'asterfort/utpvlg.h'
-    include 'asterfort/vdiff.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jspgno.h"
+#include "asterfort/lcsovn.h"
+#include "asterfort/matrot.h"
+#include "asterfort/nmvmpo.h"
+#include "asterfort/porea1.h"
+#include "asterfort/pouex7.h"
+#include "asterfort/ptkg20.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vdiff.h"
+#include "blas/ddot.h"
     character(len=16) :: option, nomte
 !-----------------------------------------------------------------------
 ! ======================================================================

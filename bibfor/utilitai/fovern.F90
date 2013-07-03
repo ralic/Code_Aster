@@ -1,13 +1,13 @@
 subroutine fovern(vecnom, nbfonc, vecpro, ier)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fonbpa.h'
-    include 'asterfort/fopro1.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/fonbpa.h"
+#include "asterfort/fopro1.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesg.h"
     integer :: nbfonc, ier
     character(len=*) :: vecnom(nbfonc), vecpro(*)
 !     ------------------------------------------------------------------

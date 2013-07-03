@@ -21,23 +21,23 @@ subroutine nmprac(fonact, lischa, numedd, numfix, solveu,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mtdsc2.h'
-    include 'asterfort/nmassm.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmmatr.h'
-    include 'asterfort/nmrinc.h'
-    include 'asterfort/nmtime.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mtdsc2.h"
+#include "asterfort/nmassm.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmmatr.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/preres.h"
+#include "asterfort/u2mess.h"
     integer :: fonact(*)
     character(len=19) :: sddyna, lischa
     character(len=24) :: sdstat, sdtime

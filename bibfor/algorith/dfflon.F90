@@ -3,13 +3,13 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff,&
 !
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dis2no.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
+#include "asterfort/dis2no.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
     real(kind=8) :: geom(*), d
     integer :: inoff, nbnoff
     character(len=8) :: nonoff(*), typfon

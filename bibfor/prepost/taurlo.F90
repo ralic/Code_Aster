@@ -2,9 +2,9 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
                   kwork, sompgw, jrwork, tspaq, ipg,&
                   jvecpg)
     implicit   none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg, jvecpg
 ! ======================================================================

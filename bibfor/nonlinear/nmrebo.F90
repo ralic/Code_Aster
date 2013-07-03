@@ -22,8 +22,8 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/zbinte.h'
-    include 'asterfort/zbiter.h'
+#include "asterfort/zbinte.h"
+#include "asterfort/zbiter.h"
     real(kind=8) :: mem(2, *), sens
     real(kind=8) :: rho, rhoopt
     logical :: echec, stite

@@ -24,7 +24,7 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/mmmtdb.h'
+#include "asterfort/mmmtdb.h"
     integer :: nbdm, ndim, nnl, nne, nnm, nbcps
     real(kind=8) :: matrcc(9, 9)
     real(kind=8) :: matree(27, 27), matrmm(27, 27)

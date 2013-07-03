@@ -1,7 +1,7 @@
 subroutine cgveth(typfis, cas)
     implicit none
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=8) :: typfis
     character(len=16) :: cas
 !

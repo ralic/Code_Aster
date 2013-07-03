@@ -2,10 +2,10 @@ subroutine vetube(r1, r2, angdeb, angfin, angare,&
                   angmax, angva, profon, volume, epais)
 ! aslint: disable=
     implicit   none
-    include 'asterc/r8dgrd.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8rddg.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8dgrd.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8rddg.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: r1, r2, angdeb, angfin, angare, angmax, angva, profon
     real(kind=8) :: volume, epais
 !-----------------------------------------------------------------------

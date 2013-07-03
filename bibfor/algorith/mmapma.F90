@@ -24,20 +24,20 @@ subroutine mmapma(noma, defico, resoco, ndimg, izone,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mmgaus.h'
-    include 'asterfort/mmnorm.h'
-    include 'asterfort/mmnumn.h'
-    include 'asterfort/mmpnoe.h'
-    include 'asterfort/mmsauv.h'
-    include 'asterfort/mmtanr.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mmgaus.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmnumn.h"
+#include "asterfort/mmpnoe.h"
+#include "asterfort/mmsauv.h"
+#include "asterfort/mmtanr.h"
+#include "asterfort/u2mesk.h"
     character(len=8) :: noma
     character(len=8) :: aliase
     character(len=24) :: defico, resoco

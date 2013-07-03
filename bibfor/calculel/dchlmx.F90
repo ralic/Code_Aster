@@ -21,14 +21,14 @@ subroutine dchlmx(opt, ligrel, iparg, nin, lpain,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
-    include 'asterc/indik8.h'
-    include 'asterfort/digde2.h'
-    include 'asterfort/modatt.h'
-    include 'asterfort/nbelem.h'
-    include 'asterfort/nbpara.h'
-    include 'asterfort/nopara.h'
-    include 'asterfort/typele.h'
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/digde2.h"
+#include "asterfort/modatt.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbpara.h"
+#include "asterfort/nopara.h"
+#include "asterfort/typele.h"
     integer :: opt, nin, nout, taille, iparg
     character(len=19) :: ligrel
     character(len=8) :: lpain(*), lpaout(*)

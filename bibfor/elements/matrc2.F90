@@ -19,14 +19,14 @@ subroutine matrc2(nbpar, nompar, valpar, kcis, matc,&
 !
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/coqrep.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utbtab.h'
+#include "jeveux.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/coqrep.h"
+#include "asterfort/jevech.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utbtab.h"
     integer :: nbpar
     real(kind=8) :: valpar(*), kcis, matc(5, 5), vectt(3, 3)
     character(len=8) :: nompar(*)

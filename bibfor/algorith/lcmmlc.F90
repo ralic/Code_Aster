@@ -52,10 +52,10 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
 !         RP     :  ECROUISSAGE
 !         IRET   :  CODE RETOUR
 !     ----------------------------------------------------------------
-    include 'asterfort/lcmmec.h'
-    include 'asterfort/lcmmfc.h'
-    include 'asterfort/lcmmfe.h'
-    include 'asterfort/lcmmfi.h'
+#include "asterfort/lcmmec.h"
+#include "asterfort/lcmmfc.h"
+#include "asterfort/lcmmfe.h"
+#include "asterfort/lcmmfi.h"
     integer :: nmat, nvi, nsfv, iret, ifl, nfs, nsg
     integer :: nuvi, ifa, nbsys, is, itmax, iexp, irk
     integer :: nbcomm(nmat, 3), nsfa, nuecou

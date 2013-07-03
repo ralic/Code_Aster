@@ -39,7 +39,7 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
 ! OUT NVV     : NOMBRE DE VRAIES VARIABLES INTERNES
 ! ----------------------------------------------------------------------
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option, optio2
     character(len=16) :: compor(*)

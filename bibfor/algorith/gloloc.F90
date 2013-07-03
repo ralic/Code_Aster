@@ -36,7 +36,7 @@ subroutine gloloc(xgloba, xorig, sina, cosa, sinb,&
 !    XLOCAL          -->  COORDONNES DANS LE REPERE LOCAL
 !-----------------------------------------------------------------------
     implicit none
-    include 'asterfort/rot3d.h'
+#include "asterfort/rot3d.h"
     real(kind=8) :: xgloba(3), xorig(3), xlocal(3), xpiv(3)
 !
 !-----------------------------------------------------------------------

@@ -17,15 +17,15 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vp2tru.h'
-    include 'asterfort/vpordo.h'
-    include 'asterfort/vpqlts.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vp2tru.h"
+#include "asterfort/vpordo.h"
+#include "asterfort/vpqlts.h"
+#include "asterfort/wkvect.h"
     character(len=1) :: type
     integer :: nbvect, mxiter, nitqr
     real(kind=8) :: alpha(*), beta(*), signes(*), vecpro(*)

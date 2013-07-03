@@ -17,14 +17,14 @@ subroutine jenuno(nomlu, nomo)
 ! ======================================================================
 ! person_in_charge: j-pierre.lefebvre at edf.fr
     implicit none
-    include 'jeveux_private.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jjallc.h'
-    include 'asterfort/jjlide.h'
-    include 'asterfort/jjvern.h'
-    include 'asterfort/jxveuo.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux_private.h"
+#include "asterfort/assert.h"
+#include "asterfort/jjallc.h"
+#include "asterfort/jjlide.h"
+#include "asterfort/jjvern.h"
+#include "asterfort/jxveuo.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     character(len=*) :: nomlu, nomo
 ! ----------------------------------------------------------------------
 ! RENVOIE LE NOM ASSOCIE A UN IDENTIFICATEUR

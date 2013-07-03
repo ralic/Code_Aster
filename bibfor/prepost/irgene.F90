@@ -3,21 +3,21 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                   nbordr, ordr, nbdisc, disc, nume,&
                   lhist)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/irpara.h'
-    include 'asterfort/irparb.h'
-    include 'asterfort/irvgen.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/titre2.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/gettco.h"
+#include "asterfort/irpara.h"
+#include "asterfort/irparb.h"
+#include "asterfort/irvgen.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/titre2.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: cmpg(*), ordr(*), nume(*)
     real(kind=8) :: disc(*)
     character(len=*) :: resu, nosy(*), para(*), form

@@ -17,16 +17,16 @@ subroutine tumass(nomte, nbrddl, mass)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/carcou.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/klg.h'
-    include 'asterfort/klgcou.h'
-    include 'asterfort/moytem.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/rcvala.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterfort/carcou.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jevech.h"
+#include "asterfort/klg.h"
+#include "asterfort/klgcou.h"
+#include "asterfort/moytem.h"
+#include "asterfort/promat.h"
+#include "asterfort/rcvala.h"
     character(len=16) :: nomte
     integer :: nbrddl
     real(kind=8) :: mass(nbrddl, nbrddl)

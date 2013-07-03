@@ -3,14 +3,14 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
 ! aslint: disable=W1306
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/reerel.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/reerel.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
     integer :: ia, ndim
     character(len=8) :: elp
     real(kind=8) :: intar(ndim), tabco(*), tabls(*)

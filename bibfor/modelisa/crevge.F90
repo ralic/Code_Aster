@@ -33,25 +33,25 @@ subroutine crevge(ligrel, bas1)
 !           A2  (2D PAR ARRETE)  ET S2 (2D PAR SOMMET)
 !-----------------------------------------------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/adlivo.h'
-    include 'asterfort/cncinv.h'
-    include 'asterfort/crvloc.h'
-    include 'asterfort/dimmai.h'
-    include 'asterfort/dimvoi.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbsomm.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/adlivo.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/crvloc.h"
+#include "asterfort/dimmai.h"
+#include "asterfort/dimvoi.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbsomm.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/wkvect.h"
     character(len=19) :: ligrel
     character(len=1) :: bas1
     character(len=12) :: vge

@@ -19,11 +19,11 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/assert.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
     integer :: imate, nbpu, jmat
     real(kind=8) :: valpu(*), resu
     character(len=*) :: nompu(*), type

@@ -29,45 +29,45 @@ subroutine nminit(result, modele, numedd, numfix, mate,&
 !
 ! aslint: disable=W1504
     implicit none
-    include 'asterfort/accel0.h'
-    include 'asterfort/cetule.h'
-    include 'asterfort/cfmxsd.h'
-    include 'asterfort/cucrsd.h'
-    include 'asterfort/diinit.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/liscpy.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchap.h'
-    include 'asterfort/nmchar.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmcrcg.h'
-    include 'asterfort/nmcrch.h'
-    include 'asterfort/nmcrcv.h'
-    include 'asterfort/nmcrst.h'
-    include 'asterfort/nmcrti.h'
-    include 'asterfort/nmdoco.h'
-    include 'asterfort/nmdoct.h'
-    include 'asterfort/nmdoet.h'
-    include 'asterfort/nmdopi.h'
-    include 'asterfort/nmetcr.h'
-    include 'asterfort/nmexso.h'
-    include 'asterfort/nmfonc.h'
-    include 'asterfort/nmihht.h'
-    include 'asterfort/nminim.h'
-    include 'asterfort/nminma.h'
-    include 'asterfort/nminmc.h'
-    include 'asterfort/nminvc.h'
-    include 'asterfort/nmlssv.h'
-    include 'asterfort/nmnoli.h'
-    include 'asterfort/nmnume.h'
-    include 'asterfort/nmobsv.h'
-    include 'asterfort/nmpro2.h'
-    include 'asterfort/nmrini.h'
-    include 'asterfort/nmvcle.h'
-    include 'asterfort/nmvcre.h'
+#include "asterfort/accel0.h"
+#include "asterfort/cetule.h"
+#include "asterfort/cfmxsd.h"
+#include "asterfort/cucrsd.h"
+#include "asterfort/diinit.h"
+#include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/liscpy.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchap.h"
+#include "asterfort/nmchar.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcrcg.h"
+#include "asterfort/nmcrch.h"
+#include "asterfort/nmcrcv.h"
+#include "asterfort/nmcrst.h"
+#include "asterfort/nmcrti.h"
+#include "asterfort/nmdoco.h"
+#include "asterfort/nmdoct.h"
+#include "asterfort/nmdoet.h"
+#include "asterfort/nmdopi.h"
+#include "asterfort/nmetcr.h"
+#include "asterfort/nmexso.h"
+#include "asterfort/nmfonc.h"
+#include "asterfort/nmihht.h"
+#include "asterfort/nminim.h"
+#include "asterfort/nminma.h"
+#include "asterfort/nminmc.h"
+#include "asterfort/nminvc.h"
+#include "asterfort/nmlssv.h"
+#include "asterfort/nmnoli.h"
+#include "asterfort/nmnume.h"
+#include "asterfort/nmobsv.h"
+#include "asterfort/nmpro2.h"
+#include "asterfort/nmrini.h"
+#include "asterfort/nmvcle.h"
+#include "asterfort/nmvcre.h"
     integer :: fonact(*)
     real(kind=8) :: parcon(*), parcri(*), parmet(*)
     character(len=16) :: method(*)

@@ -3,16 +3,16 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                   nbsel, corsel)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/eclac1.h'
-    include 'asterfort/eclaco.h'
-    include 'asterfort/eclan1.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jenonu.h'
-    include 'asterfort/jexnom.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/eclac1.h"
+#include "asterfort/eclaco.h"
+#include "asterfort/eclan1.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mesk.h"
     integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
     integer :: npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
     integer :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)

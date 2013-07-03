@@ -36,7 +36,7 @@ subroutine lccong(nr, itmax, toler, iter, r,&
 !         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
 !     ----------------------------------------------------------------
     implicit none
-    include 'asterc/r8prem.h'
+#include "asterc/r8prem.h"
     integer :: nr, itmax, iter, irtet, i
     real(kind=8) :: toler, r(nr), e1, e2, e1ini, e2ini, errr(2), rini(*)
     real(kind=8) :: yd(*), dy(*), err

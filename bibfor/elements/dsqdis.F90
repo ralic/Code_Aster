@@ -1,10 +1,10 @@
 subroutine dsqdis(xyzl, caraq4, df, dci, an)
     implicit  none
-    include 'jeveux.h'
-    include 'asterfort/dsxhft.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/jquad4.h'
-    include 'asterfort/mgauss.h'
+#include "jeveux.h"
+#include "asterfort/dsxhft.h"
+#include "asterfort/elref5.h"
+#include "asterfort/jquad4.h"
+#include "asterfort/mgauss.h"
     real(kind=8) :: xyzl(3, *), df(3, 3), dci(2, 2), an(4, 12), caraq4(*)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -32,8 +32,8 @@ subroutine onerrf(set, get, long)
 !
 !     VINI CONTIENT LA VALEUR FIXEE PAR DEBUT (INITIALISER AU 1ER APPEL)
 !     ----------------------------------------------------------------
-    include 'asterfort/jefini.h'
-    include 'asterfort/lxlgut.h'
+#include "asterfort/jefini.h"
+#include "asterfort/lxlgut.h"
     character(len=*) :: set
     character(len=16) :: get
     integer :: long

@@ -4,22 +4,22 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
                   iret)
 ! =====================================================================
     implicit      none
-    include 'asterfort/assert.h'
-    include 'asterfort/dpvpcr.h'
-    include 'asterfort/dpvpdb.h'
-    include 'asterfort/dpvpot.h'
-    include 'asterfort/dpvpsi.h'
-    include 'asterfort/dpvpva.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqma.h'
-    include 'asterfort/lcinma.h'
-    include 'asterfort/lcinve.h'
-    include 'asterfort/lcopil.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/lcsove.h'
-    include 'asterfort/trace.h'
+#include "asterfort/assert.h"
+#include "asterfort/dpvpcr.h"
+#include "asterfort/dpvpdb.h"
+#include "asterfort/dpvpot.h"
+#include "asterfort/dpvpsi.h"
+#include "asterfort/dpvpva.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqma.h"
+#include "asterfort/lcinma.h"
+#include "asterfort/lcinve.h"
+#include "asterfort/lcopil.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/trace.h"
     integer :: iret, nvi, nbmat
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
     real(kind=8) :: sigm(6), materf(nbmat, 2), dsidep(6, 6), crit(3)

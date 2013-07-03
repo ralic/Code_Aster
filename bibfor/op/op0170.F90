@@ -22,22 +22,22 @@ subroutine op0170()
 !
 !     -----------------------------------------------------------------
 !
-    include 'jeveux.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/pdadom.h'
-    include 'asterfort/tbajli.h'
-    include 'asterfort/tbajpa.h'
-    include 'asterfort/tbcrsd.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/r8vide.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pdadom.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: ibid, nbtab, nbmom, n1, nbpfat, ivmom, i, ilign, nbl0, inbl0
     integer :: nbl2, inbl2, nbl4, inbl4
     parameter     ( nbpfat = 5 )

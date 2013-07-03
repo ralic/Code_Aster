@@ -44,8 +44,8 @@ subroutine maskmn(nbcmp, nbno, nbec, mcoddl, imask,&
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    include 'asterfort/isdeco.h'
-    include 'asterfort/isgeco.h'
+#include "asterfort/isdeco.h"
+#include "asterfort/isgeco.h"
     integer :: i, iec, iexcmp, j, nbcmp, nbcpmx, nbdef
     integer :: nbec, nbecmx, nbno
 !-----------------------------------------------------------------------

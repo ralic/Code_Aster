@@ -20,10 +20,10 @@ subroutine nmepsi(ndim, nno, axi, grand, vff,&
 !
     implicit none
 !
-    include 'asterfort/r8inir.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
+#include "asterfort/r8inir.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
     logical :: axi, grand
     integer :: ndim, nno
     real(kind=8) :: vff(nno), r, dfdi(nno, ndim), depl(ndim, nno), f(3, 3)

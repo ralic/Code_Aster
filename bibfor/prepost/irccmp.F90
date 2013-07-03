@@ -18,8 +18,8 @@ subroutine irccmp(typ, gd, ncmpmx, nomcgd, nbcmp,&
 ! ======================================================================
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/u2mesg.h'
+#include "jeveux.h"
+#include "asterfort/u2mesg.h"
     character(len=*) :: gd, nomcgd(*), nomcmp(*), typ
     integer :: ncmpmx, nbcmp, nbcmpt, jcmp
 ! ----------------------------------------------------------------------

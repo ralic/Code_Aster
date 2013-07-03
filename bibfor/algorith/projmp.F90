@@ -29,7 +29,7 @@ subroutine projmp(np1, np2, nbm, nbnl, phii,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/projmg.h'
+#include "asterfort/projmg.h"
     integer :: np1, np2
     integer :: nbm, nbnl
     real(kind=8) :: accg(*), vitg(*), depg(*)

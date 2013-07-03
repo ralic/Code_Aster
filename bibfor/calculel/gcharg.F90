@@ -2,28 +2,28 @@ subroutine gcharg(modele, nchar, lchar, chvolu, cf1d2d,&
                   cf2d3d, chpres, chepsi, chpesa, chrota,&
                   fonc, epsi, time, iord)
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/codent.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcharf.h'
-    include 'asterfort/gcharm.h'
-    include 'asterfort/gverfo.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mefor0.h'
-    include 'asterfort/mepres.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/tecart.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcharf.h"
+#include "asterfort/gcharm.h"
+#include "asterfort/gverfo.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mefor0.h"
+#include "asterfort/mepres.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/tecart.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nchar, iord
     character(len=8) :: modele, lchar(*)
     character(len=19) :: chvolu, cf1d2d, cf2d3d, chpres, chepsi, chpesa, chrota

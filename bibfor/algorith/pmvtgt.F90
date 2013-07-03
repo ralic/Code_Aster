@@ -45,16 +45,16 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
 ! OUT IRET  SI IRET = 0 -> FIN, SINON -> BOUCLE
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     character(len=16) :: option
     integer :: iret, nbvari
     real(kind=8) :: carcri(*), deps2(6), sigp(6), matper(36), dsidep(6, 6)

@@ -3,15 +3,15 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                   dkma, dkmb, k1acp, k1bcp)
 !
     implicit      none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8pi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8pi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mess.h"
     real(kind=8) :: tempa, kal, kbl, k1a, k1b, lrev, deklag
     real(kind=8) :: dkma, dkmb, k1acp, k1bcp, prodef
     character(len=8) :: matrev, oridef

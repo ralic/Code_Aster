@@ -1,19 +1,19 @@
 subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/i3crdm.h'
-    include 'asterfort/i3drdm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rvechc.h'
-    include 'asterfort/rveche.h'
-    include 'asterfort/rvechm.h'
-    include 'asterfort/rvechn.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/i3crdm.h"
+#include "asterfort/i3drdm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rvechc.h"
+#include "asterfort/rveche.h"
+#include "asterfort/rvechm.h"
+#include "asterfort/rvechn.h"
+#include "asterfort/wkvect.h"
     character(len=24) :: nomsd, lieu
     character(len=19) :: ssch19
     character(len=2) :: dim

@@ -36,16 +36,16 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
 !          VINF   :  VARIABLES INTERNES A T+DT
 !          MATERF :  COEF MATERIAU
 !     ----------------------------------------------------------------
-    include 'asterfort/lcgrla.h'
-    include 'asterfort/lcloca.h'
-    include 'asterfort/lcmmsg.h'
-    include 'asterfort/lcnrte.h'
-    include 'asterfort/matinv.h'
-    include 'asterfort/pk2sig.h'
-    include 'asterfort/pmat.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterfort/lcgrla.h"
+#include "asterfort/lcloca.h"
+#include "asterfort/lcmmsg.h"
+#include "asterfort/lcnrte.h"
+#include "asterfort/matinv.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/pmat.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nvi, nmat, nbcomm(nmat, 3), nbphas, i, iphas, indfv, nuvi, ifa
     integer :: ifl, is, nbfsys, nbsys, nsfv, indpha, indcp, numirr, ns, indtau
     integer :: iei, is3, iv3, iv, irr2

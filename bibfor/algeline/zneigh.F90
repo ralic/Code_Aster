@@ -129,16 +129,16 @@ subroutine zneigh(rnorm, n, h, ldh, ritz,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/gtrevc.h'
-    include 'asterfort/zmout.h'
-    include 'asterfort/zvout.h'
-    include 'blas/dznrm2.h'
-    include 'blas/zcopy.h'
-    include 'blas/zdscal.h'
-    include 'blas/zlacpy.h'
-    include 'blas/zlahqr.h'
-    include 'blas/zlaset.h'
+#include "asterc/matfpe.h"
+#include "asterfort/gtrevc.h"
+#include "asterfort/zmout.h"
+#include "asterfort/zvout.h"
+#include "blas/dznrm2.h"
+#include "blas/zcopy.h"
+#include "blas/zdscal.h"
+#include "blas/zlacpy.h"
+#include "blas/zlahqr.h"
+#include "blas/zlaset.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

@@ -17,9 +17,9 @@ subroutine diago2(tens, vecp, valp)
 ! ======================================================================
 !
     implicit none
-    include 'asterc/r8miem.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/zerop2.h'
+#include "asterc/r8miem.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/zerop2.h"
     real(kind=8) :: tens(3), valp(2), vecp(2, 2)
 !
 ! ----------------------------------------------------------------------

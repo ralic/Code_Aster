@@ -21,22 +21,22 @@ subroutine merimp(modele, carele, mate, comref, compor,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cesvar.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/exisd.h'
-    include 'asterfort/exixfe.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/mecara.h'
-    include 'asterfort/megeom.h'
-    include 'asterfort/ndynkk.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmvcex.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cesvar.h"
+#include "asterfort/copisd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmvcex.h"
     integer :: iterat
     character(len=*) :: mate
     character(len=19) :: sddyna, solalg(*)

@@ -31,7 +31,7 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 ! OUT : SAURED : VALEURS SAUVEGARDEES
 ! OUT : SAREDI : VALEURS SAUVEGARDEES
 ! ----------------------------------------------------------------------
-    include 'asterfort/fointe.h'
+#include "asterfort/fointe.h"
     integer :: ierd, icomp, nbmode, nbrede, saredi(*)
     real(kind=8) :: resu, seuil, forc, xs, absl, penl, depgen(*), fexgen(*)
     real(kind=8) :: parred(nbrede, *), saured(*), dplred(nbrede, nbmode, *)

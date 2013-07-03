@@ -64,8 +64,8 @@ subroutine matthm(ndim, axi, nno1, nno2, dimuel,&
     implicit none
 !
 ! - VARIABLES ENTREE
-    include 'asterfort/dfdm1d.h'
-    include 'asterfort/eicine.h'
+#include "asterfort/dfdm1d.h"
+#include "asterfort/eicine.h"
     integer :: ndim, nno1, nno2, dimuel, dimdef, yap1, yap2, yate
     integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
     integer :: addep1, addep2, addlh1

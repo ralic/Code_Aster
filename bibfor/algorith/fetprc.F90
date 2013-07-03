@@ -43,15 +43,15 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/fetmpi.h'
-    include 'asterfort/fetrex.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/assert.h"
+#include "asterfort/fetmpi.h"
+#include "asterfort/fetrex.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: nbsd, nbi, vddl(nbsd), irex, ifiv, nbproc, rang
     real(kind=8) :: vd1(nbi), vdo(nbi), vd2(nbi)
     character(len=19) :: matas

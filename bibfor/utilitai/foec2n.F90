@@ -1,15 +1,15 @@
 subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
                   impr)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/foec2f.h'
-    include 'asterfort/fopro1.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/foec2f.h"
+#include "asterfort/fopro1.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
     integer :: iuni, nbfonc, impr
     real(kind=8) :: valpar(nbfonc)
     character(len=*) :: vecpro(*), chval

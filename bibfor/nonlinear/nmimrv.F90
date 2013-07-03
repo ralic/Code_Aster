@@ -20,10 +20,10 @@ subroutine nmimrv(sdimpr, fonact, iterat, fetite, relcoe,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'asterfort/isfonc.h'
-    include 'asterfort/nmimci.h'
-    include 'asterfort/nmimck.h'
-    include 'asterfort/nmimcr.h'
+#include "asterfort/isfonc.h"
+#include "asterfort/nmimci.h"
+#include "asterfort/nmimck.h"
+#include "asterfort/nmimcr.h"
     integer :: fonact(*), iterat
     character(len=24) :: sdimpr
     real(kind=8) :: relcoe, eta

@@ -28,11 +28,11 @@ function comcou(iarg)
 ! aslint: disable=W1304
     implicit none
     integer(kind=4) :: comcou
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpiexe.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpiexe.h"
     integer :: jco, iarg
     character(len=24) :: k24bid
 !

@@ -20,7 +20,7 @@ subroutine mmreac(nbdm, ndim, nne, nnm, jgeom,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: nbdm, ndim, nne, nnm, jgeom, jdepm
     real(kind=8) :: geomae(9, 3), geomam(9, 3)
 !

@@ -2,8 +2,8 @@ subroutine ernozz(modele, sigma, chmat, signo, chvarc,&
                   option, ligrel, iordr, resuco, resuc1,&
                   champ)
     implicit none
-    include 'asterfort/erglob.h'
-    include 'asterfort/zzloca.h'
+#include "asterfort/erglob.h"
+#include "asterfort/zzloca.h"
     integer :: iordr
     character(len=*) :: modele, sigma, chmat, signo, option, ligrel
     character(len=*) :: champ, resuco

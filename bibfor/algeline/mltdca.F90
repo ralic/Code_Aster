@@ -22,15 +22,15 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
 !     VERSION COMPLEXE DE MLTDRA
 ! aslint: disable=W1304
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelibe.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/sspmvc.h'
-    include 'blas/zgemv.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/sspmvc.h"
+#include "blas/zgemv.h"
     integer :: nbsn, nbnd, nbloc, lgbloc(nbsn), ncbloc(nbnd), decal(nbsn)
     integer(kind=4) :: global(*)
     integer :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)

@@ -20,12 +20,12 @@ subroutine cfcoor(noma, defico, newgeo, posmam, ksi1,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfcarm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmcoor.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfcarm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmcoor.h"
     character(len=8) :: noma
     character(len=24) :: defico
     character(len=19) :: newgeo

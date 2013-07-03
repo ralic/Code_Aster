@@ -44,14 +44,14 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !                              IRET=1 => ECHEC
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/assert.h'
-    include 'asterfort/cjsmde.h'
-    include 'asterfort/cjsmid.h'
-    include 'asterfort/cjsmis.h'
-    include 'asterfort/cjssmd.h'
-    include 'asterfort/cjssmi.h'
-    include 'asterfort/lceqve.h'
-    include 'asterfort/lceqvn.h'
+#include "asterfort/assert.h"
+#include "asterfort/cjsmde.h"
+#include "asterfort/cjsmid.h"
+#include "asterfort/cjsmis.h"
+#include "asterfort/cjssmd.h"
+#include "asterfort/cjssmi.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lceqvn.h"
     integer :: ndt, ndi, nvi, niter, ndec, iret
     integer :: nvimax
     parameter(nvimax=16)

@@ -1,8 +1,8 @@
 subroutine te0314(option, nomte)
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
+#include "jeveux.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================

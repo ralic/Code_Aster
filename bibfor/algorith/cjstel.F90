@@ -25,7 +25,7 @@ subroutine cjstel(mod, mater, sig, hook)
 !     OUT  HOOK    :  OPERATEUR RIGIDITE ELASTIQUE
 !       ----------------------------------------------------------------
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: ndt, ndi
 !
     real(kind=8) :: sig(6), hook(6, 6), mater(14, 2), i1, coef

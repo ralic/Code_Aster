@@ -6,7 +6,7 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
                   rr, singu, tau1, tau2)
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,10 +49,10 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 ! IN SINGU  : PRESENCE OU NON DE LA SINGULARITE
 ! OUT TAU1  : 1ERE TANGENTE A LE SURFACE DE CONTACT AU PG
 ! OUT TAU2  : 2EME TANGENTE (EN 3D)
-    include 'asterfort/xjacf2.h'
-    include 'asterfort/xjacff.h'
-    include 'asterfort/xmoffc.h'
-    include 'asterfort/xxmmvd.h'
+#include "asterfort/xjacf2.h"
+#include "asterfort/xjacff.h"
+#include "asterfort/xmoffc.h"
+#include "asterfort/xxmmvd.h"
     integer :: cface(5, 3), contac
     integer :: i, iaint, ibasec, ifa, igeom, ipgf, iptint, j
     integer :: jlst, k, lact(8), ndim, ninter, nlact, nno

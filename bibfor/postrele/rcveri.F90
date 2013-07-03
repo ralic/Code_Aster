@@ -1,24 +1,24 @@
 subroutine rcveri(tablz)
     implicit      none
-    include 'jeveux.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/lcprsn.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/tbexip.h'
-    include 'asterfort/tbexp2.h'
-    include 'asterfort/tbextb.h'
-    include 'asterfort/tbexv1.h'
-    include 'asterfort/tbexve.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/getvtx.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lcprsn.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/tbexp2.h"
+#include "asterfort/tbextb.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: tablz
 !
 ! ======================================================================

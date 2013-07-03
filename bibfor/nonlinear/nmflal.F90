@@ -21,13 +21,13 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmlesd.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmlesd.h"
+#include "asterfort/u2mess.h"
     character(len=24) :: compor, ddlexc, ddlsta
     character(len=16) :: optmod, option
     character(len=4) :: mod45

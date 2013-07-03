@@ -28,39 +28,39 @@ subroutine op0152()
 !             AU FORMAT MORSE A LA FIN DE OP0152 : UALFVA
 !
 !---------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getres.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/cal152.h'
-    include 'asterfort/calmdg.h'
-    include 'asterfort/chpver.h'
-    include 'asterfort/cresol.h'
-    include 'asterfort/crnslv.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jecreo.h'
-    include 'asterfort/jecroc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/mag152.h'
-    include 'asterfort/mamodg.h'
-    include 'asterfort/mat152.h'
-    include 'asterfort/phi152.h'
-    include 'asterfort/rcmfmc.h'
-    include 'asterfort/rigflu.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/ualfva.h'
-    include 'asterfort/ver152.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getres.h"
+#include "asterc/getvid.h"
+#include "asterc/getvtx.h"
+#include "asterfort/cal152.h"
+#include "asterfort/calmdg.h"
+#include "asterfort/chpver.h"
+#include "asterfort/cresol.h"
+#include "asterfort/crnslv.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/mag152.h"
+#include "asterfort/mamodg.h"
+#include "asterfort/mat152.h"
+#include "asterfort/phi152.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/rigflu.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/ualfva.h"
+#include "asterfort/ver152.h"
+#include "asterfort/wkvect.h"
     logical :: vrai
     integer :: ldblo, ibid
     integer :: nbmo, nbmode, ndble, indice, tabad(5)

@@ -1,11 +1,11 @@
 subroutine rsexc1(nomsd, nomsy, iordr, chextr)
     implicit none
-    include 'asterc/getres.h'
-    include 'asterc/gettco.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: iordr
     character(len=*) :: nomsd, nomsy, chextr
     character(len=16) :: nomcmd, option, tysd

@@ -22,17 +22,17 @@ subroutine hypela(fami, kpg, ksp, poum, ndim,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/hyp3ci.h'
-    include 'asterfort/hyp3cv.h'
-    include 'asterfort/hyp3di.h'
-    include 'asterfort/hyp3dv.h'
-    include 'asterfort/hypcpc.h'
-    include 'asterfort/hypcpd.h'
-    include 'asterfort/hypmat.h'
-    include 'asterfort/matini.h'
-    include 'asterfort/u2mesk.h'
-    include 'blas/dscal.h'
+#include "asterfort/assert.h"
+#include "asterfort/hyp3ci.h"
+#include "asterfort/hyp3cv.h"
+#include "asterfort/hyp3di.h"
+#include "asterfort/hyp3dv.h"
+#include "asterfort/hypcpc.h"
+#include "asterfort/hypcpd.h"
+#include "asterfort/hypmat.h"
+#include "asterfort/matini.h"
+#include "asterfort/u2mesk.h"
+#include "blas/dscal.h"
     integer :: kpg, ksp, ndim
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)

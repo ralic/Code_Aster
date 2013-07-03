@@ -24,16 +24,16 @@ subroutine calci(phib24, phi1j, bj, cij1)
 ! IN: POTENTIELS PHIBARRE ET PHI1
 ! OUT : CIJ1 :COEFFICIENT D'AMORTISSEMENT CORRESPONDANT AU POTENTIEL
 ! PHI1
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/mtdscr.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/ddot.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/mtdscr.h"
+#include "asterfort/wkvect.h"
+#include "blas/ddot.h"
     integer :: ibarre, iphi1, imade, nphi1
     real(kind=8) :: cij1
     character(len=1) :: k1bid

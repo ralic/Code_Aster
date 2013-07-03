@@ -1,7 +1,7 @@
 subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
                   reffin, reffou, ceffin, ceffou)
     implicit  none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     character(len=*) :: sens
     integer :: nbpoin, nbcmp
     real(kind=8) :: excen, reffin(*), reffou(*)

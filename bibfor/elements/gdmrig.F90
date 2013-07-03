@@ -42,14 +42,14 @@ subroutine gdmrig(kp, nno, ajacob, pjacob, en,&
 !                       POINTS DE GAUSS)
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/cumuma.h'
-    include 'asterfort/extrma.h'
-    include 'asterfort/gdmb.h'
-    include 'asterfort/gdmd.h'
-    include 'asterfort/gdmups.h'
-    include 'asterfort/promat.h'
-    include 'asterfort/stokma.h'
-    include 'asterfort/transp.h'
+#include "asterfort/cumuma.h"
+#include "asterfort/extrma.h"
+#include "asterfort/gdmb.h"
+#include "asterfort/gdmd.h"
+#include "asterfort/gdmups.h"
+#include "asterfort/promat.h"
+#include "asterfort/stokma.h"
+#include "asterfort/transp.h"
     real(kind=8) :: en(3, 2), enprim(3, 2), x0pg(3), rot0(3, 3), rotk(3, 3)
     real(kind=8) :: granc(6), pn(3), pm(3), rigi(18, 18), d(9, 9)
     real(kind=8) :: stokaj(9, 6, 6), pi(6, 6), cpit(6, 6), picpit(6, 6)

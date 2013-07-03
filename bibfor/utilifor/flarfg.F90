@@ -83,12 +83,12 @@ subroutine flarfg(n, alpha, x, incx, tau)
     implicit none
 !
 !     .. SCALAR ARGUMENTS ..
-    include 'asterc/matfpe.h'
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dscal.h'
+#include "asterc/matfpe.h"
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "blas/dlapy2.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
     integer :: incx, n
     real(kind=8) :: alpha, tau
 !     ..

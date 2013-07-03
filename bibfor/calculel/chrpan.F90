@@ -1,21 +1,21 @@
 subroutine chrpan(modele, carte, chelem)
     implicit       none
-    include 'jeveux.h'
-    include 'asterc/getfac.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/indik8.h'
-    include 'asterc/r8pi.h'
-    include 'asterfort/angvx.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/carces.h'
-    include 'asterfort/cescel.h'
-    include 'asterfort/cesexi.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/reliem.h'
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/indik8.h"
+#include "asterc/r8pi.h"
+#include "asterfort/angvx.h"
+#include "asterfort/assert.h"
+#include "asterfort/carces.h"
+#include "asterfort/cescel.h"
+#include "asterfort/cesexi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
     character(len=*) :: modele, carte, chelem
 !     ------------------------------------------------------------------
 ! ======================================================================

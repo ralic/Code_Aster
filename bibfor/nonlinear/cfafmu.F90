@@ -18,11 +18,11 @@ subroutine cfafmu(resoco, neq, nbliai, nbliac, llf)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/calatm.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/calatm.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     integer :: neq
     integer :: nbliac, nbliai, llf
     character(len=24) :: resoco

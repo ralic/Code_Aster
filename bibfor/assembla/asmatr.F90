@@ -18,25 +18,25 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/ascima.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/assmam.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedbg2.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/masyns.h'
-    include 'asterfort/resyme.h'
-    include 'asterfort/typmat.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/ascima.h"
+#include "asterfort/assert.h"
+#include "asterfort/assmam.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedbg2.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/masyns.h"
+#include "asterfort/resyme.h"
+#include "asterfort/typmat.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: base, mataz, tlimat(*), licoef, nu
     integer :: nbmat, itysca
     character(len=*) :: solveu, infcha

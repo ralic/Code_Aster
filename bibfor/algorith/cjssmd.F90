@@ -25,15 +25,15 @@ subroutine cjssmd(mater, sig, vin, seuild)
 !       IN  VIN    :  VARIABLES INTERNES = ( Q, R, X )
 !       OUT SEUILD :  SEUIL  ELASTICITE DU MECANISME DEVIATOIRE
 !       ----------------------------------------------------------------
-    include 'asterfort/cjsqij.h'
-    include 'asterfort/cos3t.h'
-    include 'asterfort/hlode.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/lcdevi.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcprsc.h'
-    include 'asterfort/trace.h'
+#include "asterfort/cjsqij.h"
+#include "asterfort/cos3t.h"
+#include "asterfort/hlode.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/lcdevi.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcprsc.h"
+#include "asterfort/trace.h"
     integer :: ndt, ndi
     real(kind=8) :: mater(14, 2), sig(6), vin(*), seuild, rcos3t, htq
     real(kind=8) :: r, x(6), i1, dev(6), q(6), qii, gamma, pa, qinit

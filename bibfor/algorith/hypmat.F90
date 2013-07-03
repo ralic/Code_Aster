@@ -21,9 +21,9 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterc/r8prem.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
     character(len=*) :: fami, poum
     integer :: kpg, ksp, imate
     real(kind=8) :: c10, c01, c20

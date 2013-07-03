@@ -32,8 +32,8 @@ subroutine lcsolz(a, b, ndim, n, nbscmb,&
 !      OUT  IRET   : IS : 0 OK
 !                         1 PIVOT NUL
 !     ------------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterfort/dcabs2.h'
+#include "asterc/r8miem.h"
+#include "asterfort/dcabs2.h"
     integer :: ipivot
     real(kind=8) :: apivot, zero, rmin
     complex(kind=8) :: ak, bk

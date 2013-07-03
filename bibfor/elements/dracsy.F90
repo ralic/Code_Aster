@@ -37,9 +37,9 @@ subroutine dracsy(a0, b0, c0, d0, e0,&
 ! OUT NBROOT : NOMBRE DE COUPLES SOLUTIONS
 ! OUT X ET Y : COUPLES SOLUTIONS
 !
-    include 'asterfort/draac2.h'
-    include 'asterfort/draacn.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/draac2.h"
+#include "asterfort/draacn.h"
+#include "asterfort/r8inir.h"
     integer :: deg, nbxx, nbyy, i, j, nbroox, nbroot
 !
     real(kind=8) :: a0(2), b0(2), c0(2), d0(2), e0(2), f0(2)

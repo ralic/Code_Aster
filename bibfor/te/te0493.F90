@@ -17,10 +17,10 @@ subroutine te0493(option, nomte)
 ! ======================================================================
 ! ======================================================================
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevech.h"
+#include "asterfort/u2mesk.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !

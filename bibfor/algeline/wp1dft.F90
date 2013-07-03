@@ -1,14 +1,14 @@
 subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
                   det, idet, isturm)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/almulr.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/almulr.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
     integer :: lmat, imode, idet
     complex(kind=8) :: zeropo(*), z, detnor
     real(kind=8) :: det

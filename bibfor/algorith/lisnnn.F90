@@ -18,13 +18,13 @@ subroutine lisnnn(motfac, iexci, charge)
 ! ======================================================================
 !
     implicit     none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getexm.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "asterc/getexm.h"
+#include "asterc/getvid.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     character(len=16) :: motfac
     integer :: iexci
     character(len=8) :: charge

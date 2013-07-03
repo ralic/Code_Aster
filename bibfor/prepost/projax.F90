@@ -18,15 +18,15 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
 ! ======================================================================
 ! person_in_charge: jean.angles at edf.fr
     implicit      none
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/proax0.h'
-    include 'asterfort/raxini.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/proax0.h"
+#include "asterfort/raxini.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbvec, nbordr, iflag(nbvec)
     real(kind=8) :: vecpg(2*nbvec*nbordr), rmima(4*nbvec)
     real(kind=8) :: raxe(nbvec*nbordr)

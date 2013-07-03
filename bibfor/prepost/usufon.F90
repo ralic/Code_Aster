@@ -18,7 +18,7 @@ subroutine usufon(type, para, d, f, df)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    include 'asterfort/u2mesk.h'
+#include "asterfort/u2mesk.h"
     real(kind=8) :: para(*)
     character(len=16) :: typez
     character(len=*) :: type

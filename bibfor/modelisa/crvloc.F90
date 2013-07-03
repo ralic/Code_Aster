@@ -21,14 +21,14 @@ subroutine crvloc(dim, adcom0, iatyma, connex, vgeloc,&
 !    A PARTIR DE TOUVOI
 !
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nbsomm.h'
-    include 'asterfort/somloc.h'
+#include "asterfort/dismoi.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbsomm.h"
+#include "asterfort/somloc.h"
     integer :: adcom0, iatyma, nvtot, nvoima, nscoma
     integer :: touvoi(1:nvoima, 1:nscoma+2)
     integer :: dim

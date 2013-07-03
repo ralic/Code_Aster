@@ -26,7 +26,7 @@ function ioriv3(num, noeud, vect, coor)
 !   CODE RETOUR IORIV3 : 0 SI LA MAILLE NE CONTIENT PAS LE NOEUD
 !                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 !                                      FALLU REORIENTER)
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: num(2), i, ioriv3, k, l, n1, n2, noeud
     real(kind=8) :: scal, x1, x2, y1, y2, z1, z2
 !-----------------------------------------------------------------------

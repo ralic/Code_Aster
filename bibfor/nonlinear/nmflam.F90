@@ -25,26 +25,26 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 !
 ! aslint: disable=W1504
     implicit     none
-    include      'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8maem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetc.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/nmcrel.h'
-    include 'asterfort/nmecsd.h'
-    include 'asterfort/nmflal.h'
-    include 'asterfort/nmflin.h'
-    include 'asterfort/nmflma.h'
-    include 'asterfort/nmlesd.h'
-    include 'asterfort/nmop45.h'
-    include 'asterfort/rsadpa.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/u2mesg.h'
+#include "asterc/r8maem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcrel.h"
+#include "asterfort/nmecsd.h"
+#include "asterfort/nmflal.h"
+#include "asterfort/nmflin.h"
+#include "asterfort/nmflma.h"
+#include "asterfort/nmlesd.h"
+#include "asterfort/nmop45.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/u2mesg.h"
     integer :: numins
     real(kind=8) :: parmet(*)
     character(len=16) :: option

@@ -5,20 +5,20 @@ subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
                   psidel, nonmot)
 ! aslint: disable=W1306,W1501,W1504
     implicit none
-    include 'asterfort/distno.h'
-    include 'asterfort/fnorm.h'
-    include 'asterfort/fointe.h'
-    include 'asterfort/ftang.h'
-    include 'asterfort/gloloc.h'
-    include 'asterfort/locglo.h'
-    include 'asterfort/mdfdas.h'
-    include 'asterfort/mdfflu.h'
-    include 'asterfort/mdflam.h'
-    include 'asterfort/mdmasf.h'
-    include 'asterfort/ponder.h'
-    include 'asterfort/togene.h'
-    include 'asterfort/tophy3.h'
-    include 'asterfort/tophys.h'
+#include "asterfort/distno.h"
+#include "asterfort/fnorm.h"
+#include "asterfort/fointe.h"
+#include "asterfort/ftang.h"
+#include "asterfort/gloloc.h"
+#include "asterfort/locglo.h"
+#include "asterfort/mdfdas.h"
+#include "asterfort/mdfflu.h"
+#include "asterfort/mdflam.h"
+#include "asterfort/mdmasf.h"
+#include "asterfort/ponder.h"
+#include "asterfort/togene.h"
+#include "asterfort/tophy3.h"
+#include "asterfort/tophys.h"
     integer :: logcho(nbchoc, *)
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*), accgen(*)
     real(kind=8) :: parcho(nbchoc, *), saucho(nbchoc, *), masgen(*), phicar(*)

@@ -37,8 +37,8 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
 !
 !-----------------------------------------------------------------------
 !
-    include 'asterc/r8miem.h'
-    include 'asterfort/zconju.h'
+#include "asterc/r8miem.h"
+#include "asterfort/zconju.h"
     complex(kind=8) :: cvec1(ndim), cvec0(ndim)
     complex(kind=8) :: cvec01(ndim), cvec00(ndim)
     complex(kind=8) :: cconj, cnorm, cprod

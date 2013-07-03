@@ -22,7 +22,7 @@ subroutine mavec(mp, m, mv, n)
 !       IN      MP = MATRICE PLEINE (M*M)
 !       OUT     MV = VECTEUR DEMI - MATRICE STOCKE COLONNE , LONGUEUR N
 !       ----------------------------------------------------------------
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: mv(n), mp(m, m)
 !
 !-----------------------------------------------------------------------

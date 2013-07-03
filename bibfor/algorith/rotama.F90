@@ -34,15 +34,15 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 ! ----------------------------------------------------------------------
 !
 !
-    include 'jeveux.h'
-    include 'asterc/matfpe.h'
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/dnrm2.h'
+#include "jeveux.h"
+#include "asterc/matfpe.h"
+#include "asterc/r8dgrd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
+#include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
     logical :: bidim
     character(len=8) :: k8bid

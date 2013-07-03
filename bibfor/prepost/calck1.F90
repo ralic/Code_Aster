@@ -3,13 +3,13 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
                   k1a, k1b)
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterc/r8pi.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mess.h"
     integer :: norev, nomdb
     real(kind=8) :: prodef, londef, deklag, lrev, k1a, k1b
     character(len=19) :: sigmrv, sigmdb, tbscrv, tbscmb

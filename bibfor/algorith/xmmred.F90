@@ -21,11 +21,11 @@ subroutine xmmred(ndimg, depdel, depdes, lagcn, depcn,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-    include 'jeveux.h'
-    include 'asterfort/cnocns.h'
-    include 'asterfort/cnsred.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
+#include "jeveux.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
     integer :: ndimg
     character(len=19) :: depdel, depdes, lagcn, depcn
     character(len=19) :: fcont, fconts, fctcn

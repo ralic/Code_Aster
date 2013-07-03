@@ -1,8 +1,8 @@
 subroutine zxtrac(interp, prec, crit, nbinst, ti,&
                   temps, y, neq, xtract, ier)
     implicit none
-    include 'asterfort/u2mess.h'
-    include 'blas/zcopy.h'
+#include "asterfort/u2mess.h"
+#include "blas/zcopy.h"
     integer :: nbinst, neq, ier
     real(kind=8) :: prec, ti(*)
     complex(kind=8) :: xtract(*), y(*)

@@ -35,15 +35,15 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 !           DEPS   :  INCREMENT DE DEFORMATION
 !       OUT RES    :  SYSTEME NL A T + DT
 !       ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/fgequi.h'
-    include 'asterfort/lcdive.h'
-    include 'asterfort/lceqvn.h'
-    include 'asterfort/lcopli.h'
-    include 'asterfort/lcprmv.h'
-    include 'asterfort/lcprsv.h'
-    include 'blas/dscal.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/fgequi.h"
+#include "asterfort/lcdive.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/lcprsv.h"
+#include "blas/dscal.h"
     character(len=8) :: mod
     integer :: iret, itens, ndi, nmat, nvi, ndt, ndim
     real(kind=8) :: hookf(6, 6), res(10), crit(*), theta, alphad

@@ -28,7 +28,7 @@ subroutine tstpar(itest, nbm, amor, amor0, puls,&
 !
 ! ARGUMENTS
 ! ---------
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     integer :: itest, nbm
     real(kind=8) :: amor(*), amor0(*), puls(*), puls0(*), dt, dt0
 !

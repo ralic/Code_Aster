@@ -31,7 +31,7 @@ subroutine zzpoly(nno, ino, xino, yino, sig,&
 !  SORTIE :
 !       SIG   :  CONTRAINTES LISSEES
 !
-    include 'asterfort/u2mess.h'
+#include "asterfort/u2mess.h"
     real(kind=8) :: xino, yino, sig(1), b(9, 4)
 !-----------------------------------------------------------------------
     integer :: ic, ino, nno

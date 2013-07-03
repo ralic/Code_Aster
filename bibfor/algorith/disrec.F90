@@ -19,7 +19,7 @@ subroutine disrec(pz, az, bz, r, h)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
+#include "asterfort/assert.h"
     real(kind=8) :: pz(2), az, bz, r, h, xc, yc
 !
 !

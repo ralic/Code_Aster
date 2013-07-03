@@ -20,18 +20,18 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/diinst.h'
-    include 'asterfort/isfonc.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/ndynlo.h'
-    include 'asterfort/nmadat.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/nmchsv.h'
-    include 'asterfort/nmpiac.h'
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/diinst.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/nmadat.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmchsv.h"
+#include "asterfort/nmpiac.h"
     character(len=19) :: solalg(*), valinc(*), veasse(*)
     character(len=19) :: sddyna, sdpilo, sddisc
     real(kind=8) :: eta

@@ -21,12 +21,12 @@ subroutine lceob3(intmax, tole, eps, bm, dm,&
 ! ======================================================================
 !
     implicit none
-    include 'asterfort/ceobfb.h'
-    include 'asterfort/ceobfd.h'
-    include 'asterfort/dfbdb.h'
-    include 'asterfort/dfmdf.h'
-    include 'asterfort/mgauss.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/ceobfb.h"
+#include "asterfort/ceobfd.h"
+#include "asterfort/dfbdb.h"
+#include "asterfort/dfmdf.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/r8inir.h"
     real(kind=8) :: eps(6)
     real(kind=8) :: bm(6), dm, b(6), d, mult
     real(kind=8) :: lambda, mu, alpha, seuil, ecrob, ecrod

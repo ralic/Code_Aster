@@ -26,12 +26,12 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 ! aslint: disable=W1504
     implicit none
 !
-    include 'jeveux.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/crirup.h'
-    include 'asterfort/lcegeo.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmgeom.h'
+#include "jeveux.h"
+#include "asterfort/codere.h"
+#include "asterfort/crirup.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
     integer :: nno, npg, imate, lgpg, codret, ndim
 !
     character(len=*) :: fami

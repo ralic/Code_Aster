@@ -18,24 +18,24 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvis.h'
-    include 'asterc/loisem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/comcou.h'
-    include 'asterfort/gcncon.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jerazo.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mpierr.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/utimsd.h'
-    include 'asterfort/uttcpr.h'
-    include 'asterfort/uttcpu.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/getvis.h"
+#include "asterc/loisem.h"
+#include "asterfort/assert.h"
+#include "asterfort/comcou.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mpierr.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/utimsd.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/wkvect.h"
     integer :: optmpi, ifm, niv, nbsd, nbproc, rang
     character(len=24) :: ach24, ach241, ach242
     real(kind=8) :: argr1
@@ -73,7 +73,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 !
 !
 #ifdef _USE_MPI
-    include 'mpif.h'
+#include "mpif.h"
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: iaux1, idd, nbsd1, ilist, iexist, ired, i, iach

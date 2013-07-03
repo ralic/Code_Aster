@@ -54,22 +54,22 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 ! CORPS DU PROGRAMME
 ! aslint: disable=W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/getvid.h'
-    include 'asterfort/ajlagr.h'
-    include 'asterfort/copisd.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dlfdyn.h'
-    include 'asterfort/dlfext.h'
-    include 'asterfort/dltini.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mrmult.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/vtcreb.h'
-    include 'asterfort/wkvect.h'
-    include 'blas/dcopy.h'
+#include "jeveux.h"
+#include "asterc/getvid.h"
+#include "asterfort/ajlagr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dlfdyn.h"
+#include "asterfort/dlfext.h"
+#include "asterfort/dltini.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
     integer :: neq
     integer :: nveca, nchar
     integer :: liad(*), iarg

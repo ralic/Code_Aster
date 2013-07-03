@@ -18,10 +18,10 @@ function mailla(ligrel)
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
     character(len=8) :: mailla
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     character(len=19) :: ligrel
 !
     integer :: noma

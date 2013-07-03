@@ -1,16 +1,16 @@
 subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                   lres)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mtxcnl.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mtxcnl.h"
+#include "asterfort/wkvect.h"
     integer :: nbcomb, lmat(*), lres
     character(len=*) :: typcst(*)
     character(len=*) :: typres

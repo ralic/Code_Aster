@@ -1,14 +1,14 @@
 subroutine afva01(typsd, nomsd, nomsym, lautr)
     implicit   none
-    include 'asterfort/assert.h'
-    include 'asterfort/cmpcha.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/rsexch.h'
-    include 'asterfort/rsorac.h'
-    include 'asterfort/wkvect.h'
+#include "asterfort/assert.h"
+#include "asterfort/cmpcha.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/wkvect.h"
     character(len=16) :: typsd, nomsd, nomsym
     logical :: lautr
 ! ----------------------------------------------------------------------
@@ -33,7 +33,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 ! BUT : DIRE SI DANS LA SD NOMSD DE TYPE TYPSD=CHAMP/EVOL+NOMSYM
 !       ON TROUVE DES COMPOSANTES AUTRES QUE 'TEMP' ET 'LAGR'
 ! ----------------------------------------------------------------------
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: ncmp, ncmpmx, k, j1, jordr, j, iret, nbordr, ibid
     character(len=19) :: ch19, kbid, res19
     character(len=24) :: corr1, corr2, nomcmp

@@ -2,11 +2,11 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
                   valpar, nbres, nomres, valres, icodre,&
                   iarret)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/fointa.h'
-    include 'asterfort/rcvals.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterfort/fointa.h"
+#include "asterfort/rcvals.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: imat, nbpar, nbres, iarret
     real(kind=8) :: valpar(nbpar), valres(nbres)
     integer :: icodre(nbres)

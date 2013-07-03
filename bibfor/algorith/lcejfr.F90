@@ -22,13 +22,13 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'asterfort/matinv.h'
-    include 'asterfort/pmavec.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mess.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
+#include "asterfort/matinv.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
     integer :: mate, ndim, kpg, ksp
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigma(6), dsidep(6, 6)

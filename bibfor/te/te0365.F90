@@ -19,23 +19,23 @@ subroutine te0365(option, nomte)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/mmelem.h'
-    include 'asterfort/mmlagc.h'
-    include 'asterfort/mmmlav.h'
-    include 'asterfort/mmmlcf.h'
-    include 'asterfort/mmmpha.h'
-    include 'asterfort/mmmsta.h'
-    include 'asterfort/mmmvas.h'
-    include 'asterfort/mmmvex.h'
-    include 'asterfort/mmvape.h'
-    include 'asterfort/mmvfpe.h'
-    include 'asterfort/mmvppe.h'
-    include 'asterfort/vecini.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/mmelem.h"
+#include "asterfort/mmlagc.h"
+#include "asterfort/mmmlav.h"
+#include "asterfort/mmmlcf.h"
+#include "asterfort/mmmpha.h"
+#include "asterfort/mmmsta.h"
+#include "asterfort/mmmvas.h"
+#include "asterfort/mmmvex.h"
+#include "asterfort/mmvape.h"
+#include "asterfort/mmvfpe.h"
+#include "asterfort/mmvppe.h"
+#include "asterfort/vecini.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------

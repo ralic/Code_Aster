@@ -24,15 +24,15 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
 !
 ! aslint: disable=W1306
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/codere.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/gedisc.h'
-    include 'asterfort/nmcomp.h'
-    include 'asterfort/nmfisa.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/u2mesk.h'
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/codere.h"
+#include "asterfort/elref4.h"
+#include "asterfort/gedisc.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmfisa.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/u2mesk.h"
     integer :: mate, npg, lgpg, codret
     real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp
     real(kind=8) :: fint(8), ktan(8, 8), sigmo(6, npg), sigma(6, npg)

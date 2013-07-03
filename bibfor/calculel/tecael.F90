@@ -20,10 +20,10 @@ subroutine tecael(iadzi, iazk24)
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/jenuno.h'
-    include 'asterfort/jexnum.h'
+#include "asterfort/jenuno.h"
+#include "asterfort/jexnum.h"
     integer :: iadzi, iazk24
 !     -----------------------------------------------------------------
 !     SORTIES:

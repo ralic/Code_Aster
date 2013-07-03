@@ -1,13 +1,13 @@
 subroutine vtcrec(champ, chmod, base, typc, neq)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedupo.h'
-    include 'asterfort/jeecra.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/sdchgd.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/sdchgd.h"
+#include "asterfort/wkvect.h"
     character(len=*) :: champ, base, typc, chmod
 !     ------------------------------------------------------------------
 ! ======================================================================

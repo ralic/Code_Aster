@@ -6,7 +6,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
     implicit none
 !
 !
-    include 'asterfort/rcvalb.h'
+#include "asterfort/rcvalb.h"
     integer :: kpg, ksp, imat
     real(kind=8) :: zalpha, temp, dt
     real(kind=8) :: mum, mu, troikm, troisk, alpham, alphap, ani(6, 6)

@@ -2,11 +2,11 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
                   ipoids, ivf, idfde, nddls, nnos,&
                   nddlm, nnom)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/tefrep.h'
+#include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tefrep.h"
     logical :: axi
     integer :: nno, npg, ipoids, ivf, idfde
     integer :: nnos, nddls, nnom, nddlm

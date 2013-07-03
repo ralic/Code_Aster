@@ -3,9 +3,9 @@ subroutine ptma01(kanl, itype, m, ist, rho,&
                   xiy2, xiz1, xiz2, g, alfay1,&
                   alfay2, alfaz1, alfaz2, ey, ez)
     implicit none
-    include 'asterc/r8gaem.h'
-    include 'asterfort/fun1.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8gaem.h"
+#include "asterfort/fun1.h"
+#include "asterfort/u2mess.h"
     integer :: kanl, ist, itype
     real(kind=8) :: e, rho, a1, a2, xl, xiy1, xiy2, xiz1, xiz2, g
     real(kind=8) :: m(*), alfay1, alfay2, alfaz1, alfaz2, ey, ez

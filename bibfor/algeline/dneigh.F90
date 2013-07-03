@@ -121,16 +121,16 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr,&
 !     | INCLUDE FILES FOR DEBUGGING |
 !     %-----------------------------%
 !
-    include 'asterc/matfpe.h'
-    include 'asterfort/dlaqrb.h'
-    include 'asterfort/dmout.h'
-    include 'asterfort/dvout.h'
-    include 'asterfort/ftrevc.h'
-    include 'blas/dgemv.h'
-    include 'blas/dlacpy.h'
-    include 'blas/dlapy2.h'
-    include 'blas/dnrm2.h'
-    include 'blas/dscal.h'
+#include "asterc/matfpe.h"
+#include "asterfort/dlaqrb.h"
+#include "asterfort/dmout.h"
+#include "asterfort/dvout.h"
+#include "asterfort/ftrevc.h"
+#include "blas/dgemv.h"
+#include "blas/dlacpy.h"
+#include "blas/dlapy2.h"
+#include "blas/dnrm2.h"
+#include "blas/dscal.h"
     integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
     integer :: mngets, mneupd
     common /debug/&

@@ -24,33 +24,33 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !
 ! aslint: disable=W1306,W1501,W1504
     implicit none
-    include 'jeveux.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/chauxi.h'
-    include 'asterfort/dfdm2d.h'
-    include 'asterfort/dfdm3d.h'
-    include 'asterfort/elref4.h'
-    include 'asterfort/elref5.h'
-    include 'asterfort/gbil3d.h'
-    include 'asterfort/gbilin.h'
-    include 'asterfort/iselli.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/lteatt.h'
-    include 'asterfort/normev.h'
-    include 'asterfort/provec.h'
-    include 'asterfort/rccoma.h'
-    include 'asterfort/rcvad2.h'
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/rcvarc.h'
-    include 'asterfort/reeref.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vecini.h'
-    include 'asterfort/xdeffe.h'
-    include 'asterfort/xderfe.h'
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/chauxi.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref4.h"
+#include "asterfort/elref5.h"
+#include "asterfort/gbil3d.h"
+#include "asterfort/gbilin.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/normev.h"
+#include "asterfort/provec.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvad2.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/reeref.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xdeffe.h"
+#include "asterfort/xderfe.h"
     character(len=8) :: elrefp
     integer :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl
     integer :: nfiss, jfisno, jheavt, ise

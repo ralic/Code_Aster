@@ -41,11 +41,11 @@ subroutine radial(nbsig, sigm, sigp, indm, indp,&
 !
 ! ......................................................................
     implicit none
-    include 'asterc/r8prem.h'
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/ddot.h'
-    include 'blas/dscal.h'
+#include "asterc/r8prem.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/ddot.h"
+#include "blas/dscal.h"
     integer :: nbsig, icine, i
     real(kind=8) :: n1(6), n2(6), xm(6), xp(6), indm, indp
     real(kind=8) :: tensm(6), tensp(6), normdn, sigm(nbsig), sigp(nbsig)

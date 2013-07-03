@@ -1,18 +1,18 @@
 subroutine te0040(option, nomte)
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/caurtg.h'
-    include 'asterfort/cosiro.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/jevete.h'
-    include 'asterfort/pk2cau.h'
-    include 'asterfort/tecach.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vdrepe.h'
-    include 'asterfort/vdsiro.h'
-    include 'asterfort/vectan.h'
-    include 'asterfort/vectgt.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/caurtg.h"
+#include "asterfort/cosiro.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jevete.h"
+#include "asterfort/pk2cau.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vdrepe.h"
+#include "asterfort/vdsiro.h"
+#include "asterfort/vectan.h"
+#include "asterfort/vectgt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================

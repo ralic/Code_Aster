@@ -25,8 +25,8 @@ subroutine rkcah2(comp, y, pas, nvi, w,&
 !         Y       :  VARIABLES INTERNES
 !     OUT H       :  PAS DE TEMPS
 !
-    include 'asterc/r8prem.h'
-    include 'asterfort/u2mess.h'
+#include "asterc/r8prem.h"
+#include "asterfort/u2mess.h"
     integer :: ne, ny, na, nvi, iret
     character(len=16) :: loi, comp(*)
     real(kind=8) :: y(*), h, w, dmg0, dmg1, maxout, maxdom, wk(*), eps

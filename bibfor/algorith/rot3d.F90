@@ -19,7 +19,7 @@ subroutine rot3d(x, sina, cosa, sinb, cosb,&
 ! ======================================================================
 !  CODE 1083
 ! GENERATION D'UNE MATRICE DE ROTATION(3 AXES) ANGLES DONNES EN RADIANS
-    include 'asterfort/pmavec.h'
+#include "asterfort/pmavec.h"
     real(kind=8) :: rx(3, 3), ry(3, 3), rz(3, 3), rzyx(3, 3), p(3), x(*), y(*)
 !-----------------------------------------------------------------------
     integer :: i, j, k, l

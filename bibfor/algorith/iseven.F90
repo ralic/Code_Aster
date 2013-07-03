@@ -19,7 +19,7 @@ subroutine iseven(sddisc, nomevz, lacti)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include 'asterfort/utdidt.h'
+#include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     character(len=*) :: nomevz
     logical :: lacti

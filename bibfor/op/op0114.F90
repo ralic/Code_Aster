@@ -21,23 +21,23 @@ subroutine op0114()
 !  ----- OPERATEUR RECU_PARA_YACS             --------------------------
 !  RECUPERATION DE VALEURS D'INITIALISATION POUR COUPLAGE IFS VIA YACS
 !     ------------------------------------------------------------------
-    include 'jeveux.h'
-    include 'asterc/cpedb.h'
-    include 'asterc/cpldb.h'
-    include 'asterc/cplen.h'
-    include 'asterc/getres.h'
-    include 'asterc/getvis.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/infmaj.h'
-    include 'asterfort/infniv.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/liimpr.h'
-    include 'asterfort/titre.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterc/cpedb.h"
+#include "asterc/cpldb.h"
+#include "asterc/cplen.h"
+#include "asterc/getres.h"
+#include "asterc/getvis.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liimpr.h"
+#include "asterfort/titre.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/wkvect.h"
     integer :: ifm, niv, nbvale, ndim, jpas, jnbp, jbor, jval, i
     character(len=19) :: resu
     character(len=16) :: nomcmd, concep

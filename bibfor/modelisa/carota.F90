@@ -27,19 +27,19 @@ subroutine carota(char, noma, irota, ndim, ligrmo)
 !     LIGRMO : NOM DU LIGREL DE MODELE
 !
 ! ROUTINES APPELEES:
-    include 'jeveux.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterc/r8miem.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/mecact.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/reliem.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/vetyma.h'
+#include "jeveux.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterc/r8miem.h"
+#include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
+#include "asterfort/nocart.h"
+#include "asterfort/reliem.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vetyma.h"
     real(kind=8) :: rota(7), norme
     complex(kind=8) :: cbid
     character(len=8) :: char, noma, licmp(7), k8b, k8tout

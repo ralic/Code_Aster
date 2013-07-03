@@ -1,9 +1,9 @@
 subroutine extrac(interp, prec, crit, nbinst, ti,&
                   temps, y, neq, xtract, ier)
     implicit none
-    include 'blas/daxpy.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     integer :: nbinst, neq, ier
     real(kind=8) :: prec, ti(*), y(*), xtract(*)
     character(len=*) :: interp, crit

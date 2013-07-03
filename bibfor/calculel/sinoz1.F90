@@ -31,27 +31,27 @@ subroutine sinoz1(modele, sigma, signo)
 !
 ! ----------------------- DECLARATIONS --------------------------------
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterfort/asasve.h'
-    include 'asterfort/asmatr.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/crcnct.h'
-    include 'asterfort/detrsd.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/me2zme.h'
-    include 'asterfort/memzme.h'
-    include 'asterfort/numer2.h'
-    include 'asterfort/numoch.h'
-    include 'asterfort/preres.h'
-    include 'asterfort/resoud.h'
-    include 'asterfort/u2mess.h'
+#include "asterfort/asasve.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/assert.h"
+#include "asterfort/crcnct.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/me2zme.h"
+#include "asterfort/memzme.h"
+#include "asterfort/numer2.h"
+#include "asterfort/numoch.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/u2mess.h"
     character(len=1) :: typres, k1bid
     character(len=8) :: modele
     character(len=14) :: nupgm

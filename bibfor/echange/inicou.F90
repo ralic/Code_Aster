@@ -168,17 +168,17 @@ subroutine inicou(nbpas, tinit, tfin, dt, dtsto,&
 !
 !     ARGUMENTS
 !     =========
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/cpech.h'
-    include 'asterc/cpedb.h'
-    include 'asterc/cpeen.h'
-    include 'asterc/cplch.h'
-    include 'asterfort/errcou.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
+#include "asterc/cpech.h"
+#include "asterc/cpedb.h"
+#include "asterc/cpeen.h"
+#include "asterc/cplch.h"
+#include "asterfort/errcou.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
     real(kind=8) :: vrotat, tinit, tfin, dt, dtsto, tmin
     integer :: nbpas
 !

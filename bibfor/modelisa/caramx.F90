@@ -19,12 +19,12 @@ subroutine caramx(char, iform, nzoco)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'asterfort/assert.h'
-    include 'asterfort/caracc.h'
-    include 'asterfort/caracd.h'
-    include 'asterfort/caracm.h'
-    include 'asterfort/caracp.h'
-    include 'asterfort/caracx.h'
+#include "asterfort/assert.h"
+#include "asterfort/caracc.h"
+#include "asterfort/caracd.h"
+#include "asterfort/caracm.h"
+#include "asterfort/caracp.h"
+#include "asterfort/caracx.h"
     character(len=8) :: char
     integer :: nzoco
     integer :: iform

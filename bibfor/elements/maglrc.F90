@@ -18,14 +18,14 @@ subroutine maglrc(zimat, matr, delas, ecr)
 ! ======================================================================
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/r8dgrd.h'
-    include 'asterfort/jevech.h'
-    include 'asterfort/r8inir.h'
-    include 'asterfort/rcvala.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesk.h'
+#include "asterc/r8dgrd.h"
+#include "asterfort/jevech.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesk.h"
     integer :: i, jcoqu, icacoq, zimat
 !
     real(kind=8) :: matr(*), delas(6, 6), r8b

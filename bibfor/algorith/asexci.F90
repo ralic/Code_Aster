@@ -2,19 +2,19 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
                   impr, ndir, monoap, muapde, kspect,&
                   kasysp, nbsup, nsupp, knoeu)
     implicit  none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/asexc1.h'
-    include 'asterfort/asexc2.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/typddl.h'
-    include 'asterfort/u2mess.h'
-    include 'asterfort/wkvect.h'
+#include "asterc/getfac.h"
+#include "asterc/getvtx.h"
+#include "asterfort/asexc1.h"
+#include "asterfort/asexc2.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/typddl.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
     integer :: nbmode, impr, ndir(*), nbsup, nsupp(*)
     real(kind=8) :: parmod(nbmode, *), amort(*)
     character(len=*) :: masse, kspect, kasysp, knoeu

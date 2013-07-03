@@ -17,9 +17,9 @@ subroutine ntfcma(jmat, ifon)
 ! ======================================================================
 ! ----------------------------------------------------------------------
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/u2mess.h'
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/u2mess.h"
     integer :: imate, ifon(3)
 ! ----------------------------------------------------------------------
 !     OBTENTION DES ADRESSES DES FONCTIONS BETA ET LAMBDA DANS LE

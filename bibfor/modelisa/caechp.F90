@@ -1,29 +1,29 @@
 subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                   noma, fonree, ndim)
     implicit none
-    include 'jeveux.h'
+#include "jeveux.h"
 !
-    include 'asterc/getfac.h'
-    include 'asterc/getvid.h'
-    include 'asterc/getvr8.h'
-    include 'asterc/getvtx.h'
-    include 'asterfort/alcart.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/dismoi.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveuo.h'
-    include 'asterfort/jexnum.h'
-    include 'asterfort/nocart.h'
-    include 'asterfort/paligi.h'
-    include 'asterfort/palima.h'
-    include 'asterfort/patrma.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/xtempc.h'
-    include 'asterfort/xtmafi.h'
-    include 'asterfort/xvelfm.h'
+#include "asterc/getfac.h"
+#include "asterc/getvid.h"
+#include "asterc/getvr8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/paligi.h"
+#include "asterfort/palima.h"
+#include "asterfort/patrma.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/xtempc.h"
+#include "asterfort/xtmafi.h"
+#include "asterfort/xvelfm.h"
     integer :: igrel, inema, ndim
     character(len=4) :: fonree
     character(len=8) :: char, noma

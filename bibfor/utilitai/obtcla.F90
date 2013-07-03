@@ -19,15 +19,15 @@ subroutine obtcla(sdtabl)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit      none
-    include       'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/obgeti.h'
-    include 'asterfort/obgeto.h'
-    include 'asterfort/oblgai.h'
-    include 'asterfort/oblgoi.h'
-    include 'asterfort/obseti.h'
-    include 'asterfort/u2mesi.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/obgeti.h"
+#include "asterfort/obgeto.h"
+#include "asterfort/oblgai.h"
+#include "asterfort/oblgoi.h"
+#include "asterfort/obseti.h"
+#include "asterfort/u2mesi.h"
     character(len=24) :: sdtabl
 !
 ! ----------------------------------------------------------------------

@@ -19,23 +19,23 @@ subroutine cfmmve(noma, defico, resoco, valinc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    include 'jeveux.h'
-    include 'asterfort/apcalc.h'
-    include 'asterfort/assert.h'
-    include 'asterfort/cfdisl.h'
-    include 'asterfort/cfmmvc.h'
-    include 'asterfort/cfmmvs.h'
-    include 'asterfort/cfpoin.h'
-    include 'asterfort/cfsans.h'
-    include 'asterfort/cfveri.h'
-    include 'asterfort/infdbg.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/mmpoin.h'
-    include 'asterfort/mmveri.h'
-    include 'asterfort/nmchex.h'
-    include 'asterfort/vtgpld.h'
+#include "jeveux.h"
+#include "asterfort/apcalc.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/cfmmvc.h"
+#include "asterfort/cfmmvs.h"
+#include "asterfort/cfpoin.h"
+#include "asterfort/cfsans.h"
+#include "asterfort/cfveri.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mmpoin.h"
+#include "asterfort/mmveri.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/vtgpld.h"
     character(len=8) :: noma
     character(len=24) :: defico, resoco
     character(len=19) :: valinc(*)

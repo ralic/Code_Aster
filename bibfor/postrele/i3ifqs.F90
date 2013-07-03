@@ -2,9 +2,9 @@ subroutine i3ifqs(epsi, k, f, desc, desctm,&
                   conexk, coordo, sgt, nbpt, lstpt,&
                   fink)
     implicit  none
-    include 'asterfort/i3iqgs.h'
-    include 'asterfort/i3iqps.h'
-    include 'asterfort/i3tstf.h'
+#include "asterfort/i3iqgs.h"
+#include "asterfort/i3iqps.h"
+#include "asterfort/i3tstf.h"
     integer :: k, f, desc(*), desctm(*), conexk(*), nbpt, lstpt(*)
     real(kind=8) :: epsi, sgt(*), coordo(*)
     logical :: fink

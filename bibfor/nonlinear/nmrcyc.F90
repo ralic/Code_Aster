@@ -19,12 +19,12 @@ function nmrcyc(sddisc, iterat, prec)
 !
     implicit none
     logical :: nmrcyc
-    include 'jeveux.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jedetr.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/nmlere.h'
-    include 'asterfort/wkvect.h'
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/nmlere.h"
+#include "asterfort/wkvect.h"
     integer :: iterat
     real(kind=8) :: prec
     character(len=19) :: sddisc

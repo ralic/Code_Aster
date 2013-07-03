@@ -35,11 +35,11 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
 !           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 !           IRET    :  CODE RETOUR =0 SI OK, =1 SI PB
 !     ----------------------------------------------------------------
-    include 'asterc/r8miem.h'
-    include 'asterc/r8prem.h'
-    include 'asterfort/fgequi.h'
-    include 'blas/dcopy.h'
-    include 'blas/dscal.h'
+#include "asterc/r8miem.h"
+#include "asterc/r8prem.h"
+#include "asterfort/fgequi.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
     character(len=8) :: mod
 !
     integer :: iret, itens, ndi, nmat, nvi, ndt, ndim

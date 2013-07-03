@@ -2,8 +2,8 @@ subroutine lkdvds(dt, nbmat, mater, gv, dfdsv,&
                   seuilv, dvds)
 !
     implicit    none
-    include 'asterfort/lcprte.h'
-    include 'asterfort/r8inir.h'
+#include "asterfort/lcprte.h"
+#include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), dvds(6, 6), dt
     real(kind=8) :: gv(6), dfdsv(6), seuilv

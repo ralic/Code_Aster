@@ -1,7 +1,7 @@
 subroutine i3trip(lstpt, nbpt)
     implicit none
 !
-    include 'jeveux.h'
+#include "jeveux.h"
     integer :: lstpt(*), nbpt
 !
 !     ------------------------------------------------------------------

@@ -1,24 +1,24 @@
 subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
                   resu, ier)
     implicit   none
-    include 'jeveux.h'
-    include 'asterc/fiintf.h'
-    include 'asterc/r8prem.h'
-    include 'asterc/r8vide.h'
-    include 'asterfort/focoli.h'
-    include 'asterfort/fointn.h'
-    include 'asterfort/folocx.h'
-    include 'asterfort/fonbpa.h'
-    include 'asterfort/jedema.h'
-    include 'asterfort/jeexin.h'
-    include 'asterfort/jelira.h'
-    include 'asterfort/jemarq.h'
-    include 'asterfort/jeveut.h'
-    include 'asterfort/tecael.h'
-    include 'asterfort/u2mesg.h'
-    include 'asterfort/u2mesi.h'
-    include 'asterfort/u2mesk.h'
-    include 'asterfort/u2mesr.h'
+#include "jeveux.h"
+#include "asterc/fiintf.h"
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/focoli.h"
+#include "asterfort/fointn.h"
+#include "asterfort/folocx.h"
+#include "asterfort/fonbpa.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveut.h"
+#include "asterfort/tecael.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mesi.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mesr.h"
     integer :: nbpu, ier
     character(len=*) :: codmes, nomf, nompu(*)
     real(kind=8) :: valpu(*), resu

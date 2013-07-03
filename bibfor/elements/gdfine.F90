@@ -38,8 +38,8 @@ subroutine gdfine(kp, nno, pjacob, en, grani,&
 !     OUT : FINT      : FORCES INT. (CUMUL DES CONTRIB. DES PTS DE GAUS)
 ! ------------------------------------------------------------------
     implicit none
-    include 'asterfort/antisy.h'
-    include 'asterfort/promat.h'
+#include "asterfort/antisy.h"
+#include "asterfort/promat.h"
     real(kind=8) :: irott(3, 3)
     real(kind=8) :: en(3, 2), grani(4), rot0(3, 3), rotk(3, 3), omgk(3)
     real(kind=8) :: ompgk(3), fint(6, 3), rotabs(3, 3), omegat(3, 3)

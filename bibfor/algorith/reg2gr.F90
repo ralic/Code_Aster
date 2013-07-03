@@ -23,8 +23,8 @@ subroutine reg2gr(imate, compor, ndim, regula, dimdef,&
 ! ======================================================================
 ! aslint: disable=W1306
     implicit      none
-    include 'asterfort/rcvalb.h'
-    include 'asterfort/u2mesk.h'
+#include "asterfort/rcvalb.h"
+#include "asterfort/u2mesk.h"
     integer :: imate, ndim, dimdef, regula(6)
     real(kind=8) :: sigp(ndim*ndim*ndim), defgep(dimdef)
     real(kind=8) :: dsde2g(ndim*ndim*ndim, ndim*ndim*ndim)
