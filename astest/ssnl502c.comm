@@ -1,5 +1,5 @@
 # TITRE  : POUTRE EN FLAMBEMENT
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ MO=AFFE_MODELE(   MAILLAGE=MAIL,
 #
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
                   ORIENTATION =_F( GROUP_MA = 'TOUT_ELT',
-                     CARA='ANGL_NAUT', VALE=(0., 0., 0.,),),
+                     CARA='ANGL_VRIL', VALE=(0.,),),
                      POUTRE=_F( GROUP_MA = 'TOUT_ELT' ,
  SECTION = 'GENERALE',
                 CARA = ( 'A',   'IY',    'IZ',    'AY',    'AZ',    'JX', ),
@@ -61,7 +61,7 @@ VALE = (  0.0003375, 5.69531E-10,  1.58203E-07, 1.0, 1.0,  2.19201E-09,  ),),
 
 CAREL2=AFFE_CARA_ELEM(   MODELE=MO,
                   ORIENTATION =_F( GROUP_MA = 'TOUT_ELT',
-                     CARA='ANGL_NAUT', VALE=(0., 0., 0.,),),
+                     CARA='ANGL_VRIL', VALE=(0.,),),
                      POUTRE=_F( GROUP_MA = 'TOUT_ELT' ,
                     SECTION = 'RECTANGLE',
                 CARA = ( 'HY',   'HZ',    ),

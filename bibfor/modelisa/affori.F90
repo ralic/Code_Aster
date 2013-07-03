@@ -1,7 +1,7 @@
 subroutine affori(typ, nomt, cara, val, jad,&
                   jdno, jdco, ivr, nutyma, ntseg,&
                   carori, nco, ier)
-    implicit        none
+    implicit    none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterc/r8miem.h"
@@ -13,7 +13,7 @@ subroutine affori(typ, nomt, cara, val, jad,&
     integer :: nco, ivr(*), nutyma, ntseg, jad, jdno, jdco, ier
     character(len=*) :: typ, nomt, cara, carori(nco)
     real(kind=8) :: val(6)
-!       ----------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,41 +30,51 @@ subroutine affori(typ, nomt, cara, val, jad,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!       ----------------------------------------------------------------
-!       AFFECTATION DES ORIENTATIONS AUX POI1 ET SEG2 POSSIBLES
-!       DANS LE VECTEUR TAMPON TMPORI
-!       ----------------------------------------------------------------
 !
-    character(len=16) :: cmd, car, nom
+! --------------------------------------------------------------------------------------------------
+!
+!   AFFECTATION DES ORIENTATIONS AUX POI1 ET SEG2 POSSIBLES DANS LE VECTEUR TAMPON TMPORI
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: car, nom
     character(len=24) :: valk(2)
-    integer :: ibid, no1, no2, lg, i
+    integer :: ibid, no1, no2, lg, i, locvr(2)
     real(kind=8) :: x1(3), x2(3), x3(3), angl(3), valr(2)
     real(kind=8) :: alpha, beta, gamma
     real(kind=8) :: dgrd
     real(kind=8) :: tst
-    common          /opcara/ cmd
-!       ----------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     dgrd = r8dgrd()
     tst = r8miem()
     car = cara
     nom = nomt
-! --- ------------------------------------------------------------------
-! ---   VERIFS PRELIMINAIRES
-!       0 = PAS VERIF, 1 = VERIF, (1) = MAILLE, (2) = NOEUD, (3) = IMPR
 !
-! --- ------------------------------------------------------------------
-! --- CALCUL DE LA LONGUEUR DU SEGMENT
+! --------------------------------------------------------------------------------------------------
+! Vérifications preliminaires
+!   ivr(1) = maille     0 = pas verif, 1 = verif
+!   ivr(2) = noeud      0 = pas verif, 1 = verif
+! En cas d'erreur ier+=1 ==> <F> en sortie dans la subroutine appelante
+!
+! Si pas de  vérification systématique :
+    locvr(1:2) = ivr(1:2)
+! Si vérification systématique :
+    locvr(1) = 1
+    locvr(2) = 1
+! --------------------------------------------------------------------------------------------------
+! calcul de la longueur du segment
     if (typ(1:6) .eq. 'MAILLE') then
         if (nutyma .eq. ntseg) then
             no1 = zi(jdno)
             no2 = zi(jdno+1)
-            do 10 i = 1, 3
+            do i = 1, 3
                 x1(i) = zr(jdco+(no1-1)*3+i-1)
                 x2(i) = zr(jdco+(no2-1)*3+i-1)
-10          continue
+            enddo
             call vdiff(3, x2, x1, x3)
-            if (abs(x3(1)) .gt. tst .or. abs(x3(2)) .gt. tst .or. abs(x3( 3)) .gt. tst) then
+            if (abs(x3(1)) .gt. tst .or. abs(x3(2)) .gt. tst .or. abs(x3(3)) .gt. tst) then
                 lg = 1
             else
                 lg = 0
@@ -74,35 +84,32 @@ subroutine affori(typ, nomt, cara, val, jad,&
         endif
     endif
 !
-! --- ------------------------------------------------------------------
-! ---   CARA = "ANGL_VRIL"
+! ---------------------------------------------------------------------- cara = "ANGL_VRIL"
     if (car .eq. carori(4)) then
         gamma = dgrd * val(1)
-! --- ------------------------------------------------------------------
-! ---    MAILLE
+!   maille
         if (typ(1:6) .eq. 'MAILLE') then
-! ---       SI LA MAILLE N EST PAS UN SEG2 > RETURN
+!       si la maille n'est pas un seg2 > return
             if (nutyma .ne. ntseg) then
-                if (ivr(1) .eq. 1) then
+                if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
                     call u2mesk('A', 'MODELISA_87', 2, valk)
                     ier = ier + 1
                 endif
-                goto 9999
+                goto 999
             endif
-! ---       SI LA MAILLE (SEG2) EST DE LONGUEUR NULLE > RETURN
+!       si la maille (seg2) est de longueur nulle > return
             if (lg .eq. 0) then
-                if (ivr(1) .eq. 1) then
+                if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
                     call u2mesk('A', 'MODELISA_88', 2, valk)
                     ier = ier + 1
                 endif
-                goto 9999
+                goto 999
             endif
-! --- ------------------------------------------------------------------
-! ---    REGLES DE SURCHARGE
+!       règles de surcharge
             if (abs(zr(jad+2)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
@@ -111,44 +118,37 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
                             ibid, 2, valr)
             endif
-! ---       SI MAILLE=SEG2, LONGUEUR<>0 : AFFECTATION DE GAMMA SEUL
+!       si maille=seg2, longueur<>0 : affectation de gamma seul
             zr(jad+2) = gamma
-            goto 9999
+            goto 999
         else
-! --- ------------------------------------------------------------------
-! ---    NOEUD
-! --        PAS D AFFECTATION SUR UN NOEUD POI1 > RETURN
-            if (ivr(2) .eq. 1) then
+!       noeud : pas d affectation sur un noeud poi1 > return
+            if (locvr(2) .eq. 1) then
                 valk(1) = car
                 valk(2) = nom
                 call u2mesk('A', 'MODELISA_89', 2, valk)
                 ier = ier + 1
             endif
-            goto 9999
+            goto 999
         endif
-    endif
-!
-! --- ------------------------------------------------------------------
-! --- CARA = "ANGL_NAUT"
-    if (car .eq. carori(3)) then
+! ---------------------------------------------------------------------- cara = "ANGL_NAUT"
+    else if (car .eq. carori(3)) then
         alpha = dgrd * val(1)
         beta = dgrd * val(2)
         gamma = dgrd * val(3)
-! --- ------------------------------------------------------------------
-! ----   MAILLE
+!   maille
         if (typ(1:6) .eq. 'MAILLE') then
-! ---       SI LA MAILLE (SEG2) EST DE LONGUEUR NON NULLE > RETURN
+!       si la maille (seg2) est de longueur non nulle > return
             if (lg .eq. 1) then
-                if (ivr(1) .eq. 1) then
+                if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
                     call u2mesk('A', 'MODELISA_90', 2, valk)
                     ier = ier + 1
                 endif
-                goto 9999
+                goto 999
             else
-! ---          ---------------------------------------------------------
-! ---          REGLES DE SURCHARGE
+!           règles de surcharge
                 if (abs(zr(jad)) .gt. r8prem()) then
                     valk(1) = car
                     valk(2) = nom
@@ -173,18 +173,14 @@ subroutine affori(typ, nomt, cara, val, jad,&
                     call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
                                 ibid, 2, valr)
                 endif
-! ---          ---------------------------------------------------------
-! ---          SI MAILLE SEG2 (LONGUEUR=0) OU POI1 : 3 ANGLES
+!           si maille seg2 (longueur=0) ou poi1 : 3 angles
                 zr(jad) = alpha
                 zr(jad+1) = beta
                 zr(jad+2) = gamma
-                goto 9999
+                goto 999
             endif
         else
-! --- ------------------------------------------------------------------
-! ---    NOEUD
-! ---       ------------------------------------------------------------
-! ---       REGLES DE SURCHARGE
+!       noeud : règles de surcharge
             if (abs(zr(jad)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
@@ -209,38 +205,32 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
                             ibid, 2, valr)
             endif
-! ---       ------------------------------------------------------------
-! --        SI NOEUD (POI1) > AFFECTATION DES 3 ANGLES
             zr(jad) = alpha
             zr(jad+1) = beta
             zr(jad+2) = gamma
-            goto 9999
+            goto 999
         endif
-    endif
 !
-! --- ------------------------------------------------------------------
-! --- CARA = "VECT_X_Y"
-    if (car .eq. carori(2)) then
-! --- ------------------------------------------------------------------
-! ---    MAILLE
+! ---------------------------------------------------------------------- cara = "VECT_X_Y"
+    else if (car .eq. carori(2)) then
+!   maille
         if (typ(1:6) .eq. 'MAILLE') then
-! ---       SI LA MAILLE (SEG2) EST DE LONGUEUR NON NULLE > RETURN
+!       si la maille (seg2) est de longueur non nulle > return
             if (lg .eq. 1) then
-                if (ivr(1) .eq. 1) then
+                if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
                     call u2mesk('A', 'MODELISA_90', 2, valk)
                     ier = ier + 1
                 endif
-                goto 9999
+                goto 999
             else
-! ---       SI MAILLE SEG2 (LONGUEUR=0) OU POI1 : 3 ANGLES
+!           si maille seg2 (longueur=0) ou poi1 : 3 angles
                 call angvxy(val(1), val(4), angl)
                 alpha = angl(1)
                 beta = angl(2)
                 gamma = angl(3)
-! ---          ---------------------------------------------------------
-! ---          REGLES DE SURCHARGE
+!           regles de surcharge
                 if (abs(zr(jad)) .gt. r8prem()) then
                     valk(1) = car
                     valk(2) = nom
@@ -265,22 +255,18 @@ subroutine affori(typ, nomt, cara, val, jad,&
                     call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
                                 ibid, 2, valr)
                 endif
-! ---          ---------------------------------------------------------
                 zr(jad) = alpha
                 zr(jad+1) = beta
                 zr(jad+2) = gamma
-                goto 9999
+                goto 999
             endif
         else
-! --- ------------------------------------------------------------------
-! ---    NOEUD
-! ---       SI NOEUD (POI1) > AFFECTATION DES 3 ANGLES
+!       noeud : si noeud (POI1) > affectation des 3 angles
             call angvxy(val(1), val(4), angl)
             alpha = angl(1)
             beta = angl(2)
             gamma = angl(3)
-! ---       ------------------------------------------------------------
-! ---       REGLES DE SURCHARGE
+!       regles de surcharge
             if (abs(zr(jad)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
@@ -305,47 +291,41 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
                             ibid, 2, valr)
             endif
-! ---       ------------------------------------------------------------
             zr(jad) = alpha
             zr(jad+1) = beta
             zr(jad+2) = gamma
-            goto 9999
+            goto 999
         endif
-    endif
-!
-! --- ------------------------------------------------------------------
-! --- CARA = "VECT_Y"
-    if (car .eq. carori(1)) then
-! --- ------------------------------------------------------------------
-! ---    MAILLE
+! ---------------------------------------------------------------------- cara = "VECT_Y"
+    else if (car .eq. carori(1)) then
+!   maille
         if (typ(1:6) .eq. 'MAILLE') then
-! ---       SI LA MAILLE N EST PAS UN SEG2 > RETURN
+!       si la maille n est pas un seg2 > return
             if (nutyma .ne. ntseg) then
-                if (ivr(1) .eq. 1) then
+                if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
                     call u2mesk('A', 'MODELISA_91', 2, valk)
                     ier = ier + 1
                 endif
-                goto 9999
+                goto 999
             endif
-! ---       SI LA MAILLE (SEG2) EST DE LONGUEUR NULLE > GOTO 9999
+!       si la maille (seg2) est de longueur nulle > goto 999
             if (lg .eq. 0) then
-                if (ivr(1) .eq. 1) then
+                if (locvr(1) .eq. 1) then
                     valk(1) = car
                     valk(2) = nom
                     call u2mesk('A', 'MODELISA_88', 2, valk)
                     ier = ier + 1
                 endif
-                goto 9999
+                goto 999
             endif
-! ---       SI MAILLE = SEG2 LONGUEUR<>0 : AFFECTATION DE GAMMA SEUL
+!       si maille = seg2 longueur<>0 : affectation de gamma seul
             call angvxy(x3, val(1), angl)
             alpha = angl(1)
             beta = angl(2)
             gamma = angl(3)
-! ---       ---------------------------------------------------------
-! ---       REGLES DE SURCHARGE
+!       regles de surcharge
             if (abs(zr(jad+2)) .gt. r8prem()) then
                 valk(1) = car
                 valk(2) = nom
@@ -354,22 +334,19 @@ subroutine affori(typ, nomt, cara, val, jad,&
                 call u2mesg('A', 'MODELISA2_7', 2, valk, 0,&
                             ibid, 2, valr)
             endif
-! ---       ---------------------------------------------------------
             zr(jad+2) = gamma
-            goto 9999
+            goto 999
         else
-! --- ------------------------------------------------------------------
-! ---    NOEUD
-! ---       PAS D AFFECTATION SUR UN NOEUD POI1 > RETURN
-            if (ivr(2) .eq. 1) then
+!       noeud : pas d'affectation sur un noeud poi1 > return
+            if (locvr(2) .eq. 1) then
                 valk(1) = car
                 valk(2) = nom
                 call u2mesk('A', 'MODELISA_89', 2, valk)
                 ier = ier + 1
             endif
-            goto 9999
+            goto 999
         endif
     endif
 !
-9999  continue
+999  continue
 end subroutine

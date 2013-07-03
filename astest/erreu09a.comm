@@ -1,5 +1,5 @@
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -288,8 +288,8 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                 CARA='K_TR_D_L',
                                 VALE=(1000000.0,1000000.0,1000000.0,1000000000.0,1000000000.0,1000000000.0,),),
                      ORIENTATION=_F(MAILLE='D1',
-                                    CARA='ANGL_NAUT',
-                                    VALE=(0.0,0.0,0.0,),),);
+                                    CARA='ANGL_VRIL',
+                                    VALE=(0.0,),),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(NOEUD='N2',

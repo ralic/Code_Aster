@@ -1,5 +1,5 @@
 # TITRE  TEST DES ELEMENTS DE LA MODELISATION 3D_FAISCEAU
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@
 
 DEBUT(CODE=_F(NOM='SDLV111B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -56,25 +56,14 @@ AMB=AFFE_MATERIAU(
                       )
 
 AC=AFFE_CARA_ELEM(
-                  MODELE=MO,
-                  POUTRE=_F(
-       GROUP_MA = 'V',
-
-                           SECTION = 'RECTANGLE',
-                           CARA = ('H',),
-                           VALE = ( 0.15, )),
-             ORIENTATION=_F(  GROUP_MA = 'TOUT',
-                           CARA = 'ANGL_NAUT',
-                           VALE = (0., -90., 0.,)),
-             POUTRE_FLUI=_F(
-       GROUP_MA = 'V',
-
-                           B_T = 0.79,
-                           B_N = 0.79,
-                           A_FLUI = 2.16,
-                           A_CELL = 4.41,
-                           COEF_ECHELLE = 10.)
-                       )
+    MODELE=MO,
+    POUTRE=_F(GROUP_MA = 'V', SECTION = 'RECTANGLE',
+              CARA = ('H',), VALE = ( 0.15, ),),
+    ORIENTATION=_F(GROUP_MA = 'V', CARA = 'ANGL_NAUT', VALE = (0., -90., 0.,),),
+    POUTRE_FLUI=_F(GROUP_MA = 'V',
+                    B_T = 0.79, B_N = 0.79, A_FLUI = 2.16,
+                    A_CELL = 4.41, COEF_ECHELLE = 10.)
+)
 
 CHB=AFFE_CHAR_MECA(
                   MODELE=MO,DDL_IMPO=(
@@ -189,7 +178,7 @@ RESB=MODE_ITER_SIMULT(
                 MATR_MASS=MASMB,
              OPTION='SANS',
              CALC_FREQ=_F(  OPTION = 'BANDE',
-                         FREQ = ( 0.5,  3.8, ),
+                         FREQ = ( 0.40,  3.8, ),
                          SEUIL_FREQ = 0.)
                          )
 

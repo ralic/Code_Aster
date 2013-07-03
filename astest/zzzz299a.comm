@@ -1,5 +1,5 @@
 # TITRE VALIDATION DE LA VERIFICATION DES REPERES POUR LES POUTRES ET LES COQUES
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,8 @@ CAREL=AFFE_CARA_ELEM(MODELE=AFFMOD,
                                CARA=('A','IY','IZ','JX','RY','RZ','RT',),
                                VALE=(0.02,0.166666666666E-4,0.666666666666E-4,0.45776E-4,0.1,0.05,0.0892632,),),
                      ORIENTATION=_F(GROUP_MA='Tout',
-                                    CARA='ANGL_NAUT',
-                                    VALE=(45,0,0,),),);
+                                    CARA='ANGL_VRIL',
+                                    VALE=(0.0,),),);
 
 MESTA=MECA_STATIQUE(MODELE=AFFMOD,
                     CHAM_MATER=AFFMAT,

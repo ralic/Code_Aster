@@ -1,5 +1,5 @@
 # TITRE  TEST DES ELEMENTS DE LA MODELISATION 3D_FAISCEAU
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ ACB=AFFE_CARA_ELEM(
                            SECTION = 'RECTANGLE',
                            CARA = ('H',),
                            VALE = ( 0.15, )),
-             ORIENTATION=_F(  GROUP_MA = 'TOUT',
+             ORIENTATION=_F(  GROUP_MA = 'V',
                            CARA = 'ANGL_NAUT',
                            VALE = (0., -90., 0.,)),
              POUTRE_FLUI=_F(
@@ -99,7 +99,7 @@ ACA=AFFE_CARA_ELEM(
                            SECTION = 'RECTANGLE',
                            CARA = ('H',),
                            VALE = ( 0.15, )),
-             ORIENTATION=_F(  GROUP_MA = 'TOUT',
+             ORIENTATION=_F(  GROUP_MA = 'V',
                            CARA = 'ANGL_NAUT',
                            VALE = (0., -90., 0.,)),
              POUTRE_FLUI=_F(
