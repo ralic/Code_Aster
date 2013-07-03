@@ -17,8 +17,8 @@
 !
 interface
     subroutine clcelu(piva, pivb, effm, effn, ht,&
-                      enrobg, sigaci, sigbet, dnsinf, dnssup,&
-                      epsilb, ierr)
+                      enrobg, sigaci, sigbet, es, dnsinf,&
+                      dnssup, epsilb, ierr)
         real(kind=8) :: piva
         real(kind=8) :: pivb
         real(kind=8) :: effm
@@ -27,6 +27,7 @@ interface
         real(kind=8) :: enrobg
         real(kind=8) :: sigaci
         real(kind=8) :: sigbet
+        real(kind=8) :: es
         real(kind=8) :: dnsinf
         real(kind=8) :: dnssup
         real(kind=8) :: epsilb

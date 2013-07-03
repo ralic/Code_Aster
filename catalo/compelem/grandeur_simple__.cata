@@ -983,7 +983,7 @@ GRANDEUR_SIMPLE__
 
 << FER1_R et FER2_R : 2 grandeurs utilisees par CALC_FERRAILLAGE
 >>
-    FER1_R   = R    TYPCOMB  ENROBG  CEQUI  SIGACI  SIGBET  PIVA  PIVB
+    FER1_R   = R    TYPCOMB  ENROBG  CEQUI  SIGACI  SIGBET  PIVA  PIVB ES
     FER2_R   = R    DNSXI  DNSXS  DNSYI  DNSYS  DNST  SIGMBE  EPSIBE
 
 <<  FISS_R Type:R Noeud du fond de fissure et sa normale

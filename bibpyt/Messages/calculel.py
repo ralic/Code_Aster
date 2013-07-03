@@ -282,7 +282,7 @@ Conseil :
 
 39 : _(u"""
 Le chargement (mot clé: EXCIT) fourni par l'utilisateur est différent de celui présent
-dans la structure de sonnées Résultat. Dans ce cas, le reuse est interdit.
+dans la structure de données Résultat. Dans ce cas, le reuse est interdit.
 
 Conseil :
   Relancez le calcul en créant une nouvelle structure de données résultat.
@@ -406,20 +406,23 @@ Risques et conseils :
 
  Signification du code d'erreur :
    1000 : Levier négatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
-   1010 : Dépassement déformation béton
-   1020 : Erreur calcul ELU
-   1050 : Dépassement contrainte béton;
+   1020 : Section complètement comprimée, Pivot C non calculé
+   1050 : ELS : Dépassement contrainte béton;
 """),
 
 73 : _(u"""
  Erreur utilisateur commande CALC_FERRAILLAGE :
    Certains mots clés de CALC_FERRAILLAGE / AFFE sont obligatoires :
      pour TYPE_COMB='ELU' :
-        PIVA et PIVB
+        PIVA et PIVB et ES
+        ES doit être supérieur à 0
      pour TYPE_COMB='ELS' :
         CEQUI
 """),
-
+74 : _(u"""
+ Erreur utilisateur commande CALC_FERRAILLAGE :
+   La valeur du module d'Young ES est de <%(r1)E>. Elle n'est pas correcte.
+"""),
 75 : _(u"""
  Votre modèle ne contient que des éléments 1D. Le lissage global n'est
  possible que pour les éléments 2D ou 3D.

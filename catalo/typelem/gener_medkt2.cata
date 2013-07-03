@@ -103,7 +103,7 @@ MODE_LOCAL__
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EXX      EYY      EXY      KXX      KYY      KXY
                                         GAX      GAY      )
     CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG   CEQUI    SIGACI   SIGBET   PIVA
-                                        PIVB     )
+                                        PIVB  ES   )
     CFER2_R  = FER2_R   ELEM__         (DNSXI    DNSXS    DNSYI    DNSYS    DNST     SIGMBE
                                         EPSIBE   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ

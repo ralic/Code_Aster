@@ -1,6 +1,6 @@
 subroutine clcelu(piva, pivb, effm, effn, ht,&
-                  enrobg, sigaci, sigbet, dnsinf, dnssup,&
-                  epsilb, ierr)
+                  enrobg, sigaci, sigbet, es, dnsinf,&
+                  dnssup, epsilb, ierr)
 !______________________________________________________________________
 !
 !     CC_ELU
@@ -14,6 +14,7 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
 !      I HT          EPAISSEUR DE LA COQUE
 !      I SIGACI      CONTRAINTE ADMISSIBLE DANS L'ACIER
 !      I SIGBET      CONTRAINTE ADMISSIBLE DANS LE BETON
+!      I ES          MODULE D'YOUNG DE L'ACIER
 !      O DNSINF      DENSITE DE L'ACIER INFERIEUR
 !      O DNSSUP      DENSITE DE L'ACIER SUPERIEUR
 !      O EPSILB      DEFORMATION DU BETON
@@ -40,13 +41,13 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
 !
     implicit none
 !
-    real(kind=8) :: piva
+    real(kind=8) :: piva, es, epsy, epsila
     real(kind=8) :: pivb
     real(kind=8) :: effm
     real(kind=8) :: effn
     real(kind=8) :: ht
     real(kind=8) :: enrobg
-    real(kind=8) :: sigaci
+    real(kind=8) :: sigaci, sigacim
     real(kind=8) :: sigbet
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
@@ -59,6 +60,8 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
     real(kind=8) :: hu
 !       EPAISSEUR RELATIVE DU BETON COMPRIME
     real(kind=8) :: alpha
+!       EPAISSEUR RELATIVE DU BETON COMPRIME LIMITE PIVOT A ET B
+    real(kind=8) :: alphab
 !       MOMENT MESURE A PARTIR DE L'ACIER
     real(kind=8) :: ms
 !       MOMENT REDUIT
@@ -77,8 +80,11 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
     dnsinf = 0d0
     dnssup = 0d0
     epsilb = 0d0
-!
+    sigacim = sigaci
+    epsy=sigaci/es
     ms = abs(moment) - effn * hu
+    alphab = pivb/(piva+pivb)
+!
     if (ms .lt. 0d0) then
 !         BETON ENTIEREMENT TENDU
         tmp = 0.5d0 * (effn + moment / hu)
@@ -87,27 +93,31 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
     else
 !         BETON PARTIELLEMENT COMPRIME
         mub = ms / (hs * hs * sigbet)
+!
         if (mub .lt. 0.48d0) then
             alpha = 1d0 - sqrt(1d0 - 2d0 * mub)
             epsilb = piva * alpha / (1d0 - alpha)
             tmp = ms / (hs * (1d0 - alpha / 2d0)) + effn
 !            PIVOT A (PIVOT C NON TRAITE )
             if (tmp .gt. 0d0) then
-                if (epsilb .lt. pivb) then
-                    if (0d0 .lt. moment) dnsinf = tmp
-                    if (moment .lt. 0d0) dnssup = tmp
-                else
-                    ierr = 1010
-                    goto 9999
+                if (0d0 .lt. moment) dnsinf = tmp
+                if (moment .lt. 0d0) dnssup = tmp
+                if (alpha .gt. alphab) then
+! PIVOT B ET 2 CAS
+                    epsila = pivb*(1-alpha)/alpha
+                    epsilb = pivb
+                    if (epsila .lt. epsy) then
+                        sigacim = es*epsila
+                    endif
                 endif
             endif
         else
             ierr = 1020
-            goto 9999
+            goto 999
         endif
     endif
-    dnsinf = dnsinf / sigaci
-    dnssup = dnssup / sigaci
+    dnsinf = dnsinf / sigacim
+    dnssup = dnssup / sigacim
 !
-9999  continue
+999  continue
 end subroutine

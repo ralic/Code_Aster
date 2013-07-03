@@ -1,6 +1,7 @@
 subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
-                  cequi, sigaci, sigbet, effrts, dnsits,&
-                  sigmbe, epsibe, ierr)
+                  es, cequi, sigaci, sigbet, effrts,&
+                  dnsits, sigmbe, epsibe, ierr)
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +30,7 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
 !                  0 = ELU, 1 = ELS
 !      I PIVA    VALEUR DU PIVOT A
 !      I PIVB    VALEUR DU PIVOT B
+!      I ES      MODULE D'YOUNG DE L'ACIER
 !      I CEQUI   COEFFICIENT D'EQUIVALENCE ACIER/BETON
 !      I SIGACI  CONTRAINTE ADMISSIBLE DANS L'ACIER
 !      I SIGBET  CONTRAINTE ADMISSIBLE DANS LE BETON
@@ -53,7 +55,7 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
     real(kind=8) :: ht
     real(kind=8) :: enrobg
     integer :: typcmb
-    real(kind=8) :: piva, pivb, cequi
+    real(kind=8) :: piva, pivb, cequi, es
     real(kind=8) :: sigaci
     real(kind=8) :: sigbet
     real(kind=8) :: effrts(8)
@@ -77,6 +79,8 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
     real(kind=8) :: epsimx
 !       CONTRAINTE (ELS) DU BETON
     real(kind=8) :: sigma
+!       CONTRAINTE transversale DU BETON
+    real(kind=8) :: sigmat
 !       CONTRAINTE MAXIMUM (ELS)
     real(kind=8) :: sigmmx
 !       BRAS DE LEVIER
@@ -107,16 +111,29 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
         effm = fcttab(i,1) * effrts(4) + fcttab(i,2) * effrts(5) + fcttab(i,3) * effrts(6)
 !
         if (typcmb .eq. 0) then
+! Calcul ELU
             call clcelu(piva, pivb, effm, effn, ht,&
-                        enrobg, sigaci, sigbet, ai(i), as(i),&
-                        epsil, ierr)
-            if (ierr .ne. 0) goto 9999
+                        enrobg, sigaci, sigbet, es, ai(i),&
+                        as(i), epsil, ierr)
+            if (ierr .ne. 0) goto 999
             if (epsil .gt. epsimx) epsimx = epsil
+!
+! CALCUL DU FERRAILLAGE TRANSVERSAL seulement en ELU
+!
+            levier = 0.9*(ht - enrobg)
+            if (levier .le. 0d0) then
+                ierr = 1000
+                goto 999
+            endif
+            sigmat = sqrt(effrts(7)*effrts(7)+effrts(8)*effrts(8))/ levier
+            dnsits(5) = sigmat / sigaci
+!
         else
+! Calcul ELS
             call clcels(cequi, effm, effn, ht, enrobg,&
                         sigaci, sigbet, ai( i), as(i), sigma,&
                         ierr)
-            if (ierr .ne. 0) goto 9999
+            if (ierr .ne. 0) goto 999
             if (sigma .gt. sigmmx) sigmmx = sigma
         endif
 10  continue
@@ -131,18 +148,5 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
     call clcopt(fcttab, ai, dnsits(1), dnsits(2))
     call clcopt(fcttab, as, dnsits(3), dnsits(4))
 !
-! CALCUL DU FERRAILLAGE TRANSVERSAL
-!
-    levier = ht - 2d0 * enrobg
-    if (levier .le. 0d0) then
-        do 20 i = 1, 5
-            dnsits(i) = -1d0
-20      continue
-        ierr = 1000
-        goto 9999
-    endif
-    sigma = sqrt(effrts(7)*effrts(7)+effrts(8)*effrts(8))/levier
-    dnsits(5) = sigma / sigaci
-!
-9999  continue
+999  continue
 end subroutine

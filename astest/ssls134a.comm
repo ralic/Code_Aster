@@ -1,5 +1,4 @@
 # TITRE FERRAILLAGE SELON LA METHODE DE CAPRA ET MAURY (CAS ANALYTIQUE)
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,218 +33,191 @@ CARA=AFFE_CARA_ELEM(MODELE=MODEL,
 CHEFF1=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
                    AFFE= _F(GROUP_MA='PLAQUE',
                             NOM_CMP= ('NXX'   , 'NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                            VALE=    (-1000.0E3,   0.0,  0.0,  0.0,  0.0,  0.0, 0.0, 0.0)))
+                            VALE=    (-1000.0E3,   0.0,  0.0,  0.0,  0.0,  0.0, 0.0, 100000.0)))
 
 CHEFF2=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
                    AFFE= _F(GROUP_MA='PLAQUE',
                             NOM_CMP= ('NXX'   ,'NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                            VALE=    (+1000.0E3,  0.0,  0.0,  0.0,  0.0,  0.0, 0.0, 0.0)))
+                            VALE=    (+1000.0E3,  0.0,  0.0,  0.0,  0.0,  0.0, -20000.0, 0.0)))
 
 CHEFF3=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
                    AFFE= _F(GROUP_MA='PLAQUE',
                             NOM_CMP= ('NXX','NYY'    ,'NXY','MXX','MYY','MXY','QX','QY'),
-                            VALE=    (  0.0, +1000.0E3,  0.0,  0.0, 0.0,   0.0, 0.0,0.0)))
+                            VALE=    (  0.0, +1000.0E3,  0.0,  0.0, 0.0,   0.0, -20000.0,80000.0)))
 
 CHEFF4=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
                    AFFE= _F(GROUP_MA='PLAQUE',
                             NOM_CMP= ('NXX','NYY','NXY','MXX' ,'MYY'   ,'MXY','QX','QY'),
                             VALE=    (  0.0,  0.0,  0.0,   0.0,+100.0E3,  0.0, 0.0,0.0)))
+CHEFF5=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX'   , 'NYY','NXY','MXX','MYY','MXY','QX','QY'),
+                            VALE=    (0.0,   0.0,  0.0,  +100.0E3,  0.0,  0.0, 0.0, 0.0)))
 
-RESU1=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_ELAS',
+CHEFF6=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX'   ,'NYY','NXY','MXX','MYY','MXY','QX','QY'),
+                            VALE=    (-100.0E3,  0.0,  0.0,  100E3,  0.0,  0.0, 0.0, 0.0)))
+
+CHEFF7=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX','NYY'    ,'NXY','MXX','MYY','MXY','QX','QY'),
+                            VALE=    ( 100.0E3,  0.0,  0.0,  100E3,  0.0,  0.0, 0.0, 0.0)))
+
+CHEFF8=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX','NYY','NXY','MXX' ,'MYY'   ,'MXY','QX','QY'),
+                            VALE=    (2000.0E3,  0.0,  0.0,  100E3,  0.0,  0.0, 0.0, 0.0)))
+CHEFF9=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX','NYY'    ,'NXY','MXX','MYY','MXY','QX','QY'),
+                            VALE=    ( 0.0,  0.0,  0.0,  100E3, 75E3,  0.0, 0.0, 0.0)))
+
+CHEFF10=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX','NYY','NXY','MXX' ,'MYY'   ,'MXY','QX','QY'),
+                            VALE=    (  0.0,  0.0,  0.0,   0.0,-150E3,  0.0, 0.0,0.0)))
+
+#configuration 10 à l'ELS
+CHEFF11=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX','NYY','NXY','MXX' ,'MYY'   ,'MXY','QX','QY'),
+                            VALE=    (  0.0,  0.0,  0.0,   0.0,-100E3,  0.0, 0.0,0.0)))
+#configuration 6 à l'ELS
+CHEFF12=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX'   ,'NYY','NXY','MXX','MYY','MXY','QX','QY'),
+                            VALE=    (-20.0E3,  0.0,  0.0,  100E3,  0.0,  0.0, 0.0, 0.0)))
+CHEFF13=CREA_CHAMP(MAILLAGE=MA, OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
+                   AFFE= _F(GROUP_MA='PLAQUE',
+                            NOM_CMP= ('NXX','NYY','NXY','MXX' ,'MYY'   ,'MXY','QX','QY'),
+                            VALE=    (  0.0,  0.0,  0.0,   0.0,-260E3,  0.0, 0.0,0.0)))
+
+RESUELU=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_ELAS',
            NOM_CHAM='EFGE_ELNO',
            AFFE=(
              _F( CHAM_GD=CHEFF1,INST=1., MODELE=MODEL, CARA_ELEM=CARA,),
              _F( CHAM_GD=CHEFF2,INST=2., MODELE=MODEL, CARA_ELEM=CARA,),
              _F( CHAM_GD=CHEFF3,INST=3., MODELE=MODEL, CARA_ELEM=CARA,),
              _F( CHAM_GD=CHEFF4,INST=4., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF5,INST=5., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF6,INST=6., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF7,INST=7., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF8,INST=8., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF9,INST=9., MODELE=MODEL, CARA_ELEM=CARA,),
+            _F( CHAM_GD=CHEFF10,INST=10., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF13,INST=11., MODELE=MODEL, CARA_ELEM=CARA,),
            ))
-
+RESUELS=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_ELAS',
+           NOM_CHAM='EFGE_ELNO',
+           AFFE=(
+             _F( CHAM_GD=CHEFF1,INST=1., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF2,INST=2., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF3,INST=3., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF4,INST=4., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF5,INST=5., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF12,INST=6., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF7,INST=7., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF8,INST=8., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF9,INST=9., MODELE=MODEL, CARA_ELEM=CARA,),
+             _F( CHAM_GD=CHEFF11,INST=10., MODELE=MODEL, CARA_ELEM=CARA,),
+           ))
 # calcul du ferraillage :
 #------------------------
-RESU1= CALC_FERRAILLAGE( RESULTAT =RESU1, reuse=RESU1,
-         TYPE_COMB    = 'ELU',  INST=(1., 2., 3., 4.),
+RESUELU= CALC_FERRAILLAGE( RESULTAT =RESUELU,reuse=RESUELU,
+         TYPE_COMB    = 'ELU',  INST=(1., 2., 3., 4.,5.,6.,7.,8.,9.,10.,11.),
          AFFE  = (
-            _F( TOUT='OUI', ENROBG=0.04, SIGM_ACIER=500.0E6, SIGM_BETON=21E6, PIVA=10.0E-3, PIVB= 3.5E-3),
+            _F( TOUT='OUI', ENROBG=0.04, SIGM_ACIER=435.0E6, SIGM_BETON=23.3E6, PIVA=10.0E-3, PIVB= 3.5E-3, ES = 2.1e11
+),
          ))
+RESUELS= CALC_FERRAILLAGE( RESULTAT =RESUELS, reuse=RESUELS,
+         TYPE_COMB    = 'ELS',  INST=(1., 2., 3., 4.,5.,6.,7.,8.,9.,10.),
+         AFFE  = (
+            _F( TOUT='OUI', ENROBG=0.04, SIGM_ACIER=400.0E6, SIGM_BETON=21E6, CEQUI=15.1),
+         ))
+N_CMPU = ['DNSXI','DNSXS','DNSYI','DNSYS','DNST'];
+N_CMPS = ['DNSXI','DNSXS','DNSYI','DNSYS'];
+#-----------------------------------------------------
+# Tests pour l'ELU
+#-----------------------------------------------------
+D_ref1 = [
+          [0,0,0,0,15.964],
+          [11.494,11.494,0,0,3.193],
+          [0,0,11.494,11.494,13.164],
+	  [0,0,0,15.830,0],
+	  [0,15.830,0,0,0],
+	  [0,14.596,0,0,0],
+	  [0,17.079,0,0,0],
+	  [3.831,42.146,0,0,0],
+	  [0,15.83,0,11.555,0],
+	  [0,0,25.28,0,0],
+          [0,0,58.368,0,0],
+];
+D_ref = [[1e-4*x for x in T] for T in D_ref1];
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS	  
+D_calc1 = [
+         [0,0,0,0,1.5964240102171],
+          [1.1494252873563,1.1494252873563,0,0,0.31928480204342],
+          [0,0,1.1494252873563,1.1494252873563,1.3164449634795],
+	  [0,0,0,1.5829765402984,0],
+	  [0,1.5829765402984,0,0,0],
+	  [0,1.4596414634653,0,0,0],
+	  [0,1.7079122201924,0,0,0],
+	  [0.38314176245211,4.2145593869732,0,0,0],
+	  [0,1.5829765402984,0,1.155481113338,0],
+	  [0,0,2.5280358704041,0,0],
+          [0,0,5.8368552200731,0,0],
+];
+D_calc = [[1e-3*x for x in T] for T in D_calc1];
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(N_CMPU) :
+        TEST_RESU(RESU=_F(RESULTAT=RESUELU,
+                  INST=j+1.0,
+                  NOM_CHAM='FERRAILLAGE',
+                  NOM_CMP=ncmp,
+                  MAILLE='M1',
+                  LEGENDE = 'ELU',
+                  VALE_REFE=D_ref[j][i],
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=D_calc[j][i],),);
 
+#-----------------------------------------------------
+# Tests pour l'ELS
+#-----------------------------------------------------
+D_ref1 = [[0,0,0,0],
+          [12.5,12.5,0,0],
+          [0,0,12.5,12.5],
+	  [0,0,0,18.31],
+	  [0,18.31,0,0],
+	  [0,18.044,0,0],
+	  [0,19.642,0,0],
+	  [4.167,45.833,0,0],
+	  [0,18.31,0,13.486],
+	  [0,0,18.31,0],];
+D_ref = [[1e-4*x for x in T] for T in D_ref1];
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS	  
+D_calc1 = [[0,0,0,0],
+          [1.25,1.25,0,0],
+          [0,0,1.25,1.25],
+	  [0,0,0,1.8310189118255],
+	  [0,1.8310189118255,0,0],
+	  [0,1.8044473865326,0,0],
+	  [0,1.964228978424,0,0],
+	  [0.41666666666667,4.5833333333333,0,0],
+	  [0,1.8310189118255,0,1.3485613075893],
+	  [0,0,1.8310189118255,0],];
+D_calc = [[1e-3*x for x in T] for T in D_calc1];
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(N_CMPS) :
+        TEST_RESU(RESU=_F(RESULTAT=RESUELS,
+                  INST=j+1.0,
+                  NOM_CHAM='FERRAILLAGE',
+                  NOM_CMP=ncmp,
+                  LEGENDE = 'ELS',
+                  MAILLE='M1',
+                  VALE_REFE=D_ref[j][i],
+                  REFERENCE='ANALYTIQUE',
+                  VALE_CALC=D_calc[j][i],),);
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXI',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXS',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYI',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYS',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXI',
-                   VALE_CALC= 1.00000000E-03,
-                   VALE_REFE=1.E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXS',
-                   VALE_CALC= 1.00000000E-03,
-                   VALE_REFE=1.E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYI',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYS',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=3.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXI',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=3.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXS',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=3.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYI',
-                   VALE_CALC= 1.00000000E-03,
-                   VALE_REFE=1.E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=3.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYS',
-                   VALE_CALC= 1.00000000E-03,
-                   VALE_REFE=1.E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=4.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXI',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=4.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSXS',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=4.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYI',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,
-                   MAILLE='M1',),
-                _F(INST=4.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FERRAILLAGE',
-                   NOM_CMP='DNSYS',
-                   VALE_CALC= 1.39473944E-03,
-                   VALE_REFE=1.3947E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-05,
-                   MAILLE='M1',),
-                ),
-          )
 
 FIN()

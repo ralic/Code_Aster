@@ -17,13 +17,14 @@
 !
 interface
     subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
-                      cequi, sigaci, sigbet, effrts, dnsits,&
-                      sigmbe, epsibe, ierr)
+                      es, cequi, sigaci, sigbet, effrts,&
+                      dnsits, sigmbe, epsibe, ierr)
         real(kind=8) :: ht
         real(kind=8) :: enrobg
         integer :: typcmb
         real(kind=8) :: piva
         real(kind=8) :: pivb
+        real(kind=8) :: es
         real(kind=8) :: cequi
         real(kind=8) :: sigaci
         real(kind=8) :: sigbet

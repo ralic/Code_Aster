@@ -67,6 +67,7 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_pro
            SIGM_BETON =SIMP(statut='o',typ='R'), # contrainte admissible dans le béton
            PIVA       =SIMP(statut='f',typ='R'), # valeur du pivot a  (pour ELU)
            PIVB       =SIMP(statut='f',typ='R'), # valeur du pivot b  (pour ELU)
+           ES         =SIMP(statut='f',typ='R'), # valeur du Module d'Young de l'acier (pour ELU)
            ),
       )
 
@@ -84,7 +85,7 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_pro
 #     DNSXS  densité d'acier longitudinal suivant X, peau sup
 #     DNSYI  densité d'acier longitudinal suivant Y, peau inf
 #     DNSYS  densité d'acier longitudinal suivant Y, peau sup
-#     DNST   densité d'acier transversal
+#     DNST   densité d'acier transversal à l'ELU
 #     SIGMBE contrainte beton
 #     EPSIBE deformation béton
 

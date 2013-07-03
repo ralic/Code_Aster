@@ -1,7 +1,7 @@
 subroutine te0146(option, nomte)
     implicit none
 #include "jeveux.h"
-!
+! aslint: disable=W0104
 #include "asterfort/assert.h"
 #include "asterfort/clcplq.h"
 #include "asterfort/jevech.h"
@@ -49,6 +49,7 @@ subroutine te0146(option, nomte)
 !     CEQUI  (DP)  COEFFICIENT D'EQUIVALENCE ACIER/BETON
 !     PIVA   (DP)  VALEUR DU PIVOT A
 !     PIVB   (DP)  VALEUR DU PIVOT B
+!     EA      (DP) MODULE D'YOUNG DE L'ACIER
 !     SIGACI (DP)  CONTRAINTE ADMISSIBLE DANS L'ACIER
 !     SIGBET (DP)  CONTRAINTE ADMISSIBLE DANS LE BETON
 !     EFFRTS (DP-DIM 8) TORSEUR DES EFFORTS
@@ -62,7 +63,7 @@ subroutine te0146(option, nomte)
 !     IERR        CODE RETOUR (0 = OK)
 !----------------------------------------------------------------------
     real(kind=8) :: cequi, piva, pivb, sigaci, sigbet, effrts(8), dnsits(5)
-    real(kind=8) :: sigmbe, epsibe, ht, enrobg
+    real(kind=8) :: sigmbe, epsibe, ht, enrobg, ea
     integer :: ierr, jepais, jefge, jfer1, jfer2, itab(7), nno
     integer :: typcmb, ino, icmp, iret, k
     integer :: iadzi, iazk24
@@ -96,8 +97,8 @@ subroutine te0146(option, nomte)
 !
 !       -- RECUPERATION DES DONNEES DE L'UTILISATEUR :
 !       ----------------------------------------------
-!       FER1_R=TYPCOMB  ENROBG  CEQUI  SIGACI  SIGBET  PIVA  PIVB
-!                  1        2      3       4       5       6    7
+!       FER1_R=TYPCOMB  ENROBG  CEQUI  SIGACI  SIGBET  PIVA  PIVB ES
+!                  1        2      3       4       5       6    7  8
     typcmb=nint(zr(jfer1-1+1))
     enrobg=zr(jfer1-1+2)
     cequi =zr(jfer1-1+3)
@@ -105,6 +106,7 @@ subroutine te0146(option, nomte)
     sigbet=zr(jfer1-1+5)
     piva  =zr(jfer1-1+6)
     pivb  =zr(jfer1-1+7)
+    ea = zr(jfer1-1+8)
 !
 !
 !       -- CALCUL PROPREMENT DIT :
@@ -115,8 +117,8 @@ subroutine te0146(option, nomte)
     dnsits(k)=0.d0
 10  continue
     call clcplq(ht, enrobg, typcmb, piva, pivb,&
-                cequi, sigaci, sigbet, effrts, dnsits,&
-                sigmbe, epsibe, ierr)
+                ea, cequi, sigaci, sigbet, effrts,&
+                dnsits, sigmbe, epsibe, ierr)
     if (ierr .gt. 0) call u2mesi('F', 'CALCULEL_72', 1, ierr)
 !
 !

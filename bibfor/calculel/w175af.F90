@@ -1,7 +1,6 @@
 subroutine w175af(modele, chfer1)
     implicit none
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
@@ -18,6 +17,7 @@ subroutine w175af(modele, chfer1)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
+#include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
     character(len=8) :: modele
     character(len=19) :: chfer1
@@ -43,7 +43,7 @@ subroutine w175af(modele, chfer1)
 !
 !-----------------------------------------------------------------------
     integer :: gd, ibid, nocc, ncmpmx, nbtou, iret
-    integer :: n1, n2, n3, n4, n5, n6
+    integer :: n1, n2, n3, n4, n5, n6, n7
     integer :: jncmp, jvalv, jmail, iocc, nbmail
     real(kind=8) :: valr
     character(len=8) :: k8b, typmcl(2), noma, typcb
@@ -74,7 +74,7 @@ subroutine w175af(modele, chfer1)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'FER1_R'), gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
 !
-    call assert(ncmpmx.eq.7)
+    call assert(ncmpmx.eq.8)
     zk8(jncmp-1+1)='TYPCOMB'
     zk8(jncmp-1+2)='ENROBG'
     zk8(jncmp-1+3)='CEQUI'
@@ -82,7 +82,7 @@ subroutine w175af(modele, chfer1)
     zk8(jncmp-1+5)='SIGBET'
     zk8(jncmp-1+6)='PIVA'
     zk8(jncmp-1+7)='PIVB'
-!
+    zk8(jncmp-1+8)='ES'
 !
 !     2. MOTS CLES GLOBAUX :
 !     ----------------------
@@ -111,9 +111,15 @@ subroutine w175af(modele, chfer1)
                     zr(jvalv-1+6), n5)
         call getvr8('AFFE', 'PIVB', iocc, iarg, 1,&
                     zr(jvalv-1+7), n6)
+        call getvr8('AFFE', 'ES', iocc, iarg, 1,&
+                    zr(jvalv-1+8), n7)
 !
         if (typcb .eq. 'ELU') then
             if (n5 .eq. 0 .or. n6 .eq. 0) call u2mess('F', 'CALCULEL_73')
+            if (n7 .eq. 0) call u2mess('F', 'CALCULEL_73')
+            if (zr(jvalv-1+8) .le. 0) then
+                call u2mesr('F', 'CALCULEL_74', 1, zr(jvalv-1+8))
+            endif
         else
             if (n2 .eq. 0) call u2mess('F', 'CALCULEL_73')
         endif
@@ -132,7 +138,7 @@ subroutine w175af(modele, chfer1)
                         k8b, zi(jmail), ' ', ncmpmx)
             call jedetr(mesmai)
         endif
-30  end do
+30  continue
 !
     call jedetr(chfer1//'.NCMP')
     call jedetr(chfer1//'.VALV')
