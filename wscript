@@ -130,11 +130,14 @@ def configure(self):
     self.recurse('bibfor')
     self.recurse('bibc')
     self.load('legacy', tooldir='waftools')
-    self.check_optimization_options()
-    self.env.install_tests = opts.install_tests
     # keep compatibility for as_run
     if self.env.HAVE_MPI:
         self.env.ASRUN_MPI_VERSION = 1
+    # variants
+    self.check_optimization_options()
+    # only install tests during release install
+    self.setenv('release')
+    self.env.install_tests = opts.install_tests
     self.write_config_headers()
 
 def build(self):
