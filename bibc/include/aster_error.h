@@ -19,11 +19,11 @@
 #ifndef ASTER_ERROR_H
 #define ASTER_ERROR_H
 
+#include "aster.h"
+
 #ifdef _USE_MPI
 #   include "mpi.h"
 #endif
-
-#include "aster.h"
 
 /*
  *   PUBLIC FUNCTIONS
