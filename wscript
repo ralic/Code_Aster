@@ -132,6 +132,9 @@ def configure(self):
     self.load('legacy', tooldir='waftools')
     self.check_optimization_options()
     self.env.install_tests = opts.install_tests
+    # keep compatibility for as_run
+    if self.env.HAVE_MPI:
+        self.env.ASRUN_MPI_VERSION = 1
     self.write_config_headers()
 
 def build(self):

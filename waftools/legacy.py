@@ -42,6 +42,9 @@ class create_asrun_files(Task.Task):
         dico = dict([(k, as_str(env[k])) \
                         for k in ('PREFIX', 'PYTHON', 'PYTHONARCHDIR', 'ASTERDATADIR')])
         dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
+        # as_run compatibility
+        if env.ASRUN_MPI_VERSION:
+            dico['DEFINES'] += ' _USE_MPI'
         dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
         dico['SRC'] = self.src
         dico['FC'] = env['FC']
