@@ -1,5 +1,5 @@
 # TITRE : VALIDATION DU COMPORTEMENT DES ACIERS 300 SOUS CHARGEMENTS THERMIQUE ET D'IRRADIATION
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +151,7 @@ STAT=STAT_NON_LINE(
    MODELE=MODEL,
    CHAM_MATER=CHMAT,
    EXCIT=_F(CHARGE=CL,),
-   CONVERGENCE=_F(ITER_GLOB_MAXI=15),
+   CONVERGENCE=_F(ITER_GLOB_MAXI=15, RESI_GLOB_MAXI=1.0E-07),
    COMP_INCR=_F(RELATION='IRRAD3M',ITER_INTE_MAXI=60,RESI_INTE_RELA=1.0E-09,),
    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1),
    INCREMENT=_F(LIST_INST=LISTE),
@@ -166,7 +166,7 @@ TEST_RESU(RESU=_F(INST=200.0,
                   RESULTAT=STAT,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  VALE_CALC=-540.00038717659,
+                  VALE_CALC=-540.00000009755,
                   MAILLE='M1',
                   ),
           )
@@ -176,7 +176,7 @@ TEST_RESU(RESU=_F(INST=400.0,
                   RESULTAT=STAT,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  VALE_CALC=-615.14343337245,
+                  VALE_CALC=-615.14344769815,
                   MAILLE='M1',
                   ),
           )
@@ -186,7 +186,7 @@ TEST_RESU(RESU=_F(INST=200.0,
                   NOM_CHAM='DEPL',
                   NOEUD='N2',
                   NOM_CMP='DX',
-                  VALE_CALC= 4.1170577417125E-03,
+                  VALE_CALC= 4.1170588232568E-03,
                   ),
           )
 
@@ -195,7 +195,7 @@ TEST_RESU(RESU=_F(INST=400.0,
                   NOM_CHAM='DEPL',
                   NOEUD='N2',
                   NOM_CMP='DX',
-                  VALE_CALC= 8.9207787445015E-03,
+                  VALE_CALC= 8.9207786839013E-03,
                   ),
           )
 
@@ -204,7 +204,7 @@ TEST_RESU(RESU=_F(INST=200.0,
                   RESULTAT=STAT,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC= 4.329404552593E-04 ,
+                  VALE_CALC= 4.3294117628888E-04,
                   MAILLE='M1',
                   ),
           )
@@ -214,7 +214,7 @@ TEST_RESU(RESU=_F(INST=400.0,
                   RESULTAT=STAT,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC= 3.2132149321798E-03,
+                  VALE_CALC= 3.2132149106324E-03,
                   MAILLE='M1',
                   ),
           )
