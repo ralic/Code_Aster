@@ -26,13 +26,17 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 #include "asterfort/elraca.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/indiis.h"
+#include "asterfort/inslri.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/pjeflo.h"
 #include "asterfort/pjefmi.h"
 #include "asterfort/reereg.h"
+#include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
@@ -67,6 +71,13 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno
     integer :: nnos, nbfpg, kk, ino, nuno, kdim, iret, ibid
     integer :: iarg
+!
+    integer :: nbmax
+    parameter  (nbmax=5)
+    integer :: tino2m(nbmax), nbnod, nbnodm, ii, ino2m
+    real(kind=8) :: tdmin2(nbmax), umessr(4), disprj
+    character(len=8) :: nono2
+    logical :: loin2
 ! --- DEB --------------------------------------------------------------
 !
     call jemarq()
@@ -183,19 +194,23 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     call wkvect(corres//'.PJEF_NB', 'V V I', nno2, i2conb)
     call wkvect(corres//'.PJEF_M1', 'V V I', nno2, i2com1)
     ideca2=0
-    do 10, ino2=1,nno2
+    do ino2=1,nno2
 !       ITR : TETR4 ASSOCIE A INO2
-    itr=zi(i1cotr-1+ino2)
-    if (itr .eq. 0) goto 10
+        itr=zi(i1cotr-1+ino2)
+        if (itr .eq. 0) goto 10
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
-    ima1=zi(iatr3+6*(itr-1)+5)
-    nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
-    zi(i2conb-1+ino2)=nbno
-    zi(i2com1-1+ino2)=ima1
-    ideca2=ideca2+nbno
-    10 end do
+        ima1=zi(iatr3+6*(itr-1)+5)
+        nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
+        zi(i2conb-1+ino2)=nbno
+        zi(i2com1-1+ino2)=ima1
+        ideca2=ideca2+nbno
+10      continue
+    enddo
     if (ideca2 .eq. 0) call u2mess('F', 'CALCULEL3_97')
 !
+    loin2 = .false.
+    nbnod = 0
+    nbnodm = 0
 !     2.2 ALLOCATION DE .PJEF_NU .PJEF_CF .PJEF_CO:
 !         (ET REMPLISSAGE DE CES 3 OBJETS)
 !     ------------------------------------------------------
@@ -204,126 +219,150 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
     call wkvect(corres//'.PJEF_CO', 'V V R', 3*nno2, i2coco)
     ideca1=0
     ideca2=0
-    do 20, ino2=1,nno2
+    do ino2=1,nno2
 !       ITR : TETR4 ASSOCIE A INO2
-    itr = zi(i1cotr-1+ino2)
-    if (itr .eq. 0) goto 20
+        itr = zi(i1cotr-1+ino2)
+        if (itr .eq. 0) goto 20
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
-    ima1 = zi(iatr3+6*(itr-1)+5)
+        ima1 = zi(iatr3+6*(itr-1)+5)
 !       ITYPM : TYPE DE LA MAILLE IMA1
-    itypm = zi(iatyma-1+ima1)
-    nutm = indiis(nutm3d,itypm,1,10)
-    elrefa = elrf3d(nutm)
-    ityp = zi(iatr3+6*(itr-1)+6)
-    nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
+        itypm = zi(iatyma-1+ima1)
+        nutm = indiis(nutm3d,itypm,1,10)
+        elrefa = elrf3d(nutm)
+        ityp = zi(iatr3+6*(itr-1)+6)
+        nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 !
-    call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                fapg, nbpg, crrefe, vol)
+        call elraca(elrefa, ndim, nno, nnos, nbfpg,&
+                    fapg, nbpg, crrefe, vol)
 !
-    call assert(nbno .eq. nno)
+        call assert(nbno .eq. nno)
 !
 !       2.2.1 DETERMINATION DES COORDONNEES DE INO2 DANS L'ELEMENT
 !             DE REFERENCE : KSI , ETA ET DZETA
 !     -----------------------------------------------------------
-    ksi =0.d0
-    eta =0.d0
-    dzeta=0.d0
+        ksi =0.d0
+        eta =0.d0
+        dzeta=0.d0
 !
-    if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
-        do 771,kk=1,4
-        x1 = crrefe(ndim*(cntetr(kk,ityp)-1)+1)
-        x2 = crrefe(ndim*(cntetr(kk,ityp)-1)+2)
-        x3 = crrefe(ndim*(cntetr(kk,ityp)-1)+3)
-        ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-        eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-        dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
-771      continue
+        if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
+            do kk=1,4
+                x1 = crrefe(ndim*(cntetr(kk,ityp)-1)+1)
+                x2 = crrefe(ndim*(cntetr(kk,ityp)-1)+2)
+                x3 = crrefe(ndim*(cntetr(kk,ityp)-1)+3)
+                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
+                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
+                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+            enddo
 !
-        else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or.&
-     &                                elrefa.eq.'P18' ) then
-        do 772,kk=1,4
-        x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
-        x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
-        x3 = crrefe(ndim*(cnpent(kk,ityp)-1)+3)
-        ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-        eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-        dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
-772      continue
+        elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or.&
+                                     elrefa.eq.'P18' ) then
+            do kk=1,4
+                x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
+                x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
+                x3 = crrefe(ndim*(cnpent(kk,ityp)-1)+3)
+                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
+                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
+                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+            enddo
 !
-        else if (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
-     &                                elrefa.eq.'H27' ) then
-        do 773,kk=1,4
-        x1 = crrefe(ndim*(cnhexa(kk,ityp)-1)+1)
-        x2 = crrefe(ndim*(cnhexa(kk,ityp)-1)+2)
-        x3 = crrefe(ndim*(cnhexa(kk,ityp)-1)+3)
-        ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-        eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-        dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
-773      continue
+        elseif (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
+                                     elrefa.eq.'H27' ) then
+            do kk=1,4
+                x1 = crrefe(ndim*(cnhexa(kk,ityp)-1)+1)
+                x2 = crrefe(ndim*(cnhexa(kk,ityp)-1)+2)
+                x3 = crrefe(ndim*(cnhexa(kk,ityp)-1)+3)
+                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
+                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
+                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+            enddo
 !
-    else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
-        do 774,kk=1,4
-        x1 = crrefe(ndim*(cnpyra(kk,ityp)-1)+1)
-        x2 = crrefe(ndim*(cnpyra(kk,ityp)-1)+2)
-        x3 = crrefe(ndim*(cnpyra(kk,ityp)-1)+3)
-        ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
-        eta = eta + zr(i1cocf-1+ideca1+kk)*x2
-        dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
-774      continue
+        elseif (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
+            do kk=1,4
+                x1 = crrefe(ndim*(cnpyra(kk,ityp)-1)+1)
+                x2 = crrefe(ndim*(cnpyra(kk,ityp)-1)+2)
+                x3 = crrefe(ndim*(cnpyra(kk,ityp)-1)+3)
+                ksi = ksi + zr(i1cocf-1+ideca1+kk)*x1
+                eta = eta + zr(i1cocf-1+ideca1+kk)*x2
+                dzeta = dzeta + zr(i1cocf-1+ideca1+kk)*x3
+            enddo
 !
-    else
-        call u2mesk('F', 'ELEMENTS_55', 1, elrefa)
-    endif
+        else
+            call u2mesk('F', 'ELEMENTS_55', 1, elrefa)
+        endif
 !
-    xr1(1) = ksi
-    xr1(2) = eta
-    xr1(3) = dzeta
+        xr1(1) = ksi
+        xr1(2) = eta
+        xr1(3) = dzeta
 !
 !       -- ON ESSAYE D'AMELIORER LA PRECISION DE XR1(*)
 !          EN UTILISANT REEREG :
-    do 72,ino=1,nbno
-    nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
-    do 73,kdim=1,ndim
-    cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
-73  continue
-72  continue
-    call reereg('C', elrefa, nno, cooele, geom2(3*(ino2-1)+1),&
-                ndim, xr2, iret)
+        do ino=1,nbno
+            nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
+            do kdim=1,ndim
+                cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
+            enddo
+        enddo
+        call reereg('C', elrefa, nno, cooele, geom2(3*(ino2-1)+1),&
+                    ndim, xr2, iret)
 !
-!       -- ON REGARDE SI INO2 EST EXTERIEUR A IMA1 :
-    alarme='OUI'
-    call getres(k16bid, k16bid, nomcmd)
-    if (nomcmd .eq. 'PROJ_CHAMP') then
-        call getvtx(' ', 'ALARME', 1, iarg, 1,&
-                    alarme, ibid)
-    endif
-    call pjeflo(elrefa, ndim, iret, xr2, alarme,&
-                m2, ino2, m1, ima1, lext)
+!        -- ON REGARDE SI INO2 EST EXTERIEUR A IMA1 :
+        call pjeflo(elrefa, ndim, iret, xr2, disprj)
+        call inslri(nbmax, nbnod, tdmin2, tino2m, disprj,&
+                    ino2)
+        lext= (disprj.gt.1.0d-02)
+        if (disprj .gt. 1.0d-01) then
+            loin2=.true.
+            nbnodm = nbnodm + 1
+        endif
 !
 !       -- ON CHOISIT LA MEILLEURE APPROXIMATION ENTRE XR1 ET XR2:
-    call pjefmi(elrefa, nno, cooele, geom2(3*(ino2-1)+1), ndim,&
-                xr1, xr2, lext, xr3)
+        call pjefmi(elrefa, nno, cooele, geom2(3*(ino2-1)+1), ndim,&
+                    xr1, xr2, lext, xr3)
 !
-    zr(i2coco-1+3*(ino2-1)+1)=xr3(1)
-    zr(i2coco-1+3*(ino2-1)+2)=xr3(2)
-    zr(i2coco-1+3*(ino2-1)+3)=xr3(3)
-!
+        zr(i2coco-1+3*(ino2-1)+1)=xr3(1)
+        zr(i2coco-1+3*(ino2-1)+2)=xr3(2)
+        zr(i2coco-1+3*(ino2-1)+3)=xr3(3)
 !
 !       2.2.2 :
 !       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI,ETA,DZETA:
 !       --------------------------------------------------------------
-    call elrfvf(elrefa, xr3, 27, ff, nno)
+        call elrfvf(elrefa, xr3, 27, ff, nno)
 !
-    do 22,ino=1,nbno
-    nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
-    zi(i2conu-1+ideca2+ino) = nuno
-    zr(i2cocf-1+ideca2+ino) = ff(ino)
-22  continue
+        do ino=1,nbno
+            nuno = zi(iacnx1+ zi(ilcnx1-1+ima1)-2+ino)
+            zi(i2conu-1+ideca2+ino) = nuno
+            zr(i2cocf-1+ideca2+ino) = ff(ino)
+        enddo
 !
-    ideca1=ideca1+4
-    ideca2=ideca2+nbno
+        ideca1=ideca1+4
+        ideca2=ideca2+nbno
+20      continue
+    enddo
 !
-    20 end do
+!     -- EMISSION D'UN EVENTUEL MESSAGE D'ALARME:
+    if (loin2) then
+        alarme='OUI'
+        call getres(k16bid, k16bid, nomcmd)
+        if (nomcmd .eq. 'PROJ_CHAMP') then
+            call getvtx(' ', 'ALARME', 1, iarg, 1,&
+                        alarme, ibid)
+        endif
+        if (alarme .eq. 'OUI') then
+            do ii=1,nbnod
+                ino2m = tino2m(ii)
+                call jenuno(jexnum(m2//'.NOMNOE', ino2m), nono2)
+                umessr(1) = geom2(3*(ino2m-1)+1)
+                umessr(2) = geom2(3*(ino2m-1)+2)
+                umessr(3) = geom2(3*(ino2m-1)+3)
+                umessr(4) = tdmin2(ii)
+                call u2mesg('I', 'CALCULEL5_43', 1, nono2, 0,&
+                            0, 4, umessr)
+            enddo
+            call jenuno(jexnum(m2//'.NOMNOE', tino2m(1)), nono2)
+            call u2mesg('A', 'CALCULEL5_48', 1, nono2, 1,&
+                        nbnodm, 1, tdmin2(1))
+        endif
+    endif
 !
     call jedema()
 end subroutine

@@ -60,13 +60,11 @@ Erreur utilisateur :
  n'appartient pas à la grandeur : %(k1)s
 """),
 
-7 : _(u"""
-Alarme utilisateur :
-  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
-  des noeuds sur des mailles (par exemple LIAISON_MAIL).
-  L'un des noeuds (%(k1)s) du maillage (%(k2)s) a été projeté à une distance D non nulle significative.
-  (D>10%% de la taille de la maille la plus proche (%(k3)s) du maillage (%(k4)s)).
-"""),
+
+
+
+
+
 
 8 : _(u"""
  il faut renseigner le mot clé MAILLE
@@ -186,7 +184,7 @@ PROJ_CHAMP  :
 
 43 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Le noeud %(k1)s de coordonnées (%(r1)f,%(r2)f,%(r3)f) est projeté à la distance %(r4)f"""),
+  Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à une distance %(r4)e"""),
 
 44 : _(u"""
  ! le champ doit être un CHAM_ELEM !
@@ -201,11 +199,12 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 48 : _(u"""
- PROJ_CHAMP (ou LIAISON_MAIL) :
- Nombre de noeuds projetés sur des mailles un peu distantes : %(i1)d.
- (la distance à la maille est supérieure à 1/10ème du diamètre de la maille)
+ Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
+ des noeuds sur des mailles (par exemple LIAISON_MAIL).
+ Nombre de noeuds projetés sur des mailles distantes : %(i1)d.
+ (la distance à la maille est supérieure à 1/10ème du diamètre de la maille la plus proche)
 
- Le noeud %(k1)s est projeté le plus loin à la distance %(r1)f"""),
+ Le noeud %(k1)s est celui qui est projeté à la plus grande distance %(r1)e"""),
 
 
 49 : _(u"""

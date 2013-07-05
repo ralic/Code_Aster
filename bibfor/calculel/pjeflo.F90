@@ -1,5 +1,5 @@
-subroutine pjeflo(elrefa, ndim, ipb, xr2, alarm,&
-                  ma2, ino2, ma1, ima1, lext)
+subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,97 +21,76 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, alarm,&
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-    character(len=*) :: alarm, elrefa
-    character(len=8) :: ma1, ma2
-    integer :: ipb, ima1, ndim, ino2
-    real(kind=8) :: xr2(ndim)
-    logical :: lext
+!
+    integer :: ipb, ndim
+    real(kind=8) :: xr2(ndim), disprj
+    character(len=*) :: elrefa
 ! ----------------------------------------------------------------------
 ! BUT :
 !   * EMETTRE UNE ALARME SI INO2 EST TROP LOIN DE IMA1.
 !   * DETERMINER SI INO2 EST EXTERIEUR A IMA1
 ! ----------------------------------------------------------------------
 !
-! IN  ELREFA : ELREFA DE L'ELEMENT
-! IN  NDIM   : DIMENSION DE L'ESPACE
-! IN  XR2     : COORDONNEES DU POINT DANS L'ESPACE PARA DE L'ELEMENT
-!              (CALCULE PAR REEREG)
-! IN  IPBD   : CODE RETOUR DE REEREG
-! IN  ALARM  : 'OUI'/'NON' (VEUT-ON IMPRIMER L'ALARME)
-! IN  MA1    : NOM DU MAILLAGE "1"
-! IN  MA2    : NOM DU MAILLAGE "2"
-! IN  INO2   : NUMERO DU NOEUD DANS MA2
-! IN  IMA1   : NUMERO DE LA MAILLE DANS MA1
-! OUT LEXT   : .TRUE. <=> INO2 EST EXTERIEUR A IMA1
+! IN  ELREFA   : ELREFA DE L'ELEMENT
+! IN  NDIM     : DIMENSION DE L'ESPACE
+! IN  XR2      : COORDONNEES DU POINT DANS L'ESPACE PARA DE L'ELEMENT
+!                (CALCULE PAR REEREG)
+! IN  IPBD     : CODE RETOUR DE REEREG
+! OUT DISPRJ   : DISTANCE
 ! ----------------------------------------------------------------------
 !
-!
-    real(kind=8) :: d, tolala, tolext, x, y, z
-    character(len=8) :: nomno, nomma
-    character(len=24) :: valk(5)
-! ----------------------------------------------------------------------
-    call assert(alarm.eq.'OUI' .or. alarm.eq.'NON')
-    lext=.false.
-!
-!
-!     -- SI REEREG N'A PAS CONVERGE, ON N'A PAS CONFIANCE DANS XR2 :
+    real(kind=8) :: x, y, z
+! --------------------------------------------------------------------------------------------------
+    disprj = 0.0d0
+!   SI REEREG N'A PAS CONVERGE, ON N'A PAS CONFIANCE DANS XR2 :
     if (ipb .ne. 0) then
-        d=999.d0
-        goto 70
-!
+        disprj=999.d0
+        goto 80
     endif
 !
     if (ndim .ge. 1) x=xr2(1)
     if (ndim .ge. 2) y=xr2(2)
     if (ndim .ge. 3) z=xr2(3)
 !
-!
-!     -- POUR LES HEXA : KSI,ETA,DZETA SONT DANS [-1,1]
-!     ----------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!   POUR LES HEXA : KSI,ETA,DZETA SONT DANS [-1,1]
     if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. elrefa .eq. 'H27') then
         call assert(ndim.eq.3)
         if (abs(x) .gt. 1.d0) goto 10
         if (abs(y) .gt. 1.d0) goto 10
         if (abs(z) .gt. 1.d0) goto 10
-!
-!       -- ON EST INTERIEUR
+!       ON EST INTERIEUR
         goto 80
 !
 10      continue
-!       -- ON EST EXTERIEUR. EST-ON LOIN ?
-        d=0.d0
-        d=max(d,abs(x)-1.d0)
-        d=max(d,abs(y)-1.d0)
-        d=max(d,abs(z)-1.d0)
-!
-!
-!     -- POUR LES TETRA :
-!     ----------------------------------------------------
-    else if (elrefa.eq.'TE4' .or. elrefa.eq.'T10') then
+!       ON EST EXTERIEUR. EST-ON LOIN ?
+        disprj=0.d0
+        disprj=max(disprj,abs(x)-1.d0)
+        disprj=max(disprj,abs(y)-1.d0)
+        disprj=max(disprj,abs(z)-1.d0)
+! --------------------------------------------------------------------------------------------------
+!   POUR LES TETRA :
+    elseif (elrefa.eq.'TE4' .or. elrefa.eq.'T10') then
         call assert(ndim.eq.3)
         if (x .lt. 0.d0) goto 20
         if (y .lt. 0.d0) goto 20
         if (z .lt. 0.d0) goto 20
         if (x+y+z .gt. 1.d0) goto 20
 !
-!       -- ON EST INTERIEUR
+!       ON EST INTERIEUR
         goto 80
 !
 20      continue
-!       -- ON EST EXTERIEUR. EST-ON LOIN ?
-        d=0.d0
-        d=max(d,-x)
-        d=max(d,-y)
-        d=max(d,-z)
-        d=max(d,x+y+z-1.d0)
+!       ON EST EXTERIEUR. EST-ON LOIN ?
+        disprj=0.d0
+        disprj=max(disprj,-x)
+        disprj=max(disprj,-y)
+        disprj=max(disprj,-z)
+        disprj=max(disprj,x+y+z-1.d0)
 !
-!
-!     -- POUR LES PYRAM :
-!     ----------------------------------------------------
-    else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
+! --------------------------------------------------------------------------------------------------
+!   POUR LES PYRAM :
+    elseif (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
         call assert(ndim.eq.3)
         if (z .lt. 0.d0) goto 30
         if (x+y+z .gt. 1.d0) goto 30
@@ -119,23 +98,21 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, alarm,&
         if (-x+y+z .gt. 1.d0) goto 30
         if (-x-y+z .gt. 1.d0) goto 30
 !
-!       -- ON EST INTERIEUR
+!       ON EST INTERIEUR
         goto 80
 !
 30      continue
-!       -- ON EST EXTERIEUR. EST-ON LOIN ?
-        d=0.d0
-        d=max(d,-z)
-        d=max(d,x+y+z-1.d0)
-        d=max(d,x-y+z-1.d0)
-        d=max(d,-x+y+z-1.d0)
-        d=max(d,-x-y+z-1.d0)
+!       ON EST EXTERIEUR. EST-ON LOIN ?
+        disprj=0.d0
+        disprj=max(disprj,-z)
+        disprj=max(disprj,x+y+z-1.d0)
+        disprj=max(disprj,x-y+z-1.d0)
+        disprj=max(disprj,-x+y+z-1.d0)
+        disprj=max(disprj,-x-y+z-1.d0)
 !
-!
-!     -- POUR LES PENTA :
-!     ----------------------------------------------------
-        elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18')&
-    then
+! --------------------------------------------------------------------------------------------------
+!   POUR LES PENTA :
+    elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18') then
         call assert(ndim.eq.3)
         if (x .lt. -1.d0) goto 40
         if (x .gt. +1.d0) goto 40
@@ -143,85 +120,57 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, alarm,&
         if (z .lt. 0.d0) goto 40
         if (y+z .gt. 1.d0) goto 40
 !
-!       -- ON EST INTERIEUR
+!       ON EST INTERIEUR
         goto 80
 !
 40      continue
-!       -- ON EST EXTERIEUR. EST-ON LOIN ?
-        d=0.d0
-        d=max(d,abs(x)-1.d0)
-        d=max(d,-y)
-        d=max(d,-z)
-        d=max(d,+y+z-1.d0)
+!       ON EST EXTERIEUR. EST-ON LOIN ?
+        disprj=0.d0
+        disprj=max(disprj,abs(x)-1.d0)
+        disprj=max(disprj,-y)
+        disprj=max(disprj,-z)
+        disprj=max(disprj,+y+z-1.d0)
 !
-!
-!     -- POUR LES TRIA :
-!     ----------------------------------------------------
-        elseif (elrefa.eq.'TR3' .or. elrefa.eq.'TR6' .or. elrefa.eq.'TR7')&
-    then
+! --------------------------------------------------------------------------------------------------
+!   POUR LES TRIA :
+    elseif (elrefa.eq.'TR3' .or. elrefa.eq.'TR6' .or. elrefa.eq.'TR7') then
         call assert(ndim.eq.2)
         if (x .lt. 0.d0) goto 50
         if (y .lt. 0.d0) goto 50
         if (x+y .gt. 1.d0) goto 50
 !
-!       -- ON EST INTERIEUR
+!       ON EST INTERIEUR
         goto 80
 !
 50      continue
-!       -- ON EST EXTERIEUR. EST-ON LOIN ?
-        d=0.d0
-        d=max(d,-x)
-        d=max(d,-y)
-        d=max(d,+x+y-1.d0)
+!       ON EST EXTERIEUR. EST-ON LOIN ?
+        disprj=0.d0
+        disprj=max(disprj,-x)
+        disprj=max(disprj,-y)
+        disprj=max(disprj,+x+y-1.d0)
 !
-!
-!     -- POUR LES QUAD :
-!     ----------------------------------------------------
-        elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or. elrefa.eq.'QU9')&
-    then
+! --------------------------------------------------------------------------------------------------
+!   POUR LES QUAD :
+    elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or. elrefa.eq.'QU9') then
         call assert(ndim.eq.2)
         if (x .lt. -1.d0) goto 60
         if (y .lt. -1.d0) goto 60
         if (x .gt. +1.d0) goto 60
         if (y .gt. +1.d0) goto 60
 !
-!       -- ON EST INTERIEUR
+!       ON EST INTERIEUR
         goto 80
 !
 60      continue
-!       -- ON EST EXTERIEUR. EST-ON LOIN ?
-        d=0.d0
-        d=max(d,-1.d0-x)
-        d=max(d,-1.d0-y)
-        d=max(d,x-1.d0)
-        d=max(d,y-1.d0)
-!
+!       ON EST EXTERIEUR. EST-ON LOIN ?
+        disprj=0.d0
+        disprj=max(disprj,-1.d0-x)
+        disprj=max(disprj,-1.d0-y)
+        disprj=max(disprj,x-1.d0)
+        disprj=max(disprj,y-1.d0)
     else
         call assert(.false.)
     endif
-!
-!
-!     -- EST-ON EXTERIEUR ?
-!     -------------------------------
-70  continue
-    tolext=1.d-2
-    if (d .gt. tolext) lext=.true.
-!
-!     -- DOIT-ON EMETTRE UNE ALARME ?
-!     -------------------------------
-    tolala=1.d-1
-    if (d .gt. tolala) then
-        if (alarm .eq. 'OUI') then
-            call jenuno(jexnum(ma2//'.NOMNOE', ino2), nomno)
-            call jenuno(jexnum(ma1//'.NOMMAI', ima1), nomma)
-            valk(1)=nomno
-            valk(2)=ma2
-            valk(3)=nomma
-            valk(4)=ma1
-            call u2mesk('A', 'CALCULEL5_7', 4, valk)
-        endif
-    endif
-!
 !
 80  continue
 end subroutine

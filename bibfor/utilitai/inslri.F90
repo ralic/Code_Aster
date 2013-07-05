@@ -22,6 +22,8 @@ subroutine inslri(nbx, nbn, lister, listei, valr,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! --------------------------------------------------------------------------------------------------
+!
 !  Insere VALR dans LISTER
 !     LISTER est classe du plus grand au plus petit
 !     LISTEI contient les VALI
@@ -32,11 +34,11 @@ subroutine inslri(nbx, nbn, lister, listei, valr,&
 !     VALI   : valeur entiere
 !
 !  OUT/IN
-!     NBN    : nombre actualise de valeur dans les listes
-!              Doit etre initialise a 0 avant l'appel
+!     NBN    : nombre actualise de valeur dans les listes. Doit etre initialise a 0 avant l'appel
 !     LISTER : liste actualisee des reels
 !     LISTEI : liste actualisee des entiers
 !
+! --------------------------------------------------------------------------------------------------
     integer :: ii, indx
 !
     if (nbn .eq. 0) then
@@ -45,14 +47,14 @@ subroutine inslri(nbx, nbn, lister, listei, valr,&
         lister(1) = valr
     else
         indx = nbn+1
-        do 71,ii = nbn,1,-1
-        if (valr .gt. lister(ii)) indx = ii
-71      continue
+        do ii = nbn,1,-1
+            if (valr .gt. lister(ii)) indx = ii
+        enddo
         if (nbn .lt. nbx) nbn = nbn + 1
-        do 72,ii = nbn,indx+1,-1
-        listei(ii) = listei(ii-1)
-        lister(ii) = lister(ii-1)
-72      continue
+        do ii = nbn,indx+1,-1
+            listei(ii) = listei(ii-1)
+            lister(ii) = lister(ii-1)
+        enddo
         if (indx .le. nbx) then
             listei(indx) = vali
             lister(indx) = valr
