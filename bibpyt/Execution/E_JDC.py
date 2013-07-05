@@ -63,6 +63,7 @@ class JDC:
           setattr(self, attr, 0)
       # à part car pas de type entier
       self._sign = None
+      self._poursuite = False
 
    def Exec(self):
       """
@@ -440,3 +441,12 @@ class JDC:
            traceback.print_exc()
        #print "#DBG signature of", base, "at", self.jeveux_sysaddr, ':', self._sign
        return self._sign
+
+   def set_poursuite(self, value):
+       """Positionne le booléen qui dit si on est en poursuite ou non"""
+       self._poursuite = value
+
+   def is_poursuite(self):
+       """Retourne True si on est en poursuite, False sinon"""
+       return self._poursuite
+
