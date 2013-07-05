@@ -65,9 +65,6 @@ def options(self):
     self.load('legacy', tooldir='waftools')
     self.load('runtest', tooldir='waftools')
 
-    group.add_option('-g', '--enable-debug', dest='debug',
-                    action='store_true', default=False,
-                    help='Generate debug information when compiling')
     group.add_option('-E', '--embed-all', dest='embed_all',
                     action='store_true', default=False,
                     help='activate all embed-* options')

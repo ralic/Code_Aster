@@ -12,7 +12,11 @@ def options(self):
     group = self.get_option_group("Aster options")
     group.add_option('-n', '--name', dest='testname',
                     action='append', default=None,
-                    help='Name of testcases to run (as_run must be in PATH)')
+                    help='name of testcases to run (as_run must be in PATH)')
+    group.add_option('--exectool', dest='exectool',
+                    action='store', default=None,
+                    help='run a testcase by passing additional arguments '
+                         '(depends on as_run configuration)')
 
 @TaskGen.feature('test')
 def runtest(self):
@@ -21,6 +25,11 @@ def runtest(self):
     if not _has_asrun():
         Logs.error("'as_run' not found, please check your $PATH")
         return
+    toolargs = []
+    if opts.exectool == 'debugger':
+        toolargs.append('--debugger')
+    elif opts.exectool is not None:
+        toolargs.append('--exectool=%s' % opts.exectool)
     dtmp = tempfile.mkdtemp(prefix='runtest_')
     Logs.info("destination of output files: %s" % dtmp)
     versdir = osp.join(self.env['PREFIX'], 'share', 'aster')
@@ -28,6 +37,7 @@ def runtest(self):
         cmd = ['as_run', '--vers=%s' % versdir, '--test', test]
         if self.variant == 'debug':
             cmd.extend(['-g', '--nodebug_stderr'])
+        cmd.extend(toolargs)
         Logs.info("running %s in '%s'" % (test, self.variant))
         fname = osp.join(dtmp, osp.basename(test) + '.output')
         fobj = open(fname, 'wb')
