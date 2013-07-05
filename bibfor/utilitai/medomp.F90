@@ -108,8 +108,8 @@ subroutine medomp(result, modele, mate, carele, nh)
 ! ----- L'UTILISATEUR N'A PAS FOURNI DE NUMERO D'ORDRE :
 ! ----- RECUPERATION DU PREMIER NUMERO D'ORDRE DANS LA SD RESULTAT
 !
+        knum = '&&MEDOMP.NUME_ORDRE'
         if (inuord .eq. 0) then
-            knum = '&&MEDOMP.NUME_ORDRE'
             call getvr8(' ', 'PRECISION', 1, iarg, 1,prec, n1)
             call getvtx(' ', 'CRITERE', 1, iarg, 1,crit, n2)
             call rsutnu(result, ' ', 0, knum, nbordr,prec, crit, iret)
