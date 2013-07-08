@@ -418,4 +418,10 @@ La température est obligatoire pour le comportement cristallin %(k1)s.
 L'état initial des contraintes n'est pas compatible avec le mécanisme isotrope du modèle de HUJEUX.
 Conseils: Vérifier l'état des contraintes initiales ou modifier les paramètres matériaux PC0 et/ou D du modèle de HUJEUX.
 """),
+
+84 : _(u"""
+Comportement  %(k1)s : le paramètre %(k2)s devrait rester positif. Il vaut actuellement <%(r1).15E>.
+Conseils: modifiez sa valeur dans CIN1_CHAB / CIN2_CHAB.
+"""),
+
 }

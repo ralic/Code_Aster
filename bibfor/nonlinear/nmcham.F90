@@ -37,8 +37,8 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/verift.h"
-    integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad
-    character(len=16) :: compor(3)
+    integer :: imate, nbvar, kpg, ksp, memo, visc, iret, idelta, nrad, ibid
+    character(len=16) :: compor(3),valk(2)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami
 ! ---- VARIABLES LOCALES
@@ -154,6 +154,18 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     mat(6) = w
     mat(7) = gamma0
     mat(8) = ainf
+    
+    if (b < 0.d0) then
+        valk(1)=compor(1)
+        valk(2)='b'
+        call u2mesg('A', 'COMPOR1_84', 2, valk, 0, ibid, 1, b)
+    endif
+    
+    if (w < 0.d0) then
+        valk(1)=compor(1)
+        valk(2)='w'
+        call u2mesg('A', 'COMPOR1_84', 2, valk, 0, ibid, 1, w)
+    endif
 !
 !     IDELTA : TYPE DE NON PROPORTIONNALITE
     if (nrad .eq. 1) then
