@@ -138,6 +138,7 @@ subroutine asexci(masse, parmod, amort, nbmode, corfre,&
         call wkvect('&&ASEXCI.POSITION.DDL1', 'V V I', neq, jddl1)
         call typddl('BLOQ', nume, neq, zi(jddl1), nba,&
                     nbbloq, nbl, nbliai)
+        if (nbbloq.eq.0) call u2mess('F', 'SEISME_34')
         call wkvect('&&ASEXCI.NOM_NOEUD', 'V V K8', 3*nbbloq, jnno)
         call wkvect('&&ASEXCI.NOM_SPECTRE', 'V V K8', 3*nbbloq, jnsp)
         call wkvect('&&ASEXCI.DIR_SPECTRE', 'V V R', 3*nbbloq, jdsp)

@@ -183,4 +183,9 @@ cata_msg={
  Dans le cadre de l'utilisation de la combinaison de type GUPTA il faut que F1 < F2.
 """),
 
+34: _(u"""
+ Il n'y a pas de points d'appui sur la structure.
+  -> Conseil : Vérifiez dans ASSEMBLAGE que les conditions aux limites sont présentes.
+"""),
+
 }
