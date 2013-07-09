@@ -17,10 +17,18 @@
 #
 
 def mode_iter_inv_prod(TYPE_RESU,**args ):
+  if (TYPE_RESU not in ["DYNAMIQUE","MODE_FLAMB","GENERAL"]):
+     # on retourne un type fictif pour que le plantage aie lieu dans la lecture du catalogue
+     return ASSD
   if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
   if TYPE_RESU == "GENERAL"    : return mode_flamb
-  vale_rigi=args['MATR_RIGI']
-  vale_amor=args['MATR_AMOR']
+  # sinon on est dans le cas 'DYNAMIQUE' donc **args doit contenir les mots-clés
+  # MATR_RIGI et (faculativement) MATR_AMOR, et on peut y accéder
+  vale_rigi = args['MATR_RIGI']
+  if (vale_rigi== None) : # si MATR_RIGI non renseigné
+     # on retourne un type fictif pour que le plantage aie lieu dans la lecture du catalogue
+     return ASSD
+  vale_amor = args['MATR_AMOR']
   if AsType(vale_amor) == matr_asse_depl_r : return mode_meca_c
   if AsType(vale_rigi) == matr_asse_depl_r : return mode_meca
   if AsType(vale_rigi) == matr_asse_pres_r : return mode_acou
