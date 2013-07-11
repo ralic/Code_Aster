@@ -529,8 +529,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             endif
         else
             charge = prefob(1:8)
-            call dismoi('F', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
+            call dismoi('C', 'TYPE_CHARGE', charge, 'CHARGE', ibid,&
                         typcha, iret)
+            if (iret.eq.1) call u2mess('F','CHARGES_3')
             if (typcha(5:7) .eq. '_RE') then
                 typech = 'REEL'
             else if (typcha(5:7).eq.'_RI') then

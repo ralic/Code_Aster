@@ -27,6 +27,11 @@ La charge <%(k1)s> a été utilisée plus d'une fois dans EXCIT: il faut la supp
 Il n'y a aucune charge dans le mot-clef facteur EXCIT. Ce n'est pas possible avec STAT_NON_LINE.
 """),
 
+3 : _(u"""
+La charge <%(k1)s> n'a pu être identifiée. Cette erreur est probablement due à l'utilisation d'un
+mot-clef facteur vide dans l'opérateur AFFE_CHAR_MECA, AFFE_CHAR_THER ou AFFE_CHAR_ACOU.
+"""),
+
 22 : _(u"""
 La charge <%(k1)s> n'est pas mécanique.
 """),
