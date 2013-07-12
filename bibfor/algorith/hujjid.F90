@@ -195,7 +195,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
         else if (indi(k) .eq. 4) then
 !
             ksi(k) = un
-            p(k) = (yf(1)+yf(2)+yf(3))*d13
+            p(k) = i1f
 !
         else if ((indi(k) .lt. 8) .and. (indi(k) .gt. 4)) then
 !
