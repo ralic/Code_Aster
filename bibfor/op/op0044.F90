@@ -230,7 +230,11 @@ subroutine op0044()
                 fcorig, l)
     call getvr8('CALC_'//typevp, 'PREC_SHIFT', 1, iarg, 1,&
                 precsh, l)
-    if (typres .eq. 'DYNAMIQUE') omecor = omega2(fcorig)
+    if (typres .eq. 'DYNAMIQUE') then
+        omecor = omega2(fcorig)
+    else
+        omecor = fcorig
+    endif
 !
 !     --- RECUPERATION DES ARGUMENTS POUR LE CALCUL DES MODES ---
     call getvr8('CALC_MODE', 'PREC', 1, iarg, 1,&
