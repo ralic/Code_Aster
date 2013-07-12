@@ -28,19 +28,32 @@ function comcou(iarg)
 ! aslint: disable=W1304
     implicit none
     integer(kind=4) :: comcou
+    integer         :: iarg
+#include "asterf_config.h"
 #include "jeveux.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpiexe.h"
-    integer :: jco, iarg
+#ifdef _USE_MPI
+#include "mpif.h"
+#endif
+    integer :: iret, jco
     character(len=24) :: k24bid
 !
     call jemarq()
-    comcou=-9999
+    comcou=-999
     k24bid='COMMUNICATEUR_MPI.REFE'
-    call jeveuo(k24bid, 'L', jco)
-    comcou = int(zi(jco+iarg), 4)
+    call jeexin(k24bid, iret)
+    if (iret .eq. 0) then
+!   GLUTE POUR COMMUNICATEUR ABSENT A LA CREATION DES BASES (JJLDYN)
+#ifdef _USE_MPI
+        comcou = int(MPI_COMM_WORLD, 4)
+#endif
+    else
+        call jeveuo(k24bid, 'L', jco)
+        comcou = int(zi(jco+iarg), 4)
+    endif
     call jedema()
 !
 end function
