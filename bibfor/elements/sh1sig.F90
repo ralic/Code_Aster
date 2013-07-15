@@ -27,8 +27,7 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
 #include "asterfort/rlosh6.h"
 #include "asterfort/s1calb.h"
 #include "asterfort/sh1ksi.h"
-    integer :: lag, irdc
-    real(kind=8) :: sigma(*), para(11)
+    real(kind=8) :: sigma(*), para(2)
     real(kind=8) :: xe(45), lambda, dusx(*), xidepp(*)
     real(kind=8) :: xcoq(3, 3), bksip(3, 15, 15), b(3, 15)
     real(kind=8) :: xcent(3), ppp(3, 3), ppt(3, 3)
@@ -56,7 +55,7 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
 !
 !-----------------------------------------------------------------------
     integer :: i, ip, j
-    real(kind=8) :: ajac, rbid, xcooef, xmu, xnu, zeta, zlamb
+    real(kind=8) :: ajac, rbid, xmu, xnu, zeta, zlamb
 !
 !-----------------------------------------------------------------------
     do 10 ip = 1, 5
@@ -66,7 +65,7 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
         xyg5(ip+5) = 0.d0
         xzg5(ip+10) = 0.d0
         xyg5(ip+10) = 0.5d0
-10  end do
+10  continue
 !
     do 20 ip = 1, 3
         xxg5(5*(ip-1)+1) = -0.906179845938664d0
@@ -80,26 +79,13 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
 !         PXG5(5*(IP-1)+3) =  0.568888888888889d0/6.d0
 !         PXG5(5*(IP-1)+4) =  0.478628670499366d0/6.d0
 !         PXG5(5*(IP-1)+5) =  0.236926885056189d0/6.d0
-20  end do
+20  continue
 !
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 30 i = 1, 45
         xe(i) = xetemp(i)
-30  end do
+30  continue
 !
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB6 MEME TYPE QUE SHB8 DANS PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-!
-    irdc = nint(para(5))
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!C                                                                  C
-!C ON CALCULE LES CONTRAINTES : SORTIE DANS OUT(30)                 C
-!C                       CONTRAINTES LOCALES DANS CHAQUE COUCHE     C
-!C                       SUR LA CONFIGURATION 1                     C
-!C  LE DEPLACEMENT NODAL A L'AIR D'ETRE DANS WORK(1 A 45)           C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
     call r8inir(36, 0.d0, cmatlo, 1)
 !C
 !C UE: INCREMENT DE DEPLACEMENT NODAL, REPERE GLOBAL
@@ -109,9 +95,8 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
         do 280 i = 1, 3
             ue(i,j)=xidepp((j-1)*3+i)
 280      continue
-290  end do
+290  continue
 !
-    lag = nint(para(6))
 !C
 !C ON DEFINIT CMATLO LOI MODIFIEE SHB15
 !C
@@ -120,51 +105,24 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
     xmu = 0.5d0*para(1)/ (1.d0+para(2))
     cmatlo(1,1) = lambda + 2.d0*xmu
     cmatlo(2,2) = lambda + 2.d0*xmu
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB6 PLEXUS
-        cmatlo(3,3) = para(1)
-    endif
-!
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        cmatlo(3,3) = 0.d0
-    endif
-!
+    cmatlo(3,3) = para(1)
     cmatlo(1,2) = lambda
     cmatlo(2,1) = lambda
     cmatlo(4,4) = xmu
     cmatlo(5,5) = xmu
     cmatlo(6,6) = xmu
 !
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xnu = para(2)
-        xcooef = para(1)/((1.d0+xnu)*(1.d0-2.d0*xnu))
-        cmatlo(1,1) = (1.d0-xnu)*xcooef
-        cmatlo(2,2) = (1.d0-xnu)*xcooef
-        cmatlo(3,3) = (1.d0-xnu)*xcooef
-        cmatlo(1,2) = xnu*xcooef
-        cmatlo(2,1) = xnu*xcooef
-        cmatlo(1,3) = xnu*xcooef
-        cmatlo(3,1) = xnu*xcooef
-        cmatlo(2,3) = xnu*xcooef
-        cmatlo(3,2) = xnu*xcooef
-        cmatlo(4,4) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(5,5) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(6,6) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-    endif
+! CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
+!      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
+!      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
+!      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
 !
-!C CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
-!C      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
-!C      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
-!C      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
-!C
     call sh1ksi(15, xxg5, xyg5, xzg5, bksip)
-!C
+!
     do 380 ip = 1, 15
-!C
-!C DEFINITION DES 4 POINTS  COQUES
-!C
+!
+! DEFINITION DES 4 POINTS  COQUES
+!
         zeta = xxg5(ip)
         zlamb = 0.5d0*(1.d0-zeta)
         do 310 i = 1, 3
@@ -172,31 +130,25 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
                 xcoq(j,i) = zlamb*xe((i-1)*3+j) + (1.d0-zlamb)*xe(3*i+ 6+j)
 300          continue
 310      continue
-!C
-!C CALCUL DE PPP 3*3 PASSAGE DE GLOBAL A LOCAL,COQUE
-!C XCENT : COORD GLOBAL DU CENTRE DE L'ELEMENT
-!C
+!
+! CALCUL DE PPP 3*3 PASSAGE DE GLOBAL A LOCAL,COQUE
+! XCENT : COORD GLOBAL DU CENTRE DE L'ELEMENT
+!
         call rlosh6(xcoq, xcent, ppp, xl, xxx,&
                     yyy, rbid)
-!C
-!C CALCUL DE B : U_GLOBAL ---> EPS_GLOBAL
-!C
+!
+! CALCUL DE B : U_GLOBAL ---> EPS_GLOBAL
+!
         call s1calb(bksip(1, 1, ip), xe, b, ajac)
-!C
-!C CALCUL DE EPS DANS LE REPERE GLOBAL: 1 POUR DEFORMATIONS LINEAIRES
-!C                                     2 POUR TERMES CARRES EN PLUS
+!
+! CALCUL DE EPS DANS LE REPERE GLOBAL: 1 POUR DEFORMATIONS LINEAIRES
+!				      2 POUR TERMES CARRES EN PLUS
         do 320 i = 1, 6
             deps(i)=0.d0
 320      continue
-        if (lag .eq. 1) then
-!C ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
-            call dsdx3d(2, b, ue, deps, dusdx,&
-                        15)
-        else
-            call dsdx3d(1, b, ue, deps, dusdx,&
-                        15)
-        endif
-!C
+        call dsdx3d(1, b, ue, deps, dusdx,&
+                    15)
+!
         do 340 i = 1, 3
             do 330 j = 1, 3
                 ppt(j,i) = ppp(i,j)
@@ -233,17 +185,17 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
             sigloc(i) = 0.d0
 360      continue
         call chrp3d(ppp, deps, depslo, 2)
-!C
-!C CALCUL DE SIGMA DANS LE REPERE LOCAL
-!C
+!
+! CALCUL DE SIGMA DANS LE REPERE LOCAL
+!
         call mulmat(6, 6, 1, cmatlo, depslo,&
                     sigloc)
-!C
-!C CONTRAINTES ECRITES SOUS LA FORME:
-!C               [SIG] = [S_11, S_22, S_33, S_12, S_23, S_13]
+!
+! CONTRAINTES ECRITES SOUS LA FORME:
+!		[SIG] = [S_11, S_22, S_33, S_12, S_23, S_13]
         do 370 i = 1, 6
-!C ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
+! ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
             sigma((ip-1)*6+i)=sigloc(i)
 370      continue
-380  end do
+380  continue
 end subroutine

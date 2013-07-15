@@ -27,8 +27,7 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
 #include "asterfort/rloshb.h"
 #include "asterfort/s2calb.h"
 #include "asterfort/sh2ksi.h"
-    integer :: lag, irdc
-    real(kind=8) :: sigma(*), para(11)
+    real(kind=8) :: sigma(*), para(2)
     real(kind=8) :: xe(60), lambda, dusx(*), xidepp(*)
     real(kind=8) :: xcoq(3, 4), bksip(3, 20, 20), b(3, 20)
     real(kind=8) :: xcent(3), ppp(3, 3), pppt(3, 3)
@@ -56,7 +55,7 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
 !
 !-----------------------------------------------------------------------
     integer :: i, ip, iz, j
-    real(kind=8) :: ajac, rbid, xcooef, xmu, xnu, zeta, zlamb
+    real(kind=8) :: ajac, rbid, xmu, xnu, zeta, zlamb
 !
 !-----------------------------------------------------------------------
     xzg5(1) = -0.906179845938664d0
@@ -86,18 +85,11 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
         pxg5(iz+10) = pxg5(iz)
         xzg5(iz+15) = xzg5(iz)
         pxg5(iz+15) = pxg5(iz)
-71  end do
+71  continue
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 30 i = 1, 60
         xe(i) = xetemp(i)
-30  end do
-!
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB8 TYPE PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-!
-    irdc = nint(para(5))
+30  continue
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                                                                  C
@@ -115,9 +107,8 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
         do 250 i = 1, 3
             ue(i,j)=xidepp((j-1)*3+i)
 250      continue
-260  end do
+260  continue
 !
-    lag = nint(para(6))
 !
 ! ON DEFINIT CMATLOC LOI MODIFIEE SHB20
 !
@@ -126,39 +117,12 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
     xmu = 0.5d0*para(1)/ (1.d0+para(2))
     cmatlo(1,1) = lambda + 2.d0*xmu
     cmatlo(2,2) = lambda + 2.d0*xmu
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB6 PLEXUS
-        cmatlo(3,3) = para(1)
-    endif
-!
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        cmatlo(3,3) = 0.d0
-    endif
-!
+    cmatlo(3,3) = para(1)
     cmatlo(1,2) = lambda
     cmatlo(2,1) = lambda
     cmatlo(4,4) = xmu
     cmatlo(5,5) = xmu
     cmatlo(6,6) = xmu
-!
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xnu = para(2)
-        xcooef = para(1)/((1.d0+xnu)*(1.d0-2.d0*xnu))
-        cmatlo(1,1) = (1.d0-xnu)*xcooef
-        cmatlo(2,2) = (1.d0-xnu)*xcooef
-        cmatlo(3,3) = (1.d0-xnu)*xcooef
-        cmatlo(1,2) = xnu*xcooef
-        cmatlo(2,1) = xnu*xcooef
-        cmatlo(1,3) = xnu*xcooef
-        cmatlo(3,1) = xnu*xcooef
-        cmatlo(2,3) = xnu*xcooef
-        cmatlo(3,2) = xnu*xcooef
-        cmatlo(4,4) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(5,5) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(6,6) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-    endif
 !
 ! CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
 !      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
@@ -194,14 +158,8 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
         do 280 i = 1, 6
             deps(i)=0.d0
 280      continue
-        if (lag .eq. 1) then
-! ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
-            call dsdx3d(2, b, ue, deps, dusdx,&
-                        20)
-        else
-            call dsdx3d(1, b, ue, deps, dusdx,&
-                        20)
-        endif
+        call dsdx3d(1, b, ue, deps, dusdx,&
+                    20)
 !
 ! SORTIE DE DUSDX DANS PROPEL(1 A 9 * 5 PT DE GAUSS)
 ! POUR UTILISATION ULTERIEURE DANS Q8PKCN_SHB8
@@ -254,5 +212,5 @@ subroutine sh2sig(xetemp, para, xidepp, dusx, sigma)
 ! ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
             sigma((ip-1)*6+i)=sigloc(i)
 330      continue
-340  end do
+340  continue
 end subroutine

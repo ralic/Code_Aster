@@ -1,4 +1,4 @@
-subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
+subroutine sh6for(xetemp, sigma, xivect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,18 +26,15 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
 #include "asterfort/rlosh6.h"
 #include "asterfort/s6calb.h"
 #include "asterfort/sh6ksi.h"
-    integer :: lag
-    real(kind=8) :: para(*)
     real(kind=8) :: xivect(*), xetemp(*)
-    real(kind=8) :: xe(18), xidepm(*), sigma(*), xe1(3, 6), xe2(3, 6)
+    real(kind=8) :: xe(18), sigma(*), xe1(3, 6), xe2(3, 6)
     real(kind=8) :: xcoq(3, 3), bksip(3, 6, 5)
     real(kind=8) :: xcent(3), ppp(3, 3), pppt(3, 3)
     real(kind=8) :: xl(3, 3), xxx(3), yyy(3), xeloc(18)
-    real(kind=8) :: tmpke(18, 18), tmpke2(18, 18)
     real(kind=8) :: xxg5(5), pxg5(5), ftemp(18), bloc(6, 18), blocal(3, 6)
     real(kind=8) :: sigloc(6), sitmp2(6, 6), xmodif(18)
-    real(kind=8) :: f(3, 6), fq(18), floc(3, 6), fglob(3, 6)
-    integer :: i, ip, j, k, kk
+    real(kind=8) :: f(3, 6), floc(3, 6), fglob(3, 6)
+    integer :: i, ip, j, k
     real(kind=8) :: ajac, poids, rbid, zeta, zlamb
 !-----------------------------------------------------------------------
     data xmodif/1.d0,0.d0,0.d0,&
@@ -70,27 +67,26 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 10 i = 1, 18
         xe(i) = xetemp(i)
-10  end do
+10  continue
 !
-    lag = nint(para(6))
     call r8inir(36, 0.d0, sitmp2, 1)
     do 30 j = 1, 6
         do 20 i = 1, 3
             f(i,j) = 0.d0
 20      continue
-30  end do
-!C
-!C CALCUL DE BKSIP(3,15,IP) DANS REPERE DE REFERENCE
-!C      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
-!C      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
-!C      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
-!C
+30  continue
+!
+! CALCUL DE BKSIP(3,15,IP) DANS REPERE DE REFERENCE
+!      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
+!      BKSIP(2,*,IP) = VECTEUR BY AU POINT GAUSS IP
+!      BKSIP(3,*,IP) = VECTEUR BZ AU POINT GAUSS IP
+!
     call sh6ksi(5, xxg5, bksip)
 !
     do 170 ip = 1, 5
-!C
-!C RECHERCHE DE SIGMA DU POINT DE GAUSS GLOBAL
-!C
+!
+! RECHERCHE DE SIGMA DU POINT DE GAUSS GLOBAL
+!
         do 40 i = 1, 6
             sigloc(i)=sigma((ip-1)*6+i)
 40      continue
@@ -103,9 +99,9 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
 60      continue
         call rlosh6(xcoq, xcent, ppp, xl, xxx,&
                     yyy, rbid)
-!C
-!C PASSAGE DES CONTRAINTES AU REPERE GLOBAL
-!C
+!
+! PASSAGE DES CONTRAINTES AU REPERE GLOBAL
+!
         do 80 i = 1, 3
             do 70 j = 1, 3
                 pppt(j,i) = ppp(i,j)
@@ -133,9 +129,9 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
 !  dans le repère local et en tenant
 ! compte également des modifications sur les termes croisés ZY,ZX :
         call assebg(bloc, blocal, xmodif)
-!C
-!C CALCUL DE B.SIGMA EN GLOBAL
-!C
+!
+! CALCUL DE B.SIGMA EN GLOBAL
+!
         poids = 0.5d0*pxg5(ip)*ajac
         call r8inir(18, 0.d0, ftemp, 1)
         do 140 j = 1, 18
@@ -159,45 +155,9 @@ subroutine sh6for(xetemp, para, xidepm, sigma, xivect)
             f(3,k) = f(3,k) + fglob(3,k)
 160      continue
 170  continue
-!C
-!C SI LAGRANGIEN TOTAL: AJOUT DE FQ A F
-!C
-    if (lag .eq. 1) then
-        call r8inir(324, 0.d0, tmpke, 1)
-        do 490 kk = 1, 3
-            do 480 i = 1, 6
-                do 470 j = 1, 6
-                    tmpke(i+(kk-1)*6,j+(kk-1)*6) = sitmp2(i,j)
-470              continue
-480          continue
-490      continue
-        call r8inir(324, 0.d0, tmpke2, 1)
-        do 510 j = 1, 6
-            do 500 i = 1, 18
-                tmpke2(i,(j-1)*3+1)=tmpke(i,j)
-                tmpke2(i,(j-1)*3+2)=tmpke(i,j+6)
-                tmpke2(i,(j-1)*3+3)=tmpke(i,j+12)
-500          continue
-510      continue
-        call r8inir(324, 0.d0, tmpke, 1)
-        do 530 i = 1, 6
-            do 520 j = 1, 18
-                tmpke((i-1)*3+1,j)=tmpke2(i,j)
-                tmpke((i-1)*3+2,j)=tmpke2(i+6,j)
-                tmpke((i-1)*3+3,j)=tmpke2(i+12,j)
-520          continue
-530      continue
-        call mulmat(18, 18, 1, tmpke, xidepm,&
-                    fq)
-        do 540 k = 1, 6
-            f(1,k) = f(1,k) + fq((k-1)*3+1)
-            f(2,k) = f(2,k) + fq((k-1)*3+2)
-            f(3,k) = f(3,k) + fq((k-1)*3+3)
-540      continue
-    endif
-!C
-!C ATTENTION A L'ORDRE DE XIVECT
-!C
+!
+! ATTENTION A L'ORDRE DE XIVECT
+!
     do 560 i = 1, 3
         do 550 j = 1, 6
             xivect((j-1)*3+i) = f(i,j)

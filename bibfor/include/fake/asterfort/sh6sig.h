@@ -18,7 +18,7 @@
 interface
     subroutine sh6sig(xetemp, para, xidepp, dusx, sigma)
         real(kind=8) :: xetemp(*)
-        real(kind=8) :: para(11)
+        real(kind=8) :: para(2)
         real(kind=8) :: xidepp(*)
         real(kind=8) :: dusx(*)
         real(kind=8) :: sigma(*)

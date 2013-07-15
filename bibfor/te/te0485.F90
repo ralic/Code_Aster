@@ -41,16 +41,16 @@ subroutine te0485(option, nomte)
 #include "asterfort/sh6sig.h"
 #include "asterfort/sh8sig.h"
     integer :: i, icont, idepl, idfde, igeom, imate, ipoids
-    integer :: iret, ivf, j, jgano, lag, nbres, nbv
+    integer :: iret, ivf, j, jgano, nbres, nbv
     integer :: ndim, nno, nnos, npg
-    real(kind=8) :: tempm, ygot
+    real(kind=8) :: tempm
 !-----------------------------------------------------------------------
     parameter (nbres=2)
     character(len=4) :: fami
     integer :: icodre(nbres), kpg, spt
     character(len=8) :: nomres(nbres), famil, poum
     character(len=16) :: nomte, option, nomshb
-    real(kind=8) :: sigma(120), para(11)
+    real(kind=8) :: sigma(120), para(2)
     real(kind=8) :: fstab(12)
     real(kind=8) :: valres(nbres), dusx(180)
     integer :: nbsig
@@ -62,9 +62,9 @@ subroutine te0485(option, nomte)
 ! --- INITIALISATIONS :
     call idsshb(ndim, nno, npg, nomshb)
     nbsig = 6
-    do 10 i = 1, 11
+    do 10 i = 1, 2
         para(i) = 0.d0
-10  end do
+10  continue
     famil='FPG1'
     kpg=1
     spt=1
@@ -88,18 +88,8 @@ subroutine te0485(option, nomte)
         e = valres(1)
         nu = valres(2)
 ! ----  PARAMETRES MATERIAUX
-        ygot = e
-! ----  PARAMETRES MATERIAUX POUR LE CALCUL DE LA
-! ----  MATRICE TANGENTE PLASTIQUE
-!       LAG=0 LAGRANGIEN REACTUALISE (EPS=EPSLIN)
-!       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
-        lag = 0
         para(1) = e
         para(2) = nu
-        para(3) = ygot
-        para(4) = 0
-        para(5) = 1
-        para(6) = lag
 !
     endif
 !
@@ -108,9 +98,7 @@ subroutine te0485(option, nomte)
 !  ===========================================
     if (option .eq. 'SIEF_ELGA') then
         if (nomshb .eq. 'SHB8') then
-            do 60 i = 1, nbsig*npg
-                sigma(i) = 0.d0
-60          continue
+            call r8inir(nbsig*npg, 0.d0, sigma, 1)
 !        SIGMA(1) = WORK(150)
 !        RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !        DEPL Dans ZR(IDEPL)
@@ -130,9 +118,7 @@ subroutine te0485(option, nomte)
 69          continue
 !
         else if (nomshb.eq.'SHB6') then
-            do 70 i = 1, nbsig*npg
-                sigma(i) = 0.d0
-70          continue
+            call r8inir(nbsig*npg, 0.d0, sigma, 1)
 !        RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !        DEPL Dans ZR(IDEPL)
             call jevech('PDEPLAR', 'L', idepl)
@@ -147,9 +133,7 @@ subroutine te0485(option, nomte)
 79          continue
 !
         else if (nomshb.eq.'SHB15') then
-            do 80 i = 1, nbsig*npg
-                sigma(i) = 0.d0
-80          continue
+            call r8inir(nbsig*npg, 0.d0, sigma, 1)
 !        RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !        DEPL Dans ZR(IDEPL)
             call jevech('PDEPLAR', 'L', idepl)
@@ -165,9 +149,7 @@ subroutine te0485(option, nomte)
 89          continue
 !
         else if (nomshb.eq.'SHB20') then
-            do 91 i = 1, nbsig*npg
-                sigma(i) = 0.d0
-91          continue
+            call r8inir(nbsig*npg, 0.d0, sigma, 1)
 !        RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !        DEPL Dans ZR(IDEPL)
             call jevech('PDEPLAR', 'L', idepl)

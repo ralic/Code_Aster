@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine sh1rig(xetemp, para, re)
+    subroutine sh1rig(xetemp, para, dsde, option, re)
         real(kind=8) :: xetemp(*)
-        real(kind=8) :: para(11)
+        real(kind=8) :: para(2)
+        real(kind=8) :: dsde(20,6,6)
         real(kind=8) :: re(45, 45)
+        character(len=16) :: option
     end subroutine sh1rig
 end interface

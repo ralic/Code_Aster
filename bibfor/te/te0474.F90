@@ -29,6 +29,7 @@ subroutine te0474(option, nomte)
 !
 #include "asterfort/elref4.h"
 #include "asterfort/idsshb.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/jevech.h"
 #include "asterfort/sh1mek.h"
 #include "asterfort/sh2mek.h"
@@ -62,11 +63,7 @@ subroutine te0474(option, nomte)
 !        RECUPERATION DES CONTRAINTES DANS ZR(ICONT)
         call jevech('PCONTRR', 'L', icont)
         if (nomshb .eq. 'SHB8') then
-            do 20 i = 1, 24
-                do 10 j = 1, 24
-                    re(i,j) = 0.d0
-10              continue
-20          continue
+            call r8inir(24*24,0.D0,re,1)
             do 50 i = 1, 5
                 do 40 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)
@@ -82,11 +79,7 @@ subroutine te0474(option, nomte)
 60              continue
 70          continue
         else if (nomshb.eq.'SHB6') then
-            do 90 i = 1, 18
-                do 80 j = 1, 18
-                    re6(i,j) = 0.d0
-80              continue
-90          continue
+            call r8inir(18*18,0.D0,re6,1)
             do 110 i = 1, 5
                 do 100 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)
@@ -104,11 +97,7 @@ subroutine te0474(option, nomte)
 130          continue
 !
         else if (nomshb.eq.'SHB15') then
-            do 150 i = 1, 45
-                do 140 j = 1, 45
-                    re15(i,j) = 0.d0
-140              continue
-150          continue
+            call r8inir(45*45,0.D0,re15,1)
             do 170 i = 1, 15
                 do 160 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)
@@ -126,11 +115,7 @@ subroutine te0474(option, nomte)
 190          continue
 !
         else if (nomshb.eq.'SHB20') then
-            do 210 i = 1, 60
-                do 200 j = 1, 60
-                    re20(i,j) = 0.d0
-200              continue
-210          continue
+            call r8inir(60*60,0.D0,re20,1)
             do 230 i = 1, 20
                 do 220 j = 1, 6
                     sigma(6*(i-1)+j)=zr(icont+18*(i-1)+j-1)

@@ -26,7 +26,6 @@ subroutine sh8eps(xetemp, xidepp, deploc, propel)
 #include "asterfort/rloshb.h"
 #include "asterfort/shbksi.h"
 #include "asterfort/shcalb.h"
-    integer :: lag
     real(kind=8) :: xe(24), xidepp(*)
     real(kind=8) :: xxg5(5), xcoq(3, 4), bksip(3, 8, 5), b(3, 8)
     real(kind=8) :: xcent(3), ppp(3, 3)
@@ -56,7 +55,7 @@ subroutine sh8eps(xetemp, xidepp, deploc, propel)
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 10 i = 1, 24
         xe(i) = xetemp(i)
-10  end do
+10  continue
 !
 ! UE: INCREMENT DE DEPLACEMENT NODAL, REPERE GLOBAL
 !
@@ -65,7 +64,7 @@ subroutine sh8eps(xetemp, xidepp, deploc, propel)
         do 20 i = 1, 3
             ue(i,j) = xidepp((j-1)*3+i)
 20      continue
-30  end do
+30  continue
 !
 ! CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
 !      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
@@ -101,15 +100,8 @@ subroutine sh8eps(xetemp, xidepp, deploc, propel)
         do 60 i = 1, 6
             deps(i) = 0.d0
 60      continue
-        lag = 0
-        if (lag .eq. 1) then
-! ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
-            call dsdx3d(2, b, ue, deps, dusx,&
-                        8)
-        else
-            call dsdx3d(1, b, ue, deps, dusx,&
-                        8)
-        endif
+        call dsdx3d(1, b, ue, deps, dusx,&
+                    8)
         do 80 i = 1, 3
             do 70 j = 1, 3
                 pppt(j,i) = ppp(i,j)
@@ -154,6 +146,6 @@ subroutine sh8eps(xetemp, xidepp, deploc, propel)
 !
             deploc((ip-1)*6+i) = depslo(i)
 110      continue
-120  end do
+120  continue
 !
 end subroutine

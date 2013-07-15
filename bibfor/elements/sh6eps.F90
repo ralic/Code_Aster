@@ -26,7 +26,6 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
 #include "asterfort/rlosh6.h"
 #include "asterfort/s6calb.h"
 #include "asterfort/sh6ksi.h"
-    integer :: lag
     real(kind=8) :: xe(18), xidepp(*)
     real(kind=8) :: xxg5(5), xcoq(3, 3), bksip(3, 6, 5), b(3, 6)
     real(kind=8) :: xcent(3), ppp(3, 3)
@@ -77,12 +76,12 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 10 i = 1, 18
         xe(i) = xetemp(i)
-10  end do
+10  continue
     do 360 j = 1, 6
         do 350 i = 1, 3
             ue(i,j) = xidepp((j-1)*3+i)
 350      continue
-360  end do
+360  continue
 !
 ! CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
 !      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
@@ -133,14 +132,7 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
         call mulmat(3, 3, 6, pppt, ue,&
                     ueloc)
 !
-        lag = 0
-!
-        if (lag .eq. 1) then
-! ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
-            call depsh6(2, bloc, ueloc, deps, dusx)
-        else
-            call depsh6(1, bloc, ueloc, deps, dusx)
-        endif
+        call depsh6(1, bloc, ueloc, deps, dusx)
 !
         do 420 i = 1, 9
             dusdx(i+ (ip-1)*9) = dusx(i)
@@ -152,6 +144,6 @@ subroutine sh6eps(xetemp, xidepp, deploc, dusdx)
 ! ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
             deploc((ip-1)*6+i) = deps(i)
 440      continue
-450  end do
+450  continue
 !
 end subroutine

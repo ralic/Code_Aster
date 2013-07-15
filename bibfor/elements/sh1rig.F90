@@ -1,4 +1,4 @@
-subroutine sh1rig(xetemp, para, re)
+subroutine sh1rig(xetemp, para, dsde, option, re)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,9 @@ subroutine sh1rig(xetemp, para, re)
 #include "asterfort/s1calb.h"
 #include "asterfort/sh1ksi.h"
 #include "asterfort/tran63.h"
-    integer :: p, q, irdc
-    real(kind=8) :: para(11)
+    character(len=16) :: option
+    integer :: p, q
+    real(kind=8) :: para(2)
     real(kind=8) :: xe(45), re(45, 45), lambda
     real(kind=8) :: xcoq(3, 3), bksip(3, 15, 15), b(3, 15)
     real(kind=8) :: xcent(3), ppp(3, 3), ppt(3, 3)
@@ -38,29 +39,30 @@ subroutine sh1rig(xetemp, para, re)
     real(kind=8) :: bgl(6, 45), bglt(45, 6), em(6, 6), em3333(3, 3, 3, 3)
     real(kind=8) :: em2(3, 3, 3, 3), xxg5(15), xyg5(15), xzg5(15), pxg5(15)
     real(kind=8) :: xetemp(*)
+    real(kind=8) :: dsde(20,6,6)
 !
 !
 !
-!CCCCCCCCCCCCC ENTREES CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!          ICLE=2    ON CALCULE LA MATRICE DE RAIDEUR
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!ccccccccccccc entrees ccccccccccccccccccccccccccccccccccccccccccccccc
+!          icle=2    on calcule la matrice de raideur
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 !
-! INITIALISATIONS
+! initialisations
 !
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-! INFOS:
-! XE EST RANGE COMME CA: (XNOEUD1 YNOEUD1 ZNOEUD1, XNOEUD2 YNOEUD2
-!... ZNOEUD2)
-! DANS SHB6_TEST_NUM: ATTENTION A LA NUMEROTATION DES NOEUDS
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-! ON DEFINIT LES POINTS GAUSS ET LES POIDS
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+! infos:
+! xe est range comme ca: (xnoeud1 ynoeud1 znoeud1, xnoeud2 ynoeud2
+!... znoeud2)
+! dans shb6_test_num: attention a la numerotation des noeuds
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+! on definit les points gauss et les poids
 !
 !
 !-----------------------------------------------------------------------
     integer :: i, ip, j, k, l, m, n
 !
     real(kind=8) :: ajac, coela1, coela2, elt, rbid, tt1, tt2
-    real(kind=8) :: xcooef, xmu, xnu, xxl1, xxl2, zeta, zlamb
+    real(kind=8) :: xmu, xnu, xxl1, xxl2, zeta, zlamb
 !
 !-----------------------------------------------------------------------
     do 10 ip = 1, 5
@@ -70,7 +72,7 @@ subroutine sh1rig(xetemp, para, re)
         xyg5(ip+5) = 0.d0
         xzg5(ip+10) = 0.d0
         xyg5(ip+10) = 0.5d0
-10  end do
+10  continue
 !
     do 20 ip = 1, 3
         xxg5(5*(ip-1)+1) = -0.906179845938664d0
@@ -84,85 +86,60 @@ subroutine sh1rig(xetemp, para, re)
         pxg5(5*(ip-1)+3) = 0.568888888888889d0/6.d0
         pxg5(5*(ip-1)+4) = 0.478628670499366d0/6.d0
         pxg5(5*(ip-1)+5) = 0.236926885056189d0/6.d0
-20  end do
-!      WRITE(6,*),'SHB15'
+20  continue
 !
-!
-!     ON FAIT UNE COPIE DE XETEMP DANS XE
+!     on fait une copie de xetemp dans xe
     do 30 i = 1, 45
         xe(i) = xetemp(i)
-30  end do
+30  continue
 !
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB6 MEME TYPE QUE SHB8 DANS PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-!
-    irdc = nint(para(5))
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!                                                                  C
-! ON CALCULE LA RAIDEUR : SORTIE DANS RE                           C
-!                                                                  C
-! SI IETAN = 1 , ALORS ON CALCULE AUSSI                            C
-!                LA MATRICE TANGENTE PLASTIQUE                     C
-!                                                                  C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!
-! INTIALISATION LONGUEUR DES COTES
-! CALCUL DES COEFF D ELANCEMENT A METTRE DANS LA MATRICE DE CPT
+! intialisation longueur des cotes
+! calcul des coeff d elancement a mettre dans la matrice de cpt
 !
     xxl1 = 0.d0
     xxl2 = 0.d0
     tt1 = 0.d0
     tt2 = 0.d0
 !
-! STABILISATION ADAPTATIVE EN FONCTION DE LA DISTORTION DE L'ELEMENT
+! stabilisation adaptative en fonction de la distortion de l'element
 !
     do 40 i = 1, 3
-! DISTANCE ENTRE 1 ET 4 (EPAISSEUR)
+! distance entre 1 et 4 (epaisseur)
         tt1 = tt1+(xe(i+9)-xe(i))**2
-! DISTANCE ENTRE 2 ET 5 (EPAISSEUR)
+! distance entre 2 et 5 (epaisseur)
         tt2 = tt2+(xe(i+12)-xe(i+3))**2
-! DISTANCE ENTRE 1 ET 2
+! distance entre 1 et 2
         xxl1 = xxl1+(xe(i+3)-xe(i))**2
-! DISTANCE ENTRE 2 ET 3
+! distance entre 2 et 3
         xxl2 = xxl2+(xe(i+6)-xe(i+3))**2
-40  end do
+40  continue
     xxl1 = sqrt(xxl1)
     xxl2 = sqrt(xxl2)
     tt1 = 0.5d0*(sqrt(tt1)+sqrt(tt2))
     coela1 = 5.d0/6.d0
     coela2 = 5.d0/6.d0
-! ELANCEMENT DANS DIRECTION 2
+! elancement dans direction 2
 !        WRITE(6,*) 'XXL1',XXL1
     elt = 6.d0*tt1/xxl1
     if (coela1 .gt. elt) coela1=elt
-! ELANCEMENT DANS DIRECTION 1
+! elancement dans direction 1
     elt = 6.d0*tt1/xxl2
     if (coela2 .gt. elt) coela2=elt
-! POUR L'INSTANT, ON NE MET PAS EN SERVICE:
+! pour l'instant, on ne met pas en service:
     coela1 = 1.d0
     coela2 = 1.d0
 !
     call r8inir(2025, 0.d0, re, 1)
     call r8inir(36, 0.d0, cmatlo, 1)
 !
-! ON DEFINI CMATLO: MATRICE DE COMPORTEMENT
+! on defini cmatlo: matrice de comportement
 !
     xnu = para(2)
     lambda = para(1)*para(2)/(1.d0-para(2)*para(2))
     xmu = 0.5d0*para(1)/ (1.d0+para(2))
     cmatlo(1,1) = lambda + 2.d0*xmu
     cmatlo(2,2) = lambda + 2.d0*xmu
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB6 PLEXUS
-        cmatlo(3,3) = para(1)
-    endif
-!
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        cmatlo(3,3) = 0.d0
-    endif
+    cmatlo(3,3) = para(1)
 !
     cmatlo(1,2) = lambda
     cmatlo(2,1) = lambda
@@ -170,36 +147,30 @@ subroutine sh1rig(xetemp, para, re)
     cmatlo(5,5) = xmu
     cmatlo(6,6) = xmu
 !
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xnu = para(2)
-        xcooef = para(1)/((1.d0+xnu)*(1.d0-2.d0*xnu))
-        cmatlo(1,1) = (1.d0-xnu)*xcooef
-        cmatlo(2,2) = (1.d0-xnu)*xcooef
-        cmatlo(3,3) = (1.d0-xnu)*xcooef
-        cmatlo(1,2) = xnu*xcooef
-        cmatlo(2,1) = xnu*xcooef
-        cmatlo(1,3) = xnu*xcooef
-        cmatlo(3,1) = xnu*xcooef
-        cmatlo(2,3) = xnu*xcooef
-        cmatlo(3,2) = xnu*xcooef
-        cmatlo(4,4) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(5,5) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(6,6) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-    endif
-!C
-! CALCUL DE BKSIP(3,15,IP) DANS REPERE DE REFERENCE
+! calcul de bksip(3,15,ip) dans repere de reference
 !      BKSIP(1,*,IP) = VECTEUR Ni,ksi  AU POINT GAUSS IP
 !      BKSIP(2,*,IP) = VECTEUR Ni,eta  AU POINT GAUSS IP
 !      BKSIP(3,*,IP) = VECTEUR Ni,zeta AU POINT GAUSS IP
 !
     call sh1ksi(15, xxg5, xyg5, xzg5, bksip)
 !
-! DEBUT DE LA BOUCLE SUR LES 15 PTS GAUSS
+! debut de la boucle sur les 15 pts gauss
 !
     do 270 ip = 1, 15
+
+      if(option.ne.'RIGI_MECA') then
+        cmatlo(1,1) = dsde(ip,1,1)
+        cmatlo(2,1) = dsde(ip,2,1)
+        cmatlo(4,1) = dsde(ip,4,1)/2.D0
+        cmatlo(1,2) = dsde(ip,1,2)
+        cmatlo(2,2) = dsde(ip,2,2)
+        cmatlo(4,2) = dsde(ip,4,2)/2.D0
+        cmatlo(1,4) = dsde(ip,1,4)/2.D0
+        cmatlo(2,4) = dsde(ip,2,4)/2.D0
+        cmatlo(4,4) = dsde(ip,4,4)/2.D0
+      endif
 !
-! DEFINITION DES 3 POINTS  COQUES
+! definition des 3 points  coques
 !
         zeta = xxg5(ip)
         zlamb = 0.5d0*(1.d0-zeta)
@@ -209,17 +180,17 @@ subroutine sh1rig(xetemp, para, re)
 50          continue
 60      continue
 !
-! CALCUL DE PPP 3*3 PASSAGE DE GLOBAL A LOCAL,COQUE
-! XCENT : COORD GLOBAL DU CENTRE DE L'ELEMENT
+! calcul de ppp 3*3 passage de global a local,coque
+! xcent : coord global du centre de l'element
 !
         call rlosh6(xcoq, xcent, ppp, xl, xxx,&
                     yyy, rbid)
 !
-! CALCUL DE B EN GLOBAL
+! calcul de b en global
 !
-! ATTENTION A L'ORDRE DE EPSILON:
-!  FARID DANS SON PAPIER: 11 22 33 12 13 23
-!  FARID DANS PLEXUS:     11 22 33 12 23 13
+! attention a l'ordre de epsilon:
+!  farid dans son papier: 11 22 33 12 13 23
+!  farid dans plexus:     11 22 33 12 23 13
 !
         call s1calb(bksip(1, 1, ip), xe, b, ajac)
         call r8inir(270, 0.d0, bgl, 1)
@@ -235,7 +206,7 @@ subroutine sh1rig(xetemp, para, re)
 80      continue
 !
 !
-! IL NE RESTE PLUS QU'A FAIRE: BGLT * C * BGL
+! il ne reste plus qu'a faire: bglt * c * bgl
 !
         do 100 i = 1, 6
             do 90 j = 1, 6
@@ -243,10 +214,9 @@ subroutine sh1rig(xetemp, para, re)
 90          continue
 100      continue
 !
-! Passer EM du repère d'élément au repère global
+! passer em du repere d'element au repere global
 !
         call r8inir(81, 0.d0, em3333, 1)
-!      CALL R8INIR(81,0.d0,EM2,1)
         call tran63(em, em3333, 2)
         do 120 i = 1, 3
             do 110 j = 1, 3
@@ -288,7 +258,7 @@ subroutine sh1rig(xetemp, para, re)
         call mulmat(45, 6, 45, bglt, tmptab,&
                     tmpke2)
 !
-! ASSEMBLAGE: KE=KE + POIDS*JACOBIAN*TMPKE
+! assemblage: ke=ke + poids*jacobian*tmpke
 !
         do 220 j = 1, 15
             do 210 i = 1, 45

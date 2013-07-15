@@ -31,21 +31,19 @@ subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
 #include "asterfort/shbrot.h"
 #include "asterfort/shcalb.h"
 #include "asterfort/shvrot.h"
-    integer :: lag, irdc
-    real(kind=8) :: fstab(12), para(*)
+    real(kind=8) :: fstab(12), para(2)
     real(kind=8) :: xe(24), xidepm(*), sigma(*)
     real(kind=8) :: xxg5(5), pxg5(5), xcoq(3, 4), bksip(3, 8, 5), b(3, 8)
     real(kind=8) :: xcent(3), ppp(3, 3)
     real(kind=8) :: xl(3, 4), xxx(3), yyy(3), xivect(24)
-    real(kind=8) :: tmpke(24, 24), tmpke2(24, 24)
     real(kind=8) :: xxvb(3), hij(6)
     real(kind=8) :: gb(8, 4), gs(8, 4), xxgb(3, 4)
     real(kind=8) :: rr2(3, 3), lambda, xelocp(24)
     real(kind=8) :: udef(24), xxloc(24), xloc12(24), sigloc(6)
     real(kind=8) :: f(3, 8), sigmag(6), pqialf(3, 4)
     real(kind=8) :: qialfa(3, 4), fhg(3, 8), rr12(3, 3), rr1(3, 3), fhg24(24)
-    real(kind=8) :: sitmp1(8, 8), sitmp2(8, 8), poids
-    real(kind=8) :: fq(24), xetemp(*)
+    real(kind=8) :: sitmp2(8, 8), poids
+    real(kind=8) :: xetemp(*)
 !
 ! INITIALISATIONS
 !
@@ -57,8 +55,8 @@ subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
 !      IF (NOMSHB.EQ.'SHB8') THEN
 !
 !-----------------------------------------------------------------------
-    integer :: i, ia, ip, j, k, kk
-    real(kind=8) :: ajac, aux, rbid, uns3, uns8, vol, xcooef
+    integer :: i, ia, ip, j, k
+    real(kind=8) :: ajac, aux, rbid, uns3, uns8, vol
     real(kind=8) :: xmu, xnu, xyoung, zeta, zlamb
 !-----------------------------------------------------------------------
     data gb/1.d0,1.d0,-1.d0,-1.d0,-1.d0,-1.d0,1.d0,&
@@ -92,13 +90,6 @@ subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
     do 10 i = 1, 24
         xe(i) = xetemp(i)
 10  continue
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB8 TYPE PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-!**         IRDC = OUT(1)
-    irdc = nint(para(5))
-    lag = nint(para(6))
     call r8inir(64, 0.d0, sitmp2, 1)
     do 470 j = 1, 8
         do 460 i = 1, 3
@@ -139,31 +130,7 @@ subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
         call chrp3d(ppp, sigloc, sigmag, 1)
 !
         call shcalb(bksip(1, 1, ip), xe, b, ajac)
-!
-! CALCUL DE BQ.SIGMA SI LAGRANGIEN TOTAL
-!
-        if (lag .eq. 1) then
-            do 507 j = 1, 8
-                do 506 i = 1, 8
-                    sitmp1(i,j) = 0.d0
-506              continue
-507          continue
-!
-            do 509 j = 1, 8
-                do 508 i = 1, 8
-                    sitmp1(i,j) = sigmag(1)*b(1,i)*b(1,j) + sigmag(2)* b(2,i)*b(2,j) + sigmag(3)*&
-                                  &b(3,i)*b(3,j) + sigmag( 4)*(b(1,i)*b(2,j)+b(2,i)*b(1,j)) + sig&
-                                  &mag(6)* (b( 1,i)*b(3,j)+b(3,i)*b(1,j)) + sigmag(5)* (b(3,i)*b(&
-                                  & 2,j)+b(2,i)*b(3,j))
-508              continue
-509          continue
-!***            CALL SHASKS(SIGMAG,B,SITMP1)
-            do 520 j = 1, 8
-                do 510 i = 1, 8
-                    sitmp2(i,j) = sitmp2(i,j) + 4.d0*ajac*pxg5(ip)* sitmp1(i,j)
-510              continue
-520          continue
-        endif
+
 !
 ! CALCUL DE B.SIGMA EN GLOBAL
 !
@@ -174,45 +141,6 @@ subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
             f(3,k) = f(3,k) + poids* (b(1,k)*sigmag(6)+b(2,k)*sigmag( 5)+ b(3,k)*sigmag(3))
 530      continue
 540  continue
-!
-! SI LAGRANGIEN TOTAL: RAJOUT DE FQ A F
-!
-    if (lag .eq. 1) then
-        call r8inir(576, 0.d0, tmpke, 1)
-        do 570 kk = 1, 3
-            do 560 i = 1, 8
-                do 550 j = 1, 8
-                    tmpke(i+ (kk-1)*8,j+ (kk-1)*8) = sitmp2(i,j)
-550              continue
-560          continue
-570      continue
-        call r8inir(576, 0.d0, tmpke2, 1)
-        do 590 j = 1, 8
-            do 580 i = 1, 24
-                tmpke2(i, (j-1)*3+1) = tmpke(i,j)
-                tmpke2(i, (j-1)*3+2) = tmpke(i,j+8)
-                tmpke2(i, (j-1)*3+3) = tmpke(i,j+16)
-580          continue
-590      continue
-        call r8inir(576, 0.d0, tmpke, 1)
-        do 610 i = 1, 8
-            do 600 j = 1, 24
-                tmpke((i-1)*3+1,j) = tmpke2(i,j)
-                tmpke((i-1)*3+2,j) = tmpke2(i+8,j)
-                tmpke((i-1)*3+3,j) = tmpke2(i+16,j)
-600          continue
-610      continue
-!          DO 611 J = 1,24
-!        WRITE(6,*) 'XIDEPM =',I,XIDEPM(I)
-!  611     CONTINUE
-        call mulmat(24, 24, 1, tmpke, xidepm,&
-                    fq)
-        do 620 k = 1, 8
-            f(1,k) = f(1,k) + fq((k-1)*3+1)
-            f(2,k) = f(2,k) + fq((k-1)*3+2)
-            f(3,k) = f(3,k) + fq((k-1)*3+3)
-620      continue
-    endif
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !
 ! ON CALCULE LA STABILISATION POUR LE CALCUL DE B.SIGMA
@@ -322,53 +250,19 @@ subroutine sh8for(xetemp, para, xidepm, sigma, fstab,&
 770      continue
 780  continue
 !
-    if (irdc .eq. 1) then
-        qialfa(1,1) = qialfa(1,1)
-        qialfa(2,2) = qialfa(2,2)
-        qialfa(3,3) = qialfa(3,3)
-        qialfa(1,2) = qialfa(1,2)
-        qialfa(2,3) = qialfa(2,3) + ((lambda+2.d0*xmu)*hij(2))*pqialf( 2,3)
-        qialfa(1,3) = qialfa(1,3) + ((lambda+2.d0*xmu)*hij(1))*pqialf( 1,3)
-        qialfa(2,1) = qialfa(2,1)
-        qialfa(3,2) = qialfa(3,2)
-        qialfa(3,1) = qialfa(3,1)
-        qialfa(1,4) = qialfa(1,4) + uns3* ((lambda+2*xmu)*hij(1))* pqialf(1,4)
-        qialfa(2,4) = qialfa(2,4) + uns3* ((lambda+2*xmu)*hij(2))* pqialf(2,4)
-! COMPORTEMENT SHB8 PLEXUS
-        qialfa(3,4) = qialfa(3,4) + xmu*hij(1)*uns3*pqialf(3,4)
-    endif
+    qialfa(1,1) = qialfa(1,1)
+    qialfa(2,2) = qialfa(2,2)
+    qialfa(3,3) = qialfa(3,3)
+    qialfa(1,2) = qialfa(1,2)
+    qialfa(2,3) = qialfa(2,3) + ((lambda+2.d0*xmu)*hij(2))*pqialf( 2,3)
+    qialfa(1,3) = qialfa(1,3) + ((lambda+2.d0*xmu)*hij(1))*pqialf( 1,3)
+    qialfa(2,1) = qialfa(2,1)
+    qialfa(3,2) = qialfa(3,2)
+    qialfa(3,1) = qialfa(3,1)
+    qialfa(1,4) = qialfa(1,4) + uns3* ((lambda+2*xmu)*hij(1))* pqialf(1,4)
+    qialfa(2,4) = qialfa(2,4) + uns3* ((lambda+2*xmu)*hij(2))* pqialf(2,4)
+    qialfa(3,4) = qialfa(3,4) + xmu*hij(1)*uns3*pqialf(3,4)
 !
-    if (irdc .eq. 2) then
-        qialfa(1,1) = qialfa(1,1)
-        qialfa(2,2) = qialfa(2,2)
-        qialfa(3,3) = qialfa(3,3)
-        qialfa(1,2) = qialfa(1,2)
-        qialfa(2,3) = qialfa(2,3) + ((lambda+2.d0*xmu)*hij(2))*pqialf( 2,3)
-        qialfa(1,3) = qialfa(1,3) + ((lambda+2.d0*xmu)*hij(1))*pqialf( 1,3)
-        qialfa(2,1) = qialfa(2,1)
-        qialfa(3,2) = qialfa(3,2)
-        qialfa(3,1) = qialfa(3,1)
-        qialfa(1,4) = qialfa(1,4) + uns3* ((lambda+2*xmu)*hij(1))* pqialf(1,4)
-        qialfa(2,4) = qialfa(2,4) + uns3* ((lambda+2*xmu)*hij(2))* pqialf(2,4)
-! COMPORTEMENT C.P.
-        qialfa(3,4) = qialfa(3,4)
-    endif
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xcooef = xyoung/ ((1+xnu)* (1-2*xnu))
-        qialfa(1,1) = qialfa(1,1)
-        qialfa(2,2) = qialfa(2,2)
-        qialfa(3,3) = qialfa(3,3)
-        qialfa(1,2) = qialfa(1,2)
-        qialfa(2,3) = qialfa(2,3) + ((xcooef* (1-xnu))*hij(2))*pqialf( 2,3)
-        qialfa(1,3) = qialfa(1,3) + ((xcooef* (1-xnu))*hij(1))*pqialf( 1,3)
-        qialfa(2,1) = qialfa(2,1)
-        qialfa(3,2) = qialfa(3,2)
-        qialfa(3,1) = qialfa(3,1)
-        qialfa(1,4) = qialfa(1,4) + uns3* ((xcooef* (1-xnu))*hij(1))* pqialf(1,4)
-        qialfa(2,4) = qialfa(2,4) + uns3* ((xcooef* (1-xnu))*hij(2))* pqialf(2,4)
-        qialfa(3,4) = qialfa(3,4) + xcooef* (1-xnu)*hij(3)*uns3* pqialf(3,4)
-    endif
 ! SAUVEGARDE DES FORCES DE STABILISATION
 !
     do 800 i = 1, 4

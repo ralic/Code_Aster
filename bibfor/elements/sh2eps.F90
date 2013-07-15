@@ -26,7 +26,6 @@ subroutine sh2eps(xetemp, xidepp, deploc, propel)
 #include "asterfort/rloshb.h"
 #include "asterfort/s2calb.h"
 #include "asterfort/sh2ksi.h"
-    integer :: lag
     real(kind=8) :: xe(60), xidepp(*)
     real(kind=8) :: xcoq(3, 4), bksip(3, 20, 20), b(3, 20)
     real(kind=8) :: xcent(3), ppp(3, 3), pppt(3, 3)
@@ -74,11 +73,11 @@ subroutine sh2eps(xetemp, xidepp, deploc, propel)
         xzg5(iz+5) = xzg5(iz)
         xzg5(iz+10) = xzg5(iz)
         xzg5(iz+15) = xzg5(iz)
-20  end do
+20  continue
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 30 i = 1, 60
         xe(i) = xetemp(i)
-30  end do
+30  continue
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                                                                  C
@@ -95,7 +94,7 @@ subroutine sh2eps(xetemp, xidepp, deploc, propel)
         do 240 i = 1, 3
             ue(i,j)=xidepp((j-1)*3+i)
 240      continue
-250  end do
+250  continue
 !
 !
 ! CALCUL DE BKSIP(3,20,IP) DANS REPERE DE REFERENCE
@@ -132,15 +131,8 @@ subroutine sh2eps(xetemp, xidepp, deploc, propel)
         do 280 i = 1, 6
             deps(i)=0.d0
 280      continue
-        lag = 0
-        if (lag .eq. 1) then
-! ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
-            call dsdx3d(2, b, ue, deps, dusx,&
-                        20)
-        else
-            call dsdx3d(1, b, ue, deps, dusx,&
-                        20)
-        endif
+        call dsdx3d(1, b, ue, deps, dusx,&
+                    20)
 !
 ! SORTIE DE DUSDX DANS PROPEL(1 A 9 * 5 PT DE GAUSS)
 ! POUR UTILISATION ULTERIEURE DANS Q8PKCN_SHB8
@@ -189,5 +181,5 @@ subroutine sh2eps(xetemp, xidepp, deploc, propel)
 !
             deploc((ip-1)*6+i)=depslo(i)
 330      continue
-340  end do
+340  continue
 end subroutine

@@ -26,7 +26,6 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
 #include "asterfort/rlosh6.h"
 #include "asterfort/s1calb.h"
 #include "asterfort/sh1ksi.h"
-    integer :: lag
     real(kind=8) :: xe(45), xidepp(*)
     real(kind=8) :: xxg5(15), xyg5(15), xzg5(15)
     real(kind=8) :: xcoq(3, 3), bksip(3, 15, 15), b(3, 15)
@@ -62,7 +61,7 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
         xyg5(ip+5) = 0.d0
         xzg5(ip+10) = 0.d0
         xyg5(ip+10) = 0.5d0
-10  end do
+10  continue
 !
     do 20 ip = 1, 3
         xxg5(5*(ip-1)+1) = -0.906179845938664d0
@@ -70,12 +69,12 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
         xxg5(5*(ip-1)+3) = 0.d0
         xxg5(5*(ip-1)+4) = 0.538469310105683d0
         xxg5(5*(ip-1)+5) = 0.906179845938664d0
-20  end do
+20  continue
 !
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 30 i = 1, 45
         xe(i) = xetemp(i)
-30  end do
+30  continue
 !
 !C
 !C UE: INCREMENT DE DEPLACEMENT NODAL, REPERE GLOBAL
@@ -85,7 +84,7 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
         do 280 i = 1, 3
             ue(i,j)=xidepp((j-1)*3+i)
 280      continue
-290  end do
+290  continue
 !
 !
 !C CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
@@ -122,15 +121,8 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
         do 320 i = 1, 6
             deps(i)=0.d0
 320      continue
-        lag = 0
-        if (lag .eq. 1) then
-!C ON AJOUTE LA PARTIE NON-LINEAIRE DE EPS
-            call dsdx3d(2, b, ue, deps, dusx,&
-                        15)
-        else
-            call dsdx3d(1, b, ue, deps, dusx,&
-                        15)
-        endif
+        call dsdx3d(1, b, ue, deps, dusx,&
+                    15)
 !C
 !C SORTIE DE DUSDX DANS PROPEL(1 A 9 * 15 PT DE GAUSS)
 !C POUR UTILISATION ULTERIEURE DANS Q8PKCN_SHB8
@@ -178,5 +170,5 @@ subroutine sh1eps(xetemp, xidepp, deploc, propel)
 !C ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
             deploc((ip-1)*6+i)=depslo(i)
 370      continue
-380  end do
+380  continue
 end subroutine

@@ -49,8 +49,8 @@ subroutine te0477(option, nomte)
     integer :: i, icarcr, icompo, icontm, icontp, ideplm, ideplp
     integer :: idfde, igeom, imate, imatuu, ipg, ipoids, ivarim
     integer :: ivarip, ivectu, ivf, j, jcret, jgano, k
-    integer :: lag, nbres, nbv, ndim, nno, nnos, npg
-    real(kind=8) :: tempm, ygot
+    integer :: nbres, nbv, ndim, nno, nnos, npg
+    real(kind=8) :: tempm
 !-----------------------------------------------------------------------
     parameter (nbres=2)
     character(len=8) :: typmod(2)
@@ -64,18 +64,21 @@ subroutine te0477(option, nomte)
     real(kind=8) :: lc, g, angmas(3), instm, instp, dsidep(6, 6)
     real(kind=8) :: depslo(120), eps2d(6), deps2d(6), epsloc(120)
     integer :: iinstm, iinstp, iret, codret, jtab(7), lgpg
-    real(kind=8) :: nu, e, para(11), rbid
+    real(kind=8) :: nu, e, para(2), rbid
     real(kind=8) :: xidepp(60), re6(18, 18), re15(45, 45), re20(60, 60)
     real(kind=8) :: duddd(180)
+    real(kind=8) :: dsde(20,6,6)
     fami = 'RIGI'
     call elref4(' ', fami, ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 ! --- INITIALISATIONS :
 !     -----------------
     call idsshb(ndim, nno, npg, nomshb)
-    do 10 i = 1, 11
+    do 10 i = 1, 2
         para(i) = 0.d0
-10  end do
+10  continue
+    call r8inir(720,0.D0,dsde,1)
+
 !  ###############################################################
 !  -- ELASTOPLASTICITE
 !  ###############################################################
@@ -123,22 +126,8 @@ subroutine te0477(option, nomte)
                     nbv, nomres, valres, icodre, 1)
         e = valres(1)
         nu = valres(2)
-! ----   PARAMETRES MATERIAU
-        ygot = e
-! ----       MATRICE TANGENTE PLASTIQUE SI WORK(13)=1
-! ----       WORK(150) : TYPE DE LOI DE COMPORTEMENT
-! ----       1: SHB8PS PLEXUS
-! ----       2: CONTRAINTES PLANES
-! ----       3: 3D COMPLETE
-! ----       LAG=0 LAGRANGIEN REACTUALISE (EPS=EPSLIN)
-! ----       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
-        lag = 0
         para(1) = e
         para(2) = nu
-        para(3) = ygot
-        para(4) = 0
-        para(5) = 1
-        para(6) = lag
 !  =============================================
 !  -  ACTUALISATION : GEOM ORIG + DEPL DEBUT PAS
 !  =============================================
@@ -159,27 +148,22 @@ subroutine te0477(option, nomte)
 !  =============================================
 !  -  CALCUL DES CONTRAINTES
 !  =============================================
-        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+        if (option(1:9)  .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA'.or.  &
+            option(1:14) .eq. 'RIGI_MECA_TANG') then
+
 ! ----   PARAMETRES MATERIAU
             d(1) = e
             d(2) = nu
-            ygot = e
             para(1) = e
             para(2) = nu
-            para(3) = ygot
-            para(4) = 0
-            para(5) = 1
-            para(6) = lag
-            do 30 i = 1, 120
-                sigmm(i) = 0.d0
-                sigma(i) = 0.d0
-                epsloc(i) = 0.d0
-                depslo(i) = 0.d0
-30          continue
-            do 40 i = 1, 180
-                dusdx(i) = 0.d0
-                duddd(i) = 0.d0
-40          continue
+
+            call r8inir(120, 0.d0, sigmm, 1)
+            call r8inir(120, 0.d0, sigma, 1)
+            call r8inir(120, 0.d0, epsloc, 1)
+            call r8inir(120, 0.d0, depslo, 1)
+            call r8inir(180, 0.d0, dusdx, 1)
+            call r8inir(180, 0.d0, duddd, 1)
+
             do 60 i = 1, npg
                 do 50 j = 1, 6
                     sigmm(6*(i-1)+j)=zr(icontm+18*(i-1)+j-1)
@@ -239,33 +223,27 @@ subroutine te0477(option, nomte)
                 sigma(6*(ipg-1)+4) = simp(4)/sqrt(2.d0)
                 sigma(6*(ipg-1)+5) = sigm(5) +g*depslo(6*(ipg-1)+5)
                 sigma(6*(ipg-1)+6) = sigm(6) +g*depslo(6*(ipg-1)+6)
+             do 90 i=1,6
+                do 95 j=1,6
+                   dsde(ipg,i,j)=dsidep(i,j)
+95               continue
+90            continue
+
 80          continue
-            do 90 i = 1, 120
-                sigmp(i) = 0.d0
-90          continue
+
+            call r8inir(120, 0.d0, sigmp, 1)
             call shbpkc(sigma, sigmp, dusdx, npg)
         endif
 !  ===========================================
 !  -  MATRICE DE RIGIDITE TANGENTE
 !  ===========================================
         if (option(1:16) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
-            ygot = e
             para(1) = e
             para(2) = nu
-            para(3) = ygot
-            para(4) = 0
-            para(5) = 1
-            para(6) = lag
-            do 100 i = 1, 120
-                sigma(i)=0.d0
-100          continue
+            call r8inir(120, 0.d0, sigma, 1)
             if (nomshb .eq. 'SHB8') then
-                do 120 i = 1, 24
-                    do 110 j = 1, 24
-                        re(i,j) = 0.d0
-110                  continue
-120              continue
-                call sh8rig(zr(igeom), para, re)
+                call r8inir(24*24, 0.d0, re, 1)
+                call sh8rig(zr(igeom), para, dsde, option, re)
                 if (zk16(icompo+2) .eq. 'GROT_GDEP') then
 ! ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
                     if (option(1:16) .eq. 'RIGI_MECA_TANG') then
@@ -295,12 +273,8 @@ subroutine te0477(option, nomte)
 170              continue
 !
             else if (nomshb .eq. 'SHB6') then
-                do 190 i = 1, 18
-                    do 180 j = 1, 18
-                        re6(i,j) = 0.d0
-180                  continue
-190              continue
-                call sh6rig(zr(igeom), para, re6)
+                call r8inir(18*18, 0.d0, re6, 1)
+                call sh6rig(zr(igeom), para, dsde, option, re6)
                 if (zk16(icompo+2) .eq. 'GROT_GDEP') then
 ! ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
                     if (option(1:16) .eq. 'RIGI_MECA_TANG') then
@@ -325,12 +299,8 @@ subroutine te0477(option, nomte)
 230              continue
 !
             else if (nomshb.eq.'SHB15') then
-                do 250 i = 1, 45
-                    do 240 j = 1, 45
-                        re15(i,j) = 0.d0
-240                  continue
-250              continue
-                call sh1rig(zr(igeom), para, re15)
+                call r8inir(45*45, 0.d0, re15, 1)
+                call sh1rig(zr(igeom), para, dsde, option, re15)
                 if (zk16(icompo+2) .eq. 'GROT_GDEP') then
 ! ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
                     if (option(1:16) .eq. 'RIGI_MECA_TANG') then
@@ -355,12 +325,8 @@ subroutine te0477(option, nomte)
 290              continue
 !
             else if (nomshb.eq.'SHB20') then
-                do 310 i = 1, 60
-                    do 300 j = 1, 60
-                        re20(i,j) = 0.d0
-300                  continue
-310              continue
-                call sh2rig(zr(igeom), para, re20)
+                call r8inir(60*60, 0.d0, re20, 1)
+                call sh2rig(zr(igeom), para, dsde, option, re20)
                 if (zk16(icompo+2) .eq. 'GROT_GDEP') then
 ! ----      RIGIDITE ELASTIQUE + RIGIDITE GEOMETRIQUE
                     if (option(1:16) .eq. 'RIGI_MECA_TANG') then
@@ -398,19 +364,13 @@ subroutine te0477(option, nomte)
 360              continue
             endif
 ! ----   PARAMETRES MATERIAU
-            ygot = e
 !           ZR(IGEOM) : GEOMETRIE + DEPL DEBUT PAS + INCR DEPL
-!           WORK(1)=E  WORK(2)=NU  WORK(3)=LAG
 !           ZR(IDEPLP) : INCR DEPLACEMENT
 !                        (PAS UTILISE CAR LAGRANGIEN ACTUALISE)
 !           ZR(ICONTP) : CONTRAINTE DE CAUCHY FIN DE PAS
 !           ZR(IVARIM) (DE 2 A 14) : CONTRAINTES DE STABILISATION
             para(1) = e
             para(2) = nu
-            para(3) = ygot
-            para(4) = 0
-            para(5) = 1
-            para(6) = lag
             if (zk16(icompo+2) .eq. 'GROT_GDEP') then
                 do 370 i = 1, 3*nno
                     xidepp(i) = zr(ideplp+i-1)
@@ -435,21 +395,21 @@ subroutine te0477(option, nomte)
 410                  continue
 420              continue
             else if (nomshb.eq.'SHB6') then
-                call sh6for(zr(igeom), para, xidepp, sigmp, zr(ivectu))
+                call sh6for(zr(igeom), sigmp, zr(ivectu))
                 do 440 i = 1, npg
                     do 430 j = 1, 6
                         zr(icontp+18*(i-1)+j-1)=sigmp(6*(i-1)+j)
 430                  continue
 440              continue
             else if (nomshb.eq.'SHB15') then
-                call sh1for(zr(igeom), para, xidepp, sigmp, zr(ivectu))
+                call sh1for(zr(igeom), sigmp, zr(ivectu))
                 do 460 i = 1, npg
                     do 450 j = 1, 6
                         zr(icontp+18*(i-1)+j-1)=sigmp(6*(i-1)+j)
 450                  continue
 460              continue
             else if (nomshb.eq.'SHB20') then
-                call sh2for(zr(igeom), para, xidepp, sigmp, zr(ivectu))
+                call sh2for(zr(igeom), sigmp, zr(ivectu))
                 do 480 i = 1, npg
                     do 470 j = 1, 6
                         zr(icontp+18*(i-1)+j-1)=sigmp(6*(i-1)+j)

@@ -1,4 +1,4 @@
-subroutine sh2rig(xetemp, para, re)
+subroutine sh2rig(xetemp, para, dsde, option, re)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,9 @@ subroutine sh2rig(xetemp, para, re)
 #include "asterfort/s2calb.h"
 #include "asterfort/sh2ksi.h"
 #include "asterfort/tran63.h"
-    integer :: p, q, irdc
-    real(kind=8) :: para(11)
+    character(len=16) :: option
+    integer :: p, q
+    real(kind=8) :: para(2)
     real(kind=8) :: xe(60), re(60, 60), lambda
     real(kind=8) :: xcoq(3, 4), bksip(3, 20, 20), b(3, 20)
     real(kind=8) :: xcent(3), ppp(3, 3), pppt(3, 3)
@@ -37,6 +38,7 @@ subroutine sh2rig(xetemp, para, re)
     real(kind=8) :: tmpke2(60, 60), xetemp(*)
     real(kind=8) :: xxg5(20), xyg5(20), xzg5(20), pxg5(20), em2(3, 3, 3, 3)
     real(kind=8) :: bgl(6, 60), bglt(60, 6), em(6, 6), em3333(3, 3, 3, 3)
+    real(kind=8) :: dsde(20,6,6)
 !
 !
 !
@@ -61,7 +63,7 @@ subroutine sh2rig(xetemp, para, re)
     integer :: i, ip, iz, j, k, l, m
     integer :: n
     real(kind=8) :: ajac, coela1, coela2, elt, rbid, tt1, tt2
-    real(kind=8) :: xcooef, xmu, xnu, xxl1, xxl2, zeta, zlamb
+    real(kind=8) :: xmu, xnu, xxl1, xxl2, zeta, zlamb
 !
 !-----------------------------------------------------------------------
     xzg5(1) = -0.906179845938664d0
@@ -91,29 +93,12 @@ subroutine sh2rig(xetemp, para, re)
         pxg5(iz+10) = pxg5(iz)
         xzg5(iz+15) = xzg5(iz)
         pxg5(iz+15) = pxg5(iz)
- 8  end do
-!
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB8 TYPE PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-!
-!      IRDC = 1
+ 8  continue
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 9 i = 1, 60
         xe(i) = xetemp(i)
- 9  end do
+ 9  continue
 !
-    irdc=nint(para(5))
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!                                                                  C
-! ON CALCULE LA RAIDEUR : SORTIE DANS RE                           C
-!                                                                  C
-! SI IETAN = 1 , ALORS ON CALCULE AUSSI                            C
-!                LA MATRICE TANGENTE PLASTIQUE                     C
-!                                                                  C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!      IETAN   = PARA(4)
 !
 ! INTIALISATION LONGUEUR DES COTES
 ! CALCUL DES COEFF D ELANCEMENT A METTRE DANS LA MATRICE DE CPT
@@ -161,39 +146,12 @@ subroutine sh2rig(xetemp, para, re)
     xmu = 0.5d0*para(1)/(1.d0+para(2))
     cmatlo(1,1) = lambda + 2.d0*xmu
     cmatlo(2,2) = lambda + 2.d0*xmu
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB6 PLEXUS
-        cmatlo(3,3) = para(1)
-    endif
-!
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        cmatlo(3,3) = 0.d0
-    endif
-!
+    cmatlo(3,3) = para(1)
     cmatlo(1,2) = lambda
     cmatlo(2,1) = lambda
     cmatlo(4,4) = xmu
     cmatlo(5,5) = xmu
     cmatlo(6,6) = xmu
-!
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xnu = para(2)
-        xcooef = para(1)/((1.d0+xnu)*(1.d0-2.d0*xnu))
-        cmatlo(1,1) = (1.d0-xnu)*xcooef
-        cmatlo(2,2) = (1.d0-xnu)*xcooef
-        cmatlo(3,3) = (1.d0-xnu)*xcooef
-        cmatlo(1,2) = xnu*xcooef
-        cmatlo(2,1) = xnu*xcooef
-        cmatlo(1,3) = xnu*xcooef
-        cmatlo(3,1) = xnu*xcooef
-        cmatlo(2,3) = xnu*xcooef
-        cmatlo(3,2) = xnu*xcooef
-        cmatlo(4,4) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(5,5) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(6,6) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-    endif
 !
 ! CALCUL DE BKSIP(3,20,IP) DANS REPERE DE REFERENCE
 !      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
@@ -205,6 +163,18 @@ subroutine sh2rig(xetemp, para, re)
 ! DEBUT DE LA BOUCLE SUR LES 5 PTS GAUSS
 !
     do 240 ip = 1, 20
+
+      if(option.ne.'RIGI_MECA') then
+        cmatlo(1,1) = dsde(ip,1,1)
+        cmatlo(2,1) = dsde(ip,2,1)
+        cmatlo(4,1) = dsde(ip,4,1)/2.D0
+        cmatlo(1,2) = dsde(ip,1,2)
+        cmatlo(2,2) = dsde(ip,2,2)
+        cmatlo(4,2) = dsde(ip,4,2)/2.D0
+        cmatlo(1,4) = dsde(ip,1,4)/2.D0
+        cmatlo(2,4) = dsde(ip,2,4)/2.D0
+        cmatlo(4,4) = dsde(ip,4,4)/2.D0
+      endif
 !
 ! DEFINITION DES 4 POINTS  COQUES
 !

@@ -1,4 +1,4 @@
-subroutine sh8rig(xetemp, para, re)
+subroutine sh8rig(xetemp, para, dsde, option, re)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,8 @@ subroutine sh8rig(xetemp, para, re)
 #include "asterfort/shbrot.h"
 #include "asterfort/shcalb.h"
 #include "asterfort/shvrot.h"
-    integer :: irdc
-    real(kind=8) :: eyg(5), para(11)
+    character(len=16) :: option
+    real(kind=8) :: para(2)
     real(kind=8) :: xe(24), re(24, 24)
     real(kind=8) :: xxg5(5), pxg5(5), xcoq(3, 4), bksip(3, 8, 5), b(3, 8)
     real(kind=8) :: xeloc(24), xcent(3), ppp(3, 3)
@@ -44,6 +44,7 @@ subroutine sh8rig(xetemp, para, re)
     real(kind=8) :: xk21(8, 8), xk13(8, 8), xk23(8, 8), xk31(8, 8), xk32(8, 8)
     real(kind=8) :: lambda
     real(kind=8) :: xetemp(*)
+    real(kind=8) :: dsde(20,6,6)
 !
 !
 !CCCCCCCCCCCCC ENTREES CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -65,9 +66,9 @@ subroutine sh8rig(xetemp, para, re)
 !      IF (NOMSHB.EQ.'SHB8') THEN
 !
 !-----------------------------------------------------------------------
-    integer :: i, ia, ietan, ip, j
+    integer :: i, ia, ip, j
     real(kind=8) :: ajac, coela1, coela2, elt, rbid, tt1, tt2
-    real(kind=8) :: uns3, uns8, vol, xcooef, xk1101, xk1102, xk2201
+    real(kind=8) :: uns3, uns8, vol, xk1101, xk1102, xk2201
     real(kind=8) :: xk2202, xk3301, xk3302, xmu, xnu, xxl1, xxl2
     real(kind=8) :: youngt, zeta, zlamb
 !-----------------------------------------------------------------------
@@ -101,24 +102,7 @@ subroutine sh8rig(xetemp, para, re)
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 10 i = 1, 24
         xe(i) = xetemp(i)
-10  end do
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB8 TYPE PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-    irdc = nint(para(5))
-!    WRITE(6,*) 'IRDC=',IRDC
-! //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
-!      IF (OPTION.EQ.'RIGI_MECA') THEN
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!                                                                  C
-! ON CALCULE LA RAIDEUR : SORTIE DANS RE                           C
-!                                                                  C
-! SI IETAN = 1 , ALORS ON CALCULE AUSSI                            C
-!                LA MATRICE TANGENTE PLASTIQUE                     C
-!                                                                  C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-    ietan = nint(para(4))
+10  continue
 !
 ! INTIALISATION LONGUEUR DES COTES
 ! CALCUL DES COEFF D ELANCEMENT A METTRE DANS LA MATRICE DE CPT
@@ -140,7 +124,7 @@ subroutine sh8rig(xetemp, para, re)
         xxl1 = xxl1 + (xe(i+3)-xe(i))**2
 ! DISTANCE ENTRE 2 ET 3
         xxl2 = xxl2 + (xe(i+6)-xe(i+3))**2
-40  end do
+40  continue
     xxl1 = sqrt(xxl1)
     xxl2 = sqrt(xxl2)
     tt1 = 0.5d0* (sqrt(tt1)+sqrt(tt2))
@@ -156,13 +140,6 @@ subroutine sh8rig(xetemp, para, re)
     coela1 = 1.d0
     coela2 = 1.d0
 !
-    if (ietan .eq. 1) then
-        eyg(1) = para(7)
-        eyg(2) = para(8)
-        eyg(3) = para(9)
-        eyg(4) = para(10)
-        eyg(5) = para(11)
-    endif
     call r8inir(576, 0.d0, re, 1)
     call r8inir(36, 0.d0, cmatlo, 1)
 ! ON DEFINIT CMATLO: MATRICE DE COMPORTEMENT
@@ -172,40 +149,12 @@ subroutine sh8rig(xetemp, para, re)
     xmu = 0.5d0*para(1)/(1+para(2))
     cmatlo(1,1) = lambda + 2.d0*xmu
     cmatlo(2,2) = lambda + 2.d0*xmu
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB8 PLEXUS
-        cmatlo(3,3) = para(1)
-    endif
-!
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        cmatlo(3,3) = 0.d0
-    endif
-!
+    cmatlo(3,3) = para(1)
     cmatlo(1,2) = lambda
     cmatlo(2,1) = lambda
     cmatlo(4,4) = xmu
     cmatlo(5,5) = xmu
     cmatlo(6,6) = xmu
-!
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-!
-        xnu = para(2)
-        xcooef = para(1)/((1.d0+xnu)*(1-2.d0*xnu))
-        cmatlo(1,1) = (1.d0-xnu)*xcooef
-        cmatlo(2,2) = (1.d0-xnu)*xcooef
-        cmatlo(3,3) = (1.d0-xnu)*xcooef
-        cmatlo(1,2) = xnu*xcooef
-        cmatlo(2,1) = xnu*xcooef
-        cmatlo(1,3) = xnu*xcooef
-        cmatlo(3,1) = xnu*xcooef
-        cmatlo(2,3) = xnu*xcooef
-        cmatlo(3,2) = xnu*xcooef
-        cmatlo(4,4) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(5,5) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(6,6) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-    endif
 !
 ! CALCUL DE BKSIP(3,8,IP) DANS REPERE DE REFERENCE
 !      BKSIP(1,*,IP) = VECTEUR BX AU POINT GAUSS IP
@@ -217,6 +166,18 @@ subroutine sh8rig(xetemp, para, re)
 ! DEBUT DE LA BOUCLE SUR LES 5 PTS GAUSS
 !
     do 160 ip = 1, 5
+!
+      if(option.ne.'RIGI_MECA') then
+        cmatlo(1,1) = dsde(ip,1,1)
+        cmatlo(2,1) = dsde(ip,2,1)
+        cmatlo(4,1) = dsde(ip,4,1)/2.D0
+        cmatlo(1,2) = dsde(ip,1,2)
+        cmatlo(2,2) = dsde(ip,2,2)
+        cmatlo(4,2) = dsde(ip,4,2)/2.D0
+        cmatlo(1,4) = dsde(ip,1,4)/2.D0
+        cmatlo(2,4) = dsde(ip,2,4)/2.D0
+        cmatlo(4,4) = dsde(ip,4,4)/2.D0
+      endif
 !
 ! DEFINITION DES 4 POINTS  COQUES
 !
@@ -292,7 +253,7 @@ subroutine sh8rig(xetemp, para, re)
                 re(i,j) = re(i,j) + 4.d0*ajac*pxg5(ip)*tmpke2(i,j)
 140          continue
 150      continue
-160  end do
+160  continue
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !                                                                  C
 ! MATRICE DE STABILISATION : PAS DE BOUCLE SUR LES POINTS DE GAUSS C
@@ -303,7 +264,7 @@ subroutine sh8rig(xetemp, para, re)
 !
     do 170 i = 1, 24
         xeloc(i) = xe(i)
-170  end do
+170  continue
 !
 ! ATTENTION, RR, MATRICE DU CORROTATIONNEL EST RANGEE PAR LIGNES!
 !
@@ -318,7 +279,7 @@ subroutine sh8rig(xetemp, para, re)
         do 180 ia = 1, 4
             xxgb(j,ia) = houxgb(xeloc(j),ia)
 180      continue
-190  end do
+190  continue
 !
 ! GS = (BBB)  * XXGB
 !
@@ -326,14 +287,14 @@ subroutine sh8rig(xetemp, para, re)
         do 200 j = 1, 4
             gs(i,j) = 0.d0
 200      continue
-210  end do
+210  continue
     do 240 j = 1, 3
         do 230 ia = 1, 4
             do 220 i = 1, 8
                 gs(i,ia) = gs(i,ia) + b(j,i)*xxgb(j,ia)
 220          continue
 230      continue
-240  end do
+240  continue
 !
 ! GS = GB - GS
 !
@@ -341,7 +302,7 @@ subroutine sh8rig(xetemp, para, re)
         do 250 j = 1, 8
             gs(j,i) = (gb(j,i)-gs(j,i))*uns8
 250      continue
-260  end do
+260  continue
 !
 ! CALCUL DE XXVB = X * VB
 !
@@ -360,19 +321,7 @@ subroutine sh8rig(xetemp, para, re)
     hij(4) = uns3*xxvb(3)
     hij(5) = uns3*xxvb(1)
     hij(6) = uns3*xxvb(2)
-!
-! CALCUL DES COEFS A METTRE DANS KIJ POUR COMPOSER KSTAB
-!
-!   ICI IL FAUT PRENDRE LA MOYENNE DES MODULES D'YOUNG TANGENTS
-!
-! POUR LE SHB8 PLASTIQUE ET NON_LINEAIRE, METTRE IETAN A 1 DANS RIGID.FF
-! SINON METTRE IETAN A 0
-!
-    if (ietan .eq. 1) then
-        youngt = (eyg(1)+eyg(2)+eyg(3)+eyg(4)+eyg(5))/5.d0
-    else
-        youngt = para(1)
-    endif
+    youngt = para(1)
 ! POUR RESOUDRE LE CISAILLEMENT TRANSVERSE:
 !
     youngt = youngt*0.5d0*(coela1+coela2)
@@ -383,26 +332,8 @@ subroutine sh8rig(xetemp, para, re)
     xk2201 = (lambda+2.d0*xmu)*hij(2)
     xk2202 = uns3*((lambda+2.d0*xmu)*hij(2))
     xk3301 = 0.d0
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB8 PLEXUS
-!****          XK3302 = YOUNGT*HIJ(3)*UNS3
-        xk3302 = xmu*hij(1)*uns3
-    endif
+    xk3302 = xmu*hij(1)*uns3
 !
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        xk3302 = 0.d0
-    endif
-!
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xk1101 = xcooef* (1-xnu)*hij(1)
-        xk1102 = uns3* (xcooef* (1-xnu)*hij(1))
-        xk2201 = xcooef* (1-xnu)*hij(2)
-        xk2202 = uns3* (xcooef* (1-xnu)*hij(2))
-        xk3301 = 0.d0
-        xk3302 = xcooef* (1-xnu)*hij(3)*uns3
-    endif
     call r8inir(64, 0.d0, xk12, 1)
     call r8inir(64, 0.d0, xk21, 1)
     call r8inir(64, 0.d0, xk13, 1)
@@ -419,7 +350,7 @@ subroutine sh8rig(xetemp, para, re)
             xk22(i,j) = xk2201*gs(i,3)*gs(j,3) + xk2202*gs(i,4)*gs(j, 4)
             xk33(i,j) = xk3301*gs(i,3)*gs(j,3) + xk3302*gs(i,4)*gs(j, 4)
 270      continue
-280  end do
+280  continue
 !
 ! ASSEMBLAGE DE KSTAB
 !
@@ -434,7 +365,7 @@ subroutine sh8rig(xetemp, para, re)
             tmpke(i, (j-1)*3+2) = xkstab(i,j+8)
             tmpke(i, (j-1)*3+3) = xkstab(i,j+16)
 290      continue
-300  end do
+300  continue
 !
     call r8inir(576, 0.d0, xkstab, 1)
     do 320 i = 1, 8
@@ -443,7 +374,7 @@ subroutine sh8rig(xetemp, para, re)
             xkstab((i-1)*3+2,j) = tmpke(i+8,j)
             xkstab((i-1)*3+3,j) = tmpke(i+16,j)
 310      continue
-320  end do
+320  continue
 !
 ! IL FAUT REPASSER DANS LE REPERE GLOBAL AVEC RR2^T . KSTAB . RR2
 ! EN FAIT C'EST RR2. KSTAB .RR2^T CAR RR2 RANGEE PAR LIGNES
@@ -456,7 +387,7 @@ subroutine sh8rig(xetemp, para, re)
         do 330 i = 1, 24
             re(i,j) = re(i,j) + xkstab(i,j)
 330      continue
-340  end do
+340  continue
 !
 !      K = 0
 !      DO 750 I = 1,24

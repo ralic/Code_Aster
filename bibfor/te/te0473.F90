@@ -51,6 +51,7 @@ subroutine te0473(option, nomte)
     real(kind=8) :: valres(nbres), re(24, 24), re6(18, 18)
     integer :: nbv, kpg, spt
     real(kind=8) :: nu, e, re15(45, 45)
+    real(kind=8) :: dsde(20,6,6)
 !
     fami = 'RIGI'
     call elref4(' ', fami, ndim, nno, nnos,&
@@ -107,12 +108,8 @@ subroutine te0473(option, nomte)
 !  ===========================================
     if (option .eq. 'RIGI_MECA') then
         if (nomshb .eq. 'SHB8') then
-            do 30 i = 1, nbinco
-                do 20 j = 1, nbinco
-                    re(i,j) = 0.d0
-20              continue
-30          continue
-            call sh8rig(zr(igeom), para, re)
+            call r8inir(nbinco*nbinco, 0.d0, re, 1)
+            call sh8rig(zr(igeom), para,  dsde, option, re)
 !        RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 !        DEMI-MATRICE DE RIGIDITE
             call jevech('PMATUUR', 'E', imatuu)
@@ -124,12 +121,8 @@ subroutine te0473(option, nomte)
 40              continue
 50          continue
         else if (nomshb.eq.'SHB6') then
-            do 70 i = 1, nbinco
-                do 60 j = 1, nbinco
-                    re6(i,j) = 0.d0
-60              continue
-70          continue
-            call sh6rig(zr(igeom), para, re6)
+            call r8inir(nbinco*nbinco, 0.d0, re6, 1)
+            call sh6rig(zr(igeom), para,  dsde, option, re6)
             call jevech('PMATUUR', 'E', imatuu)
             k = 0
             do 90 i = 1, nbinco
@@ -139,13 +132,9 @@ subroutine te0473(option, nomte)
 80              continue
 90          continue
         else if (nomshb.eq.'SHB15') then
-            do 110 i = 1, nbinco
-                do 100 j = 1, nbinco
-                    re15(i,j) = 0.d0
-100              continue
-110          continue
+            call r8inir(nbinco*nbinco, 0.d0, re15, 1)
 !
-            call sh1rig(zr(igeom), para, re15)
+            call sh1rig(zr(igeom), para,  dsde, option, re15)
             call jevech('PMATUUR', 'E', imatuu)
             k = 0
             do 130 i = 1, nbinco
@@ -155,12 +144,8 @@ subroutine te0473(option, nomte)
 120              continue
 130          continue
         else if (nomshb.eq.'SHB20') then
-            do 150 i = 1, 60
-                do 140 j = 1, 60
-                    re20(i,j) = 0.d0
-140              continue
-150          continue
-            call sh2rig(zr(igeom), para, re20)
+            call r8inir(60*60, 0.d0, re20, 1)
+            call sh2rig(zr(igeom), para,  dsde, option, re20)
             call jevech('PMATUUR', 'E', imatuu)
             k = 0
             do 170 i = 1, 60

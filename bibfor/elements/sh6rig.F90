@@ -1,4 +1,4 @@
-subroutine sh6rig(xetemp, para, re)
+subroutine sh6rig(xetemp, para, dsde, option, re)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ subroutine sh6rig(xetemp, para, re)
 #include "asterfort/s6calb.h"
 #include "asterfort/s6ksib.h"
 #include "asterfort/sh6ksi.h"
-    integer :: irdc
+    character(len=16) :: option
 !
     real(kind=8) :: xe(18), re(18, 18), xetemp(18)
     real(kind=8) :: xxg5(5), pxg5(5), xcoq(3, 3), bksip(3, 6, 5), b(3, 6)
@@ -39,7 +39,7 @@ subroutine sh6rig(xetemp, para, re)
     real(kind=8) :: tmptab(6, 18), tmpke(18, 18), cmatlo(6, 6)
     real(kind=8) :: tmpke2(18, 18)
     real(kind=8) :: gb(6, 2), gs(6, 2), xxgb(3, 2)
-    real(kind=8) :: lambda, para(11)
+    real(kind=8) :: lambda, para(2)
 !
     real(kind=8) :: dj(3, 3), bksip1(3, 6), xel(18), xrre(18, 18)
     real(kind=8) :: xxh(2, 3), xb01(18), xb02(18), b5(6, 18)
@@ -47,6 +47,7 @@ subroutine sh6rig(xetemp, para, re)
     real(kind=8) :: btot1(6, 18), btot1t(18, 6)
     real(kind=8) :: btot2(6, 18), btot2t(18, 6)
     real(kind=8) :: xh01(36), xh02(36), uj(3, 3)
+    real(kind=8) :: dsde(20,6,6)
 !
 !CCCCCCCCCCCCC ENTREES CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 !    ON CALCULE LA MATRICE DE RAIDEUR
@@ -70,7 +71,7 @@ subroutine sh6rig(xetemp, para, re)
 !-----------------------------------------------------------------------
     integer :: i, ia, ip, j, k
     real(kind=8) :: aj, ajac, coela1, coela2, elt, rbid, tt1
-    real(kind=8) :: tt2, uns2, uns3, xajac, xcooef, xmu, xnu
+    real(kind=8) :: tt2, uns2, uns3, xajac, xmu, xnu
     real(kind=8) :: xxl1, xxl2, zeta, zlamb
 !-----------------------------------------------------------------------
     data gb/0.d0,-1.d0,0.d0,0.d0,1.d0,0.d0,&
@@ -101,24 +102,7 @@ subroutine sh6rig(xetemp, para, re)
 !     ON FAIT UNE COPIE DE XETEMP DANS XE
     do 10 i = 1, 18
         xe(i) = xetemp(i)
-10  end do
-!
-! TYPE DE LOI DE COMPORTEMENT:
-!     IRDC = 1 : SHB6 MEME TYPE QUE SHB8 DANS PLEXUS
-!     IRDC = 2 : C.P.
-!     IRDC = 3 : 3D COMPLETE
-!
-    irdc = nint(para(5))
-!
-!      IF(ICLE.EQ.2)THEN
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!                                                                  C
-! ON CALCULE LA RAIDEUR : SORTIE DANS RE                           C
-!                                                                  C
-! SI IETAN = 1 , ALORS ON CALCULE AUSSI                            C
-!                LA MATRICE TANGENTE PLASTIQUE                     C
-!                                                                  C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+10  continue
 !
 ! INITIALISATION LONGUEUR DES COTES
 ! CALCUL DES COEFF D ELANCEMENT A METTRE DANS LA MATRICE DE CPT
@@ -140,7 +124,7 @@ subroutine sh6rig(xetemp, para, re)
         xxl1 = xxl1+(xe(i+3)-xe(i))**2
 ! DISTANCE ENTRE 2 ET 3
         xxl2 = xxl2+(xe(i+6)-xe(i+3))**2
-40  end do
+40  continue
     xxl1 = sqrt(xxl1)
     xxl2 = sqrt(xxl2)
     tt1 = uns2*(sqrt(tt1)+sqrt(tt2))
@@ -165,39 +149,12 @@ subroutine sh6rig(xetemp, para, re)
     xmu = 0.5d0*para(1)/ (1.d0+para(2))
     cmatlo(1,1) = lambda + 2.d0*xmu
     cmatlo(2,2) = lambda + 2.d0*xmu
-    if (irdc .eq. 1) then
-! COMPORTEMENT SHB6 PLEXUS
-        cmatlo(3,3) = para(1)
-    endif
-!
-    if (irdc .eq. 2) then
-! COMPORTEMENT C.P.
-        cmatlo(3,3) = 0.d0
-    endif
-!
+    cmatlo(3,3) = para(1)
     cmatlo(1,2) = lambda
     cmatlo(2,1) = lambda
     cmatlo(4,4) = xmu
     cmatlo(5,5) = xmu
     cmatlo(6,6) = xmu
-!
-    if (irdc .eq. 3) then
-! COMPORTEMENT LOI TRIDIM MMC 3D
-        xnu = para(2)
-        xcooef = para(1)/((1.d0+xnu)*(1.d0-2.d0*xnu))
-        cmatlo(1,1) = (1.d0-xnu)*xcooef
-        cmatlo(2,2) = (1.d0-xnu)*xcooef
-        cmatlo(3,3) = (1.d0-xnu)*xcooef
-        cmatlo(1,2) = xnu*xcooef
-        cmatlo(2,1) = xnu*xcooef
-        cmatlo(1,3) = xnu*xcooef
-        cmatlo(3,1) = xnu*xcooef
-        cmatlo(2,3) = xnu*xcooef
-        cmatlo(3,2) = xnu*xcooef
-        cmatlo(4,4) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(5,5) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-        cmatlo(6,6) = (1.d0-2.d0*xnu)*0.5d0*xcooef
-    endif
 !
     data xb01/1.d0,0.d0,0.d0,&
      &          0.d0,1.d0,0.d0,&
@@ -228,6 +185,19 @@ subroutine sh6rig(xetemp, para, re)
      &          0.45d0,0.45d0,0.d0,0.d0,0.45d0,0.45d0/
 !
     do 710 ip = 1, 5
+
+      if(option.ne.'RIGI_MECA') then
+        cmatlo(1,1) = dsde(ip,1,1)
+        cmatlo(2,1) = dsde(ip,2,1)
+        cmatlo(4,1) = dsde(ip,4,1)/2.D0
+        cmatlo(1,2) = dsde(ip,1,2)
+        cmatlo(2,2) = dsde(ip,2,2)
+        cmatlo(4,2) = dsde(ip,4,2)/2.D0
+        cmatlo(1,4) = dsde(ip,1,4)/2.D0
+        cmatlo(2,4) = dsde(ip,2,4)/2.D0
+        cmatlo(4,4) = dsde(ip,4,4)/2.D0
+      endif
+
 !
 ! DEFINITION DES 3 POINTS COQUES
 !
@@ -596,5 +566,5 @@ subroutine sh6rig(xetemp, para, re)
                 re(i,j)= re(i,j)+xrre(i,j)
 708          continue
 709      continue
-710  end do
+710  continue
 end subroutine

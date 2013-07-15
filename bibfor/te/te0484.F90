@@ -39,9 +39,9 @@ subroutine te0484(option, nomte)
 #include "asterfort/sh8for.h"
 #include "asterfort/tecach.h"
     integer :: i, icompo, icontm, ideplm, idfde, igeom, imate
-    integer :: ipoids, iret, ivectu, ivf, j, jgano, lag
+    integer :: ipoids, iret, ivectu, ivf, j, jgano
     integer :: nbres, nbv, ndim, nno, nnos, npg
-    real(kind=8) :: tempm, ygot
+    real(kind=8) :: tempm
 !-----------------------------------------------------------------------
     parameter (nbres=2)
     character(len=4) :: fami
@@ -49,7 +49,7 @@ subroutine te0484(option, nomte)
     character(len=8) :: nomres(nbres), famil, poum
     character(len=16) :: nomte, nomshb, option
     real(kind=8) :: sigma(120), xidepm(60)
-    real(kind=8) :: fstab(12), para(11)
+    real(kind=8) :: fstab(12), para(2)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: nu, e
     fami = 'RIGI'
@@ -57,9 +57,9 @@ subroutine te0484(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 ! --- INITIALISATIONS :
     call idsshb(ndim, nno, npg, nomshb)
-    do 10 i = 1, 11
+    do 10 i = 1, 2
         para(i) = 0.d0
-10  end do
+10  continue
     famil='FPG1'
     kpg=1
     spt=1
@@ -83,14 +83,8 @@ subroutine te0484(option, nomte)
         e = valres(1)
         nu = valres(2)
 ! ----  PARAMETRES MATERIAUX
-        ygot = e
-        lag = 0
         para(1) = e
         para(2) = nu
-        para(3) = ygot
-        para(4) = 0
-        para(5) = 1
-        para(6) = lag
     endif
 !
 !  ==============================================
@@ -135,8 +129,6 @@ subroutine te0484(option, nomte)
 !
 !           ON PASSE EN PARAMETRES
 !           ZR(IGEOM) : GEOMETRIE CONFIG DEBUT PAS
-!           WORK : PARAMETRES MATERIAU
-!                  WORK(1)=E  WORK(2)=NU  WORK(3)=LAG
 !           ZR(IDEPLM) : DEPLACEMENT
 !           ZR(ICONTM) : CONTRAINTE DE CAUCHY DEBUT DE PAS
 !           ZR(IVARIM) (DE 2 A 14) : CONTRAINTES DE STABILISATION
@@ -173,13 +165,13 @@ subroutine te0484(option, nomte)
                         zr(ivectu))
         else if (nomshb.eq.'SHB6') then
             call jevech('PVECTUR', 'E', ivectu)
-            call sh6for(zr(igeom), para, xidepm, sigma, zr(ivectu))
+            call sh6for(zr(igeom), sigma, zr(ivectu))
         else if (nomshb.eq.'SHB15') then
             call jevech('PVECTUR', 'E', ivectu)
-            call sh1for(zr(igeom), para, xidepm, sigma, zr(ivectu))
+            call sh1for(zr(igeom), sigma, zr(ivectu))
         else if (nomshb.eq.'SHB20') then
             call jevech('PVECTUR', 'E', ivectu)
-            call sh2for(zr(igeom), para, xidepm, sigma, zr(ivectu))
+            call sh2for(zr(igeom), sigma, zr(ivectu))
         endif
     endif
 end subroutine
