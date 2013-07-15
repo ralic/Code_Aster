@@ -35,7 +35,7 @@ subroutine te0149(option, nomte)
 !     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
 !     ------------------------------------------------------------------
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-!        'SIGM_ELNO'
+!        'SIPM_ELNO'
 !        'SIPO_ELNO'
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)

@@ -20,12 +20,12 @@ subroutine te0485(option, nomte)
 !.......................................................................
     implicit none
 !
-!          ELEMENT SHB
-!    FONCTION REALISEE:
-!            OPTION : 'RIGI_MECA      '
-!                            CALCUL DES MATRICES ELEMENTAIRES  3D
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
+!    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT :
+!                                  - SIEF_ELGA
+!                          POUR LES ELEMENTS SHB
+!    - ARGUMENTS:
+!        DONNEES:      OPTION       -->  OPTION DE CALCUL
+!                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
 #include "jeveux.h"
 !

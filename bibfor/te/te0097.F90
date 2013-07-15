@@ -1,4 +1,6 @@
 subroutine te0097(option, nomte)
+    implicit none
+    character(len=16) :: option, nomte
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,73 +29,68 @@ subroutine te0097(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/sigvmc.h"
-    character(len=16) :: nomte, option
-    real(kind=8) :: sigma(162), repere(7), instan, nharm
-    real(kind=8) :: bary(3)
-    integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano
+!
+    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: idim
-!
-!
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-!      ------------------------
-!-----------------------------------------------------------------------
     integer :: i, icont, idepl, igeom, imate, nbsig, itabou(7), iret
     integer :: igau, isig
+
+    real(kind=8) :: sigma(162), repere(7), instan, nharm
+    real(kind=8) :: bary(3)
     real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg1, ipoids, ivf, idfde, jgano)
 !
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!      -----------------------------------------
+!-----------------------------------------------------------------------
+!
+    call elref4(' ', 'RIGI', ndim, nno, nnos,&
+                npg, ipoids, ivf, idfde, jgano)
+!
+! - NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
+!   -----------------------------------------
     nbsig = nbsigm()
 !
-! --- INITIALISATIONS :
-!     -----------------
+! - INITIALISATIONS :
+!   -----------------
     zero = 0.0d0
     instan = zero
     nharm = zero
 !
-    do 10 i = 1, nbsig*npg1
+    do 10 i = 1, nbsig*npg
         sigma(i) = zero
 10  end do
 !
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!      ----------------------------------------------
+! - RECUPERATION DES COORDONNEES DES CONNECTIVITES
+!   ----------------------------------------------
     call jevech('PGEOMER', 'L', igeom)
 !
-! ---- RECUPERATION DU MATERIAU
-!      ------------------------
+! - RECUPERATION DU MATERIAU
+!   ------------------------
     call jevech('PMATERC', 'L', imate)
 !
-! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-!      ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+! - RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
+!   ------------------------------------------------------------
+!   COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
 !
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do 30 i = 1, nno
+        do 20 idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+20      continue
+30  end do
     call ortrep(zi(imate), ndim, bary, repere)
 !
 ! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 !      --------------------------------------------------
     call jevech('PDEPLAR', 'L', idepl)
 !
-    call sigvmc('RIGI', nno, ndim, nbsig, npg1,&
+    call sigvmc('RIGI', nno, ndim, nbsig, npg,&
                 ipoids, ivf, idfde, zr(igeom), zr(idepl),&
                 instan, repere, zi(imate), nharm, sigma)
 !
@@ -103,7 +100,7 @@ subroutine te0097(option, nomte)
 !      --------------------------------------------------------
     call jevech('PCONTRR', 'E', icont)
 !
-    do 80 igau = 1, npg1
+    do 80 igau = 1, npg
         do 81 isig = 1, nbsig+1
             if (isig .le. nbsig) then
                 zr(icont+(nbsig+1)*(igau-1)+isig-1)=sigma(nbsig*(igau-&

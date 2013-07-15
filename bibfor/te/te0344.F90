@@ -40,7 +40,7 @@ subroutine te0344(option, nomte)
 !     POUR LES ELEMENTS DE POUTRE DE TIMOSHENKO AVEC GAUCHISSEMENT.
 ! --- ------------------------------------------------------------------
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-!        SIGM_ELNO
+!        SIPM_ELNO
 !        SIPO_ELNO
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        MECA_POU_D_TG : POUTRE DROITE DE TIMOSHENKO AVEC GAUCHISSEMENT

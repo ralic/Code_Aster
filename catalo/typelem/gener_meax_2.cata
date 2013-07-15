@@ -425,7 +425,7 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR
     SECM_ZZ1            294   IN__   NGEOMER  PGEOMER  ECONTPG  PSIEF_R
                               OUT__  MVECZZR  PVECTR1  MVECZZR  PVECTR2  MVECZZR  PVECTR3  MVECZZR  PVECTR4
-    SIEF_ELGA           86    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
+    SIEF_ELGA           22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  CMATERC  PMATERC
                               OUT__  ECONTPG  PCONTRR
                                      ECONTPC  PCONTRC
