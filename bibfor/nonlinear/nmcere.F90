@@ -109,7 +109,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     character(len=19) :: cnfint, cndiri, cnfext, cnbudi
     character(len=24) :: codere
     character(len=19) :: valint(zvalin)
-    character(len=19) :: solalt(zvalin)
+    character(len=19) :: solalt(zsolal)
     character(len=19) :: depdet, depdel, deppr1, deppr2
     integer :: jdepdt, jdepdl, jdu0, jdu1
     character(len=19) :: depplt, ddep
