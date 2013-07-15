@@ -95,13 +95,6 @@ CTXFEM = DEFI_CONTACT(
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG')));
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,
-                      INFO=2);
-
-
-
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -198,8 +191,7 @@ CH22=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHXFEM),
-                           _F(CHARGE=CH1,
+                    EXCIT=(_F(CHARGE=CH1,
                               TYPE_CHARGE='FIXE_PILO')),
                     CONTACT =  CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
@@ -225,8 +217,7 @@ for i in range(1,nbc) :
                     ETAT_INIT=_F(EVOL_NOLI=UTOT1),
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHXFEM),
-                           _F(CHARGE=CH1,
+                    EXCIT=(_F(CHARGE=CH1,
                               TYPE_CHARGE='FIXE_PILO')),
                     CONTACT = CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
@@ -253,8 +244,7 @@ for i in range(1,nbc) :
 
 UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHXFEM),
-                           _F(CHARGE=CH22),
+                    EXCIT=(_F(CHARGE=CH22),
                            _F(CHARGE=CH21,
                               TYPE_CHARGE='FIXE_PILO')),
                     CONTACT =  CTXFEM,
@@ -282,8 +272,7 @@ for i in range(1,nbc) :
                     ETAT_INIT=_F(EVOL_NOLI=UTOT2),
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHXFEM),
-                           _F(CHARGE=CH22),
+                    EXCIT=(_F(CHARGE=CH22),
                            _F(CHARGE=CH21,
                               TYPE_CHARGE='FIXE_PILO')),
                     CONTACT =  CTXFEM,

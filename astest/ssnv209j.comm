@@ -146,10 +146,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                             )
                     );
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM);
-
 CHCINE=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                     ENCASTREMENT DU BAS
                       DDL_IMPO=(_F(GROUP_NO='FBATI',
@@ -209,7 +205,6 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
                     CONTACT=CTXFEM,
                     EXCIT=(
-                           _F(CHARGE=CHXFEM),
                            _F(CHARGE=CHCINE),
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),

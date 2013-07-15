@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caxfem(fonree, char)
-        character(len=4) :: fonree
-        character(len=8) :: char
-    end subroutine caxfem
+    subroutine xfem_rel_lin(char, noma, nomo)
+        character(len=8), intent(in) :: char
+        character(len=8), intent(in) :: noma
+        character(len=8), intent(in) :: nomo
+    end subroutine xfem_rel_lin
 end interface

@@ -85,11 +85,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                             ),
                     );
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,
-                      INFO=1);
-
 E=100.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
@@ -133,8 +128,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    CONTACT=CTXFEM,
-                   EXCIT=(_F(CHARGE=CHXFEM),
-                          _F(CHARGE=CH1),
+                   EXCIT=(_F(CHARGE=CH1),
                           _F(CHARGE=CH2)),
                    COMP_ELAS=(_F(RELATION='ELAS',
                                  GROUP_MA='SURF')),
@@ -142,8 +136,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INST),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1E-6)),
-                   SOLVEUR=_F(METHODE='MUMPS',
-   ),
+                   SOLVEUR=_F(METHODE='MUMPS',),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                    INFO=1);
 

@@ -93,10 +93,6 @@ CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                                  PRES=FCTPRES),
                       );
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM);
-
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1));
@@ -104,8 +100,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1),
-                          _F(CHARGE=CHF),                         
-                          _F(CHARGE=CHXFEM)),
+                          _F(CHARGE=CHF),),
                    CONTACT = CTXFEM,       
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL'),

@@ -122,9 +122,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                           DY=Ud,),),
                     INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -136,7 +133,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM,),                  
+                   EXCIT=(                  
                           _F(CHARGE=CH1,),),
                    CONTACT  = CTXFEM,       
                    COMP_ELAS=_F(RELATION='ELAS',

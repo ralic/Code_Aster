@@ -76,12 +76,6 @@ CTXFEM = DEFI_CONTACT(
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_TAC_MIX',),),);
 
-# affectation relation elimination ou inf-sup 
-# dues a enrichissement x-FEM
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,
-                      INFO=2,);
 
 # definition materiau inchangee
 MAT=DEFI_MATERIAU(
@@ -137,7 +131,6 @@ U_OUV=STAT_NON_LINE(
    CONTACT = CTXFEM,
    EXCIT      = (
      _F(CHARGE = LIAISON , FONC_MULT = FCT),
-     _F(CHARGE = CHXFEM,),
    ),
    COMP_ELAS  = _F(RELATION = 'ELAS', GROUP_MA = 'G_CUBE',),
    INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
@@ -157,7 +150,6 @@ U_OUV = STAT_NON_LINE(
   CONTACT = CTXFEM,
   EXCIT = (
     _F(CHARGE = LIAISON,TYPE_CHARGE='FIXE_PILO',),
-    _F(CHARGE = CHXFEM,),
     ),
    PILOTAGE   = _F(
      SELECTION = 'RESIDU',

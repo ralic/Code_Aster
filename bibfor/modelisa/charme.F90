@@ -45,7 +45,6 @@ subroutine charme(fonree)
 #include "asterfort/carbe3.h"
 #include "asterfort/caveas.h"
 #include "asterfort/caveis.h"
-#include "asterfort/caxfem.h"
 #include "asterfort/cbchei.h"
 #include "asterfort/cbelec.h"
 #include "asterfort/cbimpd.h"
@@ -147,37 +146,37 @@ subroutine charme(fonree)
 ! --- CHARGES REPARTIES: FORCE_CONTOUR FORCE_INTERNE FORCE_ARETE
 !                        FORCE_FACE    FORCE_POUTRE  FORCE_COQUE
 !
-    do 10 i = 1, 6
+    do i = 1, 6
         if (fonree .eq. 'COMP' .and. chrep(i) .ne. 'FORCE_POUTRE') then
             nbocc(i) = 0
         else
             call getfac(chrep(i), nbocc(i))
         endif
-10  end do
+    end do
 !
 ! --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE ---
 !
     if (ndim .gt. 3) call u2mess('A', 'MODELISA4_4')
 !
     if (ndim .eq. 3) then
-        do 20 i = 1, 6
+        do i = 1, 6
             if (nbocc(i) .ne. 0) then
 !
                 call cachre(char, ligrmo, noma, ndim, fonree,&
                             param(i), chrep(i))
 !
             endif
-20      continue
+        end do
 !
     else
-        do 15 i = 4, 5
+        do i = 4, 5
             if (nbocc(i) .ne. 0) then
 !            --------- FORCE_FACE    INTERDIT EN 2D
 !            --------- FORCE_POUTRE  INTERDIT EN 2D
                 call u2mesk('A', 'MODELISA4_5', 1, chrep(i))
             endif
-15      continue
-        do 25 i = 1, 6
+        end do
+        do i = 1, 6
             if (nbocc(i) .ne. 0) then
 !
                 para = param(i)
@@ -188,7 +187,7 @@ subroutine charme(fonree)
                 call cachre(char, ligrmo, noma, ndim, fonree,&
                             para, chrep(i))
             endif
-25      continue
+        end do
     endif
 !
     if (fonree .ne. 'COMP') then
@@ -266,10 +265,6 @@ subroutine charme(fonree)
 !
     motfac = 'DDL_IMPO        '
     call caddli(oper, motfac, fonree, char)
-!
-! --- LIAISON_XFEM ---
-!
-    call caxfem(fonree, char)
 !
 ! --- LIAISON_DDL ---
 !

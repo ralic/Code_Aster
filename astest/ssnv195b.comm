@@ -176,19 +176,13 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  ),
                        INFO=1);
 
-
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      CONTACT_XFEM=CTXFEM,
-                      LIAISON_XFEM='OUI');
-
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CH1),
-                          _F(CHARGE=CHXFEM)),
+                   EXCIT=(_F(CHARGE=CH1),),
                    CONTACT  = CTXFEM,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL'),

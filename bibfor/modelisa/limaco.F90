@@ -45,6 +45,7 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
 #include "asterfort/tablco.h"
 #include "asterfort/typeco.h"
 #include "asterfort/xconta.h"
+#include "asterfort/xfem_rel_lin.h"
 #include "asterfort/xmacon.h"
     character(len=8) :: char
     character(len=8) :: noma
@@ -184,6 +185,7 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
                 call xmacon(char, noma, nomo)
             endif
             call xconta(char, noma, nomo, ndim)
+            call xfem_rel_lin(char, noma, nomo)
         else
             call assert(.false.)
         endif

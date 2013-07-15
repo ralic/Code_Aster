@@ -39,46 +39,26 @@ cata_msg = {
      Veuillez contacter votre assistance technique.
 """),
 
-7 : _(u"""
-  -> Le contact a été activé dans XFEM (CONTACT_XFEM='OUI' dans MODI_MODELE_XFEM)
-  -> Risque & Conseil:
-     Vous devez également l'activer dans AFFE_CHAR_MECA/CONTACT_XFEM
-"""),
 
 8 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modèle
+  -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
      XFEM.
   -> Risque & Conseil:
      Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à
-     AFFE_CHAR_MECA/CONTACT un modèle XFEM.
+     DEFI_CONTACT un modèle XFEM.
 """),
 
 9 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modèle
+  -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
      XFEM avec contact.
   -> Risque & Conseil:
-     Veuillez activer CONTACT='OUI' dans MODI_MODELE_XFEM.
+     Veuillez activer CONTACT dans MODI_MODELE_XFEM.
 """),
 
 10 : _(u"""
   -> Toutes les fissures ne sont pas rattachées au même maillage.
      La fissure %(k1)s est rattachée au maillage %(k2)s alors que 
      la fissure %(k3)s est rattachée au maillage %(k4)s.
-"""),
-
-11 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas
-     le modèle XFEM utilisé dans le AFFE_CHAR_MECA/CONTACT nommé %(k2)s.
-  -> Risque & Conseil:
-     Risques de résultats faux.
-"""),
-
-12 : _(u"""
-  -> Le modèle %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas un modèle
-     XFEM.
-  -> Risque & Conseil:
-     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à
-     AFFE_CHAR_MECA/CONTACT_XFEM un modèle XFEM.
 """),
 
 15 : _(u"""

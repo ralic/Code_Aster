@@ -97,10 +97,6 @@ CTXFEM = DEFI_CONTACT(
                      RELATION='CZM_LIN_REG',
                      )));
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,
-                      INFO=2);
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
 #--------------------------------------------------------------
@@ -172,7 +168,6 @@ EVOL = STAT_NON_LINE(
   EXCIT = (
     _F(CHARGE = SYMETRIE),
     _F(CHARGE = RIGIDE),
-    _F(CHARGE = CHXFEM),
     _F(CHARGE = TRACTION,
        TYPE_CHARGE = 'FIXE_PILO',
        ),

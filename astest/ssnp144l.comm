@@ -96,10 +96,6 @@ CTXFEM = DEFI_CONTACT(
                        ALGO_LAGR='VERSION2',
                        RELATION='CZM_EXP_REG',),),);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
-
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -155,9 +151,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CH1,
-                              TYPE_CHARGE='FIXE_PILO',),),
+                    EXCIT=(_F(CHARGE=CH1,TYPE_CHARGE='FIXE_PILO',),),
                     CONTACT =  CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='SURF',),
@@ -182,8 +176,7 @@ UTOT1=STAT_NON_LINE(reuse =UTOT1,
                     ETAT_INIT=_F(EVOL_NOLI=UTOT1,),
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CH1,
+                    EXCIT=(_F(CHARGE=CH1,
                               TYPE_CHARGE='FIXE_PILO',),),
                     CONTACT =  CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',

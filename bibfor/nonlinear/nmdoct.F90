@@ -62,7 +62,8 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 !
 !
     character(len=16) :: motcle
-    integer :: nocc, nchar1, nchar2, ich, ier, iatype
+    integer :: nocc, nchar1, nchar2, ich, iatype
+    integer :: rel_lin_disc, rel_lin_xfem
     character(len=8) :: charco
     integer :: iform, ival1, ival2
     character(len=8) :: ligret, ligrel, ligrxt
@@ -153,10 +154,16 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
 !
     if (iform .eq. 1) then
         ligrel = charco(1:8)
-        call jeexin(ligrel//'.CHME.LIGRE.LGRF', ier)
-        if (ier .ne. 0) then
-            nchar2 = nchar2+1
-        endif
+        call jeexin(ligrel//'.CHME.LIGRE.LGRF', rel_lin_disc)
+        if (rel_lin_disc .ne. 0)  nchar2 = nchar2+1
+    endif
+!
+! --- EVENTUELLES RELATIONS LINEAIRES - METHODE XFEM
+!
+    if (iform .eq. 3) then
+        ligrel = charco(1:8)
+        call jeexin(ligrel//'.CHME.LIGRE.LGRF', rel_lin_xfem)
+        if (rel_lin_xfem .ne. 0)  nchar2 = nchar2+1
     endif
 !
     if (nchar2 .ne. nchar1) then
@@ -182,7 +189,7 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
         endif
 !
         if (iform .eq. 1) then
-            if (ier .ne. 0) then
+            if (rel_lin_disc .ne. 0) then
                 infoc2 = 'DIRI_CSTE'
                 ival2 = 0
                 nbinfo = 1
@@ -199,6 +206,13 @@ subroutine nmdoct(lischa, defico, deficu, lcont, lunil,&
                 call liscad(lisch2, nchar1+1, ligrxt, fctcst, nbinfo,&
                             infoc2, ival2)
                 call liscad(lisch2, nchar1+2, ligrxf(1:8), fctcst, nbinfo,&
+                            infoc2, ival2)
+            endif
+            if (rel_lin_xfem .ne. 0) then
+                infoc2 = 'DIRI_CSTE'
+                ival2 = 0
+                nbinfo = 1
+                call liscad(lisch2, nchar1+1, ligrel, fctcst, nbinfo,&
                             infoc2, ival2)
             endif
         endif

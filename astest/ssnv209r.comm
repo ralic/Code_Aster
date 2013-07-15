@@ -218,9 +218,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                              ),
                          ),
                    );
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                   DDL_IMPO=(
@@ -267,7 +265,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
-                    EXCIT=(_F(CHARGE=CHXFEM,),
+                    EXCIT=(
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),
                           _F(CHARGE=CH,

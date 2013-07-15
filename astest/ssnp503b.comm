@@ -145,13 +145,7 @@ VAR1=DEFI_FONCTION(NOM_PARA='INST',
 VAR2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
                     );   
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      CONTACT_XFEM=CTXFEM,
-                      LIAISON_XFEM='OUI',
-                      INFO=2);
-                      
-IMPR_CO(CONCEPT=_F(NOM=CHXFEM))
-                      
+
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -160,8 +154,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,INFO=1,
                     CHAM_MATER=CHAMPMAT,
                     CONTACT = CTXFEM,              
-                    EXCIT=(_F(CHARGE=CHXFEM),                                    
-                           _F(CHARGE=CH1,FONC_MULT=VAR1),
+                    EXCIT=(_F(CHARGE=CH1,FONC_MULT=VAR1),
                            _F(CHARGE=CH2,FONC_MULT=VAR2)),  
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='SURF'),

@@ -23,7 +23,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                              'CHAMNO_IMPO','ARETE_IMPO',
                              'LIAISON_DDL','LIAISON_OBLIQUE','LIAISON_GROUP','LIAISON_MAIL',
                              'LIAISON_CYCL','LIAISON_SOLIDE','LIAISON_ELEM','LIAISON_UNIF',
-                             'LIAISON_CHAMNO','LIAISON_RBE3','LIAISON_INTERF','LIAISON_XFEM',
+                             'LIAISON_CHAMNO','LIAISON_RBE3','LIAISON_INTERF',
                              'VECT_ASSE',
                              'FORCE_NODALE','FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
                              'PRE_SIGM','PRES_REP','EFFE_FOND','PRE_EPSI','FORCE_POUTRE','FORCE_TUYAU',
@@ -465,11 +465,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna),
              TYPE_LIAISON    =SIMP(statut='f',typ='TXM',defaut="RIGIDE",into=("RIGIDE","SOUPLE") ),
            ),
-
-         LIAISON_XFEM      =SIMP(statut='f',typ='TXM',into=("OUI",),),
-
-         CONTACT_XFEM      =SIMP(statut='f',typ=char_contact,min=1,max=1,),
-
 
 #         SIMP(statut='f',typ='TXM',defaut="NON" ),
 
