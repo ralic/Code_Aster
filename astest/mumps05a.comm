@@ -1,5 +1,4 @@
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +48,7 @@ solveur = 'MUMPS';
 # Choix de la methode de renumeration
 meth_renum = 'METIS';
 meth_renu2 = 'SCOTCH';
-pcent_pivot=30
+pcent_pivot=50
 #
 # Mode verbeux 1/2
 niv_info = 2
