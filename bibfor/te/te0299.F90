@@ -1,22 +1,5 @@
 subroutine te0299(option, nomte)
     implicit none
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/chauxi.h"
-#include "asterfort/elref4.h"
-#include "asterfort/fointe.h"
-#include "asterfort/gbilin.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/nmgeom.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecach.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/vecini.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -49,6 +32,23 @@ subroutine te0299(option, nomte)
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/chauxi.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gbilin.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vecini.h"
 !
     integer :: icodre(3)
     integer :: codrho
@@ -105,20 +105,21 @@ subroutine te0299(option, nomte)
     g = 0.d0
     k1 = 0.d0
     k2 = 0.d0
+    rho = 0.d0
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
 ! --- PAS DE CALCUL DE G POUR LES ELEMENTS OU THETA EST NULLE
 !
     compt = 0
-    do 10 i = 1, nno
+    do i = 1, nno
         thet = 0.d0
-        do 11 j = 1, ndim
+        do j = 1, ndim
             thet = thet + abs(zr(ithet+ndim*(i-1)+j-1))
-11      continue
+        end do
         if (thet .lt. r8prem()) compt = compt + 1
-10  end do
-    if (compt .eq. nno) goto 9999
+    end do
+    if (compt .eq. nno) goto 999
 !
 !
 ! --- RECUPERATION DES FORCES
@@ -161,9 +162,9 @@ subroutine te0299(option, nomte)
 !
 ! --- VERFICATION DU COMPORTEMENT
 !
-    do 20 i = 1, 4
+    do i = 1, 4
         compor(i) = zk16(icomp+i-1)
-20  end do
+    end do
 !
     if ((compor(1).ne.'ELAS' ) .or. (compor(3).eq.'GROT_GDEP') .or.&
         (compor(4).eq.'COMP_INCR')) then
@@ -186,22 +187,22 @@ subroutine te0299(option, nomte)
 ! --- RECUPERATION DES CHARGES
 !
     if (fonc) then
-        do 50 i = 1, nno
-            do 30 j = 1, ndim
+        do i = 1, nno
+            do j = 1, ndim
                 valpar(j) = zr(igeom+ndim*(i-1)+j-1)
-30          continue
-            do 40 j = 1, ndim
+            end do
+            do j = 1, ndim
                 kk = ndim*(i-1) + j
                 call fointe('FM', zk8(iforf+j-1), ndim+1, nompar, valpar,&
                             fno(kk), ier)
-40          continue
-50      continue
+            end do
+        end do
     else
-        do 80 i = 1, nno
-            do 60 j = 1, ndim
+        do i = 1, nno
+            do j = 1, ndim
                 fno(ndim*(i-1)+j) = zr(iforc+ndim*(i-1)+j-1)
-60          continue
-80      end do
+            end do
+        end do
     endif
 !
 ! --- RECUPERATION DE LA PESANTEUR ET DE LA ROTATION
@@ -212,37 +213,37 @@ subroutine te0299(option, nomte)
                     ' ', phenom, 1, ' ', rbid,&
                     1, 'RHO', rho, icodre, 1)
         if (lpesa) then
-            do 95 i = 1, nno
-                do 90 j = 1, ndim
+            do i = 1, nno
+                do j = 1, ndim
                     kk = ndim*(i-1)+j
                     fno(kk)=fno(kk)+rho*zr(ipesa)*zr(ipesa+j)
-90              continue
-95          continue
+                end do
+            end do
         endif
 !
         if (lrota) then
             om = zr(irota)
-            do 105 i = 1, nno
+            do i = 1, nno
                 omo = 0.d0
-                do 100 j = 1, ndim
+                do j = 1, ndim
                     omo = omo + zr(irota+j)* zr(igeom+ndim*(i-1)+j-1)
-100              continue
-                do 103 j = 1, ndim
+                end do
+                do j = 1, ndim
                     kk = ndim*(i-1)+j
                     fno(kk)=fno(kk)+rho*om*om*(zr(igeom+kk-1)-omo*zr(&
                     irota+j))
-103              continue
-105          continue
+                end do
+            end do
         endif
     endif
 !
 ! --- RECUPERATION DE LA TEMPERATURE
 !
-    do 646 ino = 1, nno
+    do ino = 1, nno
         call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
                     1, tno(ino), iret)
         if (iret .ne. 0) tno(ino) = 0.d0
-646  end do
+    end do
 !
 ! ----------------------------------------------------------------------
 !
@@ -250,21 +251,21 @@ subroutine te0299(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    do 800 kp = 1, npg
+    do kp = 1, npg
 !
         l = (kp-1) * nno
         xg = 0.d0
         yg = 0.d0
-        do 220 i = 1, 3
+        do i = 1, 3
             tgdm(i) = 0.d0
-            do 210 j = 1, 4
+            do j = 1, 4
                 dudm(i,j) = 0.d0
                 du1dm(i,j)= 0.d0
                 du2dm(i,j)= 0.d0
                 dtdm(i,j) = 0.d0
                 dfdm(i,j) = 0.d0
-210          continue
-220      continue
+            end do
+         end do
 !
 ! ----- CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E)
 !       EN UN PT DE GAUSS
@@ -277,7 +278,7 @@ subroutine te0299(option, nomte)
 ! ----- CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)
 ! ----- DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS (TGDM)
 !
-        do 320 i = 1, nno
+        do i = 1, nno
             der(1) = dfdi(i)
             der(2) = dfdi(i+nno)
             der(3) = 0.d0
@@ -286,18 +287,18 @@ subroutine te0299(option, nomte)
             xg = xg + zr(igeom-1+ndim*(i-1)+1)*der(4)
             yg = yg + zr(igeom-1+ndim*(i-1)+2)*der(4)
 !
-            do 310 j = 1, ndim
+            do j = 1, ndim
                 tgdm(j) = tgdm(j) + tno(i) * der(j)
-                do 300 k = 1, ndim
+                do k = 1, ndim
                     dudm(j,k) = dudm(j,k) + zr(idepl+ndim*(i-1)+j-1)* der(k)
                     dtdm(j,k) = dtdm(j,k) + zr(ithet+ndim*(i-1)+j-1)* der(k)
                     dfdm(j,k) = dfdm(j,k) + fno(ndim*(i-1)+j)*der(k)
-300              continue
+                end do
                 dudm(j,4) = dudm(j,4) + zr(idepl+ndim*(i-1)+j-1)*der( 4)
                 dtdm(j,4) = dtdm(j,4) + zr(ithet+ndim*(i-1)+j-1)*der( 4)
                 dfdm(j,4) = dfdm(j,4) + fno(ndim*(i-1)+j)*der(4)
-310          continue
-320      continue
+            end do
+        end do
 !
         if (axi) then
             if (ray .lt. r8prem()) call u2mess('F', 'RUPTURE0_56')
@@ -391,19 +392,19 @@ subroutine te0299(option, nomte)
 !
 ! ----- CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
 !
-        do 120 i = 1, 3
+        do i = 1, 3
             p(i,1)=e1(i)
             p(i,2)=e2(i)
             p(i,3)=e3(i)
-120      continue
+        end do
 !
 ! ----- CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
 !
-        do 130 i = 1, 3
-            do 131 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 invp(i,j)=p(j,i)
-131          continue
-130      continue
+            end do
+        end do
 !
 !       PRISE EN COMPTE DE LA COURBURE : NON
 !
@@ -417,12 +418,12 @@ subroutine te0299(option, nomte)
 !         CHAMPS SINGULIERS DANS LA BASE GLOBALE
             call vecini(ndim, 0.d0, u1)
             call vecini(ndim, 0.d0, u2)
-            do 510 i = 1, ndim
-                do 511 j = 1, ndim
+            do i = 1, ndim
+                do j = 1, ndim
                     u1(i) = u1(i) + p(i,j) * u1l(j)
                     u2(i) = u2(i) + p(i,j) * u2l(j)
-511              continue
-510          continue
+                end do
+            end do
 !
             du1dm(3,3)= u1(1)/ray
             du2dm(3,3)= u2(1)/ray
@@ -456,7 +457,7 @@ subroutine te0299(option, nomte)
                     rho, puls, axi, guv2)
         k2 = k2 + guv2
 !
-800  end do
+    end do
 !
     k1 = k1 * coefk
     k2 = k2 * coefk
@@ -467,7 +468,7 @@ subroutine te0299(option, nomte)
     zr(ificg+3) = k1
     zr(ificg+4) = k2
 !
-9999  continue
+999 continue
 !
     call jedema()
 !
