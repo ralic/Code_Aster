@@ -20,7 +20,7 @@
 def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
                               FOND_FISS,RESU_THER,AFFE_MATERIAU,
                               PRES_REP,ECHANGE,TORS_P1,COMP_ELAS,
-                              SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
+                              SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,ENERGIE,
                               INCREMENT,THETA_3D,IMPR_TABLE,IMPRESSION,INFO,TITRE ,**args):
   """
      Ecriture de la macro MACR_ASCOUF_CALC
@@ -376,6 +376,10 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   for i in dIncrem.keys():
       if dIncrem[i]==None : del dIncrem[i]
 #
+  dEnergie = {}
+  if ENERGIE:
+      dEnergie=ENERGIE[0].cree_dict_valeurs(ENERGIE[0].mc_liste)
+#
   if TITRE!=None :
     motscles['TITRE'        ] =TITRE
   motscles  ['SOLVEUR'      ] =dSolveur
@@ -383,6 +387,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   motscles  ['NEWTON'       ] =dNewton
   motscles  ['RECH_LINEAIRE'] =dRechlin
   motscles  ['INCREMENT'    ] =dIncrem
+  motscles  ['ENERGIE'      ] =dEnergie
   self.DeclareOut('nomres',self.sd)
 
   if contact==None:

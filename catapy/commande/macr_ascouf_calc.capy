@@ -103,6 +103,8 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",
            R_SUP           =SIMP(statut='o',typ='R' ),
          ),
 
+         ENERGIE         =FACT(statut='f',max=1),
+
          IMPR_TABLE      =FACT(statut='f',
            regles=(UN_PARMI('TOUT_PARA','NOM_PARA', ),
             PRESENT_PRESENT('TOUT_PARA','ANGLE',    ),

@@ -19,7 +19,7 @@
 
 def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
                              FOND_FISS_1,FOND_FISS_2,RESU_THER,AFFE_MATERIAU,EQUILIBRE,
-                             PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_ELAS,
+                             PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_ELAS,ENERGIE,
                              THETA_3D,OPTION,SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
                              INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE,BORNES ,**args):
   """
@@ -377,6 +377,10 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   for i in dIncrem.keys():
       if dIncrem[i]==None : del dIncrem[i]
 #
+  dEnergie = {}
+  if ENERGIE:
+      dEnergie=ENERGIE[0].cree_dict_valeurs(ENERGIE[0].mc_liste)
+#
   if TITRE!=None :
     motscles['TITRE'        ] =TITRE
   motscles  ['SOLVEUR'      ] =dSolveur
@@ -384,6 +388,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   motscles  ['NEWTON'       ] =dNewton
   motscles  ['RECH_LINEAIRE'] =dRechlin
   motscles  ['INCREMENT'    ] =dIncrem
+  motscles  ['ENERGIE'      ] =dEnergie
   self.DeclareOut('nomres',self.sd)
   
   

@@ -1,5 +1,4 @@
 # TITRE PLAQUE DE BETON PRECONTRAINT AVEC CABLE EXCENTRE EN FLEXION
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -124,6 +123,7 @@ RES1 =  CALC_PRECONT(MODELE=MODELE,
                                     GROUP_MA = ('CABLE1'),),),
                      EXCIT   =(_F(CHARGE = CHARMECA,),),
                      CABLE_BP   =( CAB_BP1,),
+                     ENERGIE = _F(),
                      INCREMENT=_F(LIST_INST = LINST,
                                   INST_FIN  = 1., ),);
 
@@ -146,6 +146,18 @@ RES1 = STAT_NON_LINE(reuse=RES1,
 # ------------------------------------------------------------------------
 #                       Post-traitement
 # ------------------------------------------------------------------------
+
+ENERGIE=RECU_TABLE(CO=RES1,NOM_TABLE='PARA_CALC',);
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=212.5031098818,
+           NOM_PARA='TRAV_EXT',
+           TABLE=ENERGIE,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=9.5E-01,),
+                   ),
+           )
+
 #  Cable 1 - inst 1s
 # ------------------------------------------------------------------------
 TEST_RESU(RESU=_F(INST=1.0,

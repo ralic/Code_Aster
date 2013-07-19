@@ -21,7 +21,7 @@
 
 def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                 CABLE_BP,CABLE_BP_INACTIF,
-                                COMP_INCR,ETAT_INIT,METHODE,
+                                COMP_INCR,ETAT_INIT,METHODE,ENERGIE,
                                 RECH_LINEAIRE,CONVERGENCE,INCREMENT,SOLVEUR,
                                 INFO,TITRE,**args):
   """
@@ -167,6 +167,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   else :
     dRech_lin=None
 
+  if ENERGIE:
+      dEnergie=ENERGIE[0].cree_dict_valeurs(ENERGIE[0].mc_liste)
+      motscle4['ENERGIE']=dEnergie
+      motscle5['ENERGIE']=dEnergie
+
 
   # 1.3 Creation des mots-cles pour les 3 AFFE_CHAR_MECA
   #     Recuperation des cables dans les concepts CABLE_BP
@@ -301,7 +306,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   #-------------------------------------------------------------------
   # 2.1 Premiere etape : calcul sur le(s) cable(s) et
   #     recuperation des _F_CAs aux noeuds
-  #     on travaile entre tmin et tmax
+  #     on travaille entre tmin et tmax
   #-------------------------------------------------------------------
 
   __EV1=STAT_NON_LINE(

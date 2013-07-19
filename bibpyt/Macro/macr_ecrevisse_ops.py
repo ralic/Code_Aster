@@ -42,6 +42,7 @@ def macr_ecrevisse_ops(self, reuse,
    NEWTON,
    CONVERGENCE,
    ETAT_INIT,
+   ENERGIE,
    INFO,
    **args):
     """
@@ -380,6 +381,9 @@ def macr_ecrevisse_ops(self, reuse,
                     motclefs['ETAT_INIT']=[_F(EVOL_NOLI=EVINIT, NUME_ORDRE=nume_ordre)]
                     if (debug):
                         print 'etat meca initial dReuseM', motclefs
+
+                if ENERGIE:
+                    motclefs['ENERGIE']=ENERGIE[0].cree_dict_valeurs(ENERGIE[0].mc_liste)
 
                 if (debug):
                     print '====> STAT_NON_LINE <===='

@@ -55,6 +55,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
          b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
                            NEWTON = C_NEWTON(),
                         ),
+         ENERGIE         =FACT(statut='f',max=1),
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
          SOLVEUR         =C_SOLVEUR('CALC_PRECONT'),
