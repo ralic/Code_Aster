@@ -89,6 +89,12 @@ Conseils :
   La réactualisation du préconditionneur n'est donc pas possible.
 """),
 
+43 : _(u"""
+  Vous n'avez pas activé la détection de singularité (NPREC est négatif).
+  La découpe du pas de temps en cas d'erreur sur matrice singulière (pivot nul) ne sera
+donc pas possible.
+"""),
+
 86 : _(u"""
 Il n'y a aucun pas de calcul temporel.
 En mécanique, 'LIST_INST' est absent.

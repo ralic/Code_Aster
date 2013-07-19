@@ -23,6 +23,7 @@ subroutine crsvsi(solveu)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
     character(len=19) :: solveu
 !
 ! ----------------------------------------------------------------------
@@ -36,8 +37,7 @@ subroutine crsvsi(solveu)
 !
 ! IN  SOLVEU  : NOM SD SOLVEUR
 !
-!
-!
+! ----------------------------------------------------------------------
 !
     integer :: islvi, islvk
     integer :: nprec
@@ -56,7 +56,7 @@ subroutine crsvsi(solveu)
         if (nprec .gt. 0) then
             zi(islvi-1+3) = 2
         else
-            call u2mesk('I', 'DISCRETISATION_40', 1, nomslv)
+            call u2mess('I', 'DISCRETISATION_43')
         endif
     else
         call u2mesk('I', 'DISCRETISATION_40', 1, nomslv)
