@@ -65,10 +65,6 @@ DICT_NOM_VARI = {
     "COHESION" : _(u"cohésion"),
     "COMPT" : _(u"itération de Newton courante,"),
     "COMR" : _(u"itération de Newton de rupture,"),
-
-    "CRITELS": _(u"Critère en contrainte, utilisé en Génie Civil"),
-    "CRITELU": _(u"Critère en déformation, utilisé en Génie Civil"),
-
     "CRITSIG": _(u"Critère en contrainte, utilisé en Génie Civil"),
     "CRITEPS": _(u"Critère en déformation, utilisé en Génie Civil"),
     "CRITHILL" : _(u"Critère de Hill : pour Hujeux : densité normalisée pour le travail du second ordre"),
@@ -327,7 +323,6 @@ DICT_NOM_VARI = {
     "PW" : _(u"BETON_RAG : pression hydrique"),
     "SIEQ" : _(u"cam_clay : contrainte équivalente"),
     "RESIDU" : _(u"valeur du test local d'arrêt des itérations internes"),
-    "RHXY" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 3"),
     "RHXZ" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 2"),
     "RHYZ" : _(u"Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 1"),
     "RSIGMA": _(u"Facteur de triaxialité des contraintes, modèle Mazars"),
