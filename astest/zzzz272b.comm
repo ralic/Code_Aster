@@ -1,5 +1,4 @@
 # TITRE VALIDATION DE EVOL_CHAR EN THM
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +21,6 @@
 # p.78 avec biot=1 et un chargement mecanique
 # defini par evol_char
 ##############################################
-# person_in_charge: sebastien.meunier at edf.fr
-#
 #Validation de EVOL_CHAR en HM en 3D
 
 import numpy

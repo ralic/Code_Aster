@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: sylvie.michel at edf.fr
+# person_in_charge: sylvie.michel-ponnelle at edf.fr
 
 DEFI_CABLE_OP=OPER(nom="DEFI_CABLE_OP",op= 180,sd_prod=cabl_precont,reentrant='n',
             fr="Définit les profils initiaux de tension d'une structure en béton le long des cables de précontrainte"

@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-# person_in_charge: charles.bodel at edf.fr
+# person_in_charge: mathieu.corus at edf.fr
 MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
                     fr="Calcul des modes propres d'une structure à répétitivité cyclique à partir"
                         +" d'une base de modes propres réels",

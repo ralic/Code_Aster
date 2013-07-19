@@ -15,8 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-# person_in_charge: charles.bodel at edf.fr
+# person_in_charge: albert.alarcon at edf.fr
 
 # Ce module est une surcharge de pylotage 2.0.2
 # Il faudra reporter les methodes modifiees dans la prochaine version

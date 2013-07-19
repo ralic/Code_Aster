@@ -19,7 +19,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean.angles at edf.fr
+! person_in_charge: van-xuan.tran at edf.fr
 ! aslint: disable=W1306
     implicit      none
 #include "jeveux.h"
@@ -114,20 +114,6 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
     call anacri(nomcri, nomfor, typcha, 'NON', paract,&
                 fordef, lbid, lbid, lbid, lbid)
 !
-! VOIR SI LE CRITERE DU TYPE DE PLANE CRITIQUE
-! SI OUI, ON TOURNE NVVECT, SI NON ON NVEC=1
-!
-!       PLACRI = .FALSE.
-!       DO 30 J = 1, 8
-!          IF (PARACT(J) .EQ. 1) THEN
-!             PLACRI = .TRUE.
-!             GOTO 31
-!          ENDIF
-!
-! 30    CONTINUE
-!
-! 31    CONTINUE
-!
 !-----------------------------------------------------------------------
 ! CALCULER LES GRANDEURS
 !----------------------------------------------------------------------
@@ -205,9 +191,9 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                     nompf)
     endif
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
         ad0 = (ivect-1)*nbordr
-        do 20 icycl = 1, ncycl(ivect)
+        do icycl = 1, ncycl(ivect)
             ad1 = (ivect-1)*nbordr + icycl
             ad2 = (ivect-1)*(nbordr+2) + icycl
 !
@@ -266,12 +252,12 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                 valpar(30) = 0.d0
 !
                 do 75 j = 1, np
-                    do 65 ipar = 1, nparma
+                    do ipar = 1, nparma
                         if (nompf(j) .eq. nompar(ipar)) then
                             valpu(j) = valpar(ipar)
                             goto 75
                         endif
-65                  continue
+                    end do
 75              continue
 !
                 call fointe('F', nomfor, np, nompf, valpu,&
@@ -279,13 +265,9 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
 !
             endif
 !
-20      continue
+        end do
 !
-!         IF ( .NOT. PLACRI) THEN
-!            GOTO 99
-!         ENDIF
-!
-10  end do
+    end do
 !
     call jedema()
 !

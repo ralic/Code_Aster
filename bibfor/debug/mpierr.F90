@@ -1,5 +1,5 @@
 subroutine mpierr(iermpi)
-! person_in_charge: thomas.desoza at edf.fr
+! person_in_charge: thomas.de-soza at edf.fr
 ! CORPS DU PROGRAMME
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

@@ -15,8 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-# person_in_charge: charles.bodel at edf.fr
+# person_in_charge: albert.alarcon at edf.fr
 
 ##On definit dans ce module python des classes associees a des objets aster,
 ##permettant leur manipulation en python (pour le calcul numerique).

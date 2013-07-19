@@ -27,8 +27,6 @@ subroutine thmevc(option, nomte, axi, nno, npg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sebastien.meunier at edf.fr
-! =====================================================================
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
 !                          ELEMENTS THHM, HM ET HH
 ! =====================================================================

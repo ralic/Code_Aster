@@ -16,7 +16,7 @@ subroutine te0497(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sebastien.meunier at edf.fr
+! person_in_charge: josselin.delmas at edf.fr
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 !      SUR UN ELEMENT ISOPARAMETRIQUE 2D, VIA L'OPTION 'ERME_ELEM'
@@ -135,7 +135,7 @@ subroutine te0497(option, nomte)
     data nomre4 / 'E', 'NU'    /
 !
 ! ----------------------------------------------------------------------
-    1000 format(a,' :',(6(1x,1pe17.10)))
+    100 format(a,' :',(6(1x,1pe17.10)))
 ! 2000 FORMAT(A,10I8)
 ! ----------------------------------------------------------------------
 ! 1 -------------- GESTION DES DONNEES ---------------------------------
@@ -415,7 +415,7 @@ subroutine te0497(option, nomte)
         fpx = 0.d0
         fpy = 0.d0
     endif
-!GN      WRITE(IFM,1000) 'P',FPX,FPY,FPZ
+!GN      WRITE(IFM,100) 'P',FPX,FPY,FPZ
 !
 ! 2.3. --- CALCUL DE LA FORCE DE ROTATION ---
 !
@@ -424,10 +424,10 @@ subroutine te0497(option, nomte)
                     npg, frx, fry)
     else
 !
-        do 52 , ipg = 1 , npg
-        frx(ipg) = 0.d0
-        fry(ipg) = 0.d0
-52      continue
+        do ipg = 1 , npg
+            frx(ipg) = 0.d0
+            fry(ipg) = 0.d0
+        end do
 !
     endif
 !
@@ -443,14 +443,14 @@ subroutine te0497(option, nomte)
 !       SI UNE COMPOSANTE N'A PAS ETE DECRITE, ASTER AURA MIS PAR
 !       DEFAUT LA FONCTION NULLE &FOZERO. ON LE REPERE POUR
 !       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
-        do 24 , ibid = 1 , ndim
-        if (zk8(ifovf+ibid-1)(1:7) .eq. '&FOZERO') then
-            fovo(ibid) = 0.d0
-        else
-            call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
-                        fovo(ibid), iret)
-        endif
-24      continue
+        do ibid = 1 , ndim
+            if (zk8(ifovf+ibid-1)(1:7) .eq. '&FOZERO') then
+                fovo(ibid) = 0.d0
+            else
+                call fointe('FM', zk8(ifovf+ibid-1), 1, nompar, r8bid3,&
+                            fovo(ibid), iret)
+            endif
+        end do
 !GN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
 !GN        WRITE(IFM,*) 'F Y : ',ZK8(IFOVF+1),FOVO(2)
 !
@@ -569,12 +569,10 @@ subroutine te0497(option, nomte)
 ! ON INITIALISE LES TERMES DE SAUT ET LES TERMES PROVENANT DES
 ! CONDITIONS AUX LIMITES (HYDRAULIQUE + MECANIQUE)
 !
-    do 11 , ii = 1 , 3
-!
-    tm2h1b(ii) = 0.d0
-    tm2h1s(ii) = 0.d0
-!
-    11 end do
+    do ii = 1 , 3
+        tm2h1b(ii) = 0.d0
+        tm2h1s(ii) = 0.d0
+    end do
 !
 ! BOUCLE SUR LES ARETES : IMPLICITEMENT, ON NUMEROTE LOCALEMENT LES
 !                         ARETES COMME LES NOEUDS SOMMETS
@@ -584,7 +582,7 @@ subroutine te0497(option, nomte)
 ! . L'EVENTUEL NOEUD MILIEU EST LE 1ER NOEUD, DECALE DU NOMBRE DE NOEUDS
 !   SOMMETS : IFA + NBS
 !
-    do 20 , ifa = 1,nbs
+    do ifa = 1,nbs
 !
 ! ------TEST DU TYPE DE VOISIN -----------------------------------------
 !
@@ -640,15 +638,15 @@ subroutine te0497(option, nomte)
         endif
 !
         if (niv .ge. 2) then
-            write(ifm,1003) ifa, zi(ivois+ifa), typmav
-            1003 format (i2,'-EME FACE DE NUMERO',i10,' ==> TYPMAV = ', a)
-            write(ifm,1000) 'TM2H1B', tm2h1b
-            write(ifm,1000) 'TM2H1S', tm2h1s
+            write(ifm,103) ifa, zi(ivois+ifa), typmav
+            103 format (i2,'-EME FACE DE NUMERO',i10,' ==> TYPMAV = ', a)
+            write(ifm,100) 'TM2H1B', tm2h1b
+            write(ifm,100) 'TM2H1S', tm2h1s
         endif
 !
     endif
 !
-    20 end do
+    end do
 !
 ! =====================================================================
 ! E. --- MISE EN FORME DES INDICATEURS --------------------------------

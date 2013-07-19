@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jean.angles at edf.fr
+# person_in_charge: van-xuan.tran at edf.fr
 POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
                   fr="Calculer en un point, le dommage de fatigue subi par une structure soumise à une histoire de chargement",

@@ -22,7 +22,7 @@ subroutine dimax1(jvec1, jvec2, nbp1, nbp2, dismax,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean.angles at edf.fr
+! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: ENTRE DEUX LISTES DE POINTS, DETERMINER LES DEUX POINTS QUI SONT
 !     LE PLUS ELOIGNES.

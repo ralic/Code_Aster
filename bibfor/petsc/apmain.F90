@@ -18,7 +18,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.desoza at edf.fr
+! person_in_charge: thomas.de-soza at edf.fr
 #include "asterf_config.h"
 #include "jeveux.h"
 #include "asterc/matfpe.h"

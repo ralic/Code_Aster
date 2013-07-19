@@ -22,7 +22,7 @@ subroutine dimax2(jdom, nbpt, cuon, cvon, rayon,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean.angles at edf.fr
+! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: PARMI UNE LISTE DE POINTS, DETERMINER LE POINT QUI EST LE PLUS
 !      ELOIGNE D'UN POINT DONNE.

@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: ionel.nistor at edf.fr
+# person_in_charge: nicolas.brie at edf.fr
 DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
                      reentrant='f',
                      fr="Définit la base d'une sous-structuration dynamique ou d'une recombinaison modale",

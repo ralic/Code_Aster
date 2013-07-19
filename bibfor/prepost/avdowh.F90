@@ -17,7 +17,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean.angles at edf.fr
+! person_in_charge: van-xuan.tran at edf.fr
     implicit     none
 #include "jeveux.h"
 #include "asterc/r8maem.h"

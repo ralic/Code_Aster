@@ -17,7 +17,7 @@ subroutine ldsp1(pc, ierr)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-! person_in_charge: thomas.desoza at edf.fr
+! person_in_charge: thomas.de-soza at edf.fr
 !----------------------------------------------------------------
 !
 !  PRECONDITIONNEUR ISSU D'UNE FACTORISATION SIMPLE PRECISION

@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: charles.bodel at edf.fr
+# person_in_charge: mathieu.corus at edf.fr
 def asse_matr_gene_prod(METHODE,**args):
     if   (METHODE=="INITIAL") : return matr_asse_gene_r
     elif (args['OPTION']=="RIGI_GENE_C") : return matr_asse_gene_c

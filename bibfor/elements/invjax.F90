@@ -16,8 +16,6 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sebastien.meunier at edf.fr
-!
 ! aslint: disable=W1306
     implicit   none
 #include "asterfort/assert.h"
@@ -55,19 +53,19 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 !
 ! --- JACOBIENNE EN XE
 !
-    do 10 jdim = 1, nderiv
-        do 20 idim = 1, ndim
+    do jdim = 1, nderiv
+        do idim = 1, ndim
             jacobi(idim,jdim) = dff(jdim,1) * coor(idim)
-20      continue
-10  end do
+        end do
+    end do
 !
-    do 100 ino = 2, nno
-        do 110 jdim = 1, nderiv
-            do 120 idim = 1, ndim
+    do ino = 2, nno
+        do jdim = 1, nderiv
+            do idim = 1, ndim
                 jacobi(idim,jdim) = jacobi(idim,jdim) + dff(jdim,ino) * coor(ndim*(ino-1)+idim)
-120          continue
-110      continue
-100  end do
+            end do
+        end do
+    end do
     if (ndim .ne. nderiv) then
         call assert(ndim.eq.nderiv+1)
         if (nderiv .eq. 1) then
@@ -85,15 +83,15 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
     call matinv(stop, ndim, jacobi, inv, det)
     if (det .eq. 0.d0) ipb = 1
 !
-    do 30 i = 1, 3
-        do 40 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             invjac(i,j)=0.d0
-40      continue
-30  end do
-    do 31 i = 1, ndim
-        do 41 j = 1, ndim
+        end do
+    end do
+    do i = 1, ndim
+        do j = 1, ndim
             invjac(i,j)=inv(i,j)
-41      continue
-31  end do
+        end do
+    end do
 !
 end subroutine

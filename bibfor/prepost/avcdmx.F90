@@ -15,7 +15,7 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean.angles at edf.fr
+! person_in_charge: van-xuan.tran at edf.fr
     implicit   none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -51,23 +51,23 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
     nbplan = 1
 !
 !
-    do 10 ivect = 1, nbvec
+    do ivect = 1, nbvec
         if (domtot(ivect) .gt. cudomx) then
             cudomx = domtot(ivect)
             vnormx(1) = ivect
         endif
-10  end do
+    end do
 !
 ! ON CHERCHE SI EXISTE DIFFERENT PLAN
     vnormx(2) = vnormx(1)
 !
-    do 431 ivect = 1, nbvec
+    do ivect = 1, nbvec
         if ((abs(domtot(ivect)-cudomx) .lt. prec ) .and. (ivect .ne. vnormx(1))) then
             nbplan = nbplan + 1
             vnormx(2) = ivect
         endif
 !
-431  end do
+    end do
 !
     call jedema()
 !

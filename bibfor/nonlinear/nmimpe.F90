@@ -16,7 +16,6 @@ subroutine nmimpe(modele, limped)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: nicolas.tardieu at edf.fr
 !
     implicit none
 #include "jeveux.h"
@@ -51,7 +50,7 @@ subroutine nmimpe(modele, limped)
 !
     call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k8bid)
     repk = 'NON'
-    do 10 igrel = 1, nbgrel
+    do igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
         call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k8bid)
         itypel = zi(ialiel-1+nel)
@@ -60,7 +59,7 @@ subroutine nmimpe(modele, limped)
             repk = 'OUI'
             goto 20
         endif
-10  end do
+    end do
 !
     if (repk .eq. 'NON') then
         limped = .false.
