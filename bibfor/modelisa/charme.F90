@@ -106,7 +106,7 @@ subroutine charme(fonree)
 !        LIAISON_CYCL
 !        LIAISON_INTERF
 ! ----------------------------------------------------------------------
-    integer :: nbocc(6), i, igrel, inema, iret, ndim, ibid, jlgrf
+    integer :: nbocc(6), i, iret, ndim, ibid, jlgrf
     character(len=5) :: param(7), para
     character(len=8) :: char, noma, nomo
     character(len=16) :: type, oper, chrep(6), motfac
@@ -122,25 +122,20 @@ subroutine charme(fonree)
 !
     call getres(char, type, oper)
 !
-! --- NOMS DE LIGREL, MAILLAGE , DIMENSION DU PB
+! - Mesh, Ligrel for model, dimension of model
 !
     call cagene(char, oper, ligrmo, noma, ndim)
     nomo = ligrmo(1:8)
 !
-! --- ALLOCATION DU LIGREL DE CHARGE
-!             (DDL-IMPO, FORCE_NO, FACE_IMPO, ARETE_IMPO, LIAISON_GROUP)
+! - Ligrel for loads
 !
-    call alligr(char, oper, noma, fonree, ligrch)
+    ligrch = char//'.CHME.LIGRE'
 !
-    igrel = 0
-    inema = 0
-!
-! --- FORCE_NODALE ---
+! - Keyword: FORCE_NODALE
 !
     if (fonree .ne. 'COMP') then
-!         ================
-        call cafono(char, ligrch, igrel, inema, noma,&
-                    ligrmo, fonree)
+        call alligr(char, oper, noma, fonree, ligrch)
+        call cafono(char, ligrch, noma, ligrmo, fonree)
     endif
 !
 ! --- CHARGES REPARTIES: FORCE_CONTOUR FORCE_INTERNE FORCE_ARETE
@@ -251,16 +246,6 @@ subroutine charme(fonree)
         call cbondp(char, noma)
     endif
 !
-! --- SI DDL_IMPO OU(ET) FACE_IMPO OU(ET) ARETE_IMPO:
-!        DESTRUCTION DES 3 OBJETS TEMPORAIRES SERVANT A LA SURCHARGE
-!
-    call jeexin('&&CAFACI.DESGI', iret)
-    if (iret .ne. 0) then
-        call jedetr('&&CAFACI.VALDDL')
-        call jedetr('&&CAFACI.DESGI')
-        call jedetr('&&CAFACI.NOMS_NOEUDS')
-    endif
-!
 ! --- DDL_IMPO ---
 !
     motfac = 'DDL_IMPO        '
@@ -315,7 +300,7 @@ subroutine charme(fonree)
 !         ================
 !
 ! --- FACE_IMPO ---
-        call cafaci(fonree, char)
+        call cafaci(char, noma, ligrmo, fonree)
 !
 ! --- ARETE_IMPO ---
         call caarei(fonree, char)

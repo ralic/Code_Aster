@@ -16,12 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cafono(char, ligrcz, igrel, inema, noma,&
-                      ligrmz, fonree)
+    subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
         character(len=8) :: char
         character(*) :: ligrcz
-        integer :: igrel
-        integer :: inema
         character(len=8) :: noma
         character(*) :: ligrmz
         character(len=4) :: fonree

@@ -257,10 +257,7 @@ Risque & Conseil:
   numéro d'occurrence négatif
 """),
 
-63: _(u"""
- pas de blocage de déplacement tangent sur des faces d'éléments 3D.
- rentrer la condition aux limites par DDL_IMPO ou LIAISON_DDL
-"""),
+
 
 64: _(u"""
  il faut choisir entre : FLUX_X ,  FLUX_Y , FLUX_Z et FLUN , FLUN_INF , FLUN_SUP.

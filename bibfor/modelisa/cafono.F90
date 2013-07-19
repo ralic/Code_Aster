@@ -1,5 +1,4 @@
-subroutine cafono(char, ligrcz, igrel, inema, noma,&
-                  ligrmz, fonree)
+subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
     implicit none
 #include "jeveux.h"
 !
@@ -27,7 +26,6 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    integer :: igrel, inema
     character(len=4) :: fonree
     character(len=8) :: char, noma
     character(len=*) :: ligrcz, ligrmz
@@ -67,6 +65,7 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
     integer :: j, jdesgi, jj, jl, jnbno, jncmp, jno
     integer :: jnono, jprnm, jval, jvalv, nangl, nbec, nbecf
     integer :: nbno, nbnoeu, nsurch, numel
+    integer :: igrel, inema
 !-----------------------------------------------------------------------
     parameter     (nmocl=10)
     integer :: ntypel(nmocl), forimp(nmocl)
@@ -83,10 +82,12 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
 !
     motclf = 'FORCE_NODALE'
     call getfac(motclf, nfono)
-    if (nfono .eq. 0) goto 9999
+    if (nfono .eq. 0) goto 999
 !
     ligrch = ligrcz
     typlag(1:2) = '12'
+    igrel = 0
+    inema = 0
 !
     verif = .true.
 !
@@ -176,7 +177,7 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
 !     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FORCE_NODALE
 ! --------------------------------------------------------------
 !
-    do 110 i = 1, nfono
+    do  i = 1, nfono
         do 20 ii = 1, nbcomp
             forimp(ii) = 0
 20      continue
@@ -248,8 +249,8 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
 100      continue
 !
         call jedetr(mesnoe)
-!
-110  end do
+110     continue
+    end do
 !
 !     -----------------------------------------------
 !     AFFECTATION DU LIGREL ET STOCKAGE DANS LA CARTE
@@ -291,7 +292,7 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
 !     BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
 !     -----------------------------------------------
 !
-    do 150 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
 !
         if (zi(jdesgi-1+ino) .ne. 0) then
 !
@@ -333,7 +334,7 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
 !
         endif
 !
-150  end do
+    end do
 !
     call jedetr('&&CAFONO.NOMS_NOEUDS')
     call jedetr('&&CAFONO.DESGI')
@@ -342,6 +343,6 @@ subroutine cafono(char, ligrcz, igrel, inema, noma,&
     else if (fonree.eq.'FONC') then
         call jedetr('&&CAFONO.VALDDLF')
     endif
-9999  continue
+999  continue
     call jedema()
 end subroutine

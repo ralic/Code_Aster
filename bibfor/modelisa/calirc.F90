@@ -169,7 +169,7 @@ subroutine calirc(chargz)
     corre1='&&CALIRC.CORRE1'
     corre2='&&CALIRC.CORRE2'
 !
-    do 310 iocc = 1, nocc
+    do iocc = 1, nocc
 !
 !       IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
         do 10,kk=1,idmax
@@ -261,7 +261,7 @@ subroutine calirc(chargz)
                 zi(indire+zi(jnunoe+i-1)-1)=i
 30          continue
 !
-            call canort(noma, nbma2, zi(idmai2), zk8(jlistk), ndim,&
+            call canort(noma, nbma2, zi(idmai2), ndim,&
                         nbno2, zi(jnunoe), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
             call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false.)
@@ -643,7 +643,7 @@ subroutine calirc(chargz)
         call jedetr('&&NBNLMA.NBN')
         call jedetr('&&CANORT.NORMALE')
 !
-310  end do
+    end do
 !
     call jedetr('&&CALIRC.NOMNOE')
     call jedetr('&&CALIRC.NOMDDL')

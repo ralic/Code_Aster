@@ -105,7 +105,7 @@ subroutine cnonor(nomo, gran, base, cno)
 !
 ! --- VERIFICATION QUE LES COMPOSANTES APPARTIENNENT A LA GRANDEUR
 !
-    do 10 i = 1, nbcomp
+    do i = 1, nbcomp
         call vericp(zk8(iacmp), nocmp(i), ncmpmx, iret)
         if (iret .ne. 0) then
             valk (1) = gran
@@ -113,7 +113,7 @@ subroutine cnonor(nomo, gran, base, cno)
             call u2mesg('F', 'UTILITAI6_11', 2, valk, 0,&
                         0, 0, 0.d0)
         endif
-10  end do
+    end do
 !
 ! --- LISTE DES MAILLES A TRAITER
 !
@@ -134,7 +134,7 @@ subroutine cnonor(nomo, gran, base, cno)
 !
 ! --- DETERMINATION DES NORMALES
 !
-    call canort(noma, nbma, zi(jlma), k8b, ndim,&
+    call canort(noma, nbma, zi(jlma), ndim,&
                 nbno, zi(jnunoe), 1)
 !
     call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
@@ -155,26 +155,26 @@ subroutine cnonor(nomo, gran, base, cno)
     call wkvect('&&CNONOR.NCMPMX_AFFE', 'V V I ', nbnoeu, jnbca)
     call wkvect('&&CNONOR.DESC_NOEUD', 'V V I', nec*nbnoeu, jdesc)
 !
-    do 110 ii = 1, nbno
+    do ii = 1, nbno
         ino = zi(jnunoe-1+ii)
         call jenuno(jexnum(nomnoe, ino ), zk8(jnno+ino-1))
 !
-        do 112 idim = 1, ndim
+        do idim = 1, ndim
             valr(idim) = zr(jnorm-1+ndim*(ii-1)+idim)
-112      continue
+        enddo 
 !
         call affeno(1, ino, nocmp, nbcomp, zk8(iacmp),&
                     ncmpmx, valr, k8b, zi(jdesc), zr(jval),&
                     k8b, typval, nec)
 !
-110  end do
+     end do
 !
 ! --- CALCUL DU NOMBRE TOTAL DE CMP AFFECTEES (SOMMEES SUR LES NOEUDS)
 !
     lonval = 0
-    do 140 ino = 1, nbnoeu
+    do ino = 1, nbnoeu
         icomp = 0
-        do 130 ic = 1, ncmpmx
+        do ic = 1, ncmpmx
             iec = (ic-1)/30 + 1
             jj = ic - 30* (iec-1)
             ii = 2**jj
@@ -182,10 +182,10 @@ subroutine cnonor(nomo, gran, base, cno)
             if (nn .gt. 0) then
                 icomp = icomp + 1
             endif
-130      continue
+        end do
         zi(jnbca-1+ino) = icomp
         lonval = lonval + icomp
-140  end do
+    end do
 !
     call afchno(resu, base, gran, noma, nbnoeu,&
                 zi(jnbca), zi(jdesc), lonval, typval, zr(jval),&

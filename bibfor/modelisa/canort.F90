@@ -1,4 +1,4 @@
-subroutine canort(noma, nbma, listi, listk, ndim,&
+subroutine canort(noma, nbma, listma, ndim,&
                   nbno, nuno, l)
 !
 ! ======================================================================
@@ -45,16 +45,14 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbma, listi(*), ndim, nbno, nuno(*), l
-    character(len=8) :: noma, listk(*)
+    integer :: nbma, listma(*), ndim, nbno, nuno(*), l
+    character(len=8) :: noma
 !
 !     BUT: CALCULER LES NORMALES AUX NOEUDS D'UNE LISTE DE MAILLES
 !                   ET LES TANGENTES
 ! ARGUMENTS D'ENTREE:
 !      NOMA : NOM DU MAILLAGE
 !      NBMA : NOMBRE DE MAILLES DU MAILLAGE DANS LA LISTE.
-!              SI >0 LA LISTE EST NUMEROTEE ==> LISTI
-!              SI <0 LA LISTE EST NOMMEE    ==> LISTK
 !      NDIM : DIMENSION DU PROBLEME
 !      NBNO : NOMBRE DE NOEUDS DANS LA LISTE DE MAILLES.
 !             = NOMBRE DE MAILLES SUPPLEMENTAIRES.
@@ -70,15 +68,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 !
 !
     integer :: dimcoo, i, ifonc, ibid, iret, jnorm, isom, in
-    integer :: idobj2, jcoor, iatyma, m, jcoode, ij, ino
-    integer :: n, nocc, nno, nnos, nbpar, nnn
+    integer :: idobj2, jcoor, iatyma, jcoode, ij, ino
+    integer :: n, nocc, nno, nnos,  nnn
     integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
-    real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme, r8b
-    complex(kind=8) :: c16b
+    real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme
     character(len=8) :: kangl, k8b, knumai
-    character(len=8) :: mk, nomtyp, nomnoe, k8bid
-    character(len=19) :: nomt19
-    character(len=24) :: nomobj, nomob2, coninv, para
+    character(len=8) :: nomtyp, nomnoe
+    character(len=24) :: nomobj, nomob2, coninv
     character(len=24) :: valk(2)
     character(len=1) :: k1b
     real(kind=8) :: dfse2(4), dfse3(9), armin, prec
@@ -113,44 +109,21 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
-!
-! --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
-!
-    call jeexin(noma//'           .LTNT', iret)
-    if (iret .ne. 0) then
-        call ltnotb(noma, 'CARA_GEOM', nomt19)
-        nbpar = 0
-        para = 'AR_MIN                  '
-        call tbliva(nomt19, nbpar, ' ', ibid, r8b,&
-                    c16b, k8bid, k8bid, r8b, para,&
-                    k8bid, ibid, armin, c16b, k8bid,&
-                    iret)
-        if (iret .ne. 0) call u2mess('F', 'MODELISA2_13')
-        prec = armin*1.d-06
-    else
-        prec = 1.d-10
-    endif
-!
-!     TRANSFORMATION DE LA LISTE DE NOM DE MAILLES EN LISTE DE NUMERO
-!     DE MAILLE ( POUR PASSAGE DANS CNCINV )
-    if (nbma .lt. 0) then
-        do 5 m = 1, abs(nbma)
-            mk=listk(m)
-            call jenonu(jexnom(noma//'.NOMMAI', mk), listi(m))
- 5      continue
-    endif
+
+    prec = armin(noma)*1.d-06
+    call assert(abs(nbma).gt.0)
 !
 !     RECUPERATION DE LA CONNECTIVITE INVERSE
-    call cncinv(noma, listi, abs(nbma), 'V', coninv)
+    call cncinv(noma, listma, abs(nbma), 'V', coninv)
 !
     nomob2 = '&&CANORT.VECTEUR'
     call jeexin(nomob2, iret)
     if (iret .ne. 0) call jedetr(nomob2)
     isom = 0
-    do 1 i = 1, nbno
+    do i = 1, nbno
         call jelira(jexnum(coninv, nuno(i)), 'LONMAX', nnn, k8b)
         isom = isom + nnn
- 1  end do
+    end do
 !
     call wkvect(nomob2, 'V V R', ndim*isom, idobj2)
 !
@@ -158,17 +131,17 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
 !
     ij=0
 !     BOUCLE SUR TOUS LES NOEUDS CONCERNES
-    do 10 ino = 1, nbno
+    do ino = 1, nbno
         numno=nuno(ino)
         call jelira(jexnum(coninv, numno), 'LONMAX', nnn, k8b)
         call jeveuo(jexnum(coninv, numno), 'L', iinver)
 !
 !    BOUCLE SUR TOUTES LES MAILLES CONNECTEES AU NOEUD ACTUEL
-        do 20 imail = 1, nnn
+        do imail = 1, nnn
 !
 !           NUMERO ABSOLUE DE LA MAILLE
 !
-            numail=listi(zi(iinver-1+imail))
+            numail=listma(zi(iinver-1+imail))
             ityp=zi(iatyma-1+numail)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nomtyp)
             call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', jdes)
@@ -210,21 +183,21 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 zr(idobj2-1+2*(ij-1)+1) = a
                 zr(idobj2-1+2*(ij-1)+2) = b
             else if (ndim.eq.2.and.nomtyp(1:4).eq.'SEG3') then
-                do 30 i = 1, nn
+                do i = 1, nn
                     dimcoo = -zi(jcoode-1+2)
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+dimcoo*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+dimcoo*(lino(i)-1)+2)
                     coor(3,i)=0.d0
                     if (numno .eq. lino(i)) in=i
-30              continue
+                end do
                 eksix=0.d0
                 eksiy=0.d0
 !              CALCUL DU  VECTEUR TANGENT VIA LES FONCTIONS DE FORMES
-                do 35 ifonc = 1, nn
+                do ifonc = 1, nn
                     eksix=eksix+coor(1,ifonc)*dfse3((in-1)*nn+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dfse3((in-1)*nn+ifonc)
-35              continue
+                end do
 !              ON S INTERESSE AU VECTEUR TANGENT
                 if (l .eq. 2) then
                     norme=sqrt(eksix**2+eksiy**2)
@@ -258,13 +231,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 call u2mess('F', 'MODELISA3_25')
 !
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD4') then
-                do 40 i = 1, nn
+                do i = 1, nn
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
                     coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
-40              continue
+                end do
                 eksix=0.d0
                 eksiy=0.d0
                 eksiz=0.d0
@@ -273,7 +246,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 eetaz=0.d0
 !
 !              CALCUL DES DEUX VECTEURS TANGENTS
-                do 45 ifonc = 1, nn
+                do ifonc = 1, nn
                     eksix=eksix+coor(1,ifonc)*dfqu4((in-1)*nn*2+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dfqu4((in-1)*nn*2+ifonc)
                     eksiz=eksiz+coor(3,ifonc)*dfqu4((in-1)*nn*2+ifonc)
@@ -284,7 +257,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     ifonc)
                     eetaz=eetaz+coor(3,ifonc)*dfqu4((in-1)*nn*2+nn+&
                     ifonc)
-45              continue
+                end do
 !
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                 a=eksiy*eetaz-eksiz*eetay
@@ -314,13 +287,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD8') then
-                do 50 i = 1, nn
+                do i = 1, nn
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
                     coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
-50              continue
+                end do
                 eksix=0.d0
                 eksiy=0.d0
                 eksiz=0.d0
@@ -328,7 +301,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 eetay=0.d0
                 eetaz=0.d0
 !              CALCUL DES DEUX VECTEURS TANGENTS
-                do 55 ifonc = 1, nn
+                do ifonc = 1, nn
 !
                     eksix=eksix+coor(1,ifonc)*dfqu8((in-1)*nn*2+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dfqu8((in-1)*nn*2+ifonc)
@@ -340,7 +313,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     ifonc)
                     eetaz=eetaz+coor(3,ifonc)*dfqu8((in-1)*nn*2+nn+&
                     ifonc)
-55              continue
+                end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                 a=eksiy*eetaz-eksiz*eetay
                 b=eksiz*eetax-eksix*eetaz
@@ -369,13 +342,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD9') then
-                do 60 i = 1, nn
+                do i = 1, nn
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
                     coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
-60              continue
+                end do
                 eksix=0.d0
                 eksiy=0.d0
                 eksiz=0.d0
@@ -383,7 +356,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 eetay=0.d0
                 eetaz=0.d0
 !              CALCUL DES DEUX VECTEURS TANGENTS
-                do 65 ifonc = 1, nn
+                do ifonc = 1, nn
                     eksix=eksix+coor(1,ifonc)*dfqu9((in-1)*nn*2+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dfqu9((in-1)*nn*2+ifonc)
                     eksiz=eksiz+coor(3,ifonc)*dfqu9((in-1)*nn*2+ifonc)
@@ -394,7 +367,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     ifonc)
                     eetaz=eetaz+coor(3,ifonc)*dfqu9((in-1)*nn*2+nn+&
                     ifonc)
-65              continue
+                end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                 a=eksiy*eetaz-eksiz*eetay
                 b=eksiz*eetax-eksix*eetaz
@@ -423,13 +396,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA3') then
-                do 70 i = 1, nn
+                do i = 1, nn
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
                     coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
-70              continue
+                end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
                 eksix=0.d0
                 eksiy=0.d0
@@ -437,7 +410,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 eetax=0.d0
                 eetay=0.d0
                 eetaz=0.d0
-                do 75 ifonc = 1, nn
+                do ifonc = 1, nn
                     eksix=eksix+coor(1,ifonc)*dftr3((in-1)*nn*2+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dftr3((in-1)*nn*2+ifonc)
                     eksiz=eksiz+coor(3,ifonc)*dftr3((in-1)*nn*2+ifonc)
@@ -448,7 +421,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     ifonc)
                     eetaz=eetaz+coor(3,ifonc)*dftr3((in-1)*nn*2+nn+&
                     ifonc)
-75              continue
+                end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                 a=eksiy*eetaz-eksiz*eetay
                 b=eksiz*eetax-eksix*eetaz
@@ -477,13 +450,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA6') then
-                do 90 i = 1, nn
+                do i = 1, nn
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
                     coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
-90              continue
+                end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
                 eksix=0.d0
                 eksiy=0.d0
@@ -491,7 +464,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 eetax=0.d0
                 eetay=0.d0
                 eetaz=0.d0
-                do 95 ifonc = 1, nn
+                do ifonc = 1, nn
                     eksix=eksix+coor(1,ifonc)*dftr6((in-1)*nn*2+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dftr6((in-1)*nn*2+ifonc)
                     eksiz=eksiz+coor(3,ifonc)*dftr6((in-1)*nn*2+ifonc)
@@ -502,7 +475,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     ifonc)
                     eetaz=eetaz+coor(3,ifonc)*dftr6((in-1)*nn*2+nn+&
                     ifonc)
-95              continue
+                end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                 a=eksiy*eetaz-eksiz*eetay
                 b=eksiz*eetax-eksix*eetaz
@@ -531,13 +504,13 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'TRIA7') then
-                do 100 i = 1, nn
+                do i = 1, nn
                     lino(i)=zi(jdes-1+i)
                     coor(1,i)=zr(jcoor-1+3*(lino(i)-1)+1)
                     coor(2,i)=zr(jcoor-1+3*(lino(i)-1)+2)
                     coor(3,i)=zr(jcoor-1+3*(lino(i)-1)+3)
                     if (numno .eq. lino(i)) in=i
-100              continue
+                end do
 !              CALCUL DES DEUX VECTEURS TANGENTS
                 eksix=0.d0
                 eksiy=0.d0
@@ -545,7 +518,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                 eetax=0.d0
                 eetay=0.d0
                 eetaz=0.d0
-                do 105 ifonc = 1, nn
+                do ifonc = 1, nn
                     eksix=eksix+coor(1,ifonc)*dftr7((in-1)*nn*2+ifonc)
                     eksiy=eksiy+coor(2,ifonc)*dftr7((in-1)*nn*2+ifonc)
                     eksiz=eksiz+coor(3,ifonc)*dftr7((in-1)*nn*2+ifonc)
@@ -556,7 +529,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     ifonc)
                     eetaz=eetaz+coor(3,ifonc)*dftr7((in-1)*nn*2+nn+&
                     ifonc)
-105              continue
+                end do
 !              CALCUL DU VECTEUR NORMAL ET NORMALISATION
                 a=eksiy*eetaz-eksiz*eetay
                 b=eksiz*eetax-eksix*eetaz
@@ -587,12 +560,12 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
             else
                 call u2mess('F', 'MODELISA3_27')
             endif
-20      continue
-10  end do
+        end do
+    end do
 !
 !
     ij = 0
-    do 2 n = 1, nbno
+    do n = 1, nbno
         ino = nuno(n)
         call jelira(jexnum(coninv, ino), 'LONMAX', nocc, k8b)
         if (ndim .eq. 2) then
@@ -607,7 +580,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
             endif
             zr(jnorm-1+2*(n-1)+1)=zr(jnorm-1+2*(n-1)+1)/vnorm
             zr(jnorm-1+2*(n-1)+2)=zr(jnorm-1+2*(n-1)+2)/vnorm
-            do 7 i = 1, nocc
+            do i = 1, nocc
                 ij = ij + 1
                 cosvec = zr(&
                          jnorm-1+2*(n-1)+1)*zr(idobj2-1+2*(ij-1)+1) + zr(jnorm-1+2*(n-1)+2)*zr(id&
@@ -625,7 +598,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     valk(2) = kangl
                     call u2mesk('A', 'MODELISA3_29', 2, valk)
                 endif
- 7          continue
+            enddo
         else if (ndim.eq.3) then
             vnorm = zr(&
                     jnorm-1+3*(n-1)+1)*zr(jnorm-1+3*(n-1)+1) + zr(jnorm-1+3*(n-1)+2)*zr(jnorm-1+3&
@@ -639,7 +612,7 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
             zr(jnorm-1+3*(n-1)+1)=zr(jnorm-1+3*(n-1)+1)/vnorm
             zr(jnorm-1+3*(n-1)+2)=zr(jnorm-1+3*(n-1)+2)/vnorm
             zr(jnorm-1+3*(n-1)+3)=zr(jnorm-1+3*(n-1)+3)/vnorm
-            do 8 i = 1, nocc
+            do i = 1, nocc
                 ij = ij + 1
                 cosvec = zr(&
                          jnorm-1+3*(n-1)+1)*zr(idobj2-1+3*(ij-1)+1) + zr(jnorm-1+3*(n-1)+2)*zr(id&
@@ -656,9 +629,9 @@ subroutine canort(noma, nbma, listi, listk, ndim,&
                     valk(2) = kangl
                     call u2mesk('A', 'MODELISA3_31', 2, valk)
                 endif
- 8          continue
+            enddo
         endif
- 2  end do
+    end do
 !
     call jedetr(nomob2)
     call jedetr(coninv)

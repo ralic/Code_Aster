@@ -64,14 +64,14 @@ subroutine calyrc(chargz)
     integer :: nbno2, idcal1, idcal2, nul
     integer :: iconb1, iconu1, icocf1, iconb2, iconu2, icocf2
     integer :: nno11, nno12, i, indire, lno
-    integer :: nbtyp, nddl2, jlistk, jdim, ndim1, iret, nbpar
+    integer :: nbtyp, nddl2, jlistk, jdim, ndim1
     integer :: jnunoe, jnorm, idim, ij, norien, ntrait
     integer :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3, idmai3
     logical :: lrota, dnor, lreori
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     real(kind=8) :: r8b
     real(kind=8) :: coef11, coef12, coef3
-    complex(kind=8) :: cbid, betac
+    complex(kind=8) :: betac
     character(len=1) :: kb
     character(len=2) :: typlag
     character(len=4) :: fonree
@@ -79,9 +79,9 @@ subroutine calyrc(chargz)
     character(len=8) :: k8b, noma, mo, m8blan
     character(len=8) :: kbeta, nono1, nono2, charge, cmp, ddl2, listyp(10)
     character(len=16) :: motfac, cores1, cores2, tymocl(4), motcle(4), nomcmd
-    character(len=19) :: ligrmo, nomt19
+    character(len=19) :: ligrmo
     character(len=19) :: lisrel
-    character(len=24) :: geom3, para
+    character(len=24) :: geom3
     character(len=24) :: valk(2)
     integer :: iarg
 ! ----------------------------------------------------------------------
@@ -158,7 +158,7 @@ subroutine calyrc(chargz)
     cores1 = '&&CALYRC.CORES1'
     cores2 = '&&CALYRC.CORES2'
 !
-    do 300 iocc = 1, nocc
+    do iocc = 1, nocc
 !
         dnor = .false.
         if (typlia .eq. 'DEPL') then
@@ -253,7 +253,7 @@ subroutine calyrc(chargz)
                 zi(indire+zi(jnunoe+i-1)-1) = i
 20          continue
 !
-            call canort(noma, nbma3, zi(idmai3), zk8(jlistk), ndim,&
+            call canort(noma, nbma3, zi(idmai3), ndim,&
                         nbno3, zi(jnunoe), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
             call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false.)
@@ -594,7 +594,7 @@ subroutine calyrc(chargz)
         call jedetr('&&NBNLMA.NBN')
         call jedetr('&&CANORT.NORMALE')
 !
-300  end do
+    end do
 !
     call jedetr('&&CALYRC.COEMUC')
     call jedetr('&&CALYRC.NOMNOE')
