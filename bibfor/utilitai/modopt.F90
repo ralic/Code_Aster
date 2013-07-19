@@ -43,7 +43,6 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
 !    SI SIZ2_NOEU ALORS SIEF_ELGA
 !    SI ERME_ELEM ALORS SIGM_ELNO ou SIEF_ELNO
 !    SI ERTH_ELEM ALORS FLUX_ELNO
-!    SI META_NOEU ALORS META_ELNO
 !
 !    SI XXXX_NOEU ALORS XXXX_ELNO
 !    SI XXXX_ELNO ALORS XXXX_ELEM
@@ -52,7 +51,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
     integer :: j, jopt, jopt2
     integer :: i, iret, irxfem, nbopt2
     integer :: ierz1, ierz2, inoz1, inoz2, ierth, ierto, iertno
-    integer :: ierme, iermo, iermno, iqirel, iqiren, imeta
+    integer :: ierme, iermo, iermno, iqirel, iqiren
     character(len=16) :: tysd
     character(len=24) :: lesop2
     logical :: yathm, perman
@@ -88,11 +87,8 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
 !
     iqiren = indk16( zk16(jopt), 'QIRE_NOEU', 1, nbopt )
 !
-    imeta = indk16( zk16(jopt), 'META_NOEU', 1, nbopt )
-!
-    if (ierz1+ierz2+inoz1+inoz2+ierth+ierto+iertno+ierme+iermo+iermno +iqirel+iqiren+imeta&
-        .eq. 0) then
-        goto 9999
+    if (ierz1+ierz2+inoz1+inoz2+ierth+ierto+iertno+ierme+iermo+iermno+iqirel+iqiren.eq. 0) then
+        goto 999 
     endif
 !
     lesop2 = '&&OP0058.NEW_OPTION'
@@ -226,27 +222,20 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
         endif
     endif
 !
-    if (imeta .ne. 0) then
-        call rschex(resuco, 'META_ELNO', iret)
-        if (iret .eq. 0) then
-            zk16(jopt+nbopt2-1) = 'META_ELNO'
-            nbopt2 = nbopt2 + 1
-        endif
-    endif
-!
     nbopt2 = nbopt2 - 1
 !
-    do 10 i = 1, nbopt
-        do 12 j = 1, nbopt2
-            if (zk16(jopt2+i-1) .eq. zk16(jopt+j-1)) goto 10
-12      continue
+    do i = 1, nbopt
+        do j = 1, nbopt2
+            if (zk16(jopt2+i-1) .eq. zk16(jopt+j-1)) goto 15
+        enddo
         nbopt2 = nbopt2 + 1
         zk16(jopt+nbopt2-1) = zk16(jopt2+i-1)
-10  end do
+15      continue
+    end do
 !
     nbopt = nbopt2
     call jedetr(lesop2)
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

@@ -6,6 +6,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/calcul.h"
+#include "asterfort/calc_meta_init.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -65,7 +66,6 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     integer :: icodre, test
     character(len=8) :: k8b, modele, nomcm2(2), mater, timcmp(6), lpain(8)
     character(len=8) :: lpaout(2)
-    character(len=16) :: optio2
     character(len=19) :: sdtemp, lchin(8), lchout(2)
     character(len=24) :: ch24, ligrmo, tempe, tempa, nomch, chtime, kordre
     character(len=24) :: chmate, tempi, chftrc
@@ -97,7 +97,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     iadtrc(1) = 0
     iadtrc(2) = 0
 !
-    do 10 i = 1, long
+    do i = 1, long
         mater = zk8(jmate+i-1)
         if (mater .ne. '        ') then
             call rcadme(mater, 'META_ACIER', 'TRC', iadtrc, icodre,&
@@ -105,7 +105,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
             if (icodre .eq. 0) test = 0
             nbhist = max(nbhist,iadtrc(1))
         endif
-10  end do
+    end do
 !
     if (test .eq. 0) then
         call wkvect('&&SMEVOL_FTRC', 'V V R', 9*nbhist, vali(1))
@@ -142,89 +142,27 @@ subroutine smevol(temper, modelz, mate, compor, option,&
 ! --- ET STOCKAGE DU CHAMP INITIAL DANS LA S D EVOL_THER (PAS 0 ET 1)
 !
     if (numpha .eq. 0) then
+
         numphi=1
-!
-! NUME_ORDRE = 0
-! ----------------
         num0 = zi(jordr)
-        call rsexch('F', temper, 'TEMP', num0, tempe,&
-                    iret)
-        call rsadpa(temper, 'L', 1, 'INST', num0,&
-                    0, iainst, k8b)
-        inst0 = zr(iainst)
-        lpain(1) = 'PMATERC'
-        lchin(1) = chmate
-        lpain(2) = 'PCOMPOR'
-        lchin(2) = compor
-        lpain(3) = 'PTEMPER'
-        lchin(3) = tempe
-        lpain(4) = 'PPHASIN'
-        lchin(4) = phasin
-!
-! INITIALISATION AVEC 'META_INIT_ELNO'
-!
-        optio2 = 'META_INIT_ELNO'
-        lpaout(1) = 'PPHASNOU'
-        lchout(1) = '&&SMEVOL.PHAS_META1'
-!
-        call copisd('CHAM_ELEM_S', 'V', compor, lchout(1))
-        call calcul('S', optio2, ligrmo, 4, lchin,&
-                    lpain, 2, lchout, lpaout, 'V',&
-                    'OUI')
-!
-        call rsexch(' ', temper, 'META_ELNO', num0, nomch,&
-                    iret)
-        call copisd('CHAMP_GD', 'G', '&&SMEVOL.PHAS_META1', nomch(1:19))
-        call rsnoch(temper, 'META_ELNO', num0)
-        write(ifm,1010) 'META_ELNO', num0, inst0
-!
-! NUME_ORDRE = 1
-! ----------------
+        call calc_meta_init(temper, num0, ligrmo, compor, phasin, &
+                            chmate)
         num1 = zi(jordr+1)
-        call rsexch('F', temper, 'TEMP', num1, tempe,&
-                    iret)
-        call rsadpa(temper, 'L', 1, 'INST', num1,&
-                    0, iainst, k8b)
-        inst1 = zr(iainst)
-!
-        lpain(1) = 'PMATERC'
-        lchin(1) = chmate
-        lpain(2) = 'PCOMPOR'
-        lchin(2) = compor
-        lpain(3) = 'PTEMPER'
-        lchin(3) = tempe
-        lpain(4) = 'PPHASIN'
-        lchin(4) = phasin
-!
-! INITIALISATION AVEC 'META_INIT_ELNO'
-!
-        optio2 = 'META_INIT_ELNO'
-        lpaout(1) = 'PPHASNOU'
-        lchout(1) = '&&SMEVOL.PHAS_META1'
-!
-        call copisd('CHAM_ELEM_S', 'V', compor, lchout(1))
-        call calcul('S', optio2, ligrmo, 4, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
-                    'OUI')
-!
-        call rsexch(' ', temper, 'META_ELNO', num1, nomch,&
-                    iret)
-        call copisd('CHAMP_GD', 'G', '&&SMEVOL.PHAS_META1', nomch(1:19))
-        call rsnoch(temper, 'META_ELNO', num1)
-        write(ifm,1010) 'META_ELNO', num1, inst1
+        call calc_meta_init(temper, num1, ligrmo, compor, phasin, &
+                            chmate)
 !
     else
         numphi=0
-        do 18 iord = 2, nbordr
+        do iord = 2, nbordr
             if (zi(jordr+iord-1) .eq. numpha) numphi=iord-1
-18      continue
+        enddo
     endif
 !
 ! --- BOUCLE SUR LES PAS DE TEMPS DU CHAMP DE TEMPERATURE
 !
-    do 20 iord = 1, nbordr - 2
+    do iord = 1, nbordr - 2
 !
-        if (zi(jordr+iord-1) .lt. zi(jordr+numphi-1)) goto 20
+        if (zi(jordr+iord-1) .lt. zi(jordr+numphi-1)) goto 19
 !
         num1 = zi(jordr+iord-1)
         num2 = zi(jordr+iord )
@@ -285,21 +223,21 @@ subroutine smevol(temper, modelz, mate, compor, option,&
         lchout(1) = '&&SMEVOL.PHAS_META3'
 !
         lpain(1) = 'PMATERC'
-        lchin(1) = chmate
+        lchin(1) = chmate(1:19)
         lpain(2) = 'PCOMPOR'
-        lchin(2) = compor
+        lchin(2) = compor(1:19)
         lpain(3) = 'PTEMPAR'
-        lchin(3) = tempa
+        lchin(3) = tempa(1:19)
         lpain(4) = 'PTEMPER'
-        lchin(4) = tempe
+        lchin(4) = tempe(1:19)
         lpain(5) = 'PTEMPIR'
-        lchin(5) = tempi
+        lchin(5) = tempi(1:19)
         lpain(6) = 'PTEMPSR'
-        lchin(6) = chtime
+        lchin(6) = chtime(1:19)
         lpain(7) = 'PPHASIN'
-        lchin(7) = phasin
+        lchin(7) = phasin(1:19)
         lpain(8) = 'PFTRC'
-        lchin(8) = chftrc
+        lchin(8) = chftrc(1:19)
 !
         call copisd('CHAM_ELEM_S', 'V', compor, lchout(1))
         call calcul('S', option, ligrmo, 8, lchin,&
@@ -312,9 +250,12 @@ subroutine smevol(temper, modelz, mate, compor, option,&
                     iret)
         call copisd('CHAMP_GD', 'G', '&&SMEVOL.PHAS_META3', nomch(1:19))
         call rsnoch(temper, 'META_ELNO', num3)
-        write(ifm,1010) 'META_ELNO', num3, inst2
+!        write(ifm,1010) 'META_ELNO', num3, inst2
+        call u2mesg('I', 'ARCHIVAGE_6', 1, 'META_ELNO', 1,&
+                   num3, 1, inst2)
 !
-20  end do
+19      continue
+    end do
 !
 ! --- MENAGE
     call jedetr('&&SMEVOL_FTRC')
@@ -325,8 +266,8 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     call detrsd('CHAMP_GD', '&&SMEVOL.PHAS_META1')
     call detrsd('CHAMP_GD', '&&SMEVOL.PHAS_META3')
 !
-    1010 format (1p,3x,'CHAMP    STOCKE   :',1x,a14,' NUME_ORDRE:',i8,&
-     &       ' INSTANT:',d12.5)
+!    1010 format (1p,3x,'CHAMP    STOCKE   :',1x,a14,' NUME_ORDRE:',i8,&
+!     &       ' INSTANT:',d12.5)
 !
     call jedema()
 end subroutine

@@ -95,10 +95,9 @@ subroutine op0194()
     call wkvect(lesopt, 'V V K16', nbopt, jopt)
     call getvtx(' ', 'OPTION', 1, iarg, nbopt,&
                 zk16(jopt), nb)
-    call modopt(temper, modele, lesopt, nbopt)
     call jeveuo(lesopt, 'L', jopt)
 !
-    do 660 iopt = 1, nbopt
+    do iopt = 1, nbopt
 !
         option=zk16(jopt+iopt-1)
 !
@@ -158,11 +157,12 @@ subroutine op0194()
             call calcop(option, lesopt, temper, temper, kordre,&
                         nbordr, kcha, nchar, ctyp, tysd,&
                         iret)
-            if (iret .eq. 0) goto 660
+            if (iret .eq. 0) goto 100
 !
         endif
+100     continue
 !
-660  end do
+    end do
 !
     call jedema()
 end subroutine
