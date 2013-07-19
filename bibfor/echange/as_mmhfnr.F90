@@ -48,7 +48,6 @@ subroutine as_mmhfnr(fid, maa, fam, n, typent,&
     call conv_int('med->ast', n, vi_ast=fam, vi_med=fam4)
     cret = cret4
     deallocate (fam4)
-    write(6,*) 'FAM(1..12)=',(fam(ic),ic=1,min(12,n))
 #else
     mdnont = -1
     mdnoit = -1

@@ -52,7 +52,6 @@ subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
     call conv_int('med->ast', csize, vi_ast=conn, vi_med=conn4)
     cret = cret4
     deallocate (conn4)
-    write(6,*) 'CONN(1..12)=',(conn(ic),ic=1,min(12,csize))
 #else
     mdnont = -1
     mdnoit = -1

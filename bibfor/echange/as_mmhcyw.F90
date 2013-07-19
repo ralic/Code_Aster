@@ -50,8 +50,6 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
     switc4 = switch
     mdnon4 = mdnont
     mdnoi4 = mdnoit
-    write(6,*) 'CONN=',(conn(ic),ic=1,min(12,csize))
-    write(6,*)'CONN4=',(conn4(ic),ic=1,min(12,csize))
     call mmhcyw(fid4, maa, mdnon4, mdnoi4, mdnodt,&
                 typen4, typge4, typco4, switc4, n4,&
                 conn4, cret4)
