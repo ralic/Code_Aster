@@ -64,7 +64,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: em, num, troikm, deumum, plasti
     integer :: ndimsi
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=8) :: nomres(3), materi
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
     integer :: ibid, iret, k, l
@@ -81,8 +81,9 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 10  end do
 !
 !
+    materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', 1, epsthe, iret)
 !
 !
 ! LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (TEMPS - ET +)

@@ -95,7 +95,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     integer :: icodre(3)
     character(len=6) :: epsa(6)
     character(len=8) :: nomres(3)
-    character(len=8) :: nompar(3), type
+    character(len=8) :: nompar(3), type, materi
     real(kind=8) :: valpam(3), valpap(3), resu, valrm(2)
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, xm(6), xp(6)
 !-----------------------------------------------------------------------
@@ -116,6 +116,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     nbvalp = 0
     jprolp = 0
     jvalep = 0
+    materi = ' '
 !
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
@@ -235,7 +236,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         endif
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, epsthe, iret0)
+                materi, 'ELAS', 1, epsthe, iret0)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !

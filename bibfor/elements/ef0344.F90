@@ -42,7 +42,7 @@ subroutine ef0344(nomte)
     integer :: lorien, jdepl, iret1, lforcr, lforcf
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres), nomail
+    character(len=8) :: nompar, nomres(nbres), nomail, materi
     character(len=16) :: messk(2)
     real(kind=8) :: valpar, zero, angs2, rad, e, g, a, xiz, alfaz, alfay, ey, ez
     real(kind=8) :: xjx, xjg, xiy, xl, epsith
@@ -77,6 +77,7 @@ subroutine ef0344(nomte)
 10  end do
 ! --- ------------------------------------------------------------------
     nbpar=0
+    materi = ' '
     nompar='  '
     valpar=0.d0
     zero=0.d0
@@ -159,7 +160,7 @@ subroutine ef0344(nomte)
 ! --- ------------------------------------------------------------------
 ! --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION
     call verift('RIGI', npg, 1, '+', zi(lmater),&
-                'ELAS', 1, epsith, iret1)
+                materi, 'ELAS', 1, epsith, iret1)
     do 60 i = 1, 14
         ugr(i)=0.d0
 60  end do

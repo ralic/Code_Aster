@@ -47,10 +47,12 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
     real(kind=8) :: depsth, depsme(6), depsmo, depsdv(6)
     real(kind=8) :: sigmom, sigdvm(6), sigmo
     real(kind=8) :: kron(6)
+    character(len=8) :: materi
     data    kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
+    materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, depsth, iret1)
+                materi, 'ELAS', 1, depsth, iret1)
 !
     troikm = matm(1)
     deumum = matm(2)

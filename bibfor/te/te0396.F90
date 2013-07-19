@@ -15,6 +15,7 @@ subroutine te0396(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
     implicit none
 !
 #include "jeveux.h"
@@ -39,7 +40,7 @@ subroutine te0396(option, nomte)
 !
     integer :: nno, npg, ipoids, ivf, idfdk, kp, ne, imate
     integer :: lsect, lorien, jefint, kc, iret, igeom, i, k0, ifint, ic
-    character(len=8) :: nomres(4), elrefe
+    character(len=8) :: nomres(4), elrefe, materi
     integer :: icodre(4)
     real(kind=8) :: en(3, 2), enprim(3, 2), valres(4), granc(6), fint(6, 3)
     real(kind=8) :: y0(3), x00(3, 3), x0pg(3), rot0(3, 3), nu, gn(3), gm(3)
@@ -56,6 +57,7 @@ subroutine te0396(option, nomte)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdk, jgano)
+    materi = ' '
 !
     ico = 0
     do 20 kp = 1, npg
@@ -154,7 +156,7 @@ subroutine te0396(option, nomte)
 100          continue
 110      continue
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    'ELAS', 1, epsthe, iret)
+                    materi, 'ELAS', 1, epsthe, iret)
         do 130 i = 1, 3
             gn(i) = 0.d0
             gm(i) = 0.d0

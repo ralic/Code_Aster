@@ -95,7 +95,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
     real(kind=8) :: depst1, epsth1, epsth(6), rac2, usrac2, drott(3, 3)
     character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*), nomres(nprops), nomreb(2), lvarc(npred)
+    character(len=8) :: typmod(*), nomres(nprops), nomreb(2), lvarc(npred), materi
     character(len=*) :: fami
     character(len=80) :: cmname
     common/tdim/  ntens  , ndi
@@ -146,6 +146,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     codret=0
     rac2=sqrt(2.d0)
     usrac2=rac2*0.5d0
+    materi = ' '
 !
 !     IMPRESSIONS EVENTUELLES EN DEBUG
     call infniv(ifm, niv)
@@ -202,10 +203,10 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     if (iret .ne. 0) tref=0.d0
 !     CALCUL DES DEFORMATIONS DE DILATATION THERMIQUE
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, depst1, iret)
+                materi, 'ELAS', 1, depst1, iret)
     if (iret .ne. 0) depst1=0.d0
     call verift(fami, kpg, ksp, '-', imate,&
-                'ELAS', 1, epsth1, iret)
+                materi, 'ELAS', 1, epsth1, iret)
     if (iret .ne. 0) epsth1=0.d0
 !
 ! APPEL DE RCVARC POUR EXTRAIRE TOUTES LES VARIABLES DE COMMANDE
@@ -387,7 +388,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 
 !   pour MFRONT ddsdde(1)= type de matrice tangente
 !   ddsdde(1) <0 : matrice de prédiction
-!   -1, matrice elastique initiale (sans endommagement) 
+!   -1, matrice elastique initiale (sans endommagement)
 !   -2, matrice secante (avec endommagement)
 !   -3, matrice tangente.
 !   ddsdde(1) >0 : matrice tangente (FULL_MECA, FULL_MECA_ELAS)
@@ -395,7 +396,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !    2 matrice secante (avec endommagement)
 !    3 matrice tangente
 !    4 matrice tangente cohérente
-    
+
     ddsdde=1.d0
     if (option .eq. 'RIGI_MECA_TANG') then
         ddsdde(1)=-3.d0

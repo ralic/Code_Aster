@@ -62,7 +62,7 @@ subroutine te0155(option, nomte)
     integer :: nno, nc, lx, lorien, idepla, ideplp, i, lvect, lsect
     integer :: lmater, lpesa, lforc, itemps, nbpar, iret
     integer :: ifcx, iadzi, iazk24, kpg, spt
-    character(len=8) :: nompav(1), nomail
+    character(len=8) :: nompav(1), nomail, materi
     real(kind=8) :: valpav(1), fcx, vite2, vp(3), ang1(3), u(3), v(3), instan
     logical :: normal, global, okvent
 !
@@ -76,6 +76,7 @@ subroutine te0155(option, nomte)
     data         nompav /'VITE'/
 !     ------------------------------------------------------------------
     r8min = r8miem()
+    materi = ' '
 !
     nno = 2
     nc = 3
@@ -456,7 +457,7 @@ subroutine te0155(option, nomte)
 !
 !        TEMPERATURE DE REFERENCE
         call verift(fami, 1, 1, '+', zi(lmater),&
-                    'ELAS', 1, epsth, iret)
+                    materi, 'ELAS', 1, epsth, iret)
 !
 !        TERME DE LA MATRICE ELEMENTAIRE
         xrig = e * a / xl

@@ -15,6 +15,7 @@ subroutine te0436(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
 !
@@ -43,6 +44,7 @@ subroutine te0436(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
+    character(len=8) :: materi
     integer :: nddl, nno, nnos, npg, ndim, ncomp
     integer :: i, j, n, c, cc, kpg, iret
     integer :: ipoids, ivf, idfde, jgano
@@ -54,6 +56,8 @@ subroutine te0436(option, nomte)
     real(kind=8) :: x(8), y(8), z(8), surfac, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6)
     real(kind=8) :: vro
+!
+    materi = ' '
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -160,7 +164,7 @@ subroutine te0436(option, nomte)
 !
 !         RETRAIT DE LA DEFORMATION THERMIQUE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        'ELAS_MEMBRANE', 1, epsthe, iret)
+                        materi, 'ELAS_MEMBRANE', 1, epsthe, iret)
             epsm(1) = epsm(1) - epsthe
             epsm(2) = epsm(2) - epsthe
 !

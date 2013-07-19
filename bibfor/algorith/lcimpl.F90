@@ -41,13 +41,14 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
     real(kind=8) :: sieleq, rp, dp
     integer :: iret
     integer :: codres(2)
-    character(len=8) :: nomecl(2)
+    character(len=8) :: nomecl(2), materi
     data nomecl/'D_SIGM_E','SY'/
 !
 !
 !      PRINT *,'LAAAA'
 !
 !
+    materi = ' '
     pm = vim(1)
     dt = tplus-tmoins
 !
@@ -69,7 +70,7 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
 !     ESTIMATION ELASTIQUE
 !     ------------------------------------------------------------------
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, depsth, iret)
+                materi, 'ELAS', 1, depsth, iret)
     sige = ep* (sigm/em+deps-depsth)
     sieleq = abs(sige)
 !     ------------------------------------------------------------------

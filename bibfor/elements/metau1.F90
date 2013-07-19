@@ -43,7 +43,7 @@ subroutine metau1(option, nomte, iret)
 !-----------------------------------------------------------------------
     parameter (nbres=6)
 !
-    character(len=8) :: nomres(nbres), acier(4), zirc(2)
+    character(len=8) :: nomres(nbres), acier(4), zirc(2), materi
     integer :: icodre(nbres)
     real(kind=8) :: vk3al, valres(nbres), coef1, coef2, epsth
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, phaspg(7), epsthe(2)
@@ -58,6 +58,7 @@ subroutine metau1(option, nomte, iret)
 !
 !
     iret=1
+    materi = ' '
     lacier=.false.
 !
     call rcvarc(' ', acier(1), '+', 'RIGI', 1,&
@@ -117,7 +118,7 @@ subroutine metau1(option, nomte, iret)
 10      continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    'ELAS_META', 2, epsthe(1), iret1)
+                    materi, 'ELAS_META', 2, epsthe(1), iret1)
         call rcvalb('RIGI', kp, 1, '+', mater,&
                     ' ', 'ELAS_META', 0, 'TEMP', 0.d0,&
                     6, nomres, valres, icodre, 1)

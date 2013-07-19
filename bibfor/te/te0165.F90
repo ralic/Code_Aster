@@ -39,7 +39,7 @@ subroutine te0165(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: nomres(2)
+    character(len=8) :: nomres(2), materi
     integer :: icodre(2)
     real(kind=8) :: a, w(9), nx, l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: valres(2), e
@@ -55,6 +55,8 @@ subroutine te0165(option, nomte)
 !     PRETEN = 1000.D0
 !***  FIN DE L'ESSAI DE PRETENSION
 !
+    materi = ' '
+!
     call jevech('PCOMPOR', 'L', icompo)
     if (zk16(icompo)(1:4) .ne. 'ELAS') then
         call u2mesk('F', 'CALCULEL4_92', 1, zk16(icompo))
@@ -69,7 +71,7 @@ subroutine te0165(option, nomte)
                 ' ', 'ELAS', 0, '  ', r8bid,&
                 1, nomres, valres, icodre, 1)
     call verift('RIGI', 1, 1, '+', zi(imate),&
-                'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', 1, epsthe, iret)
     e = valres(1)
     call jevech('PCACABL', 'L', lsect)
     a = zr(lsect)

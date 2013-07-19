@@ -79,17 +79,19 @@ subroutine nmpime(fami, kpg, ksp, imate, option,&
     real(kind=8) :: epsp
     real(kind=8) :: sigp, xrig
     real(kind=8) :: deps, epsthe
+    character(len=8) :: materi
 !
 !
 !----------INITIALISATIONS
 !
     call r8inir(nbt, 0.d0, klv, 1)
     call r8inir(neq, 0.d0, fono, 1)
+    materi = ' '
 !
 !----------RECUPERATION DES CARACTERISTIQUES
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', 1, epsthe, iret)
 !
     epsm = (xlongm-xlong0)/xlong0
     epsp = (xlongm+dlong0-xlong0)/xlong0

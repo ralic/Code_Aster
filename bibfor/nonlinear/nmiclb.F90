@@ -72,6 +72,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
     real(kind=8) :: sigm, deps, depsth, depsm, tmoins, tplus
     real(kind=8) :: sigp, xrig
     logical :: isot, cine, elas, corr, impl, isotli
+    character(len=8) :: materi
 !
 !
 !----------INITIALISATIONS
@@ -82,6 +83,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
     corr = .false.
     impl = .false.
     isotli = .false.
+    materi = ' '
     if (compor(1) .eq. 'ELAS') then
         elas = .true.
         else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1)&
@@ -125,14 +127,14 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
 !
     if (isot .and. (.not.impl)) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         depsm=deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
                     compor, ' ', sigp, vip, dsde)
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -141,7 +143,7 @@ subroutine nmiclb(fami, kpg, ksp, option, compor,&
         dsde = ep
         vip(1) = 0.d0
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         sigp = ep* (sigm/em+deps-depsth)
     else if (corr) then
         call nm1dco(fami, kpg, ksp, option, imate,&

@@ -66,12 +66,13 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 ! DECLARATION LOCALE
 !
     integer :: icodre(3), lgpg
-    character(len=8) :: nomres(3), kbid, type
+    character(len=8) :: nomres(3), kbid, type, materi
     real(kind=8) :: epsthe, sigy, aire, dsde, valrm(2)
     real(kind=8) :: r8bid, valres(3), resu, apui, npui, rprim
     integer :: iret1, iret2, ibid
 ! ----------------------------------------------------------------------
 !
+    materi = ' '
 !
 ! 1 - A L INSTANT COURANT YOUNG, MU ET UNK
 !
@@ -80,7 +81,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
                 1, 'NU', nu, icodre(1), 2)
 !
     call verift(fami, kpg, ksp, poum, mate,&
-                'ELAS', 1, epsthe, iret1)
+                materi, 'ELAS', 1, epsthe, iret1)
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret2)
     if (compor(6:14) .eq. 'ISOT_TRAC') then

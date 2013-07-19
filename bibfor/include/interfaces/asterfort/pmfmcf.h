@@ -17,7 +17,7 @@
 !
 interface
     subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
-                      crit, option, npg, instam, instap,&
+                      crit, option, instam, instap,&
                       icdmat, nbvalc, defam, defap, varim,&
                       varimp, contm, defm, defp, epsm,&
                       modf, sigf, varip, isecan, codret)
@@ -28,7 +28,6 @@ interface
         character(len=24) :: sdcomp(*)
         real(kind=8) :: crit(*)
         character(len=16) :: option
-        integer :: npg
         real(kind=8) :: instam
         real(kind=8) :: instap
         integer :: icdmat

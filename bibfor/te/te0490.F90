@@ -16,7 +16,7 @@ subroutine te0490(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1501
+! aslint: disable=W1501,W0104
     implicit none
 !
 !     BUTS: .CALCUL DES INDICATEURS GLOBAUX
@@ -157,7 +157,7 @@ subroutine te0490(option, nomte)
     real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3), resu
     real(kind=8) :: f(3, 3), r, eps(6), trav(81), rbid
     character(len=4) :: fami
-    character(len=8) :: nomres(5), type
+    character(len=8) :: nomres(5), type, materi
     character(len=16) :: nomte, option, optio2, compor(3)
     logical :: grand, axi
 !-----------------------------------------------------------------------
@@ -181,6 +181,7 @@ subroutine te0490(option, nomte)
     welas = zero
     wtotal = zero
     instan = zero
+    materi = ' '
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION
@@ -558,7 +559,7 @@ subroutine te0490(option, nomte)
 !  -- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
             call verift(fami, igau, 1, '+', zi(imate),&
-                        'ELAS', 1, epsthe, iret)
+                        materi, 'ELAS', 1, epsthe, iret)
 !
 !
 ! --- TRAITEMENT DU CAS CONTRAINTES PLANES :

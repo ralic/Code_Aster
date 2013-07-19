@@ -99,7 +99,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(20), test
-    character(len=8) :: nomres(20), nomcle(5), acier(4)
+    character(len=8) :: nomres(20), nomcle(5), acier(4), materi
 !
     logical :: resi, rigi
 !
@@ -130,6 +130,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
     dt=instap-instam
+    materi = ' '
 !
 !
 ! 1.1 - NOMBRE DE PHASES
@@ -162,7 +163,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     endif
 !
     call verift(fami, kpg, ksp, c1, imat,&
-                'ELAS_META', 2, epsthe, iret1)
+                materi, 'ELAS_META', 2, epsthe, iret1)
     call rcvarc(' ', 'TEMP', c1, fami, kpg,&
                 ksp, temp, iret2)
     zalpha=phase(1)+phase(2)+phase(3)+phase(4)

@@ -73,7 +73,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
     integer :: icodre(nbval)
     real(kind=8) :: valres(nbval)
 !
-    character(len=8) :: ecroli(4)
+    character(len=8) :: ecroli(4), materi
     data ecroli    /'D_SIGM_E','SY','SIGM_LIM','EPSI_LIM'/
 ! --- ------------------------------------------------------------------
 !
@@ -84,6 +84,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
     pinto = .false.
     com1d = .false.
     codret = 0
+    materi = ' '
 !
     if (compor(1)(1:16) .eq. 'GRILLE_ISOT_LINE') then
         isot = .true.
@@ -117,7 +118,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
     if (isot) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         depsm = deps-depsth
         call nm1dis(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -125,7 +126,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
     else if (cine) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         depsm = deps-depsth
         call nm1dci(fami, kpg, ksp, imate, em,&
                     ep, sigm, depsm, vim, option,&
@@ -133,7 +134,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
 !
     else if (cinegc) then
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         depsm = deps-depsth
 ! ---    VERIFICATION QUE SIGM_LIM, EPSI_LIM SONT PRESENTS
         call r8inir(nbval, 0.d0, valres, 1)
@@ -156,7 +157,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA') then
             vip(1) = 0.d0
             call verift(fami, kpg, ksp, 'T', imate,&
-                        'ELAS', 1, depsth, iret)
+                        materi, 'ELAS', 1, depsth, iret)
             sigp = ep* (sigm/em+deps-depsth)
         endif
 !
@@ -169,7 +170,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
         call nmmaba(imate, compor, e, et, sigy,&
                     ncstpm, cstpm)
         call verift(fami, kpg, ksp, 'T', imate,&
-                    'ELAS', 1, depsth, iret)
+                    materi, 'ELAS', 1, depsth, iret)
         depsm = deps-depsth
         call nm1dpm(fami, kpg, ksp, imate, option,&
                     nvarpi, ncstpm, cstpm, sigm, vim,&

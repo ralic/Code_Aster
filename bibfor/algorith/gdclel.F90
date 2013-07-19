@@ -24,6 +24,7 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
     character(len=*) :: fami
     integer :: kpg, ksp, imate
     character(len=1) :: poum
+    character(len=8) :: materi
 !
 ! ----------------------------------------------------------------------
 !        INTEGRATION DES LOIS EN GRANDES DEFORMATIONS CANO-LORENTZ
@@ -48,13 +49,15 @@ subroutine gdclel(fami, kpg, ksp, poum, imate,&
 ! ----------------------------------------------------------------------
 !
 !
+    materi=' '
+
     lambda = young*nu/(1+nu)/(1-2*nu)
     deuxmu = young/(1+nu)
     mu = deuxmu/2
     troisk = young/(1-2*nu)
     unk = troisk/3
-    call verift(fami, kpg, ksp, '+', imate,&
-                'ELAS', 1, epsth, iret)
+    call verift(fami, kpg, ksp, '+', imate, &
+                materi, 'ELAS', 1, epsth, iret)
     cother = troisk*epsth
 !
 end subroutine

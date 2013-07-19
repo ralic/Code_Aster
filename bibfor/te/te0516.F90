@@ -84,7 +84,7 @@ subroutine te0516(option, nomte)
     integer :: ncomp, jdefm, jdefp, jmodfb, jsigfb, nbvalc, jvarfb, isdcom
     integer :: kp, j, k, kk, istrxm, istrxp, istrmp, ncomp2
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg
-    real(kind=8) :: e, g, em, nu, num, temp, temm, phiy, phiz
+    real(kind=8) :: e, g, nu, temp, temm, phiy, phiz
     real(kind=8) :: defam(6), defap(6), angp(3)
 !
     real(kind=8) :: xiyr2, xizr2, effgep(nc), hotage(4, 4), d1bsig(4, 2*nc)
@@ -369,7 +369,7 @@ subroutine te0516(option, nomte)
 !
 ! ---   MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
         call pmfmcf(kp, nbgf, nbfib, zi(inbfib+2), zk24(isdcom),&
-                    zr( icarcr), option, npg, zr(iinstm), zr(iinstp),&
+                    zr( icarcr), option, zr(iinstm), zr(iinstp),&
                     zi(imate), nbvalc, defam, defap, zr(ivarim),&
                     zr(ivarmp), zr(icontm), zr(jdefm), zr( jdefp), epsm,&
                     zr(jmodfb), zr(jsigfb), zr(jvarfb), isecan, codrep)

@@ -1,8 +1,8 @@
-subroutine pmfcom(kpg, option, compor, crit, nf,&
-                  instam, instap, npg, nspg, icdmat,&
-                  nbvalc, defam, defap, varim, varimp,&
-                  contm, defm, ddefp, epsm, modf,&
-                  sigf, varip, isecan, codret)
+subroutine pmfcom(kpg, debsp, option, compor, crit, &
+                  nf,instam, instap, icdmat,nbvalc, &
+                  defam, defap, varim, varimp,contm, &
+                  defm, ddefp, epsm, modf,sigf, &
+                  varip, isecan, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
     implicit none
 #include "asterfort/comp1d.h"
 #include "asterfort/mazu1d.h"
-#include "asterfort/moytem.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dco.h"
 #include "asterfort/nm1dis.h"
@@ -32,6 +31,7 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 #include "asterfort/nm1vil.h"
 #include "asterfort/nmcb1d.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/paeldt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/u2mesk.h"
@@ -40,7 +40,7 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 #include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
 #include "blas/dcopy.h"
-    integer :: nf, icdmat, nbvalc, isecan, kpg, npg, nspg
+    integer :: nf, icdmat, nbvalc, isecan, kpg, debsp
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
     real(kind=8) :: tempm, tempp, tref, sigx, epsx, depsx, instam, instap
@@ -48,15 +48,18 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 !
     character(len=16) :: option
     character(len=24) :: compor(*)
+    logical :: ltemp
 ! --- ------------------------------------------------------------------
 !
 !        AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
 !
 ! --- ------------------------------------------------------------------
 !
+! IN  KPG   : NUMERO DE POINT DE GAUSS
+! IN  DEBSP : NUMERO DE SOUS-POINT DE LA PREMIERE FIBRE DU GROUPE
 ! IN  COMPO : NOM DU COMPORTEMENT
 ! IN  CRIT  : CRITERES DE CONVERGENCE LOCAUX
-! IN  NF    : NOMBRE DE FIBRES
+! IN  NF    : NOMBRE DE FIBRES DU GROUPE
 ! IN  INSTAM: INSTANT DU CALCUL PRECEDENT
 ! IN  INSTAP: INSTANT DU CALCUL
 ! IN  E     : MODULE D'YOUNG (ELASTIQUE)
@@ -78,10 +81,10 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 !              1 :
 !
 ! --- ------------------------------------------------------------------
-    integer :: nbval, nbvari, codrep
+    integer :: nbval, nbvari, codrep, ksp
     parameter     (nbval=12)
     integer :: icodre(nbval)
-    integer :: i, ivari, codret, iret, iret1, iret2, iret3, iret4
+    integer :: i, ivari, codret, iret1, iret2, iret3
     real(kind=8) :: valres(nbval), ep, em, depsth
     real(kind=8) :: cstpm(13), epsm, angmas(3), depsm, nu
     character(len=4) :: fami
@@ -110,34 +113,21 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 !     CALCUL DE LA TEMPERATURE
     call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
                 1, tref, iret1)
-    call moytem(fami, npg, nspg, '+', tempp,&
-                iret2)
-    call moytem(fami, npg, nspg, '-', tempm,&
-                iret3)
-!     S'IL N'Y A PAS DE TEMPERATURE
-    if (iret1 .eq. 1) tref = 0.0d0
-    if (iret2 .eq. 1) tempp = tref
-    if (iret3 .eq. 1) tempm = tref
 !
-    if (compo(1:6) .eq. 'MAZARS') then
+    ltemp=.true.
+    if (iret1.eq.1) ltemp=.false.
+    if (.not.ltemp)then
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'ELAS', 1, 'TEMP', tempp,&
+                    materi, 'ELAS', 0, '', 0.d0,&
                     2, nomres, valres, icodre, 1)
         ep = valres(1)
         nu = valres(2)
-    else
-        nomres(1) = 'E'
-        call rcvalb(fami, 1, 1, '-', icdmat,&
-                    materi, 'ELAS', 1, 'TEMP', tempm,&
-                    1, nomres, valres, icodre, 1)
-        em = valres(1)
-        call rcvalb(fami, 1, 1, '+', icdmat,&
-                    materi, 'ELAS', 1, 'TEMP', tempp,&
-                    1, nomres, valres, icodre, 1)
-        ep = valres(1)
-    endif
+        em=ep
+        depsth=0.d0
+     endif
+
 !     EVALUATION DU MODULE SECANT
     isecan = 0
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
@@ -145,17 +135,19 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
     call r8inir(3, 0.d0, angmas, 1)
 !
     if (compo .eq. 'ELAS') then
-        call verifm(fami, kpg, nspg, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
+        nomres(1) = 'E'
         do 100 i = 1, nf
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
             modf(i) = ep
             sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
-100      continue
+100    continue
 !
     else if (compo.eq.'LABORD_1D') then
         depsth = 0.d0
-        call verifm(fami, kpg, nspg, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
 ! ---    ON RECUPERE LES PARAMETRES MATERIAU
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
@@ -164,6 +156,11 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 ! ---    BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
         do 250 i = 1, nf
             ivari = nbvalc*(i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
             epsm = defm(i) - depsth
             call nmcb1d(ep, valres, contm(i), varim(ivari), epsm,&
                         ddefp(i), modf(i), sigf(i), varip(ivari), crit,&
@@ -172,8 +169,6 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 !
     else if (compo.eq.'MAZARS_GC') then
         depsth = 0.d0
-        call verifm(fami, kpg, nspg, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
 ! ---    ON RECUPERE LES PARAMETRES MATERIAU
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
@@ -190,14 +185,18 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 ! ---    BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
         do 275 i = 1, nf
             ivari = nbvalc*(i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+                valres(9) = nu
+            endif
             epsm = defm(i) - depsth
             call mazu1d(ep, valres, contm(i), varim(ivari), epsm,&
                         ddefp(i), modf(i), sigf(i), varip(ivari), option)
 275      continue
 !
     else if (compo.eq.'VMIS_CINE_GC') then
-        call verift(fami, kpg, nspg, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
 ! ---    VERIFICATION QUE SIGM_LIM, EPSI_LIM SONT PRESENT
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '+', icdmat,&
@@ -212,6 +211,11 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 ! ---    BOUCLE SUR CHAQUE FIBRE
         do 200 i = 1, nf
             ivari = nbvalc*(i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
             depsm = ddefp(i)-depsth
             call vmci1d('RIGI', kpg, i, icdmat, em,&
                         ep, contm(i), depsm, varim(ivari), option,&
@@ -219,8 +223,6 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 200      continue
 !
     else if (compo.eq.'PINTO_MENEGOTTO') then
-        call verift(fami, kpg, 1, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
 ! ---    ON RECUPERE LES PARAMETRES MATERIAU
         call r8inir(nbval, 0.d0, valres, 1)
         call rcvalb(fami, 1, 1, '-', icdmat,&
@@ -233,6 +235,12 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 300      continue
         do 350 i = 1, nf
             ivari = nbvalc*(i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+                cstpm(1) = ep
+            endif
             depsm = ddefp(i)-depsth
             call nm1dpm('RIGI', kpg, i, icdmat, option,&
                         nbvalc, 13, cstpm, contm(i), varim(ivari),&
@@ -240,10 +248,13 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 350      continue
 !
     else if (compo.eq.'VMIS_CINE_LINE') then
-        call verift(fami, kpg, 1, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
         do 400 i = 1, nf
             ivari = nbvalc* (i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
             depsm = ddefp(i)-depsth
             call nm1dci('RIGI', kpg, i, icdmat, em,&
                         ep, contm(i), depsm, varim(ivari), option,&
@@ -251,10 +262,13 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
 400      continue
 !
     else if (compo.eq.'VMIS_ISOT_LINE') then
-        call verift(fami, kpg, 1, 'T', icdmat,&
-                    'ELAS', 1, depsth, iret4)
         do 450 i = 1, nf
             ivari = nbvalc* (i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
             depsm = ddefp(i)-depsth
             call nm1dis('RIGI', kpg, i, icdmat, em,&
                         ep, contm(i), depsm, varim(ivari), option,&
@@ -264,6 +278,11 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
     else if (compo.eq.'CORR_ACIER') then
         do 500 i = 1, nf
             ivari = nbvalc* (i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
             call nm1dco('RIGI', kpg, i, option, icdmat,&
                         materi, ep, contm(i), epsm, ddefp(i),&
                         varim(ivari), sigf(i), varip(ivari), modf(i), crit,&
@@ -274,6 +293,11 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
     else if (compo.eq.'VMIS_ISOT_TRAC') then
         do 550 i = 1, nf
             ivari = nbvalc* (i-1) + 1
+            if (ltemp) then
+                ksp=debsp-1+i
+                call paeldt(kpg, ksp, fami, icdmat, materi, &
+                            em, ep, nu, depsth)
+            endif
 !           NM1TRA NE FONCTIONNE QUE POUR 1 MATERIAU PAR MAILLE
 !           (VERIFIE DANS RCTRAC)
             call nm1tra(icdmat, tempp, defm(i), ddefp(i), varim(ivari),&
@@ -283,10 +307,13 @@ subroutine pmfcom(kpg, option, compor, crit, nf,&
         else if ((compo.eq.'GRAN_IRRA_LOG').or. (compo.eq.'VISC_IRRA_LOG')&
     ) then
         if (algo(1:10) .eq. 'ANALYTIQUE') then
-            call verift(fami, kpg, 1, 'T', icdmat,&
-                        'ELAS', 1, depsth, iret)
             do 600 i = 1, nf
                 ivari = nbvalc* (i-1) + 1
+                if (ltemp) then
+                    ksp=debsp-1+i
+                    call paeldt(kpg, ksp, fami, icdmat, materi, &
+                                em, ep, nu, depsth)
+                endif
                 depsm = ddefp(i)-depsth
                 if ((iret1+iret2+iret3) .ge. 1) call u2mess('F', 'CALCULEL_31')
                 call nm1vil('RIGI', kpg, i, icdmat, materi,&

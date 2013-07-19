@@ -46,10 +46,11 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     real(kind=8) :: r0, rinf, b, cinf, k, w, gamma0, epsi
     real(kind=8) :: un, ainf, kvi, valden, unskvi
     integer :: icodre(12)
-    character(len=8) :: nomres(12), nomemo(4)
+    character(len=8) :: nomres(12), nomemo(4), materi
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     nbvar=0
+    materi = ' '
     if (compor(1)(6:9) .eq. 'CIN1') then
         nbvar=1
     else if (compor(1)(6:9) .eq. 'CIN2') then
@@ -87,7 +88,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     un = 1.0d0
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, coef, iret)
+                materi, 'ELAS', 1, coef, iret)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES ELASTIQUES :
 !     ============================================

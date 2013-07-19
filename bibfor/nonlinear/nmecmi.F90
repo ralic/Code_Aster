@@ -88,7 +88,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid
     integer :: icodre(3)
-    character(len=8) :: nomres(3), type
+    character(len=8) :: nomres(3), type, materi
 !-----------------------------------------------------------------------
     real(kind=8) :: dp0, xap
 !-----------------------------------------------------------------------
@@ -102,6 +102,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     imate2=imate
     iret=0
     jprolp=1
+    materi = ' '
 !
 ! MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 !
@@ -154,7 +155,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
         troisk = e/(1.d0-2.d0*nu)
     endif
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, epsthe, iret0)
+                materi, 'ELAS', 1, epsthe, iret0)
 !
 !     -- 3 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------

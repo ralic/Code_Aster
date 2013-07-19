@@ -1,5 +1,5 @@
 subroutine verift(fami, kpg, ksp, poum, imate,&
-                  compor, ndim, epsth, iret)
+                  materi, compor, ndim, epsth, iret)
     implicit none
 !
 ! ======================================================================
@@ -26,6 +26,7 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
     character(len=*) :: fami, poum, compor
     integer :: kpg, ksp, ndim, iret, imate
     real(kind=8) :: epsth(ndim)
+    character(len=8) :: materi
 !
 !  FAMI : FAMILLE DE POINTS DE GAUSS
 !  KPG  : NUMERO DU POINT DE GAUSS
@@ -98,12 +99,12 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
         call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                     ksp, tm, iret2)
         call rcvalb(fami, kpg, ksp, '-', imate,&
-                    ' ', compor, 0, ' ', 0.d0,&
+                    materi, compor, 0, ' ', 0.d0,&
                     ndim, nomres, valrem, codrem, 0)
         call rcvarc(' ', 'TEMP', '+', fami, kpg,&
                     ksp, tp, iret3)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', compor, 0, ' ', 0.d0,&
+                    materi, compor, 0, ' ', 0.d0,&
                     ndim, nomres, valrep, codrep, 0)
 !
         somire = iret2 + iret3
@@ -140,7 +141,7 @@ subroutine verift(fami, kpg, ksp, poum, imate,&
         call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                     ksp, tm, iret2)
         call rcvalb(fami, kpg, ksp, poum, imate,&
-                    ' ', compor, 0, ' ', 0.d0,&
+                    materi, compor, 0, ' ', 0.d0,&
                     ndim, nomres, valrem, codrem, 0)
         somire = iret2 + iret3
 !

@@ -16,21 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmfcom(kpg, option, compor, crit, nf,&
-                      instam, instap, npg, nspg, icdmat,&
-                      nbvalc, defam, defap, varim, varimp,&
-                      contm, defm, ddefp, epsm, modf,&
-                      sigf, varip, isecan, codret)
+    subroutine pmfcom(kpg, debsp, option, compor, crit, &
+                  nf,instam, instap, icdmat,nbvalc, &
+                  defam, defap, varim, varimp,contm, &
+                  defm, ddefp, epsm, modf,sigf, &
+                  varip, isecan, codret)
         integer :: nbvalc
         integer :: nf
         integer :: kpg
+        integer :: debsp
         character(len=16) :: option
         character(len=24) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: npg
-        integer :: nspg
         integer :: icdmat
         real(kind=8) :: defam(*)
         real(kind=8) :: defap(*)

@@ -44,7 +44,7 @@ subroutine metau2(option, nomte, iret)
     real(kind=8) :: rbid, zalpha
 !-----------------------------------------------------------------------
     parameter (nbres=6)
-    character(len=8) :: nomres(nbres), acier(4), zirc(2)
+    character(len=8) :: nomres(nbres), acier(4), zirc(2), materi
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), epsthe(2)
     real(kind=8) :: coef1, coef2, epsth, phaspg(7)
@@ -58,6 +58,7 @@ subroutine metau2(option, nomte, iret)
 !
 !
     iret=1
+    materi = ' '
     lacier=.false.
 !
     call rcvarc(' ', acier(1), '+', 'RIGI', 1,&
@@ -109,7 +110,7 @@ subroutine metau2(option, nomte, iret)
 50      continue
 !
         call verift('RIGI', kp, 1, '+', mater,&
-                    'ELAS_META', 2, epsthe(1), iret1)
+                    materi, 'ELAS_META', 2, epsthe(1), iret1)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     1, tpg, iret2)
         call rcvalb('RIGI', 1, 1, '+', mater,&

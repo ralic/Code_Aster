@@ -59,9 +59,11 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     real(kind=8) :: depsme(6), rac2, vepst1(6), vepst2(6), epsm2(6)
     integer :: iret, nbsigm, i, j
     character(len=2) :: k2bid
+    character(len=8) :: materi
     logical :: vrai
 !
     k2bid = '  '
+    materi = ' '
 !
     rac2=sqrt(2.d0)
     nbsigm=ndim*2
@@ -150,7 +152,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
         if (phenom .eq. 'ELAS_ORTH') then
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        'ELAS_ORTH', 3, valres, iret)
+                        materi, 'ELAS_ORTH', 3, valres, iret)
             deplth(1) = valres(1)
             deplth(2) = valres(2)
             deplth(3) = valres(3)
@@ -161,7 +163,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! RECUPERATION DES PARAMETRES MATERIAUX A L INSTANT -
 !
             call verift(fami, kpg, ksp, poum, imate,&
-                        'ELAS_ISTR', 2, valres, iret)
+                        materi, 'ELAS_ISTR', 2, valres, iret)
             deplth(1) = valres(1)
             deplth(2) = valres(1)
             deplth(3) = valres(2)

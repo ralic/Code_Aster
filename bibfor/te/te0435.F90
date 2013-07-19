@@ -44,6 +44,7 @@ subroutine te0435(option, nomte)
 ! ----------------------------------------------------------------------
 !
     character(len=4) :: fami
+    character(len=8) :: materi
     integer :: nddl, nno, nnos, npg, ndim, ncomp, nvari
     integer :: i, j, j1, n, m, c, cc, kpg, kk, kkd, iret, cod(9)
     integer :: ipoids, ivf, idfde, jgano, jtab(7)
@@ -58,6 +59,8 @@ subroutine te0435(option, nomte)
 !
     vecteu = ((option(1:9).eq.'FULL_MECA').or. (option .eq.'RAPH_MECA'))
     matric = ((option(1:9).eq.'FULL_MECA').or. (option(1:9).eq.'RIGI_MECA'))
+!
+    materi = ' '
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -164,7 +167,7 @@ subroutine te0435(option, nomte)
 130                  continue
 !
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        'ELAS_MEMBRANE', 1, epsthe, iret)
+                        materi, 'ELAS_MEMBRANE', 1, epsthe, iret)
             call r8inir(3, 0.d0, epsth, 1)
             epsth(1) = epsthe
             epsth(2) = epsthe

@@ -70,7 +70,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 ! DECLARATION VARIABLES LOCALES
     logical :: cplan, elas, vmis, line, nonlin, inco, puis
     integer :: icodre(5)
-    character(len=8) :: nomres(5)
+    character(len=8) :: nomres(5), materi
     character(len=16) :: phenom
     integer :: jprol, jvale, nbvale, ndimsi, niter, k, l, ibid
 !
@@ -105,6 +105,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
     epsi = r8prem()
     energi(1) = 0.d0
     energi(2) = 0.d0
+    materi = ' '
 !
     if (.not.(elas .or. vmis)) call u2mesk('F', 'ALGORITH4_50', 1, compor(1))
     ndimsi = 2*ndim
@@ -117,7 +118,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
 !
 ! TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
     call verift(fami, kpg, ksp, poum, imate,&
-                'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', 1, epsthe, iret)
 !
     call rcvarc(' ', 'TEMP', poum, fami, kpg,&
                 ksp, temp, iret)

@@ -63,7 +63,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     integer :: i, j, k, p, l, m, iret
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=8) :: nomres(3), materi
     real(kind=8) :: valres(3)
     real(kind=8) :: vect(7), s11, s12, s13, s21, s22, s23, s1, s2, puls, rho
     real(kind=8) :: tcla, tfor, tthe, tdyn, divt, divv, s1th, s2th, prod, epsthe
@@ -76,9 +76,10 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
+    materi = ' '
 !
     call verift(fami, kp, 1, '+', imate,&
-                'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', 1, epsthe, iret)
     call rcvalb(fami, kp, 1, '+', imate,&
                 ' ', 'ELAS', 0, ' ', 0.d0,&
                 2, nomres(1), valres(1), icodre(1), 1)

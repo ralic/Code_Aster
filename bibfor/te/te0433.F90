@@ -43,7 +43,7 @@ subroutine te0433(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
-    character(len=8) :: nomres(2)
+    character(len=8) :: nomres(2), materi
     integer :: nddl, nno, nnos, npg, ndim, i, j, n, kpg
     integer :: jgano, ipoids, ivf, idfde, igeom, imate
     integer :: icontp, iret, imass, idepl, idefo, inr
@@ -57,6 +57,7 @@ subroutine te0433(option, nomte)
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
     lexc = (nomte(1:4).eq.'MEGC')
+    materi = ' '
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
 !
@@ -177,7 +178,7 @@ subroutine te0433(option, nomte)
 !
 !         CALCUL DE LA CONTRAINTE
             call verift(fami, kpg, 1, '+', zi(imate),&
-                        'ELAS', 1, epsthe, iret)
+                        materi,'ELAS', 1, epsthe, iret)
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&
                         ' ', 'ELAS', 0, ' ', 0.d0,&

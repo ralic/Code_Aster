@@ -37,7 +37,7 @@ subroutine ef0154(nomte)
     real(kind=8) :: ugr(6), ulr(6), flr(6)
     integer :: codres
     character(len=4) :: fami
-    character(len=8) :: nomail
+    character(len=8) :: nomail, materi
     character(len=16) :: ch16
     logical :: lteimp
     real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig
@@ -46,6 +46,7 @@ subroutine ef0154(nomte)
 !     ------------------------------------------------------------------
 !
     lteimp=.false.
+    materi = ' '
     nno=2
     nc=3
     fami='RIGI'
@@ -59,7 +60,7 @@ subroutine ef0154(nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                'ELAS', 1, epsth, iret)
+                materi, 'ELAS', 1, epsth, iret)
 !
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
                 ' ', 'ELAS', 0, ' ', r8bid,&

@@ -91,7 +91,7 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: coef1, coef2, deltev
     integer :: icodre(5)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(5), nompar(2)
+    character(len=8) :: nomres(5), nompar(2),materi
 ! RMS
     real(kind=8) :: grain, tk, xr, xq1, xq2, dporo, poro, xm1, xm2, xe01, xe02
     real(kind=8) :: fdevpkk, grain0
@@ -100,8 +100,9 @@ subroutine nmvpgm(fami, kpg, ksp, ndim, imate,&
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
 !
+    materi = ' '
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, epsthe, iret)
+                materi, 'ELAS', 1, epsthe, iret)
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tm, iret1)
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&

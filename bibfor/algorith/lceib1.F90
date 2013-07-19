@@ -51,7 +51,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
 ! ----------------------------------------------------------------------
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=8) :: nomres(3),materi
     integer :: i, k, ndimsi
     real(kind=8) :: valres(3), e, nu
     real(kind=8) :: sref, sechm, hydrm
@@ -59,6 +59,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
 !
+    materi = ' '
 !
     ndimsi=2*ndim
     t(1,1)=1
@@ -97,9 +98,9 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
                     ' ', 'ELAS', 0, ' ', 0.d0,&
                     2, nomres, valres, icodre, 1)
         call verift(fami, kpg, ksp, '-', imate,&
-                    'ELAS', 1, epsthe(1), icodre)
+                    materi, 'ELAS', 1, epsthe(1), icodre)
         call verift(fami, kpg, ksp, '+', imate,&
-                    'ELAS', 1, epsthe(2), icodre)
+                    materi, 'ELAS', 1, epsthe(2), icodre)
 !
         e = valres(1)
         nu = valres(2)

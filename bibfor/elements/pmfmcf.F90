@@ -1,5 +1,5 @@
 subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
-                  crit, option, npg, instam, instap,&
+                  crit, option, instam, instap,&
                   icdmat, nbvalc, defam, defap, varim,&
                   varimp, contm, defm, defp, epsm,&
                   modf, sigf, varip, isecan, codret)
@@ -28,7 +28,7 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
     real(kind=8) :: varim(*), varimp(*), varip(*), contm(*), defm(*), defp(*)
     real(kind=8) :: crit(*), instam, instap, defap(*), defam(*), epsm
     real(kind=8) :: sigf(*), modf(*)
-    integer :: ig, ngf, nbfig, npg
+    integer :: ig, ngf, nbfig
     integer :: idcipv, idcipc, idecc, idecv, icp
     integer :: iposv, iposc
     integer :: codret, codrep
@@ -39,6 +39,7 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
     idcipv = nbvalc*idcipc
     idecc = 1
     idecv = 1
+
     do 510 ig = 1, nbgf
 ! ---    NUMERO DU GROUPE DE FIBRE
         ngf = nugf(ig)
@@ -50,8 +51,8 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
 !        ATTENTION POSITION DU POINTEUR CONTRAINTE ET VARIABLES INTERNES
         iposv = idecv + idcipv
         iposc = idecc + idcipc
-        call pmfcom(ip, option, sdcomp(icp+2), crit, nbfig,&
-                    instam, instap, npg, nbfig, icdmat,&
+        call pmfcom(ip, idecc, option, sdcomp(icp+2), crit, nbfig,&
+                    instam, instap, icdmat,&
                     nbvalc, defam, defap, varim(iposv), varimp( iposv),&
                     contm(iposc), defm(idecc), defp(idecc), epsm, modf(idecc),&
                     sigf(idecc), varip(iposv), isecan, codrep)

@@ -95,7 +95,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(12)
-    character(len=8) :: nomres(12), zirc(2)
+    character(len=8) :: nomres(12), zirc(2), materi
 !
     logical :: resi, rigi
 !
@@ -110,6 +110,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
+    materi = ' '
     if (ndim .eq. 2) then
         ndimsi=4
     else
@@ -148,7 +149,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
     endif
 !
     call verift(fami, kpg, ksp, c1, imat,&
-                'ELAS_MAT', 2, epsthe, iret)
+                materi, 'ELAS_MAT', 2, epsthe, iret)
 !
     zalpha=phase(1)+phase(2)
     phase(nz)=1.d0-zalpha

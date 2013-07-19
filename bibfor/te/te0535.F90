@@ -266,7 +266,7 @@ subroutine te0535(option, nomte)
             ipomod=jmodfb + nbfib*(ip-1)
 ! ---       MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
             call pmfmcf(ip, nbgf, nbfib, zi(inbf+2), zk24(isdcom),&
-                        zr(icarcr), option, npg, zr(iinstm), zr(iinstp),&
+                        zr(icarcr), option, zr(iinstm), zr(iinstp),&
                         zi(imate), nbvalc, defam, defap, zr(ivarim),&
                         zr(ivarmp), zr(icontm), zr( jdefm), zr(jdefp), epsm,&
                         zr(ipomod), zr(iposig), zr(ivarip), isecan, codrep)

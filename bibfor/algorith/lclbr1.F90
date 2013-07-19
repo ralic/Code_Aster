@@ -60,6 +60,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: deumud(3), sigp(3), rtemp, rtemp3, rtemp4
     real(kind=8) :: gamma
     real(kind=8) :: sigmt, sigmc, epsic, compn, epsthp, epsthm
+    character(len=8) :: materi
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
 ! ----------------------------------------------------------------------
@@ -76,6 +77,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
     if (coup) rigi=.true.
     ndimsi = 2*ndim
     rac2=sqrt(2.d0)
+    materi = ' '
 !
 ! -- INITIALISATION
 !
@@ -87,9 +89,9 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod,&
 ! -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 !
     call verift(fami, kpg, ksp, '+', imate,&
-                'ELAS', 1, epsthp, iret1)
+                materi, 'ELAS', 1, epsthp, iret1)
     call verift(fami, kpg, ksp, '-', imate,&
-                'ELAS', 1, epsthm, iret2)
+                materi, 'ELAS', 1, epsthm, iret2)
     if (resi) then
         do 10 k = 1, ndimsi
             eps(k) = epsm(k) + deps(k) - epsthp*kron(k)

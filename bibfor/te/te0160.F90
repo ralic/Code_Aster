@@ -15,6 +15,7 @@ subroutine te0160(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
 !
@@ -37,7 +38,7 @@ subroutine te0160(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: nomres(2)
+    character(len=8) :: nomres(2), materi
     integer :: icodre(2)
     real(kind=8) :: valres(2)
     integer :: nno, kp, i, j, imatuu, iret
@@ -53,6 +54,7 @@ subroutine te0160(option, nomte)
     real(kind=8) :: ec, preten, r8bid
 !-----------------------------------------------------------------------
     demi = 0.5d0
+    materi = ' '
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdk, jgano)
@@ -105,7 +107,7 @@ subroutine te0160(option, nomte)
 20  end do
     do 70 kp = 1, npg
         call verift('RIGI', kp, 1, '+', zi(imate),&
-                    'ELAS', 1, epsth, iret)
+                    materi, 'ELAS', 1, epsth, iret)
 !
         k = (kp-1)*nordre*nordre
         jacobi = sqrt(biline(nordre,zr(igeom),zr(iyty+k),zr(igeom)))

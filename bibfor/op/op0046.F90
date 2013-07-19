@@ -164,13 +164,18 @@ subroutine op0046()
                 nosy, n7)
     call assert(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
 !
-!
-!     A-T-ON DES ELEMENTS DE STRUCTURE QUI UTILISENT
-!     LE CHAMP STRX_ELGA EN LINEAIRE
+!   A-t-on des POU_D_EM qui utilisent le champ STRX_ELGA en lineaire
     call dismoi('F', 'EXI_STR2', nomode, 'MODELE', ibid,&
                 kstr, ierd)
-!
     if ((nosy.eq.'SANS') .and. (kstr(1:3).eq.'NON')) goto 9999
+!
+!   A-t-on des VARC
+    call dismoi('F', 'EXI_VARC', mate, 'CHAM_MATER', ibid,&
+                k8bla, iret)
+!   On interdit provisoirement les POU_D_EM avec les VARC
+    if ( (k8bla(1:3).eq.'OUI').and.(kstr(1:3).eq.'OUI')) then
+        call u2mess('F', 'MECASTATIQUE_1')
+    endif
 !
     exipou = .false.
 !

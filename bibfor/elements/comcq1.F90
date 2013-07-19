@@ -36,7 +36,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
     real(kind=8) :: tempm, tempp, angmas(3), sigm(4), eps(4), deps(4)
     real(kind=8) :: vim(*), vip(*), sigp(4), dsde(6, 6), carcri(*), lc(1)
     real(kind=8) :: instm, instp, ep, em, depsth, etg, depsm, wkout(1)
-    character(len=8) :: typmod(2), nompar
+    character(len=8) :: typmod(2), nompar, materi
     integer :: codres
 !
 !
@@ -44,6 +44,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
     integer :: iret
     call r8inir(36, 0.d0, dsde, 1)
     call r8inir(4, 0.d0, sigp, 1)
+    materi = ' '
 !
     codret=0
 !     INTEGRATION DE LA LOI DE COMPORTEMENT POUR LES COQUE_1D :
@@ -101,7 +102,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 else if ((compor(1).eq.'VMIS_ISOT_LINE') .or. (compor(1)&
             .eq.'VMIS_ISOT_TRAC')) then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            'ELAS', 1, depsth, iret)
+                            materi, 'ELAS', 1, depsth, iret)
                 depsm=deps(1)-depsth
                 call nm1dis(fami, kpg, ksp, imate, em,&
                             ep, sigm, depsm, vim, option,&
@@ -112,7 +113,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                 sigp(2)=0.d0
             else if (compor(1).eq.'VMIS_CINE_LINE') then
                 call verift(fami, kpg, 1, 'T', imate,&
-                            'ELAS', 1, depsth, iret)
+                            materi, 'ELAS', 1, depsth, iret)
                 depsm=deps(1)-depsth
                 call nm1dci(fami, kpg, ksp, imate, em,&
                             ep, sigm, depsm, vim, option,&

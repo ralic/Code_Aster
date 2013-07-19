@@ -15,6 +15,7 @@ subroutine te0434(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
 !
@@ -45,6 +46,7 @@ subroutine te0434(option, nomte)
 !
     integer :: codres(2)
     character(len=4) :: fami
+    character(len=8) :: materi
     integer :: nddl, nno, nnos, npg, ndim, ncomp
     integer :: i, n, kpg, c, cc, iret
     integer :: ipoids, ivf, idfde, jgano
@@ -52,6 +54,8 @@ subroutine te0434(option, nomte)
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
     real(kind=8) :: alpha, beta, rho, rig(3, 3)
     real(kind=8) :: epsthe, epsref, sgmref, sig(3)
+!
+    materi = ' '
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -145,7 +149,7 @@ subroutine te0434(option, nomte)
             else if (option.eq.'CHAR_MECA_TEMP_R') then
 !
                 call verift(fami, kpg, 1, '+', zi(imate),&
-                            'ELAS_MEMBRANE', 1, epsthe, iret)
+                            materi, 'ELAS_MEMBRANE', 1, epsthe, iret)
 !
                 call mbrigi(fami, kpg, imate, rig)
 !

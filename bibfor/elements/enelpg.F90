@@ -64,7 +64,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
     real(kind=8) :: mu, troisk, jac, tau(6), trtau, eqtau, dvtau(6), tlog(6)
     real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
     character(len=4) :: fami
-    character(len=8) :: nomres(2)
+    character(len=8) :: nomres(2), materi
     character(len=16) :: compor(*)
     data kr/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data pdtsca/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/
@@ -80,6 +80,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
     jzero = zero
     uzero = zero
     ujac = zero
+    materi = ' '
     mzero = zero
     mjac = zero
     wbe =zero
@@ -134,7 +135,7 @@ subroutine enelpg(fami, iadmat, instan, igau, repere,&
 !  ---   DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
 !
         call verift(fami, igau, 1, '+', iadmat,&
-                    'ELAS', 1, epsthe, icodre)
+                    materi, 'ELAS', 1, epsthe, icodre)
 !
 !
 ! ---    ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...

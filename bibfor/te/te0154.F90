@@ -55,7 +55,7 @@ subroutine te0154(option, nomte)
     integer :: codres
     character(len=1) :: stopz(3)
     character(len=4) :: fami
-    character(len=8) :: nomail
+    character(len=8) :: nomail, materi
     character(len=16) :: ch16
     logical :: lteimp
     real(kind=8) :: a, epsth, e, r8bid, rho, xfl1, xfl4, xl, xmas, xrig
@@ -68,6 +68,7 @@ subroutine te0154(option, nomte)
     nno = 2
     nc = 3
     fami = 'RIGI'
+    materi = ' '
 !
     if ((nomte .ne. 'MECA_BARRE') .and. (nomte .ne. 'MECA_2D_BARRE')) then
         ch16 = nomte
@@ -78,7 +79,7 @@ subroutine te0154(option, nomte)
     call jevech('PMATERC', 'L', lmater)
 !
     call verift(fami, 1, 1, '+', zi(lmater),&
-                'ELAS', 1, epsth, iret)
+                materi, 'ELAS', 1, epsth, iret)
 !
     call rcvalb(fami, 1, 1, '+', zi(lmater),&
                 ' ', 'ELAS', 0, ' ', r8bid,&

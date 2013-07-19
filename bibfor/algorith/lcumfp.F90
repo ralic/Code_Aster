@@ -206,7 +206,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     integer :: iret
 ! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE NOMPAR
 !      CHARACTER*8     NOMRES(16),NOMPAR(3)
-    character(len=8) :: nomres(16)
+    character(len=8) :: nomres(16), materi
     integer :: icodre(16)
     real(kind=8) :: cfps, cfpd
 !     NSTRS --> 6 NVARI --> 20
@@ -245,6 +245,8 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
     data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
+    materi = ' '
+
 !   CALCUL DE L'INTERVALLE DE TEMPS
 !
     tdt = tinstp-tinstm
@@ -364,9 +366,9 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     else
 !
         call verift(fami, kpg, ksp, '+', imate,&
-                    'ELAS', 1, epsthp, iret1)
+                    materi, 'ELAS', 1, epsthp, iret1)
         call verift(fami, kpg, ksp, '-', imate,&
-                    'ELAS', 1, epsthm, iret2)
+                    materi, 'ELAS', 1, epsthm, iret2)
     endif
 !
 !

@@ -68,6 +68,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     real(kind=8) :: vepst1(6), vepst2(6), hydr, sech, sref, ptot, nu
     integer :: i, k, iret, irepto
     character(len=6) :: epsa(6)
+    character(len=8) :: materi
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
 !
@@ -78,6 +79,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     zero = 0.0d0
     nompar = 'INST'
     valpar = instan
+    materi = ' '
 !
     do 10 i = 1, 6
         epsth(i) = zero
@@ -225,7 +227,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
         if (phenom .eq. 'ELAS') then
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        'ELAS', 1, epsth(1), iret)
+                        materi, 'ELAS', 1, epsth(1), iret)
             epsth(2) = epsth(1)
             epsth(3) = epsth(1)
 !
@@ -251,7 +253,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        phenom, 3, epsthl(1), iret)
+                        materi, phenom, 3, epsthl(1), iret)
 !
             epsthl(4) = 0.d0
             epsthl(5) = 0.d0
@@ -300,7 +302,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             endif
 !
             call verift(fami, igau, isgau, poum, mater,&
-                        phenom, 2, epsthl(1), iret)
+                        materi, phenom, 2, epsthl(1), iret)
 !
             epsthl(3) = epsthl(2)
             epsthl(2) = epsthl(1)

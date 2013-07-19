@@ -60,7 +60,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, tm
     character(len=*) :: fami
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3), typmod(*)
+    character(len=8) :: nomres(3), typmod(*), materi
     character(len=16) :: option
 !-----------------------------------------------------------------------
     data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -71,6 +71,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
 !     ----------------------
 !
     iret=0
+    materi = ' '
 !
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
@@ -162,7 +163,7 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     endif
 !
     call verift(fami, kpg, ksp, 'T', imate,&
-                'ELAS', 1, epsthe, iret0)
+                materi, 'ELAS', 1, epsthe, iret0)
 !
 ! --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 !
