@@ -210,5 +210,3 @@ else:
   Fvolx=FORMULE(VALE=Fvol_x, NOM_PARA=('X','Y','Z') );
   Fvoly=FORMULE(VALE=Fvol_y, NOM_PARA=('X','Y','Z') );
   Fvolz=FORMULE(VALE=Fvol_z, NOM_PARA=('X','Y','Z') );
-
-

@@ -1256,4 +1256,3 @@ ACC_Z=DEFI_FONCTION(NOM_PARA='INST',
                     INTERPOL='LIN',
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='CONSTANT',);
-

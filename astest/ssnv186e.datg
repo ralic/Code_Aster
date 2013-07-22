@@ -50,4 +50,3 @@ Volume (1) = {1000001};
 Physical Surface ( 1 ) = { 1 };  //surfinf
 Physical Surface ( 2 ) = { 26 }; //surfsup
 Physical Volume ( 3 ) = { 1 }; //vol
-

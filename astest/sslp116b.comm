@@ -4,7 +4,6 @@ DEBUT(CODE=_F(NOM='SSLP116B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 #------------------------------------------------------------------
 #
 # TITRE : PLAQUE CARREE - GRADIENT DE TEMPERATURE CONSTANT
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

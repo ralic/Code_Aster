@@ -169,4 +169,3 @@ if salome.sg.hasDesktop():
    gg = salome.ImportComponentGUI("GEOM")
    gg.createAndDisplayFitAllGO(id_GeoCoude)
    salome.sg.updateObjBrowser(1)
-

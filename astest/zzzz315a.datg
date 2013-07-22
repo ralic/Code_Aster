@@ -27,4 +27,3 @@ Extrude Surface {5, {0,0,1}}
 Physical Surface("Escl") = {5};
 Physical Surface("Depl") = {27};
 Physical Volume("Cube") = {1};
-

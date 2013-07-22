@@ -46,5 +46,3 @@ opti sauv form 'zzzz112b.mgibplex';
 sauv 'FORMAT' mailplex ;
 mailplex=mailplex coul roug ;
 trac (0. 0. 1000.) cach (MAILAST ET MAILPLEX);
-
-

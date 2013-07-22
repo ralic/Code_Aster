@@ -146,4 +146,3 @@ def EXTR_MATR(matrrr,vall) :
                 rig11[ii][jj]=matrig[indint[ii]][indint[jj]]
 
         return [vectddl,rig11]
-

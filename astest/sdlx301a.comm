@@ -2,7 +2,6 @@
 # TITRE BATIMENT SOUMIS A UNE EXCITATION SISMIQUE
 # VERSION B de ce test : ajout de poutres afin de lier les DRZ
 #                        entre poteaux et plaques
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

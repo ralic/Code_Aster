@@ -199,4 +199,3 @@ Q=add.accumulate(QP)*1./discretis
 #gaml=[]
 #for i in gam1.tolist():
   #gaml.append(i[0])
-

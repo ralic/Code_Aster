@@ -1,7 +1,5 @@
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (SINI = 0.0099)
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -437,4 +435,3 @@ TEST_RESU(RESU=_F(INST=1.0,
           )
 
 FIN()
-
