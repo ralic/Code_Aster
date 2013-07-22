@@ -74,7 +74,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 !     REPERE   IN  K16  : TYPE DE REPERE (UTILISATEUR OU CYLINDRIQUE)
 !     NBCMP    IN  I    : NOMBRE DE COMPOSANTES A TRAITER
 !     ICHAM    IN  I    : NUMERO D'OCCURRENCE
-!     TYPE     IN  K16  : TYPE DU CHAMP :'TENS' 'VECT' 'TORS' OU 'COQUE'
+!     TYPE     IN  K16  : TYPE DU CHAMP :'TENS' 'VECT' OU 'COQUE'
 !     NOMCH    IN  K16  : NOM DE CHAMP
 !     CHAMP0   IN  K16  : NOM DU CHAMP IN
 ! ----------------------------------------------------------------------

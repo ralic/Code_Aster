@@ -166,7 +166,7 @@ subroutine op0191()
             call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid, exipla, iret)
             call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid, exicoq, iret)
             if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
-                ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D').or. (type.eq.'TORS_3D')) .and.&
+                ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
                 ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) &
                     call u2mess('F', 'ALGORITH3_7')
 !
