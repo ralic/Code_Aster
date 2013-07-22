@@ -227,6 +227,15 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
         nfon = 0
         nbfond = 0
         goto 800
+!     DE MEME POUR UNE FISSURE DONT LE FOND SE SITUE EN DEHORS DE LA
+!     MATIERE (EX: FISSURE QUI DEBOUCHE EN FIN DE PROPAGATION)
+    elseif (nmafon.eq.0) then
+        call u2mess('A', 'XFEM_58')
+        if (rayon .gt. 0.d0) call u2mess('A', 'XFEM_59')
+        call assert(nmaen2+nmaen3.eq.0)
+        nfon = 0
+        nbfond = 0
+        goto 800
     endif
 !
 !--------------------------------------------------------------------
@@ -251,6 +260,8 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                 cnxinv, jmafon, nxptff, jfono, nfon,&
                 jbaso, jtailo, fiss, goinop, listpt,&
                 orient)
+    call assert(nfon.gt.0)
+!
     if (.not.goinop) then
         call u2mesi('I', 'XFEM_33', 1, nfon)
     else
@@ -260,15 +271,6 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     if (.not.orient) then
         nfon = 0
         nbfond = 0
-        goto 800
-    endif
-!
-    if (nfon .eq. 0) then
-        call u2mess('A', 'XFEM_58')
-        if (rayon .gt. 0.d0) call u2mess('A', 'XFEM_59')
-        call assert(nmaen2+nmaen3.eq.0)
-        nbfond = 0
-!       ON PASSE DIRECTEMENT
         goto 800
     endif
 !
