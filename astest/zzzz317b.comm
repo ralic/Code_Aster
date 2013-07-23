@@ -1,4 +1,4 @@
-# TITRE GENERATION DE SIGNAUX SISMIQUES
+# TITRE GENERATION DE SIGNAUX SISMIQUES OPTION DSP NON SEPARABLE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -16,6 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # person_in_charge: irmela.zentner at edf.fr
+#
 DEBUT(CODE=_F(NOM='zzzz317b',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 #
 from math import pi
@@ -41,10 +42,9 @@ tini=0.5
 #----------------------------------------------------------------
 #
 ACCE4=GENE_ACCE_SEISME( INFO            =2, INIT_ALEA=10000,
-              PAS_INST       =DT,PESANTEUR =9.81,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, FREQ_PENTE=fp),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.),
-                       DUREE_PHASE_FORTE =TSM, INST_INI= tini,INTE_ARIAS =arias), )
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", INTE_ARIAS =arias), )
 
 FONCT4=RECU_FONCTION(    TABLE=ACCE4,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -64,19 +64,19 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
                      _F(FONCTION=FONCT4 ,)))
 
 TEST_TABLE(
-           VALE_CALC=0.047017906405587999,
+           VALE_CALC=0.058846133156181,
            NOM_PARA='INTE_ARIAS',
            TABLE=N4,
            )
 
 TEST_TABLE(
-           VALE_CALC=6.3300000000000001,
+           VALE_CALC=4.7600,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N4,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.11965290779866,
+           VALE_CALC=0.15647380735786,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS4,
            )
@@ -85,10 +85,11 @@ TEST_TABLE(
 #"GAMMA"
 #----------------------------------------------------------------
 #
-ACCE5=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=10000, PAS_INST       =DT,PESANTEUR =9.81,
+ACCE5=GENE_ACCE_SEISME( INFO =2,
+            INIT_ALEA=1356000, 
+             PESANTEUR =9.81,  DUREE_PHASE_FORTE =TSM,PAS_INST       =DT,
                DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr,  FREQ_PENTE=0.0),
-               MODULATION      = _F( TYPE=   "GAMMA", DUREE_PHASE_FORTE  = TSM,
-                                             INST_INI= tini, INTE_ARIAS=arias),)
+               MODULATION      = _F( TYPE=   "GAMMA", INST_INI= tini, INTE_ARIAS=arias),)
 
 
 FONCT5=RECU_FONCTION(    TABLE=ACCE5,
@@ -102,19 +103,19 @@ N5=INFO_FONCTION(  NOCI_SEISME=_F(
 
 RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
 TEST_TABLE(
-           VALE_CALC=0.047152842646925,
+           VALE_CALC=0.046792097043320,
            NOM_PARA='INTE_ARIAS',
            TABLE=N5,
            )
 
 TEST_TABLE(
-           VALE_CALC=4.8600000000000003,
+           VALE_CALC=4.830000000000000,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N5,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.11982350812707999,
+           VALE_CALC=0.13726314116779,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS5,
            )

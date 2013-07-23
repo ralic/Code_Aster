@@ -1,4 +1,4 @@
-# TITRE GENERATION DE SIGNAUX SISMIQUES
+# TITRE GENERATION DE SIGNAUX SISMIQUES OPTION DSP, CAS SEPARABLE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -15,11 +15,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: irmela.zentner at edf.fr
+# person_in_charge: irmela.zentner at edf.fr 
 DEBUT(CODE=_F(NOM='zzzz317a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 #
+#
 from math import pi,sqrt,log,exp, ceil
-#import numpy as NP
+import numpy as NP
 ###############################################
 DT=0.01
 NBPO=2**10
@@ -50,10 +51,9 @@ pga=0.2  #(en g)
 #  ARIAS
 #####
 ACCE1a=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=100000,
-              PAS_INST       =DT, PESANTEUR =9.81,
+              PAS_INST       =DT, PESANTEUR =9.81,DUREE_PHASE_FORTE   =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
-                           DUREE_PHASE_FORTE   =TSM, INST_INI= t_ini, INTE_ARIAS=arias),),
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER",  INTE_ARIAS=arias),),
 
 FONCT1=RECU_FONCTION( TABLE=ACCE1a,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -73,15 +73,13 @@ N1=INFO_FONCTION(  NOCI_SEISME=_F(
 #                     _F(FONCTION=FONCT1 ,)))
 #
 TEST_TABLE(
-           VALE_CALC=0.056859082634040999,
+           VALE_CALC=0.044798058322245,
            NOM_PARA='INTE_ARIAS',
            TABLE=N1,
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-3,
-           VALE_CALC=8.520000000,
-           VALE_REFE=8.5199999999999996,
+TEST_TABLE(
+           VALE_CALC=7.79,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N1,)
 
@@ -89,10 +87,9 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 ########
 ACCE1b=GENE_ACCE_SEISME( INFO =2,  
               INIT_ALEA=100000,NB_POIN=2**10,
-              PAS_INST       =DT,PESANTEUR =9.81,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE   =10.,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
-                           DUREE_PHASE_FORTE   =10., INST_INI= 0.1, ECART_TYPE=ecart),),
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", ECART_TYPE=ecart),),
 
 
 FONCT1b=RECU_FONCTION( TABLE=ACCE1b,
@@ -104,7 +101,7 @@ RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC=0.958941395,
+           VALE_CALC=1.0682658963835,
            VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1b,)
@@ -118,10 +115,10 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
 #  ARIAS
 #####
 ACCE3=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=1000000,
-              PAS_INST       =DT,PESANTEUR =9.81,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE=   "GAMMA",
-                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini, INTE_ARIAS =arias), )
+                                   INST_INI= t_ini, INTE_ARIAS =arias), )
 
 FONCT3=RECU_FONCTION(TABLE=ACCE3,
                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
@@ -140,13 +137,13 @@ RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
 #                     _F(FONCTION=FONCT3 ,)))
 
 TEST_TABLE(
-           VALE_CALC=0.050175408329392,
+           VALE_CALC=0.041618358430000,
            NOM_PARA='INTE_ARIAS',
            TABLE=N3,
            )
 
 TEST_TABLE(
-           VALE_CALC=8.25,
+           VALE_CALC=8.86,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N3,
            )
@@ -154,10 +151,10 @@ TEST_TABLE(
 # ECART
 ########
 ACCE3b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=10000,
-              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,
+              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE=   "GAMMA",
-                                   DUREE_PHASE_FORTE =TSM, INST_INI= 0.5, ECART_TYPE =ecart), )
+                                   INST_INI= 0.5, ECART_TYPE =ecart), )
 
 FONCT3b=RECU_FONCTION( TABLE=ACCE3b,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -170,7 +167,7 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
                      _F(FONCTION=FONCT3b ,)))
 
 TEST_TABLE(
-           VALE_CALC=1.0070159976669,
+           VALE_CALC=0.96409533255472,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS3b,
            )
@@ -183,7 +180,7 @@ TEST_TABLE(
 ########
 ACCE2a=GENE_ACCE_SEISME( INFO =2,
 #        INIT_ALEA=100000,
-              PAS_INST       =DT, NB_POIN=2**11,PESANTEUR =9.81,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE="CONSTANT", ECART_TYPE=ecart),)
 
@@ -198,7 +195,7 @@ IMPR_TABLE (TABLE=RMS2a,  UNITE=8,);
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC=1.036018599,
+           VALE_CALC=1.0209468418836,
            VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2a,)
@@ -207,22 +204,30 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 
 
-
+############################################
+# TEST DE L INTERSPECTRE DES FCTS GENEREES
+############################################
+#
+# discretisation temps et freq
+Nsim=50
+#courbe=[]
+comp=1
+FO2=[None]*(Nsim+1)
+FOM=[None]*(Nsim+1)
+iii=0
+OM=pi/DT
+FREQ_COUP=OM/2./pi
+nbp=2**10  
+TT=(nbp-1)*DT
+fcp=0.001
 
 #  ARIAS
 #####
 
-ACCE2b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=100000,
-              PAS_INST       =DT, PESANTEUR =9.81,
-              DSP             = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE="CONSTANT",DUREE_PHASE_FORTE =TSM, INTE_ARIAS=arias),)
-
-
 ACCE2=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=100000,
-              PAS_INST       =DT, NB_POIN=NBPO,PESANTEUR =9.81,
+              PAS_INST       =DT, PESANTEUR =9.81,DUREE_PHASE_FORTE =TT,FREQ_FILTRE=fcp,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-               MODULATION      = _F(TYPE="CONSTANT",
-                                   INTE_ARIAS=arias),)
+               MODULATION      = _F(TYPE="CONSTANT",INTE_ARIAS=arias),)
 
 FONCT2=RECU_FONCTION(    TABLE=ACCE2,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -239,39 +244,28 @@ IMPR_TABLE (TABLE=RMS2,  UNITE=8,);
 
 #IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
 TEST_TABLE(
-           VALE_CALC=0.046655817603433999,
+           VALE_CALC=0.053565864709396  ,
            NOM_PARA='INTE_ARIAS',
            TABLE=N2,
            )
 
-############################################
-# TEST DE L INTERSPECTRE DES FCTS GENEREES
-############################################
-#
-# discretisation temps et freq
-Nsim=25
-#courbe=[]
-comp=1
-FO2=[None]*(Nsim+1)
-FOM=[None]*(Nsim+1)
-iii=0
-OM=pi/DT
-FREQ_COUP=OM/2./pi
-nbp=NBPO  
-TT=10.
 
 INTERS=CALC_INTE_SPEC( INST_INIT=0.0,
                        INST_FIN=TT, NB_POIN=nbp, FONCTION=( FONCT2 ),  )
+
 FOM[iii]=RECU_FONCTION(INTE_SPEC=INTERS,NUME_ORDRE_I=1,),
 DETRUIRE(CONCEPT=_F(NOM=(INTERS))) 
 #
 ## --------------------------------
 #
+
+nbp=TT/DT+1
+
 for iii in range(1, Nsim+1):
    print "RUN  ", iii+1
 #
    VECT=GENE_ACCE_SEISME(
-              PAS_INST       =DT,NB_POIN=NBPO,PESANTEUR =9.81,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TT,FREQ_FILTRE=fcp,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE="CONSTANT", INTE_ARIAS =arias),)
 
@@ -309,37 +303,30 @@ POST_DSP=POST_DYNA_ALEA(  INTE_SPEC=DSP_M,
 # TEST DSP de  KT
 ##############################
 #REFERENCE [ 0.00324168  0.00014989] (DSP CP)
-
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000126747228849,
-                         VALE_REFE=1.4898999999999999E-4,
+#[  3.61724321e-03   1.48368417e-04   3.57812105e-05]
+#[  3.61724321e-03   1.48368417e-04   3.57812105e-05]
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.297902E-04 ,
+                         VALE_REFE=1.48288849e-04,
                          VALE_PARA=10.0,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.25,
                          FONCTION=FONCMF,),
-                      _F(VALE_CALC=1.2674722879999999E-4,
-                         VALE_PARA=10.0,
-                         FONCTION=FONCMF,
-                         ),
                       ),
               )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.00305556620279,
-                         VALE_REFE=3.2416799999999998E-3,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.623451E-03,
+                         VALE_REFE=3.61601202e-03,
                          VALE_PARA=1.0,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.10000000000000001,
                          FONCTION=FONCMF,),
-                      _F(VALE_CALC=3.0555662027900001E-3,
-                         VALE_PARA=1.0,
-                         FONCTION=FONCMF,
                          ),
                       ),
-              )
 
-ecart0=0.174711603824  # valeur theorique de la DSP cible
+ecart0= 0.174711603824 # valeur theorique de la DSP cible
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-2,
-           VALE_CALC=0.176141884,
+           PRECISION=1.E-1,
+           VALE_CALC=0.17424364477819,
            VALE_REFE=ecart0,
            NOM_PARA='ECART',
            TABLE=POST_DSP,
@@ -355,26 +342,38 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 ####    TEST  visuel
 ###############################
 ## ---------------------------------------------------------------------
-#def calc_dsp_KT(lfreq, w0,amor, So=1.):
-## KT model 
-# 
-#      x11  =NP.array([4.*(amor**2)*(w0**2)*FREQ**2  for FREQ in lfreq ])
-#      xnum =x11+w0**4
-#      denom=NP.array([ (w0**2-FREQ**2)**2 for FREQ in lfreq ])
-#      denom=denom+x11
-#      valkt=xnum/denom
-## CP filter
+
+l_w=2.*pi*NP.arange(0.0, 50., 0.1) 
+def calc_dsp_KT(lfreq, w0,amor,fcp, So=1.0):
+# KT model  
+      x11  =NP.array([4.*(amor**2)*(w0**2)*FREQ**2  for FREQ in lfreq ])
+      xnum =x11+w0**4
+      denom=NP.array([ (w0**2-FREQ**2)**2 for FREQ in lfreq ])
+      denom=denom+x11
+      valkt=xnum/denom
+# CP filter
+      wcp=2.*pi*fcp
 #      wcp=0.5*pi
-#      amocp=1.0
-#      x11  =NP.array([4.*(amocp**2)*(wcp**2)*FREQ**2  for FREQ in lfreq ])
-#      denom=NP.array([ (wcp**2-FREQ**2)**2 for FREQ in lfreq ])
-#      denom=denom+x11
-#      valcp=NP.array([FREQ**4  for FREQ in lfreq ])/denom
+      amocp=1.0
+      valcp  =NP.array([  FREQ**4 / ( 4.*(amocp**2)*(wcp**2)*FREQ**2+(wcp**2-FREQ**2)**2 )  for FREQ in lfreq ]  )
+      dsp=valcp*valkt
+      return dsp*So  
+
+lfreq=2.*pi*NP.array([1.0, 10.,20.])
+vale_dsp=calc_dsp_KT(l_w , frr*2.*pi,amor,fcp)
+vale_int=NP.trapz(vale_dsp,l_w)*2.
+
+print ' --- REFERENCE ---'
+#fqt=0.78133404521855609
+vale_arias=TT*pi/(2.*9.81)
+fq=sqrt(arias/vale_arias)
+
+vale_test=calc_dsp_KT(lfreq , frr*2.*pi,amor,fcp, fq**2/vale_int)
+print lfreq
+print vale_test
+print vale_test*2*pi
+vale_dsp=calc_dsp_KT(l_w , frr*2.*pi,amor,fcp, fq**2/vale_int)
+vale_int=NP.trapz(vale_dsp,l_w)*2.
+print 'sigma', sqrt(vale_int)
 #
-#      dsp=valcp*valkt
-#      vari=NP.trapz(dsp,lfreq)
-#      dsp=dsp/vari*So*.5
-#      dsp=dsp*So
-#      return dsp
-##
 FIN( )

@@ -35,6 +35,8 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe
+from Utilitai.gauss_process  import  ACCE2SRO   
+
 from Utilitai.Utmess import  UTMESS
 from Macro.defi_inte_spec_ops import tocomplex
 
@@ -438,19 +440,17 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
             UTMESS('S', 'FONCT0_33')
         if kw['NATURE_FONC'] != 'ACCE':
             UTMESS('S', 'FONCT0_34')
-        if kw['METHODE'] != 'NIGAM':
-            UTMESS('S', 'FONCT0_35')
 
     def _run(self):
         """SPEC_OSCI"""
         import aster_fonctions
         f_in = self._lf[0]
         l_freq, l_amor = self._dat['FREQ'], self._dat['AMOR']
-        # appel à SPEC_OSCI
-        spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
-                                           l_freq, l_amor)
-        # construction de la nappe
         kw = self.kw
+        l_fonc_f = []
+
+
+        # construction de la nappe
         vale_para = l_amor
         para = {
             'INTERPOL'      : ['LIN', 'LOG'],
@@ -465,16 +465,32 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
             'PROL_DROITE' : 'CONSTANT',
             'PROL_GAUCHE' : 'EXCLU',
             'NOM_RESU'    : kw['NATURE'] }
+
         if kw['NATURE'] == 'DEPL':
             ideb = 0
         elif kw['NATURE'] == 'VITE':
             ideb = 1
         else:
             ideb = 2
-        l_fonc_f = []
-        for iamor in range(len(l_amor)):
-            vale_y = spectr[iamor, ideb, :] / kw['NORME']
-            l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+
+        if kw['METHODE'] == 'NIGAM':
+        # appel à SPEC_OSCI
+           print 'amor, norme', l_amor, kw['NORME']
+           spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
+                                           l_freq, l_amor)
+           for iamor in range(len(l_amor)):
+               vale_y = spectr[iamor, ideb, :] / kw['NORME']
+               l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+
+        elif kw['METHODE'] == 'HARMO':
+        # appel à ACCE2DSP
+           for iamor in l_amor:
+               spectr = ACCE2SRO(f_in, iamor, l_freq,ideb)
+               vale_y = spectr.vale_y / kw['NORME']
+               l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+        else:
+            UTMESS('S', 'FONCT0_35')
+
         self.resu = t_nappe(vale_para, l_fonc_f, para)
 
 class CalcFonction_DSP(CalcFonctionOper):

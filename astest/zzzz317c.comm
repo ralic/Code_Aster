@@ -1,10 +1,10 @@
-# TITRE GENERATION DE SIGNAUX SISMIQUES
+# TITRE GENERATION DE SIGNAUX SISMIQUES OPTION DSP: CAS SEPARABLE ET DONNE ACCE_MAXI
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+# (AT YOUR OPTION) ANY LATER VERSION.
 #                                                                       
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
 # WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
@@ -15,7 +15,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: irmela.zentner at edf.fr
+# person_in_charge: irmela.zentner at edf.fr 
+#
 DEBUT(CODE=_F(NOM='zzzz317c',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
 #
 from math import pi,sqrt,log,exp, ceil
@@ -49,10 +50,9 @@ pga=0.2
 # OPTION ACCE_MAXI
 #####
 ACCE1=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=1000000,TITRE='DSP1',
-              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,
+              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81, DUREE_PHASE_FORTE   =10.1,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
-                           DUREE_PHASE_FORTE   =10.1, INST_INI= 0.1,  ACCE_MAX=pga),),
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER",   ACCE_MAX=pga),),
 
 FONCT1=RECU_FONCTION( TABLE=ACCE1,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -67,15 +67,14 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
                      _F(FONCTION=FONCT1 ,)))
 #
 TEST_TABLE(
-           VALE_CALC=1.8484072526069999,
+           VALE_CALC=2.5330098335876,
            NOM_PARA='ACCE_MAX',
            TABLE=N1,
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.10000000000000001,
-           VALE_CALC=0.571879748,
-           VALE_REFE=0.60299999999999998,
+TEST_TABLE(
+           VALE_CALC=0.57360187939868,
+#           VALE_REFE=0.603,PRECISION=0.1,REFERENCE='ANALYTIQUE',
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1,)
 
@@ -85,10 +84,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #  ACCE_MAXI
 #####
 ACCE3=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=1000000,TITRE='DSP3',
-              PAS_INST       =DT,PESANTEUR =9.81,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE   =10.1,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "GAMMA",
-                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini,  ACCE_MAX=pga), )
+              MODULATION      = _F(TYPE=   "GAMMA",  INST_INI= t_ini,  ACCE_MAX=pga), )
 
 FONCT3=RECU_FONCTION(TABLE=ACCE3,
                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
@@ -105,7 +103,7 @@ IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
                      _F(FONCTION=FONCT3 ,)))
 
 TEST_TABLE(
-           VALE_CALC=2.0435963124221002,
+           VALE_CALC=2.1628339658869,
            NOM_PARA='ACCE_MAX',
            TABLE=N3,
            )
@@ -120,7 +118,7 @@ TEST_TABLE(
 # OPTION ACCE_MAXI
 ########
 ACCE2b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=10000, TITRE='DSP2',
-              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,
+              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,DUREE_PHASE_FORTE   =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
                MODULATION      = _F(TYPE="CONSTANT",  ACCE_MAX=pga),)
 
@@ -137,21 +135,20 @@ IMPR_TABLE (TABLE=N2b,  UNITE=8,);
 
 
 TEST_TABLE(
-           VALE_CALC=2.0937320352323998,
+           VALE_CALC=2.0063882942763,
            NOM_PARA='ACCE_MAX',
            TABLE=N2b,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.65130966480152996,
+           VALE_CALC=0.61240756022338,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2b,
            )
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.10000000000000001,
-           VALE_CALC=0.651309665,
-           VALE_REFE=0.60177999999999998,
+TEST_TABLE(
+           VALE_CALC=0.61240756022338,
+#           VALE_REFE=0.60177999999999998,PRECISION=0.10000000000000001,REFERENCE='AUTRE_ASTER',
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2b,)
 
@@ -163,7 +160,7 @@ l_PGA2=[]
 Nsim2=25
 for iii in range(Nsim2):
    DETRUIRE(CONCEPT=_F(NOM=(ACCE2b, FONCT2b, N2b))) 
-   ACCE2b=GENE_ACCE_SEISME( PAS_INST       =DT, NB_POIN=2**10,PESANTEUR =9.81,
+   ACCE2b=GENE_ACCE_SEISME( PAS_INST       =DT, NB_POIN=2**10,PESANTEUR =9.81, DUREE_PHASE_FORTE   =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
                MODULATION      = _F(TYPE="CONSTANT",  ACCE_MAX=pga),)
 
@@ -190,10 +187,9 @@ Nsim1=25
 for iii in range(Nsim1): 
    print iii , ' JH'
    
-   ACCE1b=GENE_ACCE_SEISME(PAS_INST       =DT,PESANTEUR =9.81,
+   ACCE1b=GENE_ACCE_SEISME(PAS_INST       =DT,PESANTEUR =9.81, DUREE_PHASE_FORTE =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
-                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini, ACCE_MAX =pga), )
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX =pga), )
 
    FONCT1b=RECU_FONCTION(    TABLE=ACCE1b,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -220,10 +216,10 @@ Nsim3=25
 for iii in range(Nsim3):
    DETRUIRE(CONCEPT=_F(NOM=(ACCE3, FONCT3, N3)))
     
-   ACCE3=GENE_ACCE_SEISME(PAS_INST       =DT,PESANTEUR =9.81,
+   ACCE3=GENE_ACCE_SEISME(PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE=   "GAMMA",
-                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini,  ACCE_MAX =pga), )
+                                    INST_INI= t_ini,  ACCE_MAX =pga), )
 
    FONCT3=RECU_FONCTION(    TABLE=ACCE3,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -250,19 +246,19 @@ tabres=CREA_TABLE(LISTE = (
           _F(    PARA='JH',         LISTE_R=(PGA_MED1,),),))
 
 TEST_TABLE(
-           VALE_CALC=0.21915400236872001,
+           VALE_CALC=0.23295026364677,
            NOM_PARA='GAMMA',
            TABLE=tabres,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.18842071892000001,
+           VALE_CALC=0.25820691473879,
            NOM_PARA='JH',
            TABLE=tabres,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.191238783735,
+           VALE_CALC=0.18859867180967,
            NOM_PARA='CONSTANT',
            TABLE=tabres,
            )

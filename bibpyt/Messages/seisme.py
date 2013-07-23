@@ -188,4 +188,14 @@ cata_msg={
   -> Conseil : Vérifiez dans ASSEMBLAGE que les conditions aux limites sont présentes.
 """),
 
+35: _(u"""
+ Tolérance sur l'ajustement du spectre au tirage %(i1)d:
+ L'erreur %(k1)s vaut %(r1).2f %% ce qui est supérieur à la borne de %(r2).2f %% demandée. 
+"""),
+
+36: _(u"""
+ ATTENTION, FREQ_FOND <0 à l'instant t=  %(r2).2f s. 
+
+"""),
+
 }
