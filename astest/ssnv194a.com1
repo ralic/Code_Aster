@@ -232,7 +232,7 @@ INT3EPX=POST_ELEM(  RESULTAT=SOLNL,
 ng=10
 prefix='GM'
 intesig = {}
-intesig['INTEGRALE'] = []			
+intesig['INTEGRALE'] = []                        
 for IP in range (ng):
    intesig['INTEGRALE'].append(_F(NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY','SIZZ'),
                                                        GROUP_MA=prefix+str(IP+1)))
@@ -446,7 +446,7 @@ TEST_TABLE(
 ng=10
 prefix='GM'
 intesig = {}
-intesig['VOLUMOGRAMME'] = []			
+intesig['VOLUMOGRAMME'] = []                        
 for IP in range (ng):
    intesig['VOLUMOGRAMME'].append(_F(NOM_CHAM='EPSP_ELGA',
                                      NOM_CMP=('EPXX'),
@@ -488,15 +488,15 @@ for IP in range (NB_GRAINS):
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
-				),)
+                                ),)
   EPS[IP]=POST_ELEM( RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSI_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
-				),)
+                                ),)
   INSX[IP]=CALC_TABLE(TABLE=INS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
-		            NOM_PARA=('INST','INTE_SIXX'),),),)
+                            NOM_PARA=('INST','INTE_SIXX'),),),)
 
   EPSX[IP]=CALC_TABLE(TABLE=EPS[IP],
                  ACTION=(_F(OPERATION ='EXTR',
@@ -542,18 +542,18 @@ for IP in range (NB_GRAINS):
   FEX[IP]=RECU_FONCTION(TABLE=COMX[IP],
                            PARA_X='INST',
                            PARA_Y='INTE_EPXX',);
-		
+                
   FEY[IP]=RECU_FONCTION(TABLE=COMY[IP],
                            PARA_X='INST',
                            PARA_Y='INTE_EPYY',);
-		
+                
   FEZ[IP]=RECU_FONCTION(TABLE=COMZ[IP],
                            PARA_X='INST',
                            PARA_Y='INTE_EPZZ',);
 
 
 motcles = {}
-motcles['COURBE'] = []			
+motcles['COURBE'] = []                        
 for IP in range (NB_GRAINS):
    motcles['COURBE'].append(_F(FONC_X=FEX[IP], FONC_Y=FSX[IP]))
    motcles['COURBE'].append(_F(FONC_X=FEY[IP], FONC_Y=FSY[IP]))

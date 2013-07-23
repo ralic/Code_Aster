@@ -16,7 +16,7 @@
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 POURSUITE(CODE=_F(NOM = 'ZZZZ119A'),
           FORMAT_HDF='OUI'
-	  );
+          );
 
 # VALIDATION DE PROJ_CHAMP/METHODE:'COLLOCATION' EN 2.5D :
 # -------------------------------------------------

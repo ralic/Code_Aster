@@ -22,7 +22,7 @@ MAGE=LIRE_MAILLAGE(FORMAT='MED', )
 MAGE = MODI_MAILLAGE(reuse =MAGE,
                      MAILLAGE=MAGE,
                      ORIE_PEAU_2D=_F(GROUP_MA=('L_INT',),),
-			);
+                        );
 MAGE=DEFI_GROUP( reuse=MAGE,        MAILLAGE=MAGE,CREA_GROUP_NO=(
                         _F( GROUP_MA = 'RGENEF',
                                        NOM = 'RGENEF',        ),
@@ -67,13 +67,13 @@ HEXT=DEFI_CONSTANTE(VALE=6,);
 HINT=DEFI_CONSTANTE(VALE=4,);
 CHARTH=AFFE_CHAR_THER_F(       MODELE=MOTH,
                                ECHANGE=(
-			       _F(GROUP_MA='L_INT',
+                               _F(GROUP_MA='L_INT',
                                    COEF_H=HINT,
                                    TEMP_EXT=T_INT,),
-				_F(GROUP_MA='L_EXT',
+                                _F(GROUP_MA='L_EXT',
                                    COEF_H=HEXT,
                                    TEMP_EXT=T_EXT,),),
-				   );
+                                   );
 LISTTHER=DEFI_LIST_REEL(
              DEBUT=0.,INTERVALLE=(
         _F( JUSQU_A = 3.15360E+05,       NOMBRE = 1,  ), #   0.1 AN
@@ -220,7 +220,7 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
-			    EVOL_THER_SECH=RESUTHER,
+                            EVOL_THER_SECH=RESUTHER,
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )
@@ -235,7 +235,7 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
-			    EVOL_THER_SECH=RESUTHER,
+                            EVOL_THER_SECH=RESUTHER,
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )
@@ -246,14 +246,14 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
 LISTSEC2=DEFI_LIST_REEL(
              DEBUT=0.,INTERVALLE=(
         _F( JUSQU_A = 1.57680E+08,       NOMBRE = 1, ), #   5   ANS
-	_F( JUSQU_A = 4.73040E+08,       NOMBRE = 1,  ), #  15   ANS
+        _F( JUSQU_A = 4.73040E+08,       NOMBRE = 1,  ), #  15   ANS
         _F( JUSQU_A = 1.70294E+09,       NOMBRE = 1,  )) #  54   ANS
                           )
 COUP=MACR_LIGN_COUPE(RESULTAT=RESUSECH,
                          LIST_INST=LISTSEC2,
                          NOM_CHAM='TEMP',
                          LIGN_COUPE=_F(NOM_CMP=('TEMP'),
-			               TYPE='GROUP_NO',
+                                       TYPE='GROUP_NO',
                                        GROUP_NO='RGENEF',),);
 IMPR_TABLE(TABLE=COUP,FORMAT='TABLEAU_CROISE', FORMAT_R='F3.12',NOM_PARA=('INST','COOR_X','TEMP'),);
 #-----------------------------------------------------
@@ -270,7 +270,7 @@ C_ref = [[67.6838,54.2257,51.6],
          [90.1783,82.8,73.1186],
          [81,76.3516,70.815],
          [71.2,70.0603,68.8035],];
-# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS	  
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS          
 C_reg = [[69.395181067823,51.783622484755,51.655519222563],
          [81.147292294737,64.547409835086,56.462377622713],
          [90.609706107310,74.958289607395,61.976610683787],
@@ -283,7 +283,7 @@ C_reg = [[69.395181067823,51.783622484755,51.655519222563],
          [81.098664271063,76.298380859997,70.963553124055],
          [69.361291644540,69.278022053404,69.149615073210],];
 x_test = [22.5,22.5382,22.5954,22.6809,22.8088,23,23.1912,23.3191,23.4046,23.4618,23.5];
-inst_test = [1.57680E+08,4.73040E+08,1.70294E+09,];	 
+inst_test = [1.57680E+08,4.73040E+08,1.70294E+09,];         
 for j,t in enumerate(inst_test) :
     for i,x in enumerate(x_test) :
         TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
@@ -293,7 +293,7 @@ for j,t in enumerate(inst_test) :
                    NOM_PARA='TEMP',
                    TABLE=COUP,
                    FILTRE=(_F(NOM_PARA='COOR_X',VALE=x,),
-		           _F(NOM_PARA='INST',VALE=t,),),);
+                           _F(NOM_PARA='INST',VALE=t,),),);
 #
 FIN()
 #

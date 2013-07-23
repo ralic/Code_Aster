@@ -142,7 +142,7 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
         call s1calb(bksip(1, 1, ip), xe, b, ajac)
 !
 ! CALCUL DE EPS DANS LE REPERE GLOBAL: 1 POUR DEFORMATIONS LINEAIRES
-!				      2 POUR TERMES CARRES EN PLUS
+!                                      2 POUR TERMES CARRES EN PLUS
         do 320 i = 1, 6
             deps(i)=0.d0
 320      continue
@@ -192,7 +192,7 @@ subroutine sh1sig(xetemp, para, xidepp, dusx, sigma)
                     sigloc)
 !
 ! CONTRAINTES ECRITES SOUS LA FORME:
-!		[SIG] = [S_11, S_22, S_33, S_12, S_23, S_13]
+!                [SIG] = [S_11, S_22, S_33, S_12, S_23, S_13]
         do 370 i = 1, 6
 ! ON LAISSE LES CONTRAINTES DANS LE REPERE LOCAL POUR LA PLASTICITE
             sigma((ip-1)*6+i)=sigloc(i)

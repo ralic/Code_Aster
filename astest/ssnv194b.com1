@@ -36,7 +36,7 @@ for IP in range (NB_GRAINS):
 
 
 motcles = {}
-motcles['COURBE'] = []			 
+motcles['COURBE'] = []                         
 for IP in range (NB_GRAINS):
    motcles['COURBE'].append(_F(FONC_X=EVPG1[IP], FONC_Y=SIGG1[IP]))
 

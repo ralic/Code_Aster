@@ -156,7 +156,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0916517629633,
                         VALE_PARA=duree,
                         REFERENCE='ANALYTIQUE',
                         PRECISION=0.10000000000000001,
-			TOLE_MACHINE=1.0E-5,
+                        TOLE_MACHINE=1.0E-5,
                         FONCTION=E_E_eul,),
               )
 
@@ -166,7 +166,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0630520811374,
                         VALE_PARA=duree,
                         REFERENCE='ANALYTIQUE',
                         PRECISION=0.10000000000000001,
-			TOLE_MACHINE=1.0E-5,
+                        TOLE_MACHINE=1.0E-5,
                         FONCTION=E_E_ada,),
               )
 
@@ -182,7 +182,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
                         VALE_PARA=duree,
                         REFERENCE='ANALYTIQUE',
                         PRECISION=1.E-08,
-			TOLE_MACHINE=1.0E-5,
+                        TOLE_MACHINE=1.0E-5,
                         FONCTION=E_F_ada,),
               )
 
