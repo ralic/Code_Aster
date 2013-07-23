@@ -467,13 +467,16 @@ VM11=POST_ELEM(MODELE=MODELT,
                 NUME_ORDRE=5,
                 VOLUMOGRAMME=(_F(NOM_CHAM='SIEF_ELGA',
                                  NOM_CMP ='M11',
-                                 GROUP_MA='GAUCHE'),
+                                 GROUP_MA='GAUCHE',
+                                 NB_INTERV=5,),
                               _F(NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP ='M11',
-                                 GROUP_MA='GAUCHE'),
+                                 GROUP_MA='GAUCHE',
+                                 NB_INTERV=5,),
                               _F(NOM_CHAM='SIEF_NOEU',
                                  NOM_CMP ='M11',
-                                 GROUP_MA='GAUCHE')))
+                                 GROUP_MA='GAUCHE',
+                                 NB_INTERV=5,)))
 
 TEST_TABLE(
            VALE_REFE=20.0,

@@ -1,5 +1,4 @@
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -806,6 +805,8 @@ VOLUM1=POST_ELEM( RESULTAT=EVOLNOLI,
                   MODELE=MODELE,
               )
 
+IMPR_TABLE(TABLE=VOLUM1)
+
 TEST_TABLE(
            VALE_CALC=5.4069500000000001,
            TOLE_MACHINE=1.E-3,
@@ -842,6 +843,33 @@ TEST_TABLE(
                       VALE_I=1,),
                    _F(NOM_PARA='INTERVALLE',
                       VALE_I=3,),
+                   ),
+           )
+
+VOLUM3=POST_ELEM( RESULTAT=EVOLNOLI,
+                  VOLUMOGRAMME=  _F(NOM_CMP='PRIN_1',
+                                    TYPE_MAILLE='3D',
+                                    TOUT='OUI',
+                                    NOM_CHAM='SIEQ_ELGA',
+                                    NORME='RELATIF',
+                                    BORNES=(-1.E+08,1.E+08),
+                                    SEUIL=0.0,),
+                  MODELE=MODELE,
+              )
+
+IMPR_TABLE(TABLE=VOLUM3)
+
+TEST_TABLE(
+           VALE_CALC=1.0316643804298,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DISTRIBUTION',
+           TABLE=VOLUM3,
+           FILTRE=(_F(NOM_PARA='NOM_CMP',
+                      VALE_K='PRIN_1',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=2,),
                    ),
            )
 

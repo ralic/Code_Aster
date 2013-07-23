@@ -338,26 +338,32 @@ VEPXX=POST_ELEM(MODELE=TROISD,
                 NUME_ORDRE=10,
                 VOLUMOGRAMME=(_F(NOM_CHAM='EPSP_ELGA',
                                  NOM_CMP=('EPXX'),
-                                 TOUT='OUI'),
+                                 TOUT='OUI',
+                                 NB_INTERV=5,),
                               _F(NOM_CHAM='EPSP_ELNO',
                                  NOM_CMP=('EPXX'),
-                                 TOUT='OUI'),
+                                 TOUT='OUI',
+                                 NB_INTERV=5,),
                               _F(NOM_CHAM='EPSP_NOEU',
                                  NOM_CMP=('EPXX'),
-                                 TOUT='OUI'),),)
+                                 TOUT='OUI',
+                                 NB_INTERV=5,),),)
 
 VEPXX2=POST_ELEM(MODELE=TROISD,
                 RESULTAT=SOLNL,
                 NUME_ORDRE=10,
                 VOLUMOGRAMME=(_F(NOM_CHAM='EPSP_ELGA',
                                  NOM_CMP=('EPXX'),
-                                 TOUT='OUI'),
+                                 TOUT='OUI',
+                                 NB_INTERV=5,),
                               _F(NOM_CHAM='EPSP_ELNO',
                                  NOM_CMP=('EPXX'),
-                                 TOUT='OUI'),
+                                 TOUT='OUI',
+                                 NB_INTERV=5,),
                               _F(NOM_CHAM='EPSP_NOEU',
                                  NOM_CMP=('EPXX'),
-                                 TOUT='OUI'),),)
+                                 TOUT='OUI',
+                                 NB_INTERV=5,),),)
 TEST_TABLE(
            VALE_CALC=32.5959,
            TOLE_MACHINE=1.E-3,
@@ -404,7 +410,8 @@ VSIXX=POST_ELEM(MODELE=TROISD,
                 CHAM_GD=CSIXX,
                 VOLUMOGRAMME=_F(NOM_CMP=('SIXX'),
                                 TYPE_MAILLE='3D',
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                NB_INTERV=5,),)
 
 TEST_TABLE(
            VALE_CALC=64.599999999999994,
@@ -425,8 +432,10 @@ prefix='GM'
 intesig = {}
 intesig['VOLUMOGRAMME'] = []			
 for IP in range (ng):
-   intesig['VOLUMOGRAMME'].append(_F(NOM_CHAM='EPSP_ELGA', NOM_CMP=('EPXX'),
-                                                       GROUP_MA=prefix+str(IP+1)))
+   intesig['VOLUMOGRAMME'].append(_F(NOM_CHAM='EPSP_ELGA',
+                                     NOM_CMP=('EPXX'),
+                                     GROUP_MA=prefix+str(IP+1),
+                                     NB_INTERV=5,))
 
 VEPXX3=POST_ELEM(MODELE=TROISD,RESULTAT=SOLNL, **intesig);
 

@@ -17,8 +17,8 @@
 !
 interface
     subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
-                      dim, bfix, borne, norme, borpct,&
-                      voltot)
+                      dim, bfix, borne, norme, seuil,&
+                      lseuil, borpct, voltot)
         integer :: dim
         character(len=8) :: modele
         integer :: nbma
@@ -28,6 +28,8 @@ interface
         integer :: bfix
         real(kind=8) :: borne(2)
         character(len=8) :: norme
+        real(kind=8) :: seuil
+        logical :: lseuil
         real(kind=8) :: borpct(dim)
         real(kind=8) :: voltot
     end subroutine pebpct

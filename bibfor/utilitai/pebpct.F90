@@ -1,6 +1,6 @@
 subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
-                  dim, bfix, borne, norme, borpct,&
-                  voltot)
+                  dim, bfix, borne, norme, seuil,&
+                  lseuil, borpct, voltot)
     implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -19,10 +19,11 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     integer :: dim, nbma, bfix
-    real(kind=8) :: borpct(dim), borne(2), voltot
+    real(kind=8) :: borpct(dim), borne(2), seuil, voltot
     character(len=8) :: modele, nomcmp, norme
     character(len=19) :: cham
     character(len=24) :: lma
+    logical :: lseuil
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,6 +63,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !          BORNE   =  BORNE MIN/MAX DE LA PLAGE
 !                     - SI FIXEE PAR L UTILISATEUR
 !          NORME   =  VOLUME CALCULE RELATIF OU ABSOLU
+!          SEUIL   =  SEUIL POUR CALCULER LA DISTRIBUTION
+!          LSEUIL  =  .TRUE. : L'UTILISATEUR A DONNE SEUIL
+!                     .FALSE. : L'UTILISATEUR A DONNE NB_INTERV
 !     IN/OUT :
 !          BORPCT  =  TABLEAU RESULTAT
 !                     ON Y STOCKE RESPECTIVEMENT POUR CHAQUE
@@ -234,13 +238,24 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
         goto 100
     endif
 !
-    pas=(valmax-valmin)/nbintv
     p0=valmin
-    do 50 i = 1, nbintv
-        borpct(3*(i-1)+1)=p0
-        borpct(3*(i-1)+2)=p0+pas
-        p0=p0+pas
-50  end do
+    if (lseuil) then
+        call assert(nbintv .eq. 2)
+        pas = seuil
+        do 50 i = 1, nbintv
+            borpct(3*(i-1)+1)=p0
+            borpct(3*(i-1)+2)=pas
+            p0=seuil
+            pas=valmax
+50      end do
+    else
+        pas=(valmax-valmin)/nbintv
+        do 51 i = 1, nbintv
+            borpct(3*(i-1)+1)=p0
+            borpct(3*(i-1)+2)=p0+pas
+            p0=p0+pas
+51      end do
+    endif
 !
 ! --- AJOUT DES VOLUMES DANS 'BORPCT' EN FONCTION DES VALEURS
 !     DE LA COMPOSANTE

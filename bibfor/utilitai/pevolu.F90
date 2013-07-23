@@ -73,14 +73,14 @@ subroutine pevolu(resu, modele, nbocc)
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
     character(len=8) :: typmcl(1), tout, nomcmp, infoma, ncpini
     character(len=8) :: nopar, norme
-    real(kind=8) :: r8b, prec, inst, borne(2), voltot
+    real(kind=8) :: r8b, prec, inst, borne(2), voltot, seuil
     complex(kind=8) :: c16b
     character(len=19) :: knum, kins, lisins, cham, cham2, chamtm, celmod, ligrel
     character(len=19) :: tmpcha, cham3
     character(len=16) :: nompar(nbpmax), mocles(1), optio2, nomcha, valk, valr
     character(len=16) :: vali
     character(len=24) :: mesmai, mesmaf, mesmae, borpct, valk2(5), grouma
-    logical :: exiord, toneut
+    logical :: exiord, toneut, lseuil
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -240,14 +240,14 @@ subroutine pevolu(resu, modele, nbocc)
         call copisd('CHAMP', 'V', chamg, tmpcha)
     endif
 !
-    do 10 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !
 !
 !
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ----------------------------------
 !
-        do 5 inum = 1, nbordr
+        do inum = 1, nbordr
 !
 !      -- 4.1 RECUPERATION DU CHAMP --
 !
@@ -301,11 +301,11 @@ subroutine pevolu(resu, modele, nbocc)
                 call wkvect('&&PEVOLU.CMP1', 'V V K8', ncmpm, jlicm1)
                 call jedetr('&&PEVOLU.CMP2')
                 call wkvect('&&PEVOLU.CMP2', 'V V K8', ncmpm, jlicm2)
-                do 15 i = 1, ncmpm
+                do i = 1, ncmpm
                     call codent(i, 'G', ki)
                     zk8(jlicm2+i-1)='X'//ki(1:len(ki))
                     zk8(jlicm1+i-1)=zk8(jlicmp+i-1)
-15              continue
+                end do
                 call chsut1(chamtm, 'NEUT_R', ncmpm, zk8(jlicm1), zk8(jlicm2),&
                             'V', chamtm)
 !
@@ -393,10 +393,18 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !      -- 4.4 CALCUL DES INTERVALLES ET DE LA DISTRIBUTION --
 !
-!        - ON RECUPERE LE NOMBRE D'INTERVALLES ET LA NORME
+!        - ON RECUPERE LE NOMBRE D'INTERVALLES OU LE SEUIL ET LA NORME
 !        - POUR CALCUL RELATIF OU ABSOLU
             call getvis('VOLUMOGRAMME', 'NB_INTERV', iocc, iarg, 1,&
                         nbint, iret)
+            seuil = 0.d0
+            lseuil = .false.
+            call getvr8('VOLUMOGRAMME', 'SEUIL', iocc, iarg, 1,&
+                        seuil, iret)
+            if (iret .ne. 0) then
+                nbint = 2
+                lseuil = .true.
+            endif
             call getvtx('VOLUMOGRAMME', 'NORME', iocc, iarg, 1,&
                         norme, iret)
             call getvr8('VOLUMOGRAMME', 'BORNES', iocc, iarg, 2,&
@@ -416,8 +424,8 @@ subroutine pevolu(resu, modele, nbocc)
 !             . LE VALEUR DE REPARTITION DE LA COMPOSANTE
             call wkvect(borpct, 'V V R', 3*nbint, jbpct)
             call pebpct(modele, nbma, mesmae, cham, nomcmp,&
-                        3*nbint, bfix, borne, norme, zr(jbpct),&
-                        voltot)
+                        3*nbint, bfix, borne, norme, seuil,&
+                        lseuil, zr(jbpct), voltot)
 !
 !      -- 4.5 ON REMPLIT LA TABLE --
 !
@@ -447,14 +455,14 @@ subroutine pevolu(resu, modele, nbocc)
             endif
 !
 !        - POUR CHAQUE INTERVALLE, ON AJOUTE UNE LIGNE A LA TABLE :
-            do 20 ii = 1, nbint
+            do ii = 1, nbint
                 zr(jvalr+ivalr) =zr(jbpct+3*(ii-1))
                 zr(jvalr+ivalr+1)=zr(jbpct+3*(ii-1)+1)
                 zr(jvalr+ivalr+2)=zr(jbpct+3*(ii-1)+2)
                 zi(jvali+ivali)=ii
                 call tbajli(resu, nbpar, nompar, zi(jvali), zr(jvalr),&
                             c16b, zk24(jvalk), 0)
-20          continue
+            end do
 !
 !     IMPRESSION DU VOLUME TOTAL CONCERNE PAR LE CALCUL :
 !      - SOIT LE VOLUME TOTAL DEFINI PAR L ENTITE TOPOLOGIQUE
@@ -477,11 +485,12 @@ subroutine pevolu(resu, modele, nbocc)
 !
 !     --- FIN DE LA BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ---------------------------------------------
- 5      end do
+        end do
 !
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE VOLUMOGRAMME
 !     ----------------------------------------------------------------
-10  end do
+10  continue
+    end do
 !
     if (nr .eq. 0) then
         call detrsd('CHAMP', tmpcha)
