@@ -50,6 +50,9 @@ CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
                   PROL_GAUCHE='LINEAIRE');
 
 #
+# MATERIAU ISOTROPE
+SIGY=400.
+YOUNG=200.E+3
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200.E+3,
                           NU=.3,
@@ -140,10 +143,11 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 INCREMENT=_F(LIST_INST=L_INST),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1),
-                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
-                               ITER_GLOB_MAXI=10),
+                CONVERGENCE=_F(EPSI_REFE=SIGY/YOUNG,
+                               SIGM_REFE=SIGY,
+                               RESI_REFE_RELA=1.E-5,),
                 SOLVEUR=_F(METHODE='MUMPS',
-   NPREC=-1));
+                           NPREC=-1),);
 
 #
 
