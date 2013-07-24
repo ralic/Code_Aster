@@ -1,8 +1,8 @@
-subroutine catang(noma, nbma, numail, nbno, nunoeu,&
-                  tang)
-    implicit none
-#include "jeveux.h"
+subroutine catang(noma, nbma, listma, nbno, listno)
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
@@ -15,9 +15,7 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/wkvect.h"
-    integer :: nbma, numail(nbma), nbno, nunoeu(nbno)
-    real(kind=8) :: tang(3*nbno)
-    character(len=8) :: noma
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,26 +33,39 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     BUT: CALCULER LES VECTEURS TANGENTS AUX NOEUDS DES ARETES DES
-!          ELEMENTS 3D (SEG2 OU SEG3)
+    character(len=8), intent(in) :: noma
+    integer, intent(in) :: nbma
+    integer, intent(in) :: listma(*)
+    integer, intent(in) :: nbno
+    integer, intent(in) :: listno(*)
 !
-! ARGUMENTS D'ENTREE:
-!      NOMA    : NOM DU MAILLAGE
-!      NBMA    : NOMBRE DE MAILLES
-!      NUMAIL  : TABLEAU DES NUMEROS DES MAILLES (SEG2,SEG3)
-!      NBNO    : NOMBRE DE NOEUDS
-!      NUNOEU  : TABLEAU DES NUMEROS DE NOEUDS A PRENDRE EN COMPTE
+! --------------------------------------------------------------------------------------------------
 !
-! ARGUMENTS D'ENTREE/SORTIE:
-!      TANG    : TABLEAU DES VECTEURS TANGENTS AUX NOEUDS
+! AFFE_CHAR_MECA
 !
-! ROUTINE APPELEE: CAAREI
+! Compute tangents at nodes on edge in 3D
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  noma   : mesh
+! In  nbma   : number of elements
+! In  listma : list of elements
+! In  nbno   : number of nodes
+! In  listno : list of nodes
+!
+! Objects created:
+!     &&CATANG.TANGENT : tangents at nodes
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: i, iacnx1, ilcnx1, jco, jtanma, j, ino, nbnoma, jcoor, jnoema
-    integer :: jtanno, iret, k, ino1, ino2, ino3, jtyp, i1
+    integer :: jtanno, iret, k, ino1, ino2, ino3, jtyp, i1, jtang
     real(kind=8) :: vale1(3), vale2(3), vale3(3), vale(3), valu(3), valv(3)
     real(kind=8) :: norm
     character(len=8) :: ntyp, k8b
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -65,9 +76,11 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
     call jeveuo(noma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
+    call jedetr('&&CATANG.TANGENT')
     call wkvect('&&CATANG.TANG_MAIL', 'V V R', 3*3*nbma, jtanma)
     call wkvect('&&CATANG.NOEU_MAIL', 'V V I', 3*nbma, jnoema)
     call wkvect('&&CATANG.TANG_NOEU', 'V V R', 3*nbnoma, jtanno)
+    call wkvect('&&CATANG.TANGENT', 'V V R', 3*nbno, jtang)
 !
 ! --- 1.ON CONSTRUIT LES VECTEURS TANGENTS AUX NOEUDS PAR ELEMENT
 !     (LES ELEMENTS SONT CEUX SPECIFIES PAR L'UTILISATEUR)
@@ -81,24 +94,24 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
 !     DANS LE CAS SEG2, LES VALEURS TANGENTIELLES DU NOEUD 3 NE SONT PAS
 !     PRISE EN COMPTE, ON INITIALISE AVEC LA VALEUR 0.D0
 !
-    do 10 i = 1, nbma
+    do i = 1, nbma
 !
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyp+numail(i)-1)), ntyp)
+        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyp+listma(i)-1)), ntyp)
         if (ntyp(1:3) .ne. 'SEG') call assert(.false.)
 !
-        jco=iacnx1-1+zi(ilcnx1+numail(i)-1)
+        jco=iacnx1-1+zi(ilcnx1+listma(i)-1)
         ino1=zi(jco)
         ino2=zi(jco+1)
-        do 20 j = 1, 3
+        do j = 1, 3
             vale1(j)=zr(jcoor+3*(ino1-1)+j-1)
             vale2(j)=zr(jcoor+3*(ino2-1)+j-1)
-20      continue
+        end do
 !
         if (ntyp(1:4) .eq. 'SEG2') then
 !
-            do 25 j = 1, 3
+            do j = 1, 3
                 vale(j)=vale2(j)-vale1(j)
-25          continue
+            end do
             call normev(vale, norm)
 !
 !            -- PREMIER NOEUD DE LA MAILLE J
@@ -120,16 +133,16 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
         else if (ntyp(1:4).eq.'SEG3') then
 !
             ino3=zi(jco+2)
-            do 30 j = 1, 3
+            do j = 1, 3
                 vale3(j)=zr(jcoor+3*(ino3-1)+j-1)
                 valu(j) =vale3(j)-vale1(j)
                 valv(j) =vale2(j)-vale3(j)
-30          continue
+            end do
             call normev(valu, norm)
             call normev(valv, norm)
-            do 35 j = 1, 3
+            do j = 1, 3
                 vale(j)=valu(j)+valv(j)
-35          continue
+            end do
             call normev(vale, norm)
 !
 !            -- PREMIER NOEUD DE LA MAILLE J
@@ -149,7 +162,7 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
             zr(jtanma+9*(i-1)+8)=vale(3)
 !
         endif
-10  end do
+    end do
 !
 ! --- 2.ON CONSTRUIT LES VECTEURS TANGENTS AUX NOEUDS
 !     ON LES STOCKE DANS TNNO= ZR(JTANNO) DIMENSIONNE
@@ -161,42 +174,42 @@ subroutine catang(noma, nbma, numail, nbno, nunoeu,&
 !     REMARQUE : ViX=ViY=ViZ=0 SI LE NOEUD i NE FAIT PAS
 !     PARTIE DES MAILLES FOURNIES PAR L'UTILISATEUR
 !
-    do 40 j = 1, 3*nbnoma
+    do j = 1, 3*nbnoma
         zr(jtanno+j-1)=0.d0
-40  end do
-    do 50 j = 1, nbma
-        do 51 i = 1, 3
+    end do
+    do j = 1, nbma
+        do i = 1, 3
             ino=zi(jnoema+3*(j-1)+i-1)
             if (ino .gt. 0) then
-                do 52 k = 1, 3
+                do k = 1, 3
                     zr(jtanno+3*(ino-1)+k-1)=zr(jtanno+3*(ino-1)+k-1)+&
                     zr(jtanma+9*(j-1)+3*(i-1)+k-1)
-52              continue
+                end do
             endif
-51      continue
-50  end do
+        end do
+    end do
 !
 ! --- 3.ON FILTRE POUR NE CONSERVER QUE LES VECTEURS TANGENTS AUX NOEUDS
 !     DEMANDES PAR L'UTILISATEUR (PRISE EN COMPTE DE SANS_XXXX)
 !
-    do 55 j = 1, 3*nbno
-        tang(j)=0.d0
-55  end do
-    do 60 j = 1, nbma
-        do 61 i = 1, 3
+    do j = 1, 3*nbno
+        zr(jtang-1+j)=0.d0
+    end do
+    do j = 1, nbma
+        do i = 1, 3
             ino=zi(jnoema+3*(j-1)+i-1)
-            i1= indiis(nunoeu,ino,1,nbno)
+            i1= indiis(listno,ino,1,nbno)
             if (i1 .gt. 0) then
                 vale(1)=zr(jtanno+3*(ino-1))
                 vale(2)=zr(jtanno+3*(ino-1)+1)
                 vale(3)=zr(jtanno+3*(ino-1)+2)
                 call normev(vale, norm)
-                do 62 k = 1, 3
-                    tang(3*(i1-1)+k)=vale(k)
-62              continue
+                do k = 1, 3
+                    zr(jtang-1+3*(i1-1)+k) = vale(k)
+                end do
             endif
-61      continue
-60  end do
+        end do
+    end do
 !
     call jedetr('&&CATANG.TANG_MAIL')
     call jedetr('&&CATANG.NOEU_MAIL')

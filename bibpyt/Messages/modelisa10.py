@@ -49,10 +49,6 @@ Le quadrangle de nom %(k1)s est dégénéré : les cotés 1-2 et 1-3 sont colin�
 Reprenez votre maillage.
 """),
 
-6 : _(u"""
-Le modèle est de dimension %(i1)d . ARETE_IMPO s'applique sur des arêtes d'éléments 3D,
-donc un modèle de dimension 3. Pour les arêtes d'éléments 2D utiliser FACE_IMPO.
-"""),
 7 : _(u"""
 Il faut au moins un noeud esclave.
 """),

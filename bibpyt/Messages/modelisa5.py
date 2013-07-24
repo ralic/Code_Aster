@@ -112,10 +112,6 @@ cata_msg = {
  pas de convergence
 """),
 
-43 : _(u"""
- erreur programmeur. type de maille inconnu
-"""),
-
 44 : _(u"""
  paramètre bêta non trouve
 """),

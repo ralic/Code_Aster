@@ -32,7 +32,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     character(len=4), intent(in)  :: fonree
     character(len=8), intent(in)  :: char, noma
     character(len=19), intent(in) :: ligrmo
-! ---------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     integer :: i
     integer :: nbnoeu, jval, jdirec, nbno
     integer :: idim, in, jnorm, jtang, jnono, nfaci
-    integer :: ibid,  ier, ndim,jcompt
+    integer :: ibid,  ier, ndim, jcompt
     integer :: n1, n2, ino, jprnm, nbec
     integer :: nbma, nbcmp, inom
     real(kind=8) :: coef(3), direct(3)
@@ -161,7 +161,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 ! ----- Read affected components and their values
 !
         call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
-                            n_max_keyword, n_keyword , keywordlist, ddlimp, valimr, &
+                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
                             valimf, valimc)
 !
 ! ----- Detection of DNOR, DTAN and others

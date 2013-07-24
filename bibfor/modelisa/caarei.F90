@@ -1,7 +1,8 @@
-subroutine caarei(fonree, char)
-    implicit none
-#include "jeveux.h"
+subroutine caarei(char, noma, ligrmo, fonree)
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
 #include "asterc/getres.h"
@@ -35,8 +36,16 @@ subroutine caarei(fonree, char)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
-    character(len=4) :: fonree
-    character(len=8) :: char
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_val.h"
+#include "asterfort/char_read_keyw.h"
+#include "asterfort/char_read_mesh.h"
+#include "asterfort/char_xfem.h"
+!
+    character(len=4), intent(in)  :: fonree
+    character(len=8), intent(in)  :: char, noma
+    character(len=19), intent(in) :: ligrmo
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,366 +71,219 @@ subroutine caarei(fonree, char)
 !                REEL OU FONC OU COMP
 !      CHAR  : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !
-! ROUTINES APPELEES:
-    integer :: nmocl
-    parameter (nmocl=300)
+    integer :: n_max_keyword
+    parameter (n_max_keyword=300)
+    integer :: ddlimp(n_max_keyword)
+    real(kind=8) :: valimr(n_max_keyword)
+    complex(kind=8) :: valimc(n_max_keyword)
+    character(len=8) :: valimf(n_max_keyword)
+    character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: i, j, k, n, jlisti, jnoxfl, jnoxfv
-    integer :: nbnoeu, jval, nddla, jdirec, nbno
+    integer :: i
+    integer :: nbnoeu, jval, jdirec, nbno
     integer :: idim, in, jtang, jnono, narei
-    integer :: ibid, jnoma, ier, ndim, nbma2, jcompt
-    integer :: n1, n2, ino, jprnm, nbec, nmcl, icmp
-    integer :: nbma, nbcmp, inom, itan
-    integer :: jlist2, jlist3, nbno1, nbno3
-    integer :: ddlimp(nmocl), nbno2, jlino2, jlino1, jlino, jlinu
-    real(kind=8) :: valimr(nmocl), coef(3), direct(3)
-    complex(kind=8) :: valimc(nmocl), coefc(3)
-    character(len=1) :: k1bid
+    integer :: ibid,  ier, ndim, jcompt
+    integer :: n1, n2, ino, jprnm, nbec
+    integer :: nbma, nbcmp, inom
+    real(kind=8) :: coef(3), direct(3)
+    complex(kind=8) :: coefc(3)
+    integer :: i_keyword, n_keyword
+    character(len=24) :: list_node, list_elem
+    integer :: jlino, jlima
     character(len=2) :: typlag
-    character(len=3) :: tymocl(nmocl)
     character(len=4) :: typcoe
-    character(len=8) :: k8b, noma, mod, nomg
-    character(len=8) :: valimf(nmocl), nomnoe, ddl(3)
-    character(len=16) :: motfac, motcle(nmocl), nomcmd, typmcl(2), moclm(2)
-    character(len=16) :: moclm2(2), moclm3(2), typmc3(2)
-    character(len=24) :: mesmai, mesma2, lnoeu2, lnoeu1, mesno3
-    character(len=19) :: cnxinv
-    character(len=19) :: ligrmo
-    character(len=19) :: lisrel, noxfem
-    logical :: lxfem
-    character(len=19) :: ch1, ch2, ch3
-    integer :: iarg
+    character(len=8) :: nomo, nomg
+    character(len=8) :: nomnoe, ddl(3), k8bid
+    character(len=16) :: keywordfact, keyword
+    character(len=19) :: lisrel
+    character(len=19) :: connex_inv
+    character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
+    integer :: jnoxfl, jnoxfv
+    logical :: lxfem, l_ocmp
+    logical :: l_dtan
+    integer :: val_nb_dtan
+    real(kind=8) :: val_r_dtan
+    character(len=8) :: val_f_dtan
+    complex(kind=8) :: val_c_dtan
+    character(len=24) :: keywordexcl
+    integer :: n_keyexcl
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    if (fonree .ne. 'REEL') goto 999
-!
-    call getfac('ARETE_IMPO', narei)
+    keywordfact = 'ARETE_IMPO'
+    call getfac(keywordfact, narei)
     if (narei .eq. 0) goto 999
 !
-    call getres(k8b, k8b, nomcmd)
+! - Initialization
 !
-    lisrel = '&&CAFACI.RLLISTE'
-!
-    mesmai = '&&CAFACI.MES_MAILLES'
-    mesma2 = '&&CAFACI.MAILLES_2'
-    mesno3 = '&&CAFACI.NOEUDS_2'
-    motfac = 'ARETE_IMPO'
-!
-    moclm(1) = 'MAILLE'
-    moclm(2) = 'GROUP_MA'
-    moclm2(1) = 'SANS_MAILLE'
-    moclm2(2) = 'SANS_GROUP_MA'
-    typmcl(1) = 'MAILLE'
-    typmcl(2) = 'GROUP_MA'
-!
-    moclm3(1) = 'SANS_NOEUD'
-    moclm3(2) = 'SANS_GROUP_NO'
-    typmc3(1) = 'NOEUD'
-    typmc3(2) = 'GROUP_NO'
-!
+    lisrel = '&&CAAREI.RLLISTE'
     typlag = '12'
-    ddl(1) = 'DX'
-    ddl(2) = 'DY'
-    ddl(3) = 'DZ'
-!
     coefc(1) = (1.0d0,0.0d0)
     coefc(2) = (1.0d0,0.0d0)
     coefc(3) = (1.0d0,0.0d0)
-!
+    coef(1) = 1.0d0
+    ddl(1) = 'DEPL'
 !
     typcoe = 'REEL'
     if (fonree .eq. 'COMP') call assert(.false.)
+    if (fonree .eq. 'FONC') call assert(.false.)
+    nomo = ligrmo(1:8)
 !
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
-    call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
-                mod, ier)
-    call dismoi('F', 'DIM_GEOM', mod, 'MODELE', ndim,&
-                k8b, ier)
-    if (ndim .ne. 3) call u2mesi('F', 'MODELISA10_6', 1, ndim)
+! - Create list of excluded keywords for using in char_read_keyw
 !
-! --- LIGREL DU MODELE ---
-    ligrmo = mod//'.MODELE'
-    if (nomcmd(11:14) .eq. 'MECA') then
-        nomg='DEPL_R'
-    else
-        call assert(.false.)
-    endif
+    keywordexcl = '&&CAAREI.KEYWORDEXCL'
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+!
+! - Information about <GRANDEUR>
+! 
+    nomg='DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
-!
-! --- MAILLAGE ASSOCIE AU MODELE ---
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
-!
-! --- RECUPERATION DU DESCRIPTEUR GRANDEUR .PRNM  DU MODELE
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('F', 'NB_NO_MAILLA', ligrmo, 'LIGREL', n1,&
-                k8b, ier)
-    call jelira(ligrmo//'.PRNM', 'LONMAX', n2, k1bid)
+                k8bid, ier)
+    call jelira(ligrmo//'.PRNM', 'LONMAX', n2, k8bid)
     nbec = n2/n1
-    if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
-    else
-        call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    endif
+    call assert(nbec.le.10)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
+                k8bid, ier)
+
+    if (ndim .ne. 3) call u2mesi('F', 'CHARGES2_7', 1, ndim)
 !
-    do 210 i = 1, narei
-        icmp = 0
-        itan = 0
+! - Xfem fields
+! 
+     call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
+                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
+     if (lxfem) then
+         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
+         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
+     endif
 !
-! ----- RECUPERATION DES MAILLES
-        call reliem(' ', noma, 'NU_MAILLE', motfac, i,&
-                    2, moclm, typmcl, mesmai, nbma)
-        if (nbma .eq. 0) goto 210
-        call jeveuo(mesmai, 'L', jlisti)
+    do i = 1, narei
 !
-! ----- RECUPERATION DES MAILLES (A EXCLURE)
-        call reliem(' ', noma, 'NU_MAILLE', motfac, i,&
-                    2, moclm2, typmcl, mesma2, nbma2)
+! ----- Read mesh affectation
 !
-! ----- RECUPERATION DES NOEUDS (A EXCLURE)
-        call reliem(' ', noma, 'NO_NOEUD', motfac, i,&
-                    2, moclm3, typmc3, mesno3, nbno3)
+        list_node = '&&CAFACI.LIST_NODE'
+        list_elem = '&&CAFACI.LIST_ELEM'
+        call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
+                            list_elem, nbma)
+        call jeveuo(list_node,'L',jlino)
+        call jeveuo(list_elem,'L',jlima)
 !
+! ----- Read keywords and their values except for affectation
 !
-! --- MODELE X-FEM ?
-        call jeexin(mod//'.XFEM_CONT', ier)
-        if (ier .eq. 0) then
-            lxfem = .false.
-            noxfem = ' '
-            ch1 = ' '
-            ch2 = ' '
-            ch3 = ' '
-        else
-            lxfem = .true.
-!       RECUPERATION DE LA CONNECTIVITE INVERSE
-            cnxinv='&&CAAREI.CNXINV'
-            call cncinv(noma, ibid, 0, 'V', cnxinv)
+        call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
+                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
+                            valimf, valimc)
 !
-            noxfem = '&&CAFACI.NOXFEM'
-            call cnocns(mod//'.NOXFEM', 'V', noxfem)
-            call jeveuo(noxfem//'.CNSL', 'L', jnoxfl)
-            call jeveuo(noxfem//'.CNSV', 'L', jnoxfv)
-!       STATUT DU NOEUD ET LEVEL SETS
-            ch1 = '&&CAFACI.CHS1'
-            ch2 = '&&CAFACI.CHS2'
-            ch3 = '&&CAFACI.CHS3'
-            call celces(mod//'.STNO', 'V', ch1)
-            call celces(mod//'.LNNO', 'V', ch2)
-            call celces(mod//'.LTNO', 'V', ch3)
+! ----- Detection of DTAN and others
+!
+        call char_read_val(keywordfact, i, 'DTAN', fonree, val_nb_dtan, &
+                           val_r_dtan, val_f_dtan, val_c_dtan)
+        l_dtan = val_nb_dtan.gt.0
+        l_ocmp = n_keyword.gt.0
+!
+! ----- Tangents
+!
+        if (l_dtan) then
+            call catang(noma, nbma, zi(jlima), nbno, zi(jlino))
+            call jeveuo('&&CATANG.TANGENT', 'L', jtang)
         endif
 !
+! ----- If DTAN exists
 !
-! ----- RECUPERATION DES MOTS-CLES DDL SOUS ARETE_IMPO
-!       MOTCLE(J): K8 CONTENANT LE J-EME MOT-CLE DDL
-!       NDDLA    : NOMBRE DE MOTS CLES DU TYPE DDL
-        call getmjm('ARETE_IMPO', i, 0, motcle, tymocl,&
-                    n)
-        nmcl = -n
-        call getmjm('ARETE_IMPO', i, nmcl, motcle, tymocl,&
-                    n)
-        nddla = 0
-        do 50 j = 1, nmcl
-            if (motcle(j) .ne. 'MAILLE' .and. motcle(j) .ne. 'GROUP_MA' .and. motcle(j)&
-                .ne. 'SANS_MAILLE' .and. motcle(j) .ne. 'SANS_GROUP_MA' .and. motcle(j)&
-                .ne. 'SANS_NOEUD' .and. motcle(j) .ne. 'SANS_GROUP_NO' .and. motcle(j) .ne.&
-                'DTAN') then
-                nddla = nddla + 1
-                motcle(nddla) = motcle(j)
-            endif
-50      continue
-        motcle(nddla+1) = 'DTAN'
-        do 60 j = 1, nddla + 1
-            call getvr8('ARETE_IMPO', motcle(j), i, iarg, 1,&
-                        valimr(j), ddlimp(j))
-            if (j .le. nddla) then
-                icmp = icmp + ddlimp(j)
-            else
-                itan = itan + ddlimp(j)
-            endif
-60      continue
+        if (l_dtan) then
+            do ino = 1, nbno
+                in = zi(jlino+ino-1)
+                call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
+                do idim = 1, ndim
+                    direct(idim) = zr(jtang-1+ndim* (ino-1)+idim)
+                end do
 !
-!
-! ----- RECUPERATION DES NOEUDS (A CONSERVER)
-        if ((nbma2.ne.0) .or. (nbno3.ne.0)) then
-!
-!         LISTE DES NOMS DES NOEUDS
-            lnoeu1='&&CAAREI.NOEU_MAIL.TOTAL'
-            call jedetr(lnoeu1)
-            call mainoe(noma, nbma, zi(jlisti), 'NO', nbno1,&
-                        lnoeu1)
-            call jeveuo(lnoeu1, 'L', jlino1)
-!
-!         LISTE DES NOMS DES NOEUDS DES MAILLES EXCLUES
-            lnoeu2='&&CAAREI.NOEU_MAIL.EXCL'
-            call jedetr(lnoeu2)
-            if (nbma2 .ne. 0) then
-!            LISTE DES NUM DES MAILLES EXCLUES
-                call jeveuo(mesma2, 'L', jlist2)
-!            LISTE DES NOMS DES NOEUDS DES MAILLES EXCLUES
-                call mainoe(noma, nbma2, zi(jlist2), 'NO', nbno2,&
-                            lnoeu2)
-            endif
-            if (nbno3 .ne. 0) then
-!            LISTE DES NOMS DES NOEUDS EXCLUS : SANS_(NOEUD,GROUP_NO)
-                call jeveuo(mesno3, 'L', jlist3)
-!            SI NBMA2<>0
-!               AGRANDIR LNOEU2 DE NBNO3 ET AJOUTER MESNO3
-!            SINON
-!               CREER LNOEU2 ET COPIER MESNO3
-                if (nbma2 .ne. 0) then
-                    call juveca(lnoeu2, nbno2+nbno3)
-                    call jeveuo(lnoeu2, 'E', jlino2)
-!               COMPLETER AVEC LES NOEUDS
-                    do 300 j = 0, nbno3-1
-                        zk8(jlino2+nbno2+j) = zk8(jlist3+j)
-300                  continue
-                    nbno2=nbno2+nbno3
-                else
-                    call wkvect(lnoeu2, 'V V K8', nbno3, jlino2)
-                    do 310 j = 0, nbno3-1
-                        zk8(jlino2+j) = zk8(jlist3+j)
-310                  continue
-                    nbno2=nbno3
-                endif
-            endif
-            call jeveuo(lnoeu2, 'L', jlino2)
-!
-!         LISTE DES NOMS DES NOEUDS A CONSERVER
-            call jedetr('&&CAAREI.NOEU_NOM')
-            call wkvect('&&CAAREI.NOEU_NOM', 'V V K8', nbno1, jlino)
-            nbno = nbno1
-            call kndiff(8, zk8(jlino1), nbno1, zk8(jlino2), nbno2,&
-                        zk8(jlino), nbno)
-!
-!         LISTE DES NUMEROS DES NOEUDS A CONSERVER
-            call jedetr('&&CAAREI.NOEU_NUM')
-            call wkvect('&&CAAREI.NOEU_NUM', 'V V I', nbno, jlinu)
-            do 71 j = 1, nbno
-                call jenonu(jexnom(noma//'.NOMNOE', zk8(jlino+j-1)), zi(jlinu+j-1))
-71          continue
-!
-        else
-!
-!         LISTE DES NUMEROS DES NOEUDS
-            lnoeu1='&&CAAREI.NOEU_MAIL.TOTAL'
-            call jedetr(lnoeu1)
-            call mainoe(noma, nbma, zi(jlisti), 'NU', nbno,&
-                        lnoeu1)
-            call jeveuo(lnoeu1, 'L', jlinu)
-!
-        endif
-!
-! -----------------------------------------------
-! ---- 1. TRAITEMENT DE LA COMPOSANTE  DTAN  ----
-! -----------------------------------------------
-!
-! ----- CALCUL DES TANGENTES AUX NOEUDS
-        if (ddlimp(nddla+1) .ne. 0) then
-            call wkvect('&&CAAREI.TANG', 'V V R', 3*nbno, jtang)
-            call catang(noma, nbma, zi(jlisti), nbno, zi(jlinu),&
-                        zr(jtang))
-        endif
-!
-! ----- AFFECTATION DES COMPOSANTES DE LA RELATION A LA RELATION
-!       COURANTE
-        coef(1) = 1.0d0
-        ddl(1) = 'DEPL'
-        do 120 ino = 1, nbno
-            in = zi(jlinu+ino-1)
-            call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
-!
-            if (ddlimp(nddla+1) .ne. 0) then
-                do 110 idim = 1, 3
-                    direct(idim) = zr(jtang-1+3*(ino-1)+idim)
-110              continue
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*in)) then
-                        call xddlim(mod, ddl, nomnoe, in, valimr(nddla+2),&
-                                    valimc(j), valimf(j), fonree, ibid, lisrel,&
-                                    ndim, direct, jnoxfv, ch1, ch2,&
-                                    ch3, cnxinv)
-                        goto 120
+                        call xddlim(nomo, ddl, nomnoe, in, val_r_dtan,&
+                                    val_c_dtan, val_f_dtan, fonree, ibid, lisrel,&
+                                    ndim, direct, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                                    ch_xfem_ltno, connex_inv)
+                        goto 115
                     endif
                 endif
+!
                 call afrela(coef, coefc, ddl, nomnoe, ndim,&
-                            direct, 1, valimr(nddla+1), valimc(nddla+1), valimf(nddla+1),&
+                            direct, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
                             typcoe, fonree, typlag, 0.d0, lisrel)
-            endif
-120      continue
-        call jedetr('&&CAAREI.TANG')
-!
-! -------------------------------------------------
-! ---- 2. TRAITEMENT DES COMPOSANTES DX,DY,DZ  ----
-! -------------------------------------------------
-!
-        if (icmp .eq. 0) goto 200
-!
-        call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k1bid)
-!
-!    ALLOCATION DE 3 OBJETS INTERMEDIAIRES PERMETTANT D'APPLIQUER
-!    LA REGLE DE SURCHARGE :
-!
-!               - VECTEUR (K8) CONTENANT LES NOMS DES NOEUDS
-!               - TABLEAU DES VALEURS DES DDLS DES NOEUDS BLOQUES
-!                 DIM NBNOEU * NBCOMP
-!               - VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR
-!                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
-!
-        call wkvect('&&CAFACI.NOMS_NOEUDS', 'V V K8', nbnoeu, jnono)
-        if (fonree .eq. 'REEL') then
-            call wkvect('&&CAFACI.VALDDL', 'V V R', nddla*nbnoeu, jval)
-        else
-            call wkvect('&&CAFACI.VALDDL', 'V V K8', nddla*nbnoeu, jval)
+
+115             continue
+            enddo
         endif
 !
-        call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
+! ----- If other components exist
 !
-        call wkvect('&&CAFACI.ICOMPT', 'V V I', nddla, jcompt)
-        do 180 ino = 1, nbno
-            in = zi(jlinu-1+ino)
-            call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
-            zk8(jnono-1+in) = nomnoe
-            call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+ (in- 1)*nbec+1), nddla,&
-                        fonree, nomnoe, in, ddlimp, valimr,&
-                        valimf, valimc, motcle, zr(jdirec+3* (in-1)), 0,&
-                        mod, lisrel, zk8( inom), nbcmp, zi(jcompt),&
-                        lxfem, jnoxfl, jnoxfv, ch1, ch2,&
-                        ch3, cnxinv)
-180      continue
-        do 181,k=1,nddla
-        if (zi(jcompt-1+k) .eq. 0) call u2mesk('F', 'MODELISA2_45', 1, motcle(k))
-181      continue
-        call jedetr('&&CAFACI.ICOMPT')
+        if (l_ocmp) then
 !
-        call jedetr('&&CAFACI.NOMS_NOEUDS')
-        call jedetr('&&CAFACI.VALDDL')
-        call jedetr('&&CAFACI.DIRECT')
+! -------- Overload preparation
 !
-200      continue
+            call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
+            call wkvect('&&CAFACI.NOMS_NOEUDS', 'V V K8', nbnoeu, jnono)
+            if (fonree .eq. 'REEL') then
+                call wkvect('&&CAFACI.VALDDL', 'V V R', n_keyword*nbnoeu, jval)
+            else
+                call wkvect('&&CAFACI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
+            endif
+            call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
+            call wkvect('&&CAFACI.ICOMPT', 'V V I', n_keyword, jcompt)
 !
-        call jedetr(mesmai)
-        call jedetr(mesma2)
+! --------- Linear relation
 !
-210  end do
-!        -------------------------------------
-!        AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE
-!        (I.E. AFFECTATION DES OBJETS .CMULT, .CIMPO,
-!        LIGRCH ET .NEMA)
-!        -------------------------------------
+            do ino = 1, nbno
+                in = zi(jlino-1+ino)
+                call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
+                call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+ (in- 1)*nbec+1), n_keyword,&
+                            fonree, nomnoe, in, ddlimp, valimr,&
+                            valimf, valimc, keywordlist, zr(jdirec+3* (in-1)), 0,&
+                            nomo, lisrel, zk8( inom), nbcmp, zi(jcompt),&
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
+            enddo
+!
+! --------- Components doesn't exist on all nodes
+!
+            do i_keyword = 1,n_keyword
+                keyword = keywordlist(i_keyword)
+                if (zi(jcompt-1+i_keyword) .eq. 0) then
+                    call u2mesk('F', 'CHARGES2_45', 1, keyword)
+                endif
+            enddo
+!
+            call jedetr('&&CAFACI.ICOMPT')
+            call jedetr('&&CAFACI.NOMS_NOEUDS')
+            call jedetr('&&CAFACI.VALDDL')
+            call jedetr('&&CAFACI.DIRECT')
+!
+        endif
+!
+        call jedetr(list_node)
+        call jedetr(list_elem)
+!
+    enddo
+!
+! - Final linear relation affectation
+!
     call aflrch(lisrel, char)
 !
-    call jedetr('&&NBNLMA.LN')
-    call jedetr('&&NBNLMA.NBN')
-    call jedetr('&&CANORT.NORMALE')
-    call jedetr('&&CANORT.TANGENT')
+    call jedetr('&&CATANG.TANGENT')
+    call jedetr(keywordexcl)
     if (lxfem) then
-        call jedetr(cnxinv)
-        call detrsd('CHAM_NO_S', noxfem)
-        call detrsd('CHAM_ELEM_S', ch1)
-        call detrsd('CHAM_ELEM_S', ch2)
-        call detrsd('CHAM_ELEM_S', ch3)
+        call jedetr(connex_inv)
+        call detrsd('CHAM_NO_S', ch_xfem_node)
+        call detrsd('CHAM_ELEM_S', ch_xfem_stat)
+        call detrsd('CHAM_ELEM_S', ch_xfem_lnno)
+        call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
     endif
-999  continue
+!
+999 continue
     call jedema()
 end subroutine

@@ -114,47 +114,9 @@ cata_msg={
  pas de normale pour les quadrangles en 2d
 """),
 
-23: _(u"""
- il est impossible de calculer la tangente de la maille  %(k1)s . des noeuds doivent être confondus.
-"""),
 
-24: _(u"""
- il est impossible de calculer la normale de la maille  %(k1)s . des noeuds doivent être confondus.
-"""),
 
-25: _(u"""
- impossible de calculer la normale d un segment en 3d
-"""),
 
-26: _(u"""
- il est impossible de calculer la normale de la maille  %(k1)s . des arêtes doivent être confondues.
-"""),
-
-27: _(u"""
- type d élément inconnu
-"""),
-
-28: _(u"""
- la norme du vecteur normal ( ou tangentiel) moyenne est presque nulle. les facettes concourantes  au noeud  %(k1)s  ne définissent pas une normale moyenne fiable . il y a un problème dans la définition de vos mailles de bord .
-"""),
-
-29: _(u"""
- L'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyen, au noeud  %(k1)s , est supérieur a 10 degrés et vaut  %(k2)s  degrés.
-"""),
-
-30: _(u"""
-Erreur d'utilisation :
- La norme du vecteur normal (moyenne des normales des éléments concourants) est presque nulle.
- Les facettes concourantes au noeud  %(k1)s ne définissent pas une normale fiable.
- Il y a un problème dans la définition des mailles de bord .
-
-Suggestion :
- Avez-vous pensé à réorienter les mailles de bord avec l'opérateur MODI_MAILLAGE
-"""),
-
-31: _(u"""
- l'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyenne, au noeud  %(k1)s , est supérieur a 10 degrés et vaut  %(k2)s  degrés.
-"""),
 
 32: _(u"""
  Alarme utilisateur dans CREA_MAILLAGE/MODI_MAILLE :

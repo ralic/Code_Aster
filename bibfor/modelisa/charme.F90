@@ -294,16 +294,18 @@ subroutine charme(fonree)
 !
         call calimc(char)
 !
+! --- ARETE_IMPO ---
+!
+        call caarei(char, noma, ligrmo, fonree)
+!
     endif
 !
-    if (fonree .ne. 'COMP') then
+    if (fonree .eq. 'REEL') then
 !         ================
 !
 ! --- FACE_IMPO ---
         call cafaci(char, noma, ligrmo, fonree)
-!
-! --- ARETE_IMPO ---
-        call caarei(fonree, char)
+
 !
 ! --- LIAISON_OBLIQUE ---
         call caliob(fonree, char)

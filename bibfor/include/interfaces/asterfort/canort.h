@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine canort(noma, nbma, listi, ndim, nbno, &
-                      nuno, l)
-        character(len=8) :: noma
-        integer :: nbma
-        integer :: listi(*)
-        integer :: ndim
-        integer :: nbno
-        integer :: nuno(*)
-        integer :: l
+    subroutine canort(noma, nbma, listma, ndim, nbno,&
+                      listno, type_calc)
+        character(len=8), intent(in) :: noma
+        integer, intent(in) :: nbma
+        integer, intent(in) :: listma(*)
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nbno
+        integer, intent(in) :: listno(*)
+        integer, intent(in) :: type_calc
     end subroutine canort
 end interface

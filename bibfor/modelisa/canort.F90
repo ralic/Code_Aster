@@ -1,27 +1,9 @@
-subroutine canort(noma, nbma, listma, ndim,&
-                  nbno, nuno, l)
+subroutine canort(noma, nbma, listma, ndim, nbno,&
+                  listno, type_calc)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-! aslint: disable=W1501
     implicit none
-#include "jeveux.h"
 !
+#include "jeveux.h"
 #include "asterc/r8rddg.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/codree.h"
@@ -45,27 +27,55 @@ subroutine canort(noma, nbma, listma, ndim,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbma, listma(*), ndim, nbno, nuno(*), l
-    character(len=8) :: noma
 !
-!     BUT: CALCULER LES NORMALES AUX NOEUDS D'UNE LISTE DE MAILLES
-!                   ET LES TANGENTES
-! ARGUMENTS D'ENTREE:
-!      NOMA : NOM DU MAILLAGE
-!      NBMA : NOMBRE DE MAILLES DU MAILLAGE DANS LA LISTE.
-!      NDIM : DIMENSION DU PROBLEME
-!      NBNO : NOMBRE DE NOEUDS DANS LA LISTE DE MAILLES.
-!             = NOMBRE DE MAILLES SUPPLEMENTAIRES.
-!      NUNO : LISTE DES NUMEROS DE NOEUDS DE LA LISTE DE MAILLES
-!      L    : =1 ==> CALCUL DE LA NORMALE (2D ET 3D)
-!             =2 ==> CALCUL DE LA TANGENTE (2D )
-! OBJETS JEVEUX CREES
-!     &&CANORT.NORMALE : NORMALES MOYENNEES AUX NOEUDS (2 EN 2D,3 EN 3D)
-!     &&CANORT.TANGENT : TANGENTES AUX NOEUDS (2 EN 2D)
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ROUTINES APPELEES:
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! aslint: disable=W1501
+!
+    character(len=8), intent(in) :: noma
+    integer, intent(in) :: nbma
+    integer, intent(in) :: listma(*)
+    integer, intent(in) :: ndim
+    integer, intent(in) :: nbno
+    integer, intent(in) :: listno(*)
+    integer, intent(in) :: type_calc
+!
+! --------------------------------------------------------------------------------------------------
+!
+! AFFE_CHAR_MECA
+!
+! Compute normals and tangents at nodes
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
+! In  noma   : mesh
+! In  nbma   : number of elements
+! In  listma : list of elements
+! In  ndim : space dimension
+! In  nbno : number of nodes
+! In  listno : list of nodes
+! In  type_calc : normals (type_calc = 1) or tangents (type_calc = 2)
+!
+! Objects created:
+!     &&CANORT.NORMALE : normals at nodes
+!     &&CANORT.TANGENT : tangents at nodes
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: dimcoo, i, ifonc, ibid, iret, jnorm, isom, in
     integer :: idobj2, jcoor, iatyma, jcoode, ij, ino
@@ -83,6 +93,7 @@ subroutine canort(noma, nbma, listma, ndim,&
     real(kind=8) :: eksix, eksiy, eksiz, eetax, eetay, eetaz
     real(kind=8) :: vnorm, cosvec, sinvec, angl, atan2
 !
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -99,10 +110,11 @@ subroutine canort(noma, nbma, listma, ndim,&
     call dffno('QU9', ibid, nno, nnos, dfqu9)
     coninv='&&CANORT.CONINV'
 !
-    if (l .eq. 1) nomobj = '&&CANORT.NORMALE'
-    if (l .eq. 2) nomobj = '&&CANORT.TANGENT'
-    call jeexin(nomobj, iret)
-    if (iret .ne. 0) call jedetr(nomobj)
+! - Creation of resultant object
+!
+    if (type_calc .eq. 1) nomobj = '&&CANORT.NORMALE'
+    if (type_calc .eq. 2) nomobj = '&&CANORT.TANGENT'
+    call jedetr(nomobj)
     call jecreo(nomobj, 'V V R')
     call jeecra(nomobj, 'LONMAX', ndim*nbno, ' ')
     call jeveuo(nomobj, 'E', jnorm)
@@ -118,10 +130,10 @@ subroutine canort(noma, nbma, listma, ndim,&
 !
     nomob2 = '&&CANORT.VECTEUR'
     call jeexin(nomob2, iret)
-    if (iret .ne. 0) call jedetr(nomob2)
+    call jedetr(nomob2)
     isom = 0
     do i = 1, nbno
-        call jelira(jexnum(coninv, nuno(i)), 'LONMAX', nnn, k8b)
+        call jelira(jexnum(coninv, listno(i)), 'LONMAX', nnn, k8b)
         isom = isom + nnn
     end do
 !
@@ -132,7 +144,7 @@ subroutine canort(noma, nbma, listma, ndim,&
     ij=0
 !     BOUCLE SUR TOUS LES NOEUDS CONCERNES
     do ino = 1, nbno
-        numno=nuno(ino)
+        numno=listno(ino)
         call jelira(jexnum(coninv, numno), 'LONMAX', nnn, k8b)
         call jeveuo(jexnum(coninv, numno), 'L', iinver)
 !
@@ -156,23 +168,23 @@ subroutine canort(noma, nbma, listma, ndim,&
                 coor(2,2)=zr(jcoor-1+dimcoo*(lino(2)-1)+2)
                 eksix=coor(1,1)*dfse2(1)+coor(1,2)*dfse2(2)
                 eksiy=coor(2,1)*dfse2(1)+coor(2,2)*dfse2(2)
-                if (l .eq. 2) then
+                if (type_calc .eq. 2) then
                     norme=sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
                         a=eksix/norme
                         b=eksiy/norme
                     else
                         call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                        call u2mesk('F', 'MODELISA3_23', 1, knumai)
+                        call u2mesk('F', 'CHARGES2_23', 1, knumai)
                     endif
-                else if (l.eq.1) then
+                else if (type_calc .eq.1) then
                     norme=sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
                         a=eksiy/norme
                         b=-eksix/norme
                     else
                         call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                        call u2mesk('F', 'MODELISA3_24', 1, knumai)
+                        call u2mesk('F', 'CHARGES2_24', 1, knumai)
                     endif
                 endif
                 zr(jnorm-1+2*(ino-1)+1)=zr(jnorm-1+2*(ino-1)+1)&
@@ -199,7 +211,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     eksiy=eksiy+coor(2,ifonc)*dfse3((in-1)*nn+ifonc)
                 end do
 !              ON S INTERESSE AU VECTEUR TANGENT
-                if (l .eq. 2) then
+                if (type_calc .eq. 2) then
                     norme=sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
                         a=eksix/norme
@@ -210,7 +222,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     endif
 !
 !              ON S INTERESSE AU VECTEUR NORMAL
-                else if (l.eq.1) then
+                else if (type_calc .eq.1) then
                     norme=sqrt(eksix**2+eksiy**2)
                     if (norme .gt. prec) then
                         a=eksiy/norme
@@ -228,7 +240,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                 zr(idobj2-1+2*(ij-1)+1) = a
                 zr(idobj2-1+2*(ij-1)+2) = b
             else if (ndim.eq.3.and.nomtyp(1:3).eq.'SEG') then
-                call u2mess('F', 'MODELISA3_25')
+                call u2mess('F', 'CHARGES2_25')
 !
             else if (ndim.eq.3.and.nomtyp(1:5).eq.'QUAD4') then
                 do i = 1, nn
@@ -270,7 +282,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'MODELISA3_26', 1, knumai)
+                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -379,7 +391,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'MODELISA3_26', 1, knumai)
+                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -433,7 +445,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'MODELISA3_26', 1, knumai)
+                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -541,7 +553,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     c=c/norme
                 else
                     call jenuno(jexnum(noma//'.NOMMAI', numail), knumai)
-                    call u2mesk('F', 'MODELISA3_26', 1, knumai)
+                    call u2mesk('F', 'CHARGES2_26', 1, knumai)
                 endif
 !              ON FAIT LA MOYENNE SUR TOUTES LES MAILLES DES NORMALES
 !              RELATIVES A UN NOEUD
@@ -558,7 +570,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else
-                call u2mess('F', 'MODELISA3_27')
+                call assert(.false.)
             endif
         end do
     end do
@@ -566,7 +578,7 @@ subroutine canort(noma, nbma, listma, ndim,&
 !
     ij = 0
     do n = 1, nbno
-        ino = nuno(n)
+        ino = listno(n)
         call jelira(jexnum(coninv, ino), 'LONMAX', nocc, k8b)
         if (ndim .eq. 2) then
             vnorm = zr(&
@@ -576,7 +588,7 @@ subroutine canort(noma, nbma, listma, ndim,&
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
-                call u2mesk('F', 'MODELISA3_28', 1, nomnoe)
+                call u2mesk('F', 'CHARGES2_30', 1, nomnoe)
             endif
             zr(jnorm-1+2*(n-1)+1)=zr(jnorm-1+2*(n-1)+1)/vnorm
             zr(jnorm-1+2*(n-1)+2)=zr(jnorm-1+2*(n-1)+2)/vnorm
@@ -596,7 +608,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     call codree(abs(angl), 'G', kangl)
                     valk(1) = nomnoe
                     valk(2) = kangl
-                    call u2mesk('A', 'MODELISA3_29', 2, valk)
+                    call u2mesk('A', 'CHARGES2_29', 2, valk)
                 endif
             enddo
         else if (ndim.eq.3) then
@@ -607,7 +619,7 @@ subroutine canort(noma, nbma, listma, ndim,&
             vnorm = sqrt(vnorm)
             if (vnorm .lt. 1.0d-2) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino), nomnoe)
-                call u2mesk('F', 'MODELISA3_30', 1, nomnoe)
+                call u2mesk('F', 'CHARGES2_30', 1, nomnoe)
             endif
             zr(jnorm-1+3*(n-1)+1)=zr(jnorm-1+3*(n-1)+1)/vnorm
             zr(jnorm-1+3*(n-1)+2)=zr(jnorm-1+3*(n-1)+2)/vnorm
@@ -627,7 +639,7 @@ subroutine canort(noma, nbma, listma, ndim,&
                     call codree(abs(angl), 'G', kangl)
                     valk(1) = nomnoe
                     valk(2) = kangl
-                    call u2mesk('A', 'MODELISA3_31', 2, valk)
+                    call u2mesk('A', 'CHARGES2_29', 2, valk)
                 endif
             enddo
         endif

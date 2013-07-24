@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine catang(noma, nbma, numail, nbno, nunoeu,&
-                      tang)
-        integer :: nbno
-        integer :: nbma
-        character(len=8) :: noma
-        integer :: numail(nbma)
-        integer :: nunoeu(nbno)
-        real(kind=8) :: tang(3*nbno)
+    subroutine catang(noma, nbma, listma,  nbno, listno)
+        character(len=8), intent(in) :: noma
+        integer, intent(in) :: nbma
+        integer, intent(in) :: listma(*)
+        integer, intent(in) :: nbno
+        integer, intent(in) :: listno(*)
     end subroutine catang
 end interface
