@@ -163,12 +163,14 @@ subroutine op0191()
 !
 ! ----- RECUPERATION DU MODELE ASSOCIE AU CHAMP
             call rslesd(resuin(1:8), iordr, modele, k8bid, carele, kbid, ibid)
-            call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid, exipla, iret)
-            call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid, exicoq, iret)
-            if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
-                ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
-                ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) &
-                    call u2mess('F', 'ALGORITH3_7')
+            if (modele.ne.'') then
+                call dismoi('F', 'EXI_PLAQUE', modele, 'MODELE', ibid, exipla, iret)
+                call dismoi('F', 'EXI_COQUE', modele, 'MODELE', ibid, exicoq, iret)
+                if (((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and.&
+                    ((type.eq.'TENS_2D').or.(type.eq.'TENS_3D')) .and.&
+                    ((repere.eq.'CYLINDRIQUE').or.( repere.eq.'UTILISATEUR'))) &
+                        call u2mess('F', 'ALGORITH3_7')
+            endif
 !
 ! ----- RECUPERATION DE LA NATURE DES CHAMPS
 ! ----- (CHAM_NO OU CHAM_ELEM)
