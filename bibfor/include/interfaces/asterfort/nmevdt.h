@@ -17,8 +17,8 @@
 !
 interface
     subroutine nmevdt(sdtime, sderro, timer)
-        character(len=24) :: sdtime
-        character(len=24) :: sderro
-        character(len=3) :: timer
+        character(len=24), intent(in) :: sdtime
+        character(len=24), intent(in) :: sderro
+        character(len=3), intent(in) :: timer
     end subroutine nmevdt
 end interface

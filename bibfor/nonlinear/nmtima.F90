@@ -1,4 +1,4 @@
-subroutine nmtima(sdtime, timer, vall)
+subroutine nmtima(sdtime, timer, vali)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,9 +24,9 @@ subroutine nmtima(sdtime, timer, vall)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=24) :: sdtime
-    character(len=3) :: timer
-    logical :: vall
+    character(len=24), intent(in) :: sdtime
+    character(len=3), intent(in) :: timer
+    integer, intent(out) :: vali
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,9 +41,9 @@ subroutine nmtima(sdtime, timer, vall)
 !                'PAS'   TIMER POUR UN PAS DE TEMPS
 !                'ITE'   TIMER POUR UNE ITERATION DE NEWTON
 ! IN  SDTIME : SD TIMER
-! OUT VALL   : RESULTAT DE L'ACTION
-!
-!
+! OUT VALI   : RESULTAT DE L'ACTION
+!               0 ON CONTINUE
+!               1 ON S'ARRETE
 !
 !
     character(len=24) :: timpas, timite, timarc
@@ -56,7 +56,7 @@ subroutine nmtima(sdtime, timer, vall)
 !
 ! --- INITIALISATIONS
 !
-    vall = .false.
+    vali = 0
 !
 ! --- ACCES SD TIMER
 !
@@ -78,16 +78,16 @@ subroutine nmtima(sdtime, timer, vall)
     if (timer .eq. 'ITE') then
         tpsrst = zr(jtite+1-1)
         if ((2.d0*moyite) .le. (0.95d0*tpsrst-moyarc)) then
-            vall = .false.
+            vali = 0
         else
-            vall = .true.
+            vali = 1
         endif
     else if (timer.eq.'PAS') then
         tpsrst = zr(jtpas+1-1)
-        if (moypas .gt. 0.90d0*tpsrst) then
-            vall = .true.
+        if (moypas .le. 0.90d0*tpsrst) then
+            vali = 0
         else
-            vall = .false.
+            vali = 1
         endif
     else
         call assert(.false.)

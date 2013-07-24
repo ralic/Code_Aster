@@ -27,9 +27,9 @@ subroutine nmevdt(sdtime, sderro, timer)
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmleeb.h"
 #include "asterfort/nmtima.h"
-    character(len=24) :: sderro
-    character(len=24) :: sdtime
-    character(len=3) :: timer
+    character(len=24), intent(in) :: sderro
+    character(len=24), intent(in) :: sdtime
+    character(len=3), intent(in) :: timer
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,8 +48,11 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! ----------------------------------------------------------------------
 !
-    logical :: mtcpui, mtcpup, stopus
+    logical :: mtcpup, mtcpui, stopus
     character(len=4) :: etnewt
+    integer :: itcpup, itcpui, isusr1, ibid
+    real(kind=8) :: r8bid
+    complex(kind=8) :: c8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,34 +60,43 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! --- INITIALISATIONS
 !
-    mtcpup = .false.
-    mtcpui = .false.
-    stopus = (etausr().eq.1)
+    itcpup = 0
+    itcpui = 0
+    isusr1 = 0
 !
     if (timer .eq. 'PAS') then
 !
 ! ----- ASSEZ DE TEMPS POUR UN NOUVEAU PAS ?
 !
-        call nmtima(sdtime, 'PAS', mtcpup)
+        call nmtima(sdtime, 'PAS', itcpup)
     else if (timer.eq.'ITE') then
         call nmleeb(sderro, 'NEWT', etnewt)
 !
 ! ----- ASSEZ DE TEMPS POUR UNE NOUVELLE ITERATION DE NEWTON ?
 !
-        if (etnewt .ne. 'CONV') call nmtima(sdtime, 'ITE', mtcpui)
+        if (etnewt .ne. 'CONV') call nmtima(sdtime, 'ITE', itcpui)
     else
         call assert(.false.)
     endif
 !
 ! --- INTERRUPTION DEMANDEE PAR SIGNAL ?
 !
-    stopus = etausr().eq.1
+    isusr1 = etausr()
+!
+! --- SYNCHRONISATION DES PROCESSUS PARALLELES
+!
+    call mpicm1('MPI_MAX','I',1,ibid,itcpui,r8bid,c8bid)
+    call mpicm1('MPI_MAX','I',1,ibid,itcpup,r8bid,c8bid)
+    call mpicm1('MPI_MAX','I',1,ibid,isusr1,r8bid,c8bid)
 !
 ! --- SAUVEGARDE DES EVENEMENTS
 !
-    call nmcrel(sderro, 'ERRE_EXCP', stopus)
+    mtcpui = itcpui.eq.1
+    mtcpup = itcpup.eq.1
+    stopus = isusr1.eq.1
     call nmcrel(sderro, 'ERRE_TIMP', mtcpup)
     call nmcrel(sderro, 'ERRE_TIMN', mtcpui)
+    call nmcrel(sderro, 'ERRE_EXCP', stopus)
 !
     call jedema()
 end subroutine

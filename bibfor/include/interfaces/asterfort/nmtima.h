@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmtima(sdtime, timer, vall)
-        character(len=24) :: sdtime
-        character(len=3) :: timer
-        logical :: vall
+    subroutine nmtima(sdtime, timer, vali)
+        character(len=24), intent(in) :: sdtime
+        character(len=3), intent(in) :: timer
+        integer, intent(out) :: vali
     end subroutine nmtima
 end interface
