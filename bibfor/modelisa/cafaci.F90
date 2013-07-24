@@ -23,6 +23,8 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
 #include "asterfort/char_read_mesh.h"
 #include "asterfort/char_xfem.h"
@@ -65,10 +67,6 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     character(len=8) :: valimf(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: n_keyexcl
-    parameter (n_keyexcl=6)
-    character(len=16) :: keywordexcl(n_keyexcl)
-!
     integer :: i
     integer :: nbnoeu, jval, jdirec, nbno
     integer :: idim, in, jnorm, jtang, jnono, nfaci
@@ -89,9 +87,14 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
-    logical :: lxfem
-    logical :: l_dtan, l_dnor, l_ocmp
-    integer :: i_dtan, i_dnor
+    logical :: lxfem, l_ocmp
+    logical :: l_dtan, l_dnor
+    integer :: val_nb_dnor, val_nb_dtan
+    real(kind=8) :: val_r_dnor, val_r_dtan
+    character(len=8) :: val_f_dnor, val_f_dtan
+    complex(kind=8):: val_c_dnor, val_c_dtan
+    character(len=24) :: keywordexcl
+    integer :: n_keyexcl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,12 +106,6 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 ! - Initialization
 !
     lisrel = '&&CAFACI.RLLISTE'
-    keywordexcl(1) = 'MAILLE'
-    keywordexcl(2) = 'GROUP_MA'
-    keywordexcl(3) = 'SANS_MAILLE'
-    keywordexcl(4) = 'SANS_GROUP_MA'
-    keywordexcl(5) = 'SANS_NOEUD'
-    keywordexcl(6) = 'SANS_GROUP_NO'
 !
     typlag = '12'
 !
@@ -121,6 +118,11 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     typcoe = 'REEL'
     if (fonree .eq. 'COMP') call assert(.false.)
     nomo = ligrmo(1:8)
+!
+! - Create list of excluded keywords for using in char_read_keyw
+!
+    keywordexcl = '&&CAFACI.KEYWORDEXCL'
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 ! 
@@ -138,12 +140,12 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
 ! - Xfem fields
 ! 
-     call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
+    call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
                     ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
-     if (lxfem) then
-         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
-         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
-     endif
+    if (lxfem) then
+        call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
+        call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
+    endif
 !
     do i = 1, nfaci
 !
@@ -156,30 +158,21 @@ subroutine cafaci(char, noma, ligrmo, fonree)
         call jeveuo(list_node,'L',jlino)
         call jeveuo(list_elem,'L',jlima)
 !
-! ----- Read keywords and their values except for affectation
+! ----- Read affected components and their values
 !
         call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
-                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, valimf)
+                            n_max_keyword, n_keyword , keywordlist, ddlimp, valimr, &
+                            valimf, valimc)
 !
 ! ----- Detection of DNOR, DTAN and others
 !
-        l_dtan = .false.
-        l_dnor = .false.
-        l_ocmp = .false.
-        i_dtan = 0
-        i_dnor = 0
-        do i_keyword = 1, n_keyword
-             keyword = keywordlist(i_keyword)
-             if (keyword.eq.'DTAN') then
-                l_dtan = .true.
-                i_dtan = i_keyword
-             elseif (keyword.eq.'DNOR') then
-                l_dnor = .true.
-                i_dnor = i_keyword
-             else
-                l_ocmp = .true.
-             endif
-        enddo
+        call char_read_val(keywordfact, i, 'DNOR', fonree, val_nb_dnor, &
+                           val_r_dnor, val_f_dnor, val_c_dnor)
+        l_dnor = val_nb_dnor.gt.0
+        call char_read_val(keywordfact, i, 'DTAN', fonree, val_nb_dtan, &
+                           val_r_dtan, val_f_dtan, val_c_dtan)
+        l_dtan = val_nb_dtan.gt.0
+        l_ocmp = n_keyword.gt.0
 !
 ! ----- Some verifications
 !  
@@ -216,8 +209,8 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*in)) then
-                        call xddlim(nomo, ddl, nomnoe, in, valimr(i_dnor),&
-                                    valimc(i_dnor), valimf(i_dnor), fonree, ibid, lisrel,&
+                        call xddlim(nomo, ddl, nomnoe, in, val_r_dnor,&
+                                    val_c_dnor, val_f_dnor, fonree, ibid, lisrel,&
                                     ndim, direct, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv)
                         goto 105
@@ -225,7 +218,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
                 endif
 !
                 call afrela(coef, coefc, ddl, nomnoe, ndim,&
-                            direct, 1, valimr(i_dnor), valimc(i_dnor), valimf(i_dnor),&
+                            direct, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
                             typcoe, fonree, typlag, 0.d0, lisrel)
 !
 105             continue
@@ -244,8 +237,8 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*in)) then
-                        call xddlim(nomo, ddl, nomnoe, in, valimr(i_dtan),&
-                                    valimc(i_dnor), valimf(i_dnor), fonree, ibid, lisrel,&
+                        call xddlim(nomo, ddl, nomnoe, in, val_r_dtan,&
+                                    val_c_dtan, val_f_dtan, fonree, ibid, lisrel,&
                                     ndim, direct, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv)
                         goto 115
@@ -253,7 +246,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
                 endif
 !
                 call afrela(coef, coefc, ddl, nomnoe, ndim,&
-                            direct, 1, valimr(i_dtan), valimc(i_dtan), valimf(i_dtan),&
+                            direct, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
                             typcoe, fonree, typlag, 0.d0, lisrel)
 
 115             continue
@@ -293,9 +286,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
             do i_keyword = 1,n_keyword
                 keyword = keywordlist(i_keyword)
-                if ((zi(jcompt-1+i_keyword) .eq. 0).and.&
-                    (i_keyword.ne.i_dnor).and.&
-                    (i_keyword.ne.i_dtan)) then
+                if (zi(jcompt-1+i_keyword) .eq. 0) then
                     call u2mesk('F', 'CHARGES2_45', 1, keyword)
                 endif
             enddo
@@ -312,12 +303,13 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
     end do
 !
-! - Final linera relation affectation
+! - Final linear relation affectation
 !
     call aflrch(lisrel, char)
 !
     call jedetr('&&CANORT.NORMALE')
     call jedetr('&&CANORT.TANGENT')
+    call jedetr(keywordexcl)
     if (lxfem) then
         call jedetr(connex_inv)
         call detrsd('CHAM_NO_S', ch_xfem_node)

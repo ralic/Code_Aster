@@ -4,6 +4,7 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
     implicit none
 !
 #include "jeveux.h"
+#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -55,8 +56,9 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: typmcl(4), moclm(4)
+    character(len=16) :: typmcl(5), moclm(5)
     character(len=24) :: list_lect, list_excl
+    integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: num_lect, num_excl
     integer :: jlect, jexcl, jnode
@@ -66,42 +68,100 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
 !
     call jemarq()
 !
+! - Initializations
+!
     list_lect = '&&LIST_LECT'
     list_excl = '&&LIST_EXCL'
     nb_node = 0
+    nb_elem = 0
+    nb_lect = 0
+    nb_excl = 0
 !
-! - Nodes
+! - Read nodes
+! 
+    nb_mocl = 0  
+    if (getexm(keywordfact,'TOUT') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'TOUT'
+        typmcl(nb_mocl) = 'TOUT'
+    endif
+    if (getexm(keywordfact,'GROUP_MA') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'GROUP_MA'
+        typmcl(nb_mocl) = 'GROUP_MA'
+    endif
+    if (getexm(keywordfact,'MAILLE') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'MAILLE'
+        typmcl(nb_mocl) = 'MAILLE'
+    endif
+    if (getexm(keywordfact,'GROUP_NO') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'GROUP_NO'
+        typmcl(nb_mocl) = 'GROUP_NO'
+    endif
+    if (getexm(keywordfact,'NOEUD') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'NOEUD'
+        typmcl(nb_mocl) = 'NOEUD'
+    endif
+    if (nb_mocl.ne.0) then
+        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
+                    nb_mocl, moclm, typmcl, list_lect, nb_lect)
+    endif
 !
-    moclm(1) = 'MAILLE'
-    moclm(2) = 'GROUP_MA'
-    typmcl(1) = 'MAILLE'
-    typmcl(2) = 'GROUP_MA'
-    call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
-                2, moclm, typmcl, list_lect, nb_lect)
+! - Read elements
 !
-! - Elements
+    nb_mocl = 0  
+    if (getexm(keywordfact,'TOUT') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'TOUT'
+        typmcl(nb_mocl) = 'TOUT'
+    endif
+    if (getexm(keywordfact,'GROUP_MA') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'GROUP_MA'
+        typmcl(nb_mocl) = 'GROUP_MA'
+    endif
+    if (getexm(keywordfact,'MAILLE') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'MAILLE'
+        typmcl(nb_mocl) = 'MAILLE'
+    endif
+    if (nb_mocl.ne.0) then
+        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc ,&
+                    nb_mocl, moclm, typmcl, list_elem, nb_elem)
+    endif
 !
-    moclm(1) = 'MAILLE'
-    moclm(2) = 'GROUP_MA'
-    typmcl(1) = 'MAILLE'
-    typmcl(2) = 'GROUP_MA'
-    call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc ,&
-                2, moclm, typmcl, list_elem, nb_elem)
+! - Read nodes exludes
+! 
+    nb_mocl = 0  
+    if (getexm(keywordfact,'SANS_GROUP_MA') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'SANS_GROUP_MA'
+        typmcl(nb_mocl) = 'GROUP_MA'
+    endif
+    if (getexm(keywordfact,'SANS_MAILLE') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'SANS_MAILLE'
+        typmcl(nb_mocl) = 'MAILLE'
+    endif
+    if (getexm(keywordfact,'SANS_GROUP_NO') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'SANS_GROUP_NO'
+        typmcl(nb_mocl) = 'GROUP_NO'
+    endif
+    if (getexm(keywordfact,'SANS_NOEUD') .eq. 1) then
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl)  = 'SANS_NOEUD'
+        typmcl(nb_mocl) = 'NOEUD'
+    endif
+    if (nb_mocl.ne.0) then
+        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
+                    nb_mocl, moclm, typmcl, list_excl, nb_excl)
+    endif
 !
-! - Nodes excluded
-!
-    moclm(1) = 'SANS_MAILLE'
-    moclm(2) = 'SANS_GROUP_MA'
-    moclm(3) = 'SANS_NOEUD'
-    moclm(4) = 'SANS_GROUP_NO'
-    typmcl(1) = 'MAILLE'
-    typmcl(2) = 'GROUP_MA'
-    typmcl(3) = 'NOEUD'
-    typmcl(4) = 'GROUP_NO'
-    call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
-                4, moclm, typmcl, list_excl, nb_excl)
-!
-! - Length
+! - Exclusion of nodes in initial list
 !
     nb_elim = 0
     call jeveuo(list_lect,'E',jlect)

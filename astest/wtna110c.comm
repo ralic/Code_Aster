@@ -229,17 +229,23 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
                              AFFE=_F(  TOUT = 'OUI',    MATER = MATAGO,  )
                           )
 
+
+
 DEP_FIX=AFFE_CHAR_MECA(    MODELE=MODELE,
                            FACE_IMPO=(
                               _F(  GROUP_MA = 'HAUT',      DY = 0.,   ),
                               _F(  GROUP_MA = 'DROITE',    DX = 0.,   ),
                               _F(  GROUP_MA = 'BAS',       DY = 0.,   ),
-                              _F(  GROUP_MA = 'GAUCHE',    DX = 0.,   ),
 
                               _F(  GROUP_MA = 'HAUT',      TEMP = 0.,   ),
                               _F(  GROUP_MA = 'DROITE',    TEMP = 0.,   ),
                               _F(  GROUP_MA = 'BAS',       TEMP = 0.,   ),
-                              _F(  GROUP_MA = 'GAUCHE',    TEMP = 0.,   ),
+
+
+# Testing DNOR + other DDL in FACE_IMPO: do not change this special boundary condition !
+                              _F(  GROUP_MA = 'GAUCHE',    DNOR = 0.,   ),    
+                              _F(  GROUP_MA = 'GAUCHE',    TEMP = 0.,   ),  
+                   
                                 ),
                            DDL_IMPO=(
                              _F(TOUT='OUI',       PRE2= PGAGO0), )
