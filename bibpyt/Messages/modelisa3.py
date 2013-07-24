@@ -75,7 +75,7 @@ cata_msg={
 """),
 
 13: _(u"""
- il n'y a aucun groupe de noeuds ni aucun noeud défini après le mot facteur  %(k1)s
+ Il n'y a aucun groupe de noeuds ni aucun noeud défini après le mot facteur  %(k1)s
 """),
 
 14: _(u"""

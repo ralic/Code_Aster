@@ -73,15 +73,15 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     integer :: ibid,  ier, ndim, jcompt
     integer :: n1, n2, ino, jprnm, nbec
     integer :: nbma, nbcmp, inom
-    real(kind=8) :: coef(3), direct(3)
-    complex(kind=8) :: coefc(3)
+    real(kind=8) :: coef, direct(3)
+    complex(kind=8) :: coefc
     integer :: i_keyword, n_keyword
     character(len=24) :: list_node, list_elem
     integer :: jlino, jlima
     character(len=2) :: typlag
     character(len=4) :: typcoe
     character(len=8) :: nomo, nomg
-    character(len=8) :: nomnoe, ddl(3), k8bid
+    character(len=8) :: nomnoe, ddl, k8bid
     character(len=16) :: keywordfact, keyword
     character(len=19) :: lisrel
     character(len=19) :: connex_inv
@@ -103,17 +103,13 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     call getfac(keywordfact, nfaci)
     if (nfaci .eq. 0) goto 999
 !
-! - Initialization
+! - Initializations
 !
     lisrel = '&&CAFACI.RLLISTE'
-!
     typlag = '12'
-!
-    coefc(1) = (1.0d0,0.0d0)
-    coefc(2) = (1.0d0,0.0d0)
-    coefc(3) = (1.0d0,0.0d0)
-    coef(1)  = 1.0d0
-    ddl(1)   = 'DEPL'
+    coefc = (1.0d0,0.0d0)
+    coef  = 1.0d0
+    ddl   = 'DEPL'
 !
     typcoe = 'REEL'
     if (fonree .eq. 'COMP') call assert(.false.)
@@ -129,12 +125,11 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
-    call dismoi('F', 'NB_NO_MAILLA', ligrmo, 'LIGREL', n1,&
+    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call jelira(ligrmo//'.PRNM', 'LONMAX', n2, k8bid)
-    nbec = n2/n1
     call assert(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+!
     call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
                 k8bid, ier)
 !

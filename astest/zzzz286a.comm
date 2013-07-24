@@ -99,7 +99,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 # 1.1 REFERENCE AVEC DDL_IMPO
 # ---------------------------
 
-CHARG0=AFFE_CHAR_MECA(MODELE=MO,
+CHARG0=AFFE_CHAR_MECA(MODELE=MO, INFO = 2, 
                       FACE_IMPO=_F(GROUP_MA='DBC',
                                    SANS_GROUP_NO=('D','B','C'),
                                    DNOR=10),

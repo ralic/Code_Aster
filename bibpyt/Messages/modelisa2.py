@@ -349,6 +349,7 @@ Les mots-clés admissibles pour définir la seconde liste de noeuds sous le mot-
   %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s
 """),
 
+
 97: _(u"""
   Assemblage de maillages : Présence de noeuds confondus dans la zone à coller GROUP_MA_1.
 """),

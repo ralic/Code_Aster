@@ -1,7 +1,8 @@
-subroutine caliob(fonree, charge)
-    implicit none
-#include "jeveux.h"
+subroutine caliob(char, noma, ligrmo, fonree)
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getvid.h"
 #include "asterc/getvr8.h"
@@ -28,8 +29,10 @@ subroutine caliob(fonree, charge)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    character(len=4) :: fonree
-    character(len=8) :: charge
+!
+    character(len=4), intent(in)  :: fonree
+    character(len=8), intent(in)  :: char, noma
+    character(len=19), intent(in) :: ligrmo
 ! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,277 +56,163 @@ subroutine caliob(fonree, charge)
 !
 ! IN  : FONREE : 'REEL' OU 'FONC'
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
-! ---------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: i, i1, ibid, ier, igr, in, ino
-    integer :: iocc, iret, j, jcmu, jcmuc, jddl, jgr0
-    integer :: jjj, jliste, jnoma, k, n, n1, na, jlist2
-    integer :: nbddl, nbem, nbet, nbgm, nbno, ndim, ndimmo
-    integer :: nent, ng, ngr, ngro, nliai, nno
-    real(kind=8) :: beta
-!-----------------------------------------------------------------------
-    parameter (nbddl=6)
-    integer :: imp
-    complex(kind=8) :: betac
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: n_max_keyword
+    parameter (n_max_keyword=300)
+    integer :: ddlimp(n_max_keyword)
+    real(kind=8) :: valimr(n_max_keyword)
+    complex(kind=8) :: valimc(n_max_keyword)
+    character(len=8) :: valimf(n_max_keyword)
+    character(len=16) :: keywordlist(n_max_keyword)
+!
+    character(len=24) :: list_node, list_elem
+    integer :: jlino
+    integer :: ier, ino
+    integer :: nbno, nbma, ndim, nbec
+    integer :: nliai, numnoe
+    integer :: i_angle, i_keyword, i, i_direct
+    real(kind=8) :: coefr, val_r, direct(3)
+    character(len=8) :: ddl, coeff, val_f
+    complex(kind=8) :: coefc, val_c
     character(len=2) :: typlag
     character(len=4) :: typcoe
-    character(len=8) :: k8bid, motcle, kbeta, mogrou, mod, noma
+    character(len=8) :: k8bid, nomo, nomg
     character(len=8) :: nomnoe
-    character(len=16) :: motfac
+    character(len=16) :: keywordfact, keyword
+    integer :: n_keyword
     character(len=19) :: lisrel
-    character(len=24) :: trav, grouma, noeuma
-    character(len=24) :: valk(3)
-    character(len=19) :: ligrmo
-    real(kind=8) :: direct(3)
-    real(kind=8) :: mat(3, 3)
-    real(kind=8) :: dgrd, zero
-    real(kind=8) :: angl(3), reel
-    character(len=8) :: kddl(nbddl), kfonc
-    character(len=1) :: k1bid
+    real(kind=8) :: matr_rota(3, 3), rdgd
+    real(kind=8) :: zero
+    real(kind=8) :: angl_naut(3)
+    integer :: n_angle
     integer :: iarg
-! ----------------------------------------------------------------------
-    data kddl/'DX','DY','DZ','DRX','DRY','DRZ'/
-! ----------------------------------------------------------------------
+    character(len=24) :: keywordexcl
+    integer :: n_keyexcl
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+    keywordfact = 'LIAISON_OBLIQUE'
+    call getfac(keywordfact, nliai)
+    if (nliai .eq. 0) goto 999
+!
+! - Initializations
+!
     lisrel = '&&CALIOB.RLLISTE'
-    motfac = 'LIAISON_OBLIQUE '
-    typcoe = 'REEL'
-    if (fonree .eq. 'COMP') then
-        typcoe = 'COMP'
-    endif
-    call getfac(motfac, nliai)
-    if (nliai .eq. 0) goto 110
-!
-    dgrd = r8dgrd()
     zero = 0.d0
-!
-    motcle = 'NOEUD   '
-    mogrou = 'GROUP_NO'
     typlag = '12'
-! --- INITIALISATION PROVISOIRE ---
-    betac = (1.0d0,0.0d0)
+    coefc = (1.0d0,0.0d0)
+    coefr = 1.0d0
+    coeff = ' '
+    rdgd = r8dgrd()
 !
+    typcoe = 'REEL'
+    if (fonree .eq. 'COMP') call assert(.false.)
+    nomo = ligrmo(1:8)
 !
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
+! - Create list of excluded keywords for using in char_read_keyw
 !
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    keywordexcl = '&&CALIOB.KEYWORDEXCL'
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 !
-! ---  LIGREL DU MODELE ---
-!
-    ligrmo = mod//'.MODELE'
-!
-! --- MAILLAGE ASSOCIE AU MODELE ---
-!
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
-!
-! --- DIMENSION ASSOCIEE AU MODELE ---
-    call dismoi('F', 'DIM_GEOM', mod, 'MODELE', ndimmo,&
+! - Information about <GRANDEUR>
+! 
+    nomg = 'DEPL_R'
+    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'MODELISA2_6')
+    call assert(nbec.le.10)
 !
-    noeuma = noma//'.NOMNOE'
-    grouma = noma//'.GROUPENO'
+    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
+                k8bid, ier)
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
-    ndim = 0
-    ngro = 0
-    nbgm = 0
-    nbem = 0
-    nbet = 0
-    nent = 0
+    do i = 1, nliai
 !
-! --- DETERMINATION DU NOMBRE TOTAL DE NOEUDS INTERVENANT ---
-! --- DANS TOUTES LES LIAISONS                            ---
+! ----- Read mesh affectation
 !
-    do 10 i = 1, nliai
-        call getvtx(motfac, mogrou, i, iarg, 0,&
-                    k8bid, ngro)
-        call getvtx(motfac, motcle, i, iarg, 0,&
-                    k8bid, nent)
+        list_node = '&&CALIOB.LIST_NODE'
+        list_elem = '&&CALIOB.LIST_ELEM'
+        call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
+                            list_elem, nbma)
+        call jeveuo(list_node,'L',jlino)
 !
-        ngro = -ngro
-        nbgm = max(nbgm,ngro)
-        nent = -nent
-        nbem = max(nbem,nent)
-        nbet = nbet + nent
-10  end do
+! ----- Local orientation
+!        
+        angl_naut(1) = zero
+        angl_naut(2) = zero
+        angl_naut(3) = zero
+        call getvr8(keywordfact, 'ANGL_NAUT', i, iarg, 3,&
+                    angl_naut, n_angle)
+        do i_angle= 1, min(3, abs(n_angle))
+            angl_naut(i_angle) = rdgd*angl_naut(i_angle)
+        enddo
+        call matrot(angl_naut, matr_rota)
 !
-    ndim = max(nbgm,nbem)
-    if (ndim .eq. 0) then
-        call u2mesk('F', 'MODELISA3_13', 1, motfac)
-    endif
-    trav = '&&CALIOB.'//motfac
-    call wkvect(trav, 'V V K24', ndim, jjj)
+! ----- Read affected components and their values
 !
-    do 40 iocc = 1, nliai
-        call getvtx(motfac, mogrou, iocc, iarg, ndim,&
-                    zk24(jjj), ngr)
-        do 20 igr = 1, ngr
-            call jeexin(jexnom(grouma, zk24(jjj+igr-1)), iret)
-            if (iret .eq. 0) then
-                valk(1) = zk24(jjj+igr-1)
-                valk(2) = noma
-                call u2mesk('F', 'MODELISA2_95', 2, valk)
+        call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
+                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
+                            valimf, valimc)
+!
+        do i_keyword = 1, n_keyword
+            keyword = keywordlist(i_keyword)
+!
+! --------- Values
+!
+            val_r = valimr(i_keyword)
+            val_c = valimc(i_keyword)
+            val_f = valimf(i_keyword)
+            call assert(ddlimp(i_keyword).eq.1)
+!
+! --------- Which direction ?
+!
+            if ((keyword.eq.'DX').or.(keyword.eq.'DRX')) then
+                i_direct = 1
+            elseif ((keyword.eq.'DY').or.(keyword.eq.'DRY')) then
+                i_direct = 2
+            elseif ((keyword.eq.'DZ').or.(keyword.eq.'DRZ')) then
+                i_direct = 3
             else
-                call jelira(jexnom(grouma, zk24(jjj+igr-1)), 'LONUTI', n1, k1bid)
+                call assert(.false.)
             endif
-20      continue
-        call getvtx(motfac, motcle, iocc, iarg, ndim,&
-                    zk24(jjj), nno)
-        do 30 ino = 1, nno
-            call jenonu(jexnom(noeuma, zk24(jjj+ino-1)), iret)
-            if (iret .eq. 0) then
-                valk(1) = motcle
-                valk(2) = zk24(jjj+ino-1)
-                valk(3) = noma
-                call u2mesk('F', 'MODELISA2_96', 3, valk)
-            endif
-30      continue
-40  end do
+            direct(1) = matr_rota(i_direct,1)
+            direct(2) = matr_rota(i_direct,2)
+            direct(3) = matr_rota(i_direct,3)
 !
-!     ALLOCATION DE TABLEAUX DE TRAVAIL
+! --------- Which kind of dof ?
 !
-    call wkvect('&&CALIOB.LISTE', 'V V K24', ndim, jliste)
-    call wkvect('&&CALIOB.LIST2', 'V V K8', ndim, jlist2)
-    call wkvect('&&CALIOB.DDL  ', 'V V K8', nbddl, jddl)
-    call wkvect('&&CALIOB.COEMU', 'V V R', nbddl, jcmu)
-    call wkvect('&&CALIOB.COEMUC', 'V V C', nbddl, jcmuc)
-!
-!     MISE A JOUR DE LIGRCH ET STOCKAGE DANS LES CARTES
-!
-    do 100 i = 1, nliai
-        angl(1) = zero
-        angl(2) = zero
-        angl(3) = zero
-        call getvr8(motfac, 'ANGL_NAUT', i, iarg, 3,&
-                    angl, na)
-!
-        do 50 i1 = 1, min(3, abs(na))
-            angl(i1) = angl(i1)*dgrd
-50      continue
-!
-!  --- MATRICE DE PASSAGE AU REPERE GLOBAL ---
-!
-        call matrot(angl, mat)
-!
-        n1 = 0
-        do 90 i1 = 1, nbddl
-!
-            if (fonree .eq. 'REEL') then
-                call getvr8(motfac, kddl(i1), i, iarg, 1,&
-                            reel, imp)
-!
-                if (imp .ne. 0) then
-                    zk8(jddl) = kddl(i1)
-                    zr(jcmu) = 1.0d0
-                    beta = reel
-                endif
+            if ((keyword.eq.'DX').or.(keyword.eq.'DY').or.(keyword.eq.'DZ')) then
+                ddl = 'DEPL'
+            elseif ((keyword.eq.'DRX').or.(keyword.eq.'DRY').or.(keyword.eq.'DRZ')) then
+                ddl = 'ROTA'
             else
-                call getvid(motfac, kddl(i1), i, iarg, 1,&
-                            kfonc, imp)
-!
-                if (imp .ne. 0) then
-                    zk8(jddl) = kddl(i1)
-                    zr(jcmu) = 1.0d0
-                    kbeta = kfonc
-                endif
-            endif
-            if (imp .eq. 0) goto 90
-!
-            call lxcaps(zk8(jddl))
-            call lxcadr(zk8(jddl))
-!
-            if (zk8(jddl) .eq. 'DX' .or. zk8(jddl) .eq. 'DRX') then
-                direct(1) = mat(1,1)
-                direct(2) = mat(1,2)
-                direct(3) = mat(1,3)
-            else if (zk8(jddl).eq.'DY' .or. zk8(jddl).eq.'DRY') then
-                direct(1) = mat(2,1)
-                direct(2) = mat(2,2)
-                direct(3) = mat(2,3)
-            else if (zk8(jddl).eq.'DZ' .or. zk8(jddl).eq.'DRZ') then
-                direct(1) = mat(3,1)
-                direct(2) = mat(3,2)
-                direct(3) = mat(3,3)
+                call assert(.false.)
             endif
 !
-            if (zk8(jddl) .eq. 'DX' .or. zk8(jddl) .eq. 'DY' .or. zk8( jddl) .eq. 'DZ') then
-                zk8(jddl) = 'DEPL'
-                else if (zk8(jddl).eq.'DRX' .or. zk8(jddl).eq.'DRY' .or.&
-            zk8(jddl).eq.'DRZ') then
-                zk8(jddl) = 'ROTA'
-            endif
+! --------- Affect in direction
 !
-! ---   CAS DE GROUP_NO ---
+            do ino = 1, nbno
+                numnoe = zi(jlino+ino-1)
+                call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+                call afrela(coefr, coefc, ddl, nomnoe, ndim,&
+                            direct, 1, val_r, val_c, val_f,&
+                            typcoe, fonree, typlag, 0.d0, lisrel)
+            enddo
+        enddo
 !
-            call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
-                        iarg, 0, zk24(jliste), ng)
-            if (ng .ne. 0) then
-                ng = -ng
-                call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
-                            iarg, ng, zk24(jliste), n)
-                do 70 j = 1, ng
-                    call jeveuo(jexnom(grouma, zk24(jliste-1+j)), 'L', jgr0)
-                    call jelira(jexnom(grouma, zk24(jliste-1+j)), 'LONUTI', n, k1bid)
-                    do 60 k = 1, n
-                        in = zi(jgr0-1+k)
-                        call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
+        call jedetr(list_node)
+        call jedetr(list_elem)
+    enddo
 !
-! --- CREATION ET CALCUL DE LA RELATION      ---
-! --- ET AFFECTATION A LA LISTE DE RELATIONS ---
+! - Final linear relation affectation
 !
-                        call afrela(zr(jcmu), zc(jcmuc), zk8(jddl), nomnoe, ndimmo,&
-                                    direct, 1, beta, betac, kbeta,&
-                                    typcoe, fonree, typlag, 0.d0, lisrel)
-60                  continue
-70              continue
-!
-!
-            else
-!
-! ---   CAS DE NOEUD ---
-!
-                call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
-                            iarg, 0, zk8(jlist2), nbno)
-                if (nbno .ne. 0) then
-                    nbno = -nbno
-                    call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
-                                iarg, nbno, zk8(jlist2), n)
-!
-                    do 80 k = 1, nbno
-!
-! --- CREATION ET CALCUL DE LA RELATION      ---
-! --- ET AFFECTATION A LA LISTE DE RELATIONS ---
-!
-                        call afrela(zr(jcmu), zc(jcmuc), zk8(jddl), zk8(jlist2+k-1), ndimmo,&
-                                    direct, 1, beta, betac, kbeta,&
-                                    typcoe, fonree, typlag, 0.d0, lisrel)
-80                  continue
-!
-                endif
-!
-            endif
-90      continue
-!
-100  end do
-!
-! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE ---
-!
-    call aflrch(lisrel, charge)
-!
-!
-! --- MENAGE
+    call aflrch(lisrel, char)
 !
     call jedetc('V', '&&CALIOB.RLLISTE', 1)
-    call jedetr(trav)
-    call jedetr('&&CALIOB.LISTE')
-    call jedetr('&&CALIOB.DDL  ')
-    call jedetr('&&CALIOB.COEMU')
-    call jedetr('&&CALIOB.COEMUC')
+    call jedetr(keywordexcl)
 !
-110  continue
+999 continue
     call jedema()
 end subroutine

@@ -72,6 +72,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
         n_keyexcl = n_keyexcl + 2
     elseif (keywordfact.eq.'ARETE_IMPO') then
         n_keyexcl = n_keyexcl + 1
+    elseif (keywordfact.eq.'LIAISON_OBLIQUE') then
+        n_keyexcl = n_keyexcl + 1
     else
         call assert(.false.)
     endif
@@ -103,6 +105,12 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
     elseif (keywordfact.eq.'ARETE_IMPO') then
         n_keyexcl = n_keyexcl + 1
         zk16(j_kexcl-1+n_keyexcl) = 'DTAN'
+    elseif (keywordfact.eq.'ARETE_IMPO') then
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'DTAN'
+    elseif (keywordfact.eq.'LIAISON_OBLIQUE') then
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'ANGL_NAUT'
     else
         call assert(.false.)
     endif

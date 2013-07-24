@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caliob(fonree, charge)
-        character(len=4) :: fonree
-        character(len=8) :: charge
+    subroutine caliob(char, noma, ligrmo, fonree)
+        character(len=4), intent(in)  :: fonree
+        character(len=8), intent(in)  :: char, noma
+        character(len=19), intent(in) :: ligrmo
     end subroutine caliob
 end interface

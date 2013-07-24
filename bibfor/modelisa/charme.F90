@@ -300,7 +300,7 @@ subroutine charme(fonree)
 !
     endif
 !
-    if (fonree .eq. 'REEL') then
+    if (fonree .ne. 'COMP') then
 !         ================
 !
 ! --- FACE_IMPO ---
@@ -308,7 +308,7 @@ subroutine charme(fonree)
 
 !
 ! --- LIAISON_OBLIQUE ---
-        call caliob(fonree, char)
+        call caliob(char, noma, ligrmo, fonree)
 !
 ! --- LIAISON_GROUP ---
         call caliag(fonree, char)

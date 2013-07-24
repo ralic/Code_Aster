@@ -83,7 +83,7 @@ subroutine caarei(char, noma, ligrmo, fonree)
     integer :: nbnoeu, jval, jdirec, nbno
     integer :: idim, in, jtang, jnono, narei
     integer :: ibid,  ier, ndim, jcompt
-    integer :: n1, n2, ino, jprnm, nbec
+    integer :: ino, jprnm, nbec
     integer :: nbma, nbcmp, inom
     real(kind=8) :: coef(3), direct(3)
     complex(kind=8) :: coefc(3)
@@ -141,15 +141,13 @@ subroutine caarei(char, noma, ligrmo, fonree)
     nomg='DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
-    call dismoi('F', 'NB_NO_MAILLA', ligrmo, 'LIGREL', n1,&
+    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call jelira(ligrmo//'.PRNM', 'LONMAX', n2, k8bid)
-    nbec = n2/n1
     call assert(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+!
     call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
                 k8bid, ier)
-
     if (ndim .ne. 3) call u2mesi('F', 'CHARGES2_7', 1, ndim)
 !
 ! - Xfem fields

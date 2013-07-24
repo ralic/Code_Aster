@@ -85,26 +85,17 @@ CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MA,
 #                         CHARGEMENTS
 #---------------------------------------------------------------------
 #
-CHA=AFFE_CHAR_MECA(        MODELE=MO,DDL_IMPO=(
-                           _F( GROUP_NO = 'COTEBC',
-                                          DY = 0.),
-                           _F( GROUP_NO = 'COTECD',
-                                          DY = 0.)),LIAISON_OBLIQUE=(
-                    _F( GROUP_NO = 'COTEAD',
-                                          DY = 0.,
-                                    ANGL_NAUT = (0., -48.5, 90.,)),
-                    _F( GROUP_NO = 'COTEAD',
-                                          DRX = 0.,
-                                    ANGL_NAUT = (0., -48.5, 90.,)),
-                    _F( GROUP_NO = 'COTEAB',
-                                          DX = 0.,
-                                    ANGL_NAUT = (0., -48.5, 90.,)),
-                    _F( GROUP_NO = 'COTEAB',
-                                          DRY = 0.,
-                                    ANGL_NAUT = (0., -48.5, 90.,))),
-                        FORCE_COQUE=_F( TOUT = 'OUI',
-                                     PRES = -3000.)
-                      )
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(
+                            _F( GROUP_NO = 'COTEBC',DY = 0.),
+                            _F( GROUP_NO = 'COTECD',DY = 0.)
+                            ),
+                   LIAISON_OBLIQUE=(
+                            _F( GROUP_NO = 'COTEAD',DY = 0.,DRX = 0.,ANGL_NAUT = (0., -48.5, 90.,)),
+                            _F( GROUP_NO = 'COTEAB',DX = 0.,DRY = 0.,ANGL_NAUT = (0., -48.5, 90.,)),
+                                    ),
+                   FORCE_COQUE= _F( TOUT = 'OUI',PRES = -3000.)
+                   )
 
 #
 #---------------------------------------------------------------------
