@@ -113,7 +113,7 @@ MODE_LOCAL__
     EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ESTRAUX  = STRX_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ
                                         BX       EPXX     GAXY     GAXZ     GAT      KY
-                                        KZ        GAX     DXINT)
+                                        KZ        GAX     DXINT    ALPHA    BETA     GAMMA   )
 
     EGAMIMA  = SPMX_R   ELGA__ RIGI    ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
     ENOMIMA  = SPMX_R   ELNO__ IDEN__  ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
@@ -212,7 +212,8 @@ OPTION__
     EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
                               OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
     FORC_NODA           517   IN__   CCAORIE  PCAORIE  ECONTPG  PCONTMR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
-                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXMR
+                                     ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  ESTRAUX  PSTRXMR  CCOMPOR  PCOMPOR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           535   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES

@@ -23,6 +23,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/jeexin.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lcsovn.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfbkb.h"
@@ -34,6 +35,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/pmfits.h"
 #include "asterfort/pmfmcf.h"
 #include "asterfort/pmfpti.h"
+#include "asterfort/porea1.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/u2mesk.h"
@@ -42,6 +44,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
+
     character(len=16) :: option, nomte
 ! --- ------------------------------------------------------------------
 !
@@ -60,7 +63,7 @@ subroutine te0535(option, nomte)
     parameter  (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
     integer :: lx
-    real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk)
+    real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk),rgeom(nk)
     real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
     real(kind=8) :: zero, deux
     integer :: jdefm, jdefp, jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
@@ -72,13 +75,16 @@ subroutine te0535(option, nomte)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he, minus, xls2
     real(kind=8) :: vv(12), fv(12), sv(78), ksg(3),sign, my, mz
-    logical :: vecteu, matric
+    real(kind=8) :: gamma, angp(3), sigma(nd),cars1(6)
+    real(kind=8) :: a, xiy, xiz, ey, ez
+    logical :: vecteu, matric, reactu
     character(len=8) :: mator
+    character(len=24) :: valk(2)
     parameter  (zero=0.0d+0,deux=2.d+0)
 !
 ! --- ------------------------------------------------------------------
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
-    ncomp = 15
+    ncomp = 18
 
     call jevech('PNBSP_I', 'L', inbf)
 !     NOMBRE DE FIBRES TOTAL DE L'ELEMENT
@@ -172,13 +178,44 @@ subroutine te0535(option, nomte)
     call wkvect('&&TE0535.DEFPFIB', 'V V R8', nbfib, jdefp)
     call wkvect('&&TE0535.MODUFIB', 'V V R8', (nbfib*2), jmodfb)
     call wkvect('&&TE0535.SIGFIB', 'V V R8', (nbfib*2), jsigfb)
-! --- ------------------------------------------------------------------
+
+
 ! --- LONGUEUR DE L'ELEMENT
     lx = igeom - 1
     xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
     if (xl .eq. zero) then
         call u2mess('F', 'ELEMENTS_17')
     endif
+!
+    if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
+        valk(1) = zk16(icompo+2)
+        valk(2) = nomte
+        call u2mesk('F', 'ELEMENTS3_40', 2, valk)
+    endif
+    reactu = zk16(icompo+2) .eq. 'GROT_GDEP'
+!
+!   CALCUL DES MATRICES DE CHANGEMENT DE REPERE
+!
+    if (reactu) then
+!
+!        RECUPERATION DU 3EME ANGLE NAUTIQUE AU TEMPS T-
+        gamma = zr(istrxm+18-1)
+!
+!       CALCUL DE PGL,XL ET ANGP
+        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom),&
+                    gamma, vecteu, pgl, xl, angp)
+!
+!        SAUVEGARDE DES ANGLES NAUTIQUES
+        if (vecteu) then
+            zr(istrxp+16-1) = angp(1)
+            zr(istrxp+17-1) = angp(2)
+            zr(istrxp+18-1) = angp(3)
+        endif
+!
+    else
+        call matrot(zr(iorien), pgl)
+    endif
+!
 ! --- CARACTERISTIQUES ELASTIQUES (PAS DE TEMPERATURE POUR L'INSTANT)
 !     ON PREND LE E ET NU DU MATERIAU TORSION (VOIR OP0059)
     call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', isicom)
@@ -190,8 +227,7 @@ subroutine te0535(option, nomte)
 ! --- TORSION A PART
     xjx = zr(isect+7)
     gxjx = g*xjx
-! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERE
-    call matrot(zr(iorien), pgl)
+
 ! --- DEPLACEMENTS DANS LE REPERE LOCAL
     call utpvgl(nno, nc, pgl, zr(ideplm), deplm)
     call utpvgl(nno, nc, pgl, zr(ideplp), deplp)
@@ -314,11 +350,8 @@ subroutine te0535(option, nomte)
 ! --- TORSION A PART POUR LES FORCES INTERNE
     fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
     fl(4) = -fl(10)
-! --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
-    if (matric) then
-! ---    ON SORT LA MATRICE DE RIGIDITE TANGENTE
-        call utpslg(nno, nc, pgl, klv, zr(imatuu))
-    endif
+
+!   STOCKAGE DES EFFORTS GENERALISES ET PASSAGE DES FORCES EN REP LOCAL
     if (vecteu) then
          xls2 = xl/2.d0
          my = (fl(11)-fl(5))/deux
@@ -331,7 +364,6 @@ subroutine te0535(option, nomte)
                 zr(iposcp+i) = zr(iposig+i)
 300          continue
 !           STOCKAGE DES FORCES INTEGREES
-!           attention le point de gauss 2 est proche du noeud 1
             if (ip .eq. 1) then
                 sign = - 1.d0
             else
@@ -345,10 +377,36 @@ subroutine te0535(option, nomte)
             zr(istrxp-1+ncomp*(ip-1)+6) = sign *( mz - fl(6*(ip-1)+2)*xls2)
 310      continue
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
-
         zr(istrxp-1+15)=alicom+dalico
         zr(istrxp-1+ncomp+15)=alicom+dalico
     endif
+!
+!   CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE
+    if (matric .and. reactu) then
+
+        do 15 i = 1, nc
+            sigma(i) = - zr(istrxp+i-1)
+            sigma(i+nc) = zr(istrxp+ncomp+i-1)
+15      continue
+!
+        call r8inir(nk, zero, rgeom, 1)
+        call pmfitg(nbfib, 3, zr(jacf), cars1)
+        a = cars1(1)
+        xiy = cars1(5)
+        xiz = cars1(4)
+        ey = -zr(isect+5)
+        ez = -zr(isect+6)
+        call ptkg00(sigma, a, a, xiz, xiz,&
+                    xiy, xiy, xl, ey, ez,&
+                    rgeom)
+        call lcsovn(nk, klv, rgeom, klv)
+    endif
+!
+    if (matric) then
+! ---    ON SORT LA MATRICE DE RIGIDITE TANGENTE
+        call utpslg(nno, nc, pgl, klv, zr(imatuu))
+    endif
+
 !
 900  continue
 ! --- SORTIE PROPRE: CODE RETOUR ET LIBERATION DES RESSOURCES

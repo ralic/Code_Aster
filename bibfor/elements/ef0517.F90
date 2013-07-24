@@ -133,7 +133,7 @@ subroutine ef0517(nomte)
     else if (nomte.eq.'MECA_POU_D_EM') then
 
         nc=6
-        ncomp=15
+        ncomp=18
         npg = 2
         call jevech('PSTRXRR', 'L', istrxr)
         call jevech('PEFFORR', 'E', icontn)

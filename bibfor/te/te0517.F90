@@ -18,6 +18,7 @@ subroutine te0517(option, nomte)
 #include "asterfort/utpvlg.h"
 #include "asterfort/vdiff.h"
 #include "blas/ddot.h"
+
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -66,15 +67,14 @@ subroutine te0517(option, nomte)
 !
 ! ----------------------------------------------------------------------
     nno = 2
+    ncomp = 18
 
     if (nomte .eq. 'MECA_POU_D_EM') then
         nc = 6
         npg = 2
-        ncomp = 15
     else if (nomte.eq.'MECA_POU_D_TGM') then
         nc = 7
         npg = 3
-        ncomp = 18
     endif
 !
     if (option .eq. 'REFE_FORC_NODA  ') then
@@ -109,11 +109,9 @@ subroutine te0517(option, nomte)
 !
 !
         reactu = .false.
-        if (nomte .eq. 'MECA_POU_D_TGM') then
-            call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
+        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
                         iretc)
-            if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
-        endif
+        if (iretc .eq. 0) reactu = (zk16(icompo+2).eq.'GROT_GDEP')
 !
         call jevech('PVECTUR', 'E', ivectu)
         call r8inir(2*nc, 0.d0, fl, 1)
@@ -133,7 +131,7 @@ subroutine te0517(option, nomte)
         endif
 !
         if (nomte .eq. 'MECA_POU_D_EM') then
-!        
+!
             do kp = 1,npg
                 do k = 1,nc
                     fl(nc*(kp-1)+k) = zr(istrxm-1+ncomp*(kp-1)+k)

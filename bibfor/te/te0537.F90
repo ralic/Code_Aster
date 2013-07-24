@@ -15,6 +15,7 @@ subroutine te0537(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
 !
@@ -70,7 +71,7 @@ subroutine te0537(option, nomte)
     ncarfi = 3
 
 !   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
-    ncomp = 15
+    ncomp = 18
 
     npg = 2
 !

@@ -1,0 +1,121 @@
+# TITRE VALIDATION DE LA REACTUALISATION DE L'ANGLE DE VRILLE DES POUTRES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNL139B',NIV_PUB_WEB='INTERNET'))
+# lecture maillage lineique
+MAPOU=LIRE_MAILLAGE(UNITE=20,)
+
+MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_E',),)
+
+
+POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
+# caracteristiques des sections, orientations et rigidite de torsion
+           POUTRE=_F(GROUP_MA=('POUTRE'),
+                     SECTION='RECTANGLE',
+                     CARA = ('HY','HZ'),
+                     VALE = (0.1,0.2)),
+           ORIENTATION=_F(GROUP_MA=('POUTRE'),
+                          CARA='ANGL_VRIL', VALE=90.0,),
+                  )
+
+# LES MATERIAUX
+
+# DEFINIR ICI TOUTES LES VARIATIONS FONCTION DE LA TEMPERATURE SELON EUROCODE
+NUB=0.25
+RHOB=2400.
+EB=10.E9
+
+BETON=DEFI_MATERIAU(ELAS=_F(E=EB, NU=NUB, RHO=RHOB),
+                   )
+
+
+
+# LES CHAMPS DE MATERIAUX
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
+                    AFFE=_F(GROUP_MA='POUTRE', MATER=(BETON)),
+                         )
+
+RAC2SUR2=sqrt(2.)/2.
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,
+                                                    DRY=0.,
+                                     ),
+                                  _F(GROUP_NO='B',  DY=0.0, ),
+                                  ),
+                                  # blocage de la rotation autour de l'axe de la poutre
+                                  LIAISON_DDL=_F(NOEUD=('N001','N001'),DDL=('DRX','DRZ'),COEF_MULT=(RAC2SUR2,RAC2SUR2),COEF_IMPO=0.0)
+                                  )
+CHARG=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        DDL_IMPO=(
+                                  _F(GROUP_NO='B',  DX= -0.01*RAC2SUR2, DZ=-0.01*RAC2SUR2 ),
+                                  ),)
+PERTU=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        FORCE_NODALE=(
+                                  _F(GROUP_NO='C',  FY=100.0 , ),
+                                  ),)
+FOFO=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0. , 0.,
+                         1. , 1.,
+                         1.1, 1.)
+                         )
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+INTERVALLE=(_F(JUSQU_A=1.1,  NOMBRE=11,),
+           ),
+            );
+
+
+U1=STAT_NON_LINE(MODELE=MOPOU,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=POUCA,
+                 EXCIT=(_F(CHARGE=BLOQUAGE,),
+                        _F(CHARGE=CHARG,FONC_MULT=FOFO),
+                        _F(CHARGE=PERTU),
+                         ),
+                 COMP_INCR=(_F(RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                               ),
+                 INCREMENT=_F(LIST_INST=LINST,
+                              ),
+                 NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
+                                ITER_GLOB_MAXI=100,),
+                 );
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=U1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N006',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.15658191432102,
+                   VALE_REFE=0.15658191432102,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0000000000000001E-05,
+                   ),
+                _F(PARA='ITER_GLOB',
+                   VALE_CALC_I=1,
+                   INST=1.1000000000000001,
+                   RESULTAT=U1,
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
+
+FIN()
