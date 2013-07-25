@@ -48,6 +48,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                          ALPHA = 1.E-6,
                           NU=0.3,),
                   ECRO_LINE=_F(D_SIGM_EPSI=1930.,
                                SY=181.,),);
@@ -405,6 +406,36 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
                         VALE_ABS='OUI',),
                      ),
           )
+
+# Thermo-mechanical validation
+
+CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MODELE=MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=400.,),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                    AFFE_VARC=_F(TOUT='OUI', VALE_REF=20.,NOM_VARC='TEMP',
+                    CHAM_GD        = CHTEMP,),);
+
+
+CONT2=CALCUL(
+            OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+            MODELE=MO,
+            CHAM_MATER=CHMAT2,
+            INCREMENT=_F(LIST_INST=LIST2,
+                         NUME_ORDRE=2),
+            EXCIT=_F(CHARGE=CHARGE),
+            DEPL=U,
+            INCR_DEPL=DU,
+            SIGM=SIGP,
+            VARI=VARIP,
+            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            INFO=2,);
 
 #
 # ==========     FIN DE LA VALIDATION DE : CALCUL/TABLE   ==============

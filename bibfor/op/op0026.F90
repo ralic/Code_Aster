@@ -88,7 +88,7 @@ subroutine op0026()
     character(len=19) :: linst
     character(len=24) :: modele, mate, carele, compor, carcri
     character(len=24) :: codere, ligrmo
-    character(len=24) :: k24bid
+    character(len=24) :: comref, k24bid
     character(len=19) :: nomtab
     character(len=19) :: commoi, complu, depplu
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
@@ -101,6 +101,7 @@ subroutine op0026()
     data lischa     /'&&OP0026.LISCHA'/
     data carele     /'&&OP0026.CARELE'/
     data carcri     /'&&OP0026.CARCRI'/
+    data comref     /'&&OP0026.COMREF'/
     data knoobj     /'MATR_ELEM               ',&
      &                 'SIEF_ELGA               ',&
      &                 'VARI_ELGA               ',&
@@ -146,9 +147,9 @@ subroutine op0026()
     nuord = 0
     modele = ' '
     k19bla = ' '
-    do 2 i = 1, 100
+    do i = 1, 100
         fonact(i) = 0
- 2  end do
+    end do
     call nmdome(modele, mate, carele, lischa, result,&
                 nuord)
     call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ibid,&
@@ -204,6 +205,10 @@ subroutine op0026()
                 complu, codret)
     call nmvcle(modele, mate, carele, lischa, instam,&
                 commoi, codret)
+!
+! --- CREATION DU CHAMP DES VARIABLES DE COMMANDE DE REFERENCE
+!
+    call nmvcre(modele, mate, carele, comref)
 !
 ! --- VERIFICATION DU NOMBRE DE VARIABLES INTERNES
 !
@@ -265,7 +270,7 @@ subroutine op0026()
 !
     if (lrigi) then
         iterat=1
-        call merimo('G', modele, carele, mate, k24bid,&
+        call merimo('G', modele, carele, mate, comref,&
                     compor, carcri, iterat, fonact, k19bla,&
                     valinc, solalg, merigi, vefint, option,&
                     tabret, codere)
@@ -375,7 +380,7 @@ subroutine op0026()
         inuord=0
         iinst=0
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
-        do 5 i = 1, nbpa
+        do i = 1, nbpa
             if (zk24(jtblp+(i-1)*4)(1:9) .eq. 'NOM_OBJET') then
                 inoobj=i
             else if (zk24(jtblp+(i-1)*4)(1:6).eq.'NOM_SD') then
@@ -385,7 +390,7 @@ subroutine op0026()
             else if (zk24(jtblp+(i-1)*4)(1:4).eq.'INST') then
                 iinst=i
             endif
- 5      continue
+        enddo
 !
         call assert(inoobj.ne.0)
         call assert(inomsd.ne.0)
@@ -400,9 +405,9 @@ subroutine op0026()
         call jeveuo(zk24(jtblp+(iinst -1)*4+3), 'L', jlins)
 !
 !       POUR LES NBLIBL(=6) NOM_OBJET DE CALCUL
-        do 10 i = 1, nblibl
+        do i = 1, nblibl
 !         ON PARCOURT LES LIGNES DE LA TABLE POUR:
-            do 20 j = 1, nbli
+            do j = 1, nbli
 !          - IDENTIFIER LES LIGNES OU L'ON TROUVE LE NOM_OBJET DE CALCUL
                 if (zk16(jnobj+j-1) .eq. knoobj(i)(1:16)) then
                     if (zi(jlins+j-1) .eq. 1) then
@@ -419,11 +424,11 @@ subroutine op0026()
                             zk24(jnosd+j-1)=vkk(i)
                             zi(jnuor+j-1)=vi(1)
                             zr(jrins+j-1)=vr(1)
-                            goto 10
+                            goto 15
                         endif
                     endif
                 endif
-20          continue
+             enddo
 !         SI LE NOM_OBJET ET L'INSTANT N'ONT PAS ETE TROUVES, ALORS ON
 !         AJOUTE UNE NOUVELLE LIGNE A LA TABLE:
             vk(1)=knoobj(i)
@@ -431,7 +436,8 @@ subroutine op0026()
             vk(3)=vkk(i)
             call tbajli(table, nbpar, nompar, vi, vr,&
                         cbid, vk, 0)
-10      continue
+15          continue
+        enddo
 !
     endif
 !
