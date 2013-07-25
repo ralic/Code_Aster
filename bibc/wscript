@@ -32,6 +32,12 @@ def configure(self):
     if 'ifort' in self.env.LINK_FC:
         self.env.append_value('LINKFLAGS', ['-nofor_main'])
     self.check_cflags()
+    self.check_bibc_depends()
+
+@Configure.conf
+def check_bibc_depends(self):
+    """check dependencies of bibc"""
+    self.check_cc(uselib_store='SYS', lib='dl')
 
 def build(self):
     # We split Code_Aster byte code:
@@ -55,7 +61,7 @@ def build(self):
     for deps in ('MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH', 'PETSC'):
         if buildenv['HAVE_' + deps]:
             adds.append(deps)
-    uses = adds + ['MATH', 'MPI', 'OPENMP', 'CLIB']
+    uses = adds + ['MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
 
     if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
         build_as_embeded(self, uses, env)

@@ -48,9 +48,15 @@ def check_libm_after_files(self):
     """Avoid warning #10315: specifying -lm before files may supercede the
     Intel(R) math library and affect performance"""
     self.start_msg('Setting libm after files')
-    if '-lm' in self.env.LINKFLAGS_CLIB:
-        self.env.LINKFLAGS_CLIB.remove('-lm')
+    flags = self.env.LINKFLAGS_CLIB
+    if '-lm' in flags:
+        while True:
+            try:
+                flags.remove('-lm')
+            except ValueError:
+                break
         self.end_msg('ok ("-lm" moved from LINKFLAGS_CLIB)')
+        self.env.LINKFLAGS_CLIB = flags
     else:
         self.end_msg('nothing done')
 
