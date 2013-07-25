@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,34 +21,45 @@
 Ce package contient la définition des comportements.
 """
 
-#_debug = True
-_debug = False
-
-import os
+import os.path as osp
 from glob import glob
 
 from cata_comportement import CataComportementError, LoiComportement, KIT, catalc
 
-pkgdir = os.path.dirname(__file__)
-pkg = os.path.basename(pkgdir)
+def _init_cata(debug):
+    """Import de tous les comportements"""
+    from Execution.strfunc import ufmt
+    from cata_vari import DICT_NOM_VARI
+    pkgdir = osp.dirname(__file__)
+    pkg = osp.basename(pkgdir)
+    l_mod = [osp.splitext(osp.basename(modname))[0] \
+                for modname in glob(osp.join(pkgdir, '*.py'))]
+    l_mod = [modname for modname in l_mod \
+                if modname not in ('__init__', 'cata_comportement')]
+    all_vari = set()
+    for modname in l_mod:
+        try:
+            mod = __import__('%s.%s' % (pkg, modname), globals(), locals(), [modname])
+            # liste des lois de comportements définies dans le module
+            for objname in dir(mod):
+                obj = getattr(mod, objname)
+                if type(obj) == LoiComportement:
+                    if debug:
+                        print '<Comportement> Module "%s" - ajout objet "%s"' % (modname, objname)
+                    catalc.add(obj)
+                    all_vari.update(obj.nom_vari)
+        except Exception, msg:
+            err = ufmt(u"Erreur import de '%s' : %s", modname, str(msg))
+            raise CataComportementError(err)
+    if debug:
+        print catalc
+    # vérification que toutes les variables déclarées sont utilisées
+    unused = list(set(DICT_NOM_VARI.keys()).difference(all_vari))
+    if unused:
+        unused.sort()
+        msg = u"Variables déclarées dans cata_vari mais non utilisées: %s" \
+           % ', '.join(unused)
+        raise CataComportementError(msg)
 
-#
-l_mod = [os.path.splitext(os.path.basename(modname))[0] \
-            for modname in glob(os.path.join(pkgdir, '*.py'))]
-l_mod = [modname for modname in l_mod if modname not in ('__init__', 'cata_comportement')]
-
-for modname in l_mod:
-   try:
-      mod = __import__('%s.%s' % (pkg, modname), globals(), locals(), [modname])
-      # liste des lois de comportements définies dans le module
-      for objname in dir(mod):
-         obj = getattr(mod, objname)
-         if type(obj) == LoiComportement:
-            if _debug:
-               print '<Comportement> Module "%s" - ajout objet "%s"' % (modname, objname)
-            catalc.add(obj)
-   except Exception, msg:
-      raise CataComportementError, 'Erreur import de "%s" : %s' % (modname, str(msg))
-
-if _debug:
-   print catalc
+_init_cata(debug=False)
+del _init_cata

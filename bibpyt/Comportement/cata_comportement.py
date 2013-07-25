@@ -63,8 +63,9 @@ Interfaces Fortran/Python :
 import os
 
 from Noyau.N_types import force_tuple
-from Execution.strfunc import convert
+from Noyau.N_utils import Singleton
 
+from Execution.strfunc import convert, ufmt
 from cata_vari import DICT_NOM_VARI
 
 __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
@@ -94,7 +95,8 @@ def check_type(typ, value, accept_None=False):
       if val is None and accept_None:
          pass
       elif type(val) not in l_typ:
-         raise CataComportementError, "%r n'est pas d'un type autorisé : %r" % (val, l_typ)
+         msg = ufmt(u"%r n'est pas d'un type autorisé : %r", val, l_typ)
+         raise CataComportementError(msg)
 
 def union(args):
    """Union de N séquences."""
@@ -184,7 +186,7 @@ class Base(object):
       return template % self.dict_info()
 
    def __repr__(self):
-      # par défaut
+      """Représentation par défaut"""
       return self.long_repr()
 
 
@@ -243,21 +245,20 @@ class LoiComportement(Base):
 
    def check_vari(self):
       """Vérifie la cohérence de la définition des variables internes"""
-      #from warnings import warn
       if self._nb_vari is not None and self._nom_vari is not None \
          and self._nb_vari != len(self._nom_vari):
          print self
-         raise CataComportementError("Nombre de variables internes = %d, "
-            "incohérent avec la liste des variables internes %s" \
-            % (self._nb_vari, self._nom_vari))
+         msg = ufmt(u"Nombre de variables internes = %d, "
+                    u"incohérent avec la liste des variables internes %s",
+                     self._nb_vari, self._nom_vari)
+         raise CataComportementError(msg)
       if self._nom_vari:
-          err = [nvi for nvi in self._nom_vari if DICT_NOM_VARI.get(nvi) is None]
+          err = set(self._nom_vari).difference(DICT_NOM_VARI.keys())
           if len(err) > 0:
-              msg = u"Comportement '%s', nom de variables internes non autorisés : %s" \
-                % (self.nom, ', '.join(err))
+              strerr = ', '.join(err)
+              msg = ufmt(u"Comportement '%s', nom de variables internes non "
+                         u"autorisés : %s", self.nom, strerr)
               raise CataComportementError(msg)
-             # warn(convert(msg), RuntimeWarning, stacklevel=4)
-
 
 class KIT(Base):
    """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
@@ -265,7 +266,7 @@ class KIT(Base):
    def __init__(self, nom, *list_comport):
       """Initialisations"""
       if not type(nom) in (str, unicode):
-         raise CataComportementError, "'KIT' : argument 1 (nom) de type invalide"
+         raise CataComportementError(u"'KIT' : argument 1 (nom) de type invalide")
       self.nom          = nom
       self.list_comport = [comport.copy() for comport in list_comport]
       self.list_nom     = [comport.nom for comport in self.list_comport]
@@ -295,9 +296,10 @@ class KIT_META(KIT):
    def __init__(self, nom, *list_comport):
       """Initialisations"""
       if len(list_comport) != 2:
-         raise CataComportementError, "KIT_META : il faut 2 comportements"
+         raise CataComportementError(u"KIT_META : il faut 2 comportements")
       elif not list_comport[0].nom.startswith('META_'):
-         raise CataComportementError, "KIT_META : le premier doit etre un comportement META_xx"
+         raise CataComportementError(u"KIT_META : le premier doit être un "
+               "comportement META_xx")
       KIT.__init__(self, nom, *list_comport)
 
       self.init_nb_vari()
@@ -331,7 +333,7 @@ class KIT_META(KIT):
    def get_nb_vari(self):
       return self._nb_vari or 0
 
-   nb_vari = property(get_nb_vari, "nb_viru")
+   nb_vari = property(get_nb_vari, "nb_vari")
 
    def get_nom_vari(self):
       return self._nom_vari
@@ -339,7 +341,7 @@ class KIT_META(KIT):
    nom_vari = property(get_nom_vari, "nom_vari")
 
 
-class CataLoiComportement(object):
+class CataLoiComportement(Singleton):
    """Catalogue de loi de comportement.
    Il s'agit juste d'un dictionnaire contenant les objets de type LoiComportement
    et quelques méthodes d'interrogation"""
@@ -361,14 +363,15 @@ class CataLoiComportement(object):
       """Ajoute une loi de comportement au catalogue"""
       loi = comport.nom
       if self._dico.get(loi) is not None:
-         raise CataComportementError, 'Comportement déjà défini : %s' % loi
+         msg = ufmt(u"Comportement déjà défini : %s", loi)
+         raise CataComportementError(msg)
       self._dico[loi] = comport
 
    def get(self, loi):
       """Retourne l'objet LoiComportement dont le nom est 'loi'"""
       comport = self._dico.get(loi.strip())
       if comport is None:
-         raise CataComportementError, 'Comportement inexistant : %s' % loi
+         raise CataComportementError(ufmt(u"Comportement inexistant : %s", loi))
       return comport
 
    def create(self, *list_kit):
@@ -414,7 +417,7 @@ class CataLoiComportement(object):
       attr = attr.lower()
       comport = self.get(loi)
       if not attr in __properties__:
-         raise CataComportementError, 'Propriete invalide : %s' % attr
+         raise CataComportementError(ufmt(u"Propriete invalide : %s", attr))
       # retourner 1 si (valeur est dans comport.attr), 0 sinon.
       return int(valeur.strip() in getattr(comport, attr))
 
