@@ -211,6 +211,11 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              EVOL_THER     =SIMP(statut='o',typ=(evol_ther)),       # evol_ther de type "coque" (TEMP_MIL/TEMP_INF/TEMP_SUP)
              MODELE        =SIMP(statut='o',typ=modele_sdaster),    # modele mecanique contenant les coques multicouche
              CARA_ELEM     =SIMP(statut='o',typ=cara_elem),         # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
+
+             TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+
            ),
          ),
 )  ;

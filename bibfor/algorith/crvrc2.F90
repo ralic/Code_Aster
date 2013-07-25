@@ -33,6 +33,7 @@ subroutine crvrc2()
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/exlima.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -49,7 +50,7 @@ subroutine crvrc2()
     real(kind=8) :: vinst
     character(len=8) :: kbid, resu, modele, model2, carele, paout, lpain(10)
     character(len=16) :: type, oper
-    character(len=19) :: ligrmo, chout, resu1, chtemp
+    character(len=19) :: ligrel, chout, resu1, chtemp
     character(len=24) :: chcara(18), lchin(10)
     logical :: exicar
     integer :: iarg
@@ -91,9 +92,10 @@ subroutine crvrc2()
         call rscrsd('G', resu, 'EVOL_THER', nbinst)
     endif
 !
-    ligrmo = modele//'.MODELE'
     paout = 'PTEMPCR'
     call mecara(carele, exicar, chcara)
+!
+    call exlima('PREP_VRC2', 1, 'G', modele, ligrel)
 !
     lpain(1) = 'PNBSP_I'
     lchin(1) = chcara(1) (1:8)//'.CANBSP'
@@ -112,8 +114,8 @@ subroutine crvrc2()
 !
     call rsexch(' ', resu, 'TEMP', iordr, chout,&
                 iret)
-    call cesvar(carele, ' ', ligrmo, chout)
-    call calcul('S', 'PREP_VRC', ligrmo, nbin, lchin,&
+    call cesvar(carele, ' ', ligrel, chout)
+    call calcul('S', 'PREP_VRC', ligrel, nbin, lchin,&
                 lpain, 1, chout, paout, 'G',&
                 'OUI')
     call detrsd('CHAM_ELEM_S', chout)

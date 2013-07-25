@@ -118,8 +118,12 @@ LATEMPB=CREA_RESU(
 
 
 TEMPERB=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
-    PREP_VRC2= _F(  MODELE=LEMOD, CARA_ELEM=LACAR, EVOL_THER = LATEMPB, ),)
-
+    PREP_VRC2= _F(  MODELE=LEMOD, 
+                    GROUP_MA=(
+                              'GXXXXXX_GEOB',
+                              'GXXXXXX_GEOA',
+                             ), 
+                    CARA_ELEM=LACAR, EVOL_THER = LATEMPB, ),)
 #
 # -------------------------------------------------
 # AFFECTATION DES MATERIAUX
