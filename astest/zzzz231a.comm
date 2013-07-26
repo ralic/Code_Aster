@@ -46,7 +46,9 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        MODELISATION='3D',),);
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MO,
-                      DDL_IMPO=_F(GROUP_MA='Base',
+                      DDL_IMPO=_F(GROUP_MA=('Base','Dimpo'),
+# Validation de SANS_* dans DDL_IMPO (issue20374), ne pas supprimer !
+                                  SANS_GROUP_MA='Dimpo',
                                   LIAISON='ENCASTRE',),);
 
 ENCAST2=AFFE_CHAR_MECA(MODELE=MO,

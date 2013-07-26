@@ -105,6 +105,7 @@ subroutine caarei(char, noma, ligrmo, fonree)
     real(kind=8) :: val_r_dtan
     character(len=8) :: val_f_dtan
     complex(kind=8) :: val_c_dtan
+    character(len=16) :: val_t_dtan
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
 !
@@ -179,7 +180,7 @@ subroutine caarei(char, noma, ligrmo, fonree)
 ! ----- Detection of DTAN and others
 !
         call char_read_val(keywordfact, i, 'DTAN', fonree, val_nb_dtan, &
-                           val_r_dtan, val_f_dtan, val_c_dtan)
+                           val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
 !

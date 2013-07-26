@@ -137,10 +137,6 @@ cata_msg = {
         - le noeud porte-t-il le ddl que l'on cherche à contraindre ?
 """),
 
-31 : _(u"""
- nombre de mots-clés supérieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d
-"""),
-
 34 : _(u"""
  erreur dans les données le paramètre  %(k1)s n existe pas dans la table  %(k2)s
 """),

@@ -120,8 +120,8 @@ subroutine charth(fonree)
 !
 ! --- TEMP_IMPO ---
 !
-    motfac = 'TEMP_IMPO       '
-    call caddli(oper, motfac, fonree, char)
+    motfac = 'TEMP_IMPO'
+    call caddli(motfac, char, noma, ligrmo, fonree)
 !
 ! --- LIAISON_DDL ---
 !

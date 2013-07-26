@@ -66,8 +66,8 @@ subroutine charac(fonree)
 !
 ! --- PRES_IMPO ---
 !
-    motfac = 'PRES_IMPO       '
-    call caddli(oper, motfac, fonr2, char)
+    motfac = 'PRES_IMPO'
+    call caddli(motfac, char, noma, ligrmo, fonr2)
 !
 ! --- LIAISON_UNIF ---
 !

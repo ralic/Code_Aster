@@ -67,7 +67,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordread(300)
-    character(len=16) :: k16_dummy(300), keyword
+    character(len=16) :: k16_dummy(300), keyword, val_t_dummy
     integer :: n, i_keyword, i_keyexcl
     logical :: l_excl
     integer :: j_kexcl
@@ -112,7 +112,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
     do i_keyword = 1, n_keyword
         keyword = keywordlist(i_keyword)
         call char_read_val(keywordfact, iocc, keyword, val_type, val_nb(i_keyword), &
-                           val_r(i_keyword), val_f(i_keyword), val_c(i_keyword))
+                           val_r(i_keyword), val_f(i_keyword), val_c(i_keyword), val_t_dummy)
         call assert(val_nb(i_keyword).eq.1)
     end do
 !

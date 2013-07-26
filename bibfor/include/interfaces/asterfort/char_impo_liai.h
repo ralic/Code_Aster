@@ -16,11 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
-        character(len=16), intent(in) :: keywordfact
-        character(len=8), intent(in)  :: char
-        character(len=8), intent(in)  :: noma
-        character(len=19), intent(in) :: ligrmo
-        character(len=4), intent(in)  :: fonree
-    end subroutine caddli
+    subroutine char_impo_liai(nomg, type_liai, cmp_nb, cmp_name, cmp_index,  &
+                              vale_real,vale_cplx, vale_fonc)
+        character(len=8), intent(in) :: nomg
+        character(len=16), intent(in) :: type_liai
+        character(len=8), intent(out) :: cmp_name(6)
+        integer, intent(out) :: cmp_index(6)
+        integer, intent(out) :: cmp_nb
+        real(kind=8), intent(out) :: vale_real
+        character(len=8), intent(out) :: vale_fonc
+        complex(kind=8), intent(out):: vale_cplx
+    end subroutine char_impo_liai
 end interface

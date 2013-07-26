@@ -248,8 +248,8 @@ subroutine charme(fonree)
 !
 ! --- DDL_IMPO ---
 !
-    motfac = 'DDL_IMPO        '
-    call caddli(oper, motfac, fonree, char)
+    motfac = 'DDL_IMPO'
+    call caddli(motfac, char, noma, ligrmo, fonree)
 !
 ! --- LIAISON_DDL ---
 !

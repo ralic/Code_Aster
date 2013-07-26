@@ -1,8 +1,9 @@
 subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
-                         val_r, val_f, val_c)
+                         val_r, val_f, val_c, val_t)
 !
     implicit none
 !
+#include "asterc/getexm.h"
 #include "asterc/getvid.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvc8.h"
@@ -33,6 +34,7 @@ subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
     real(kind=8), intent(out) :: val_r
     character(len=8), intent(out) :: val_f
     complex(kind=8), intent(out) :: val_c
+    character(len=16), intent(out) :: val_t
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,12 +46,13 @@ subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
 !
 ! In  keywordfact   : factor keyword to read
 ! In  iocc          : factor keyword index in AFFE_CHAR_MECA
-! In  val_type      : type of values (REEL, COMP or FONC) in keyword
+! In  val_type      : type of values (REEL, COMP, FONC or TEXT) in keyword
 ! In  keyword       : keyword to read
 ! Out val_nb        : number of values in keyword
 ! Out val_r         : values (if real) in keyword
 ! Out val_f         : names of function (if function) in keyword
 ! Out val_c         : values (if complex) in keyword
+! Out val_t         : values (if text) in keyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +62,14 @@ subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
 ! --------------------------------------------------------------------------------------------------
 !
     keyword = keyword_z
+    val_r   = 0.d0
+    val_c   = (0.d0,0.d0)
+    val_f   = ' '
+    val_t   = ' '
+    val_nb  = 0
+!
+    if (getexm(keywordfact,keyword) .eq. 0) goto 99
+!
     if (val_type .eq. 'REEL') then
         call getvr8(keywordfact, keyword, iocc, iarg, 1,&
                     val_r, val_nb)
@@ -68,8 +79,13 @@ subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
     elseif (val_type .eq. 'COMP') then
         call getvc8(keywordfact, keyword, iocc, iarg, 1,&
                     val_c, val_nb)
+    elseif (val_type .eq. 'TEXT') then
+        call getvtx(keywordfact, keyword, iocc, iarg, 1,&
+                    val_t, val_nb)
     else
         call assert(.false.)
     endif
+!
+ 99 continue
 !
 end subroutine

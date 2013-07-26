@@ -1,7 +1,8 @@
-subroutine caddli(nomcmd, motfac, fonree, char)
-    implicit none
-#include "jeveux.h"
+subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
 #include "asterc/getvc8.h"
@@ -13,6 +14,12 @@ subroutine caddli(nomcmd, motfac, fonree, char)
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_impo_liai.h"
+#include "asterfort/char_read_val.h"
+#include "asterfort/char_read_keyw.h"
+#include "asterfort/char_read_mesh.h"
+#include "asterfort/char_xfem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
@@ -31,10 +38,13 @@ subroutine caddli(nomcmd, motfac, fonree, char)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
-    character(len=4) :: fonree
-    character(len=8) :: char
-    character(len=16) :: nomcmd, motfac
-! ---------------------------------------------------------------------
+!
+    character(len=16), intent(in) :: keywordfact
+    character(len=8), intent(in)  :: char
+    character(len=8), intent(in)  :: noma
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: fonree
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,320 +74,230 @@ subroutine caddli(nomcmd, motfac, fonree, char)
 !                REEL OU FONC OU COMP
 !      CHAR    : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !
-!-----------------------------------------------------------------------
-!---------------- DECLARATION DES VARIABLES LOCALES  -------------------
+
+    integer :: n_max_keyword
+    parameter (n_max_keyword=300)
+    integer :: ddlimp(n_max_keyword)
+    real(kind=8) :: valimr(n_max_keyword)
+    complex(kind=8) :: valimc(n_max_keyword)
+    character(len=8) :: valimf(n_max_keyword)
+    character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: nmocl
-    parameter (nmocl=300)
-    integer :: vali(2)
-    integer :: ddlimp(nmocl), nddli, n, nmcl, i, j, nddla, ibid
-    integer :: ier, nbec, jnoma, nbnoeu, jprnm, jval
-    integer :: jdirec, jdimen, nbno, ialino, k, ino
+    integer :: i, ino, icmp, ier, numnoe, i_keyword
+    integer :: jdirec, jdimen, jval, jprnm, jnom, jcompt
+    integer :: n_keyword, nbcmp, nbec, nbnoeu, nddli
+!
+    character(len=8) :: nomo, k8bid, nomg
+    character(len=19) :: lisrel
+    character(len=24) :: nomnoe
+    complex(kind=8):: coef_cplx
+    real(kind=8):: coef_real
+    character(len=2) :: type_lagr
+    character(len=19) :: connex_inv
+    character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
     logical :: lxfem
-    real(kind=8) :: valimr(nmocl)
-    complex(kind=8) :: valimc(nmocl)
+    character(len=24) :: list_node, list_elem
+    integer :: jlino
+    integer :: nbno, nbma
+    character(len=24) :: keywordexcl
+    integer :: n_keyexcl
+    logical :: l_liai, l_ocmp
+    integer :: val_nb_liai
+    real(kind=8) :: val_r_liai
+    character(len=8) :: val_f_liai
+    character(len=16) :: val_t_liai
+    complex(kind=8):: val_c_liai
+    character(len=8) :: liai_cmp_name(6)
+    integer :: liai_cmp_index(6)
+    integer :: liai_cmp_nb
+    real(kind=8) :: liai_vale_real
+    character(len=8) :: liai_vale_fonc
+    complex(kind=8):: liai_vale_cplx
 !
-    character(len=1) :: k1bid
-    character(len=3) :: tymocl(nmocl)
-    character(len=8) :: mod, noma, k8bid
-    character(len=8) :: nomn, valimf(nmocl)
-    character(len=16) :: motcle(nmocl), motcl2(5), tymoc2(5)
-    character(len=19) :: cnxinv
-    character(len=19) :: ligrmo, lisrel
-    character(len=19) :: noxfem, ch1, ch2, ch3
-    character(len=24) :: nomnoe
-!
-!--- Variables pour le mot-clef "LIAISON = ENCASTRE"
-    integer :: ndlia, liaimp, inom, nbcmp, jcompt
-    integer :: icmp1, icmp2, icmp3, icmp4, icmp5, icmp6
-    character(len=8) :: nomg
-    character(len=72) :: vallia
-    integer :: iarg
-    data         vallia  /'XXXXXXXX'/
-!-------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-    motcl2(1) = 'NOEUD'
-    tymoc2(1) = 'NOEUD'
-    motcl2(2) = 'GROUP_NO'
-    tymoc2(2) = 'GROUP_NO'
-    motcl2(3) = 'MAILLE'
-    tymoc2(3) = 'MAILLE'
-    motcl2(4) = 'GROUP_MA'
-    tymoc2(4) = 'GROUP_MA'
-    motcl2(5) = 'TOUT'
-    tymoc2(5) = 'TOUT'
-!
-    lisrel = '&&CADDLI.RLLISTE'
-    call getfac(motfac, nddli)
+    call getfac(keywordfact, nddli)
     if (nddli .eq. 0) goto 999
 !
-! --- MODELE ASSOCIE A LA CHARGE ---
-    call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
-                mod, ier)
-    ligrmo = mod(1:8)//'.MODELE'
+! - Initializations
 !
-    if (nomcmd(11:14) .eq. 'MECA') then
-        nomg='DEPL_R'
-    else if (nomcmd(11:14).eq.'THER') then
-        nomg='TEMP_R'
-    else if (nomcmd(11:14).eq.'ACOU') then
-        nomg='PRES_C'
+    lisrel = '&&CADDLI.RLLISTE'
+    type_lagr = '12'
+    coef_cplx = (1.d0,0.d0)
+    coef_real = 1.d0
+    nomo  = ligrmo(1:8)
+!
+! - Create list of excluded keywords for using in char_read_keyw
+!
+    keywordexcl = '&&CADDLI.KEYWORDEXCL'
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+!
+! - Information about <GRANDEUR>
+! 
+    if (keywordfact.eq. 'DDL_IMPO') then
+        nomg = 'DEPL_R'
+    else if (keywordfact.eq. 'TEMP_IMPO') then
+        nomg = 'TEMP_R'
+    else if (keywordfact.eq. 'PRES_IMPO') then
+        nomg = 'PRES_C'
     else
         call assert(.false.)
     endif
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     call assert(nbec.le.10)
-!
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
-!
-! --- MAILLAGE ASSOCIE AU MODELE ---
-!
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
-    nomnoe = noma//'.NOMNOE'
-    call jelira(nomnoe, 'NOMMAX', nbnoeu, k1bid)
-!
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
-!    --------------------------------------------------------
-!    MODELE X-FEM
-!    --------------------------------------------------------
-    call jeexin(mod//'.XFEM_CONT', ier)
-    if (ier .eq. 0) then
-        lxfem = .false.
-        noxfem = ' '
-        ch1 = ' '
-        ch2 = ' '
-        ch3 = ' '
-    else
-        lxfem = .true.
-!       CONNECTIVITE INVERSE
-        cnxinv='&&CADDLI.CNXINV'
-        call cncinv(noma, ibid, 0, 'V', cnxinv)
+    call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
 !
-        noxfem = '&&CADDLI.NOXFEM'
-        call cnocns(mod//'.NOXFEM', 'V', noxfem)
-        call jeveuo(noxfem//'.CNSL', 'L', jnoxfl)
-        call jeveuo(noxfem//'.CNSV', 'L', jnoxfv)
-!       STATUT DU NOEUD ET LEVEL SETS
-        ch1 = '&&CADDLI.CHS1'
-        ch2 = '&&CADDLI.CHS2'
-        ch3 = '&&CADDLI.CHS3'
-        call celces(mod//'.STNO', 'V', ch1)
-        call celces(mod//'.LNNO', 'V', ch2)
-        call celces(mod//'.LTNO', 'V', ch3)
+! - Xfem fields
+! 
+    call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
+                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
+    if (lxfem) then
+        call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
+        call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
     endif
 !
-! --------------------------------------------------------------
-! 3   BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR DDL IMPOSE
-! --------------------------------------------------------------
+! - Loop on factor keyword
 !
-    do 100 i = 1, nddli
+    do i = 1, nddli
 !
-! ---------------------------------------------------
-! 1.  RECUPERATION DES MOTS-CLES DDL SOUS XXX_IMPO
-!     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
-!     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
-! ---------------------------------------------------
-        call getmjm(motfac, i, 0, motcle, tymocl,&
-                    n)
-        nmcl = abs(n)
-        if (nmcl .gt. nmocl) then
-            vali (1) = nmocl
-            vali (2) = nmcl
-            call u2mesg('F', 'MODELISA8_31', 0, ' ', 2,&
-                        vali, 0, 0.d0)
-        endif
-        call getmjm(motfac, i, nmcl, motcle, tymocl,&
-                    n)
+! ----- Read mesh affectation
 !
-! --- RECUPERATION DU MOT-CLEF "LIAISON"
+        list_node = '&&CADDLI.LIST_NODE'
+        list_elem = '&&CADDLI.LIST_ELEM'
+        call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
+                            list_elem, nbma)
+        call jeveuo(list_node,'L',jlino)
 !
+! ----- Detection of LIAISON
 !
-        nddla = 1
-        do 20 j = 1, nmcl
-            if (motcle(j) .ne. 'TOUT' .and. motcle(j) .ne. 'GROUP_NO' .and. motcle(j) .ne.&
-                'NOEUD' .and. motcle(j) .ne. 'GROUP_MA' .and. motcle(j) .ne. 'MAILLE' .and.&
-                motcle(j) .ne. 'EVOL_THER' .and. motcle(j) .ne. 'DDL' .and. motcle(j) .ne.&
-                'LIAISON') then
-                motcle(nddla) = motcle(j)
-                nddla = nddla + 1
-            endif
+        call char_read_val(keywordfact, i, 'LIAISON', 'TEXT' , val_nb_liai, &
+                           val_r_liai, val_f_liai, val_c_liai, val_t_liai)
+        l_liai = val_nb_liai.gt.0
 !
-20      continue
-        nddla = nddla - 1
+! ----- Loop on nodes: LIAISON case
 !
-        ndlia = 0
-        do 30 j = 1, nmcl
-            if (motcle(j) .eq. 'LIAISON') then
-                ndlia = 1
-                nddla = 6
-                motcle(1) = 'DX'
-                motcle(2) = 'DY'
-                motcle(3) = 'DZ'
-                motcle(4) = 'DRX'
-                motcle(5) = 'DRY'
-                motcle(6) = 'DRZ'
+        if (l_liai) then
 !
-                icmp1 = indik8(zk8(inom),motcle(1) (1:8),1,nbcmp)
-                icmp2 = indik8(zk8(inom),motcle(2) (1:8),1,nbcmp)
-                icmp3 = indik8(zk8(inom),motcle(3) (1:8),1,nbcmp)
-                icmp4 = indik8(zk8(inom),motcle(4) (1:8),1,nbcmp)
-                icmp5 = indik8(zk8(inom),motcle(5) (1:8),1,nbcmp)
-                icmp6 = indik8(zk8(inom),motcle(6) (1:8),1,nbcmp)
-            endif
-30      continue
+! -------- Overload preparation
 !
-!
-! ---------------------------------------------------
-! 2   ALLOCATION DE TABLEAUX DE TRAVAIL
-! ---------------------------------------------------
-!   OBJETS INTERMEDIAIRES PERMETTANT D'APPLIQUER LA REGLE DE SURCHARGE
-!
-!        -  VECTEUR (K8) CONTENANT LES NOMS DES NOEUDS
-!        -  TABLEAU DES VALEURS DES DDLS DES NOEUDS BLOQUES
-!                         DIM NBNOEU * NBCOMP
-!        -  VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR ASSOCIE AUX
-!                         DDLS IMPOSES PAR NOEUD
-!
-        if (nddla .ne. 0) then
+            n_keyword = 6
+            call wkvect('&&CADDLI.ICOMPT', 'V V I', n_keyword, jcompt)
             if (fonree .eq. 'REEL') then
-                call wkvect('&&CADDLI.VALDDL', 'V V R', nddla*nbnoeu, jval)
+                call wkvect('&&CADDLI.VALDDL', 'V V R', n_keyword*nbnoeu, jval)
             else if (fonree.eq.'COMP') then
-                call wkvect('&&CADDLI.VALDDL', 'V V C', nddla*nbnoeu, jval)
+                call wkvect('&&CADDLI.VALDDL', 'V V C', n_keyword*nbnoeu, jval)
             else if (fonree.eq.'FONC') then
-                call wkvect('&&CADDLI.VALDDL', 'V V K8', nddla*nbnoeu, jval)
+                call wkvect('&&CADDLI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
             else
                 call assert(.false.)
             endif
             call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
             call wkvect('&&CADDLI.DIMENSION', 'V V I', nbnoeu, jdimen)
-        endif
-!
-!        3.1- RECUPERATION DE LA LISTE DES NOEUDS :
-!        ----------------------------------------------
-        call reliem(' ', noma, 'NU_NOEUD', motfac, i,&
-                    5, motcl2, tymoc2, '&&CADDLI.NUNOTMP', nbno)
-        if (nbno .eq. 0) goto 98
-        call jeveuo('&&CADDLI.NUNOTMP', 'L', ialino)
-!
-!
-!
-!        3.2- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
-!        ---------------------------------------------------
-        if (fonree .eq. 'REEL') then
-            do 40 j = 1, nddla
-                call getvr8(motfac, motcle(j), i, iarg, 1,&
-                            valimr(j), ddlimp(j))
-40          continue
-!
-        else if (fonree.eq.'COMP') then
-            do 50 j = 1, nddla
-                call getvc8(motfac, motcle(j), i, iarg, 1,&
-                            valimc(j), ddlimp(j))
-50          continue
-!
-!
-        else if (fonree.eq.'FONC') then
-            do 60 j = 1, nddla
-                call getvid(motfac, motcle(j), i, iarg, 1,&
-                            valimf(j), ddlimp(j))
-60          continue
-        endif
-!
-!
-!
-!        3.3- AFFECTATION DES RELATIONS LINEAIRES :
-!        ----------------------------------------------
-        call wkvect('&&CADDLI.ICOMPT', 'V V I', max(nddla, 1), jcompt)
-        do 90 k = 1, nbno
-            ino = zi(ialino-1+k)
-            call jenuno(jexnum(nomnoe, ino), nomn)
-!---  GESTION DU MOT-CLEF "LIAISON"
-            do 80 j = 1, ndlia
-                vallia='XXXXXXXX'
-                call getvtx(motfac, 'LIAISON', i, iarg, 1,&
-                            vallia, liaimp)
-                if (vallia .eq. 'ENCASTRE') then
-                    if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp1)) then
-                        valimr(1) = 0.d0
-                        valimc(1) = (0.d0,0.d0)
-                        valimf(1) = '&FOZERO'
-                        ddlimp(1) = 1
+            call assert(val_nb_liai.eq.1)
+            call char_impo_liai(nomg, val_t_liai, liai_cmp_nb, liai_cmp_name, liai_cmp_index, &
+                                liai_vale_real, liai_vale_cplx, liai_vale_fonc)
+            do ino = 1, nbno
+                numnoe = zi(jlino+ino-1)
+                call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+                n_keyword = 0
+                ddlimp = 1
+                do icmp = 1, liai_cmp_nb
+                    if (exisdg(zi(jprnm-1+(numnoe-1)*nbec+1),liai_cmp_index(icmp))) then
+                        n_keyword = n_keyword + 1
+                        valimr(n_keyword) = liai_vale_real
+                        valimc(n_keyword) = liai_vale_cplx
+                        valimf(n_keyword) = liai_vale_fonc
+                        keywordlist(n_keyword) = liai_cmp_name(icmp)
                     endif
-                    if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp2)) then
-                        valimr(2) = 0.d0
-                        valimc(2) = (0.d0,0.d0)
-                        valimf(2) = '&FOZERO'
-                        ddlimp(2) = 1
-                    endif
-                    if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp3)) then
-                        valimr(3) = 0.d0
-                        valimc(3) = (0.d0,0.d0)
-                        valimf(3) = '&FOZERO'
-                        ddlimp(3) = 1
-                    endif
-                    if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp4)) then
-                        valimr(4) = 0.d0
-                        valimc(4) = (0.d0,0.d0)
-                        valimf(4) = '&FOZERO'
-                        ddlimp(4) = 1
-                    endif
-                    if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp5)) then
-                        valimr(5) = 0.d0
-                        valimc(5) = (0.d0,0.d0)
-                        valimf(5) = '&FOZERO'
-                        ddlimp(5) = 1
-                    endif
-                    if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp6)) then
-                        valimr(6) = 0.d0
-                        valimc(6) = (0.d0,0.d0)
-                        valimf(6) = '&FOZERO'
-                        ddlimp(6) = 1
-                    endif
-                endif
-80          continue
+                enddo
+                call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+(numnoe-1)*nbec+1),n_keyword,&
+                            fonree, nomnoe, numnoe, ddlimp, valimr,&
+                            valimf, valimc, keywordlist, zr(jdirec+3*(numnoe-1)), 0,&
+                            nomo, lisrel, zk8(jnom), nbcmp, zi(jcompt),&
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
+            enddo
 !
-            call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+ (ino- 1)*nbec+1), nddla,&
-                        fonree, nomn, ino, ddlimp, valimr,&
-                        valimf, valimc, motcle, zr(jdirec+3*(ino-1)), 0,&
-                        mod, lisrel, zk8( inom), nbcmp, zi(jcompt),&
-                        lxfem, jnoxfl, jnoxfv, ch1, ch2,&
-                        ch3, cnxinv)
-90      continue
-!
-!       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
-        if (vallia .ne. 'ENCASTRE') then
-            do 91,k=1,nddla
-            if (zi(jcompt-1+k) .eq. 0) call u2mesk('F', 'MODELISA2_45', 1, motcle(k))
-91          continue
-        endif
-!
-98      continue
         call jedetr('&&CADDLI.ICOMPT')
+        call jedetr('&&CADDLI.VALDDL')
+        call jedetr('&&CADDLI.DIRECT')
+        call jedetr('&&CADDLI.DIMENSION')
+        call jedetr('&&CADDLI.NUNOTMP')
+
+        endif
 !
+! ----- Read affected components and their values
+!
+        call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
+                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
+                            valimf, valimc)
+        l_ocmp = n_keyword.gt.0
+!
+! ----- Loop on nodes: other cases
+!
+        if (l_ocmp) then 
+!
+! -------- Overload preparation
+!
+            call wkvect('&&CADDLI.ICOMPT', 'V V I', n_keyword, jcompt)
+            if (fonree .eq. 'REEL') then
+                call wkvect('&&CADDLI.VALDDL', 'V V R', n_keyword*nbnoeu, jval)
+            else if (fonree.eq.'COMP') then
+                call wkvect('&&CADDLI.VALDDL', 'V V C', n_keyword*nbnoeu, jval)
+            else if (fonree.eq.'FONC') then
+                call wkvect('&&CADDLI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
+            else
+                call assert(.false.)
+            endif
+            call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
+            call wkvect('&&CADDLI.DIMENSION', 'V V I', nbnoeu, jdimen)
+            do ino = 1, nbno
+                numnoe = zi(jlino+ino-1)
+                call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+                call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+(numnoe-1)*nbec+1),n_keyword,&
+                            fonree, nomnoe, numnoe, ddlimp, valimr,&
+                            valimf, valimc, keywordlist, zr(jdirec+3*(numnoe-1)), 0,&
+                            nomo, lisrel, zk8(jnom), nbcmp, zi(jcompt),&
+                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
+            enddo
+            do i_keyword=1,n_keyword
+                if (zi(jcompt-1+i_keyword) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1,&
+                                                               keywordlist(i_keyword))
+            enddo
+        endif
+!
+        call jedetr('&&CADDLI.ICOMPT')
         call jedetr('&&CADDLI.VALDDL')
         call jedetr('&&CADDLI.DIRECT')
         call jedetr('&&CADDLI.DIMENSION')
         call jedetr('&&CADDLI.NUNOTMP')
 !
-100  end do
+        call jedetr(list_node)
+        call jedetr(list_elem)
+!
+    end do
+!
+! - Final linear relation affectation
 !
     call aflrch(lisrel, char)
 !
+    call jedetr(keywordexcl)
     if (lxfem) then
-        call jedetr(cnxinv)
-        call detrsd('CHAM_NO_S', noxfem)
-        call detrsd('CHAM_ELEM_S', ch1)
-        call detrsd('CHAM_ELEM_S', ch2)
-        call detrsd('CHAM_ELEM_S', ch3)
+        call jedetr(connex_inv)
+        call detrsd('CHAM_NO_S', ch_xfem_node)
+        call detrsd('CHAM_ELEM_S', ch_xfem_stat)
+        call detrsd('CHAM_ELEM_S', ch_xfem_lnno)
+        call detrsd('CHAM_ELEM_S', ch_xfem_ltno)
     endif
 !
-999  continue
+999 continue
     call jedema()
 end subroutine

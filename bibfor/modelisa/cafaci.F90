@@ -71,7 +71,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     integer :: nbnoeu, jval, jdirec, nbno
     integer :: idim, in, jnorm, jtang, jnono, nfaci
     integer :: ibid,  ier, ndim, jcompt
-    integer :: n1, n2, ino, jprnm, nbec
+    integer :: ino, jprnm, nbec
     integer :: nbma, nbcmp, inom
     real(kind=8) :: coef, direct(3)
     complex(kind=8) :: coefc
@@ -93,6 +93,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     real(kind=8) :: val_r_dnor, val_r_dtan
     character(len=8) :: val_f_dnor, val_f_dtan
     complex(kind=8):: val_c_dnor, val_c_dtan
+    character(len=16) :: val_t_dnor, val_t_dtan
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
 !
@@ -162,10 +163,10 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 ! ----- Detection of DNOR, DTAN and others
 !
         call char_read_val(keywordfact, i, 'DNOR', fonree, val_nb_dnor, &
-                           val_r_dnor, val_f_dnor, val_c_dnor)
+                           val_r_dnor, val_f_dnor, val_c_dnor, val_t_dnor)
         l_dnor = val_nb_dnor.gt.0
         call char_read_val(keywordfact, i, 'DTAN', fonree, val_nb_dtan, &
-                           val_r_dtan, val_f_dtan, val_c_dtan)
+                           val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
 !
