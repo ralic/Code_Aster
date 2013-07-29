@@ -173,6 +173,10 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
         list_elem = '&&CADDLI.LIST_ELEM'
         call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
                             list_elem, nbma)
+!
+! ----- No nodes (empty groups)
+!
+        if (nbno.eq.0) goto 60
         call jeveuo(list_node,'L',jlino)
 !
 ! ----- Detection of LIAISON
@@ -273,6 +277,8 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
                                                                keywordlist(i_keyword))
             enddo
         endif
+!
+60      continue
 !
         call jedetr('&&CADDLI.ICOMPT')
         call jedetr('&&CADDLI.VALDDL')

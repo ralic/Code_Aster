@@ -164,7 +164,7 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
 ! - Exclusion of nodes in initial list
 !
     nb_elim = 0
-    call jeveuo(list_lect,'E',jlect)
+    if (nb_lect.ne.0) call jeveuo(list_lect,'E',jlect)
     if (nb_excl.ne.0) then
         call jeveuo(list_excl,'L',jexcl)
         do i_excl = 1, nb_excl
@@ -183,7 +183,7 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
 ! - Final list of nodes
 !
     i_node = 0
-    if (nb_node.ne.0) then
+    if ((nb_node.ne.0).and.(nb_lect.ne.0)) then
         call wkvect(list_node,'V V I',nb_node,jnode)
         do i_lect = 1, nb_lect
             num_lect = zi(jlect-1+i_lect)
