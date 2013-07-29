@@ -51,8 +51,9 @@ subroutine dglrda()
     integer :: nnap, nprec, nliner, ibid, ii, ilit, nlit, jlm, jmelk
     integer :: jmelr, jmelc, lonobj, ifon0, longf, ifon1, lonuti
     real(kind=8) :: eb, nub, ft, fc, gamma
-    integer :: niv, impr, ifm, ibid1
-    real(kind=8) :: qp1, qp2, cn(2, 3), cm(2, 3), prex, prey, nmin0
+    integer :: niv, ifm
+    real(kind=8) :: qp1, qp2, prex, prey, nmin0
+    real(kind=8), dimension(2, 3) :: cn, cm
     real(kind=8) :: ea(3*na), omx(3*na), omy(3*na), sy(3*na), nua(3*na)
     real(kind=8) :: rx(3*na), ry(3*na), rlr(na), liner(3*na), bn11, bn12, bn22
     real(kind=8) :: bn33
@@ -66,8 +67,7 @@ subroutine dglrda()
     character(len=8) :: mater, fon(4), k8b, nomres(5)
     character(len=8) :: fsncx, fsncy, fscxd, fscyd, fscxd2, fscyd2
     character(len=8) :: fincx, fincy, ficxd, ficyd, ficxd2, ficyd2
-    character(len=16) :: type, nomcmd, fichie
-    logical :: ulexis
+    character(len=16) :: type, nomcmd
     integer :: iarg, impf, icst, icis
 !
     call jemarq()
@@ -132,8 +132,9 @@ subroutine dglrda()
     ft = valres(1)
     fc = valres(2)
 !
-    nomres(1) = 'PERT_FLUA'
-    nomres(2) = 'PERT_RETR'
+! PERT_FLUA et PERT_RETR
+    nomres(1) = 'PERT_FLU'
+    nomres(2) = 'PERT_RET'
     call rcvale(mater, 'BPEL_BETON      ', 0, k8b, r8b,&
                 2, nomres, valres, icodr2, 0)
     if (icodr2(1) .eq. 0) then
@@ -182,89 +183,89 @@ subroutine dglrda()
                 cm(2, 3), ibid)
 !
     if (nnap .gt. 0) then
-        do 10, ilit = 1,nnap
-        call getvid('NAPPE', 'MATER', ilit, iarg, 1,&
-                    mater, ibid)
-        nomres(1) = 'E'
-        call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
-                    1, nomres, valres, icodr2, 1)
-        ea(ilit) = valres(1)
-        nomres(1) = 'SY'
-        call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
-                    1, nomres, valres, icodr2, 1)
-        sy(ilit) = valres(1)
-        call getvr8('NAPPE', 'OMX', ilit, iarg, 1,&
-                    omx(ilit), ibid)
-        call getvr8('NAPPE', 'OMY', ilit, iarg, 1,&
-                    omy(ilit), ibid)
-        call getvr8('NAPPE', 'RX', ilit, iarg, 1,&
-                    rx(ilit), ibid)
-        call getvr8('NAPPE', 'RY', ilit, iarg, 1,&
-                    ry(ilit), ibid)
-        nua(ilit) = 0.0d0
-        liner(ilit) = 0.0d0
-10      continue
+        do ilit = 1, nnap
+            call getvid('NAPPE', 'MATER', ilit, iarg, 1,&
+                        mater, ibid)
+            nomres(1) = 'E'
+            call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+                        1, nomres, valres, icodr2, 1)
+            ea(ilit) = valres(1)
+            nomres(1) = 'SY'
+            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+                        1, nomres, valres, icodr2, 1)
+            sy(ilit) = valres(1)
+            call getvr8('NAPPE', 'OMX', ilit, iarg, 1,&
+                        omx(ilit), ibid)
+            call getvr8('NAPPE', 'OMY', ilit, iarg, 1,&
+                        omy(ilit), ibid)
+            call getvr8('NAPPE', 'RX', ilit, iarg, 1,&
+                        rx(ilit), ibid)
+            call getvr8('NAPPE', 'RY', ilit, iarg, 1,&
+                        ry(ilit), ibid)
+            nua(ilit) = 0.0d0
+            liner(ilit) = 0.0d0
+        end do
         ilit = nnap
     endif
 !
     if (nprec .gt. 0) then
-        do 20, ii = 1,nprec
-        ilit = ilit + 1
-        call getvid('CABLE_PREC', 'MATER', ii, iarg, 1,&
-                    mater, ibid)
-        nomres(1) = 'E'
-        call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
-                    1, nomres, valres, icodr2, 1)
-        ea(ilit) = valres(1)
-        nomres(1) = 'SY'
-        call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
-                    1, nomres, valres, icodr2, 1)
-        sy(ilit) = valres(1)
-        call getvr8('CABLE_PREC', 'OMX', ii, iarg, 1,&
-                    omx(ilit), ibid)
-        call getvr8('CABLE_PREC', 'OMY', ii, iarg, 1,&
-                    omy(ilit), ibid)
-        call getvr8('CABLE_PREC', 'RX', ii, iarg, 1,&
-                    rx(ilit), ibid)
-        call getvr8('CABLE_PREC', 'RY', ii, iarg, 1,&
-                    ry(ilit), ibid)
-        call getvr8('CABLE_PREC', 'PREX', ii, iarg, 1,&
-                    prex, ibid)
-        call getvr8('CABLE_PREC', 'PREY', ii, iarg, 1,&
-                    prey, ibid)
-        nua(ilit) = 0.0d0
-        liner(ilit) = 0.0d0
-20      continue
+        do ii = 1, nprec
+            ilit = ilit + 1
+            call getvid('CABLE_PREC', 'MATER', ii, iarg, 1,&
+                        mater, ibid)
+            nomres(1) = 'E'
+            call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+                        1, nomres, valres, icodr2, 1)
+            ea(ilit) = valres(1)
+            nomres(1) = 'SY'
+            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+                        1, nomres, valres, icodr2, 1)
+            sy(ilit) = valres(1)
+            call getvr8('CABLE_PREC', 'OMX', ii, iarg, 1,&
+                        omx(ilit), ibid)
+            call getvr8('CABLE_PREC', 'OMY', ii, iarg, 1,&
+                        omy(ilit), ibid)
+            call getvr8('CABLE_PREC', 'RX', ii, iarg, 1,&
+                        rx(ilit), ibid)
+            call getvr8('CABLE_PREC', 'RY', ii, iarg, 1,&
+                        ry(ilit), ibid)
+            call getvr8('CABLE_PREC', 'PREX', ii, iarg, 1,&
+                        prex, ibid)
+            call getvr8('CABLE_PREC', 'PREY', ii, iarg, 1,&
+                        prey, ibid)
+            nua(ilit) = 0.0d0
+            liner(ilit) = 0.0d0
+        end do
     else
         prex = 0.0d0
         prey = 0.0d0
     endif
 !
     if (nliner .gt. 0) then
-        do 30, ii = 1,nliner
-        ilit = ilit + 1
-        call getvid('LINER', 'MATER', ii, iarg, 1,&
-                    mater, ibid)
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
-                    2, nomres, valres, icodr2, 1)
-        ea(ilit) = valres(1)
-        nua(ilit) = valres(2)
-        nomres(1) = 'SY'
-        call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
-                    1, nomres, valres, icodr2, 1)
-        sy(ilit) = valres(1)
-        call getvr8('LINER', 'OML', ii, iarg, 1,&
-                    oml(ii), ibid)
-        call getvr8('LINER', 'RLR', ii, iarg, 1,&
-                    rlr(ii), ibid)
-        rx(ilit) = rlr(ii)
-        ry(ilit) = rlr(ii)
-        omx(ilit) = oml(ii)
-        omy(ilit) = oml(ii)
-        liner(ilit) = 1.0d0
-30      continue
+        do ii = 1, nliner
+            ilit = ilit + 1
+            call getvid('LINER', 'MATER', ii, iarg, 1,&
+                        mater, ibid)
+            nomres(1) = 'E'
+            nomres(2) = 'NU'
+            call rcvale(mater, 'ELAS            ', 0, k8b, r8b,&
+                        2, nomres, valres, icodr2, 1)
+            ea(ilit) = valres(1)
+            nua(ilit) = valres(2)
+            nomres(1) = 'SY'
+            call rcvale(mater, 'ECRO_LINE       ', 0, k8b, r8b,&
+                        1, nomres, valres, icodr2, 1)
+            sy(ilit) = valres(1)
+            call getvr8('LINER', 'OML', ii, iarg, 1,&
+                        oml(ii), ibid)
+            call getvr8('LINER', 'RLR', ii, iarg, 1,&
+                        rlr(ii), ibid)
+            rx(ilit) = rlr(ii)
+            ry(ilit) = rlr(ii)
+            omx(ilit) = oml(ii)
+            omy(ilit) = oml(ii)
+            liner(ilit) = 1.d0
+        end do
     endif
 !
 ! CALCUL DES COEFFICIENTS DE LA MATRICE ELASTIQUE
@@ -277,24 +278,24 @@ subroutine dglrda()
                 bm12, bm22, bc11, bc22)
 !
 ! E ET NU EQUIVALENTS EN FLEXION
-    nueq = 2.0d0*bm12/(bm11+bm22)
+    nueq = 2.d0*bm12/(bm11+bm22)
     eeq = (bm11+bm22)*6.d0/hh**3 *(1.d0-nueq**2)
-    par1 = eeq*hh / (1.0d0 - nueq*nueq)
-    par2 = par1*hh*hh/12.0d0
+    par1 = eeq*hh / (1.d0 - nueq*nueq)
+    par2 = par1*hh*hh/12.d0
     bm11 = par2
     bm12 = par2*nueq
     bm22 = par2
-    bm33 = par2*(1.0d0 - nueq)/2.0d0
+    bm33 = par2*(1.d0 - nueq)/2.d0
 !
 ! MOMENT DE FISSURATION
-    mf1x=((bn11*ft/eb-prex)*bm11+(prex*hh/2-ft/eb*bc11)*bc11)&
-     &         / (bn11*hh/2-bc11)
-    mf1y=((bn22*ft/eb-prey)*bm22+(prey*hh/2-ft/eb*bc22)*bc22)&
-     &         / (bn22*hh/2-bc22)
-    mf2x=((bn11*ft/eb-prex)*bm11+(-prex*hh/2-ft/eb*bc11)*bc11)&
-     &         / (-bn11*hh/2-bc11)
-    mf2y=((bn22*ft/eb-prey)*bm22+(-prey*hh/2-ft/eb*bc22)*bc22)&
-     &         / (-bn22*hh/2-bc22)
+    mf1x=((bn11*ft/eb-prex)*bm11+(prex*hh/2.d0-ft/eb*bc11)*bc11)&
+     &         / (bn11*hh/2.d0-bc11)
+    mf1y=((bn22*ft/eb-prey)*bm22+(prey*hh/2.d0-ft/eb*bc22)*bc22)&
+     &         / (bn22*hh/2.d0-bc22)
+    mf2x=((bn11*ft/eb-prex)*bm11+(-prex*hh/2.d0-ft/eb*bc11)*bc11)&
+     &         / (-bn11*hh/2.d0-bc11)
+    mf2y=((bn22*ft/eb-prey)*bm22+(-prey*hh/2.d0-ft/eb*bc22)*bc22)&
+     &         / (-bn22*hh/2.d0-bc22)
 !
 ! MOYENNE DANS CHAQUE DIRECTION
     mf1 = (mf1x+mf1y)/2.d0
@@ -312,12 +313,11 @@ subroutine dglrda()
         call getvr8('BETON', 'EAT', 1, iarg, 1,&
                     eat, icis)
         if (icis .ne. 0) then
-            bt1 = 5.d0/6.d0*hh/2.d0*(eb/(1+nub)+eat*omt)
-            bt2 = 5.d0/6.d0*hh/2.d0*(eb/(1+nub)+eat*omt)
+            bt1 = 5.d0/6.d0*hh/2.d0*(eb/(1.d0+nub)+eat*omt)
         else
-            bt1 = -1.d0
-            bt2 = -1.d0
+            bt1 = 5.d0/6.d0*hh/2.d0*eb/(1.d0+nub)
         endif
+        bt2 = bt1
     endif
 !
 !-----REMPLISSAGE DU MATERIAU
@@ -442,7 +442,7 @@ subroutine dglrda()
     zr(jmelr+27 ) = 1.0d0
 !---------IMPRESSION-------------
     if (niv .gt. 0) then
-        write (ifm,1000)
+        write (ifm,100)
         write (ifm,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DAMAGE :'
         write (ifm,*) 'BN11, BN12, BN22, BN33 =   :',bn11,' ',bn12,' ',&
      &                bn22,' ',bn33
@@ -555,7 +555,7 @@ subroutine dglrda()
 !
 !---------IMPRESSION-------------
         if (niv .gt. 0) then
-            write (ifm,1000)
+            write (ifm,100)
             write (ifm,*) 'FONCTIONS SEUIL POUR GLRC:'
             call foimpr(fsncx, 3, ifm, 0, k8b)
             call foimpr(fsncy, 3, ifm, 0, k8b)
@@ -586,39 +586,40 @@ subroutine dglrda()
     endif
 !
 !------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
-    do 35, ii = 1,2
-    if (icst .eq. 0) then
-        k8b = 'X '
-        call fointe('F', fon(2*(ii-1)+1), 1, 'X ', 0.0d0,&
-                    mp1n0, ibid)
-        call fointe('F', fon(2*ii ), 1, 'X ', 0.0d0,&
-                    mp2n0, ibid)
-        call mmfonc(fon(2*(ii-1)+1), aux, maxmp(ii))
-        call mmfonc(fon(2*ii), minmp(ii), aux)
-        if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) .or. (maxmp(ii) -minmp(ii) .le. 0.d0)) then
-            call u2mess('F', 'ELEMENTS_87')
+    do ii = 1, 2
+        if (icst .eq. 0) then
+            k8b = 'X '
+            call fointe('F', fon(2*(ii-1)+1), 1, 'X ', 0.0d0,&
+                        mp1n0, ibid)
+            call fointe('F', fon(2*ii ), 1, 'X ', 0.0d0,&
+                        mp2n0, ibid)
+            call mmfonc(fon(2*(ii-1)+1), aux, maxmp(ii))
+            call mmfonc(fon(2*ii), minmp(ii), aux)
+            if ((mp1n0 .lt. 0.d0) .or. (mp2n0 .gt. 0.d0) &
+                  .or. (maxmp(ii) -minmp(ii) .le. 0.d0)) then
+                call u2mess('F', 'ELEMENTS_87')
+            endif
+        else
+            maxmp(ii)=mp1cst(ii)
+            minmp(ii)=mp2cst(ii)
         endif
-    else
-        maxmp(ii)=mp1cst(ii)
-        minmp(ii)=mp2cst(ii)
-    endif
-    35 end do
+    end do
 !
     normm=0.5d0*max(maxmp(1)-minmp(1),maxmp(2)-minmp(2))
 !
-    do 40, ii = 1,2
-    if (icst .eq. 0) then
-        nmax0 = 1.0d20
-        nmin0 = -1.0d20
-        call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm, nmin0,&
-                    nmin(ii))
-        call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm, nmax0,&
-                    nmax(ii))
-    else
-        nmax(ii)=0.d0
-        nmin(ii)=0.d0
-    endif
-    40 end do
+    do ii = 1, 2
+        if (icst .eq. 0) then
+            nmax0 = 1.0d20
+            nmin0 = -1.0d20
+            call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm,&
+                        nmin0, nmin(ii))
+            call interf(mater, nomres(2*(ii-1)+1), nomres(2*ii), normm,&
+                         nmax0,nmax(ii))
+        else
+            nmax(ii)=0.d0
+            nmin(ii)=0.d0
+        endif
+    end do
 !
     normn=0.5d0*max(abs(nmax(1)-nmin(1)),abs(nmax(2)-nmin(2)))
 !
@@ -644,14 +645,14 @@ subroutine dglrda()
     zr(jmelr+32 ) = bm22
     zk8(jmelk+33) = 'BM33    '
     zr(jmelr+33 ) = bm33
-    zk8(jmelk+34) = 'MPCST    '
+    zk8(jmelk+34) = 'MPCST   '
     if (icst .ne. 0) then
         zr(jmelr+34 ) = 0.d0
     else
         zr(jmelr+34 ) = 1.d0
     endif
 !
-    1000 format (/,80 ('-'))
+    100 format (/,80 ('-'))
 !
     call jedema()
 !

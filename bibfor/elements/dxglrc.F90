@@ -272,18 +272,18 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     call r8inir(32, 0.d0, efform, 1)
 !     PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 !
-    do 10,ino = 1,nno
-    um(1,ino) = ul(1,ino)
-    um(2,ino) = ul(2,ino)
-    uf(1,ino) = ul(3,ino)
-    uf(2,ino) = ul(5,ino)
-    uf(3,ino) = -ul(4,ino)
-    dum(1,ino) = dul(1,ino)
-    dum(2,ino) = dul(2,ino)
-    duf(1,ino) = dul(3,ino)
-    duf(2,ino) = dul(5,ino)
-    duf(3,ino) = -dul(4,ino)
-    10 end do
+    do ino = 1, nno
+        um(1,ino) = ul(1,ino)
+        um(2,ino) = ul(2,ino)
+        uf(1,ino) = ul(3,ino)
+        uf(2,ino) = ul(5,ino)
+        uf(3,ino) = -ul(4,ino)
+        dum(1,ino) = dul(1,ino)
+        dum(2,ino) = dul(2,ino)
+        duf(1,ino) = dul(3,ino)
+        duf(2,ino) = dul(5,ino)
+        duf(3,ino) = -dul(4,ino)
+    end do
 !
 !     INTEGRATION SUR LA SURFACE DE L'ELEMENT:
 !
@@ -299,9 +299,9 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
                     iret)
 ! SIGMAM : EFFORTS DANS REPERE UTILISATEUR
 !
-        do 20 i = 1, nbcon*npg
+        do i = 1, nbcon*npg
             sigmam(i)=zr(icontm-1+i)
-20      end do
+        end do
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERE
 !
@@ -325,350 +325,335 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !
 !     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !
-    do 130,ipg = 1,npg
-    call r8inir(24, 0.d0, ecrp, 1)
-    call r8inir(3, 0.d0, n, 1)
-    call r8inir(3, 0.d0, m, 1)
-    call r8inir(2, 0.d0, q, 1)
-    call r8inir(9, 0.d0, df, 1)
-    call r8inir(9, 0.d0, dm, 1)
-    call r8inir(9, 0.d0, dmf, 1)
-    call r8inir(4, 0.d0, dc, 1)
+    do ipg = 1, npg
+        call r8inir(24, 0.d0, ecrp, 1)
+        call r8inir(3, 0.d0, n, 1)
+        call r8inir(3, 0.d0, m, 1)
+        call r8inir(2, 0.d0, q, 1)
+        call r8inir(9, 0.d0, df, 1)
+        call r8inir(9, 0.d0, dm, 1)
+        call r8inir(9, 0.d0, dmf, 1)
+        call r8inir(4, 0.d0, dc, 1)
 !
-    qsi = zr(icoopg-1+ndim*(ipg-1)+1)
-    eta = zr(icoopg-1+ndim*(ipg-1)+2)
+        qsi = zr(icoopg-1+ndim*(ipg-1)+1)
+        eta = zr(icoopg-1+ndim*(ipg-1)+2)
 !
-    icpg = (ipg-1)*nbcon
-    icpv = (ipg-1)*nbvar
+        icpg = (ipg-1)*nbcon
+        icpv = (ipg-1)*nbvar
 !
-    if (nomte(1:8) .eq. 'MEDKTG3 ') then
-        call dxtbm(carat3(9), bm)
-        call dktbf(qsi, eta, carat3, bf)
-        poids = zr(ipoids+ipg-1)*carat3(7)
-    else if (nomte(1:8).eq.'MEDKQG4 ') then
-        call jquad4(xyzl, qsi, eta, jacob)
-        call dxqbm(qsi, eta, jacob(2), bm)
-        call dkqbf(qsi, eta, jacob(2), caraq4, bf)
-        poids = zr(ipoids+ipg-1)*jacob(1)
-    else if (nomte(1:8).eq.'MEQ4GG4 ') then
-        call jquad4(xyzl, qsi, eta, jacob)
-        call dxqbm(qsi, eta, jacob(2), bm)
-        call dsqbfb(qsi, eta, jacob(2), bf)
-        call q4gbc(qsi, eta, jacob(2), caraq4, bc)
-        poids = zr(ipoids+ipg-1)*jacob(1)
-    else if (nomte(1:8).eq.'MET3GG3 ') then
-        call dxtbm(carat3(9), bm)
-        call dstbfb(carat3(9), bf)
-        call t3gbc(xyzl, qsi, eta, bc)
-        poids = carat3(8)
-    endif
+        if (nomte(1:8) .eq. 'MEDKTG3 ') then
+            call dxtbm(carat3(9), bm)
+            call dktbf(qsi, eta, carat3, bf)
+            poids = zr(ipoids+ipg-1)*carat3(7)
+        else if (nomte(1:8).eq.'MEDKQG4 ') then
+            call jquad4(xyzl, qsi, eta, jacob)
+            call dxqbm(qsi, eta, jacob(2), bm)
+            call dkqbf(qsi, eta, jacob(2), caraq4, bf)
+            poids = zr(ipoids+ipg-1)*jacob(1)
+        else if (nomte(1:8).eq.'MEQ4GG4 ') then
+            call jquad4(xyzl, qsi, eta, jacob)
+            call dxqbm(qsi, eta, jacob(2), bm)
+            call dsqbfb(qsi, eta, jacob(2), bf)
+            call q4gbc(qsi, eta, jacob(2), caraq4, bc)
+            poids = zr(ipoids+ipg-1)*jacob(1)
+        else if (nomte(1:8).eq.'MET3GG3 ') then
+            call dxtbm(carat3(9), bm)
+            call dstbfb(carat3(9), bf)
+            call t3gbc(xyzl, qsi, eta, bc)
+            poids = carat3(8)
+        endif
 !
-    call pmrvec('ZERO', 3, 2*nno, bm, um,&
-                eps)
-    call pmrvec('ZERO', 3, 2*nno, bm, dum,&
-                deps)
-    call pmrvec('ZERO', 3, 3*nno, bf, uf,&
-                khi)
-    call pmrvec('ZERO', 3, 3*nno, bf, duf,&
-                dkhi)
-    if (q4gg) then
-        call pmrvec('ZERO', 2, 3*nno, bc, uf,&
-                    gam)
-        call pmrvec('ZERO', 2, 3*nno, bc, duf,&
-                    dgam)
-    endif
+        call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
+        call pmrvec('ZERO', 3, 2*nno, bm, dum, deps)
+        call pmrvec('ZERO', 3, 3*nno, bf, uf, khi)
+        call pmrvec('ZERO', 3, 3*nno, bf, duf, dkhi)
+        if (q4gg) then
+            call pmrvec('ZERO', 2, 3*nno, bc, uf, gam)
+            call pmrvec('ZERO', 2, 3*nno, bc, duf, dgam)
+        endif
 !
-    call jevech('PCACOQU', 'L', icara)
+        call jevech('PCACOQU', 'L', icara)
 !
 !     EPAISSEUR TOTALE :
-    ep = zr(icara)
+        ep = zr(icara)
 !     EULER_ALMANSI - TERMES QUADRATIQUES
-    if (leul) then
-        call r8inir(6, 0.d0, bmq, 1)
+        if (leul) then
+            call r8inir(6, 0.d0, bmq, 1)
 !
-        do 145,i = 1,2
-        do 146,k = 1,nno
-        do 142,j = 1,2
-        bmq(i,j) = bmq(i,j) + bm(i,2*(k-1)+i)*dum(j,k)
-142      continue
-        bmq(i,3) = bmq(i,3) + bm(i,2*(k-1)+i)*duf(1,k)
-146      continue
-145      continue
+            do i = 1, 2
+                do k = 1, nno
+                    do j = 1, 2
+                        bmq(i,j) = bmq(i,j) + bm(i,2*(k-1)+i)*dum(j,k)
+                    end do
+                    bmq(i,3) = bmq(i,3) + bm(i,2*(k-1)+i)*duf(1,k)
+                end do
+            end do
 !
-        do 150, k = 1,3
-        do 155, i = 1,2
-        deps(i) = deps(i) - 0.5d0*bmq(i,k)*bmq(i,k)
-155      continue
-        deps(3) = deps(3) - bmq(1,k)*bmq(2,k)
-150      continue
-    endif
+            do k = 1, 3
+                do i = 1, 2
+                    deps(i) = deps(i) - 0.5d0*bmq(i,k)*bmq(i,k)
+                end do
+                deps(3) = deps(3) - bmq(1,k)*bmq(2,k)
+            end do
+        endif
 !
-    do 60, i = 1,50
-    matr(i) = 0.0d0
-60  continue
+        do i = 1, 50
+            matr(i) = 0.0d0
+        end do
 !
-    if (.not. lrgm) then
-        do 70, i = 1,3
-        epst(i) = eps(i) + deps(i)
-        epst(3 + i) = khi(i) + dkhi(i)
-        deps(3 + i) = dkhi(i)
-70      continue
+        if (.not. lrgm) then
+            do i = 1, 3
+                epst(i) = eps(i) + deps(i)
+                epst(3 + i) = khi(i) + dkhi(i)
+                deps(3 + i) = dkhi(i)
+            end do
 !
-        do 73, i = 1,3
-        epsm(i) = eps(i)
-        epsm(i+3) = khi(i)
-73      continue
+            do i = 1, 3
+                epsm(i) = eps(i)
+                epsm(i+3) = khi(i)
+            end do
 !
-        do 77, i = 1,nbsig
-        sig(i) = efform(icpg + i)
-        sigm(i) = sig(i)
-77      continue
-    endif
-    if (compor(1)(1:4) .eq. 'ELAS') then
-        call dxmate('RIGI', dff, dmm, dmff, dcc,&
-                    dci, dmc, dfc, nno, pgl,&
-                    multic, coupmf, t2ev, t2ve, t1ve)
-        call r8inir(36, 0.d0, dsidep, 1)
+            do i = 1, nbsig
+                sig(i) = efform(icpg + i)
+                sigm(i) = sig(i)
+            end do
+        endif
+!
+        if (compor(1)(1:4) .eq. 'ELAS') then
+            call dxmate('RIGI', dff, dmm, dmff, dcc,&
+                        dci, dmc, dfc, nno, pgl,&
+                        multic, coupmf, t2ev, t2ve, t1ve)
+            call r8inir(36, 0.d0, dsidep, 1)
 ! -- MEMBRANE
-        dsidep(1,1) = dmm(1)
-        dsidep(2,1) = dmm(2)
-        dsidep(1,2) = dmm(4)
-        dsidep(2,2) = dmm(5)
-        dsidep(3,3) = dmm(9)
+            dsidep(1,1) = dmm(1)
+            dsidep(2,1) = dmm(2)
+            dsidep(1,2) = dmm(4)
+            dsidep(2,2) = dmm(5)
+            dsidep(3,3) = dmm(9)
 ! -- FLEXION
-        dsidep(4,4) = dff(1)
-        dsidep(5,4) = dff(2)
-        dsidep(4,5) = dff(4)
-        dsidep(5,5) = dff(5)
-        dsidep(6,6) = dff(9)
+            dsidep(4,4) = dff(1)
+            dsidep(5,4) = dff(2)
+            dsidep(4,5) = dff(4)
+            dsidep(5,5) = dff(5)
+            dsidep(6,6) = dff(9)
 !
 ! - CALCUL DE L'ACCROISSEMENT DE CONTRAINTE
 !
-        do 753, i = 1,6
-        dsig(i) = 0.d0
-        do 754, j = 1,6
-        dsig(i) = dsig(i)+dsidep(i,j)*deps(j)
-754      continue
-753      continue
+            do i = 1, 6
+                dsig(i) = 0.d0
+                do j = 1, 6
+                    dsig(i) = dsig(i)+dsidep(i,j)*deps(j)
+                end do
+            end do
 !
 ! CALCUL DE L'ACCOISSEMENT EFFORT CISAILLEMENT
 !
 !
-        if (q4gg) then
-            dsig(7) = dcc(1,1)*dgam(1)
-            dsig(8) = dcc(2,2)*dgam(2)
-        endif
+            if (q4gg) then
+                dsig(7) = dcc(1,1)*dgam(1)
+                dsig(8) = dcc(2,2)*dgam(2)
+            endif
 !
-        do 851, i = 1,nbsig
-        sig(i) = sig(i) + dsig(i)
-851      continue
+            do i = 1, nbsig
+                sig(i) = sig(i) + dsig(i)
+            end do
 !
-    else if (compor(1)(1:11).eq. 'GLRC_DAMAGE') then
-        do 75, i = 1,nbvar
-        ecr(i) = zr(ivarim-1 + icpv + i)
-75      continue
+        else if (compor(1)(1:11).eq. 'GLRC_DAMAGE') then
+            do i = 1, nbvar
+                ecr(i) = zr(ivarim-1 + icpv + i)
+            end do
 !
-        call maglrc(zi(imate), matr, delas, ecr)
-        if (q4gg) then
-            if (matr(14) .eq. -1.d0) then
-                dcc(1,1) = matr(6)*ep/(2.d0*(1.d0+matr(7)))*5.d0/ 6.d0
-                dcc(2,2) = dcc(1,1)
-            else
+            call maglrc(zi(imate), matr, delas, ecr)
+            if (q4gg) then
                 dcc(1,1) = matr(14)
                 dcc(2,2) = matr(15)
+                dcc(1,2) = 0.d0
+                dcc(2,1) = 0.d0
             endif
-            dcc(1,2) = 0.d0
-            dcc(2,1) = 0.d0
-        endif
 !
 !   AIRE DE SURFACE APPARTENANT AU POINT DE G.
-        surfgp = poids
+            surfgp = poids
 !
-        call glrcmm(zi(imate), matr, ep, surfgp, pgl,&
-                    epst, deps, dsig, ecr, delas,&
-                    dsidep, crit, codret)
+            call glrcmm(zi(imate), matr, ep, surfgp, pgl,&
+                        epst, deps, dsig, ecr, delas,&
+                        dsidep, crit, codret)
 !
-        do 78, i = 1,3
-        dsig(i) = dsig(i) * ep
-        dsig(3 + i) = dsig(3 + i) * ep*ep / 6.d0
-78      continue
+            do i = 1, 3
+                dsig(i) = dsig(i) * ep
+                dsig(3 + i) = dsig(3 + i) * ep*ep / 6.d0
+            end do
 !
-        do 80, i = 1,nbvar
-        ecrp(i) = ecr(i)
-80      continue
+            do i = 1, nbvar
+                ecrp(i) = ecr(i)
+            end do
 !
-        if (q4gg) then
-            dsig(7) = dcc(1,1)*dgam(1)
-            dsig(8) = dcc(2,2)*dgam(2)
-        endif
+            if (q4gg) then
+                dsig(7) = dcc(1,1)*dgam(1)
+                dsig(8) = dcc(2,2)*dgam(2)
+            endif
 !
-        do 85, i = 1,nbsig
-        sig(i) = sig(i) + dsig(i)
-85      continue
+            do i = 1, nbsig
+                sig(i) = sig(i) + dsig(i)
+            end do
 !
-    else if (compor(1)(1:7).eq. 'GLRC_DM') then
-        if (.not. lrgm) then
-            do 8510, i = 1,nbvar
-            ecr(i) = zr(ivarim-1 + icpv + i)
-8510          continue
-        endif
+        else if (compor(1)(1:7).eq. 'GLRC_DM') then
+            if (.not. lrgm) then
+                do i = 1, nbvar
+                    ecr(i) = zr(ivarim-1 + icpv + i)
+                end do
+            endif
 !
-        call crgdm(zi(imate), compor(1), lambda, deuxmu, lamf,&
-                   deumuf, gt, gc, gf, seuil,&
-                   alphaf, alfmc, ep, lrgm, ipg,&
-                   ther, tref, dtmoy, dtgra, tmoy,&
-                   tgra, alphat)
+            call crgdm(zi(imate), compor(1), lambda, deuxmu, lamf,&
+                      deumuf, gt, gc, gf, seuil,&
+                      alphaf, alfmc, ep, lrgm, ipg,&
+                      ther, tref, dtmoy, dtgra, tmoy,&
+                      tgra, alphat)
 !
 !     CALCUL DE LA DEFORMATION THERMIQUE
-        if (ther) then
-            epsth = alphat * (tmoy-tref)
-            khith = alphat * tgra
-            do 87, i = 1,2
-            epsm(i) = epsm(i) - epsth
-            epsm(i+3) = epsm(i+3) - khith
-87          continue
-            depsth = alphat * dtmoy
-            dkhith = alphat * dtgra
-            do 86, i = 1,2
-            deps(i) = deps(i) - depsth
-            deps(i+3) = deps(i+3) - dkhith
-86          continue
-        endif
+            if (ther) then
+                epsth = alphat * (tmoy-tref)
+                khith = alphat * tgra
+                do i = 1, 2
+                    epsm(i) = epsm(i) - epsth
+                    epsm(i+3) = epsm(i+3) - khith
+                end do
+                depsth = alphat * dtmoy
+                dkhith = alphat * dtgra
+                do i = 1, 2
+                    deps(i) = deps(i) - depsth
+                    deps(i+3) = deps(i+3) - dkhith
+                end do
+            endif
 !
 !
 !     ENDOMMAGEMENT SEULEMENT
 !
-        call r8inir(36, 0.d0, dsidep, 1)
-        call lcgldm(epsm, deps, ecr, opt, sig,&
-                    ecrp, dsidep, lambda, deuxmu, lamf,&
-                    deumuf, gt, gc, gf, seuil,&
-                    alphaf, alfmc, crit, codret)
-    else if (compor(1)(1:7).eq. 'KIT_DDI') then
+            call r8inir(36, 0.d0, dsidep, 1)
+            call lcgldm(epsm, deps, ecr, opt, sig,&
+                        ecrp, dsidep, lambda, deuxmu, lamf,&
+                        deumuf, gt, gc, gf, seuil,&
+                        alphaf, alfmc, crit, codret)
+        else if (compor(1)(1:7).eq. 'KIT_DDI') then
 !     ENDOMMAGEMENT PLUS PLASTICITE
 !
-        if (.not. lrgm) then
-            do 8515, i = 1,nbvar
-            ecr(i) = zr(ivarim-1 + icpv + i)
-8515          continue
+            if (.not. lrgm) then
+                do i = 1, nbvar
+                    ecr(i) = zr(ivarim-1 + icpv + i)
+                end do
+            endif
+!
+            call nmcoup('RIGI', ipg, 1, 3, k8bid,&
+                        zi(imate), compor, lbid, crit, r8bid,&
+                        r8bid, 6, epsm, deps, 6,&
+                        sigm, ecr, opt, 1, r8bid,&
+                        sig, ecrp, 36, dsidep, 1,&
+                        r8bid, codret)
+        else
+            valk = compor(1)
+            call u2mesg('F', 'ELEMENTS4_79', 1, valk, 0,&
+                        0, 0, 0.d0)
         endif
 !
-        call nmcoup('RIGI', ipg, 1, 3, k8bid,&
-                    zi(imate), compor, lbid, crit, r8bid,&
-                    r8bid, 6, epsm, deps, 6,&
-                    sigm, ecr, opt, 1, r8bid,&
-                    sig, ecrp, 36, dsidep, 1,&
-                    r8bid, codret)
-    else
-        valk = compor(1)
-        call u2mesg('F', 'ELEMENTS4_79', 1, valk, 0,&
-                    0, 0, 0.d0)
-    endif
-!
-    if (.not. lrgm) then
-        do 8520, i = 1,nbvar
-        zr(ivarip-1 + icpv + i) = ecrp(i)
-8520      continue
-!
-    endif
+        if (.not. lrgm) then
+            do i = 1, nbvar
+                zr(ivarip-1 + icpv + i) = ecrp(i)
+            end do
+        endif
 !
 !     EFFORTS RESULTANTS (N ET M)
 !
-    if (vecteu) then
-        do 90 i = 1, 3
-            n(i) = sig(i)
-            m(i) = sig(i+3)
-90      continue
-        do 95 i = 1, 2
-            q(i) = sig(i+6)
-95      continue
-    endif
+        if (vecteu) then
+            do i = 1, 3
+                n(i) = sig(i)
+                m(i) = sig(i+3)
+            end do
+            do i = 1, 2
+                q(i) = sig(i+6)
+            end do
+        endif
 !
 !     CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
-    if (matric) then
-        l = 0
+        if (matric) then
+            l = 0
 !
-        do 96 i = 1, 3
-            do 97 j = 1, 3
-                l = l + 1
-                dm(l) = dm(l) + poids*dsidep(j,i)
-                dmf(l)= dmf(l) + poids*dsidep(j,i+3)
-                df(l) = df(l) + poids*dsidep(j+3,i+3)
-97          continue
-96      continue
-    endif
+            do i = 1, 3
+                do j = 1, 3
+                    l = l + 1
+                    dm(l) = dm(l) + poids*dsidep(j,i)
+                    dmf(l)= dmf(l) + poids*dsidep(j,i+3)
+                    df(l) = df(l) + poids*dsidep(j+3,i+3)
+                end do
+            end do
+        endif
 !
-    if (q4gg) then
-        dc(1,1) = poids*dcc(1,1)
-        dc(2,2) = dc(1,1)
-        dc(1,2) = 0.d0
-        dc(2,1) = 0.d0
-    endif
+        if (q4gg) then
+            dc(1,1) = poids*dcc(1,1)
+            dc(2,2) = dc(1,1)
+            dc(1,2) = 0.d0
+            dc(2,1) = 0.d0
+        endif
 !
 !     CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 !
 !     BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
-    if (vecteu) then
-        do 100,k = 1,3
-        effint((ipg-1)*8+k) = n(k)
-        effint((ipg-1)*8+3+k) = m(k)
-100      continue
+        if (vecteu) then
+            do k = 1, 3
+                effint((ipg-1)*8+k) = n(k)
+                effint((ipg-1)*8+3+k) = m(k)
+            end do
 !
-        if (q4gg) then
-            do 105,k = 1,2
-            effint((ipg-1)*8+6+k) = q(k)
-105          continue
-        endif
-        do 120,ino = 1,nno
-        do 110,k = 1,3
-        btsig(1,ino) = btsig(1,ino) + bm(k,2* (ino-1)+1)* n(k)*poids
-        btsig(2,ino) = btsig(2,ino) + bm(k,2* (ino-1)+2)* n(k)*poids
-        btsig(3,ino) = btsig(3,ino) + bf(k,3* (ino-1)+1)* m(k)*poids
-        btsig(5,ino) = btsig(5,ino) + bf(k,3* (ino-1)+2)* m(k)*poids
-        btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
-110      continue
+            if (q4gg) then
+                do k = 1, 2
+                    effint((ipg-1)*8+6+k) = q(k)
+                end do
+            endif
+            do ino = 1, nno
+                do k = 1, 3
+                    btsig(1,ino) = btsig(1,ino) + bm(k,2* (ino-1)+1)* n(k)*poids
+                    btsig(2,ino) = btsig(2,ino) + bm(k,2* (ino-1)+2)* n(k)*poids
+                    btsig(3,ino) = btsig(3,ino) + bf(k,3* (ino-1)+1)* m(k)*poids
+                    btsig(5,ino) = btsig(5,ino) + bf(k,3* (ino-1)+2)* m(k)*poids
+                    btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
+                end do
 !
 ! PRISE EN COMPTE DI CISAILLEMENT
 !
-        if (q4gg) then
-            do 115,k = 1,2
-            btsig(3,ino) = btsig(3,ino) + bc(k,3* (ino-1)+ 1)*q(k)*poids
-            btsig(5,ino) = btsig(5,ino) + bc(k,3* (ino-1)+ 2)*q(k)*poids
-            btsig(4,ino) = btsig(4,ino) - bc(k,3* (ino-1)+ 3)*q(k)*poids
-115          continue
+                if (q4gg) then
+                    do k = 1, 2
+                        btsig(3,ino) = btsig(3,ino) + bc(k,3* (ino-1)+ 1)*q(k)*poids
+                        btsig(5,ino) = btsig(5,ino) + bc(k,3* (ino-1)+ 2)*q(k)*poids
+                        btsig(4,ino) = btsig(4,ino) - bc(k,3* (ino-1)+ 3)*q(k)*poids
+                    end do
+                endif
+            end do
         endif
-120      continue
-    endif
 !     CALCUL DE LA MATRICE TANGENTE :
 !
 !     KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
 !                   + BCT*DC*BC
-    if (matric) then
+        if (matric) then
 !     MEMBRANE :
-        call utbtab('CUMU', 3, 2*nno, dm, bm,&
-                    work, memb)
+            call utbtab('CUMU', 3, 2*nno, dm, bm, work, memb)
 !
 !     FLEXION :
-        call utbtab('CUMUL', 3, 3*nno, df, bf,&
-                    work, flex)
+            call utbtab('CUMUL', 3, 3*nno, df, bf, work, flex)
 !
 !     CISAILLEMENT:
-        if (q4gg) then
-            call utbtab('CUMUL', 2, 3*nno, dc, bc,&
-                        work, flex)
-        endif
+            if (q4gg) then
+                call utbtab('CUMUL', 2, 3*nno, dc, bc, work, flex)
+            endif
 !     COUPLAGE:
-        call utctab('CUMUL', 3, 3*nno, 2*nno, dmf,&
-                    bf, bm, work, mefl)
-    endif
+            call utctab('CUMUL', 3, 3*nno, 2*nno, dmf, bf, bm, work, mefl)
+        endif
 !
 !     FIN BOUCLE SUR LES POINTS DE GAUSS
-    130 end do
+    end do
 !
     if (.not.lrgm) then
         if (compor(1)(1:7) .eq. 'GLRC_DM') then
-            do 30 i = 1, nbcon*npg
+            do i = 1, nbcon*npg
                 zr(icontp-1+i) = effint(i)
-30          continue
+            end do
         else
 !
 ! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
@@ -676,9 +661,9 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !     STOCKAGE DES EFFORTS GENERALISES
 !
             call dxefro(npg, t2ve, effint, efforp)
-            do 35 i = 1, nbcon*npg
+            do i = 1, nbcon*npg
                 zr(icontp-1+i) = efforp(i)
-35          continue
+            end do
         endif
     endif
 !

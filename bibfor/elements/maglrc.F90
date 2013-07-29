@@ -56,6 +56,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     endif
 !
 !     ELAS
+!     ATTENTION PARAMETRES EQUIVALENTS EN FLEXION
+!     EF ET NUEF
 !
     nomres(1) = 'E'
     nomres(2) = 'NU'
@@ -172,8 +174,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     vel = vglob(1)*vglob(1) + vglob(2)*vglob(2)
     vel = vel + vglob(3)*vglob(3)
     vel = sqrt(vel)
-    do 80, i = 1,3
-    ecr(10 + i) = vglob(i)/vel
-    80 end do
+    do i = 1, 3
+        ecr(10 + i) = vglob(i)/vel
+    end do
 !
 end subroutine
