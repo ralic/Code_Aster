@@ -123,7 +123,7 @@ int main(void){
 @Configure.conf
 def check_hdf5_api(self):
     from Options import options as opts
-    fragv18 = "#include <hdf5.h>\nint main(){hid_t st;H5Eclear(st);return 0;}"
+    fragv18 = "#include <hdf5.h>\nint main(){hid_t st=0;H5Eclear(st);return 0;}"
 
     self.start_msg('Checking for API hdf5 v18')
     try:

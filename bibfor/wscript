@@ -37,6 +37,8 @@ def configure(self):
     if self.env.OPTLIB_FLAGS:
         self.start_msg('Checking for OPTLIB_FLAGS')
         self.env.prepend_value('FCSHLIB_MARKER', self.env.OPTLIB_FLAGS)
+        # because it is just after FCSTLIB_MARKER (-Wl,-Bstatic)
+        self.env.prepend_value('FCSHLIB_MARKER', '-Wl,-Bdynamic')
         self.end_msg(self.env.OPTLIB_FLAGS)
 
 def build(self):

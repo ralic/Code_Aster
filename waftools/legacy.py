@@ -25,7 +25,7 @@ class create_asrun_files(Task.Task):
         self.src = kw['src']
         self._relevant_env_keys = ('PREFIX', 'DEFINES', 'PYTHON',
                                    'FC', 'FCFLAGS',
-                                   'PYTHONARCHDIR', 'LIBPATH', 'LIBDIR',
+                                   'PYTHONDIR', 'LIBPATH', 'LIBDIR',
                                    'ASTERDATADIR', 'OPT_ENV', 'install_tests')
         Task.Task.__init__(self, *k, **kw)
 
@@ -40,7 +40,7 @@ class create_asrun_files(Task.Task):
         ld_path = [path for path in ld_path if path]
         sep = os.pathsep + '\\\n'
         dico = dict([(k, as_str(env[k])) \
-                        for k in ('PREFIX', 'PYTHON', 'PYTHONARCHDIR', 'ASTERDATADIR')])
+                        for k in ('PREFIX', 'PYTHON', 'PYTHONDIR', 'ASTERDATADIR')])
         dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
         # as_run compatibility
         if env.ASRUN_MPI_VERSION:
@@ -99,7 +99,7 @@ PYTHON         | python  | -     | %(PYTHON)s
 #
 BIN_NODBG      | bin     | -     | %(PREFIX)s/bin/aster
 BIN_DBG        | bin     | -     | %(PREFIX)s/bin/asterd
-BINCMDE        | bin     | -     | %(PYTHONARCHDIR)s/Cata
+BINCMDE        | bin     | -     | %(PYTHONDIR)s/Cata
 BINELE         | bin     | -     | $ASTER_VERSION_DIR/elements
 BINPICKLED     | bin     | -     | %(SRC)s/build/release/catalo/cata_ele.pickled
 #
@@ -110,7 +110,7 @@ OPTF90_O       | compil  | -     | %(FCFLAGS)s
 # for as_run --messages, --get, --show..., and astout
 SRCFOR         | src     | -     | %(SRC)s/bibfor
 SRCC           | src     | -     | %(SRC)s/bibc
-SRCPY          | src     | -     | %(PYTHONARCHDIR)s
+SRCPY          | src     | -     | %(PYTHONDIR)s
 SRCCATA        | src     | -     | %(SRC)s/catalo
 SRCCAPY        | src     | -     | %(SRC)s/catapy
 %(srctest)s

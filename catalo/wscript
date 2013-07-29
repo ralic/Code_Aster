@@ -102,7 +102,7 @@ def build_cata_ele(self, ojb, install_path):
     try:
         #  generate the command line
         exec_pyaster(self, 'Execution/E_SUPERV.py', cwd=bldnode.abspath(),
-                     args=['-eficas_path', '${PYTHONARCHDIR}',
+                     args=['-eficas_path', '${PYTHONDIR}',
                            '-commandes', comm.abspath(),
                            '-memjeveux', '500',
                            '-tpmax', '120'])
@@ -152,7 +152,7 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         Logs.warn('stderr: %s' % err.stderr)
         Logs.info('To run manually, set:')
         Logs.info('BINDIR="%s"' % environ['BINDIR'])
-        Logs.info('PYTHONARCHDIR="%s"' % environ['PYTHONARCHDIR'])
+        Logs.info('PYTHONDIR="%s"' % environ['PYTHONDIR'])
         Logs.info('and copy/paste the command line below:')
         raise
     # self.exec_command(cmds, env=environ)
