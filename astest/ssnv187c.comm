@@ -1,19 +1,19 @@
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - 3D
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -26,43 +26,43 @@ MAIL=LIRE_MAILLAGE(INFO=2,VERI_MAIL=_F(APLAT=1.E-3,));
 MAIL=DEFI_GROUP(reuse =MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(GROUP_MA='GM20',
-                                     NOM='SURF_GAU'),               
+                                     NOM='SURF_GAU'),
                     );
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(GROUP_MA='GM21',
-                                     NOM='SURF_BAS'),                 
+                                     NOM='SURF_BAS'),
                     );
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(GROUP_MA='GM22',
-                                     NOM='SURF_HAU'),                
+                                     NOM='SURF_HAU'),
                     );
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(GROUP_MA='GM23',
-                                     NOM='SURF_DEV'),                 
+                                     NOM='SURF_DEV'),
                     );
-                    
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                     MAILLAGE=MAIL,
                     CREA_GROUP_MA=_F(GROUP_MA='GM24',
-                                     NOM='SURF_DER'),               
-                    );              
-                    
+                                     NOM='SURF_DER'),
+                    );
+
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);                   
+                           MODELISATION='3D',),);
 
 
-                    
+
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
                    ORIE_PEAU_3D=_F(GROUP_MA='SURF_HAU',),)
-                    
+
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
                      PRES_REP=_F(GROUP_MA='SURF_HAU',
                                  PRES=0.876,),);
@@ -71,11 +71,11 @@ DEPL=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=(_F(GROUP_MA='SURF_BAS',
                                   DY=0.0,),
                                _F(GROUP_MA='SURF_GAU',
-                                  DX=0.0,), 
+                                  DX=0.0,),
                                _F(GROUP_MA='SURF_DEV',
-                                  DZ=0.0,),                               
+                                  DZ=0.0,),
                                _F(GROUP_MA='SURF_DER',
-                                  DZ=0.0,),                               
+                                  DZ=0.0,),
                                ),);
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
@@ -83,8 +83,8 @@ LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                                    NOMBRE=20,),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,1.0,1.0,),);                                 
-                                   
+                VALE=(0.0,0.0,1.0,1.0,),);
+
 
 
 # MATERIAU HYPERELASTIQUE: MOONEY-RIVLIN
@@ -102,7 +102,7 @@ RUBBER1=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
 
 # temperature non prise en compte par ELAS_HYPER
 # ici pour valider que le code ne plante pas.
-                                
+
 CHT10=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                     OPERATION='AFFE',
                     MAILLAGE=MAIL,
@@ -135,34 +135,24 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=DEPL,),),
                    NEWTON=(_F(REAC_INCR=1,
                               MATRICE='TANGENTE',
-                              REAC_ITER=1,)),                   
+                              REAC_ITER=1,)),
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
                                 DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
-                                   ITER_GLOB_MAXI=20)),                               
+                                   ITER_GLOB_MAXI=20)),
                    INCREMENT=_F(LIST_INST=LISTE,),);
-                   
+
 TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO='GM100',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.034072488,
+                  VALE_CALC=-0.034072487756090002,
                   VALE_REFE=-0.0340091,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM100',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.034072487756090002,
-                  CRITERE='RELATIF',
-                  ),
           )
 
 # MATERIAU HYPERELASTIQUE: NEO-HOOKEEN
@@ -178,8 +168,8 @@ RUBBER2=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    C20=C20,
                                    K=K,
                                    RHO=1000.0),);
-                                   
-                                   
+
+
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
@@ -194,14 +184,14 @@ RESU2=STAT_NON_LINE(MODELE=MODELE,
                    NEWTON=(_F(REAC_INCR=1,
                               MATRICE='TANGENTE',
                               PREDICTION='ELASTIQUE',
-                              REAC_ITER=1,)),                   
+                              REAC_ITER=1,)),
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
                                 DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
-                                   ITER_GLOB_MAXI=20)),                               
+                                   ITER_GLOB_MAXI=20)),
                    INCREMENT=_F(LIST_INST=LISTE,),);
-                   
+
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=20,
@@ -210,20 +200,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.078330831,
+                  VALE_CALC=-0.078330830948144997,
                   VALE_REFE=-0.078174999999999994,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM100',
-                  RESULTAT=RESU2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.078330830948144997,
-                  CRITERE='RELATIF',
-                  ),
           )
 
 # MATERIAU HYPERELASTIQUE: SIGNORINI
@@ -239,8 +219,8 @@ RUBBER3=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    C20=C20,
                                    K=K,
                                    RHO=1000.0),);
-                                   
-                                   
+
+
 CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
@@ -254,14 +234,14 @@ RESU3=STAT_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=DEPL,),),
                    NEWTON=(_F(REAC_INCR=1,
                               MATRICE='TANGENTE',
-                              REAC_ITER=1,)),                   
+                              REAC_ITER=1,)),
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
                                 DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
-                                   ITER_GLOB_MAXI=20)),                               
+                                   ITER_GLOB_MAXI=20)),
                    INCREMENT=_F(LIST_INST=LISTE,),);
-                   
+
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=20,
@@ -270,20 +250,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=RESU3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.071058426,
+                  VALE_CALC=-0.071058425921551996,
                   VALE_REFE=-0.066199999999999995,
                   CRITERE='RELATIF',
-                  PRECISION=0.074999999999999997,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM100',
-                  RESULTAT=RESU3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.071058425921551996,
-                  CRITERE='RELATIF',
-                  ),
+                  PRECISION=0.075,),
           )
 
 FIN();

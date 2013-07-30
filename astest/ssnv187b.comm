@@ -112,20 +112,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.034072488,
+                  VALE_CALC=-0.034072487756090002,
                   VALE_REFE=-0.0340091,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM5',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.034072487756090002,
-                  CRITERE='RELATIF',
-                  ),
           )
 
 # MATERIAU HYPERELASTIQUE: NEO-HOOKEEN
@@ -172,20 +162,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.078330878,
+                  VALE_CALC=-0.078330877884584,
                   VALE_REFE=-0.078174999999999994,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM5',
-                  RESULTAT=RESU2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.078330877899999998,
-                  CRITERE='RELATIF',
-                  ),
           )
 
 TAB2 = POST_RELEVE_T(ACTION=_F(INTITULE='RET2',
@@ -242,20 +222,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=RESU3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=-0.071058426,
+                  VALE_CALC=-0.071058425921551996,
                   VALE_REFE=-0.066199999999999995,
                   CRITERE='RELATIF',
-                  PRECISION=0.074999999999999997,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='GM5',
-                  RESULTAT=RESU3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.071058425921551996,
-                  CRITERE='RELATIF',
-                  ),
+                  PRECISION=0.075,),
           )
 
 TAB3 = POST_RELEVE_T(ACTION=_F(INTITULE='RET3',
