@@ -163,16 +163,19 @@ connex   = mm.co
 
       try:
          import aster
-         nom_mailles = (None,) + string.strip(aster.getvectjev('&CATA.TM.NOMTM'))
-      except:
+         nom_mailles = [None] + [tm.strip() for tm in aster.getvectjev('&CATA.TM.NOMTM')]
+      except ImportError:
          nom_mailles = (None,
          'POI1',   'SEG2',   'SEG22',  'SEG3',   'SEG33',  'SEG4',   'TRIA3',
          'TRIA33', 'TRIA6',  'TRIA66', 'TRIA7',  'QUAD4',  'QUAD44', 'QUAD8',
-         'QUAD88', 'QUAD9',  'QUAD99', 'TETRA4', 'TETRA10','PENTA6', 'PENTA15',
+         'QUAD88', 'QUAD9',  'QUAD99', 'TETRA4', 'TETRA10','PENTA6', 'PENTA15', 'PENTA18',
          'PYRAM5', 'PYRAM13','HEXA8',  'HEXA20', 'HEXA27', 'TR3QU4', 'QU4TR3',
          'TR6TR3', 'TR3TR6', 'TR6QU4', 'QU4TR6', 'TR6QU8', 'QU8TR6', 'TR6QU9',
          'QU9TR6', 'QU8TR3', 'TR3QU8', 'QU8QU4', 'QU4QU8', 'QU8QU9', 'QU9QU8',
-         'QU9QU4', 'QU4QU9', 'QU9TR3', 'TR3QU9', 'SEG32',  'SEG23' )
+         'QU9QU4', 'QU4QU9', 'QU9TR3', 'TR3QU9', 'SEG32',  'SEG23',  'QU4QU4',
+         'TR3TR3', 'HE8HE8', 'PE6PE6', 'TE4TE4', 'QU8QU8', 'TR6TR6', 'SE2TR3',
+         'SE2TR6', 'SE2QU4', 'SE2QU8', 'SE2QU9', 'SE3TR3', 'SE3TR6', 'SE3QU4',
+         'SE3QU8', 'SE3QU9', 'H20H20', 'P15P15', 'T10T10')
 
       dic_mailles = {}
       for i in range(len(nom_mailles)) :
