@@ -143,6 +143,11 @@ subroutine carcha(noch, nomgd, typcha, option, param)
         typcha = 'ELNO'
         option = 'EPSP_ELNO'
         param = 'PDEFOPL'
+    else if (noch.eq.'EPSP_ELGA') then
+         nomgd  = 'EPSI_R'
+         typcha = 'ELGA'
+         option = 'EPSP_ELGA'
+         param  = 'PDEFOPG'
     else if (noch.eq.'EPSI_NOEU') then
         nomgd = 'EPSI_R'
         typcha = 'NOEU'
