@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: J-pierre.lefebvre at edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,8 +18,8 @@
 # ======================================================================
 #     IDENTIFICATION DE LA VERSION
 #----------------------------------------------------------------------
-version = "12.0.4"
-date = "25/07/2013"
+version = "12.0.5"
+date = "01/08/2013"
 exploit = False
 
 parentid, branch, from_branch = ['?'] * 3
