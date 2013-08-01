@@ -327,21 +327,17 @@ def print_header(part):
 
 def get_version_name():
     """Return the 'name' of the version.
-    If there is no current changes:
-        - testing or stable for a frozen version,
-        - stable-updates or unstable
-    else:
-        - the real branch name"""
+    - testing or stable for a frozen version,
+    - stable-updates or unstable"""
     import aster_core
     sta = aster_core.get_option('version').split('.')[-1] == '0'
     expl = aster_core.get_option('exploit')
     changes = aster_core.get_option('changes')
     name = aster_core.get_option('from_branch')
-    if not changes:
-        if expl:
-            name = sta and 'stable' or 'stable-updates'
-        else:
-            name = sta and 'testing' or 'unstable'
+    if expl:
+        name = sta and 'stable' or 'stable-updates'
+    else:
+        name = sta and 'testing' or 'unstable'
     return name
 
 def get_version_desc():

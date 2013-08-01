@@ -54,7 +54,9 @@ class Language(Singleton):
         from E_Core import get_version_name
         try:
             shortname = get_version_name()
-            if shortname in ('?', 'default'):
+            if shortname.startswith('stable'):
+                shortname = 'stable'
+            elif shortname in ('?', 'default'):
                 shortname = 'unstable'
         except (ImportError, AttributeError):
             shortname = 'stable'
