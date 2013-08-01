@@ -36,7 +36,7 @@
  * }
  * ici, lnom est l'entier qui indique la longueur de la chaine Fortran nomobj
  * Les macros définies ici ne servent qu'à former le nom de la fonction et à
- * mettre les arguments dans le bon ordre. On utilise l'ordre _WIN32 comme
+ * mettre les arguments dans le bon ordre. On utilise l'ordre windows comme
  * base (pointeur char suivi de la longueur) et on reordonne pour les autres compilateurs.
  * STRING_SIZE est le type retourné par strlen.
  */
@@ -46,15 +46,12 @@
 
 /* Appels : minuscules/majuscules, avec/sans underscore */
 #if defined _POSIX
-#define F_FUNC(UN,LN)           _(LN,_)
-
-#if defined _NO_UNDERSCORE
-#define F_FUNC(UN,LN)           LN
-#endif
-
-#elif defined _WIN32
-#define F_FUNC(UN,LN)           UN
-
+#   define F_FUNC(UN,LN)           _(LN,_)
+#   if defined _NO_UNDERSCORE
+#       define F_FUNC(UN,LN)           LN
+#   endif
+#else
+#   define F_FUNC(UN,LN)           UN
 #endif
 
 /* http://gcc.gnu.org/onlinedocs/cpp/Stringification.html */
@@ -64,9 +61,9 @@
 
 /* STDCALL for "old" windows version */
 #ifdef _USE_STDCALL
-#define STDCALL(UN,LN)   __stdcall F_FUNC(UN,LN)
+#   define STDCALL(UN,LN)   __stdcall F_FUNC(UN,LN)
 #else
-#define STDCALL(UN,LN)   F_FUNC(UN,LN)
+#   define STDCALL(UN,LN)   F_FUNC(UN,LN)
 #endif
 
 /* Appels et signatures avec strlen en fin de liste */

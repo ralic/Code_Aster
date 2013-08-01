@@ -38,13 +38,6 @@ void hancpu (int sig);
 #include <ucontext.h>
   void hanfpe(int sig, siginfo_t *sip, ucontext_t *uap);
 
-#elif defined IRIX 
-#include <siginfo.h>
-#include <sigfpe.h>
-#include <limits.h>
-  void stptrap(int sig);
-  void interrupt_sigsegv(int sig);
-
 #elif defined _WINDOWS
 #include <float.h>
   void hanfpe(int sig);
@@ -57,22 +50,16 @@ void hancpu (int sig);
 #endif
 
 #if defined GNU_LINUX
-#define _GNU_SOURCE 1
-#include <fenv.h>
+#   define _GNU_SOURCE 1
+#   include <fenv.h>
 #endif
 
 
 void DEF0(INISIG, inisig)
 {
 #if defined _POSIX
-   struct sigaction action_CPU_LIM;
-#endif
-#if defined IRIX
-   int ier;
-   extern struct sigfpe_template sigfpe_[_N_EXCEPTION_TYPES+1];
-   extern int inifpe(void);
-#endif
-#if defined _WINDOWS
+    struct sigaction action_CPU_LIM;
+#else
     unsigned int cw, cwOrig;
 #endif
 
@@ -92,8 +79,6 @@ void DEF0(INISIG, inisig)
 #if defined SOLARIS
    ieee_handler("set","common",hanfpe);
    ieee_handler("clear","invalid",hanfpe);
-#elif defined IRIX
-   ier=inifpe();
 
 #elif defined GNU_LINUX
 

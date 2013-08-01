@@ -31,6 +31,10 @@ def configure(self):
     self.check_fortran_dummy_main()
     self.check_fortran_compiler_flags()
     self.check_fortran_mangling()
+    if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == '':
+        self.define('_NO_UNDERSCORE', 1)
+    else:
+        self.undefine('_NO_UNDERSCORE')
     self.check_fortran_types()
     self.check_optional_features()
     # insert flags before FCSHLIB_MARKER (and after FCSTLIB_MARKER)

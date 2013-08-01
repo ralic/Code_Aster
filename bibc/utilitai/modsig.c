@@ -19,7 +19,6 @@
 /*
 ** Initialisation et modification de l'interception des signaux
 ** du type Floating Point Exception (FPE)
-** Sur CRAY et HPUX seule la l'initialisationest prise en compte
 ** Sous SOLARIS et WINDOWS NT la detection des erreurs suivantes peut
 ** etre activee ou non :
 **                   underflow

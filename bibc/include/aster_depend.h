@@ -18,70 +18,35 @@
 #ifndef ASTER_DEPEND_H
 #define ASTER_DEPEND_H
 
-/* --------------------------------------------
-   --          DEBUT aster_depend.h          --
-   --------------------------------------------
+/* 
+ * Exactly one of _POSIX and _WINDOWS must be defined, they are exclusive.
+ * 
+ * In the source code, only use _POSIX or _WINDOWS and, when required, _USE_64_BITS.
+ * 
+ * The only platform name used is SOLARIS in the signal features.
+ * 
+ */
 
-_POSIX et _WINDOWS doivent être exclusifs.
+#include "asterc_config.h"
 
-Dans les routines C, ne pas utiliser les noms de plates-formes,
-se ramener à _POSIX/_WINDOWS et +/- _USE_64_BITS.
-
-Pour les cas (rares) d'adhérence système (constantes, signaux),
-on se limite à SOLARIS, LINUX, IRIX (cas particuliers à
-l'intérieur de _POSIX).
-
-Compatibilité ascendantes :
- HPUX       => _POSIX, _NO_UNDERSCORE
- IRIX       => _POSIX
- IRIX64     => _POSIX, IRIX, _USE_64_BITS
- P_LINUX    => _POSIX, LINUX
- LINUX64    => _POSIX, LINUX, _USE_64_BITS
- TRU64      => _POSIX, _USE_64_BITS
- SOLARIS    => _POSIX
- SOLARIS64  => _POSIX, SOLARIS, _USE_64_BITS
- PPRO_NT    => _WINDOWS
- (_)WIN32   => _WINDOWS
-
-*/
-
-/* XXX backward compatibility layer */
-#if defined _WIN32
-#   ifndef _WINDOWS
-#       define _WINDOWS
-#   endif
+/* test required value */
+#if ! defined _POSIX && ! defined _WINDOWS
+#   error ERROR _POSIX or _WINDOWS is required
+#endif
+#if defined _POSIX && defined _WINDOWS
+#   error ERROR only one of _POSIX or _WINDOWS, not both
 #endif
 
-#if defined P_LINUX || LINUX || LINUX64 || HPUX || IRIX || IRIX64 || SOLARIS || SOLARIS64 || TRU64
-#   define _POSIX
-#endif
-
-#if defined LINUX64 || IRIX64 || SOLARIS64 || TRU64
-#   define _USE_64_BITS
-#endif
-
-#if defined IRIX64
-#   define IRIX
-#   define _NOT_GNU
+#if defined LINUX || LINUX64
+#   define GNU_LINUX
 #endif
 
 #if defined SOLARIS64
 #   define SOLARIS
-#   define _NOT_GNU
 #endif
-
-#ifdef HPUX
-#   define _NO_UNDERSCORE
-#   define _NOT_GNU
-#endif
-
-/* XXX end backward compatibility */
-
-#include "asterc_config.h"
 
 /* MS Windows platforms */
 #if defined _WINDOWS
-#   define _IGNORE_RLIMIT
 
 /* win64 - use LLP64 model */
 #   ifdef _USE_64_BITS
@@ -99,11 +64,6 @@ Compatibilité ascendantes :
 /* Linux & Unix platforms */
 #   define _STRLEN_AT_END
 
-/* Linux but not Unix - see inisig.c */
-#   ifndef _NOT_GNU
-#       define GNU_LINUX
-#   endif
-
 /* end platforms type */
 #endif
 
@@ -118,19 +78,8 @@ Compatibilité ascendantes :
 #define STRING_SIZE         ASTERC_STRING_SIZE
 #define INTEGER4            ASTERC_FORTRAN_INT4
 #define INTEGER             ASTERC_FORTRAN_INT
-#define LONG_INTEGER_BITS   8 * ASTER_INT_SIZE
-#define LONG_INTEGER_MOTS   ASTER_INT_SIZE
 #define DOUBLE              ASTERC_FORTRAN_REAL8
 #define REAL4               ASTERC_FORTRAN_REAL4
-#define LONG_REAL_MOTS      ASTER_REAL8_SIZE
-#define LONG_COMPLEX_MOTS   ASTER_COMPLEX_SIZE
-#define OFF_INIT            ASTER_INT_SIZE
-
-/* Utilisation de getrlimit :
-   _IGNORE_RLIMIT permet de ne pas utiliser getrlimit */
-#ifndef _IGNORE_RLIMIT
-#   define _USE_RLIMIT
-#endif
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */
@@ -144,7 +93,7 @@ Compatibilité ascendantes :
 #   define OPT_TAILLE_BLOC_MULT_FRONT __OPT_TAILLE_BLOC_MULT_FRONT__
 #endif
 
-/* Comportement par défaut des FPE dans les blas/lapack */
+/* Comportement par défaut des FPE dans matfpe pour les blas/lapack */
 #ifndef _ENABLE_MATHLIB_FPE
 #   ifndef _DISABLE_MATHLIB_FPE
 #       define _DISABLE_MATHLIB_FPE
@@ -166,24 +115,4 @@ Compatibilité ascendantes :
 #   define REP_DON "/aster/donnees/"
 #endif
 
-/* --- TODO COMPTABILITY (remove _WIN32) --- */
-#if defined _WINDOWS
-#   ifndef _WIN32
-#       define _WIN32
-#   endif
-#endif
-
-/* --------------------------------------------
-   --      TEST DES VALEURS OBLIGATOIRES     --
-   -------------------------------------------- */
-#if ! defined _POSIX && ! defined _WINDOWS
-#   error ERREUR au moins un parmi _POSIX or _WINDOWS !!
-#endif
-#if defined _POSIX && defined _WINDOWS
-#   error ERREUR seulement un parmi _POSIX or _WINDOWS !!
-#endif
-
-/* --------------------------------------------
-   --           FIN  aster_depend.h          --
-   -------------------------------------------- */
 #endif

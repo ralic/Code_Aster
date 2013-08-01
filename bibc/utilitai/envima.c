@@ -69,13 +69,13 @@ static INTEGER   ISLFIC   = 2000*1024;
 
 /* ----------------------------- fonctions renvoyant un  INTEGER */
 /* -------------------------------------------- LONGUEUR EN BITS */
-INTEGER DEF0(LBISEM,lbisem) { return LONG_INTEGER_BITS; }
+INTEGER DEF0(LBISEM,lbisem) { return 8 * ASTER_INT_SIZE; }
 
 /* ------------------------------------------ LONGUEUR EN OCTETS */
-INTEGER DEF0(LOLSEM,lolsem) { return LONG_INTEGER_MOTS; }
-INTEGER DEF0(LOISEM,loisem) { return LONG_INTEGER_MOTS; }
-INTEGER DEF0(LOR8EM,lor8em) { return LONG_REAL_MOTS; }
-INTEGER DEF0(LOC8EM,loc8em) { return LONG_COMPLEX_MOTS; }
+INTEGER DEF0(LOLSEM,lolsem) { return ASTER_INT_SIZE; }
+INTEGER DEF0(LOISEM,loisem) { return ASTER_INT_SIZE; }
+INTEGER DEF0(LOR8EM,lor8em) { return ASTER_REAL8_SIZE; }
+INTEGER DEF0(LOC8EM,loc8em) { return ASTER_COMPLEX_SIZE; }
 
 /* --------------- NOT.A.NUMBER (IEEE) OU UNDEF (CRAY NON IEEE) */
 /* rq : ne veut rien dire pour un entier...mais utilise...      */

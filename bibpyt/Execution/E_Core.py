@@ -200,7 +200,7 @@ class CoreOptions(object):
             self.opts.tpmax = limcpu
         if not self.opts.memory and self.opts.memjeveux:
             import aster_core # depend on self.opts.bibpyt (see parse_args)
-            self.opts.memory = self.opts.memjeveux * aster_core.LONG_INTEGER_MOTS
+            self.opts.memory = self.opts.memjeveux * aster_core.ASTER_INT_SIZE
 
     def sub_tpmax(self, tsub):
         """Soustrait `tsub` au temps cpu maximum."""

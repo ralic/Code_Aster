@@ -18,8 +18,9 @@
 
 #include "aster.h"
 
-#define MAX_FAC 256
-#define LONG_NOM_FIC 129
+#define MAX_FAC         256
+#define LONG_NOM_FIC    129
+#define OFF_INIT        ASTER_INT_SIZE
 
 static FILE *fpfile[MAX_FAC];
 static long   nenr[MAX_FAC];
