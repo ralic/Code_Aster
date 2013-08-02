@@ -19,7 +19,7 @@ subroutine as_mfacre(fid, maa, fam, num, ngro,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/mfacre.h"
     aster_int :: fid, num, ngro, cret

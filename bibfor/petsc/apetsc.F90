@@ -19,7 +19,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/apmain.h"
 #include "asterfort/assert.h"

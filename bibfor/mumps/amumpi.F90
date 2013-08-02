@@ -28,7 +28,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterc/r4maem.h"
 #include "asterfort/amumpu.h"
 #include "asterfort/assert.h"

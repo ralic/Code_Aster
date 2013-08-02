@@ -20,7 +20,7 @@ subroutine mpierr(iermpi)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterfort/u2mesk.h"
     integer(kind=4) :: iermpi
 !

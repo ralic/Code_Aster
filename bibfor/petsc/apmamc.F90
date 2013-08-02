@@ -18,7 +18,7 @@ subroutine apmamc(kptsc)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"

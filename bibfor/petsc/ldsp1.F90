@@ -23,7 +23,7 @@ subroutine ldsp1(pc, ierr)
 !  PRECONDITIONNEUR ISSU D'UNE FACTORISATION SIMPLE PRECISION
 !
 !----------------------------------------------------------------
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

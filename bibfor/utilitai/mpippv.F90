@@ -39,7 +39,7 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterfort/assert.h"

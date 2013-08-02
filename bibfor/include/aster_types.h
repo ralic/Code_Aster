@@ -18,7 +18,7 @@
 !
 ! Definition of types used by aster
 !
-#include "asterf_config.h"
+#include "asterf.h"
 !
 #define aster_int_kind  ASTER_INT_SIZE
 #define aster_int       integer(kind=aster_int_kind)

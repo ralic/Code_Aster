@@ -19,7 +19,7 @@ subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/mlclor.h"
     real(kind=8) :: tr1(*), tr2(*), tr3(*)

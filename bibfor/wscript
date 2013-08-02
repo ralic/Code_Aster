@@ -36,6 +36,7 @@ def configure(self):
     else:
         self.undefine('_NO_UNDERSCORE')
     self.check_fortran_types()
+    self.check_fortran_preprocessor()
     self.check_optional_features()
     # insert flags before FCSHLIB_MARKER (and after FCSTLIB_MARKER)
     if self.env.OPTLIB_FLAGS:
@@ -68,6 +69,8 @@ def check_fortran_compiler_flags(self):
                       for name in ('double', 'integer', 'real')]
             self.check_fortran_compiler_options(flags)
         self.check_fortran_compiler_options('-fno-aggressive-loop-optimizations')
+        # long lines after preprocessing
+        self.check_fortran_compiler_options('-ffree-line-length-none')
     if self.env.FC_NAME == 'IFORT':
         self.check_fortran_compiler_options(['-fpe0', '-traceback'])
         if self.env.DEST_CPU == 'x86_64':
@@ -102,6 +105,46 @@ def check_fortran_types(self):
     self.check_sizeof_real8()
     self.check_sizeof_complex()
     self.check_sizeof_string_size()
+
+@Configure.conf
+def check_fortran_preprocessor(self):
+    """Check how behaves the fortran preprocessor"""
+    def _check(define, msg, fragment):
+        """"""
+        program = '\n'.join([
+            'program main',
+            '%s',
+            'print *, str(hello)',
+            'end program main',
+            '']) % fragment
+        self.start_msg('Checking fpp stringify using %s' % msg)
+        res = self.check_fc(fragment=program,
+                            compile_filename = 'test.F90',
+                            mandatory=False,
+                            execute=True,
+                            define_ret=True)
+        ok = res and "hello" in res
+        if ok:
+            self.define(define, 1)
+        else:
+            self.undefine(define)
+        self.end_msg('yes' if ok else 'no')
+
+    _check('STRINGIFY_USE_OPERATOR', '#', '#define str(arg) #arg')
+    _check('STRINGIFY_USE_QUOTES', '""', '#define str(arg) "arg"')
+    # preprocessing may create long lines, test with more than 500 columns
+    fragment = '\n'.join([
+        'program main',
+        'integer :: var',
+        'var = 1 ' + ('+' + ' ' * 100 + '1') * 5,
+        'end program main', ''])
+    if not self.check_fc(msg='Checking compilation with long lines',
+                         fragment=fragment,
+                         mandatory=False,
+                         compile_filename = 'test.F90'):
+        Logs.warn('The compiler failed on long lines that may be generated '
+                  'by the precompiler. If the build fails, you must provide a '
+                  'relevant option using FCFLAGS.')
 
 @Configure.conf
 def code_checker(self, define, check, fragment, start_msg, error_msg,

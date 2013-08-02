@@ -20,7 +20,7 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/mfdrpr.h"
     character(len=*) :: cha, profil

@@ -19,7 +19,7 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/mfdcsi.h"
     aster_int :: fid, ind, numdt, numo, cret

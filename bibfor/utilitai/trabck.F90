@@ -24,7 +24,7 @@ subroutine trabck(cmess, iexit)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! aslint: disable=W1304
-#include "asterf_config.h"
+#include "asterf.h"
 #if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1
     use ifcore
 #endif

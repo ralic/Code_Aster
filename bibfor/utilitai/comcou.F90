@@ -29,7 +29,7 @@ function comcou(iarg)
     implicit none
     integer(kind=4) :: comcou
     integer         :: iarg
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"

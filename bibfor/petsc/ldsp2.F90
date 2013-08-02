@@ -19,7 +19,7 @@ subroutine ldsp2(pc, x1, y, ierr)
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
 !
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterfort/amumph.h"
 #include "asterfort/assert.h"
 #ifdef _HAVE_PETSC

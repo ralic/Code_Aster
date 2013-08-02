@@ -34,7 +34,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"

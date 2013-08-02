@@ -33,7 +33,7 @@ subroutine mpicm2(optmpi, nomjev)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 !
 #include "asterc/loisem.h"

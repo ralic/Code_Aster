@@ -19,7 +19,7 @@ subroutine as_mfdcre(fid, cha, nomamd, type, comp,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/mfdcre.h"
     character(len=*) :: cha, nomamd, comp, unit

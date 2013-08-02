@@ -37,7 +37,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"

@@ -45,7 +45,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/loisem.h"
 #include "asterfort/assert.h"

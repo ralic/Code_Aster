@@ -19,7 +19,7 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/msmsmi.h"
     character(len=*) :: nom

@@ -19,7 +19,7 @@ subroutine mpisst(istat, resp0)
 !
     implicit none
 !     ARGUMENTS          IN     OUT
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterc/uttrst.h"
 #include "asterfort/assert.h"
 #include "asterfort/comcou.h"

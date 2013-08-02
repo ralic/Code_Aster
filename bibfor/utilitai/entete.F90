@@ -21,7 +21,7 @@ subroutine entete()
 ! ----------------------------------------------------------------------
 !     ECRITURE DE L'ENTETE
 ! ----------------------------------------------------------------------
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterc/lihdfv.h"
 #include "asterc/limedv.h"
 #include "asterc/liscov.h"

@@ -56,7 +56,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-#include "asterf_config.h"
+#include "asterf.h"
 #include "asterfort/assert.h"
 #include "asterfort/comcou.h"
 #include "asterfort/infniv.h"

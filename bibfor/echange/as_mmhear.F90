@@ -19,7 +19,7 @@ subroutine as_mmhear(fid, maa, nom, typent, typgeo,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterf_config.h"
+#include "asterf.h"
 #include "aster_types.h"
 #include "med/mmhear.h"
     character(len=*) :: maa

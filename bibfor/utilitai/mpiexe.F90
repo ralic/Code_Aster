@@ -57,7 +57,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
 ! OUT MPICOU        : COMMUNICATEUR
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"

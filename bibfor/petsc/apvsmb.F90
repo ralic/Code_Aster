@@ -18,7 +18,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf_config.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/apbloc.h"
 #include "asterfort/assert.h"

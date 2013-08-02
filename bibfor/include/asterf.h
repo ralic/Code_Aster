@@ -1,6 +1,3 @@
-subroutine as_mfiope(fid, nom, acces, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,25 +14,20 @@ subroutine as_mfiope(fid, nom, acces, cret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-    implicit none
-#include "asterf.h"
-#include "aster_types.h"
-#include "med/mfiope.h"
-    character(len=*) :: nom
-    aster_int :: acces, fid, cret
-#ifdef _DISABLE_MED
-    call u2mess('F', 'FERMETUR_2')
-#else
+! person_in_charge: mathieu.courtois@edf.fr
+!
+#ifndef ASTERF_H
+#define ASTERF_H
 
-#if med_int_kind != aster_int_kind
-    med_int :: acces4, fid4, cret4
-    acces4 = acces
-    call mfiope(fid4, nom, acces4, cret4)
-    fid = fid4
-    cret = cret4
+#include "asterf_config.h"
+
+! The fortran preprocessor is compiler dependent
+#ifdef STRINGIFY_USE_OPERATOR
+#   define TO_STRING(name)  #name
+#elif  STRINGIFY_USE_QUOTES
+#   define TO_STRING(name)  "name"
 #else
-    call mfiope(fid, nom, acces, cret)
+#   define TO_STRING(name)  "?"
 #endif
 
 #endif
-end subroutine
