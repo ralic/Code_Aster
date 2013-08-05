@@ -74,7 +74,7 @@ subroutine nmdome(modele, mate, carele, lischa, result,&
 !
 ! --- LECTURES
 !
-    if (nomcmd .eq. 'LIRE_RESU') goto 500
+    if (nomcmd .eq. 'LIRE_RESU' .or. nomcmd .eq. 'CREA_RESU') goto 500
 !
     if ((nomcmd.eq.'CALC_CHAMP') .or. (nomcmd.eq.'POST_ELEM')) then
 !

@@ -77,7 +77,7 @@ subroutine nmdorc(modelz, compoz, carcri)
     if (nomcmd(1:13) .eq. 'THER_NON_LINE') then
         nbmo1 = 1
         moclef(1) = 'COMP_THER_NL'
-    else if (nomcmd(1:9).eq.'LIRE_RESU') then
+    else if (nomcmd(1:9).eq.'LIRE_RESU' .or. nomcmd(1:9).eq.'CREA_RESU') then
         nbmo1 = 1
         moclef(1) = 'COMP_INCR'
         meca=.true.

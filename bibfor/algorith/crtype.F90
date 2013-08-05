@@ -1,5 +1,4 @@
 subroutine crtype()
-! aslint: disable=W1501
     implicit  none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -69,7 +68,7 @@ subroutine crtype()
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
     integer :: jcham, jcoor, iad, jinst, jval, jnomf, jdeeq, lprol, nbpf
     integer :: ino, nbv, jrefe, jlcha, nchar, jfcha, iadesc, icmpd, icmpi
-    integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci
+    integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini
     integer :: valii(2), jrefd, nfr, n4, jnmo, nmode, iarg, nbcmpd, nbcmpi
 !
     parameter  (mxpara=10)
@@ -97,6 +96,7 @@ subroutine crtype()
 !
     blan8 = ' '
     excit = ' '
+    nboini=10
 !
     call getres(resu, type, oper)
     resu19=resu
@@ -107,7 +107,7 @@ subroutine crtype()
                 typres, n1)
 !
     call jeexin(resu//'           .DESC', iret)
-    if (iret .eq. 0) call rscrsd('G', resu, typres, 10)
+    if (iret .eq. 0) call rscrsd('G', resu, typres, nboini)
 !
     lncas = .false.
     if (typres .eq. 'MULT_ELAS' .or. typres .eq. 'FOURIER_ELAS' .or. typres .eq.&
@@ -574,7 +574,7 @@ subroutine crtype()
 70      continue
         call jedetr(linst)
         call jedetr(lcpt)
-80  end do
+80  continue
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
     if (typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' .or. typres(1:10)&
@@ -597,6 +597,11 @@ subroutine crtype()
                     matr, n1)
         if (n1 .eq. 1) zk24(jrefd-1+2)=matr
     endif
+!
+    if ( typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER' ) then
+        call lrcomm(resu, typres, nboini, materi, carele, modele)
+    endif    
+                                        
 !
     call jedetr('&&CRTYPE.CHAMPS')
     call jedema()

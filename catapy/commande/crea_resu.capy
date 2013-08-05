@@ -55,7 +55,42 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            b_mode       =BLOC(condition = "au_moins_un(TYPE_RESU, ('MODE_MECA', 'DYNA_HARMO', 'DYNA_TRANS'))",
              MATR_RIGI     =SIMP(statut='f',typ=matr_asse_depl_r,),
              MATR_MASS     =SIMP(statut='f',typ=matr_asse_depl_r,),
+           ),          
+#
+#  pour ajouter un comportement dans la SD
+#                
+           COMP_INCR     =C_COMP_INCR(),
+#
+#  pour ajouter une charge dans la SD
+#     
+           b_evol_elas  = BLOC(condition="TYPE_RESU=='EVOL_ELAS'",
+           EXCIT           =FACT(statut='f',max='**',
+             CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+             FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),),
+            ),
+      
+           b_evol_ther  = BLOC(condition="TYPE_RESU=='EVOL_THER'",
+           EXCIT           =FACT(statut='f',max='**',
+             CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
+             FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),),
+            ),
+      
+           b_evol_noli  = BLOC(condition="TYPE_RESU=='EVOL_NOLI'",
+           EXCIT           =FACT(statut='f',max='**',
+            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
+                                  into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
+            DEPL            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+            ACCE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+            VITE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+            MULT_APPUI      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
+            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
            ),
+
 
            AFFE         =FACT(statut='o',max='**',
              CHAM_GD       =SIMP(statut='o',typ=(cham_gd_sdaster)),
@@ -63,6 +98,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              CHAM_MATER    =SIMP(statut='f',typ=cham_mater),
              CARA_ELEM     =SIMP(statut='f',typ=cara_elem),
 
+#
              b_mult_elas     =BLOC(condition = "TYPE_RESU == 'MULT_ELAS' ",
                 NOM_CAS         =SIMP(statut='f',typ='TXM' ),
                 CHARGE          =SIMP(statut='f',typ=(char_meca),max='**'),

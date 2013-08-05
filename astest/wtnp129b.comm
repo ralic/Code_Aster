@@ -460,6 +460,8 @@ for k in range(1,lenlinst) :
     SIGEFF=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_NOLI',
                    NOM_CHAM='SIEF_ELGA',
+                   COMP_INCR=_F(RELATION='ELAS'),
+                   EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIGEFFCH,
                            MODELE=MODMEC,
                            INST=linst[k]));
@@ -468,6 +470,8 @@ for k in range(1,lenlinst) :
     SIGEFFNO=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_NOLI',
                    NOM_CHAM='SIEF_NOEU',
+                   COMP_INCR=_F(RELATION='ELAS'),
+                   EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIEFFNO,
                            MODELE=MODMEC,
                            INST=linst[k]));
@@ -478,6 +482,8 @@ for k in range(1,lenlinst) :
                      OPERATION='AFFE',
                    TYPE_RESU='EVOL_NOLI',
                    NOM_CHAM='SIEF_ELGA',
+                   COMP_INCR=_F(RELATION='ELAS'),
+                   EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIGEFFCH,
                            MODELE=MODMEC,
                            INST=linst[k]));
@@ -486,6 +492,8 @@ for k in range(1,lenlinst) :
                    OPERATION='AFFE',
                    TYPE_RESU='EVOL_NOLI',
                    NOM_CHAM='SIEF_NOEU',
+                   COMP_INCR=_F(RELATION='ELAS'),
+                   EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIEFFNO,
                            MODELE=MODMEC,
                            INST=linst[k]));
