@@ -118,7 +118,7 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-18 : {  'message' : _(u"""Librairie MUMPS : installée"""),
+18 : {  'message' : _(u"""Version de la librairie MUMPS : %(k1)s"""),
         'flags' : 'CENTER | ALL_UNIT',
 },
 

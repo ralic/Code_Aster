@@ -73,8 +73,9 @@ subroutine entete()
 #endif
 ! --- LIBRARIES SOLVEURS
 #ifdef _HAVE_MUMPS
-!     STOCKER A L'INSTALLATION MUMPS_VERSION DE smumps_c.h
-    call u2mess('I', 'SUPERVIS2_18')
+!   to avoid C1510
+#   define vers MUMPS_VERSION
+    call u2mesk('I', 'SUPERVIS2_18', 1, vers)
 #else
     call u2mess('I', 'SUPERVIS2_19')
 #endif
