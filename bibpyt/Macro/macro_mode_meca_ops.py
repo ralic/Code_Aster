@@ -19,9 +19,11 @@ from Accas import _F
 from Utilitai.Utmess import UTMESS
 import aster_core
 import aster
+from Noyau.N_utils import AsType
+from Cata.cata import matr_asse_depl_r
 
 def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
-                      SOLVEUR,VERI_MODE,NORM_MODE,FILTRE_MODE,IMPRESSION,
+                      SOLVEUR,VERI_MODE,
                       NIVEAU_PARALLELISME,**args):
    """
       Ecriture de la macro MACRO_MODE_MECA
@@ -34,10 +36,14 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    # ----------------------------------------------------------------------      
    ier=0
    dbg=False # True si on souhaite faire un IMPR_CO intermediaire, False sinon
-    
+   lmatphys = True   # True si matrices d'entrée de type matr_asse_depl_r, False sinon    
+   if ( AsType(MATR_RIGI) != matr_asse_depl_r ) :
+      lmatphys = False
+
    #  On protege le contenu du mot cle NORM_MODE pour eviter les confusions
    #  avec la commande du meme nom
-   normode=NORM_MODE
+   if lmatphys : # dans ce cas, NORM_MODE est renseigné donc l'accès par args[] est licite
+      normode=args['NORM_MODE']
   
    # On importe les definitions des commandes a utiliser dans la macro
    MODE_ITER_SIMULT  =self.get_cmd('MODE_ITER_SIMULT')
@@ -278,20 +284,31 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
          #     du filtre de l'etape 3b.
          #
          #-----------------------------------------------------------------
-         __nomre0=NORM_MODE(reuse     =__nomre0,
-                            MODE      =__nomre0,
-                            NORME     =normode['NORME'],
-                            INFO      =normode['INFO'],)
-         if IMPRESSION['TOUT_PARA']=='OUI':
-            IMPR_RESU(RESU=_F(  RESULTAT=__nomre0,
+         if lmatphys : # on peut normer
+            __nomre0=NORM_MODE(reuse     =__nomre0,
+                               MODE      =__nomre0,
+                               NORME     =normode['NORME'],
+                               INFO      =normode['INFO'],
+                               )
+         impr_tout = False
+         if lmatphys :
+            if args['IMPRESSION']['TOUT_PARA']=='OUI': impr_tout = True
+         if not lmatphys :                             impr_tout = True
+         if impr_tout :
+            IMPR_RESU(RESU=_F(RESULTAT=__nomre0,
                               TOUT_ORDRE='OUI',
                               TOUT_CHAM ='NON',
                               TOUT_PARA ='OUI',) )
-         if FILTRE_MODE :
+         lfiltre = False  # False si non renseigné par l'utilisateur ou si matr_asse_gene_r, True sinon
+         if lmatphys :
+            if args['FILTRE_MODE'] : lfiltre = True
+            else :                   lfiltre = False
+         else: lfiltre = False
+         if lfiltre :
             motscles['FILTRE_MODE'].append(_F(MODE      =__nomre0,
-                                              CRIT_EXTR =FILTRE_MODE['CRIT_EXTR'],
-                                              SEUIL     =FILTRE_MODE['SEUIL'], ))
-         else:
+                                              CRIT_EXTR =args['FILTRE_MODE']['CRIT_EXTR'],
+                                              SEUIL     =args['FILTRE_MODE']['SEUIL'], ))
+         else :
             motscles['FILTRE_MODE'].append(_F(MODE      =__nomre0,
                                               TOUT_ORDRE='OUI',) )
 
@@ -381,9 +398,10 @@ def macro_mode_meca_ops(self,MATR_RIGI,MATR_MASS,INFO,METHODE,OPTION,CALC_FREQ,
    # 3b. Filtrage et concatenation des resultats
    #
    #-----------------------------------------------------------------------
-   if (nbmodeth != 0) :  
-      motscles['IMPRESSION']=_F(CUMUL    =IMPRESSION['CUMUL'],
-                            CRIT_EXTR=IMPRESSION['CRIT_EXTR'],)
+   if ( nbmodeth != 0 ):
+      if lmatphys :
+         motscles['IMPRESSION']=_F(CUMUL    =args['IMPRESSION']['CUMUL'],
+                                   CRIT_EXTR=args['IMPRESSION']['CRIT_EXTR'],)
       self.DeclareOut('nomres',self.sd)
       nomres=EXTR_MODE(**motscles)
 

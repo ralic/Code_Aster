@@ -180,5 +180,37 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
+# Test de MACRO_MODE_MECA avec des matrices généralisées
+MODHUMIM = MACRO_MODE_MECA(
+                          MATR_RIGI = RIGGEN,
+                          MATR_MASS = MASTOT,
+                          CALC_FREQ =_F( FREQ = (1., 2., 5.) ),
+                         )
+
+MODEAU=REST_GENE_PHYS(RESU_GENE=MODHUMIM,
+                      MODE_MECA=MODES,
+                      NOM_CHAM='DEPL')
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   RESULTAT=MODEAU,
+                   VALE_CALC=1.6958084013848,
+                   VALE_REFE=1.696,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='RELATIF',
+                   ),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   RESULTAT=MODEAU,
+                   VALE_CALC=4.1247255996963,
+                   VALE_REFE=4.128,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',
+                   CRITERE='RELATIF',
+                   ),
+                ),
+          )
+
 FIN()
 #

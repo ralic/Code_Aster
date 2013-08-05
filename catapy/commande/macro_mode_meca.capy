@@ -16,14 +16,23 @@
 # ======================================================================
 # person_in_charge: nicolas.brie at edf.fr
 
+def macro_mode_meca_prod( self, MATR_RIGI,MATR_MASS, **args) :
+   if ( AsType(MATR_RIGI) == matr_asse_gene_r ):
+      if ( AsType(MATR_MASS) == matr_asse_gene_r ):
+         return mode_gene
+      else:
+         raise AsException("Matrices d'entrée de types différents : physique / généralisée.")
+
+   return mode_meca
+
 
 MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
                      op=OPS('Macro.macro_mode_meca_ops.macro_mode_meca_ops'),
-                     sd_prod=mode_meca,
+                     sd_prod=macro_mode_meca_prod,
                      reentrant='n',fr="Lancer une succession de calculs de modes propres réels",
             UIinfo={"groupes":("Résolution","Dynamique",)},
-         MATR_RIGI       =SIMP(statut='o',typ=matr_asse_depl_r ),
-         MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r ),
+         MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r, matr_asse_gene_r) ),
+         MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r, matr_asse_gene_r) ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 #  ce mot cle ne devrait il pas etre dans calc_freq
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",
@@ -71,7 +80,8 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
            STURM           =SIMP(statut='f',typ='TXM',defaut="GLOBAL",into=("GLOBAL","LOCAL","NON") ),
          ),
 
-         NORM_MODE       =FACT(statut='o',max='**',
+         b_matr_phys =BLOC( condition = "AsType(MATR_RIGI) == matr_asse_depl_r",
+         NORM_MODE       =FACT(statut='d',max='**',
            NORME           =SIMP(statut='f',typ='TXM',defaut="TRAN_ROTA",
                                  into=("MASS_GENE","RIGI_GENE","EUCL",
                                        "EUCL_TRAN","TRAN","TRAN_ROTA") ),
@@ -90,4 +100,5 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",
            CRIT_EXTR       =SIMP(statut='f',typ='TXM',defaut="MASS_EFFE_UN",
                                  into=("MASS_EFFE_UN","MASS_GENE",) ),
          ),
+                          ),
 )  ;
