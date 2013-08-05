@@ -123,7 +123,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !
 ! -----------------------------DECLARATION-----------------------------
     if (formal(1) .ne. 'GDEF_HYPO_ELAS') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     rbid = r8vide()
@@ -163,7 +163,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !-----------------------------TEST AVANT CALCUL---------------------
 !
 !     TEST SUR LE NOMBRE DE NOEUDS SI TEST NON VERIFIE MESSAGE ERREUR
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
     if (typmod(1) .eq. 'C_PLAN') call u2mess('F', 'ALGORITH8_1')
     if (axi) ndu = 3
 !

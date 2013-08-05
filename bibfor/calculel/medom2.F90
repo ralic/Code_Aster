@@ -130,7 +130,7 @@ subroutine medom2(modele, mate, cara, kcha, ncha,&
             noojb='12345678.LIGR000000.LIEL'
             call gnomsd(result, noojb, 14, 19)
             ligr1=noojb(1:19)
-            call assert(ligr1.ne.' ')
+            ASSERT(ligr1.ne.' ')
             call exlim1(zi(jlisma), nbmaal, modele, base, ligr1)
             call jedetr('&&MEDOM2.LISTE_MAILLES')
         endif

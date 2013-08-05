@@ -159,7 +159,7 @@ subroutine nuendo(numedd, sdnuen)
 ! --- A LA GRANDEUR DEPL_R
 !
     idamg = indik8(zk8(iancmp),nocmp,1,ncmpmx)
-    call assert(idamg.ne.0)
+    ASSERT(idamg.ne.0)
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE
 !
@@ -170,7 +170,7 @@ subroutine nuendo(numedd, sdnuen)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
 40  end do
-    call assert(k.ne.0)
+    ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
 !

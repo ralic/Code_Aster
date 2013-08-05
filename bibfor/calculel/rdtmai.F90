@@ -1,6 +1,5 @@
 subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                   bascor, nbmal, lima)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -89,8 +88,8 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !
     call jemarq()
 !
-    call assert(noma.ne.nomare)
-    call assert(base.eq.'V' .or. base.eq.'G')
+    ASSERT(noma.ne.nomare)
+    ASSERT(base.eq.'V' .or. base.eq.'G')
 !
 !
 ! -1- PRELIMINAIRES
@@ -99,7 +98,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     call getres(nomres, typres, nomcmd)
     lcaay=(nomcmd.eq.'IMPR_CAAY')
 !     LCAAY => ON IMPRIME AUSSI LES GROUPES VIDES
-    if (lcaay) call assert(nbmal.gt.0)
+    if (lcaay) ASSERT(nbmal.gt.0)
 !
 !
 ! --- CALCUL DE LA LISTE DES MAILLES SUR LESQUELLES IL FAUT REDUIRE :
@@ -387,7 +386,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 !
     if (ttgrno .eq. 'NON') then
 !       'TOUT_GROUP_MA'='NON' ET 'GROUP_NO' PRESENT
-        call assert(.not.lcaay)
+        ASSERT(.not.lcaay)
         call wkvect('&&RDTMAI_GRNO_NON_VIDES', 'V V I', nbnoou, jgnonv)
         call wkvect('&&RDTMAI_NB_NO_PAR_GRNO', 'V V I', nbnoou, jnnpg)
         nbgnnv=0

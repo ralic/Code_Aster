@@ -165,13 +165,13 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !        STRUCTURES ARE AUTOMATICALLY DESTROYED BY THE SUBROUTINE
 !        "CNSPRJ"
     call cnsprj(dcnsln, corres, 'G', tmplsn, ibid)
-    call assert(ibid.eq.0)
+    ASSERT(ibid.eq.0)
 !
 !        PROJECTION OF THE TANGENTIAL LEVELSET. THE EXISTING FIELD DATA
 !        STRUCTURES ARE AUTOMATICALLY DESTROYED BY THE SUBROUTINE
 !        "CNSPRJ"
     call cnsprj(dcnslt, corres, 'G', tmplst, ibid)
-    call assert(ibid.eq.0)
+    ASSERT(ibid.eq.0)
 !
     call jedetr(corres)
 !

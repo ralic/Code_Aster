@@ -128,7 +128,7 @@ subroutine lgdmvm(imate, compor, epsm, deps, vim,&
 !
 !-----TRIANGULATION DU MODULE ELASTIQUE
     call trlds(celdam, 6, 6, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 !
 !-----INVERSION DU MODULE ELASTIQUE
@@ -354,7 +354,7 @@ subroutine lgdmvm(imate, compor, epsm, deps, vim,&
 !
 !-------TRIANGULATION DE (Cd + Cp - Cp*Ce^(-1)*Cd)
         call trlds(tanloc, 6, 6, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !-------RESOLUTION DU DDEMP
         call rrlds(tanloc, 6, 6, ddemp, 1)
@@ -382,7 +382,7 @@ subroutine lgdmvm(imate, compor, epsm, deps, vim,&
 !
 !-------TRIANGULATION
         call trlds(tanepl, 6, 6, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call r8inir(36, 0.d0, tanpom, 1)
         do 700, j = 1,6
@@ -401,7 +401,7 @@ subroutine lgdmvm(imate, compor, epsm, deps, vim,&
 !
 !-------TRIANGULATION
         call trlds(tandam, 6, 6, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call r8inir(36, 0.d0, tanepl, 1)
         do 720, j = 1,6
@@ -420,7 +420,7 @@ subroutine lgdmvm(imate, compor, epsm, deps, vim,&
 !
 !-------TRIANGULATION
         call trlds(tanpom, 6, 6, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call r8inir(36, 0.d0, dsidep, 1)
         do 740, j = 1,6

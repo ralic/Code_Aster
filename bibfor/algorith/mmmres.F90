@@ -19,7 +19,6 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -290,7 +289,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                         rny = zr(jcont-1+2*(numnoe-1)+2)
                         rn = sqrt(rnx**2+rny**2)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 !
 ! ----------- CONTACT AFFLEURANT ?
@@ -313,7 +312,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                             gli1 = zr(jglie+iptc-1) - zr(jglim+iptc-1)
                             gli = abs(gli1)
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
 !
 ! ------------- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
@@ -328,7 +327,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                         else if (ndimg.eq.2) then
                             lagsf = abs (zr(jdepde-1+ndd1*(numnoe-1)+ 4))
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
 !
 ! ------------- GLISSANT OU ADHERENT
@@ -347,7 +346,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                                 rtgx = zr(jfrot-1+2*(numnoe-1)+1)
                                 rtgy = zr(jfrot-1+2*(numnoe-1)+2)
                             else
-                                call assert(.false.)
+                                ASSERT(.false.)
                             endif
                         else
 !
@@ -361,7 +360,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                                 rtax = zr(jfrot-1+2*(numnoe-1)+1)
                                 rtay = zr(jfrot-1+2*(numnoe-1)+2)
                             else
-                                call assert(.false.)
+                                ASSERT(.false.)
                             endif
                         endif
                     else
@@ -490,7 +489,7 @@ subroutine mmmres(noma, inst, defico, resoco, depplu,&
                     zl(jcnslr+zresu*(numnoe-1)+28-1) = .true.
                     zl(jcnslr+zresu*(numnoe-1)+29-1) = .true.
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 ! --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S VALE_PERC

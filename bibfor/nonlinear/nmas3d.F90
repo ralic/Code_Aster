@@ -255,7 +255,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
         else if (compor(1).eq.'ELAS_ORTH') then
             nomres(2)='NU_LT'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !

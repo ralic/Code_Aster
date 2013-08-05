@@ -103,7 +103,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 !
     chcara = cara(1:8)//'.CARORIEN'
     call etenca(chcara, ligrel, ier)
-    call assert(ier.eq.0)
+    ASSERT(ier.eq.0)
     nomgd = 'CAORIE'
     call jeveuo(chcara//'.DESC', 'L', idesc)
 !

@@ -63,7 +63,7 @@ subroutine vrcdec()
     call jeveuo(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'L', jfpgl)
     call jelira(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'LONMAX', nfpg, kbid)
     nfpg=nfpg-1
-    call assert(nfpg.le.nfpgmx)
+    ASSERT(nfpg.le.nfpgmx)
     kpgmat=0
     elrefe= zk8(jfpgl-1+nfpg+1)
     do 1,k=1,nfpg
@@ -72,7 +72,7 @@ subroutine vrcdec()
     noflpg = nomte//elrefe//fapg
     nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
     nufgpg = zi(jnolfp-1+nuflpg)
-    call assert(nufgpg.gt.0)
+    ASSERT(nufgpg.gt.0)
     nbpg=zi(jtmfpg-1+nufgpg)
     kpgmat=kpgmat+nbpg
     1 end do

@@ -59,8 +59,8 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call assert(ces2.ne.' ')
-    call assert(ces1.ne.ces2)
+    ASSERT(ces2.ne.' ')
+    ASSERT(ces1.ne.ces2)
     codret=1
 !
 !
@@ -129,7 +129,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
                 isp, icmp, iad1)
     call cesexi('C', jce2d, jce2l, ima2, ipt,&
                 isp, icmp, iad2)
-    call assert(iad2.le.0)
+    ASSERT(iad2.le.0)
     if ((iad1.le.0) .or. (iad2.eq.0)) goto 20
 !
 !               -- RECOPIE DE LA VALEUR:
@@ -153,7 +153,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2,&
     else if (tsca.eq.'K80') then
         zk80(jce2v-1-iad2)=zk80(jce1v-1+iad1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 20  continue

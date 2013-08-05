@@ -114,7 +114,7 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 60  continue

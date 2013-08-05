@@ -58,11 +58,11 @@ subroutine mainoe(noma, nbm, limanu, nuouno, nbno,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    call assert(nuouno.eq.'NO' .or. nuouno.eq.'NU')
+    ASSERT(nuouno.eq.'NO' .or. nuouno.eq.'NU')
 !
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnot,&
                 kbid, ier)
-    call assert(nbnot.gt.0)
+    ASSERT(nbnot.gt.0)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
@@ -85,7 +85,7 @@ subroutine mainoe(noma, nbm, limanu, nuouno, nbno,&
     do 30,k = 1,nbnot
     if (zi(jlisno-1+k) .eq. 1) nbno = nbno + 1
     30 end do
-    call assert(nbno.gt.0)
+    ASSERT(nbno.gt.0)
 !
 !     -- ALLOCATION ET REMPLISSAGE DE OBJ :
 !     --------------------------------------

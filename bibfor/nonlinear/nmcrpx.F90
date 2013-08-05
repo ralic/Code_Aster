@@ -127,7 +127,7 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
         call getvis(motfac, motpas, iocc, iarg, 1,&
                     freq, n1)
         if (n1 .ne. 0) then
-            call assert(freq.ge.0)
+            ASSERT(freq.ge.0)
         endif
     endif
 !

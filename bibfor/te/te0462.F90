@@ -51,7 +51,7 @@ subroutine te0462(option, nomte)
 ! ----------------------------------------------------------------------
 !
     if (nomte(1:4) .ne. 'MEDK' .and. nomte(1:4) .ne. 'MEGC') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     grille= nomte(1:4).eq.'MEGC'
 !
@@ -61,7 +61,7 @@ subroutine te0462(option, nomte)
     else if (nomte(5:7).eq.'TR3') then
         nno = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -72,7 +72,7 @@ subroutine te0462(option, nomte)
                 iret)
     icopg=jtab(1)
     nbsp=jtab(7)
-    call assert(nbsp.gt.0)
+    ASSERT(nbsp.gt.0)
 !
     call jevech('PCACOQU', 'L', icoq)
 !

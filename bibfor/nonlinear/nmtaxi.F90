@@ -68,7 +68,7 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
                 epm, dp, sp, xi, f,&
                 g, fds, gds, fdp, gdp,&
                 fdx, gdx, dpmax, sig, tang)
-    call assert(f.gt.0.d0)
+    ASSERT(f.gt.0.d0)
     x(2) = xi
     y(2) = f
     gg(2) = g

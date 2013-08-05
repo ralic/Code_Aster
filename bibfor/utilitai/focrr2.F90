@@ -151,7 +151,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     endif
 !
 !     --- REMPLISSAGE DU .PROL ---
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
     if (typres(1:10) .eq. 'DYNA_HARMO') then
         zk24(lpro) = 'FONCT_C'
@@ -172,7 +172,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     lfon = lvar + nbinst
 !
     call jenonu(jexnom(resu//'.NOVA', nomacc), iacces)
-    call assert(iacces.ne.0)
+    ASSERT(iacces.ne.0)
     call jeveuo(jexnum(resu//'.TAVA', iacces), 'L', iatava)
 !
     call rslipa(resu, nomacc, '&&FOCRR2.LIR8', jlir8, nbordr)
@@ -249,7 +249,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !
             call rsutro(resu, i1, ip1, ierr1)
             call rsutro(resu, i2, ip2, ierr2)
-            call assert(ierr1+ierr2.le.0)
+            ASSERT(ierr1+ierr2.le.0)
             rbase = zr(jlir8-1+i2) - zr(jlir8-1+i1)
 !
             call rsexch('F', resu, nomcha, ip1, ch1,&
@@ -374,7 +374,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 !
             call rsutro(resu, i1, ip1, ierr1)
             call rsutro(resu, i2, ip2, ierr2)
-            call assert(ierr1+ierr2.le.0)
+            ASSERT(ierr1+ierr2.le.0)
             rbase = zr(jlir8-1+i2) - zr(jlir8-1+i1)
 !
             call rsexch('F', resu, nomcha, ip1, ch1,&
@@ -386,7 +386,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
                 call utch19(ch1, noma, maille, noeuz, npoinz,&
                             nuspz, ivari, cmp, type, valr1,&
                             valc1, vali1, iret)
-                call assert(iret.eq.0)
+                ASSERT(iret.eq.0)
                 zr(lvar+iordr) = rval
                 if (type .eq. 'R') then
                     zr(lfon+iordr) = valr1
@@ -404,11 +404,11 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call utch19(ch1, noma, maille, noeuz, npoinz,&
                         nuspz, ivari, cmp, type, valr1,&
                         valc1, vali1, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call utch19(ch2, noma, maille, noeuz, npoinz,&
                         nuspz, ivari, cmp, type, valr2,&
                         valc2, vali2, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
 !
             zr(lvar+iordr) = rval
             if (type .eq. 'R') then

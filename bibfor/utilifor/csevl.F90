@@ -58,9 +58,9 @@ function csevl(x, cs, n)
 !***FIRST EXECUTABLE STATEMENT  DCSEVL
     if (first) onepl = 1.0d0 + r8prem()
     first = .false.
-    call assert(n .ge. 1)
-    call assert(n .le. 1000)
-    call assert(abs(x) .le. onepl)
+    ASSERT(n .ge. 1)
+    ASSERT(n .le. 1000)
+    ASSERT(abs(x) .le. onepl)
 !
     b1 = 0.0d0
     b0 = 0.0d0

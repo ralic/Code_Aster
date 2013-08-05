@@ -134,7 +134,7 @@ subroutine rsagsd(nomsd, ilong)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1, k8b)
         n2=n1/nbordr
-        call assert(n1.eq.n2*nbordr)
+        ASSERT(n1.eq.n2*nbordr)
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
         do 1, kk=n2*nbordr+1, n2*newnb

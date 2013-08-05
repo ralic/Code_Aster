@@ -36,6 +36,7 @@ subroutine cgvedo(ndim, option)
 !
     integer :: nbop3d, i
     parameter   (nbop3d=4)
+    logical :: bool
     character(len=16) :: liop3d(nbop3d)
     data         liop3d / 'CALC_G_GLOB','G_MAX_GLOB','G_BILI_GLOB',&
      &                      'CALC_K_MAX' /
@@ -44,13 +45,10 @@ subroutine cgvedo(ndim, option)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'RUPTURE0_2')
 !
 !     VERIFICATION DE L'OPTION (NORMALEMENT, C'EST FAIT DANS LE CAPY)
-    call assert(option .eq. 'CALC_G' .or. option&
-                .eq. 'CALC_G_GLOB' .or. option .eq.&
-                'CALC_K_G' .or. option .eq. 'K_G_MODA'&
-                .or. option .eq. 'G_BILI' .or.&
-                option .eq. 'G_BILI_GLOB' .or. option&
-                .eq. 'G_MAX' .or. option .eq.&
-                'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX')
+    bool = option .eq. 'CALC_G' .or. option.eq. 'CALC_G_GLOB' .or. option .eq. 'CALC_K_G' &
+      .or. option .eq. 'K_G_MODA'.or. option .eq. 'G_BILI' .or. option .eq. 'G_BILI_GLOB' &
+      .or. option .eq. 'G_MAX' .or. option .eq.'G_MAX_GLOB' .or. option .eq. 'CALC_K_MAX'
+    ASSERT(bool)
 !
 !     CERTAINES OPTIONS NE S'UTILISENT (OU NE SONT PROGRAMMEES) QU'EN 3D
     if (ndim .eq. 2) then

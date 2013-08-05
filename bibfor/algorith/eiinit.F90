@@ -96,7 +96,7 @@ subroutine eiinit(nomte, iu, il, it)
 230      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

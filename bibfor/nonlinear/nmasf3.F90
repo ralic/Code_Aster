@@ -156,7 +156,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     else if (phenom.eq.'ELAS_ORTH') then
         nomres(2)='NU_LT'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call rcvalb('FPG1', 1, 1, '+', imate,&

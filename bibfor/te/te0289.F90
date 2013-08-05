@@ -79,14 +79,14 @@ subroutine te0289(option, nomte)
     call elref1(elrefp)
     call elref4(' ', 'RIGI', ndim, nnop, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
-    call assert(nnop.le.27)
+    ASSERT(nnop.le.27)
 !
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG, IVF ET JGANO
     call elref4(elrese(ndim), fami(ndim), ibid, nno, ibid,&
                 npg, ibid, ivf, ibid, jgano)
 !
-    call assert(npg.le.15)
+    ASSERT(npg.le.15)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -95,7 +95,7 @@ subroutine te0289(option, nomte)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
-    call assert(nbsig.le.6)
+    ASSERT(nbsig.le.6)
 !
 !-----------------------------------------------------------------------
 !     RECUPERATION DES ENTREES / SORTIE
@@ -143,7 +143,7 @@ subroutine te0289(option, nomte)
 !
     else
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

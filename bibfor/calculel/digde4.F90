@@ -55,7 +55,7 @@ function digde4(igr, iel, opt, ipar, dim1,&
     numail(igr,iel) = zi(ialiel-1+zi(illiel+igr-1)+iel-1)
 !
 ! DEB-------------------------------------------------------------------
-    call assert(evfini.eq.1)
+    ASSERT(evfini.eq.1)
     lon1=0
     numa = numail(igr,iel)
     call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
@@ -67,7 +67,7 @@ function digde4(igr, iel, opt, ipar, dim1,&
     nel2p1=zi(illiel-1+igr2+1)-zi(illiel-1+igr2)
     te2= zi(ialiel-1+zi(illiel-1+igr2)-1+nel2p1)
     mode2 = modatt(opt,te2,'OUT',ipar)
-    call assert(mode2.gt.0)
+    ASSERT(mode2.gt.0)
     dim2=digde3(mode2,'L')
     lon1=lon1+dim1*dim2
     22 end do

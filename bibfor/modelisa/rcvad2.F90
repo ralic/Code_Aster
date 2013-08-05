@@ -63,7 +63,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
     phen = phenom
     nbmat=zi(jmat)
 !     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
-    call assert(nbmat.eq.1)
+    ASSERT(nbmat.eq.1)
     imat = jmat+zi(jmat+nbmat+1)
 !
     do 30 ires = 1, nbres

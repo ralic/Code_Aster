@@ -66,7 +66,7 @@ subroutine cftypn(defico, posno, typno)
     else if (zi(jtypno+ztypn*(posno -1)+1-1).eq.-1) then
         typno = 'ESCL'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

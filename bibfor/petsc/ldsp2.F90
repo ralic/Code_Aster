@@ -37,18 +37,18 @@ subroutine ldsp2(pc, x1, y, ierr)
 !
 ! --  COPIE DU VECTEUR D'ENTREE, CAR ERREUR S'IL EST TRANSFORME
     call VecCopy(x1, xlocal, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 ! --  RECUPERATION DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecScatterBegin(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD,&
                          ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecScatterEnd(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD,&
                        ierr)
 !
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecGetArray(xglobal, xx, xidx, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
     call amumph('RESOUD', spsomu, spmat, xx(xidx+1), cbid,&
@@ -56,13 +56,13 @@ subroutine ldsp2(pc, x1, y, ierr)
 !
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
     call VecRestoreArray(xglobal, xx, xidx, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecScatterBegin(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE,&
                          ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecScatterEnd(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE,&
                        ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
     ierr=iret
 !

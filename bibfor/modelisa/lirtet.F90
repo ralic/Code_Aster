@@ -57,7 +57,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
     nbigno=0
     nom='INDEFINI'
 !
-    call assert(inom.eq.0.or.inom.eq.1)
+    ASSERT(inom.eq.0.or.inom.eq.1)
 !
     if (inom .eq. 0) then
  1      continue
@@ -75,7 +75,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
                     if (icl .eq. 1) then
                         nbigno=iv
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                     goto 9
                 else
@@ -111,7 +111,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
                             call u2mesk('A', 'MODELISA4_97', 1, cvz(1:iv))
                         endif
                         lcv=min(iv,24)
-                        call assert(len(cv).ge.lcv)
+                        ASSERT(len(cv).ge.lcv)
                         nom=cv(1:lcv)
                     else
                         call u2mess('F', 'MODELISA4_98')
@@ -126,7 +126,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
                     if (icl .eq. 1) then
                         nbigno=iv
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                     lent=.true.
                 else
@@ -144,7 +144,7 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom,&
             endif
         else
             if (lent) then
-                call assert(.not.lnom)
+                ASSERT(.not.lnom)
                 nbigno = nbigno - 1
                 goto 9
             else

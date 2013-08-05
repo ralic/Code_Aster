@@ -16,7 +16,6 @@ subroutine jjlide(nomap, nomlu, itype)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
@@ -109,7 +108,7 @@ subroutine jjlide(nomap, nomlu, itype)
         fonc = 'TASS'
 !
 !       APPEL A JJLIDE PAR JETASS INVALIDE POUR TYPE =/= 1
-        call assert(itype.eq.1)
+        ASSERT(itype.eq.1)
     else if (nomap .eq. 'JELIBF') then
         fonc = 'LIBF'
     else if (nomap .eq. 'SYSTEM') then
@@ -304,7 +303,7 @@ subroutine jjlide(nomap, nomlu, itype)
             ixlono = iszon ( jiszon + ibacol + idlono )
 !
 !         LIBERATION D''UN OBJET DE COLLECTION CONTIGUE REFUSEE
-            call assert(ixiadd .ne. 0)
+            ASSERT(ixiadd .ne. 0)
             ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
             ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
             ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )

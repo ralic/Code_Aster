@@ -50,7 +50,7 @@ subroutine nxdomt(parmei, parmer)
     if (iocc .eq. 1) then
         call getvis('NEWTON', 'REAC_ITER', 1, iarg, 1,&
                     parmei(1), n1)
-        call assert(parmei(1).ge.0)
+        ASSERT(parmei(1).ge.0)
 !
         call getvr8('NEWTON', 'RESI_LINE_RELA', 1, iarg, 1,&
                     parmer(2), n1)

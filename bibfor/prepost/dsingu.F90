@@ -92,7 +92,7 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
                     nelcom, numeli, xy, erreur, energi,&
                     mesu, alpha, nalpha)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

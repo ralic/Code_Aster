@@ -140,7 +140,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf,&
         call daxpy(ndimsi, 1.d0, deps, 1, epsp,&
                    1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

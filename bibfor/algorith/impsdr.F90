@@ -66,7 +66,7 @@ subroutine impsdr(sdcolo, valk, valr, vali)
     else if (lchai) then
         call obsetk(sdcolo, 'VALE_K', valk)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

@@ -79,7 +79,7 @@ subroutine cnsimp(cnsz, unite)
     goto 30
 20  continue
     ncmpu = ncmpu + 1
-    call assert(ncmpu.le.997)
+    ASSERT(ncmpu.le.997)
     licmpu(ncmpu) = k
     30 end do
 !
@@ -88,7 +88,7 @@ subroutine cnsimp(cnsz, unite)
 !
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert((tsca.eq.'R') .or. (tsca.eq.'K8') .or. (tsca.eq.'I') .or. (tsca.eq.'C'))
+    ASSERT((tsca.eq.'R') .or. (tsca.eq.'K8') .or. (tsca.eq.'I') .or. (tsca.eq.'C'))
 !
 !
 !     1- ALLOCATION D'UN TABLEAU DE K16 QUI CONTIENDRA LES VALEURS

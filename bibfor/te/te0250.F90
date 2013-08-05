@@ -86,7 +86,7 @@ subroutine te0250(option, nomte)
         call jevech('PTEMPEI', 'L', itemp)
     else
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (lteatt(' ','AXIS','OUI')) then
         laxi = .true.
@@ -138,7 +138,7 @@ subroutine te0250(option, nomte)
             if (lcoef) then
                 call fointe('A', zk8(icoefh), 3, nompar, valpar,&
                             coefh, icode)
-                call assert(icode.eq.0)
+                ASSERT(icode.eq.0)
                 do 70 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
 !CDIR$ IVDEP
@@ -160,10 +160,10 @@ subroutine te0250(option, nomte)
 80              continue
                 call fointe('A', zk8(iray), 3, nompar, valpar,&
                             sigma, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 call fointe('A', zk8(iray+1), 3, nompar, valpar,&
                             epsil, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 do 100 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
 !CDIR$ IVDEP

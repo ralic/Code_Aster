@@ -61,7 +61,7 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
 ! =====================================================================
 ! --- INITIALISATION DE LA MATRICE ------------------------------------
 ! =====================================================================
-    call assert(degre.le.degmax)
+    ASSERT(degre.le.degmax)
     do 10 ii = 1, degmax*degmax
         comapo(ii) = 0.d0
 10  end do

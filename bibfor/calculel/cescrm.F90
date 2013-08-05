@@ -89,7 +89,7 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg,&
 20      continue
     else
         do 21 i = 1, ncmpg
-            call assert(licmp(i).ne.' ')
+            ASSERT(licmp(i).ne.' ')
             zk8(jcmps-1+i) = licmp(i)
 21      continue
     endif

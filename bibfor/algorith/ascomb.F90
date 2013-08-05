@@ -86,11 +86,11 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
     vecele = vecelz
     vachar = vecele(1:19)//'.CHNO'
     call jeexin(vachar, iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     call jelira(vachar, 'LONMAX', nbvec, k8bid)
-    call assert(nbvec.ne.0)
+    ASSERT(nbvec.ne.0)
     call jeveuo(vachar, 'L', jvacha)
-    call assert(typres.eq.'R'.or.typres.eq.'C')
+    ASSERT(typres.eq.'R'.or.typres.eq.'C')
     call lisnnb(lischa, nbchar)
     dgrd = r8dgrd()
 !
@@ -108,7 +108,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 ! ------- NUMERO DE LA CHARGE
 !
             call corich('L', chamno, ibid, ichar)
-            call assert((ichar.ne.0).and.(ichar.ge.-2))
+            ASSERT((ichar.ne.0).and.(ichar.ge.-2))
 !
 ! ------- FONCTION MULTIPLICATRICE
 !
@@ -126,12 +126,12 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
             else if (ichar.gt.0) then
                 valres = 1.d0
                 if (nomfct .ne. ' ') then
-                    call assert(typfct(7:10).eq.'REEL')
+                    ASSERT(typfct(7:10).eq.'REEL')
                     call fointe('F', nomfct, 1, nompar, valpar,&
                                 valres, iret)
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
             zr(jcoef+ivec-1) = valres
@@ -155,7 +155,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 ! ------- NUMERO DE LA CHARGE
 !
             call corich('L', chamno, ibid, ichar)
-            call assert((ichar.ne.0).and.(ichar.ge.-2))
+            ASSERT((ichar.ne.0).and.(ichar.ge.-2))
 !
 ! ------- FONCTION MULTIPLICATRICE
 !
@@ -194,11 +194,11 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
                         call fointc('F', nomfct, 1, nompar, valpar,&
                                     valre, valim, iret)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
             zk8(jtype+ivec-1) = 'C'

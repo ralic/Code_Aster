@@ -59,7 +59,7 @@ subroutine utnuav(noma, k, iocc, lno)
 !
     call reliem(' ', ma8, 'NU_NOEUD', 'VIS_A_VIS', iocc,&
                 5, limocl, tymocl, lno, n1)
-    call assert(n1.gt.0)
+    ASSERT(n1.gt.0)
 !
     call jedema()
 end subroutine

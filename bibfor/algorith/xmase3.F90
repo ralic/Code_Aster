@@ -92,7 +92,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
@@ -138,7 +138,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
 !
         endif
 !
@@ -172,7 +172,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 125              continue
 124          continue
 !
-            call assert(cpt.eq.ddld)
+            ASSERT(cpt.eq.ddld)
 !
 120      continue
 !

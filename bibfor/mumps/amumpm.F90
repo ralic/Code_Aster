@@ -143,7 +143,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         rang=zmpsk%myid
         esizemu=16
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (lmd) then
@@ -175,7 +175,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     else if (nvale.eq.2) then
         lmnsy=.true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -196,7 +196,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         endif
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
         nbeq=zi(jnequ)
-        call assert(n1.eq.nsmdi)
+        ASSERT(n1.eq.nsmdi)
 ! --- CALCUL DE N
         n=nsmdi
 !
@@ -212,22 +212,22 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         case('NON')
         eli2lg=.false.
         case default
-        call assert(.false.)
+        ASSERT(.false.)
         end select
 !
 ! --- CALCUL DE NZ2
         nz=zi(jsmdi-1+n)
-        call assert(nz.le.nsmhc)
+        ASSERT(nz.le.nsmhc)
         nz2=nz
         if (sym .eq. 0) nz2=2*nz-n
 !
         call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvale)
         call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong, kbid)
-        call assert(nlong.eq.nz)
+        ASSERT(nlong.eq.nz)
         if (lmnsy) then
             call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvale2)
             call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong, kbid)
-            call assert(nlong.eq.nz)
+            ASSERT(nlong.eq.nz)
         endif
 !
 ! ---  DETERMINATION DES TERMES DE REFERENCE POUR LE FILTRAGE
@@ -282,7 +282,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         kpiv2='&&AMUMPM.TERMEOK2'
         call jeexin(kpiv, ibid)
         if (ibid .ne. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             call wkvect(kpiv, 'V V S', nz, iok)
             do k = 1, nz
@@ -292,7 +292,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         if (sym .eq. 0) then
             call jeexin(kpiv2, ibid)
             if (ibid .ne. 0) then
-                call assert(.false.)
+                ASSERT(.false.)
             else
                 call wkvect(kpiv2, 'V V S', nz, iok2)
                 do k = 1, nz
@@ -473,7 +473,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 allocate(zmpsk%jcn_loc(nz2))
                 allocate(zmpsk%a_loc(nz2))
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             if (lmd) then
                 nsizemu=nz2*(4+4+esizemu)+esizemu*nbeq
@@ -506,7 +506,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                 allocate(zmpsk%jcn(nz2))
                 allocate(zmpsk%a(nz2))
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             nsizemu=nz2*(4+4+esizemu)+esizemu*n
         endif
@@ -599,7 +599,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                         zmpsk%jcn_loc(iterm)=jcolg
                         zmpsk%a_loc(iterm)=caux
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                 else
                     if (type .eq. 'S') then
@@ -619,7 +619,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                         zmpsk%jcn(iterm)=jcolg
                         zmpsk%a(iterm)=caux
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                 endif
                 kzero=0
@@ -697,7 +697,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                             zmpsk%jcn_loc(iterm)=iligg
                             zmpsk%a_loc(iterm)=caux
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
                     else
                         if (type .eq. 'S') then
@@ -717,7 +717,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                             zmpsk%jcn(iterm)=iligg
                             zmpsk%a(iterm)=caux
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
                     endif
                     if (eli2lg) then
@@ -733,7 +733,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! ---FIN DE LA BOUCLE SUR NZ
         enddo
 !
-        call assert(iterm.le.nz2)
+        ASSERT(iterm.le.nz2)
         nz2=iterm
         if (ldist) then
             if (type .eq. 'S') then
@@ -745,7 +745,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else if (type.eq.'Z') then
                 zmpsk%nz_loc=nz2
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             if (type .eq. 'S') then
@@ -757,11 +757,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             else if (type.eq.'Z') then
                 zmpsk%nz=nz2
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
-        call assert(iligl.eq.n)
-        call assert(jcoll.eq.n)
+        ASSERT(iligl.eq.n)
+        ASSERT(jcoll.eq.n)
         call jelibe(nonu//'.SMOS.SMDI')
         call jelibe(nonu//'.SMOS.SMHC')
         call jelibe(jexnum(nomat//'.VALM', 1))
@@ -835,7 +835,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                     endif
                 enddo
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             if (ldist) then
                 write(ifmump,*) 'MUMPS FIN A_loc'

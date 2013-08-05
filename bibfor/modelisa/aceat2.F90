@@ -3,7 +3,7 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: nbtuy, eltuy(nbtuy), notuy(nno*nbtuy), nbpart, noex1(nbpart)
+    integer :: nno, nbtuy, eltuy(nbtuy), notuy(nno*nbtuy), nbpart, noex1(nbpart)
     integer :: noex2(nbpart), nbmap(nbpart), elpar(nbpart, nbtuy)
     integer :: nopar(nbpart, nno, nbtuy)
 ! ----------------------------------------------------------------------
@@ -35,7 +35,7 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
 !-----------------------------------------------------------------------
     integer :: iext1, iext2, im1, ima, ipa, jma, kp
     integer :: nbe, nbext1, nbext2, nex1, ni1, ni2, ni3
-    integer :: ni4, nj1, nj2, nj3, nj4, nno
+    integer :: ni4, nj1, nj2, nj3, nj4
 !-----------------------------------------------------------------------
     nbext1=0
     nbext2=0
@@ -69,8 +69,8 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1,&
             noex2(nbext2)=ni2
         endif
 30  end do
-    call assert(nbext1.eq.nbext2)
-    call assert(nbext1.eq.nbpart)
+    ASSERT(nbext1.eq.nbext2)
+    ASSERT(nbext1.eq.nbpart)
 !
 ! --- VERIFICATION ET STOCKAGE DES PARTIES CONNEXES
 !     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS

@@ -71,7 +71,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     character(len=8) :: nomai(*), nonoe(*), nomtm
     character(len=24) :: nogn(*), nogm(*)
     real(kind=8) :: coordo(*), r(3), bidon, rcsf
-    integer :: connex(*), typma(*), point(*), typel(*)
+    integer :: maxnod, connex(*), typma(*), point(*), typel(*)
     integer :: nodsup(32), nodast(32), permut(maxnod, *), codgra(*), codphy(*)
     integer :: icodno, icodma, versio, codphd(*)
     integer :: itri7, iqua9, iseg4, ihex27, ipen18
@@ -85,7 +85,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     integer :: ifc, igm, igm2, ign, ima, imail, imas
     integer :: imat, inbo, ino, ioff, iphy, ipoin, iret
     integer :: isup, itseg2, itype, j, jm, jmagr, jn
-    integer :: jnogr, k, l, m, maxnod, nbgrm, nbgrn
+    integer :: jnogr, k, l, m, nbgrm, nbgrn
     integer :: nbm, nbm2, nbma, nbn, ndim, nno, nnoe
 !
 !-----------------------------------------------------------------------
@@ -257,7 +257,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
         else if (codphd(typma(ima)).eq.6001) then
             call u2mess('A', 'PREPOST2_83')
         endif
-        call assert((icod2.le.10000).and.(icod2.ge.0))
+        ASSERT((icod2.le.10000).and.(icod2.ge.0))
         if (icod1 .ne. 0 .and. icod2 .ne. 0) then
             if (lmasu) then
                 call lxliis(nomai(ima)(2:8), imas, ier)

@@ -34,7 +34,7 @@ subroutine te0452(option, nomte)
     real(kind=8) :: excen
 !     ------------------------------------------------------------------
 !
-    call assert(option.eq.'EFGE_EXCENT')
+    ASSERT(option.eq.'EFGE_EXCENT')
 !
 !     -- IL Y A 4 CAS POSSIBLES : GAUSS/NOEUD + REEL/COMPLEXE
     call tecach('ONO', 'PEFFONR', 'L', 7, itab1,&
@@ -71,11 +71,11 @@ subroutine te0452(option, nomte)
     nbpoin=itab1(3)
     lgcata=itab1(2)
     nbcmp=lgcata/nbpoin
-    call assert(lgcata.eq.nbpoin*nbcmp)
-    call assert(nbcmp.eq.6.or.nbcmp.eq.8)
+    ASSERT(lgcata.eq.nbpoin*nbcmp)
+    ASSERT(nbcmp.eq.6.or.nbcmp.eq.8)
 !
     jout=itab2(1)
-    call assert(itab2(2).eq.lgcata)
+    ASSERT(itab2(2).eq.lgcata)
 !
     call jevech('PCACOQU', 'L', jcara)
     excen=zr(jcara+5-1)

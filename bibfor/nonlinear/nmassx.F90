@@ -194,7 +194,7 @@ subroutine nmassx(modele, numedd, mate, carele, comref,&
 ! --- CHARGEMENT DONNE
 !
     if (nbvec .gt. 8) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)

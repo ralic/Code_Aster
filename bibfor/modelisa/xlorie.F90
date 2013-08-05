@@ -65,7 +65,7 @@ subroutine xlorie(fiss)
 !     TYPE ENRICHISSEMENT (TOPOLOGIQUE OU GEOMETRIQUE)
     call getvtx(' ', 'TYPE_ENRI_FOND', 1, iarg, 1,&
                 typenr, ibid)
-    call assert(typenr.eq.'TOPOLOGIQUE'.or.typenr.eq.'GEOMETRIQUE')
+    ASSERT(typenr.eq.'TOPOLOGIQUE'.or.typenr.eq.'GEOMETRIQUE')
     if (typenr .eq. 'TOPOLOGIQUE') then
         rayon = 0.d0
         ncouch = 0
@@ -89,7 +89,7 @@ subroutine xlorie(fiss)
 !      WRITE(6,*) 'RAYON  = ',RAYON
 !      WRITE(6,*) 'NCOUCH = ',NCOUCH
 !
-    call assert(rayon*ncouch.eq.0.d0)
+    ASSERT(rayon*ncouch.eq.0.d0)
 !
 !     ATTENTION, ON NE PEUT PAS TRANSFORMER NCOUCH EN RAYON EQUIVALENT
 !     ICI CAR EN CAS DE PROPAGATION AVEC PROPA_XFEM, LE RAYON EQUIVALENT

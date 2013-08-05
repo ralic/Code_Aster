@@ -155,9 +155,9 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
                 k8bid, iret)
     call nmchai('VALINC', 'LONMAX', nmax)
-    call assert(nmax.eq.zvalin)
+    ASSERT(nmax.eq.zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
-    call assert(nmax.eq.zsolal)
+    ASSERT(nmax.eq.zsolal)
 !
 ! --- PARAMETRES RECHERCHE LINEAIRE
 !
@@ -167,7 +167,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     rhoexm = -parmet(9)
     rhoexp = parmet(9)
     relirl = parmet(6)
-    call assert(itrlmx.le.1000)
+    ASSERT(itrlmx.le.1000)
     dimmem = 10
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
@@ -246,7 +246,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
         call zbinit(sens*f0, parmul, dimmem, mem)
         rhoopt = 1.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- BOUCLE DE RECHERCHE LINEAIRE
@@ -308,7 +308,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
 !
 ! ----- ON A NECESSAIREMENT INTEGRE LA LOI DE COMPORTEMENT
 !
-        call assert(ldccvg.ne.-1)
+        ASSERT(ldccvg.ne.-1)
 !
 ! ----- ECHEC A L'INTEGRATION DE LA LOI DE COMPORTEMENT
 !
@@ -349,7 +349,7 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
                 goto 100
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (stite) then
             goto 100

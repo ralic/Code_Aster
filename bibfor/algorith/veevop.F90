@@ -196,7 +196,7 @@ subroutine veevop(nomo, fnocal, instan, lisch2)
                     vali, 1, valr)
     endif
 !
-    call assert(nbchar.le.nmxech)
+    ASSERT(nbchar.le.nmxech)
 !
 ! --- CREATION SD LISTE DES CHARGES
 !

@@ -127,7 +127,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
 110      continue
 100  end do
 !
-    call assert(nbmaco.gt.0)
+    ASSERT(nbmaco.gt.0)
 !
     fabord=.false.
     if (nbmaco .eq. 1) fabord=.true.

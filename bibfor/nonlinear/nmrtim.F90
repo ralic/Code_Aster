@@ -169,7 +169,7 @@ subroutine nmrtim(sdtime, timerz, time)
         zr(jtimen-1+17) = zr(jtimen-1+17) + time
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

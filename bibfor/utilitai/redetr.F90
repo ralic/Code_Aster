@@ -62,7 +62,7 @@ subroutine redetr(matelz)
     call mpicm1('MPI_MAX', 'I', 1, ibid, iexi,&
                 rbid, c8bid)
     iexi=min(1,abs(iexi))
-    call assert(iexi.eq.iexiav)
+    ASSERT(iexi.eq.iexiav)
     if (iexi .eq. 0) goto 60
 !
     call jeveuo(matele//'.RELR', 'E', jrelr)
@@ -73,7 +73,7 @@ subroutine redetr(matelz)
     nb1av=nb1
     call mpicm1('MPI_MAX', 'I', 1, ibid, nb1,&
                 rbid, c8bid)
-    call assert(nb1.eq.nb1av)
+    ASSERT(nb1.eq.nb1av)
 !
 !     -- SI LE MATR_ELEM NE CONTIENT QU'1 RESUELEM OU AUCUN,
 !        IL NE FAUT RIEN DETRUIRE
@@ -96,7 +96,7 @@ subroutine redetr(matelz)
     zi(jadet-1+k)=0
     resuel=zk24(jrelr-1+k)
     if (resuel .eq. ' ') then
-        call assert(.false.)
+        ASSERT(.false.)
         zi(jadet-1+k)=1
         goto 10
     endif
@@ -105,7 +105,7 @@ subroutine redetr(matelz)
     call exisd('RESUELEM', resuel, iret1)
     if (iret1 .eq. 0) then
         zi(jadet-1+k)=2
-        call assert(.false.)
+        ASSERT(.false.)
         goto 10
     endif
 !
@@ -157,7 +157,7 @@ subroutine redetr(matelz)
         zk24(jtemp-1+ico) = resuel
     endif
     40 end do
-    call assert(ico.gt.0)
+    ASSERT(ico.gt.0)
 !
     call jeecra(matele//'.RELR', 'LONUTI', ico, cbid)
     do 50,k=1,ico

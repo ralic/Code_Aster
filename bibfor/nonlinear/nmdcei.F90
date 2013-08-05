@@ -28,10 +28,10 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utdidt.h"
+    integer :: nbins, numins, nbini
     character(len=19) :: sddisc
     real(kind=8) :: newins(nbins)
     real(kind=8) :: dt0
-    integer :: nbins, numins, nbini
     character(len=4) :: typext
 !
 ! ----------------------------------------------------------------------
@@ -95,7 +95,7 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
         else if (typext.eq.'ADAP') then
             zr(jtemps+ipas+numins) = inst
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 20  end do
 !

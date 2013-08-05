@@ -89,7 +89,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
             nnof = 4
             alias='QU4'
         endif
-        call assert(nnof.le.4)
+        ASSERT(nnof.le.4)
 !
 !       RECHERCHE DES INTERSECTION ENTRE LSN ET LES LSJ SUR LA FACE
 !

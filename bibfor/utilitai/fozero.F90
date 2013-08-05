@@ -47,7 +47,7 @@ subroutine fozero(nomfon)
     call jeexin(chpro, iret)
     if (iret .ne. 0) goto 9999
 !
-    call assert(lxlgut(nomf).le.24)
+    ASSERT(lxlgut(nomf).le.24)
     call wkvect(chpro, 'G V K24', 6, jpro)
     zk24(jpro) = 'CONSTANT'
     zk24(jpro+1) = 'LIN LIN '

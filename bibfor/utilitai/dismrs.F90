@@ -113,7 +113,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
         else if (questi(1:10).eq.'CHAM_MATER') then
             call rslipa(nomob, 'CHAMPMAT', '&&DISMRS.LIPAR', jlipar, n1)
         endif
-        call assert(n1.ge.1)
+        ASSERT(n1.ge.1)
         repk=' '
         ico=0
         do 10, k=1,n1

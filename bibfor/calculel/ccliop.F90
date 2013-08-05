@@ -162,7 +162,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
                     else if (zk24(iaoplo+3*ipara-1).eq.'NM1') then
                         isodep(iop) = '-'
 !              ELSE
-!                CALL ASSERT(.FALSE.)
+!                ASSERT(.FALSE.)
                     endif
                     goto 20
                 endif
@@ -236,7 +236,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
     endif
 !
 !     TEMPORAIRE POUR EVITER LES DEPASSEMENTS DE TABLEAU
-    if (nopout .gt. 100) call assert(.false.)
+    if (nopout .gt. 100) ASSERT(.false.)
 !
     call wkvect(noliop, 'V V K24', nopout, jlisop)
     call wkvect(nolori, 'V V I', 2*nopout, jliori)

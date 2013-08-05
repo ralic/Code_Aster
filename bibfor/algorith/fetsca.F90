@@ -104,7 +104,7 @@ subroutine fetsca(nbi, vi, vo, scalin, infofe,&
             iaux=iaux+4
 20      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ---------------------------------------------------
 ! FIN BOUCLE SUR LES NOEUDS D'INTERFACE

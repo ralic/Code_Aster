@@ -65,7 +65,7 @@ subroutine fettor(option, infofe, rang, nbi, irg1,&
             raux=ddot(nbi4,zr(irp),1,zr(irz),1)
             write(ifm,*)'RANG ',rang,' TEST <DI,FI*DI-1>',raux
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

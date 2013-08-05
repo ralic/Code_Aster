@@ -61,16 +61,16 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     call getvtx(motfac, 'PRE_COND', 1, iarg, 1,&
                 precon, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'RENUM', 1, iarg, 1,&
                 renum, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvis(motfac, 'NMAX_ITER', 1, iarg, 1,&
                 nmaxit, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvr8(motfac, 'RESI_RELA', 1, iarg, 1,&
                 resire, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
 !
 ! --- LECTURES PARAMETRES LIES A LDLT_INC
@@ -85,21 +85,21 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
     if (precon .eq. 'LDLT_INC') then
         call getvis(motfac, 'NIVE_REMPLISSAGE', 1, iarg, 1,&
                     niremp, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
     else if (precon.eq.'LDLT_SP') then
         call getvis(motfac, 'REAC_PRECOND', 1, iarg, 1,&
                     reacpr, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         call getvis(motfac, 'PCENT_PIVOT', 1, iarg, 1,&
                     pcpiv, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
 !
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
         call gcncon('.', solvbd)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ON REMPLIT LA SD_SOLVEUR

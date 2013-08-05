@@ -92,7 +92,7 @@ subroutine obcrea(typstz, nomstr)
                     nbparo)
     else
         write(6,*) 'TYPE SD INTROUVABLE: ',typstr
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CREATION DESCRIPTEURS

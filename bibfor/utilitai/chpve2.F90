@@ -53,7 +53,7 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
     gdch=blan8
     do 10 i = 1, nbtyp
         lc=len(tabtyp(i))
-        call assert(lc.ge.11)
+        ASSERT(lc.ge.11)
         chaine=tabtyp(i)(1:11)
 !
         do 20 j = 1, lc

@@ -97,7 +97,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac .and. 1+nfh+nfe.le.mxstac)
+    ASSERT(nnop.le.mxstac .and. 1+nfh+nfe.le.mxstac)
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
@@ -211,7 +211,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                 do 210 i = 1, nnop
                     lst=lst+zr(jlst-1+i)*ff(i)
 210              continue
-                call assert(lst.lt.0.d0)
+                ASSERT(lst.lt.0.d0)
                 rr(1)=-sqrt(-lst)
                 rr(2)= sqrt(-lst)
             endif
@@ -229,7 +229,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                 call fointe('FM', zk8(ihechp), ndim+1, nompar, xg,&
                             hechp, ier)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 !         MODIFICATION DU JACOBIEN SI AXI
@@ -238,7 +238,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                 do 220 inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
 220              continue
-                call assert(r.gt.0d0)
+                ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
 !
@@ -291,7 +291,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                                     else if (lddl.eq.3) then
                                         r8tmp = 2.d0*rr(ilev)*ff(jnp)
                                     else
-                                        call assert(.false.)
+                                        ASSERT(.false.)
                                     endif
 !
                                     ind2 = ind1 + nbddl*(jnp-1)+lddl

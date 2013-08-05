@@ -66,7 +66,7 @@ subroutine te0344(option, nomte)
 !     ------------------------------------------------------------------
 !
     okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
-    call assert(okopt)
+    ASSERT(okopt)
     materi = ' '
 !
 ! --- ------------------------------------------------------------------

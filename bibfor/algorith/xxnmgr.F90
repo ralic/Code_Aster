@@ -142,7 +142,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES LOIS DE COMPORTEMENT
 ! - LES ARGUMENTS DFDIB, DEPLB1, DEPLB2 NE SERVENT PAS DANS CE CAS
@@ -197,7 +197,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
             endif
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
         endif
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
@@ -290,7 +290,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                     endif
 156              continue
 155          continue
-            call assert(cpt.eq.ddld)
+            ASSERT(cpt.eq.ddld)
 150      continue
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
@@ -317,7 +317,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                         cpt = cpt+1
                         pff(cpt,n,i) = dfdi(n,i)*fe(ig) + ff(n)*dgdgl( ig,i)
 163                  continue
-                    call assert(cpt.eq.ddldn)
+                    ASSERT(cpt.eq.ddldn)
 161              continue
 160          continue
         endif

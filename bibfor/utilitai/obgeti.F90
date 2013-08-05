@@ -75,7 +75,7 @@ subroutine obgeti(nomstr, nompaz, vali)
         vali = zi(jsvali-1+indice)
     else
         write(6,*) 'TYPE INCORRECT: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

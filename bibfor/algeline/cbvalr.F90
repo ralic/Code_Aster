@@ -92,7 +92,7 @@ subroutine cbvalr(rouc, neq, smhc, smdi, idlexc,&
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

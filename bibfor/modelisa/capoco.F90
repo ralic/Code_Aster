@@ -101,7 +101,7 @@ subroutine capoco(char, motfac)
             call getvid(motfac, 'CARA_ELEM', izone, iarg, 1,&
                         carael, noc)
             if (noc .eq. 0) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 10  end do
@@ -169,13 +169,13 @@ subroutine capoco(char, motfac)
                 if (iad1 .gt. 0) then
                     r1 = zr(icesv-1+iad1)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
                 if (iad2 .gt. 0) then
                     r2 = zr(icesv-1+iad2)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
                 if (r1 .ne. r2) then

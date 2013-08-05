@@ -79,29 +79,29 @@ subroutine matimp(matz, ific, typimz)
         call jelira(nonu//'.NUME.DELG', 'LONMAX', n1, kbid)
         jnlogl=0
     endif
-    call assert(n1.eq.nsmdi)
+    ASSERT(n1.eq.nsmdi)
 !     --- CALCUL DE N
     n=nsmdi
 !     --- CALCUL DE NZ
     nz=zi(jsmdi-1+n)
 !
-    call assert(nz.le.nsmhc)
+    ASSERT(nz.le.nsmhc)
     call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
     if (nvale .eq. 1) then
         lsym=.true.
     else if (nvale.eq.2) then
         lsym=.false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvale)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
-    call assert(nlong.eq.nz)
+    ASSERT(nlong.eq.nz)
     if (.not.lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'L', jval2)
         call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
-        call assert(nlong.eq.nz)
+        ASSERT(nlong.eq.nz)
     endif
 !
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, ktyp)
@@ -134,7 +134,7 @@ subroutine matimp(matz, ific, typimz)
         write(ific,*) '% 2-2 >> A=spconvert(mat);'
         write(ific,*) ' '
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -205,7 +205,7 @@ subroutine matimp(matz, ific, typimz)
         call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1, kbid)
         nomgd=zk24(jrefn-1+2)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-        call assert(n1.eq.2*n)
+        ASSERT(n1.eq.2*n)
         do 2, k=1,n
         nuno=zi(jdeeq-1+2*(k-1)+1)
         nucmp=zi(jdeeq-1+2*(k-1)+2)
@@ -214,23 +214,23 @@ subroutine matimp(matz, ific, typimz)
             nocmp=zk8(jcmp-1+nucmp)
             write(ific,1004) k,nono,nocmp
         else if (nucmp.lt.0) then
-            call assert(nuno.gt.0)
+            ASSERT(nuno.gt.0)
             call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
             nocmp=zk8(jcmp-1-nucmp)
             if (zi(jdelg-1+k) .eq. -1) then
                 write(ific,1005) k,nono,nocmp,' LAGR1 BLOCAGE'
             else
-                call assert(zi(jdelg-1+k).eq.-2)
+                ASSERT(zi(jdelg-1+k).eq.-2)
                 write(ific,1005) k,nono,nocmp,' LAGR2 BLOCAGE'
             endif
         else
-            call assert(nuno.eq.0 .and. nucmp.eq.0)
+            ASSERT(nuno.eq.0 .and. nucmp.eq.0)
             nono=' '
             nocmp=' '
             if (zi(jdelg-1+k) .eq. -1) then
                 write(ific,1005) k,nono,nocmp,' LAGR1 RELATION LINEAIRE'
             else
-                call assert(zi(jdelg-1+k).eq.-2)
+                ASSERT(zi(jdelg-1+k).eq.-2)
                 write(ific,1005) k,nono,nocmp,' LAGR2 RELATION LINEAIRE'
             endif
         endif

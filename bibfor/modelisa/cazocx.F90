@@ -139,7 +139,7 @@ subroutine cazocx(char, nomo, motfac, izone)
                     paring, noc)
         zr(jcmxf+zcmxf*(izone-1)+1-1) = 10.d0*paring + 4.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- OPTIONS ALGORITHME CONTACT
@@ -161,7 +161,7 @@ subroutine cazocx(char, nomo, motfac, izone)
         algocr = 3.d0
         lfrot = .false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     zr(jcmxf+zcmxf*(izone-1)+2-1) = coefcr
     zr(jcmxf+zcmxf*(izone-1)+12-1) = coefcp
@@ -184,7 +184,7 @@ subroutine cazocx(char, nomo, motfac, izone)
             coeffr = 0.d0
             algofr = 2.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         coeffr = 0.d0
@@ -220,7 +220,7 @@ subroutine cazocx(char, nomo, motfac, izone)
         else if (staco0 .eq. 'NON') then
             zr(jcmxf+zcmxf*(izone-1)+7-1) = 0.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- GLISSIERE
@@ -232,7 +232,7 @@ subroutine cazocx(char, nomo, motfac, izone)
         else if (glis(1:3) .eq. 'NON') then
             zr(jcmxf+zcmxf*(izone-1)+10-1) = 0.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -247,7 +247,7 @@ subroutine cazocx(char, nomo, motfac, izone)
     else if (algola.eq.'VERSION2') then
         zr(jcmxf+zcmxf*(izone-1)+9-1) = 2.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PARAMETRE APPARIEMENT: TOLE_PROJ_EXT

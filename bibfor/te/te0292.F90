@@ -96,7 +96,7 @@ subroutine te0292(option, nomte)
                         dfdx, dfdy, dfdz, poids)
             nbcmp=3
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (laxi) then
@@ -192,7 +192,7 @@ subroutine te0292(option, nomte)
                   )**2
             norsig = norsig + nor * poids / e
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 101  end do

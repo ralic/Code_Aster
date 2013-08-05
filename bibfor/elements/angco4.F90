@@ -85,7 +85,7 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
     dn1n2 = sqrt( (coo1(1)-coo2(1) )**2 + ( coo1(2)-coo2(2) )**2 + ( coo1(3)-coo2(3) )**2 )
 !
     if (icoud2 .ne. icoud1) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         icoude=icoud2
         rayon=rayon2
@@ -103,7 +103,7 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
     endif
 !
     if (abs(rayon2-rayon1) .gt. test) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         rayon=rayon2
     endif
@@ -120,7 +120,7 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
     endif
 !
     if (abs(theta2-theta1) .gt. test) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         theta=1.5d0*theta1
     endif
@@ -137,7 +137,7 @@ subroutine angco4(coor, zk1, izk, icoude, zk2,&
     endif
 !
     if (abs(omega2-omega1) .gt. test) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         omega=omega1
     endif

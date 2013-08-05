@@ -101,7 +101,7 @@ subroutine fetcpu(option, temps, infofe, rang, ifm)
             write(ifm,*)'PROC ',rang,' FETREO CPU/SYS: ',temps(5),&
             temps(6)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 end subroutine

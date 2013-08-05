@@ -69,8 +69,8 @@ subroutine liscad(lischa, ichar, nomcha, nomfct, nbinfo,&
     call jeveuo(infcha, 'E', jinfch)
     call jeveuo(fomult, 'E', jalifc)
     nchar = zi(jinfch)
-    call assert(ichar.gt.0)
-    call assert(ichar.le.nchar)
+    ASSERT(ichar.gt.0)
+    ASSERT(ichar.le.nchar)
 !
     zk24(jalich+ichar-1) = nomcha
     zk24(jalifc+ichar-1) = nomfct
@@ -144,7 +144,7 @@ subroutine liscad(lischa, ichar, nomcha, nomfct, nbinfo,&
 !
         else
             write(6,*) 'LISCAD: ',infoch
-            call assert(.false.)
+            ASSERT(.false.)
 !
         endif
 10  end do

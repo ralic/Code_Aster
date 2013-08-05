@@ -22,7 +22,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -123,8 +123,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
 !
-    call assert(nnop.le.mxstac)
-    call assert((3*ndim*nnop).le.mxstac)
+    ASSERT(nnop.le.mxstac)
+    ASSERT((3*ndim*nnop).le.mxstac)
 !
     grdepl=.false.
 !
@@ -166,7 +166,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
-    call assert(ndim.eq.ndimb)
+    ASSERT(ndim.eq.ndimb)
 !
 !     TEMPERATURE DE REF
     call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
@@ -324,7 +324,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             endif
 ! Si R négative, on s'arrete
 !
-            call assert(r.gt.0d0)
+            ASSERT(r.gt.0d0)
         endif
 !
 !       NORMALISATION DE LA BASE
@@ -363,7 +363,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         endif
 !       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !       CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
 !       ---------------------------------------------
 !       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)

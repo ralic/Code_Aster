@@ -81,18 +81,18 @@ subroutine nmiret(codret, tabret)
 !
 !     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
     if ((zi(jcesd-1+3).ne.1) .or. (zi(jcesd-1+4).ne.1)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nomgd = zk8(jcesk-1+2)
     if (nomgd .ne. 'CODE_I') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nbmail = zi(jcesd-1+1)
     icmp = zi(jcesd-1+2)
     if (icmp .ne. 1) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     do 20 ima = 1, nbmail

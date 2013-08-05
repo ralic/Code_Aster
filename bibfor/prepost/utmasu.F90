@@ -94,7 +94,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
     call jemarq()
     call infniv(ifm, niv)
 !
-    call assert(kdim.eq.'3D'.or.kdim.eq.'2D')
+    ASSERT(kdim.eq.'3D'.or.kdim.eq.'2D')
     first = .false.
     call getres(k8b, k16b, oper)
 !
@@ -121,7 +121,7 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
         numa = lima(ima)
         nutyma=zi(itypma+numa-1)
         nnoe = zi(p2+numa)-zi(p2-1+numa)
-        call assert(nnoe .le. 27)
+        ASSERT(nnoe .le. 27)
         do 80 ino = 1, nnoe
             lisnoe(ino) = zi(p1-1+zi(p2+numa-1)+ino-1)
 80      continue

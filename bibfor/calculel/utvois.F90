@@ -66,7 +66,7 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
 !
     form = typmac(1:2)
 ! CALCUL NBRE ARETES
-    call assert(form.eq.'TR'.or.form.eq.'QU')
+    ASSERT(form.eq.'TR'.or.form.eq.'QU')
     if (form .eq. 'TR') then
         nbf = 3
     else if (form.eq.'QU') then
@@ -74,10 +74,6 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
     endif
     noeu = typmac(5:5)
 ! CALCUL NBRE SOMMETS ARETES ET POIDS DE NEWTON-COTES DE L'ARETE
-    call assert(noeu .eq. '6' .or. noeu&
-                .eq. '8' .or. noeu .eq.&
-                '9' .or. noeu .eq. '3'&
-                .or. noeu .eq. '4')
     if (noeu .eq. '6' .or. noeu .eq. '8' .or. noeu .eq. '9') then
         nsomf = 3
         ndegre = 2
@@ -91,6 +87,8 @@ subroutine utvois(typmac, lmaj, nbf, nsomf, poinc1,&
         elrefe = 'SEG2  '
         poinc1 = 1.d0
         poinc2 = 0.d0
+    else
+        ASSERT(.false.)
     endif
 !
 !

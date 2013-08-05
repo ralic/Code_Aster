@@ -154,7 +154,7 @@ subroutine gefact(duree, nominf)
 !=====
     dim = nnn
     nbfc = dim * ( dim + 1 ) / 2
-    call assert(nbfc.eq.nbmr)
+    ASSERT(nbfc.eq.nbmr)
 !
 ! 1.2.1 CAS OU ON UTILISE LA DISCRETISATION DE L INTERSPECTRE :
 !     VERIFICATION DE LA COHERENCE DE LA DISCRETISATION DES FONCTIONS

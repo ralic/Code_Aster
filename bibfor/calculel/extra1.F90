@@ -77,7 +77,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
             goto 90
         endif
 !
-        call assert(iparin.ne.0)
+        ASSERT(iparin.ne.0)
         chin=lchin(iparin)
         if (chin(1:1) .eq. ' ') call u2mesk('E', 'CALCULEL2_56', 1, nompar)
 !
@@ -95,8 +95,8 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
         iachlo=zi(iawloc-1+3*(iparg-1)+1)
         ilchlo=zi(iawloc-1+3*(iparg-1)+2)
         imodat=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+1)
-        call assert((iachlo.lt.-2) .or. (iachlo.gt.0))
-        call assert(ilchlo.ne.-1)
+        ASSERT((iachlo.lt.-2) .or. (iachlo.gt.0))
+        ASSERT(ilchlo.ne.-1)
         type=zk8(iachik-1+2*(iparin-1)+1)(1:4)
         typegd=zk8(iachik-1+2*(iparin-1)+2)
         if (typegd .eq. 'R') then
@@ -112,7 +112,7 @@ subroutine extra1(nin, lchin, lpain, opt, nute,&
         else if (typegd.eq.'K24') then
             itypgd=6
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !

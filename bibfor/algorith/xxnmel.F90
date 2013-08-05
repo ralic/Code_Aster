@@ -6,7 +6,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                   sig, vi, matuu, ivectu, codret,&
                   nfiss, fisno)
 !
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -20,9 +20,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-    integer :: codret, ddlc, ddlm, fisno(nnop, nfiss)
+    integer :: nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
-    integer :: lgpg, ndim, nfe, nfh, nfiss, nnop, npg
+    integer :: lgpg, ndim, nfe, nfh, nnop, npg
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), crit(3), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
     real(kind=8) :: matuu(*), vi(lgpg, npg)
@@ -134,7 +134,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 ! DECALAGES CALCULES EN AMONT: PERF
 !
@@ -188,7 +188,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !         PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
 !
         endif
 !
@@ -210,7 +210,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 120          continue
 !
-            call assert(r.gt.0d0)
+            ASSERT(r.gt.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
@@ -315,7 +315,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 145          continue
 !
-            call assert(cpt.eq.ddld)
+            ASSERT(cpt.eq.ddld)
 !
 140      continue
 !

@@ -110,7 +110,7 @@ subroutine cmlqna(nbma, nbno, lima, connez, typema,&
                     goto 31
                 endif
 30          continue
-            call assert(.false.)
+            ASSERT(.false.)
 31          continue
 !
             nomima(a,m) = nomi

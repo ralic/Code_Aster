@@ -17,7 +17,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501,C1002
+! aslint: disable=C1002
     implicit none
 #include "jeveux_private.h"
 #include "asterc/gtopti.h"
@@ -145,18 +145,18 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     call lxmins(nomf)
     knomf = nomf
 !
-    call assert(knomf .ne. '        ' .and. len(nomf) .le. 8)
-    call assert(kclas .ne. ' ')
-    call assert(index (classe, kclas) .eq. 0)
+    ASSERT(knomf .ne. '        ' .and. len(nomf) .le. 8)
+    ASSERT(kclas .ne. ' ')
+    ASSERT(index (classe, kclas) .eq. 0)
 !
-    call assert(kstin .eq. 'DEBUT   ' .or. kstin .eq. 'POURSUIT' .or. kstin .eq. 'DUMMY   ')
-    call assert(kstou .eq. 'SAUVE   ' .or. kstou .eq. 'DETRUIT ')
-    call assert(kstin .ne. 'DUMMY   ' .or. kstou .ne. 'SAUVE   ')
-    call assert(nrep .gt. 0)
-    call assert(lbloc .gt. 0)
+    ASSERT(kstin .eq. 'DEBUT   ' .or. kstin .eq. 'POURSUIT' .or. kstin .eq. 'DUMMY   ')
+    ASSERT(kstou .eq. 'SAUVE   ' .or. kstou .eq. 'DETRUIT ')
+    ASSERT(kstin .ne. 'DUMMY   ' .or. kstou .ne. 'SAUVE   ')
+    ASSERT(nrep .gt. 0)
+    ASSERT(lbloc .gt. 0)
 !
     ic = index (classe , ' ')
-    call assert(ic .gt. 0)
+    ASSERT(ic .gt. 0)
     nomfic(ic) = knomf
     nombas(ic) = knom
     kstini(ic) = kstin

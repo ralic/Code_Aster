@@ -69,7 +69,7 @@ subroutine te0479(option, nomte)
             call vff2dn(ndim, nno, kp, ipoids, idfde,&
                         zr(igeom), rbid81, rbid81, poids)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !       EN AXI R C'EST XX

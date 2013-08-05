@@ -169,8 +169,8 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     call lxliis(k8maxi, imaxi, ier2)
     k8debu = zk8(iatava-1+2)
     call lxliis(k8debu, idebu, ier1)
-    call assert(imaxi.gt.0)
-    call assert((idebu.gt.0).and.(idebu.le.imaxi))
+    ASSERT(imaxi.gt.0)
+    ASSERT((idebu.gt.0).and.(idebu.le.imaxi))
 !
     call jeveuo(noms2//'.ORDR', 'L', jordr)
     call jeveuo(noms2//nomobj, 'L', iaobj)

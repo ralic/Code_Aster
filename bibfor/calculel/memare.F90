@@ -48,7 +48,7 @@ subroutine memare(base, matel, modele, mate, cara,&
     bas2 = base
     mate2 = matel
     mode2 = modele
-    call assert(mode2.ne.' ')
+    ASSERT(mode2.ne.' ')
 !
     call jedetr(mate2//'.RERR')
     call wkvect(mate2//'.RERR', bas2//' V K24', 5, iarefe)

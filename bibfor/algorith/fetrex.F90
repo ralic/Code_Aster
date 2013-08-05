@@ -99,10 +99,10 @@ subroutine fetrex(option, idd, ni, vi, no,&
 !
 ! TEST DE COHERENCE DES DONNEES INDIVIDUELLEMENT
 !         TESTA=NDDLCI*NBDDLI*NDDLCD*NBDDLD
-!          CALL ASSERT(TESTA.GT.0)
+!          ASSERT(TESTA.GT.0)
 !
 ! TEST DE COHERENCE DES NOMBRES DE DDLS
-!          CALL ASSERT(NBDDLI.EQ.NBDDLD)
+!          ASSERT(NBDDLI.EQ.NBDDLD)
 !
             if (option .eq. 1) then
 ! RESTRICTION

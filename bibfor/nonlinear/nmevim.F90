@@ -130,7 +130,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
                         call u2mess('A', 'MECANONLINE10_25')
                     endif
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
         endif

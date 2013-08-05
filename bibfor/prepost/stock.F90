@@ -113,7 +113,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas,&
     if (iret .gt. 0) acce = 'FREQ'
 !
     call rsexpa(resu, 0, acce, iret)
-    call assert(iret.gt.0)
+    ASSERT(iret.gt.0)
     call rsadpa(resu, 'E', 1, acce, numord,&
                 0, jiouf, k8b)
     zr(jiouf) = iouf

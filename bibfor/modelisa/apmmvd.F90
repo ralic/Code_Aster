@@ -53,7 +53,7 @@ function apmmvd(vect)
     else if (vect.eq.'ZINFI') then
         apmmvd = zinfi
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

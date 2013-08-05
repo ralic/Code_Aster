@@ -88,7 +88,7 @@ subroutine nmarnr(result, typtaz, numreu)
         goto 99
     else
         call tbexip(nomtab, 'NUME_REUSE', lexist, typvar)
-        if (.not.lexist .or. typvar .ne. 'I') call assert(.false.)
+        if (.not.lexist .or. typvar .ne. 'I') ASSERT(.false.)
 !
 ! ----- NOMBRE DE LIGNES
 !
@@ -117,7 +117,7 @@ subroutine nmarnr(result, typtaz, numreu)
 99  continue
 !
     call jedetr(lisres)
-    call assert(numreu.ge.0)
+    ASSERT(numreu.ge.0)
 !
     call jedema()
 end subroutine

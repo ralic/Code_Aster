@@ -112,8 +112,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
 !
 !
     call jelira(a, 'NMAXOC', nblig2, k1bid)
-    call assert(nblig.gt.0)
-    call assert(nblig.le.nblig2)
+    ASSERT(nblig.gt.0)
+    ASSERT(nblig.le.nblig2)
 !
     ksmdi = numddl//'.SMOS.SMDI'
     call wkvect(ksmdi, base//' V I', neq, jsmdi)
@@ -149,14 +149,14 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
             do 15 i = 1, nddltm
                 if (zr(idligm-1+i) .ne. 0.d0) nddlt = nddlt + 1
 15          continue
-!           CALL ASSERT(NDDLT.GT.0)
+!           ASSERT(NDDLT.GT.0)
             zi(jacnbt-1+ilig+(j-1)*nblia) = nddlt
             zi(jac1er-1+ilig+(j-1)*nblia) = dimacv + 1
             dimacv = dimacv + nddlt
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
 10      continue
 20  end do
-!       CALL ASSERT(DIMACV.GT.0)
+!       ASSERT(DIMACV.GT.0)
     dimacv = max(dimacv,1)
 !
 !
@@ -271,14 +271,14 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
         do 130,j = 1,nddlt
         vj = zr(jacv-1+decal-1+j)
         jj = zi(jaci-1+decal-1+j)
-        call assert(jj.le.neq)
+        ASSERT(jj.le.neq)
         ii2 = zi(jsmdi-1+jj)
         if (jj .eq. 1) then
             ii1 = 1
         else
             ii1 = zi(jsmdi-1+jj-1) + 1
         endif
-        call assert(ii2.ge.ii1)
+        ASSERT(ii2.ge.ii1)
         do 120,i = 1,j
         vi = zr(jacv-1+decal-1+i)
         ii = zi(jaci-1+decal-1+i)
@@ -287,7 +287,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
         do 100,iii = ii1,ii2
         if (zi4(jsmhc-1+iii) .eq. ii) goto 110
 100      continue
-        call assert(.false.)
+        ASSERT(.false.)
 110      continue
         zr(jvalm-1+iii) = zr(jvalm-1+iii) + vij
 120      continue

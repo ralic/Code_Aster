@@ -110,7 +110,7 @@ subroutine xrecff(fiss, chfond, basfon, lnoff)
 !       SI OUI : MODIFICATION DE LA LISTE DES POINTS DU FOND
 !                ET DE LA BASE
 !
-        call assert(nfonu.ge.2)
+        ASSERT(nfonu.ge.2)
 !
 !       CREATION DU FOND MODIFIE
         call wkvect(chfond, 'V V R', 4*nfonu, jfonu)

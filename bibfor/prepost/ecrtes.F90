@@ -100,7 +100,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     else if (fitype.eq.'ELNO') then
         entete(2) = '    57   %VALEURS AUX NOEUDS DES ELEMENTS'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !   --- CHOIX DU TYPE DE MODELE--------

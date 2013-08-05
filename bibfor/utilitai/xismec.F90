@@ -47,7 +47,7 @@ function xismec()
     else if (k16tmp.eq.'TEMP') then
         lmeca = .false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     xismec=lmeca

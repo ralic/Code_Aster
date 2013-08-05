@@ -191,21 +191,21 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 !
         call cesexi('C', jcesd(1), jcesl(1), nummae, 1,&
                     ifiss, 1, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         ninter = zi(jcesv(1)-1+iad)
 !
 ! --- ON RECUPERE LE NOMBRE DE POINTS PAR FACETTE
 ! --- DE LA MAILLE ESCLAVE
         call cesexi('C', jcesd(1), jcesl(1), nummae, 1,&
                     ifiss, 3, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         npte = zi(jcesv(1)-1+iad)
 !
 ! --- ON RECUPERE LE NOMBRE DE FACETTES DE CONTACT DE LA MAILLE ESCLAVE
 !
         call cesexi('C', jcesd(1), jcesl(1), nummae, 1,&
                     ifiss, 2, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         nface = max(1,zi(jcesv(1)-1+iad))
 !
         if (nbpc .eq. 0) goto 100
@@ -233,7 +233,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
                                     ifiss, zxain*(numpi-1)+2, iad)
                         if (zr(jcesv(2)-1+iad) .ne. 0) goto 130
 120                  continue
-                    call assert(.false.)
+                    ASSERT(.false.)
 130                  continue
                     call mmgaus(alias, tyco, ipc2, ksipc1, ksipc2,&
                                 wpc)
@@ -429,7 +429,7 @@ subroutine xappar(loptin, noma, modele, defico, resoco)
 105      continue
 100  end do
     zr(jtabf-1+1) = ntpc
-    call assert(ntpc.eq.cfdisi(defico, 'NTPC'))
+    ASSERT(ntpc.eq.cfdisi(defico, 'NTPC'))
 !
 ! --- MENAGE
 !

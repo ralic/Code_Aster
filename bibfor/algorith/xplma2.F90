@@ -43,7 +43,7 @@ subroutine xplma2(ndim, nne, nnes, ndls, n,&
 !
 ! ----------------------------------------------------------------------
 !
-    call assert(n.le.nne)
+    ASSERT(n.le.nne)
 !
     if (n .le. nnes) then
         pl= ndls*n - ndim*max(1,nfhe) + 1

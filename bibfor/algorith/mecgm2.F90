@@ -85,7 +85,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
             endif
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (bidon) then
         goto 9999
@@ -100,7 +100,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
         fct = .true.
         call jelira(fomult, 'LONMAX', nchar, k8bid)
         if (nchar .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call jeveuo(fomult, 'L', jfonct)
     endif
@@ -120,7 +120,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
                 call fointe('F ', zk24(jfonct+icha-1)(1:8), 1, 'INST', instan,&
                             valres, ier)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             valres = 1.d0

@@ -105,7 +105,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     endif
     nh = 0
     if (modele(1:1) .eq. ' ') then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         ligrmo = modele(1:8)//'.MODELE'
     endif

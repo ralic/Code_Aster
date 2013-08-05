@@ -76,7 +76,7 @@ subroutine cargeo(mailla)
     typmai = ma//'.TYPMAIL        '
 !
     call jelira(nodime, 'CLAS', ibid, bas1)
-    call assert(bas1.eq.'G' .or. bas1.eq.'V')
+    ASSERT(bas1.eq.'G' .or. bas1.eq.'V')
 !
     call jeveuo(nodime, 'L', jdime)
     nbnoeu = zi(jdime)

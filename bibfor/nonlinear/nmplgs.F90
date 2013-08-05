@@ -56,7 +56,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 ! OUT CODRET  : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit none
 !
 #include "jeveux.h"
@@ -150,7 +150,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
         numav=livois(kvois)
         call tecac2('OOO', numav, 'PVARIMP', 'L', 1,&
                     vivois, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
         if (nint(zr(vivois-1+5)) .eq. numa) then
             if (zr(vivois-1+7) .lt. vip(8,1)) then

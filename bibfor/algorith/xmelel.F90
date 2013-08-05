@@ -84,18 +84,18 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     do 10 k = 1, 3
         if (mode(k) .eq. mod(1:2)) imod = k
 10  end do
-    call assert(imod.ne.0)
+    ASSERT(imod.ne.0)
 ! --- RECUPERATION DES L'ATTRIBUT POUR L'ESCALVE
     call teattr(typel, 'S', 'XFEM', att, ier)
     do 20 k = 1, 7
         if (att .eq. attr(k)) iatt(1) = k
 20  end do
-    call assert(iatt(1).ne.0)
+    ASSERT(iatt(1).ne.0)
 ! --- RECUPERATION DU TYPE DE MAILLE POUR L'ESCALVE
     do 30 k = 1, 8
         if (typma .eq. mail(ndim-1,k)) imail(1) = k
 30  end do
-    call assert(imail(1).ne.0)
+    ASSERT(imail(1).ne.0)
     nno(1) = nbno(ndim-1,imail(1))
 !
 !
@@ -105,25 +105,25 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     call jenuno(jexnum('&CATA.TE.NOMTE', zi(jmail-1+numam)), typel)
 ! --- RECUPERATION DE LA MODÉLISATION POUR LE MAITRE
     call dismte('MODELISATION', typel, ibid, mod, ier)
-    call assert(mod(1:2).eq.mode(imod))
+    ASSERT(mod(1:2).eq.mode(imod))
 ! --- RECUPERATION DES L'ATTRIBUT POUR LE MAITRE
     call teattr(typel, 'S', 'XFEM', att, ier)
     do 40 k = 1, 7
         if (att .eq. attr(k)) iatt(2) = k
 40  end do
-    call assert(iatt(2).ne.0)
+    ASSERT(iatt(2).ne.0)
 ! --- RECUPERATION DU TYPE DE MAILLE
     do 50 k = 1, 8
         if (typma .eq. mail(ndim-1,k)) then
             imail(2) = k
         endif
 50  end do
-    call assert(imail(2).ne.0)
+    ASSERT(imail(2).ne.0)
     nno(2) = nbno(ndim-1,imail(2))
 !
 ! ---POUR L'ELEMENT EXCLUSIVEEMENT CRACK-TIP
     if (iatt(2) .eq. 3) then
-        call assert(iatt(1).eq.3)
+        ASSERT(iatt(1).eq.3)
         nno(2)=0
     endif
 end subroutine

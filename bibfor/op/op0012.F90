@@ -81,7 +81,7 @@ subroutine op0012()
 !     -- LES SD_CHAR_XXX PEUVENT CONTENIR UNE SD_CHAR_CINE :
     do 1, k=1,nbmat
     matel=zk24(jlimat-1+k)
-    call assert(zk24(jlimat-1+k)(9:24).eq.' ')
+    ASSERT(zk24(jlimat-1+k)(9:24).eq.' ')
     call jeexin(matel//'.RECC', iexi)
     if (iexi .gt. 0) then
         call jeveuo(matel//'.RECC', 'L', jrecc)
@@ -148,7 +148,7 @@ subroutine op0012()
 !     -- SI MATAS N'EST PAS MPI_COMPLET, ON LA COMPLETE :
     call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
-    call assert((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
+    ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
     if (kmpic .eq. 'NON') call sdmpic('MATR_ASSE', matas)
 !
 !

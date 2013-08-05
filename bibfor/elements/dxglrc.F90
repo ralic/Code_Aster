@@ -1,7 +1,6 @@
 subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
                   dul, btsig, ktan, pgl, crit,&
                   codret)
-! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -222,7 +221,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
         call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
                     iret)
         icontm=jtab(1)
-        call assert(npg.eq.jtab(3))
+        ASSERT(npg.eq.jtab(3))
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCOMPOR', 'L', icompo)
         leul = zk16(icompo+2).eq.'GROT_GDEP'
@@ -321,7 +320,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     endif
 !
 !     ON VERIFIE QUE LE NOMBRE DE VARINT TIENT DANS ECR
-    call assert(nbvar.le.24)
+    ASSERT(nbvar.le.24)
 !
 !     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 !

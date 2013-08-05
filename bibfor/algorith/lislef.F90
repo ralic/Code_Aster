@@ -114,7 +114,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
             if (nccplx .eq. 0) then
                 call getvr8(motfac, 'COEF_MULT', iexci, iarg, 1,&
                             rcoef, ncreel)
-                call assert(ncreel.ne.0)
+                ASSERT(ncreel.ne.0)
                 lcrfcr = .true.
             else
                 rcoef = dble (ccoef)
@@ -122,7 +122,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
                 lcrfcc = .true.
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 99
     endif
@@ -151,7 +151,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
             nomfct = fctcsr
         else
             call codent(iexci, 'D0', knum)
-            call assert(iexci.le.9999)
+            ASSERT(iexci.le.9999)
             nomfct = '&&NC'//knum
             call focste(nomfct, 'TOUTRESU', rcoef, 'V')
         endif
@@ -164,7 +164,7 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
         rcoef = dble (ccoef)
         icoef = dimag(ccoef)
         call codent(iexci, 'D0', knum)
-        call assert(iexci.le.9999)
+        ASSERT(iexci.le.9999)
         nomfct = '&&NC'//knum
         call focstc(nomfct, 'TOUTRESU', rcoef, icoef, 'V')
         typfct = 'CONST_COMP'
@@ -174,8 +174,8 @@ subroutine lislef(motfac, iexci, nomfct, typfct, phase,&
 !
     call lispcp(motfac, iexci, phase, npuis)
 !
-    call assert(typfct.ne.' ')
-    call assert(nomfct.ne.' ')
+    ASSERT(typfct.ne.' ')
+    ASSERT(nomfct.ne.' ')
 !
     call jedema()
 end subroutine

@@ -107,7 +107,7 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
             optrig = 'RIGI_MECA_IMPLEX'
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MATR_ELEM DE RIGIDITE A CALCULER ?
@@ -134,12 +134,12 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
         else if (optrig(1:9).eq.'RAPH_MECA') then
             lcfint = .true.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (phase.eq.'CORRECTION') then
         lcfint = lcrigi
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DECALAGE COEF_MASS_SHIFT AU PREMIER PAS DE TEMPS -> ON A BESOIN

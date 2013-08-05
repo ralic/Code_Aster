@@ -79,7 +79,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
 !
 ! --- INITIALISATIONS
 !
-    call assert(typres.eq.'C')
+    ASSERT(typres.eq.'C')
     omega = r8depi()*valpar
     call jeveuo(cnvass(1:19)//'.VALE', 'E', jresu)
     do 5 ieq = 1, neq
@@ -132,7 +132,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
                     call fointc('F', nomfct, 1, nompar, valpar,&
                                 valre, valim, iret)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
             calp = dcmplx(valre,valim)

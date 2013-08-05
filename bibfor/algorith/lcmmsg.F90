@@ -1,6 +1,5 @@
 subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
                   ng, mg, ir, q)
-! aslint: disable=W1501
     implicit none
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
@@ -76,7 +75,7 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
             goto 150
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -714,7 +713,7 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
         call pmavec('ZERO', 3, q, ngr, ng)
         call pmavec('ZERO', 3, q, mgr, mg)
     else
-        call assert(ir.eq.0)
+        ASSERT(ir.eq.0)
     endif
     do 140 j = 1, 3
         mus(j)=ng(j)*mg(j)

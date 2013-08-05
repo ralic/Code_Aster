@@ -350,7 +350,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
                     endif
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             chamno(20:24) = '.VALE'
             call jeexin(chamno, ibid)

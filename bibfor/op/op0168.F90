@@ -19,7 +19,6 @@ subroutine op0168()
 ! ======================================================================
 !     OPERATEUR  EXTR_MODE
 !     ------------------------------------------------------------------
-! aslint: disable=W1501
 !
 #include "jeveux.h"
 !
@@ -376,9 +375,9 @@ subroutine op0168()
                     nbpara, nopara, kvali, kvalr, kvalk,&
                     neq, nbmode, typmod, npari, nparr,&
                     npark)
-        call assert(npari.eq.nbpari)
-        call assert(nparr.eq.nbparr)
-        call assert(npark.eq.nbpark)
+        ASSERT(npari.eq.nbpari)
+        ASSERT(nparr.eq.nbparr)
+        ASSERT(npark.eq.nbpark)
         call jeveuo(kvec, 'L', lmod)
         call jeveuo(kvali, 'L', lvali)
         call jeveuo(kvalr, 'L', lvalr)

@@ -218,7 +218,7 @@ subroutine xmligr(noma, nomo, resoco)
     compt(nbgrel) = 1
     zi(jtynma-1+ipc)=nbgrel
     50 end do
-    call assert(nbgrel.ne.0)
+    ASSERT(nbgrel.ne.0)
 !
 ! --- CREATION DE L'OBJET .LIEL
 !

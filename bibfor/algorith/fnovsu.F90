@@ -125,7 +125,7 @@ subroutine fnovsu(option, nface, congem, vectu, press1,&
 !       ADCM1 = 1
 !       ADCM2 = 2
 !
-    call assert(option.eq.'FORC_NODA')
+    ASSERT(option.eq.'FORC_NODA')
 ! =====================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU -------------
 ! =====================================================================

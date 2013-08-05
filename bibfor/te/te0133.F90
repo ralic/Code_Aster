@@ -44,7 +44,7 @@ subroutine te0133(option, nomte)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdx, jgano)
-    call assert(nnos.le.8)
+    ASSERT(nnos.le.8)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PREPLO1', 'E', jrepl1)

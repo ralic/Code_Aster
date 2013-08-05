@@ -4,6 +4,7 @@ subroutine mudirx(nbsom, geom, idim, al1, al2,&
 !
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
+    integer :: idim, nbsom
     real(kind=8) :: geom(idim, nbsom), axe(3, 3), ang(2), al1, al2
 !
 ! ======================================================================
@@ -50,14 +51,12 @@ subroutine mudirx(nbsom, geom, idim, al1, al2,&
     real(kind=8) :: pjxi1, pjxi2, pjxi3, s1, s2, s3, psxin, coepi
 !
 !-----------------------------------------------------------------------
-    integer :: idim, nbsom
-!-----------------------------------------------------------------------
     coepi=r8pi()/180.d0
     if (nbsom .ne. 3 .and. nbsom .ne. 4) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (idim .ne. 2 .and. idim .ne. 3) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     xi1=cos(coepi*al2)*cos(coepi*al1)
     xi2=cos(coepi*al2)*sin(coepi*al1)

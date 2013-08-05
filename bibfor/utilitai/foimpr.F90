@@ -103,7 +103,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
                         zr(lfon1+ival), iret)
 100      continue
 !
-        call assert(lxlgut(nomf1).le.24)
+        ASSERT(lxlgut(nomf1).le.24)
         call wkvect(nomf1//'.PROL', 'V V K24', 6, lprol1)
         zk24(lprol1) = 'FONCTION'
         zk24(lprol1+1) = 'LIN LIN '
@@ -174,7 +174,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
         call foec1n(iul, nomfon, zk24(lprol), nbfonc, 'RIEN')
         if (impr .ge. 2) then
             call jeveuo(para, 'L', lval)
-            call assert(ind.eq.0)
+            ASSERT(ind.eq.0)
             call foec2n(iul, zk24(lprol), zr(lval), vale, nbfonc,&
                         impr)
         endif

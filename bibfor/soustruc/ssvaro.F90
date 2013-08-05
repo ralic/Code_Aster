@@ -164,7 +164,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
         long= nddle*(nddle+1)/2
         ieqdeb=nddli+1
     else
-        call assert((typnoe.eq.'TOUS').or.(typnoe.eq.'EXTE'))
+        ASSERT((typnoe.eq.'TOUS').or.(typnoe.eq.'EXTE'))
         if (typnoe .eq. 'TOUS') then
             long= nddlt
             ieqdeb=1
@@ -265,7 +265,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
 22  continue
     di= ieqp-ieq
-    if (di .gt. 10) call assert(.false.)
+    if (di .gt. 10) ASSERT(.false.)
     zi(iaiino-1+3*(ino-1)+2)= di
     zi(iaiino-1+3*(ino-1)+3)= dmi
     2 end do

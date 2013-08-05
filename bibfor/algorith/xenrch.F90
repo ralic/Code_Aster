@@ -223,7 +223,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
 !     POUR UNE INTERFACE, ON PASSE DIRECTEMENT A LA CREATION DE LA SD
     if (typdis .eq. 'INTERFACE') then
-        call assert(nmaen2+nmaen3.eq.0)
+        ASSERT(nmaen2+nmaen3.eq.0)
         nfon = 0
         nbfond = 0
         goto 800
@@ -232,7 +232,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     elseif (nmafon.eq.0) then
         call u2mess('A', 'XFEM_58')
         if (rayon .gt. 0.d0) call u2mess('A', 'XFEM_59')
-        call assert(nmaen2+nmaen3.eq.0)
+        ASSERT(nmaen2+nmaen3.eq.0)
         nfon = 0
         nbfond = 0
         goto 800
@@ -260,7 +260,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
                 cnxinv, jmafon, nxptff, jfono, nfon,&
                 jbaso, jtailo, fiss, goinop, listpt,&
                 orient)
-    call assert(nfon.gt.0)
+    ASSERT(nfon.gt.0)
 !
     if (.not.goinop) then
         call u2mesi('I', 'XFEM_33', 1, nfon)

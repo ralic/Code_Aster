@@ -90,7 +90,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
     typmat = 'R'
     para = 'INST'
     lischa = charge(1:19)
-    call assert(lischa.eq.infoch(1:19))
+    ASSERT(lischa.eq.infoch(1:19))
 !
     partps(1) = temps
     partps(2) = r8vide()

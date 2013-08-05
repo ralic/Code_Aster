@@ -67,7 +67,7 @@ subroutine disell(pz, az, bz, h)
 !     H EST POSITIF A L'EXTERIEUR DE L'ELLIPSE
 !
 !     VERIFICATIONS
-    call assert(a.gt.0.d0 .and. b.gt.0.d0)
+    ASSERT(a.gt.0.d0 .and. b.gt.0.d0)
     if (a .lt. b) then
 !       SI A EST PLUS PETIT QUE B, ON INVERSE A ET B
 !       ET AUSSI LES COORDONNÉES DU POINT P
@@ -88,7 +88,7 @@ subroutine disell(pz, az, bz, h)
 !
 !     RAPPORT B/A = (1-F)
     ba=b/a
-    call assert(ba.le.1.d0)
+    ASSERT(ba.le.1.d0)
 !
 !     TRAITEMENT DU CAS PARTICULIER : POINT = CENTRE O
     if (sqrt(r**2+z**2) .lt. eps*a) then

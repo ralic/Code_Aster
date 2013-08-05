@@ -148,7 +148,7 @@ subroutine te0295(option, nomte)
         fonc =.false.
         call jevech('PFRVOLU', 'L', iforc)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     lpesa = .false.
@@ -339,9 +339,9 @@ subroutine te0295(option, nomte)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', 0.d0,&
                     3, nomres, valres, icodre, 0)
-        call assert(icodre(1)+icodre(2).eq.0)
+        ASSERT(icodre(1)+icodre(2).eq.0)
         if (icodre(3) .ne. 0) then
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
             valres(3) = 0.d0
         endif
 !
@@ -394,7 +394,7 @@ subroutine te0295(option, nomte)
 !
 ! ----- ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 ! ----- CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
 ! ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
 !       (E1=GRLT,E2=GRLN,E3=E1^E2)

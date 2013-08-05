@@ -162,8 +162,8 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     call jeveuo(basecs//'.CESL', 'L', jcesl4)
     call jeveuo(lstno//'.CESL', 'L', jcesl5)
 !
-    call assert(zi(jcesd1).eq.zi(jcesd2))
-    call assert(zi(jcesd1).eq.zi(jcesd3))
+    ASSERT(zi(jcesd1).eq.zi(jcesd2))
+    ASSERT(zi(jcesd1).eq.zi(jcesd3))
 !
 ! --- DONNEES RELATIVES AU MAILLAGE
 !
@@ -229,33 +229,33 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
         do 120 i = 1, ninter
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+1, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             ia = nint(zr(jcesv2-1+iad))
-            call assert(ia.le.nbar)
+            ASSERT(ia.le.nbar)
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+2, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             in = nint(zr(jcesv2-1+iad))
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+3, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             longar =zr(jcesv2-1+iad)
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         1, zxain*(i-1)+4, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             alpha = zr(jcesv2-1+iad)
 !
 !         ADRESSE DU DEBUT MEMOIRE DE LA BASE COVARIANTE
             call cesexi('S', jcesd4, jcesl4, ima, 1,&
                         1, ndim*ndim*(i-1)+1, iadb)
-            call assert(iadb.gt.0)
+            ASSERT(iadb.gt.0)
 !
 !         RECUPERATION DES COORDONNES DU POINT D'INTERSECTION
             xyz(3)=0.d0
             do 121 j = 1, ndim
                 call cesexi('S', jcesd3, jcesl3, ima, 1,&
                             1, ndim*(i-1)+j, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 xyz(j)=zr(jcesv3-1+iad)
 121          continue
 !

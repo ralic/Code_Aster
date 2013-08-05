@@ -122,14 +122,14 @@ subroutine rescmp(cndiri, cnvcfo, cnfext, cnfint, cnfnod,&
         goto 30
 20      continue
         nbcmpu = nbcmpu + 1
-        call assert(nbcmpu.lt.999)
+        ASSERT(nbcmpu.lt.999)
         licmpu(nbcmpu) = inc
 30  end do
 !
-    if (nbcmpu .gt. nddmax) call assert(.false.)
+    if (nbcmpu .gt. nddmax) ASSERT(.false.)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    if (tsca .ne. 'R') call assert(.false.)
+    if (tsca .ne. 'R') ASSERT(.false.)
 !
     do 31 inc = 1, nbcmpu
         nomddl(inc) = zk8(jcnsc-1+licmpu(inc))

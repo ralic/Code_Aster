@@ -64,14 +64,13 @@ subroutine xthini(nomte, nfh, nfe)
                     iret)
         nfiss = jtab(7)
 !       ON NE TRAITE PAS LA JONCTION DE FISSURES EN THERMMIQUE
-        call assert(nfiss.eq.1)
+        ASSERT(nfiss.eq.1)
     endif
 !
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
         nfe = 1
     endif
 !
-    call assert(((nfh.eq.1).and.(nfe.eq.0)) .or. ((nfh.eq.0).and.(nfe.eq.1)) .or.&
-                ((nfh.eq.1).and.(nfe.eq.1)))
+    ASSERT((nfh.eq.1 .and. nfe.eq.0) .or. (nfh.eq.0 .and. nfe.eq.1) .or.(nfh.eq.1 .and. nfe.eq.1))
 !
 end subroutine

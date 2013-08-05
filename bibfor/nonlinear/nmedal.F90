@@ -92,7 +92,7 @@ subroutine nmedal(alphap, sigmc, gc, s, q,&
 !
         det = mat(1)*mat(2)-mat(3)*mat(3)
 !
-        call assert(abs(det).gt.1.d-12)
+        ASSERT(abs(det).gt.1.d-12)
 !
         call r8inir(2, 0.d0, tempal, 1)
         tempal(1) = ( mat(2)*s(1) - mat(3)*s(2)) / det

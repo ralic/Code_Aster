@@ -133,9 +133,9 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
 !
         do 40,ima = 1,nbma
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
-        call assert(nbpt.eq.1)
+        ASSERT(nbpt.eq.1)
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
-        call assert(nbsp.eq.1)
+        ASSERT(nbsp.eq.1)
 !
         do 30,ipt = 1,nbpt
         do 20,isp = 1,nbsp
@@ -199,14 +199,14 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     do 92 icmp1 = 1, ncmp1
         icmp2 = indik8( zk8(jce2c),zk8(jcns1c-1+icmp1), 1, ncmp2 )
         if (icmp2.eq.0) goto 92
-        call assert(zk8(jce2c-1+icmp2).eq.zk8(jcns1c-1+icmp1))
+        ASSERT(zk8(jce2c-1+icmp2).eq.zk8(jcns1c-1+icmp1))
 !       -- nbno1 est le nombre de pseudo-noeuds du maillage 2
         do 98 ipo = 1, nbno1
             ima=zi(jpo-1+2*ipo-1)
             ipt= zi(jpo-1+2*ipo)
             call cesexi('C', jce2d, jce2l, ima, ipt,&
                         1, icmp2, iad2)
-            call assert(iad2.le.0)
+            ASSERT(iad2.le.0)
             iad2=-iad2
             if (iad2 .eq. 0) goto 98
 

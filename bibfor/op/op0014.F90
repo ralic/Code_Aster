@@ -243,7 +243,7 @@ subroutine op0014()
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call apetsc('DETR_MAT', ' ', mfac, rbid, ' ',&
                     0, ibid, iret)
@@ -286,14 +286,14 @@ subroutine op0014()
             else if (mfac.ne.mass) then
                 if (ildeb .eq. 1 .and. ibdeb .eq. 1) then
                     call mtcopy(mass, mfac, iret)
-                    call assert(iret.eq.0)
+                    ASSERT(iret.eq.0)
                 endif
             endif
         else
             type = ' '
             call mtdefs(mfac, mass, 'GLOBALE', type)
             call mtcopy(mass, mfac, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
         endif
     endif
 !

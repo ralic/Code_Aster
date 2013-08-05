@@ -118,7 +118,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
 ! --- INITIALISATIONS
 !
@@ -212,7 +212,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
         etaf = eta(1)
         pilcvg = licite(1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DU RESIDU POUR LA RECHERCHE LINEAIRE
@@ -238,7 +238,7 @@ subroutine nmceta(modele, numedd, mate, carele, comref,&
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
     call jedema()
 end subroutine

@@ -66,13 +66,13 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
 ! --- TEST DES PARAMETRES D'ENTREES
     if (option .eq. 1) then
 ! --- LA MATRICE DOIT ETRE REELLE
-        if (zi(lmat+3) .ne. 1) call assert(.false.)
+        if (zi(lmat+3) .ne. 1) ASSERT(.false.)
     else if (option.eq.2) then
 ! --- LA MATRICE DOIT ETRE COMPLEXE
-        if (zi(lmat+3) .ne. 2) call assert(.false.)
+        if (zi(lmat+3) .ne. 2) ASSERT(.false.)
     else
 ! --- MAUVAISE OPTION DE CALCUL
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -118,7 +118,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
         if (ibid .ne. 0) then
             call jeveuo(kpiv, 'L', ipiv)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! --- LE DETERMINANT ISSU DE MUMPS EST STOCKE SOUS LA FORME:
 ! ---                 MANTISSE * (2**EXP)   MANTISSE COMPLEXE
@@ -141,7 +141,7 @@ subroutine mtdete(option, method, lmat, mantis, expo,&
 ! --- CALCUL DET AVEC LDLT/MF
 !
 ! --- ON S'ATTEND A UN DETERMINANT REEL, CETTE VALEUR EST SUSPECTE !
-            if ((rinf12.gt.trent1) .and. (rinf13.gt.(0.05d0*rinf12))) call assert(.false.)
+            if ((rinf12.gt.trent1) .and. (rinf13.gt.(0.05d0*rinf12))) ASSERT(.false.)
             mantis=rinf12
             expo = 0
             do 20 i = 1, info34

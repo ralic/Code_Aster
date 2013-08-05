@@ -72,7 +72,7 @@ subroutine te0185(option, nomte)
             call ef0154(nomte)
         else if (cmod.eq.'CAB'.or.cmod.eq.'CAP') then
 !         -- CABLE, CABLE_POULIE
-            call assert(.false.)
+            ASSERT(.false.)
         else if (cmod.eq.'CQ3') then
 !         -- COQUE_3D
             call ef0410(nomte)
@@ -105,18 +105,18 @@ subroutine te0185(option, nomte)
             call ef0142(nomte)
         else if (cmod.eq.'PGD') then
 !         -- POU_D_T_GD
-            call assert(.false.)
+            ASSERT(.false.)
         else if (cmod.eq.'PFM') then
 !         -- POU_D_EM
             call ef0142(nomte)
         else if (cmod.eq.'PGM') then
 !         -- POU_D_TGM
-            call assert(.false.)
+            ASSERT(.false.)
         else if (cmod.eq.'TU3'.or.cmod.eq.'TU6') then
 !         -- TUYAU_3M, TUYAU_6M
             call ef0585(nomte)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !
@@ -134,13 +134,13 @@ subroutine te0185(option, nomte)
             call ef0156(nomte)
         else if (cmod.eq.'CAB'.or.cmod.eq.'CAP') then
 !         -- CABLE, CABLE_POULIE
-            call assert(.false.)
+            ASSERT(.false.)
         else if (cmod.eq.'CQ3') then
 !         -- COQUE_3D
             call ef0415(nomte)
         else if (cmod.eq.'CQA'.or.cmod.eq.'CQC'.or.cmod.eq.'CQD') then
 !         -- COQUE_AXIS, COQUE_C_PLAN, COQUE_D_PLAN
-            call assert(.false.)
+            ASSERT(.false.)
         else if (cmod.eq.'DIT') then
 !         -- DIS_T
             call ef0039(nomte)
@@ -149,7 +149,7 @@ subroutine te0185(option, nomte)
             call ef0409(nomte)
         else if (cmod.eq.'DKT'.or.cmod.eq.'DST'.or.cmod.eq.'Q4G') then
 !         -- DKT, DST, Q4G
-            if (cmod .eq. 'DST' .or. cmod .eq. 'Q4G') call assert(.false.)
+            if (cmod .eq. 'DST' .or. cmod .eq. 'Q4G') ASSERT(.false.)
             call ef0031(nomte)
         else if (cmod.eq.'DTR') then
 !         -- DIS_TR
@@ -168,7 +168,7 @@ subroutine te0185(option, nomte)
             call ef0347(nomte)
         else if (cmod.eq.'PGD') then
 !         -- POU_D_T_GD
-            call assert(.false.)
+            ASSERT(.false.)
         else if (cmod.eq.'PFM') then
 !         -- POU_D_EM
             call ef0517(nomte)
@@ -179,7 +179,7 @@ subroutine te0185(option, nomte)
 !         -- TUYAU_3M, TUYAU_6M
             call ef0587(nomte)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

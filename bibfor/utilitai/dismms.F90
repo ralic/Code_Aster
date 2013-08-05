@@ -77,7 +77,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         else if (typmat.eq.'MR') then
             repk='NON_SYM'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'NB_EQUA') then
@@ -158,8 +158,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq. 'MPI_COMPLET') then
         k24 = zk24(jrefa-1+11)
-        call assert((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or.&
-                    (k24.eq.'MATR_DISTR'))
+        ASSERT((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or. (k24.eq.'MATR_DISTR'))
         if (k24 .eq. 'MPI_COMPLET') then
             repk='OUI'
         else
@@ -168,8 +167,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq. 'MATR_DISTR') then
         k24 = zk24(jrefa-1+11)
-        call assert((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or.&
-                    (k24.eq.'MATR_DISTR'))
+        ASSERT((k24.eq.'MPI_COMPLET') .or. ( k24.eq.'MPI_INCOMPLET') .or. (k24.eq.'MATR_DISTR'))
         if (k24 .eq. 'MATR_DISTR') then
             repk='OUI'
         else

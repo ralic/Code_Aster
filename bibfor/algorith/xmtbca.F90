@@ -201,7 +201,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
                     if (zr(jtabf+ztabf*(ipc2-1)+27) .eq. 0) goto 40
 ! --- LE PT VITAL EST CONTACTANT
                     if (zi(jvalv-1+adiel2+1) .eq. 1) goto 20
-!              CALL ASSERT(ZI(JVALV-1+ADIEL2+2).EQ.0)
+!              ASSERT(ZI(JVALV-1+ADIEL2+2).EQ.0)
 ! --- ATTENTION,LE PT VITAL EST NON CONTACTNT
                     naret2 = int(zr(jtabf+ztabf*(ipc2-1)+5))
                     do 50 ipc2 = 1, ntpc

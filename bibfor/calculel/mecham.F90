@@ -61,7 +61,7 @@ subroutine mecham(option, modele, cara, nh, chgeoz,&
     chgeom=' '
     chharm=' '
 !
-    call assert(modele(1:1).ne.' ')
+    ASSERT(modele(1:1).ne.' ')
     nomo=modele
 !
 !     --- ON VERIFIE LES EVENTUELLES SOUS-STRUCTURES STATIQUES:

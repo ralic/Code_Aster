@@ -83,7 +83,7 @@ subroutine rloshb(xcoq, xcent, ppp, xl, xv24,&
     ss(2) = xv24(3)*xv13(1) - xv24(1)*xv13(3)
     ss(3) = xv24(1)*xv13(2) - xv24(2)*xv13(1)
     xj = sqrt (ss(1)*ss(1)+ss(2)*ss(2)+ss(3)*ss(3))
-    call assert(xj.gt.0)
+    ASSERT(xj.gt.0)
     aux=1/xj
     ppp(1,3) = ss(1) * aux
     ppp(2,3) = ss(2) * aux

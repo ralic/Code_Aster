@@ -47,7 +47,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
 !
     call getvtx(mcfac, 'NOM_CMP', iocc, iarg, 1,&
                 nomcmp, n2)
-    call assert(n2.eq.1)
+    ASSERT(n2.eq.1)
 !
 !
     if (nomgd .eq. 'VARI_R') then

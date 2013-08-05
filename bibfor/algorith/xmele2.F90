@@ -178,7 +178,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
                                 ispt, 1, iad)
                     if (iad .lt. 0) goto 140
 130              continue
-                call assert(.false.)
+                ASSERT(.false.)
 140              continue
 !
 ! --- RECOPIE EFFECTIVE DES CHAMPS

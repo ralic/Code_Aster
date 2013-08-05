@@ -193,7 +193,7 @@ subroutine op0171()
         call getvis('ETAT_INIT', 'NUME_ORDRE', 1, iarg, 1,&
                     num, n2)
         if (n2 .le. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             call rsexch('F', tempev, 'TEMP', num, tempin,&
                         iret)

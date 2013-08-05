@@ -71,7 +71,7 @@ subroutine mmmtcm(phasep, ndim, nnl, nnm, norm,&
 190          continue
 200      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

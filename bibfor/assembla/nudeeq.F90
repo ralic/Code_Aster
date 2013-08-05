@@ -153,7 +153,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
                         ieq = zi(jnueq-1+iddl)
 !
                         if (i .eq. 1) then
-                            call assert((nbnl.le.0) .or. (ieq.eq.iddl))
+                            ASSERT((nbnl.le.0) .or. (ieq.eq.iddl))
                             zi(jdeeq-1+2* (ieq-1)+1) = j
                             zi(jdeeq-1+2* (ieq-1)+2) = k
                             zi(jdelg-1+ieq) = 0
@@ -201,7 +201,7 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
     endif
 50  continue
     60 end do
-    call assert(ier.le.0)
+    ASSERT(ier.le.0)
     call jedetr('&&NUEFFE.LNOBLOQ')
 !
 !

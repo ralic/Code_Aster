@@ -111,7 +111,7 @@ function cfmmvd(vect)
     else if (vect.eq.'ZEVEN') then
         cfmmvd = zeven
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

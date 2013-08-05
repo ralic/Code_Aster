@@ -48,7 +48,7 @@ function nbelem(ligrlz, igrel)
     character(len=19) :: ligrel
 ! DEB-------------------------------------------------------------------
     ligrel=ligrlz
-    call assert(igrel.gt.0)
+    ASSERT(igrel.gt.0)
 !
 !     -- SI ON EST "SOUS" CALCUL, ON PEUT ALLER PLUS VITE :
     if (iactif .eq. 1) then

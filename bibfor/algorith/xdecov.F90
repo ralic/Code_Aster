@@ -80,9 +80,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac)
-    call assert(nfisc.le.mxstac)
-    call assert(ndim.le.mxstac)
+    ASSERT(nnop.le.mxstac)
+    ASSERT(nfisc.le.mxstac)
+    ASSERT(ndim.le.mxstac)
 !
 !
     call elref4(' ', 'RIGI', ndime, ibid, ibid,&
@@ -115,7 +115,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !
         if (ninter .lt. 2) then
 !         INTER DOUTEUSE
-            call assert(npts.eq.ninter)
+            ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
             do 90 in = 1, nnose
@@ -133,7 +133,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             else if (npts .eq. 1) then
 !           2 ELEMENTS
                 nse=2
-                call assert(a1.eq.0.and.a2.ne.0)
+                ASSERT(a1.eq.0.and.a2.ne.0)
                 cnse(1,1)=nint(ainter(zxain*(npts-1)+2))
                 cnse(1,2)=102
                 cnse(1,3)=cnset(nnose*(it-1)+ar(a2,1))
@@ -143,7 +143,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             else
 !           3 ELEMENTS
                 nse=3
-                call assert(a1.ne.0)
+                ASSERT(a1.ne.0)
 !           101 ET 102 LES 2 POINTS D'INTERSECTION
 !           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
                 do 93 i = 1, 2
@@ -167,7 +167,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             endif
         else if (ninter .eq. 3) then
 !         L'INTERFACE COINCIDE AVEC LE TRIA
-            call assert(npts.eq.ninter)
+            ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
             do 92 in = 1, nnose
@@ -175,14 +175,14 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 92          continue
         else
 !         TROP DE POINTS D'INTERSECTION
-            call assert(ninter.le.3)
+            ASSERT(ninter.le.3)
         endif
 !
     else if (ndime .eq. 1) then
 !
         if (ninter .lt. 1) then
 !         INTER DOUTEUSE
-            call assert(npts.eq.ninter)
+            ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
             do 95 in = 1, 2
@@ -199,7 +199,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             else if (npts .eq. 0) then
 !           2 ELEMENTS
                 nse=2
-                call assert(a1.ne.0)
+                ASSERT(a1.ne.0)
                 a=ar(a1,1)
                 b=ar(a1,2)
 !
@@ -212,7 +212,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             endif
         else if (ninter .eq. 2) then
 !         L'INTERFACE COINCIDE AVEC LE SEG
-            call assert(npts.eq.ninter)
+            ASSERT(npts.eq.ninter)
 !         1 SEUL ELEMENT
             nse=1
             do 97 in = 1, 2
@@ -220,7 +220,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 97          continue
         else
 !         TROP DE POINTS D'INTERSECTION
-            call assert(ninter.le.2)
+            ASSERT(ninter.le.2)
         endif
 !
 !
@@ -233,7 +233,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !       ---------------------------------------------
 !
 !         INTER DOUTEUSE
-            call assert(npts.eq.ninter)
+            ASSERT(npts.eq.ninter)
 !         ON A UN SEUL ELEMENT
             nse=1
             do 100 in = 1, nnose
@@ -258,8 +258,8 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             else if (npts.eq.2) then
 !           ON A DEUX SOUS-ELEMENTS
                 nse=2
-                call assert(a1.eq.0.and.a2.eq.0)
-                call assert(nint(ainter(2)) .gt. 0 .and. nint(ainter( zxain+2)) .gt. 0)
+                ASSERT(a1.eq.0.and.a2.eq.0)
+                ASSERT(nint(ainter(2)) .gt. 0 .and. nint(ainter( zxain+2)) .gt. 0)
 !
 !           CONNECTIVITE DES NSE PAR RAPPORT AU NUM DE NOEUDS DU PARENT
 !           AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
@@ -276,8 +276,8 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             else if (npts.eq.1) then
 !           ON A TROIS SOUS-ELEMENTS
                 nse=3
-                call assert(a1.eq.0.and.a2.ne.0)
-                call assert(nint(ainter(2)).gt.0)
+                ASSERT(a1.eq.0.and.a2.ne.0)
+                ASSERT(nint(ainter(2)).gt.0)
 !           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
                 do 30 i = 1, 2
                     do 40 j = 1, 2
@@ -333,7 +333,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                                 cnset(nnose*(it-1)+3), 101, 102, 103)
                 else
 !             PROBLEME DE DECOUPAGE Ã 3 POINTS
-                    call assert(a1.eq.1.and.a2.eq.2.and.a3.eq.3)
+                    ASSERT(a1.eq.1.and.a2.eq.2.and.a3.eq.3)
                 endif
 !
             endif
@@ -369,7 +369,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
                             cnset(nnose*(it-1)+1), 102, 101)
             else
 !          PROBLEME DE DECOUPAGE A 4 POINTS
-                call assert(a1.eq.1.and.a2.eq.2.and.a3.eq.5.and.a4.eq.6)
+                ASSERT(a1.eq.1.and.a2.eq.2.and.a3.eq.5.and.a4.eq.6)
             endif
         endif
     endif
@@ -424,7 +424,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !             MATRICE DES COORDONNÃES ET FONCTION HEAVYSIDE
 !             ALGO BOOK III (28/04/04)
 !-----------------------------------------------------------------------
-    call assert(nse.le.nsemax)
+    ASSERT(nse.le.nsemax)
     do 300 ise = 1, nse
         do 310 i = 1, ifiss-1
 ! ----- ON RECOPIE LES VALEURS PRÉCÉDENTES
@@ -489,7 +489,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 !       EST DONC FAUSSE DANS CE CAS : ON MET 99.
 !       UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION DES
 !       NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI HEAV(ISE)
-            call assert(ndime.eq.ndim-1.and.npts.eq.ndim.and.nse.eq.1)
+            ASSERT(ndime.eq.ndim-1.and.npts.eq.ndim.and.nse.eq.1)
             heav(ifiss*ise) = 99.d0
         endif
 !

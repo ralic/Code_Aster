@@ -250,7 +250,7 @@ function cfdisi(deficz, questz)
 !
     else
         write(6,*) 'QUESTION: ',questi
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -107,7 +107,7 @@ subroutine mmvape(phasep, leltf, ndim, nnl, nbcps,&
                     dlagrf, rese, lambda, coefff, dvite,&
                     mprojt, vectff)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

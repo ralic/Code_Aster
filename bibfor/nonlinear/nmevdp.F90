@@ -84,7 +84,7 @@ subroutine nmevdp(sddisc, ievdac, retswa)
         call u2mess('I', 'MECANONLINE10_43')
         retswa = 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- SAUVEGARDE INFO

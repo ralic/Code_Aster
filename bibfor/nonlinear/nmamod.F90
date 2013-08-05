@@ -89,7 +89,7 @@ subroutine nmamod(phase, numedd, sddyna, vitplu, vitkm1,&
             call fmodam(neq, zr(jvitp), valmod, basmod, zr(jmoda))
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

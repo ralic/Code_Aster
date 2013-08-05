@@ -99,7 +99,7 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
     else if (nomcmd.eq.'CALC_G') then
         nbgcmd = zbgccg
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- BOUCLE SUR LES MOTS-CLEFS ACTIFS DANS LA CHARGE
@@ -119,9 +119,9 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
                     motclf = autccg(iauth)
                     call lisdef('POSM', motclf, ibid, k8bid, iposit)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
-                call assert(iposit(1).ne.0)
+                ASSERT(iposit(1).ne.0)
                 if (iposit(1) .eq. ipose) lfind = .true.
 21          continue
             if (lfind) then

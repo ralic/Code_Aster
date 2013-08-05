@@ -69,7 +69,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
         ndec = 3
         nno = 2
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jeveuo(maille, 'L', iatr3)
     ntr3 = zi(iatr3-1+1)
@@ -120,7 +120,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     nx = int((xmax-xmin)*1.05d0/dx) + 1
     ny = int((ymax-ymin)*1.05d0/dy) + 1
     nz = int((zmax-zmin)*1.05d0/dz) + 1
-    call assert(nx*ny*nz.ne.0)
+    ASSERT(nx*ny*nz.ne.0)
     ddx = (nx*dx- (xmax-xmin))/2.d0
     ddy = (ny*dy- (ymax-ymin))/2.d0
     ddz = (nz*dz- (zmax-zmin))/2.d0
@@ -271,7 +271,7 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     do 100,r = r1,r2
     zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p) = zi( iabtnb- 1+ (r-1)*nx*ny+ (q-1)*nx+p ) + 1
     iposi = zi( iabtlc-1+ (r-1)*nx*ny+ (q-1)*nx+p) + zi(iabtnb-1+ (r-1)*nx*ny+ (q-1)*nx+p )
-    call assert((iposi.ge.1) .and. (iposi.le.lont))
+    ASSERT((iposi.ge.1) .and. (iposi.le.lont))
     zi(iabtco-1+iposi) = i
 100  continue
 110  continue

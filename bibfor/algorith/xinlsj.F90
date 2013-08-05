@@ -108,7 +108,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         nomfis(cpt) = zk8(jfiss-1+ifiss)
         call cnocns(nomfis(cpt)//'.LNNO', 'V', cnsln)
         call jeveuo(cnsln//'.CNSV', 'L', jcnsvn)
-        call assert(zr(jcnsvn-1+nuno).ne.0.d0)
+        ASSERT(zr(jcnsvn-1+nuno).ne.0.d0)
         coefln(cpt) = nint(sign(1.d0,-1.d0*zr(jcnsvn-1+nuno)))
 50  end do
 !
@@ -150,7 +150,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
     nfini = nfiss+1
     nfiss = cpt
     if (nfini .le. nfiss) goto 90
-    call assert(nfiss.le.10)
+    ASSERT(nfiss.le.10)
 !
 ! --- CRÉATION DES SD GLOBALES JONFISS ET JONCOEF
 !

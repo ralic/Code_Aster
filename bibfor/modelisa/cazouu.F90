@@ -72,7 +72,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
                 nval)
 !
     nval = abs(nval)
-    call assert(nval.lt.nmocl)
+    ASSERT(nval.lt.nmocl)
 !
     if (nval .ne. 0) then
         do 15 izone = 1, nzoco
@@ -97,7 +97,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
                         call getvr8(motfac, nommc, izone, iarg, 1,&
                                     parar, noc)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                     if (noc .eq. 0) then
                         goto 14
@@ -124,7 +124,7 @@ subroutine cazouu(motfac, nzoco, nommcz)
                                 goto 20
                             endif
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
                     endif
 14                  continue

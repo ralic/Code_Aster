@@ -110,7 +110,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
             (zk16(init+2+20*(i-1)) .eq.'SIMO_MIEHE')) then
             defo = 1
         else if ((zk16(init+2+20*(i-1)).eq.'GDEF_LOG')) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 10  end do
 !
@@ -154,7 +154,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
             call nmlesd('POST_TRAITEMENT', sdpost, 'OPTION_EXTR_FLAM', ibid, r8bid,&
                         optmod)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call nmlesd('POST_TRAITEMENT', sdpost, 'BANDE_FLAMB_1', ibid, bande(1),&
@@ -172,7 +172,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
         call nmlesd('POST_TRAITEMENT', sdpost, 'MODI_RIGI', ibid, r8bid,&
                     modrig)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

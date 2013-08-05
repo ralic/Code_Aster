@@ -120,7 +120,7 @@ subroutine misazl(vecinc, defico)
             poslf2 = iposdg(zi(jdg),numlf2)
 !         INDIRECTION VERS LE .NUEQ
             inueq = zi(jprno - 1 + (numno-1)*(2+nec) + 1)
-            call assert(poslc.ne.0)
+            ASSERT(poslc.ne.0)
 !         ADRESSE DU DDL LAGS_C DANS LE .VALE
             ivalc = zi(jnueq - 1 + inueq - 1 + poslc)
             zr(jvale - 1 + ivalc) = 0.d0
@@ -136,7 +136,7 @@ subroutine misazl(vecinc, defico)
             endif
         endif
 10  end do
-    call assert(nbno.eq.ntnoe)
+    ASSERT(nbno.eq.ntnoe)
 !
     call jedema()
 end subroutine

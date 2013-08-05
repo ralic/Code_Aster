@@ -63,9 +63,9 @@ function compr8(a, comp, b, eps, crit)
 !     --------------------
 !
 !     TEST DE LA PRECISION (POSITIVE OU NULLE)
-    call assert(eps.ge.0.d0)
+    ASSERT(eps.ge.0.d0)
 !
-    call assert(crit.eq.0.or.crit.eq.1)
+    ASSERT(crit.eq.0.or.crit.eq.1)
 !
 !     --------------------
 !     COMPARAISONS
@@ -96,7 +96,7 @@ function compr8(a, comp, b, eps, crit)
 !
     else
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

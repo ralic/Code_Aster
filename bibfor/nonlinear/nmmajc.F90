@@ -147,7 +147,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
                         accplu, daccla, accplu, 1)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- COEFFICIENTS
@@ -190,7 +190,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
         call vtaxpy(1.d0, ddepla, depdel)
         call vtaxpy(1.d0, dvitla, vitdel)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MISE A JOUR DES DEPL/VITE/ACCE GENERALISEES

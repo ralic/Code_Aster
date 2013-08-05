@@ -61,16 +61,16 @@ subroutine pcmump(matasz, solvez, iretz)
     reacpr=zi(jslvi-1+6)
     pcpiv =zi(jslvi-1+7)
 !
-    call assert(precon.eq.'LDLT_SP')
+    ASSERT(precon.eq.'LDLT_SP')
 !
 ! --  PRISE EN COMPTE DES CHARGEMENTS CINEMATIQUES
 ! --  SAUF DANS LE CAS OU LE SOLVEUR EST PETSC
 ! --  CAR DEJA FAIT DANS APETSC
     if (zk24(jslvk) .ne. 'PETSC') then
         call jeveuo(matass//'.REFA', 'L', jrefa)
-        call assert(zk24(jrefa-1+3).ne.'ELIMF')
+        ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
         if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
-        call assert(zk24(jrefa-1+3).ne.'ELIML')
+        ASSERT(zk24(jrefa-1+3).ne.'ELIML')
     endif
 !
 ! --  CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION

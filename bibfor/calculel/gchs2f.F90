@@ -95,7 +95,7 @@ subroutine gchs2f(char1, char2, char3)
                     kk=kk+1
                     call codent(kk, 'D0', nomfon(7:8))
                     nomf19=nomfon
-                    call assert(lxlgut(nomf19).le.24)
+                    ASSERT(lxlgut(nomf19).le.24)
                     call wkvect(nomf19//'.PROL', 'V V K24', 6, jfpro)
                     zk24(jfpro )='CONSTANT'
                     zk24(jfpro+1)='LIN LIN'

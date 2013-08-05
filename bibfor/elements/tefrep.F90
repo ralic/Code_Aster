@@ -40,7 +40,7 @@ subroutine tefrep(option, nomte, param, iforc)
 !
     call tecach('OON', param, 'L', 8, itab,&
                 iret)
-    call assert(iret.eq.0.or.iret.eq.3)
+    ASSERT(iret.eq.0.or.iret.eq.3)
 !
     if (iret .eq. 0) then
         iforc=itab(1)
@@ -55,7 +55,7 @@ subroutine tefrep(option, nomte, param, iforc)
         nbno=itab(3)
         jad=itab(8)
         nbcmp=nbval/nbno
-        call assert(nbval.eq.nbno*nbcmp)
+        ASSERT(nbval.eq.nbno*nbcmp)
 !
         do 3,ino=1,nbno
         ico=0
@@ -63,7 +63,7 @@ subroutine tefrep(option, nomte, param, iforc)
         if (zl(jad-1+(ino-1)*nbcmp+k)) ico=ico+1
  1      continue
         if (ico .ne. 0 .and. ico .ne. nbcmp) goto 12
-        call assert(iforc.ne.0)
+        ASSERT(iforc.ne.0)
         if (ico .eq. 0) then
             do 2, k=1,nbcmp
             zr(iforc-1+(ino-1)*nbcmp+k)=0.d0

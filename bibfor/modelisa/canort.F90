@@ -5,6 +5,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
 #include "jeveux.h"
 #include "asterc/r8rddg.h"
+#include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/codree.h"
 #include "asterfort/dffno.h"
@@ -44,7 +45,6 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
 !
     character(len=8), intent(in) :: noma
     integer, intent(in) :: nbma
@@ -123,7 +123,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 
     prec = armin(noma)*1.d-06
-    call assert(abs(nbma).gt.0)
+    ASSERT(abs(nbma).gt.0)
 !
 !     RECUPERATION DE LA CONNECTIVITE INVERSE
     call cncinv(noma, listma, abs(nbma), 'V', coninv)
@@ -570,7 +570,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
                 zr(idobj2-1+3*(ij-1)+2) = b
                 zr(idobj2-1+3*(ij-1)+3) = c
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         end do
     end do

@@ -107,7 +107,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
             endif
         endif
     endif
-    call assert(lso.ne.0)
+    ASSERT(lso.ne.0)
     lsi = lso / lois
 !
 !     LE SEGMENT DE VALEURS EST ALLOUE DYNAMIQUEMENT

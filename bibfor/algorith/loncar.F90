@@ -48,7 +48,7 @@ subroutine loncar(ndim, typma, coord, l)
 !     NDIM EST LA DIMENSION DU MAILLAGE
 !     POUR LES MAILLES DE BORD, CE N'EST PAS LA DIMENSION DE LA MAILLE
 !
-    call assert(ndim.eq.2.or.ndim.eq.3)
+    ASSERT(ndim.eq.2.or.ndim.eq.3)
 !
     if (typma(1:4) .eq. 'HEXA') then
 !
@@ -120,7 +120,7 @@ subroutine loncar(ndim, typma, coord, l)
     else
 !
 !       TYPE D'ELEMENT FINI PAS TRAITE
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

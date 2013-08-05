@@ -155,7 +155,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !         DECOUPAGE EN 3 ELEMENTS
 !         3 SEUL ELEMENT
                 nse=3
-                call assert(a1.ne.0)
+                ASSERT(a1.ne.0)
 !           101 ET 102 LES 2 POINTS D'INTERSECTION
 !           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
 !
@@ -192,7 +192,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !         DECOUPAGE EN 2 ELEMENTS
 !         2 SEUL ELEMENT
                 nse=2
-                call assert(a1.eq.0.and.a2.ne.0)
+                ASSERT(a1.eq.0.and.a2.ne.0)
 !           101 ET 102 LES 2 POINTS D'INTERSECTION
 !           CNSE(1,1)=101
                 b = ar(a2,1)
@@ -311,7 +311,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
             if (npts .eq. 0) then
 !          DECOUPAGE EN 2 ELEMENTS
                 nse=2
-                call assert(a1.ne.0)
+                ASSERT(a1.ne.0)
                 a=ar(a1,1)
                 b=ar(a1,2)
 !            101 LE POINT D'INTERSECTION
@@ -340,7 +340,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !             ALGO BOOK III (28/04/04)
 ! --------------------------------------------------------------------
 !
-    call assert(nse.le.nsemax)
+    ASSERT(nse.le.nsemax)
     do 300 ise = 1, nse
         heav(ise)=1.d0
         do 310 in = 1, ndime+1

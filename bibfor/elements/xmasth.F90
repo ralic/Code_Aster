@@ -101,7 +101,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac)
+    ASSERT(nnop.le.mxstac)
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
@@ -117,7 +117,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     call rccoma(zi(imate), 'THER', 1, phenom, icodre)
     if (icodre .ne. 0) call u2mess('F', 'ELEMENTS2_63')
 !     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
-    call assert(phenom.eq.'THER')
+    ASSERT(phenom.eq.'THER')
     valpar(1) = zr(itemps-1+1)
     spt = 1
     poum = '+'
@@ -149,7 +149,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                     coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
                     1)+j)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 1110          continue
 1100      continue
@@ -197,7 +197,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 endif
 !           PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
 !           CAR ON SE TROUVE SUR LE FOND DE FISSURE
-                call assert(iret.ne.0)
+                ASSERT(iret.ne.0)
 !           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
                 feth = femec(1)
             endif
@@ -219,7 +219,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 do 1230 inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
 1230              continue
-                call assert(r.gt.0d0)
+                ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
 !

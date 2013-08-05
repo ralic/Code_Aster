@@ -63,7 +63,7 @@ subroutine te0008(option, nomte)
 !
     zero = 0.d0
     nharm = zero
-    call assert(nno*ndim.le.81)
+    ASSERT(nno*ndim.le.81)
 !
 ! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !

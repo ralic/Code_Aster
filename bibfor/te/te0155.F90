@@ -1,5 +1,4 @@
 subroutine te0155(option, nomte)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterc/r8miem.h"
@@ -201,7 +200,7 @@ subroutine te0155(option, nomte)
         if (lforc .ne. 0) then
             if (nomte .eq. 'MECA_2D_BARRE') then
 ! OPTION NON PROGRAMMEE
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             normal = .true.
             okvent = .true.

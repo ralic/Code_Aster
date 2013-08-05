@@ -75,6 +75,6 @@ subroutine melima(chin, ma, icode, ient, lima,&
         call jelira(jexnum(chin(1:19)//'.LIMA', ient), 'LONMAX', nb, k1bid)
         call jeveuo(jexnum(chin(1:19)//'.LIMA', ient), 'L', lima)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

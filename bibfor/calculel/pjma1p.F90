@@ -54,7 +54,7 @@ subroutine pjma1p(moa1, ma1p, cham1, corres)
 !
     shrink=1.d0
     lonmin=0.d0
-    call assert(cham1.ne.' ')
+    ASSERT(cham1.ne.' ')
     call dismoi('F', 'NOM_LIGREL', cham1, 'CHAM_ELEM', ibid,&
                 ligrel, ibid)
 !

@@ -125,7 +125,7 @@ subroutine medime(base, cumul, modele, lischa, mediri)
         nluti = nluti+1
         call codent(nluti+1, 'D0', lchout(1) (12:14))
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     ilires = nluti-1

@@ -68,10 +68,10 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
     typrez = typres(1:1)
     call jelira(chm19z//'.CELV', 'TYPE', ibid, type)
 !
-    call assert(type.eq.typrez)
+    ASSERT(type.eq.typrez)
     call dismoi('F', 'MPI_COMPLET', cham19, 'CHAM_ELEM', ibid,&
                 kmpic, ibid)
-    call assert(kmpic.eq.'OUI'.or.kmpic.eq.'NON')
+    ASSERT(kmpic.eq.'OUI'.or.kmpic.eq.'NON')
 !
     if (type .ne. 'R' .and. type .ne. 'C' .and. type .ne. 'I') call u2mesk('E', 'UTILITAI5_29',&
                                                                            1, type)

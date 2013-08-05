@@ -60,7 +60,7 @@ subroutine mmcaln(ndim, tau1, tau2, norm, mprojn,&
 ! --- NORMALE
 !
     call mmnorm(ndim, tau1, tau2, norm, noor)
-    if (noor .le. r8prem()) call assert(.false.)
+    if (noor .le. r8prem()) ASSERT(.false.)
 !
 ! --- MATRICE DE PROJECTION NORMALE
 !

@@ -52,7 +52,7 @@ function sdsolv(vect)
     else if (vect.eq.'ZSLVI') then
         sdsolv = zslvi
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

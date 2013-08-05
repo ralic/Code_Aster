@@ -61,7 +61,7 @@ function lcesvf(mode, a)
         goto 9999
     endif
 !
-    call assert(.false.)
+    ASSERT(.false.)
 !
 9999  continue
 end function

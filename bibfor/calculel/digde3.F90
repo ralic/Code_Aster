@@ -46,10 +46,10 @@ function digde3(modelo, louc)
     integer :: jmodlo, mod1, jmod1
 !
 ! DEB-------------------------------------------------------------------
-    call assert(louc.eq.'C' .or. louc.eq.'L')
+    ASSERT(louc.eq.'C' .or. louc.eq.'L')
 !
     jmodlo = iamloc - 1 + zi(ilmloc-1+modelo)
-    call assert(zi(jmodlo-1+1).eq.5)
+    ASSERT(zi(jmodlo-1+1).eq.5)
 !
     if (louc .eq. 'C') then
         mod1=zi(jmodlo-1+4)
@@ -57,6 +57,6 @@ function digde3(modelo, louc)
         mod1=zi(jmodlo-1+5)
     endif
     jmod1 = iamloc - 1 + zi(ilmloc-1+mod1)
-    call assert(zi(jmod1-1+1).eq.2)
+    ASSERT(zi(jmod1-1+1).eq.2)
     digde3 = zi(jmod1-1+3)
 end function

@@ -65,7 +65,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom,&
     character(len=24) :: valkm(2)
     real(kind=8) :: valrm
 !
-    call assert(nno.eq.2)
+    ASSERT(nno.eq.2)
 !
 !     CALCUL DU VECTEUR XLOCAL AU TEMPS T-
     do 20 i = 1, 3

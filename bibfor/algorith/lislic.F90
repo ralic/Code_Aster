@@ -60,7 +60,7 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
     else if (typlig.eq.'LIGRCH') then
         ligcal = prefob//'.LIGRE'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

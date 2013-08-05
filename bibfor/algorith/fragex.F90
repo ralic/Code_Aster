@@ -297,7 +297,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
 !        VIP(2) = ETAT
         vip(2) = (d-dm)/(instap-instam)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

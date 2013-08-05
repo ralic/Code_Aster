@@ -100,7 +100,7 @@ subroutine nmcrel(sderro, nomevt, vall)
 !
 66  continue
 !
-    call assert(ievact.ne.0)
+    ASSERT(ievact.ne.0)
 !
 ! --- (DES-)ACTIVATION DE L'EVENEMENT
 !

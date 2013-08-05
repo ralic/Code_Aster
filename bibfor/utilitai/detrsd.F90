@@ -1,5 +1,4 @@
 subroutine detrsd(typesd, nomsd)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 #include "asterfort/amumph.h"
@@ -323,7 +322,7 @@ subroutine detrsd(typesd, nomsd)
             call jeveuo(table//'.TBNP', 'L', iad)
             nblg=zi(iad+1)
             nbpa=zi(iad)
-            call assert(nbpa.ge.3)
+            ASSERT(nbpa.ge.3)
             call jeveuo(table//'.TBLP', 'L', iad)
             call jelira(table//'.TBLP', 'LONMAX', long, k1bid)
             nblp=long/nbpa

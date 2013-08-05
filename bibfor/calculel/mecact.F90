@@ -98,7 +98,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
         call jeveuo(nommo2(1:19)//'.LGRF', 'L', ianoma)
         noma = zk8(ianoma-1+1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- SI LA CARTE EXISTE DEJA , ON LA DETRUIT COMPLETEMENT:
@@ -144,7 +144,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
         else if (ltyp.eq.24) then
             zk24(jvalv-1+i) = kcmp(i)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     1 end do

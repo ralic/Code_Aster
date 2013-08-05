@@ -201,12 +201,12 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
 !
                 do 40 i = 1, nnm
                     nuno = zi(iconex+zi(ilong-1+nummam)+i-2)
-                    call assert(zl(jdepdl-1+ndd1*(nuno-1)+1))
-                    call assert(zl(jdepdl-1+ndd1*(nuno-1)+2))
+                    ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+1))
+                    ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+2))
                     deplpm(1) = deplpm(1)+zr(jdepde-1+ndd1*(nuno-1)+1) *ff(i)
                     deplpm(2) = deplpm(2)+zr(jdepde-1+ndd1*(nuno-1)+2) *ff(i)
                     if (ndimg .eq. 3) then
-                        call assert(zl(jdepdl-1+ndd1*(nuno-1)+3))
+                        ASSERT(zl(jdepdl-1+ndd1*(nuno-1)+3))
                         deplpm(3) = deplpm(3)+zr(jdepde-1+ndd1*(nuno- 1)+3)*ff(i)
                     endif
 40              continue
@@ -226,7 +226,7 @@ subroutine mmmreg(noma, defico, resoco, depcn, ndd1,&
                     zr(jglie+iptc-1) = deplpe(1)*tau1(1) + deplpe(2)* tau1(2)
                     zr(jglim+iptc-1) = deplpm(1)*tau1(1) + deplpm(2)* tau1(2)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 ! --------- LIAISON DE CONTACT SUIVANTE

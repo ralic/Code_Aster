@@ -68,7 +68,7 @@ subroutine cormgi(basez, ligrez)
 !
     call jeveuo(ligrel//'.LGRF', 'L', jlgrf)
     nmaila = zk8(jlgrf)
-    call assert(nmaila.ne.' ')
+    ASSERT(nmaila.ne.' ')
 !
     call jeexin(nmaila//'.CONNEX', iret)
     if (iret .eq. 0) goto 9999

@@ -74,7 +74,7 @@ subroutine oblsai(sdlist, istru, lacti)
     do 10 i = 1, nbstru
         if (zi(jlisac-1+i) .eq. 1) nbacti = nbacti +1
 10  end do
-    call assert(nbacti.le.nbstru)
+    ASSERT(nbacti.le.nbstru)
     call obseti(sdlist, 'NBRE_ACTI', nbacti)
 !
     call jedema()

@@ -100,7 +100,7 @@ subroutine te0005(option, nomte)
                     nnom, interp, axi, regula, zr(ideplp),&
                     zr(idefo))
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ======================================================================
 end subroutine

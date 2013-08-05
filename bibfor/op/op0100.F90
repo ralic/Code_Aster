@@ -23,7 +23,6 @@ subroutine op0100()
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"
@@ -201,7 +200,7 @@ subroutine op0100()
 !     LE MOT-CLE THETA EST RENSEIGNE : ON CREE L'OBJET THETA (K24)
     if (typfis .eq. 'THETA') then
         call gettco(nomfis, typco)
-        call assert(typco.eq.'THETA_GEOM'.or.typco.eq.'CHAM_NO_SDASTER')
+        ASSERT(typco.eq.'THETA_GEOM'.or.typco.eq.'CHAM_NO_SDASTER')
         if (typco .eq. 'THETA_GEOM') then
             call rsexch('F', nomfis, 'THETA', 0, theta,&
                         ier)
@@ -225,7 +224,7 @@ subroutine op0100()
 !         A VIRER !!
             if (typfis .eq. 'FONDFISS' .and. ndim .eq. 2) call u2mess('F', 'RUPTURE0_81')
         else if (iret.lt.0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else if (iret.gt.0) then
             direc=.true.
         endif
@@ -601,7 +600,7 @@ subroutine op0100()
                             nomcas, lmoda, puls, compor)
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 34          continue

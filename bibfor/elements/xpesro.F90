@@ -97,7 +97,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
     call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
-    call assert(ndim.eq.ndimb)
+    ASSERT(ndim.eq.ndimb)
 !     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', 2, jtab,&
                 iret)
@@ -144,7 +144,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !
 !
-            call assert(r.gt.0d0)
+            ASSERT(r.gt.0d0)
         endif
 !
         if (axi) then

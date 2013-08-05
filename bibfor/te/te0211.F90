@@ -42,7 +42,7 @@ subroutine te0211(option, nomte)
 !     ------------------------------------------------------------------
 !
     call elref2(nomte, 2, lirefe, nbelr)
-    call assert(nbelr.eq.2)
+    ASSERT(nbelr.eq.2)
     call elref4(lirefe(2), 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !

@@ -109,7 +109,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
     else
         call jelira(chel1//'.CELD', 'DOCU', ibid, tych)
     endif
-    call assert(tych.eq.'CHML')
+    ASSERT(tych.eq.'CHML')
 !
 ! --- VERIFICATIONS SI CHAMP ELGA
 !

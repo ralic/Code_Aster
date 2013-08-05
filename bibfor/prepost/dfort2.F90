@@ -195,11 +195,11 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                     call dcqpri(coor(1, 2), coor(1, 1), coorin, sprim)
                 else
 !             IPOI1 et IPOI4 non traité
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
-            call assert(sprim.ge.0.d0)
+            ASSERT(sprim.ge.0.d0)
 !
 ! 3.1.3 - CALCUL DE L ENERGIE
 !
@@ -210,7 +210,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 !
 40      continue
 !
-        call assert(airtot.gt.0.d0.and.ener(iint).gt.0.d0)
+        ASSERT(airtot.gt.0.d0.and.ener(iint).gt.0.d0)
         ener(iint) = ener(iint) / airtot
 !
 ! LISSAGE DE LA COURBE ENERGI=F(RAYON) POUR IDENTIFIER PE

@@ -84,7 +84,7 @@ subroutine nmextt(sdieto, nomcha, typcha)
         typcha = 'NOEU'
     else
         write(6,*) 'LOCALISATION INTERDITE POUR OBSV: ',loccha
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

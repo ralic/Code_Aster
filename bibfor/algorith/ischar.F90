@@ -109,7 +109,7 @@ function ischar(lischa, typcha, soutyp, ichar)
             deb = 1
             fin = nchar
         else
-            if ((ichar.le.0) .or. (ichar.gt.nchar)) call assert(.false.)
+            if ((ichar.le.0) .or. (ichar.gt.nchar)) ASSERT(.false.)
             deb = ichar
             fin = ichar
         endif
@@ -176,10 +176,10 @@ function ischar(lischa, typcha, soutyp, ichar)
                         llapl = .true.
                     endif
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             if (ldiri) then
                 if (zi(jinfch+3*nchar+2+icha) .eq. 1) then
@@ -203,12 +203,12 @@ function ischar(lischa, typcha, soutyp, ichar)
                 ischar = ldiri
             else
                 write(6,*) 'SOUTYP: ',soutyp
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (lneum) then
             ischar = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (typcha.eq.'NEUM') then
         if (lneum) then
@@ -226,16 +226,16 @@ function ischar(lischa, typcha, soutyp, ichar)
                 ischar = lneum
             else
                 write(6,*) 'SOUTYP: ',soutyp
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (ldiri) then
             ischar = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         write(6,*) 'TYPCHA: ',typcha
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 99  continue

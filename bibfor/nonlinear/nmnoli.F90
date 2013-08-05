@@ -121,10 +121,10 @@ subroutine nmnoli(result, sddisc, sderro, carcri, sdimpr,&
 ! --- CREATION DE LA SD EVOL_NOLI OU NETTOYAGE DES ANCIENS NUMEROS
 !
     if (lreuse) then
-        call assert(numarc.ne.0)
+        ASSERT(numarc.ne.0)
         call rsrusd(result, numarc)
     else
-        call assert(numarc.eq.0)
+        ASSERT(numarc.eq.0)
         call rscrsd('G', result, 'EVOL_NOLI', 100)
     endif
 !

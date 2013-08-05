@@ -35,7 +35,7 @@ subroutine vfimat(maxdim, ndim, a, am1)
 !
 ! ----------------------------------------------------------------------
 !
-    call assert(ndim.eq.2.or.ndim.eq.3)
+    ASSERT(ndim.eq.2.or.ndim.eq.3)
 !
     call vfcdet(maxdim, ndim, a, deta)
 !

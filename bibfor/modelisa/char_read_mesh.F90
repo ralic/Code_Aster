@@ -192,7 +192,7 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
                 zi(jnode-1+i_node) = num_lect
             endif
         end do
-        call assert(i_node.eq.nb_node)
+        ASSERT(i_node.eq.nb_node)
     endif
 !
     call jedetr(list_lect)

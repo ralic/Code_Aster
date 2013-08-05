@@ -134,7 +134,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     else if (typces.eq.'ELNO') then
         call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jlconx)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
@@ -148,7 +148,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !     -- ON CALCULE ET ON VERIFIE :  '&&CESCRE.LICMP' :
 !     --------------------------------------------------
     if (ncmpg .eq. 0) then
-        call assert(nomgd(1:5).ne.'VARI_')
+        ASSERT(nomgd(1:5).ne.'VARI_')
         ncmp2 = ncmpmx
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
         do 10,k = 1,ncmp2
@@ -157,7 +157,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !
     else if (ncmpg.gt.0) then
         call verigd(nomgd, licmp, ncmpg, iret)
-        call assert(iret.le.0)
+        ASSERT(iret.le.0)
 !
         ncmp2 = ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
@@ -166,7 +166,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 20      continue
 !
     else if (ncmpg.lt.0) then
-        call assert(nomgd(1:5).eq.'VARI_')
+        ASSERT(nomgd(1:5).eq.'VARI_')
         ncmp2 = -ncmpg
         call wkvect('&&CESCRE.LICMP', 'V V K8', ncmp2, jlicmp)
         nomcmp(1:1) = 'V'

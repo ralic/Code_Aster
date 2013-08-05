@@ -63,7 +63,7 @@ subroutine mkkvec(rese, nrese, ndim, vec, resu)
 !
     norme = nrese*nrese
     if ((norme.eq.0.d0) .or. (nrese.eq.0.d0)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DU PRODUIT IK()VEC

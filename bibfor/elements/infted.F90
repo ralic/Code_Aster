@@ -71,7 +71,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
 !
     itype = -10
     if (nomte .eq. 'MECA_DIS_TR_L') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 78
             nbnoeu = 2
@@ -86,7 +86,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 43
         endif
     else if (nomte.eq.'MECA_DIS_TR_N') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 21
             nbnoeu = 1
@@ -101,7 +101,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 23
         endif
     else if (nomte.eq.'MECA_DIS_T_L') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 21
             nbnoeu = 2
@@ -116,7 +116,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 42
         endif
     else if (nomte.eq.'MECA_DIS_T_N') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 6
             nbnoeu = 1
@@ -131,7 +131,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 22
         endif
     else if (nomte.eq.'MECA_2D_DIS_TR_L') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 21
             nbnoeu = 2
@@ -146,7 +146,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 43
         endif
     else if (nomte.eq.'MECA_2D_DIS_TR_N') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 6
             nbnoeu = 1
@@ -161,7 +161,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 23
         endif
     else if (nomte.eq.'MECA_2D_DIS_T_L') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 10
             nbnoeu = 2
@@ -176,7 +176,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
             itype = 42
         endif
     else if (nomte.eq.'MECA_2D_DIS_T_N') then
-        call assert((symetr.eq.1).or.(symetr.eq.2))
+        ASSERT((symetr.eq.1).or.(symetr.eq.2))
         if (symetr .eq. 1) then
             nbterm = 3
             nbnoeu = 1

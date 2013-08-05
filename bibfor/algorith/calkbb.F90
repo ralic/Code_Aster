@@ -68,7 +68,7 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
         call pmat(4, idev2/3.d0, dsidep, devd)
         call pmat(4, devd, idev2/3.d0, dddev)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! - CALCUL DE LA MATRICE KBB

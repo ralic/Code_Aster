@@ -107,15 +107,15 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !
 ! --- TYPE DE SYSTEME: REEL OU COMPLEXE
     type='Z'
-    call assert(kxmps.gt.0)
-    call assert(kxmps.le.nmxins)
+    ASSERT(kxmps.gt.0)
+    ASSERT(kxmps.le.nmxins)
     nomat=nomats(kxmps)
     nosolv=nosols(kxmps)
     nonu=nonus(kxmps)
     etam=etams(kxmps)
     rouc=roucs(kxmps)
     prec=precs(kxmps)
-    call assert((rouc.eq.'C').and.(prec.eq.'D'))
+    ASSERT((rouc.eq.'C').and.(prec.eq.'D'))
     zmpsk=>zmps(kxmps)
     iret=0
 !

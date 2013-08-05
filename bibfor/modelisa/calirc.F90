@@ -1,5 +1,4 @@
 subroutine calirc(chargz)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -100,7 +99,7 @@ subroutine calirc(chargz)
     else if (nomcmd.eq.'AFFE_CHAR_THER') then
         typlia='TEMP'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -187,9 +186,9 @@ subroutine calirc(chargz)
             if (nddl2 .gt. 0) dnor=.true.
             call getvtx(motfac, 'TYPE_RACCORD', iocc, iarg, 1,&
                         typrac, ibid)
-            if (typrac .eq. 'COQUE') call assert(ndim.eq.3)
-            if (typrac .eq. 'COQUE_MASSIF') call assert(ndim.eq.3)
-            if (typrac .eq. 'MASSIF_COQUE') call assert(ndim.eq.3)
+            if (typrac .eq. 'COQUE') ASSERT(ndim.eq.3)
+            if (typrac .eq. 'COQUE_MASSIF') ASSERT(ndim.eq.3)
+            if (typrac .eq. 'MASSIF_COQUE') ASSERT(ndim.eq.3)
         endif
 !
 !        1.1 RECUPERATION DE LA LISTE DES MAILLE_MAIT :
@@ -302,16 +301,16 @@ subroutine calirc(chargz)
         call calirg('LIAISON_MAIL', iocc, ndim, noma, '&&CALIRC.LINONU2',&
                     geom2, mrota, lrota)
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
-        if (typrac .eq. 'COQUE_MASSIF') call assert(.not.lrota)
-        if (typrac .eq. 'MASSIF_COQUE') call assert(.not.lrota)
-        if (typrac .eq. 'COQUE') call assert(.not.lrota)
+        if (typrac .eq. 'COQUE_MASSIF') ASSERT(.not.lrota)
+        if (typrac .eq. 'MASSIF_COQUE') ASSERT(.not.lrota)
+        if (typrac .eq. 'COQUE') ASSERT(.not.lrota)
 !
 !
 !
 !       2. CALCUL DE CORRES (+ EVENTUELLEMENT CORRE1, CORRE2) :
 !       --------------------------------------------------------
         if (ndim .eq. 2) then
-            call assert((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
+            ASSERT((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
             call pj2dco('PARTIE', mo, mo, nbma1, zi(iagma1),&
                         nbno2, zi( iagno2), ' ', geom2, corres,&
                         .false., rbid)
@@ -333,7 +332,7 @@ subroutine calirc(chargz)
                 call calir3(mo, nbma1, zi(iagma1), nbno2, zi(iagno2),&
                             geom2, corre1, corre2, jlisv1, iocc)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         endif
@@ -354,7 +353,7 @@ subroutine calirc(chargz)
             call jeveuo(corre2//'.PJEF_CF', 'L', jcocf2)
         endif
         call jelira(corres//'.PJEF_NB', 'LONMAX', nbno2t, kb)
-        call assert(nbno2t.eq.nnomx)
+        ASSERT(nbno2t.eq.nnomx)
 !
 !
 !
@@ -626,7 +625,7 @@ subroutine calirc(chargz)
                 idecal=idecal+nno1
 300          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call detrsd('CORRESP_2_MAILLA', corres)

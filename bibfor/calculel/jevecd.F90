@@ -39,11 +39,11 @@ subroutine jevecd(nompar, jad, valdef)
 !
     call tecach('OON', nompar, 'L', 8, itab,&
                 iret)
-    call assert((iret.eq.0).or.(iret.eq.3))
+    ASSERT((iret.eq.0).or.(iret.eq.3))
 !
     jad=itab(1)
     if (iret .eq. 3) then
-        call assert(itab(5).eq.1)
+        ASSERT(itab(5).eq.1)
         lonel=itab(2)*max(1,itab(6))*max(1,itab(7))
         do 1, k = 1,lonel
         if (zl(itab(8)-1+k)) then

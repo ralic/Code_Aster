@@ -83,7 +83,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
     call jemarq()
 !
-    call assert(nbma.gt.0)
+    ASSERT(nbma.gt.0)
 !
     call jeveuo(nomaqu, 'L', jmaqu)
     call jeveuo(main//'.TYPMAIL', 'L', jtyp)
@@ -165,7 +165,7 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
         endif
 60  end do
 !
-    call assert(nbnosu.eq.nbnm)
+    ASSERT(nbnosu.eq.nbnm)
 !
     call jedetr('&&CMQLNM.TAB_NO')
 !

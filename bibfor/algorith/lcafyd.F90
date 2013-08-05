@@ -82,7 +82,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
         if (materf(nbcomm(1,1),2) .ge. 4) then
 !           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
 !           UNE SEULE FAMILLE
-            call assert(nbcomm(nmat, 2).eq.1)
+            ASSERT(nbcomm(nmat, 2).eq.1)
             do 102 i = 1, ns
                 yd(ndt+i)=vind(6+3*(i-1)+1)
 102          continue

@@ -61,8 +61,8 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi,&
     dff1(n,i) = dfdi1(nno1*(i-1) + n)
     dff2(n,i) = dfdi2(nno2*(i-1) + n)
 ! ----------------------------------------------------------------------
-    call assert(nno1.le.27)
-    call assert(nno2.le.8)
+    ASSERT(nno1.le.27)
+    ASSERT(nno2.le.8)
     rac2 = sqrt(2.d0)
     r2 = sqrt(2.d0)/2
     nddl = nno1*ndim + nno2*2

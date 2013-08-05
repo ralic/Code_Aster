@@ -386,7 +386,7 @@ subroutine te0003(option, nomte)
         if (( elrefe(1:3).eq.'H20' ) .or. ( elrefe(1:3).eq.'H27' ) .or.&
             ( elrefe(1:3).eq.'P15' ) .or. ( elrefe(1:3).eq.'T10' ) .or.&
             ( elrefe(1:3).eq.'P13' )) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -463,7 +463,7 @@ subroutine te0003(option, nomte)
     if (iret .ne. 0) then
         call tecach('ONN', 'PSOURCF', 'L', 1, isour,&
                     iret2)
-        if (iret2 .eq. 0) call assert(nomgds.eq.'SOUR_F')
+        if (iret2 .eq. 0) ASSERT(nomgds.eq.'SOUR_F')
     endif
 !
 ! FLAG POUR EFFECTUER LES CALCULS IMPLIQUANT (1-THETA)
@@ -498,7 +498,7 @@ subroutine te0003(option, nomte)
 !
 ! RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
     call rccoma(zi(imate), 'THER', 1, phenom, icodre)
-    call assert(icodre(1).eq.0)
+    ASSERT(icodre(1).eq.0)
     if ((phenom.eq.'THER') .or. (phenom.eq.'THER_ORTH')) then
         lnonli = .false.
         call rcvala(zi(imate), ' ', phenom, 1, 'INST',&
@@ -610,7 +610,7 @@ subroutine te0003(option, nomte)
             tempp = tempp + zr(itemp+i1)*fforme
 30      continue
         deltat = inst - insold
-        call assert(deltat.gt.ovfl)
+        ASSERT(deltat.gt.ovfl)
         unsurd = 1.d0/deltat
         if (lnonli) then
 ! CAS NON LINEAIRE
@@ -665,7 +665,7 @@ subroutine te0003(option, nomte)
 !
 ! TRAITEMENT PARTICULIER DU A L'AXI (PART III)
     if (laxi) then
-        call assert(abs(r).gt.ovfl)
+        ASSERT(abs(r).gt.ovfl)
         unsurr = 1.d0/r
         poids = poids*r
     endif

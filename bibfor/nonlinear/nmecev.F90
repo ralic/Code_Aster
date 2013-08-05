@@ -64,7 +64,7 @@ subroutine nmecev(sderro, acces, nomevd, action)
         nomevd = zk16(jeeevt-1+1)
         action = zk16(jeeevt-1+2)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

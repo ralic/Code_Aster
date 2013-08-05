@@ -134,7 +134,7 @@ subroutine cnocns(cnoz, basez, cnsz)
         else if (tsca.eq.'K8') then
             zk8(jcnsv-1+ieq) = zk8(jvale-1+ieq)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 50      continue
 60      continue
@@ -164,7 +164,7 @@ subroutine cnocns(cnoz, basez, cnsz)
             ico = ico + 1
             ieq = zi(jnueq-1+ival-1+ico)
             icmp1 = zi(jcorr1-1+icmp)
-!             CALL ASSERT(ICMP1.EQ.KCMP)  COUTEUX ?
+!             ASSERT(ICMP1.EQ.KCMP)  COUTEUX ?
 !
             zl(jcnsl-1+ (ino-1)*ncmp1+icmp1) = .true.
 !
@@ -179,7 +179,7 @@ subroutine cnocns(cnoz, basez, cnsz)
             else if (tsca.eq.'K8') then
                 zk8(jcnsv-1+ (ino-1)*ncmp1+icmp1) = zk8( jvale-1+ieq)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 70      continue

@@ -119,7 +119,7 @@ subroutine nmassd(modele, numedd, lischa, fonact, depest,&
 ! --- CHARGEMENT FIXE
 !
     if (nbvec .gt. nbcoef) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)

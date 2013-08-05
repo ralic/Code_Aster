@@ -74,7 +74,7 @@ subroutine nmlssv(mode, lischa, nbsst)
  1          continue
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 !

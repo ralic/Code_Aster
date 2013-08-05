@@ -132,7 +132,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     do 100 imat = 1, nbmat
         matel = zk24(ilimat+imat-1)(1:19)
         call jeexin(matel//'.RERR', iret1)
-        call assert(iret1.gt.0)
+        ASSERT(iret1.gt.0)
         call jeveuo(matel//'.RERR', 'L', iarefr)
         modele= zk24(iarefr-1+1)(1:8)
         suropt= zk24(iarefr-1+2)(1:16)
@@ -248,7 +248,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         if (kstop .eq. 'C') then
             goto 9999
         else
-            call assert(kstop.eq.'F')
+            ASSERT(kstop.eq.'F')
             call u2mess('F', 'ASSEMBLA_20')
         endif
     endif

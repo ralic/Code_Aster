@@ -81,7 +81,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
     ratio = 1.d0
     nomlis = '&&NMDCEX.NOMLIS'
     retdex = 0
-    call assert(durdec.gt.0.d0)
+    ASSERT(durdec.gt.0.d0)
     insfin = insref+durdec
 !
 ! --- AFFICHAGE
@@ -152,7 +152,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac,&
     else if (retdex.eq.2) then
         call u2mesr('I', 'SUBDIVISE_15', 1, insref)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

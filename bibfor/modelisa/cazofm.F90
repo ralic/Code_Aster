@@ -82,7 +82,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
     else if (iform.eq.3) then
         formul = 'XFEM'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
@@ -141,7 +141,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
                     call u2mesk('F', 'CONTACT3_3', 3, valk)
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             ifrot = 0
@@ -159,7 +159,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
                 icont = 5
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         endif
@@ -198,7 +198,7 @@ subroutine cazofm(char, motfac, iform, nzoco)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- SAUVEGARDE METHODE CONTACT ET FROTTEMENT

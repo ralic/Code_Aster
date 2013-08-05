@@ -107,7 +107,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
         nnof = 4
         alias='QU4'
     endif
-    call assert(nnof.le.4)
+    ASSERT(nnof.le.4)
 !
 !     NOEUDS SOMMETS DE LA FACE : FA(IFQ,1) ... FA(IFQ,NNOF)
 !

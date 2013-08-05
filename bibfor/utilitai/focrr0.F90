@@ -91,7 +91,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
     endif
 !
 !     --- REMPLISSAGE DU .PROL ---
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
     if (typres(1:10) .eq. 'DYNA_HARMO') then
         zk24(lpro) = 'FONCT_C'

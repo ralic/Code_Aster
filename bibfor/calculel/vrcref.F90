@@ -149,8 +149,8 @@ subroutine vrcref(modele, chmat, carele, chvref)
     do 170,ima = 1,nbma
     nbpt = zi(jdcld-1+5+4* (ima-1)+1)
     nbsp = max(1,zi(jdcld-1+5+4* (ima-1)+2))
-    call assert(nbpt.eq.1)
-    call assert(nbsp.eq.1)
+    ASSERT(nbpt.eq.1)
+    ASSERT(nbsp.eq.1)
     call cesexi('C', jdcld, jdcll, ima, 1,&
                 1, 2, iad)
     if (iad .gt. 0) zi(jdclv-1+iad)=nbcvrc
@@ -158,7 +158,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 !
     call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
                 iret, dceli)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     call detrsd('CHAMP', dceli)
     call celces(celmod, 'V', csvref)
     call detrsd('CHAMP', celmod)
@@ -185,14 +185,14 @@ subroutine vrcref(modele, chmat, carele, chvref)
     ces1='&&VRCREF.CES1'
     call carces(cart1, 'ELEM', ' ', 'V', ces1,&
                 'A', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     call jeveuo(ces1//'.CESD', 'L', jcesd1)
     call jeveuo(ces1//'.CESV', 'L', jcesv1)
     call jeveuo(ces1//'.CESL', 'L', jcesl1)
 !
     nbma = zi(jcesd-1+1)
-    call assert(nbma.eq.zi(jcesd1-1+1))
+    ASSERT(nbma.eq.zi(jcesd1-1+1))
 !
 !       -- CALCUL DE NCMP
     ncmp=0
@@ -214,7 +214,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     do 51,icmp = 1,ncmp
     call cesexi('C', jcesd, jcesl, ima, ipt,&
                 isp, k-1+ icmp, iad)
-    call assert(iad.le.0)
+    ASSERT(iad.le.0)
     if (iad .eq. 0) goto 51
     iad=-iad
     zl(jcesl-1+iad)=.true.

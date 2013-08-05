@@ -53,7 +53,7 @@ function ismali(typma)
 !
     else
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

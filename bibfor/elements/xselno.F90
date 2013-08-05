@@ -92,7 +92,7 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim,&
 !
 !     MOYENNES DES CONTRAINTES AUX NOEUDS DE L'ELEMENT PARENT
     do 300 ino = 1, nnop
-        call assert(nbseco(ino).gt.0)
+        ASSERT(nbseco(ino).gt.0)
         do 310 ic = 1, nbsig
             zr(jout2-1+nbsig*(ino-1)+ic) = somsig(ino,ic) / nbseco( ino)
 310      continue

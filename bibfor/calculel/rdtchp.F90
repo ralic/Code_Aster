@@ -61,8 +61,8 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
 !
     call jemarq()
 !
-    call assert(noma.ne.nomare)
-    call assert(ch1.ne.ch2)
+    ASSERT(noma.ne.nomare)
+    ASSERT(ch1.ne.ch2)
 !
     call dismoi('F', 'TYPE_CHAMP', ch1, 'CHAMP', ibid,&
                 tych, ibid)
@@ -89,8 +89,8 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
                         option, ibid)
             call cescel(ch2s, ligrel, option, ' ', 'OUI',&
                         nncp, base, ch2, 'F', iret)
-            call assert(iret.eq.0)
-            call assert(nncp.eq.0)
+            ASSERT(iret.eq.0)
+            ASSERT(nncp.eq.0)
         endif
         call detrsd('CHAM_ELEM_S', ch1s)
         call detrsd('CHAM_ELEM_S', ch2s)
@@ -99,17 +99,17 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base,&
     else if (tych.eq.'CART') then
         call carces(ch1, 'ELEM', ' ', 'V', ch1s,&
                     'A', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call rdtces(nomare, corrm, ch1s, 'V', ch2s,&
                     cret)
         call cescar(ch2s, ch2, base)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call detrsd('CHAM_ELEM_S', ch1s)
         call detrsd('CHAM_ELEM_S', ch2s)
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

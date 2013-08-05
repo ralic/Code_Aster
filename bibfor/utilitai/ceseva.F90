@@ -156,7 +156,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !
     call cesexi('C', jrd, jrl, ima, ipt,&
                 isp, k, iadr)
-    call assert(iadr.lt.0)
+    ASSERT(iadr.lt.0)
     zl(jrl-1-iadr) = .true.
 !
     if (fo .eq. ' ') goto 40

@@ -1,5 +1,4 @@
 subroutine jni080(elrefe, nmaxob, liobj, nbobj)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -306,7 +305,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
     integer :: l1
 !-----------------------------------------------------------------------
     nbobj = 3
-    call assert(nmaxob.gt.nbobj)
+    ASSERT(nmaxob.gt.nbobj)
     liobj(1) = '&INEL.'//elrefe//'.DESI'
     liobj(2) = '&INEL.'//elrefe//'.DESR'
     elrefl=elrefe

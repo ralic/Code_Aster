@@ -111,7 +111,7 @@ subroutine mxmoam(sddyna, nbmodp)
     call getvid('PROJ_MODAL', 'MODE_MECA', 1, iarg, 1,&
                 modmec, nbmd)
     if (nbmd .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MASSE, RIGIDITE ET AMORTISSEMENT GENERALISES
@@ -126,7 +126,7 @@ subroutine mxmoam(sddyna, nbmodp)
 ! --- IL FAUT MASS_GENE _ET_ RIGI_GENE (VOIR CAPY)
 !
     if ((nbmg.gt.0) .and. (nbrg.eq.0)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INFORMATIONS SUR MATRICE DES MODES MECANIQUES

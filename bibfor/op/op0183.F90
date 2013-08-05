@@ -108,15 +108,15 @@ subroutine op0183()
 ! --- OPTIONS A CALCULER
 !
     call getres(resuc1, type, oper)
-    call assert(type.eq.'DYNA_TRANS')
+    ASSERT(type.eq.'DYNA_TRANS')
     call getvid(' ', 'RESULTAT', 1, iarg, 1,&
                 resuco, n0)
-    call assert(resuco.ne.resuc1)
+    ASSERT(resuco.ne.resuc1)
 !
 !
     call getvtx(' ', 'OPTION', 1, iarg, 1,&
                 option, n2)
-    call assert(n2.eq.1 .and. option.eq.'FONL_NOEU')
+    ASSERT(n2.eq.1 .and. option.eq.'FONL_NOEU')
 !
 !
     knum='&&'//nompro//'.NUME_ORDRE'
@@ -155,7 +155,7 @@ subroutine op0183()
     call getvid(' ', 'MODELE', 1, iarg, 1,&
                 modele, n0)
     ligrel=modele(1:8)//'.MODELE'
-    call assert(n0.eq.1)
+    ASSERT(n0.eq.1)
     call getvid(' ', 'CHAM_MATER', 1, iarg, 1,&
                 materi, n0)
     if (n0 .gt. 0) then
@@ -171,7 +171,7 @@ subroutine op0183()
     charge=infcha//'.LCHA'
     infoch=infcha//'.INFC'
     call jeexin(infoch, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     nbchar=0
     ichar=1
 !

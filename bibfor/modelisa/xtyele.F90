@@ -314,7 +314,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                                     c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                                     ac(k)=c(k)-a(k)
 410                              continue
-                                call assert(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
+                                ASSERT(ddot(ndim, ab, 1, ab, 1) .gt. r8prem())
                                 lstc = lsta + (lstb-lsta) * ddot(ndim, ab,1,ac,1) / ddot(ndim,ab,&
                                        &1,ab,1)
                                 if (lstc .lt. minlst) then
@@ -412,7 +412,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! SI MAILLE DEJA EN CONTACT POUR UNE AUTRE FISS
                     if (.not.lcont .and. zi(jtab-1+5*(ima-1)+kk) .gt. 0) then
                         if (kk .ne. 1) call u2mesk('F', 'XFEM_44', 1, nomail)
-                        call assert(zi(jtab-1+5*(ima-1)+4).eq.0)
+                        ASSERT(zi(jtab-1+5*(ima-1)+4).eq.0)
                         icont(ifiss) = icont(ifiss)+1
                         zi(jcont(ifiss)-1+icont(ifiss)) = ima
                     endif
@@ -448,7 +448,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
                         endif
                         linter = .true.
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 30              continue
             endif

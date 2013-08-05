@@ -93,7 +93,7 @@ subroutine obpara(nomstr, nompaz, indice, typpar)
     if (indabs .eq. 0) then
         write(6,*) 'PARAMETRE INCONNU: ',nompar
         write(6,*) 'DANS SD: ',nomstr
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INDICE DANS TYPE DE PARAMETRE
@@ -115,5 +115,5 @@ subroutine obpara(nomstr, nompaz, indice, typpar)
         typpar = 'B'
     endif
 !
-    call assert(indice.gt.0)
+    ASSERT(indice.gt.0)
 end subroutine

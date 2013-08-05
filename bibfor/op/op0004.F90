@@ -143,7 +143,7 @@ subroutine op0004()
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
     nprol = 7 + 2*nbfonc
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', nprol, lpro)
     zk24(lpro ) = 'NAPPE   '
     call getvtx(' ', 'INTERPOL', 0, iarg, 2,&

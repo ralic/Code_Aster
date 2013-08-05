@@ -146,7 +146,7 @@ subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
 778              continue
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         else

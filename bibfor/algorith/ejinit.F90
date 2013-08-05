@@ -123,7 +123,7 @@ subroutine ejinit(nomte, iu, ip)
 !
     else
 !     NOM D'ELEMENT ILLICITE
-        call assert(ifqu8.or.ifp15.or.ifh20)
+        ASSERT(ifqu8.or.ifp15.or.ifh20)
     endif
 !
 end subroutine

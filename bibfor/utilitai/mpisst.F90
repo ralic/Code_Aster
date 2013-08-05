@@ -47,8 +47,8 @@ subroutine mpisst(istat, resp0)
 !
     call MPI_COMM_RANK(mpicou, rank, iermpi)
     call mpierr(iermpi)
-    call assert(rank .ne. 0)
-    call assert(istat.eq.ST_OK .or. istat.eq.ST_ER)
+    ASSERT(rank .ne. 0)
+    ASSERT(istat.eq.ST_OK .or. istat.eq.ST_ER)
 !
     call uttrst(tres)
     timout = tres * 0.2d0

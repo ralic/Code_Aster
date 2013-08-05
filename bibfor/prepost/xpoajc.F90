@@ -73,7 +73,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !
     inm = inm + 1
     inmtot = inmtot + 1
-    call assert(inm.le.nnm)
+    ASSERT(inm.le.nnm)
 !
     npg1 = npg
     ncmp1 = zi(jcesd1-1+5+4* (ima-1)+3)
@@ -81,24 +81,24 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
 !
 !     PAS DE CONTRAINTES POUR LES ELEMENTS DE BORD
     if (ndime .ne. ndim) then
-        call assert(npg2.eq.0)
+        ASSERT(npg2.eq.0)
         goto 999
     endif
 !
-    call assert(npg2.eq.1 .or. npg2.eq.3)
+    ASSERT(npg2.eq.1 .or. npg2.eq.3)
 !
     ncmp2 = zi(jcesd2-1+5+4* (nbmac +inmtot-1)+3)
 !
-    call assert(ncmp1.eq.ncmp2)
+    ASSERT(ncmp1.eq.ncmp2)
 !
     if ((jcvid1 .ne. 0) .and. (jcvid2 .ne. 0)) then
         ncmv1 = zi(jcvid1-1+5+4* (ima-1)+3)
         npgv2 = zi(jcvid2-1+5+4* (nbmac +inmtot-1)+1)
         ncmv2 = zi(jcvid2-1+5+4* (nbmac +inmtot-1)+3)
 !
-        call assert(npgv2.eq.1 .or.npgv2.eq.3)
-        call assert(npg2.eq.npgv2)
-        call assert(ncmv1.le.ncmv2)
+        ASSERT(npgv2.eq.1 .or.npgv2.eq.3)
+        ASSERT(npg2.eq.npgv2)
+        ASSERT(ncmv1.le.ncmv2)
     else
         ncmv1 = 0
         ncmv2 = 0
@@ -122,7 +122,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
         do 35 ipt = 1, npg2
             call cesexi('C', jcesd2, jcesl2, nbmac +inmtot, ipt,&
                         1, icmp, iad2)
-            call assert(iad2.gt.0)
+            ASSERT(iad2.gt.0)
             zl(jcesl2-1+iad2) = .true.
             zr(jcesv2-1+iad2) = val
 35      continue
@@ -140,7 +140,7 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise,&
             do 45 ipt = 1, npg2
                 call cesexi('C', jcvid2, jcvil2, nbmac +inmtot, ipt,&
                             1, icmp, iad2)
-                call assert(iad2.lt.0)
+                ASSERT(iad2.lt.0)
                 iad2 = -iad2
                 zl(jcvil2-1+iad2) = .true.
                 zr(jcviv2-1+iad2) = val

@@ -78,7 +78,7 @@ subroutine ligecp(noma, nbtout, lonlig, lonema, nbgrel)
         call palima(noma, 'ECHANGE_PAROI', 'GROUP_MA_1', 'MAILLE_1', iocc,&
                     liste)
         call jeexin(liste, iret)
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
         call jeveuo(liste, 'L', iliste)
         nbma = zi(iliste)
         nbtout(3) =nbtout(3) +nbma

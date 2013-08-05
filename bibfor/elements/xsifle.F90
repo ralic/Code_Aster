@@ -212,7 +212,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 120      continue
 !
 !       CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-        call assert(lst.lt.0.d0)
+        ASSERT(lst.lt.0.d0)
         rr(1)=-sqrt(-lst)
         rr(2)= sqrt(-lst)
 !

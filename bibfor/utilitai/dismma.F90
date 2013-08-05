@@ -191,9 +191,9 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         if (questi .eq. 'EXI_PYRAM5') typma='PYRAM5'
         if (questi .eq. 'EXI_PYRAM13') typma='PYRAM13'
         if (questi .eq. 'EXI_POI1') typma='POI1'
-        call assert(typma.ne.'XXXX')
+        ASSERT(typma.ne.'XXXX')
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), typv)
-        call assert(typv.gt.0)
+        ASSERT(typv.gt.0)
 !
         repk = 'NON'
         nbma = zi(jdime-1+3)

@@ -96,8 +96,8 @@ subroutine gidoma(nbnoto)
     do 22 ima = 1, nbmato
         nuno1= zi(iacnx2-1+zi(ilcnx2-1+ima)-1+1 )
         ipos = zi(iawk3-1+nuno1)
-        call assert(ipos.ne.0)
-        call assert(zi(iawk2-1+ipos).eq.0)
+        ASSERT(ipos.ne.0)
+        ASSERT(zi(iawk2-1+ipos).eq.0)
         zi(iawk2-1+ipos) = ima
         zi(iawk3-1+nuno1) = ipos + 1
 22  end do

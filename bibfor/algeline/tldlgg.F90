@@ -38,7 +38,7 @@ subroutine tldlgg(istop, lmat, ildeb, ilfin, ndigit,&
     noma19 = zk24(zi(lmat+1))
     call dismoi('F', 'METH_RESO', noma19, 'MATR_ASSE', ibid,&
                 metres, ibid)
-    call assert(metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS')
+    ASSERT(metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS')
     call dismoi('F', 'RENUM_RESO', noma19, 'MATR_ASSE', ibid,&
                 renum, ibid)
 !     -- ON MET SCIEMMENT CETTE VALEUR CAR ON NE CONNAIT PAS A CET

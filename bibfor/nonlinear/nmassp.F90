@@ -121,7 +121,7 @@ subroutine nmassp(modele, numedd, mate, carele, comref,&
                     sdtime, valinc, veelem, veasse, cnpilo,&
                     cndonn, mate, carele, defico, matass)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

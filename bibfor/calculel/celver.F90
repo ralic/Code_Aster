@@ -141,7 +141,7 @@ subroutine celver(celz, typver, arret, iret)
             if (zk24(jcelv-1+k) .eq. knan) lnan=.true.
 84          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (lnan) then
@@ -154,7 +154,7 @@ subroutine celver(celz, typver, arret, iret)
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

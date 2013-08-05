@@ -105,7 +105,7 @@ subroutine conhex(macor, nbcor, macoc, nbcoc, lface,&
                 call conper(macoc, 11, 15, 19, 16)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (lface) then
             i1=1

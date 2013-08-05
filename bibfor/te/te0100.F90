@@ -85,7 +85,7 @@ subroutine te0100(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(lteatt(' ', 'C_PLAN', 'OUI'))
+        ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
     endif
 !
     if (lteatt(' ','TYPMOD2','ELEMDISC')) then

@@ -121,7 +121,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno,&
     if (inntot .ge. 999999) call u2mesk('F', 'XFEM_8', 1, valk)
     inn = inn + 1
     inntot= inntot +1
-    call assert(inn.le.nnn)
+    ASSERT(inn.le.nnn)
 !
     zi(jdirno-1+(2+nfiss)*(inn-1)+1) = ino
     zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot

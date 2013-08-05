@@ -273,7 +273,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
                 noment = 'EXCLU'
                 jeu = r8vide()
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! ------- SAUVEGARDE
@@ -297,7 +297,7 @@ subroutine cfveri(noma, defico, resoco, newgeo, sdappa,&
 25      continue
 10  end do
 !
-    call assert(npt0.eq.npt)
+    ASSERT(npt0.eq.npt)
 !
     call jedema()
 end subroutine

@@ -101,7 +101,7 @@ subroutine expcar(carte)
 !     SI CODE(IEDIT)=-3:  LES MAILLES SUPPL. D'1 LISTE TARDIVE.
 !
     call jeexin(carte//'.NOLI', iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     call jeveuo(carte//'.NOLI', 'L', ianoli)
     call jecreo(carte//'.NUMT', 'V V I')
     call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit, ' ')
@@ -131,7 +131,7 @@ subroutine expcar(carte)
         else
 !              MAILLES SUPPLEMENTAIRES D'1 LIGREL:
 !              TEST : ON DOIT AVOIR ICODE=3 POUR DES MAILLES TARDIVES
-            call assert(icode.eq.-3)
+            ASSERT(icode.eq.-3)
             call dismoi('F', 'NB_MA_SUP', noli, 'LIGREL', nbma,&
                         kbid, ied)
             nbmato = nbmato + nbma

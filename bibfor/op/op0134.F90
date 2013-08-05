@@ -105,7 +105,7 @@ subroutine op0134()
         noparf = zk24(lprol+6)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -156,7 +156,7 @@ subroutine op0134()
         call getvtx(' ', 'NOM_PARA_FONC', 1, iarg, 1,&
                     nopf, n1)
 !        OBLIGATOIRE
-        call assert(n1.eq.1)
+        ASSERT(n1.eq.1)
         if (nopf .ne. noparf) then
             valk(1) = nomfin
             valk(2) = noparf

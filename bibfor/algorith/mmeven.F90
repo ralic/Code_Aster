@@ -107,7 +107,7 @@ subroutine mmeven(phase, defico, resoco)
             else if (phase.eq.'FIN') then
                 etacfi = 1.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             if (phase .eq. 'INI') then
@@ -115,7 +115,7 @@ subroutine mmeven(phase, defico, resoco)
             else if (phase.eq.'FIN') then
                 etacfi = 0.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         zr(jctevc+zeven*(iptc-1)+1-1) = etacin

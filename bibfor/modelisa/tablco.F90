@@ -197,7 +197,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
     nmano = zi(jpoma+nnoco)
     if (nmano .gt. long) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jeecra(manoco, 'LONUTI', nmano, k8bid)
 !
@@ -290,7 +290,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
 !
     nnoma = zi(jpono+nmaco)
     if (nnoma .gt. long) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jeecra(nomaco, 'LONUTI', nnoma, k8bid)
 !

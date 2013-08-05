@@ -91,8 +91,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 SONT DX DY
 !     OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
-    call assert((zk8(jcnsc1-1+1).eq.'DX'.and.zk8(jcnsc1-1+2).eq.'DY') .or.&
-                (zk8(jcnsc1-1+1).eq.'TEMP'))
+    ASSERT((zk8(jcnsc1-1+1).eq.'DX'.and.zk8(jcnsc1-1+2).eq.'DY') .or. (zk8(jcnsc1-1+1).eq.'TEMP'))
 !
     lmeca = xismec()
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
@@ -159,27 +158,27 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
             npg2 = zi(jcesd2-1+5+4* (ima2-1)+1)
             ncmp2 = zi(jcesd2-1+5+4* (ima2-1)+3)
-            call assert(npg1.eq.npg2)
-            call assert(ncmp1.eq.ncmp2)
+            ASSERT(npg1.eq.npg2)
+            ASSERT(ncmp1.eq.ncmp2)
 !
             if (iviex .ne. 0) then
                 npgv1 = zi(jcvid1-1+5+4* (ima-1)+1)
                 ncmv1 = zi(jcvid1-1+5+4* (ima-1)+3)
                 npgv2 = zi(jcvid2-1+5+4* (ima2-1)+1)
                 ncmv2 = zi(jcvid2-1+5+4* (ima2-1)+3)
-                call assert(npg2.eq.npgv2)
-                call assert(npgv1.eq.npg2)
-                call assert(ncmv1.le.ncmv2)
+                ASSERT(npg2.eq.npgv2)
+                ASSERT(npgv1.eq.npg2)
+                ASSERT(ncmv1.le.ncmv2)
             endif
 !
             do 20 ipg = 1, npg1
                 do 30 icmp = 1, ncmp1
                     call cesexi('C', jcesd1, jcesl1, ima, ipg,&
                                 1, icmp, iad1)
-                    call assert(iad1.gt.0)
+                    ASSERT(iad1.gt.0)
                     call cesexi('C', jcesd2, jcesl2, dirma(ima), ipg,&
                                 1, icmp, iad2)
-                    call assert(iad2.gt.0)
+                    ASSERT(iad2.gt.0)
                     zl(jcesl2-1+iad2) = .true.
                     zr(jcesv2-1+iad2) = zr(jcesv1-1+iad1)
 30              continue
@@ -187,10 +186,10 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                     do 40 icmp = 1, ncmv1
                         call cesexi('C', jcvid1, jcvil1, ima, ipg,&
                                     1, icmp, iad1)
-                        call assert(iad1.gt.0)
+                        ASSERT(iad1.gt.0)
                         call cesexi('C', jcvid2, jcvil2, dirma(ima), ipg,&
                                     1, icmp, iad2)
-                        call assert(iad2.lt.0)
+                        ASSERT(iad2.lt.0)
                         iad2 = -iad2
                         zl(jcvil2-1+iad2) = .true.
                         zr(jcviv2-1+iad2) = zr(jcviv1-1+iad1)
@@ -221,7 +220,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !       VERIF QUE LE CHAMP DE SORTIE A BIEN ETE CREE
         call exisd('CHAM_ELEM_S', comps2, iret)
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
 !       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
         call jeveuo(comps2//'.CESD', 'L', jresd2)
@@ -243,7 +242,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                             1, icmp, iadr2)
 !
                 if (iadr1 .gt. 0) then
-                    call assert(iadr2.lt.0)
+                    ASSERT(iadr2.lt.0)
                     zk16(jresv2-1-iadr2) = zk16(jresv1-1+iadr1)
                     zl(jresl2-1-iadr2) = .true.
                 endif

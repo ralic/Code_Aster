@@ -127,7 +127,7 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
     else if (even.eq.'INSTABILITE') then
         zr(jeevr-1+leevr*(isauve-1)+1) = 5.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ACTION SI EVENEMENT DECLENCHE
@@ -147,7 +147,7 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
     else if (action.eq.'CONTINUE') then
         zr(jeevr-1+leevr*(isauve-1)+2) = 6.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- EVENEMENT 'DELTA_GRANDEUR' - PARAMETRES
@@ -182,7 +182,7 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
         else if (subaut.eq.'EXTRAPOLE') then
             zr(jesur-1+lesur*(isauve-1)+10) = 2.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

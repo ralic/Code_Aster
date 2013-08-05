@@ -172,7 +172,7 @@ subroutine cfneg(resoco, defico, noma, ndim, indic,&
 ! --- CAS IMPOSSIBLE
 ! ======================================================================
 1000                              continue
-                                call assert(.false.)
+                                ASSERT(.false.)
 ! ======================================================================
 ! --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D
 ! --- OU CAS GENERAL EN 2D

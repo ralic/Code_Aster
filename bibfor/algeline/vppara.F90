@@ -154,7 +154,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
                     resuk, iprec)
 !
     else if (( lamor .eq. 0 ).and.((ktyp.eq.'C').or.lns)) then
-        if (lcomod) call assert(.false.)
+        if (lcomod) ASSERT(.false.)
 ! --- GENERALISE MODES COMPLEXES
 !        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
         call wpnorx(nfreq, neq, dlagr, vectc, resuk)
@@ -178,7 +178,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
                     resuk, iprec)
 !
     else if (( lamor .ne. 0 ).and.(ktyp.eq.'R')) then
-        if (lcomod) call assert(.false.)
+        if (lcomod) ASSERT(.false.)
 ! --- QUADRATIQUE MODES COMPLEXES AVEC K REELLE
 !        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
         call wpnorx(nfreq, neq, dlagr, vectc, resuk)
@@ -197,8 +197,8 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
                     nbpark, nopara, '    ', resui, resur,&
                     resuk, iprec)
     else if (( lamor .ne. 0 ).and.(ktyp.eq.'C')) then
-        if (lcomod) call assert(.false.)
-        if (lns) call assert(.false.)
+        if (lcomod) ASSERT(.false.)
+        if (lns) ASSERT(.false.)
 ! --- QUADRATIQUE MODES COMPLEXES AVEC K COMPLEXE
 !        - NORMALISATION A LA + GRANDE DES COMPOSANTES /= LAGRANGE --
         call wpnorx(nfreq, neq, dlagr, vectc, resuk)

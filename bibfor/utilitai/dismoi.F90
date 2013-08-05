@@ -78,7 +78,7 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
 ! DEB-------------------------------------------------------------------
 !
     arret2=arret
-    call assert(arret2.eq.'F'.or.arret2.eq.'C')
+    ASSERT(arret2.eq.'F'.or.arret2.eq.'C')
 !
     repi1=99999
     ierd1=0
@@ -167,7 +167,7 @@ subroutine dismoi(arret, questi, nomob, typeco, repi,&
 !
 !
 !     -- ON NE DOIT PAS SORTIR DE DISMOI SI IERD1/=0 ET ARRET='F'
-    if (ierd1 .ne. 0 .and. arret2 .eq. 'F') call assert(.false.)
+    if (ierd1 .ne. 0 .and. arret2 .eq. 'F') ASSERT(.false.)
 !
     repk = repk1
     repi = repi1

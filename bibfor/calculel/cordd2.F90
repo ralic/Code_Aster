@@ -59,8 +59,8 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
 ! --- IFIN DONNE POUR CHAQUE ENTIER CODE LE NOMBRE MAX DE DDLS
 ! --- QUE L'ON PEUT TROUVER SUR CET ENTIER :
 !     ------------------------------------
-    call assert(nec.gt.0.and.nec.le.nbecmx)
-    call assert(ncmp.gt.0.and.ncmp.le.30*nbecmx)
+    ASSERT(nec.gt.0.and.nec.le.nbecmx)
+    ASSERT(ncmp.gt.0.and.ncmp.le.30*nbecmx)
     do 10 iec = 1, nec-1
         ifin(iec) = 30
 10  end do

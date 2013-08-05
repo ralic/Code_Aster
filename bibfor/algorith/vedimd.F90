@@ -140,7 +140,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! --- LISTE DES INDEX DES CHARGES
 !
     call lisnol(lischa, 'DIRI_DUAL', nomlis, nbch)
-    call assert(nbch.eq.1)
+    ASSERT(nbch.eq.1)
     call jeveuo(nomlis, 'L', jlisci)
     indxch = zi(jlisci-1+1)
 !
@@ -189,7 +189,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! ------- RESU_ELEM DANS LE VECT_ELEM
 !
             call exisd('CHAMP_GD', lchout(1), iret)
-            call assert(iret.gt.0)
+            ASSERT(iret.gt.0)
             call reajre(vecele, lchout(1), 'V')
         endif
 30  continue

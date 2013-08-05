@@ -174,7 +174,7 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
                 metcor, reasma, lcamor, optrig, lcrigi,&
                 larigi, lcfint)
 !
-    if (lcfint) call assert(.false.)
+    if (lcfint) ASSERT(.false.)
 !
 ! --- CALCUL DES MATR_ELEM CONTACT/XFEM_CONTACT
 !
@@ -214,7 +214,7 @@ subroutine nmprma(modelz, mate, carele, compor, carcri,&
                         lcalme, lassme)
         endif
         if (.not.reasma) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

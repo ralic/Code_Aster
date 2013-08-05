@@ -92,7 +92,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
 !
     else
         write(6,*) typsd,nomsd,nomsym
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
  7  continue

@@ -54,7 +54,7 @@ subroutine rcmate(chmat, nomail, nomode)
 !
     call dismoi('F', 'NB_CMP_MAX', 'NOMMATER', 'GRANDEUR', nbcmp,&
                 k8b, ier)
-    call assert(nbcmp.eq.30)
+    ASSERT(nbcmp.eq.30)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'L', jad)
     do 5 i = 1, nbcmp
         zk8(jncmp-1+i) = zk8(jad-1+i)
@@ -73,7 +73,7 @@ subroutine rcmate(chmat, nomail, nomode)
         call getvid('AFFE', 'MATER', i, iarg, 1,&
                     nommat, nm)
         if (nm .lt. -1) nm = -nm
-        call assert(nm.le.nbcmp)
+        ASSERT(nm.le.nbcmp)
         call getvid('AFFE', 'MATER', i, iarg, nm,&
                     zk8(jvalv), nm)
         call getvtx('AFFE', 'TOUT', i, iarg, 1,&

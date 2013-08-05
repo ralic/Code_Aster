@@ -71,7 +71,7 @@ subroutine nmetpl(sdieto)
             tychap = nomchx(6:11)
             if (tychap .eq. 'VALINC') then
                 tyvari = nomchx(13:18)
-                if (tyvari .eq. 'TEMP') call assert(.false.)
+                if (tyvari .eq. 'TEMP') ASSERT(.false.)
                 newchx = nomchx
                 newchx(16:18) = 'PLU'
                 zk24(jiolch+zioch*(icham-1)+6-1) = newchx

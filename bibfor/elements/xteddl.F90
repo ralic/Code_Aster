@@ -100,7 +100,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     endif
 !
 !     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
-    call assert(nddl.le.ddlmax)
+    ASSERT(nddl.le.ddlmax)
     do 99 ino = 1, ddlmax
         posddl(ino)=0
 99  end do
@@ -119,7 +119,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         PB DE STATUT DES NOEUDS ENRICHIS
             do 330 ifh = 1, nfh
                 istatu = stano((ino-1)*nfiss+fisno(ino,ifh))
-                call assert(istatu.le.1)
+                ASSERT(istatu.le.1)
                 if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL H
                     do 10 k = 1, ndim
@@ -137,7 +137,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
 !         PB DE STATUT DES NOEUDS ENRICHIS
             istatu = stano(ino)
-            call assert(istatu.le.2 .and. istatu.ne.1)
+            ASSERT(istatu.le.2 .and. istatu.ne.1)
             if (istatu .eq. 2) then
 !           ON NE SUPPRIME AUCUN DDL
             else if (istatu.eq.0) then
@@ -155,7 +155,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
 !         PB DE STATUT DES NOEUDS ENRICHIS
             istatu = stano(ino)
-            call assert(istatu.le.3)
+            ASSERT(istatu.le.3)
             if (istatu .eq. 3) then
 !           ON NE SUPPRIME AUCUN DDL
             else if (istatu.eq.2) then

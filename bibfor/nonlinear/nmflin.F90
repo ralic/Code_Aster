@@ -94,7 +94,7 @@ subroutine nmflin(sdpost, matass, freqr, linsta)
         else if (sign.eq.'POSITIF_NEGATIF') then
             valtst = (abs(freqr).lt.(1.d0+prec))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (valtst) linsta = .true.
     endif

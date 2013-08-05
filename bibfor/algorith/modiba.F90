@@ -138,9 +138,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres,&
                 nbpara, nopara, kvali, kvalr, kvalk,&
                 neq, nbmode, typmod, npari, nparr,&
                 npark)
-    call assert(npari.eq.nbpari)
-    call assert(nparr.eq.nbparr)
-    call assert(npark.eq.nbpark)
+    ASSERT(npari.eq.nbpari)
+    ASSERT(nparr.eq.nbparr)
+    ASSERT(npark.eq.nbpark)
     call jeveuo(kvec, 'E', lmod)
     call jeveuo(kvali, 'E', lvali)
     call jeveuo(kvalr, 'E', lvalr)

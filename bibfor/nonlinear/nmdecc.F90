@@ -104,7 +104,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             nbrpas = nint(deltat/deltac)
             pasdt = deltat/nbrpas
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (optdec.eq.'PROGRESSIF') then
         if (typdec .eq. 'SUBD') then
@@ -115,9 +115,9 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
                 goto 99
             endif
         else if (typdec.eq.'DELT') then
-            call assert(.false.)
+            ASSERT(.false.)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (optdec.eq.'DEGRESSIF') then
         if (typdec .eq. 'SUBD') then
@@ -138,10 +138,10 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
                 goto 99
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DECOUPE INUTILE ?
@@ -187,7 +187,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             dtmin = min(dtmin ,pasdt)
 20      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- AFFICHAGE
@@ -212,7 +212,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam,&
             call u2mesg('I', 'SUBDIVISE_12', 0, k16bid, 1,&
                         nbrpas, 3, valr)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

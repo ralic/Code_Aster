@@ -121,7 +121,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
 !
     call jeveuo(chin//'.NOLI', 'E', noli)
     if ((code.eq.-1) .or. (code.eq.-3)) then
-        call assert(nomlig(1:8).ne.' ')
+        ASSERT(nomlig(1:8).ne.' ')
         zk24(noli-1+nedit) = nomlig
     endif
 !
@@ -145,7 +145,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
         zi(jdesc-1+3+2*nedit) = nedit
         dim = nma
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -186,7 +186,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
             call jenonu(jexnom(ma//'.NOMMAI', limanz), numero)
             zi(jlima-1+i) = numero
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 100  end do
 !

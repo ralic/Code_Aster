@@ -72,7 +72,7 @@ subroutine nmcvgf(sddisc, sderro, valinc, defico, resoco)
         else if (etnewt.eq.'ERRE') then
             call nmeceb(sderro, 'FIXE', 'ERRE')
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 99
     endif

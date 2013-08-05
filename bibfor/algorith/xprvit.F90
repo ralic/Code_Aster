@@ -393,7 +393,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !        THAN ZERO... EXCEPT IN THE CASE THE NORMAL AND TANGENTIAL AXIS
 !        ARE PARALLEL! IN THIS CASE SOMETHING NASTY HAS HAPPENED TO THE
 !        LEVEL SETS (OUTSIDE THIS SUBROUTINE)!
-        call assert(mtast.gt.0.d0)
+        ASSERT(mtast.gt.0.d0)
 !
 !        CALCULATE THE UNIT VECTOR FOR THE NEW TANGENTIAL AXIS AND STORE
 !        IT
@@ -443,8 +443,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                      )
         endif
 !
-        call assert(modnor.gt.0.d0)
-        call assert(modtan.gt.0.d0)
+        ASSERT(modnor.gt.0.d0)
+        ASSERT(modtan.gt.0.d0)
 !
 !        CALCULATE THE PROPAGATION SPEED VECTOR V IN THE GLOBAL
 !        REFERENCE SYSTEM USED FOR THE MESH
@@ -670,7 +670,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
                 jlimdx = zi(jfmult-1+2*numfon)-1
             endif
 !
-            call assert(2.gt.1)
+            ASSERT(2.gt.1)
 !
 204          continue
 !
@@ -741,7 +741,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !                 CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS
                     modvec = (b(1)**2+b(2)**2+b(3)**2)**0.5d0
 !
-                    call assert(modvec.gt.r8prem())
+                    ASSERT(modvec.gt.r8prem())
 !
                     b(1) = b(1)/modvec
                     b(2) = b(2)/modvec
@@ -1002,7 +1002,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !              N-AXIS
                 modvec = (t(1)**2+t(2)**2+t(3)**2)**0.5d0
 !
-                call assert(modvec.gt.r8prem())
+                ASSERT(modvec.gt.r8prem())
 !
                 zr(jbl-1+2*ndim*(i-1)+1) = n(1)/modvec
                 zr(jbl-1+2*ndim*(i-1)+2) = n(2)/modvec
@@ -1010,7 +1010,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !              T-AXIS
                 modvec = (n(1)**2+n(2)**2+n(3)**2)**0.5d0
 !
-                call assert(modvec.gt.r8prem())
+                ASSERT(modvec.gt.r8prem())
 !
                 zr(jbl-1+2*ndim*(i-1)+4) = t(1)/modvec
                 zr(jbl-1+2*ndim*(i-1)+5) = t(2)/modvec

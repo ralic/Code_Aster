@@ -148,7 +148,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         nvers=zmpsk%version_number
         n=zmpsk%n
         case default
-        call assert(.false.)
+        ASSERT(.false.)
         end select
     else
 ! ---- ON CREE PUIS DETRUIT UNE OCCURENCE MUMPS TEMPORAIRE
@@ -195,7 +195,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         zmpsk%job=-2
         call zmumps(zmpsk)
         case default
-        call assert(.false.)
+        ASSERT(.false.)
         end select
     endif
 !
@@ -300,7 +300,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         if (iret .eq. 0) then
             tmax=int(rval1-(rval2+rval3))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         select case(usersm)
@@ -348,7 +348,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             if (iret .eq. 0) then
                 tmaxb=int(rval1b-(rval2b+rval3b))
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             if (niv .ge. 2) then
                 vali(1)=int(rval1b-rval1)
@@ -390,7 +390,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
                     vali, 0, 0.d0)
         if (.not.lpeak) call u2mess('A', 'FACTOR_83')
         case default
-        call assert(.false.)
+        ASSERT(.false.)
         end select
 ! --- CORRECTIF POUR BENEFICIER DES BOUCLES DE RATTRAPAGE SI VMPEAK
 ! --- NON EVALUABLE ET GESTION_MEMOIRE='AUTO'
@@ -484,19 +484,19 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             kpiv='&&AMUMP.PIVNUL'
             call jeexin(kpiv, ibid)
             if (ibid .ne. 0) then
-                call assert(.false.)
+                ASSERT(.false.)
             else
                 call wkvect(kpiv, 'V V I', n+2, ipiv)
                 if (lresol) then
 ! ---   KPIV(1)= NOMBRE DE PIVOTS QUASI NULS (TOUS LE PROCS)
                     if (info28 .gt. n) then
-                        call assert(.false.)
+                        ASSERT(.false.)
                     else
                         zi(ipiv)=info28
                     endif
 ! ---   KPIV(2)= NOMBRE DE PIVOTS NEGATIFS (TOUS LE PROCS)
                     if (info12 .gt. n) then
-                        call assert(.false.)
+                        ASSERT(.false.)
                     else
                         zi(ipiv+1)=info12
                     endif
@@ -597,7 +597,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !
 ! --- CASE SUR LA VARIABLE OPTION
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

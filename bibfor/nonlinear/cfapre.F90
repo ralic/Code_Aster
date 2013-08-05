@@ -195,7 +195,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
                             coorne, posmam, ksipr1, ksipr2, tau1m,&
                             tau2m, iliai)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
@@ -214,7 +214,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
 ! ------- POINT SUIVANT
 !
             ip = ip + 1
-            call assert(iliai.le.ip)
+            ASSERT(iliai.le.ip)
 !
 20      continue
 25      continue
@@ -225,7 +225,7 @@ subroutine cfapre(noma, defico, resoco, newgeo, sdappa)
     nbliai = iliai
     call cfecrd(resoco, 'NBLIAI', nbliai)
     nesmax = cfdisd(resoco,'NESMAX')
-    call assert(nbliai.le.nesmax)
+    ASSERT(nbliai.le.nesmax)
 !
     call jedema()
 end subroutine

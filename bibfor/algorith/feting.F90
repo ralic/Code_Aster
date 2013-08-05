@@ -152,7 +152,7 @@ subroutine feting(nbsd, sdfeti, chsecm, colaui, infofe,&
 !
 ! TESTS DE VALIDITE POUR VERIFIER QUE LES COMPOSANTES SONT PAR ORDRE
 ! CROISSANT (RENUMEROTATION MD, MDA ET METIS)
-                            call assert(iaux3.ge.icmp)
+                            ASSERT(iaux3.ge.icmp)
                             icmp=iaux3
                             nbcmp=nbcmp+1
                         endif
@@ -162,7 +162,7 @@ subroutine feting(nbsd, sdfeti, chsecm, colaui, infofe,&
 !
 ! TESTS DE COHERENCE
                 testa=ieq*nbcmp
-                call assert(testa.gt.0)
+                ASSERT(testa.gt.0)
 !
                 zi(icol+2*k)=ieq
                 zi(icol+2*k+1)=nbcmp

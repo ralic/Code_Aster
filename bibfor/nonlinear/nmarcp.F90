@@ -81,7 +81,7 @@ subroutine nmarcp(typost, sdpost, vecmod, freqr, imode)
         call nmlesd('POST_TRAITEMENT', sdpost, 'SOLU_MODE_STAB', ibid, r8bid,&
                     vecmod)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- EXTRACTION DU MODE

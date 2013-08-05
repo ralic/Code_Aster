@@ -71,7 +71,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !    DANS LE CAS OU LE MOT CLE EST WOHLER
 !
         call jeexin(nommat//'.'//nomphe//'.VALR', iret)
-        call assert(iret .ne. 0)
+        ASSERT(iret .ne. 0)
 !
         call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
         call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8bid)
@@ -111,7 +111,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !    DANS LE CAS OU LE MOT CLE EST MANSON_COFFIN
 !
         call jeexin(nommat//'.'//nomphe//'.VALR', iret)
-        call assert(iret .ne. 0)
+        ASSERT(iret .ne. 0)
 !
         call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
         call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8bid)

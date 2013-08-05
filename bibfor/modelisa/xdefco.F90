@@ -67,7 +67,7 @@ subroutine xdefco(noma, nomo, fiss, algola, ndim,&
         call jeexin(grma(i), ier)
         if (ier .ne. 0) lxfem=.true.
 10  continue
-    call assert(lxfem)
+    ASSERT(lxfem)
 !
 ! --- CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT
 !

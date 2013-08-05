@@ -50,7 +50,7 @@ subroutine te0463(option, nomte)
 ! ----------------------------------------------------------------------
 !
     if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)

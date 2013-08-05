@@ -146,7 +146,7 @@ subroutine xstan2(crimax, noma, modele)
         numa = zi(jnoxfv-1+2*(nuno-1)+1)
         ino = zi(jnoxfv-1+2*(nuno-1)+2)
         nfiss = zi(jnbsp-1+numa)
-        call assert(nfiss.ge.1)
+        ASSERT(nfiss.ge.1)
         nheav = max(1,zi(jnbsp2-1+numa))
 !
 !       RECUPERATION DES MAILLES CONTENANT LE NOEUD
@@ -203,7 +203,7 @@ subroutine xstan2(crimax, noma, modele)
                         goto 200
                     endif
 60              continue
-                call assert(.false.)
+                ASSERT(.false.)
 200              continue
                 if (zi(jnbsp-1+numa2) .eq. 1) then
                     ifiss = 1
@@ -267,7 +267,7 @@ subroutine xstan2(crimax, noma, modele)
                             goto 150
                         endif
 160                  continue
-                    call assert(.false.)
+                    ASSERT(.false.)
 150              continue
             endif
 !

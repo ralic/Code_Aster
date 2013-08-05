@@ -181,7 +181,7 @@ subroutine mmmvmm(phasez, ndim, nnm, norm, tau1,&
 73          continue
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

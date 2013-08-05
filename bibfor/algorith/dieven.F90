@@ -55,7 +55,7 @@ subroutine dieven(sddisc, ievent, lacti)
             lacti = .false.
         else
             write(6,*) 'DIEVEN: ',ievent,active
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

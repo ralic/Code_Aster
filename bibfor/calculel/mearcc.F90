@@ -76,7 +76,7 @@ subroutine mearcc(option, mo, chin, chout)
                 ma, iret)
     call dismoi('F', 'DIM_GEOM', ma, 'MAILLAGE', ndim,&
                 k8b, iret)
-    call assert(ndim.eq.3)
+    ASSERT(ndim.eq.3)
 !
 !     RECUPERATION DES MAILLES DE FACES ET DES MAILLES 3D SUPPORT
     call srlima(mo, mail2d, mail3d, mailto, nbma)

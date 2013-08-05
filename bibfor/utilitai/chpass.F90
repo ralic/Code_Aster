@@ -168,7 +168,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
         if ((tych2.ne.'CART') .and. (tych2.ne. 'ELEM')) call u2mesk('F', 'UTILITAI_28', 2, valk)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     10 end do
@@ -299,7 +299,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                     'V', chs2)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -344,7 +344,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     else if (tychr.eq.'CART') then
         call cescar(chs3, chou, 'G')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

@@ -259,7 +259,7 @@ subroutine mmmtem(phasep, lnewtg, ndim, nne, nnm,&
 801          continue
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

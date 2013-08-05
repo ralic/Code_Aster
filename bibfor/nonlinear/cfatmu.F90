@@ -140,7 +140,7 @@ subroutine cfatmu(neq, nesmax, ndim, nbliac, frot,&
                         zi(japddl+jdecal), zr(jatmu))
         endif
         if (frot .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 10
 3000      continue
@@ -152,7 +152,7 @@ subroutine cfatmu(neq, nesmax, ndim, nbliac, frot,&
         call calatm(neq, nbddl, zr(jmu-1+compt1), zr(japcof+jdecal), zi( japddl+jdecal),&
                     zr(jatmu))
         if (frot .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 10
 4000      continue
@@ -164,7 +164,7 @@ subroutine cfatmu(neq, nesmax, ndim, nbliac, frot,&
         call calatm(neq, nbddl, zr(jmu-1+compt2), zr(japcof+jdecal+30* nesmax),&
                     zi(japddl+jdecal), zr(jatmu))
         if (frot .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 10  end do
 ! ======================================================================

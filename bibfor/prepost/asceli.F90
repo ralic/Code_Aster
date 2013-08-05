@@ -177,7 +177,7 @@ subroutine asceli(mailla)
             kk=kk+1
         endif
 205  end do
-    call assert(k.eq.nbno2)
+    ASSERT(k.eq.nbno2)
 !
 !
 !     ON ACTUALISE LES OBJETS .GROUPENO ET .CONNEX

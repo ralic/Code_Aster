@@ -1,5 +1,4 @@
 subroutine op0018()
-! aslint: disable=W1501
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 !     ------------------------------------------------------------------
@@ -237,7 +236,7 @@ subroutine op0018()
                     phenom, nph)
         call getvtx('AFFE', 'MODELISATION', ioc, iarg, 10,&
                     lmodel, nmo)
-        call assert(nmo.gt.0)
+        ASSERT(nmo.gt.0)
         d2=-99
         call jerazo(tmpdef, ndmax, 1)
         call jerazo('&&OP0018.MAILLE2', nbmail, 1)

@@ -235,7 +235,7 @@ subroutine op0070()
                     measse, veelem, veasse, defico, resoco,&
                     deficu, resocu, eta, nbiter)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TEMPS CPU PAS DE TEMPS
@@ -323,7 +323,7 @@ subroutine op0070()
 !
 ! --- MISE A JOUR DES INFORMATIONS POUR UN NOUVEAU PAS DE TEMPS
 !
-    call assert(etcalc.eq.'CONT')
+    ASSERT(etcalc.eq.'CONT')
     call nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
                 numins, eta, valinc, solalg, veasse)
     numins = numins + 1

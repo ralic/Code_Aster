@@ -86,7 +86,7 @@ subroutine te0140(option, nomte)
         opti = 'ELAS_FLUI'
     else
 ! OPTION NON PROGRAMMEE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (nomte .ne. 'MECA_POU_D_TG' .and. nomte .ne. 'MECA_POU_D_TGM') then
         call moytem('NOEU', 2, 1, '+', valpar,&

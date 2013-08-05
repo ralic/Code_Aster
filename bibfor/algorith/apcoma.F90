@@ -72,8 +72,8 @@ subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
 !
 ! --- NOMBRE DE NOEUDS DE LA MAILLE
 !
-    call assert(nnosdm.gt.0)
-    call assert(nnosdm.le.nbnmax)
+    ASSERT(nnosdm.gt.0)
+    ASSERT(nnosdm.le.nbnmax)
 !
 ! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE
 !

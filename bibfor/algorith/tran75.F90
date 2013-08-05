@@ -364,15 +364,15 @@ subroutine tran75(nomres, typres, nomin, basemo)
                             iret)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
 !              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
-                call assert(iexi.gt.0)
+                ASSERT(iexi.gt.0)
                 call jelira(nomcha(1:19)//'.VALE', 'TYPE', ibid, typ1)
-                call assert(typ1.eq.'R')
+                ASSERT(typ1.eq.'R')
 !
 !              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
-                call assert(prchno.ne.' ')
+                ASSERT(prchno.ne.' ')
                 call dismoi('F', 'PROF_CHNO', nomcha, 'CHAM_NO', ibid,&
                             prchn1, ie)
-                call assert(idensd('PROF_CHNO', prchno, prchn1))
+                ASSERT(idensd('PROF_CHNO', prchno, prchn1))
 !
                 nomcha(20:24)='.VALE'
                 call jeveuo(nomcha, 'L', idefm)
@@ -424,7 +424,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                     endif
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             chamno(20:24) = '.VALE'
             call jeexin(chamno, ibid)

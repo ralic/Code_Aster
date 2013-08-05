@@ -183,7 +183,7 @@ subroutine aflrch(lisrez, chargz)
         call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
                     vali, 0, 0.d0)
     endif
-    call assert(nbcmp.le.nmocl)
+    ASSERT(nbcmp.le.nmocl)
     do 10 i = 1, nbcmp
         nomcmp(i)=zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i)(1:7)), ntypel(i))

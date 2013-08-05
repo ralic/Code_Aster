@@ -108,7 +108,7 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
         call extdch(typext, vale, nocham, nocmp, dval)
     endif
 !
-    call assert(crit.eq.'GT')
+    ASSERT(crit.eq.'GT')
 !
     if (dval .gt. valref) then
         ievdac = iechec

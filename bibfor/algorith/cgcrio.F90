@@ -51,7 +51,7 @@ subroutine cgcrio(resu, vecord)
 !
     call rsutnu(resu, ' ', 0, vecord, nbord,&
                 prec, crit, ier)
-    call assert(ier.eq.0)
+    ASSERT(ier.eq.0)
 !
     call jedema()
 !

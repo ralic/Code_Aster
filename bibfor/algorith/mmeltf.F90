@@ -57,7 +57,7 @@ function mmeltf(ityp)
 !
     mmeltf = '                '
     if ((ityp.le.0) .or. (ityp.gt.nbtyp)) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         mmeltf = nomtf(ityp)
     endif

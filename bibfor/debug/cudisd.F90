@@ -61,7 +61,7 @@ function cudisd(resocu, questz)
     if (questi .eq. 'NBLIAC') then
         cudisd = zi(jcoco+3-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

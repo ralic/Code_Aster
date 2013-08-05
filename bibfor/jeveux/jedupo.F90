@@ -193,7 +193,7 @@ subroutine jedupo(schin, claout, schout, dupcol)
             if (idat .gt. 0) then
                 nomin = rnom(jrnom(icin)+idat)
                 if (nomin(1:24) .ne. nomcol(1:24)) then
-                    if (k .eq. 5) call assert(.false.)
+                    if (k .eq. 5) ASSERT(.false.)
                     if (dupcol .or. .not. idenba) then
                         nomout = nomout(1:24)//csuffi(k)
                     else

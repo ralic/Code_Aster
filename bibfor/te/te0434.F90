@@ -173,13 +173,13 @@ subroutine te0434(option, nomte)
         else if (option.eq.'REFE_FORC_NODA') then
 !
             call terefe('EPSI_REFE', 'MEMBRANE', epsref)
-            if (epsref .eq. r8vide()) call assert(.false.)
+            if (epsref .eq. r8vide()) ASSERT(.false.)
 !
             call mbrigi(fami, kpg, imate, rig)
 !
 !         ON CALCULE UN ORDRE DE GRANDEUR DE LA CONTRAINTE MEMBRANAIRE
             sgmref = epsref*(rig(1,1) + rig(2,2))/2.d0
-            call assert(sgmref.gt.0.d0)
+            ASSERT(sgmref.gt.0.d0)
 !
             do 200 n = 1, nno
                 do 200 i = 1, nddl

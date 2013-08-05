@@ -73,7 +73,7 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nfiss.le.mxstac)
+    ASSERT(nfiss.le.mxstac)
 !
     nommai = noma//'.NOMMAI'
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
@@ -131,8 +131,8 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 100  end do
 !
 !     VERIFICATION
-    call assert(nbma.le.cpt)
-    call assert(nbma.ge.1)
+    ASSERT(nbma.le.cpt)
+    ASSERT(nbma.ge.1)
 !
 !     CREATION DE LA LISTE DEFINITIVE
     call wkvect(mesmai, 'V V K8', nbma, jmad)

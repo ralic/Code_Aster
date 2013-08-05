@@ -160,7 +160,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
         chsith='&&VECTME.CHSITH'
         call alchml(ligrmo, 'SIEF_ELGA', 'PCONTRR', 'V', chsith,&
                     iret, ' ')
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         lpaout(2) = 'PCONTRT'
         lchout(2) = chsith
         nbout = nbout+1

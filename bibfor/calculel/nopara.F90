@@ -56,7 +56,7 @@ function nopara(opt, te, statut, ipar)
     if (statut .eq. 'IN ') then
         nopara = zk8(optnom-1+ipar)
     else
-        call assert(statut.eq.'OUT')
+        ASSERT(statut.eq.'OUT')
         nbin = zi(optmod-1+2)
         nopara = zk8(optnom-1+nbin+ipar)
     endif

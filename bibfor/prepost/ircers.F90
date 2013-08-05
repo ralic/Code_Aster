@@ -4,7 +4,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                   typma, nomsd, nomsym, ir, nbmat,&
                   nummai, lmasu, ncmpu, nucmp, nbcmp,&
                   ncmps, nocmpl)
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
@@ -30,7 +30,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/nbec.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), ncmpu
+    integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), ncmpu
     integer :: nucmp(*), nbnoma(*), typma(*), permut(maxnod, *), nbmat
     integer :: nummai(*), nbcmp, ncmps(*)
     character(len=*) :: nomgd, nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
@@ -103,7 +103,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: irvn, is0, isnbcs, isp, ispt, isup, itabl
     integer :: itseg2, itype, iutil, j, jj, jmax, jmod
     integer :: jspt, jt, jtitr, k, l, ll
-    integer :: maxnod, mode, nbcou, nbdats, nbelgr, nbpg, ncmpg
+    integer :: mode, nbcou, nbdats, nbelgr, nbpg, ncmpg
     integer :: ncmpp, nec, ni, npcalc, nsca, nscal
 !-----------------------------------------------------------------------
     call jemarq()
@@ -491,7 +491,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
 528                                  continue
 !
 529                                  continue
-                                    call assert(inoa.ne.0)
+                                    ASSERT(inoa.ne.0)
 !
                                     do 561 icou = 1, nbcou
                                         jj=iachml-1+zi(inbctg+igrel-1)&
@@ -570,7 +570,7 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                         endif
 28                                  continue
 29                                  continue
-                                    call assert(inoa.ne.0)
+                                    ASSERT(inoa.ne.0)
                                     do 161 icou = 1, nbcou
                                         j=iachml-1+ncmpp*icoef*(inoa-&
                                         1)+ (icou-1)*ncmpp*icoef*nnoe+&

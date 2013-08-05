@@ -40,7 +40,6 @@ subroutine op0044()
 ! LOC NFREQB : IS : NB DE FREQUENCES EFFECTIVES DANS LA BANDE DONNEE
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
-! aslint: disable=W1501
     implicit none
 !
 ! VARIABLES LOCALES
@@ -674,7 +673,7 @@ subroutine op0044()
 !
     else
 !        --- ERREUR ---
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     ------------------------------------------------------------------

@@ -71,7 +71,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    call assert(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base.eq.'V' .or. base.eq.'G')
 !
 !     --- VERIFICATION DE LA TABLE ---
 !

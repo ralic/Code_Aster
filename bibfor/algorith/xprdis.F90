@@ -141,7 +141,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !           PARAM S (PRODUIT SCALAIRE...)
             s = xij*xim + yij*yim + zij*zim
             norm2 = xij*xij + yij*yij + zij*zij
-            call assert(norm2.gt.r8prem())
+            ASSERT(norm2.gt.r8prem())
             s = s/norm2
 !           SI N=P(M) SORT DU SEGMENT
             if ((s-1) .ge. eps) s = 1.d0
@@ -168,7 +168,7 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
     dismin=sqrt(dismin)
 !
 !     CHECK IF THE TOLERANCE ON THE CALCULATED DISTANCE IS RESPECTED
-    call assert(lcmin.gt.r8prem())
+    ASSERT(lcmin.gt.r8prem())
     difmin = (dismin-dist)/lcmin*100
     difmax = (dismax-dist)/lcmin*100
 !

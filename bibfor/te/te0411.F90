@@ -151,7 +151,7 @@ subroutine te0411(option, nomte)
 !
     det=vt1(1)*vt2(2)*vno(3)+vt2(1)*vno(2)*vt1(3)+vno(1)*vt1(2)*vt2(3)&
      &   -vno(1)*vt2(2)*vt1(3)-vt1(1)*vno(2)*vt2(3)-vt2(1)*vt1(2)*vno(3)
-    call assert(abs(det).gt.prec)
+    ASSERT(abs(det).gt.prec)
 !
     mgl(1,1) = vt1(1)
     mgl(2,1) = vt2(1)
@@ -186,7 +186,7 @@ subroutine te0411(option, nomte)
         write(6,*) 'DEBUG DELTA=',delta
         write(6,*) 'DEBUG SIGL=',sigl
     endif
-    call assert(delta.ge.0.d0)
+    ASSERT(delta.ge.0.d0)
     l1=(sigl(1,1)+sigl(2,2)-sqrt(delta))/2
     l2=(sigl(1,1)+sigl(2,2)+sqrt(delta))/2
     if (abs(sigl(1,1)-l1) .lt. prec) then

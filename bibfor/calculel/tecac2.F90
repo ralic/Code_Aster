@@ -132,7 +132,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
     logical :: stpcat, stpexi, stpinc
 !
 !     DEB--------------------------------------------------------------
-    call assert(numa.ge.0)
+    ASSERT(numa.ge.0)
     if (numa .eq. 0) then
         igr2=igr
         iel2=iel
@@ -149,8 +149,8 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
     stpexi = (stop8(2:2).eq.'O')
     stpinc = (stop8(3:3).eq.'O')
 !
-    call assert(loue.eq.'L' .or. loue.eq.'E')
-    call assert(1.le.nval .and. nval.le.8)
+    ASSERT(loue.eq.'L' .or. loue.eq.'E')
+    ASSERT(1.le.nval .and. nval.le.8)
     iret = 0
     itab(1) = 0
 !
@@ -179,10 +179,10 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
 !     ET QUE LES PARAMETRES OUT SONT EN ECRITURE
     if (iparg .gt. nparin .and. loue .eq. 'L') then
         write(6,*)'PARAMETRE OUT EN LECTURE : ',nompar
-        call assert(.false.)
+        ASSERT(.false.)
     else if (iparg.le.nparin .and. loue.eq.'E') then
         write(6,*)'PARAMETRE IN EN ECRITURE : ',nompar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     iachlo=zi(iawloc-1+3*(iparg-1)+1)
@@ -265,7 +265,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
         debgr2 = zi(jceld-1+zi(jceld-1+4+igr2)+8)
         nbspt = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+1)
         ncdyn = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+2)
-        call assert(lgcata.eq.zi(jceld-1+zi(jceld-1+4+igr2)+3))
+        ASSERT(lgcata.eq.zi(jceld-1+zi(jceld-1+4+igr2)+3))
         decael = (adiel-debgr2)
         lonchl = zi(jceld-1+zi(jceld-1+4+igr2)+4+4* (iel2-1)+3)
     else
@@ -338,7 +338,7 @@ subroutine tecac2(stopz, numa, nmparz, louez, nval,&
     else if (zk8(iawtyp-1+iparg) (1:3).eq.'K24') then
         itab(5) = 6
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (nval .lt. 6) goto 20
 !

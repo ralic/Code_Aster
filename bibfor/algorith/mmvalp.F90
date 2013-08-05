@@ -64,7 +64,7 @@ subroutine mmvalp(ndim, alias, nno, ncmp, ksi1,&
     do 1 icmp = 1, ncmp
         valept(icmp) = 0.d0
  1  end do
-    call assert(nno.le.9)
+    ASSERT(nno.le.9)
 !
 ! --- FONCTIONS DE FORME
 !

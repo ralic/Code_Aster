@@ -116,7 +116,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 ! ----- RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION DE LA MAILLE
         call cesexi('C', jcesd(1), jcesl(1), nummai, 1,&
                     ifiss, 3, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         nbpt = zi(jcesv(1)-1+iad)
 ! ----- BOUCLE SUR LES POINTS D'INTERSECTION
 !
@@ -125,7 +125,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
             do 120 j = 1, ndim
                 call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
                             ifiss, ndim*(ini-1)+j, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 coord(j) = zr(jcesv(6)-1+iad)
 120          continue
 ! ------- CALCUL DE LA DISTANCE
@@ -136,7 +136,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
             if (dist .lt. dmin) then
                 call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                             ifiss, zxain*(ini-1)+1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 if (nint(zr(jcesv(2)-1+iad)) .gt. 0) then
                     amait = nint(zr(jcesv(2)-1+iad))
                     nmait = 0
@@ -145,7 +145,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
                 else
                     call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
                                 ifiss, zxain*(ini-1)+2, iad)
-                    call assert(iad.gt.0)
+                    ASSERT(iad.gt.0)
                     if (nint(zr(jcesv(2)-1+iad)) .gt. 0) then
                         amait = 0
                         nmait = nint(zr(jcesv(2)-1+iad))

@@ -75,7 +75,7 @@ subroutine chrpan(modele, carte, chelem)
 ! --- INDICE DE 'ALPHA' ET 'BETA' DANS LA CARTE
     ialpha = indik8 ( zk8(icesc), 'ALPHA   ', 1, ncmax )
     ibeta = indik8 ( zk8(icesc), 'BETA    ', 1, ncmax )
-    call assert(ialpha.eq.1.and.ibeta.eq.2)
+    ASSERT(ialpha.eq.1.and.ibeta.eq.2)
 !
     motcls(1) = 'GROUP_MA'
     motcls(2) = 'MAILLE'

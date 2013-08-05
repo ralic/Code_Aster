@@ -57,10 +57,10 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
 !
 !     N1 : NOMBRE DE NOEUDS DE LA MAILLE "COQUE" EN FACE DE N2
     n1=zi(jconb-1+nuno2)
-    call assert(n1.ge.3 .and. n1.le.9)
+    ASSERT(n1.ge.3 .and. n1.le.9)
 !
     nbterm=1+n1*ndim
-    call assert(nbterm.le.28)
+    ASSERT(nbterm.le.28)
 !
 !
 !     CALCUL DES COORDONNEES DU POINT A (COQUE) EN FACE DE N2 (MASSIF) :
@@ -126,7 +126,7 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
     endif
     idec=idec+2
 50  continue
-    call assert(idec.eq.nbterm+1)
+    ASSERT(idec.eq.nbterm+1)
 !
     call afrela(coefr, cbid, ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&

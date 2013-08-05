@@ -101,7 +101,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
                 repi=igdli
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi(1:9).eq.'NOM_GD_SI') then
@@ -145,7 +145,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
             call jeveuo(jexnom('&CATA.GD.NOMCMP', nomob), 'L', iancmp)
             repi=indik8(zk8(iancmp),'LAGR',1,nmax)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'TYPE_SCA') then

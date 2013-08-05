@@ -47,7 +47,7 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !        UNE MATRICE ASSEMBLEE NON SYMETRIQUE, IL FAUT COPIER 2 FOIS
     nbfois=1
     if (lmasym) then
-        call assert(lmesym)
+        ASSERT(lmesym)
     else
         if (lmesym) nbfois=2
     endif
@@ -101,7 +101,7 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     1 end do

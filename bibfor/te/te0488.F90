@@ -137,7 +137,7 @@ subroutine te0488(option, nomte)
             call sumetr(cova, metr, jac)
             poids=jac*zr(ipoids-1+kp)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !

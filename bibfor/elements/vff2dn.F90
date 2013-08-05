@@ -43,7 +43,7 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
 ! ......................................................................
 !
 !
-    call assert(ndim.eq.1)
+    ASSERT(ndim.eq.1)
     dxds = 0.d0
     dyds = 0.d0
     do 1 i = 1, nno

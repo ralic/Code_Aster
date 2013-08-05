@@ -36,7 +36,7 @@ subroutine te0189(option, nomte)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call assert(option.eq.'PRAC_ELNO')
+    ASSERT(option.eq.'PRAC_ELNO')
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfde, jgano)
 !

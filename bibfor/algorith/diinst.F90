@@ -55,7 +55,7 @@ function diinst(sddisc, numins)
 !
     call jemarq()
 !
-    if (numins .lt. 0) call assert(.false.)
+    if (numins .lt. 0) ASSERT(.false.)
     typeco = ' '
 !
     call gettco(sddisc, typeco)

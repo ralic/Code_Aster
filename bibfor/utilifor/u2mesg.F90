@@ -68,7 +68,7 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
 !     EXCEPTION DVP_NNN, OU ERREUR 'D' CAR SUIVIE DE MPI_ABORT
     typm = typ
     idf = index('EFIMASZD', typm(1:1))
-    call assert(idf .ne. 0)
+    ASSERT(idf .ne. 0)
     lstop = .false.
 !
 !     --- COMPORTEMENT EN CAS D'ERREUR

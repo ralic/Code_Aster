@@ -188,8 +188,8 @@ subroutine carcha(noch, nomgd, typcha, option, param)
 !     VERIFICATION DE LA PRESENCE DE 'PARAM' ET 'OPTION'
 !     POUR LES CHAMPS ELGA
     if (noch(6:9) .eq. 'ELGA') then
-        call assert(option.ne.' ')
-        call assert(param .ne.' ')
+        ASSERT(option.ne.' ')
+        ASSERT(param .ne.' ')
     endif
 !
 end subroutine

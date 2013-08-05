@@ -76,7 +76,7 @@ subroutine te0109(option, nomte)
     call jevech('PFLUXPG', 'E', iflupg)
 !
     nbcou = zi(inbspi)
-    call assert(nbcou.eq.1)
+    ASSERT(nbcou.eq.1)
 !
 ! --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 !     -------------------------------------------------

@@ -160,7 +160,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
             zi(jnnma+i-1)=zi(ilcnx+ima)-zi(ilcnx+ima-1)
 20      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --  ON FILTRE LES MAILLES SUIVANT LES CRITERES RELATIFS

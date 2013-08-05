@@ -92,7 +92,7 @@ subroutine matinv(stop, ndim, mat, inv, det)
             det = 0.d0
             goto 999
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

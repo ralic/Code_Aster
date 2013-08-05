@@ -59,7 +59,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
                 kbid, ibid)
     call jenonu(jexnom('&CATA.'//phen1(1:13)//'.MODL', modeli), kmod)
-    call assert(kmod.gt.0)
+    ASSERT(kmod.gt.0)
     call jeveuo(jexnum('&CATA.'//phen1, kmod), 'L', jphmod)
 !
 !
@@ -71,7 +71,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     nbel=0
     do 1, ima=1,nbma
     tm= zi(jtyma-1+ima)
-    call assert(tm.gt.0)
+    ASSERT(tm.gt.0)
     te= zi(jphmod-1+tm)
     if (te .gt. 0) then
         nbel=nbel+1
@@ -100,7 +100,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     if (zi(jlitm-1+tm) .gt. 0) then
         igr=igr+1
         te= zi(jphmod-1+tm)
-        call assert(te.gt.0)
+        ASSERT(te.gt.0)
         nbel=0
         do 4, ima=1,nbma
         if (zi(jtyma-1+ima) .eq. tm) then
@@ -109,7 +109,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
             zi(jliel-1+ico)=ima
         endif
  4      continue
-        call assert(nbel.gt.0)
+        ASSERT(nbel.gt.0)
         call jecroc(jexnum(ligr19//'.LIEL', igr))
         call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1, kbid)
         ico=ico+1

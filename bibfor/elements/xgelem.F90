@@ -20,7 +20,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1306,W1501
+! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -105,9 +105,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(ndim.le.mxstac)
-    call assert(nnop.le.mxstac)
-    call assert(nfiss.le.mxstac)
+    ASSERT(ndim.le.mxstac)
+    ASSERT(nnop.le.mxstac)
+    ASSERT(nfiss.le.mxstac)
 !
     grdepl=.false.
 !
@@ -161,7 +161,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
-    call assert(ndim.eq.ndimb)
+    ASSERT(ndim.eq.ndimb)
 !
 !     TEMPERATURE DE REF
     call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
@@ -238,7 +238,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 1000          continue
 !
             poids= poids * r
-            call assert(r.gt.0d0)
+            ASSERT(r.gt.0d0)
 !
         endif
 !
@@ -296,7 +296,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         endif
 !       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !       CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
 !       ---------------------------------------------
 !       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)

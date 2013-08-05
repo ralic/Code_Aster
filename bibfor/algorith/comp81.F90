@@ -127,11 +127,11 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call jeveuo(nomres//'.MAEL_MASS_DESC', 'L', iadesc)
     call dismoi('F', 'NB_MODES_TOT', basmod, 'RESULTAT', nbmtot,&
                 k8bid, ier)
-    if (nbmtot .eq. 0) call assert(.false.)
+    if (nbmtot .eq. 0) ASSERT(.false.)
     call dismoi('F', 'NB_MODES_STA', basmod, 'RESULTAT', nbmdef,&
                 k8bid, ier)
     nbmdyn=nbmtot-nbmdef
-    if (nbmdyn .lt. 0) call assert(.false.)
+    if (nbmdyn .lt. 0) ASSERT(.false.)
 !
     if (nbmtot .ne. zi(iadesc+1)) then
         call u2mess('I', 'ALGORITH_52')

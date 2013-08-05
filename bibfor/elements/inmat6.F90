@@ -45,8 +45,8 @@ subroutine inmat6(elrefa, fapg, mganos)
     call elraga(elrefa, fapg, ndim, npg, xpg,&
                 poipg)
 !
-    call assert(nno.le.nbnomx)
-    call assert(npg.le.nbpgmx)
+    ASSERT(nno.le.nbnomx)
+    ASSERT(npg.le.nbpgmx)
 !
 !     CAS DU SHB8 ET DU SHB6 NON INVERSIBLE
     if (fapg .eq. 'SHB5' .or. fapg .eq. 'SHB6') then

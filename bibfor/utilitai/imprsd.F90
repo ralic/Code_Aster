@@ -63,7 +63,7 @@ subroutine imprsd(typesd, nomsd, ific, titre)
     call jemarq()
     typ2sd = typesd
 !
-    call assert((ific.ne.0) .and. (ific.le.100))
+    ASSERT((ific.ne.0) .and. (ific.le.100))
     ibid = 0
 !
 !     1. ECRITURE DU TITRE :

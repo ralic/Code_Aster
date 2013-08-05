@@ -53,7 +53,7 @@ subroutine mmmmpb(rese, nrese, ndim, matprb)
 !
     call matini(3, 3, 0.d0, matprb)
     theta = 1.d0
-    if (nrese .eq. 0.d0) call assert(.false.)
+    if (nrese .eq. 0.d0) ASSERT(.false.)
 !
 ! --- CALCUL DE LA NORME DE LAMBDA +RHO[[U]]_TAU
 !

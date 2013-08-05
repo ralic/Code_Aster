@@ -179,7 +179,7 @@ subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
 !
 !     --- CREATION DU .PROL ---
     prol(1:19) = sortie
-    call assert(lxlgut(prol(1:19)).le.24)
+    ASSERT(lxlgut(prol(1:19)).le.24)
     call wkvect(prol, base//' V K24', 6, lpros)
     zk24(lpros ) = type
     zk24(lpros+1) = interp

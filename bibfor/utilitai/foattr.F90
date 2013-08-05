@@ -45,7 +45,7 @@ subroutine foattr(motcle, iocc, nomfon)
 !-----------------------------------------------------------------------
     call jemarq()
     temp = nomfon
-    call assert(lxlgut(temp).le.24)
+    ASSERT(lxlgut(temp).le.24)
     prol = temp//'.PROL'
     call jeveuo(prol, 'E', lpro)
     call jelira(prol, 'LONUTI', nbprol, k1bid)

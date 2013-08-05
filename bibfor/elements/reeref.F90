@@ -106,9 +106,7 @@ subroutine reeref(elrefp, axi, nnop, nnos, geom,&
 !
 ! --- INITIALISATIONS
 !
-    call assert(cinem .eq. 'NON' .or. cinem&
-                .eq. 'OUI' .or. cinem .eq.&
-                'DFF' .or. cinem .eq. 'INI')
+    ASSERT(cinem .eq. 'NON' .or. cinem .eq. 'OUI' .or. cinem .eq. 'DFF' .or. cinem .eq. 'INI')
     zero = 0.d0
     un = 1.d0
     rac2 = sqrt(2.d0)

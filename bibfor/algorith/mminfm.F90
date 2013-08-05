@@ -78,7 +78,7 @@ subroutine mminfm(posmae, defico, questz, irep)
 !
     indmae = zi(jtypma+ztypm*(posmae-1)+2-1)
     posma2 = zi(jmaesc+zmaes*(indmae-1)+1-1)
-    call assert(posma2.eq.posmae)
+    ASSERT(posma2.eq.posmae)
 !
 ! --- QUESTION
 !
@@ -89,7 +89,7 @@ subroutine mminfm(posmae, defico, questz, irep)
     else if (questi.eq.'NDEXFR') then
         irep = zi(jmaesc+zmaes*(indmae-1)+4-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

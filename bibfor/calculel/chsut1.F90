@@ -106,11 +106,11 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
 !
 !     2.2 : NOMGD1 ET LCMP1 SONT COHERENTS :
     call verigd(nomgd1, lcmp1, ncmp, iret)
-    call assert(iret.le.0)
+    ASSERT(iret.le.0)
 !
 !     2.3 : NOMGD2 ET LCMP2 SONT COHERENTS :
     call verigd(nomgd2, lcmp2, ncmp, iret)
-    call assert(iret.le.0)
+    ASSERT(iret.le.0)
 !
 !
 !      3. MODIFICATION DE CHS2 :
@@ -121,7 +121,7 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
     nocmp = zk8(jcs1c-1+k)
     kk = indik8(lcmp1,nocmp,1,ncmp)
 !       SI KK.EQ.0 : ON NE SAIT PAS RENOMMER LA CMP
-    call assert(kk.ne.0)
+    ASSERT(kk.ne.0)
     zk8(jcs2c-1+k) = lcmp2(kk)
     10 end do
 !

@@ -132,7 +132,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     endif
 !
     if (iocc .le. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call getfac(motfac, nlino)

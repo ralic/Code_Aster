@@ -134,7 +134,7 @@ subroutine nmtime(sdtime, phasez, timerz)
             call uttcpu('CPU.NMTIME.TM2', 'INIT', ' ')
             zr(jtdeb+6-1) = 0.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (phase.eq.'RUN') then
@@ -159,7 +159,7 @@ subroutine nmtime(sdtime, phasez, timerz)
         else if (timer.eq.'ASSE_MATR') then
             call uttcpu('CPU.NMTIME.TM2', 'DEBUT', ' ')
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (phase.eq.'END') then
@@ -208,10 +208,10 @@ subroutine nmtime(sdtime, phasez, timerz)
             zr(jtdeb+6-1) = 0.d0
             call nmrtim(sdtime, timer, time)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

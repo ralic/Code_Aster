@@ -63,7 +63,7 @@ function typmat(nbmat, tlimat)
         call mpicm1('MPI_MAX', 'I', 1, ibid, iexi,&
                     rbid, cbid)
         iexi=min(1,abs(iexi))
-        call assert(iexi.eq.iexiav)
+        ASSERT(iexi.eq.iexiav)
         if (iexi .eq. 0) goto 10
 !
 !       -- LA LOGIQUE CI-DESSOUS N'EST VALABLE QUE SI LE MATR_ELEM

@@ -124,7 +124,7 @@ subroutine te0131(option, nomte)
         if (option(11:14) .eq. 'COEF') then
             call fointe('A', zk8(iech), 4, nompar, valpar,&
                         echan, ier)
-            call assert(ier.eq.0)
+            ASSERT(ier.eq.0)
 !
             do 103 i = 1, nno
 !CDIR$ IVDEP
@@ -139,10 +139,10 @@ subroutine te0131(option, nomte)
         else if (option(11:14).eq.'RAYO') then
             call fointe('A', zk8(iray), 4, nompar, valpar,&
                         sigma, ier)
-            call assert(ier .eq. 0)
+            ASSERT(ier .eq. 0)
             call fointe('A', zk8(iray+1), 4, nompar, valpar,&
                         epsil, ier)
-            call assert(ier .eq. 0)
+            ASSERT(ier .eq. 0)
 !
             tpg = 0.d0
             do 105 i = 1, nno

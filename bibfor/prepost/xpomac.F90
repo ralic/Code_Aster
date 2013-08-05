@@ -111,7 +111,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac,&
                 k8b, iret)
     call wkvect(dirnoe, 'V V I', nbno, jdirno)
     call jeexin(listno, ier)
-    call assert(ier.ne.0)
+    ASSERT(ier.ne.0)
     call jeveuo(listno, 'L', jno)
 !
     do 110 i = 1, nbnoc

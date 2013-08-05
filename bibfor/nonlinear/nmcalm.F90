@@ -208,7 +208,7 @@ subroutine nmcalm(typmat, modelz, lischa, mate, carele,&
                     depmoi, depdel, vitmoi, vitplu, accmoi,&
                     matele)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DEBUG

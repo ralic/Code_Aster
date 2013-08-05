@@ -95,7 +95,7 @@ subroutine reere3(elrefp, nnop, igeom, xg, depl,&
 !
 ! --- INITIALISATIONS
 !
-    call assert(cinem.eq.'NON'.or.cinem.eq.'OUI'.or.cinem.eq.'DFF')
+    ASSERT(cinem.eq.'NON'.or.cinem.eq.'OUI'.or.cinem.eq.'DFF')
     zero = 0.d0
     un = 1.d0
     rac2 = sqrt(2.d0)

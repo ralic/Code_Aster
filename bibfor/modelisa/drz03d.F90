@@ -1,6 +1,5 @@
 subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
                   dmin)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,7 +116,7 @@ subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
     betac = (0.0d0,0.0d0)
     un = 1.0d0
     zero = 0.0d0
-    call assert(dmin .gt. 0.d0)
+    ASSERT(dmin .gt. 0.d0)
 !
     call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
                 mod, ier)
@@ -134,7 +133,7 @@ subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
     else if (oper(15:16).eq.'  ') then
         typval = 'REEL'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECUPERATION DES NOMS DES DDLS ET DES NUMEROS

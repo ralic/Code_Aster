@@ -92,7 +92,7 @@ subroutine rcver1(phenoz, tablz, tably)
         call jeveuo(ordo2, 'L', jordo2)
 !       ON COMPARE LES COORDONNEES DE TOUS LES NOEUDS
         if (phenom .eq. 'MECANIQUE') then
-            call assert(nbno1.eq.nbno2)
+            ASSERT(nbno1.eq.nbno2)
             do 20 i = 1, nbno1
                 if (abs(zr(jordo1+i-1)-zr(jordo2+i-1)) .gt. eps) then
                     valk(1)=tabref(1:8)
@@ -130,7 +130,7 @@ subroutine rcver1(phenoz, tablz, tably)
     call getvtx(' ', 'TYPE_RESU_MECA', 1, iarg, 1,&
                 typmec, n1)
     call tbexip(tabcom, valek(4), exist, k8b)
-    call assert(exist)
+    ASSERT(exist)
     call tbexv1(tabcom, valek(4), intit2, 'V', nbint2,&
                 tyva)
 !     CAS UNITAIRE: 1 SEUL LIGAMENT
@@ -157,14 +157,14 @@ subroutine rcver1(phenoz, tablz, tably)
 !     --------------------------------------------------------
     if (typmec .eq. 'EVOLUTION') then
         call tbexip(tabcom, valek(5), exist, k8b)
-        call assert(exist)
+        ASSERT(exist)
         call tbexve(tabref, valek(5), inst1, 'V', nbins1,&
                     k8b)
         call jeveuo(inst1, 'L', jinst1)
         call tbexve(tabcom, valek(5), inst2, 'V', nbins2,&
                     k8b)
         call jeveuo(inst2, 'L', jinst2)
-        call assert(nbins1.eq.nbins2)
+        ASSERT(nbins1.eq.nbins2)
         do 30 i = 1, nbins1
             if (abs(zr(jinst1+i-1)-zr(jinst2+i-1)) .gt. eps) then
                 valk(1)=tabref(1:8)

@@ -130,10 +130,10 @@ subroutine resyme(resu1z, basez, resu2z)
                 call jeveuo(resl1//'.DESC', 'L', jresl1)
                 call jeveuo(resl2//'.DESC', 'L', jresl2)
                 nbgr=zi(jresl1-1+2)
-                call assert(nbgr.eq.zi(jresl2-1+2))
+                ASSERT(nbgr.eq.zi(jresl2-1+2))
                 do 21, igr=1,nbgr
                 if (zi(jresl1-1+2+igr) .gt. 0) then
-                    call assert(zi(jresl2-1+2+igr).ne.0)
+                    ASSERT(zi(jresl2-1+2+igr).ne.0)
                 endif
 21              continue
             else

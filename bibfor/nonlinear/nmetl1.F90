@@ -123,7 +123,7 @@ subroutine nmetl1(result, numein, sdieto, icham)
             call copisd('CHAMP_GD', 'V', champ, nomcha)
         else
             write(6,*) 'LOCCHA: ',loccha
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ----- STATUT DU CHAMP: LU DANS SD RESULTAT

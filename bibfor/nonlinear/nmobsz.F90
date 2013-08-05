@@ -216,7 +216,7 @@ subroutine nmobsz(sdobse, nomtab, titobs, nomcha, typcha,&
             rval = rval + 1
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     npar = ipar -1

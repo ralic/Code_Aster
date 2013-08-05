@@ -83,7 +83,7 @@ subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
         call getvtx(keywordfact, keyword, iocc, iarg, 1,&
                     val_t, val_nb)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
  99 continue

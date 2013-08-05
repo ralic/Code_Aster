@@ -102,7 +102,7 @@ subroutine ttprsm(ndim, ddeple, ddeplm, dlagrf, coeffr,&
                 rese(i) = dlagrf(1)*tau1(i)+ dlagrf(2)*tau2(i)+ coeffr*dvitet(i)
 31          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

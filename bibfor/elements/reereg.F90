@@ -86,13 +86,13 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 ! --- VALEURS DES FONCTIONS DE FORME EN XE: FF
 !
     call elrfvf(elrefp, xe, nbnomx, ff, nno)
-    call assert(nno.eq.nnop)
+    ASSERT(nno.eq.nnop)
 !
 ! --- DERIVEES PREMIERES DES FONCTIONS DE FORME EN XE: DFF
 !
     call elrfdf(elrefp, xe, ndim*nbnomx, dff, nno,&
                 nderiv)
-!      CALL ASSERT(NDERIV.EQ.NDIM)
+!      ASSERT(NDERIV.EQ.NDIM)
 !
 ! --- CALCUL DES COORDONNEES DU POINT: POINT
 !
@@ -114,7 +114,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
             iret=1
             goto 999
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -148,7 +148,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
         if (stop .eq. 'S') then
             call u2mess('F', 'ELEMENTS2_58')
         else
-            call assert(stop.eq.'C')
+            ASSERT(stop.eq.'C')
             iret=1
         endif
     endif

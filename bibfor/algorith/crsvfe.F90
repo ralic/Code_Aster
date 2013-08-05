@@ -109,42 +109,42 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
 !     CHAQUE SOUS-DOMAINE
     call getvtx(motfac, 'RENUM', 1, iarg, 1,&
                 renum, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     sdfeti=' '
     call getvid(motfac, 'PARTITION', 1, iarg, 1,&
                 sdfeti(1:8), ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvis(motfac, 'NMAX_ITER', 1, iarg, 1,&
                 nmaxit, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvis(motfac, 'REAC_RESI', 1, iarg, 1,&
                 reacre, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvr8(motfac, 'RESI_RELA', 1, iarg, 1,&
                 resire, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'VERIF_SDFETI', 1, iarg, 1,&
                 verif, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvr8(motfac, 'TEST_CONTINU', 1, iarg, 1,&
                 testco, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'TYPE_REORTHO_DD', 1, iarg, 1,&
                 tyreor, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     if (tyreor(1:4) .ne. 'SANS') then
         call getvis(motfac, 'NB_REORTHO_DD', 1, iarg, 1,&
                     nbreor, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         call getvtx(motfac, 'ACCELERATION_SM', 1, iarg, 1,&
                     acsm, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         if (acsm(1:3) .eq. 'OUI') then
             call getvis(motfac, 'NB_REORTHO_INST', 1, iarg, 1,&
                         nbreoi, ibid)
-            call assert(ibid.eq.1)
+            ASSERT(ibid.eq.1)
         else
             nbreoi=0
         endif
@@ -155,23 +155,23 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
     endif
     call getvtx(motfac, 'PRE_COND', 1, iarg, 1,&
                 preco, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     if (preco(1:4) .ne. 'SANS') then
         call getvtx(motfac, 'SCALING', 1, iarg, 1,&
                     scalin, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
     else
         scalin(1:4)='SANS'
     endif
     call getvtx(motfac, 'STOCKAGE_GI', 1, iarg, 1,&
                 stogi, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
 ! --- OBJET TEMPORAIRE POUR MONITORING FETI
     infofe='FFFFFFFFFFFFFFFFFFFFFFFF'
     call getvtx(motfac, 'INFO_FETI', 1, iarg, 1,&
                 infofe, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call wkvect('&FETI.FINF', 'V V K24', 1, iinf)
     zk24(iinf)=infofe
 !

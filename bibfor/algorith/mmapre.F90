@@ -192,7 +192,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! --------- APPARIEMENT NODAL INTERDIT !
 !
                 if (typapp .eq. 1) then
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 ! --------- NUMEROS DE LA MAILLE MAITRE
@@ -234,7 +234,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! --- NOMBRE TOTAL DE NOEUDS EN CONTACT
 !
     zr(jtabf-1+1) = ntpc
-    call assert(ntpc.eq.cfdisi(defico, 'NTPC'))
+    ASSERT(ntpc.eq.cfdisi(defico, 'NTPC'))
 !
 ! --- INDICATEUR DE REAPPARIEMENT
 !

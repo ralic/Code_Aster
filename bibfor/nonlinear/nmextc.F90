@@ -68,7 +68,7 @@ subroutine nmextc(sdieto, motfac, iocc, nomcha, lextr)
     call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 0,&
                 k8bid, n1)
     nchp = -n1
-    call assert(nchp.eq.1)
+    ASSERT(nchp.eq.1)
 !
 ! --- NOM DU CHAMP
 !

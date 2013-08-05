@@ -119,7 +119,7 @@ subroutine dfllty(sdlist, metlis, dtmin)
     else if (metlis.eq.'AUTO') then
         zr(jlinr-1+1)= 2.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECUPERATION DE LA LISTE D'INSTANTS FOURNIE
@@ -166,8 +166,8 @@ subroutine dfllty(sdlist, metlis, dtmin)
 !       RECUPERATION DU NOMBRE DE DECOUPE
         call getvis(motfac, 'SUBD_PAS', 1, iarg, 1,&
                     nbdec, iret)
-        call assert(iret.ne.0)
-        call assert(nbdec.gt.0)
+        ASSERT(iret.ne.0)
+        ASSERT(nbdec.gt.0)
 !
 !       CREATION DE LA LISTE "NBDEC" FOIS PLUS FINE
         lisins = '&&DFLLTY.LIST_INST'

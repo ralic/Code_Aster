@@ -109,7 +109,7 @@ subroutine apvect(sdappa, questz, ip, valr)
         valr(3) = zr(jptgno+6*(posno-1)+6-1)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

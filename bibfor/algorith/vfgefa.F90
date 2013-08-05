@@ -54,9 +54,9 @@ subroutine vfgefa(maxdim, ndim, nbnos, xs, t,&
 !
 ! ----------------------------------------------------------------------
 !
-    call assert(ndim.eq.3)
-    call assert(maxdim.ge.3)
-    call assert((nbnos.ge.4).and.(nbnos.ge.3))
+    ASSERT(ndim.eq.3)
+    ASSERT(maxdim.ge.3)
+    ASSERT((nbnos.ge.4).and.(nbnos.ge.3))
 !
     if (nbnos .eq. 3) then
         call vfgetr(maxdim, ndim, nbnos, xs, t,&
@@ -106,7 +106,7 @@ subroutine vfgefa(maxdim, ndim, nbnos, xs, t,&
             norm(3)=norm2(3)
             d =(xgf(1)-xg(1))*norm(1)+ (xgf(2)-xg(2))*norm(2)+&
             (xgf(3)-xg(3))*norm(3)
-            call assert(d.gt.0.d0)
+            ASSERT(d.gt.0.d0)
         endif
     endif
 end subroutine

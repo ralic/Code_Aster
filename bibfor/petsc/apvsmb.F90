@@ -86,13 +86,13 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         end do
 !
         call VecCreate(mpicou, b, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, bs, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecSetSizes(b, ndprop, nglo, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecSetType(b, VECMPI, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call wkvect('&&APVSMB.INDICES', 'V V S', nloc, jindic)
         call wkvect('&&APVSMB.VALEURS', 'V V R', nloc, jvaleu)
@@ -106,33 +106,33 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         call jedetr('&&APVSMB.INDICES')
         call jedetr('&&APVSMB.VALEURS')
         call VecAssemblyBegin(b, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecAssemblyEnd(b, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
         neq=nsmdi
 !
         call VecCreate(mpicou, b, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, bs, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecSetSizes(b, PETSC_DECIDE, neq, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecSetType(b, VECMPI, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call VecGetOwnershipRange(b, low, high, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecGetArray(b, xx, xidx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         do i = 1, high-low
             xx(xidx+i)=rsolu(low+i)
         end do
 !
         call VecRestoreArray(b, xx, xidx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     endif
 !
     call jedema()

@@ -48,12 +48,12 @@ subroutine impfok(messag, long, unite)
     if (long .le. 0) then
         forma = '(A)'
     else if (long.gt.zlig) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         write(forma,1001) long
     endif
     if (unite .le. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         write(unite,forma) messag(1:long)
     endif

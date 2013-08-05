@@ -48,7 +48,7 @@ subroutine op0101()
 ! --- RECUPERATION DU RESULTAT
     call getres(chcine, type, oper)
     chci19=chcine
-    call assert(type(1:9).eq.'CHAR_CINE')
+    ASSERT(type(1:9).eq.'CHAR_CINE')
     pheno=type(11:14)
     cinef=(oper(15:16).eq.'_F')
 !
@@ -89,11 +89,11 @@ subroutine op0101()
             call charci(chcine, 'THER_IMPO', mo, 'F')
         endif
     else if (pheno.eq.'ACOU') then
-        call assert(.not.cinef)
+        ASSERT(.not.cinef)
         zk8(jafck-1+1)='CIAC_CX'
         call charci(chcine, 'ACOU_IMPO', mo, 'C')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

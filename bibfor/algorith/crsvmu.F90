@@ -112,7 +112,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
                             modele, iret)
             else
 ! --- CAS NON PREVU
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -140,7 +140,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             if (.not.ldgrel) then
                 call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
                 call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1, kbid)
-                call assert(zi(jnumsd-1+n1).eq.nbproc)
+                ASSERT(zi(jnumsd-1+n1).eq.nbproc)
                 nbma=n1-1
                 compt=0
                 do 50 i = 1, nbma
@@ -201,13 +201,13 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     call getvis(motfac, 'PCENT_PIVOT', 1, iarg, 1,&
                 pcpiv, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'TYPE_RESOL', 1, iarg, 1,&
                 ktypr, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'PRETRAITEMENTS', 1, iarg, 1,&
                 ktyps, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
     ktypp='SANS'
     eximc=getexm(motfac,'POSTTRAITEMENTS')
@@ -218,10 +218,10 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 !
     call getvtx(motfac, 'RENUM', 1, iarg, 1,&
                 ktyprn, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'ELIM_LAGR2', 1, iarg, 1,&
                 klag2, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
     eps=-1.d0
     eximc=getexm(motfac,'RESI_RELA')
@@ -232,7 +232,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 !
     call getvtx(motfac, 'GESTION_MEMOIRE', 1, iarg, 1,&
                 kooc, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
 ! --- ON REMPLIT LA SD_SOLVEUR
 ! --- ATTENTION A LA COHERENCE AVEC CRSMSP

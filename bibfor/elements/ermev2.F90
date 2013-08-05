@@ -118,7 +118,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
 10      continue
 !
 !
-        call assert(abs(r).gt.r8prem())
+        ASSERT(abs(r).gt.r8prem())
 !
         dsx=dsig11+dsig12+(1.d0/r)*(spg11-spg33)
         dsy=dsig21+dsig22+(1.d0/r)*spg12

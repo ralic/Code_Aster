@@ -70,7 +70,7 @@ subroutine w039c4(carte, ifi, form)
     call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert(tsca.eq.'R')
+    ASSERT(tsca.eq.'R')
 !
 ! --- ON TRANSFORME LA CARTE EN UN CHAM_ELEM_S
     chels1='&&W039C4.CHELS1'
@@ -113,7 +113,7 @@ subroutine w039c4(carte, ifi, form)
                 jcesv, jcesl, 0, [0], k8bid,&
                 iret)
 !
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     call detrsd('CHAM_ELEM_S', chels1)
 !

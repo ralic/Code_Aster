@@ -68,7 +68,7 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
 !
 !     -- CALCUL DE XR1 : GEOMETRIE REELLE DE X1 :
     call elrfvf(elrefp, x1, nbnomx, ff, nno)
-    call assert(nno.eq.nnop)
+    ASSERT(nno.eq.nnop)
     call vecini(ndim, zero, xr1)
     do 20 idim = 1, ndim
         do 10 ino = 1, nno

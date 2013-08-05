@@ -318,7 +318,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             lchin(nchin) = chpuls
         endif
 !
-        call assert(nchin.le.nbinmx)
+        ASSERT(nchin.le.nbinmx)
         call calcul('S', opti, ligrmo, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')

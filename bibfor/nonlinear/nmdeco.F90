@@ -107,7 +107,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
         retdec = 0
         goto 999
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DECOUPE DU PAS DE TEMPS
@@ -122,7 +122,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
                     deltat, nbrpas, dtmin, ldcext, durdec,&
                     retdec)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PAS DE DECOUPE: ON SORT
@@ -163,7 +163,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
             call nmdcax(sddisc, insref, numins, durdec, deltac)
             retdex = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (retdex .eq. 0) retdec = 0
     endif

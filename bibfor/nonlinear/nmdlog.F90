@@ -91,7 +91,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !-----------------------------TEST AVANT CALCUL---------------------
 !
 !     TEST SUR LE NOMBRE DE NOEUDS SI TEST NON VERIFIE MESSAGE ERREUR
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
     if (compor(5)(1:7) .eq. 'DEBORST') call u2mess('F', 'ALGORITH7_9')
 !
 ! -----------------------------DECLARATION-----------------------------

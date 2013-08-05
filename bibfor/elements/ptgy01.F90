@@ -78,7 +78,7 @@ subroutine ptgy01(sk, nl, xnu, rho, a,&
     sk(i) = zero
     1 end do
 !
-    call assert(nl.eq.78)
+    ASSERT(nl.eq.78)
 !
 !
     if (abs(xl) .lt. r8prem()) then

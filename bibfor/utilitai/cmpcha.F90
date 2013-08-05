@@ -89,7 +89,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
         call dismoi('F', 'NOM_GD', ch19, 'CARTE', ibid,&
                     nomgd, ibid)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
@@ -106,7 +106,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !           UN DESCRIPTEUR_GRANDEUR (DG) "ENVELOPPE" DE TOUS LES
 !           POINTS DU CHAMP.
 !     ----------------------------------------------------------------
-    call assert(nec.le.50)
+    ASSERT(nec.le.50)
     do 10,k=1,50
     dg(k)=0
     10 end do
@@ -125,7 +125,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
         if (zi(jdesc-1+2) .lt. 0) then
             profcn=' '
             call jelira(ch19//'.DESC', 'LONMAX', long, kbid)
-            call assert(long.eq.(2+nec))
+            ASSERT(long.eq.(2+nec))
             iadg=jdesc-1+3
             do 20,k=1,nec
             dg(k)=zi(iadg-1+k)
@@ -159,8 +159,8 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
             imolo=zi(jceld-1+zi(jceld-1+4+igr)+2)
             if (imolo .eq. 0) goto 70
             call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-            call assert(zi(jmolo-1+1).le.3)
-            call assert(zi(jmolo-1+2).eq.gd)
+            ASSERT(zi(jmolo-1+1).le.3)
+            ASSERT(zi(jmolo-1+2).eq.gd)
             diff=(zi(jmolo-1+4).gt.10000)
             nbpt=mod(zi(jmolo-1+4),10000)
 !
@@ -192,7 +192,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 90      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -222,7 +222,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
         zk8(jnocmp-1+kcmp)=zk8(jcmpgd-1+icmp)
     endif
     110 end do
-    call assert(kcmp.eq.ncmp)
+    ASSERT(kcmp.eq.ncmp)
 !
 !
     call jedema()

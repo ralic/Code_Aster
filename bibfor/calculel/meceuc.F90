@@ -159,7 +159,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
 !
 !     -- 3. LE CHAMP "OUT" EST-IL A SOUS-POINTS ?
 !     -------------------------------------------
-    call assert(nou.eq.1)
+    ASSERT(nou.eq.1)
     call exisd('CHAM_ELEM_S', lchou(1), iexi)
     lsspt=(iexi.ne.0)
 !
@@ -199,7 +199,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
         call exisd('CHAM_ELEM', ch1, iexi1)
         call exisd('CHAM_ELEM', ch2, iexi2)
         if (iexi1 .eq. 0) then
-            call assert(iexi2.eq.0)
+            ASSERT(iexi2.eq.0)
             goto 9998
         endif
     endif
@@ -219,7 +219,7 @@ subroutine meceuc(stop, poux, option, caraez, ligrel,&
         call barych(ch1, ch2, 1.d0, 1.d0, lchou(1),&
                     'G')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

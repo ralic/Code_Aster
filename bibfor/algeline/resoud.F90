@@ -133,7 +133,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     csol19 = chsolu
     crit19 = criter
 !
-    call assert(matr19.ne.' ')
+    ASSERT(matr19.ne.' ')
     call dismoi('F', 'MPI_COMPLET', matr19, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
 !
@@ -143,13 +143,11 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     call jeveuo(solv19//'.SLVR', 'L', jslvr)
     call jeveuo(solv19//'.SLVI', 'L', jslvi)
     metres = zk24(jslvk)
-    call assert(metres.ne.' ')
-    if (kmpic .eq. 'NON') call assert(metres .eq. 'FETI' .or. metres&
-                                      .eq. 'MUMPS' .or. metres .eq.&
-                                      'PETSC')
+    ASSERT(metres.ne.' ')
+    if (kmpic .eq. 'NON') ASSERT(metres .eq. 'FETI' .or. metres.eq. 'MUMPS' .or. metres .eq.'PETSC')
 !
 !     VERIFICATIONS ET INITIALISATIONS
-    call assert((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))
+    ASSERT((istop.eq.0).or.(istop.eq.2).or.(istop.eq.-9999))
     if (istop .eq. -9999) then
         istopz = zi(jslvi-1+8)
     else
@@ -167,7 +165,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
         if (nsecm .ge. 1) call u2mess('F', 'FACTOR_13')
     endif
 !
-    call assert(nsecm.ge.0)
+    ASSERT(nsecm.ge.0)
     call jeveuo(matr19//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
         imd=1
@@ -175,8 +173,8 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
         imd=0
     endif
     if (nsecm .eq. 0) then
-        call assert(secm19.ne.' ')
-        call assert(csol19.ne.' ')
+        ASSERT(secm19.ne.' ')
+        ASSERT(csol19.ne.' ')
         if (csol19 .ne. secm19) then
             call detrsd('CHAMP_GD', csol19)
             call vtdefs(csol19, secm19, base, ' ')
@@ -199,13 +197,13 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
             endif
         endif
     else
-        call assert(secm19.eq.' ')
-        call assert(csol19.eq.' ')
+        ASSERT(secm19.eq.' ')
+        ASSERT(csol19.eq.' ')
     endif
 !
     if ((cine19.ne.' ') .and. (metres.ne.'FETI')) then
         call jelira(cine19//'.VALE', 'TYPE', ibid, typ1)
-        call assert(typ1.eq.type)
+        ASSERT(typ1.eq.type)
     endif
 !
 !
@@ -256,7 +254,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                             cine19, 1, iret, prepos)
             endif
         endif
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
 !
 !
@@ -271,7 +269,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !     ----------------------------------
         niter = zi(jslvi-1+2)
         epsi = zr(jslvr-1+2)
-        call assert(type.eq.'R')
+        ASSERT(type.eq.'R')
         if (nsecm .gt. 0) then
             call resgra(matr19, mpre19, cine19, niter, epsi,&
                         crit19, nsecm, rsolu, solv19, istopz,&
@@ -286,7 +284,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !
     else if (metres.eq.'PETSC') then
 !     ----------------------------------
-        call assert(type.eq.'R')
+        ASSERT(type.eq.'R')
         if (nsecm .gt. 0) then
             call apetsc('RESOUD', solv19, matr19, rsolu, cine19,&
                         nsecm, istopz, iret)

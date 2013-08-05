@@ -69,7 +69,7 @@ function lisexi(prefob, indxch)
         call jeexin(nomobj, iret)
         if (iret .ne. 0) lisexi = .true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

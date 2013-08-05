@@ -137,7 +137,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 fapg, nbpg, crrefe, vol)
-    call assert(nbno.eq.nno)
+    ASSERT(nbno.eq.nno)
 !
 !
 !       2.2.1 DETERMINATION DES COORDONEES DE INO2 DANS L'ELEMENT

@@ -73,7 +73,7 @@ subroutine xthpos(resulz, modele)
 !            DONC DEFINI QUE SUR L'ENSEMBLE DES EF X-FEM
         call alchml(ligrmo, 'TEMP_ELGA', 'PTEMPPG', 'V', celtmp,&
                     iret, ' ')
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
 !       CALCUL DE L'OPTION 'TEMP_ELGA' ET ECRITURE DANS CELTMP
         call xthpoc(modele, chtn, celtmp)
@@ -81,7 +81,7 @@ subroutine xthpos(resulz, modele)
 !       RECUPERATION DU NOM DU CHAMP A ECRIRE : CHTPG
         call rsexch(' ', result, 'TEMP_ELGA', iord, chtpg,&
                     iret)
-        call assert(iret.eq.100)
+        ASSERT(iret.eq.100)
 !       COPIE : CELTMP (BASE 'V') -> CHTPG (BASE 'G')
         call copisd('CHAMP', 'G', celtmp, chtpg)
 !       STOCKAGE DANS LA SD RESULTAT

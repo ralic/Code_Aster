@@ -51,7 +51,7 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
     integer :: ianbno, ityma, nbtyma
 !-----------------------------------------------------------------------
     call jemarq()
-    call assert(nomobz.eq.'&')
+    ASSERT(nomobz.eq.'&')
     repk = ' '
     repi = 0
     ierd = 0

@@ -1,7 +1,6 @@
 subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                   connex, point, noma, typma, lmod,&
                   nbgrn, nogn, nbgrm, nogm, nive)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -450,7 +449,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 87          continue
             nomob =zk24(jnom-1+nbgno+ijk)
             if (nomob(9:24) .ne. ' ') write(6,*) 'DEBUG NOMOB= >',nomob, '<'
-            call assert(nomob(9:24).eq.' ')
+            ASSERT(nomob(9:24).eq.' ')
             if (igm .le. nbgrm) then
                 toto = '&&IRMA.G.'
             else

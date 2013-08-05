@@ -116,7 +116,7 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
     else if (phase.eq.'FIN') then
         write(ifm,301) nbliac
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (llagrf) then
@@ -167,7 +167,7 @@ subroutine cfimp1(phase, noma, defico, resoco, ifm)
         else if (phase.eq.'FIN') then
             jeu = zr(jjeuit+3*(iliai-1)+1-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- ACTIF OU NON ?

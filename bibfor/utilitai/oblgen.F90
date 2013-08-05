@@ -43,7 +43,7 @@ subroutine oblgen(subccn, idnvaz, nomstr)
     integer :: long
 !
     long = lxlgut(idnvaz)
-    call assert(long.le.15)
+    ASSERT(long.le.15)
     nomstr = '&&'//subccn//'.'//idnvaz(1:15)
 !
 end subroutine

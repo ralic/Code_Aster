@@ -69,7 +69,7 @@ subroutine nmcha0(tychap, tyvarz, novarz, vachap)
     else
         call nmchai(tychap, tyvari, index)
         if ((index.le.0) .or. (index.gt.nbvar)) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             vachap(index) = novari
         endif

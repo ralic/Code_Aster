@@ -51,7 +51,7 @@ subroutine nmdcin(sddisc, numins)
 !
 ! --- ON DOIT ETRE NON REDECOUPE
 !
-    call assert((niveam-niveap).le.1)
+    ASSERT((niveam-niveap).le.1)
 !
 99  continue
 !

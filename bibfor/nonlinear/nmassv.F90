@@ -304,7 +304,7 @@ subroutine nmassv(typvez, modelz, lischa, mate, carele,&
         call cufoco(numedd, resocu, vecass)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DEBUG

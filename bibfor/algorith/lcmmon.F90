@@ -104,7 +104,7 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
 !
     if (coeft(nbcomm(1,1)) .ge. 4) then
 !         KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
-        call assert(nbcomm(nmat, 2).eq.1)
+        ASSERT(nbcomm(nmat, 2).eq.1)
         do 102 i = 1, nbsyst
             yd(6+i)=vini(6+3*(i-1)+1)
 102      continue

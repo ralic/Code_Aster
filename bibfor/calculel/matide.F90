@@ -78,29 +78,29 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
     call jelira(nonu//'.NUME.DELG', 'LONMAX', n1, kbid)
-    call assert(n1.eq.nsmdi)
+    ASSERT(n1.eq.nsmdi)
 !     --- CALCUL DE N
     n=nsmdi
 !     --- CALCUL DE NZ
     nz=zi(jsmdi-1+n)
 !
-    call assert(nz.le.nsmhc)
+    ASSERT(nz.le.nsmhc)
     call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
     if (nvale .eq. 1) then
         lsym=.true.
     else if (nvale.eq.2) then
         lsym=.false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvale)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
-    call assert(nlong.eq.nz)
+    ASSERT(nlong.eq.nz)
     if (.not.lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jval2)
         call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
-        call assert(nlong.eq.nz)
+        ASSERT(nlong.eq.nz)
     endif
 !
     call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, ktyp)
@@ -116,7 +116,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1, kbid)
     nomgd=zk24(jrefn-1+2)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-    call assert(n1.eq.2*n)
+    ASSERT(n1.eq.2*n)
     do 20,k=1,n
     nucmp=zi(jdeeq-1+2*(k-1)+2)
     if (nucmp .gt. 0) then
@@ -168,7 +168,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     else if (tdiag(1:6) .eq. 'IMPOSE') then
         kmax = vdiag
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     do 30,kterm=1,nz

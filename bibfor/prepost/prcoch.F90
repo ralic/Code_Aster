@@ -91,7 +91,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                 k8bid, iret)
     call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbma,&
                 k8bid, iret)
-    call assert(tsca.eq.'R'.or.tsca.eq.'C'.or.tsca.eq.'I')
+    ASSERT(tsca.eq.'R'.or.tsca.eq.'C'.or.tsca.eq.'I')
 !
 !
 !
@@ -401,7 +401,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
 200      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

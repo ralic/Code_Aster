@@ -90,9 +90,9 @@ subroutine op0166()
     if (n2 .eq. 0) corru=' '
     if (projon .eq. 'NON') then
         typcal='1'
-        call assert(n2.eq.0)
+        ASSERT(n2.eq.0)
     else
-        call assert(projon.eq.'OUI')
+        ASSERT(projon.eq.'OUI')
         if (corru .ne. ' ') then
             typcal='2'
         else
@@ -131,7 +131,7 @@ subroutine op0166()
             norein = cham1(1:8)
             call dismoi('F', 'NOM_MAILLA', cham1, 'CHAMP', ibid,&
                         nomare, ibid)
-            call assert(n3.eq.1)
+            ASSERT(n3.eq.1)
             resuin=' '
         endif
     else
@@ -171,7 +171,7 @@ subroutine op0166()
             nomo1=' '
             call getvid(' ', 'MAILLAGE_1', 1, iarg, 1,&
                         noma1, n2)
-            call assert(n2.eq.1)
+            ASSERT(n2.eq.1)
             moa1=noma1
         endif
 !
@@ -185,7 +185,7 @@ subroutine op0166()
             nomo2=' '
             call getvid(' ', 'MAILLAGE_2', 1, iarg, 1,&
                         noma2, n2)
-            call assert(n2.eq.1)
+            ASSERT(n2.eq.1)
             moa2=noma2
         endif
 !
@@ -222,7 +222,7 @@ subroutine op0166()
 !       RECUPERATION DU CARA_ELEM
         call getvid(' ', 'CARA_ELEM', 1, iarg, 1,&
                     noca, n1)
-        call assert(n1.ne.0)
+        ASSERT(n1.ne.0)
 !       LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
         call getvid(' ', 'MODELE_2', 1, iarg, 1,&
                     nomo2, n1)
@@ -309,7 +309,7 @@ subroutine op0166()
             tychv = ' '
             call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
                         'NON', ' ', 'G', iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
 !
         else
 !
@@ -349,7 +349,7 @@ subroutine op0166()
                     tychv = ' '
                     call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
                                 'NON', ' ', 'G', iret)
-                    call assert(iret.eq.0)
+                    ASSERT(iret.eq.0)
                 endif
             else if (lelno) then
 !       ------ CAS OU IL Y A UN CHAM_ELEM (ELNO)
@@ -375,7 +375,7 @@ subroutine op0166()
                     tychv = ' '
                     call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
                                 prol0, ligre2, 'G', iret)
-                    call assert(iret.eq.0)
+                    ASSERT(iret.eq.0)
                 endif
             else if (lelem) then
 !       ------ CAS OU IL Y A UN CHAM_ELEM (ELEM)
@@ -396,7 +396,7 @@ subroutine op0166()
                 tychv = ' '
                 call pjxxch(lcorre(1), cham1, resuou, tychv, ' ',&
                             prol0, ligre2, 'G', iret)
-                call assert(iret.eq.0)
+                ASSERT(iret.eq.0)
 !
             else if (lelga) then
 !       ------ CAS OU IL Y A UN CHAM_ELEM (ELGA)
@@ -423,7 +423,7 @@ subroutine op0166()
 !
                 call pjelga(nomo2, cham1, ligre1, prol0, lcorre(2),&
                             resuou, ligre2, iret)
-                call assert(iret.eq.0)
+                ASSERT(iret.eq.0)
 !
             endif
 !

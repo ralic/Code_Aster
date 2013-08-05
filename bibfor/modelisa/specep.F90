@@ -231,7 +231,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                             c16b, k8b, k8b, r8b, 'FONCTION_C',&
                             k8b, ibid, r8b, c16b, nomfon,&
                             iret)
-                call assert(iret.eq.0)
+                ASSERT(iret.eq.0)
                 k8b = ' '
                 do 22 il = 1, nbpf
                     ptf = zr(lwr+il-1)

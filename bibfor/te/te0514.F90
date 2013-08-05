@@ -78,7 +78,7 @@ subroutine te0514(option, nomte)
 !     ALLOUE DE FACON STATIQUE POUR OPTIMISER LE CPU (CAR LES APPELS A
 !     WKVECT DANS LES TE SONT COUTEUX).
 !
-    call assert(option.eq.'TOPOSE')
+    ASSERT(option.eq.'TOPOSE')
 !
     call jemarq()
 !
@@ -160,7 +160,7 @@ subroutine te0514(option, nomte)
     call xdivte(ndim, elp, zi(jout2), nit, nnose)
     cpt = nit
 !     PROBLEME DE DIMENSSIONNEMENT DANS LES CATALOGUES
-    call assert(ncompc.ge.nnose*ncomph)
+    ASSERT(ncompc.ge.nnose*ncomph)
 !
     vali(1)=nfimax
     vali(2)=nfiss
@@ -238,7 +238,7 @@ subroutine te0514(option, nomte)
                     npi=npi+1
                     ni =npi
 !             NOMBRE TOTAL DE PT D'INTER LIMITE A LA TAILLE DE LA CARTE
-                    call assert(npi.le.ncompp)
+                    ASSERT(npi.le.ncompp)
 !             ARCHIVAGE DE PINTTO
                     do 230 j = 1, ndim
                         zr(jout1-1+ndim*(npi-1)+j)=newpt(j)
@@ -280,7 +280,7 @@ subroutine te0514(option, nomte)
                     if (.not.deja) then
                         npm=npm+1
 !               NOMBRE TOTAL DE POINTS MILIEUX LIMITE A PMMAX
-                        call assert(npm.le.pmmax)
+                        ASSERT(npm.le.pmmax)
 !               ARCHIVAGE DE PMILTO
                         do 330 j = 1, ndim
                             zr(jout5-1+ndim*(npm-1)+j)=pmilie(ndim*(&
@@ -313,7 +313,7 @@ subroutine te0514(option, nomte)
                     ise2=cpt
                 endif
 !         NOMBRE TOTAL DE SOUS-ELEMENTS LIMITE A LA TAILLE DE LA CARTE
-                call assert(cpt.le.ncomph)
+                ASSERT(cpt.le.ncomph)
 !           ARCHIVAGE DE PHEAVTO
                 do 125 i = 1, ifiss
                     zi(jout3-1+ncomph*(i-1)+ise2)= nint(heav(ifiss*(&
@@ -343,13 +343,13 @@ subroutine te0514(option, nomte)
 !     NCOMB COMBINAISONS POSSIBLES
     ncomb = 2**nfiss
 !     ON VA JUSQU'A NCOMPP, NOMBRE MAX DE POINTS D'INTERSECTION
-    call assert(ncompp.le.ninmax)
+    ASSERT(ncompp.le.ninmax)
     do 776 i = 1, ninmax*(2**nfimax)
         ndoub2(i)=0
 776  end do
 !     POUR COMPTER LES PT D'INTER EN DOUBLE (EN POST-TRAITEMENT)
 !     ON VA JUSQU'A NNO+1 POUR PRENDRE EN COMPTE LE 9EME NOEUD DU QUAD8
-    call assert((nno+1).le.ninmax)
+    ASSERT((nno+1).le.ninmax)
     do 777 i = 1, ninmax*(2**nfimax)
         ndoubl(i)=0
 777  end do

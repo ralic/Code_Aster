@@ -391,7 +391,7 @@ subroutine te0409(option, nomte)
 90      continue
     else
 !       OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then

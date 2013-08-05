@@ -32,7 +32,6 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -640,7 +639,7 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
                 call jerazo(k24cf1, nbsd, 1)
             else
 ! INCOHERENCE QUE POUR LE SEQUENTIEL, CF BOUCLE 150 CI-DESSOUS
-                call assert(nbproc.ne.1)
+                ASSERT(nbproc.ne.1)
                 call jeveuo(k24cf1, 'E', ifel1)
             endif
             zk24(ifel1+numsd-1)=k24cf1(1:19)

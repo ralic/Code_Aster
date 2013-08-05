@@ -346,7 +346,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
         if (zl(jnofla-1+i)) then
             j=j+1
-            call assert(j.le.nunopr)
+            ASSERT(j.le.nunopr)
             zi(jnto-1+j) = i
         endif
 !

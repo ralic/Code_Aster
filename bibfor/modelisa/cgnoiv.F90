@@ -70,7 +70,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
                 nocmp, n1)
     call getvr8(motfac, 'VALE', iocc, iarg, 2,&
                 valr(1), n1)
-    call assert(n1.eq.2)
+    ASSERT(n1.eq.2)
     vmin=valr(1)
     vmax=valr(2)
     if (vmin .gt. vmax) goto 30
@@ -98,7 +98,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     nomgd=zk8(jcn2k-1+2)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert(tsca.eq.'R'.or.tsca.eq.'I')
+    ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
 !
     call wkvect('&&CGNOIV.LISNO', 'V V I', nbnot, jtrav)
     do 10,ino=1,nbnot

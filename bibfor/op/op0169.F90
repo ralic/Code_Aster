@@ -62,7 +62,7 @@ subroutine op0169()
 !
 ! --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL
     prol = nomfon//'.PROL'
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(prol, 'G V K24', 6, lprol)
     zk24(lprol) = 'CONSTANT'
     zk24(lprol+1) = 'LIN LIN '

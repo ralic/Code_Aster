@@ -101,30 +101,30 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !
     call jemarq()
 !
-    call assert(elim.eq.'ELIM=' .or. elim.eq.'ELIM1')
+    ASSERT(elim.eq.'ELIM=' .or. elim.eq.'ELIM1')
 !
     matres = matrez
     mat1=limat(1)
-    call assert(nbcomb.ge.1)
+    ASSERT(nbcomb.ge.1)
     call jelira(matres//'.REFA', 'CLAS', ibid, base)
     call jelira(matres//'.VALM', 'TYPE', ibid, typres)
     call jelira(matres//'.VALM', 'NMAXOC', nbloc, kbid)
     call jelira(matres//'.VALM', 'LONMAX', lgbloc, kbid)
-    call assert(nbloc.eq.1.or.nbloc.eq.2)
+    ASSERT(nbloc.eq.1.or.nbloc.eq.2)
     call jeveuo(matres//'.REFA', 'E', jrefar)
-    call assert(zk24(jrefar-1+9) (1:1).eq.'M')
+    ASSERT(zk24(jrefar-1+9) (1:1).eq.'M')
     symr = zk24(jrefar-1+9) .eq. 'MS'
     if (symr) then
-        call assert(nbloc.eq.1)
+        ASSERT(nbloc.eq.1)
     else
-        call assert(nbloc.eq.2)
+        ASSERT(nbloc.eq.2)
     endif
 !
-    call assert(ddlexc.eq.' '.or.ddlexc.eq.'LAGR')
+    ASSERT(ddlexc.eq.' '.or.ddlexc.eq.'LAGR')
     call wkvect('&&MTCMBL.LISPOINT', 'V V I', nbcomb, idlima)
     reutil=.false.
     do 10 i = 1, nbcomb
-        call assert(typcst(i).eq.'R'.or.typcst(i).eq.'C')
+        ASSERT(typcst(i).eq.'R'.or.typcst(i).eq.'C')
         mati=limat(i)
         call jeveuo(mati//'.REFA', 'L', jrefai)
         if (zk24(jrefai-1+3) .eq. 'ELIMF') call mtmchc(mati, 'ELIML')
@@ -135,10 +135,10 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         call jeveuo(mati//'.REFA', 'L', jrefai)
         symi = zk24(jrefai-1+9) .eq. 'MS'
         if (symi) then
-            call assert(nbloc.eq.1)
+            ASSERT(nbloc.eq.1)
         else
-            call assert(nbloc.eq.2)
-            call assert(.not.symr)
+            ASSERT(nbloc.eq.2)
+            ASSERT(.not.symr)
         endif
 !        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         if (mati .eq. matres) reutil=.true.
@@ -188,9 +188,9 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !       COMBINER SOIT DU MEME TYPE (SOIT TOUTES DISTRIBUEES,
 !       SOIT TOUTES COMPLETES MAIS SURTOUT PAS DE MELANGE !)
         if (kmatd .eq. 'OUI') then
-            if (.not.matd) call assert(.false.)
+            if (.not.matd) ASSERT(.false.)
         else
-            if (matd) call assert(.false.)
+            if (matd) ASSERT(.false.)
         endif
 19  end do
 !

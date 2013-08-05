@@ -1,6 +1,5 @@
 subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
                   poipg)
-! aslint: disable=W1501
     implicit  none
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -78,13 +77,13 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         call u2mesk('F', 'ELEMENTS4_84', 2, valk)
     endif
     nbpg = nbpg1(ifam)
-    call assert((ndim.ge.0).and.(ndim.le.3))
+    ASSERT((ndim.ge.0).and.(ndim.le.3))
 !
 !
 !     -- TRAITEMENT GENERIQUE DE FAPG='NOEU' :
 !     -----------------------------------------
     if (fapg .eq. 'NOEU') then
-        call assert(nbpg.eq.nno)
+        ASSERT(nbpg.eq.nno)
         do 10,ino = 1,nno
         hpg(ino) = vol/nno
         if (ndim .ge. 1) xpg(ino) = xno(ndim* (ino-1)+1)
@@ -98,7 +97,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 !     -- TRAITEMENT GENERIQUE DE FAPG='NOEU_S' :
 !     -----------------------------------------
     if (fapg .eq. 'NOEU_S') then
-        call assert(nbpg.eq.nnos)
+        ASSERT(nbpg.eq.nnos)
         do 20,ino = 1,nnos
         hpg(ino) = vol/nnos
 !         -- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS
@@ -114,7 +113,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 !     -- TRAITEMENT GENERIQUE DE FAPG='FPG1' :
 !     -----------------------------------------
     if (fapg .eq. 'FPG1') then
-        call assert(nbpg.eq.1)
+        ASSERT(nbpg.eq.1)
         xpg(1) = 0.d0
         if (ndim .ge. 1) xpg(1) = 0.d0
         if (ndim .ge. 2) ypg(1) = 0.d0

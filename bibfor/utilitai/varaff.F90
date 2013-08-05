@@ -58,7 +58,7 @@ subroutine varaff(noma, gran, base, ceselz)
     call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmato,&
                 kbid, ibid)
 !
-    call assert(gran.eq.'VARI_R')
+    ASSERT(gran.eq.'VARI_R')
     call wkvect('&&VARAFF.LNOVX', 'V V K8', nvarmx, jlnovx)
     call wkvect('&&VARAFF.LVAVX', 'V V R', nvarmx, jlvavx)
 !
@@ -78,14 +78,14 @@ subroutine varaff(noma, gran, base, ceselz)
     do 29 iocc = 1, nocc
         call getvtx(motclf, 'NOM_CMP', iocc, iarg, nvarmx,&
                     zk8(jlnovx), n1)
-        call assert(n1.gt.0)
+        ASSERT(n1.gt.0)
         do 28, k=1,n1
-        call assert(zk8(jlnovx-1+k)(1:1).eq.'V')
+        ASSERT(zk8(jlnovx-1+k)(1:1).eq.'V')
         read (zk8(jlnovx-1+k)(2:8),'(I7)') nuva
         nuvamx=max(nuvamx,nuva)
 28      continue
 29  end do
-    call assert(nuvamx.gt.0)
+    ASSERT(nuvamx.gt.0)
 !
 !
 !     1- ALLOCATION DE CESELM
@@ -120,7 +120,7 @@ subroutine varaff(noma, gran, base, ceselz)
                     zk8(jlnovx), n1)
         call getvr8(motclf, 'VALE', iocc, iarg, nvarmx,&
                     zr(jlvavx), n2)
-        call assert(n1.eq.n2)
+        ASSERT(n1.eq.n2)
 !
 !
 !
@@ -133,24 +133,24 @@ subroutine varaff(noma, gran, base, ceselz)
             ltou=.false.
             call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcls, typmcl, mesmai, nbmail)
-            call assert(nbmail.gt.0)
+            ASSERT(nbmail.gt.0)
             call jeveuo(mesmai, 'L', jmesma)
         endif
 !
         do 31, kvari=1,n1
         read (zk8(jlnovx-1+kvari)(2:8),'(I7)') nuva
-        call assert(nuva.gt.0.and.nuva.le.nuvamx)
+        ASSERT(nuva.gt.0.and.nuva.le.nuvamx)
         do 32, k=1,nbmail
         if (ltou) then
             numa=k
         else
             numa=zi(jmesma-1+k)
         endif
-        call assert(numa.gt.0.and.numa.le.nbmato)
+        ASSERT(numa.gt.0.and.numa.le.nbmato)
 !
         call cesexi('C', jcesd, jcesl, numa, 1,&
                     1, nuva, iad)
-        call assert(iad.lt.0)
+        ASSERT(iad.lt.0)
 !
 !           -- RECOPIE DE LA VALEUR:
         zl(jcesl-1-iad) = .true.

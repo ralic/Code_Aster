@@ -137,7 +137,7 @@ subroutine pipepe(pilo, ndim, nno, npg, ipoids,&
                         epsp, epsd, sigma, etamin, etamax,&
                         tau, copilo)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 10  end do

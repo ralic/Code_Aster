@@ -289,7 +289,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
         if (zi(ianbco-1+k) .lt. zi(ianbco-1+i)) i=k
     endif
     51 end do
-    call assert(i.ne.0)
+    ASSERT(i.ne.0)
 !
     iinew=iinew+1
     zi(ianew1-1+i)=iinew

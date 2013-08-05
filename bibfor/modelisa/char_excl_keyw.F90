@@ -81,7 +81,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
     elseif (keywordfact.eq.'PRES_IMPO') then
 ! ----- Nothing else components
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (n_keyexcl.eq.0) goto 99
@@ -125,7 +125,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
     elseif (keywordfact.eq.'PRES_IMPO') then
 ! ----- Nothing else components
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 99  continue

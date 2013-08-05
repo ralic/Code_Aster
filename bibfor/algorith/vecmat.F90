@@ -145,7 +145,7 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 !
     nbmat=zi(jmat)
 !     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
-    call assert(nbmat.eq.1)
+    ASSERT(nbmat.eq.1)
 !
     do 9 j = 1, 2
         do 9 i = 1, nmat

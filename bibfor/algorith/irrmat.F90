@@ -115,7 +115,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat,&
 !
 !
 ! -   PROTECTION SUR LA DIMENSION DES TABLEAUX : MATERD MATERF
-    call assert(nmat.ge.30)
+    ASSERT(nmat.ge.30)
 !
 ! -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
     call irrnvi(model, ndt, ndi, nr, nvi)

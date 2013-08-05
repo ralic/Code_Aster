@@ -147,7 +147,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
             nbpg=zi(idpg-1+5+4*(jma-1)+1)
             nbsp=zi(idpg-1+5+4*(jma-1)+2)
             posma=zi(idpg-1+5+4*(jma-1)+4)
-            call assert(nbsp.eq.1)
+            ASSERT(nbsp.eq.1)
             do 5 jpg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS JPG X2,Y2,Z2
                 valpar(4)=zr(ivpg+posma+4*(jpg-1))

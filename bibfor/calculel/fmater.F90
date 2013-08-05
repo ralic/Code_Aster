@@ -33,7 +33,7 @@ subroutine fmater(nbfmax, nftab, tab)
     common /caii17/nfpg,jfpgl,decala,km,kp,kr,iredec
 ! ----------------------------------------------------------------------
 !
-    call assert(nbfmax .ge. nfpg)
+    ASSERT(nbfmax .ge. nfpg)
     nftab=nfpg
     do 10, i=1, nfpg
     tab(i)=zk8(jfpgl+i-1)

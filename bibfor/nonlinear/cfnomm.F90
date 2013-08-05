@@ -77,7 +77,7 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
         call cfnumn(defico, 1, posnoe, numnoe)
         call jenuno(jexnum(noma//'.NOMNOE', numnoe), noment)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

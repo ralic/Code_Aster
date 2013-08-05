@@ -63,7 +63,7 @@ function isdiri(lischa, soutyp)
     else if (soutyp.eq.'DUAL') then
         isdiri = ldual
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

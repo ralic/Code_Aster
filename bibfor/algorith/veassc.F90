@@ -93,7 +93,7 @@ subroutine veassc(lischa, vecele)
 ! ------- NOM DU CHAMP
 !
             call exisd('CHAMP_GD', chamno, iexis)
-            call assert(iexis.gt.0)
+            ASSERT(iexis.gt.0)
 !
 ! ------- ON RECOPIE SIMPLEMENT LE CHAMP DANS VECT_ELEM
 !

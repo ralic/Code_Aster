@@ -125,19 +125,19 @@ subroutine nmxvec(modelz, mate, carele, compor, carcri,&
 ! --- UTILISER NMFINT
 !
         if (typvec .eq. 'CNFINT') then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- UTILISER NMDIRI
 !
         if (typvec .eq. 'CNDIRI') then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- UTILISER NMBUDI
 !
         if (typvec .eq. 'CNBUDI') then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- CALCULER VECT_ELEM

@@ -42,7 +42,7 @@ function xpheop(modele)
     else if (pheno.eq.'THERMIQUE') then
         xpheop = 'RIGI_THER'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

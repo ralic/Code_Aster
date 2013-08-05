@@ -76,7 +76,7 @@ subroutine diatri(n, d, e, vector, evec,&
         if (iter .eq. 30*n) then
 !C            WRITE(6,*)  'THE ITERATION FOR THE EIGENVALUES DID '//
 !C     &                  'NOT CONVERGE.'
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         iter = iter + 1
 !       --- VALEUR DE SHIFT ---

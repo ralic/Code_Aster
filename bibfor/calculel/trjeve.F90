@@ -70,7 +70,7 @@ subroutine trjeve(ific, nocc)
             if (lref) then
                 call getvis('OBJET', 'VALE_REFE_I', iocc, iarg, 1,&
                             refir, n2r)
-                call assert(n2.eq.n2r)
+                ASSERT(n2.eq.n2r)
                 call utesto(nomobj, 'I', tbref, refir, refrr,&
                             epsir, crit, ific, .false., ssigne)
             endif
@@ -84,7 +84,7 @@ subroutine trjeve(ific, nocc)
             if (lref) then
                 call getvr8('OBJET', 'VALE_REFE', iocc, iarg, 1,&
                             refrr, n2r)
-                call assert(n2.eq.n2r)
+                ASSERT(n2.eq.n2r)
                 call utesto(nomobj, 'R', tbref, refir, refrr,&
                             epsir, crit, ific, .false., ssigne)
             endif

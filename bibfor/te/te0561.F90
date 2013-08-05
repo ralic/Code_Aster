@@ -67,7 +67,7 @@ subroutine te0561(option, nomte)
         typmod(1) = '3D      '
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(nomte(1:4).eq.'MNVG')
+        ASSERT(nomte(1:4).eq.'MNVG')
     endif
 !
     typmod(2) = 'GDVARINO'

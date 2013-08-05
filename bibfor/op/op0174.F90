@@ -85,7 +85,7 @@ subroutine op0174()
 !    NOMBRE DE PARAMETRES
     call getvtx(' ', 'NOM_PARA', 0, iarg, 0,&
                 k16b, nbpara)
-    call assert(nbpara.ne.0)
+    ASSERT(nbpara.ne.0)
     nbpara = -nbpara
 !
 !

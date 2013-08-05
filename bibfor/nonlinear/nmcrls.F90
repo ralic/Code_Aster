@@ -76,7 +76,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 ! --- NOMBRE FINAL D'INSTANTS
 !
     nbtemp = (numfin-numini) + 1
-    call assert(nbtemp.le.nbinst)
+    ASSERT(nbtemp.le.nbinst)
 !
 ! --- NOMS SD_DISC
 !

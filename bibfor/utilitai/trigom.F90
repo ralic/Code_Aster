@@ -42,7 +42,7 @@ function trigom(fonc, x)
     if (x .gt. 1.d0) x2 = 1.d0
     if (x .lt. -1.d0) x2 = -1.d0
 !
-    call assert(fonc.eq.'ASIN' .or. fonc.eq.'ACOS')
+    ASSERT(fonc.eq.'ASIN' .or. fonc.eq.'ACOS')
     if (fonc .eq. 'ASIN') then
         trigom = asin(x2)
     else

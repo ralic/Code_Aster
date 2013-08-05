@@ -186,7 +186,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !         MODIFICATION EN TENANT COMPTE DE LA LEVEL SET JONCTION
             if (nfisc .gt. 0) then
 !           POUR LES FISSURES SUR LESQUELLES IFISS SE BRANCHE
-                call assert(na.gt.0.and.nb.gt.0.and.nc.gt.0)
+                ASSERT(na.gt.0.and.nb.gt.0.and.nc.gt.0)
                 do 130 j = 1, nfisc
                     lsja(j)=lsn((na-1)*nfiss+fisco(2*j-1))*fisco(2*j)
                     lsjb(j)=lsn((nb-1)*nfiss+fisco(2*j-1))*fisco(2*j)
@@ -347,7 +347,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
 !       NORMALEMENT, ON A DEJE FAIT LA VERIF DANS XAJPIN
 !       CEINTURE ET BRETELLE
-        call assert(ninter.le.7)
+        ASSERT(ninter.le.7)
 !
         if (ninter .eq. 7) then
             nface=5
@@ -464,7 +464,7 @@ subroutine xcface(elref, lsn, lst, jgrlsn, igeom,&
 !
     else
 !       PROBLEME DE DIMENSION : NI 2D, NI 3D
-        call assert(ndim.eq.2 .or. ndim.eq.3)
+        ASSERT(ndim.eq.2 .or. ndim.eq.3)
     endif
     if (nfiss .gt. 1 .and. minlsn .eq. 0) nface = 0
     if (nface .eq. 0) ninter = 0

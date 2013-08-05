@@ -78,9 +78,9 @@ subroutine mmnewd(alias, nno, ndim, coorma, coorpt,&
 !
 ! --- VERIF CARACTERISTIQUES DE LA MAILLE
 !
-    if (nno .gt. 9) call assert(.false.)
-    if (ndim .gt. 3) call assert(.false.)
-    if (ndim .le. 1) call assert(.false.)
+    if (nno .gt. 9) ASSERT(.false.)
+    if (ndim .gt. 3) ASSERT(.false.)
+    if (ndim .le. 1) ASSERT(.false.)
 !
 ! --- POINT DE DEPART
 !
@@ -153,7 +153,7 @@ subroutine mmnewd(alias, nno, ndim, coorma, coorpt,&
             matri3(idim,3)= dir(idim)
 21      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RESOLUTION K.dU=RESIDU
@@ -173,7 +173,7 @@ subroutine mmnewd(alias, nno, ndim, coorma, coorpt,&
             goto 999
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ACTUALISATION
@@ -187,7 +187,7 @@ subroutine mmnewd(alias, nno, ndim, coorma, coorpt,&
         ksi2 = ksi2 + dksi(2)
         alpha = alpha + dksi(3)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     iter = iter + 1
 !

@@ -90,8 +90,8 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
     character(len=19) :: noch19, ligrel, chamns, chnova, chmano, chcorr, chabis
     character(len=19) :: chater, noetcm
     parameter ( chamns = '&&IRVARI.CH_EL_S_TM' )
-    parameter ( chnova = '&&IRVARI.CH_NOM_VARI' )
-    parameter ( chmano = '&&IRVARI.CH_TOT_NOM_VARI' )
+    parameter ( chnova = '&&IRVARI.CH_NOM_VAR' )
+    parameter ( chmano = '&&IRVARI.CH_TOT_NOM' )
     parameter ( chabis = '&&IRVARI.CH_EL_S_BI' )
     parameter ( chater = '&&IRVARI.CH_EL_S_TE' )
     character(len=64) :: nomres
@@ -248,7 +248,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
         icmp2=zi(jcorva+icmp-1)
         call cesexi('C', jcesdb, jceslb, ima2, ipt,&
                     isp, icmp2, iad2)
-        call assert(iad2.lt.0)
+        ASSERT(iad2.lt.0)
         zr(jcesvb-1-iad2)=zr(jcesv-1+iad)
         zl(jceslb-1-iad2)=.true.
     endif

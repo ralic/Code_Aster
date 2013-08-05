@@ -125,7 +125,7 @@ subroutine cftabl(indic, nbliac, ajliai, spliai, llf,&
             do 111 ii = 1, nbliac + llf +llf1 + llf2 - 1
                 if (zi(jliac-1+ii) .eq. iliai) goto 112
 111          continue
-            call assert(.false.)
+            ASSERT(.false.)
 112          continue
         else if (typlia.eq.typef1) then
 ! ======================================================================

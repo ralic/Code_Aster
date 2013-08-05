@@ -130,8 +130,8 @@ subroutine mmcyc3(resoco, iptc, nompt, indco, indfr,&
 !
 ! --- MISE A JOUR
 !
-    call assert(indfr.eq.1)
-    call assert(ccycle.eq.0)
+    ASSERT(indfr.eq.1)
+    ASSERT(ccycle.eq.0)
 !
 ! --- DETECTION D'UN CYCLE
 !

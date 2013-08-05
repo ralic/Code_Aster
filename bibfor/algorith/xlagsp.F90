@@ -166,7 +166,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     mxar = nbno
 !
     nbarto = 0
-    call assert(nbcmp.eq.zxbas)
+    ASSERT(nbcmp.eq.zxbas)
     tabno = '&&XLAGSP.TABNO'
     tabint = '&&XLAGSP.TABINT'
     tabcri = '&&XLAGSP.TABCRI'
@@ -249,7 +249,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
             call cesexi('S', jcesd3, jcesl3, ima, 1,&
                         ifiss, zxain*(pint-1)+ 1, iad3)
-            call assert(iad3.gt.0)
+            ASSERT(iad3.gt.0)
             ia=nint(zr(jcesv3-1+iad3))
 ! - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
             if (getexm('PILOTAGE','DIRE_PILO') .eq. 1) then
@@ -293,14 +293,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- NOUVELLE ARETE
 !
             nbarto = nbarto+1
-            call assert(nbarto.lt.mxar)
+            ASSERT(nbarto.lt.mxar)
             zi(jtabno-1+3*(nbarto-1)+1) = nunoa
             zi(jtabno-1+3*(nbarto-1)+2) = nunob
             zi(jtabno-1+3*(nbarto-1)+3) = nunom
             do 130 i = 1, ndim
                 call cesexi('S', jcesd4, jcesl4, ima, 1,&
                             ifiss, ndim*(pint- 1)+i, iad4)
-                call assert(iad4.gt.0)
+                ASSERT(iad4.gt.0)
                 c(i) = zr(jcesv4-1+iad4)
                 zr(jtabin-1+ndim*(nbarto-1)+i) = c(i)
 130          continue

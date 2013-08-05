@@ -76,7 +76,7 @@ subroutine te0050(option, nomte)
         call tecach('ONN', 'PMATUUC', 'E', 5, idresu,&
                     iret)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     nbval= idresu(2)
 !
@@ -88,7 +88,7 @@ subroutine te0050(option, nomte)
                 iret)
     igeom=idgeo(1)
     idimge=idgeo(2)/nno
-    call assert(idimge.eq.2 .or. idimge.eq.3)
+    ASSERT(idimge.eq.2 .or. idimge.eq.3)
     npara=idimge
     do 5, k=1,idimge
     vxyz=0.d0
@@ -104,11 +104,11 @@ subroutine te0050(option, nomte)
     if (ins .eq. 0) then
         call tecach('ONN', 'PRIGIEL', 'L', 2, idrigi,&
                     iret)
-        call assert(idrigi(2).eq.nbval)
+        ASSERT(idrigi(2).eq.nbval)
     else if (irns.eq.0) then
         call tecach('ONN', 'PRIGINS', 'L', 2, idrigi,&
                     iret)
-        call assert(idrigi(2).eq.nbval)
+        ASSERT(idrigi(2).eq.nbval)
     endif
 !
 !
@@ -121,10 +121,10 @@ subroutine te0050(option, nomte)
                     iret)
 !
         if (ins .eq. 0) then
-            call assert(idmass(2).eq.nbval)
+            ASSERT(idmass(2).eq.nbval)
         else if (irns.eq.0) then
             nbddl = int(sqrt(dble(nbval)))
-            call assert(idmass(2).eq. nbddl*(nbddl+1)/2)
+            ASSERT(idmass(2).eq. nbddl*(nbddl+1)/2)
         endif
 !
         nomres(1)='AMOR_ALPHA'
@@ -148,7 +148,7 @@ subroutine te0050(option, nomte)
                         1, nomres, valres, icodre, 0)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- CALCUL PROPREMENT DIT :

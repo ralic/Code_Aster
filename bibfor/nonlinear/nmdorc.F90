@@ -99,7 +99,7 @@ subroutine nmdorc(modelz, compoz, carcri)
         meca=.true.
         criloc=.true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CARTE COMPOR

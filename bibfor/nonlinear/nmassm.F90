@@ -111,7 +111,7 @@ subroutine nmassm(fonact, lischa, solveu, numedd, numfix,&
                     lischa, 'ZERO', 'V', 1, matass)
         call mtdscr(matass)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DEBUG

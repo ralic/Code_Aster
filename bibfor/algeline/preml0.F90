@@ -76,7 +76,7 @@ subroutine preml0(n1, n2, diag, col, delg,&
 20              continue
                 if (deeq(2*nobl) .ne. num) then
                     nobl = nobl + 1
-                    call assert(nobl.le.n1)
+                    ASSERT(nobl.le.n1)
                     goto 20
 !     FIN DO WHILE
                 endif

@@ -150,8 +150,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
     etam = deux*sin(parame(4)*pi)/(trois+sin(parame(4)*pi))
     resi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RAPH_MECA'
     rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    call assert((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA') .or.&
-                (option(1:9).eq.'RAPH_MECA'))
+    ASSERT(resi .or. rigi)
 ! =====================================================================
 ! --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 ! =====================================================================

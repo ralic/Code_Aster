@@ -77,10 +77,10 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 !     ON AUTORISE UNIQUEMENT L'ISOTROPIE
     call jevech('PMATERC', 'L', imate)
     call rccoma(zi(imate), 'ELAS', 1, phenom, iret)
-    call assert(iret.eq.0 .and. phenom.eq.'ELAS')
+    ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
     call tecach('ONO', 'PCAMASS', 'L', 1, ibid,&
                 iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     r8bi7(1) = 1.d0
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO ET NPG
@@ -103,9 +103,9 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
         idecpg = npg * (ise-1)
         idebs = nbsig * idecpg
         if (ndim .eq. 3) then
-            call assert(nbsig.eq.6)
+            ASSERT(nbsig.eq.6)
         else if (ndim.eq.2) then
-            call assert(nbsig.eq.4)
+            ASSERT(nbsig.eq.4)
         endif
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT

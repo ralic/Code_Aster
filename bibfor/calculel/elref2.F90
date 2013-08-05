@@ -44,7 +44,7 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
     integer :: nute, jnbelr, jnoelr, ntrou, iad, k
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', nomte), nute)
-    call assert(nute.gt.0)
+    ASSERT(nute.gt.0)
 !
     call jeveuo('&CATA.TE.NBELREFE', 'L', jnbelr)
     call jeveuo('&CATA.TE.NOELREFE', 'L', jnoelr)
@@ -52,7 +52,7 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
     ntrou = zi(jnbelr-1+2* (nute-1)+1)
     iad = zi(jnbelr-1+2* (nute-1)+2)
 !
-    call assert(ntrou.le.dim)
+    ASSERT(ntrou.le.dim)
 !
     do 10,k = 1,ntrou
     lielrf(k) = zk8(jnoelr-1+iad-1+k)

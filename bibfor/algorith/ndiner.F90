@@ -128,7 +128,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
                     .true.)
         call dscal(neq, coiner, zr(jfoine), 1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- AFFICHAGE

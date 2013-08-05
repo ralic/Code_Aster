@@ -48,7 +48,7 @@ subroutine te0478(option, nomte)
 ! ----------------------------------------------------------------------
     call elref4(' ', 'RIGI', ndim1, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
-    call assert(npg.le.4)
+    ASSERT(npg.le.4)
 !
 !     NDIM1 EST LA DIMENSION TOPOLOGIQUE. IL FAUT CALCULER LA
 !     DIMENSION DE L'ESPACE NDIM (2 OU 3) :
@@ -151,7 +151,7 @@ subroutine te0478(option, nomte)
         elseif((nomte(1:7).eq.'METCSE3').or. (nomte(1:7).eq.'MECXSE3')&
     .or.(nomte(1:7).eq.'METDSE3')) then
 !
-        call assert(ndim.eq.2)
+        ASSERT(ndim.eq.2)
 !
         call jevech('PNBSP_I', 'L', inbf)
         nbcou=zi(inbf)

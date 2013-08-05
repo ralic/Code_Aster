@@ -93,7 +93,7 @@ subroutine rc32th()
     motcl2 = 'RESU_MECA_UNIT'
     call getvid(motcl2, 'TABL_PRES', 1, iarg, 1,&
                 tbpres, n1)
-    call assert(n1.ne.0)
+    ASSERT(n1.ne.0)
 !
     do 10, iocc = 1, nbther, 1
 !

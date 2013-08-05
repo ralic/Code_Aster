@@ -218,7 +218,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call jeveuo(fonct//'.PROL', 'L', lprol)
                 fondep(i+nexcit) = zk24(lprol)(1:8)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         if (n3 .ne. 0) then
@@ -276,7 +276,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call zerlag('R', zr(jpsdel+(i-1)*neq), cbid, neq, zi( iddeeq))
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 10  end do

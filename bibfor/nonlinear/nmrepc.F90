@@ -81,7 +81,7 @@ subroutine nmrepc(sddisc, solveu, ievdac, retrpc)
         retrpc = 1
         call u2mess('I', 'MECANONLINE10_41')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- SAUVEGARDE INFO

@@ -168,7 +168,7 @@ subroutine te0364(option, nomte)
                     lpenaf, phasep)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL FORME FAIBLE FORCE DE CONTACT/FROTTEMENT
@@ -195,7 +195,7 @@ subroutine te0364(option, nomte)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL FORME FAIBLE LOI DE CONTACT/FROTTEMENT
@@ -208,7 +208,7 @@ subroutine te0364(option, nomte)
                     coefaf, coefac, matrcc, matrff, matrce,&
                     matrcm, matrfe, matrfm)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MODIFICATIONS EXCLUSION

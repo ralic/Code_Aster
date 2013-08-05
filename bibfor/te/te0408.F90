@@ -39,7 +39,7 @@ subroutine te0408(option, nomte)
 !
     call teattr(' ', 'S', 'ALIAS8', alias8, ibid)
     grille=lteatt(' ','GRILLE','OUI')
-    call assert(.not.grille)
+    ASSERT(.not.grille)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdx, jgano)
@@ -82,7 +82,7 @@ subroutine te0408(option, nomte)
 !        -------------------------------------------------------
         call tecach('ONN', 'PTEMPEF', 'L', 1, itempf,&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call jevech('PINST_R', 'L', itemps)
         inst=zr(itemps)
         tempno=.false.

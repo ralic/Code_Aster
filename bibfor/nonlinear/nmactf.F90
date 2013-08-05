@@ -86,7 +86,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
         call nmevac(sdimpr, sddisc, sderro, defico, resoco,&
                     solveu, ievdac, numins, iterat, retact)
 ! ----- ON NE PEUT PAS CONTINUER LES ITERATIONS DE NEWTON ICI
-        call assert(retact.ne.2)
+        ASSERT(retact.ne.2)
     else if (etfixe.eq.'CONT') then
         retact = 2
     else if (etfixe.eq.'ERRE') then
@@ -94,7 +94,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
     else if (etfixe.eq.'STOP') then
         retact = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TRAITEMENT DE L'ACTION
@@ -136,7 +136,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
 !
         actfix = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
@@ -150,7 +150,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
     else if (actfix.eq.3) then
         call nmeceb(sderro, 'FIXE', 'STOP')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -54,7 +54,7 @@ subroutine focste(nomfon, nomres, rval, base)
     call jeexin(chpro, iret)
     if (iret .eq. 0) then
 !
-        call assert(lxlgut(nomf).le.24)
+        ASSERT(lxlgut(nomf).le.24)
         call wkvect(chpro, base//' V K24', 6, jpro)
         zk24(jpro) = 'CONSTANT'
         zk24(jpro+1) = 'LIN LIN '

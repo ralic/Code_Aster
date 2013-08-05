@@ -47,12 +47,12 @@ subroutine cgtyfi(typfis, nomfis)
     call getvid('THETA', 'FISSURE', 1, iarg, 1,&
                 nomfis, ifiss)
 !
-    call assert(ithet.eq.0.or.ithet.eq.1)
-    call assert(ifond.eq.0.or.ifond.eq.1)
-    call assert(ifiss.eq.0.or.ifiss.eq.1)
+    ASSERT(ithet.eq.0.or.ithet.eq.1)
+    ASSERT(ifond.eq.0.or.ifond.eq.1)
+    ASSERT(ifiss.eq.0.or.ifiss.eq.1)
 !
 !     NORMALEMENT, CETTE REGLE D'EXCLUSION EST VERIFIEE DANS LE CAPY
-    call assert(ithet+ifond+ifiss.eq.1)
+    ASSERT(ithet+ifond+ifiss.eq.1)
 !
     if (ithet .eq. 1) then
 !

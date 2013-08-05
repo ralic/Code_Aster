@@ -92,7 +92,7 @@ subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
 ! ------- PAS DE CONTACT INITIAL
             zr(jtabf+ztabf*(iptc-1)+22) = 0.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

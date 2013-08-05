@@ -188,7 +188,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 !           SI C'EST LE CAS C'EST LA FONCTION UNITE
             if (fmult(1:2) .eq. '&&') then
 !              NORMALEMENT SEUL NMDOME DOIT CREER CETTE FONCTION
-                call assert(fmult.eq.'&&NMDOME')
+                ASSERT(fmult.eq.'&&NMDOME')
                 coeff = 1.d0
                 call focste(fmult, 'TOUTRESU', coeff, 'V')
             endif

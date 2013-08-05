@@ -193,7 +193,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     epsi = 1.0d-6
 !
     call jelira(nvalch, 'TYPE', ibid, type)
-    call assert((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
+    ASSERT((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
     if (type(1:1) .eq. 'R') then
         call jeveuo(nvalch, 'L', avalch)
     else if (type(1:1) .eq. 'C') then

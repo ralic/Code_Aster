@@ -85,7 +85,7 @@ subroutine rccomp(chmat, nomail, nomode)
         call getvid('AFFE_COMPOR', 'COMPOR', i, iarg, 1,&
                     sdcomp, nm)
         call jeveuo(sdcomp//'.CPRI', 'L', icpri)
-        call assert(zi(icpri).eq.3)
+        ASSERT(zi(icpri).eq.3)
 ! ---ON MET LE NOM DE LA PREMIERE RELATION NON VIDE DANS RELCOM POUR QUE
 !    ALGO1D FONCTIONNE (AVEC UN SEUL GROUPE DE FIBRE)
         call jeveuo(sdcomp//'.CPRK', 'L', icprk)

@@ -196,7 +196,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                             call jeexin(jexnom(obj1, grnoeu), iret)
                             if (iret .eq. 0) then
                                 ier = ier + 1
-                                call assert(iret .ne. 0)
+                                ASSERT(iret .ne. 0)
                             endif
                             call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno, k1b)
                             call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)

@@ -58,7 +58,7 @@ subroutine mrconl(oper, lmat, neq2, typev, rvect,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    call assert(oper.eq.'MULT' .or. oper.eq.'DIVI')
+    ASSERT(oper.eq.'MULT' .or. oper.eq.'DIVI')
     if (typev .eq. ' ') then
         type=ftype(zi(lmat+3))
     else

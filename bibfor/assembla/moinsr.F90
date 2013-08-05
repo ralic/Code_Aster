@@ -69,7 +69,7 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
         zi(idiich-1+j) = iilib
         if ((iilib+n) .ge. iimax) then
             iimax = nint(1.5d0*iimax)
-            call assert((iilib+n).lt.iimax)
+            ASSERT((iilib+n).lt.iimax)
             call juveca(noip, iimax)
             call jeveuo(noip, 'E', idip)
             call juveca(nosuiv, iimax)
@@ -99,7 +99,7 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
             if ((iilib+1) .ge. iimax) then
                 iimax = nint(1.5d0*iimax)
                 call juveca(noip, iimax)
-                call assert((iilib+1).lt.iimax)
+                ASSERT((iilib+1).lt.iimax)
                 call jeveuo(noip, 'E', idip)
                 call juveca(nosuiv, iimax)
                 call jeveuo(nosuiv, 'E', idsuiv)
@@ -161,7 +161,7 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
                     if ((iilib+1) .ge. iimax) then
                         iimax = nint(1.5d0*iimax)
                         call juveca(noip, iimax)
-                        call assert((iilib+1).lt.iimax)
+                        ASSERT((iilib+1).lt.iimax)
                         call jeveuo(noip, 'E', idip)
                         call juveca(nosuiv, iimax)
                         call jeveuo(nosuiv, 'E', idsuiv)
@@ -180,7 +180,7 @@ subroutine moinsr(j, n, idil, idiich, idsuiv,&
                 if ((iilib+1+n-kil) .ge. iimax) then
                     iimax = nint(1.5d0*iimax)
                     call juveca(noip, iimax)
-                    call assert((iilib+1+n-kil).lt.iimax)
+                    ASSERT((iilib+1+n-kil).lt.iimax)
                     call jeveuo(noip, 'E', idip)
                     call juveca(nosuiv, iimax)
                     call jeveuo(nosuiv, 'E', idsuiv)

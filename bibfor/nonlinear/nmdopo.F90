@@ -115,7 +115,7 @@ subroutine nmdopo(sddyna, method, sdpost)
 ! --- PRESENCE DES MOTS-CLEFS - FLAMBEMENT OU STABILITE
 !
     call getfac('CRIT_STAB', iflamb)
-    call assert(iflamb.le.1)
+    ASSERT(iflamb.le.1)
     if (iflamb .ne. 0) then
         call nmecsd('POST_TRAITEMENT', sdpost, 'CRIT_STAB', ibid, r8bid,&
                     k24bid)
@@ -126,7 +126,7 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
     if (ldyna) then
         call getfac('MODE_VIBR', imvibr)
-        call assert(imvibr.le.1)
+        ASSERT(imvibr.le.1)
         if (imvibr .ne. 0) then
             call nmecsd('POST_TRAITEMENT', sdpost, 'MODE_VIBR', ibid, r8bid,&
                         k24bid)
@@ -144,7 +144,7 @@ subroutine nmdopo(sddyna, method, sdpost)
         else if (limpl) then
             option = 'FLAMBDYN'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call nmecsd('POST_TRAITEMENT', sdpost, 'OPTION_CALCUL_FLAMB', ibid, r8bid,&
                     option)
@@ -152,11 +152,11 @@ subroutine nmdopo(sddyna, method, sdpost)
 !
     if (lmvib) then
         if (lstat) then
-            call assert(.false.)
+            ASSERT(.false.)
         else if (limpl) then
             option = 'VIBRDYNA'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call nmecsd('POST_TRAITEMENT', sdpost, 'OPTION_CALCUL_VIBR', ibid, r8bid,&
                     option)
@@ -260,7 +260,7 @@ subroutine nmdopo(sddyna, method, sdpost)
         else if (ngeo.eq.'OUI') then
             optrig = 'RIGI_GEOM_OUI'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call nmecsd('POST_TRAITEMENT', sdpost, 'RIGI_GEOM_FLAMB', ibid, r8bid,&
                     optrig)
@@ -281,7 +281,7 @@ subroutine nmdopo(sddyna, method, sdpost)
                 call nmecsd('POST_TRAITEMENT', sdpost, 'NOM_DDL_EXCLUS', ibid, r8bid,&
                             ddlexc)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -301,7 +301,7 @@ subroutine nmdopo(sddyna, method, sdpost)
                 call nmecsd('POST_TRAITEMENT', sdpost, 'NOM_DDL_STAB', ibid, r8bid,&
                             dlstab)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         call getvtx(motfac, 'MODI_RIGI', iocc, iarg, 1,&
@@ -311,7 +311,7 @@ subroutine nmdopo(sddyna, method, sdpost)
         else if (modrig(1:3).eq.'NON') then
             opmrig = 'MODI_RIGI_NON'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call nmecsd('POST_TRAITEMENT', sdpost, 'MODI_RIGI', ibid, r8bid,&
                     opmrig)

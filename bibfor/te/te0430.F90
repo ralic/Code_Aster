@@ -182,8 +182,8 @@ subroutine te0430(option, nomte)
         else if (option.eq.'REFE_FORC_NODA') then
 !
             call terefe('EPSI_REFE', 'GRILLE', epsref)
-            if (epsref .eq. r8vide()) call assert(.false.)
-            if (lexc) call assert(.false.)
+            if (epsref .eq. r8vide()) ASSERT(.false.)
+            if (lexc) ASSERT(.false.)
 !
             nomres(1) = 'E'
             call rcvalb(fami, kpg, 1, '+', zi(imate),&

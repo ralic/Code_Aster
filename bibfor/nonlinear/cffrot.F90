@@ -77,7 +77,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
     else if (koper.eq.'-') then
         coefmu(2) = -1.0d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     typcst(1) = 'R'
     typcst(2) = 'R'

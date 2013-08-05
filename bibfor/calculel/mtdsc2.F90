@@ -44,7 +44,7 @@ subroutine mtdsc2(matas, objet, eoul, adress)
 !
     mat=matas
     obj=objet
-    call assert(obj(3:4).eq.'BL' .or. obj(3:4).eq.'DI' .or. obj(3:4).eq.'HC')
+    ASSERT(obj(3:4).eq.'BL' .or. obj(3:4).eq.'DI' .or. obj(3:4).eq.'HC')
 !
     call jeveuo(mat//'.REFA', eoul, jrefa)
     nu=zk24(jrefa-1+2)
@@ -52,32 +52,32 @@ subroutine mtdsc2(matas, objet, eoul, adress)
     call jeexin(nu//'.SMOS.SMDI', i1)
     call jeexin(nu//'.SLCS.SCDI', i2)
 !       SI LDLT, LES 2 OBJETS PEUVENT EXISTER
-    call assert(i1.gt.0 .or. i2.gt.0)
+    ASSERT(i1.gt.0 .or. i2.gt.0)
 !
     if (obj(2:2) .eq. 'X') then
 !           -- ON PRIVILEGIE LE STOCKAGE MORSE :
         if (i1 .gt. 0) then
             obj='SM'//obj(3:4)
-            call assert(obj.ne.'SMBL')
+            ASSERT(obj.ne.'SMBL')
             call jeveuo(nu//'.SMOS.'//obj, eoul, adress)
         else
-            call assert(.false.)
+            ASSERT(.false.)
 !            -- LE STOCK. LIGNE_CIEL N'EXISTE QU'AVEC UN STOCK. MORSE
             obj='SC'//obj(3:4)
             call jeveuo(nu//'.SLCS.'//obj, eoul, adress)
         endif
 !
     else if (obj(2:2).eq.'M') then
-        call assert(i1.gt.0)
-        call assert(obj.ne.'SMBL')
+        ASSERT(i1.gt.0)
+        ASSERT(obj.ne.'SMBL')
         call jeveuo(nu//'.SMOS.'//obj, eoul, adress)
 !
     else if (obj(2:2).eq.'C') then
-        call assert(i2.gt.0)
+        ASSERT(i2.gt.0)
         call jeveuo(nu//'.SLCS.'//obj, eoul, adress)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -244,9 +244,9 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
                 call jelira(ch19r//refe, 'LONMAX', nbref1, kbid)
                 call jelira(ch19r//vale, 'LONMAX', nbval1, kbid)
 ! VERIFICATION DE LA COHERENCE DES DIMENSIONS
-                call assert(nbdes1.eq.nbdesc)
-                call assert(nbref1.eq.nbrefe)
-                call assert(nbval1.eq.nbvale)
+                ASSERT(nbdes1.eq.nbdesc)
+                ASSERT(nbref1.eq.nbrefe)
+                ASSERT(nbval1.eq.nbvale)
 ! SI FETI CONNEXION A L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
                 if ((nbsd.gt.0) .and. (idd.eq.0)) call jeveuo(ch19r// fetc, 'E', kfetc)
             endif

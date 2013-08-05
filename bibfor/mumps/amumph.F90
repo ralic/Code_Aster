@@ -122,7 +122,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     call infniv(ifm, niv)
     if ((action(1:6).ne.'PRERES') .and. (action(1:6).ne.'RESOUD') .and.&
         (action(1:8).ne.'DETR_OCC') .and. (action(1:8).ne.'DETR_MAT') .and.&
-        (action(1:7).ne.'VERSION')) call assert(.false.)
+        (action(1:7).ne.'VERSION')) ASSERT(.false.)
 !
 ! --- ATTENTION: PARAMETRE DEVELOPPEUR
 ! --- IMPR : PARAMETRE POUR IMPRIMER LA MATRICE + RHS + EVENTUELLEMENT
@@ -161,7 +161,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                 call u2mesi('A', 'FACTOR_71', 1, ifmump)
             else
 ! --- OPTION NON PREVUE
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -182,7 +182,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !      1. RECHERCHE DE KXMPS (NUMERO DE L'INSTANCE XMUMPS) +
 !           ROUC (R OU C) :
 !      -----------------------------------------------------
-    call assert(matas.ne.' ')
+    ASSERT(matas.ne.' ')
 !
 !        Y-A-T-IL DEJA UNE INSTANCE EN MEMOIRE POUR MATAS ?
 !
@@ -212,7 +212,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
     prec=' '
     lpreco=.false.
-    if (action(1:8) .eq. 'DETR_OCC') call assert(solveu.ne.' ')
+    if (action(1:8) .eq. 'DETR_OCC') ASSERT(solveu.ne.' ')
     call jeexin(solveu//'.SLVK', ibid)
     if (ibid .ne. 0) then
         call jeveuo(solveu//'.SLVK', 'L', jslvk)
@@ -245,16 +245,16 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             else
 ! --- ON A OUBLIE UNE INITIALISATION AMONT DE MIXPRE DS .SLVK
 !     SAUF POUR CMDE ECLATEE
-                if (action(1:5) .ne. 'DETR_') call assert(.false.)
+                if (action(1:5) .ne. 'DETR_') ASSERT(.false.)
             endif
         else
 !
 ! --- A PRECISER POUR GCPC AVEC IC SIMPLE PRECISION AVEC MUMPS
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
 ! --- ON DOIT AVOIR UNE SD_SOLVEUR.SLVK POUR CETTE OPTION
-        if ((action(1:8).eq.'DETR_OCC') .or. (action(1:7).eq.'VERSION')) call assert(.false.)
+        if ((action(1:8).eq.'DETR_OCC') .or. (action(1:7).eq.'VERSION')) ASSERT(.false.)
     endif
 !
     kxmps=1
@@ -272,7 +272,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                 dmpsk=>dmps(k)
                 n=dmpsk%n
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (rouc.eq.'C') then
             if (prec .eq. 'S') then
@@ -282,10 +282,10 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                 zmpsk=>zmps(k)
                 n=zmpsk%n
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (((nsmdi.eq.n).and.(imd.eq.0)) .or. (imd.eq.1)) then
             kxmps=k
@@ -314,13 +314,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     if (action(1:6) .eq. 'PRERES') then
         call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
                     nu, ierd)
-        call assert(solveu.ne.' ')
-        call assert(nomats(kxmps).eq.' ')
-        call assert(nosols(kxmps).eq.' ')
-        call assert(nonus(kxmps).eq.' ')
-        call assert(etams(kxmps).eq.' ')
-        call assert(roucs(kxmps).eq.' ')
-        call assert(precs(kxmps).eq.' ')
+        ASSERT(solveu.ne.' ')
+        ASSERT(nomats(kxmps).eq.' ')
+        ASSERT(nosols(kxmps).eq.' ')
+        ASSERT(nonus(kxmps).eq.' ')
+        ASSERT(etams(kxmps).eq.' ')
+        ASSERT(roucs(kxmps).eq.' ')
+        ASSERT(precs(kxmps).eq.' ')
         etam='FNUM'
         nomat=matas
         nosolv=solveu
@@ -348,7 +348,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         nprec=zi(jslvi)
 !
     else if (action(1:6).eq.'RESOUD') then
-        call assert(nbsol.ge.1)
+        ASSERT(nbsol.ge.1)
         nomat=nomats(kxmps)
         nosolv=nosols(kxmps)
         etam=etams(kxmps)
@@ -356,21 +356,21 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
         rouc=roucs(kxmps)
         prec=precs(kxmps)
 !
-        call assert(solveu.ne.' ')
+        ASSERT(solveu.ne.' ')
         if (imd .eq. 0) then
-            call assert(solveu.eq.nosolv)
-            call assert(etam.eq.'FNUM')
+            ASSERT(solveu.eq.nosolv)
+            ASSERT(etam.eq.'FNUM')
         endif
         call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
                     nu, ierd)
-        call assert(nonu.eq.nu)
+        ASSERT(nonu.eq.nu)
 !
     else if (action(1:5).eq.'DETR_') then
         nomat=nomats(kxmps)
-        call assert(matas.ne.' ')
+        ASSERT(matas.ne.' ')
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !        --- SI GESTION_MEMOIRE='AUTO'
@@ -389,7 +389,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             call amumpd(action, kxmps, rsolu, vcine, nbsol,&
                         iretz, impr, ifmump, prepos, pcentp)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (rouc.eq.'C') then
         if (prec .eq. 'S') then
@@ -399,10 +399,10 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             call amumpz(action, kxmps, csolu, vcine, nbsol,&
                         iretz, impr, ifmump, prepos, pcentp)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NETTOYAGE DES OCCURENCES MUMPS EN MODE GESTION_MEMOIRE='EVAL' POUR
@@ -431,7 +431,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
 ! --- GESTION DES CODES RETOUR EN CAS DE DETECTION DE SINGULARITES
     if (action(1:6) .eq. 'PRERES') then
-        call assert((iretz.eq.0).or.(iretz.eq.1).or.(iretz.eq.2))
+        ASSERT((iretz.eq.0).or.(iretz.eq.1).or.(iretz.eq.2))
         if (iretz .eq. 2) then
             if (nprec .lt. 0) then
 ! --- FONCTIONNALITE DE DETECTION DE SINGULARITE NON ACTIVEE:
@@ -448,7 +448,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 9999  continue
     if ((iretz.ne.0) .and. (iretz.ne.1) .and. (iretz.ne.2)) then
 ! --- VALEUR ILLICITE
-        call assert(.false.)
+        ASSERT(.false.)
     else
 ! --- ON PEUT FOURNIR L'OUTPUT
         iret=iretz

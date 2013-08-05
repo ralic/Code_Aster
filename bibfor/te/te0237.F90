@@ -81,11 +81,11 @@ subroutine te0237(option, nomte)
         call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
                     1, tref, iret)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nbcmp=itab(2)/itab(3)
-    call assert(nbcmp.gt.0)
+    ASSERT(nbcmp.gt.0)
 !
     h=zr(icaco)
 !---- COTE MINIMALE SUR L'EPAISSEUR
@@ -168,7 +168,7 @@ subroutine te0237(option, nomte)
                     call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                                 isp+3, tpgsup, iret3)
                     iret4=iret1+iret2+iret3
-                    call assert(iret4.eq.0 .or. iret4.eq.3)
+                    ASSERT(iret4.eq.0 .or. iret4.eq.3)
 !
 !         ---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 !         ---- COMME POUR LA LONGUEUR
@@ -226,7 +226,7 @@ subroutine te0237(option, nomte)
                     zr(icont+idec-1+4)=si12
 !
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 30          continue

@@ -135,7 +135,7 @@ subroutine nmspec(modele, numedd, numfix, carele, compor,&
             else if (option.eq.'FLAMBDYN') then
                 call u2mess('I', 'MECANONLINE6_2')
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call affich('MESSAGE', ' ')
 !

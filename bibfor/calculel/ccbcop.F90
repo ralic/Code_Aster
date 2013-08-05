@@ -179,7 +179,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
                         nbordr, lischa, nbchar, typcha, typesd,&
                         iret)
 !
-            if (iret .ne. 0) call assert(.false.)
+            if (iret .ne. 0) ASSERT(.false.)
         endif
 20  end do
 !

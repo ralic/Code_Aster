@@ -76,7 +76,7 @@ subroutine apnomk(sdappa, questi, rnomsd)
         rnomsd = zk24(jnomsd+3 -1)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

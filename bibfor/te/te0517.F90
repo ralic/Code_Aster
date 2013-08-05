@@ -188,13 +188,13 @@ subroutine te0517(option, nomte)
                 fl(7*(i-1)+4) = fl( 7*(i-1)+4) - ez*fl(7*(i-1)+2) + ey* fl(7*(i-1)+3 )
 430          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !        PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

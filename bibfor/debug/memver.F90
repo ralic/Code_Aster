@@ -48,11 +48,11 @@ subroutine memver(action, prec, arret, titre)
     integer :: iret
     save mtots,precs
 !
-    call assert(action.eq.'MESURE' .or. action.eq.'VERIF')
+    ASSERT(action.eq.'MESURE' .or. action.eq.'VERIF')
     if (action .eq. 'MESURE') precs=2.d0*prec
 !
-    call assert(arret(1:1).eq.'F' .or. arret(1:1).eq.' ')
-    call assert(arret(2:2).eq.'I' .or. arret(2:2).eq.' ')
+    ASSERT(arret(1:1).eq.'F' .or. arret(1:1).eq.' ')
+    ASSERT(arret(2:2).eq.'I' .or. arret(2:2).eq.' ')
 !
     call memres('NON', 'NON', ' ', precs, tmax)
     k8tab(1) = 'COUR_JV'
@@ -66,7 +66,7 @@ subroutine memver(action, prec, arret, titre)
             write (6,9000)'<MEMVER> MTOTS,MTOT,DIFF=',titre, mtots,&
             mtot,mtots-mtot
         endif
-        if (arret(1:1) .eq. 'F') call assert(mtots-mtot.lt.precs)
+        if (arret(1:1) .eq. 'F') ASSERT(mtots-mtot.lt.precs)
     endif
 !
     9000 format (2(a,1x),3(f15.3,1x))

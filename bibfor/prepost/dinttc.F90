@@ -119,7 +119,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                 zo1o2 )**2 + ( xo1a*yo1o2-yo1a*xo1o2 )**2 - r*r *&
                 do1o2**2
                 delta = b*b - a*c
-                call assert(delta.ge.0.d0)
+                ASSERT(delta.ge.0.d0)
                 if (a .eq. 0.0d0) then
 ! AB ET O1O2 SONT COLINEAIRES : INTERSECTION SUR LES FACES
                     lintcy = .false.
@@ -173,7 +173,7 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                     if (abs(1.d0-n2) .le. 1.0d-6) n2 = 1.0d0
                     if (abs(1.d0-n3) .le. 1.0d-6) n3 = 1.0d0
                     if (abs(1.d0-n4) .le. 1.0d-6) n4 = 1.0d0
-                    call assert(n4.eq.1.0d0)
+                    ASSERT(n4.eq.1.0d0)
                     if (n2 .gt. 1.0d0 .or. n3 .gt. 1.0d0) then
                         lintcy = .false.
                     endif
@@ -242,14 +242,14 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2,&
                     else if (dao1.eq.0.0d0 .or. dao2.eq.0.0d0) then
                         lambda = 0.0d0
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                     if (abs(1.d0-lambda) .le. 1.0d-10) then
                         lambda = 1.0d0
                     else if (abs(lambda).le.1.0d-10) then
                         lambda = 0.0d0
                     endif
-                    call assert(lambda.ge.0.d0 .and. lambda.le.1.d0)
+                    ASSERT(lambda.ge.0.d0 .and. lambda.le.1.d0)
                     coord(1,l) = lambda*xab + coord(1,ia)
                     coord(2,l) = lambda*yab + coord(2,ia)
                     coord(3,l) = lambda*zab + coord(3,ia)

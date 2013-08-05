@@ -81,7 +81,7 @@ function cfdisr(deficz, questz)
         cfdisr = 1d-4
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

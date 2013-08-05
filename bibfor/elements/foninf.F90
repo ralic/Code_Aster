@@ -45,12 +45,12 @@ subroutine foninf(resu, typfon)
 !     RECUPERATION DU MOT-CLE SYME
     call getvtx(' ', 'SYME', 0, iarg, 1,&
                 syme, ibid)
-    call assert(syme.eq.'OUI'.or.syme.eq.'NON')
+    ASSERT(syme.eq.'OUI'.or.syme.eq.'NON')
 !
 !     RECUPERATION DU MOT-CLE CONFIG_INIT
     call getvtx(' ', 'CONFIG_INIT', 0, iarg, 1,&
                 confin, ibid)
-    call assert(confin.eq.'DECOLLEE'.or.confin.eq.'COLLEE')
+    ASSERT(confin.eq.'DECOLLEE'.or.confin.eq.'COLLEE')
 !
 !     CREATION DE L'OBJET .INFO DANS LA SD FOND_FISS
     call wkvect(resu//'.INFO', 'G V K8', 3, jinfo)

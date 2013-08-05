@@ -269,7 +269,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !     -- MOTCLE NON ADMIS
 !        -------------------------------------------------------
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- IDIMAX = MAJORANT DE LA LONGUEUR DE LA LISTE DE NOEUDS

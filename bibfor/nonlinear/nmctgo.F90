@@ -180,7 +180,7 @@ subroutine nmctgo(noma, sdimpr, sderro, defico, resoco,&
             mmcvgo = .true.
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- SAUVEGARDE DES EVENEMENTS

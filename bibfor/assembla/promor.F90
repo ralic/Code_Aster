@@ -1,5 +1,4 @@
 subroutine promor(nuz, base)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -352,7 +351,7 @@ subroutine promor(nuz, base)
                     endif
 !
 !           -- TRI EN ORDRE CROISSANT POUR L'INSERTION DES COLONNES
-                    call assert(nddlt.le.mxddlt)
+                    ASSERT(nddlt.le.mxddlt)
                     call uttrii(zi(jalm), nddlt)
 !
 !           -- INSERTION DES COLONNES DE L'ELEMENT DANS
@@ -384,7 +383,7 @@ subroutine promor(nuz, base)
                 do 71 iel = 1, nel
                     nddlt=0
                     numa=zzliel(ili,igr,iel)
-                    call assert(numa.gt.0)
+                    ASSERT(numa.gt.0)
                     nnoe=zznbne(numa)
                     call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
                                 jptvoi, jelvoi, nbvois, livois, tyvois,&
@@ -407,7 +406,7 @@ subroutine promor(nuz, base)
 21                      continue
                         nddlt=nddlt+nddl1
 31                  continue
-                    call assert(nddlt.le.mxddlt)
+                    ASSERT(nddlt.le.mxddlt)
 !
                     nnov=zznbne(numav)
                     do 33 k1 = 1, nnov
@@ -425,7 +424,7 @@ subroutine promor(nuz, base)
 23                      continue
                         nddlt=nddlt+nddl1
 33                  continue
-                    call assert(nddlt.le.mxddlt)
+                    ASSERT(nddlt.le.mxddlt)
 !
                     call uttrii(zi(jalm), nddlt)
                     do 61 iddl = 0, nddlt-1
@@ -439,7 +438,7 @@ subroutine promor(nuz, base)
 81          continue
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !
@@ -455,7 +454,7 @@ subroutine promor(nuz, base)
             call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe, kbid)
             do 110 k1 = 1, nnoe
                 n1=zi(iamail-1+k1)
-                call assert(n1.ne.0)
+                ASSERT(n1.ne.0)
                 iad1=zzprno(1,n1,1)
                 nddl1=zzprno(1,n1,2)
                 if (mxddlt .lt. (nddlt+nddl1)) then
@@ -469,7 +468,7 @@ subroutine promor(nuz, base)
                 nddlt=nddlt+nddl1
 110          continue
 !
-            call assert(nddlt.le.mxddlt)
+            ASSERT(nddlt.le.mxddlt)
             call uttrii(zi(jalm), nddlt)
             do 120 iddl = 0, nddlt-1
                 jddl=jsmdi+zi(jalm+iddl)-1

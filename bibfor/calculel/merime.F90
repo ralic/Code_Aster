@@ -94,7 +94,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 ! --- INITIALISATIONS
 !
     modele = modelz
-    call assert(modele.ne.' ')
+    ASSERT(modele.ne.' ')
     carele = carelz
     matele = matelz
     compor = compoz

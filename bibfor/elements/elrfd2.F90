@@ -390,6 +390,6 @@ subroutine elrfd2(elrefz, x, dimd, dff2, nno,&
 !
 !     ------------------------------------------------------------------
 !
-    call assert(dimd.ge. (nno*ndim*ndim))
+    ASSERT(dimd.ge. (nno*ndim*ndim))
 !
 end subroutine

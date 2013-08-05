@@ -98,7 +98,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 ! --- INITIALISATIONS
 !
     if (modele(1:1) .eq. ' ') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     option = optioz
     ligrmo = modele(1:8)//'.MODELE'
@@ -139,7 +139,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
                             ligre1, ied)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 20
 10          continue
-            call assert(.false.)
+            ASSERT(.false.)
 20          continue
 !
 !
@@ -161,7 +161,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
                             ligre1, ied)
                 if (ligre1(1:8) .eq. modele(1:8)) goto 40
 30          continue
-            call assert(.false.)
+            ASSERT(.false.)
 40          continue
         endif
     endif
@@ -219,7 +219,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     else if (option.eq.'RIGI_MECA_HYST') then
         lpaout(1) = 'PMATUUC'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     lpaout(3) = 'PMATUUR'
     lchout(1) = meamor(1:8)//'.ME001'

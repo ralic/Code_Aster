@@ -64,7 +64,7 @@ subroutine lctel3()
     iz=indik8(zk8(inocmp),'Z',1,nbcmp)
     call dismoi('F', 'NB_EC', 'GEOM_R', 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call assert(nbec.le.1)
+    ASSERT(nbec.le.1)
 !
 !     - BOUCLE SUR TOUS LES MODES LOCAUX DES CATALOGUES :
     call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbml, k8bid)

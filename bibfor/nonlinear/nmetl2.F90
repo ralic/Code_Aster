@@ -144,7 +144,7 @@ subroutine nmetl2(motfac, sdieto, icham)
             call copisd('CHAMP_GD', 'V', champ2, nomcha)
         else
             write(6,*) 'LOCCHA: ',loccha
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ----- STATUT DU CHAMP: LU CHAMP PAR CHAMP

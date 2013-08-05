@@ -104,7 +104,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
 !
         else
 !        -- SINON --> RESUELEM
-            call assert((code.ge.3).and.(code.le.5))
+            ASSERT((code.ge.3).and.(code.le.5))
             call alresl(iopt, ligrel, nochou, nompar, base)
 !        -- LES RESU_ELEMS SONT COMPLETS AVEC FETI (MATRICE/ SM LOCAUX)
 !           MAIS INCOMPLETS EN LDIST (BLOCS DE MATRICE/SM GLOBAUX)
@@ -151,7 +151,7 @@ subroutine alrslt(iopt, ligrel, nout, lchout, lpaout,&
         else
             call jeveuo(nochou//'.DESC', 'E', zi(iachoi-1+3* (i-1)+1))
             if (evfini .eq. 1 .and. code .gt. 3) then
-                call assert(code.eq.5)
+                ASSERT(code.eq.5)
                 call jeveuo(nochou//'.RSVI', 'L', zi(iachoi-1+3* (i-1)+ 2))
                 call jeveuo(jexatr(nochou//'.RSVI', 'LONCUM'), 'L', zi(iachoi-1+3* (i-1)+3))
             endif

@@ -93,7 +93,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
 !     ON AUTORISE UNIQUEMENT L'ISOTROPIE
     call rccoma(imate, 'ELAS', 1, phenom, iret)
-    call assert(iret.eq.0 .and. phenom.eq.'ELAS')
+    ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
 !
 !     INITIALISATIONS
     instan = 0.d0
@@ -126,7 +126,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     call elref5(elrese, 'XINT', ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -161,7 +161,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
             do 1000 ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
 1000          continue
-            call assert(r.ge.0d0)
+            ASSERT(r.ge.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
@@ -184,7 +184,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS

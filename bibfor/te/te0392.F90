@@ -131,7 +131,7 @@ subroutine te0392(option, nomte)
     else if (phenom.eq.'ELAS_ORTH') then
         nomres(2)='NU_LT'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

@@ -33,7 +33,7 @@ subroutine lcdetf(ndim, fr, det)
     else if (ndim.eq.2) then
         det = fr(3,3)*(fr(1,1)*fr(2,2)-fr(1,2)*fr(2,1))
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

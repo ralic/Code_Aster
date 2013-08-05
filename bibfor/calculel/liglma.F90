@@ -58,7 +58,7 @@ subroutine liglma(ligrel, nbma, linuma, linute)
     nbel=n1-1
     nbma=nbma+nbel
     10 end do
-    call assert(nbma.gt.0)
+    ASSERT(nbma.gt.0)
 !
 !     -- CALCUL DE LINUMA ET LINUTE :
     call wkvect(linuma, 'V V I', nbma, jnuma)

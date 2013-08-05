@@ -155,9 +155,9 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call jeveuo(maxfem//'.DIME', 'E', jdime)
         zi(jdime-1+1) = nbno2
         zi(jdime-1+3) = nbma2
-        call assert(zi(jdime-1+2).eq.0)
-        call assert(zi(jdime-1+4).eq.0)
-        call assert(zi(jdime-1+5).eq.0)
+        ASSERT(zi(jdime-1+2).eq.0)
+        ASSERT(zi(jdime-1+4).eq.0)
+        ASSERT(zi(jdime-1+5).eq.0)
 !
 !       CREATION DES .NOMMAI, .NOMNOE, .TYPMAIL, .COORDO  .CONNEX
 !       DU MAILLAGE 2
@@ -196,7 +196,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             call jeveuo(logrma, 'L', jlogma)
             call jelira(logrma, 'LONMAX', nbgma, kbid)
             call jelira(malini//'.GROUPEMA', 'NUTIOC', nbgma1, kbid)
-            call assert(nbgma.eq.nbgma1)
+            ASSERT(nbgma.eq.nbgma1)
             do 30 i = 1, nbgma
                 if (zi(jlogma-1+i) .ne. 0) nbgma2 = nbgma2 + 1
 30          continue
@@ -251,9 +251,9 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                     k8b, ier)
         call dismoi('F', 'NB_NO_MAILLA', maxfem, 'MAILLAGE', nbid,&
                     k8b, ier)
-        call assert(nbno2.eq.nbid)
+        ASSERT(nbno2.eq.nbid)
 !
-        call assert(nbcham.gt.0)
+        ASSERT(nbcham.gt.0)
 !
         chn1 ='&&XPODIM.CHN1'
 !
@@ -273,7 +273,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                 call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep2, 'V',&
                             cns2)
             else
-                call assert(ndim.eq.3)
+                ASSERT(ndim.eq.3)
                 call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep3, 'V',&
                             cns2)
             endif
@@ -365,7 +365,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                         nomgd, iret)
             call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                         tsca, ibid)
-            call assert(tsca.eq.'K16')
+            ASSERT(tsca.eq.'K16')
 !
 !         CREATION CHAM_ELEM_S 1 A PARTIR DE LA CARTE 1
             call carces(comp1, 'ELEM', ' ', 'V', comps1,&

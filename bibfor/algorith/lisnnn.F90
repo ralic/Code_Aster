@@ -61,7 +61,7 @@ subroutine lisnnn(motfac, iexci, charge)
     if (eximve .eq. 1) then
         call getvid(motfac, 'VECT_ASSE', iexci, iarg, 1,&
                     charge, nval)
-        call assert(nval.ge.0)
+        ASSERT(nval.ge.0)
     endif
 !
 ! --- CHARGE SPECIFIQUE VECT_ASSE_GENE
@@ -70,14 +70,14 @@ subroutine lisnnn(motfac, iexci, charge)
     if (eximvg .eq. 1) then
         call getvid(motfac, 'VECT_ASSE_GENE', iexci, iarg, 1,&
                     charge, nval)
-        call assert(nval.ge.0)
+        ASSERT(nval.ge.0)
     endif
 !
 ! --- CHARGE STANDARD
 !
     call getvid(motfac, 'CHARGE', iexci, iarg, 1,&
                 charge, nval)
-    call assert(nval.ge.0)
+    ASSERT(nval.ge.0)
 !
     call jedema()
 end subroutine

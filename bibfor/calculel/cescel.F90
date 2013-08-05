@@ -18,7 +18,6 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 ! ======================================================================
 !
 ! person_in_charge: jacques.pellet at edf.fr
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -162,7 +161,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
         prol2 = .true.
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -231,7 +230,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
         read (nomcmp(2:8),'(I7)') icmp
         ncmpmx = max(ncmpmx,icmp)
 20      continue
-        call assert(ncmpmx.gt.0)
+        ASSERT(ncmpmx.gt.0)
         call wkvect('&&CESCEL.NUCM1', 'V V I', ncmp1, jnucm1)
         call wkvect('&&CESCEL.NUCM2', 'V V I', ncmpmx, jnucm2)
         do 30,icmp1 = 1,ncmp1
@@ -260,7 +259,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
             option = 'TOU_INI_ELEM'
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
@@ -293,14 +292,14 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !       -- NBRE DE SOUS-POINTS :
     call cesexi('C', jdceld, jdcell, ima, 1,&
                 1, 1, iad)
-    call assert(iad.lt.0)
+    ASSERT(iad.lt.0)
     zl(jdcell-1-iad) = .true.
     zi(jdcelv-1-iad) = zi(jcesd-1+5+4* (ima-1)+2)
 !
 !       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
     call cesexi('C', jdceld, jdcell, ima, 1,&
                 1, 2, iad)
-    call assert(iad.lt.0)
+    ASSERT(iad.lt.0)
     zl(jdcell-1-iad) = .true.
     if (nomgd .eq. 'VARI_R') then
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
@@ -374,7 +373,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
             do 84,ieq = 1,neq
             zk24(jcelv-1+ieq) = knan
 84          continue
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -382,7 +381,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     3.2 ON INITIALISE CELV AVEC "&FOZERO" SI NEUT_F :
 !     -----------------------------------------------------
     if (prol0 .eq. 'OUI' .and. nomgd .eq. 'NEUT_F') then
-        call assert(tsca.eq.'K8')
+        ASSERT(tsca.eq.'K8')
         do 85,ieq = 1,neq
         zk8(jcelv-1+ieq) = '&FOZERO'
 85      continue
@@ -537,7 +536,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
                 zk24(jcelv-1+ieq) = zk24(jcesv-1+ iad)
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             zi(jcopi-1+iad) = 1
 130          continue
@@ -558,10 +557,10 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         diff = (zi(jmolo-1+4).gt.10000)
 !         CAS (ZI(JMOLO-1+4).GT.10000) RESTE A PROGRAMMER
-        call assert(.not.diff)
+        ASSERT(.not.diff)
         nbpt = mod(zi(jmolo-1+4),10000)
         lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
-        call assert(nbpt.eq.lgcata)
+        ASSERT(nbpt.eq.lgcata)
         nbel = nbelem(ligrel,igr)
 !
 !
@@ -638,7 +637,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
             zk8(jcelv-1+ieq) = zk8(jcesv-1+iad)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zi(jcopi-1+iad) = 1
 180      continue
@@ -666,7 +665,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     ---------------------
 240  continue
     iret = 1
-    call assert(kstop.eq.'F' .or. kstop.eq.'A' .or. kstop.eq.' ')
+    ASSERT(kstop.eq.'F' .or. kstop.eq.'A' .or. kstop.eq.' ')
     call detrsd('CHAMP', cel)
     if (kstop .eq. ' ') goto 250
 !
@@ -688,7 +687,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     else if (messag.eq.'CALCULEL_58') then
         call u2mesk(kstop, 'CALCULEL_58', 4, valk)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -696,7 +695,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 250  continue
     if (dbg) then
         call cheksd(cel, 'SD_CHAM_ELEM', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
     endif
 !
     call detrsd('CHAM_ELEM_S', dcel)

@@ -29,11 +29,11 @@ function rminsp(x1, x2, x3, x4, x5)
 !     ------------------------------------------------------------------
 !
 ! DEB------------------------------------------------------------------
-    call assert(x1.gt.0.d0)
-    call assert(x2.ge.0.d0)
-    call assert(x3.ge.0.d0)
-    call assert(x4.ge.0.d0)
-    call assert(x5.ge.0.d0)
+    ASSERT(x1.gt.0.d0)
+    ASSERT(x2.ge.0.d0)
+    ASSERT(x3.ge.0.d0)
+    ASSERT(x4.ge.0.d0)
+    ASSERT(x5.ge.0.d0)
 !
     xmin=x1
     if (x2 .gt. 0.d0 .and. x2 .lt. xmin) xmin=x2

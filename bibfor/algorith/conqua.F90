@@ -82,7 +82,7 @@ subroutine conqua(macor, nbcor, macoc, nbcoc, lface,&
             call conper(macoc, 1, 2, 3, 4)
             if (quadra) call conper(macoc, 5, 6, 7, 8)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (lface) then
             i1=1

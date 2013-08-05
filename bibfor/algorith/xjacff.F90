@@ -88,8 +88,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
                 ibid, ipoidf, ivff, idfdef, ibid)
 !
     axi = lteatt(' ','AXIS','OUI')
-    call assert(nnof.eq.3)
-    call assert(ndim.eq.3)
+    ASSERT(nnof.eq.3)
+    ASSERT(ndim.eq.3)
 !
 ! --- INITIALISATION
     call vecini(3, 0.d0, a)
@@ -177,7 +177,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
             if (ndim .eq. 3) tau1(3)=0.d0-nd1(2)*nd1(3)
             call normev(tau1, norm2)
         endif
-        call assert(norm2.gt.1.d-12)
+        ASSERT(norm2.gt.1.d-12)
     endif
     if (ndim .eq. 3) then
         call provec(nd1, tau1, tau2)

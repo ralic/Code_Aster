@@ -72,7 +72,7 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
 ! --- INITIALISATIONS
 !
     ieff = 1
-    call assert(nbcmp.le.nparx)
+    ASSERT(nbcmp.le.nparx)
 !
 ! --- ACCES CHAMP
 !
@@ -103,7 +103,7 @@ subroutine nmexti(nomnoe, champ, nbcmp, listcp, extrcp,&
 !
     call nmextv(neff, extrcp, nomcmp, valcmp, nvalcp,&
                 valres)
-    call assert(nvalcp.le.nbcmp)
+    ASSERT(nvalcp.le.nbcmp)
 !
     call jedema()
 !

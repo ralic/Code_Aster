@@ -1,7 +1,6 @@
 subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
                   icabl, nbnoca, xnoca, ynoca, znoca,&
                   ncncin, nmabet)
-! aslint: disable=W1501
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -518,7 +517,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! 2.2.6  MISE A JOUR DE LA SD TABLE
 ! .....
         call jenuno(jexnum(nomama, numail), voisin(1))
-        call assert(noebec.ne.0)
+        ASSERT(noebec.ne.0)
         call jenuno(jexnum(nonoma, noebec), voisin(2))
         call tbajli(tablca, 3, param, immer, rbid,&
                     cbid, voisin(1), ideca+ inoca)

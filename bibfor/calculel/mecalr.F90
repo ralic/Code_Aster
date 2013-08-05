@@ -1,7 +1,6 @@
 subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                   resuc1, nbordr, modele, mate, cara,&
                   nchar, ctyp)
-! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -458,7 +457,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 else if (iret2.eq.0) then
                     call celces(cherr2(1:19), 'V', cherrs)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
                 chenes='&&'//nompro//'.ENER'

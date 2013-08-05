@@ -85,7 +85,7 @@ subroutine xfisco(noma, modelx)
         do 110 ifiss = 1, nfiss
             call cesexi('S', jcesd2, jcesl2, ima, 1,&
                         ifiss, 1, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             nomfis = zk8(jcesv2-1+iad)
             call jeexin(nomfis//'.JONFISS', iret)
             if (iret .ne. 0) then
@@ -148,7 +148,7 @@ subroutine xfisco(noma, modelx)
                 zi(jcesv-1-iad) = 0
                 call cesexi('S', jcesd, jcesl, ima, 1,&
                             ifiss, 2, iad)
-                call assert(iad.lt.0)
+                ASSERT(iad.lt.0)
                 zl(jcesl-1-iad) = .true.
                 zi(jcesv-1-iad) = 0
             endif

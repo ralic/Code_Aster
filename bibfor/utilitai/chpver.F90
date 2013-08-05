@@ -48,7 +48,7 @@ subroutine chpver(arret, nocham, locham, gdcham, ier)
     call jemarq()
 !
     noch=nocham
-    call assert(arret.eq.'F'.or.arret.eq.'C')
+    ASSERT(arret.eq.'F'.or.arret.eq.'C')
     ie1=0
     ie2=0
     ier=1

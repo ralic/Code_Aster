@@ -3,7 +3,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
                   materf, matcst, nbcomm, cpmono, ndt,&
                   ndi, nr, nvi, nfs, nsg,&
                   nhsr, numhsr, hsr)
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -222,7 +222,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
         monoi=cpmono(indcp-1)(1:8)//'.CPRI'
         monor=cpmono(indcp-1)(1:8)//'.CPRR'
         call jeveuo(monoi, 'L', imonoi)
-        call assert(nbfsys.eq.zi(imonoi-1+5))
+        ASSERT(nbfsys.eq.zi(imonoi-1+5))
         itbint=zi(imonoi-1+4)
         nbsyst=zi(imonoi-1+8)
         nbtbsy=0
@@ -522,9 +522,9 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 40  end do
 !
 9999  continue
-    call assert(nmat.gt.indcom)
-    call assert((5*nmat+1).gt.dimk)
-    call assert(nmat.gt.(indmat+nvloc))
+    ASSERT(nmat.gt.indcom)
+    ASSERT((5*nmat+1).gt.dimk)
+    ASSERT(nmat.gt.(indmat+nvloc))
 !
 !     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
     materd(nmat,2)=nbcomm(nmat,3)

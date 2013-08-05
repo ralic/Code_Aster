@@ -62,7 +62,7 @@ subroutine caramx(char, iform, nzoco)
     else if (iform.eq.3) then
         call caracx(char, nzoco)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

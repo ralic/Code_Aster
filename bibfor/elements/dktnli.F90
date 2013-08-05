@@ -186,7 +186,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
                 iret)
     nbsp=jtab(7)
     icontm=jtab(1)
-    call assert(npg.eq.jtab(3))
+    ASSERT(npg.eq.jtab(3))
 !
     call jevech('PVARIMR', 'L', ivarim)
     call jevech('PINSTMR', 'L', iinstm)

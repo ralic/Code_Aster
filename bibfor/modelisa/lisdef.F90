@@ -16,7 +16,6 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
 !
     implicit      none
 #include "jeveux.h"
@@ -525,7 +524,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             else if (nomgd(1:1).eq.'C') then
                 typech = 'COMP'
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             charge = prefob(1:8)
@@ -539,7 +538,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             else if (typcha(5:6).eq.'_F') then
                 typech = 'FONC'
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -586,7 +585,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                     chamno = prefob(1:8)
                     nomobj = chamno(1:19)//'.VALE'
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             else
                 carte = prefob(1:13)//nomob(indxch)
@@ -594,9 +593,9 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 nomobj = carte
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
-        call assert(itypob.ge.0)
+        ASSERT(itypob.ge.0)
         valkz = nomobj
         vali(1) = itypob
 ! ----------------------------------------------------------------------
@@ -608,7 +607,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         do 15 indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) iposit = gencod(indxch)
 15      continue
-        if ((iposit.le.0) .or. (iposit.gt.30)) call assert(.false.)
+        if ((iposit.le.0) .or. (iposit.gt.30)) ASSERT(.false.)
         vali(1) = iposit
 ! ----------------------------------------------------------------------
 ! --- POSITION DANS L'ENTIER CODE POUR UN MOT-CLEF DONNE
@@ -619,7 +618,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         do 17 indxch = 1, nbtyth
             if (motcl(indxch) .eq. motcle) iposit = mcfcod(indxch)
 17      continue
-        if ((iposit.le.0) .or. (iposit.gt.60)) call assert(.false.)
+        if ((iposit.le.0) .or. (iposit.gt.60)) ASSERT(.false.)
         vali(1) = iposit
 ! ----------------------------------------------------------------------
 ! --- NOM DE LA CARTE A PARTIR DU MOT-CLEF
@@ -647,10 +646,10 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             else if (typech(1:4).eq.'FONC') then
                 option = optiof(indxch)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         valkz = option
 ! ----------------------------------------------------------------------
@@ -666,10 +665,10 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
             else if (typech(1:4).eq.'FONC') then
                 lpain = paraf(indxch)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         valkz = lpain
 ! ----------------------------------------------------------------------
@@ -706,7 +705,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         do 45 indxch = 1, nbtyth
             if (genre(indxch) .eq. gencha) nbch = nbch + 1
 45      continue
-        call assert(nbch.gt.0)
+        ASSERT(nbch.gt.0)
 !
 ! ----- CREATION DE L'OBJET
 !
@@ -721,7 +720,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 zi(jlisci-1+i) = indxch
             endif
 50      continue
-        call assert(i.eq.nbch)
+        ASSERT(i.eq.nbch)
         vali(1) = nbch
 ! ----------------------------------------------------------------------
     else if (oper.eq.'LIGC') then
@@ -730,7 +729,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
         if ((indxch.gt.0) .and. (indxch.le.nbtyth)) then
             ligcal = typlig(indxch)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         valkz = ligcal
 ! ----------------------------------------------------------------------
@@ -760,11 +759,11 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
                 endif
             endif
 70      continue
-        call assert(idd.le.nbtyth)
+        ASSERT(idd.le.nbtyth)
         vali(1) = idd
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

@@ -160,7 +160,7 @@ subroutine xdivte(ndim, elp, cnset, nse, nnose)
         nnose=3
     else
 !       TYPE D'ELEMENT FINI PAS TRAITE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     do 10 ise = 1, nse

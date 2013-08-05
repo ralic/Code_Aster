@@ -113,7 +113,7 @@ subroutine macr78(nomres, trange, typres)
     nbndyn = nbmdyn/nec
     nbndef = nbntot-nbndyn
 !      NBNDE2 = NBMDEF/NEC
-!      CALL ASSERT(NBNDEF.EQ.NBNDE2)
+!      ASSERT(NBNDEF.EQ.NBNDE2)
     if (nbmdef .ne. 0) then
         call rsadpa(basemo, 'L', 1, 'NOEUD_CMP', nbmdyn+1,&
                     0, lnocmp, k8b)

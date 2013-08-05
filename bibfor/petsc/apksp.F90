@@ -74,23 +74,23 @@ subroutine apksp(kptsc)
 !     ------------------------
     if (algo .eq. 'CG') then
         call KSPSetType(ksp, KSPCG, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else if (algo.eq.'CR') then
         call KSPSetType(ksp, KSPCR, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else if (algo.eq.'GMRES') then
         call KSPSetType(ksp, KSPGMRES, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else if (algo.eq.'GCR') then
         call KSPSetType(ksp, KSPGCR, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else if (algo.eq.'BCGS') then
         call KSPSetType(ksp, KSPBCGS, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 !     -- paramètres numériques :
 !     --------------------------
@@ -108,14 +108,14 @@ subroutine apksp(kptsc)
 !
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits,&
                           ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 !     - pour suivre les itérations de Krylov
 !     --------------------------------------
     if (niv .ge. 2) then
         call KSPMonitorSet(ksp, KSPMonitorTrueResidualNorm, PETSC_NULL_OBJECT,&
                            PETSC_NULL_FUNCTION, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     endif
 !
     call jedema()

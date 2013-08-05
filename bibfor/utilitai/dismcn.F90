@@ -83,7 +83,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
     else if (questi.eq.'NOM_NUME_DDL') then
-        call assert(.false.)
+        ASSERT(.false.)
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe+1)
 !        ATTENTION : ZK24(IAREFE+1) EST UN PROF_CHNO (K19)

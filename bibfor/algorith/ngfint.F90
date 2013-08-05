@@ -86,9 +86,9 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
 !
 ! - INITIALISATION
 !
-    call assert(npg.le.npgmax)
-    call assert(neps.le.epsmax)
-    call assert(nddl.le.ddlmax)
+    ASSERT(npg.le.npgmax)
+    ASSERT(neps.le.epsmax)
+    ASSERT(nddl.le.ddlmax)
     nepg = neps*npg
 !
     resi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RAPH_MECA'

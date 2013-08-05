@@ -117,7 +117,7 @@ subroutine cescar(cesz, cartz, basz)
     do 10,kcmp=1,ncmp
     call cesexi('C', jce1d, jce1l, ima, 1,&
                 1, kcmp, iad1)
-    call assert(iad1.ne.0)
+    ASSERT(iad1.ne.0)
     if (iad1 .gt. 0) then
         ncmpma=ncmpma+1
         zk8(jncmp-1+ncmpma)=zk8(jce1c-1+kcmp)
@@ -139,7 +139,7 @@ subroutine cescar(cesz, cartz, basz)
         else if (tsca.eq.'K80') then
             zk80(jvalv-1+ncmpma)=zk80(jce1v-1+iad1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 10  continue
@@ -148,7 +148,7 @@ subroutine cescar(cesz, cartz, basz)
 !
     if (nbcmps .eq. 0) then
 !         -- C'EST LE 1ER PAQUET QUI COMMENCE
-        call assert(.not.idprec)
+        ASSERT(.not.idprec)
         nbcmps=ncmpma
         premie=.true.
 !
@@ -219,7 +219,7 @@ subroutine cescar(cesz, cartz, basz)
             do 60,kcmp=1,ncmp
             call cesexi('C', jce1d, jce1l, ima, 1,&
                         1, kcmp, iad1)
-            call assert(iad1.ne.0)
+            ASSERT(iad1.ne.0)
             if (iad1 .gt. 0) then
                 ncmpma=ncmpma+1
                 zk8(jncmp-1+ncmpma)=zk8(jce1c-1+kcmp)

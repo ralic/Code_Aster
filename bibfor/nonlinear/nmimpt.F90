@@ -68,7 +68,7 @@ subroutine nmimpt(numins, sddisc, sdimpr)
     else if (metlis.eq.'AUTO') then
         lenivo = 0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INSTANT COURANT

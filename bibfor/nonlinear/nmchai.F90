@@ -134,9 +134,9 @@ subroutine nmchai(tychap, tyvarz, vali)
             vali = indik8(lvalin,tyvari,1,zvalin)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
-    call assert(vali.gt.0)
+    ASSERT(vali.gt.0)
 !
 end subroutine

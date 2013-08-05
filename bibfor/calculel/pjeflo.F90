@@ -55,7 +55,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES HEXA : KSI,ETA,DZETA SONT DANS [-1,1]
     if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. elrefa .eq. 'H27') then
-        call assert(ndim.eq.3)
+        ASSERT(ndim.eq.3)
         if (abs(x) .gt. 1.d0) goto 10
         if (abs(y) .gt. 1.d0) goto 10
         if (abs(z) .gt. 1.d0) goto 10
@@ -71,7 +71,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES TETRA :
     elseif (elrefa.eq.'TE4' .or. elrefa.eq.'T10') then
-        call assert(ndim.eq.3)
+        ASSERT(ndim.eq.3)
         if (x .lt. 0.d0) goto 20
         if (y .lt. 0.d0) goto 20
         if (z .lt. 0.d0) goto 20
@@ -91,7 +91,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES PYRAM :
     elseif (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
-        call assert(ndim.eq.3)
+        ASSERT(ndim.eq.3)
         if (z .lt. 0.d0) goto 30
         if (x+y+z .gt. 1.d0) goto 30
         if (x-y+z .gt. 1.d0) goto 30
@@ -113,7 +113,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES PENTA :
     elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18') then
-        call assert(ndim.eq.3)
+        ASSERT(ndim.eq.3)
         if (x .lt. -1.d0) goto 40
         if (x .gt. +1.d0) goto 40
         if (y .lt. 0.d0) goto 40
@@ -134,7 +134,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES TRIA :
     elseif (elrefa.eq.'TR3' .or. elrefa.eq.'TR6' .or. elrefa.eq.'TR7') then
-        call assert(ndim.eq.2)
+        ASSERT(ndim.eq.2)
         if (x .lt. 0.d0) goto 50
         if (y .lt. 0.d0) goto 50
         if (x+y .gt. 1.d0) goto 50
@@ -152,7 +152,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES QUAD :
     elseif (elrefa.eq.'QU4' .or. elrefa.eq.'QU8' .or. elrefa.eq.'QU9') then
-        call assert(ndim.eq.2)
+        ASSERT(ndim.eq.2)
         if (x .lt. -1.d0) goto 60
         if (y .lt. -1.d0) goto 60
         if (x .gt. +1.d0) goto 60
@@ -169,7 +169,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,x-1.d0)
         disprj=max(disprj,y-1.d0)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 80  continue

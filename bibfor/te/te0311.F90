@@ -264,7 +264,7 @@ subroutine te0311(option, nomte)
 !
 !       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !       CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
 !
         if ((abs(lsng) .lt. 1.0d-8) .and. (lstg .lt. 0.0d0)) then

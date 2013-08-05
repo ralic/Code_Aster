@@ -84,7 +84,7 @@ subroutine apinfr(sdappa, questz, ip, valr)
         valr = zr(jdist+4*(ip-1)+1-1)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -86,7 +86,7 @@ subroutine apinfi(sdappa, questz, ip, vali)
         call jeveuo(appar, 'L', jappa)
         vali = zi(jappa+4*(ip-1)+4-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

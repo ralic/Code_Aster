@@ -221,8 +221,7 @@ subroutine plasbe(fami, kpg, ksp, typmod, imat,&
 !
     resi = opt(1:9).eq.'FULL_MECA' .or. opt .eq.'RAPH_MECA'
     rigi = opt(1:9).eq.'FULL_MECA' .or. opt(1:9).eq.'RIGI_MECA'
-    call assert((opt(1:9).eq.'RIGI_MECA') .or. (opt(1:9).eq.'FULL_MECA') .or.&
-                (opt .eq.'RAPH_MECA'))
+    ASSERT((opt(1:9).eq.'RIGI_MECA') .or. (opt(1:9).eq.'FULL_MECA') .or. (opt .eq.'RAPH_MECA'))
     call rcvarc(' ', 'TEMP', '-', fami, kpg,&
                 ksp, tempd, iret)
     call rcvarc(' ', 'TEMP', '+', fami, kpg,&

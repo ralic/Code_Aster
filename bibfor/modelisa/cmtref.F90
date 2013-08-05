@@ -82,16 +82,16 @@ subroutine cmtref(chmat, nomail)
     nbcm1 = zi(jdcm1-1+3)
     igd = zi(jdcm1-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    call assert(nomgd.eq.'NOMMATER')
+    ASSERT(nomgd.eq.'NOMMATER')
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nccm1, k8b)
-    call assert(nccm1.ge.30)
+    ASSERT(nccm1.ge.30)
 !
     call jeveuo(cartrf//'.DESC', 'L', jdtrf)
     call jeveuo(cartrf//'.VALE', 'L', jvtrf)
     nbtrf = zi(jdtrf-1+3)
     igd = zi(jdtrf-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    call assert(nomgd.eq.'NEUT_R')
+    ASSERT(nomgd.eq.'NEUT_R')
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nctrf, k8b)
 !
 !     3) ALLOCATION DE CARCM2 :
@@ -104,7 +104,7 @@ subroutine cmtref(chmat, nomail)
 !     ---------------------------------------------------------------
     do 40,kcm1 = 1,nbcm1
     codcm1 = zi(jdcm1-1+3+2* (kcm1-1)+1)
-    call assert(codcm1.eq.1 .or. codcm1.eq.3)
+    ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
     nucm1 = zi(jdcm1-1+3+2* (kcm1-1)+2)
 !        -- ON STOCKE LES NOMS DES MATERIAUX AFFECTES (28 MAX) :
     ico = 0
@@ -118,7 +118,7 @@ subroutine cmtref(chmat, nomail)
     zk8(jncmp+ico-1) = nocp
 20  continue
     nm = ico
-    call assert(nm.gt.0 .and. nm.le.28)
+    ASSERT(nm.gt.0 .and. nm.le.28)
     zk8(jncmp-1+nm+1) = 'LREF'
     zk8(jvalv-1+nm+1) = 'TREF=>'
     zk8(jncmp-1+nm+2) = 'VREF'
@@ -145,7 +145,7 @@ subroutine cmtref(chmat, nomail)
 !
     do 30,ktrf = 1,nbtrf
     codtrf = zi(jdtrf-1+3+2* (ktrf-1)+1)
-    call assert(codtrf.eq.1 .or. codtrf.eq.3)
+    ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
     nutrf = zi(jdtrf-1+3+2* (ktrf-1)+2)
     tref = zr(jvtrf-1+nctrf* (ktrf-1)+1)
     if (tref .eq. r8vide()) then
@@ -169,7 +169,7 @@ subroutine cmtref(chmat, nomail)
 !           -- CALCUL DE LA LISTE DES MAILLES CONCERNEES PAR KCM1/KTRF:
     call cmtrf2(codcm1, codtrf, ncm1, zi(jlcm1), ntrf,&
                 zi(jltrf), nbma, codint, zi(jlint), ninter)
-    call assert(codint.eq.1 .or. codint.eq.3)
+    ASSERT(codint.eq.1 .or. codint.eq.3)
     if (ninter .eq. 0) goto 30
 !
     if (codint .eq. 1) then

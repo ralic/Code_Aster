@@ -50,7 +50,7 @@ subroutine kndif2(long, lk1, l1, lk2, l2,&
     character(len=24) :: pn2, kbid
     integer :: k1, k2, nbk3
 !
-    call assert((long.eq.8).or.(long.eq.16).or.(long.eq.24))
+    ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
 !
     nbk3=l3
     l3 = 0
@@ -81,7 +81,7 @@ subroutine kndif2(long, lk1, l1, lk2, l2,&
     call jenonu(jexnom(pn2, lk1(k1)), k2)
     if (k2 .eq. 0) then
         l3 = l3 + 1
-        call assert(l3.le.nbk3)
+        ASSERT(l3.le.nbk3)
         lk3(l3) = lk1(k1)
     endif
     2 end do

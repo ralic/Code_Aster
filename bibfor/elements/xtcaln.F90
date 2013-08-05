@@ -63,7 +63,7 @@ subroutine xtcaln(ndim, tau1, tau2, norm, mprojt)
         call normev(norm, noor)
     endif
     if (noor .lt. r8prem()) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MATRICE DE PROJECTION TANGENTE

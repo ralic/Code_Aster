@@ -141,9 +141,9 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
                 zk8(jce3c-1+ncmp2) = zk8(jce1c-1+icmp1)
             endif
 200      continue
-        call assert(ncmp2 .lt. ncmp1)
+        ASSERT(ncmp2 .lt. ncmp1)
     endif
-    call assert(ncmp2 .ne. 0)
+    ASSERT(ncmp2 .ne. 0)
 !
 !     2- CREATION DE 3 OBJETS CONTENANT LES NOMBRES DE POINTS,
 !         SOUS-POINTS ET CMPS POUR CHAQUE MAILLE :
@@ -154,7 +154,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
 !
     if (nbma .ne. 0) then
         do 10,kma = 1,nbma
-        call assert(lima(kma).le.nbmam)
+        ASSERT(lima(kma).le.nbmam)
         if (lima(kma) .le. 0) goto 10
         zi(jnbpt-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+1)
         zi(jnbsp-1+lima(kma))=zi(jce1d-1+5+4*(lima(kma)-1)+2)
@@ -200,7 +200,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
     zl(jexma-1+kma) = .false.
     20 end do
 !
-    call assert(nbma.ge.0)
+    ASSERT(nbma.ge.0)
     if (nbma .eq. 0) then
         do 30,kma = 1,nbmam
         zl(jexma-1+kma) = .true.
@@ -230,7 +230,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
                     isp, icmp1, iad1)
         call cesexi('C', jce2d, jce2l, ima, ipt,&
                     isp, icmp2, iad2)
-        call assert(iad2.le.0)
+        ASSERT(iad2.le.0)
         if ((iad1.le.0) .or. (iad2.eq.0)) goto 50
 !               -- RECOPIE DE LA VALEUR:
         zl(jce2l-1-iad2) = .true.
@@ -253,7 +253,7 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
         else if (tsca.eq.'K80') then
             zk80(jce2v-1-iad2) = zk80(jce1v-1+iad1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 50      continue

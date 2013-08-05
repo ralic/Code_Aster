@@ -69,7 +69,7 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
     if (iocc .eq. 1) then
         call tbexip(table, 'INTITULE', exist, typ)
         if (exist) then
-            call assert(typ(1:3).eq.'K16')
+            ASSERT(typ(1:3).eq.'K16')
             call tbexv1(table, 'INTITULE', intitu, 'V', nbinti,&
                         typ)
         else

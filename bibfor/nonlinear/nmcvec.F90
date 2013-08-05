@@ -77,20 +77,20 @@ subroutine nmcvec(oper, typvez, optioz, lcalc, lasse,&
     else if (oper.eq.'AJOU') then
         nbvect = nbvect + 1
         if (nbvect .eq. 21) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- UTILISER NMFINT !
 !
         if (typvec .eq. 'CNFINT') then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         ltypve(nbvect) = typvec
         loptve(nbvect) = option
         lassve(nbvect) = lasse
         lcalve(nbvect) = lcalc
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

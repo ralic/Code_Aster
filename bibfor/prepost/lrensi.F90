@@ -128,7 +128,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
         read (iu99,'(2I8)',err=50,end=50,iostat=io) i1,i2
     else
         if (npas .ne. 1) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     read (iu99,'(A80)',err=50,end=50,iostat=io) figeom

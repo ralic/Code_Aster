@@ -42,7 +42,7 @@ subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
     integer :: ddls
 !
 ! ----------------------------------------------------------------------
-    call assert(n.le.(nnos+nnom))
+    ASSERT(n.le.(nnos+nnom))
 !
 !     NOMBRE DE DDL PAR NOEUD SOMMET
     ddls=ndim*(1+nfh+nfe)+ddlc

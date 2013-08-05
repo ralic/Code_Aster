@@ -65,7 +65,7 @@ subroutine eclau1(nomte, famil, elrefa, fapg)
         fapg = nofgpg(9:16)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

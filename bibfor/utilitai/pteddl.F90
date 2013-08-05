@@ -103,10 +103,10 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
             call dismoi('F', 'NUM_GD', num, 'CHAM_NO', gd,&
                         k8b, ier)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         nec=nbec(gd)
-        call assert(nec.le.10)
+        ASSERT(nec.le.10)
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
         call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
@@ -166,13 +166,13 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !     ----------------------
     else
         call jeveuo(nomnu//'.DESC', 'L', jdesc)
-        call assert(zi(jdesc).eq.2)
-        if (matd) call assert(.false.)
+        ASSERT(zi(jdesc).eq.2)
+        if (matd) ASSERT(.false.)
         call jeveuo(nomnu//'.DEEQ', 'L', jdeeq)
         call jelira(nomnu//'.DEEQ', 'LONMAX', nleq, k8b)
         nleq=nleq/2
 !       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
-        call assert(nleq.eq.neq)
+        ASSERT(nleq.eq.neq)
         do 90 ieq = 1, neq
             numno=zi(jdeeq+2*ieq-1)
             do 80 j = 1, nbcmp

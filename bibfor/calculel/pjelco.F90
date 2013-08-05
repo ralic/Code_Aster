@@ -37,7 +37,7 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
     integer :: ndim, ndim1, ndim2, ibid
 !     ----------------------------------------------
 !
-    call assert(base.eq.'V')
+    ASSERT(base.eq.'V')
 !
 !
 !     -- CALCUL DE NDIM :
@@ -45,9 +45,9 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
                 kbid, ibid)
     call dismoi('F', 'DIM_GEOM', moa2, 'MODELE', ndim2,&
                 kbid, ibid)
-    call assert(ndim1.eq.ndim2)
+    ASSERT(ndim1.eq.ndim2)
     ndim=ndim1
-    call assert(ndim.eq.2.or.ndim.eq.3)
+    ASSERT(ndim.eq.2.or.ndim.eq.3)
     call u2mesi('I', 'CALCULEL3_28', 1, ndim)
 !
 !

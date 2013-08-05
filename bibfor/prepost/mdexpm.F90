@@ -136,7 +136,7 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim,&
 !
                 iaux = len(nomamd)
                 jaux = lxlgut(saux64)
-                call assert(jaux.le.iaux)
+                ASSERT(jaux.le.iaux)
 !
                 nomamd = ' '
                 nomamd(1:jaux) = saux64(1:jaux)

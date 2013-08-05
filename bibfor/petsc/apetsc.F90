@@ -129,7 +129,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         iprem = 1
     endif
 !
-    call assert(matas.ne.' ')
+    ASSERT(matas.ne.' ')
     call jelira(matas//'.VALM', 'TYPE', ibid, rouc)
 !
 !     1. INFORMATIONS SUR LA MATRICE :
@@ -150,9 +150,9 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     kptsc=1
     do k = 1, nmxins
         if ((nomats(k).eq.matas) .and. (nonus (k).eq.nu )) then
-            call assert(ap(k).ne.0)
+            ASSERT(ap(k).ne.0)
             call MatGetSize(ap(k), m, n, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             if (m .eq. n .and. nglo .eq. n) then
                 kptsc = k
                 goto 1
@@ -160,7 +160,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         endif
     enddo
 !
-    call assert(action.ne.'RESOUD')
+    ASSERT(action.ne.'RESOUD')
 !
     if (action .eq. 'DETR_MAT') then
         goto 9999
@@ -182,12 +182,12 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !     ----------------------------------------------
     if (action .eq. 'PRERES') then
 !        -- REMPLISSAGE DU COMMUN
-        call assert(nomats(kptsc).eq.' ')
-        call assert(nosols(kptsc).eq.' ')
-        call assert(nonus(kptsc).eq.' ')
-        call assert(matas .ne.' ')
-        call assert(solveu.ne.' ')
-        call assert(nu .ne.' ')
+        ASSERT(nomats(kptsc).eq.' ')
+        ASSERT(nosols(kptsc).eq.' ')
+        ASSERT(nonus(kptsc).eq.' ')
+        ASSERT(matas .ne.' ')
+        ASSERT(solveu.ne.' ')
+        ASSERT(nu .ne.' ')
         nomats(kptsc) = matas
         nosols(kptsc) = solveu
         nonus(kptsc) = nu
@@ -203,17 +203,17 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         endif
 !
 !        -- ELIMINATION DES DDLS (AFFE_CHAR_CINE)
-        call assert(zk24(jrefa-1+3).ne.'ELIMF')
+        ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
         if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(matas, 'ELIMF')
-        call assert(zk24(jrefa-1+3).ne.'ELIML')
+        ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
     else if (action.eq.'RESOUD') then
-        call assert(nbsol.ge.1)
-        call assert((istop.eq.0).or.(istop.eq.2))
+        ASSERT(nbsol.ge.1)
+        ASSERT((istop.eq.0).or.(istop.eq.2))
     else if (action.eq.'DETR_MAT') then
 !        RIEN A VERIFIER
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     4. APPEL DE PETSC :

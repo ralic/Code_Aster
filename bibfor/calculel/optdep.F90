@@ -34,7 +34,7 @@ subroutine optdep(option, lisopt, nopout)
     temp = '&&OPTDEP'
     call ccliop('CHAMP', option, temp, noliop, nopout)
     if (nopout .eq. 0) goto 9999
-    call assert(nopout.le.100)
+    ASSERT(nopout.le.100)
 !
     call jeveuo(noliop, 'L', jlisop)
     do 10 i = 1, nopout

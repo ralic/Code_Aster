@@ -66,7 +66,7 @@ subroutine te0443(option, nomte)
 !
     if (option .ne. 'REPE_TENS' .and. option .ne. 'REPE_GENE') then
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (option .eq. 'REPE_TENS') then
@@ -80,7 +80,7 @@ subroutine te0443(option, nomte)
         call tecach('ONO', 'PDENOIN', 'L', 7, itab,&
                     iret(4))
         iret1 = iret(1) + iret(2) + iret(3) + iret(4)
-        call assert(iret1.eq.6)
+        ASSERT(iret1.eq.6)
 !
         if (iret(1) .eq. 0) then
             pain = 'PCOGAIN'
@@ -107,7 +107,7 @@ subroutine te0443(option, nomte)
         call tecach('ONO', 'PDGNOIN', 'L', 7, itab,&
                     iret(4))
         iret1 = iret(1) + iret(2) + iret(3) + iret(4)
-        call assert(iret1.eq.6)
+        ASSERT(iret1.eq.6)
 !
         if (iret(1) .eq. 0) then
             pain = 'PEFGAIN'
@@ -176,8 +176,8 @@ subroutine te0443(option, nomte)
 120      continue
 110  end do
 !
-    call assert(ncmp.le.ncpmax)
-    call assert(np.le.nptmax)
+    ASSERT(ncmp.le.ncpmax)
+    ASSERT(np.le.nptmax)
     vali(1)=nspmax
     vali(2)=nbsp
     if (nbsp .gt. nspmax) call u2mesi('F', 'ELEMENTS5_4', 2, vali)

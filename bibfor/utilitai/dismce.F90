@@ -67,7 +67,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
 !
     call jeveuo(nomob//'.CELD', 'L', jceld)
     call jelira(nomob//'.CELD', 'DOCU', ibid, docu)
-    call assert(docu.eq. 'CHML')
+    ASSERT(docu.eq. 'CHML')
     gd = zi(jceld)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nogd)
 !
@@ -103,7 +103,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'MPI_COMPLET') then
         call jeveuo(nomob//'.CELK', 'L', jcelk)
         k24 = zk24(jcelk-1+7)
-        call assert(k24.eq.'MPI_COMPLET'.or.k24.eq.'MPI_INCOMPLET')
+        ASSERT(k24.eq.'MPI_COMPLET'.or.k24.eq.'MPI_INCOMPLET')
         if (k24 .eq. 'MPI_COMPLET') then
             repk='OUI'
         else

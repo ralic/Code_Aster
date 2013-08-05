@@ -142,7 +142,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     else if (typpil.eq.'DEFORMATION') then
         option = 'PILO_PRED_DEFO'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (nivdbg .ge. 2) then
         debug = .true.

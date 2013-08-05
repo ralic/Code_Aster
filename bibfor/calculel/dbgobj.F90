@@ -63,10 +63,10 @@ subroutine dbgobj(ojbz, perm, iunit, mess)
         if (iret .ne. 0) then
             write (iunit,1004) mess,ojb,type,iret
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

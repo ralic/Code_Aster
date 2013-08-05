@@ -257,7 +257,7 @@ subroutine te0533(option, nomte)
                                 singu, tau1, tau2)
 !
                 else
-                    call assert(rela.eq.3.d0.or.rela.eq.4.d0)
+                    ASSERT(rela.eq.3.d0.or.rela.eq.4.d0)
                 endif
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
 110          continue

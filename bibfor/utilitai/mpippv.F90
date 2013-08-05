@@ -102,7 +102,7 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
             call MPI_SEND(vi4, nbv4, lint4, nudes4, numes4,&
                           mpicou, iermpi)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
     else if (optmpi.eq.'MPI_RECV') then
@@ -117,11 +117,11 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
             call MPI_RECV(vi4, nbv4, lint4, nudes4, numes4,&
                           mpicou, MPI_STATUS_IGNORE, iermpi)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

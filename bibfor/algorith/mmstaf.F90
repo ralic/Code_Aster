@@ -163,7 +163,7 @@ subroutine mmstaf(noma, ndim, chdepd, coefaf, lpenaf,&
                 rese(idim) = dlagrf(1)*tau1(idim)+ dlagrf(2)*tau2( idim)+ coefaf*djeut(idim)
 31          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

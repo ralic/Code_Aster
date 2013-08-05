@@ -84,7 +84,7 @@ subroutine sschge(nomacr)
     endif
     cara = zk8(iarefm-1+4)
     nu= zk8(iarefm-1+5)
-    if (nu(1:8) .ne. nomacr) call assert(.false.)
+    if (nu(1:8) .ne. nomacr) ASSERT(.false.)
 !
     vecel = '&&VECEL            '
     vecas = nomacr//'.CHARMECA'

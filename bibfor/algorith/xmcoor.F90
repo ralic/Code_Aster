@@ -79,7 +79,7 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
     do 20 i = 1, npte
         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                     ifiss, (ifac-1)* ndim+i, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         numpi(i) = zi(jcesv(4)-1+iad)
 20  end do
     do 30 i = 1, ndim
@@ -90,7 +90,7 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
 ! --- D'INTERSECTIONS J DE LA FACETTE
             call cesexi('S', jcesd(3), jcesl(3), nummae, 1,&
                         ifiss, ndim*( numpi(j)-1)+i, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             coor(j) = zr(jcesv(3)-1+iad)
 40      continue
 ! --- CALCUL DE LA COMPOSANTE I POUR LE POINT DE CONTACT DANS LA

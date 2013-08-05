@@ -173,7 +173,7 @@ subroutine mmmtef(phasep, ndim, nne, nnl, nbcps,&
 184          continue
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

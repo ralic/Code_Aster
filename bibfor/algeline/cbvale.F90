@@ -103,7 +103,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
                 zi(lddl))
 !
     symr = zi(lres+4) .eq. 1
-    call assert(typres.eq.'R' .or. typres.eq.'C')
+    ASSERT(typres.eq.'R' .or. typres.eq.'C')
 !
 !
     call mtdsc2(zk24(zi(lres+1)), 'SMDI', 'L', jsmdi)
@@ -155,7 +155,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
         mati = zk24(zi(lmat(imat)+1))
         valmi = mati//'.VALM'
         call jelira(valmi, 'TYPE', ibid, typmat)
-        call assert(typmat.eq.'R' .or. typmat.eq.'C')
+        ASSERT(typmat.eq.'R' .or. typmat.eq.'C')
         call jeveuo(jexnum(valmi, 1), 'L', jvami1)
         symi = zi(lmat(imat)+4) .eq. 1
         if (.not.symi) call jeveuo(jexnum(valmi, 2), 'L', jvami2)

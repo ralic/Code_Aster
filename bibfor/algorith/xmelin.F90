@@ -103,6 +103,6 @@ subroutine xmelin(typma, typint, nnint)
         if (typma(1:2) .eq. 'SE') nnint = 10
         if (typma(1:2) .eq. 'TR') nnint = 25
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

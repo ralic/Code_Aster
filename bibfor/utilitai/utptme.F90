@@ -89,7 +89,7 @@ subroutine utptme(nbarg, nomarg, valarg, iret)
 !
 100      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! FIN ------------------------------------------------------------------

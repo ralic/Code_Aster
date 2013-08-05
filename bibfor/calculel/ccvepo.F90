@@ -93,7 +93,7 @@ subroutine ccvepo(modele, resuin, lischa, nbchar, typesd,&
         noojb='12345678.LIGR000000.LIEL'
         call gnomsd(' ', noojb, 14, 19)
         ligrel=noojb(1:19)
-        call assert(ligrel.ne.' ')
+        ASSERT(ligrel.ne.' ')
         call exlim1(zi(jlisma), nbmaal, modele, 'V', ligrel)
         call jedetr('&&CCVEPO.LISTE_MAILLES')
     endif

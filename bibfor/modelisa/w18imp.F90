@@ -83,7 +83,7 @@ subroutine w18imp(ligrel, noma, nomo)
         nutype=zi(jdli+numvec+nmgrel-2)
         if (nutype .eq. 0) goto 10
 !
-        call assert(nutype.gt.0 .and. nutype.le.nbte)
+        ASSERT(nutype.gt.0 .and. nutype.le.nbte)
         zi(jnbele-1+nutype)=zi(jnbele-1+nutype)+nmgrel-1
         if (zk16(jmodli-1+nutype) .eq. ' ') then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutype), typele)
@@ -158,7 +158,7 @@ subroutine w18imp(ligrel, noma, nomo)
                 jc=jc+1
                 numail=zi(j)
                 if (numail .lt. 0) then
-                    call assert(jdnw.ne.0)
+                    ASSERT(jdnw.ne.0)
                     numnoe=zi(jdnw+(-numail*2-1)-1)
                     call jenuno(jexnum(nomnoe, numnoe), nomail)
                 else

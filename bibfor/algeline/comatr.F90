@@ -85,9 +85,9 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! ----------------------------------------------------------------------
 ! --- VERIF PARAMETRES INPUT
 !-----------------------------------------------------------------------
-    if ((option.ne.'S') .and. (option.ne.'T')) call assert(.false.)
-    if ((typev.ne.'R') .and. (typev.ne.'I') .and. (typev.ne.'C')) call assert(.false.)
-    if ((nbproc.lt.1) .or. (rang.lt.0) .or. (rang+1.gt.nbproc)) call assert(.false.)
+    if ((option.ne.'S') .and. (option.ne.'T')) ASSERT(.false.)
+    if ((typev.ne.'R') .and. (typev.ne.'I') .and. (typev.ne.'C')) ASSERT(.false.)
+    if ((nbproc.lt.1) .or. (rang.lt.0) .or. (rang+1.gt.nbproc)) ASSERT(.false.)
 !
     if (typev .eq. 'I') then
         idim1=dim1i
@@ -99,7 +99,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
         idim1=dim1c
         idim2=dim2c
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! ----------------------------------------------------------------------
@@ -112,14 +112,14 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     nconvg=0
     idecal=0
     do 10 i = 1, nbproc
-        if (vnconv(i) .lt. 0) call assert(.false.)
+        if (vnconv(i) .lt. 0) ASSERT(.false.)
         if ((i-1) .lt. rang) idecal=idecal+vnconv(i)
         nconvg=nconvg+vnconv(i)
 10  end do
     if (option .eq. 'S') then
-        if (idim2 .ne. nconvg) call assert(.false.)
+        if (idim2 .ne. nconvg) ASSERT(.false.)
     else if (option.eq.'T') then
-        if (idim1 .ne. nconvg) call assert(.false.)
+        if (idim1 .ne. nconvg) ASSERT(.false.)
     endif
 !
 ! --- VERIF INIT.

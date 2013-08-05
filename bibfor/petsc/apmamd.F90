@@ -96,26 +96,26 @@ subroutine apmamd(kptsc)
     if (nvalm .eq. 1) then
         lmnsy=.false.
     else if (nvalm.eq.2) then
-        call assert(.false.)
+        ASSERT(.false.)
         lmnsy=.true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong, kbid)
-    call assert(nlong.eq.nz)
+    ASSERT(nlong.eq.nz)
     if (lmnsy) then
         call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvalm2)
         call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong, kbid)
-        call assert(nlong.eq.nz)
+        ASSERT(nlong.eq.nz)
     endif
 !
 !     low donne la premiere ligne stockee localement
 !     high donne la premiere ligne stockee par le processus (rang+1)
 !     ATTENTION ces indices commencent a zero (convention C de PETSc)
     call MatGetOwnershipRange(a, low, high, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
     call wkvect(idxi1, 'V V S', nloc, jdxi1)
     call wkvect(idxi2, 'V V S', nloc, jdxi2)

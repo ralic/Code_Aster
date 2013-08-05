@@ -41,7 +41,7 @@ subroutine mdarch(isto1, ipas, disc, dt, nbmode,&
     real(kind=8) :: dt, disc
 !-----------------------------------------------------------------------
 !
-    call assert((typcal(1:4).eq.'TRAN').or.(typcal(1:4).eq.'HARM'))
+    ASSERT((typcal(1:4).eq.'TRAN').or.(typcal(1:4).eq.'HARM'))
 !
     iorsto(isto1+1) = ipas
     discst(isto1+1) = disc

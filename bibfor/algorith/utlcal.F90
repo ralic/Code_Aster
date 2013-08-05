@@ -39,7 +39,7 @@ subroutine utlcal(typque, algo, valr)
 ! IN/OUT VALR   : NOM DE L'ALGORITHME
 !
 !
-    call assert(typque.eq.'NOM_VALE'.or. typque.eq.'VALE_NOM')
+    ASSERT(typque.eq.'NOM_VALE'.or. typque.eq.'VALE_NOM')
 !
     if (typque .eq. 'NOM_VALE') then
 !
@@ -67,7 +67,7 @@ subroutine utlcal(typque, algo, valr)
         else if (algo.eq.'NEWTON_PERT') then
             valr =10.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !
@@ -97,7 +97,7 @@ subroutine utlcal(typque, algo, valr)
         else if (valr.eq.10.d0) then
             algo = 'NEWTON_PERT'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     endif

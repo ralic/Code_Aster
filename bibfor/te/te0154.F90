@@ -270,7 +270,7 @@ subroutine te0154(option, nomte)
 !
         else
 ! OPTION NON PROGRAMMEE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

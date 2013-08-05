@@ -291,7 +291,7 @@ subroutine zedgar(matos, tm, tp, instp, dinst,&
             if (g .le. 0.d0) zinf = zp
 !
 10      continue
-        call assert(.false.)
+        ASSERT(.false.)
 100      continue
     endif
 !

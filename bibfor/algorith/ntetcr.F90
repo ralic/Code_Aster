@@ -142,7 +142,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
                         larch (icham))
         endif
 30  end do
-    call assert(ich.eq.nbcham)
+    ASSERT(ich.eq.nbcham)
 !
 ! --- NOM DU CHAMP
 !
@@ -156,7 +156,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
             nomchx = compor
         else
             write(6,*) 'NOMCHA: ',nomcha
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zk24(jiolch+zioch*(icham-1)+6-1) = nomchx
 40  end do
@@ -173,7 +173,7 @@ subroutine ntetcr(numedd, compor, sdieto, lnonl, vhydr,&
             nomch0 = ' '
         else
             write(6,*) 'NOMCHA: ',nomcha
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zk24(jiolch+zioch*(icham-1)+2-1) = nomch0
 50  end do

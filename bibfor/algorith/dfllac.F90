@@ -92,7 +92,7 @@ subroutine dfllac(mcfact, iechec, dtmin, even, action,&
     else if (action.eq.'CONTINUE') then
 ! ----- PAS D'OPTIONS
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

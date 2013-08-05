@@ -112,7 +112,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !     SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
     if (zi(jscde-1+4) .eq. 1) then
         zi(iadesc+2)=1
-!        CALL ASSERT(.NOT.LSYM)
+!        ASSERT(.NOT.LSYM)
     else
         zi(iadesc+2)=2
     endif
@@ -150,7 +150,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
             do 30 i = n1bloc, n2bloc
                 nbj=i-zi(jschc+i-1)+1
-                call assert(nbj.eq.1 .or. nbj.eq.i)
+                ASSERT(nbj.eq.1 .or. nbj.eq.i)
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
                 call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
@@ -175,19 +175,19 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     else
 !     -- CAS DES MATRICES NON-SYMETRIQUES :
 !     --------------------------------------
-        call assert(nbloc.eq.1)
+        ASSERT(nbloc.eq.1)
         call jecroc(jexnum(resu//'.UALF', 1))
         call jecroc(jexnum(resu//'.UALF', 2))
         call jeveuo(jexnum(resu//'.UALF', 1), 'E', ldblo1)
         call jeveuo(jexnum(resu//'.UALF', 2), 'E', ldblo2)
         n1bloc=zi(jscbl+1-1)+1
         n2bloc=zi(jscbl+1)
-        call assert(n1bloc.eq.1)
-        call assert(n2bloc.eq.nueq)
+        ASSERT(n1bloc.eq.1)
+        ASSERT(n2bloc.eq.nueq)
 !
         do 60 i = 1, nueq
             nbj=i-zi(jschc+i-1)+1
-            call assert(nbj.eq.1)
+            ASSERT(nbj.eq.1)
             call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
                         .true.)
             call zerlag('R', zr(idvec2), cbid, neq, zi(iddeeq))

@@ -79,7 +79,7 @@ subroutine te0363(option, nomte)
                 ddle, ddlm, contac, ndeple, nsinge,&
                 nsingm, nfhe, nfhm)
 !
-    call assert(nddl.le.336)
+    ASSERT(nddl.le.336)
     lmulti = .false.
     if (nfhe .gt. 1 .or. nfhm .gt. 1) lmulti = .true.
 !
@@ -88,7 +88,7 @@ subroutine te0363(option, nomte)
     dlagrc = 0.d0
 ! --- INITIALISATION DE LA VARIABLE DE TRAVAIL
     incoca = 0
-    call assert(option.eq.'XCVBCA')
+    ASSERT(option.eq.'XCVBCA')
 !
 ! --- RECUPERATION DES DONNEES DE LA CARTE CONTACT 'POINT' (VOIR XMCART)
 !
@@ -179,7 +179,7 @@ subroutine te0363(option, nomte)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffec, ffc)
     else
-        call assert(contac.eq.0)
+        ASSERT(contac.eq.0)
     endif
 !
 ! --- CALCUL DE LA NORMALE
@@ -191,7 +191,7 @@ subroutine te0363(option, nomte)
         call normev(norm, noor)
     endif
     if (noor .le. r8prem()) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DE L'INCREMENT DE REACTION DE CONTACT
@@ -246,7 +246,7 @@ subroutine te0363(option, nomte)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 999  continue

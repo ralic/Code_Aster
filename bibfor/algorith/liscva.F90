@@ -69,11 +69,11 @@ subroutine liscva(prefob, chamno)
     else
         nomobj = prefob(1:13)//'.VEASS'
         call jeexin(nomobj, iret)
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
         call jeveuo(nomobj, 'L', jobje)
         chamno = zk8(jobje)
         call exisd('CHAM_NO', chamno, iret)
-        call assert(iret.gt.0)
+        ASSERT(iret.gt.0)
     endif
 !
     call jedema()

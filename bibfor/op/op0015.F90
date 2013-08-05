@@ -56,7 +56,7 @@ subroutine op0015()
 !
     call getvid('  ', 'MATR', 0, iarg, 1,&
                 matr, nb)
-    call assert(nb.eq.1)
+    ASSERT(nb.eq.1)
 !
     matf=' '
     call getvid(' ', 'MATR_PREC', 0, iarg, 1,&
@@ -64,7 +64,7 @@ subroutine op0015()
 !
     call getvid('  ', 'CHAM_NO', 0, iarg, 1,&
                 secmbr, nb)
-    call assert(nb.eq.1)
+    ASSERT(nb.eq.1)
     call chpver('F', secmbr, 'NOEU', '*', ier)
 !
     vcine = ' '

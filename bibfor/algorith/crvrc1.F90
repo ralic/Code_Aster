@@ -64,7 +64,7 @@ subroutine crvrc1()
 !
     call getfac('PREP_VRC1', nbfac)
     if (nbfac .eq. 0) goto 20
-    call assert(nbfac.eq.1)
+    ASSERT(nbfac.eq.1)
 !
 !
     call getres(resu, type, oper)
@@ -87,7 +87,7 @@ subroutine crvrc1()
 !     -- INSTANTS DE L'EVOL_THER :
     call getvr8('PREP_VRC1', 'INST', 1, iarg, 0,&
                 rbid, n1)
-    call assert(n1.lt.0)
+    ASSERT(n1.lt.0)
     nbinst = -n1
     call wkvect('&&CRVRC1.LINST', 'V V R', nbinst, jlinst)
     call getvr8('PREP_VRC1', 'INST', 1, iarg, nbinst,&

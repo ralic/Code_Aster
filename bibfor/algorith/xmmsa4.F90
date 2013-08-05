@@ -59,7 +59,7 @@ subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
 ! ----------------------------------------------------------------------
 !
     call vecini(3, 0.d0, saut)
-    call assert(nvec.gt.0)
+    ASSERT(nvec.gt.0)
     do 161 i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
         do 162 j = 1, nfh*ndim

@@ -83,9 +83,9 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac)
-    call assert(nfisc.le.mxstac)
-    call assert(ndim.le.mxstac)
+    ASSERT(nnop.le.mxstac)
+    ASSERT(nfisc.le.mxstac)
+    ASSERT(ndim.le.mxstac)
 !
     zxain = xxmmvd('ZXAIN')
     call elref4(' ', 'RIGI', ndime, ibid, ibid,&
@@ -118,7 +118,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !
     else if (ndim.eq.1) then
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !
@@ -266,7 +266,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 30                  continue
                     if (abs(lsnc) .gt. lonref*1d-8) then
                         iter = iter+1
-                        call assert(iter.lt.50)
+                        ASSERT(iter.lt.50)
                         lsnb = lsnc
                         do 140 i = 1, ndim
                             b(i) = c(i)
@@ -287,7 +287,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 999  continue
     ninter=ipt
     npts  =ins
-    call assert(ninter.ge.npts.and.ninter.le.ptmax)
+    ASSERT(ninter.ge.npts.and.ninter.le.ptmax)
 !
 !     TRI DES POINTS D'INTERSECTION PAR ORDRE CROISSANT DES ARETES
     do 200 pd = 1, ninter-1

@@ -166,7 +166,7 @@ subroutine calimc(chargz)
         nbndyn = nbmdyn/nec
         nbndef = nbntot-nbndyn
         nbnde2 = nbmdef/nec
-        call assert(nbndef.eq.nbnde2)
+        ASSERT(nbndef.eq.nbnde2)
 !       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES
         call wkvect('&&CALIMC.NCMPSD', 'V V K8', 2*nbmdef, jncmpd)
         call jeveuo(macrel//'.LINO', 'L', iaconx)

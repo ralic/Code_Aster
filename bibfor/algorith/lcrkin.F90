@@ -131,7 +131,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
         endif
         if (materf(nbcomm(1,1),2) .ge. 4) then
 !           UNE SEULE FAMILLE
-            call assert(nbcomm(nmat, 2).eq.1)
+            ASSERT(nbcomm(nmat, 2).eq.1)
             necoul=cpmono(3)
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 irr=1

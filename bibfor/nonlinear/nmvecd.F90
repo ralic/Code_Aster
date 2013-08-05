@@ -274,7 +274,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
         kxhi = 0.d0
         xhi = 0.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     dkxidx = 0.d0

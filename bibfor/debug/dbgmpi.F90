@@ -80,13 +80,13 @@ subroutine dbgmpi(ico)
                        MPI_COMM_WORLD, iermpi)
     call mpierr(iermpi)
     icout=icout/nbproc
-    call assert(icout.eq.icoin)
+    ASSERT(icout.eq.icoin)
 !
 !     -- POUR CAPTER LES ALL_REDUCE / MPI_MAX :
     call MPI_ALLREDUCE(icoin, icout, 1, lint, MPI_MAX,&
                        MPI_COMM_WORLD, iermpi)
     call mpierr(iermpi)
-    call assert(icout.eq.icoin)
+    ASSERT(icout.eq.icoin)
 !
 999  continue
 #endif

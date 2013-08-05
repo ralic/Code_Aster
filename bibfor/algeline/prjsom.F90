@@ -86,7 +86,7 @@ function prjsom(nbmat, mater, invare, invars, b,&
             prjsom = .true.
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ======================================================================
 end function

@@ -145,18 +145,18 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        ------------------------------------
 !
         call MatAssemblyBegin(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call MatAssemblyEnd(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
 !
         call KSPCreate(mpicou, kp(kptsc), ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         call appcpr(kptsc)
 !
@@ -183,7 +183,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         if (ierd .ne. 0) then
             call jeveuo(vcine//'.VALE', 'L', idvalc)
             call jelira(vcine//'.VALE', 'TYPE', ibid, rouc)
-            call assert(rouc.eq.'R')
+            ASSERT(rouc.eq.'R')
             call csmbgg(lmat, rsolu, zr(idvalc), cbid, cbid,&
                         'R')
         endif
@@ -207,7 +207,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        ----------------
 !
         call VecDuplicate(b, x, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call KSPSolve(ksp, b, x, ierr)
 !
 !        2.5 DIAGNOSTIC :
@@ -220,14 +220,14 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
 !        ANALYSE DE LA CONVERGENCE DU KSP
         call KSPGetConvergedReason(ksp, indic, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !        ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
 !        EN CAS DE DIVERGENCE
         if (indic .lt. 0) then
             call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,&
                                   ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !           -- PRECONDITIONNEUR UTILISE
             call jeveuo(nosolv//'.SLVK', 'L', jslvk)
             precon = zk24(jslvk-1+2)
@@ -275,26 +275,26 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
         if (resipc .ge. 0.d0) then
             call VecDuplicate(x, r, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !           r = Ax
             call MatMult(a, x, r, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !           r = b - Ax
             call VecAYPX(r, -1.d0, b, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !           fres = ||r||_2
             call VecNorm(r, norm_2, fres, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !           ires = ||b||_2
             call VecNorm(b, norm_2, ires, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !
             call VecDestroy(r, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !
             call KSPGetTolerances(ksp, rtol, atol, dtol, maxits,&
                                   ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
 !
             if (fres .gt. sqrt(rtol)*ires) then
                 call u2mess('F', 'PETSC_16')
@@ -312,9 +312,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        -- EN CAS D'ERREUR DANS LES ITERATIONS DE KRYLOV ON SAUTE ICI
 999      continue
         call VecDestroy(b, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecDestroy(x, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !        -- PRECONDITIONNEUR UTILISE
         call jeveuo(nosolv//'.SLVK', 'L', jslvk)
@@ -328,17 +328,17 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             spsomu = ' '
 !
             call VecDestroy(xlocal, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             call VecDestroy(xglobal, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             call VecScatterDestroy(xscatt, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             xlocal = 0
             xglobal = 0
             xscatt = 0
 !           ON STOCKE LE NOMBRE D'ITERATIONS DU KSP
             call KSPGetIterationNumber(ksp, maxits, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             nmaxit = maxits
             call jeveuo(nosolv//'.SLVI', 'E', jslvi)
             zi(jslvi-1+5) = nmaxit
@@ -358,9 +358,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
 !        -- DESTRUCTION DES OBJETS PETSC GENERAUX
         call MatDestroy(a, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call KSPDestroy(ksp, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !        -- SUPRESSION DE L'INSTANCE PETSC
         nomats(kptsc) = ' '
@@ -380,7 +380,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- ON REACTIVE LA LEVEE D'EXCEPTION

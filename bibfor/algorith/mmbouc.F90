@@ -70,7 +70,7 @@ subroutine mmbouc(resoco, nombcl, typope, valbcl)
         else if (typope.eq.'READ') then
             valbcl = zi(jmbouc-1+1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         valbcl = zi(jmbouc-1+1)
     else if (nombcl.eq.'FROT') then
@@ -81,7 +81,7 @@ subroutine mmbouc(resoco, nombcl, typope, valbcl)
         else if (typope.eq.'READ') then
             valbcl = zi(jmbouc-1+2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         valbcl = zi(jmbouc-1+2)
     else if (nombcl.eq.'GEOM') then
@@ -92,11 +92,11 @@ subroutine mmbouc(resoco, nombcl, typope, valbcl)
         else if (typope.eq.'READ') then
             valbcl = zi(jmbouc-1+3)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         valbcl = zi(jmbouc-1+3)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -49,7 +49,7 @@ subroutine ptfop1(itype, coef1, coef2, xl, rad,&
         if (sect1 .ne. 1.d0) then
             if (qq(4) .ne. 0.d0 .or. qq(10) .ne. 0.d0 .or. qq(5) .ne. 0.d0 .or. qq(11) .ne.&
                 0.d0 .or. qq(6) .ne. 0.d0 .or. qq(12) .ne. 0.d0) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         coef = sect1 * xl

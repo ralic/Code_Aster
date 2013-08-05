@@ -85,7 +85,7 @@ function cfcald(defico, izone, typnoe)
             cfcald = .true.
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

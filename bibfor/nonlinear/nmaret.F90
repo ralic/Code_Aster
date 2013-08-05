@@ -138,7 +138,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
         call jeveuo(nlise2, 'L', jlis1)
         call jelira(nlise2, 'LONMAX', nreleq, k8bid)
         nreleq = nreleq/2
-        call assert(nreleq.eq.nar)
+        ASSERT(nreleq.eq.nar)
         if (nreleq .gt. 0) then
             do 60 i = 1, nreleq
                 repere=0

@@ -115,7 +115,7 @@ subroutine u195tb(chou)
     else if (typchs.eq.'CART') then
         call cescar(chs, chou, 'G')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 !

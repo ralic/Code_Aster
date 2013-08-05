@@ -70,7 +70,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
                     k8b, ier)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jenonu(jexnom(nomma//'.NOMNOE', noeud), nunoe)
@@ -84,7 +84,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
     call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
     nec = nbec( gd )
-    call assert(nec .le. 10)
+    ASSERT(nec .le. 10)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
     do 10 iec = 1, nec

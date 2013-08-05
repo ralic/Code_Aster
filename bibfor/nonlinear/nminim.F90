@@ -233,7 +233,7 @@ subroutine nminim(sdsuiv, sdimpr)
             typcol = typcoz(icolo2)
             if (typcol .eq. ordcol) icolo = icolo2
 16      continue
-        call assert(icolo.ne.0)
+        ASSERT(icolo.ne.0)
         typcol = typcoz(icolo)
 !
 ! ----- RECUPERATION D'UNE COLONNE GENEREE
@@ -281,7 +281,7 @@ subroutine nminim(sdsuiv, sdimpr)
     do 30 icolo = 2, nbcolt
         call oblgoi(slcolo, icolo, sdcolo)
         call obgeti(sdcolo, 'HAUTEUR_TITRE', titcom)
-        if (titco1 .ne. titcom) call assert(.false.)
+        if (titco1 .ne. titcom) ASSERT(.false.)
 30  end do
     call obseti(sdtabc, 'HAUTEUR_TITRE', titcom)
 !

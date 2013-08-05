@@ -53,7 +53,7 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel,&
     else if (sens.eq.'MAIL') then
         rsign=+1.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

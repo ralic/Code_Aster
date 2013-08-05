@@ -68,7 +68,7 @@ subroutine apninv(sdappa, defico, posnom, questz, vali)
         call cfnben(defico, posnom, 'CONINV', ibid, jdeciv)
         vali = jdeciv
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

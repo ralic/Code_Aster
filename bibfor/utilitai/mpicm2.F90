@@ -106,7 +106,7 @@ subroutine mpicm2(optmpi, nomjev)
     if (optmpi .eq. 'BCAST') then
 !     ---------------------------------
         call jelira(nomjev, 'XOUS', ibid, xous)
-        call assert(xous.eq.'S')
+        ASSERT(xous.eq.'S')
         call jelira(nomjev, 'TYPE', ibid, typsca)
         call jelira(nomjev, 'LONMAX', nlong, kbid)
 !
@@ -123,14 +123,14 @@ subroutine mpicm2(optmpi, nomjev)
             call MPI_BCAST(zi4(jnomjv), n4, lint4, 0, mpicou,&
                            iermpi)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
 !
     else if (optmpi.eq.'REDUCE') then
 !     ---------------------------------
         call jelira(nomjev, 'XOUS', ibid, xous)
-        call assert(xous.eq.'S')
+        ASSERT(xous.eq.'S')
         call jelira(nomjev, 'TYPE', ibid, typsca)
         call jelira(nomjev, 'LONMAX', nlong, kbid)
 !
@@ -162,7 +162,7 @@ subroutine mpicm2(optmpi, nomjev)
             call MPI_REDUCE(zi4(jtrav), zi4(jnomjv), n4, lint4, MPI_SUM,&
                             0, mpicou, iermpi)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
         call jedetr(notrav)
@@ -217,7 +217,7 @@ subroutine mpicm2(optmpi, nomjev)
             call MPI_ALLREDUCE(zi4(jtrav), zi4(jnomjv), n4, lint4, MPI_SUM,&
                                mpicou, iermpi)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call jedetr(notrav)
 !
@@ -226,7 +226,7 @@ subroutine mpicm2(optmpi, nomjev)
         call mpierr(iermpi)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

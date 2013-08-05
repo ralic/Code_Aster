@@ -155,7 +155,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
             reasma = mod(numins-1,reincr) .eq. 0
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ELASTICITE ?

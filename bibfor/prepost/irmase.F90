@@ -155,7 +155,7 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
         rmax = rmax+0.5d0
         theta = 0.d0
 20      continue
-        call assert(postmp.eq.2*nbpoin)
+        ASSERT(postmp.eq.2*nbpoin)
 !
     else if (typsec.eq.'PMF') then
 !
@@ -165,12 +165,12 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
         call jeveuo(sdcarm//'.CAFIBR    .CESV', 'L', jcesv)
         call jeveuo(sdcarm//'.CAFIBR    .CESL', 'L', jcesl)
 !
-        call assert(zi(jcesd+5+4*(nummai-1)).eq.1)
+        ASSERT(zi(jcesd+5+4*(nummai-1)).eq.1)
         nbpoin = zi(jcesd+5+4*(nummai-1)+1)
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', 2*nbpoin, jcoopt)
         nbcmp = zi(jcesd+5+4*(nummai-1)+2)
-        call assert(nbcmp.eq.3)
-        call assert(zk8(jcesc).eq.'XG      '.and. zk8(jcesc+1).eq.'YG      ')
+        ASSERT(nbcmp.eq.3)
+        ASSERT(zk8(jcesc).eq.'XG      '.and. zk8(jcesc+1).eq.'YG      ')
 !
         postmp = 0
         do 50, isp = 1,nbpoin
@@ -183,7 +183,7 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
 50      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- DEFINITION DU MAILLAGE SUPPORT MED

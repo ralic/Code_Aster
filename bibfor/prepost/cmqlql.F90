@@ -81,7 +81,7 @@ subroutine cmqlql(main, maout, nbma, lima)
     do 10 ityp = 1, nbtyma
         call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nom)
 ! VERIFICATION COHERENCE CATALOGUE FORTRAN
-        call assert(nomast(ityp) .eq. nom)
+        ASSERT(nomast(ityp) .eq. nom)
 10  end do
 !
 !     =========================================================

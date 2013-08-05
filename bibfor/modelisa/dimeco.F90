@@ -93,7 +93,7 @@ subroutine dimeco(char, ndim, nzoco, nsuco, nmaco,&
         else if (ndim.eq.23) then
             ndim = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

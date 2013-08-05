@@ -108,7 +108,7 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol,&
         jac(ipg) = aux*poids3(ipg)
 !
 ! NORMALISATION A L'UNITE DES COMPOSANTES DE LA NORMALE
-        call assert(abs(aux).gt.ovfl)
+        ASSERT(abs(aux).gt.ovfl)
         aux = -1.d0/aux
         xn(ipg) = xn(ipg)*aux
         yn(ipg) = yn(ipg)*aux

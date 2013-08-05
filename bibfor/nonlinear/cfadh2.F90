@@ -136,7 +136,7 @@ subroutine cfadh2(resoco, defico, noma, indic, nbliac,&
                     endif
                 endif
 310          continue
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 300
 312      continue

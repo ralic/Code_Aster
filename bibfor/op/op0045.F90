@@ -38,7 +38,6 @@ subroutine op0045()
 !          COMPLEXES CONJUGUEES OU NON
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
-! aslint: disable=W1501
     implicit none
 !
 ! VARIABLES LOCALES
@@ -217,7 +216,7 @@ subroutine op0045()
     mpicow=comcou(0)
     mpicou=comcou(1)
 !     --- ON EST CENSE FONCTIONNER EN COMM_WORLD
-    if (mpicow .ne. mpicou) call assert(.false.)
+    if (mpicow .ne. mpicou) ASSERT(.false.)
     call mpiexe('MPI_RANG_SIZE', mpicow, ibid, rang, nbproc)
     call getvis('PARALLELISME_MACRO', 'TYPE_COM', 1, iarg, 1,&
                 typeco, l1)
@@ -252,7 +251,7 @@ subroutine op0045()
 !       --- PLUS AFFECTATION DE CE NOUVEAU COM AFIN DE NE PAS PERTURBER
 !       --- LA FACTO DE LA DEMI-BANDE
         call mpiexe('MPI_COMM_SPLIT', mpicow, mpicou, icom1, 0)
-        if (mpicow .eq. mpicou) call assert(.false.)
+        if (mpicow .eq. mpicou) ASSERT(.false.)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
         call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
@@ -341,7 +340,7 @@ subroutine op0045()
     else if (ktyp.eq.'C') then
         lkr=.false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     --- METHODE DE RESOLUTION CHOISIE ---
@@ -915,7 +914,7 @@ subroutine op0045()
         endif
     else
 !     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
-        if (lcomod) call assert(.false.)
+        if (lcomod) ASSERT(.false.)
         call wkvect('&&OP0045.VECTEUR_PROPRE', 'V V C', neq*nbvect, lvec)
     endif
 !
@@ -1023,7 +1022,7 @@ subroutine op0045()
             call wkvect('&&OP0045.VECT.AUR', 'V V R', 2*neq*(nbvect+1), laur)
         else
 ! ---- OPTION ILLICITE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -1111,7 +1110,7 @@ subroutine op0045()
 !     ------------------------------------------------------------------
 !     -------  SORENSEN PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 !     ------------------------------------------------------------------
-            if (lcomod) call assert(.false.)
+            if (lcomod) ASSERT(.false.)
             call vpsorc(lmasse, lmatra, neq, nbvect, nfreq,&
                         tolsor, zc(lvec), zc(lresid), zc(lworkd), zc(lworkl),&
                         lonwl, zl(lselec), zc(ldsor), sigma, zc(laux),&
@@ -1169,7 +1168,7 @@ subroutine op0045()
 !     ------------------------------------------------------------------
 !     -------  QZ PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 !     ------------------------------------------------------------------
-            if (lcomod) call assert(.false.)
+            if (lcomod) ASSERT(.false.)
             call vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                         qrai, qrba, qrvl, lvec, kqrn,&
                         lvalpr, nconv, omecor, ktyp, kqrnr,&
@@ -1196,7 +1195,7 @@ subroutine op0045()
 !     ------------------------------------------------------------------
 !     -------  JACOBI PB GENERALISE REEL   --------
 !     ------------------------------------------------------------------
-            if ((.not.lkr) .or. lns) call assert(.false.)
+            if ((.not.lkr) .or. lns) ASSERT(.false.)
             call sspace(lmtpsc, lmatra, lmasse, neq, nbvect,&
                         nfreq, zi( lprod), itemax, nperm, tol,&
                         toldyn, zr(lvec), zr(lvalpr), nitjac, nitbat,&
@@ -1231,7 +1230,7 @@ subroutine op0045()
 !     ------------------------------------------------------------------
 !     -------  LANCZOS PB GENERALISE REEL   --------
 !     ------------------------------------------------------------------
-            if ((.not.lkr) .or. lns) call assert(.false.)
+            if ((.not.lkr) .or. lns) ASSERT(.false.)
             if (nstoc .ge. nbvect) call u2mess('A', 'ALGELINE2_72')
             if (nstoc .ne. 0) then
                 do 26 i = 1, neq * nstoc
@@ -1272,7 +1271,7 @@ subroutine op0045()
 !
     else
 !
-        if (lcomod) call assert(.false.)
+        if (lcomod) ASSERT(.false.)
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -1367,7 +1366,7 @@ subroutine op0045()
 !     -------  SORENSEN PB QUADRATIQUE COMPLEXE SYM  --------
 !     -------  APPROCHE COMPLEXE                     --------
 !     ------------------------------------------------------------------
-                if (lns) call assert(.false.)
+                if (lns) ASSERT(.false.)
                 call wpsorc(lmasse, lamor, lmatra, neq, nbvect,&
                             nfreq, tolsor, zc(lvec), zc(lresid), zc(lworkd),&
                             zc( lworkl), lonwl, zl(lselec), zc(ldsor), sigma,&
@@ -1397,7 +1396,7 @@ subroutine op0045()
 !     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
     mfreq = nconv
     if (optiof .eq. 'BANDE') then
-        if (lc .or. lns .or. .not.lkr) call assert(.false.)
+        if (lc .or. lns .or. .not.lkr) ASSERT(.false.)
         do 110 ifreq = mfreq - 1, 0
             if (zr(lresur+mxresf+ifreq) .gt. omemax .or. zr(lresur+ mxresf+ifreq) .lt. omemin) &
             nconv = nconv - 1
@@ -1435,7 +1434,7 @@ subroutine op0045()
                     zr(lresur), zk24(lresuk), ktyp, lcomod, icom1,&
                     icom2, typres, nfreqg)
     else
-        if (lcomod) call assert(.false.)
+        if (lcomod) ASSERT(.false.)
         call vppara(modes, typcon, knega, lraide, lmasse,&
                     lamor, mxresf, neq, nconv, omecor,&
                     zi(lddl), zi(lprod), rbid, zc(lvec), nbpari,&

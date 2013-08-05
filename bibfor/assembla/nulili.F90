@@ -233,11 +233,11 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
                 goto 30
             endif
 20      continue
-        call assert(.false.)
+        ASSERT(.false.)
 30      continue
     endif
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgds), igds)
-    call assert(igds.ne.0)
+    ASSERT(igds.ne.0)
 !
     nec = nbec(igds)
     ncmp = nbcmp(igds)

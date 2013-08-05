@@ -61,7 +61,7 @@ subroutine vrcom2(compop, varmoi, ligrep)
 !
 !     -- ON VERIFIE QUE VARMOI EST UN OBJET TEMPORAIRE QUE L'ON A
 !        LE DROIT DE MODIFIER :
-    call assert(varmoi(1:2).eq.'&&')
+    ASSERT(varmoi(1:2).eq.'&&')
 !
 !
 !     1- ON TRANSFORME VARMOI EN CHAM_ELEM_S (CESV1)
@@ -128,7 +128,7 @@ subroutine vrcom2(compop, varmoi, ligrep)
 !          ON NE VEUT PAS FAIRE D'ERREUR <F> :
     if ((nbsp1.eq.0) .and. (nbcm1.eq.0)) goto 40
 !
-    call assert(nbsp2.eq.nbsp1)
+    ASSERT(nbsp2.eq.nbsp1)
 !
     if (nbcm1 .eq. nbcm2) then
         action=1
@@ -141,12 +141,12 @@ subroutine vrcom2(compop, varmoi, ligrep)
     do 10,icm=1,nbcm2
     call cesexi('S', jcev2d, jcev2l, ima, ipg,&
                 isp, icm, iad2)
-    call assert(iad2.gt.0)
+    ASSERT(iad2.gt.0)
     zl(jcev2l-1+iad2)=.true.
     if (action .eq. 1) then
         call cesexi('S', jcev1d, jcev1l, ima, ipg,&
                     isp, icm, iad1)
-        call assert(iad1.gt.0)
+        ASSERT(iad1.gt.0)
         zr(jcev2v-1+iad2)=zr(jcev1v-1+iad1)
 !
     else

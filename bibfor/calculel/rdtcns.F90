@@ -53,8 +53,8 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call assert(cns2.ne.' ')
-    call assert(cns1.ne.cns2)
+    ASSERT(cns2.ne.' ')
+    ASSERT(cns1.ne.cns2)
 !
     call jeveuo(cns1//'.CNSK', 'L', jcn1k)
     call jeveuo(cns1//'.CNSD', 'L', jcn1d)
@@ -65,7 +65,7 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
     nomgd=zk8(jcn1k-1+2)
     nbno1=zi(jcn1d-1+1)
     ncmp=zi(jcn1d-1+2)
-    call assert(ncmp.gt.0)
+    ASSERT(ncmp.gt.0)
 !
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
@@ -81,8 +81,8 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
     call jeveuo(cns2//'.CNSV', 'E', jcn2v)
     call jeveuo(cns2//'.CNSL', 'E', jcn2l)
     nbno2=zi(jcn2d-1+1)
-    call assert(nbno2.gt.0)
-    call assert(nbno2.le.nbno1)
+    ASSERT(nbno2.gt.0)
+    ASSERT(nbno2.le.nbno1)
 !
 !
 !     3- REMPLISSAGE DES OBJETS .CNSL ET .CNSV :
@@ -112,7 +112,7 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
             zk8(jcn2v-1+(ino2-1)*ncmp+icmp)=zk8(jcn1v-1+(ino1-&
                     1)*ncmp+ icmp)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     endif

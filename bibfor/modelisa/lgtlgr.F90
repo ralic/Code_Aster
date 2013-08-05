@@ -81,7 +81,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 ! --- S'ARRETE EN ERREUR FATALE :
 !     -------------------------
     call jeexin(ligret//'.LGRF', iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
 !
 ! --- NUMERO DU TYPE ASSOCIE A DES MAILLES TARDIVES :
 !     ---------------------------------------------

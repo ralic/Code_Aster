@@ -70,7 +70,7 @@ subroutine ccchut(resuin, resuou, lisord, nbordr)
                     chin, ibid)
         call getvis(mcfact, 'NUME_CHAM_RESU', ioc, iarg, 1,&
                     nchout, ibid)
-        call assert(nchout.ge.1 .and. nchout.le.20)
+        ASSERT(nchout.ge.1 .and. nchout.le.20)
 !       CRITERE OU FORMULE ?
         crit = ' '
         call getvid(mcfact, 'FORMULE', ioc, iarg, 0,&

@@ -144,7 +144,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
         cresi = cmaxi
         call nmlere(sddisc, 'L', 'VMAXI_TOUS', iterat, zr(jvresi))
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DE L'EXTRAPOLATION LINEAIRE

@@ -120,7 +120,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
             do 312 imae = 1, nmafis
                 if (nmaabs .eq. mafis(imae)) then
                     i=i+1
-                    call assert(i.le.nmafis)
+                    ASSERT(i.le.nmafis)
                     mafon(i)=nmaabs
 !             ON SORT DE LA BOUCLE 312
                     goto 313
@@ -132,15 +132,15 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !       ON RÉCUPÈRE LES NUMEROS DES MAILLES ENRICHIES
         if (em .eq. 1) then
             im1=im1+1
-            call assert(im1.le.nbma)
+            ASSERT(im1.le.nbma)
             maen1(im1)=nmaabs
         else if (em.eq.2) then
             im2=im2+1
-            call assert(im2.le.nbma)
+            ASSERT(im2.le.nbma)
             maen2(im2)=nmaabs
         else if (em.eq.3) then
             im3=im3+1
-            call assert(im3.le.nbma)
+            ASSERT(im3.le.nbma)
             maen3(im3)=nmaabs
         endif
 310  end do

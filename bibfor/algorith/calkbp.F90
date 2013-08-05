@@ -49,7 +49,7 @@ subroutine calkbp(nno, ndim, w, dff1, kbp)
     else if (ndim .eq. 2) then
         pbulle = 3.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! - TERME KBP

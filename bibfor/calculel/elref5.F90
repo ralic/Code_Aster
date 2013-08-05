@@ -64,7 +64,7 @@ subroutine elref5(elrz, famil, ndim, nno, nnos,&
 !
     if (elrz .eq. ' ') then
         call elref1(elrf)
-        call assert(elrf.ne.'XXXXXXXX')
+        ASSERT(elrf.ne.'XXXXXXXX')
     else
         elrf = elrz
     endif

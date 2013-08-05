@@ -62,7 +62,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 !----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1501,W1504
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -194,7 +194,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 ! OBJET POUR ACCELERER LA RECONSTRUCTION DU CHAMP SOLUTION
         colau3='&&FETI.DVALG'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! OBJET JEVEUX POINTANT SUR LA LISTE DES MATR_ASSE
@@ -437,9 +437,9 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
                     call jeexin(jexnom(kflin, nomsd), iretn)
                     call jeexin(jexnom(kfcfl, nomsd), iretl)
                     if (nblili .le. 2) then
-                        call assert((iretn.eq.0).and.(iretl.eq.0))
+                        ASSERT((iretn.eq.0).and.(iretl.eq.0))
                     else
-                        call assert((iretn.ne.0).or.(iretl.ne.0))
+                        ASSERT((iretn.ne.0).or.(iretl.ne.0))
                         if (iretn .ne. 0) then
                             call jeveuo(jexnom(kflin, nomsd), 'L', ikflin)
                             ikflin=ikflin-1
@@ -467,10 +467,10 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
                             do 80 ino = 1, lprnol
 ! ADRESSE DANS LE CHAM_NO LOCAL
                                 j=zi(iprnol+(ino-1)*nec2)
-                                call assert(j.gt.0)
+                                ASSERT(j.gt.0)
 ! NOMBRE DE COMPOSANTE
                                 nbcmp=zi(iprnol+(ino-1)*nec2+1)
-                                call assert(nbcmp.eq.1)
+                                ASSERT(nbcmp.eq.1)
 !
 ! --------------------------------
 ! ON PARCOURT LA LISTE DES LIGRELS TARDIFS DU SOUS-DOMAINE IDD POUR
@@ -494,7 +494,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
                                         endif
                                     endif
 50                              continue
-                                call assert(.false.)
+                                ASSERT(.false.)
 55                              continue
 !
 ! SI LIGREL DUPLIQUE, IL FAUT RETROUVER SON INDICE DANS LE  PRNO GLOBAL
@@ -528,7 +528,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 56                                          continue
                                         endif
 60                                  continue
-                                    call assert(.false.)
+                                    ASSERT(.false.)
 65                                  continue
                                 else
                                     ksol=ino

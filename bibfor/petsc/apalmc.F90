@@ -92,18 +92,18 @@ subroutine apalmc(kptsc)
 !     ON EST OBLIGE DE PASSER PAR UN VECTEUR TEMPORAIRE CONSTRUIT
 !     PAR MORCEAUX POUR OBTENIR LE BON DECOUPAGE PAR BLOC
     call VecCreate(mpicou, tmp, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecSetBlockSize(tmp, bs, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecSetSizes(tmp, PETSC_DECIDE, neq, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecSetType(tmp, VECMPI, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
     call VecGetOwnershipRange(tmp, low, high, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecDestroy(tmp, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 !     NB DE LIGNES QUE L'ON STOCKE LOCALEMENT
     nblloc = high - low
@@ -166,27 +166,27 @@ subroutine apalmc(kptsc)
     end do
 !
     call MatCreate(mpicou, ap(kptsc), ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call MatSetSizes(ap(kptsc), nblloc, nblloc, neq, neq,&
                      ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     if (nbproc .eq. 1) then
         call MatSetType(ap(kptsc), MATSEQAIJ, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call MatSEQAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd), ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     else
         call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call MatMPIAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd),&
                                        PETSC_NULL_INTEGER, zi4(jidxo), ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     endif
 !
 !     AVEC PETSc <= 3.2
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI, NE PAS DEPLACER
     call MatSetBlockSize(ap(kptsc), bs, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
 !     ON N'OUBLIE PAS DE DETRUIRE LES TABLEAUX
 !     APRES AVOIR ALLOUE CORRECTEMENT

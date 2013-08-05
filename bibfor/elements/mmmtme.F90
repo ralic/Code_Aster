@@ -288,7 +288,7 @@ subroutine mmmtme(phasep, lnewtg, ndim, nne, nnm,&
 707          continue
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

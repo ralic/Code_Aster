@@ -215,7 +215,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
     nbsp=zi(jcesd-1+5+4*(ima-1)+2)
     nbcmp=zi(jcesd-1+5+4*(ima-1)+3)
     if (nbpt .eq. 0) goto 160
-    call assert(nbcmp.eq.3)
+    ASSERT(nbcmp.eq.3)
     do 150,ipt=1,nbpt
     do 145 isp = 1, nbsp
         ino2p=ino2p+1
@@ -230,7 +230,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
 150  continue
 !
     160 end do
-    call assert(ino2p.eq.nbnosp)
+    ASSERT(ino2p.eq.nbnosp)
 !
 !
 !     -- CREATION DU .DESC DU NOUVEAU MAILLAGE

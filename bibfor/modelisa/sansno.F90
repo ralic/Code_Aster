@@ -144,7 +144,7 @@ subroutine sansno(char, motfac, noma, sans, psans,&
 ! --- MISE A JOUR POINTEUR
 !
         stocno = stocno + nbveli
-        if (stocno .gt. ltrav) call assert(.false.)
+        if (stocno .gt. ltrav) ASSERT(.false.)
         zi(jpsans+izone) = zi(jpsans+izone-1) + nbveli
 !
 70  end do

@@ -100,7 +100,7 @@ subroutine dismca(questi, nomobz, repi, repkz, ierd)
                 else if (ltyp.eq.24) then
                     nomfon = zk24(jvale+k-1)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 !

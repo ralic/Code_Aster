@@ -68,6 +68,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
     character(len=16) :: typch
     character(len=19) :: dch, dchs, chplu, chmoi
     parameter   (nompro = 'EXTDCH')
+    logical :: bool
 !
 !      REAL*8  TMP
 !
@@ -75,12 +76,13 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !
     call jemarq()
 !
-    call assert(typext .eq. 'MIN' .or. typext&
+    bool = typext .eq. 'MIN' .or. typext&
                 .eq. 'MAX' .or. typext .eq.&
                 'MIN_ABS' .or. typext .eq. 'MAX_ABS'&
-                .or. typext .eq. 'MIN_VAR')
+                .or. typext .eq. 'MIN_VAR'
+    ASSERT(bool)
 !
-    call assert(nocham .eq. 'VARI_ELGA' .or. nocham .eq. 'SIEF_ELGA' .or. nocham .eq. 'DEPL')
+    ASSERT(nocham .eq. 'VARI_ELGA' .or. nocham .eq. 'SIEF_ELGA' .or. nocham .eq. 'DEPL')
 !
 !     DECOMPACTION DES VARIABLES CHAPEAUX
     if (nocham .eq. 'VARI_ELGA') then

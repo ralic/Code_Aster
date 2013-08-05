@@ -81,7 +81,7 @@ subroutine dmatmc(fami, modeli, mater, instan, poum,&
                     isgau, repere, d)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

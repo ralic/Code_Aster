@@ -87,7 +87,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !
 !         -- CAS DES SD_CHAR_MECA POUVANT CONTENIR UNE SD_CHAR_CINE :
             else if (zi(jinfc+ich).ge.0) then
-                call assert(zk24(jlcha-1+ich)(9:24).eq.' ')
+                ASSERT(zk24(jlcha-1+ich)(9:24).eq.' ')
                 charge=zk24(jlcha-1+ich)(1:8)
                 call jeexin(charge//'.ELIM      .AFCK', ier)
                 if (ier .gt. 0) then

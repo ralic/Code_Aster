@@ -101,7 +101,7 @@ subroutine op0160()
 !         CALL IREDPL ( MACREL, IFIC, VERSIO )
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -84,7 +84,7 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
     det = p(1,1)*p(2,2) - p(2,1)*p(1,2)
 !
 !     LA BASE LOCALE SEMBLE FAUSSE
-    call assert((abs(det)-1.d0).le.1.d-5)
+    ASSERT((abs(det)-1.d0).le.1.d-5)
 !
 !     CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
     do 125 i = 1, 2

@@ -47,7 +47,7 @@ subroutine crsmos(nomsto, typroz, neq)
     sto19=nomsto
     typrof=typroz
 !
-    call assert(typrof.eq.'PLEIN' .or. typrof.eq.'DIAG')
+    ASSERT(typrof.eq.'PLEIN' .or. typrof.eq.'DIAG')
     if (typrof .eq. 'DIAG') then
         nterm=neq
     else

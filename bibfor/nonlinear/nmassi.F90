@@ -138,7 +138,7 @@ subroutine nmassi(modele, numedd, lischa, fonact, sddyna,&
 ! --- FORCES DONNEES
 !
     if (nbvec .gt. nbcoef) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)

@@ -118,7 +118,7 @@ subroutine cazocm(char, motfac, izone)
     else if (appa(1:9) .eq. 'MAIT_ESCL') then
         zi(jmeth+zmeth*(izone-1)+1-1) = 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PRESENCE DE DIST_POUTRE/DIST_COQUE
@@ -148,7 +148,7 @@ subroutine cazocm(char, motfac, izone)
     else if (norm(1:4) .eq. 'ESCL') then
         zi(jmeth+zmeth*(izone-1)+4-1) = 2
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DEFINITION DU TYPE DE NORMALE - MAITRE
@@ -169,7 +169,7 @@ subroutine cazocm(char, motfac, izone)
         call getvr8(motfac, 'MAIT_FIXE', izone, iarg, 3,&
                     dir, noc)
         if (noc .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
@@ -189,7 +189,7 @@ subroutine cazocm(char, motfac, izone)
         call getvr8(motfac, 'MAIT_VECT_Y', izone, iarg, 3,&
                     dir, noc)
         if (noc .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
@@ -199,7 +199,7 @@ subroutine cazocm(char, motfac, izone)
         zr(jdirno+zdirn*(izone-1)+1) = dir(2)
         zr(jdirno+zdirn*(izone-1)+2) = dir(3)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DEFINITION DU TYPE DE NORMALE - ESCLAVE
@@ -220,7 +220,7 @@ subroutine cazocm(char, motfac, izone)
         call getvr8(motfac, 'ESCL_FIXE', izone, iarg, 3,&
                     dir, noc)
         if (noc .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
@@ -240,7 +240,7 @@ subroutine cazocm(char, motfac, izone)
         call getvr8(motfac, 'ESCL_VECT_Y', izone, iarg, 3,&
                     dir, noc)
         if (noc .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call normev(dir, noor)
         if (noor .le. r8prem()) then
@@ -250,7 +250,7 @@ subroutine cazocm(char, motfac, izone)
         zr(jdirno+zdirn*(izone-1)+4) = dir(2)
         zr(jdirno+zdirn*(izone-1)+5) = dir(3)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECH. APPARIEMENT DANS UNE DIRECTION FIXE: DIRE_APPA
@@ -271,7 +271,7 @@ subroutine cazocm(char, motfac, izone)
         zr(jdirap+3*(izone-1)+1) = dir(2)
         zr(jdirap+3*(izone-1)+2) = dir(3)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PRESENCE DE VERIF

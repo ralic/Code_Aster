@@ -93,7 +93,7 @@ subroutine rlosh6(xcoq, xcent, ppp, xl, xv2cen,&
     ss(3) = xv2cen(1)*xv1cen (2) - xv2cen(2)*xv1cen (1)
     xj = sqrt(ss(1)*ss(1)+ss(2)*ss(2)+ss(3)*ss(3))
 !
-    call assert(xj.gt.zero)
+    ASSERT(xj.gt.zero)
     aux=1/xj
     ppp(1,3) = ss(1) * aux
     ppp(2,3) = ss(2) * aux

@@ -106,7 +106,7 @@ subroutine afddli(valr, valk, valc, prnm, nddla,&
 !
 !       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
         icmp = indik8(nomcmp,motcle(j)(1:8),1,nbcmp)
-        call assert(icmp.gt.0)
+        ASSERT(icmp.gt.0)
         if (.not.exisdg(prnm,icmp)) goto 30
 !
         if (lxfem) then
@@ -121,7 +121,7 @@ subroutine afddli(valr, valk, valc, prnm, nddla,&
 !
 !       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
         icmp = indik8(nomcmp,motcle(j)(1:8),1,nbcmp)
-        call assert(icmp.gt.0)
+        ASSERT(icmp.gt.0)
         if (.not.exisdg(prnm,icmp)) goto 30
 !
         icompt(j) = icompt(j) + 1

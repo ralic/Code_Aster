@@ -136,7 +136,7 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
             call nmimcr(sdimpr, 'GEOM_NEWT', vgeom, laffe)
             call nmimck(sdimpr, 'GEOM_NOEU', ngeom, laffe)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zr(jcnvva-1+iresi) = vale
         zk16(jcnvli-1+iresi) = lieu

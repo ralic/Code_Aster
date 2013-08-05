@@ -212,7 +212,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         dirth(20:24) = '.REFE'
         call jeveuo(dirth, 'L', irefe)
         call jeveuo(zk24(irefe+1)(1:19)//'.DEEQ', 'L', ideeq)
-        call assert(lndir.eq.(3*lobj2))
+        ASSERT(lndir.eq.(3*lobj2))
         do 5 i = 1, lobj2
             dirx = zr(idirth+(i-1)*3+1-1)
             diry = zr(idirth+(i-1)*3+2-1)

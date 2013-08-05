@@ -76,7 +76,7 @@ subroutine nmdoim(sdimpr)
         else if (repk.eq.'NON') then
             linfre = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -92,7 +92,7 @@ subroutine nmdoim(sdimpr)
         else if (repk.eq.'NON') then
             linftp = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

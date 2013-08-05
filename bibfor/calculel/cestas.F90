@@ -139,7 +139,7 @@ subroutine cestas(cesz)
     call cesexi('C', jce2d, jce2l, ima, ipt,&
                 isp, icmp, iad2)
     if (iad .gt. 0) then
-        call assert(iad2.lt.0)
+        ASSERT(iad2.lt.0)
         iad2 = -iad2
         zl(jce2l-1+iad2) = .true.
 !
@@ -162,7 +162,7 @@ subroutine cestas(cesz)
         else if (tsca.eq.'K80') then
             zk80(jce2v-1+iad2) = zk80(jcesv-1+iad)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 50  continue

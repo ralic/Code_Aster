@@ -115,7 +115,7 @@ subroutine execop()
 ! --- AVANT ET APRES L'APPEL A L'OPERATEUR
     mpicow=comcou(0)
     mpicou=comcou(1)
-    if (mpicow .ne. mpicou) call assert(.false.)
+    if (mpicow .ne. mpicou) ASSERT(.false.)
 !
     if (nuoper .lt. 0) then
         nuop2 = abs(nuoper)
@@ -131,7 +131,7 @@ subroutine execop()
 !
     mpicow=comcou(0)
     mpicou=comcou(1)
-    if (mpicow .ne. mpicou) call assert(.false.)
+    if (mpicow .ne. mpicou) ASSERT(.false.)
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !

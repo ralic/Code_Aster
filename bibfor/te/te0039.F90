@@ -16,7 +16,6 @@ subroutine te0039(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
     implicit       none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -276,7 +275,7 @@ subroutine te0039(option, nomte)
 50              continue
             else
 !              VERIF DU NOMBRE DE POINT DE GAUUS
-                call assert((npg.eq.2).or.(npg.eq.3))
+                ASSERT((npg.eq.2).or.(npg.eq.3))
                 if (npg .eq. 2) then
                     do 60 in = 1, nc
                         fs(in) = -zr(icontg+in-1)

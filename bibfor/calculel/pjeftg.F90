@@ -67,7 +67,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    call assert((igeom.eq.1).or.(igeom.eq.2))
+    ASSERT((igeom.eq.1).or.(igeom.eq.2))
 !
 !     PRISE EN COMPTE DU MOT-CLE TRANSF_GEOM_[1|2] : CALCUL DE GEOMI
 !     --------------------------------------------------------------
@@ -78,9 +78,9 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         call getvid(motfac, 'TRANSF_GEOM_2', iocc, iarg, 3,&
                     lfonc, nfonc)
     endif
-    call assert(nfonc.ge.0)
+    ASSERT(nfonc.ge.0)
     if (nfonc .gt. 0) then
-        call assert(nfonc.eq.2 .or. nfonc.eq.3)
+        ASSERT(nfonc.eq.2 .or. nfonc.eq.3)
         if (nfonc .eq. 2) lfonc(3)='&FOZERO'
         if (igeom .eq. 1) then
             geomi='&&PJEFTG.GEOM1'
@@ -92,7 +92,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         call jelira(geomi, 'LONMAX', n1, kbid)
         call jeveuo(geomi, 'E', jgeomi)
         nbnoi=n1/3
-        call assert(n1.eq.nbnoi*3)
+        ASSERT(n1.eq.nbnoi*3)
         lparx(1)='X'
         lparx(2)='Y'
         lparx(3)='Z'
@@ -100,7 +100,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         do 2, ifonc=1,3
         call fointe('F', lfonc(ifonc), 3, lparx, zr(jgeomi-1+3*( inoi-1)+1),&
                     vx(ifonc), ier)
-        call assert(ier.eq.0)
+        ASSERT(ier.eq.0)
  2      continue
         zr(jgeomi-1+3*(inoi-1)+1)=vx(1)
         zr(jgeomi-1+3*(inoi-1)+2)=vx(2)

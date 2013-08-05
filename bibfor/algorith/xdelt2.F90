@@ -135,7 +135,7 @@ subroutine xdelt2(elp, nno, ndim, ksi, ptint,&
 ! --- CALCUL DES QUANTITES A MINIMISER
 !     CALCUL DE DELTAS
     delta3 = d1fctf*d2fctg - d2fctf*d1fctg
-    call assert(abs(delta3).gt.r8prem())
+    ASSERT(abs(delta3).gt.r8prem())
     delta(1) = (fctf*d2fctg - fctg*d2fctf) / delta3
     delta(2) = (fctg*d1fctf - fctf*d1fctg) / delta3
 !

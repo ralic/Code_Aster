@@ -18,7 +18,6 @@ subroutine op0041()
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-! aslint: disable=W1501
     implicit none
 !
 ! ----------------------------------------------------------------------
@@ -124,7 +123,7 @@ subroutine op0041()
                 nomo, ibid)
     call dismoi('F', 'PHENOMENE', nomo, 'MODELE', ibid,&
                 pheno, ibid)
-    call assert(pheno.eq.'MECANIQUE' .or. pheno.eq.'THERMIQUE')
+    ASSERT(pheno.eq.'MECANIQUE' .or. pheno.eq.'THERMIQUE')
     call wkvect(fiss//'.MODELE', 'G V K8', 1, jmod)
     zk8(jmod-1+1)=nomo
 !
@@ -303,7 +302,7 @@ subroutine op0041()
             call getvr8('DEFI_FISS', 'VECT_Y', 1, iarg, 3,&
                         vect2, ibid)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     endif
@@ -349,7 +348,7 @@ subroutine op0041()
     else if (me4.eq.1) then
         meth='CHAMP'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call xinils(noma, kbid, .false., ndim, meth,&
@@ -419,10 +418,10 @@ subroutine op0041()
 !
 !           PROJECT THE NORMAL LEVEL SET
             call cnsprj(cnsln, corres, 'G', cnslng, ibid)
-            call assert(ibid.eq.0)
+            ASSERT(ibid.eq.0)
 !           PROJECT THE TANGENTIAL LEVEL SET
             call cnsprj(cnslt, corres, 'G', cnsltg, ibid)
-            call assert(ibid.eq.0)
+            ASSERT(ibid.eq.0)
 !
         endif
 !

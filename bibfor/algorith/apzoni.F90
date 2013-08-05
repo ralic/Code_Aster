@@ -136,7 +136,7 @@ subroutine apzoni(sdappa, izone, questz, vali)
     else if (questi.eq.'CALC_NORM_MAIT') then
         vali = zi(jpinzi+zinzi*(izone-1)+15-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

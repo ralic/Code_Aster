@@ -54,7 +54,7 @@ subroutine dilcar(option, icompo, icontm, ideplm, ideplp,&
 ! ======================================================================
     if (option .eq. 'CHAR_MECA_PESA_R') then
 ! OPTION NON PROGRAMMEE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ======================================================================
 ! --- RECUPERATION DES CHAMPS D'ENTREE DE L'ELEMENT --------------------

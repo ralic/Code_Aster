@@ -167,7 +167,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
             if (zi(indma+ima-1) .ne. 1) goto 35
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-            call assert(nbsp.eq.1)
+            ASSERT(nbsp.eq.1)
             do 40 ipt = 1, nbpt
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)

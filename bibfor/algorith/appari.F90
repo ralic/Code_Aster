@@ -84,7 +84,7 @@ subroutine appari(sdappa, questz, vali)
     else if (questi.eq.'APPARI_NTNO') then
         vali = zi(jpinfi+6-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

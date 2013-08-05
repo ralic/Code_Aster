@@ -60,7 +60,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     else if (symk.eq.'NON_SYM') then
         syme='NON'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call dismoi('F', 'MATR_DISTR', matass, 'MATR_ASSE', ibid,&
                 kmatd, iret)

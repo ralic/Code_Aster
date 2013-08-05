@@ -70,7 +70,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: iarg
 !----------------------------------------------------------------------
     call jemarq()
-    call assert(base.eq.'V')
+    ASSERT(base.eq.'V')
 !
     corre1 = '&&PJEFCO.CORRES1'
     corre2 = '&&PJEFCO.CORRES2'
@@ -155,7 +155,7 @@ subroutine pjefco(moa1, moa2, corres, base)
                         0, 0, geom1, geom2, corres,&
                         ldmax, distma)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 
     else
@@ -226,7 +226,7 @@ subroutine pjefco(moa1, moa2, corres, base)
                             nbno2, zi(iagno2), geom1, geom2, corre1,&
                             ldmax, distma)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 !

@@ -165,10 +165,10 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
             call cesexi('C', jcsd1, jcsl1, ima, 1,&
                         ifiss, 1, iad)
             if (iad .eq. 0) goto 11
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             ninter = zi(jcsv1-1+iad)
             if (ninter .eq. 0) goto 11
-            call assert(ninter.gt.0)
+            ASSERT(ninter.gt.0)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
             call conare(typma, ar, nbar)
             do 21 pin = 1, ninter
@@ -177,10 +177,10 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 ia=nint(zr(jcsv2-1+iad))
                 if (ia .eq. 0) goto 21
-                call assert(ia.gt.0)
+                ASSERT(ia.gt.0)
 !
 ! --- S IL S'AGIT D'UNE ARRETE, RECUP DES NUM GLOBAUX DE SES NOEUDS
 !
@@ -208,7 +208,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 21          continue
 11      continue
 81  end do
-    call assert(narcon.gt.0)
+    ASSERT(narcon.gt.0)
     call wkvect('&&XBARVI.ARCON', 'V V I', 4*narcon, jarcon)
 !
 41  continue
@@ -230,10 +230,10 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
             call cesexi('C', jcsd1, jcsl1, ima, 1,&
                         ifiss, 1, iad)
             if (iad .eq. 0) goto 10
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             ninter = zi(jcsv1-1+iad)
             if (ninter .eq. 0) goto 10
-            call assert(ninter.gt.0)
+            ASSERT(ninter.gt.0)
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma-1+ima)), typma)
             call conare(typma, ar, nbar)
             do 20 pin = 1, ninter
@@ -242,13 +242,13 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 ia=nint(zr(jcsv2-1+iad))
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 2, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 no=nint(zr(jcsv2-1+iad))
-                call assert(no.ge.0)
+                ASSERT(no.ge.0)
                 call cesexi('S', jcsd2, jcsl2, ima, 1,&
                             ifiss, zxain*(pin-1)+ 5, iad)
                 if (iad .le. 0) iad = -iad
@@ -302,7 +302,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 ! --- L'ARETE ET ON SORT
 !
                                             iac = iac + 1
-                                            call assert(iac.le.narcon)
+                                            ASSERT(iac.le.narcon)
                                             zi(jarcon-1+4*(iac-1)+1) = in
                                             zi(jarcon-1+4*(iac-1)+2) =&
                                         ima
@@ -326,7 +326,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 10      continue
 80  end do
 !
-    call assert(iac.eq.narcon)
+    ASSERT(iac.eq.narcon)
     if (narcon .gt. 0) then
 !
 ! --- ON ECRIT LE VECTEUR DES ARETES CONECTÉES

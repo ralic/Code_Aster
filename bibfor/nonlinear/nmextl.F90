@@ -114,7 +114,7 @@ subroutine nmextl(noma, nomo, motfac, iocc, nomcha,&
             call u2mesk('F', 'EXTRACTION_2', 1, valk)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TYPE D'EXTRACTION

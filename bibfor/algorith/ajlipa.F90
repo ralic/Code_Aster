@@ -222,7 +222,7 @@ subroutine ajlipa(modelz, base)
             call u2mesi('F', 'ALGORITH16_97', 2, vali)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! ----------------------------------------------------------------------
@@ -316,7 +316,7 @@ subroutine ajlipa(modelz, base)
             if (zi(jnumsd-1+i) .ge. 0) ico = ico+1
             if (zi(jnumsd-1+i) .eq. rang) icobis = icobis+1
 60      continue
-        call assert(ico.eq.nbmamo)
+        ASSERT(ico.eq.nbmamo)
 !
 !
     else if (kdis.eq.'GROUP_ELEM') then
@@ -329,7 +329,7 @@ subroutine ajlipa(modelz, base)
 !       DE RANG=MOD(IGREL,NBPROC)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

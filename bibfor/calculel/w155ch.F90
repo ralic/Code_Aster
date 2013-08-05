@@ -95,7 +95,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     linuma='&&W155CH.LIMA'
     linute='&&W155CH.LITE'
     call liglma(ligrel, nbma, linuma, linute)
-    call assert(nbma.gt.0)
+    ASSERT(nbma.gt.0)
     call jeveuo(linuma, 'L', jlima)
 !
 !
@@ -121,7 +121,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     if (motfac .eq. 'EXTR_TUYAU') then
         call carces(carele//'.CARORIEN', 'ELEM', ' ', 'V', ces1,&
                     'A', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         licmp(1)='ANGZZK'
         call cesred(ces1, nbma, zi(jlima), 1, licmp,&
                     'V', ces5)
@@ -165,7 +165,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     do 40,kma=1,nbma
     numa=zi(jlima-1+kma)
     if (numa .le. 0) goto 40
-    call assert(numa.le.nbmat)
+    ASSERT(numa.le.nbmat)
     nbpt=zi(jnbpt-1+numa)
     call w155ma(numa, nucou, nicou, nangl, nufib,&
                 motfac, jce2d, jce2l, jce2v, jce5d,&
@@ -179,10 +179,10 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call cesexi('C', jce3d, jce3l, numa, kpt,&
                 ksp2, kcmp, iad2)
     if (iad1 .gt. 0) then
-        call assert(iad2.gt.0)
+        ASSERT(iad2.gt.0)
         call cesexi('C', jce4d, jce4l, numa, kpt,&
                     1, kcmp, iad4)
-        call assert(iad4.lt.0)
+        ASSERT(iad4.lt.0)
         iad4=-iad4
         if (tsca .eq. 'R') then
             zr(jce4v-1+iad4)=c1*zr(jce3v-1+iad1)+c2*zr(&
@@ -191,7 +191,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
             zc(jce4v-1+iad4)=c1*zc(jce3v-1+iad1)+c2*zc(&
                         jce3v-1+iad2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zl(jce4l-1+iad4)=.true.
     endif
@@ -208,7 +208,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
                 nompar, ibid)
     call cescel(ces4, ligrel, option, nompar, 'OUI',&
                 nncp, 'G', chextr, 'F', iret)
-    call assert(nncp.eq.0)
+    ASSERT(nncp.eq.0)
 !
 !
 !     6. MENAGE :

@@ -23,9 +23,9 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 !           / 'med->ast'
 !     nb : nombre de valeurs dans les tableaux vi_ast et vi_med
 !
-#include "aster_types.h"
-
     implicit none
+#include "aster_types.h"
+#include "asterfort/assert.h"
     character(len=*) :: sens
     aster_int :: nb
     aster_int :: vi_ast(nb)
@@ -34,15 +34,15 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
 
     if (sens.eq.'ast->med') then
         do  i = 1, nb
-            vi_med(i) = vi_ast(i)
+            vi_med(i) = to_med_int(vi_ast(i))
         enddo
 
     elseif (sens.eq.'med->ast') then
         do  i = 1, nb
-            vi_ast(i) = vi_med(i)
+            vi_ast(i) = to_aster_int(vi_med(i))
         enddo
 
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

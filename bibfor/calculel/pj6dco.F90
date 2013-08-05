@@ -137,7 +137,7 @@ subroutine pj6dco(mocle, moa1, moa2, nbma1, lima1,&
     if ((itypm.eq.nutm(1)) .or. (itypm.eq.nutm(2)) .or. ( itypm.eq.nutm(3))) then
         ico=ico+1
     else
-        call assert(.false.)
+        ASSERT(.false.)
         if (ico .eq. 0) call u2mess('F', 'CALCULEL4_55')
     endif
     51 end do

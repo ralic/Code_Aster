@@ -73,7 +73,7 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
     nsfv=6
     nbfsys=nbcomm(nmat,2)
 !     PROGRAMMATION VALABLE POUR UNE SEULE FAMILLE DE SYSTEMES
-    call assert(nbfsys.eq.1)
+    ASSERT(nbfsys.eq.1)
     do 16 ifa = 1, nbfsys
 !        Calcul preliminaire de somme(dgamma*ms*ns)
         call r8inir(9, 0.d0, gamsns, 1)

@@ -17,7 +17,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
     implicit      none
 #include "jeveux.h"
 !
@@ -194,7 +193,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     endif
 !
     call jeexin(ma//'.CONNEX', iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     call jeveuo(ma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call jeveuo(chams1//'.CESV', 'E', jcesv)
@@ -669,7 +668,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 call jeveuo(manoga//'.CESD', 'L', mnogad)
                 call jeveuo(manoga//'.CESL', 'L', mnogal)
                 call jeveuo(manoga//'.CESV', 'L', mnogav)
-                call assert(zk8(mnogak).eq.ma)
+                ASSERT(zk8(mnogak).eq.ma)
 !
                 do 120 inel = 1, nbmail
                     if (nbm .ne. 0) then
@@ -699,8 +698,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                     nbpg = zi(jcesd-1+5+4* (imai-1)+1)
                     nbsp = zi(jcesd-1+5+4* (imai-1)+2)
                     ncmp = zi(jcesd-1+5+4* (imai-1)+3)
-                    call assert(nbno.eq.nbno2)
-                    call assert(nbpg.eq.nbpg2)
+                    ASSERT(nbno.eq.nbno2)
+                    ASSERT(nbpg.eq.nbpg2)
 !
 !  RECUP DES COORDONNEES DES NOEUDS
 !

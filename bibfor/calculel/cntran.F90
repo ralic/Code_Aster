@@ -63,7 +63,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
     nomgd2 = zk8(jcn2k-1+2)
     ncmp2 = zi(jcn2d-1+2)
 !
-    call assert(nomgd2.eq.nomgd)
+    ASSERT(nomgd2.eq.nomgd)
 !
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
@@ -94,7 +94,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
             else if (tsca.eq.'K8') then
                 zk8(jcn2v-1+(ino2-1)*ncmp2+icmp2) = zk8( jcn1v-1+(ino1- 1 )*ncmp1+icmp1 )
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 20      continue

@@ -80,7 +80,7 @@ subroutine obsetb(nomstr, nompaz, vall)
         zi(jsvalb-1+indice) = vali
     else
         write(6,*) 'TYPE INCONNU: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

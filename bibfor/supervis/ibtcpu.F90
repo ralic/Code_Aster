@@ -47,7 +47,7 @@ subroutine ibtcpu(ier)
     l2=0
 !     RECUPERATION DU TEMPS LIMITE DE L'EXECUTION
     call gtoptr('tpmax', tpmax, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     itpmax = nint(tpmax)
 !
     call getfac('CODE', iret)

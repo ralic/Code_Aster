@@ -278,17 +278,17 @@ subroutine pecapo(resu, modele, cara, nh)
                     c16b, noma, k8b, r8b, 'ALPHA',&
                     k8b, ibid, alpha, c16b, k8b,&
                     iret)
-        call assert(iret .eq. 0)
+        ASSERT(iret .eq. 0)
         call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                     c16b, noma, k8b, r8b, 'CDG_Y',&
                     k8b, ibid, yg, c16b, k8b,&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                     c16b, noma, k8b, r8b, 'CDG_Z',&
                     k8b, ibid, zg, c16b, k8b,&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
 ! --- CALCUL DES COORDONNEES DU CENTRE DE CISAILLEMENT/TORSION EY ET EZ
 ! --- ET DES COEFFICIENTS DE CISAILLEMENT
@@ -318,17 +318,17 @@ subroutine pecapo(resu, modele, cara, nh)
                         c16b, nomail, k8b, r8b, 'A',&
                         k8b, ibid, seq, c16b, k8b,&
                         iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                         c16b, nomail, k8b, r8b, 'IY',&
                         k8b, ibid, iyeq, c16b, k8b,&
                         iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                         c16b, nomail, k8b, r8b, 'IZ',&
                         k8b, ibid, izeq, c16b, k8b,&
                         iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
 !
             call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                         c16b, nomail, k8b, r8b, 'KY',&
@@ -346,17 +346,17 @@ subroutine pecapo(resu, modele, cara, nh)
                         c16b, nomail, k8b, r8b, 'ALPHA',&
                         k8b, ibid, alpheq, c16b, k8b,&
                         iret)
-            call assert(iret .eq. 0)
+            ASSERT(iret .eq. 0)
             call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                         c16b, nomail, k8b, r8b, 'CDG_Y',&
                         k8b, ibid, ygeq, c16b, k8b,&
                         iret)
-            call assert(iret .eq. 0)
+            ASSERT(iret .eq. 0)
             call tbliva(resu, 1, 'LIEU', ibid, r8b,&
                         c16b, nomail, k8b, r8b, 'CDG_Z',&
                         k8b, ibid, zgeq, c16b, k8b,&
                         iret)
-            call assert(iret .eq. 0)
+            ASSERT(iret .eq. 0)
 !
 !         VECTEUR GEQ-GI DANS LE REPERE GLOBAL
 !

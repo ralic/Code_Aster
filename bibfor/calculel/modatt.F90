@@ -50,13 +50,13 @@ function modatt(opt, te, statut, ipar)
 !
 !     JJ = IOPTTE(OPT,TE)
     jj = zi(iaoptt-1+ (te-1)*lgco+opt)
-    call assert(jj.gt.0)
+    ASSERT(jj.gt.0)
     optmod = iaopmo + zi(ilopmo-1+jj) - 1
     if (statut .eq. 'IN ') then
         modatt = zi(optmod-1+3+ipar)
         goto 10
     else
-        call assert(statut.eq.'OUT')
+        ASSERT(statut.eq.'OUT')
         nbin = zi(optmod-1+2)
         modatt = zi(optmod-1+3+nbin+ipar)
         goto 10

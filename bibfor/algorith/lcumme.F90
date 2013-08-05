@@ -100,7 +100,7 @@ subroutine lcumme(youn, xnu, ifou, dep)
         goto 100
     endif
 !
-    call assert(.false.)
+    ASSERT(.false.)
 !
 100  continue
 !

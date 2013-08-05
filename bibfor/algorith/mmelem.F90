@@ -375,7 +375,7 @@ subroutine mmelem(nomte, ndim, nddl, typmae, nne,&
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NOMBRE DE NOEUDS PORTANT DES LAGRANGES
@@ -394,7 +394,7 @@ subroutine mmelem(nomte, ndim, nddl, typmae, nne,&
 !
     nbdm = ndim + nbcps
 !
-    call assert(nddl.le.81)
-    call assert((ndim.eq.2).or.(ndim.eq.3))
+    ASSERT(nddl.le.81)
+    ASSERT((ndim.eq.2).or.(ndim.eq.3))
 !
 end subroutine

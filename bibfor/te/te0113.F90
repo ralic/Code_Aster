@@ -65,7 +65,7 @@ subroutine te0113(option, nomte)
 !
 ! - FONCTIONS DE FORME
     call elref2(nomte, 10, lielrf, ntrou)
-    call assert(ntrou.ge.2)
+    ASSERT(ntrou.ge.2)
 !
     if (option(1:9) .eq. 'MASS_MECA') then
         call elref4(lielrf(1), 'MASS', ndim, nno, nnos,&
@@ -86,7 +86,7 @@ subroutine te0113(option, nomte)
         typmod(1) = '3D'
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(ndim .eq. 3)
+        ASSERT(ndim .eq. 3)
     endif
 !
     typmod(2) = 'GRADEPSI'
@@ -109,7 +109,7 @@ subroutine te0113(option, nomte)
 ! - 3 DEPLACEMENTS + 6 DEF
             dlns = 9
         else
-            call assert(ndim .eq. 3)
+            ASSERT(ndim .eq. 3)
         endif
 !
         call massup(option, ndim, dlns, nno, nnos,&

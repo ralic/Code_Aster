@@ -59,8 +59,8 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     call jeveuo(csnorm//'.CNSL', 'L', jcnsl)
     call jeveuo(csnorm//'.CNSV', 'L', jcnsv)
     ncmp=zi(jcnsd-1+2)
-    call assert(ncmp.eq.3)
-    call assert(ncmp.eq.3)
+    ASSERT(ncmp.eq.3)
+    ASSERT(ncmp.eq.3)
 !
 !
 !     -- ON REMPLIT L'OBJET &&CALIRC.LISV1 :
@@ -71,7 +71,7 @@ subroutine calir3(mo, nbma1, lima1, nbno2, lino2,&
     if (.not.zl(jcnsl-1+3*(nuno2-1)+k)) then
         call u2mesk('F', 'CHAMPS_2', 1, chnorm)
     endif
-    call assert(zl(jcnsl-1+3*(nuno2-1)+k))
+    ASSERT(zl(jcnsl-1+3*(nuno2-1)+k))
     zr(jlisv1-1+3*(nuno2-1)+k)=zr(jcnsv-1+3*(nuno2-1)+k)*&
             epais
 10  continue

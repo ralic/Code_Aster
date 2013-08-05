@@ -2,7 +2,6 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                   masgen, amogen, lflu, nbnli, nbpal,&
                   noecho, nbrfis, logcho, parcho, intitu,&
                   ddlcho, ier)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -349,7 +348,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
                             k8typ, ibid, r8bid, cbid, refo,&
                             irett)
-                call assert(irett.eq.0)
+                ASSERT(irett.eq.0)
                 if (refo(1:9) .eq. 'BI_PLAN_Y') then
                     noecho(iliai,9) = 'BI_PLANY'
                 else if (refo(1:9).eq.'BI_PLAN_Z') then
@@ -393,7 +392,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
                             k8typ, ibid, r8bid, cbid, refo,&
                             irett)
-                call assert(irett.eq.0)
+                ASSERT(irett.eq.0)
                 if (refo(1:9) .eq. 'BI_PLAN_Y') then
                     noecho(iliai,9) = 'BI_PLANY'
                 else if (refo(1:9).eq.'BI_PLAN_Z') then
@@ -576,8 +575,8 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 77                  continue
                 endif
 66          continue
-            call assert(compt1 .ge. 1)
-            call assert(compt2 .ge. 1)
+            ASSERT(compt1 .ge. 1)
+            ASSERT(compt2 .ge. 1)
 !
             do 89 j = 1, 3
                 axe(j)=zr(jcoor+3*(bono1-1)+j-1) - zr(jcoor+3*(bono2-&

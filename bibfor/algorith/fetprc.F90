@@ -136,7 +136,7 @@ subroutine fetprc(nbsd, nbi, vd1, vd2, vdo,&
 !========================================
 40      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if ((preco(1:4).eq.'SANS') .or. (preco(1:5).eq.'LUMPE')) then
 ! COLLECTE DU RESIDU INITIAL POUR LE PROCESSUS MAITRE

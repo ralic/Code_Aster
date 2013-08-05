@@ -176,7 +176,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
     endif
 !
     12 end do
-    call assert(numsau.ne.0)
+    ASSERT(numsau.ne.0)
 !
     if (existc .ne. 1) then
         call as_mfdnfd(idfimd, nchmed, codret)
@@ -312,7 +312,7 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix,&
 !     SOIT ON A TROUVE POUR TOUS LES INSTANTS DES VALEURS DANS
 !     LE FICHIER MED, SOIT ON EN A TROUVE AUCUNE
 !     LE CAS INTERMEDIAIRE EST PROBLEMATIQUE ET NON TRAITE
-    call assert((nbtv.eq.nbtv2).or.(nbtv2.eq.0))
+    ASSERT((nbtv.eq.nbtv2).or.(nbtv2.eq.0))
     if (nbtv2 .eq. 0) then
         call jedetr(prefix//'.NUME')
         call jedetr(prefix//'.INST')

@@ -57,7 +57,7 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
 !
 ! --- RECUPERATION DE LA LISTE DES ELREFE CORRESPONDANTS AU NOMTE
     call elref2(nomte, 10, lirefe, nbelr)
-    call assert(nbelr.gt.0)
+    ASSERT(nbelr.gt.0)
 !
 !
 !     --BOUCLE SUR LES ELREFE :
@@ -89,11 +89,11 @@ subroutine ini002(nomte, nmax, itabl, k24tab, nval)
             call jni092(elrefe, 10, liobj, nbobj)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         nval = nval + nbobj
-        call assert(nval.le.nmax)
+        ASSERT(nval.le.nmax)
         do 10,k = 1,nbobj
         k24tab(nval-nbobj+k) = liobj(k)
 10      continue

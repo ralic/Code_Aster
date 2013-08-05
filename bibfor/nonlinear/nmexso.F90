@@ -187,7 +187,7 @@ subroutine nmexso(noma, result, sddyna, numedd)
         unifrq = uniter
     endif
 !
-    if (unifrq .eq. 0) call assert(.false.)
+    if (unifrq .eq. 0) ASSERT(.false.)
     if (unifrq .eq. uniter) call u2mess('I', 'DYNAMIQUE_20')
     if (unifrq .eq. unitem) call u2mess('I', 'DYNAMIQUE_21')
     if (unifrq .eq. unitea) call u2mess('I', 'DYNAMIQUE_22')

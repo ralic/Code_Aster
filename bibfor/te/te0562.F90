@@ -57,7 +57,7 @@ subroutine te0562(option, nomte)
     call jevech('PMATUUR', 'E', imatuu)
 !
 !    DEPLACEMENT + LAMBDA + VAR_REG
-    call assert(ndim.eq.2 .or. ndim.eq.3)
+    ASSERT(ndim.eq.2 .or. ndim.eq.3)
     dlns = ndim + 2
 !
     call massup(option, ndim, dlns, nno, nnob,&

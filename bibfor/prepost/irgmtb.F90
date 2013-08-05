@@ -1,5 +1,4 @@
 subroutine irgmtb(tdec, typd, vers)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 !
@@ -883,7 +882,7 @@ subroutine irgmtb(tdec, typd, vers)
     goto 9000
 !     VERIFICATION EMMELAGE DE PINCEAUX DU PROGRAMMEUR...
 999  continue
-    call assert(.false.)
+    ASSERT(.false.)
 !     ------------------------------------------------------------------
 !
 9000  continue

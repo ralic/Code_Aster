@@ -176,7 +176,7 @@ subroutine mmpoin(noma, defico, newgeo, sdappa)
 20      continue
 10  end do
 !
-    call assert(np.eq.cfdisi(defico, 'NTPT'))
+    ASSERT(np.eq.cfdisi(defico, 'NTPT'))
 !
     call jedema()
 !

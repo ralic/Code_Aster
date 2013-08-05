@@ -87,7 +87,7 @@ subroutine sinoz1(modele, sigma, signo)
     else if (repdim.eq.3) then
         nbcmp = 6
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     massel='&&MASSEL'

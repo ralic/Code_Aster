@@ -177,7 +177,7 @@ subroutine te0143(option, nomte)
 !           NOMBRE DE POINTS DE GAUSS
             call elref4(' ', 'RIGI', iplouf, iplouf, iplouf,&
                         npg, iplouf, iplouf, iplouf, iplouf)
-            call assert((npg.eq.2).or.(npg.eq.3))
+            ASSERT((npg.eq.2).or.(npg.eq.3))
             if (npg .eq. 2) then
                 do 15 i = 1, nc
                     sigma(i) = zr(ldep+i-1)

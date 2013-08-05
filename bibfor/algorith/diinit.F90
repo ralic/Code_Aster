@@ -77,7 +77,7 @@ subroutine diinit(noma, nomo, result, mate, carele,&
 !
     call getvid('INCREMENT', 'LIST_INST', 1, iarg, 1,&
                 lisins, n1)
-    call assert(n1.ne.0)
+    ASSERT(n1.ne.0)
 !
 ! --- FONCTIONNALITES ACTIVEES
 !

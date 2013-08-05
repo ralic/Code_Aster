@@ -83,7 +83,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk,&
 !   --- STEP 3: DISCRETISATION OF THE SHAPE ---
     call wkvect('&&APM345.CONTOUR.DIS', 'V V C', nbtetc, jcont)
     if (typcon(1:6) .eq. 'CERCLE') then
-        call assert(nbtetc.gt.1)
+        ASSERT(nbtetc.gt.1)
         raux1=2.d0*pi/(nbtetc-1)
         do 210 i = 1, nbtetc
             raux2=(i-1)*raux1

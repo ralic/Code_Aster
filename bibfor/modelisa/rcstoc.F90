@@ -172,10 +172,10 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                         else if (valtx.eq.'GLIS_2D') then
                             valr(nbr) = 2.d0
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                 endif
             endif
@@ -440,7 +440,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
         prol1 = nomfct//'.PROL'
         call jeveuo(prol1, 'L', lpro1)
         prol2 = nomint//'.PROL'
-        call assert(lxlgut(nomint).le.24)
+        ASSERT(lxlgut(nomint).le.24)
         call jeveuo(prol2, 'E', lpro2)
         if (zk24(lpro1+4)(1:1) .eq. 'C') zk24(lpro2+4)(1:1)='L'
         if (zk24(lpro1+4)(2:2) .eq. 'C') zk24(lpro2+4)(2:2)='L'

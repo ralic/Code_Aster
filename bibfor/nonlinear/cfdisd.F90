@@ -85,7 +85,7 @@ function cfdisd(resoco, questz)
     else if (questi.eq.'NBLIAI') then
         cfdisd = zi(jcoco+8-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -98,7 +98,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     else if (typenm.eq.'NOEU') then
         call jenuno(jexnum(noma//'.NOMNOE', numenm), nomenm)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NOM DU NOEUD ESCLAVE
@@ -130,7 +130,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
             else if (typenm.eq.'NOEU') then
                 call u2mesk('F', 'CONTACT3_26', 1, nomenm)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -146,7 +146,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
     else if (lescl) then
         call dcopy(3, enorm, 1, norm, 1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECOPIE DES TANGENTES SI NORMALE FIXE
@@ -156,7 +156,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
             call dcopy(3, tau1m, 1, tau1, 1)
             call dcopy(3, tau2m, 1, tau2, 1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     if (lefixe) then
@@ -164,7 +164,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
             call dcopy(3, tau1e, 1, tau2, 1)
             call dcopy(3, tau2e, 1, tau1, 1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -183,7 +183,7 @@ subroutine cfchno(noma, defico, ndimg, posnoe, typenm,&
         else if (typenm.eq.'NOEU') then
             call u2mesk('F', 'CONTACT3_35', 2, valk)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

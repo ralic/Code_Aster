@@ -324,7 +324,7 @@ subroutine resvoi(moz, maz, chvoiz)
             vali(2)=nbvois
             call u2mesg('F', 'INDICATEUR_12', 1, valk, 2,&
                         vali, 0, r8bidt(1))
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 802      continue
 !
@@ -420,7 +420,7 @@ subroutine resvoi(moz, maz, chvoiz)
                     vali(2)=nbvois
                     call u2mesg('F', 'INDICATEUR_12', 1, valk, 2,&
                                 vali, 0, r8bidt(1))
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 602          continue
 !

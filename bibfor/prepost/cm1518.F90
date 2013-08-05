@@ -144,7 +144,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
         impmai(ityp) = 0
         call jenuno(jexnum('&CATA.TM.NOMTM', ityp), kbid)
 ! VERIFICATION COHERENCE CATALOGUE FORTRAN
-        call assert(nomast(ityp) .eq. kbid)
+        ASSERT(nomast(ityp) .eq. kbid)
         call jeveuo(jexnum('&CATA.TM.NBNO', reftyp(ityp)), 'L', jnoeu)
         nbref(ityp) = zi(jnoeu)
 10  end do

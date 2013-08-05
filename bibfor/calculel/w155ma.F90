@@ -59,7 +59,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
         else if (nicou.eq.'SUP') then
             iposi=3
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -68,7 +68,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !
     if (motfac .eq. 'EXTR_COQUE') then
 !     ---------------------------------
-        call assert(nucou.ge.1)
+        ASSERT(nucou.ge.1)
 !       -- EXTR_COQUE EST UTILISE POUR LES COQUES :
 !       -- CMP1 = COQ_NCOU
         call cesexi('C', jce2d, jce2l, numa, 1,&
@@ -91,7 +91,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !
     else if (motfac.eq.'EXTR_PMF') then
 !     ---------------------------------
-        call assert(nufib.ge.1)
+        ASSERT(nufib.ge.1)
 !       -- CMP4 = NBFIBR
         call cesexi('C', jce2d, jce2l, numa, 1,&
                     1, 4, iad2)
@@ -109,7 +109,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !
     else if (motfac.eq.'EXTR_TUYAU') then
 !     ---------------------------------
-        call assert(nucou.ge.1)
+        ASSERT(nucou.ge.1)
 !       -- CMP2 = TUY_NCOU
         call cesexi('C', jce2d, jce2l, numa, 1,&
                     1, 2, iad2)
@@ -122,7 +122,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !       -- CMP3 = TUY_NSEC
         call cesexi('C', jce2d, jce2l, numa, 1,&
                     1, 3, iad2)
-        call assert(iad2.gt.0)
+        ASSERT(iad2.gt.0)
         nbsec=zi(jce2v-1+iad2)
         if (nucou .gt. nbcou) call u2mess('F', 'CALCULEL2_14')
         icou=2*(nucou-1)+iposi
@@ -151,7 +151,7 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib,&
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

@@ -80,7 +80,7 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
     else if (metlis.eq.'MANUEL') then
         nbins = nbrpas - 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- EXTENSION DE LA LISTE D'INSTANTS

@@ -131,7 +131,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
     newzef = nmzef
     newzeg = nmzeg
 !
-    call assert(nmief.le.0)
+    ASSERT(nmief.le.0)
 !
     do 30, j = 1,6
     do 20, i = 1,6

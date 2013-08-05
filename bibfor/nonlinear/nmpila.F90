@@ -136,7 +136,7 @@ subroutine nmpila(numedd, sdpilo, isxfe, dtau, depdel,&
 !
     r1 = 2.d0*r1
     if (r2 .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (niv .ge. 2) then
         write (ifm,*) '<PILOTAGE> ....EQUATION X2+BX+C: ',r1/r2,r0/r2

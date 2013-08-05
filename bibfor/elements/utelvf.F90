@@ -51,9 +51,9 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 nofpg, nbpg, xno, vol)
 !
-    call assert((ndim.ge.0) .and. (ndim.le.3))
-    call assert((nno.gt.0) .and. (nno.le.nbnomx))
-    call assert((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
+    ASSERT((ndim.ge.0) .and. (ndim.le.3))
+    ASSERT((nno.gt.0) .and. (nno.le.nbnomx))
+    ASSERT((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
 !
     do 10,ifam = 1,nbfpg
     if (nofpg(ifam) .eq. famil) goto 12
@@ -62,7 +62,7 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 12  continue
 !
     npg = nbpg(ifam)
-    call assert((npg.gt.0) .and. (npg.le.nbpgmx))
+    ASSERT((npg.gt.0) .and. (npg.le.nbpgmx))
 !
     call wkvect(nomjv, 'V V R', npg*nno, jvr)
 !

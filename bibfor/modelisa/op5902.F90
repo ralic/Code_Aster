@@ -316,7 +316,7 @@ subroutine op5902(nboccp, compor)
     nomvar(1)='INDIPLAS'
     call u2mesg('I', 'COMPOR2_29', 1, nomvar(1), 1,&
                 nvit, 0, 0.d0)
-    call assert(indvar.eq.nvit)
+    ASSERT(indvar.eq.nvit)
 ! FIN ------------------------------------------------------------------
     call jedema()
 end subroutine

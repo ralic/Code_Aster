@@ -97,7 +97,7 @@ subroutine catang(noma, nbma, listma, nbno, listno)
     do i = 1, nbma
 !
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtyp+listma(i)-1)), ntyp)
-        if (ntyp(1:3) .ne. 'SEG') call assert(.false.)
+        if (ntyp(1:3) .ne. 'SEG') ASSERT(.false.)
 !
         jco=iacnx1-1+zi(ilcnx1+listma(i)-1)
         ino1=zi(jco)

@@ -57,7 +57,7 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
     noml32='                      '
     noml32=nomres
 !     AU DELA DE 24 : RESERVE JEVEUX &&xxxx
-    call assert(lxlgut(noml32).le.24)
+    ASSERT(lxlgut(noml32).le.24)
     call jjvern(noml32, 0, iret)
     if (iret .eq. 0) then
 !     CET OBJET N'EXISTE PAS

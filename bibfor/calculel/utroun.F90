@@ -52,7 +52,7 @@ subroutine utroun(ch1, idec, ch2, isup)
 !
 ! --  INITIALISATIONS
 !
-    call assert(isup.eq.0.or.isup.eq.1)
+    ASSERT(isup.eq.0.or.isup.eq.1)
     chv2 = ' '
     chv3 = ' '
     ch2 = ' '
@@ -60,7 +60,7 @@ subroutine utroun(ch1, idec, ch2, isup)
     if (ch1(1:1) .eq. '-') then
         lsg=.true.
         chv1=ch1(2:)
-        call assert(isup.eq.0)
+        ASSERT(isup.eq.0)
     else
         lsg=.false.
         chv1=ch1
@@ -81,7 +81,7 @@ subroutine utroun(ch1, idec, ch2, isup)
 11  continue
 !
 !     SI LA CHAINE NE CONTIENT PAS DE 'E' :
-    if (ii .eq. lcv) call assert(.false.)
+    if (ii .eq. lcv) ASSERT(.false.)
     iii=ii+1
 !
 !
@@ -98,7 +98,7 @@ subroutine utroun(ch1, idec, ch2, isup)
 21  continue
 !
 !     SI LA CHAINE NE CONTIENT PAS DE POINT :
-    if (ii .eq. lcv) call assert(.false.)
+    if (ii .eq. lcv) ASSERT(.false.)
 !
 !     POSITION DANS LA CHAINE DU '.' : II
     ii=ii+1
@@ -114,8 +114,8 @@ subroutine utroun(ch1, idec, ch2, isup)
 !
 !
     call lxliis(chv1(ii+idec+1:ii+idec+1), itmp, iret)
-    call assert(iret.eq.0)
-    call assert(itmp.ge.0.and.itmp.le.9)
+    ASSERT(iret.eq.0)
+    ASSERT(itmp.ge.0.and.itmp.le.9)
 !
 !     -- POUR FORCER L'ARRONDI "AU DESSUS" :
     if (isup .eq. 1) itmp=9

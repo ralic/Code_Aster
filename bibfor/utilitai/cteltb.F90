@@ -127,9 +127,9 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
             else if (tych.eq.'CART') then
                 call carces(zk24(jkcha+i-1), 'ELEM', ' ', 'V', chames,&
                             ' ', iret)
-                call assert(iret.eq.0)
+                ASSERT(iret.eq.0)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call jeveuo(chames//'.CESV', 'L', jcesv)
             call jeveuo(chames//'.CESL', 'L', jcesl)
@@ -211,7 +211,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 230                      continue
                         if (kcp .eq. 0) goto 225
 !                   -- POUR NE PAS DEBORDER DES OBJETS (L=250):
-                        call assert(kcp.le.200)
+                        ASSERT(kcp.le.200)
 !
 !                   SOIT NI LE NOMBRE DE ENTIERS DE LA TABLE
 !                   SOIT NR LE NOMBRE DE REELS DE LA TABLE

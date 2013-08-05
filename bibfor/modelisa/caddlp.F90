@@ -90,7 +90,7 @@ subroutine caddlp(fonree, char)
     else if (nomcmd(11:14).eq.'ACOU') then
         nomg='PRES_C'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)

@@ -152,10 +152,10 @@ subroutine fonnor(resu, noma, cnxinv)
 !
 !     NSEG : NOMBRE DE "SEGMENTS" DU FOND A TRAITER
     if (ndim .eq. 2) then
-        call assert(nbnoff.eq.1)
+        ASSERT(nbnoff.eq.1)
         nseg = 1
     else if (ndim.eq.3) then
-        call assert(nbnoff.gt.1)
+        ASSERT(nbnoff.gt.1)
         if (casfon .eq. 'LINEAIRE') nseg = nbnoff-1
         if (casfon .eq. 'QUADRATIQUE') nseg = (nbnoff-1)/2
     endif

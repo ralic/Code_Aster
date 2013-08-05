@@ -99,7 +99,7 @@ subroutine infoma(nomu)
 20  end do
     do 21 i = 1, nbmail
         ityp=zi(jtyma-1+i)
-        call assert((ityp.gt.0).and.(ityp.lt.100))
+        ASSERT((ityp.gt.0).and.(ityp.lt.100))
         dimmai(ityp)=dimmai(ityp)+1
 21  end do
 !

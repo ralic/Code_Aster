@@ -114,7 +114,7 @@ subroutine ntetl3(result, sdieto, icham, tempct)
         else if (statut.eq.'VALE') then
             call u2mesr('I', 'ETATINIT_35', 1, tempct)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

@@ -167,7 +167,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
             zr(jdvc) = 0.0d0
             if (lcartf) zk8(jdvcf) = epaf
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zr(jdvc+1) = ang(1)
         zr(jdvc+2) = ang(2)

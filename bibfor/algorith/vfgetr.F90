@@ -41,9 +41,9 @@ subroutine vfgetr(maxdim, ndim, nbnos, xs, t,&
     real(kind=8) :: xs(1:maxdim, nbnos), t(1:maxdim, 2)
     real(kind=8) :: xg(1:maxdim), surf, norm(1:maxdim), xgf(1:maxdim), d
     real(kind=8) :: xnorm
-    call assert(ndim.eq.3)
-    call assert(maxdim.ge.3)
-    call assert(nbnos.eq.3)
+    ASSERT(ndim.eq.3)
+    ASSERT(maxdim.ge.3)
+    ASSERT(nbnos.eq.3)
     do 10 idim = 1, ndim
         xgf(idim)=0.d0
         do 11 is = 1, nbnos

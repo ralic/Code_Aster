@@ -72,7 +72,7 @@ subroutine coqucf(nomu)
     cartco = nomu//'.CARCOQUE'
     call exisd('CARTE', cartco, iret)
 !     SI LA CARTE DE REELS N'EXISTE PAS : BIZARRE
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
 !     POUR TRACE DES INFORMATIONS DANS LE FICHIER DE MESSAGES
     call infniv(ifm, niv)
 !
@@ -124,7 +124,7 @@ subroutine coqucf(nomu)
             iret = iret + 1
         endif
 100  end do
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 ! --- INFORMATIONS SUR LE MAILLAGE
     call dismoi('F', 'NOM_MAILLA', cartco, 'CARTE', ibid,&

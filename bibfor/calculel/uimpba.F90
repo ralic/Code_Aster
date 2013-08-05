@@ -57,14 +57,14 @@ subroutine uimpba(clas, iunmes)
     nbobj=0
     call jelstc(clas, ' ', 0, nbobj, kbid,&
                 nbval)
-    call assert(nbval.le.0)
+    ASSERT(nbval.le.0)
     if (nbval .eq. 0) goto 9999
     nbobj=-nbval
     call wkvect('&&UIMPBA.LISTE_OBJ', 'V V K24', nbobj+1, jlobj)
     call jelstc(clas, ' ', 0, nbobj, zk24(jlobj),&
                 nbval)
 !     NBVAL = NBOBJ (+1 EVENTUELLEMENT A CAUSE DE '&&UIMPBA.LISTE_OBJ')
-    call assert(nbval.eq.nbobj+1 .or. nbval.eq.nbobj)
+    ASSERT(nbval.eq.nbobj+1 .or. nbval.eq.nbobj)
     nbobj=nbval
 !
 !     -- 2 : .TAILLE = TAILLE DES OBJETS :
@@ -74,7 +74,7 @@ subroutine uimpba(clas, iunmes)
     do 1, i=1,nbobj
     obj=zk24(jlobj-1+i)
     call jelgdq(obj, rlong, nbsv)
-    call assert(rlong.gt.0.d0)
+    ASSERT(rlong.gt.0.d0)
     zr(jtailo-1+i)=rlong
     zi(jnbsvo-1+i)=nbsv
     1 end do
@@ -106,8 +106,8 @@ subroutine uimpba(clas, iunmes)
     obj=zk24(jlobj-1+i)
     k8=obj(1:8)
     call jenonu(jexnom('&&UIMPBA.LCONK8', k8), iexi)
-    call assert(iexi.gt.0)
-    call assert(iexi.le.nbcon)
+    ASSERT(iexi.gt.0)
+    ASSERT(iexi.le.nbcon)
     zr(jtailc-1+iexi)=zr(jtailc-1+iexi)+zr(jtailo-1+i)
     taitot=taitot+zr(jtailo-1+i)
     zi(jnbsvc-1+iexi)=zi(jnbsvc-1+iexi)+zi(jnbsvo-1+i)

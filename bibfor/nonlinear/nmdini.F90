@@ -128,8 +128,8 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 !
 ! --- VERIFICATIONS
 !
-    call assert(numini.ge.0)
-    call assert(numini.le.nbinst)
+    ASSERT(numini.ge.0)
+    ASSERT(numini.le.nbinst)
 !
     call jedema()
 !

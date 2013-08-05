@@ -66,7 +66,7 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 !
     call rsexch(' ', result, typcha, numarc, champ,&
                 iret)
-    if (iret .gt. 100) call assert(.false.)
+    if (iret .gt. 100) ASSERT(.false.)
 !
 ! --- COPIE DU CHAMP DANS SD RESULTAT
 !

@@ -94,8 +94,8 @@ subroutine cabhvf(maxfa, maxdim, ndim, nno, nnos,&
 !
     integer :: iadzi, iazk24
     character(len=8) :: nomail
-    call assert(maxfa1.eq.maxfa)
-    call assert(maxdi1.eq.maxdim)
+    ASSERT(maxfa1.eq.maxfa)
+    ASSERT(maxdi1.eq.maxdim)
     aris(1,1)=1
     aris(1,2)=3
     aris(2,1)=1

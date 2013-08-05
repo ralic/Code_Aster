@@ -64,7 +64,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 ! ----------------------------------------------------------------------
 !
-    call assert(nvec.gt.0.and.nvec.le.3)
+    ASSERT(nvec.gt.0.and.nvec.le.3)
     call vecini(3, 0.d0, saut)
     coefi = 2
     lmultc = nfiss.gt.1

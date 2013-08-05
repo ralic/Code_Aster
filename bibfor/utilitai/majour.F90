@@ -142,7 +142,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                     call nmgrot(iran, deldet, theta, chamaj)
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 30      continue
     endif

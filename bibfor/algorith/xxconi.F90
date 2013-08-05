@@ -74,14 +74,14 @@ function xxconi(defico, nomfis, typmai)
         if (typmai .eq. 'MAIT') then
             fiscou = zk8(jfimai-1+izone)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (fiscou .eq. nomfis) then
             if (iret .eq. 0) then
                 iret = izone
                 goto 11
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 10  end do

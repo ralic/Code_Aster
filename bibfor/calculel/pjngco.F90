@@ -53,10 +53,10 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
 !----------------------------------------------------------------------
 !
     call jemarq()
-    call assert(method.eq.'NUAGE_DEG_0' .or. method.eq.'NUAGE_DEG_1')
+    ASSERT(method.eq.'NUAGE_DEG_0' .or. method.eq.'NUAGE_DEG_1')
     corr16=corres
     bas1=base
-    call assert(bas1.eq.'G' .or. bas1.eq.'V')
+    ASSERT(bas1.eq.'G' .or. bas1.eq.'V')
 !
     call wkvect(corr16//'.PJXX_K1', bas1//' V K24', 5, jxxk1)
     zk24(jxxk1-1+1)=noma1
@@ -65,11 +65,11 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     zk24(jxxk1-1+4)=cnref
 !
     call getfac('VIS_A_VIS', nbocc)
-    call assert(nbocc.le.999)
+    ASSERT(nbocc.le.999)
 !
     call dismoi('F', 'NOM_MAILLA', cnref, 'CHAMP', ibid,&
                 noma3, ibid)
-    call assert(noma3.eq.noma2)
+    ASSERT(noma3.eq.noma2)
 !
 !
     if (nbocc .eq. 0) then

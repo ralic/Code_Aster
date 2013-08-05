@@ -108,7 +108,7 @@ subroutine mtdsc3(nommat)
 !     -- LMAT+3 :
 !     ------------
     call jelira(mat19//'.UALF', 'TYPE', ibid, kbid)
-    call assert(kbid(1:1).eq.'R')
+    ASSERT(kbid(1:1).eq.'R')
     zi(lmat+3) = 1
 !
 !
@@ -125,7 +125,7 @@ subroutine mtdsc3(nommat)
 !     -- LMAT+7 ET LMAT+18  (SI CHARGES CINEMATIQUES) :
 !     -------------------------------------------------
     call jeexin(mat19//'.CCID', ier)
-    call assert(ier.eq.0)
+    ASSERT(ier.eq.0)
     zi(lmat+7) = 0
     zi(lmat+18) = 0
 !

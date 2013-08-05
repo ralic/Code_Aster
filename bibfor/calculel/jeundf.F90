@@ -78,7 +78,7 @@ subroutine jeundf(obj)
         else if (ltyp.eq.80) then
             typsca='K80'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         typsca=type
@@ -86,7 +86,7 @@ subroutine jeundf(obj)
 !
     call jelira(obj2, 'XOUS', ibid, xous)
 !     TEST CAS NON PROGRAMME
-    call assert(xous.ne.'X')
+    ASSERT(xous.ne.'X')
 !
     call jelira(obj2, 'LONMAX', long, kbid)
     call jeveuo(obj2, 'E', iad)
@@ -129,7 +129,7 @@ subroutine jeundf(obj)
         zk80(iad-1+k)=k80df
 90      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

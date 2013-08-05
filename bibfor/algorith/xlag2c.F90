@@ -88,7 +88,7 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 !
     do 10 i = 1, neq
         nuno = zi(jliseq-1+i)
-        call assert(zl(jcnsl-1+2*nuno))
+        ASSERT(zl(jcnsl-1+2*nuno))
         ima = zi(jcnsv-1+2*(nuno-1)+1)
         ino = zi(jcnsv-1+2*(nuno-1)+2)
         ifiss = zi(jnbpt-1+ima)

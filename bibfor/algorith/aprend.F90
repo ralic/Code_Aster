@@ -215,8 +215,8 @@ subroutine aprend(sdappa)
 !
 ! ------- QUELLQUES VERIFS
 !
-            call assert(typapp.ne.0)
-            call assert(posmin.ne.0)
+            ASSERT(typapp.ne.0)
+            ASSERT(posmin.ne.0)
 !
 ! ------- PREPARATION STOCKAGE
 !
@@ -238,7 +238,7 @@ subroutine aprend(sdappa)
 20      continue
 10  end do
 !
-    call assert((ip-1).eq.ntpt)
+    ASSERT((ip-1).eq.ntpt)
 !
     call jedema()
 !

@@ -127,7 +127,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
 ! ------- CALCUL
 !
-            call assert(lastin.le.nbin)
+            ASSERT(lastin.le.nbin)
             call calcul('S', option, ligcal, lastin, lchin,&
                         lpain, nbout, lchout, lpaout, 'V',&
                         'OUI')
@@ -135,7 +135,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 ! ------- RESU_ELEM DANS LE VECT_ELEM
 !
             call exisd('CHAMP_GD', lchout(1), iret)
-            call assert(iret.gt.0)
+            ASSERT(iret.gt.0)
             call reajre(vecele, lchout(1), 'V')
         endif
 70  end do

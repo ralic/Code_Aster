@@ -50,7 +50,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
                 tsca, ibid)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, kbid)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-    call assert(nuzone.gt.0)
+    ASSERT(nuzone.gt.0)
     nzonmx=zi(jdesc-1+2)
 !
     write (ifm,1005)'VALEUR =',dble(nuzone)
@@ -83,7 +83,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
             write (ifr,1002)nocmp,'=',dble(zc(jvale-1+dec1)),&
                 dimag(zc(jvale-1+dec1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     10 end do

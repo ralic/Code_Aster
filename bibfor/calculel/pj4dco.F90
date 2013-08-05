@@ -147,7 +147,7 @@ subroutine pj4dco(mocle, moa1, moa2, nbma1, lima1,&
     else if (itypm.eq.nutm(6)) then
         ico=ico+2
     else
-        call assert(.false.)
+        ASSERT(.false.)
         if (ico .eq. 0) call u2mess('F', 'CALCULEL4_55')
     endif
     51 end do

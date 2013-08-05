@@ -169,7 +169,7 @@ subroutine te0004(option, nomte)
                     iret)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !    -------------------------------------------------------------------
@@ -184,8 +184,8 @@ subroutine te0004(option, nomte)
 !
 ! --- NOMBRE DE COMPOSANTE
     nbcmp=itabin(2)/itabin(3)
-    call assert(nbcmp.gt.0)
-    call assert(nbcmp.eq.itabou(2)/itabou(3))
+    ASSERT(nbcmp.gt.0)
+    ASSERT(nbcmp.eq.itabou(2)/itabou(3))
 !
 ! --- ON ESSAIE UNE AUTRE FAMILLE DE POINT DE GAUSS
     if (itabin(3) .ne. npg) then
@@ -193,16 +193,16 @@ subroutine te0004(option, nomte)
         call elref4(' ', fami, ndim, nno, nnos,&
                     npg, ipoids, ivf, idfde, jgano)
     endif
-    call assert(itabin(3).eq.npg)
+    ASSERT(itabin(3).eq.npg)
 !
 ! --- NOMBRE DE SOUS-POINT
     nbsp=itabin(7)
-    call assert(nbsp.eq.itabou(7))
+    ASSERT(nbsp.eq.itabou(7))
 !
 ! --- NOMBRE DE COMPOSANTE DYNAMIQUE
     if (option .eq. 'VARI_ELNO') then
         nbcmp=itabin(6)
-        call assert(nbcmp.eq.itabou(6))
+        ASSERT(nbcmp.eq.itabou(6))
     endif
 !
     call ppgan2(jgano, nbsp, nbcmp, zr(iinpg), zr(ioutno))

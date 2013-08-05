@@ -124,7 +124,7 @@ subroutine apsauv(phasez, sdappa, izone, ip, vali,&
     typapp = 0
     posno = 0
     posma = 0
-    call assert(ip.le.ntpt)
+    ASSERT(ip.le.ntpt)
 !
 ! --- SAUVEGARDE INFOS NOEUD LE PLUS PROCHE
 !
@@ -133,7 +133,7 @@ subroutine apsauv(phasez, sdappa, izone, ip, vali,&
 ! ----- TYPE D'APPARIEMENT
 !
         typapp = vali(1)
-        call assert((typapp.eq.-2).or.(typapp.eq.-1).or. (typapp.eq.1))
+        ASSERT((typapp.eq.-2).or.(typapp.eq.-1).or. (typapp.eq.1))
 !
 ! ----- INDICE ET DISTANCE DU NOEUD LE PLUS PROCHE
 !
@@ -181,7 +181,7 @@ subroutine apsauv(phasez, sdappa, izone, ip, vali,&
         zr(jtau2+3*(ip-1)+2-1) = valr(8)
         zr(jtau2+3*(ip-1)+3-1) = valr(9)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

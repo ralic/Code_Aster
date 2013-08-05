@@ -281,7 +281,7 @@ subroutine te0532(option, nomte)
                     else
 !                SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
 !                PROBLEME DE STATUT DE CONTACT.
-                        call assert(indco.eq.0.or.indco.eq.1)
+                        ASSERT(indco.eq.0.or.indco.eq.1)
                     endif
 !
 !           IMPRESSION (2EME PARTIE)
@@ -320,7 +320,7 @@ subroutine te0532(option, nomte)
                             alpha(i)
  3                      continue
                         eps = r8prem()
-                        call assert((alpha(1)+eps).ge.cohes(1))
+                        ASSERT((alpha(1)+eps).ge.cohes(1))
                     endif
 !
 ! CHAMPS LIES AU CONTACT INUTILES POUR LE COHESIF

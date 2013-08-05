@@ -74,7 +74,7 @@ subroutine jenonu(nomlu, numo)
         call jjcroc(noml32(25:32), icre)
         call jjlide('JENONU', noml32(1:24), iret)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     numo = idatoc

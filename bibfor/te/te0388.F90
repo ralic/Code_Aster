@@ -47,7 +47,7 @@ subroutine te0388(option, nomte)
     integer :: k2, k3, k4
 !-----------------------------------------------------------------------
     call elref2(nomte, 2, lirefe, nbelr)
-    call assert(nbelr.eq.2)
+    ASSERT(nbelr.eq.2)
     elrefe = lirefe(2)
 !
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&

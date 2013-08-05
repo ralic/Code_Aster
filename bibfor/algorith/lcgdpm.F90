@@ -20,7 +20,6 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1501
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -687,7 +686,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                                     unsurn, dp, iret)
                         if (iret .eq. 1) goto 9999
 240                  continue
-                    call assert((test.ne.1).or.(j.ne.maxval))
+                    ASSERT((test.ne.1).or.(j.ne.maxval))
 600                  continue
                 endif
             endif

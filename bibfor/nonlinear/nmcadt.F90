@@ -156,7 +156,7 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

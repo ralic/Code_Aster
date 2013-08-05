@@ -449,7 +449,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
             do 80 ino = 1, nbnoma
                 numequ = zi(jequ-1+ino)
-                call assert(numequ.le.neq)
+                ASSERT(numequ.le.neq)
                 if (numequ .ne. 0) then
                     zr(jplsl-1+numequ) = 1.d0
                 endif

@@ -116,7 +116,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
     else if (phase.eq.'FROT') then
         option = 'CHAR_MECA_FROT'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TYPE DE CO NTACT
@@ -147,7 +147,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
             ligrel = modele(1:8)//'.MODELE'
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INITIALISATIONS DES CHAMPS

@@ -81,7 +81,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 !        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
     ces3 = '&&CESQUA.CES3'
-    call assert(nbchs.gt.0)
+    ASSERT(nbchs.gt.0)
 !
     ces1 = lichs(1)
 !
@@ -138,11 +138,11 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     call jeveuo(ces1//'.CESD', 'L', jce1d)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-    call assert(ma.eq.zk8(jce1k-1+1))
+    ASSERT(ma.eq.zk8(jce1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-    call assert(nomgd.eq.zk8(jce1k-1+2))
+    ASSERT(nomgd.eq.zk8(jce1k-1+2))
 !       TEST SUR IDENTITE DES 2 TYPES (CART/ELNO/ELGA)
-    call assert(typces.eq.zk8(jce1k-1+3))
+    ASSERT(typces.eq.zk8(jce1k-1+3))
 !
     if (ichs .eq. 1) then
         do 40,ima = 1,nbma
@@ -156,9 +156,9 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         ncmp = zi(jce1d-1+5+4* (ima-1)+3)
         if (nbpt*nbsp*ncmp .eq. 0) goto 50
 !           TEST SUR IDENTITE DU NOMBRE DE POINTS
-        call assert(zi(jnbpt-1+ima).eq.nbpt)
+        ASSERT(zi(jnbpt-1+ima).eq.nbpt)
 !           TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
-        call assert(zi(jnbsp-1+ima).eq.nbsp)
+        ASSERT(zi(jnbsp-1+ima).eq.nbsp)
 50      continue
     endif
     call jelibe(ces1//'.CESK')
@@ -219,7 +219,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
     do 110,ima = 1,nbma
     icmp1 = zi(jce1d-1+5+4* (ima-1)+3)
     if (icmp1 .eq. 0) goto 110
-    call assert(icmp1.gt.0)
+    ASSERT(icmp1.gt.0)
     icmp3 = zi(jcrcmp-1+icmp1)
     zi(jnbcmp-1+ima) = max(icmp3,zi(jnbcmp-1+ima))
 110  continue
@@ -264,7 +264,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
                 isp, icmp3, iad3)
     if (iad1 .le. 0) goto 130
 !
-    call assert(iad3.ne.0)
+    ASSERT(iad3.ne.0)
 !
 !               -- SI AFFECTATION :
     if ((.not.cumul) .or. (iad3.lt.0)) then
@@ -274,7 +274,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         if (tsca .eq. 'R') then
             zr(jce3v-1+iad3) = zr(jce1v-1+iad1)** 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -283,7 +283,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
         if (tsca .eq. 'R') then
             zr(jce3v-1+iad3) = zr(jce3v-1+iad3) + zr(jce1v-1+iad1)**2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

@@ -265,7 +265,7 @@ subroutine te0534(option, nomte)
                                 seuil, singu, tau1, tau2, vtmp)
 !
                 else
-                    call assert(option .eq. 'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_CONT')
+                    ASSERT(option .eq. 'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_CONT')
                 endif
 !
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS

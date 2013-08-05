@@ -180,7 +180,7 @@ subroutine mmmcri(criter, noma, depmoi, depgeo, depplu,&
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

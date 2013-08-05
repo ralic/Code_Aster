@@ -100,7 +100,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 !       -- 1.2 CAS MOINS FACILE : DDL PORTE PAR NOEUD TARDIF :
 !          CALCUL DE TROUVE, NUNO, NUCMP :
         call jelira(nume//'.PRNO', 'NMAXOC', nlili, k8b)
-        call assert(nlili.gt.1)
+        ASSERT(nlili.gt.1)
         nec=nbec(gd)
         trouve=.false.
         do 30 i = 2, nlili
@@ -125,8 +125,8 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 20          continue
 30      continue
 40      continue
-        call assert(trouve)
-        call assert(nuno.gt.0)
+        ASSERT(trouve)
+        ASSERT(nuno.gt.0)
 !
 !
 !       -- CALCUL DE NOMCMP :
@@ -139,9 +139,9 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
             endif
 50      continue
 60      continue
-        call assert(icmp.le.ncmpmx)
+        ASSERT(icmp.le.ncmpmx)
         nomcmp=zk8(inocmp-1+icmp)
-        call assert(nomcmp.eq.'LAGR')
+        ASSERT(nomcmp.eq.'LAGR')
 !
 !
 !       -- ON REMPLIT INFOBL:
@@ -166,7 +166,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
         ligrel=' '
         infobl=' '
         call jeveuo(nume//'.DESC', 'L', jdesc)
-        call assert(zi(jdesc).eq.2)
+        ASSERT(zi(jdesc).eq.2)
         call jeveuo(nume//'.DEEQ', 'L', jdeeq)
         call jelira(nume//'.DEEQ', 'LONMAX', neq, k8b)
         neq=neq/2

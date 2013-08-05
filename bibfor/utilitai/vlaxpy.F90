@@ -61,7 +61,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
     else
         lfeti=.false.
     endif
-    call assert(.not.lfeti)
+    ASSERT(.not.lfeti)
 !
 ! --- MISE A JOUR DES VALEURS DES LAGRANGE
     call jeveuo(chamn1(1:19)//'.VALE', 'L', ival1)

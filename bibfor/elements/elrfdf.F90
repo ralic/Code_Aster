@@ -1,6 +1,5 @@
 subroutine elrfdf(elrefz, x, dimd, dff, nno,&
                   ndim)
-! aslint: disable=W1501
     implicit none
 #include "asterfort/assert.h"
     integer :: dimd, nno, ndim
@@ -1241,12 +1240,12 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
 !
 !     ------------------------------------------------------------------
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
 !     ------------------------------------------------------------------
 !
-    call assert(dimd.ge.(nno*ndim))
+    ASSERT(dimd.ge.(nno*ndim))
 !
 end subroutine

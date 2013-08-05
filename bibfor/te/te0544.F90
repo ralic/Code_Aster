@@ -59,12 +59,12 @@ subroutine te0544(option, nomte)
         typmod(1) = 'D_PLAN'
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(nomte(1:5).eq.'MGCA_')
+        ASSERT(nomte(1:5).eq.'MGCA_')
     endif
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS POUR LES DEFO GENERALISEES
     call elref2(nomte, 10, lielrf, ntrou)
-    call assert(ntrou.ge.2)
+    ASSERT(ntrou.ge.2)
     call elref4(lielrf(2), 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !

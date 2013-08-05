@@ -887,7 +887,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 !
 !                 -- CALCUL DU NUMERO DE LA CMP ASSO
                             if (icddlb .eq. 0) then
-                                call assert(nomgds.eq.nomte(3:8))
+                                ASSERT(nomgds.eq.nomte(3:8))
                                 nomcmp = nomte(10:16)
 !
 !                   "GLUTE" POUR TEMP_MIL, TEMP_INF, TEMP_SUP :
@@ -903,7 +903,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                                 call jelira(jexnom('&CATA.GD.NOMCMP', nomgds), 'LONMAX', nbcmp,&
                                             kbid)
                                 nddlb = indik8(zk8(idnocm),nomcmp,1, nbcmp)
-                                call assert(nddlb.ne.0)
+                                ASSERT(nddlb.ne.0)
                                 icddlb = 1
                             endif
 !

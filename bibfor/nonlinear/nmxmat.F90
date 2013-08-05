@@ -121,7 +121,7 @@ subroutine nmxmat(modelz, mate, carele, compor, carcri,&
 ! --- SI CALCUL DES FORCES INTERNES
 !
     if (lcfint) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM

@@ -118,7 +118,7 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
         lccomb = .false.
     else
         write(6,*) 'MOT-CLEF:',motcle
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -106,7 +106,7 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap,&
                 termeb=termeb+sqrt(hsr(is,is)*alphas)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&

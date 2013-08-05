@@ -53,7 +53,7 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
     if (option(1:16) .eq. 'CHAR_MECA_TEMP_R') then
 !
         nbadd = 10
-        call assert(nchin+nbadd .le. mxchin)
+        ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = modele(1:8)//'.TOPOSE.PIN'
         lpain(nchin + 2 ) = 'PCNSETO'
@@ -81,7 +81,7 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
     .eq.'CHAR_THER_PARO_R') then
 !
         nbadd = 7
-        call assert(nchin+nbadd .le. mxchin)
+        ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTER'
         lchin(nchin + 1 ) = modele(1:8)//'.TOPOFAC.OE'
         lpain(nchin + 2 ) = 'PAINTER'
@@ -100,7 +100,7 @@ subroutine xajcin(modele, option, mxchin, lchin, lpain,&
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

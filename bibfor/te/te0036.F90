@@ -1,5 +1,4 @@
 subroutine te0036(option, nomte)
-! aslint: disable=W1501
     implicit none
 !
 ! ======================================================================
@@ -93,7 +92,7 @@ subroutine te0036(option, nomte)
     call elref1(elrefp)
     call elref4(' ', 'RIGI', ndime, nnop, nnops,&
                 ibid, ibid, ibid, ibid, ibid)
-    call assert(ndime.eq.1.or.ndime.eq.2)
+    ASSERT(ndime.eq.1.or.ndime.eq.2)
 !
     axi = lteatt(' ','AXIS','OUI')
 !
@@ -143,7 +142,7 @@ subroutine te0036(option, nomte)
         nfe = 4
     endif
 !
-    call assert(nfe.gt.0.or.nfh.gt.0)
+    ASSERT(nfe.gt.0.or.nfh.gt.0)
 !
 !-----------------------------------------------------------------------
 !     RECUPERATION DES ENTREES / SORTIE
@@ -301,7 +300,7 @@ subroutine te0036(option, nomte)
             do 1000 ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
 1000          continue
-            call assert(r.ge.0d0)
+            ASSERT(r.ge.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
@@ -329,7 +328,7 @@ subroutine te0036(option, nomte)
 !
 !         CALCUL DE LA NORMALE A LA FACE AU POINT DE GAUSS
             if (ndim .eq. 2 .and. .not.iselli(elref)) then
-                call assert(elref.eq.'SE3')
+                ASSERT(elref.eq.'SE3')
                 call vecini(3, 0.d0, nd)
 !           COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
                 call reereg('S', elref, nno, seg, gloc,&

@@ -78,14 +78,14 @@ subroutine w039c3(carele, modele, ifi, form, titre)
                     0, nomcmp, ' ', ' ', 0,&
                     0.d0, 0, 0, 0, sdcarm,&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
         nommed=chrel2
         call irceme(ifi, nommed, chrel2, typech, modele,&
                     0, nomcmp, ' ', ' ', 0,&
                     0.d0, 0, 0, 0, sdcarm,&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
         nommed=chrel3
 !
@@ -94,7 +94,7 @@ subroutine w039c3(carele, modele, ifi, form, titre)
                         0, nomcmp, ' ', ' ', 0,&
                         0.d0, 0, 0, 0, sdcarm,&
                         iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
         endif
 !
     else if (form.eq.'RESULTAT') then
@@ -108,7 +108,7 @@ subroutine w039c3(carele, modele, ifi, form, titre)
             call imprsd('CHAMP', chrel3, ifi, titrz)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call detrsd('CHAM_ELEM', chrel1)

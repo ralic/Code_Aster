@@ -64,7 +64,7 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
                     1, icmp, iadr2)
 !
         if (iadr1 .gt. 0) then
-            call assert(iadr2.lt.0)
+            ASSERT(iadr2.lt.0)
             zk16(jresv2-1-iadr2) = zk16(jresv1-1+iadr1)
             zl(jresl2-1-iadr2) = .true.
         endif

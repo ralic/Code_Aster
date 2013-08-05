@@ -77,8 +77,8 @@ subroutine reeret(elrefp, nnop, geom, xg, ndim,&
 !
 ! --- INITIALISATIONS
 !
-    call assert(iselli(elrefp))
-    call assert(deriv.eq.'NON'.or.deriv.eq.'OUI')
+    ASSERT(iselli(elrefp))
+    ASSERT(deriv.eq.'NON'.or.deriv.eq.'OUI')
     zero = 0.d0
 !
 ! --- RECHERCHE DE XE PAR NEWTON-RAPHSON

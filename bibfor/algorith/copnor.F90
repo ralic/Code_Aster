@@ -132,7 +132,7 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 !
     call normev(norm, noor)
     if (noor .le. r8prem()) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECONSTRUCTION DES TANGENTES
@@ -143,7 +143,7 @@ subroutine copnor(noma, defico, resoco, posmai, ksi1,&
 !
     call mmtann(ndim, tau1, tau2, iret)
     if (iret .ne. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

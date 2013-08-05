@@ -82,7 +82,7 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
 ! --- TITRE DE LA COLONNE
 !
     call obseti(sdcolo, 'HAUTEUR_TITRE', tithau)
-    call assert((tithau.gt.0).and.(tithau.le.3))
+    ASSERT((tithau.gt.0).and.(tithau.le.3))
     call obsetk(sdcolo, 'TITRE_LIGN_1', titli1)
     if (tithau .ge. 2) call obsetk(sdcolo, 'TITRE_LIGN_2', titli2)
     if (tithau .eq. 3) call obsetk(sdcolo, 'TITRE_LIGN_3', titli3)
@@ -103,7 +103,7 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
     else if (typval.eq.'K') then
         lchai = .true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call obsetb(sdcolo, 'ENTIER', linte)
     call obsetb(sdcolo, 'REEL', lreel)
@@ -122,7 +122,7 @@ subroutine obclcr(subccn, typcol, larcol, tithau, titli1,&
     else if (cnoval.eq.'SANS') then
         lnvsan = .true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call obsetb(sdcolo, 'NON_AFFE_ERREUR', lnverr)
     call obsetb(sdcolo, 'NON_AFFE_VIDE', lnvvid)

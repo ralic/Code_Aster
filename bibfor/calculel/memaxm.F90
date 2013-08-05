@@ -100,12 +100,12 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     else if (tych.eq.'CART') then
         call carces(cham19, 'ELEM', ' ', 'V', chams,&
                     ' ', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jelira(chams//'.CESV', 'TYPE', ibid, typ1)
-    call assert(typ1.eq.'R')
+    ASSERT(typ1.eq.'R')
 !
 !
 !
@@ -118,18 +118,18 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     nomgd=zk8(jcesk-1+2)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert(tsca.eq.'R'.or.tsca.eq.'I')
+    ASSERT(tsca.eq.'R'.or.tsca.eq.'I')
     lreel=tsca.eq.'R'
 !
 !
 !
 !     -- INITIALISATION DE VMIMA :
-    call assert(typmx(1:3).eq.'MIN'.or.typmx(1:3).eq.'MAX')
+    ASSERT(typmx(1:3).eq.'MIN'.or.typmx(1:3).eq.'MAX')
     lmax=typmx(1:3).eq.'MAX'
     if (.not.lmax) vmima=+r8maem()
     if (len(typmx) .gt. 3) then
-        call assert(len(typmx).eq.7)
-        call assert(typmx(4:7).eq.'_ABS')
+        ASSERT(len(typmx).eq.7)
+        ASSERT(typmx(4:7).eq.'_ABS')
         labs=.true.
         if (lmax) vmima=0.d0
     else

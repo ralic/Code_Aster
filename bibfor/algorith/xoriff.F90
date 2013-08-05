@@ -171,7 +171,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 12          continue
 13          continue
 !
-            call assert(indice.ne.0)
+            ASSERT(indice.ne.0)
             zi(jptext-1+iptext) = 0
 !
 !         RECHERCHE D'UN NOUVEAU POINT D'EXTREMITE POUR DEBUTER LE

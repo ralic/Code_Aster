@@ -42,7 +42,7 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
 !
 !     -- QUELQUES VERIFICATIONS:
 !
-    call assert(long.ge.0)
+    ASSERT(long.ge.0)
 !
 !     -- RECOPIE SELON LE TYPE DE SCALAIRE:
 !
@@ -92,7 +92,7 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
         zk80(iad2-1+i) = zk80(iad1-1+i)
 90      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

@@ -209,9 +209,9 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
                         ddls, ddlm, jfisno, nfiss, ifiss,&
                         jheafa, ncomph, ifa, vtmp)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

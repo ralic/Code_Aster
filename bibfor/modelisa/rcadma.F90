@@ -55,7 +55,7 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
     nomphe = phenom
 !
     nbmat=zi(jmat)
-    call assert(nbmat.eq.1)
+    ASSERT(nbmat.eq.1)
     imate = jmat+zi(jmat+nbmat+1)
 !
     do 10 icomp = 1, zi(imate+1)

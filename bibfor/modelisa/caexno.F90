@@ -66,10 +66,10 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno,&
     mcgr = mcgrno
     mcn = mcno
     if (motf .ne. 'LIAISON_GROUP') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (iocc .le. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call getfac(motf, nlino)
     if ((nlino.eq.0) .or. (iocc.gt.nlino)) goto 999

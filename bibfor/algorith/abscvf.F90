@@ -111,7 +111,7 @@ subroutine abscvf(ndim, tabar, xe, s)
     endif
 !
     if (s .lt. 0.d0) then
-        call assert(2.eq.3)
+        ASSERT(2.eq.3)
     endif
 !
     call jedema()

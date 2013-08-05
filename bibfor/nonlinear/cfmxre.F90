@@ -125,7 +125,7 @@ subroutine cfmxre(noma, nomo, sdstat, defico, resoco,&
                     resoco, depplu, depdel, ddepla, cnsinr,&
                     cnsper)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DECOMPTE NOMBRE DE LIAISONS

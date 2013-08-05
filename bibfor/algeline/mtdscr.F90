@@ -114,7 +114,7 @@ subroutine mtdscr(nommat)
 !
 !
     call jeexin(mat19//'.REFA', ier)
-    call assert(ier.ne.0)
+    ASSERT(ier.ne.0)
 !
 !
     call jeveuo(mat19//'.REFA', 'L', jrefa)
@@ -145,7 +145,7 @@ subroutine mtdscr(nommat)
         call jelira(mat19//'.UALF', 'TYPE', ibid, kbid)
     endif
 !
-    call assert(kbid(1:1).eq.'R' .or. kbid(1:1).eq.'C')
+    ASSERT(kbid(1:1).eq.'R' .or. kbid(1:1).eq.'C')
     if (kbid(1:1) .eq. 'R') zi(lmat+3) = 1
     if (kbid(1:1) .eq. 'C') zi(lmat+3) = 2
 !
@@ -163,7 +163,7 @@ subroutine mtdscr(nommat)
             zi(lmat+4) = 0
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else
@@ -177,7 +177,7 @@ subroutine mtdscr(nommat)
             zi(lmat+4) = 0
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     endif

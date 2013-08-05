@@ -319,7 +319,7 @@ subroutine te0012(option, nomte)
 !
     else
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

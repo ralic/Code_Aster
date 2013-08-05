@@ -116,7 +116,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do 22 in = 0, nb-1
             numa=zi(ldgm+in)
-            call assert(numa.gt.0)
+            ASSERT(numa.gt.0)
             call jelira(jexnum(manoma, numa), 'LONMAX', nm, k8b)
             call jeveuo(jexnum(manoma, numa), 'L', ldnm)
 !
@@ -140,7 +140,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 24          continue
 22      continue
 20  end do
-    call assert(appui.ne.-1)
+    ASSERT(appui.ne.-1)
 !
     call wkvect('&&MASREP.COENO', 'V V R', noemax, icoef)
     call wkvect('&&MASREP.COENXX', 'V V R', noemax, icoexx)
@@ -197,7 +197,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             hc = hc/nm
 !
             if (appui .eq. 1) then
-                call assert(.false.)
+                ASSERT(.false.)
             else if (appui.eq.2) then
                 a(1) = x(3) - x(1)
                 a(2) = y(3) - y(1)
@@ -211,7 +211,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                     b(2) = y(4) - y(2)
                     b(3) = z(4) - z(2)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 call provec(a, b, c)
                 surf=ddot(3,c,1,c,1)
@@ -220,7 +220,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
                 c(3)=c(3)/sqrt(surf)
                 zr(isurma+im-1) = sqrt(surf)*0.5d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             if (.not.lvale) surtot = surtot + zr(isurma+im-1)
             if (lfonc) then

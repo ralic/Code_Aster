@@ -49,7 +49,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
     call r8inir(18*nno, 0.d0, b, 1)
     r2 = sqrt(2.d0)/2.d0
 !
-    call assert((ndim.eq.2).or.(ndim.eq.3))
+    ASSERT((ndim.eq.2).or.(ndim.eq.3))
 !
     if (ndim .eq. 2) then
         do 10 n = 1, nno

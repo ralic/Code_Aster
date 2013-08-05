@@ -80,7 +80,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac)
+    ASSERT(nnop.le.mxstac)
 !
 !     NBRE DE DDLS PAR NOEUD
     nbddl = 1+nfh+nfe
@@ -112,7 +112,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                     coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
                     1)+j)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 1110          continue
 1100      continue
@@ -160,7 +160,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 endif
 !           PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
 !           CAR ON SE TROUVE SUR LE FOND DE FISSURE
-                call assert(iret.ne.0)
+                ASSERT(iret.ne.0)
 !           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
                 feth = femec(1)
             endif

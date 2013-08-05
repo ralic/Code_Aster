@@ -129,7 +129,7 @@ subroutine mmprel(char, noma, nomo, ligret)
                 modeli = 'CONT_DVP_3D'
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (.not.lveri) then

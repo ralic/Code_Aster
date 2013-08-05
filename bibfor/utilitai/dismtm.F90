@@ -89,7 +89,7 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
         else if (repi.eq.3) then
             repk = 'VOLU'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !

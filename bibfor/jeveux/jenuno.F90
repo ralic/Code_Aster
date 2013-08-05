@@ -141,7 +141,7 @@ subroutine jenuno(nomlu, nomo)
 20          continue
             call jjlide('JENUNO', nomlu(1:24), 2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     ipgc = ipgcex

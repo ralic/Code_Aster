@@ -110,7 +110,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                 kbid, ibid)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert(tsca.eq.'R')
+    ASSERT(tsca.eq.'R')
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jelira(cns//'.CNSC', 'LONMAX', ncmp, kbid)
@@ -128,7 +128,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     10 end do
 !
     call exisd('CHAM_ELEM_S', cesmod, iret)
-    call assert((typces.ne.'ELGA') .or. (iret.gt.0))
+    ASSERT((typces.ne.'ELGA') .or. (iret.gt.0))
 !
     if (iret .gt. 0) then
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
@@ -149,7 +149,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     else if (typces.eq.'ELGA') then
 !       DEJA FAIT GRACE A CESMOD
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -199,7 +199,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
             do 70,isp = 1,nbsp
             call cesexi('C', jcesd, jcesl, ima, ipt,&
                         isp, icmp, iad)
-            call assert(iad.lt.0)
+            ASSERT(iad.lt.0)
             zl(jcesl-1-iad) = .true.
             zr(jcesv-1-iad) = v
 70          continue
@@ -214,7 +214,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
         nbpt = zi(jcesd-1+5+4* (ima-1)+1)
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
         nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
-        call assert(nbno.eq.nbpt)
+        ASSERT(nbno.eq.nbpt)
 !
         do 140 icmp = 1, ncmp
 !
@@ -233,7 +233,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
             do 120,isp = 1,nbsp
             call cesexi('C', jcesd, jcesl, ima, ino,&
                         isp, icmp, iad)
-            call assert(iad.lt.0)
+            ASSERT(iad.lt.0)
             zl(jcesl-1-iad) = .true.
             zr(jcesv-1-iad) = v
 120          continue
@@ -249,7 +249,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
         call jeveuo(mnoga//'.CESD', 'L', mnogad)
         call jeveuo(mnoga//'.CESL', 'L', mnogal)
         call jeveuo(mnoga//'.CESV', 'L', mnogav)
-        call assert(zk8(mnogak).eq.ma)
+        ASSERT(zk8(mnogak).eq.ma)
 !
         do 210,ima = 1,nbma
         call cesexi('C', mnogad, mnogal, ima, 1,&
@@ -271,8 +271,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
         nbsp = zi(jcesd-1+5+4* (ima-1)+2)
         nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
         if (nbno .ne. nbno2 .and. cnsz .eq. '&&VRCIN1.CNS1') nbno = nbno2
-        call assert(nbno.eq.nbno2)
-        call assert(nbpg.eq.nbpg2)
+        ASSERT(nbno.eq.nbno2)
+        ASSERT(nbpg.eq.nbpg2)
 !
         do 200 icmp = 1, ncmp
 !
@@ -295,7 +295,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
             do 180,isp = 1,nbsp
             call cesexi('C', jcesd, jcesl, ima, ipg,&
                         isp, icmp, iad1)
-            call assert(iad1.lt.0)
+            ASSERT(iad1.lt.0)
             zl(jcesl-1-iad1) = .true.
             zr(jcesv-1-iad1) = v
 180          continue

@@ -33,6 +33,6 @@ function jevtbl(questi)
     else if (questi.eq.'TAILLE_GROUP_ELEM') then
         jevtbl=tgrel
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end function

@@ -53,8 +53,8 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 #include "asterfort/vectpe.h"
 #include "asterfort/vectrn.h"
     character(len=16) :: nomte
-    real(kind=8) :: pk2(ncmp, 1), sigma(ncmp, 1)
     integer :: ncmp, jnbspi
+    real(kind=8) :: pk2(ncmp, 1), sigma(ncmp, 1)
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
     integer :: i, icara, icompo, icou, idepl, igeom, ii
@@ -102,7 +102,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
         if (iret .ne. 0) then
             call tecach('NNN', 'PDEPPLU', 'L', 1, idepl,&
                         iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
         endif
     else
         do 10 i = 1, 6

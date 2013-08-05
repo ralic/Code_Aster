@@ -133,7 +133,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
     call jelira(chams//'.CESC', 'LONMAX', ncmpm, k8b)
     nucmp=indik8(zk8(jcesc),nomcmp,1,ncmpm)
-    call assert(nucmp.ge.0)
+    ASSERT(nucmp.ge.0)
 !
 !     MAILLES A CONSIDERER
     call jeveuo(lma, 'L', jnuma)
@@ -163,13 +163,13 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                 if (tych .eq. 'ELGA') then
                     call cesexi('C', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad)
-                    call assert(iad.gt.0)
+                    ASSERT(iad.gt.0)
                     volpt=zr(jpoiv-1+iad)
                 else if (tych.eq.'ELEM') then
-                    call assert(nbpt.eq.1)
+                    ASSERT(nbpt.eq.1)
                     volpt=zr(jpdsm-1+ima)
                 else if (tych.eq.'ELNO') then
-                    call assert(nbpt.ge.1)
+                    ASSERT(nbpt.ge.1)
                     volpt=zr(jpdsm-1+ima)/nbpt
                 endif
 !
@@ -194,13 +194,13 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                     if (tych .eq. 'ELGA') then
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
                                     1, 1, iad)
-                        call assert(iad.gt.0)
+                        ASSERT(iad.gt.0)
                         volpt=zr(jpoiv-1+iad)
                     else if (tych.eq.'ELEM') then
-                        call assert(nbpt.eq.1)
+                        ASSERT(nbpt.eq.1)
                         volpt=zr(jpdsm-1+ima)
                     else if (tych.eq.'ELNO') then
-                        call assert(nbpt.ge.1)
+                        ASSERT(nbpt.ge.1)
                         volpt=zr(jpdsm-1+ima)/nbpt
                     endif
 !
@@ -240,7 +240,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
     p0=valmin
     if (lseuil) then
-        call assert(nbintv .eq. 2)
+        ASSERT(nbintv .eq. 2)
         pas = seuil
         do 50 i = 1, nbintv
             borpct(3*(i-1)+1)=p0

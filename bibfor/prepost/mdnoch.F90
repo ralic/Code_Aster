@@ -105,7 +105,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
 ! 2.2. ==> NOM DU RESULTAT
 !
         jaux = lxlgut(noresu)
-        call assert(jaux.ge.1 .and. jaux.le.8)
+        ASSERT(jaux.ge.1 .and. jaux.le.8)
 !
         lnochm = jaux
         nochmd(1:lnochm) = noresu(1:lnochm)
@@ -115,7 +115,7 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
         if (lresu) then
 !
             jaux = lxlgut(nomsym)
-            call assert(jaux.ge.1 .and. jaux.le.16)
+            ASSERT(jaux.ge.1 .and. jaux.le.16)
 !
             do 23 , iaux = lnochm+1 , 8
             nochmd(iaux:iaux) = '_'

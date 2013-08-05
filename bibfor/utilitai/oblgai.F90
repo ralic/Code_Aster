@@ -57,7 +57,7 @@ subroutine oblgai(sdlist, istru, lacti)
 ! --- VERIFICATIONS
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') call assert(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
 !
 ! --- ACTIVATION
 !
@@ -72,7 +72,7 @@ subroutine oblgai(sdlist, istru, lacti)
     else if (la.eq.1) then
         lacti = .true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

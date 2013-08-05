@@ -64,16 +64,16 @@ subroutine te0581(option, nomte)
 !
 !
     nbpt=jtab3(3)
-    call assert(nbpt.eq.jtab1(3))
+    ASSERT(nbpt.eq.jtab1(3))
 !
     nbsp=jtab3(7)
     nbsp1=jtab1(7)
     nbsp2=jtab2(7)
-    call assert(nbsp.eq.nbsp1)
-    call assert((nbsp2.eq.nbsp).or.(nbsp2.eq.1))
+    ASSERT(nbsp.eq.nbsp1)
+    ASSERT((nbsp2.eq.nbsp).or.(nbsp2.eq.1))
 !
     nbcmp=jtab3(2)/nbpt
-    call assert(jtab3(2).eq.nbcmp*nbpt)
+    ASSERT(jtab3(2).eq.nbcmp*nbpt)
 !
     do 20 j1 = 1, nbpt
         do 21 j2 = 1, nbsp
@@ -83,12 +83,12 @@ subroutine te0581(option, nomte)
                     v2= zr(jtab2(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-&
                     1)
                 else
-                    call assert(nbsp2.eq.1)
+                    ASSERT(nbsp2.eq.1)
                     v2= zr(jtab2(1)+(j1-1)*nbcmp+j3-1)
                 endif
 !              -- LA PRECONTRAINTE != 0 N'EST AUTORISEE QUE POUR
 !              LES ELEMENTS DE BARRE (CABLES DE PRECONTRAINTE) :
-                if (v2 .ne. 0.d0) call assert(nomte.eq.'MECA_BARRE')
+                if (v2 .ne. 0.d0) ASSERT(nomte.eq.'MECA_BARRE')
                 zr(jtab3(1)+(j1-1)*nbsp*nbcmp+(j2-1)*nbcmp+j3-1)=v1+&
                 v2
 22          continue

@@ -59,8 +59,8 @@ subroutine juveca(nom, long)
     call jelira(nom, 'CLAS', ibid, base)
 !
 !     -- LONMA2 : LONGUEUR DE RECOPIE :
-    call assert(lonmax.gt.0)
-    call assert(long.gt.0)
+    ASSERT(lonmax.gt.0)
+    ASSERT(long.gt.0)
     lonma2=min(long,lonmax)
 !
 !     --- ALLOCATION D'UN TAMPON ---

@@ -229,7 +229,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 22  continue
 !
     if (ind .eq. 0) then
-        call assert(lxlgut(nomfon).le.24)
+        ASSERT(lxlgut(nomfon).le.24)
         call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
         zk24(lpro) = 'FONCTION'
         zk24(lpro+1) = 'LIN LIN '
@@ -249,7 +249,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 !
     else
         fonct1 = '&&FOCRCH.FONCT1'
-        call assert(lxlgut(fonct1).le.24)
+        ASSERT(lxlgut(fonct1).le.24)
         call wkvect(fonct1//'.PROL', 'V V K24', 6, lpro)
         zk24(lpro) = 'FONCTION'
         zk24(lpro+1) = 'LIN LIN '
@@ -266,7 +266,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 100      continue
 !
         fonct2 = '&&FOCRCH.FONCT2'
-        call assert(lxlgut(fonct2).le.24)
+        ASSERT(lxlgut(fonct2).le.24)
         call wkvect(fonct2//'.PROL', 'V V K24', 6, lpro)
         zk24(lpro) = 'FONCTION'
         zk24(lpro+1) = 'LIN LIN '
@@ -285,7 +285,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         call jeveuo(listr//'.VALE', 'L', jval)
         call jelira(listr//'.VALE', 'LONUTI', nbpara, k8b)
 !
-        call assert(lxlgut(nomfon).le.24)
+        ASSERT(lxlgut(nomfon).le.24)
         call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
         zk24(lpro) = 'FONCTION'
         zk24(lpro+1) = 'LIN LIN '

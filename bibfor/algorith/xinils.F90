@@ -241,9 +241,9 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
 !       ON VERIFIE LE NOMBRE DE COMPOSANTES = 1  (LSN OU LST)
         call jeveuo(chslsn//'.CNSD', 'L', jcnd)
-        call assert(zi(jcnd+1).eq.1)
+        ASSERT(zi(jcnd+1).eq.1)
         if (callst) call jeveuo(chslst//'.CNSD', 'L', jctd)
-        if (callst) call assert(zi(jctd+1).eq.1)
+        if (callst) ASSERT(zi(jctd+1).eq.1)
 !
         call jeveuo(chslsn//'.CNSV', 'L', jcnv)
         call jeveuo(chslsn//'.CNSL', 'L', jcnl)
@@ -252,8 +252,8 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
         do 60 ino = 1, nbno
 !           ON VERIFIE QUE LE NOEUD POSSEDE CETTE COMPOSANTE
-            call assert(zl(jcnl+ino-1))
-            if (callst) call assert(zl(jctl+ino-1))
+            ASSERT(zl(jcnl+ino-1))
+            if (callst) ASSERT(zl(jctl+ino-1))
             zr(jlnsv-1+(ino-1)+1)=zr(jcnv+ino-1)
             zl(jlnsl-1+(ino-1)+1)=.true.
             if (callst) zr(jltsv-1+(ino-1)+1)=zr(jctv+ino-1)

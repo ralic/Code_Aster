@@ -89,7 +89,7 @@ subroutine nminma(fonact, lischa, sddyna, solveu, numedd,&
         else if (lexpl) then
             optass = 'AVEC_DIRICHLET'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ... MATR_ASSE DE MASSE'

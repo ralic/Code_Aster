@@ -63,7 +63,7 @@ subroutine te0595(option, nomte)
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
-    call assert(ntrou.ge.2)
+    ASSERT(ntrou.ge.2)
     call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
                 npg, iw, ivf2, idf2, jgn)
     call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&

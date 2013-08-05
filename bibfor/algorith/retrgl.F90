@@ -16,7 +16,6 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !***********************************************************************
-! aslint: disable=W1501
     implicit none
 !  C. VARE     DATE 16/11/94
 !-----------------------------------------------------------------------
@@ -285,7 +284,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)
@@ -420,7 +419,7 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'R', neq)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)

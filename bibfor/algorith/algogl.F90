@@ -259,7 +259,7 @@ subroutine algogl(sdstat, defico, resoco, solveu, matass,&
 ! ----- SI AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE
 ! ----- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE
 !
-        call assert(llliai.gt.0)
+        ASSERT(llliai.gt.0)
         call cftabl(indic, nbliac, ajliai, spliai, llf,&
                     llf1, llf2, resoco, typeaj, llliac,&
                     llliai, typec0)

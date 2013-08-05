@@ -53,7 +53,7 @@ subroutine op0022()
         call dliext()
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

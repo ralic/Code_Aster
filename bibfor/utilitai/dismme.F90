@@ -109,7 +109,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
             if (iexi .eq. 0) goto 2
             call dismre(questi, zk24(ialire-1+i), repi, partit, i1)
             if (partit .ne. ' ' .and. repk .eq. ' ') repk=partit
-            if (partit .ne. ' ') call assert(repk.eq.partit)
+            if (partit .ne. ' ') ASSERT(repk.eq.partit)
  2          continue
         endif
 !
@@ -126,7 +126,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
             if (i .eq. 1) then
                 repk=kmpic
             else
-                call assert(repk.eq.kmpic)
+                ASSERT(repk.eq.kmpic)
             endif
  3          continue
         endif

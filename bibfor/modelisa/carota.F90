@@ -65,8 +65,8 @@ subroutine carota(char, noma, irota, ndim, ligrmo)
                     rota(5), nrota)
 !
         if (n1 .gt. 0) then
-            call assert(n1.eq.1)
-            call assert(n2.eq.3)
+            ASSERT(n1.eq.1)
+            ASSERT(n2.eq.3)
             norme=sqrt( rota(2)*rota(2)+rota(3)*rota(3)+rota(4)*rota(&
             4) )
             if (norme .gt. r8miem()) then

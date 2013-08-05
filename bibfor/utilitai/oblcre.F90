@@ -69,9 +69,9 @@ subroutine oblcre(sdlist, typstz, idnpaz, nbstru)
 ! --- LISTE DE LISTES INTERDIT
 !
     if (typstr .eq. 'LISTE_STRUCT') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
-    call assert(nbstru.gt.0)
+    ASSERT(nbstru.gt.0)
 !
 ! --- LISTE DES NOMS DE STRUCTS
 !

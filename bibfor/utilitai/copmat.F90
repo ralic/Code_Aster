@@ -94,7 +94,7 @@ subroutine copmat(matr, numddl, mat)
                 call jelibe(jexnum(matr//'           .VALM', ib))
 20          continue
         else
-            call assert(nbbloc.eq.1)
+            ASSERT(nbbloc.eq.1)
 !          TRIANGULAIRE SUPERIEURE
             call jeveuo(jexnum(matr//'           .VALM', 1), 'L', jbloc)
 !          TRIANGULAIRE INFERIEURE

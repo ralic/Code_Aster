@@ -49,7 +49,7 @@ subroutine tbcrsd(nomta, baseta)
     if (nomtab(18:19) .ne. '  ') call u2mess('F', 'UTILITAI4_75')
 !
     base = baseta(1:1)
-    call assert(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base.eq.'V' .or. base.eq.'G')
 !
 !     --- CREATION DU .TBBA ---
 !

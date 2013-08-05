@@ -115,7 +115,7 @@ subroutine te0137(option, nomte)
             if (option(11:14) .eq. 'COEF') then
                 call fointe('A', zk8(iech), 3, nompar, valpar,&
                             coenp1, icode)
-                call assert(icode.eq.0)
+                ASSERT(icode.eq.0)
                 do 50 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li )* theta*coenp1*tpg
@@ -123,10 +123,10 @@ subroutine te0137(option, nomte)
             else if (option(11:14).eq.'RAYO') then
                 call fointe('A', zk8(iray), 4, nompar, valpar,&
                             sigma, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 call fointe('A', zk8(iray+1), 4, nompar, valpar,&
                             epsil, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 do 60 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
                     vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)* theta*sigma*epsil* (tpg+tz0&

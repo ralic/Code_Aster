@@ -97,7 +97,7 @@ subroutine mmexcl(resoco, typint, iptc, iptm, ndexfr,&
 ! --- NOEUD EXCLUS PAR SANS_GROUP_NO (TYPAPP=-1)
 !
     if (typapp .eq. -1) then
-        call assert(typint.eq.1)
+        ASSERT(typint.eq.1)
         zr(jtabf+ztabf*(iptc-1)+18) = 1.d0
     endif
 !

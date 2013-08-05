@@ -310,7 +310,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
                         call jeveuo(lchin(1), 'L', jlchin)
                         call copisd('CHAMP_GD', 'V', zk8(jlchin), lchout)
                     else
-                        call assert(nchin.le.nchinx)
+                        ASSERT(nchin.le.nchinx)
                         call calcul(stop, option, ligrel, nchin, lchin,&
                                     lpain, 1, lchout, lpaout, 'V',&
                                     'OUI')
@@ -319,7 +319,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! ----------- RECOPIE DU CHAMP (S'IL EXISTE) DANS LE VECT_ELEM
 !
                     call exisd('CHAMP_GD', lchout, iexis)
-                    call assert((iexis.gt.0).or.(stop.eq.'C'))
+                    ASSERT((iexis.gt.0).or.(stop.eq.'C'))
                     call reajre(vecele, lchout, 'V')
 !
                 endif

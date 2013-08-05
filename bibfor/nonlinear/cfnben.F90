@@ -77,7 +77,7 @@ subroutine cfnben(defico, posent, typent, nbent, jdecen)
         nbent = zi(jpoma+posent) - zi(jpoma+posent-1)
         jdecen = zi(jpoma+posent-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

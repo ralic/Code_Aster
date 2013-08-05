@@ -52,8 +52,8 @@ subroutine x195cb(tychr, nomgd, chou)
 !
     call jemarq()
     call getfac('COMB', nbocc)
-    call assert(nbocc.ge.1)
-    call assert(tychr.eq.'NOEU')
+    ASSERT(nbocc.ge.1)
+    ASSERT(tychr.eq.'NOEU')
 !
 !
 !     -- 1. CREATION DU CHAMP "OUT" SUR LE MODELE DU 1ER CHAMP "IN"
@@ -94,7 +94,7 @@ subroutine x195cb(tychr, nomgd, chou)
     if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) call u2mess('F', 'MODELISA5_12')
 !
     call jelira(ch1//'.VALE', 'LONMAX', n2, kbid)
-    if (n2 .ne. n1) call assert(.false.)
+    if (n2 .ne. n1) ASSERT(.false.)
 !
     call dismoi('F', 'NOM_GD', ch1, 'CHAMP', ib,&
                 nomgd1, ib)
@@ -102,13 +102,13 @@ subroutine x195cb(tychr, nomgd, chou)
 !
     call dismoi('F', 'TYPE_SCA', nomgd1, 'GRANDEUR', ib,&
                 tsca, ib)
-    call assert(tsca.eq.'R'.or.tsca.eq.'C')
+    ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
 !
 !       -- CUMUL DES VALEURS :
     call jeveuo(ch1//'.VALE', 'L', jvale1)
     call getvr8('COMB', 'COEF_R', iocc, iarg, 1,&
                 coefr, ib)
-    call assert(ib.eq.1)
+    ASSERT(ib.eq.1)
     if (tsca .eq. 'R') then
         do 11, k=1,n1
         zr(jvale2-1+k)=zr(jvale2-1+k)+coefr*zr(jvale1-1+k)

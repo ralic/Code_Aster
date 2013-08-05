@@ -140,7 +140,7 @@ subroutine cricho(nbmode, riggen, nbchoc, parcho, noecho,&
                 if (ifac .eq. 0) then
                     call dismoi('F', 'SOLVEUR', marig, 'MATR_ASSE', ibid,&
                                 solveu, ibid)
-                    call assert(solveu.eq.'&&OP0074.SOLVEUR')
+                    ASSERT(solveu.eq.'&&OP0074.SOLVEUR')
                     matpre='&&OP0074.BIDON'
 !
 !             ISTOP MIS A 2 POUR NE PAS ARRETER L'EXECUTION EN CAS

@@ -57,7 +57,7 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     call jemarq()
     ntr3 = tria3(1)
     rbig = r8maem()
-    call assert(ntr3.ne.0)
+    ASSERT(ntr3.ne.0)
 !
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
@@ -91,7 +91,7 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     dy = dx
     nx = int((xmax-xmin)*1.05d0/dx) + 1
     ny = int((ymax-ymin)*1.05d0/dy) + 1
-    call assert(nx*ny.ne.0)
+    ASSERT(nx*ny.ne.0)
     ddx = (nx*dx- (xmax-xmin))/2.d0
     ddy = (ny*dy- (ymax-ymin))/2.d0
     xmin = xmin - ddx
@@ -180,7 +180,7 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     do 90,q = q1,q2
     zi(iabtnb-1+ (q-1)*nx+p) = zi(iabtnb-1+ (q-1)*nx+p) + 1
     iposi = zi(iabtlc-1+ (q-1)*nx+p) + zi(iabtnb-1+ (q-1)* nx+p)
-    call assert((iposi.ge.1) .and. (iposi.le.lont))
+    ASSERT((iposi.ge.1) .and. (iposi.le.lont))
     zi(iabtco-1+iposi) = i
 90  continue
 100  continue

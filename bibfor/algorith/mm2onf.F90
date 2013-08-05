@@ -78,11 +78,11 @@ subroutine mm2onf(ndim, nno, alias, ksi1, ksi2,&
     elrefe = alias
 !
     if ((nno.lt.1) .or. (nno.gt.9)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if ((ndim.lt.1) .or. (ndim.gt.3)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECUP DERIVEES SECONDES DES FONCTIONS DE FORME

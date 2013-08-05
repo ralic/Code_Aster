@@ -41,7 +41,7 @@ subroutine extrai(nin, lchin, lpain, opt, nute,&
 !
 ! DEB-------------------------------------------------------------------
 !
-    call assert(init.eq.' '.or.init.eq.'INIT')
+    ASSERT(init.eq.' '.or.init.eq.'INIT')
 !
     if (calvoi .eq. 0) then
         if (init .ne. 'INIT') then

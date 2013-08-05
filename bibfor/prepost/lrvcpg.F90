@@ -152,7 +152,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, tygeos,&
     call wkvect('&&LRVCPG_POIDS_PG_MED', 'V V R', nbpgm, jwg)
     call as_mlclor(idfimd, zr(jrefco), zr(jgscoo), zr(jwg), edfuin,&
                 locnam, iret)
-    call assert(typgeo/100.eq.dime)
+    ASSERT(typgeo/100.eq.dime)
 !
 !     COMPARAISON DES COORD DES PG ENTRE ASTER ET MED
 !     -----------------------------------------------

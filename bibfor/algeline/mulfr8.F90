@@ -179,7 +179,7 @@ subroutine mulfr8(nommat, npivot, neq, typsym, eps,&
     call jedisp(2, it)
 !
 !    -- SUR LES MACHINES I4, ON MODIFIE IT() POUR PARLER EN R8 :
-    call assert(lor8em().eq.8)
+    ASSERT(lor8em().eq.8)
     if (loisem() .eq. 4) then
         it(1)=it(1)/2
         it(2)=it(2)/2

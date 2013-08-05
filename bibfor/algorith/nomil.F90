@@ -39,10 +39,10 @@ function nomil(typma, ia)
 !
     integer :: tab(12)
 !
-    call assert(ia.gt.0)
+    ASSERT(ia.gt.0)
 !
     if (typma .eq. 'HEXA20') then
-        call assert(ia.le.12)
+        ASSERT(ia.le.12)
         tab(1)=9
         tab(2)=10
         tab(3)=11
@@ -56,7 +56,7 @@ function nomil(typma, ia)
         tab(11)=15
         tab(12)=16
     else if (typma.eq.'PENTA15') then
-        call assert(ia.le.9)
+        ASSERT(ia.le.9)
         tab(1)=7
         tab(2)=8
         tab(3)=9
@@ -67,7 +67,7 @@ function nomil(typma, ia)
         tab(8)=11
         tab(9)=12
     else if (typma.eq.'PYRAM13') then
-        call assert(ia.le.8)
+        ASSERT(ia.le.8)
         tab(1)=6
         tab(2)=7
         tab(3)=8
@@ -77,7 +77,7 @@ function nomil(typma, ia)
         tab(7)=12
         tab(8)=13
     else if (typma.eq.'TETRA10') then
-        call assert(ia.le.6)
+        ASSERT(ia.le.6)
         tab(1)=5
         tab(2)=7
         tab(3)=8
@@ -85,13 +85,13 @@ function nomil(typma, ia)
         tab(5)=9
         tab(6)=10
     else if (typma.eq.'QUAD8') then
-        call assert(ia.le.4)
+        ASSERT(ia.le.4)
         tab(1)=5
         tab(2)=6
         tab(3)=7
         tab(4)=8
     else if (typma.eq.'TRIA6') then
-        call assert(ia.le.3)
+        ASSERT(ia.le.3)
         tab(1)=4
         tab(2)=5
         tab(3)=6

@@ -150,7 +150,7 @@ subroutine nmprde(modele, numedd, numfix, mate, carele,&
         call nmprdc(method, numedd, depmoi, sddisc, numins,&
                     incest, depest)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECOPIE DE LA SOLUTION

@@ -75,7 +75,7 @@ subroutine dismph(questi, nomobz, repi, repkz, ierd)
         else if (nomob(1:9).eq.'ACOUSTIQU') then
             repk = 'DDL_ACOU'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         ierd = 1

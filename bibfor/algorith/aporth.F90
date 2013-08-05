@@ -74,7 +74,7 @@ subroutine aporth(sdappa, noma, defico, ndimg, posmam,&
 !
 ! --- POINT NON PROJETE
 !
-    call assert(posmam.ne.0)
+    ASSERT(posmam.ne.0)
 !
 ! --- NOMBRE DE NOEUDS DE LA MAILLE
 !

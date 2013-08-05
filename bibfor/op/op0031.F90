@@ -174,7 +174,7 @@ subroutine op0031()
         else
             call getvc8(combrc, 'COEF_C', iocc+1, iarg, 1,&
                         cval, lc)
-            call assert(lc.eq.1)
+            ASSERT(lc.eq.1)
             zr(lcoef+nbcst) = dble(cval)
             zr(lcoef+nbcst+1) = dimag(cval)
             nbcst = nbcst + 2
@@ -207,7 +207,7 @@ subroutine op0031()
 !     -- SI LA MATRICE EST REENTRANTE, ON LA DETRUIT ET ON RECOPIE
 !        LA MATRICE INTERMEDIAIRE :
     if (lreent) then
-        call assert(matr19(1:8).eq.'&&OP0031')
+        ASSERT(matr19(1:8).eq.'&&OP0031')
         call detrsd('MATR_ASSE', matres)
         call copisd('MATR_ASSE', 'G', matr19, matres)
         call detrsd('MATR_ASSE', matr19)

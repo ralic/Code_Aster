@@ -75,7 +75,7 @@ subroutine obgeto(nomstr, nompaz, valo)
         valo = zk24(jsvalo-1+indice)
     else
         write(6,*) 'TYPE INCORRECT: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

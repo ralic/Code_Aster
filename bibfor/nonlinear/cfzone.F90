@@ -67,7 +67,7 @@ subroutine cfzone(defico, izone, typsur, isurf)
     else if (typsur.eq.'MAIT') then
         isurf = zi(jzone+izone-1) + 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

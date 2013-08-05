@@ -73,7 +73,7 @@ subroutine te0139(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !
 !     MATNS MAL DIMENSIONNEE
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
 !
 !
 ! - TYPE DE MODELISATION

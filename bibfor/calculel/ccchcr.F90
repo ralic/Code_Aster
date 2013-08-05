@@ -65,7 +65,7 @@ subroutine ccchcr(crit, nomgd, nbcmp, valin, licmp,&
 !
 ! --- VERIFICATIONS COMMUNES POUR VMIS, INVA_2, TRACE
     if (crit .eq. 'VMIS' .or. crit .eq. 'INVA_2' .or. crit .eq. 'TRACE') then
-        call assert(nbcmpr.eq.1)
+        ASSERT(nbcmpr.eq.1)
         if (nomgd .eq. 'SIEF_R') then
             nomcmp = cmpsig
         else if (nomgd.eq.'EPSI_R') then
@@ -137,7 +137,7 @@ subroutine ccchcr(crit, nomgd, nbcmp, valin, licmp,&
 !
     else
 ! ---   INTERDIT DANS LE CATALOGUE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

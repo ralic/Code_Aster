@@ -41,7 +41,7 @@ subroutine op0057()
     else if (relat(1:7) .eq. 'GLRC_DM') then
         call dglrdm()
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

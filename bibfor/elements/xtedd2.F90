@@ -77,7 +77,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !
 ! --- REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
 !
-    call assert(nddl.le.ddlmax)
+    ASSERT(nddl.le.ddlmax)
     do 9 i = 1, ddlmax
         posddl(i)=0
  9  end do

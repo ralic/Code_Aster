@@ -75,7 +75,7 @@ subroutine obseto(nomstr, nompaz, valo)
         zk24(jsvalo-1+indice) = valo
     else
         write(6,*) 'TYPE INCONNU: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

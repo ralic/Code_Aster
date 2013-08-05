@@ -71,8 +71,8 @@ subroutine vdsiro(np, nbsp, matev, sens, goun,&
     integer :: i, kpt, ksp, kpt2
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
-    call assert(sens.eq.'IU'.or.sens.eq.'UI')
-    call assert(goun.eq.'G'.or.goun.eq.'N')
+    ASSERT(sens.eq.'IU'.or.sens.eq.'UI')
+    ASSERT(goun.eq.'G'.or.goun.eq.'N')
 !
 ! --- BOUCLE SUR LES POINTS OU SONT CALCULES LES TENSEURS
 ! --- (I.E. LES NOEUDS OU LES POINTS D'INTEGRATION) :

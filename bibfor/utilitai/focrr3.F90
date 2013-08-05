@@ -75,7 +75,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 !     --- CREATION DE LA FONCTION SORTIE ---
 !
 !     --- REMPLISSAGE DU .PROL ---
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
     zk24(lpro ) = 'FONCTION'
     zk24(lpro+1) = 'NON NON '

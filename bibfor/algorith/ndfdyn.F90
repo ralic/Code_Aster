@@ -86,7 +86,7 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
     ltheta = ndynlo(sddyna,'THETA_METHODE')
     lkrenk = ndynlo(sddyna,'KRENK')
     if (.not.(lnewma.or.ltheta.or.lkrenk)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TYPE DE THETA
@@ -101,7 +101,7 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
             lthetd = .false.
             lthetv = .true.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -146,7 +146,7 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
             call vtaxpy(coerri, cniner, cndyna)
             call jeveuo(cndyna(1:19)//'.VALE', 'E', jprov)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

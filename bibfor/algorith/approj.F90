@@ -118,7 +118,7 @@ subroutine approj(sdappa, noma, newgeo, defico, posnom,&
 !
 ! --- POINT EXCLU PAR SANS_*
 !
-    call assert(posnom.ne.0)
+    ASSERT(posnom.ne.0)
 !
 ! --- NOMBRE DE MAILLES ATTACHEES AU NOEUD MAITRE LE PLUS PROCHE
 !

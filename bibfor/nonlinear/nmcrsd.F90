@@ -84,7 +84,7 @@ subroutine nmcrsd(typesd, nomsd)
 ! WSCH : ENERGIE DISSIPEE PAR LE SCHEMA
         call wkvect(nomsd(1:19)//'.VALE', 'V V R  ', zener, jener)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

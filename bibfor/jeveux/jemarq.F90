@@ -92,7 +92,7 @@ subroutine jemarq()
 !
 !     SI IPGC > 200 C'EST PROBABLEMENT QU'UNE ROUTINE
 !     FAIT JEMARQ SANS FAIRE JEDEMA
-    call assert(ipgc.lt.200)
+    ASSERT(ipgc.lt.200)
 !
 ! FIN ------------------------------------------------------------------
 end subroutine

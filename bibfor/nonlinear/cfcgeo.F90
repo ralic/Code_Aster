@@ -200,7 +200,7 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
             dvgeom = .true.
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- SI ON DEPASSE LA TOLERANCE DE 5% DE REAC_GEOM ET SI ON N'EST

@@ -71,7 +71,7 @@ subroutine ualfva(mataz, basz)
 !
 !     -- .VALM NE DOIT PAS EXISTER :
     call jeexin(matas//'.VALM', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     call jeveuo(matas//'.REFA', 'L', jrefa)
     nu=zk24(jrefa-1+2)(1:14)
@@ -101,7 +101,7 @@ subroutine ualfva(mataz, basz)
             if (lplein) then
                 call crsmos(stomor, 'PLEIN', neq)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -112,13 +112,13 @@ subroutine ualfva(mataz, basz)
     itbloc= zi(jsmde-1+2)
 !
     call jelira(matas//'.UALF', 'NMAXOC', nblocl, kbid)
-    call assert(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
+    ASSERT(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
     nblocm=1
     if (nblocl .eq. 2*nbloc) nblocm=2
 !
 !     -- REEL OU COMPLEXE ?
     call jelira(matas//'.UALF', 'TYPE', ibid, tyrc)
-    call assert(tyrc.eq.'R' .or. tyrc.eq.'C')
+    ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
 !
 !
 !     1. ALLOCATION DE .VALM :
@@ -163,7 +163,7 @@ subroutine ualfva(mataz, basz)
                     ieq)
     endif
  2  continue
-    call assert(ilig.eq.ieq)
+    ASSERT(ilig.eq.ieq)
 !
     ismdi0=ismdi
  1  continue

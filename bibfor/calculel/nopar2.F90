@@ -72,7 +72,7 @@ function nopar2(nomopt, nomgd, statut)
 !
     if (statu2 .eq. 'OUT') then
         if (nomgd2 .eq. ' ') then
-            call assert(nbout.eq.1)
+            ASSERT(nbout.eq.1)
             nbtrou=nbtrou+1
             itrou=1
             outrou='OUT'
@@ -119,7 +119,7 @@ function nopar2(nomopt, nomgd, statut)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (nbtrou .eq. 0) then
@@ -141,7 +141,7 @@ function nopar2(nomopt, nomgd, statut)
         nopar2=zk8(iaoppa-1+itrou)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

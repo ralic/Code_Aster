@@ -104,7 +104,7 @@ subroutine caliso(chargz)
                 cbid, k1bid, 'ABSO', r8gaem(), 'AR_MIN',&
                 k1bid, ibid, armin, cbid, k1bid,&
                 ier)
-    call assert(armin.gt.0.d0)
+    ASSERT(armin.gt.0.d0)
 !
 !
 ! --- DIMENSION ASSOCIEE AU MODELE

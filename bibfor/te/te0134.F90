@@ -47,7 +47,7 @@ subroutine te0134(option, nomte)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdx, jgano)
-    call assert(nnos.le.8)
+    ASSERT(nnos.le.8)
 !
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PCACOQU', 'L', jcacoq)
@@ -65,7 +65,7 @@ subroutine te0134(option, nomte)
     else if (nnos.eq.4) then
         call dxqpgl(coor, pgl, 'S', iret)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     alpha = zr(jcacoq+1)*r8dgrd()
     beta = zr(jcacoq+2)*r8dgrd()

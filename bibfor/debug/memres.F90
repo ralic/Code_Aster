@@ -60,9 +60,9 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     integer :: lon1, idep, incr, iret
     integer :: k, jad, ierr, ibid, nbfree, ltot
 !
-    call assert(limpr.eq.'OUI' .or. limpr.eq.'NON')
-    call assert(ldyn.eq.'OUI' .or. ldyn.eq.'NON')
-    call assert(prec.gt.0.d0)
+    ASSERT(limpr.eq.'OUI' .or. limpr.eq.'NON')
+    ASSERT(ldyn.eq.'OUI' .or. ldyn.eq.'NON')
+    ASSERT(prec.gt.0.d0)
 !
     tmax=-99.d0
     if (ldyn .eq. 'OUI') call jjldyn(0, -1, ltot)
@@ -79,8 +79,8 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 !
 !        -- ON VERIFIE LA CAPACITE DES ENTIERS :
     lon1=lon1*2
-    call assert(lon1.gt.0)
-    call assert(idep+lon1.gt.0)
+    ASSERT(lon1.gt.0)
+    ASSERT(idep+lon1.gt.0)
 !
 !       -- TENTATIVE D'ALLOCATION :
     call hpalloc(jad, idep+lon1, ierr, 0)
@@ -88,7 +88,7 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
         call hpdeallc(jad, nbfree, ibid)
         goto 30
     else
-        call assert(ierr.eq.-2)
+        ASSERT(ierr.eq.-2)
         idep=idep+lon1/2
         goto 20
     endif
@@ -108,10 +108,10 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 !      -- ON VERIFIE QUE TMAX EST ASSEZ BIEN EVALUE (+/- PREC):
     if (.true.) then
         call hpalloc(jad, idep-2*incr, ierr, 0)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call hpdeallc(jad, nbfree, ibid)
         call hpalloc(jad, idep+2*incr, ierr, 0)
-        call assert(ierr.ne.0)
+        ASSERT(ierr.ne.0)
     endif
 !
 !     -- CONVERSION EN MO :

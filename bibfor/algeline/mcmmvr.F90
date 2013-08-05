@@ -59,7 +59,7 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
     nom19=zk24(zi(lmat+1))
     valm=nom19//'.VALM'
     call jelira(valm, 'NMAXOC', nbloc, kbid)
-    call assert(nbloc.eq.1 .or. nbloc.eq.2)
+    ASSERT(nbloc.eq.1 .or. nbloc.eq.2)
     nonsym=(nbloc.eq.2)
     czero=dcmplx(0.d0,0.d0)
     if (cumul .eq. 'ZERO') then
@@ -118,7 +118,7 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
         do 110 jvec = 1, nbvect
             do 111, ieq=1,neq
             keta=zi(jccid-1+ieq)
-            call assert(keta.eq.1 .or. keta.eq.0)
+            ASSERT(keta.eq.1 .or. keta.eq.0)
             if (keta .eq. 1) xsol(ieq,jvec)=dcmplx(0.d0,0.d0)
 111          continue
 110      continue

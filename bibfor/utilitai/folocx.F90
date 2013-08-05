@@ -5,6 +5,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
+    integer :: n, i, ier
     real(kind=8) :: vale(n)
     real(kind=8) :: valr(2)
     character(len=*) :: prolgd
@@ -49,7 +50,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
 !                IER = 40 --->  ON DEBORDE A DROITE
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, ie, ier, ind, j, n
+    integer :: id, ie, ind, j
 !
     real(kind=8) :: epsi, tole, x
 !-----------------------------------------------------------------------
@@ -154,7 +155,7 @@ subroutine folocx(vale, n, x, prolgd, i,&
         i = id
         coli = 'I'
     endif
-    call assert(i.ge.1 .and. i.le.n)
+    ASSERT(i.ge.1 .and. i.le.n)
 !
 9999  continue
 !

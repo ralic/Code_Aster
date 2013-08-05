@@ -129,7 +129,7 @@ subroutine mmtape(phasep, leltf, ndim, nnl, nne,&
                     ffm, tau1, tau2, mprojt, rese,&
                     nrese, lambda, coefff, matrfe, matrfm)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

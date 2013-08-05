@@ -15,7 +15,6 @@ subroutine carbe3(charge)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -23,6 +22,7 @@ subroutine carbe3(charge)
 #include "asterc/getres.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
+#include "asterfort/assert.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
@@ -540,7 +540,7 @@ subroutine carbe3(charge)
         call mgauss('NFSP', stws, x, 6, 6,&
                     6, rbid, iret)
 !
-        if (iret .ne. 0) call assert(.false.)
+        if (iret .ne. 0) ASSERT(.false.)
 !
         if (niv .eq. 2) then
             write (ifm,*) 'IMPRESSION MATRICE X'

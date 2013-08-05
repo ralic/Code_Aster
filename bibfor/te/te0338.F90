@@ -362,7 +362,7 @@ subroutine te0338(option, nomte)
 !     ------------------------------------
     else
 !       OPTION DE CALCUL NON VALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

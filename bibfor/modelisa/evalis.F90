@@ -94,7 +94,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
         nbpg=zi(idpg-1+5+4*(ima-1)+1)
         nbsp=zi(idpg-1+5+4*(ima-1)+2)
         posma=zi(idpg-1+5+4*(ima-1)+4)
-        call assert(nbsp.eq.1)
+        ASSERT(nbsp.eq.1)
         do 5 ipg = 1, nbpg
 !  COORDONNEES DU POINT DE GAUSS IPG X1,Y1,Z1 ET POIDS DE GAUSS
             valpar(1)=zr(ivpg+posma+4*(ipg-1))

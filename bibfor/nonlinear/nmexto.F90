@@ -75,12 +75,12 @@ subroutine nmexto(typcpt, typcha, extrcp, extrga, extrch,&
             (extrga.eq.'MOY')) then
                 ncompt = 1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (typcha.eq.'NOEU') then
             ncompt = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (typcpt.eq.'LIEU') then
         if (typcha .eq. 'NOEU') then
@@ -91,7 +91,7 @@ subroutine nmexto(typcpt, typcha, extrcp, extrga, extrch,&
             (extrch.eq.'MOY')) then
                 ncompt = 1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (typcha.eq.'ELGA') then
             if (extrch .eq. 'VALE') then
@@ -101,13 +101,13 @@ subroutine nmexto(typcpt, typcha, extrcp, extrga, extrch,&
             (extrch.eq.'MOY')) then
                 ncompt = 1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

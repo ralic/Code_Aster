@@ -38,11 +38,11 @@ subroutine elref1(elrefe)
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
     common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
 !
-    call assert(iactif.eq.1)
+    ASSERT(iactif.eq.1)
     if (zi(jnbelr-1+2* (nute-1)+2) .eq. 0) then
         elrefe = 'XXXXXXXX'
     else
         elrefe = zk8(jnoelr-1+zi(jnbelr-1+2* (nute-1)+2))
     endif
-    call assert(elrefe.ne.' ')
+    ASSERT(elrefe.ne.' ')
 end subroutine

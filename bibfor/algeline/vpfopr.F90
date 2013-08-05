@@ -96,7 +96,6 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 ! OUT  IDET  : IS  : IDEM SUR LES EXPOSANTS
 !----------------------------------------------------------------------
 !
-! aslint: disable=W1501
     implicit none
 !
 ! PARAMETRES D'APPEL
@@ -142,7 +141,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         (option.ne.'PLUS_PETITE') .and. (option.ne.'TOUT') .and. (option.ne.'STURM') .and.&
         (option.ne.'STURML1') .and. (option.ne.'STURML1P') .and. (option.ne.'STURML10') .and.&
         (option.ne.'STURML11') .and. (option.ne.'STURMLN') .and. (option.ne.'STURMLNP') .and.&
-        (option.ne.'STURMAD')) call assert(.false.)
+        (option.ne.'STURMAD')) ASSERT(.false.)
     det(1)=-9999.d0
     det(2)=-9999.d0
     idet(1)=-9999
@@ -352,7 +351,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
             .or. (option.eq.'STURML11')) then
             mpicow=comcou(0)
             mpicou=comcou(1)
-            if (mpicou .eq. mpicow) call assert(.false.)
+            if (mpicou .eq. mpicow) ASSERT(.false.)
 !         --- ON REMPLACE LE COMM LOCAL PAR LE COMM WORLD
             call mpiexe('MPI_RANG_SIZE', mpicou, ibid, rangl, ibid)
             call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
@@ -369,19 +368,19 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
             call wkvect(k24c, 'V V I', nbrow+1, jk24c)
             call vecint(nbrow+1, 0, zi(jk24c))
             if (option .eq. 'STURML1P') then
-                if (frecou .ne. 1) call assert(.false.)
+                if (frecou .ne. 1) ASSERT(.false.)
                 if (rangl .eq. 0) zi(jk24c+1)=nbfmax
 !
             else if (option.eq.'STURMLNP') then
-                if (frecou .le. 1) call assert(.false.)
+                if (frecou .le. 1) ASSERT(.false.)
                 if (rangl .eq. 0) zi(jk24c+frecou)=nbfmax
 !
             else if (option.eq.'STURML10') then
-                if (frecou .ne. 0) call assert(.false.)
+                if (frecou .ne. 0) ASSERT(.false.)
                 if (rangl .eq. 0) zi(jk24c)=nbfmin
 !
             else if (option.eq.'STURML11') then
-                if (frecou .ne. 1) call assert(.false.)
+                if (frecou .ne. 1) ASSERT(.false.)
                 if (rangl .eq. 0) zi(jk24c+1)=nbfmax
             endif
 !

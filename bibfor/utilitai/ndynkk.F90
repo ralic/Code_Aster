@@ -219,7 +219,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
         sdmuap = zk24(jnosd+1-1)(1:15)
         cham24 = sdmuap(1:15)//'.PSD'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 999  continue

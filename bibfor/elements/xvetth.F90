@@ -101,7 +101,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac)
+    ASSERT(nnop.le.mxstac)
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
@@ -118,7 +118,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
     call rccoma(zi(imate), 'THER', 1, phenom, codret)
     if (codret .ne. 0) call u2mess('F', 'ELEMENTS2_63')
 !     POUR L'INSTANT ON NE TRAITE PAS 'THER_ORTH'
-    call assert(phenom.eq.'THER')
+    ASSERT(phenom.eq.'THER')
     valpar(1) = zr(itps-1+1)
     spt = 1
     poum = '+'
@@ -150,7 +150,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                     coorse(ndim*(in-1)+j)=zr(jpintt-1+ndim*(ino-1000-&
                     1)+j)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 1110          continue
 1100      continue
@@ -198,7 +198,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                 endif
 !           PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
 !           CAR ON SE TROUVE SUR LE FOND DE FISSURE
-                call assert(iret.ne.0)
+                ASSERT(iret.ne.0)
 !           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
                 call vecini(ndim, 0.d0, dgdth)
                 feth = femec(1)
@@ -224,7 +224,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                 do 1240 inp = 1, nnop
                     r = r + ff(inp)*zr(igeom-1+2*(inp-1)+1)
 1240              continue
-                call assert(r.gt.0d0)
+                ASSERT(r.gt.0d0)
                 jac = jac * r
             endif
 !

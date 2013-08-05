@@ -197,7 +197,7 @@ subroutine op0033()
             if (indimp(i) .eq. 0) valimp(i)=valimp(i)/coef
 20      continue
 !            NORMALEMENT DEJA VERIFIE PAR SIMU_POINT_MAT_OPS
-        call assert(compor(3).eq.'PETIT')
+        ASSERT(compor(3).eq.'PETIT')
     else if (defimp.eq.2) then
         igrad=1
 !           VALEURS IMPOSEES DE GRADIENTS F
@@ -254,7 +254,7 @@ subroutine op0033()
                         option, eps, sigp, zr(lvip), dsidep,&
                         iret)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call pmimpr(0, instap, indimp, fonimp, valimp,&
                     0, epsm, sigm, zr(lvim), nbvari,&

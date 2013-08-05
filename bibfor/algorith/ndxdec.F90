@@ -77,14 +77,14 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
                     solveu, ievdac, numins, iterat, retact)
     else if (etnewt.eq.'CONT') then
 ! ----- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE EN EXPLICITE
-        call assert(.false.)
+        ASSERT(.false.)
     else if (etnewt.eq.'ERRE') then
 ! ----- ERRREUR NON TRAITEE DANS NDXCVG
         retact = 4
     else if (etnewt.eq.'STOP') then
         retact = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TRAITEMENT DE L'ACTION
@@ -101,7 +101,7 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
         actnew = 1
     else if (retact.eq.2) then
 !
-        call assert(.false.)
+        ASSERT(.false.)
     else if (retact.eq.3) then
 !
 ! ----- ECHEC DE L'ACTION -> ARRET DU CALCUL
@@ -113,7 +113,7 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
 !
         actnew = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
@@ -123,11 +123,11 @@ subroutine ndxdec(sdimpr, sddisc, sderro, solveu, numins)
     else if (actnew.eq.1) then
         call nmeceb(sderro, 'NEWT', 'ERRE')
     else if (actnew.eq.2) then
-        call assert(.false.)
+        ASSERT(.false.)
     else if (actnew.eq.3) then
         call nmeceb(sderro, 'NEWT', 'STOP')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TRANSFERT ETAT DE LA BOUCLE

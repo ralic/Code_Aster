@@ -145,7 +145,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
     20 end do
 !
     if (ditopo .eq. 3) then
-        call assert(ndim.eq.3)
+        ASSERT(ndim.eq.3)
         ncas='3D'
     else if (ditopo.eq.1) then
         ncas='1.5D'
@@ -155,10 +155,10 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
         else if (ndim.eq.3) then
             ncas='2.5D'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

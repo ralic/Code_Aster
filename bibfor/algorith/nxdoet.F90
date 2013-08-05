@@ -120,7 +120,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 ! --- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
     call getfac(motfac, nocc)
-    call assert(nocc.le.1)
+    ASSERT(nocc.le.1)
     leinit = nocc.gt.0
     if (leinit) then
         if (niv .ge. 2) then
@@ -138,7 +138,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 !
     call getvid(motfac, 'EVOL_THER', 1, iarg, 1,&
                 evol, nocc)
-    call assert(nocc.le.1)
+    ASSERT(nocc.le.1)
     evonol = nocc.gt.0
 !
 ! --- INSTANT INITIAL
@@ -159,7 +159,7 @@ subroutine nxdoet(modele, numedd, lreuse, lostat, sdieto,&
 ! --- PAS DE PRECISION --> C'EST UN CALCUL STATIONNAIRE
 !
     call getfac(motfac, nocc)
-    call assert(nocc.le.1)
+    ASSERT(nocc.le.1)
     if (nocc .eq. 0) then
         lostat = .true.
         initpr = -1

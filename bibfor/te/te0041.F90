@@ -77,7 +77,7 @@ subroutine te0041(option, nomte)
 !
 !
     lbid = (nomte(1:9).eq.'MECA_DIS_') .or. (nomte(1:12).eq.'MECA_2D_DIS_')
-    call assert(lbid)
+    ASSERT(lbid)
     fami='FPG1'
     kpg=1
     spt=1
@@ -108,7 +108,7 @@ subroutine te0041(option, nomte)
     else
 !        POUR LES AUTRES OPTIONS C'EST SYMETRIQUE
         call infdis('SKMA', ibid, r8bid, k8bid)
-        call assert(ibid .eq. 3)
+        ASSERT(ibid .eq. 3)
     endif
 !
 ! --- INFORMATIONS SUR LES DISCRETS :
@@ -231,7 +231,7 @@ subroutine te0041(option, nomte)
             call jevech('PVECTUR', 'E', ivect)
         else
 ! --- ---   OPTION DE CALCUL INVALIDE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (ndim .eq. 3) call utpslg(nno, nc, pgl, mata1, mata2)
@@ -387,7 +387,7 @@ subroutine te0041(option, nomte)
  8          continue
         else
 ! --- ---   OPTION DE CALCUL INVALIDE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (ndim .eq. 3) call utpplg(nno, nc, pgl, mata3, mata4)
         if (irep .eq. 1) then

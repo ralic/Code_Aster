@@ -4,7 +4,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !  ATTENTION : CETTE ROUTINE NE DOIT PAS ETRE APPELLEE DIRECTEMENT :
 !              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
 !
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"
@@ -168,7 +167,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                 ma, ierd)
     call dismoi('F', 'NOM_MAILLA', nudev, 'NUME_DDL', ibid,&
                 ma2, ierd)
-    call assert(ma.eq.ma2)
+    ASSERT(ma.eq.ma2)
     call dismoi('F', 'NB_NO_SS_MAX', ma, 'MAILLAGE', nbnoss,&
                 k8bid, ierd)
     call dismoi('F', 'NOM_GD', nudev, 'NUME_DDL', ibid,&
@@ -220,7 +219,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !             TT(2) : TYPE (R/C) DE LA SD_MATR_ASSE
 !     ------------------------------------------------------
     matsym=typmat(nbmat,tlimat)
-    call assert(matsym.eq.'S' .or. matsym.eq.'N')
+    ASSERT(matsym.eq.'S' .or. matsym.eq.'N')
     lmasym=(matsym.eq.'S')
     if (motcle(1:4) .eq. 'ZERO') then
         cumul=.false.
@@ -229,12 +228,12 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         cumul=.true.
         acreer=.false.
         call jelira(matdev//'.VALM', 'NMAXOC', nblc, kbid)
-        call assert(nblc.eq.1 .or. nblc.eq.2)
+        ASSERT(nblc.eq.1 .or. nblc.eq.2)
         if (nblc .eq. 2) lmasym=.false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
-    call assert((itysca.eq.1) .or. (itysca.eq.2))
+    ASSERT((itysca.eq.1) .or. (itysca.eq.2))
     if (itysca .eq. 1) then
         tt='?R'
     else if (itysca.eq.2) then
@@ -253,7 +252,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !           * METHOD : METHODE DE RESOLUTION : FETI / AUTRE
 ! ------------------------------------------------------------------
     call jelira(nudev//'.NUME.REFN', 'LONMAX', n1, kbid)
-    call assert(n1.eq.4)
+    ASSERT(n1.eq.4)
     call jeveuo(nudev//'.NUME.REFN', 'L', jrefn)
     method=zk24(jrefn+2)
     sdfeti=zk24(jrefn+3)(1:19)
@@ -263,7 +262,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     infofe='FFFFFFFFFFFFFFFFFFFFFFFF'
     if (method(1:4) .eq. 'FETI') then
         lfeti=.true.
-        call assert(lmasym)
+        ASSERT(lmasym)
         call jeveuo(sdfeti//'.FDIM', 'L', idime)
         nbsd=zi(idime)
         call jeveuo(nudev//'.FETN', 'L', jfetn)
@@ -418,7 +417,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                     nu14=zk24(jfetn+idd-1)(1:14)
                 endif
                 call jeveuo(mat19//'.REFA', 'L', jrefa)
-                call assert(zk24(jrefa-1+2)(1:14).eq.nu14)
+                ASSERT(zk24(jrefa-1+2)(1:14).eq.nu14)
                 call jedetr(mat19//'.LIME')
                 call jedetr(mat19//'.REFA')
             endif
@@ -544,7 +543,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             call jeveuo(nu14//'.SMOS.SMDE', 'L', jsmde)
             nequ=zi(jsmde-1+1)
             itbloc=zi(jsmde-1+2)
-            call assert(zi(jsmde-1+3).eq.1)
+            ASSERT(zi(jsmde-1+3).eq.1)
             if (lmasym) then
                 nblc=1
             else
@@ -574,7 +573,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !         -- MISE EN MEMOIRE DES 1 (OU 2) BLOCS DE .VALM :
             call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalm(1))
             call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, typsca)
-            call assert(tt(2:2).eq.typsca)
+            ASSERT(tt(2:2).eq.typsca)
             if (.not.lmasym) then
                 call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jvalm(2))
             else
@@ -638,12 +637,12 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                     call dismoi('F', 'MPI_COMPLET', resu, 'RESUELEM', ibid,&
                                 kempic, ierd)
                     if (kempic .eq. 'NON') then
-                        call assert(ldist.or.lfeti)
+                        ASSERT(ldist.or.lfeti)
 !             -- POUR FETI IL EST NORMAL QUE CHAQUE PROC NE CONNAISSE
 !                QUE SA PARTIE DE MATRICE: LA MATRICE LOCALE AU SD IDD
                         if (.not.lfeti) kampic='NON'
                     else
-                        call assert(.not.ldist)
+                        ASSERT(.not.ldist)
                     endif
 !
 !
@@ -658,7 +657,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                     call dismoi('F', 'EXI_VF', ligre1, 'LIGREL', ibid,&
                                 exivf, ierd)
                     if (exivf .eq. 'OUI') then
-                        call assert(.not.lmasym)
+                        ASSERT(.not.lmasym)
                         call jeveuo(ligre1//'.REPE', 'L', jrepe)
                         call jeveuo(ligre1//'.NVGE', 'L', jnvge)
                         vge=zk16(jnvge-1+1)(1:12)
@@ -738,13 +737,13 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                     endif
                     call dismoi('F', 'TYPE_SCA', resu, 'RESUELEM', ibid,&
                                 typsca, ierd)
-                    call assert(typsca.eq.'R' .or. typsca.eq.'C')
+                    ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
                     tt(1:1)=typsca
                     call dismoi('F', 'TYPE_MATRICE', resu, 'RESUELEM', ibid,&
                                 symel, ierd)
-                    call assert(symel(1:1).eq.'S' .or. symel(1:1) .eq.'N')
+                    ASSERT(symel(1:1).eq.'S' .or. symel(1:1) .eq.'N')
                     lmesym=(symel(1:1).eq.'S')
-                    if (lmasym) call assert(lmesym)
+                    if (lmasym) ASSERT(lmesym)
 !
 !             BOUCLE SUR LES GRELS DU LIGREL
 !             ==============================
@@ -759,7 +758,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                         mode=zi(jdesc+igr+1)
                         if (mode .gt. 0) then
                             nnoe=nbno(mode)
-                            call assert(nnoe.le.nbnomx)
+                            ASSERT(nnoe.le.nbnomx)
                             nbvel=digdel(mode)
 !                 NOMBRE D'ELEMENTS DU GREL IGR DU LIGREL LIGRE1/ILIMA
                             nel=zznelg(ilima,igr)
@@ -864,11 +863,11 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
         if (kampic .eq. 'OUI') then
 !         -- CALCUL STD OU CALCUL FETI OU CALCUL DISTRIBUE COMPLETE
 !            (CMD ECLATEE ASSE_MATRICE)
-            call assert(.not.ldist)
+            ASSERT(.not.ldist)
             zk24(jrefa-1+11)='MPI_COMPLET'
         else
 !         -- CALCUL DISTRIBUE AVEC OU SANS MUMPS
-            call assert(ldist)
+            ASSERT(ldist)
             zk24(jrefa-1+11)='MPI_INCOMPLET'
         endif
 !        -- DANGEREUX DE CUMULER DEUX TYPES D'INFORMATIONS EN REFA(11)
@@ -877,7 +876,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !           POUR RECUPERER CETTE INFO
         if (imatd .ne. 0) then
 !        -- CALCUL DISTRIBUE AVEC MUMPS + OPTION MATR_DISTRIBUEE='OUI'
-            call assert(ldist)
+            ASSERT(ldist)
             zk24(jrefa-1+11)='MATR_DISTR'
         endif
 130  end do

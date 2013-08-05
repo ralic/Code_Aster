@@ -129,7 +129,7 @@ subroutine fetmon(infofe, nbi2, nbi, nbtot, nbsd,&
         nommon='&FETI.MONITORING.MPI'
         call jeexin(nommon, iexist)
 ! SI L OBJET NOMMON EXISTE DEJA : ARRET
-        call assert(iexist.eq.0)
+        ASSERT(iexist.eq.0)
         call jeveuo(nommon, 'L', imon)
 ! NBRE D'OPTION DE FETAM
         nomopt(1)='REPARTITION SD'

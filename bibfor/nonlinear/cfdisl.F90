@@ -190,7 +190,7 @@ function cfdisl(deficz, questz)
         else if (ifrot.eq.0) then
             cfdisl = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'GEOM_NEWTON') then
@@ -222,7 +222,7 @@ function cfdisl(deficz, questz)
         cfdisl = cfdisi(defico,'NB_ITER_GEOM').lt.0
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

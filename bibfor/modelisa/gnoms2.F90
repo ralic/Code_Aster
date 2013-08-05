@@ -37,9 +37,9 @@ subroutine gnoms2(noojb, k1, k2)
     integer :: inum, iret, k1, k2, nessai, ndigit, iessai
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------
-    call assert(k2.gt.k1)
-    call assert(k1.gt.8)
-    call assert(k2.le.24)
+    ASSERT(k2.gt.k1)
+    ASSERT(k1.gt.8)
+    ASSERT(k2.le.24)
 !
     ndigit=min(k2-k1+1,4)
     nessai=int(10**ndigit)
@@ -48,7 +48,7 @@ subroutine gnoms2(noojb, k1, k2)
     inum = -1
     do 10, iessai=1,nessai
     inum = inum + 1
-!        CALL ASSERT(INUM.LE.9998)
+!        ASSERT(INUM.LE.9998)
     call codent(inum, 'D0', noojb1(k1:k2))
     call jeexin(noojb1, iret)
     if (iret .eq. 0) goto 20

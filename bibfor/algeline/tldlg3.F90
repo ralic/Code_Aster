@@ -125,14 +125,14 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
 !     -- DDLS ELIMINES :
     call jeveuo(noma19//'.REFA', 'L', jrefa)
-    call assert(zk24(jrefa-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
     if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(noma19, 'ELIMF')
-    call assert(zk24(jrefa-1+3).ne.'ELIML')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
     call dismoi('F', 'NOM_NUME_DDL', noma19, 'MATR_ASSE', ibid,&
                 nu, ibid)
-    call assert(nu.ne.' ')
-    call assert(zk24(jrefa-1+2)(1:14).eq.nu)
+    ASSERT(nu.ne.' ')
+    ASSERT(zk24(jrefa-1+2)(1:14).eq.nu)
 !
     call infdbg('FACTOR', ifm, niv)
     if (niv .eq. 2) then
@@ -236,7 +236,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                 if (iretp .ne. 0) then
                     call jeveuo(kpiv, 'L', ipiv)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !    -- LE PREMIER ELEMENT DU TABLEAU CORRESPOND A INFOG(28)
 !    -- IL INDIQUE LE NOMBRE DE PIVOTS INFERIEUR A UN CERTAIN SEUIL
@@ -265,10 +265,10 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     iretz=1
                     ndeci=ndigi2
                     isingu=zi(ipiv+2)
-                    call assert(isingu.gt.0 .and. isingu.le.neq)
+                    ASSERT(isingu.gt.0 .and. isingu.le.neq)
                     npivot=-zi(ipiv+1)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             else
 !     -- LA FACTO S'EST BIEN PASSEE ET ON NE CHERCHE PAS A TESTER LES
@@ -298,7 +298,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             iretz=2
             ndeci=-999
             isingu=npivot
-            call assert(isingu.gt.0 .and. isingu.le.neq)
+            ASSERT(isingu.gt.0 .and. isingu.le.neq)
         else
 !
 !     -- ON REGARDE CE QUE SONT DEVENUS LES TERMES DIAGONAUX :
@@ -326,12 +326,12 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     endif
                 endif
 10          continue
-            call assert(dmax.gt.0)
+            ASSERT(dmax.gt.0)
             ndeci1=int(log10(dmax))
             ndeci2=int(log10(1.d0/dmin))
             ndeci=ndeci1
             isingu=ieq3
-            call assert(isingu.gt.0 .and. isingu.le.neq)
+            ASSERT(isingu.gt.0 .and. isingu.le.neq)
             if (ndeci .ge. ndigi2) then
                 iretz=1
             else
@@ -357,18 +357,18 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         else if (iretz.eq.2) then
             codmes='F'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (istop.eq.0) then
         codmes='F'
     endif
 !
 !
-    call assert(isingu.eq.-999 .or. isingu.gt.0)
+    ASSERT(isingu.eq.-999 .or. isingu.gt.0)
     vali(1)=isingu
 !
-    call assert(ndeci.eq.-999 .or. ndeci.ge.0)
-    if (isingu .eq. -999) call assert(ndeci.eq.-999)
+    ASSERT(ndeci.eq.-999 .or. ndeci.ge.0)
+    if (isingu .eq. -999) ASSERT(ndeci.eq.-999)
     vali(2)=ndeci
 !
     valk(1)='XXXX'
@@ -385,7 +385,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     ligrel, infobl)
         valk(4)=tyddl
         if (tyddl .eq. 'A') then
-            call assert(nomcmp.ne.'LAGR')
+            ASSERT(nomcmp.ne.'LAGR')
             valk(1)=nomno
             valk(2)=nomcmp
         else if (tyddl.eq.'B') then
@@ -396,7 +396,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !         -- SI C'EST UN NOEUD DE LAGRANGE D'UNE LIAISON_DDL
 !            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
             lliai=index(infobl,'LIAISON_DDL')
-            call assert(lliai.gt.0)
+            ASSERT(lliai.gt.0)
             call imppiv(nu, isingu)
 !
         else if (tyddl.eq.'D') then
@@ -405,7 +405,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
             valk(6)=nomcmp
             valk(7)=infobl
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     call u2mesg(codmes, 'FACTOR_10', 7, valk, 2,&
@@ -431,7 +431,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !
 !       -- ALARME EVENTUELLE SI LE PIVOT DEVIENT TROP GRAND :
         if ((metres.ne.'MUMPS') .and. (ndeci2.ge.ndigi2)) then
-            call assert(ieq4.gt.0 .and. ieq4.le.neq)
+            ASSERT(ieq4.gt.0 .and. ieq4.le.neq)
             write (ifm,*)'<FACTOR> PROBLEME FACTORISATION.'
             write (ifm,*)'<FACTOR> LE PIVOT DEVIENT TRES GRAND',&
             ' A LA LIGNE:',ieq4

@@ -319,7 +319,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
         call r8inir(9, 0.d0, dfgrd0, 1)
         call r8inir(9, 0.d0, dfgrd1, 1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (compor(3) .eq. 'GDEF_LOG') then

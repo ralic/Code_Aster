@@ -69,7 +69,7 @@ subroutine mmextm(defico, cnsmul, posmae, mlagr)
 ! --- NUMEROS DANS SD CONTACT DES NOEUDS DE LA MAILLE ESCLAVE
 !
     call cfposn(defico, posmae, posnno, nnomai)
-    call assert(nnomai.le.nbnmax)
+    ASSERT(nnomai.le.nbnmax)
 !
 ! --- NUMEROS ABSOLUS DES NOEUDS DE LA MAILLE ESCLAVE
 !

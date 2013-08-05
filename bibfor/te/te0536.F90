@@ -49,7 +49,7 @@ subroutine te0536(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !      FAMI='RIGI'
 !     MATNS MAL DIMENSIONNEE
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, ibid, ddlc,&

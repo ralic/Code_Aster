@@ -137,7 +137,7 @@ subroutine op0075()
 !         --- IMPOSSIBILE DE DETERMINER LE TYPE DE RESTITUTION A PARTIR
 !           - DE LA SD_DYNA_GENE, LA SD A PROBABLEMENT ETE MAL DEFINIE
 !           - A LA BASE. ON ARRETE LE CALCUL.
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !     --- CALCUL MODAL SANS SOUS-STRUCTURATION
@@ -160,7 +160,7 @@ subroutine op0075()
 !
         else
 !         --- BLINDAGE : VOIR REMARQUE 1
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

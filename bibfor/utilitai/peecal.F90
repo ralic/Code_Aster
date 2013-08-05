@@ -215,7 +215,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
             do 40 ipt = 1, nbpt
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)
-                call assert(iad.ge.0)
+                ASSERT(iad.ge.0)
                 if (iad .eq. 0) goto 35
 !
                 val=val+zr(jcesv-1+iad)
@@ -223,13 +223,13 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                 if (tych .eq. 'ELGA') then
                     call cesexi('C', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad)
-                    call assert(iad.gt.0)
+                    ASSERT(iad.gt.0)
                     volpt=zr(jpoiv-1+iad)
                 else if (tych.eq.'ELEM') then
-                    call assert(nbpt.eq.1)
+                    ASSERT(nbpt.eq.1)
                     volpt=zr(jpdsm-1+ima)
                 else if (tych.eq.'ELNO') then
-                    call assert(nbpt.ge.1)
+                    ASSERT(nbpt.ge.1)
                     volpt=zr(jpdsm-1+ima)/nbpt
                 endif
                 ico=ico+1

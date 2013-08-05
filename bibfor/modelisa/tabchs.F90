@@ -94,7 +94,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 k8b, iret)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert(tsca.eq.'R')
+    ASSERT(tsca.eq.'R')
     call jeveuo(ma//'.CONNEX', 'L', jcon1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jcon2)
 !
@@ -219,7 +219,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 if (zi(jobj2+ili-1) .eq. 1) then
                     nono=zk8(jcolno+ili-1)
                     call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
-                    call assert(nuno.gt.0)
+                    ASSERT(nuno.gt.0)
                     zr(jcnsv+(nuno-1)*ncmp+icmp-1)=zr(jobj3+ili-1)
                     zl(jcnsl+(nuno-1)*ncmp+icmp-1)=.true.
                 endif
@@ -236,7 +236,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !           - SI LNOEU, ON CALCULE '&&TABCHS.POINT'
 !           - ON VERIFIE QUE LE NUMERO DE POINT EST POSSIBLE
             if (lnoeu) then
-                call assert(.not.lpoin)
+                ASSERT(.not.lpoin)
                 call wkvect('&&TABCHS.POINT', 'V V I', nblig, jcolpt)
             endif
             do 40 ili = 1, nblig
@@ -246,7 +246,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
                 if (lpoin) then
                     ipt=zi(jcolpt-1+ili)
                 else
-                    call assert(lnoeu)
+                    ASSERT(lnoeu)
                     nono=zk8(jcolno-1+ili)
                     call jenonu(jexnom(ma//'.NOMNOE', nono), nuno)
                     ipt=indiis(zi(jcon1-1+zi(jcon2-1+numa)),nuno,1,&
@@ -273,11 +273,11 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
             nbssp=1
             do 50 ili = 1, nblig
                 ksp=zi(jcolsp+ili-1)
-                call assert(ksp.gt.0)
+                ASSERT(ksp.gt.0)
                 nbssp=max(nbssp,ksp)
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
-                call assert(numa.gt.0)
+                ASSERT(numa.gt.0)
                 zi(jsp-1+numa)=max(zi(jsp-1+numa),ksp)
 50          continue
         else
@@ -291,7 +291,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
             call wkvect('&&TABCHS.PG_TOT', 'V V I', nbma, jpg)
             do 60 ili = 1, nblig
                 kpt=zi(jcolpt+ili-1)
-                call assert(kpt.gt.0)
+                ASSERT(kpt.gt.0)
                 noma=zk8(jcolma+ili-1)
                 call jenonu(jexnom(ma//'.NOMMAI', noma), numa)
                 zi(jpg-1+numa)=max(zi(jpg-1+numa),kpt)
@@ -352,7 +352,7 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma,&
 !
                 call cesexi('S', jcesd, jcesl, numa, ipt,&
                             isp, icmp, iad)
-                call assert(iad.ne.0)
+                ASSERT(iad.ne.0)
                 if (iad .lt. 0) then
                     iad=-iad
                 else

@@ -76,7 +76,7 @@ subroutine cfcoor(noma, defico, newgeo, posmam, ksi1,&
                 nummam, alias, nommam, ndim, nnomam,&
                 coorma)
     if (typmai .ne. 'MAIT') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- COORDONNEES DU PROJETE

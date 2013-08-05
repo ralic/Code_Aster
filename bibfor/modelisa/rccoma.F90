@@ -52,14 +52,14 @@ subroutine rccoma(jmat, pheno, iarret, phenom, icodre)
 !
 ! ----------------------------------------------------------------------
 !
-    call assert(jmat.ne.1)
-    call assert((iarret.eq.0) .or. (iarret.eq.1))
+    ASSERT(jmat.ne.1)
+    ASSERT((iarret.eq.0) .or. (iarret.eq.1))
 !
     feno = pheno
 !
 !     -- PHENO NE DOIT PAS CONTENIR LE SUFFIXE _FO :
     ind = index(feno,'_FO')
-    call assert(ind.eq.0)
+    ASSERT(ind.eq.0)
 !
 !
     icodre = 1

@@ -94,7 +94,7 @@ subroutine te0033(option, nomte)
     if (option .ne. 'SIEF_ELGA' .and. option .ne. 'EPSI_ELGA' .and. option .ne. 'DEGE_ELNO'&
         .and. option .ne. 'DEGE_ELGA') then
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     dkg = .false.
@@ -214,7 +214,7 @@ subroutine te0033(option, nomte)
                         nbcou, zr(jsigm))
         else
 ! TYPE D ELEMENT INVALIDE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)

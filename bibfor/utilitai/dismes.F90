@@ -76,7 +76,7 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
         else if (zk8(jcesk-1+3).eq.'ELNO') then
             repk = 'CESN'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi .eq. 'NOM_MAILLA') then

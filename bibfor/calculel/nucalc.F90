@@ -49,7 +49,7 @@ function nucalc(opt, te, memoir)
     integer :: optmod, jj, ianblc
 !
 ! DEB-------------------------------------------------------------------
-    call assert(memoir.eq.0 .or. memoir.eq.1)
+    ASSERT(memoir.eq.0 .or. memoir.eq.1)
     if (memoir .eq. 1) then
         call jeveuo('&CATA.TE.OPTTE', 'L', iaoptt)
         call jeveuo('&CATA.TE.OPTMOD', 'L', iaopmo)

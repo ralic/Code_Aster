@@ -258,7 +258,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 endif
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 30          continue
         else
@@ -314,7 +314,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             ite=zi(jliel-1+n1)
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
             call dismte(questi, nomte, ige1, repk, ierd)
-            call assert((ige1.ge.0) .and. (ige1.le.3))
+            ASSERT((ige1.ge.0) .and. (ige1.le.3))
             if ((ige2.eq.0) .and. (ige1.ne.0)) ige2=ige1
             if ((ige1*ige2.gt.0) .and. (ige1.ne.ige2)) melang= .true.
             if (ige1 .gt. 0) dimge(ige1)=1
@@ -339,7 +339,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             if (zi(jsssa-1+ism) .eq. 1) then
                 nomacr=zk8(jnomac-1+ism)
                 call dismml(questi, nomacr, ige1, repk, ierd)
-                call assert(ige1.ge.0 .and. ige1.le.123)
+                ASSERT(ige1.ge.0 .and. ige1.le.123)
                 if (ige2 .ne. ige1) then
                     ige2=dimge1(ige2,ige1)
                 endif

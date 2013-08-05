@@ -37,7 +37,7 @@ function nbsigm()
     else if (nbsig.eq.'X6') then
         nbsigm=6
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

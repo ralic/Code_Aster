@@ -53,15 +53,15 @@ subroutine lecojb(ob, unite, base, iret)
 !
     call jemarq()
     read(unite,1001,end=9998) mocle1,genr
-    call assert(mocle1.eq.'|TYPE_JEVEUX=')
+    ASSERT(mocle1.eq.'|TYPE_JEVEUX=')
 !
 !
     if (genr .eq. 'SIMPLE') then
 !     ----------------------------
         read (unite,1002) mocle1,ob1,mocle2,type,mocle3,long
-        call assert(mocle1.eq.'|NOM=')
-        call assert(mocle2.eq.'|TYPE=')
-        call assert(mocle3.eq.'|LONMAX=')
+        ASSERT(mocle1.eq.'|NOM=')
+        ASSERT(mocle2.eq.'|TYPE=')
+        ASSERT(mocle3.eq.'|LONMAX=')
         call wkvect(ob1, base//' V '//type, long, iad)
         call lecvec(iad, long, type, unite)
 !
@@ -69,9 +69,9 @@ subroutine lecojb(ob, unite, base, iret)
     else if (genr.eq.'PT_NOM') then
 !     ----------------------------
         read (unite,1002) mocle1,ob1,mocle2,type,mocle3,long
-        call assert(mocle1.eq.'|NOM=')
-        call assert(mocle2.eq.'|TYPE=')
-        call assert(mocle3.eq.'|NOMMAX=')
+        ASSERT(mocle1.eq.'|NOM=')
+        ASSERT(mocle2.eq.'|TYPE=')
+        ASSERT(mocle3.eq.'|NOMMAX=')
         call jecreo(ob1, base//' N '//type)
         call wkvect('&&LECOJB.PTNOM', base//' V '//type, long, jtmp)
         call lecvec(jtmp, long, type, unite)
@@ -93,7 +93,7 @@ subroutine lecojb(ob, unite, base, iret)
             call jecroc(jexnom(ob1, zk32(jtmp-1+k)))
 13          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call jedetr('&&LECOJB.PTNOM')
 !
@@ -105,9 +105,9 @@ subroutine lecojb(ob, unite, base, iret)
         mocle4,nutioc,mocle4,acces(1:2),mocle4,stock, mocle4,modlon,&
         mocle4,lonmax,mocle4,lont
 !
-        call assert(mocle1.eq.'|NOM=')
-        call assert(mocle2.eq.'|TYPE=')
-        call assert(mocle3.eq.'|NMAXOC=')
+        ASSERT(mocle1.eq.'|NOM=')
+        ASSERT(mocle2.eq.'|TYPE=')
+        ASSERT(mocle3.eq.'|NMAXOC=')
         call jecrec(ob1, base//' V '//type, acces(1:2), stock, modlon,&
                     nmaxoc)
 !
@@ -118,14 +118,14 @@ subroutine lecojb(ob, unite, base, iret)
 !
         if (acces(1:2) .eq. 'NO') then
             read (unite,1005) mocle1,nomk8,mocle2,long
-            call assert(mocle1.eq.'|NOM=')
-            call assert(mocle2.eq.'|LONMAX=')
+            ASSERT(mocle1.eq.'|NOM=')
+            ASSERT(mocle2.eq.'|LONMAX=')
             call jecroc(jexnom(ob1, nomk8))
             if (modlon .ne. 'CONSTANT') call jeecra(jexnom(ob1, nomk8), 'LONMAX', long, kbid)
             if (long .gt. 0) call jeveuo(jexnom(ob1, nomk8), 'E', iad)
         else
             read (unite,1006) mocle1,long
-            call assert(mocle1.eq.'|LONMAX=')
+            ASSERT(mocle1.eq.'|LONMAX=')
             call jecroc(jexnum(ob1, iobj))
             if (modlon .ne. 'CONSTANT') call jeecra(jexnum(ob1, iobj), 'LONMAX', long, kbid)
             if (long .gt. 0) call jeveuo(jexnum(ob1, iobj), 'E', iad)
@@ -134,7 +134,7 @@ subroutine lecojb(ob, unite, base, iret)
  2      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

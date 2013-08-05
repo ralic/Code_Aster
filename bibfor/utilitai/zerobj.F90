@@ -51,11 +51,11 @@ function zerobj(obj)
     obj2=obj
 !
     call jelira(obj2, 'TYPE', ibid, typsca)
-    call assert(typsca.eq.'R' .or. typsca.eq.'C')
+    ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
     call jelira(obj2, 'XOUS', ibid, xous)
     call jelira(obj2, 'XOUS', ibid, xous)
     call jelira(obj2, 'GENR', ibid, genr)
-    call assert(genr.eq.'V')
+    ASSERT(genr.eq.'V')
 !
 !
 !     1) CAS DES OBJETS SIMPLES :

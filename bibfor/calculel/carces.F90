@@ -189,14 +189,14 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
         ieq = deb1 - 1 + ico
 !
         cmp2 = zi(jcorr1-1+cmp)
-        call assert(cmp2.gt.0)
-        call assert(cmp2.le.ncmp)
+        ASSERT(cmp2.gt.0)
+        ASSERT(cmp2.le.ncmp)
 !
         do 100,ipt = 1,nbpt
         do 90,isp = 1,nbsp
         call cesexi('C', jcesd, jcesl, ima, ipt,&
                     isp, cmp2, iad)
-        call assert(iad.le.0)
+        ASSERT(iad.le.0)
         if (iad .eq. 0) goto 110
 !
 !
@@ -221,7 +221,7 @@ subroutine carces(cartz, typces, cesmoz, base, cesz,&
         else if (tsca.eq.'K80') then
             zk80(jcesv-1-iad) = zk80(jvale-1+ieq)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 90      continue
 100      continue

@@ -94,7 +94,7 @@ subroutine apcpoi(sdappa, ndimg, izone, nommai, typzon,&
     else if (itype.eq.2) then
         call u2mesk('F', 'APPARIEMENT_62', 1, nommai)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

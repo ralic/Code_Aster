@@ -77,9 +77,9 @@ subroutine nmetdo(sdcriq)
                 call getvtx('COMP_INCR', 'RELATION_KIT', iocc, iarg, dimaki,&
                             comel(1), n2)
                 if (n2 .eq. 0) then
-                    call assert(.false.)
+                    ASSERT(.false.)
                 else if (n2.gt.dimaki) then
-                    call assert(.false.)
+                    ASSERT(.false.)
                 else
                     ellisq = .false.
                     do 101 ii = 1, n2

@@ -124,8 +124,8 @@ subroutine celfpg(celz, nomobj, iret)
         ligrsv=ligrel
         nomosv=nomobj
     else
-        call assert(nomobj.eq.nomosv)
-        call assert(ligrel.eq.ligrsv)
+        ASSERT(nomobj.eq.nomosv)
+        ASSERT(ligrel.eq.ligrsv)
         call jeveuo(nomobj, 'L', jobj)
     endif
 !

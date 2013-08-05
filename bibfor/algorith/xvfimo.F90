@@ -44,7 +44,7 @@ function xvfimo(modele, fiss)
     call jemarq()
 !
     call jeexin(modele//'.FISS', ier)
-    call assert(ier.ne.0)
+    ASSERT(ier.ne.0)
 !
 !     RECUPERATION DU NOMBRE DE FISSURES ASSOCIEES AU MODELE
     call dismoi('F', 'NB_FISS_XFEM', modele, 'MODELE', nfiss,&

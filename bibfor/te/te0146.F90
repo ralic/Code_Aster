@@ -80,10 +80,10 @@ subroutine te0146(option, nomte)
     call jevech('PEFFORR', 'L', jefge)
     call tecach('OOO', 'PEFFORR', 'L', 7, itab,&
                 iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     nno=itab(3)
-    call assert(nno.gt.0.and.nno.le.9)
-    call assert(itab(2).eq.8*nno)
+    ASSERT(nno.gt.0.and.nno.le.9)
+    ASSERT(itab(2).eq.8*nno)
 !
 !       -- CALCUL DE LA CONTRAINTE MOYENNE :
 !       ----------------------------------------------

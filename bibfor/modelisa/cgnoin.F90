@@ -84,7 +84,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     tymocl(1)='GROUP_MA'
     call reliem(' ', noma1, 'NU_MAILLE', motfac, iocc,&
                 nbmc, motcle, tymocl, mesma1, nbno1)
-    call assert(nbno1.gt.0)
+    ASSERT(nbno1.gt.0)
     call jeveuo(mesma1, 'L', jma1)
 !
 !
@@ -96,7 +96,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     tymocl(1)='GROUP_MA'
     call reliem(' ', noma2, 'NU_NOEUD', motfac, iocc,&
                 nbmc, motcle, tymocl, mesno2, nbno2)
-    call assert(nbno2.gt.0)
+    ASSERT(nbno2.gt.0)
     call jeveuo(mesno2, 'L', jno2)
 !
 !
@@ -119,8 +119,8 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
                     c16b, k8bid, k8bid, r8b, 'AR_MIN',&
                     k8bid, ibid, armin, c16b, k8bid,&
                     iret)
-        call assert(iret.eq.0)
-        call assert(armin.gt.0.d0)
+        ASSERT(iret.eq.0)
+        ASSERT(armin.gt.0.d0)
         distma=0.01d0*armin
     endif
 !
@@ -137,7 +137,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
                     nbno2, zi(jno2), ' ', ' ', corres,&
                     ldmax, distma, ' ')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

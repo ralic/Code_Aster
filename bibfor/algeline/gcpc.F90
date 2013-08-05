@@ -110,7 +110,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
 !-----INITS DIVERS
     iret = 0
     zero = 0.d0
-    call assert(irep.eq.0 .or. irep.eq.1)
+    ASSERT(irep.eq.0 .or. irep.eq.1)
 !
 !-----RECUPERATION DU PRECONDITIONNEUR
 !  -- CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
@@ -188,7 +188,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
             call jeveuo(smbr//'.VALE', 'L', jsmbr)
             call dcopy(m, zr(jsmbr), 1, rr, 1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !                                             RRRI <--- (RK,ZK)
@@ -256,7 +256,7 @@ subroutine gcpc(m, in, ip, ac, inpc,&
         else if (istop.eq.2) then
             iret = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !    -----------

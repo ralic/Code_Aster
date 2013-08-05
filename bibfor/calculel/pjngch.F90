@@ -65,16 +65,16 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     noma2=zk24(jxxk1-1+2)
     method=zk24(jxxk1-1+3)
     cnref=zk24(jxxk1-1+4)
-    call assert(method(1:10).eq.'NUAGE_DEG_')
+    ASSERT(method(1:10).eq.'NUAGE_DEG_')
 !
     call chpver('F', cham1, 'NOEU', '*', ibid)
     call chpver('F', cnref, 'NOEU', '*', ibid)
     call dismoi('F', 'NOM_MAILLA', cham1, 'CHAMP', ibid,&
                 noma3, ibid)
-    call assert(noma3.eq.noma1)
+    ASSERT(noma3.eq.noma1)
     call dismoi('F', 'NOM_MAILLA', cnref, 'CHAMP', ibid,&
                 noma3, ibid)
-    call assert(noma3.eq.noma2)
+    ASSERT(noma3.eq.noma2)
 !
 !
 !     C'EST LE MAILLAGE MAILLA1 QUI IMPOSE LA DIMENSION D'ESPACE DES
@@ -92,14 +92,14 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     call copisd('CHAMP_GD', 'G', cnref, cham2)
     call jelira(cham2//'.VALE', 'LONMAX', nbeq, kbid)
     call jelira(cham2//'.VALE', 'TYPE', ibid, type)
-    call assert(type.eq.'R')
+    ASSERT(type.eq.'R')
     call jeveuo(cham2//'.VALE', 'E', jvale)
     if (type .eq. 'R') then
         do 10 ieq = 0, nbeq-1
             zr(jvale+ieq)=0.d0
 10      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nuage1='&&NUAGE1'

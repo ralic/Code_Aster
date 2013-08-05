@@ -95,7 +95,7 @@ subroutine nmctcl(numins, modele, noma, defico, resoco,&
         call mmchml(noma, defico, resoco, sddisc, sddyna,&
                     numins)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

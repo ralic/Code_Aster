@@ -70,7 +70,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 !
 !
     if ((docu(1:4).ne.'CHNO') .and. (docu(1:4).ne.'CHML')) then
-        call assert(.false.)
+        ASSERT(.false.)
     else if (docu(1:4).eq.'CHNO') then
 !     -----------------------------------
         vale='.VALE'
@@ -118,7 +118,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
             call jelira(ch1//vale, 'LONMAX', lon1, k1bid)
             call jelira(ch2//vale, 'LONMAX', lon2, k1bid)
             call jelira(ch//vale, 'LONMAX', long, k1bid)
-            call assert((lon1.eq.lon2).and.(lon1.eq.long))
+            ASSERT((lon1.eq.lon2).and.(lon1.eq.long))
 !
             call jeveuo(ch//vale, 'E', iach)
             call jeveuo(ch1//vale, 'L', iach1)

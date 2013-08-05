@@ -104,7 +104,7 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
     hc=imax-imin+1
 !
 !        -- PEUT-ON ENCORE STOCKER CETTE COLONNE DANS LE BLOC COURANT ?
-    call assert(hc.le.itbloc)
+    ASSERT(hc.le.itbloc)
     if (tcumu+hc .gt. itbloc) then
         nbloc=nbloc+1
         tcumu=0
@@ -132,7 +132,7 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
         zi (jscbl-1+ibloc)=ieq-1
     endif
     2 end do
-    call assert(ibloc.eq.nbloc)
+    ASSERT(ibloc.eq.nbloc)
     zi (jscbl-1+nbloc+1)=neq
 !
 !
@@ -140,7 +140,7 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 !        ADAPTE LA TAILLE DE CE BLOC
 !     ------------------------------------------------------
     if (itbloc .gt. hcc) then
-        call assert(nbloc.eq.1)
+        ASSERT(nbloc.eq.1)
         itbloc=hcc
     endif
     zi(jscde-1+2)=itbloc

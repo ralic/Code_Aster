@@ -40,7 +40,7 @@ function gamdev(alpha)
 !
     pi = r8pi()
     un = 1.d0
-    call assert(alpha.gt.1.d0)
+    ASSERT(alpha.gt.1.d0)
 !
     gamma2 = alpha-1.d0
     gamm1 = 1d0/gamma2
@@ -57,7 +57,7 @@ function gamdev(alpha)
         call getran(u)
         y = beta*tan(pi*(u*c1+c2))+gamma2
         call getran(unif)
-        call assert(unif.gt.0.d0)
+        ASSERT(unif.gt.0.d0)
         v = -log(unif)
         vref = log(1+beta2*((y-gamma2)**2))+gamma2*log(y*gamm1)-y +gamma2
         goto 1

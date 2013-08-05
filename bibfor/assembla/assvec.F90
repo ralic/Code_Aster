@@ -1,6 +1,5 @@
 subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                   nu, vecpro, motcle, type)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -152,7 +151,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', lcmodl)
     call jeveuo(jexnum('&CATA.TE.MODELOC', 1), 'L', admodl)
-    call assert(motcle.eq.'ZERO')
+    ASSERT(motcle.eq.'ZERO')
 !
 !
 ! --- SI LE CONCEPT VECAS EXISTE DEJA, ON LE DETRUIT:
@@ -1034,11 +1033,11 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     b19=zk24(jrelr-1+k)(1:19)
     call jeexin(b19//'.VALE', iexi)
     if (iexi .gt. 0) then
-        call assert(.not.lfeti)
+        ASSERT(.not.lfeti)
         call jeveuo(kvale, 'E', jvale1)
         call jelira(kvale, 'TYPE', ibid, ktyp)
-        call assert(ktyp.eq.'R')
-        call assert(type.eq.1)
+        ASSERT(ktyp.eq.'R')
+        ASSERT(type.eq.1)
         c19='&&ASSVEC.CHAMNO'
         call vtcreb(c19, nu, 'V', ktyp, nequa)
 !

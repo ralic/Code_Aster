@@ -71,7 +71,7 @@ subroutine obttit(sdtabl, sepcol, entet1, entet2, entet3)
 ! --- HAUTEUR TITRE
 !
     call obgeti(sdtabl, 'HAUTEUR_TITRE', tithau)
-    call assert((tithau.gt.0).and.(tithau.le.3))
+    ASSERT((tithau.gt.0).and.(tithau.le.3))
 !
 ! --- LISTE DES COLONNES DISPONIBLES
 !
@@ -84,7 +84,7 @@ subroutine obttit(sdtabl, sepcol, entet1, entet2, entet3)
 ! --- LARGEUR D'UNE LIGNE
 !
     call obgeti(sdtabl, 'LARGEUR_LIGNE', larlig)
-    call assert(larlig.le.255)
+    ASSERT(larlig.le.255)
 !
 ! --- LIGNES VIDES AVEC LES SEPARATEURS DE COLONNES
 !

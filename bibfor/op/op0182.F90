@@ -119,7 +119,7 @@ subroutine op0182()
     else
 !     SI PAS REENTRANT : TYPE DISCRET, INITIALISATION DE NOMFON
         typini = 'DISCRET'
-        call assert(lxlgut(nomfon).le.24)
+        ASSERT(lxlgut(nomfon).le.24)
         call wkvect(nomfon(1:19)//'.PROL', 'G V K24', 6, lpro)
         zk24(lpro) = 'FONCTION'
         zk24(lpro+1) = 'LINLIN'
@@ -295,7 +295,7 @@ subroutine op0182()
                         c16b, 'DEFIOBST', k8b, r8b, 'FONCTION',&
                         k8typ, ibid, r8b, c16b, nomobc,&
                         iret2)
-            call assert(irett.eq.0.and.iret2.eq.0)
+            ASSERT(irett.eq.0.and.iret2.eq.0)
             if (typobc(14:17) .eq. '1300') then
                 rtube = 4.84d-3
                 goto 61

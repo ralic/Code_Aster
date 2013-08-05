@@ -173,7 +173,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
     else if (iopt.eq.3) then
 !
 ! suivant DE SOUZA-NIETO
-        call assert(.false.)
+        ASSERT(.false.)
 !
 !         DFPMAX=0.D0
 !         DFPMIN=100.D0
@@ -189,7 +189,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !         CALL DEXPMAP(DFPMDG,NOCONV,DFP)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

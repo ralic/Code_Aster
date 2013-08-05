@@ -194,7 +194,7 @@ subroutine cfgli2(noma, defico, resoco, neq, nbliai,&
         endif
 710  end do
 !
-    if (lfmin .gt. 0) call assert(indic.eq.1)
+    if (lfmin .gt. 0) ASSERT(indic.eq.1)
 !
     liasup = lfmin.ne.0
 !

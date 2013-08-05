@@ -190,7 +190,7 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
     ba = 0.d0
     fa = nmcri4(ba)
 !      FA0 = FA
-    call assert(fa.le.0.d0)
+    ASSERT(fa.le.0.d0)
 !
     if (sige .ne. 0.d0) then
         bb = abs(sige)/e
@@ -198,7 +198,7 @@ subroutine nmfgas(fami, npg, icodma, pgl, nno,&
         nitmax = int(crit(1))
         call zerofr(1, 'BRENT', nmcri4, ba, bb,&
                     preci, nitmax, dp, iret, iter)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
         pp(1) = pm(1) + dp/theta
 !

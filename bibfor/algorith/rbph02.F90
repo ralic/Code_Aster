@@ -69,7 +69,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
         call dismoi('F', 'PROF_CHNO', numddl, 'NUME_DDL', ibid,&
                     prno, ie)
     else
-        call assert(chamno.ne.' ')
+        ASSERT(chamno.ne.' ')
         call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
                     prno, ie)
     endif
@@ -78,7 +78,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq,&
                 k8b, ie)
     call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
                 k8b, ie)
-    call assert(nec .le. 10)
+    ASSERT(nec .le. 10)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iad)
     call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
 !

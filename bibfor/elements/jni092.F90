@@ -30,12 +30,12 @@ subroutine jni092(elrefe, nmaxob, liobj, nbobj)
     real(kind=8) :: dff(2)
     character(len=24) :: yty, liobj(nmaxob)
 ! DEB -----------------------------------------------------------------
-    call assert(elrefe.eq.'CABPOU')
+    ASSERT(elrefe.eq.'CABPOU')
 !
     yty = '&INEL.CABPOU.YTY'
 !
     nbobj = 1
-    call assert(nmaxob.gt.nbobj)
+    ASSERT(nmaxob.gt.nbobj)
     liobj(1) = yty
 !
     call jeexin(yty, iret)

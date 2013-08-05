@@ -82,7 +82,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                     1, 1, iad)
 !C VERIFICATION HORS BORNES DEFINIES DANS CESMAT
 !C OU COMPOSANTE NON AFFECTEE
-        call assert(iad .gt. 0)
+        ASSERT(iad .gt. 0)
         nommat = zk8(icesv - 1 + iad)
 !
     else if (optio .eq. 'DOMA_NOEUD') then
@@ -104,7 +104,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                         1, 1, iad)
 !C VERIFICATION HORS BORNES DEFINIES DANS CESMAT
 !C OU COMPOSANTE NON AFFECTEE
-            call assert(iad .gt. 0)
+            ASSERT(iad .gt. 0)
             if ((k .gt. 1) .and. (nommat .ne. zk8(icesv - 1 + iad))) then
                 call u2mess('F', 'FATIGUE1_33')
             else

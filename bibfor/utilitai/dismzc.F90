@@ -60,7 +60,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     numglm(numail,ino)=zi(iamaco-1+zi(ilmaco+numail-1)+ino-1)
 ! --------------------------------------------------------------------
     call jemarq()
-    call assert(questi.eq.'Z_CST')
+    ASSERT(questi.eq.'Z_CST')
 !
     nolig = nomobz
     repk = ' '

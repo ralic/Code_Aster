@@ -84,6 +84,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     character(len=16) :: cas, option, nomcmd, kbid
     character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2
     character(len=24) :: valk(4)
+    logical :: bool
 !
 !     ------------------------------------------------------------------
     mnoga = '&&CHPCHD.MANOGA'
@@ -102,17 +103,16 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
                 tychi, ib)
     call dismoi('F', 'NOM_GD', chin, 'CHAMP', ib,&
                 nomgd, ib)
-    call assert(tychi .eq. 'NOEU' .or. tychi&
-                .eq. 'CART' .or. tychi .eq.&
-                'ELNO' .or. tychi .eq. 'ELGA'&
-                .or. tychi .eq. 'CESE')
+    bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' &
+        .or. tychi .eq. 'ELGA' .or. tychi .eq. 'CESE'
+    ASSERT(bool)
 !
 !
 ! 2.  -- SI TYPE = 'EL..' : ON CREE UN CHAM_ELEM_S "MODELE" : CESMOD
 !         LIGREL: NOM DU LIGREL ASSOCIE A CHOU
 ! ---------------------------------------------------------------
     if (type(1:2) .eq. 'EL') then
-        call assert(celmod.ne.' ')
+        ASSERT(celmod.ne.' ')
         call dismoi('F', 'NOM_LIGREL', celmod, 'CHAM_ELEM', ib,&
                     ligrel, ib)
         call dismoi('F', 'NOM_OPTION', celmod, 'CHAM_ELEM', ib,&
@@ -231,7 +231,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
                         'A', iret)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call cescns(ces1, '&&CHPCHD.CELFPG', 'V', cns1, ' ',&
@@ -246,7 +246,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas(1:8).eq.'CART->EL') then
 !     ----------------------------------------------------------------
-        call assert(ligrel.ne.' ')
+        ASSERT(ligrel.ne.' ')
         ces1 = '&&CHPCHD.CES1'
         call carces(chin, cas(7:10), cesmod, 'V', ces1,&
                     'A', ib)
@@ -268,7 +268,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas(1:8).eq.'CESE->EL') then
 !     ----------------------------------------------------------------
-        call assert(ligrel.ne.' ')
+        ASSERT(ligrel.ne.' ')
         ces1 = '&&CHPCHD.CES1'
         call cesces(chin, cas(7:10), cesmod, ' ', ' ',&
                     'V', ces1)
@@ -294,7 +294,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
         call celces(chin, 'V', ces1)
         call celfpg(chin, '&&CHPCHD.CELFPG', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call cesces(ces1, 'ELNO', cesmod, ' ', '&&CHPCHD.CELFPG',&
                     'V', ces2)
         call cescel(ces2, ligrel, option, param, prol0,&

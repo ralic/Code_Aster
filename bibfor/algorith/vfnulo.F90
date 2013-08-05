@@ -49,7 +49,7 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface,&
     call elref1(elrefe)
 !
     if (ndim .eq. 2) then
-        call assert(nnos.eq.nface)
+        ASSERT(nnos.eq.nface)
         do 1 ifa = 1, nface
             nbnofa(ifa)=2
             nosfa(ifa,1)=ifa
@@ -61,8 +61,8 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface,&
  1      continue
     else
         if (elrefe .eq. 'H27') then
-            call assert(nface.eq.6)
-            call assert(nnos.eq.8)
+            ASSERT(nface.eq.6)
+            ASSERT(nnos.eq.8)
             do 2 ifa = 1, 6
                 nbnofa(ifa)=4
  2          continue
@@ -142,8 +142,8 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface,&
             narfa(6,3)=11
             narfa(6,4)=12
         else if (elrefe.eq.'T9') then
-            call assert(nface.eq.4)
-            call assert(nnos.eq.4)
+            ASSERT(nface.eq.4)
+            ASSERT(nnos.eq.4)
             do 3 ifa = 1, 4
                 nbnofa(ifa)=3
  3          continue

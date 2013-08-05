@@ -137,7 +137,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
         else if (kstop.eq.'C') then
             iret = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
     norm4 = sqrt( (x14*x14) + (y14*y14) + (z14*z14) )
@@ -155,7 +155,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
         else if (kstop.eq.'C') then
             iret = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

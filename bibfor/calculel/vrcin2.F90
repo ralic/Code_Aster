@@ -72,7 +72,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs, kbid)
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
     call jelira(chmat//'.LISTE_SD', 'LONMAX', n1, kbid)
-    call assert(n1.eq.nbchs*7)
+    ASSERT(n1.eq.nbchs*7)
 !
 !
 !     1. ALLOCATION DE CHVARS ET DE CHMAT.CESVI:
@@ -91,8 +91,8 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     do 170,ima = 1,nbma
     nbpt = zi(jdcld-1+5+4* (ima-1)+1)
     nbsp = max(1,zi(jdcld-1+5+4* (ima-1)+2))
-    call assert(nbpt.eq.1)
-    call assert(nbsp.eq.1)
+    ASSERT(nbpt.eq.1)
+    ASSERT(nbsp.eq.1)
     call cesexi('C', jdcld, jdcll, ima, 1,&
                 1, 2, iad)
     if (iad .gt. 0) zi(jdclv-1+iad)=nbcvrc
@@ -100,7 +100,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !
     call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
                 iret, dceli)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     call detrsd('CHAMP', dceli)
     call celces(celmod, 'V', chvars)
     call detrsd('CHAMP', celmod)
@@ -133,7 +133,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     ces2='&&VRCIN2.CES2'
     call carces(cart2, 'ELEM', ' ', 'V', ces2,&
                 'A', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     call jeveuo(ces2//'.CESK', 'L', jcesk2)
     call jeveuo(ces2//'.CESD', 'L', jcesd2)
@@ -146,7 +146,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
         call u2mesk('F', 'CALCULEL2_11', 2, valk)
     endif
     nbma = zi(jcesd-1+1)
-    call assert(nbma.eq.zi(jcesd2-1+1))
+    ASSERT(nbma.eq.zi(jcesd2-1+1))
 !
 !       -- CALCUL DE NCMP (NOMBRE DE CVRC DANS VARC)
     ncmp=0
@@ -172,7 +172,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     nosy2=zk16(jlissd-1+7*(ichs-1)+3)
     if ((tysd1.eq.tysd2) .and. (nosd1.eq.nosd2) .and. ( nosy1.eq.nosy2)) goto 72
 71  continue
-    call assert(.false.)
+    ASSERT(.false.)
 72  continue
 !
     do 60,ipt = 1,nbpt
@@ -184,7 +184,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !               EN REALITE, K S'INCREMENTE PAR PAQUETS DE NCMP
 !               (VOIR COMMENTAIRE EN DEBUT DE BOUCLE 1)
     if (iad .eq. 0) goto 51
-    call assert(iad.lt.0)
+    ASSERT(iad.lt.0)
     iad=-iad
     zl(jcesl-1+iad)=.true.
     zi(jcesvi-1+iad)=ichs

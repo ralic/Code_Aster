@@ -78,7 +78,7 @@ subroutine inmain(nommat, neq, nozero)
 !
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nommat//'.VALM', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !-- ALLOCATION DES MATRICES D'INTERFACE
     call jecrec(nommat//'.VALM', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&

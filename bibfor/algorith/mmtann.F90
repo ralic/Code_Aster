@@ -56,7 +56,7 @@ subroutine mmtann(ndim, tau1, tau2, iret)
         call normev(tau1, nta1)
         call normev(tau2, nta2)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- VERIFICATION DES TANGENTES

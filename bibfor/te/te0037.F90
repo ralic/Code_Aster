@@ -113,7 +113,7 @@ subroutine te0037(option, nomte)
         call jevech('PTEMPSR', 'L', itemps)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jevech('PVECTUR', 'E', ires)
@@ -243,7 +243,7 @@ subroutine te0037(option, nomte)
                 do 112 i = 1, nno
                     lst=lst+zr(jlst-1+i)*ff(i)
 112              continue
-                call assert(lst.lt.0.d0)
+                ASSERT(lst.lt.0.d0)
                 rr(1)=-sqrt(-lst)
                 rr(2)= sqrt(-lst)
             endif

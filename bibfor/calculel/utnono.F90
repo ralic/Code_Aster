@@ -91,7 +91,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
     endif
 !
     iret = 0
-    call assert(nbno.gt.0)
+    ASSERT(nbno.gt.0)
     if (nbno .ne. 1) then
         iret = 1
         if (typm .eq. 'F' .or. typm .eq. 'E') then

@@ -143,10 +143,10 @@ subroutine nmlesd(typesd, nomsd, nompar, vali, valr,&
         else if (nompar.eq.'PREC_INSTAB') then
             valr = zr(jpinfr+8-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

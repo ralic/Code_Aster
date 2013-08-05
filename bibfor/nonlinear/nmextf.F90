@@ -56,7 +56,7 @@ subroutine nmextf(motfac, iocc, extrcp)
         call getvid(motfac, 'FORMULE', iocc, iarg, 1,&
                     extrcp, n1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

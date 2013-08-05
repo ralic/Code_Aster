@@ -143,13 +143,13 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     else if (keywordfact.eq. 'PRES_IMPO') then
         nomg = 'PRES_C'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call assert(nbec.le.10)
+    ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
     call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
@@ -200,11 +200,11 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
             else if (fonree.eq.'FONC') then
                 call wkvect('&&CADDLI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
             call wkvect('&&CADDLI.DIMENSION', 'V V I', nbnoeu, jdimen)
-            call assert(val_nb_liai.eq.1)
+            ASSERT(val_nb_liai.eq.1)
             call char_impo_liai(nomg, val_t_liai, liai_cmp_nb, liai_cmp_name, liai_cmp_index, &
                                 liai_vale_real, liai_vale_cplx, liai_vale_fonc)
             do ino = 1, nbno
@@ -258,7 +258,7 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
             else if (fonree.eq.'FONC') then
                 call wkvect('&&CADDLI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
             call wkvect('&&CADDLI.DIMENSION', 'V V I', nbnoeu, jdimen)

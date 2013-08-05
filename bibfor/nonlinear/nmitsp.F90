@@ -132,7 +132,7 @@ subroutine nmitsp(sdimpr, sddisc, iterat, retsup)
         call u2mess('I', 'ITERSUPP_6')
         itesup = 0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
 !

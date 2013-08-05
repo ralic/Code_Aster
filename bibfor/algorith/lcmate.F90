@@ -194,5 +194,5 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
 !       ENSUITE UTILISEES PAR NEWTON
 !     - LA DIMENSION DU SYSTEME DIFFERENTIEL EST NR
 !     ==> IL FAUT DONC NDT+NVI >= NR
-    call assert((ndt+nvi).ge.nr)
+    ASSERT((ndt+nvi).ge.nr)
 end subroutine

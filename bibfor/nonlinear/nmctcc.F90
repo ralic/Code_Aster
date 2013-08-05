@@ -130,7 +130,7 @@ subroutine nmctcc(noma, modele, mate, sddyna, sdimpr,&
             call nmimck(sdimpr, 'CTCC_CYCL', typcyc, .true.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CONVERGENCE CONTRAINTES ACTIVES

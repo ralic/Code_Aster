@@ -76,7 +76,7 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
         if (etnewt .ne. 'CONV') call nmtima(sdtime, 'ITE', itcpui)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INTERRUPTION DEMANDEE PAR SIGNAL ?

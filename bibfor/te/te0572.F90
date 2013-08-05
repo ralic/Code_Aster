@@ -52,7 +52,7 @@ subroutine te0572(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    call assert(iselli(elrefp))
+    ASSERT(iselli(elrefp))
 !
 !     CHAMPS IN 'CLASSIQUES'
     call jevech('PGEOMER', 'L', igeom)

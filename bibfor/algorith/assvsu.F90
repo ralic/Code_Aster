@@ -408,7 +408,6 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! FLADSK PRODUIT DE LA DIFFUSION DE L AIR DISSOUS PAR FCLKS
 ! FAD1SK DERIDEE DE FLADSK PAR RAPPORT A PRE1 AU CENTRE ET
 ! AUX ARETES
-    logical :: tange, cont
 ! FAD2SK DERIDEE DE FLADSK PAR RAPPORT A PRE2 AU CENTRE ET
 ! AUX ARETES
 !
@@ -510,7 +509,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! VARIABLES COMMUNES
 ! =====================================================================
 !
-    logical :: vf
+    logical :: tange, cont, vf, bool
     integer :: numav
     real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa)
     real(kind=8) :: normfa(maxdim, maxfa), vol, volv
@@ -667,8 +666,9 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !===============================
     uticer = .false.
 !
-    call assert((option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
-                (option(1:9).eq.'FULL_MECA' ))
+    bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) &
+       .or.(option(1:9).eq.'FULL_MECA' )
+    ASSERT(bool)
 !
     fickfa = .false.
     vf = .true.
@@ -1126,7 +1126,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         fad2sk)
 21      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ENDIF DE LA LIGNE      1098
 !=====================================================================
@@ -1207,35 +1207,35 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 ! ================================================================
         call tecac2('OOO', numav, 'PGEOMER', 'L', 1,&
                     igeomv, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tecac2('OOO', numav, 'PMATERC', 'L', 1,&
                     imatev, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tecac2('OOO', numav, 'PDEPLMR', 'L', 1,&
                     idepmv, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tecac2('OOO', numav, 'PCOMPOR', 'L', 1,&
                     icompv, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tecac2('OOO', numav, 'PCARCRI', 'L', 1,&
                     icarcv, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tecac2('OOO', numav, 'PVARIMR', 'L', 1,&
                     ivarmv, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call tecac2('OOO', numav, 'PCONTMR', 'L', 1,&
                     iconmv, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         if (cont) then
             call tecac2('OOO', numav, 'PDEPLPR', 'L', 1,&
                         iddepv, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call tecac2('OOO', numav, 'PCONTPR', 'E', 1,&
                         iconpv, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call tecac2('OOO', numav, 'PVARIPR', 'E', 1,&
                         ivarpv, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
         else
             ivarpv = ivarmv
             iconpv = iconmv
@@ -1253,7 +1253,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         xfacel, norfal, kintvf, yssl, cl,&
                         dl)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! ******************************************************
 ! CALCUL POUR LE CENTRE DE LA MAILLE VOISINE
@@ -1676,7 +1676,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
                 if (finter(ifa)) then
                     nnov=nbnovo(kvois)
-                    call assert(nnov.eq.nno)
+                    ASSERT(nnov.eq.nno)
 ! *******************************************************************
 ! EQUATION DE LA CONSERVATION DE LA MASSE POUR K
 !                 (DERIVEES % VARIABLES DU CENTRE)

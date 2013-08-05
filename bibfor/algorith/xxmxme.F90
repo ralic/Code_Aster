@@ -76,7 +76,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     lxfcm = isfonc(fonact,'CONT_XFEM')
     lxffm = isfonc(fonact,'FROT_XFEM')
     lxczm = cfdisl(defico,'EXIS_XFEM_CZM')
-    call assert(lxfcm)
+    ASSERT(lxfcm)
 !
 ! --- INITIALISATIONS
 !

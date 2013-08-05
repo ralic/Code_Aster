@@ -88,7 +88,7 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
     else if (typent.eq.'NOEU') then
         call jenuno(jexnum(noma//'.NOMNOE', nument), noment)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NORMALE AUTOMATIQUE: ON SORT
@@ -99,7 +99,7 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
     else
         call normev(vector, noor)
         if (noor .le. r8prem()) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         lnfixe = .true.
     endif
@@ -115,7 +115,7 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
             else if (typent.eq.'NOEU') then
                 call u2mesk('F', 'CONTACT_13', 1, noment)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -137,7 +137,7 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
                 else if (typent.eq.'NOEU') then
                     call u2mesk('F', 'CONTACT3_26', 1, noment)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
         else
@@ -150,7 +150,7 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
                 else if (typent.eq.'NOEU') then
                     call u2mesk('F', 'CONTACT3_26', 1, noment)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
             call provec(tau2, norm, tau1)
@@ -158,7 +158,7 @@ subroutine cfnord(noma, typent, nument, itype, vector,&
     endif
 !
     if (itype .ge. 3) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 999  continue

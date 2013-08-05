@@ -1,7 +1,6 @@
 subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                   listrz, listiz, precis, crit, epsi,&
                   acces, mfich, noma, ligrez, nbvari)
-! aslint: disable=W1501
     implicit  none
 #include "jeveux.h"
 !
@@ -433,7 +432,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                 if (nomnob .ne. nomnoa) call u2mess('F', 'PREPOST3_40')
                 inoast=inoide
             endif
-            call assert(inoast.gt.0)
+            ASSERT(inoast.gt.0)
 !
 !
             if (inoast .gt. nbnoeu) then
@@ -483,7 +482,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !  ON ESSAIE DE RECUPERER LE NUMERO DE LA MAILLE DIRECTEMENT
 !  SI ON NE LE TROUVE PAS VIA MXXXX
             if (ielast .eq. 0) ielast = ielide
-            call assert(ielast.gt.0)
+            ASSERT(ielast.gt.0)
 !
             if (ielast .gt. nbelem) then
                 vali = ielast

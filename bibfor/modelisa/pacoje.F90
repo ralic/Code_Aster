@@ -118,7 +118,7 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
         endif
         call jeveuo(jexnum(conr, iocc), 'E', idrad)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call wkvect('&&PACOJE.ANGL', 'V V R', nbcoup, idangl)

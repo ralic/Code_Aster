@@ -123,7 +123,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
     ngdmx = zi(jdesc-1+2)
     nedit = zi(jdesc-1+3)
     ndisp = ngdmx - nedit
-    call assert(ndisp.ge.0)
+    ASSERT(ndisp.ge.0)
     if (long .gt. ndisp) then
 ! ---       LA TAILLE DES CARTES .CMULT ET .CIMPO EST    ---
 ! ---       INSUFFISANTE ON LES REDIMENSIONNE DE MANIERE ---

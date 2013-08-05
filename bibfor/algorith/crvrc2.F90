@@ -60,7 +60,7 @@ subroutine crvrc2()
 !
     call getfac('PREP_VRC2', nbfac)
     if (nbfac .eq. 0) goto 20
-    call assert(nbfac.eq.1)
+    ASSERT(nbfac.eq.1)
 !
 !
     call getres(resu, type, oper)
@@ -83,7 +83,7 @@ subroutine crvrc2()
 !
     call jelira(resu1//'.ORDR', 'LONUTI', nbinst, kbid)
     call jeveuo(resu1//'.ORDR', 'L', jordr1)
-    call assert(nbinst.gt.0)
+    ASSERT(nbinst.gt.0)
 !
     call jeexin(resu//'           .DESC', iret)
     if (iret .ne. 0) then

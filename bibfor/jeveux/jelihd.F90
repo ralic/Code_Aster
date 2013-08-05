@@ -16,7 +16,7 @@ subroutine jelihd(nomf, fichdf, clas)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501,C1002
+! aslint: disable=C1002
     implicit none
 #include "jeveux.h"
 #include "jeveux_private.h"
@@ -169,12 +169,12 @@ subroutine jelihd(nomf, fichdf, clas)
     knomf = nomf
     call lxmins(knomf)
 !
-    call assert(knomf .ne. '        ' .and. len(nomf) .le. 8)
-    call assert(kclas .ne. ' ')
-    call assert(index (classe, kclas) .eq. 0)
+    ASSERT(knomf .ne. '        ' .and. len(nomf) .le. 8)
+    ASSERT(kclas .ne. ' ')
+    ASSERT(index (classe, kclas) .eq. 0)
 !
     ic = index (classe , ' ')
-    call assert(ic .ne. 0)
+    ASSERT(ic .ne. 0)
     nomfic(ic) = knomf
     nombas(ic) = knom
     kstini(ic) = 'POURSUIT'
@@ -509,7 +509,7 @@ subroutine jelihd(nomf, fichdf, clas)
     svuse = svuse + (iszon(jiszon+ktemp2-4) - ktemp2 + 4)
     smxuse = max(smxuse,svuse)
     iret2 = hdftyp(idfic,ngrp,nbobj,k8(jk8))
-    call assert(iret2 .eq. 0)
+    ASSERT(iret2 .eq. 0)
 !
 !     ON AJUSTE LA LONGUEUR DU TYPE POUR LES INTEGER *8 OU *4
 !     SUIVANT LA PLATE-FORME, ET LA LONGUEUR DES OBJETS DE GENRE
@@ -545,7 +545,7 @@ subroutine jelihd(nomf, fichdf, clas)
                 call jjlchd(idco, ic, idfic, idts, ngrp)
             endif
             iret3=hdfcld(idts)
-            call assert(iret3 .eq. 0)
+            ASSERT(iret3 .eq. 0)
         endif
 101  end do
 !

@@ -59,7 +59,7 @@ function nbpara(opt, te, statut)
             if (statut .eq. 'IN ') then
                 nbpara = zi(optmod-1+2)
             else
-                call assert(statut.eq.'OUT')
+                ASSERT(statut.eq.'OUT')
                 nbpara = zi(optmod-1+3)
             endif
         endif

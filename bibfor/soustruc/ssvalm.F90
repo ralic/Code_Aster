@@ -136,7 +136,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
 !          NOMOB=NOMACR//'.AP_EE'
             nomob=nomacr//'.MAEL_AMOR_VALE'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call jeveuo(nomob, 'L', iavmat)
@@ -171,7 +171,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
             call ssvaro(lambda, 'LG', .true., 'EXTE', nomacr,&
                         iavmat, jresl)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call jelibe(nomob)

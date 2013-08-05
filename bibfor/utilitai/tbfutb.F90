@@ -67,7 +67,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    call assert(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base.eq.'V' .or. base.eq.'G')
 !
 !     --- VERIFICATION DES TABLES ---
 !

@@ -88,7 +88,7 @@ subroutine nurota(numedd, compor, sdnuro)
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
                 k8bid, ier)
 !
-    call assert(nec.le.1)
+    ASSERT(nec.le.1)
 !
 ! --- MODELE ASSOCIE AU NUME_DDL
 !
@@ -115,7 +115,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! --- CREATION DU TABLEAU DESCRIPTEUR DE LA CARTE COMPOR
 !
     call etenca(compor, ligrmo, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 ! --- CREATION D'UN VECTEUR DESTINE A CONTENIR LES NUMEROS
 ! --- DES NOEUDS EN GRANDES ROTATIONS
@@ -163,7 +163,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 ! ---     QUI EST RELCOM A BIEN ETE AFFECTEE
 !
-                    call assert(exisdg(dg, 1))
+                    ASSERT(exisdg(dg, 1))
 ! ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
                     compt = zk16(ivale+idebgd+3-1)
                     if (compt .ne. deform) goto 130
@@ -221,7 +221,7 @@ subroutine nurota(numedd, compor, sdnuro)
 !
     idrz = indik8(zk8(iancmp),nocmp,1,ncmpmx)
     if (idrz .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE  ---
@@ -233,7 +233,7 @@ subroutine nurota(numedd, compor, sdnuro)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
 40  end do
-    call assert(k.ne.0)
+    ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
 !
@@ -256,7 +256,7 @@ subroutine nurota(numedd, compor, sdnuro)
 !
         do 60 i = idrz-2, idrz
             if (.not.exisdg(zi(iadg),i)) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 60      continue
         ico = 0

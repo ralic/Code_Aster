@@ -88,7 +88,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             noma2=zk8(jlgrf)
             ligrel=modele//'.MODELE'
         else
-            call assert(mailla.ne.' ')
+            ASSERT(mailla.ne.' ')
             noma2=mailla
             ligrel=' '
         endif
@@ -125,11 +125,11 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
             if (lrest) then
                 call dismoi('F', 'NOM_MAILLA', chamin, 'CHAMP', ibid,&
                             nomavr, iret)
-                call assert(noma1.eq.nomavr)
+                ASSERT(noma1.eq.nomavr)
                 call dismoi('F', 'TYPE_CHAMP', chamin, 'CHAMP', ibid,&
                             tych, ier)
                 if (tych(1:2) .eq. 'EL') then
-                    call assert(ligrel.ne.' ')
+                    ASSERT(ligrel.ne.' ')
                 endif
                 call rdtchp(corrn, corrm, chamin(1:19), chamou(1:19), 'G',&
                             noma1, noma2, ligrel, cret)

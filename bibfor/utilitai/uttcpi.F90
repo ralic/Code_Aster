@@ -78,7 +78,7 @@ subroutine uttcpi(nommes, ifm, typimp)
         if (indi .eq. 0) goto 9999
         goto 9998
     endif
-    call assert(indi.le.indmax)
+    ASSERT(indi.le.indmax)
     ljev=.false.
 !
 9998  continue
@@ -142,7 +142,7 @@ subroutine uttcpi(nommes, ifm, typimp)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- NOMMEL, NUMES :
@@ -153,7 +153,7 @@ subroutine uttcpi(nommes, ifm, typimp)
         nommel=snolon(indi)(1:50)
     endif
     i1= index(nommel,'#')
-    call assert(i1.gt.1 .and. i1.le.8)
+    ASSERT(i1.gt.1 .and. i1.le.8)
     numes='#'//nommel(1:i1-1)
     nommel=nommel(i1+1:)
 !
@@ -171,7 +171,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 !     ------------------------------------------------------
     if (mtpsta .eq. 1) then
         call mpicm0(rang, nbproc)
-        call assert(nbproc.le.npromx)
+        ASSERT(nbproc.le.npromx)
         if (nbproc .gt. 1) then
             do 11,k=1,nbproc
             xtotap(k)=0.d0

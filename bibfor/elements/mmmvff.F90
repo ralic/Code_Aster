@@ -106,7 +106,7 @@ subroutine mmmvff(phasep, ndim, nnl, nbcps, wpg,&
             tt(2) = (dlagrf(1)*tau1(k)+dlagrf(2)*tau2(k))*tau2(k)+tt( 2)
 32      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- QUANTITES POUR LE CAS ADHERENT
@@ -150,7 +150,7 @@ subroutine mmmvff(phasep, ndim, nnl, nbcps, wpg,&
                 )*tau2(i)+inter(2)
 233          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     endif
@@ -201,7 +201,7 @@ subroutine mmmvff(phasep, ndim, nnl, nbcps, wpg,&
 84          continue
 83      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

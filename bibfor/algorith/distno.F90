@@ -127,7 +127,7 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1,&
                     cbid, 'DEFIOBST', kbid, r8bid, 'FONCTION',&
                     k8typ, ibid, r8bid, cbid, nomfon,&
                     irett)
-        call assert(irett.eq.0)
+        ASSERT(irett.eq.0)
         call jeveuo(nomfon(1:19)//'.VALE', 'L', lval)
         call jelira(nomfon(1:19)//'.VALE', 'LONMAX', nbval, kbid)
         nbpair = nbval/2

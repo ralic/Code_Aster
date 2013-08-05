@@ -126,14 +126,14 @@ subroutine adalig(ligrz)
         nbel = zi(jnteut-1+ktype)
 !
         nspaq=(nbel/nbproc)/nbelmx
-        call assert((nspaq*nbproc*nbelmx.le.nbel))
+        ASSERT((nspaq*nbproc*nbelmx.le.nbel))
         if (nspaq*nbproc*nbelmx .lt. nbel) nspaq=nspaq+1
         nbg = nspaq*nbproc
         zi(jgteut-1+ktype) = nbg
         nbgrel = nbgrel + nbg
         lont = lont + nbel + nbg
  3  end do
-    call assert((nbgrel/nbproc)*nbproc.eq.nbgrel)
+    ASSERT((nbgrel/nbproc)*nbproc.eq.nbgrel)
 !
 !
 !     -- ALLOCATION DU NOUVEAU .LIEL
@@ -155,7 +155,7 @@ subroutine adalig(ligrz)
 !       -- LES NP1 1ERS GREL DE KTYPE AURONT NBELGR+1 ELEMENTS
 !          LES AUTRES AURONT NBELGR ELEMENTS
         np1=ntot-nbg*nbelgr
-        call assert(np1.lt.nbg)
+        ASSERT(np1.lt.nbg)
         do 42 k = 1, nbg
             nbelgv=nbelgr
             if (k .le. np1) nbelgv=nbelgv+1
@@ -166,7 +166,7 @@ subroutine adalig(ligrz)
 42      continue
         igrel=igrel+nbg
 41  end do
-    call assert(nbgrel.eq.igrel)
+    ASSERT(nbgrel.eq.igrel)
 !
 !
 !     -- REMPLISSAGE DES NOUVEAUX GRELS
@@ -178,7 +178,7 @@ subroutine adalig(ligrz)
         nbg = zi(jgteut-1+ktype)
         nbelgr=ntot/nbg
         np1=ntot-nbg*nbelgr
-        call assert(np1.lt.nbg)
+        ASSERT(np1.lt.nbg)
 !
         igre2=1
         nbelgv=nbelgr
@@ -208,11 +208,11 @@ subroutine adalig(ligrz)
             endif
             iadt = iadtp
  5      continue
-        call assert(igre2.le.nbg)
-        call assert(nelem.eq.nbelgv)
+        ASSERT(igre2.le.nbg)
+        ASSERT(nelem.eq.nbelgv)
         igrel=igrel+nbg
  4  end do
-    call assert(igrel.eq.nbgrel)
+    ASSERT(igrel.eq.nbgrel)
 !
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL

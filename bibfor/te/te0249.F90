@@ -83,7 +83,7 @@ subroutine te0249(option, nomte)
         epsil = zr(iray+1)
     else
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (lteatt(' ','AXIS','OUI')) then
         laxi = .true.

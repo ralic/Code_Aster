@@ -92,7 +92,7 @@ subroutine nmpr3d(mode, nno, npg, poidsg, vff,&
 21              continue
 20          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 100  end do

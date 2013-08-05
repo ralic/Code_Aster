@@ -94,7 +94,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
             call jeecra(noms2//'.ORDR', 'LONUTI', nrang, ' ')
             call jeveuo(noms2//'.ORDR', 'E', jordr)
             if (nrang .gt. 1) then
-                call assert(zi(jordr+nrang-2).lt.iordr)
+                ASSERT(zi(jordr+nrang-2).lt.iordr)
             endif
             zi(jordr+nrang-1) = iordr
             irang = nrang

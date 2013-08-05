@@ -124,7 +124,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !       -- SI LINEAIRE, ON DOIT CHANGER PCOMPOR (POUR POU_D_EM):
         if (inume .eq. 0) then
             kparin=indik8(lipain,'PCOMPOR',1,nbpain)
-            call assert(kparin.ge.1)
+            ASSERT(kparin.ge.1)
             lichin(kparin)=mateco(1:8)//'.COMPOR'
         endif
 !
@@ -188,7 +188,7 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 !
         if (parain .ne. ' ') then
             kparin=indik8(lipain,parain,1,nbpain)
-            call assert(kparin.ge.1)
+            ASSERT(kparin.ge.1)
             call jeexin(lichin(kparin)(1:19)//'.CELD', iret1)
             nbsp=1
             if (iret1 .ne. 0) then

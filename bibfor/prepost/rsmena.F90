@@ -117,7 +117,7 @@ subroutine rsmena(resu)
             call dismoi('F', 'PROF_CHNO', cham, 'CHAMP', ibid,&
                         noco19, ierd)
             call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
-            call assert(i1.gt.0 .and. i1.le.nbcon)
+            ASSERT(i1.gt.0 .and. i1.le.nbcon)
             zi(jcoche-1+i1)=1
 20      continue
 30  end do
@@ -161,7 +161,7 @@ subroutine rsmena(resu)
         if (zk24(jrs24+i-1)(14:19) .ne. '.EXCIT') goto 70
         noco19=zk24(jrs24+i-1)(1:19)
         call jenonu(jexnom('&&RSMENA.DICO', noco19), i1)
-        call assert(i1.gt.0 .and. i1.le.nbcon)
+        ASSERT(i1.gt.0 .and. i1.le.nbcon)
         zi(jcoche-1+i1)=1
 70  end do
 !

@@ -73,7 +73,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 !
     call cfposn(defico, posmae, posnno, nnomai)
     call cfnumn(defico, nnomai, posnno, numnno)
-    call assert(nnomai.le.9)
+    ASSERT(nnomai.le.9)
 !
 ! --- REPERAGE SI LE NOEUD EST UN NOEUD A EXCLURE
 !
@@ -100,7 +100,7 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
             if (ndirex .gt. 0) then
                 ndexcl(10) = 1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (ndimg.eq.3) then
             if (ndirex .eq. 1) then
@@ -108,10 +108,10 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
             else if (ndirex.eq.2) then
                 ndexcl(10) = 1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call iscode(ndexcl, ndexfr, 10)
     endif

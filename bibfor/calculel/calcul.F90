@@ -1,7 +1,7 @@
 subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                   lpain, nou, lchou, lpaou, base,&
                   mpic)
-! aslint: disable=W1306,W1501
+! aslint: disable=W1306
     implicit none
 !
 ! ======================================================================
@@ -168,8 +168,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     nbobtr=0
     base2=base
     option=optio
-    call assert(mpic.eq.'OUI'.or.mpic.eq.'NON')
-    call assert(stop.eq.'S'.or.stop.eq.'C')
+    ASSERT(mpic.eq.'OUI'.or.mpic.eq.'NON')
+    ASSERT(stop.eq.'S'.or.stop.eq.'C')
 !
     dbg=.false.
     lfetmo=.false.
@@ -342,13 +342,13 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         if (numc .eq. -1) then
             call u2mesk('F', 'CALCULEL_30', 2, valk)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
     afaire=max(afaire,numc)
     30 end do
-    call assert(ier.le.0)
+    ASSERT(ier.le.0)
     if (afaire .eq. 0) then
         if (stop .eq. 'S') then
             call u2mesk('F', 'CALCULEL_34', 1, option)
@@ -363,7 +363,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !        QUI SERVENT A AU MOINS UN TYPE_ELEMENT
 !     ---------------------------------------------------------
 !     TEST SUR ERREUR PROGRAMMEUR : TROP DE CHAMPS "IN"
-    call assert(nin.le.80)
+    ASSERT(nin.le.80)
     nin3=zi(iaopds-1+2)
     nou3=zi(iaopds-1+3)
 !
@@ -390,7 +390,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !     -- VERIF PAS DE DOUBLONS DANS LPAIN2 :
     call kndoub(8, lpain2, nin2, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     nou2=0
     do 70,i=1,nou
@@ -406,7 +406,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         lpaou2(nou2)=lpaou(i)
         lchou2(nou2)=lchou(i)
 !           -- ON INTERDIT LA CREATION DU CHAMP ' ' :
-        call assert(lchou2(nou2).ne.' ')
+        ASSERT(lchou2(nou2).ne.' ')
         goto 70
 !
 60      continue
@@ -414,7 +414,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     70 end do
 !     -- VERIF PAS DE DOUBLONS DANS LPAOU2 :
     call kndoub(8, lpaou2, nou2, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !     3- DEBCAL FAIT DES INITIALISATIONS ET MET LES OBJETS EN MEMOIRE :
 !     -----------------------------------------------------------------
@@ -461,8 +461,8 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         endif
 !
         numc=nucalc(opt,nute,0)
-        call assert(numc.ge.-10)
-        call assert(numc.le.9999)
+        ASSERT(numc.ge.-10)
+        ASSERT(numc.le.9999)
 !
         if (numc .gt. 0) then
 !

@@ -72,7 +72,7 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
     call elref5('TR3', 'XINT', ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
     tvolse=0.d0
 !

@@ -72,7 +72,7 @@ subroutine nmmass(fonact, lischa, sddyna, solveu, numedd,&
         else if (lexpl) then
             optass = 'AVEC_DIRICHLET'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         masse = '&&NMMASS.MASSENER'
         call nmassm(fonact, lischa, solveu, numedd, numfix,&

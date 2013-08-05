@@ -63,7 +63,7 @@ subroutine cfmmvc(defico, jeux, loca, enti, zone,&
     ntpt = cfdisi(defico,'NTPT' )
     ntpc = cfdisi(defico,'NTPC' )
     npt = ntpt-ntpc
-    call assert(npt.ge.1)
+    ASSERT(npt.ge.1)
 !
 ! --- CREATION SD PROVISOIRES
 !

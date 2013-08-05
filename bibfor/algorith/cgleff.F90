@@ -92,7 +92,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER CAR
 !       LE CAS DES FONDS DOUBLES EST INTERDITS)
         call jeexin(noeuin, ier)
-        call assert(ier.ne.0)
+        ASSERT(ier.ne.0)
 !
         call jedupo(noeuin, 'V', fonoeu, .false.)
 !
@@ -104,7 +104,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !
 !       VERIF D'EXISTENCE (CET OBJET DOIT NORMALEMENT EXISTER)
         call jeexin(fondin, ier)
-        call assert(ier.ne.0)
+        ASSERT(ier.ne.0)
 !
         call jedupo(fondin, 'V', chfond, .false.)
 !
@@ -116,7 +116,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
                     conf, ier)
         if (conf .eq. 'COLLEE') then
             call jeexin(basein, ier)
-            call assert(ier.ne.0)
+            ASSERT(ier.ne.0)
             call jedupo(basein, 'V', basfon, .false.)
         endif
 !
@@ -126,7 +126,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !       CET OBJET N'EXISTE QUE SI CONFIG_INIT='COLLEE'
         if (conf .eq. 'COLLEE') then
             call jeexin(taillr, ier)
-            call assert(ier.ne.0)
+            ASSERT(ier.ne.0)
         endif
 !
     else if (typfis.eq.'FISSURE') then

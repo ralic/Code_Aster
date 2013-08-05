@@ -71,7 +71,7 @@ subroutine irmopr(chamns, nbnoec, linoec, nonvpr)
             nbnonp=nbnonp+1
         endif
 10      continue
-        call assert(nbnonp.le.nbnoto)
+        ASSERT(nbnonp.le.nbnoto)
         if (nbnonp .eq. nbnoto) then
             zi(jnvpro)=0
         else
@@ -85,7 +85,7 @@ subroutine irmopr(chamns, nbnoec, linoec, nonvpr)
             nbnonp=nbnonp+1
         endif
 20      continue
-        call assert(nbnonp.le.nbnoec)
+        ASSERT(nbnonp.le.nbnoec)
         zi(jnvpro)=nbnonp
     endif
 !

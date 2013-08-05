@@ -31,7 +31,11 @@
 cata_msg={
 
 1 : _(u"""
-   Erreur de programmation : condition non respectée.
+   Erreur de programmation.
+
+   Condition non respectée:
+        %(k1)s
+   Fichier %(k2)s, ligne %(i1)d
 """),
 
 2 : _(u"""

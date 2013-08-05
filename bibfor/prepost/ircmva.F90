@@ -112,7 +112,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
         else if (part(1:4).eq.'IMAG') then
             itype=3
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         valk(1) = gd

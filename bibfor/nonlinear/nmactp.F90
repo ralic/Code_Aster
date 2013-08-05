@@ -95,7 +95,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
     else if (etinst.eq.'STOP') then
         retact = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TRAITEMENT DE L'ACTION
@@ -116,7 +116,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
 ! ----- PAS D'ITERATION EN PLUS ICI
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     else if (retact.eq.3) then
 !
@@ -141,7 +141,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
         actpas = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
@@ -153,7 +153,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
     else if (actpas.eq.3) then
         call nmeceb(sderro, 'INST', 'STOP')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PROCHAIN INSTANT: ON REINITIALISE

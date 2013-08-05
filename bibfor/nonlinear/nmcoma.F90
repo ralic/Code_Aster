@@ -242,7 +242,7 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
                         lcalme, lassme)
         endif
         if (.not.reasma) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

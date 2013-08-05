@@ -242,7 +242,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !       NUCP2.NE.ICMP == GLUTE POUR LA SOUS-STRUCTURATION STATIQUE
     if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not.zl(jtrav2+ieq2-1)) then
         if (kstop .eq. 'F') then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             codret = 1
         endif

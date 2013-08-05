@@ -165,21 +165,21 @@ subroutine trchel(ific, nocc)
             call getvc8('CHAM_ELEM', 'VALE_REFE_C', iocc, iarg, 0,&
                         c16b, n3r)
             if (n1r .ne. 0) then
-                call assert((n1r.eq.n1))
+                ASSERT((n1r.eq.n1))
                 nref=-n1r
                 call jedetr(travrr)
                 call wkvect(travrr, 'V V R', nref, irefrr)
                 call getvr8('CHAM_ELEM', 'VALE_REFE', iocc, iarg, nref,&
                             zr(irefrr), iret)
             else if (n2r.ne.0) then
-                call assert((n2r.eq.n2))
+                ASSERT((n2r.eq.n2))
                 nref=-n2r
                 call jedetr(travir)
                 call wkvect(travir, 'V V I', nref, irefir)
                 call getvis('CHAM_ELEM', 'VALE_REFE_I', iocc, iarg, nref,&
                             zi(irefir), iret)
             else if (n3r.ne.0) then
-                call assert((n3r.eq.n3))
+                ASSERT((n3r.eq.n3))
                 nref=-n3r
                 call jedetr(travcr)
                 call wkvect(travcr, 'V V C', nref, irefcr)

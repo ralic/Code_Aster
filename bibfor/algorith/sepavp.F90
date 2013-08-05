@@ -120,7 +120,7 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha,&
         call nbval(ck, cm, cmat, ndim, c,&
                    nb)
         nb=nb-n1
-        call assert(nb.ge.0 .and.nb.le.nbmod)
+        ASSERT(nb.ge.0 .and.nb.le.nbmod)
         if (nb .gt. 0) then
             if (beta(nb) .lt. 0.d0) then
                 beta(nb)=c

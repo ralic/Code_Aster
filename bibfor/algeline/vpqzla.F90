@@ -79,7 +79,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! OUT FLAGE  : LO : FLAG PERMETTANT DE GERER LES IMPRESSIONS
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1501,W1504
+! aslint: disable=W1304,W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -191,7 +191,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ---- QRN DOIT ETRE PAIRE EN QUADRATIQUE
         qrns2=qrn/2
         lc=.true.
-        if ((qrns2*2) .ne. qrn) call assert(.false.)
+        if ((qrns2*2) .ne. qrn) ASSERT(.false.)
         imult=2
     else
         lc=.false.
@@ -208,7 +208,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         lkr=.false.
     else
 ! ---- OPTION ILLICITE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ---- MATRICES NON SYMETRIQUES ?
     lnsa=.false.
@@ -374,7 +374,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 40      continue
         call jedetr('&&VPQZLA.NORME')
 ! ---- ERREUR DONNEES OU CALCUL
-!        IF (ANORM*BNORM*CNORM.EQ.0.D0) CALL ASSERT(.FALSE.)
+!        IF (ANORM*BNORM*CNORM.EQ.0.D0) ASSERT(.FALSE.)
 ! ---- COEF MULTIPLICATEUR (EQUILIBRAGE) POUR LA LINEARISATION PB QUAD
         coefn=(anorm+bnorm+cnorm)/(3*qrns2)
 !
@@ -463,7 +463,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
                     zc(lqrn+j2m1*qrn+iaux21) = cauxm
                     zc(lqrn+qrn*iaux21+j2m1) = cauxm1
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 36          continue
             ideb = ifin+1
@@ -578,7 +578,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         bnorm1=max(bnorm1,baux)
 440  end do
 ! ---- ERREUR DONNEES OU CALCUL
-    if (anorm*bnorm*anorm1*bnorm1 .eq. 0.d0) call assert(.false.)
+    if (anorm*bnorm*anorm1*bnorm1 .eq. 0.d0) ASSERT(.false.)
     if (niv .ge. 2) then
         valr(1)=anorm
         valr(2)=bnorm
@@ -683,7 +683,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
             do 70 i = 1, qrn
                 im1=i-1
                 raux=zr(icscal+im1)
-                if (abs(raux) .lt. prec1) call assert(.false.)
+                if (abs(raux) .lt. prec1) ASSERT(.false.)
                 zr(icscal+im1)=prec*abnorm/raux
 70          continue
         endif
@@ -725,7 +725,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 ! ----  QR
     else if (typeqz(1:5).eq.'QZ_QR') then
 ! ---- CONFIGURATION ILLICITE
-        if (lc .or. lnsm .or. lnsr .or. (.not.lkr)) call assert(.false.)
+        if (lc .or. lnsm .or. lnsr .or. (.not.lkr)) ASSERT(.false.)
         call dsygv(1, 'V', 'U', qrn4, zr(iqrn),&
                    qrn4, zr(lqrn), qrn4, zr(lvalpr), zr(kqrn),&
                    qrlwo4, qrinfo)
@@ -740,7 +740,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
         endif
     else
 ! ---- OPTION INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !-------------------------------------
@@ -931,7 +931,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar,&
 155      continue
         if (lc) call jedetr('&&VPQZLA.VP2')
     else if (typeqz(1:5).eq.'QZ_QR') then
-        if (lqze) call assert(.false.)
+        if (lqze) ASSERT(.false.)
 !     --- POST-TRAITEMENT POUR QR ---
         do 57 i = 1, qrn
             im1=i-1

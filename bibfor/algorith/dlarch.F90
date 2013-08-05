@@ -113,7 +113,7 @@ subroutine dlarch(result, neq, istoc, iarchi, texte,&
         else if (iaux.eq.100) then
             call vtcrem(chamno, masse, 'G', 'R')
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         chamno(20:24) = '.VALE'

@@ -75,7 +75,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     common /tdim/   ndt, ndi
 !
 !
-    call assert(nvi.le.nvimax)
+    ASSERT(nvi.le.nvimax)
 !
     pa = mater(12,2)
     qinit = mater(13,2)

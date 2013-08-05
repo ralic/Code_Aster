@@ -56,7 +56,7 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
     integer :: ivalk, nbc, nbf, nbobj, nbr, nbt
 !-----------------------------------------------------------------------
     nbmat=zi(jmat)
-    call assert(nbmat.eq.1)
+    ASSERT(nbmat.eq.1)
     imat = jmat+zi(jmat+nbmat+1)
 !
 !

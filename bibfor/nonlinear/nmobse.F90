@@ -92,7 +92,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
     obsinf = sdobse(1:14)//'     .INFO'
     call jeveuo(obsinf, 'L', jobsin)
     nbocc = zi(jobsin-1+1)
-    call assert(nbocc.le.99)
+    ASSERT(nbocc.le.99)
 !
 ! --- SD TITRES
 !

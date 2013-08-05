@@ -152,9 +152,9 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
             else if (gd.eq.'TEMP_R') then
                 nomch='TEMP'
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
-            call assert(fonc)
+            ASSERT(fonc)
             call rsinch(evoim, nomch, 'INST', inst, cnoimp,&
                         'EXCLU', 'EXCLU', 2, 'V', ier)
             call cnocns(cnoimp, 'V', cnsimp)
@@ -163,7 +163,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
             call jeveuo(cnsimp//'.CNSD', 'L', jcn1d)
             call jeveuo(cnsimp//'.CNSC', 'L', jcn1c)
             call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1, kbid)
-            call assert(nbcmp1.eq.zi(jcn1d-1+2))
+            ASSERT(nbcmp1.eq.zi(jcn1d-1+2))
             call jeveuo(cnsimp//'.CNSV', 'L', jcn1v)
             call jeveuo(cnsimp//'.CNSL', 'L', jcn1l)
             valk(1)=evoim
@@ -194,12 +194,12 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
                 if (evoim .ne. ' ') then
                     ino=zi(jdeeq-1+2*(nueq-1)+1)
                     icmp=zi(jdeeq-1+2*(nueq-1)+2)
-                    call assert(ino.eq.ni)
+                    ASSERT(ino.eq.ni)
                     nocmp=zk8(jnocmp-1+icmp)
                     vali(1)=ino
                     valk(2)=nocmp
                     icmp1=indik8(zk8(jcn1c),nocmp,1,nbcmp1)
-                    call assert(icmp1.gt.0)
+                    ASSERT(icmp1.gt.0)
                     if (.not.zl(jcn1l-1+(ino-1)*nbcmp1+icmp1)) call u2mesg('F', 'CALCULEL_2', 2,&
                                                                            valk, 1, vali, 1,&
                                                                            valr)
@@ -240,8 +240,8 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !       -- CAS DES VALEURS COMPLEXES :
 !       ---------------------------------
         else if (typval.eq.'C') then
-            call assert(phen.eq.'CIAC')
-            call assert(.not.fonc)
+            ASSERT(phen.eq.'CIAC')
+            ASSERT(.not.fonc)
             do 20 nimp = 1, nbimp
                 n =3*(nimp-1)+jafci
                 ni = zi(n+1)
@@ -254,7 +254,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
  1  end do
 !

@@ -83,7 +83,7 @@ function meiden(scal, ncmp, i1, i3, nec,&
         if (zk24(i1+i) .ne. zk24(i3+i)) goto 9999
  7      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     meiden = .true.
 9999  continue

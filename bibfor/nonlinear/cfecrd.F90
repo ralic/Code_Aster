@@ -86,7 +86,7 @@ subroutine cfecrd(resoco, questz, ival)
     else if (questi.eq.'NBLIAI') then
         zi(jcoco+8-1) = ival
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

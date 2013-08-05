@@ -117,7 +117,7 @@ subroutine op0001()
                 call getvtx('RENOMME', 'NOM', i, iarg, 1,&
                             zk80(ivgrm-1+i* 2), ibid)
                 ilng = lxlgut(zk80(ivgrm-1+i*2))
-                call assert(ilng.gt.0 .and. ilng.le.8)
+                ASSERT(ilng.gt.0 .and. ilng.le.8)
 100          continue
         endif
 !

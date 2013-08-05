@@ -67,9 +67,9 @@ subroutine chor2c(lischa, vecele)
 !
     vachar = vecele//'.CHNO'
     call jeexin(vachar, iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     call jelira(vachar, 'LONMAX', nbvec, k8bid)
-    call assert(nbvec.ne.0)
+    ASSERT(nbvec.ne.0)
 !
 ! --- DIMENSIONNEMENT SD DE SAUVEGARDE
 !
@@ -94,7 +94,7 @@ subroutine chor2c(lischa, vecele)
 ! ----- RECUPERATION DU NUMERO DE LA CHARGE DU RESU_ELEM
 !
         call corich('L', resuel, ibid, ichar)
-        call assert((ichar.ne.0).and.(ichar.ge.-2))
+        ASSERT((ichar.ne.0).and.(ichar.ge.-2))
 !
 ! ----- TYPE DU CHARGEMENT
 !
@@ -108,7 +108,7 @@ subroutine chor2c(lischa, vecele)
             else if (typsca.eq.'C') then
                 typchn = 'C'
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (tyresl.eq.'NOEU') then
             call lisltc(lischa, ichar, typech)
@@ -123,7 +123,7 @@ subroutine chor2c(lischa, vecele)
         if (typchn .eq. 'R') then
             call jeveuo(chamno//'.VALE', 'L', jcn)
             call jelira(chamno//'.VALE', 'LONMAX', nbvale, k8bid)
-            if (nbvdim .ne. nbvale) call assert(.false.)
+            if (nbvdim .ne. nbvale) ASSERT(.false.)
 !
 ! ------- SAUVEGARDE DES VALEURS
 !

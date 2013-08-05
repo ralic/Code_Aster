@@ -198,7 +198,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     smxuse = svuse
 ! -----------------  NOMBRE DE BASES -----------------------------------
     nbfic = min ( nbfi , n , len(classe) )
-    call assert(nbfic .gt. 0 .and. nbfic .eq. nbfi)
+    ASSERT(nbfic .gt. 0 .and. nbfic .eq. nbfi)
 ! -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
     kstat = 'XUAD'
     isstat = ispbem( lbis - 3 )

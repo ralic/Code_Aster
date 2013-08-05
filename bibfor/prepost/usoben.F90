@@ -194,7 +194,7 @@ subroutine usoben(guidag, dimobs, obsuse, nco, rayo,&
                 call usvect(1.d0, ad, am, af, prof,&
                             dimobs, obsuse)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 100  end do

@@ -62,7 +62,7 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
 !
 !
     if (method .eq. 'COLLOCATION') then
-        call assert(tychv.eq.' ' .or. tychv.eq.'NOEU')
+        ASSERT(tychv.eq.' ' .or. tychv.eq.'NOEU')
         call pjefch(corres, ch1, ch2, tychv, prfchn,&
                     prol0, ligrel, base, iret)
 !
@@ -70,7 +70,7 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz,&
         call pjngch(ch1, ch2, corres, base)
         iret=0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

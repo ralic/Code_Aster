@@ -133,14 +133,14 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
         nomlog='&FETI.LISTE.SD.MPI'
         call jeexin(nomlog, iexist)
 ! SI L OBJET NOMLOG EXISTE DEJA : ARRET
-        call assert(iexist.eq.0)
+        ASSERT(iexist.eq.0)
         call wkvect(nomlog, 'V V I', nbsd1, ilist)
 ! OBJET TEMPORAIRE POUR PARALLELISME MPI:
 ! ZI(ILIST1+I-1)=NUMERO DU PROCESSEUR QUI LE CONCERNE
         nomlo1='&FETI.LISTE.SD.MPIB'
         call jeexin(nomlo1, iexist)
 ! SI L OBJET NOMLO1 EXISTE DEJA : ARRET
-        call assert(iexist.eq.0)
+        ASSERT(iexist.eq.0)
         call wkvect(nomlo1, 'V V I', nbsd, ilist1)
 !
         call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
@@ -421,7 +421,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 !---------------------------------------------- OPTION
 ! <1 OU >10 OU DIFFERENT DE 71
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 !
@@ -439,14 +439,14 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
         nbsd1=nbsd+1
         nomlog='&FETI.LISTE.SD.MPI'
         call jeexin(nomlog, iexist)
-        call assert(iexist.eq.0)
+        ASSERT(iexist.eq.0)
         call wkvect(nomlog, 'V V I', nbsd1, ilist)
         do 200 idd = 0, nbsd
             zi(ilist+idd)=1
 200      continue
         nomlog='&FETI.LISTE.SD.MPIB'
         call jeexin(nomlog, iexist)
-        call assert(iexist.eq.0)
+        ASSERT(iexist.eq.0)
         call wkvect(nomlog, 'V V I', nbsd, ilist)
         do 201 idd = 1, nbsd
             zi(ilist+idd-1)=0
@@ -472,7 +472,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 ! MONITORING
         if (niv .ge. 2) write(ifm,*)'<FETI/FETMPI> OPTMPI=', optmpi,' VIDE '
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 #endif

@@ -64,7 +64,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     nbzone=zi(jdesc-1+3)
 !     ON VERIFIE QUE LA TAILLE DE LA CARTE EST BIEN TOUJOURS DE 30
 !     PAR ZONE
-    call assert(l1.eq.(nbzmax*ncmpmx))
+    ASSERT(l1.eq.(nbzmax*ncmpmx))
 !
 !
     nbmtrc = 0

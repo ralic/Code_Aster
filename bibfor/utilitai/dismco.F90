@@ -56,7 +56,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 !
     call jemarq()
 !
-    call assert(questi(1:9).eq.'ELAS_INCR')
+    ASSERT(questi(1:9).eq.'ELAS_INCR')
 !
     repk = ' '
     repi = 0

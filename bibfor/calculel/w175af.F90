@@ -55,7 +55,7 @@ subroutine w175af(modele, chfer1)
 !
     call dismoi('F', 'NOM_MAILLA', modele, 'MODELE', ibid,&
                 noma, iret)
-    call assert(noma.ne.' ')
+    ASSERT(noma.ne.' ')
 !
     call getfac('AFFE', nocc)
 !
@@ -74,7 +74,7 @@ subroutine w175af(modele, chfer1)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'FER1_R'), gd)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
 !
-    call assert(ncmpmx.eq.8)
+    ASSERT(ncmpmx.eq.8)
     zk8(jncmp-1+1)='TYPCOMB'
     zk8(jncmp-1+2)='ENROBG'
     zk8(jncmp-1+3)='CEQUI'
@@ -89,7 +89,7 @@ subroutine w175af(modele, chfer1)
 !     2.1 TYPE_COMB :
     call getvtx(' ', 'TYPE_COMB', 0, iarg, 1,&
                 typcb, n1)
-    call assert(typcb.eq.'ELU'.or.typcb.eq.'ELS')
+    ASSERT(typcb.eq.'ELU'.or.typcb.eq.'ELS')
     if (typcb .eq. 'ELU') valr=0.d0
     if (typcb .eq. 'ELS') valr=1.d0
     zr(jvalv-1+1)=valr

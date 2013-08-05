@@ -98,9 +98,9 @@ subroutine jeimpm(unit)
                 im = imarq(jmarq(ic)+2*j-1)
                 il = iszon(jiszon+idm) - 8 - idm
                 isd = iszon(jiszon + idm + 3) / isstat
-                call assert((isd.gt.0) .and. (isd.lt.5))
+                ASSERT((isd.gt.0) .and. (isd.lt.5))
                 isf = iszon(jiszon + iszon(jiszon+idm) - 4) / isstat
-                call assert((isf.gt.0) .and. (isf.lt.5))
+                ASSERT((isf.gt.0) .and. (isf.lt.5))
                 write(unit,&
      &        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//&
      &        'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')&

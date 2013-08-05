@@ -77,7 +77,7 @@ subroutine nmeraz(sderro, typevt)
         else if (typevt.eq.'EVEN') then
             if (teven .eq. 'EVEN') zi(jeeact-1+ieven) = 0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 15  end do
 !

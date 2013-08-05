@@ -151,7 +151,7 @@ subroutine piqeli(mailla)
                         do 402 i = 1, nbnor
                             if (zi(jgrnr+i-1) .eq. zi(jvi2+ino1-1)) then
                                 inc = inc + 1
-                                call assert(inc.le.10)
+                                ASSERT(inc.le.10)
                                 numno(inc) = zi(jvi2+ino1-1)
                             endif
 402                      continue

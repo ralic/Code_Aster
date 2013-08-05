@@ -75,7 +75,7 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
     call jeveuo(infocv, 'E', jifcv)
     info = infz
 !
-    call assert((action.eq.'E').or.(action.eq.'L'))
+    ASSERT((action.eq.'E').or.(action.eq.'L'))
 !
     if (info .eq. 'MXITER') then
         if (action .eq. 'L') then
@@ -138,7 +138,7 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
             zr(jifcv+10-1) = vali
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

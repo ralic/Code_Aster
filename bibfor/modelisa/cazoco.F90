@@ -68,7 +68,7 @@ subroutine cazoco(char, nomo, motfac, iform, izone,&
     else if (iform.eq.3) then
         call cazocx(char, nomo, motfac, izone)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

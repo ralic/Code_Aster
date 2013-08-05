@@ -212,7 +212,7 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
 !
 !   --- ILLEGAL OPTION
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (typep .ne. 'S') write(ifm,950)
 !

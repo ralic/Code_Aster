@@ -74,7 +74,7 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
 10  continue
 20  continue
     30 end do
-    call assert(.false.)
+    ASSERT(.false.)
 !
 !
 40  continue

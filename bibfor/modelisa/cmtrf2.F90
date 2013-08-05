@@ -30,9 +30,9 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
 !
     integer :: k
 ! ----------------------------------------------------------------------
-    call assert(codcm1.eq.1 .or. codcm1.eq.3)
-    call assert(codtrf.eq.1 .or. codtrf.eq.3)
-    call assert(nbma.gt.0)
+    ASSERT(codcm1.eq.1 .or. codcm1.eq.3)
+    ASSERT(codtrf.eq.1 .or. codtrf.eq.3)
+    ASSERT(nbma.gt.0)
     codint = 3
 !
     if (codcm1 .eq. 1) then
@@ -78,6 +78,6 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
     endif
 !
 !
-    call assert(codint.eq.1 .or. codint.eq.3)
-    call assert(nint.ge.0)
+    ASSERT(codint.eq.1 .or. codint.eq.3)
+    ASSERT(nint.ge.0)
 end subroutine

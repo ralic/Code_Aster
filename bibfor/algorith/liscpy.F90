@@ -85,8 +85,8 @@ subroutine liscpy(lischa, lisch2, base)
         endif
 24  end do
 !
-    call assert(nchar2.gt.0)
-    call assert(nchar2.le.nchar)
+    ASSERT(nchar2.gt.0)
+    ASSERT(nchar2.le.nchar)
 !
     call lisccr(lisch2, nchar2, base)
 !
@@ -105,7 +105,7 @@ subroutine liscpy(lischa, lisch2, base)
         endif
 25  end do
 !
-    call assert(nchar2.eq.(ich2-1))
+    ASSERT(nchar2.eq.(ich2-1))
 !
 999  continue
     call jedema()

@@ -91,7 +91,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     call elref1(elp)
     call elref4(' ', 'RIGI', ndim, nno, ibid,&
                 ibid, ibid, ibid, ibid, ibid)
-    call assert(ndim.eq.2)
+    ASSERT(ndim.eq.2)
 !
 !     1) RECHERCHE DES POINTS D'INTERSECTION
 !     --------------------------------------
@@ -217,7 +217,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !          CALCUL DES FF DU SE3 (REEREF N'ACCEPTE PAS NDIM=2 & NNO=3)
                 call abscvl(ndim, tabar, c, sc)
                 call xinvac(elp, ndim, tabar, sc, ksic)
-                call assert(ksic(1).ge.-1 .and. ksic(1).le.1)
+                ASSERT(ksic(1).ge.-1 .and. ksic(1).le.1)
                 call elrfvf(elc, ksic(1), nbnomx, ff, ibid)
                 lstc=ff(1)*lstb+ff(2)*lsta+ff(3)*lstm
                 if (lstc .le. prec) then

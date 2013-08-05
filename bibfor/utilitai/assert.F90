@@ -1,10 +1,12 @@
-subroutine assert(cond)
+subroutine assert(cond, str_cond, fname, line)
     implicit   none
-#include "asterfort/u2mess.h"
     logical :: cond
-!     ------------------------------------------------------------------
+    character(len=*) :: str_cond
+    character(len=*) :: fname
+    integer :: line
+#include "asterfort/u2mesg.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,10 +22,15 @@ subroutine assert(cond)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     ARRET DU CODE EN ERREUR FATALE SI COND=.FALSE.
+! person_in_charge: mathieu.courtois@edf.fr
 !
-! ======================================================================
-!
-!
-    if (.not.cond) call u2mess('F', 'DVP_1')
+    character(len=256) :: valk(2)
+    integer :: vali(1)
+    real(kind=8) :: rbid(1)
+    if (.not.cond) then
+        valk(1) = str_cond
+        valk(2) = fname
+        vali(1) = line
+        call u2mesg('F', 'DVP_1', 2, valk, 1, vali, 1, rbid)
+    endif
 end subroutine

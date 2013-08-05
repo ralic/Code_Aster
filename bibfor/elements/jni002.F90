@@ -54,7 +54,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
 !
 !
     nbobj = 2
-    call assert(nmaxob.gt.nbobj)
+    ASSERT(nmaxob.gt.nbobj)
     liobj(1) = '&INEL.'//elrefa//'.ELRA_I'
     liobj(2) = '&INEL.'//elrefa//'.ELRA_R'
 !
@@ -65,9 +65,9 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
 !
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 nofpg, nbpg, xno, vol)
-    call assert((ndim.ge.0) .and. (ndim.le.3))
-    call assert((nno.gt.0) .and. (nno.le.nbnomx))
-    call assert((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
+    ASSERT((ndim.ge.0) .and. (ndim.le.3))
+    ASSERT((nno.gt.0) .and. (nno.le.nbnomx))
+    ASSERT((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
 !
 !
     call wkvect(liobj(1), 'V V I', 4+nbfpg, jvi)
@@ -78,7 +78,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     lon2 = 0
     do 10,ifam = 1,nbfpg
     npg = nbpg(ifam)
-    call assert((npg.gt.0) .and. (npg.le.nbpgmx))
+    ASSERT((npg.gt.0) .and. (npg.le.nbpgmx))
     zi(jvi-1+4+ifam) = npg
 !
 !       ON VEUT STOCKER : W(IPG),GEOM(IDIM,IPG)
@@ -133,7 +133,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     do 90,ipg = 1,npg
     call elrfdf(elrefa, xpg(ndim* (ipg-1)+1), 3*nbnomx, dff, nno,&
                 nderiv)
-    call assert(nderiv.eq.ndim)
+    ASSERT(nderiv.eq.ndim)
     do 80,ino = 1,nno
     do 70,idim = 1,ndim
     decal = decal + 1
@@ -149,11 +149,11 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     call elrfd2(elrefa, xpg(ndim* (ipg-1)+1), 9*nbnomx, dff2, nno2,&
                 nderiv)
     if (nderiv .eq. 0) then
-        call assert(nno2.eq.0)
+        ASSERT(nno2.eq.0)
         rvide = r8vide()
     else
-        call assert(nderiv.eq.ndim)
-        call assert(nno2.eq.nno)
+        ASSERT(nderiv.eq.ndim)
+        ASSERT(nno2.eq.nno)
     endif
     do 120,ino = 1,nno
     do 110,jdim = 1,ndim

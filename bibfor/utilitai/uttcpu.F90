@@ -74,7 +74,7 @@ subroutine uttcpu(nommes, action, nomlon)
     else
         goto 9998
     endif
-    call assert(indi.le.indmax)
+    ASSERT(indi.le.indmax)
 !
     if (action .eq. 'INIT') then
         snolon(indi)=nomlon
@@ -108,8 +108,8 @@ subroutine uttcpu(nommes, action, nomlon)
         if (action .eq. 'INIT') then
             call jecroc(jexnom('&&UTTCPU.NOMMES', nommes))
             call jenonu(jexnom('&&UTTCPU.NOMMES', nommes), indi)
-            call assert(indi.gt.0)
-            call assert(indi.lt.100)
+            ASSERT(indi.gt.0)
+            ASSERT(indi.lt.100)
             call jeveuo('&&UTTCPU.NOMLON', 'E', jnoml)
             zk80(jnoml-1+indi)=nomlon
         else

@@ -66,7 +66,7 @@ function dinins(sddisc, numins)
 !
     tpsdin = sddisc(1:19)//'.DINI'
     call jeveuo(tpsdin, 'L', jnivtp)
-    call assert(numins.ge.1)
+    ASSERT(numins.ge.1)
     dinins = zi(jnivtp-1+numins)
 !
 999  continue

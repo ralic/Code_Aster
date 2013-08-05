@@ -189,7 +189,7 @@ subroutine cfimp2(defico, resoco, noma, iliai, typlia,&
             write (ifm,1002) nomlia,etalia
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

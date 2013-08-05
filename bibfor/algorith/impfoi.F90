@@ -62,7 +62,7 @@ subroutine impfoi(unite, long, vali, chaine)
         for5(4:4) = for1
         for5(5:5) = ')'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (unite .ne. 0) then
@@ -71,7 +71,7 @@ subroutine impfoi(unite, long, vali, chaine)
         else if (lonfor.eq.5) then
             write(unite,for5) vali
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         if (lonfor .eq. 4) then
@@ -79,7 +79,7 @@ subroutine impfoi(unite, long, vali, chaine)
         else if (lonfor.eq.5) then
             write(chaine,for5) vali
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

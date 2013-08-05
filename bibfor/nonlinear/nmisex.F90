@@ -441,7 +441,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 136          continue
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

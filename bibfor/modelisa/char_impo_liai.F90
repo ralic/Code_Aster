@@ -67,7 +67,7 @@ subroutine char_impo_liai(nomg, type_liai, cmp_nb, cmp_name, cmp_index,  &
 !
 ! - Initializations
 !
-    call assert(type_liai.eq. 'ENCASTRE')
+    ASSERT(type_liai.eq. 'ENCASTRE')
     vale_real = 0.d0
     vale_cplx = (0.d0,0.d0)
     vale_fonc = '&FOZERO'

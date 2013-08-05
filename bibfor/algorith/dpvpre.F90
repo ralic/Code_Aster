@@ -84,8 +84,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! =====================================================================
 ! =====================================================================
     resi = option(1:9).eq.'FULL_MECA' .or. option .eq.'RAPH_MECA'
-    call assert((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA') .or.&
-                (option .eq.'RAPH_MECA'))
+    ASSERT((option(1:9).eq.'RIGI_MECA') .or. resi)
 ! =====================================================================
 ! --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 ! =====================================================================

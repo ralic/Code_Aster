@@ -118,14 +118,14 @@ subroutine rcvarp(arret, novrc, poum, valvrc, iret)
                 valvrc=valvrm+(tf1-timed1)*(valvrp-valvrm)/(timef1-&
                 timed1)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             valvrc=rundf
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     iret=0

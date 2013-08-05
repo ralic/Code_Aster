@@ -63,7 +63,7 @@ subroutine taxis(noma, indic, nbma)
                 c16b, k8b, k8b, r8b, 'X_MAX',&
                 k8b, ibid, xmax, c16b, k8b,&
                 iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     toler=-1.d-6*abs(xmax)
 !
 !

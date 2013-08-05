@@ -71,12 +71,12 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 !
     if (questi .eq. 'TYPE_CHAMP') then
         call jelira(nomob//'.DESC', 'DOCU', ibid, k8bid)
-        call assert(k8bid(1:4) .eq. 'RESL')
+        ASSERT(k8bid(1:4) .eq. 'RESL')
         repk = 'RESL'
 !
     else if (questi .eq. 'TYPE_SUPERVIS') then
         call jelira(nomob//'.DESC', 'DOCU', ibid, k8bid)
-        call assert(k8bid(1:4) .eq. 'RESL')
+        ASSERT(k8bid(1:4) .eq. 'RESL')
         repk = '????'
 !
     else if (questi .eq. 'TYPE_MATRICE') then
@@ -115,7 +115,7 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
     else if (questi .eq. 'MPI_COMPLET') then
         call jeveuo(nomob//'.NOLI', 'L', jnoli)
         k24 = zk24(jnoli-1+3)
-        call assert(k24.eq.'MPI_COMPLET'.or.k24.eq.'MPI_INCOMPLET')
+        ASSERT(k24.eq.'MPI_COMPLET'.or.k24.eq.'MPI_INCOMPLET')
         if (k24 .eq. 'MPI_COMPLET') then
             repk='OUI'
         else

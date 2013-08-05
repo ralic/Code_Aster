@@ -193,7 +193,7 @@ subroutine bamo78(nomres, trange, typres)
         if (n1 .ne. 0) then
             nbcham = -n1
             if (nbcham .gt. 3) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call getvtx(' ', 'NOM_CHAM', 1, iarg, nbcham,&
                         champ, n1)

@@ -222,7 +222,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !           IL FAUT AU MOINS H1 A H4
             do 1 i = 1, 4
                 if (icodre(i) .ne. 0) then
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
  1          continue
 !

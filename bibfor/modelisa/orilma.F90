@@ -141,7 +141,7 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
     kdim =' '
     if (dime1) kdim ='2D'
     if (dime2) kdim ='3D'
-    call assert(kdim.ne.' ')
+    ASSERT(kdim.ne.' ')
     nomob1 = '&&ORILMA.MAILLE_3D'
     call utmasu(noma, kdim, nbmail, listma, nomob1,&
                 zr(jcoor), nbmavo, mailvo, .false.)

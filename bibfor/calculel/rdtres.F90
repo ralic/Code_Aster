@@ -77,10 +77,10 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !
     call jemarq()
 !
-    call assert(noma1.ne.noma2)
-    call assert(resu1.ne.resu2)
-    call assert(corrn.ne.' ')
-    call assert(corrm.ne.' ')
+    ASSERT(noma1.ne.noma2)
+    ASSERT(resu1.ne.resu2)
+    ASSERT(corrn.ne.' ')
+    ASSERT(corrm.ne.' ')
 !
 !
 !
@@ -91,8 +91,8 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
     if (kchml .eq. 'OUI') then
         call dismoi('F', 'MODELE_1', resu1, 'RESULTAT', ibid,&
                     model1, iret)
-        call assert(model1(1:1).ne.'#')
-        call assert(model1.ne.' ')
+        ASSERT(model1(1:1).ne.'#')
+        ASSERT(model1.ne.' ')
     else
         model1=' '
     endif
@@ -103,7 +103,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !       1.2- IL FAUT ENSUITE TRANSFERER LE LIGREL DE NOMA1 SUR NOMA2 :
 !       1.2.1  OBJET .LGRF A MODIFIER :
         call jeveuo(ligrel//'.LGRF', 'E', j1)
-        call assert(zk8(j1-1+1).eq.noma1)
+        ASSERT(zk8(j1-1+1).eq.noma1)
         zk8(j1-1+1)=noma2
 !       1.2.2  OBJET .NBNO A MODIFIER :
         call jeveuo(ligrel//'.NBNO', 'E', j1)
@@ -119,7 +119,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         call wkvect('&&RDTRES.CORRM_INV', 'V V I', nbma1, jcoinv)
         do 10,ima2=1,nbma2
         ima1=zi(jcorrm-1+ima2)
-        call assert(ima1.gt.0)
+        ASSERT(ima1.gt.0)
         zi(jcoinv-1+ima1)=ima2
 10      continue
 !
@@ -155,8 +155,8 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         ite=zi(j1-1+n1)
         do 21,iel=1,n1-1
         ima2=zi(j1-1+iel)
-        call assert(ima2.gt.0)
-        call assert(ima2.le.nbma2)
+        ASSERT(ima2.gt.0)
+        ASSERT(ima2.le.nbma2)
         zi(jmail2-1+ima2)=ite
 21      continue
 31      continue
@@ -193,7 +193,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
 !     ------------------------------------
     call rsutc4(resu1, 'RESU', iocc, 200, nomsym,&
                 nbsym, acceno)
-    call assert(nbsym.gt.0)
+    ASSERT(nbsym.gt.0)
     cret=0
     do 50,isym=1,nbsym
     redpos=.true.
@@ -237,7 +237,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                     1, iad1, type)
         call rsadpa(resu2, 'E', 1, nopara, iordr,&
                     1, iad2, type)
-        if (nopara .eq. 'MODELE') call assert(type.eq.'K8')
+        if (nopara .eq. 'MODELE') ASSERT(type.eq.'K8')
         if (type .eq. 'I') then
             zi(iad2)=zi(iad1)
         else if (type.eq.'R') then
@@ -259,7 +259,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
                 zk8(iad2)=model2
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 60  continue
     70 end do

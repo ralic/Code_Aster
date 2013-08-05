@@ -104,7 +104,7 @@ subroutine te0118(option, nomte)
 !  CALCUL DE NDIME (2 OU 3) DIMENSION DE L'ESPACE :
     call teattr(' ', 'S', 'DIM_COOR_MODELI', kdime, ibid)
     read(kdime,'(I8)')  ndime
-    call assert(ndime.eq.2.or.ndime.eq.3)
+    ASSERT(ndime.eq.2.or.ndime.eq.3)
 !
 !
 !-----------------------------------------------------------------------
@@ -231,7 +231,7 @@ subroutine te0118(option, nomte)
 !
         call elref4(' ', 'NOEU', ndim, nno, nnos,&
                     npg, ipoids, ivf, idfde, jgano)
-        call assert(nno.le.8)
+        ASSERT(nno.le.8)
 !
 !
 !  --------------
@@ -243,7 +243,7 @@ subroutine te0118(option, nomte)
             if (typma(1:5) .eq. 'TETRA') then
                 call elref4(' ', 'RIGI', ndim, nno, nnos,&
                             npg, ipoids, ivf, idfde, jgano)
-                call assert(npg.eq.1)
+                ASSERT(npg.eq.1)
                 call dfdm3d(nno, 1, ipoids, idfde, zr(igeom),&
                             dfdx, dfdy, dfdz, meast)
                 call elref4(' ', 'NOEU', ndim, nno, nnos,&
@@ -285,7 +285,7 @@ subroutine te0118(option, nomte)
             else if (typma(1:3).eq.'TRI') then
                 call elref4(' ', 'RIGI', ndim, nno, nnos,&
                             npg, ipoids, ivf, idfde, jgano)
-!               CALL ASSERT(NPG.EQ.1)
+!               ASSERT(NPG.EQ.1)
                 call dfdm2d(nno, 1, ipoids, idfde, zr(igeom),&
                             dfdx, dfdy, meast)
                 call elref4(' ', 'NOEU', ndim, nno, nnos,&
@@ -357,7 +357,7 @@ subroutine te0118(option, nomte)
 !
         call elref4(' ', 'NOEU', ndim, nno, nnos,&
                     npg, ipoids, ivf, idfde, jgano)
-        call assert(nno.le.8)
+        ASSERT(nno.le.8)
 !
 !  ------------------------------------------
 !  INITIALISATION DE DELTAPHI ET ALPHA(I) A 0

@@ -75,7 +75,7 @@ subroutine obgetr(nomstr, nompaz, valr)
         valr = zr(jsvalr-1+indice)
     else
         write(6,*) 'TYPE INCORRECT: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

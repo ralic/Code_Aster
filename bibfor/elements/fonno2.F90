@@ -106,7 +106,7 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose,&
 !       ON GARDE LES MAILLES CONNECTEES QU'A 1 SEULE AUTRE MAILLE
         if (comp3 .eq. 1) then
             comp4=comp4+1
-            call assert(comp4.le.2)
+            ASSERT(comp4.le.2)
             tablev(comp4)=zi(jmaco-1 + inp)
         endif
 120  end do

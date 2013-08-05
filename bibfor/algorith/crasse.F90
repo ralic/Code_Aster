@@ -66,7 +66,7 @@ subroutine crasse()
 !
 !     -- LA RE-ENTRANCE EST INTERDITE:
     call jeexin(resu2//'           .DESC', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !     -- ON COMPTE LE NOMBRE MAX. DE NUMEROS D'ORDRE DE LA
 !        SD_RESULTAT :
@@ -138,7 +138,7 @@ subroutine crasse()
 !           2- STOCKAGE DE CHAM1 :
             call rsexch(' ', resu2, chter, iord2, nomch,&
                         iret)
-            call assert(iret.eq.0.or.iret.eq.100)
+            ASSERT(iret.eq.0.or.iret.eq.100)
             call copisd('CHAMP_GD', 'G', cham1, nomch)
             call rsnoch(resu2, chter, iord2)
 !

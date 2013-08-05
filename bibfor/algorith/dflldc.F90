@@ -86,7 +86,7 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
                     niveau, iret)
         call getvis(mcfact, 'SUBD_PAS', iechec, iarg, 1,&
                     nbrpas, iret)
-        if (nbrpas .lt. 2) call assert(.false.)
+        if (nbrpas .lt. 2) ASSERT(.false.)
     else if (submet.eq.'AUTO') then
         if (even .eq. 'COLLISION') then
             call getvr8(mcfact, 'SUBD_INST', iechec, iarg, 1,&
@@ -98,7 +98,7 @@ subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
             subaut = 'EXTRAPOLE'
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

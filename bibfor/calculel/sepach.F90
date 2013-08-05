@@ -172,14 +172,14 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
                         iret2, ' ')
         endif
 !
-        call assert((iret1.eq.0).or.(iret2.eq.0))
+        ASSERT((iret1.eq.0).or.(iret2.eq.0))
 !
         call jelira(chin//'.CELV', 'LONMAX', nbval, k8b)
         call jeveuo(chin//'.CELV', 'L', icelv)
 !
         call jelira(chreel//'.CELV', 'LONMAX', nbval2, k8b)
         if (nbval2 .ne. nbval) then
-            call assert(nbval.gt.nbval2)
+            ASSERT(nbval.gt.nbval2)
             call juveca(chreel//'.CELV', nbval)
             call juveca(chimag//'.CELV', nbval)
         endif

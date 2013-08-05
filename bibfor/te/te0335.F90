@@ -84,7 +84,7 @@ subroutine te0335(option, nomte)
         idefo=itabin(1)
         call tecach('OOO', 'PDEFOEQ', 'E', 7, itabou,&
                     iret)
-        call assert(itabou(2)/itabou(3).eq.neeqmx)
+        ASSERT(itabou(2)/itabou(3).eq.neeqmx)
 !
         elseif ((option.eq.'SIEQ_ELGA') .or. (option.eq.'SIEQ_ELNO'))&
     then
@@ -94,26 +94,26 @@ subroutine te0335(option, nomte)
         icont=itabin(1)
         call tecach('OOO', 'PCONTEQ', 'E', 7, itabou,&
                     iret)
-        call assert(itabou(2)/itabou(3).eq.nceqmx)
+        ASSERT(itabou(2)/itabou(3).eq.nceqmx)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     iequi = itabou(1)
 !
     nbsp = itabou(7)
-    call assert(nbsp.ge.1)
-    call assert(nbsp.eq.itabin(7))
+    ASSERT(nbsp.ge.1)
+    ASSERT(nbsp.eq.itabin(7))
 !
     nbcmp = itabin(2)/itabin(3)
-    call assert((nbcmp.eq.1).or.(nbcmp.eq.4).or.(nbcmp.eq.6))
+    ASSERT((nbcmp.eq.1).or.(nbcmp.eq.4).or.(nbcmp.eq.6))
 !
     ncmpeq = itabou(2)/itabou(3)
-    call assert((ncmpeq.eq.neeqmx).or.(ncmpeq.eq.nceqmx))
+    ASSERT((ncmpeq.eq.neeqmx).or.(ncmpeq.eq.nceqmx))
 !
-    call assert(itabin(6).le.1)
-    call assert(itabou(6).le.1)
+    ASSERT(itabin(6).le.1)
+    ASSERT(itabou(6).le.1)
 !
     if (nbcmp .eq. 6) then
         ndim = 3

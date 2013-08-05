@@ -104,7 +104,7 @@ subroutine te0040(option, nomte)
             endif
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jevech('PNBSP_I', 'L', jnbspi)
@@ -246,7 +246,7 @@ subroutine te0040(option, nomte)
 180                  continue
 190              continue
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 200      continue

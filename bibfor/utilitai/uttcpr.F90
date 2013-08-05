@@ -73,7 +73,7 @@ subroutine uttcpr(nommes, nbv, temps)
         if (indi .eq. 0) goto 9999
         goto 9998
     endif
-    call assert(indi.le.indmax)
+    ASSERT(indi.le.indmax)
     ljev=.false.
 !
 !

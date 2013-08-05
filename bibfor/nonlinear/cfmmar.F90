@@ -211,7 +211,7 @@ subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
         call jecroc(jexnum(aptgel, ima))
         longt = longt + longc
 20  end do
-    call assert(longt.eq.6*ntmano)
+    ASSERT(longt.eq.6*ntmano)
 !
     call jedema()
 !

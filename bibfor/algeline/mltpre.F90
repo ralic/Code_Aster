@@ -16,7 +16,6 @@ subroutine mltpre(mat19, renumz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -123,7 +122,7 @@ subroutine mltpre(mat19, renumz)
         call dismoi('F', 'SOLVEUR', mat19, 'MATR_ASSE', ibid,&
                     solv19, ierd)
         call jeveuo(solv19//'.SLVK', 'L', jslvk)
-        call assert(zk24(jslvk-1+1).eq.'MULT_FRONT')
+        ASSERT(zk24(jslvk-1+1).eq.'MULT_FRONT')
         renum=zk24(jslvk-1+4)
     else
         renum=renumz
@@ -180,7 +179,7 @@ subroutine mltpre(mat19, renumz)
 !
     neq = zi(jsmde-1+1)
     do 10 i = 1, neq
-        call assert(zi(inueq+i-1).eq.i)
+        ASSERT(zi(inueq+i-1).eq.i)
 10  end do
     call jelibe(nu//'.NUME.NUEQ')
     lmat = zi(ismdi+neq-1)
@@ -193,7 +192,7 @@ subroutine mltpre(mat19, renumz)
     call jelibe(nu//'.SMOS.SMHC')
     call jeveuo(mat19//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+10) .ne. 'NOEU') then
-        call assert(zk24(jrefa-1+10).eq.'GENE')
+        ASSERT(zk24(jrefa-1+10).eq.'GENE')
         matgen=.true.
     else
         matgen=.false.

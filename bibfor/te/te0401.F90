@@ -73,7 +73,7 @@ subroutine te0401(optioz, nomtz)
                     vrs)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

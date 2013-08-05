@@ -2,7 +2,6 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
                   noesom, lcmin, cnsln, grln, cnslt,&
                   grlt, deltat, noresi, isozro, nodtor,&
                   eletor, liggrd)
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"
@@ -542,7 +541,7 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
 !
 !        FINAL EVALUATION OF THE RESIDUALS.
 !        GLOBAL RESIDUAL FIRST...
-        call assert(sumlsg.gt.r8prem())
+        ASSERT(sumlsg.gt.r8prem())
         resglo(i) = (dlsg / sumlsg)**0.5d0
 !        ...THEN THE LOCAL RESIDUAL
 !        IF THE RADIUS SPECIFIED FOR THE CALCULATION OF THE LOCAL

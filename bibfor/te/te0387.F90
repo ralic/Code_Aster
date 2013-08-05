@@ -49,7 +49,7 @@ subroutine te0387(option, nomte)
 !
 !
     call elref2(nomte, 2, lirefe, nbelr)
-    call assert(nbelr.eq.2)
+    ASSERT(nbelr.eq.2)
     call elref4(lirefe(2), 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
@@ -97,7 +97,7 @@ subroutine te0387(option, nomte)
         nompar(3) = 'INST'
         call fointe('A', zk8(ihechp), 3, nompar, valpar,&
                     hechp, icode)
-        call assert(icode.eq.0)
+        ASSERT(icode.eq.0)
         k = 0
         do 30 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1

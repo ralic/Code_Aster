@@ -124,7 +124,7 @@ subroutine nmetl3(modele, compor, evonol, result, numein,&
         else if (statut.eq.'CHAMP') then
             call u2mesk('I', 'ETATINIT_33', 1, nomchs)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

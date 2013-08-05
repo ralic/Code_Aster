@@ -131,7 +131,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
 !     ------------------------------------
-    call assert(longt.le.long)
+    ASSERT(longt.le.long)
 !
     do 20,i = 1,long
     if (scal(1:1) .eq. 'I') then
@@ -272,7 +272,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
             call mpicm1('MPI_SUM', 'R', longt, ibid, ibid,&
                         vr, cbid)
         else if (scal(1:1).eq.'C') then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

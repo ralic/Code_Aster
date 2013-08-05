@@ -78,7 +78,7 @@ subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
     do 150 i = 1, npte
         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                     ifiss, (iface-1)* ndim+i, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         numpi(i) = zi(jcesv(4)-1+iad)
 150  end do
 !
@@ -89,7 +89,7 @@ subroutine xcopco(jcesd, jcesv, jcesl, ifiss, alias,&
         do 210 j = 1, ndim
             call cesexi('S', jcesd(5), jcesl(5), nummae, 1,&
                         ifiss, ndim*( numpi(i)-1)+j, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             coor(ndim*(i-1)+j)=zr(jcesv(5)-1+iad)
 210      continue
 200  end do

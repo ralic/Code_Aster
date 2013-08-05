@@ -102,7 +102,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     call jeveuo(charg1//'.DESC', 'L', jdes1)
     call jeveuo(charg2//'.DESC', 'L', jdes2)
-    call assert(zi(jdes1).eq.zi(jdes2))
+    ASSERT(zi(jdes1).eq.zi(jdes2))
 !
 ! --  1.2 TABLEAUX : MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_1)
 !                    MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_2)
@@ -117,7 +117,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     call jeveuo(jexatr(charg1//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg1//'.LIMA', 'L', p1)
     call jelira(charg1//'.LIMA', 'ACCES', ibid, acces)
-    call assert(acces(1:2).eq.'NU')
+    ASSERT(acces(1:2).eq.'NU')
 !
     nbzo1=zi(jdes1+3-1)
     do 10 izo = 1, nbzo1
@@ -132,7 +132,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
     call jeveuo(jexatr(charg2//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg2//'.LIMA', 'L', p1)
     call jelira(charg2//'.LIMA', 'ACCES', ibid, acces)
-    call assert(acces(1:2).eq.'NU')
+    ASSERT(acces(1:2).eq.'NU')
 !
     nbzo2=zi(jdes2+3-1)
     do 30 izo = 1, nbzo2

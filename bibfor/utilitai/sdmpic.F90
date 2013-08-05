@@ -91,7 +91,7 @@ subroutine sdmpic(typesd, nomsd)
         zk24(jrefa-1+11)='MPI_COMPLET'
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

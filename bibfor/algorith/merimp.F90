@@ -97,7 +97,7 @@ subroutine merimp(modele, carele, mate, comref, compor,&
 !
     ligrmo = modele(1:8)//'.MODELE'
     chiter = '&&MERIMO.CH_ITERAT'
-    call assert(mate(9:18).eq.'.MATE_CODE')
+    ASSERT(mate(9:18).eq.'.MATE_CODE')
     k19bla = ' '
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
 !

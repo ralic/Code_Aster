@@ -113,7 +113,7 @@ subroutine aprema(sdappa)
 ! ------- LE POINT DOIT-IL ETRE APPARIE ?
 !
             call apinfi(sdappa, 'APPARI_TYPE', ip, typapp)
-            call assert(typapp.ne.0)
+            ASSERT(typapp.ne.0)
 !
 ! ------- POINT A APPARIER !
 !

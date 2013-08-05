@@ -55,7 +55,7 @@ subroutine dliext()
                 param, n2)
     call getvr8(' ', 'INTERV_R', 0, iarg, 2,&
                 inter2, n3)
-    call assert(n1+n2+n3.eq.4)
+    ASSERT(n1+n2+n3.eq.4)
 !
 !
 !
@@ -77,7 +77,7 @@ subroutine dliext()
     iord = zi(jordr-1+k)
     call rsadpa(sdresu, 'L', 1, param, iord,&
                 0, iad, kbid)
-    call assert(iad.ne.0)
+    ASSERT(iad.ne.0)
     vpara = zr(iad)
     if (vpara .ge. inter2(1) .and. vpara .le. inter2(2)) then
         k1 = k1 + 1
@@ -86,7 +86,7 @@ subroutine dliext()
     10 end do
     nbordr = k1
     nbvale = nbordr
-    call assert(nbordr.gt.0)
+    ASSERT(nbordr.gt.0)
 !
 !
 !     2) CREATION DE LA STRUCTURE DE DONNEES :

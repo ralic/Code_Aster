@@ -104,16 +104,18 @@ subroutine jelibf(cond, clas, info)
     character(len=32) :: nomcar
     integer :: iadcar, iaddac(2), lgbl, vali(8), iadcdy, iaddad(2)
     real(kind=8) :: valr(2)
+    logical :: bool
 ! DEB ------------------------------------------------------------------
     kcond = cond
     kclas = clas
     ic = index ( classe , kclas )
     iclaos = ic
-    call assert(ic .ne. 0)
-    call assert(kcond .eq. '        ' .or. kcond&
+    ASSERT(ic .ne. 0)
+    bool = kcond .eq. '        ' .or. kcond&
                 .eq. 'SAUVE   ' .or. kcond .eq.&
                 'ERREUR  ' .or. kcond .eq. 'DETRUIT '&
-                .or. kcond .eq. 'LIBERE  ')
+                .or. kcond .eq. 'LIBERE  '
+    ASSERT(bool)
     if (kcond .eq. '        ') then
         kcond = kstout(ic)
     else if (kcond .eq. 'ERREUR  ') then

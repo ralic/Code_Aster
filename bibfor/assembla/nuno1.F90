@@ -42,7 +42,7 @@ subroutine nuno1(i, iligr, nunoel, n, inum21,&
     integer :: i1, i2, ili, ili1, inum21, inuno2, j
     integer :: jli, n, nlili, nunoel
 !-----------------------------------------------------------------------
-    call assert((i.gt.0) .and. (i.le.n))
+    ASSERT((i.gt.0) .and. (i.le.n))
     j = zi(inum21+i)
     if (j .eq. 0) then
         iligr = 0

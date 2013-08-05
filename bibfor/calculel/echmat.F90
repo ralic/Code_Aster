@@ -71,7 +71,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
     nz=zi(jsmdi-1+n)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
-    call assert(nz.le.nsmhc)
+    ASSERT(nz.le.nsmhc)
 !
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelgg)
     call jelira(nonu//'.NUME.DELG', 'LONMAX', ng, kbid)
@@ -80,14 +80,14 @@ subroutine echmat(matz, ldist, rmin, rmax)
         call jeveuo(nonu//'.NUML.DELG', 'L', jdelgl)
     else
         jdelgl=jdelgg
-        call assert(ng.eq.n)
+        ASSERT(ng.eq.n)
     endif
 !
     call jelira(mat19//'.VALM', 'TYPE', ibid, ktyp)
     call jelira(mat19//'.VALM', 'CLAS', ibid, base1)
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvalm1)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
-    call assert(nlong.eq.nz)
+    ASSERT(nlong.eq.nz)
 !
 !
 !     --CALCUL DE RMIN ET RMAX :

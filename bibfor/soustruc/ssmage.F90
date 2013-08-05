@@ -77,7 +77,7 @@ subroutine ssmage(nomu, option)
         call rcmfmc(materi, mate)
     endif
     nu= zk8(iarefm-1+5)
-    if (nu(1:8) .ne. nomu) call assert(.false.)
+    if (nu(1:8) .ne. nomu) ASSERT(.false.)
 !
     matel = '&&MATEL'
     if (option .eq. 'MASS_MECA') then
@@ -85,7 +85,7 @@ subroutine ssmage(nomu, option)
     else if (option.eq.'AMOR_MECA') then
         matas = nomu//'.AMORMECA'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(nomu//'.DESM', 'L', jdesm)

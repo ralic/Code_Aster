@@ -69,7 +69,7 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
             zi(jj+5) = itypx(6)
             ntypx(6) = ntypx(6) + 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nfiss.gt.1) then
         if (zi(jj+1) .lt. 0) then

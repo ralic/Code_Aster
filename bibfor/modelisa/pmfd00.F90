@@ -257,7 +257,7 @@ subroutine pmfd00()
                     iasbon = ii
                     goto 160
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !              MAILLE DANS LISTE OU GROUPE DE MAILLE DE CETTE ZONE
                 do 152 jj = 1, nbmaza

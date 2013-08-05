@@ -63,7 +63,7 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 !     RECHERCHE DE L'INTERVALLE INITIAL [A,B]
 !     ------------------------------------------------------------------
 !
-    call assert(intini.eq.0.or. intini.eq.1.or. intini.eq.2)
+    ASSERT(intini.eq.0.or. intini.eq.1.or. intini.eq.2)
 !
     if (intini .eq. 1) then
 !
@@ -113,7 +113,7 @@ subroutine zerofr(intini, algo, func, x1, x2,&
 !
     else
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

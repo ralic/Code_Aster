@@ -810,7 +810,7 @@ subroutine te0490(option, nomte)
 !
             if (compor(1) .eq. 'VMIS_CINE_LINE') then
                 nbsig2 = 7
-                call assert(idvari.ne.1)
+                ASSERT(idvari.ne.1)
                 do 75 i = 1, nbsig
                     x(i) = zr(idvari+(igau-1)*nbsig2+i-1)
 75              continue

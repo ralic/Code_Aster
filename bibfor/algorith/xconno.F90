@@ -174,7 +174,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
                                 kk, icmp, iad)
                     if (iad .lt. 0) goto 110
 100              continue
-                call assert(.false.)
+                ASSERT(.false.)
 110              continue
                 if (tsca .eq. 'R') then
                     zl(jcesl-1-iad) = .true.
@@ -201,7 +201,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
                     zk8(jcesv-1-iad)= zk8(jcnsv-1+(ino-1)*&
                                 ncmp1+icmp)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 1220              continue

@@ -56,7 +56,7 @@ subroutine jjlidy(iadyn, iadmi)
 100      continue
         if (iet .eq. istat(2)) then
             svuse = svuse - lgs
-            call assert(lgs .gt. 0)
+            ASSERT(lgs .gt. 0)
             smxuse = max(smxuse,svuse)
         endif
         mcdyn = mcdyn - lgs

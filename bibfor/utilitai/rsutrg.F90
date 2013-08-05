@@ -107,9 +107,9 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
             goto 20
         endif
 10  end do
-    call assert(.false.)
+    ASSERT(.false.)
 !
 20  continue
-    call assert(irang.ge.0)
+    ASSERT(irang.ge.0)
     call jedema()
 end subroutine

@@ -75,13 +75,13 @@ subroutine te0144(option, nomte)
         call jevech('PCONTRR', 'E', jeffo)
     else
 ! OPTION NON PROGRAMMEE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- POINT DE GAUSS DE L'ELEMENT
     call elref4(' ', 'RIGI', iplouf, iplouf, iplouf,&
                 npg, iplouf, iplouf, iplouf, iplouf)
-    call assert((npg.eq.2).or.(npg.eq.3))
+    ASSERT((npg.eq.2).or.(npg.eq.3))
 !
 ! --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)

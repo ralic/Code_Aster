@@ -70,7 +70,7 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 7+2*nbvalp, lprol)
 !
     zk24(lprol) = 'NAPPE           '

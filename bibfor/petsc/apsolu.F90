@@ -81,11 +81,11 @@ subroutine apsolu(kptsc, lmd, rsolu)
         enddo
 !
         call VecGetOwnershipRange(x, low, high, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !       -- RECOPIE DE DANS RSOLU
         call VecGetArray(x, xx, xidx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
         do iaux = 1, nloc
             if (zi(jprddl-1+iaux) .eq. rang) then
@@ -99,25 +99,25 @@ subroutine apsolu(kptsc, lmd, rsolu)
                     rsolu, cbid)
 !
         call VecRestoreArray(x, xx, xidx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
     else
 !
 !       -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
         call VecScatterCreateToAll(x, ctx, xgth, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecScatterBegin(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD,&
                              ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecScatterEnd(ctx, x, xgth, INSERT_VALUES, SCATTER_FORWARD,&
                            ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call VecScatterDestroy(ctx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !       -- RECOPIE DE DANS RSOLU
         call VecGetArray(xgth, xx, xidx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
         neqg = zi(jnequ)
         do i = 1, neqg
@@ -125,11 +125,11 @@ subroutine apsolu(kptsc, lmd, rsolu)
         end do
 !
         call VecRestoreArray(xgth, xx, xidx, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
 !       -- NETTOYAGE
         call VecDestroy(xgth, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
     endif
 !

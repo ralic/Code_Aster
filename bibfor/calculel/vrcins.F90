@@ -140,16 +140,16 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     goto 2
 !
  4  continue
-    call assert(kcvrc.ge.1 .and. kcvrc.le.nbcvrc)
+    ASSERT(kcvrc.ge.1 .and. kcvrc.le.nbcvrc)
 !
 !         -- BOUCLE SUR LES MAILLES :
     nbma = zi(jcesd-1+1)
-    call assert(nbma.eq.zi(jce1d-1+1))
+    ASSERT(nbma.eq.zi(jce1d-1+1))
 !
     do 70,ima = 1,nbma
     nbpt = zi(jcesd-1+5+4* (ima-1)+1)
     if (nbpt .eq. 0) goto 70
-    call assert(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
+    ASSERT(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
     nbsp = max(1,zi(jcesd-1+5+4* (ima-1)+2))
     if (nbsp .ne. zi(jce1d-1+5+4* (ima-1)+2)) then
         valk(1) = nocmp1
@@ -180,7 +180,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     if (iad .gt. 0) then
         call cesexi('C', jce1d, jce1l, ima, ipt,&
                     isp, kcvrc, iad1)
-        call assert(iad1.gt.0)
+        ASSERT(iad1.gt.0)
         if (zi(jcesvi-1+iad1) .eq. ichs) then
             valeur=zr(jcesv-1+iad)
             zl(jce1l-1+iad1)=.true.

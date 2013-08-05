@@ -75,7 +75,7 @@ subroutine jevech(nmparz, louez, itab)
     nompar = nmparz
     loue = louez
 !
-    call assert(loue.eq.'L' .or. loue.eq.'E')
+    ASSERT(loue.eq.'L' .or. loue.eq.'E')
 !
 !     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
     capoiz = capoiz + 1
@@ -102,10 +102,10 @@ subroutine jevech(nmparz, louez, itab)
 !     ET QUE LES PARAMETRES OUT SONT EN ECRITURE
     if (iparg .gt. nparin .and. loue .eq. 'L') then
         write(6,*)'PARAMETRE OUT EN LECTURE : ',nompar
-        call assert(.false.)
+        ASSERT(.false.)
     else if (iparg.le.nparin .and. loue.eq.'E') then
         write(6,*)'PARAMETRE IN EN ECRITURE : ',nompar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     iachlo=zi(iawloc-1+3*(iparg-1)+1)
@@ -164,7 +164,7 @@ subroutine jevech(nmparz, louez, itab)
         call contex(option, nompar)
 !
     endif
-    call assert(iachlo.ne.-2)
+    ASSERT(iachlo.ne.-2)
 !
 !
 !     -- CALCUL DE ITAB,LONCHL,DECAEL :
@@ -173,7 +173,7 @@ subroutine jevech(nmparz, louez, itab)
     if (etendu) then
         adiel = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+4)
         debgr2 = zi(jceld-1+zi(jceld-1+4+igr)+8)
-        call assert(lgcata.eq.zi(jceld-1+zi(jceld-1+4+igr)+3))
+        ASSERT(lgcata.eq.zi(jceld-1+zi(jceld-1+4+igr)+3))
         decael = (adiel-debgr2)
         lonchl = zi(jceld-1+zi(jceld-1+4+igr)+4+4* (iel-1)+3)
     else

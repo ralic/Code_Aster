@@ -173,7 +173,7 @@ subroutine ssdmte(mag)
     do 6 ,ino=1,nbnoph
     jno=zi(iancnf-1+ino)
     if (jno .ne. ino) then
-        call assert(jno.le.ino)
+        ASSERT(jno.le.ino)
         kno=zi(iancnf-1+jno)
         if (kno .ne. jno) then
             zi(iancnf-1+ino)= kno

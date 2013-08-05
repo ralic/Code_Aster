@@ -112,7 +112,7 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
 ! ----- NOMBRE DE SURFACES DE CONTACT
 !
         nbsurf = zi(jzone+izone) - zi(jzone+izone-1)
-        call assert(nbsurf.eq.2)
+        ASSERT(nbsurf.eq.2)
 !
         do 20 isuco = 1, nbsurf
             isurf = nbsurf*(izone-1)+isuco
@@ -161,7 +161,7 @@ subroutine cfleqc(noma, defico, nzoco, nnoco, nsuco,&
 21      continue
 10  end do
 !
-    call assert((2*nzoco).eq.nsuco)
+    ASSERT((2*nzoco).eq.nsuco)
 !
     call jedema()
 end subroutine

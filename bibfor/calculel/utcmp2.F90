@@ -60,7 +60,7 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
     call getvtx(mcfac, 'NOM_CMP', iocc, iarg, 0,&
                 k8b, n2)
     nbcmp=-n2
-    call assert(dim.ge.nbcmp)
+    ASSERT(dim.ge.nbcmp)
 !
     call getvtx(mcfac, 'NOM_CMP', iocc, iarg, nbcmp,&
                 nomcmp, n2)
@@ -70,9 +70,9 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp,&
 !     -----------------------------------------
         do 10 i = 1, nbcmp
             nocmp=nomcmp(i)
-            call assert(nocmp(1:1).eq.'V')
+            ASSERT(nocmp(1:1).eq.'V')
             call lxliis(nocmp(2:8), nucmp, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             numcmp(i)=nucmp
 10      continue
 !

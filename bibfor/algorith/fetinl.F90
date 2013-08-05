@@ -216,14 +216,14 @@ subroutine fetinl(nbi, vlagi, matas, chsecm, lrigid,&
 ! PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS
                 call dsptrf('L', dimgi4, zr(jgitgi), zi4(ipiv), infola)
                 infol8=infola
-                call assert(infol8.eq.0)
+                ASSERT(infol8.eq.0)
             endif
             infol8=0
             infola=0
             call dsptrs('L', dimgi4, 1, zr(jgitgi), zi4(ipiv),&
                         zr(jve), dimgi4, infola)
             infol8=infola
-            call assert(infol8.eq.0)
+            ASSERT(infol8.eq.0)
 ! MONITORING
             if (infofe(1:1) .eq. 'T') write(ifm, *)'<FETI/FETINL', rang,&
                                       '> INVERSION (GITGI)-1*E'

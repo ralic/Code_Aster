@@ -63,7 +63,7 @@ subroutine ssrone(mag, isma, rota)
         if (r1 .gt. 1.d-6) rot1=2
     endif
 !
-    call assert((rot1.eq.2).or.(rot1.eq.0))
+    ASSERT((rot1.eq.2).or.(rot1.eq.0))
     if (rot1 .eq. 2) then
         rota='OUI'
     else if (rot1.eq.0) then

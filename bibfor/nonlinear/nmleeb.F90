@@ -85,7 +85,7 @@ subroutine nmleeb(sderro, nombcl, etabcl)
     else if (nombcl.eq.'CALC') then
         iconve = zi(jeconv-1+5)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- SELON ETAT
@@ -103,7 +103,7 @@ subroutine nmleeb(sderro, nombcl, etabcl)
     else if (iconve.eq.5) then
         etabcl = 'CTCD'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

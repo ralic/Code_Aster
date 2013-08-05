@@ -68,7 +68,7 @@ subroutine mmtanr(noma, ndimg, defico, resoco, izone,&
 ! --- INITIALISATIONS
 !
     if (nummam .le. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CHOIX DE LA NORMALE

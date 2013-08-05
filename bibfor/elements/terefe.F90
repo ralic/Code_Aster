@@ -70,7 +70,7 @@ subroutine terefe(nomref, typele, valref)
         else if (typele.eq.'MECA_INCO') then
             index = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'EPSI_REFE') then
         if (typele .eq. 'MECA_INCO') then
@@ -80,13 +80,13 @@ subroutine terefe(nomref, typele, valref)
         else if (typele.eq.'MEMBRANE') then
             index = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'FLUX_THER_REFE') then
         if (typele .eq. 'THM') then
             index = 4
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'FLUX_HYD1_REFE') then
         if (typele .eq. 'THM_JOINT') then
@@ -94,19 +94,19 @@ subroutine terefe(nomref, typele, valref)
         else if (typele.eq.'THM') then
             index = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'FLUX_HYD2_REFE') then
         if (typele .eq. 'THM') then
             index = 3
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'VARI_REFE') then
         if (typele .eq. 'MECA_GRADVARI') then
             index = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'EFFORT_REFE') then
         if (typele .eq. 'MECA_DISCRET') then
@@ -120,7 +120,7 @@ subroutine terefe(nomref, typele, valref)
         else if (typele.eq.'MECA_POUTRE') then
             index = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'MOMENT_REFE') then
         if (typele .eq. 'MECA_DISCRET') then
@@ -128,22 +128,22 @@ subroutine terefe(nomref, typele, valref)
         else if (typele.eq.'MECA_POUTRE') then
             index = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'DEPL_REFE') then
         if (typele .eq. 'MECA_INTERFACE') then
             index = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (nomref.eq.'LAGR_REFE') then
         if (typele .eq. 'MECA_GRADVARI') then
             index = 3
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     val = zr(jvrefe+index-1)

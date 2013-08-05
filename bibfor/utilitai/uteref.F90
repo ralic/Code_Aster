@@ -115,7 +115,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         write (ifm,10001) tyelas, nomte
         10001 format('ELEMENT FINI NUMERO',i6,', DE NOM : ',a16)
     endif
-    call assert(typech.eq.'ELGA')
+    ASSERT(typech.eq.'ELGA')
 !
 !     2- DETERMINATION DE ELREFE :
 !     -----------------------------
@@ -123,17 +123,17 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     if (codret .eq. 0) then
 !
         call elref2(nomte, nbfamx, lielrf, nbelr)
-        call assert(nbelr.gt.0)
+        ASSERT(nbelr.gt.0)
         elrefe = lielrf(1)
 !
 !
         call dismoi('F', 'TYPE_CHAMP', chanom, 'CHAMP', repi,&
                     tych, ierd)
-        call assert(tych.eq.typech)
+        ASSERT(tych.eq.typech)
         call jeveuo(chanom//'.CELK', 'L', jcelk)
         call jeveuo(chanom//'.CELD', 'L', jceld)
         ligrel = zk24(jcelk-1+1)(1:19)
-        call assert(zk24(jcelk-1+3)(1:19).eq.typech)
+        ASSERT(zk24(jcelk-1+3)(1:19).eq.typech)
         nbgrel = zi(jceld-1+2)
 !
     endif
@@ -164,7 +164,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
         31     end do
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
 32      continue
 !
@@ -182,7 +182,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                     kbid, ierd)
         kfpg = zi(jmolo-1+4+nec+1)
         call jenuno(jexnum('&CATA.TM.NOFPG', kfpg), nomfpg)
-        call assert(elrefe.eq.nomfpg(1:8))
+        ASSERT(elrefe.eq.nomfpg(1:8))
         famil = nomfpg(9:16)
 !
     endif
@@ -195,8 +195,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                     fapg, nbpg00, refcoo, vol)
 !
-        call assert(nbfpg.le.20)
-        call assert(nno.le.27)
+        ASSERT(nbfpg.le.20)
+        ASSERT(nno.le.27)
         ifam = indik8(fapg,famil,1,nbfpg)
         if (ifam .le. 0) then
             resu = chanom(1:8)
@@ -214,7 +214,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         call elraga(elrefe, famil, ndim, nbpg, gscoo,&
                     wg)
 !
-        call assert(nbpg.le.27)
+        ASSERT(nbpg.le.27)
 !
     endif
 !

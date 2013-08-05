@@ -144,7 +144,7 @@ subroutine ef0517(nomte)
         end do
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

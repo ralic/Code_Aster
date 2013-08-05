@@ -56,7 +56,7 @@ subroutine te0422(option, nomte)
     call elref4(' ', fami, ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdx, jgano)
 !
-    if (option .ne. 'SIEF_ELGA') call assert(.false.)
+    if (option .ne. 'SIEF_ELGA') ASSERT(.false.)
 !
     do 10 i = 1, 32
         effgt(i) = 0.d0

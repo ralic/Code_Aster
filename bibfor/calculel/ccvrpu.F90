@@ -110,7 +110,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 valk(2) = modelr
                 valk(3) = modelu
                 call u2mesk('F', 'CALCULEL_33', 3, valk)
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -124,7 +124,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 valk(2) = carelr
                 valk(3) = carelu
                 call u2mesk('F', 'CALCULEL_33', 3, valk)
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -138,7 +138,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 valk(2) = chmatr
                 valk(3) = chmatu
                 call u2mesk('F', 'CALCULEL_33', 3, valk)
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -156,7 +156,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 nchasd = zi(jinfc)
                 if (nchasd .ne. nchalu) then
                     call u2mess('F', 'CALCULEL_39')
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 do 40 ilu = 1, nchalu
                     do 50 isd = 1, nchasd

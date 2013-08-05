@@ -93,7 +93,7 @@ subroutine ssdmgn(mag)
     else
         call getvtx('DEFI_GROUP_NO', 'GROUP_NO_FIN', iocc, iarg, 1,&
                     kbid, n2)
-        call assert(n2.ne.0)
+        ASSERT(n2.ne.0)
         unaun=.true.
     endif
 !
@@ -242,7 +242,7 @@ subroutine ssdmgn(mag)
             do 5112,ii=1,nbno
             inol=zi(iawk1-1+ii)
             kk= indiis(zi(ialino),inol,1,nbnoex)
-            if (kk .eq. 0) call assert(.false.)
+            if (kk .eq. 0) ASSERT(.false.)
             zi(iagno-1+ii)=i1noe+kk
 !
 5112          continue
@@ -281,7 +281,7 @@ subroutine ssdmgn(mag)
             do 52,ii=1,nbno
             inol=zi(iawk1-1+ii)
             kk= indiis(zi(ialino),inol,1,nbnoex)
-            if (kk .eq. 0) call assert(.false.)
+            if (kk .eq. 0) ASSERT(.false.)
             zi(iagno-1+ii)=i1noe+kk
 52          continue
         else

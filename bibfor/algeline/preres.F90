@@ -47,7 +47,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !                        ET N'IMPRIME AUCUN MESSAGE.
 !                 /-9999 -> ON PREND LA VALEUR PREVUE DS LA SD_SOLVEUR
 !                        POUR STOP_SINGULIER (VALEUR 0 OU 1 SEULEMENT)
-!                 /AUTRE --> CALL ASSERT
+!                 /AUTRE --> ASSERT
 !-----------------------------------------------------------------------
     implicit none
 !
@@ -96,7 +96,7 @@ subroutine preres(solvez, base, iret, matpre, matass,&
 !     COHERENCE DES VALEURS DE ISTOPZ (NIVEAU DEVELOPPEUR)
     istopz=istop
     if ((istopz.ne.0) .and. (istopz.ne.1) .and. (istopz.ne.2) .and. (istopz.ne.-9999)) &
-    call assert(.false.)
+    ASSERT(.false.)
     dbg=.true.
     dbg=.false.
 !

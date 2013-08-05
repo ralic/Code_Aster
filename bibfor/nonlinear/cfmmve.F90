@@ -108,7 +108,7 @@ subroutine cfmmve(noma, defico, resoco, valinc)
         else if (lctcd) then
             call cfpoin(noma, defico, newgeo, sdappa)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ----- REALISATION DE L'APPARIEMENT
@@ -131,7 +131,7 @@ subroutine cfmmve(noma, defico, resoco, valinc)
         call cfveri(noma, defico, resoco, newgeo, sdappa,&
                     npt, jeux, loca, enti, zone)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- AFFICHAGE DES INTERPENETRATIONS EVENTUELLES

@@ -37,7 +37,7 @@ subroutine te0023(option, nomte)
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call assert(option .eq. 'INI_STRX')
+    ASSERT(option .eq. 'INI_STRX')
 !
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PSTRX_R', 'E', istrx)
@@ -62,7 +62,7 @@ subroutine te0023(option, nomte)
             zr(istrx-1+i) = zr(iorien-1+i)
 30      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 end subroutine

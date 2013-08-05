@@ -106,8 +106,8 @@ subroutine cfsvfr(defico, resoco, lconv)
         if (typlia(1:1) .ne. 'F') goto 10
         iliai = zi(jliac -1+iliac)
         posnoe = zi(jnumli-1+4*(iliai-1)+2)
-        call assert(posnoe.le.nnoco)
-        call assert(zk8(jstfr-1+posnoe).eq.' ')
+        ASSERT(posnoe.le.nnoco)
+        ASSERT(zk8(jstfr-1+posnoe).eq.' ')
         zk8(jstfr-1+posnoe) = typlia
 10  end do
 !

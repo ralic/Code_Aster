@@ -40,7 +40,7 @@ subroutine chgrep(type, pgl1, pgl2, matl, matg)
 !-----------------------------------------------------------------------
     integer :: i, j
 !-----------------------------------------------------------------------
-    call assert(( type .eq. 'LG' ).or.( type .eq. 'GL' ))
+    ASSERT(( type .eq. 'LG' ).or.( type .eq. 'GL' ))
     if (type .eq. 'LG') then
         do 10 i = 1, 3
             do 12 j = 1, 3

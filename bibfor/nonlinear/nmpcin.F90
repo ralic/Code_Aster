@@ -64,7 +64,7 @@ subroutine nmpcin(matass)
     if (lvcine) then
         call jeveuo(matass(1:19)//'.CCID', 'L', jccid)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

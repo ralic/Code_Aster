@@ -65,7 +65,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
 ! 1.1 - COUCHE 1
 !
     nbelzo(1) = numeli(1,inno)
-    call assert(nbelzo(1).le.1000)
+    ASSERT(nbelzo(1).le.1000)
     do 10 inel = 1, nbelzo(1)
         tbelzo(inel) = numeli(inel+2,inno)
 10  end do
@@ -93,7 +93,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                     endif
                     if (test) then
                         nbelco = nbelco + 1
-                        call assert((nefin+nbelco).le.1000)
+                        ASSERT((nefin+nbelco).le.1000)
                         tbelzo(nefin+nbelco) = elem
                     endif
 50              continue
@@ -135,7 +135,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                 if (test) then
                     nbnozo(j) = nbnozo(j) + 1
                     nbnoco = nbnoco + 1
-                    call assert(nbnoco.le.1000)
+                    ASSERT(nbnoco.le.1000)
                     tbnozo(nbnoco) = noeud
                 endif
 90          continue

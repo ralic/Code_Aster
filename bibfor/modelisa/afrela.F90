@@ -92,6 +92,7 @@ subroutine afrela(coefr, coefc, ddl, noeud, ndim,&
 #include "asterfort/juveca.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+    integer :: nbterm
     real(kind=8) :: coefr(nbterm), dble, dimag, epsi
     real(kind=8) :: direct(3, nbterm), betar2
 !
@@ -116,7 +117,7 @@ subroutine afrela(coefr, coefc, ddl, noeud, ndim,&
     integer :: i, idbeta, idcoef, iddl, idim, idlagr, idnbre
     integer :: idnoeu, idpoin, idsurc, idterm, ifm, ipoint, iret
     integer :: irot, k, kk, lonuti, lveclr, mdim, nbrel0
-    integer :: nbrela, nbrmax, nbterm, nbterr, niv
+    integer :: nbrela, nbrmax, nbterr, niv
     real(kind=8) :: betar, rcoef
 !-----------------------------------------------------------------------
     call jemarq()
@@ -328,7 +329,7 @@ subroutine afrela(coefr, coefc, ddl, noeud, ndim,&
                     else if (ddl(i).eq.'ROTA') then
                         irot = 1
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 !
                     mdim = ndim(i)
@@ -369,7 +370,7 @@ subroutine afrela(coefr, coefc, ddl, noeud, ndim,&
                     else if (ddl(i).eq.'ROTA') then
                         irot = 1
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 !
                     mdim = ndim(i)

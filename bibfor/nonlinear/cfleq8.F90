@@ -118,7 +118,7 @@ subroutine cfleq8(noma, defico, nzoco, nsuco, nnoco,&
             zi(jno+k-1) = zi(jnoco+ino-1)
         endif
 120  end do
-    call assert(k.eq.nnoco)
+    ASSERT(k.eq.nnoco)
 !
 999  continue
 !

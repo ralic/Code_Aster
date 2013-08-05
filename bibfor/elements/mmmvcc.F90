@@ -74,7 +74,7 @@ subroutine mmmvcc(phasep, nnl, wpg, ffl, jacobi,&
             vectcc(inoc) = vectcc(inoc)- wpg*ffl(inoc)*jeu*jacobi
 62      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

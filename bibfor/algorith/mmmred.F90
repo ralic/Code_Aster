@@ -88,7 +88,7 @@ subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
         call cnsred(champs, 0, 0, ndd1, licmp4,&
                     'V', champr)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call detrsd('CHAMP', champs)

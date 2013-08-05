@@ -170,7 +170,7 @@ subroutine apverl(sdappa)
                         inocou = inomai
                     endif
 40              continue
-                call assert(inocou.ne.0)
+                ASSERT(inocou.ne.0)
 !
 ! --------- RECUPERATIONS DES TANGENTES EN CE NOEUD
 !

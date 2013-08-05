@@ -129,7 +129,7 @@ subroutine te0542(option, nomte)
                         nomte)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! FIN ------------------------------------------------------------------
 !

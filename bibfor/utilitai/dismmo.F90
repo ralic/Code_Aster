@@ -129,7 +129,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             endif
         endif
 10      continue
-        call assert(ico.ge.1)
+        ASSERT(ico.ge.1)
 !
         if (ico .eq. 1) then
             repk=nomodl

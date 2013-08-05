@@ -91,7 +91,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 !        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
     ces3 = '&&CESFUS.CES3'
-    call assert(nbchs.gt.0)
+    ASSERT(nbchs.gt.0)
 !
     ces1 = lichs(1)
 !
@@ -151,11 +151,11 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     call jeveuo(ces1//'.CESD', 'L', jce1d)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-    call assert(ma.eq.zk8(jce1k-1+1))
+    ASSERT(ma.eq.zk8(jce1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-    call assert(nomgd.eq.zk8(jce1k-1+2))
+    ASSERT(nomgd.eq.zk8(jce1k-1+2))
 !       TEST SUR IDENTITE DES 2 TYPES (ELEM/ELNO/ELGA)
-    call assert(typces.eq.zk8(jce1k-1+3))
+    ASSERT(typces.eq.zk8(jce1k-1+3))
 !
     if (ichs .eq. 1) then
         do 40,ima = 1,nbma
@@ -255,7 +255,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     do 110,ima = 1,nbma
     ncmp1 = zi(jce1d-1+5+4* (ima-1)+3)
     if (ncmp1 .eq. 0) goto 110
-    call assert(ncmp1.ge.0)
+    ASSERT(ncmp1.ge.0)
     do 111,icmp1 = 1,ncmp1
     icmp3 = zi(jcrcmp-1+icmp1)
     zi(jnbcmp-1+ima) = max(icmp3,zi(jnbcmp-1+ima))
@@ -312,7 +312,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                 isp, icmp3, iad3)
     if (iad1 .le. 0) goto 130
 !
-    call assert(iad3.ne.0)
+    ASSERT(iad3.ne.0)
 !
 !
 !               -- SI AFFECTATION :
@@ -337,7 +337,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         else if (tsca.eq.'K16') then
             zk16(jce3v-1+iad3) = zk16(jce1v-1+ iad1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -356,11 +356,11 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             else if ((tsca.eq.'L') .or. (tsca.eq.'K8')&
                             ) then
 !                   CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
-            call assert(.false.)
+            ASSERT(.false.)
 !                  ELSE IF (TSCA.EQ.'K16') THEN
 !                    ZK16(JCE3V-1+IAD3) = ZK16(JCE1V-1+IAD1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

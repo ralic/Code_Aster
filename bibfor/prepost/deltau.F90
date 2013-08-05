@@ -232,8 +232,8 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
 !              -- TOUTES LES MAILLES NE SAVENT PAS CALCULER LA FATIGUE :
                 if (jad .eq. 0) then
-                    call assert(icmp.eq.1)
-                    call assert(ipg.eq.1)
+                    ASSERT(icmp.eq.1)
+                    ASSERT(ipg.eq.1)
                     goto 400
                 endif
                 jad = abs(jad)

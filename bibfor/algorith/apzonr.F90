@@ -77,7 +77,7 @@ subroutine apzonr(sdappa, izone, questz, valr)
     else if (questi.eq.'TOLE_PROJ_EXT') then
         valr = zr(jpinzr+zinzr*(izone-1)+5 -1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -116,7 +116,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
     call dismoi('F', 'NOM_NUME_DDL', noma19, 'MATR_ASSE', ibid,&
                 nu, ibid)
     call jeveuo(nu//'.NUME.DELG', 'L', jdelg)
-    call assert(nu.ne.' ')
+    ASSERT(nu.ne.' ')
     metres='MULT_FRONT'
     renum='METIS'
 !
@@ -137,7 +137,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
         call infmue()
         call infniv(ifm, niv)
     else
-        call assert(feti.eq.' ')
+        ASSERT(feti.eq.' ')
         lfeti=.false.
         infofe='FFFFFFFFFFFFFFFFFFFF'
     endif
@@ -156,7 +156,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE NON-SYMETRIQUE'
         call u2mesk('F', 'ALGELINE3_46', 1, noma19)
     endif
-    call assert(typsym.eq.1)
+    ASSERT(typsym.eq.1)
 !
     if (typvar .eq. 1) then
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE REELLE'
@@ -164,7 +164,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
         if (niv .ge. 2) write (ifm,*)'<TLDLG2> MATRICE COMPLEXE'
         call u2mesk('F', 'ALGELINE3_47', 1, noma19)
     endif
-    call assert(typvar.eq.1)
+    ASSERT(typvar.eq.1)
 !
     if (niv .ge. 2) write (ifm,*)'<TLDLG2> METHODE MULT_FRONT'
 !
@@ -190,9 +190,9 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
     call jeveuo(nomb19//'.&INT', 'E', lmatb)
 !
 !     -- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
-    call assert(zk24(jrefab-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefab-1+3).ne.'ELIMF')
     if (zk24(jrefab-1+3) .eq. 'ELIML') call mtmchc(nomb19, 'ELIMF')
-    call assert(zk24(jrefab-1+3).ne.'ELIML')
+    ASSERT(zk24(jrefab-1+3).ne.'ELIML')
 !
 !
 !
@@ -247,16 +247,16 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
     do 31, ksing=nmrav+1,nmrig
     pass=1
     isingu=zi(jksing-1+ksing)
-    call assert(isingu.gt.0 .and. isingu.le.neq)
+    ASSERT(isingu.gt.0 .and. isingu.le.neq)
 !       -- CE SERAIT BIZARRE QUE ISINGU SOIT UN DDL DE LAGRANGE :
-    call assert(zi(jdelg-1+isingu).eq.0)
+    ASSERT(zi(jdelg-1+isingu).eq.0)
     if (lfeti) zi(inpn-1+ksing)=isingu
     zi(jpomr-1+isingu)=ksing
     if (niv .ge. 2) then
         write (ifm,*)'<TLDLG2> PIVOT NUL A LA LIGNE ',isingu
         call rgndas(nu, isingu, nomno, nomcmp, tyddl,&
                     ligrel, infobl)
-        call assert(tyddl.eq.'A'.or.tyddl.eq.'D')
+        ASSERT(tyddl.eq.'A'.or.tyddl.eq.'D')
         write (ifm,*)'<TLDLG2> NOEUD ',nomno,' CMP ',nomcmp
     endif
     31 end do
@@ -277,7 +277,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig, feti,&
 !     -- BLOCAGE 'CINEMATIQUE' DU/DES DDL A PIVOT NUL
     call jeveuo(nomb19//'.REFA', 'E', jrefab)
     if (zk24(jrefab-1+3) .eq. 'ELIMF') call mtmchc(nomb19, 'ELIML')
-    call assert(zk24(jrefab-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefab-1+3).ne.'ELIMF')
     if (zk24(jrefab-1+3) .eq. 'ELIML') then
         call jeveuo(nomb19//'.CCID', 'E', jccid)
     else

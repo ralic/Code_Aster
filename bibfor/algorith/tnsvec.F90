@@ -63,7 +63,7 @@ subroutine tnsvec(choix, ndim, mat, vec, r)
             mat(3,2)=vec(6)*r
         endif
     else
-        call assert(choix.eq.3)
+        ASSERT(choix.eq.3)
     endif
 !
 end subroutine

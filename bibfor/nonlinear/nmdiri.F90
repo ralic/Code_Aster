@@ -82,7 +82,7 @@ subroutine nmdiri(modele, mate, carele, lischa, sddyna,&
     else if (lacce) then
         veclag = acce
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DES VECT_ELEM POUR LES REACTIONS D'APPUI BT.LAMBDA

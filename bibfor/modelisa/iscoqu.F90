@@ -68,7 +68,7 @@ subroutine iscoqu(nomo, numail, lcoque)
     ligrmo = nomo(1:8)//'.MODELE'
     call jeexin(ligrmo//'.LIEL', iret)
     if (iret .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NOMBRE DE GREL

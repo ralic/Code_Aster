@@ -87,7 +87,7 @@ subroutine obtlig(sdtabl, sepcol, ligne)
 !
 ! --- VERIF
 !
-    call assert(larcum.eq.larlig)
+    ASSERT(larcum.eq.larlig)
 !
     call jedema()
 !

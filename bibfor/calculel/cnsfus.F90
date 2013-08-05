@@ -85,7 +85,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
 !     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_NO_S "IN",
 !        ON CREE CNS3 SOUS UN NOM TEMPORAIRE :
     cns3 = '&&CNSFUS.CNS3'
-    call assert(nbchs.gt.0)
+    ASSERT(nbchs.gt.0)
 !
     cns1 = lichs(1)
 !
@@ -118,9 +118,9 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     call jeveuo(cns1//'.CNSC', 'L', jcn1c)
 !
 !       TEST SUR IDENTITE DES 2 MAILLAGES
-    call assert(ma.eq.zk8(jcn1k-1+1))
+    ASSERT(ma.eq.zk8(jcn1k-1+1))
 !       TEST SUR IDENTITE DES 2 GRANDEURS
-    call assert(nomgd.eq.zk8(jcn1k-1+2))
+    ASSERT(nomgd.eq.zk8(jcn1k-1+2))
 !
     ncmp1 = zi(jcn1d-1+2)
     do 10,icmp1 = 1,ncmp1
@@ -175,7 +175,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
     do 50,icmp1 = 1,ncmp1
     nocmp = zk8(jcn1c-1+icmp1)
     icmp3 = indik8(zk8(jcn3c),nocmp,1,ncmp3)
-    call assert(icmp3.ne.0)
+    ASSERT(icmp3.ne.0)
 !
     do 40,ino = 1,nbno
     k1 = (ino-1)*ncmp1 + icmp1
@@ -203,7 +203,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
             else if (tsca.eq.'K8') then
                 zk8(jcn3v-1+k3) = zk8(jcn1v-1+k1)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 !             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -221,9 +221,9 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                 else if ((tsca.eq.'L') .or. (tsca.eq.'K8'))&
                         then
 !                 CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
-                call assert(.false.)
+                ASSERT(.false.)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !

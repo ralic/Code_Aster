@@ -121,7 +121,7 @@ subroutine nmctcf(noma, modele, sdimpr, sderro, defico,&
     else if (lctcc) then
         call mmreas(noma, defico, resoco, valinc)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CONVERGENCE SEUIL FROTTEMENT

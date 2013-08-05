@@ -21,7 +21,7 @@ function comcou(iarg)
 ! SOIT LE COMMUNICATEUR COURANT (IRET=1).
 ! ILS SONT STOCKES DANS L'OBJET JEVEUX SUR LA BASE GLOBALE:
 ! 'COMMUNICATEUR_MPI.REFE'.
-! EN CAS DE PB, CALL ASSERT(.FALSE.) (SAUF LA PREMIERE FOIS OU ON CREE
+! EN CAS DE PB, ASSERT(.FALSE.) (SAUF LA PREMIERE FOIS OU ON CREE
 ! L'OBJET)
 ! ----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr

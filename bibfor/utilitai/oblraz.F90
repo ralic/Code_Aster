@@ -50,7 +50,7 @@ subroutine oblraz(sdlist)
 ! --- VERIFICATION
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') call assert(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
 !
 ! --- DESACTIVATION
 !

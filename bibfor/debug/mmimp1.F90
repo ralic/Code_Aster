@@ -198,7 +198,7 @@ subroutine mmimp1(ifm, noma, defico, resoco)
                 else if (xs.eq.1) then
                     write(ifm,7000)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 7000 format (' <CONTACT>        ETAT : EN CONTACT')
                 7001 format (' <CONTACT>        ETAT : PAS EN CONTACT')

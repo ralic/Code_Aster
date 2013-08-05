@@ -77,7 +77,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                 kbid, ierd)
     if (nbssa .eq. 0) goto 100
 !
-    call assert(lmasym)
+    ASSERT(lmasym)
     lmesym=.true.
     do 10 i = 1, nbecmx
         icodla(i)=0

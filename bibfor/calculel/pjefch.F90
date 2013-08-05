@@ -106,10 +106,10 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn,&
     if (tychv .eq. 'NOEU' .and. tych(1:2) .eq. 'EL') then
         call cescns(ch2s, ' ', 'V', ch3s, 'F',&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call cnscno(ch3s, prfchn, prol0, base, ch2,&
                     'A', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call detrsd('CHAM_NO_S', ch3s)
 !
     else if (tych.eq.'NOEU') then

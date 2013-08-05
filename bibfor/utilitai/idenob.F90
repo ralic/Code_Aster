@@ -127,7 +127,7 @@ function idenob(obj1, obj2)
 !     3.1 : CAS DES OBJETS SIMPLES :
 !     ------------------------------
     if (xous .eq. 'S') then
-        call assert((genr.eq.'V').or.(genr.eq.'N'))
+        ASSERT((genr.eq.'V').or.(genr.eq.'N'))
         if (genr .eq. 'V') then
 !
             call jelira(ob1, 'LONMAX', l1, kbid)
@@ -193,7 +193,7 @@ function idenob(obj1, obj2)
 90              continue
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 !
@@ -307,12 +307,12 @@ function idenob(obj1, obj2)
 190              continue
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 200          continue
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

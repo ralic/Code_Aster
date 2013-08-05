@@ -107,7 +107,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         first = .false.
     endif
     10 end do
-    call assert(longt.le.long)
+    ASSERT(longt.le.long)
 !
 !     -- ON MET A ZERO LE VECTEUR "VSCAL":
     if (scal(1:1) .eq. 'R') then

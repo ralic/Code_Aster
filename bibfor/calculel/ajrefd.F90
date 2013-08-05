@@ -64,7 +64,7 @@ subroutine ajrefd(resu1, resu2, action)
     else if (action.eq.'COPIE') then
         call jedupo(r1//'.REFD', 'G', r2//'.REFD', .false.)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

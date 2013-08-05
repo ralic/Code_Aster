@@ -1,5 +1,4 @@
 subroutine op0151()
-! aslint: disable=W1501
     implicit none
 !       ----------------------------------------------------------------
 ! ======================================================================
@@ -271,7 +270,7 @@ subroutine op0151()
     else if (nomopt(11:14).eq.'EPME') then
         nomsym='EPMQ_'//nomopt(6:9)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -288,7 +287,7 @@ subroutine op0151()
     else if (nomopt(6:14) .eq. 'ELNO_EPME') then
         ntcmp = 14
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !       TYPE DE GRANDEUR EQUIVALENTE UTILISEE LE POUR CALCUL DU DOMMAGE
@@ -594,12 +593,12 @@ subroutine op0151()
     option='TOU_INI_'//nomopt(6:9)
     call alchml(ligrel, option, 'PDOMMAG', 'G', chelem,&
                 iret, ' ')
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !
     call jeveuo(chelem//'.CELV', 'E', jcelv)
     call jelira(chelem//'.CELV', 'LONMAX', ibid, k8b)
-    call assert(ibid.eq.nbpt)
+    ASSERT(ibid.eq.nbpt)
     do 222 i = 1, nbpt
         zr(jcelv+i-1) = zr(ivdmg+i-1)
 222  end do

@@ -258,7 +258,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
     else if (nconta.eq.2) then
         ndeple = jnne(2)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

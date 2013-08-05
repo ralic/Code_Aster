@@ -1,5 +1,4 @@
 subroutine calyrc(chargz)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -98,7 +97,7 @@ subroutine calyrc(chargz)
     else if (nomcmd.eq.'AFFE_CHAR_THER') then
         typlia = 'TEMP'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -578,7 +577,7 @@ subroutine calyrc(chargz)
                 idcal2 = idcal2 + nno12
 290          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call detrsd('CORRESP_2_MAILLA', cores1)

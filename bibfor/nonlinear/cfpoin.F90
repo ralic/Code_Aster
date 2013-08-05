@@ -108,7 +108,7 @@ subroutine cfpoin(noma, defico, newgeo, sdappa)
 !
 ! ----- POINTS DE CONTACT = NOEUDS ESCLAVES
 !
-        call assert(nbpt.eq.nbnoe)
+        ASSERT(nbpt.eq.nbnoe)
 !
 ! ----- BOUCLE SUR LES POINTS
 !

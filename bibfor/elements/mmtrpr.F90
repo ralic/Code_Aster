@@ -79,7 +79,7 @@ subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
                 rese(idim) = dlagrf(1)*tau1(idim)+ dlagrf(2)*tau2( idim)+ coefaf*djeut(idim)
 31          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

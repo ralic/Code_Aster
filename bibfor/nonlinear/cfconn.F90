@@ -60,7 +60,7 @@ subroutine cfconn(defico, jdecno, ino, posno)
 ! --- REPONSE
 !
     if (jdecno .eq. -1) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     numno = jdecno+ino
     posno = zi(jnoma+numno-1)

@@ -93,7 +93,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
     endif
 !
     read(nfic,1008) nbobj
-    call assert(nbobj .eq. nboblu)
+    ASSERT(nbobj .eq. nboblu)
 !
 ! LECTURE DES INDIRECTIONS
 !

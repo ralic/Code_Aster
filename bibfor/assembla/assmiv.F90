@@ -289,7 +289,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 !
 ! --- ALLOCATION VALE
-    call assert(type.eq.1)
+    ASSERT(type.eq.1)
     call wkvect(kvale, bas//' V R8', nequa, jvale)
 !
     do 20 i = 1, nequa

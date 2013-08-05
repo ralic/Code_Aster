@@ -69,7 +69,7 @@ subroutine nmcrdd(noma, nomo, sdieto, sdsuiv)
 ! --- NOMBRE OCCURRENCES
 !
     call getfac(motfac, nbocc)
-    call assert(nbocc.le.99)
+    ASSERT(nbocc.le.99)
 !
 ! --- LECTURE DES DONNEES
 !

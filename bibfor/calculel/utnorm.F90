@@ -101,7 +101,7 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
     x(1) = 0.5d0*(zrjno1 + 3.d0*zrino1 - 4.d0*y3 )
     y(1) = -0.5d0*(zrjno2 + 3.d0*zrino2 - 4.d0*x3 )
     aux = sqrt(y(1)**2 + x(1)**2)
-    call assert(aux.gt.ovfl)
+    ASSERT(aux.gt.ovfl)
     jac(1) = aux*poinc1
     if (laxi) jac(1) = jac(1)*zrino2
     aux = 1.d0/aux
@@ -112,7 +112,7 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
     x(2) = -0.5d0*(3.d0*zrjno1 + zrino1 - 4.d0*y3)
     y(2) = 0.5d0*(3.d0*zrjno2 + zrino2 - 4.d0*x3)
     aux = sqrt(y(2)**2 + x(2)**2)
-    call assert(aux.gt.ovfl)
+    ASSERT(aux.gt.ovfl)
     jac(2) = aux*poinc1
     if (laxi) jac(2) = jac(2)*zrjno2
     aux = 1.d0/aux
@@ -122,7 +122,7 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1,&
     if (nsomm .eq. 3) then
 !
 ! CALCUL NORMALE, TANGENTE ET JACOBIEN TROISIEME POINT D'INTEGRATION
-        call assert(hf.gt.ovfl)
+        ASSERT(hf.gt.ovfl)
         aux = 1.d0/hf
         xn(3) = (zrino1 - zrjno1) * aux * jacob1
         yn(3) = (zrjno2 - zrino2) * aux * jacob1

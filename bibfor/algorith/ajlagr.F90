@@ -112,7 +112,7 @@ subroutine ajlagr(rigid, masse, masinv)
     neq = zi(jsmde-1+1)
     hbloc = zi(jsmde-1+2)
     nbbloc = zi(jsmde-1+3)
-    call assert(nbbloc.eq.1)
+    ASSERT(nbbloc.eq.1)
 !
 !     --- DETERMINATION DU COEFFICIENT DE CONDITIONNEMENT ---
     if (typmat .eq. 'R') then

@@ -53,14 +53,14 @@ subroutine diaghr(n, a, lda, eval, evec,&
     if (n .lt. 1) then
 !C         WRITE(6,*) 'THE ARGUMENT N = %(I1).  THE '//
 !C     &               'ORDER OF THE MATRIX MUST BE AT LEAST 1.'
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (lda .lt. n) then
 !C          WRITE(6,*) 'THE ARGUMENT LDA = %(I1).  THE '//
 !C     &               'LEADING DIMENSION OF THE MATRIX MUST BE AT '//
 !C     &               'LEAST EQUAL TO THE ORDER, N = %(I2).'
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (ldevec .lt. n) then
@@ -68,7 +68,7 @@ subroutine diaghr(n, a, lda, eval, evec,&
 !C     &               'LEADING DIMENSION OF THE EIGENVECTOR MATRIX '//
 !C     &               'MUST BE AT LEAST EQUAL TO THE ORDER, N = '//
 !C     &               '%(I2).'
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !    --- A EST COPIEE DANS ACOPY
     do 10 i = 1, n

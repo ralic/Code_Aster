@@ -31,9 +31,9 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
 #if med_int_kind != aster_int_kind
     med_int :: fid4, num4
     med_int :: cret4, ind4
-!      CALL ASSERT(LEN(MAA).EQ.32)
-!      CALL ASSERT(LEN(FAM).EQ.32)
-!      CALL ASSERT(LEN(GRO(1)).EQ.80)
+!      ASSERT(LEN(MAA).EQ.32)
+!      ASSERT(LEN(FAM).EQ.32)
+!      ASSERT(LEN(GRO(1)).EQ.80)
     fid4 = fid
     ind4 = ind
     call mfafai(fid4, maa, ind4, fam, num4,&

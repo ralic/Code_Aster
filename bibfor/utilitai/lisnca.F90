@@ -48,6 +48,6 @@ subroutine lisnca(phenoz, charge, genchz, carte)
 !
     call lisnnl(phenoz, charge, prefob)
     call lisdef('CART', genchz, ibid, nomcar, itypob)
-    call assert(itypob(1).eq.1)
+    ASSERT(itypob(1).eq.1)
     carte = prefob(1:13)//nomcar(1:6)
 end subroutine

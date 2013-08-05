@@ -188,7 +188,7 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
         elrf(9)='PY5'
         elrf(10)='P13'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     do 10,k=1,nbtm
@@ -225,7 +225,7 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     else if (zi(ialim1-1+i).eq.2) then
         zi(ialim1-1+i)=1
     else if (zi(ialim1-1+i).gt.2) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     60 end do
 !

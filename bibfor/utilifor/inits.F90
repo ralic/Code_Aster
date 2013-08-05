@@ -52,7 +52,7 @@ function inits(os, nos, eta)
     integer :: i, ii, nos
     real(kind=8) :: err, eta
 !-----------------------------------------------------------------------
-    call assert(nos .ge. 1)
+    ASSERT(nos .ge. 1)
 !
     err = 0.d0
     do 10 ii = 1, nos
@@ -63,7 +63,7 @@ function inits(os, nos, eta)
 !
 20  continue
 !     ASSERT SI SERIE DE CHEBYSHEV TROP COURTE POUR LA PRECISION
-    call assert(i .ne. nos)
+    ASSERT(i .ne. nos)
     inits = i
 !
 end function

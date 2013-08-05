@@ -167,7 +167,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     call jenuno(jexnum('&CATA.TE.NOMTE', ntypef), nomtef)
 !
     call elref2(nomtef, nbfamx, lielrf, nbelr)
-    call assert(nbelr.gt.0)
+    ASSERT(nbelr.gt.0)
 !
     call uteref(chanom, typech, ntypef, nomtef, nomfpg,&
                 nbnoso, nbnoto, nbrepg, ndim, refcoo,&
@@ -186,7 +186,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     else if (nbcouc.eq.0.and.nbsect.eq.0.and.nummai.eq.0) then
         goto 50
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     nomasu(9:12) = nomfpg(1:3)
     do 70, inimp2 = 1,nbimpr
@@ -223,7 +223,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     endif
 !
 !       -- CREATION DE LA CONNECTIVITE
-    call assert(nbnoto.le.9)
+    ASSERT(nbnoto.le.9)
     if (modnum(tymaas) .eq. 0) then
         do 20, ino = 1, nbnoto
         connex(ino) = ino
@@ -255,7 +255,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     nvtymd = -9999
     call as_msecre(idfimd, nomasu, ndim, nomasu, edmail,&
                 tymamd, nvtymd, codret)
-    call assert(nvtymd.ne.-9999)
+    ASSERT(nvtymd.ne.-9999)
     if (codret .ne. 0) then
         saux08='msecre'
         call u2mesg('F', 'DVP_97', 1, saux08, 1,&
@@ -306,7 +306,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
                         codret, 0, 0.d0)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !       -- MODIFICATION DU TYPE MED A IMPRIMER

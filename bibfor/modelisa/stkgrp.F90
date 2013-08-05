@@ -51,8 +51,8 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
 #include "asterfort/tesmcl.h"
 #include "asterfort/u2mesk.h"
     real(kind=8) :: rv
+    integer :: deblig, nbm
     character(len=8) :: mcl(nbm), nom, b8
-    integer :: deblig
     character(len=14) :: cnl
     character(len=*) :: cv
     character(len=16) :: cmd
@@ -61,7 +61,7 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     common          /opmail/        cmd
 !-----------------------------------------------------------------------
     integer :: i, iadg, icl, ifl, ifn, iret
-    integer :: irtet, irteti, iv, nbitem, nbm, num
+    integer :: irtet, irteti, iv, nbitem, num
     integer :: numm, numn
 !-----------------------------------------------------------------------
     data b8         /'        '/
@@ -99,7 +99,7 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
         nomg = ' '
         nomg(1:iv) = cv(1:iv)
         call tesfin(icl, iv, cv, irtet)
-        call assert(irtet.eq.0)
+        ASSERT(irtet.eq.0)
         if (irtet .gt. 0) goto (7,8), irtet
     else
 !
@@ -159,7 +159,7 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
         if (nbitem .eq. 0) numm=numm+1
     endif
 !
-    call assert(nbitem.ge.0)
+    ASSERT(nbitem.ge.0)
     call jeexin(jexnom(grp, nomg), iret)
     if (iret .eq. 0) then
         call jecroc(jexnom(grp, nomg))

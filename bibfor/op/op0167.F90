@@ -1,5 +1,4 @@
 subroutine op0167()
-! aslint: disable=W1501
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -128,7 +127,7 @@ subroutine op0167()
     if (nbecla .gt. 0) then
         call getvid('ECLA_PG', 'MODELE', 1, iarg, 1,&
                     mo, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         call getvr8('ECLA_PG', 'SHRINK', 1, iarg, 1,&
                     shrink, ibid)
         call getvr8('ECLA_PG', 'TAILLE_MIN', 1, iarg, 1,&
@@ -194,7 +193,7 @@ subroutine op0167()
 !
     call getfac('LINE_QUAD', nbmoma)
     if (nbmoma .gt. 0) then
-        call assert(nbmoma.eq.1)
+        ASSERT(nbmoma.eq.1)
         if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_90')
 !
         call getvtx('LINE_QUAD', 'PREF_NOEUD', 1, iarg, 1,&
@@ -292,7 +291,7 @@ subroutine op0167()
 !
     call getfac('QUAD_LINE', nbmoma)
     if (nbmoma .gt. 0) then
-        call assert(nbmoma.eq.1)
+        ASSERT(nbmoma.eq.1)
         if (nn1 .eq. 0) call u2mess('F', 'ALGELINE2_93')
 !
         call getvtx('QUAD_LINE', 'MAILLE', 1, iarg, 0,&
@@ -1010,7 +1009,7 @@ subroutine op0167()
         do 270 i = 1, nbgrma
             call getvtx('CREA_GROUP_MA', 'NOM', i, iarg, 1,&
                         nomg, n1)
-            call assert(n1.eq.1)
+            ASSERT(n1.eq.1)
             call jeexin(jexnom(grpmai, nomg), iret)
             if (iret .eq. 0) then
                 call jecroc(jexnom(grpmai, nomg))

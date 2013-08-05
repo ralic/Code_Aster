@@ -66,7 +66,7 @@ subroutine jefini(cond)
 !     ------------------------------------------------------------------
 !
     kcond = cond ( 1: min( len(cond) , len(kcond) ) )
-    call assert(kcond .eq. 'NORMAL  ' .or. kcond .eq. 'ERREUR  ' .or. kcond .ne. 'TEST    ')
+    ASSERT(kcond .eq. 'NORMAL  ' .or. kcond .eq. 'ERREUR  ' .or. kcond .ne. 'TEST    ')
     if (kcond .eq. 'NORMAL  ' .or. kcond .eq. 'TEST    ') then
         staou = '        '
     else

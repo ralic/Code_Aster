@@ -51,7 +51,7 @@ subroutine op0002()
 !     CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL
     call getres(nomfon, typfon, consta)
     chpro = nomfon//'.PROL'
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(chpro, 'G V K24', 6, jpro)
     zk24(jpro) = 'CONSTANT'
     zk24(jpro+1) = 'LIN LIN '

@@ -142,12 +142,12 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !       -- CAS "PROJ_CHAMP" :
         call dismoi('F', 'TYPE_CHAMP', cham1, 'CHAMP', ibid,&
                     tych, ibid)
-        call assert(tych.eq.'ELGA')
-        call assert(nch.eq.0)
-        call assert(ligrel.ne.' ')
+        ASSERT(tych.eq.'ELGA')
+        ASSERT(nch.eq.0)
+        ASSERT(ligrel.ne.' ')
         call dismoi('F', 'NOM_LIGREL', cham1, 'CHAM_ELEM', ibid,&
                     ligre1, ibid)
-        call assert(ligre1.eq.ligrel)
+        ASSERT(ligre1.eq.ligrel)
         cas=1
     else
 !       -- CAS "CREA_MAILLAGE/ECLA_PG" :
@@ -165,7 +165,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     if (cas .eq. 1) then
         nch2=1
         call celfpg(cham1, nomobj, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call jeveuo(nomobj, 'L', jobj)
 !
     else if (cas.eq.2) then

@@ -100,7 +100,7 @@ subroutine celcel(transf, cel1, base, cel2)
         nbma = zi(jcesd1-1+1)
         ncmpg = zi(jcesd1-1+2)
         nbvamx = zi(jcesd1-1+5)
-        call assert(ncmpg.eq.nbvamx)
+        ASSERT(ncmpg.eq.nbvamx)
 !
 !       2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
 !             POINTS DE SOUS-POINTS DES MAILLES
@@ -138,7 +138,7 @@ subroutine celcel(transf, cel1, base, cel2)
                     ispt, icmp, iad1)
         call cesexi('C', jcesd2, jcesl2, ima, ipt,&
                     ispt, icmp, iad2)
-        call assert(iad2.lt.0)
+        ASSERT(iad2.lt.0)
         zl(jcesl2-1-iad2) = .true.
         if (iad1 .gt. 0) then
             zr(jcesv2-1-iad2) = zr(jcesv1-1+iad1)
@@ -209,7 +209,7 @@ subroutine celcel(transf, cel1, base, cel2)
 !
     else
 !       CAS RESTANT A PROGRAMMER ...
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 80  continue

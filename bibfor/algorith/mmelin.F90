@@ -73,7 +73,7 @@ subroutine mmelin(noma, numa, typint, nnint)
         else if (alias(1:3).eq.'QU9') then
             nnint = 9
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !     'GAUSS'
@@ -95,12 +95,12 @@ subroutine mmelin(noma, numa, typint, nnint)
             else if (param .eq. 6) then
                 nnint = 12
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (alias(1:2) .eq. 'QU') then
             nnint = param**2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !     'SIMPSON'
@@ -113,7 +113,7 @@ subroutine mmelin(noma, numa, typint, nnint)
         else if (alias(1:2) .eq. 'QU') then
             nnint = (2*param+1)**2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !     'NCOTES'
@@ -126,10 +126,10 @@ subroutine mmelin(noma, numa, typint, nnint)
         else if (alias(1:2) .eq. 'QU') then
             nnint = (param+1)**2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -96,7 +96,7 @@ subroutine te0400(option, nomte)
 !
 ! --- CALCUL DE LA CONNECTIVITE INVERSE
 !
-    call assert((nse+1)*nnotot.le.nnonsx)
+    ASSERT((nse+1)*nnotot.le.nnonsx)
     do 10 i = 1, nnonsx
         vcninx(i)=0
 10  end do

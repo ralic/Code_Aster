@@ -119,7 +119,7 @@ subroutine mmelty(noma, numa, alias, nno, ndim)
         nno = 9
         ndim = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

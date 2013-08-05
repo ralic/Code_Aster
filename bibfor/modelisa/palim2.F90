@@ -151,7 +151,7 @@ subroutine palim2(mcfact, iocc, nomaz, nomvei, nomvek,&
 30  end do
     call jedetr(nomjv)
 !
-    if (ier .ne. 0) call assert(.false.)
+    if (ier .ne. 0) ASSERT(.false.)
 !
     call jedema()
 end subroutine

@@ -63,7 +63,7 @@ subroutine te0060(option, nomte)
         ltext = .false.
     else
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES

@@ -185,7 +185,7 @@ subroutine nmetac(fonact, sddyna, defico, nbmax, chaact)
 !
     do 10 icham = 1, nbmax
         istop = zi(jtrav-1+icham)
-        call assert(istop.eq.1)
+        ASSERT(istop.eq.1)
 10  end do
 !
     call jedetr(trav)

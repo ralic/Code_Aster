@@ -146,7 +146,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     endif
 !
     if (nbvec .gt. nbcoef) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)
@@ -160,7 +160,7 @@ subroutine nmassc(fonact, sddyna, sdtime, veasse, cnpilo,&
     vect(1) = cnffpi
     vect(2) = cndfpi
     if (nbvec .gt. nbcoef) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 15 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cnpilo)

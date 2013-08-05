@@ -86,7 +86,7 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
             call u2mesr('A', 'LISTINST_2', 1, predef)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (prec .le. r8prem()) then
@@ -100,7 +100,7 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
     else if (criter.eq.'ABSOLU') then
         tole = -prec
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

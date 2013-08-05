@@ -113,9 +113,9 @@ subroutine apalmd(kptsc)
         if (procol .eq. rang) ndprop = ndprop+1
     end do
     call VecCreateMPI(mpicou, ndprop, neqg, tmp, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call VecGetOwnershipRange(tmp, low, high, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
     call wkvect(idxd, 'V V S', ndprop, jidxd)
     call wkvect(idxo, 'V V S', ndprop, jidxo)
@@ -222,7 +222,7 @@ subroutine apalmd(kptsc)
                     call mpippv('MPI_SEND', 'I4', lgenvo, ibid, zi4(jvaleu),&
                                 rbid, numpro, iaux)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 call jedetr('&&CPYSOL.TMP1')
             endif
@@ -236,17 +236,17 @@ subroutine apalmd(kptsc)
     enddo
 !
     call MatCreate(mpicou, ap(kptsc), ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call MatSetSizes(ap(kptsc), ndprop, ndprop, neqg, neqg,&
                      ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call MatMPIAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd), PETSC_NULL_INTEGER,&
                                    zi4(jidxo), ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
     call MatSetBlockSize(ap(kptsc), bs, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
     call jedetr(idxd)
     call jedetr(idxo)

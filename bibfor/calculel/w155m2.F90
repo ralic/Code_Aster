@@ -79,8 +79,8 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     if (nbspmx .le. 1) call u2mess('F', 'CALCULEL2_15')
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbmat,&
                 kbid, iret)
-    call assert(tsca.eq.'R')
-    call assert(exituy.eq.'OUI' .or. exituy.eq.'NON')
+    ASSERT(tsca.eq.'R')
+    ASSERT(exituy.eq.'OUI' .or. exituy.eq.'NON')
 !
 !
 !     1.  LISTE DES MAILLES A TRAITER :
@@ -88,7 +88,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     linuma='&&W155M2.LIMA'
     linute='&&W155M2.LITE'
     call liglma(ligrel, nbma, linuma, linute)
-    call assert(nbma.gt.0)
+    ASSERT(nbma.gt.0)
     call jeveuo(linuma, 'L', jlima)
     call jeveuo(linute, 'L', jlite)
 !
@@ -146,7 +146,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
 20  continue
     do 60,kma=1,nbma
     numa=zi(jlima-1+kma)
-    call assert(numa.ge.1 .and. numa.le.nbmat)
+    ASSERT(numa.ge.1 .and. numa.le.nbmat)
     nbpt=zi(jce3d-1+5+4*(numa-1)+1)
     nbsp=zi(jce3d-1+5+4*(numa-1)+2)
     if (nbsp .eq. 0) goto 60
@@ -176,7 +176,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
                     isp=ksp
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -190,27 +190,27 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     do 40,kcmp2=1,6
     call cesexi('C', jce4d, jce4l, numa, kpt,&
                 1, kcmp2, iad4)
-    call assert(iad4.gt.0)
+    ASSERT(iad4.gt.0)
     if (kcmp2 .eq. 1) then
-        call assert(zk8(jce4c-1+kcmp2).eq.'VAL')
+        ASSERT(zk8(jce4c-1+kcmp2).eq.'VAL')
         zr(jce4v-1+iad4)=vmima
     else if (kcmp2.eq.2) then
-        call assert(zk8(jce4c-1+kcmp2).eq.'NUCOU')
+        ASSERT(zk8(jce4c-1+kcmp2).eq.'NUCOU')
         zr(jce4v-1+iad4)=dble(nucou)
     else if (kcmp2.eq.3) then
-        call assert(zk8(jce4c-1+kcmp2).eq.'NUSECT')
+        ASSERT(zk8(jce4c-1+kcmp2).eq.'NUSECT')
         zr(jce4v-1+iad4)=dble(nusec)
     else if (kcmp2.eq.4) then
-        call assert(zk8(jce4c-1+kcmp2).eq.'NUFIBR')
+        ASSERT(zk8(jce4c-1+kcmp2).eq.'NUFIBR')
         zr(jce4v-1+iad4)=dble(nufib)
     else if (kcmp2.eq.5) then
-        call assert(zk8(jce4c-1+kcmp2).eq.'POSIC')
+        ASSERT(zk8(jce4c-1+kcmp2).eq.'POSIC')
         zr(jce4v-1+iad4)=dble(posic)
     else if (kcmp2.eq.6) then
-        call assert(zk8(jce4c-1+kcmp2).eq.'POSIS')
+        ASSERT(zk8(jce4c-1+kcmp2).eq.'POSIS')
         zr(jce4v-1+iad4)=dble(posis)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 40  continue
 50  continue
@@ -226,7 +226,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     call detrsd('CHAM_ELEM', chextr)
     call cescel(ces4, ligrel, option, nompar, 'OUI',&
                 nncp, 'G', chextr, 'F', iret)
-    call assert(nncp.eq.0)
+    ASSERT(nncp.eq.0)
 !
 !
 !     6. MENAGE :

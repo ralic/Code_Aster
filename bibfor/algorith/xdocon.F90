@@ -106,25 +106,25 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
     coeffp = zr(jdonco-1+(ifiss-1)*ncompd+9)
 !     VERIFICATIONS
     if (algocr .eq. 1) then
-        call assert(coefcr.ne.0.d0.and.coefcp.eq.0.d0)
+        ASSERT(coefcr.ne.0.d0.and.coefcp.eq.0.d0)
     else if (algocr.eq.2) then
-        call assert(coefcr.eq.0.d0.and.coefcp.ne.0.d0)
+        ASSERT(coefcr.eq.0.d0.and.coefcp.ne.0.d0)
     else if (algocr.eq.3) then
         call teattr(nomte, 'S', 'XFEM', enr, ibid)
-        call assert(enr.eq.'XHC')
+        ASSERT(enr.eq.'XHC')
         rela = zr(jdonco-1+(ifiss-1)*ncompd+10)
-        call assert(rela .eq. 1.d0 .or. rela .eq. 2.d0 .or. rela .eq. 3.d0 .or. rela .eq. 4.d0)
+        ASSERT(rela .eq. 1.d0 .or. rela .eq. 2.d0 .or. rela .eq. 3.d0 .or. rela .eq. 4.d0)
         coefcr = 1.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (algofr .eq. 1) then
-        call assert(coeffr.ne.0.d0.and.coeffp.eq.0.d0)
+        ASSERT(coeffr.ne.0.d0.and.coeffp.eq.0.d0)
     else if (algofr.eq.2) then
-        call assert(coeffr.eq.0.d0.and.coeffp.ne.0.d0)
+        ASSERT(coeffr.eq.0.d0.and.coeffp.ne.0.d0)
     else
-        call assert(algofr.eq.0)
+        ASSERT(algofr.eq.0)
     endif
 !
 ! --- DECALAGE INDICE POUR LA MULTIFISSURATION

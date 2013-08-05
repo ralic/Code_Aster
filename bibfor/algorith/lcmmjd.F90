@@ -63,7 +63,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     iret=0
 !
     if (nuecou .ne. 5) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !             MATRICE JACOBIENNE DU SYSTEME :
 !  R1 = D-1*SIGMA - (D_M-1*SIGMA_M)-(DEPS-DEPS_TH)+Somme(ms*Dps*S)=0

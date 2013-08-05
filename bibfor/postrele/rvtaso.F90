@@ -214,10 +214,10 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp,&
     nopara(nbpar) = nomcmp(icp)
     20 end do
 !
-    call assert(nbpar .le. 15)
-    call assert(ii+2 .le. 10)
-    call assert(ir+nbcmp .le. 10)
-    call assert(ik .le. 10)
+    ASSERT(nbpar .le. 15)
+    ASSERT(ii+2 .le. 10)
+    ASSERT(ir+nbcmp .le. 10)
+    ASSERT(ik .le. 10)
 !
     ls = nbcmp
     lc = nbsp * ls

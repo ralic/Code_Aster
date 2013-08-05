@@ -84,7 +84,7 @@ subroutine elmddl(raide, option, neq, ddl, nddle,&
 ! ------- STOP SI ON CHERCHE A ELIM UN DDL ABSENT DE LA MODELISATION
 !
             if (nbddl .eq. 0) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! ------- INVERSION : INTER = 0 SI DDL TROUVE ET 1 SINON

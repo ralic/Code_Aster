@@ -57,7 +57,7 @@ function mmeltn(ityp)
 !
     mmeltn = 0
     if ((ityp.le.0) .or. (ityp.gt.nbtyp)) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         mmeltn = npl(ityp)
     endif

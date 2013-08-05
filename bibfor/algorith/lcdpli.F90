@@ -71,8 +71,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
     iret = 0
     resi = option(1:9).eq.'FULL_MECA' .or. option .eq.'RAPH_MECA'
     rigi = option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA'
-    call assert((option(1:9).eq.'RIGI_MECA') .or. (option(1:9).eq.'FULL_MECA') .or.&
-                (option .eq.'RAPH_MECA'))
+    ASSERT(resi .or. rigi)
 ! =====================================================================
 ! --- AFFECTATION DES VARIABLES ---------------------------------------
 ! =====================================================================

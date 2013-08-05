@@ -93,7 +93,7 @@ subroutine slismo(stolcz, stomoz, basz)
     kterm=0
     do 3, ieq=1,neq
     hcol=zi(jschc-1+ieq)
-    call assert(hcol.le.ieq)
+    ASSERT(hcol.le.ieq)
     do 4, ilig=ieq-hcol+1,ieq
     kterm=kterm+1
     zi4(jsmhc-1+kterm)=ilig

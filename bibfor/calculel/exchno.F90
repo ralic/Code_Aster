@@ -93,12 +93,12 @@ subroutine exchno(imodat, iparg)
     debugr=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+5)
     lgcata=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+2)
 !
-    call assert(ityplo.lt.4)
+    ASSERT(ityplo.lt.4)
 !
 !     1-  CAS: CHNO -> ELGA :
 !     -----------------------
 !     LE CAS ITYPLO=3 N EST PAS PREVU : DEVELOPPEMENT A FAIRE ...
-    call assert(ityplo.ne.3)
+    ASSERT(ityplo.ne.3)
 !
 !     2-  CAS: CHNO -> ELNO :
 !         CAS: CHNO -> ELEM (MOYENNE)
@@ -114,7 +114,7 @@ subroutine exchno(imodat, iparg)
 !       2.1 ON CHERCHE NNO SUR LE 1ER ELEMENT :
 !       ---------------------------------------
         ima=numail(igr,1)
-        call assert(ima.ne.0)
+        ASSERT(ima.ne.0)
         if (ima .gt. 0) then
             nno=zi(ilmaco-1+ima+1)-zi(ilmaco-1+ima)
         else
@@ -134,10 +134,10 @@ subroutine exchno(imodat, iparg)
         endif
 !
 !       MOYENN => (NBPT2=1)
-        call assert((.not.moyenn) .or. (nbpt2.eq.1))
+        ASSERT((.not.moyenn) .or. (nbpt2.eq.1))
 !
 !       .NOT.MOYENN => (NBPT2=NNO)
-        call assert(moyenn .or. (nbpt2.eq.nno))
+        ASSERT(moyenn .or. (nbpt2.eq.nno))
 !
 !
 !       2.3 SI MOYENN, IL FAUT METTRE A ZERO LE CHAMP LOCAL
@@ -176,7 +176,7 @@ subroutine exchno(imodat, iparg)
 60                  continue
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -195,7 +195,7 @@ subroutine exchno(imodat, iparg)
                 endif
             endif
             ima=numail(igr,iel)
-            call assert(ima.ne.0)
+            ASSERT(ima.ne.0)
             do 80 ino = 1, nno
                 if (diff) idg2=5+nec*(ino-1)
                 if (ima .gt. 0) then
@@ -233,7 +233,7 @@ subroutine exchno(imodat, iparg)
                 endif
             endif
             ima=numail(igr,iel)
-            call assert(ima.ne.0)
+            ASSERT(ima.ne.0)
             do 100 ino = 1, nno
                 if (diff) idg2=5+nec*(ino-1)
                 if (ima .gt. 0) then
@@ -292,7 +292,7 @@ subroutine exchno(imodat, iparg)
 170                  continue
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !

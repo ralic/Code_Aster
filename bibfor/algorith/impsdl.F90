@@ -87,7 +87,7 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
 !
     call obgeti(slcolo, 'NBRE_STRUCTS', ncol)
     call obgeti(sdtabc, 'LARGEUR_LIGNE', larlig)
-    call assert(larlig.le.255)
+    ASSERT(larlig.le.255)
 !
 ! --- INITIALISATION DE LA LIGNE AVEC LES SEPARATEURS DE COLONNE
 !
@@ -118,13 +118,13 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
                 if (lnverr) then
                     write(6,*) 'COLONNE: ',typcol
                     write(6,*) 'ERREUR - VALEUR NON AFFECTEE SUR COLONNE'
-!              CALL ASSERT(.FALSE.)
+!              ASSERT(.FALSE.)
                 else if (lnvvid) then
                     ligne(pos:posfin) = chvide(1:larcol)
                 else if (lnvsan) then
                     ligne(pos:posfin) = chsobj(1:larcol)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             else
                 call obgetk(sdcolo, 'MARQUE', marq)
@@ -138,7 +138,7 @@ subroutine impsdl(sdtabc, sepcol, uimpr)
                     call obgetk(sdcolo, 'VALE_K', valk)
                     ligne(pos:posfin) = valk(1:larcol)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !

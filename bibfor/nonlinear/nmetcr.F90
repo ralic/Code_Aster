@@ -193,7 +193,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
                         larch (icham))
         endif
 30  end do
-    call assert(ich.eq.nbcham)
+    ASSERT(ich.eq.nbcham)
 !
 ! --- NOM DES CHAMPS DANS OP0070
 !
@@ -231,14 +231,14 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
                 if (nomsym .eq. chnoms) lfind = .true.
 55          continue
 ! ------- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS RSCRSD !
-            call assert(lfind)
+            ASSERT(lfind)
         endif
 ! ----- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS NMETC0 !
         if (chetin .eq. 'OUI') then
-            if (chinit .eq. ' ') call assert(.false.)
+            if (chinit .eq. ' ') ASSERT(.false.)
         endif
 ! ----- DECLENCHEMENT DU ASSERT -> OUBLI D'IMPACT DANS NMETCC !
-        if (choper .eq. ' ') call assert(.false.)
+        if (choper .eq. ' ') ASSERT(.false.)
 50  end do
     call detrsd('RESULTAT', result)
 !

@@ -113,7 +113,7 @@ subroutine te0511(option, nomte)
 ! --- ON TESTE LA COHERENCE DES RECUPERATIONS ELREF4 ET TECACH SUR ----
 ! --- LE NOMBRE DE POINTS DE GAUSS ------------------------------------
 ! =====================================================================
-            call assert(npgu.eq.npg)
+            ASSERT(npgu.eq.npg)
             nbsig = dimmax / npg
 ! =====================================================================
 ! --- DANS LE CADRE DE LA THM ON RECUPERE DIRECTEMENT LA RELATION -----
@@ -159,7 +159,7 @@ subroutine te0511(option, nomte)
 10      continue
     else
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! =====================================================================
 end subroutine

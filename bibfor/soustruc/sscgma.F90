@@ -1,5 +1,4 @@
 subroutine sscgma(ma, nbgmp, nbgmin)
-! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -176,7 +175,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             nbma = nbma + 1
             zi(jmail+nbma-1) = num
 20      continue
-        if (ier .ne. 0) call assert(.false.)
+        if (ier .ne. 0) ASSERT(.false.)
         call wkvect(lisma, 'V V I', nbma, jlisma)
         do 30,ima = 0,nbma - 1
         zi(jlisma+ima) = zi(jmail+ima)

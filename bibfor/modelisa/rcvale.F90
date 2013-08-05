@@ -87,7 +87,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     phen = phenom
     kstop='F '
 !
-    call assert(iarret.ge.0 .and. iarret.le.2)
+    ASSERT(iarret.ge.0 .and. iarret.le.2)
 !
 !
 ! --- TESTS: CELA A-T-IL CHANGE ?
@@ -114,7 +114,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             if (nomfop(ires) .ne. ' ') then
                 call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
                             valres(ires), ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 icodre(ires) = 0
             else
                 icodre(ires) = 1
@@ -159,7 +159,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
                         nomfop(ires) = zk8(ivalk-1+nbr+nbc+nbf+ik)
                         call fointe(kstop, nomfop(ires), nbpar, nompar, valpar,&
                                     valres(ires), ier)
-                        call assert(ier.eq.0)
+                        ASSERT(ier.eq.0)
                         icodre(ires) = 0
                     endif
 160              continue

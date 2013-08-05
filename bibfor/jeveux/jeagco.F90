@@ -122,7 +122,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
         endif
         call jjallc(icin, idin, 'L', ibacol)
         nmax = iszon(jiszon+ibacol+ivnmax)
-        call assert(nmax .le. nbocnw)
+        ASSERT(nmax .le. nbocnw)
         iclas = icout
         call jjcren(nomout(1:24), 0, iret2)
         if (iret2 .ne. 0) then
@@ -143,7 +143,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 !
 ! ----  COLLECTION DISPERSEE
             iv(1) = 0
-            call assert(lontnw .eq. 0)
+            ASSERT(lontnw .eq. 0)
         endif
 !
         ixlong = iszon (jiszon+ibacol+idlong)

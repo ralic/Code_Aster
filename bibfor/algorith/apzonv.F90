@@ -87,7 +87,7 @@ subroutine apzonv(sdappa, izone, questz, valr)
         valr(2) = zr(jpinzr+zinzr*(izone-1)+10-1)
         valr(3) = zr(jpinzr+zinzr*(izone-1)+11-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

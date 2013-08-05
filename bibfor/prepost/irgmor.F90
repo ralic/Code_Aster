@@ -74,7 +74,7 @@ subroutine irgmor(tord, vers)
 !
 !     VERIFICATION EMMELAGE DE PINCEAUX DU PROGRAMMEUR...
 999  continue
-    call assert(.false.)
+    ASSERT(.false.)
 !     ------------------------------------------------------------------
 !
 9000  continue

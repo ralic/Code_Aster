@@ -176,9 +176,9 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
         idebv = lgpg * idecpg
 !
         if (ndim .eq. 3) then
-            call assert(nbsig.eq.6)
+            ASSERT(nbsig.eq.6)
         else if (ndim.eq.2) then
-            call assert(nbsig.eq.4)
+            ASSERT(nbsig.eq.4)
         endif
 !
         if (option .eq. 'RIGI_MECA') then

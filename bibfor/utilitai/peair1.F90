@@ -126,7 +126,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             long = long + sqrt( xxl )
         endif
 10  end do
-    call assert(nbma.eq.nbel)
+    ASSERT(nbma.eq.nbel)
 !
 !     VERIFICATION QUE LE CONTOUR EST FERME
 !
@@ -192,10 +192,10 @@ subroutine peair1(modele, nbma, lisma, aire, long)
         goto 41
     endif
 11  continue
-    call assert(nbma.eq.nbe)
+    ASSERT(nbma.eq.nbe)
     nj2=zi(jn2-1+3*nbe-1)
     nj0=zi(jn2)
-    call assert(nj2.eq.nj0)
+    ASSERT(nj2.eq.nj0)
 !
 !     CALCUL DU CDG APPROXIMATIF
 !

@@ -57,7 +57,7 @@ subroutine cpclma(nomain, nomaou, typcol, base)
         grmaou = nomaou//'.GROUPENO'
         ptnmou = nomaou//'.PTRNOMNOE'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedetr(grmaou)

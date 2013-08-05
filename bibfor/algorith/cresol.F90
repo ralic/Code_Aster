@@ -187,7 +187,7 @@ subroutine cresol(solveu)
                     epsmat, mixpre, kmd)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

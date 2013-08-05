@@ -92,7 +92,7 @@ subroutine dflld2(sdlist, ifm, iechec)
             write(ifm,*) '<DEFILISTINST> ............... DUREE '//&
             ' DE LA DECOUPE : ', zr(jesur-1+lesur*(iechec-1)+6)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

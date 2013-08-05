@@ -118,7 +118,7 @@ subroutine monte1(opt, te2, nout, lchout, lpaout,&
 !
             if (lparal) then
 !           -- POUR L'INSTANT ON N'ACCEPTE PAS EVFINI=1
-                call assert(evfini.eq.0)
+                ASSERT(evfini.eq.0)
                 ncmpel=digde2(mod1)
                 do 10 iel = 1, nbelgr
                     if (zl(jparal-1+iel)) then

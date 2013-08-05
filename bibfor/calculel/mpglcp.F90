@@ -63,7 +63,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
 !
     if (typecp .eq. 'P') then
 !
-        call assert(nbnolo.eq.2)
+        ASSERT(nbnolo.eq.2)
 !
 !       CALCUL DE ALPHA ET BETA
         call vdiff(3, coordo(1), coordo(4), xd)
@@ -82,7 +82,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta,&
         else if (nbnolo.eq.4) then
             call dxqpgl(coordo, pgl, 'C', iret)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !       MODIFICATION DE LA MATRICE POUR PRENDRE EN COMPTE

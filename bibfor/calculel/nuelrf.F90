@@ -52,7 +52,7 @@ subroutine nuelrf(elrefe, nujni)
         nujni = 1
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

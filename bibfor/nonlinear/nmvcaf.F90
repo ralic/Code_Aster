@@ -56,7 +56,7 @@ subroutine nmvcaf(index, chainz, exicha, comz)
 !
 !    AFFECTATION DU CHAMP
     call exisd('CHAMP_GD', chain, iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     chaout = com // '.' // index
     call copisd('CHAMP_GD', 'V', chain, chaout)
 !

@@ -50,13 +50,13 @@ subroutine masyns(matas)
     mat19 = matas(1:19)
     call jelira(mat19//'.VALM', 'CLAS', ibid, base)
     call jelira(mat19//'.VALM', 'TYPE', ibid, ktyp)
-    call assert(ktyp.eq.'R'.or.ktyp.eq.'C')
+    ASSERT(ktyp.eq.'R'.or.ktyp.eq.'C')
     call jeveuo(mat19//'.REFA', 'E', jrefa)
-    call assert(zk24(jrefa-1+9).eq.'MS')
+    ASSERT(zk24(jrefa-1+9).eq.'MS')
     zk24(jrefa-1+9)='MR'
 !
     call jelira(mat19//'.VALM', 'NMAXOC', nbloc, kbid)
-    call assert(nbloc.eq.1)
+    ASSERT(nbloc.eq.1)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', lgbloc, kbid)
 !
 !

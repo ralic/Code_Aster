@@ -165,7 +165,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 ! --- RECOPIE DU VECTEUR CHAPEAU
 !
     call nmchai('VALINC', 'LONMAX', nmax)
-    call assert(nmax.eq.zvalin)
+    ASSERT(nmax.eq.zvalin)
     call nmcha0('VALINC', 'ALLINI', ' ', valin2)
     call nmchcp('VALINC', valinc, valin2)
 !
@@ -228,7 +228,7 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
         optrig = 'RIGI_MECA'
     else
         optrig = 'RIGI_MECA_TANG'
-!        CALL ASSERT(.FALSE.)
+!        ASSERT(.FALSE.)
     endif
 !
 ! --- A RECALCULER

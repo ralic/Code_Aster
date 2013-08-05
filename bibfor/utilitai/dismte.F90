@@ -188,7 +188,7 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
         call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt, kbid)
         do 90,irig=1,nrig
         call jenonu(jexnom('&CATA.OP.NOMOPT', optrig(irig)), iopt)
-        call assert(iopt.gt.0)
+        ASSERT(iopt.gt.0)
         ioptte=zi(iaopte-1+(ite-1)*nbopt+iopt)
         if (ioptte .eq. 0) goto 90
         repk='OUI'

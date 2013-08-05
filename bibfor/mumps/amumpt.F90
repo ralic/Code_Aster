@@ -126,7 +126,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         rinfog(10)=zmpsk%rinfog(10)
         nvers(1:15)='ZMUMPS '//zmpsk%version_number
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TEST POUR LIMITER LE MONITORING DES CMDES ECLATEES
@@ -319,9 +319,9 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 ! ---   ZI(isizemu+RANG-1): TAILLE CUMULEE EN MO OBJETS MUMPS A,IRN...
 ! ---   EXECMU:  TAILLE EN MO DE L'EXECUTABLE MUMPS
                 execmu=30
-                KSIZEMU='&&TAILLE_OBJ_MUMPS'
-                call jeveuo(KSIZEMU, 'L', isizemu)
-                KSIZEMU='&&TAILLE_OBJ_MUMPS'
+                ksizemu='&&TAILLE_OBJ_MUMPS'
+                call jeveuo(ksizemu, 'L', isizemu)
+                ksizemu='&&TAILLE_OBJ_MUMPS'
                 if (type .eq. 'S') then
                     ibid=smpsk%icntl(22)
                 else if (type.eq.'C') then
@@ -331,15 +331,15 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 else if (type.eq.'Z') then
                     ibid=zmpsk%icntl(22)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 if (ibid .eq. 0) then
                     ktemp='IN-CORE'
                 else
                     ktemp='OUT-OF-CORE'
                 endif
-                write(ifm,*)' MEMOIRE RAM ESTIMEE ET REQUISE&
-     &             EN MO(OBJETS MUMPS + EXECUTABLE)'
+                write(ifm,*)' MEMOIRE RAM ESTIMEE ET REQUISE '&
+     &            //' EN MO(OBJETS MUMPS + EXECUTABLE)'
 !
                 write(ifm,*)'RANG ASTER : '//&
      &            'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//ktemp
@@ -429,7 +429,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         endif
     else
 ! --- OPTION IMPREVUE
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
     999 call jedema()

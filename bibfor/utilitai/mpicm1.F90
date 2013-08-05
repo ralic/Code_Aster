@@ -115,17 +115,17 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !     -- SCALAIRE :
 !     -------------
     typsc1=typsca
-    call assert(typsc1.eq.'R'.or.typsc1.eq.'I'.or.typsc1.eq.'C')
+    ASSERT(typsc1.eq.'R'.or.typsc1.eq.'I'.or.typsc1.eq.'C')
     nbv4=nbv
 !
 !     -- CHOIX OPERATION MPI  :
 !     ---------------------------
     if (optmpi .eq. 'MPI_MAX') then
         lopmpi=MPI_MAX
-        if (typsc1 .eq. 'C') call assert(.false.)
+        if (typsc1 .eq. 'C') ASSERT(.false.)
     else if (optmpi.eq.'MPI_MIN') then
         lopmpi=MPI_MIN
-        if (typsc1 .eq. 'C') call assert(.false.)
+        if (typsc1 .eq. 'C') ASSERT(.false.)
     else
         lopmpi=MPI_SUM
     endif
@@ -135,7 +135,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !        - SINON ON ALLOUE UN TABLEAU JEVEUX
 !     ------------------------------------------------------
     if (optmpi .ne. 'BCAST') then
-        call assert(nbv.gt.0)
+        ASSERT(nbv.gt.0)
 !
         if (nbv .le. 1000) then
             if (typsc1 .eq. 'R') then
@@ -151,7 +151,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                     vc2(k)=vc(k)
  3              continue
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             if (typsc1 .eq. 'R') then
@@ -170,7 +170,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                     zc(jtrav-1+k)=vc(k)
  8              continue
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -188,7 +188,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
             call MPI_BCAST(vc, nbv4, lc8, bcrank, mpicou,&
                            iermpi)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
 !
@@ -234,7 +234,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                                              iermpi)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
 !
@@ -266,7 +266,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                                 0, mpicou, iermpi)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
 !
@@ -298,12 +298,12 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
                                    mpicou, iermpi)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call mpierr(iermpi)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (optmpi .ne. 'BCAST' .and. nbv .gt. 1000) call jedetr('&&MPICM1.TRAV')

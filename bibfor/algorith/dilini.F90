@@ -114,7 +114,7 @@ subroutine dilini(option, nomte, ivf, ivf2, idfde,&
         typmod(1) = '3D  '
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(nomte(5:6).eq.'DP' .or. nomte(5:6).eq.'3D')
+        ASSERT(nomte(5:6).eq.'DP' .or. nomte(5:6).eq.'3D')
     endif
 ! ======================================================================
     if (interp .eq. 'P0') then

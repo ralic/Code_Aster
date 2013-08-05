@@ -101,7 +101,7 @@ subroutine ibdbgs()
     repons = 'NON'
     call getvtx('DEBUG', 'JEVEUX', 1, iarg, 1,&
                 repons, l)
-    call assert(repons.eq.'OUI' .or. repons.eq.'NON')
+    ASSERT(repons.eq.'OUI' .or. repons.eq.'NON')
     if (repons .eq. 'OUI') then
         call u2mess('I', 'SUPERVIS_12')
         idebug = 1

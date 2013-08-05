@@ -103,7 +103,7 @@ function diadap(sddisc, iadapt)
 !
     else if (even.eq.'SEUIL_AVEC_FORMULE') then
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

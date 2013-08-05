@@ -125,7 +125,7 @@ subroutine te0247(option, nomte)
 !
     call elref4(' ', 'RIGI', ndimel, nnoel, nnosel,&
                 npg, iplouf, iplouf, iplouf, iplouf)
-    call assert((npg.eq.2).or.(npg.eq.3))
+    ASSERT((npg.eq.2).or.(npg.eq.3))
 !
 !     -- BOOLEENS PRATIQUES :
     matric = option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'

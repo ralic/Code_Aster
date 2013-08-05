@@ -70,9 +70,9 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
 !------------------------------------------------------------------
 !     1- QUELQUES VERIFS :
 !     ------------------------
-    call assert(ncmp.ne.0)
+    ASSERT(ncmp.ne.0)
     call verigd(nomgd, licmp, ncmp, iret)
-    call assert(iret.le.0)
+    ASSERT(iret.le.0)
 !
 !------------------------------------------------------------------
 !     2- CREATION DE CNS.CNSK:

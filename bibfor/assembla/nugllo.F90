@@ -137,7 +137,7 @@ subroutine nugllo(nu, base, solveu)
 !
 !---- ON VERIFIE QU'IL N'Y A PAS DE SUPER-MAILLES
     call jeveuo(noma//'.DIME', 'L', jdime)
-    call assert(zi(jdime+3).eq.0)
+    ASSERT(zi(jdime+3).eq.0)
 !
 !---- ON RAMENE EN MEMOIRE LES OBJETS DU .NUME :
 !     CALCUL DE NEQG, NLILI
@@ -169,7 +169,7 @@ subroutine nugllo(nu, base, solveu)
     ldgrel=.false.
     call mpicm0(rang, nbproc)
     if (partit .ne. ' ') then
-        call assert(nbproc.gt.1)
+        ASSERT(nbproc.gt.1)
         ldist=.true.
         call jeveuo(partit//'.PRTK', 'L', jprtk)
         ldgrel=zk24(jprtk-1+1) .eq. 'GROUP_ELEM'
@@ -177,7 +177,7 @@ subroutine nugllo(nu, base, solveu)
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
         endif
     endif
-    call assert(ldist)
+    ASSERT(ldist)
 !
 !---- ALLOCATION DU PRNO DE NUML :
     call jecrec(nu//'.NUML.PRNO', base(1:1)//' V I ', 'NU', 'CONTIG', 'VARIABLE',&
@@ -207,13 +207,13 @@ subroutine nugllo(nu, base, solveu)
     numinc=1
     do 100 ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
-        if (ili .eq. 2) call assert(nomlig.eq.ligrmo)
+        if (ili .eq. 2) ASSERT(nomlig.eq.ligrmo)
         do 90 igr = 1, zzngel(ili)
             if (ldgrel .and. mod(igr,nbproc) .ne. rang) goto 90
             nel=zznelg(ili,igr)
             do 80 iel = 1, nel
                 numa=zzliel(ili,igr,iel)
-                call assert(numa.ne.0)
+                ASSERT(numa.ne.0)
                 if (.not.ldgrel) then
                     if (numa .gt. 0) then
                         if (zi(jnumsd-1+numa) .ne. rang) goto 80
@@ -314,7 +314,7 @@ subroutine nugllo(nu, base, solveu)
             nddl=zzprn2(ili,ino,2)
             do 120 iddl = 1, nddl
                 ieqg=zi(jtaeq+ddl1l-1+iddl-1)
-                call assert(ieqg.gt.0)
+                ASSERT(ieqg.gt.0)
 !
                 zi(jnulg+ddl1l-1+iddl-1)=ieqg
                 zi(jnueql+ddl1l-1+iddl-1)=ddl1l+iddl-1

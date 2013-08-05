@@ -63,7 +63,7 @@ subroutine lecvec(iad, long, type, unite)
         read(unite,'(A80)') zk80(iad-1+k)
 35      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

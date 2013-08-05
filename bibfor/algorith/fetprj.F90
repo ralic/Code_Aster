@@ -116,7 +116,7 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
 ! EN PARALLELE SEUL LE PROCESSUS MAITRE CONSTRUIT CET OBJET VD0
     if (rang .eq. 0) then
 !
-        call assert((option.eq.1).or.(option.eq.2))
+        ASSERT((option.eq.1).or.(option.eq.2))
         sdfetg=sdfeti//'.FETG'
 !---------------------------------------------------------------------
 ! --------------------------------------------------------------------
@@ -189,7 +189,7 @@ subroutine fetprj(nbi, vi, vo, nomggt, lrigid,&
             call dsptrs('L', dimgi4, 1, zr(jgitgi), zi4(ipiv),&
                         zr(jgitvi), dimgi4, infola)
             infol8=infola
-            call assert(infol8.eq.0)
+            ASSERT(infol8.eq.0)
             if (option .eq. 1) then
 ! --------------------------------------------------------------------
 ! CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)

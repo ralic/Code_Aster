@@ -105,7 +105,7 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
         call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
         cnfint = '&&CNPART.CHP3'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DES TERMES
@@ -117,7 +117,7 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
         call ndthet(fonact, sddyna, foiner, veasse, cnfint,&
                     cnfext)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

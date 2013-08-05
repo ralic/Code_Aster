@@ -73,7 +73,7 @@ subroutine nmext2(noma, champ, nbcmp, nbno, extrch,&
 ! --- ACCES AU CHAMP DE TRAVAIL
 !
     call jeveuo(chnoeu, 'E', jnoeu)
-    call assert(nbcmp.le.nparx)
+    ASSERT(nbcmp.le.nparx)
 !
 ! --- ACCES LISTE DES NOEUDS
 !
@@ -117,7 +117,7 @@ subroutine nmext2(noma, champ, nbcmp, nbno, extrch,&
             else if (extrch.eq.'MOY') then
                 zr(jnoeu+ivalcp-1 +nbcmp*(inor-1)) = valr+val2r
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 35      continue
 20  end do

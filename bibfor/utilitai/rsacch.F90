@@ -100,7 +100,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
                 if (comp .eq. liscmp(j)) goto 30
 40          continue
             nbcmp = nbcmp + 1
-            call assert(nbcmp.le.500)
+            ASSERT(nbcmp.le.500)
             liscmp(nbcmp) = comp
 30      continue
 !      DESTRUCTION DU CHAMP_S

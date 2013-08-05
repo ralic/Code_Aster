@@ -68,8 +68,8 @@ subroutine liscli(lischa, ichar, nomcha, nomfct, nbinfo,&
     call jeveuo(infcha, 'L', jinfch)
     call jeveuo(fomult, 'L', jalifc)
     nchar = zi(jinfch)
-    call assert(ichar.gt.0)
-    call assert(ichar.le.nchar)
+    ASSERT(ichar.gt.0)
+    ASSERT(ichar.le.nchar)
 !
     nomcha = zk24(jalich+ichar-1)(1:8)
     nomfct = zk24(jalifc+ichar-1)(1:8)

@@ -132,11 +132,11 @@ subroutine w039ca(ifi, form)
 !
             call getvtx('CONCEPT', 'REPERE_LOCAL', iocc, iarg, 1,&
                         rplo, ibid)
-            call assert(ibid.eq.1)
+            ASSERT(ibid.eq.1)
             if (rplo .eq. 'OUI') then
                 call getvid('CONCEPT', 'MODELE', iocc, iarg, 1,&
                             modele, ibid)
-                call assert(ibid.eq.1)
+                ASSERT(ibid.eq.1)
 !
                 titre = 'vecteur du repere local'
                 call w039c3(carele, modele, ifi, form, titre)

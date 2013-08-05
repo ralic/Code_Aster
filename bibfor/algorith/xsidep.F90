@@ -66,6 +66,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 #include "asterfort/tecach.h"
 #include "asterfort/xside2.h"
 #include "asterfort/xside3.h"
+    integer :: nnop
     character(len=8) :: elrefp, elrese(6), fami(6), typmod(*)
     character(len=16) :: compor(4)
     real(kind=8) :: he(nfiss), sig(*), lsn(nnop), lst(nnop), basloc(*)
@@ -73,7 +74,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     integer :: nse, npg, imate, ddlc, ddlm, ndim, nfh
     integer :: j, ise, in, ino, cnset(4*32), heavt(*), lonch(10)
     integer :: ibid, idecpg, nbsig, ig, ifiss, idebs, jpmilt, nfe, idepl
-    integer :: nnop, nfiss, jfisno, jpintt, igeom
+    integer :: nfiss, jfisno, jpintt, igeom
     integer :: irese, nno, fisno(nnop, nfiss), jtab(2), ncomp, iret
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','TE4'/
@@ -158,7 +159,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 !
         if (ndim .eq. 3) then
 !
-            call assert(nbsig.eq.6)
+            ASSERT(nbsig.eq.6)
 !
             call xside3(elrefp, ndim, coorse, elrese(ndim+irese), igeom,&
                         he, nfh, ddlc, ddlm, nfe,&
@@ -167,7 +168,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                         fisno, sig(idebs+1))
         else if (ndim.eq.2) then
 !
-            call assert(nbsig.eq.4)
+            ASSERT(nbsig.eq.4)
 !
             call xside2(elrefp, ndim, coorse, elrese(ndim+irese), igeom,&
                         he, nfh, ddlc, ddlm, nfe,&

@@ -3,7 +3,6 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
                   option, sigp, vinp, dside, retcom,&
                   invi)
 !
-! aslint: disable=W1501
     implicit  none
 #include "asterc/iisnan.h"
 #include "asterc/r8prem.h"
@@ -139,7 +138,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
     call lklmat(mod, imate, nbmat, tm, materd,&
                 materf, matcst, ndt, ndi, nvi,&
                 indal)
-    call assert(invi.eq.nvi)
+    ASSERT(invi.eq.nvi)
 !      SIGC   = MATERD(3,2)
     xipic = materd(18,2)
     xivm = materd(20,2)

@@ -69,7 +69,7 @@ subroutine chrp3d(ppp, siepin, siepoo, iop)
 !        ENTREE : LOCAL --> SORTIE : GLOBAL
         call dr3gl2(ppp, aoo, ain)
     endif
-    call assert(kop.eq.0.or.kop.eq.1)
+    ASSERT(kop.eq.0.or.kop.eq.1)
 !
 !----    PASSAGE VERS LA FORME VECTORIELLE
     do 30 ik = 1, 6

@@ -95,7 +95,7 @@ subroutine dclhoa(n, tab, iran)
 !
         if (ir-ia .gt. ib-ir) then
             if (ia .lt. ira) then
-                call assert(kopf .lt. lgpile)
+                ASSERT(kopf .lt. lgpile)
                 kopf = kopf + 1
                 ipil1(kopf) = ia
                 ipil2(kopf) = ira
@@ -105,7 +105,7 @@ subroutine dclhoa(n, tab, iran)
 !
         else
             if (irb .lt. ib) then
-                call assert(kopf .lt. lgpile)
+                ASSERT(kopf .lt. lgpile)
                 kopf = kopf+1
                 ipil1(kopf) = irb
                 ipil2(kopf) = ib

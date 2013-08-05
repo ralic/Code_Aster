@@ -40,9 +40,9 @@ subroutine inmat4(elrefa, nno, nnos, npg, nofpg,&
 ! DEB ------------------------------------------------------------------
 !
 !
-    call assert(npg.le.nbpgmx)
-    call assert(nno.le.nbnomx)
-    call assert(nnos.le.nbnomx)
+    ASSERT(npg.le.nbpgmx)
+    ASSERT(nno.le.nbnomx)
+    ASSERT(nnos.le.nbnomx)
 !
 !
 !     -- MISES A ZERO :
@@ -73,7 +73,7 @@ subroutine inmat4(elrefa, nno, nnos, npg, nofpg,&
 !     -- ON TRAITE LE CAS GENERIQUE NOFPG='NOEU'
 !     -------------------------------------------------
     if (nofpg .eq. 'NOEU') then
-        call assert(nno.eq.npg)
+        ASSERT(nno.eq.npg)
         do 60,k = 1,nno
         mgano2(k,k) = 1.d0
 60      continue
@@ -84,7 +84,7 @@ subroutine inmat4(elrefa, nno, nnos, npg, nofpg,&
 !     -- ON TRAITE LE CAS GENERIQUE NOFPG='NOEU_S'
 !     -------------------------------------------------
     if (nofpg .eq. 'NOEU_S') then
-        call assert(nnos.eq.npg)
+        ASSERT(nnos.eq.npg)
         do 70,k = 1,nnos
         mganos(k,k) = 1.d0
 70      continue

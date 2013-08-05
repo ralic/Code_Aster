@@ -64,7 +64,7 @@ subroutine xmoffc(lact, nlact, nno, ffe, ffc)
     endif
 !
     if (nno .gt. 8) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

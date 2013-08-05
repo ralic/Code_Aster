@@ -82,7 +82,7 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 ! 2.2. ==> NOM DU MAILLAGE
 !
         iaux = lxlgut(nomast)
-        call assert(iaux.ge.1 .and. iaux.le.8)
+        ASSERT(iaux.ge.1 .and. iaux.le.8)
         nomamd(1:iaux) = nomast(1:iaux)
         lnomam = iaux
 !

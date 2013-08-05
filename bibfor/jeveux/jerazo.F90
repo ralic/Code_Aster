@@ -19,6 +19,7 @@ subroutine jerazo(nomlu, ni, i1)
     implicit none
 #include "jeveux.h"
 #include "jeveux_private.h"
+#include "asterfort/assert.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjalty.h"
 #include "asterfort/jjcroc.h"
@@ -110,7 +111,7 @@ subroutine jerazo(nomlu, ni, i1)
             ltypi = ltyp( jltyp(iclaco) + ixdeso )
         endif
     else 
-         call assert (.false.)
+        ASSERT(.false.)
     endif
 100 continue
     call jjalty(typei, ltypi, 'E', inatb, jctab)

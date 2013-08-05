@@ -152,7 +152,7 @@ subroutine etenca(chinz, ligrlz, iret)
 !
 !        ------- GROUPE DE MAILLES DU MAILLAGE:
         if (code .eq. 2) then
-            call assert(jmalut.ne.0)
+            ASSERT(jmalut.ne.0)
             nb=zi(jmalut-1+ient)
             call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', grpma)
             do 30 i = 1, nb
@@ -184,7 +184,7 @@ subroutine etenca(chinz, ligrlz, iret)
                 if (bonlig) then
                     do 50 i = 1, nb
                         ii = zi(lima-1+i)
-                        call assert(ii.lt.0)
+                        ASSERT(ii.lt.0)
                         zi(ptms-1-ii) = igd
 50                  continue
                 endif

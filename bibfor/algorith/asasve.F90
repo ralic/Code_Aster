@@ -143,7 +143,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !       CALL UTIMS2('ASASVE 1',I,RESUEL,1,' ')
 !
         call corich('L', resuel, ibid, icha)
-        call assert((icha.ne.0).and.(icha.ge.-2))
+        ASSERT((icha.ne.0).and.(icha.ge.-2))
 !
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
@@ -166,7 +166,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
             call vtcopy(resuel, chamno, ' ', iret)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 20  end do

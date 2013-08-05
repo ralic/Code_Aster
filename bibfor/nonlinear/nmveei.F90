@@ -200,7 +200,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                 toler, ndt, ndi, nrv, crit,&
                 nvi, vind, nfs, nsg, toutms,&
                 1, numhsr, sigm)
-    call assert(ndt.eq.nb.or.nvi.eq.ni.or.nrv.eq.nr)
+    ASSERT(ndt.eq.nb.or.nvi.eq.ni.or.nrv.eq.nr)
     if ((iret2+iret3) .eq. 0) then
         epsthp = mate(3,1)*(tp-tref)
         epsthm = matm(3,1)*(tm-tref)
@@ -403,7 +403,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
                             drpde, dsgde, dsgdb, dsgdp, np,&
                             nb, nr, dsidep)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !         ENDIF
@@ -413,7 +413,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod,&
         if (typma .eq. 'COHERENT') then
             call lceqmn(nb, hook, dsidep)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !        ENDIF
 !

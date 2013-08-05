@@ -84,7 +84,7 @@ subroutine gfmama(noma, numagl, nutyma, jcnx, nttri3,&
     else if (nutyma.eq.ntqua4) then
         nno=4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jeecra(jexnum(connex, numagl), 'LONMAX', nno, ' ')
     call jeveuo(jexnum(connex, numagl), 'E', jconnx)

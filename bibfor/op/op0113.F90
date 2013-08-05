@@ -195,7 +195,7 @@ subroutine op0113()
 300  end do
 !
     call jelira(liel2, 'NUTIOC', nb1, k8bid)
-    call assert(nb1.eq.nelt)
+    ASSERT(nb1.eq.nelt)
 !
 !-----------------------------------------------------------------------
 !     4)  CONSTRUCTION DU .MAILLE

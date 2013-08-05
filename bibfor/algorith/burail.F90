@@ -54,7 +54,7 @@ subroutine burail(vin, nvi, materd, materf, nmat,&
     else if (part(1:3).eq.'DEV') then
         eta = materd(6,2)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     kappa = materd(7,2)
 !

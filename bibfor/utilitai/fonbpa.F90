@@ -75,7 +75,7 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 12      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (nbpf .gt. mxpf) then

@@ -80,7 +80,7 @@ subroutine te0285(option, nomte)
         call jevech('PCARAGE', 'E', lcastr)
     else
 !          OPTION DE CALCUL NON VALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)

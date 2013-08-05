@@ -105,6 +105,6 @@ subroutine nirela(irela, jp, gm, gp, am,&
         dboa = 1.d0
         d2boa = 0.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

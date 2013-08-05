@@ -57,7 +57,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
 !         CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_____________________________________________________________________
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! 0.1. ==> ARGUMENTS
@@ -555,7 +555,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
             call cescre('V', chames, typech, nomaas, nomgd,&
                         ncmprf, zk8(jnocmp), -1, -1, -ncmprf)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call jeveuo(chames//'.CESD', 'L', adsd)

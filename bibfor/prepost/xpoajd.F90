@@ -136,12 +136,12 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             lpint = .false.
         endif
     endif
-    if (ddlc .gt. 0) call assert(lmeca)
+    if (ddlc .gt. 0) ASSERT(lmeca)
     lcont = (ddlc.gt.0).and.(ndime.eq.ndim) .and.(ninter.gt.0).and.(nfiss.eq.1)
 !
     inn = inn + 1
     inntot = inntot + 1
-    call assert(inn.le.nnn)
+    ASSERT(inn.le.nnn)
 !
     zi(jdirno-1+(2+nfiss)*(inn-1)+1) = ino
     zi(jdirno-1+(2+nfiss)*(inn-1)+2) = nbnoc + inntot
@@ -219,7 +219,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
 !       NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)
         call xlacti(typma, ninter, iainc, lact, nlact)
-        call assert(nlact.gt.0)
+        ASSERT(nlact.gt.0)
         if (contac .eq. 1) then
             nnol = nnop
         else if (contac.eq.3) then

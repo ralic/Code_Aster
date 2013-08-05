@@ -92,7 +92,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
     ier = 0
     call verdis(nomo, noma, 'F', i3d, i2d,&
                 ndim, ier)
-    call assert((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
+    ASSERT((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
 !
     call jeexin(modnem, ixnw)
     nbmtrd = 0
@@ -182,11 +182,11 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                     iarg, lmax, zk8( jdls2), nn)
         call getvr8(mcf, 'VALE', ioc, iarg, nbval,&
                     val, nval)
-        call assert(nbval .ge. 1)
+        ASSERT(nbval .ge. 1)
         call getvtx(mcf, 'CARA', ioc, iarg, nbcar,&
                     car, ncar)
         if (ncar .gt. 0) ncarac = ncar
-        call assert(ncarac .eq. 1)
+        ASSERT(ncarac .eq. 1)
 !
         call getvtx(mcf, 'REPERE', ioc, iarg, 1,&
                     rep, nrep)

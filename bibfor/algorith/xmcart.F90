@@ -293,7 +293,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                 endif
                 call cesexi('S', jcesd(1), jcesl(1), nummae, i,&
                             jfiss, 1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zi(jvalv(2)-1+nfhe*(i-1)+j)=zi(jcesv(1)-1+iad)
 220          continue
 210      continue
@@ -307,7 +307,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                 endif
                 call cesexi('S', jcesd(1), jcesl(1), nummam, i,&
                             jfiss, 1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zi(jvalv(2)-1+nfhe*nnoe+nfhm*(i-1)+j)=zi(jcesv(1)-1+&
                 iad)
 240          continue
@@ -321,7 +321,7 @@ subroutine xmcart(noma, defico, modele, resoco)
             do 20 j = 1, nbpi
                 call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
                             ifise, ndim*(j-1)+i, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zr(jvalv(3)-1+ndim*(j-1)+i)=zr(jcesv(2)-1+iad)
 20          continue
 10      continue
@@ -334,7 +334,7 @@ subroutine xmcart(noma, defico, modele, resoco)
             do 50 j = 1, ninter
                 call cesexi('S', jcesd(3), jcesl(3), nummae, 1,&
                             ifise, zxain*(j-1)+i, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zr(jvalv(4)-1+zxain*(j-1)+i)=zr(jcesv(3)-1+iad)
 50          continue
 40      continue
@@ -347,7 +347,7 @@ subroutine xmcart(noma, defico, modele, resoco)
             do 80 j = 1, nface
                 call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                             ifise, npte*(j-1)+i, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zi(jvalv(5)-1+npte*(j-1)+i)=zi(jcesv(4)-1+iad)
 80          continue
 70      continue
@@ -368,7 +368,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                             jfiss = zi(jcesv(5)-1+iad)
                             call cesexi('S', jcesd(7), jcesl(7), nummae, 1,&
                                         nfiss*(ifise-1)+jfiss, 1, iad)
-                            call assert(iad.gt.0)
+                            ASSERT(iad.gt.0)
                             zi(jvalv(6)-1+nfhe*(i-1)+j)=zi(jcesv(7)-1+&
                             iad)
                         else
@@ -385,7 +385,7 @@ subroutine xmcart(noma, defico, modele, resoco)
                             jfiss = zi(jcesv(5)-1+iad)
                             call cesexi('S', jcesd(7), jcesl(7), nummam, 1,&
                                         nfiss*(ifism-1)+jfiss, 2, iad)
-                            call assert(iad.gt.0)
+                            ASSERT(iad.gt.0)
                             zi(jvalv(6)-1+nfhe*nnoe+nfhm*(i-1)+j)=&
                             zi(jcesv(7)-1+iad)
                         else

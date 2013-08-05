@@ -103,39 +103,39 @@ subroutine appcpr(kptsc)
 !     -- CHOIX DU PRECONDITIONNEUR :
 !     ------------------------------
     call KSPGetPC(ksp, pc, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     if (precon .eq. 'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCFactorSetLevels(pc, fill, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCFactorSetFill(pc, fillp, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCFactorSetMatOrderingType(pc, MATORDERINGNATURAL, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'LDLT_SP') then
         call PCSetType(pc, PCSHELL, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !        LDLT_SP FAIT APPEL A DEUX ROUTINES EXTERNES
         call PCShellSetSetUp(pc, ldsp1, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCShellSetApply(pc, ldsp2, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
-        call assert(spmat.eq.' ')
+        ASSERT(spmat.eq.' ')
         spmat = nomat
-        call assert(spsolv.eq.' ')
+        ASSERT(spsolv.eq.' ')
         spsolv = nosolv
 !-----------------------------------------------------------------------
     else if (precon.eq.'JACOBI') then
         call PCSetType(pc, PCJACOBI, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SOR') then
         call PCSetType(pc, PCSOR, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'ML') then
         call PCSetType(pc, PCML, ierr)
@@ -143,15 +143,15 @@ subroutine appcpr(kptsc)
             call u2mesk('F', 'PETSC_19', 1, precon)
         endif
         call PetscOptionsSetValue('-pc_type', 'ml', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue('-pc_ml_CoarsenScheme', 'Uncoupled', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PetscOptionsSetValue('-pc_ml_PrintLevel', '0', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'BOOMER') then
         call PCSetType(pc, PCHYPRE, ierr)
@@ -159,25 +159,25 @@ subroutine appcpr(kptsc)
             call u2mesk('F', 'PETSC_19', 1, precon)
         endif
         call PetscOptionsSetValue('-pc_hypre_type', 'boomeramg', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_coarsen_type', 'PMIS', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !        CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_relax_type_all', 'SOR/Jacobi', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_print_statistics', '0', ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SANS') then
         call PCSetType(pc, PCNONE, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !-----------------------------------------------------------------------
 !

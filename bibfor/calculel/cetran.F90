@@ -66,7 +66,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
     nomgd2 = zk8(jce2k-1+2)
     ncmp2 = zi(jce2d-1+2)
 !
-    call assert(nomgd2.eq.nomgd)
+    ASSERT(nomgd2.eq.nomgd)
 !
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
@@ -81,8 +81,8 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
         nbpt2 = zi(jce2d-1+5+4*(ima2-1)+1)
         nbsp2 = zi(jce2d-1+5+4*(ima2-1)+2)
-        call assert(nbpt2.eq.nbpt)
-        call assert(nbsp2.eq.nbsp)
+        ASSERT(nbpt2.eq.nbpt)
+        ASSERT(nbsp2.eq.nbsp)
 !
         do 20 icmp2 = 1, ncmp2
 !
@@ -101,7 +101,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
                     if (.not. zl(jce1l-1+iad1)) goto 40
                     call cesexi('C', jce2d, jce2l, ima2, ipt,&
                                 isp, icmp2, iad2)
-                    call assert(iad2.gt.0)
+                    ASSERT(iad2.gt.0)
 !
                     zl(jce2l-1+iad2) = .true.
 !
@@ -116,7 +116,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
                     else if (tsca.eq.'K8') then
                         zk8(jce2v-1+iad2) = zk8(jce1v-1+iad1)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 !
 40              continue

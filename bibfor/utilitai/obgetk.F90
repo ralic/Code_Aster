@@ -75,7 +75,7 @@ subroutine obgetk(nomstr, nompaz, valk)
         valk = zk24(jsvalk-1+indice)
     else
         write(6,*) 'TYPE INCORRECT: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

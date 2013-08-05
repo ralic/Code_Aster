@@ -98,14 +98,14 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine,&
     if (zi(lmat+3) .eq. 1) then
 !
 !        --- SYSTEME REEL:
-        call assert(type.eq.'R')
+        ASSERT(type.eq.'R')
         call csmbr8(zk24(zi(lmat+1)), zi(jccll), zi(jccii), neq, vcine,&
                     vsmb)
 !
     else if (zi(lmat+3).eq.2) then
 !
 !        --- SYSTEME COMPLEXE:
-        call assert(type.eq.'C')
+        ASSERT(type.eq.'C')
         call csmbc8(zk24(zi(lmat+1)), zi(jccll), zi(jccii), neq, cvcine,&
                     cvsmb)
     endif

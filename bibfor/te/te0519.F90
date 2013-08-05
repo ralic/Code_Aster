@@ -56,7 +56,7 @@ subroutine te0519(option, nomte)
 !
 ! ---------------------------------------------------------------------
 !
-    call assert(option.eq.'GEOM_FAC')
+    ASSERT(option.eq.'GEOM_FAC')
 !
     call jemarq()
 !

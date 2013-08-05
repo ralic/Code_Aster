@@ -62,8 +62,8 @@ subroutine xmilfi(elp, ndim, nno, ptint, jtabco,&
                 ptint, zr(jtabco), jtabls, ipp, ip,&
                 rbid, itemax, epsmax, ksi)
 !
-    call assert(ksi(1).ge.-1.d0 .and. ksi(1).le.1.d0)
-    call assert(ksi(2).ge.-1.d0 .and. ksi(2).le.1.d0)
+    ASSERT(ksi(1).ge.-1.d0 .and. ksi(1).le.1.d0)
+    ASSERT(ksi(2).ge.-1.d0 .and. ksi(2).le.1.d0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
     call reerel(elp, nno, ndim, zr(jtabco), ksi,&

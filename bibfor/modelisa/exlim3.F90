@@ -60,13 +60,13 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !     -----------------------------------------------------------------
 !
     motfac=motfaz
-    call assert(motfac.ne.' ')
+    ASSERT(motfac.ne.' ')
     call getfac(motfac, nocc)
-    call assert(nocc.gt.0)
+    ASSERT(nocc.gt.0)
 !
 !
     modele=modelz
-    call assert(modele.ne.' ')
+    ASSERT(modele.ne.' ')
 !
     call dismoi('F', 'NOM_LIGREL', modele, 'MODELE', ib,&
                 ligrmo, ib)
@@ -74,7 +74,7 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
                 noma, ib)
     call dismoi('F', 'NB_MA_MAILLA', noma, 'MAILLAGE', nbmat,&
                 k8bid, ib)
-    call assert(nbmat.gt.0)
+    ASSERT(nbmat.gt.0)
 !
 !
 !
@@ -104,7 +104,7 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
     do 30,iocc=1,nocc
     call reliem(modele, noma, 'NU_MAILLE', motfac, iocc,&
                 2, motcle(1), typmcl(1), '&&EXLIM3.LIMA1', nbma)
-    call assert(nbma.gt.0)
+    ASSERT(nbma.gt.0)
     call jeveuo('&&EXLIM3.LIMA1', 'L', jlima1)
     do 20,k=1,nbma
     numa=zi(jlima1-1+k)

@@ -66,7 +66,7 @@ subroutine te0543(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(nomte(1:5).eq.'MECA_')
+        ASSERT(nomte(1:5).eq.'MECA_')
     endif
 !
     typmod(2) = 'DEPLA'

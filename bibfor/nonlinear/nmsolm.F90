@@ -95,7 +95,7 @@ subroutine nmsolm(sddyna, solalg)
         coevit = ndynre(sddyna,'COEF_VITE')
         coeacc = ndynre(sddyna,'COEF_ACCE')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RE-CALCUL DES INCREMENTS
@@ -106,15 +106,15 @@ subroutine nmsolm(sddyna, solalg)
         call vtaxpy(coevit, ddepla, dvitla)
         call vtaxpy(coeacc, ddepla, daccla)
     else if (lvite) then
-        call assert(.false.)
+        ASSERT(.false.)
 !
 !
     else if (lacce) then
-        call assert(.false.)
+        ASSERT(.false.)
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- AFFICHAGE

@@ -82,7 +82,7 @@ subroutine te0560(option, nomte)
         typmod(1) = '3D      '
     else
 !     NOM D'ELEMENT ILLICITE
-        call assert(nomte(1:4).eq.'MNVG')
+        ASSERT(nomte(1:4).eq.'MNVG')
     endif
 !
     typmod(2) = 'GDVARINO'
@@ -105,7 +105,7 @@ subroutine te0560(option, nomte)
 !     3 DEPLACEMENT + VARI
             dlns = 4
         else
-            call assert(ndim .eq. 3)
+            ASSERT(ndim .eq. 3)
         endif
 !
         call massup(option, ndim, dlns, nno, nnob,&

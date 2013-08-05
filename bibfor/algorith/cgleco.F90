@@ -112,7 +112,7 @@ subroutine cgleco(resu, modele, iord0, typfis, compor,&
         else if (repk.eq.'INCR'.or.repk.eq.'MIXTE') then
             incr = .true.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

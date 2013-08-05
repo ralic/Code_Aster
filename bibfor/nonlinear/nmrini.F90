@@ -108,7 +108,7 @@ subroutine nmrini(sdtime, sdstat, phase)
             zi(jstvin+i-1) = 0
 22      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

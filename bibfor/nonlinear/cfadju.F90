@@ -97,7 +97,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             else if (ksi2.gt.1.d0) then
                 izone = 3
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         if (ksi2 .lt. 0.d0) then
@@ -108,7 +108,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             else if (ksi1.gt.1.d0) then
                 izone = 7
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         if (ksi1 .ge. 0.d0) then
@@ -139,7 +139,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
         else if (izone.eq.8) then
             ecart = sqrt(abs(ksi2)*abs(ksi2))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- RABATTEMENT
@@ -186,7 +186,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             else if (ksi2.gt.1.d0) then
                 izone = 3
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         if (ksi1 .gt. 1.d0) then
@@ -197,7 +197,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
             else if (ksi2.gt.1.d0) then
                 izone = 5
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         if ((ksi1.ge.-1.d0) .and. (ksi1.le.1.d0)) then
@@ -227,7 +227,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
         else if (izone.eq.8) then
             ecart = sqrt((abs(ksi2)-1.d0)*(abs(ksi2)-1.d0))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- RABATTEMENT
@@ -261,7 +261,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 999  continue

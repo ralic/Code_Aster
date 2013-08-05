@@ -99,7 +99,7 @@ subroutine te0366(option, nomte)
                 ddle, ddlm, contac, ndeple, nsinge,&
                 nsingm, nfhe, nfhm)
 !
-    call assert(nddl.le.n)
+    ASSERT(nddl.le.n)
     lmulti = .false.
     if (nfhe .gt. 1 .or. nfhm .gt. 1) lmulti = .true.
 !
@@ -221,7 +221,7 @@ subroutine te0366(option, nomte)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffec, ffc)
     else
-        call assert(contac.eq.0)
+        ASSERT(contac.eq.0)
     endif
 !
 ! --- JACOBIEN POUR LE POINT DE CONTACT
@@ -265,7 +265,7 @@ subroutine te0366(option, nomte)
 !
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (option.eq.'RIGI_FROT') then
@@ -351,10 +351,10 @@ subroutine te0366(option, nomte)
                             ddle, ddlm, nfhe, mmat)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(option.eq.'RIGI_FROT' .or. option.eq.'RIGI_CONT')
+        ASSERT(option.eq.'RIGI_FROT' .or. option.eq.'RIGI_CONT')
     endif
 !
 ! --- SUPPRESSION DES DDLS SUPERFLUS (CONTACT ET XHTC)

@@ -81,9 +81,9 @@ subroutine mmnewt(alias, nno, ndim, coorma, coorpt,&
 !
 ! --- VERIF CARACTERISTIQUES DE LA MAILLE
 !
-    if (nno .gt. 9) call assert(.false.)
-    if (ndim .gt. 3) call assert(.false.)
-    if (ndim .le. 1) call assert(.false.)
+    if (nno .gt. 9) ASSERT(.false.)
+    if (ndim .gt. 3) ASSERT(.false.)
+    if (ndim .le. 1) ASSERT(.false.)
 !
 ! --- POINT DE DEPART
 !

@@ -101,7 +101,7 @@ subroutine mmmjac(alias, jgeom, ff, dff, laxis,&
 ! --- AUTRES ELEMENTS : DIMENSION 3
 !
     else
-        call assert(ndim.eq.3)
+        ASSERT(ndim.eq.3)
         call subaco(nne, dff, geom, cova)
         call sumetr(cova, metr, jacobi)
     endif

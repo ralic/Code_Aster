@@ -56,7 +56,7 @@ function xxmmvd(vect)
     else if (vect.eq.'ZXAIN') then
         xxmmvd = zxain
     else
-        call assert(lvect)
+        ASSERT(lvect)
     endif
 !
 end function

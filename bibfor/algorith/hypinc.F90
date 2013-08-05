@@ -103,7 +103,7 @@ subroutine hypinc(fami, kpg, ksp, poum, ndim,&
     call matini(6, 6, 0.d0, dsidep)
     nitmax = int(crit(1))
     epsi = crit(3)
-    call assert(compor(4).eq.'COMP_INCR')
+    ASSERT(compor(4).eq.'COMP_INCR')
 !
 ! --- LECTURE DES CARACTERISTIQUES MATERIAU
 !
@@ -111,7 +111,7 @@ subroutine hypinc(fami, kpg, ksp, poum, ndim,&
         call hypmat(fami, kpg, ksp, poum, imate,&
                     c10, c01, c20, k)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- A PRIORI ON A CONVERGE

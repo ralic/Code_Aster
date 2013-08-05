@@ -133,7 +133,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
             endif
 60      continue
 70  end do
-    call assert(irang.eq.nbarch)
+    ASSERT(irang.eq.nbarch)
 !
 !
 !     3. -- ON COMPACTE LES NUME_ORDRE ARCHIVES :
@@ -146,7 +146,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
         irang=irang+1
         zi(jordr+irang-1)=nuordr(i)
 80  end do
-    call assert(irang.eq.nbarch)
+    ASSERT(irang.eq.nbarch)
 !
 !
 !     4. -- ON MET A "ZERO" LES IRANG INUTILISES :

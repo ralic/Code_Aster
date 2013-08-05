@@ -94,7 +94,7 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
     else if (typent.eq.'NOEU') then
         call jenuno(jexnum(noma//'.NOMNOE', nument), noment)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MODIF DE LA NORMALE SI FIXE (LNFIXE = .TRUE.)
@@ -111,7 +111,7 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
             else if (typent.eq.'NOEU') then
                 call u2mesk('F', 'CONTACT_61', 1, noment)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -128,13 +128,13 @@ subroutine cfnors(noma, defico, resoco, posmai, typent,&
 !
     if (lliss) then
         if (lnfixe) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (typent .eq. 'MAIL') then
             call copnor(noma, defico, resoco, posmai, ksi1,&
                         ksi2, tau1, tau2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

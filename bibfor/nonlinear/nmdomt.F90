@@ -94,7 +94,7 @@ subroutine nmdomt(method, parmet)
         call getvis('NEWTON', 'REAC_INCR', 1, iarg, 1,&
                     reincr, iret)
         if (reincr .lt. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             parmet(1) = reincr
         endif
@@ -102,7 +102,7 @@ subroutine nmdomt(method, parmet)
         call getvis('NEWTON', 'REAC_ITER', 1, iarg, 1,&
                     reiter, iret)
         if (reiter .lt. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             parmet(2) = reiter
         endif
@@ -118,7 +118,7 @@ subroutine nmdomt(method, parmet)
         call getvis('NEWTON', 'REAC_ITER_ELAS', 1, iarg, 1,&
                     reitel, iret)
         if (reiter .lt. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             parmet(4) = reitel
         endif
@@ -140,7 +140,7 @@ subroutine nmdomt(method, parmet)
         method(5) = 'TANGENTE'
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PARAMETRES DE LA RECHERCHE LINEAIRE

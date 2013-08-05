@@ -87,12 +87,12 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
     call dismoi('F', 'NOM_GD', geomi, 'CHAM_NO', ibid,&
                 nomgd, iret)
-    call assert(nomgd(1:6).eq.'GEOM_R')
+    ASSERT(nomgd(1:6).eq.'GEOM_R')
     call dismoi('F', 'NOM_GD', depla, 'CHAM_NO', ibid,&
                 nomgd, iret)
-    call assert(nomgd(1:6).eq.'DEPL_R')
+    ASSERT(nomgd(1:6).eq.'DEPL_R')
     call jelira(depla//'.VALE', 'TYPE', ibid, ktype)
-    call assert(ktype(1:1).eq.'R')
+    ASSERT(ktype(1:1).eq.'R')
 !
 ! --- ON RECOPIE BESTIALEMENT LE CHAMP POUR CREER LE NOUVEAU
 !
@@ -106,7 +106,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                 k8bid, iret)
 !
     call jelira(geomi//'.VALE', 'LONMAX', ldim, k8bid)
-    call assert(ldim/3.eq.nbno)
+    ASSERT(ldim/3.eq.nbno)
 !
 ! --- ACCES AUX CHAMPS
 !
@@ -122,12 +122,12 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
     igd = zi(iadesc-1+1)
     num = zi(iadesc-1+2)
     nec = nbec(igd)
-    call assert(nec.le.10)
+    ASSERT(nec.le.10)
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx, k8bid)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iad)
-    call assert(zk8(iad-1+1).eq.'DX')
-    call assert(zk8(iad-1+2).eq.'DY')
-    call assert(zk8(iad-1+3).eq.'DZ')
+    ASSERT(zk8(iad-1+1).eq.'DX')
+    ASSERT(zk8(iad-1+2).eq.'DY')
+    ASSERT(zk8(iad-1+3).eq.'DZ')
 !
 ! --- SI LE CHAMP EST A REPRESENTATION CONSTANTE
 !
@@ -140,7 +140,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                 else if (cumul.eq.'ZERO') then
                     zr(iavalf-1+3*(ino-1)+icmp) = alpha*rdepla
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 14          continue
 13      continue
@@ -149,7 +149,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 ! --- ON RECUPERE CE QUI CONCERNE LES NOEUDS DU MAILLAGE
 !
         call jelira(jexnum(nomnu(1:19)//'.PRNO', 1), 'LONMAX', ibid, k8bid)
-        call assert(ibid.ne.0)
+        ASSERT(ibid.ne.0)
         call jeveuo(jexnum(nomnu(1:19)//'.PRNO', 1), 'L', iaprno)
         do 11 ino = 1, nbno
             ival = zi(iaprno-1+(ino-1)*(nec+2)+1)
@@ -166,7 +166,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
                         else if (cumul.eq.'ZERO') then
                             zr(iavalf-1+3*(ino-1)+icmp)= alpha*rdepla
                         else
-                            call assert(.false.)
+                            ASSERT(.false.)
                         endif
                     endif
 12              continue

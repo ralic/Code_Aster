@@ -77,8 +77,8 @@ subroutine op0155()
                 crit, ie)
     call rsutnu(resu19, ' ', 0, '&&OP0155.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
-    call assert(iret.eq.0)
-    call assert(nbordr.gt.0)
+    ASSERT(iret.eq.0)
+    ASSERT(nbordr.gt.0)
     call jeveuo('&&OP0155.NUME_ORDRE', 'L', jordr)
 !
 !

@@ -130,7 +130,7 @@ subroutine cftanr(noma, ndimg, defico, resoco, izone,&
         lmait = .false.
         lescl = .true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INCOMPATIBILITE SCHEMA INTEGRATION GAUSS AVEC OPTION ESCLAVE

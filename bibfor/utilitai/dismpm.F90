@@ -59,7 +59,7 @@ subroutine dismpm(questi, nomobz, repi, repkz, ierd)
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
     call jenonu(jexnom('&CATA.'//phen(1:13)//'.MODL', mode), imode)
-    call assert(imode.gt.0)
+    ASSERT(imode.gt.0)
     call jeveuo(jexnum('&CATA.'//phen, imode), 'L', jphen)
 !
     if (questi .eq. 'DIM_GEOM') then

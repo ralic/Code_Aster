@@ -236,7 +236,7 @@ subroutine mdchge(numddl, typnum, imode, iamor, pulsat,&
                     cbid, 'DEFIOBST', kbid, r8bid, 'TYPE',&
                     k8typ, ibid, r8bid, cbid, refo,&
                     irett)
-        call assert(irett.eq.0)
+        ASSERT(irett.eq.0)
         if (refo(1:9) .eq. 'BI_PLAN_Y') then
             noecho(i,9) = 'BI_PLANY'
         else if (refo(1:9).eq.'BI_PLAN_Z') then

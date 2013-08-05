@@ -34,8 +34,8 @@ function nufloc(ndim, nsc, isc)
     call elref1(elrefe)
 !
     if (ndim .eq. 2) then
-        call assert(nsc.eq.2)
-        call assert(isc(1).ne.isc(2))
+        ASSERT(nsc.eq.2)
+        ASSERT(isc(1).ne.isc(2))
 !
 !  ON NE SAIT PAS DANS QUEL ORDRE SONT DONNES LES SOMETS VOISINS
 !  SI ABS(ISC1-ISC2)=1 ON N'EST PAS SUR LE DERNIER SOMMET ET IFA =
@@ -50,7 +50,7 @@ function nufloc(ndim, nsc, isc)
         endif
     else
         if (elrefe .eq. 'H27') then
-            call assert(nsc.eq.4)
+            ASSERT(nsc.eq.4)
             cle = isc(1)**2+isc(2)**2+isc(3)**2+isc(4)**2
             if (cle .eq. 30) then
                 fa = 1
@@ -65,12 +65,12 @@ function nufloc(ndim, nsc, isc)
             else if (cle.eq.174) then
                 fa = 6
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (elrefe.eq.'T9') then
-            call assert(nsc.eq.3)
+            ASSERT(nsc.eq.3)
             fa=10-isc(1)-isc(2)-isc(3)
-            call assert(fa.ge.1.and.fa.le.4)
+            ASSERT(fa.ge.1.and.fa.le.4)
         else
             call u2mesk('F', 'VOLUFINI_12', 1, elrefe)
         endif

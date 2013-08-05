@@ -2,7 +2,6 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
                   cnsln, cnslt, cnsgls, deltat, lcmin,&
                   levset, isozro, cnxinv, nodtor, eletor,&
                   liggrd)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -573,7 +572,7 @@ subroutine xprrei(noma, fiss, fispre, noesom, noresi,&
     write(ifm,*)'   RESIDU LOCAL  = '//resk10
     write(ifm,*)'   RESIDU GLOBAL = '//retk10
 !
-    call assert(itemp.le.itermx)
+    ASSERT(itemp.le.itermx)
 !
 !   DESTRUCTION DES OBJETS VOLATILES
     call jedetr(cnols)

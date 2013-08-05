@@ -37,7 +37,7 @@ subroutine detmat()
 !
     call jelstc('V', '.REFA', 20, 100, lirefa,&
                 nbmat)
-    call assert(nbmat.ge.0)
+    ASSERT(nbmat.ge.0)
 !
     do 1,i=1,nbmat
 !

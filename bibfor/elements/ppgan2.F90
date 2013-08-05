@@ -49,7 +49,7 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !
     nno = nint(zr(jgano-1+1))
     npg = nint(zr(jgano-1+2))
-    call assert(nno*npg.gt.0)
+    ASSERT(nno*npg.gt.0)
 !
     call tecael(iadzi, iazk24)
     nno2 = zi(iadzi+1)

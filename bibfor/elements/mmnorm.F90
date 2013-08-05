@@ -62,7 +62,7 @@ subroutine mmnorm(ndim, tau1, tau2, norm, noor)
     else if (ndim.eq.3) then
         call provec(tau2, tau1, norm)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call normev(norm, noor)

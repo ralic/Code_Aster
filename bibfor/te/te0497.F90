@@ -35,7 +35,6 @@ subroutine te0497(option, nomte)
 !                      STATIONNAIRE .
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
@@ -552,7 +551,7 @@ subroutine te0497(option, nomte)
     if (noeu .eq. '6' .or. noeu .eq. '8') then
         nbna = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! CALCUL DE L'ORIENTATION DE LA MAILLE 2D

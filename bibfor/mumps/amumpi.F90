@@ -82,7 +82,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     else if (type.eq.'Z') then
         zmpsk=>zmps(kxmps)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nomat=nomats(kxmps)
@@ -108,7 +108,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else if (type.eq.'Z') then
             zmpsk%comm = mpicou
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---     ISYM = 0 => NON-SYMETRIQUE
@@ -121,7 +121,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else if (typm.eq.'MS') then
             isymm=2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---     PRISE EN COMPTE DE LA VOLONTE DE L'UTILISATEUR
@@ -135,7 +135,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else if (zk24(jslvk-1+3).eq.'AUTO') then
             isymv=-1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---     STRATEGIE PRUDENTE ET CONSERVATIVE
@@ -172,7 +172,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             zmpsk%par = 1
             zmpsk%job = -1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !       ------------------------------------------------------
@@ -214,7 +214,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             icntl(8) = 77
             icntl(12) = 0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---     RENUMEROTATION
@@ -233,7 +233,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else if (zk24(jslvk-1+4).eq.'AUTO') then
             icntl(7) = 7
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---     INITIALISATION EN DUR (EN DOUBLONS VS CALL DMUMPS JOB=-1)
@@ -299,7 +299,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else if (type.eq.'Z') then
             zmpsk%ooc_tmpdir='XXXX'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---     COMPLEMENT DE SCHUR
@@ -340,7 +340,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                 smpsk%icntl(i)=icntl(i)
             enddo
             do i = 2, ncntl
-                if (abs(cntl(i)) .gt. rr4max) call assert(.false.)
+                if (abs(cntl(i)) .gt. rr4max) ASSERT(.false.)
                 smpsk%cntl(i)=cntl(i)
             enddo
         else if (type.eq.'C') then
@@ -348,7 +348,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                 cmpsk%icntl(i)=icntl(i)
             enddo
             do i = 2, ncntl
-                if (abs(cntl(i)) .gt. rr4max) call assert(.false.)
+                if (abs(cntl(i)) .gt. rr4max) ASSERT(.false.)
                 cmpsk%cntl(i)=cntl(i)
             enddo
         else if (type.eq.'D') then
@@ -366,7 +366,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                 zmpsk%cntl(i)=cntl(i)
             enddo
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !       ------------------------------------------------------
@@ -385,9 +385,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         else if (type.eq.'Z') then
             mpimum=zmpsk%comm
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
-        if (mpimum .ne. mpicou) call assert(.false.)
+        if (mpimum .ne. mpicou) ASSERT(.false.)
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
         call amumpu(3, type, kxmps, k12bid, ibid,&
@@ -452,14 +452,14 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             zmpsk%icntl(11)=icntl(11)
             zmpsk%cntl(2) =cntl(2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !       ------------------------------------------------
 !        MAUVAISE OPTION
 !       ------------------------------------------------
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 #endif

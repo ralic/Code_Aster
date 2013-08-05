@@ -214,7 +214,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     nbarvi=nar
 !
 !     VERIF SI NB ARETES HYPERS + NB ARETES VITALES = NB ARETES INITIAL
-    call assert(nbarhy+nbarvi.eq.narz)
+    ASSERT(nbarhy+nbarvi.eq.narz)
 !
 !
 !     ATTENTION : MAINTENANT, TABNO ET TABDIR SONT DE LONGUEUR NBARVI
@@ -272,7 +272,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 !
 !     TABLEAU T2 : PAQUETS D'ARETES  (DIM : NBARVI)
     do 410 ia = 1, nbarvi
-        call assert(t1(tabdir(ia, 1)) .eq. t1(tabdir(ia, 2)))
+        ASSERT(t1(tabdir(ia, 1)) .eq. t1(tabdir(ia, 2)))
         t2(ia)=t1(tabdir(ia,1))
 410  end do
 !
@@ -287,7 +287,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                 eq(dimeq)=tabno(ia,3)
             endif
 441      continue
-        call assert(dimeq-1.ge.0)
+        ASSERT(dimeq-1.ge.0)
         do 442 ie = 1, dimeq-1
             nreleq=nreleq+1
             liseqt(nreleq,1)=eq(ie)

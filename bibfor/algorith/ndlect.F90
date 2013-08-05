@@ -18,7 +18,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -269,7 +268,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         zk16(jtsch+9-1) = 'KRENK'
         phi = 0.5d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     zr(jpsch+1-1) = beta

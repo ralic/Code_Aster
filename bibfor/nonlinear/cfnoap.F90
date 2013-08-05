@@ -76,7 +76,7 @@ subroutine cfnoap(noma, defico, typapp, entapp, nomapp,&
         type2 = '/EL '
         nomapp = nommam
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

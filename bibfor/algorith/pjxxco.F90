@@ -79,7 +79,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 ! --------------------------------
 !
     if (method(1:10) .eq. 'NUAGE_DEG_') then
-        call assert(typcal.eq.'1ET2')
+        ASSERT(typcal.eq.'1ET2')
         call pjngco(lcorre(1), noma1, noma2, method, cnref,&
                     'V')
 !
@@ -91,8 +91,8 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
 !       -- SI TYPCAL='1' => 'COLLOCATION' OU 'COUPLAGE' SEULEMENT :
         if (typcal .eq. '1') then
-            call assert(resuin.eq.' ' .and. cham1.eq.' ')
-            call assert(method.eq.'COLLOCATION'.or.method.eq.'COUPLAGE')
+            ASSERT(resuin.eq.' ' .and. cham1.eq.' ')
+            ASSERT(method.eq.'COLLOCATION'.or.method.eq.'COUPLAGE')
             call getres(corru, k16bid, k16bid)
             cortmp='&&PJXXCO.CORRES'
             if (method .eq. 'COLLOCATION') then
@@ -106,7 +106,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
 !
         else
-            call assert(typcal.eq.'1ET2')
+            ASSERT(typcal.eq.'1ET2')
 !
 !         -- QUELS SONT LES TYPES DE CHAMPS A PROJETER ?
             call pjtyco(isole, resuin, cham1, lnoeu, lelno,&
@@ -128,14 +128,14 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
             if ((method.eq.'COLLOCATION') .and. (.not.lnoeu) .and. ( .not.lelno) .and.&
                 (.not.lelem)) then
-                call assert(lelga)
+                ASSERT(lelga)
                 valk(1) = method
                 valk(2) = 'ELGA'
                 call u2mesk('F', 'CALCULEL5_33', 2, valk)
             endif
 !
             if ((method.eq.'SOUS_POINT') .and. (.not.lnoeu) .and. ( .not.lelno)) then
-                call assert(lelga .or. lelem)
+                ASSERT(lelga .or. lelem)
                 valk(1) = method
                 valk(2) = 'ELGA ET ELEM'
                 call u2mesk('F', 'CALCULEL5_33', 2, valk)

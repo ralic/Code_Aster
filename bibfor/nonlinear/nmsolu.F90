@@ -83,7 +83,7 @@ subroutine nmsolu(sddyna, solalg)
         coevit = ndynre(sddyna,'COEF_VITE')
         coeacc = ndynre(sddyna,'COEF_ACCE')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NOM DES INCREMENTS SOLUTIONS

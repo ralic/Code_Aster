@@ -58,7 +58,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     if (iret .eq. 0) call vtcreb(cncine, numedd, 'V', 'R', neq)
     call jelira(cncine(1:19)//'.VALE', 'LONMAX', neq, kbid)
     call jelira(depmoi(1:19)//'.VALE', 'LONMAX', neq2, kbid)
-    call assert(neq.eq.neq2)
+    ASSERT(neq.eq.neq2)
     call jeveuo(cncine(1:19)//'.VALE', 'E', j1)
     do 2, ieq=1,neq
     zr(j1-1+ieq)=0.d0

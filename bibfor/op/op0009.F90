@@ -229,7 +229,7 @@ subroutine op0009()
             if (iexi .eq. 0) goto 101
             call dismoi('F', 'MPI_COMPLET', resuel, 'RESUELEM', ibid,&
                         kmpic, ibid)
-            call assert((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
+            ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
             if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
 101      continue
     endif

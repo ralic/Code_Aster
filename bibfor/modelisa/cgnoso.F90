@@ -103,7 +103,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !     ----------
     call oreino(noma, zi(jnoeu), nbno, numori, numext,&
                 zr(idcoor), crit, tole, iera, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     call jedema()
 !

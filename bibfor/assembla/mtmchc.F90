@@ -63,21 +63,21 @@ subroutine mtmchc(matas, action)
     call jeveuo(mat//'.REFA', 'E', jrefa)
     call jeexin(mat//'.CCID', ier)
     if (zk24(jrefa-1+3) .eq. ' ') then
-        call assert(ier.eq.0)
+        ASSERT(ier.eq.0)
         goto 9999
     else
-        call assert(ier.gt.0)
+        ASSERT(ier.gt.0)
     endif
 !
     if (action .eq. 'ELIMF') then
-        call assert(zk24(jrefa-1+3).eq.'ELIML')
+        ASSERT(zk24(jrefa-1+3).eq.'ELIML')
         call asmchc(mat)
         goto 9999
     else if (action.eq.'ELIML') then
-        call assert(zk24(jrefa-1+3).eq.'ELIMF')
+        ASSERT(zk24(jrefa-1+3).eq.'ELIMF')
 !        TRAITEMENT CI-DESSOUS
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -111,7 +111,7 @@ subroutine mtmchc(matas, action)
     if (kbid(1:1) .eq. 'C') typmat = 2
     nonsym=.false.
     call jelira(mat//'.VALM', 'NMAXOC', nblocm, kbid)
-    call assert(nblocm.eq.1 .or. nblocm.eq.2)
+    ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
     if (nblocm .eq. 2) nonsym=.true.
     call jeveuo(jexnum(mat//'.VALM', 1), 'E', jvalm)
     if (nonsym) call jeveuo(jexnum(mat//'.VALM', 2), 'E', jvalm2)
@@ -134,7 +134,7 @@ subroutine mtmchc(matas, action)
     else
         keta=zi(jccid-1+ieq)
     endif
-    call assert(keta.eq.1 .or. keta.eq.0)
+    ASSERT(keta.eq.1 .or. keta.eq.0)
     if (keta .eq. 1) then
         nelim=nelim+1
         zi(kkeli-1+ieq)=nelim

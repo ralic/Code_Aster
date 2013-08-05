@@ -74,7 +74,7 @@ subroutine mmpnoe(defico, posmae, alias, typint, iptm,&
             if (inoe .le. nbnoe) then
                 call cfconn(defico, jdecne, inoe, posnoe)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     else

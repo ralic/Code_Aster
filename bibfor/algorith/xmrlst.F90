@@ -105,7 +105,7 @@ subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma,&
     do 10 ino = 1, nno
         call cesexi('C', jcesd(7), jcesl(7), posma, ino,&
                     1, 1, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         lst = lst + zr(jcesv(7)-1+iad) * ff(ino)
 10  end do
     lst = sqrt(abs(lst))

@@ -58,7 +58,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    call assert(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base.eq.'V' .or. base.eq.'G')
 !
 !     --- VERIFICATION DE LA TABLE ---
 !
@@ -127,7 +127,7 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
         call u2mess('F', 'UTILITAI4_78')
     endif
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)
     zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = interp

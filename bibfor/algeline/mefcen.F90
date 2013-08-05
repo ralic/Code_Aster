@@ -20,7 +20,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     integer :: iequiv, nbcyl, numnog(*), nbnog(*), nummag(*)
-    integer :: numgrp(*), irot(3), nbgrp
+    integer :: numgrp(*), irot(3), nbgrp, nbz
     real(kind=8) :: xint(nbcyl), yint(nbcyl), zint(nbz, nbgrp), coor(*)
     real(kind=8) :: cent(2*nbcyl), req(nbgrp), rint(nbcyl)
     character(len=19) :: caelem
@@ -84,7 +84,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 !
 !-----------------------------------------------------------------------
     integer :: iad, icesc, icesd, icesl, icesv, icmp, idesc
-    integer :: nbz, npmax, numma, numno1, numno2
+    integer :: npmax, numma, numno1, numno2
     real(kind=8) :: epsit
 !-----------------------------------------------------------------------
     call jemarq()
@@ -146,7 +146,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
         carsd='&&MEFCEN.CARGEOPO'
         call carces(carte, 'ELEM', ' ', 'G', carsd,&
                     'A', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
 ! --- RECUPERATION DE LA GRANDEUR (ICI R1)  ---
 ! --- REFERENCEE PAR LA CARTE CARGEOPO           ---

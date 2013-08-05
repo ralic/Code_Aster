@@ -105,7 +105,7 @@ subroutine cfleqb(noma, defico, nzoco, nnoqua)
 ! ----- NOMBRE DE SURFACES DE CONTACT
 !
         nbsurf = zi(jzone+izone) - zi(jzone+izone-1)
-        call assert(nbsurf.eq.2)
+        ASSERT(nbsurf.eq.2)
 !
         do 20 isuco = 1, nbsurf
 !

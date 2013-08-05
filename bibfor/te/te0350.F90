@@ -58,7 +58,7 @@ subroutine te0350(option, nomte)
                 npg1, ipoids, ivf, idfde, jgano)
 !
 !     MATNS MAL DIMENSIONNEE
-    call assert(nno.le.9)
+    ASSERT(nno.le.9)
 ! - TYPE DE MODELISATION
 !
     if (lteatt(' ','AXIS','OUI')) then
@@ -69,7 +69,7 @@ subroutine te0350(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(lteatt(' ', 'C_PLAN', 'OUI'))
+        ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
     endif
 !
     typmod(2) = 'ASSU    '

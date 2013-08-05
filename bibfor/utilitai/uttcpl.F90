@@ -76,8 +76,8 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     d1(14)='CPU.CMPI.1|P|4#Communications MPI'
 !
     nbmesu=14
-    call assert(nbmax.ge.nbmesu)
-    call assert(dim.ge.nbmesu)
+    ASSERT(nbmax.ge.nbmesu)
+    ASSERT(dim.ge.nbmesu)
 !
 !
 !
@@ -87,9 +87,9 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     i1= index(d1(k),'|')
     nomc(k)=d1(k)(1:i1-1)
     i2= index(d1(k)(i1+1:),'|')
-    call assert(i2.eq.2)
+    ASSERT(i2.eq.2)
     prpal(k)=d1(k)(i1+1:i1+2)
-    call assert(prpal(k).eq.'P'.or.prpal(k).eq.'S')
+    ASSERT(prpal(k).eq.'P'.or.prpal(k).eq.'S')
     noml(k)=d1(k)(i1+i2+1:)
 !
     1 end do

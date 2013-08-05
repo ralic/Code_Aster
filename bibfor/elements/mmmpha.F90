@@ -101,7 +101,7 @@ subroutine mmmpha(loptf, lcont, ladhe, ndexfr, lpenac,&
             phasep = phase(1:4)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

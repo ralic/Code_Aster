@@ -69,7 +69,7 @@ subroutine caundf(code, opt, te)
     rnnem = r8nnem()
     knnem='????????'
 !
-    call assert((code.eq.'ECRIT').or.(code.eq.'VERIF'))
+    ASSERT((code.eq.'ECRIT').or.(code.eq.'VERIF'))
 !
 !
     if (code .eq. 'ECRIT') then
@@ -99,7 +99,7 @@ subroutine caundf(code, opt, te)
             else if (typsca.eq.'K24') then
                 zk24(iachlo-1+debugr-1+lggrel+1) = knnem
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 10      continue
 !
@@ -135,7 +135,7 @@ subroutine caundf(code, opt, te)
             else if (typsca.eq.'I') then
                 if (zi(iachlo-1+debugr-1+lggrel+1) .ne. innem) ecras= .true.
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
             if (ecras) then
@@ -150,7 +150,7 @@ subroutine caundf(code, opt, te)
 !
 30      continue
 !
-        call assert(.not.arret)
+        ASSERT(.not.arret)
 !
     endif
 !

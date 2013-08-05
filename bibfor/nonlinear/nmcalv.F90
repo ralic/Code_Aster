@@ -177,7 +177,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
             sigm = sigext
             strx = ' '
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call vefnme(modele, sigm, carele, depl, depdel,&
@@ -263,7 +263,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
         call nmvcfo(modele, mate, carele, compor, comref,&
                     complu, vecele)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DEBUG

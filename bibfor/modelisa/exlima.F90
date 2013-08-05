@@ -107,12 +107,12 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
     else
 !     -- DANS LE CAS IMPR_RESU, GNOMSD NE PEUT PAS SERVIR CAR
 !        LA COMMANDE NE CREE PAS DE CONCEPT
-        call assert(base.eq.'V')
+        ASSERT(base.eq.'V')
         noojb='&&EXLIMA.LIGR000000.LIEL'
         call gnoms2(noojb, 14, 19)
     endif
     ligrel=noojb(1:19)
-    call assert(ligrel(1:8).ne.' ')
+    ASSERT(ligrel(1:8).ne.' ')
     call jeveuo(lismai, 'L', jma)
     call exlim1(zi(jma), nbma, modele, base, ligrel)
     call jedetr(lismai)

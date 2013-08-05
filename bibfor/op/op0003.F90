@@ -108,7 +108,7 @@ subroutine op0003()
         if (verif .eq. 'CROISSANT') then
             iret=2
             call foverf(zr(lpar2), nbcoup, iret)
-            call assert(iret.eq.2)
+            ASSERT(iret.eq.2)
         endif
     else if (nbvr.ne.0 .and. nbln.eq.0) then
         if (nbvr .lt. 2) then
@@ -129,7 +129,7 @@ subroutine op0003()
         if (verif .eq. 'CROISSANT') then
             iret=2
             call foverf(zr(lpar2), nbcoup, iret)
-            call assert(iret.eq.2)
+            ASSERT(iret.eq.2)
         endif
     else if (nbla.ne.0) then
         if (nbla .lt. 2) then
@@ -148,7 +148,7 @@ subroutine op0003()
         if (verif .eq. 'CROISSANT') then
             iret=2
             call foverf(zr(lpar2), nbla, iret)
-            call assert(iret.eq.2)
+            ASSERT(iret.eq.2)
         endif
     endif
 !
@@ -165,7 +165,7 @@ subroutine op0003()
                 prolgd(2:2), n5)
 !
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     if (nbln .ne. 0) then
         zk24(lpro) = 'FONCTION'

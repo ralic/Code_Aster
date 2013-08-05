@@ -75,7 +75,7 @@ subroutine obsetk(nomstr, nompaz, valk)
         zk24(jsvalk-1+indice) = valk
     else
         write(6,*) 'TYPE INCONNU: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

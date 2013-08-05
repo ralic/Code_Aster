@@ -160,7 +160,7 @@ subroutine rfinte(ispec)
     call jeveuo(jexnum(chvale, indi), 'L', lvale)
     call jelira(jexnum(chvale, indi), 'LONMAX', nbval, k8b)
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro+1) = 'LIN LIN '
     zk24(lpro+2) = 'FREQ'

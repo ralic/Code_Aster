@@ -56,14 +56,14 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
         nbfib=zi(jce2v-1+iad4)
     else if (iad2.gt.0) then
         typma='TUY'
-        call assert(iad3.gt.0)
+        ASSERT(iad3.gt.0)
         nbcou=zi(jce2v-1+iad2)
         nbsec=zi(jce2v-1+iad3)
     else if (iad1.gt.0) then
         typma='COQ'
         nbcou=zi(jce2v-1+iad1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nucou=-999
@@ -75,23 +75,23 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
 !
     if (typma .eq. 'GRI') then
 !       -------------------------
-        call assert(isp.le.nbcou)
+        ASSERT(isp.le.nbcou)
         nucou=isp
 !
     else if (typma.eq.'PMF') then
 !       -------------------------
-        call assert(isp.le.nbfib)
+        ASSERT(isp.le.nbfib)
         nufib=isp
 !
     else if (typma.eq.'COQ') then
 !       -------------------------
-        call assert(isp.le.nbcou*3)
+        ASSERT(isp.le.nbcou*3)
         nucou=(isp+2)/3
         posic=mod(isp+1,3)-1
 !
     else if (typma.eq.'TUY') then
 !       -------------------------
-        call assert(isp.le.(2*nbcou+1)*(2*nbsec+1))
+        ASSERT(isp.le.(2*nbcou+1)*(2*nbsec+1))
         icou=(isp-1)/(2*nbsec+1)+1
         isec=isp-(icou-1)*(2*nbsec+1)
         if (icou .eq. 1) then
@@ -110,7 +110,7 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

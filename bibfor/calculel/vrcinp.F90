@@ -61,7 +61,7 @@ subroutine vrcinp(nbvrcm, ind, instam, instap)
         iactif=2
         call getfac('AFFE_VARC', nbocc)
         nbcvrc=nbocc
-        call assert(nbcvrc.le.nbvrcm)
+        ASSERT(nbcvrc.le.nbvrcm)
 !
         if (nbcvrc .eq. 0) then
             goto 9999

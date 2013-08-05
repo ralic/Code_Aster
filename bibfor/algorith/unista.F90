@@ -61,6 +61,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 #include "asterfort/wkvect.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
+    integer :: n, ldh, ldv
     integer :: ddlsta(n), ddlexc(n)
     real(kind=8) :: h(ldh, ldh), v(ldv, ldh)
     real(kind=8) :: vectp(ldv)
@@ -69,7 +70,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    integer :: n, ldh, ldv, etat, ldynfa
+    integer :: etat, ldynfa
     integer :: redem
     real(kind=8) :: beta, csta
 !
@@ -148,7 +149,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
         vtest = vtest +zr(vectt+i-1)*zr(xsol+i-1)
         if (ddlsta(i) .eq. 0 .and. proj .eq. 1) then
             if (zr(vectt+i-1) .lt. zero) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 50  end do
@@ -227,7 +228,7 @@ subroutine unista(h, ldh, v, ldv, ddlsta,&
         vtest = vtest +vectp(i)*zr(xsol+i-1)
         if (ddlsta(i) .eq. 0) then
             if (vectp(i) .lt. zero) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 65  end do

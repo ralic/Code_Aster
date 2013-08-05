@@ -98,7 +98,7 @@ subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
     wlast = nompro//'.WLAST'
     ligrel = 'NOT_INIT'
     call codent(nchout, 'D0', cnum)
-    call assert((nf.eq.0 .and. crit.ne.' ') .or.(nf.ne.0 .and. crit.eq.' '))
+    ASSERT((nf.eq.0 .and. crit.ne.' ') .or.(nf.ne.0 .and. crit.eq.' '))
 !
 !     RECUPERATION DE LA LISTE DE NUMEROS D'ORDRE
     call jeveuo(lisord, 'L', jordr)
@@ -134,7 +134,7 @@ subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
                         nomgd, iret)
             call dismoi('F', 'TYPE_CHAMP', chps, 'CHAMP', ibid,&
                         typces, iret)
-            call assert(typces.ne.'CART' .and. typces.ne.'RESL')
+            ASSERT(typces.ne.'CART' .and. typces.ne.'RESL')
             chout = 'UT'//cnum//'_'//typces
         endif
         call dismoi('F', 'NOM_MAILLA', chps, 'CHAMP', ibid,&
@@ -223,7 +223,7 @@ subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
             endif
             call cnscno(chr, ' ', 'UNUSED', 'G', chres,&
                         'F', iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call rsnoch(resuou, chout, iordr)
 !
             call detrsd(typs, chs)
@@ -362,7 +362,7 @@ subroutine ccchuc(resuin, resuou, chin, nchout, crit,&
             endif
             call cescel(chr, ligrel, ' ', ' ', 'NAN',&
                         ibid, 'G', chres, 'F', iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
             call rsnoch(resuou, chout, iordr)
 !
             call detrsd(typs, chs)

@@ -1,6 +1,5 @@
 subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                   nbcoor)
-! aslint: disable=W1501
     implicit none
 !     IN
 #include "jeveux.h"
@@ -650,7 +649,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
             nbno1 = 0
             do 610 im1 = 1, nbno
                 nom1 = zk8(jvg+im1-1)
-                call assert(nom1.ne.' ')
+                ASSERT(nom1.ne.' ')
                 call jenonu(jexnom(nomnoe, nom1), num)
                 if (num .eq. 0) then
                     ier = ier + 1

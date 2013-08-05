@@ -82,10 +82,10 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     ncmp2=zi(jcnsd2-1+2)
 !
 !     -- COHERENCE DES 2 CHAMPS :
-    call assert(ma1.eq.ma2)
-    call assert(nomgd1.eq.nomgd2)
-    call assert(nbno1.eq.nbno2)
-    call assert(ncmp1.eq.ncmp2)
+    ASSERT(ma1.eq.ma2)
+    ASSERT(nomgd1.eq.nomgd2)
+    ASSERT(nbno1.eq.nbno2)
+    ASSERT(ncmp1.eq.ncmp2)
     nbno=nbno1
     ncmp=ncmp1
 !
@@ -93,10 +93,10 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 !
     call dismoi('F', 'TYPE_SCA', nomgd1, 'GRANDEUR', ibid,&
                 tsca1, ibid)
-    call assert(tsca1.eq.'R')
+    ASSERT(tsca1.eq.'R')
 !
     do 10,k=1,ncmp
-    call assert(zk8(jcnsc1-1+k).eq.zk8(jcnsc2-1+k))
+    ASSERT(zk8(jcnsc1-1+k).eq.zk8(jcnsc2-1+k))
     10 end do
 !
 !

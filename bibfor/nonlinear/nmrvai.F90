@@ -142,7 +142,7 @@ subroutine nmrvai(sdstat, questz, phase, vali)
             zi(jstvip-1+16) = zi(jstvip-1+16) + vali
             zi(jstvin-1+16) = zi(jstvin-1+16) + vali
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         elseif ((phase.eq.'T').or. (phase.eq.'P').or. (phase.eq.'N'))&
@@ -229,11 +229,11 @@ subroutine nmrvai(sdstat, questz, phase, vali)
             if (phase .eq. 'N') vali = zi(jstvin-1+16)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

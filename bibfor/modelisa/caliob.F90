@@ -10,6 +10,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
 #include "asterc/r8dgrd.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/jedema.h"
@@ -109,7 +110,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
     rdgd = r8dgrd()
 !
     typcoe = 'REEL'
-    if (fonree .eq. 'COMP') call assert(.false.)
+    if (fonree .eq. 'COMP') ASSERT(.false.)
     nomo = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
@@ -122,7 +123,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
     nomg = 'DEPL_R'
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call assert(nbec.le.10)
+    ASSERT(nbec.le.10)
 !
     call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
                 k8bid, ier)
@@ -164,7 +165,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
             val_r = valimr(i_keyword)
             val_c = valimc(i_keyword)
             val_f = valimf(i_keyword)
-            call assert(ddlimp(i_keyword).eq.1)
+            ASSERT(ddlimp(i_keyword).eq.1)
 !
 ! --------- Which direction ?
 !
@@ -175,7 +176,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
             elseif ((keyword.eq.'DZ').or.(keyword.eq.'DRZ')) then
                 i_direct = 3
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             direct(1) = matr_rota(i_direct,1)
             direct(2) = matr_rota(i_direct,2)
@@ -188,7 +189,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
             elseif ((keyword.eq.'DRX').or.(keyword.eq.'DRY').or.(keyword.eq.'DRZ')) then
                 ddl = 'ROTA'
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! --------- Affect in direction

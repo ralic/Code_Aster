@@ -86,7 +86,7 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !     --------------------------------------------------
     call getvtx(motfac, 'NOM_CHAM', 1, iarg, 10,&
                 nomsym, nbsym)
-    call assert(nbsym.gt.0)
+    ASSERT(nbsym.gt.0)
     if (motfac .eq. 'EXTR_COQUE' .or. motfac .eq. 'EXTR_TUYAU') then
         call getvis(motfac, 'NUME_COUCHE', 1, iarg, 1,&
                     nucou, ibid)
@@ -122,7 +122,7 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !
         call rsexch(' ', nomres, nomsym(isym), nuordr, chextr,&
                     iret)
-        call assert(iret.eq.100)
+        ASSERT(iret.eq.100)
         call w155ch(chin, carele, ligrel, chextr, motfac,&
                     nucou, nicou, nangl, nufib)
         call rsnoch(nomres, nomsym(isym), nuordr)

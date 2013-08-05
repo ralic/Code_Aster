@@ -61,7 +61,7 @@ subroutine te0563(option, nomte)
                 iret)
 !     NOMBRE DE COMPOSANTES DU CHAMP DE COEF (=30) : NCMP3
     ncmp3=jtab3(2)
-    call assert(ncmp3.eq.ncmp1)
+    ASSERT(ncmp3.eq.ncmp1)
 !
     resu=0.d0
     do 10 i = 1, npg

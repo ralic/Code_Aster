@@ -149,7 +149,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
         call detrsd('CHAM_ELEM', chmlcf)
         call alchml(ligrcf, 'RIGI_CONT', 'PCONFR', 'V', chmlcf,&
                     iret, ' ')
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
     endif
 !
 ! --- RECUPERATION DU DESCRIPTEUR DU CHAM_ELEM
@@ -172,7 +172,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 !       NOMBRE D'ELEMENTS DU GREL IGR
         nbliel = zi(jceld-1+decal+1)
 !       VERIF TAILLE CHAM_ELEM
-        call assert(zi(jceld-1+decal+3).eq.ncmp)
+        ASSERT(zi(jceld-1+decal+3).eq.ncmp)
 !       RECUPERATION DES MAILLES DU GREL IGR
         call jeveuo(jexnum(ligrcf//'.LIEL', igr), 'L', jliel)
         do 300 iel = 1, nbliel
@@ -228,7 +228,7 @@ subroutine mmchml(noma, defico, resoco, sddisc, sddyna,&
 300      continue
         ntliel = ntliel + nbliel
 200  end do
-    call assert(ntliel.eq.ntpc)
+    ASSERT(ntliel.eq.ntpc)
 !
     call jedema()
 end subroutine

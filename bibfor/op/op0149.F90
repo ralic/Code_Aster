@@ -141,7 +141,7 @@ subroutine op0149()
 !
     vite = basefl//'.VITE'
     call jelira(vite, 'LONUTI', nbvite, k8bid)
-    call assert(numvit.gt.0 .and. numvit.le.nbvite)
+    ASSERT(numvit.gt.0 .and. numvit.le.nbvite)
 !
 !-----2.3.ERREUR FATALE SI TOUS LES MODES NON COUPLES SONT RETENUS
 !         (MOT-CLE <NUME_ORDRE> NON UTILISE) ET NOMBRE D'ARGUMENTS

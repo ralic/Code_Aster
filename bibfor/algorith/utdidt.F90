@@ -19,7 +19,6 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-! aslint: disable=W1501
     implicit      none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -88,9 +87,9 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
     latpr = dfllvd('LATPR')
     latpk = dfllvd('LATPK')
 !
-    call assert(typque.eq.'LIST'.or. typque.eq.'ECHE'.or. typque.eq.'ADAP')
+    ASSERT(typque.eq.'LIST'.or. typque.eq.'ECHE'.or. typque.eq.'ADAP')
 !
-    call assert(getset.eq.'L'.or.getset.eq.'E')
+    ASSERT(getset.eq.'L'.or.getset.eq.'E')
 !
 !     ------------------------------------------------------------------
 !                     QUESTION SUR LA LISTE
@@ -111,7 +110,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'AUTO') then
                     zr(jlinr-1+1) = 2
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -162,7 +161,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                     zr(jlinr-1+7) = 1
                 else
                     write(6,*) 'VALK: ',valk
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -178,7 +177,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                     zr(jlinr-1+11) = 1
                 else
                     write(6,*) 'VALK: ',valk
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -204,7 +203,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
 !
         endif
 !
@@ -250,7 +249,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'INSTABILITE') then
                     zr(jeevr-1+leevr*(iechec-1)+1) = 5.d0
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -280,7 +279,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'CONTINUE') then
                     zr(jeevr-1+leevr*(iechec-1)+2) = 6.d0
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -295,7 +294,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'NON') then
                     zr(jeevr-1+leevr*(iechec-1)+3) = 1
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -354,7 +353,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk .eq. 'AUTO') then
                     zr(jesur-1+lesur*(iechec-1)+1) = 2
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -369,7 +368,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk .eq. 'EXTRAPOLE') then
                     zr(jesur-1+lesur*(iechec-1)+10) =21
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -455,7 +454,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'AUTRE') then
                     zi(jpil)=2
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -467,7 +466,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
 !
         endif
 !
@@ -505,7 +504,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'SEUIL_AVEC_FORMULE') then
                     zr(jaevr-1+laevr*(iadapt-1)+1) = 3
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -527,7 +526,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'SEUIL_AVEC_FORMULE') then
                     zr(jaevr-1+laevr*(iadapt-1)+3) = 2
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -548,7 +547,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'GE') then
                     zr(jaevr-1+laevr*(iadapt-1)+4) = 4
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -588,7 +587,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
                 else if (valk.eq.'IMPLEX') then
                     zr(jatpr-1+latpr*(iadapt-1)+1) = 5
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -637,7 +636,7 @@ subroutine utdidt(getset, sddisc, typque, iocc, quest,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
 !
         endif
 !

@@ -1,5 +1,4 @@
 subroutine copisd(typesd, base, sd1, sd2)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -83,7 +82,7 @@ subroutine copisd(typesd, base, sd1, sd2)
     bas2 = base
     x1=sd1
     x2=sd2
-    call assert(x1.ne.x2)
+    ASSERT(x1.ne.x2)
 !
 ! ----------------------------------------------------------------------
 !     SUPRESSION DE SD2 :
@@ -478,7 +477,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !         CALL JEVEUO(K192//'.RELR','E',JRELR2)
 !         CALL JELIRA(K191//'.RELR','LONUTI',N1,KBID)
 !         CALL JELIRA(K192//'.RELR','LONUTI',N2,KBID)
-!         CALL ASSERT(N1.EQ.N2)
+!         ASSERT(N1.EQ.N2)
 !         DO 20,K=1,N1
 !           CH1=ZK24(JRELR1-1+K)
 !           CH2=??

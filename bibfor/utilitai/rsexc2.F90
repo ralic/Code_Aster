@@ -71,8 +71,8 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
         iretg=10000
     endif
 !
-    call assert((iprec.eq.0.or.nb.eq.i2).and.(iprec+1.eq.i1))
-    call assert(i2.le.nmax)
+    ASSERT((iprec.eq.0.or.nb.eq.i2).and.(iprec+1.eq.i1))
+    ASSERT(i2.le.nmax)
     iprec=i1
     if (iretg .le. 0) goto 20
     noms(i1)=nomsy

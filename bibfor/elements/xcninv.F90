@@ -71,7 +71,7 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset,&
             endif
 ! ------- STOCKAGE
             cninv(jno,1)=cninv(jno,1)+1
-            call assert(cninv(jno, 1).le.nse)
+            ASSERT(cninv(jno, 1).le.nse)
             cninv(jno,cninv(jno,1)+1)=ise
 !
 111      continue

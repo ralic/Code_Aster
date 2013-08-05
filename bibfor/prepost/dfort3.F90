@@ -87,7 +87,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
     yo1o2 = coord2(2)-coord1(2)
     zo1o2 = coord2(3)-coord1(3)
     do1o2 = sqrt( xo1o2**2 + yo1o2**2 + zo1o2**2 )
-    call assert(do1o2.ge.1.d-20)
+    ASSERT(do1o2.ge.1.d-20)
 !
 ! 2 - CALCUL DU RAYON MAXI
 !
@@ -211,11 +211,11 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
                     voli = 0.0d0
                 else
 !             problème intersection cylindre tétraèdre
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
-            call assert(voli.ge.0.d0)
+            ASSERT(voli.ge.0.d0)
 !
 ! 3.1.3 - CALCUL DE L ENERGIE
 !
@@ -226,7 +226,7 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 !
 40      continue
 !
-        call assert(voltot.gt.0.d0.and.ener(iint).gt.0.d0)
+        ASSERT(voltot.gt.0.d0.and.ener(iint).gt.0.d0)
         ener(iint) = ener(iint) / voltot
 !
 ! LISSAGE DE LA COURBE ENERGI=F(RAYON) POUR IDENTIFIER PE

@@ -109,9 +109,9 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
     ilagc = indik8(zk8(jcmp),'LAGS_C' ,1,ncmpmx)
     ilagf1 = indik8(zk8(jcmp),'LAGS_F1',1,ncmpmx)
     ilagf2 = indik8(zk8(jcmp),'LAGS_F2',1,ncmpmx)
-    call assert(ilagc.ne.0)
-    call assert(ilagf1.ne.0)
-    call assert(ilagf2.ne.0)
+    ASSERT(ilagc.ne.0)
+    ASSERT(ilagf1.ne.0)
+    ASSERT(ilagf2.ne.0)
 !
 ! --- RECUPERATION DU NOMBRE D'INCONNUES DU MODELE
 !
@@ -127,7 +127,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
         if (nolili(1:8) .ne. '&MAILLA ') goto 40
         k = i
 40  end do
-    call assert(k.ne.0)
+    ASSERT(k.ne.0)
 !
     call jeveuo(jexnum(numedd(1:14)//'.NUME.PRNO', k), 'L', iaprno)
 !

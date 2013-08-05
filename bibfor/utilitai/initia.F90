@@ -67,7 +67,7 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
             else if (indro(i).eq.1) then
                 chamin(i) = chamro(i)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 20      continue
     endif

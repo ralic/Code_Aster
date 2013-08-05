@@ -201,7 +201,7 @@ subroutine asgeel(nomres, option, nugene)
 !
 !-- .VALM NE DOIT PAS EXISTER :
     call jeexin(nomres//'           .VALM', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !-- ALLOCATION DE LA MATRICE PROJETEE
     call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&

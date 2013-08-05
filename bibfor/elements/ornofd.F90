@@ -179,8 +179,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
         do 580 i = 1, nbma
             zi(jnoe-1 + 3*i-2) = zi(jcour2-1 + i)
             call jeveuo(jexnum(conec, zi(jmail-1 + i)), 'L', jrdm)
-            call assert((zi(jrdm-1 + 1).eq.zi(jcour2-1 + i)) .or.&
-                        (zi(jrdm-1 + 2).eq.zi(jcour2-1 + i)))
+            ASSERT((zi(jrdm-1 + 1).eq.zi(jcour2-1 + i)) .or. (zi(jrdm-1 + 2).eq.zi(jcour2-1 + i)))
             if (zi(jrdm-1 + 1) .eq. zi(jcour2-1 + i)) then
                 zi(jnoe-1 + 3*i-1) = zi(jrdm-1 + 3)
                 zi(jnoe-1 + 3*i ) = zi(jrdm-1 + 4)
@@ -209,8 +208,8 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig,&
 !     ------------------------------------------------------------------
     ps1=ddot(3,vecori,1,vecori,1)
     if (ps1 .gt. 0.d0) then
-        call assert(nbno.ge.3)
-        call assert(zi(jnoe-1+1).eq.zi(jnoe-1+nbno))
+        ASSERT(nbno.ge.3)
+        ASSERT(zi(jnoe-1+1).eq.zi(jnoe-1+nbno))
         call jeveuo(nomail//'.COORDO    .VALE', 'L', jcoor)
 !
 !       PS1 : DDOT(VECORI,(1,2))/NORME((1,2))

@@ -160,7 +160,7 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
                     zr(jr+k) = zr(j1+k) + zr(j2+k) + zr(j3+k) + zr(j4+ k)
  6              continue
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 ! MONITORING
             if ((infofe(1:1).eq.'T') .and. (nbsd.gt.0)) then

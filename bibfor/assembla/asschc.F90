@@ -64,7 +64,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     mat = matas
     call jeveuo(mat//'.REFA', 'E', jrefa)
     nu = nomnu
-    call assert(zk24(jrefa-1+2).eq.nu)
+    ASSERT(zk24(jrefa-1+2).eq.nu)
     if (nbchc .eq. 0) goto 40
 !
 !     -- IL N'Y A PEUT-ETRE AUCUN DDL A ELIMINER (CHAR_CINE VIDES) :
@@ -96,7 +96,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     else if (cumul.eq.'CUMU') then
         call jeveuo(mat//'.CCID', 'E', jccid)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

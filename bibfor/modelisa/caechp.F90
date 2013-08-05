@@ -162,10 +162,10 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                         k8b, ntcon)
 !         VERIF DE COHERENCE AVEC LE MC COEF_H
             if (ntcon .eq. 1) then
-                call assert(k8b(1:3).eq.'OUI'.and. nh.eq.0)
+                ASSERT(k8b(1:3).eq.'OUI'.and. nh.eq.0)
                 ltcon=.true.
             else
-                call assert(nh.eq.1 .and. ntcon.eq.0)
+                ASSERT(nh.eq.1 .and. ntcon.eq.0)
             endif
 !
 ! ----------------------------------------------------------------------

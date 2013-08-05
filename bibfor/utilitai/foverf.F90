@@ -115,7 +115,7 @@ subroutine foverf(v, nc, ier)
 !           PARAMETRES NON STRICTEMENT DECROISSANTS
                 call u2mesk('F', 'FONCT0_47', 1, nomfon)
             endif
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
 !        UNE SEULE VALEUR, ON RETOURNE CROISSANT STRICT SI IER=0

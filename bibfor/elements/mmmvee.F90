@@ -183,7 +183,7 @@ subroutine mmmvee(phasez, ndim, nne, norm, tau1,&
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -97,7 +97,7 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
     lexge = ndynlo(sddyna,'EXPL_GENE')
     lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
     if (.not.lacce) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- OBJETS PROJECTION MODALE

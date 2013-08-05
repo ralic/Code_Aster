@@ -42,6 +42,6 @@ subroutine jedbg2(dbgav, dbgap)
     else if (dbgap.eq.1) then
         idebug=1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

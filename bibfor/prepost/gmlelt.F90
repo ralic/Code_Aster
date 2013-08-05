@@ -163,7 +163,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !      INDICATION DES NOEUDS QUI NE SONT PAS ORPHELINS

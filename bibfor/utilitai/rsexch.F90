@@ -69,7 +69,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
     noms2 = nomsy
     nomd2 = nomsd
     chextr = '???'
-    call assert(kstop.eq.' '.or.kstop.eq.'F')
+    ASSERT(kstop.eq.' '.or.kstop.eq.'F')
 !
 !
 !     --- NOM SYMBOLIQUE PERMIS ?
@@ -93,7 +93,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
             call rsutch(nomsd, noms2, iordr, chext2, .true.)
         else
             call rsutch(nomsd, noms2, iordr, chext3, .true.)
-            call assert(chext2.eq.chext3)
+            ASSERT(chext2.eq.chext3)
         endif
 !
 !
@@ -123,7 +123,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
 !     --- LA SD CHEXTR EXISTE-T-ELLE ? :
 !     -----------------------------------------
     chextr = chext2
-    call assert(chextr.ne.' ')
+    ASSERT(chextr.ne.' ')
     call exisd('CHAMP_GD', chextr, iexi)
     if (iexi .gt. 0) then
         icode = 0

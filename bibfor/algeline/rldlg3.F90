@@ -91,7 +91,7 @@ subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
             call rlfc16(mat19, neq, cxsol, nbsol, typsym)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

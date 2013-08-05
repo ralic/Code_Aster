@@ -77,7 +77,7 @@ subroutine mmmtcc(phasep, nnl, wpg, ffl, jacobi,&
 53          continue
 63      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

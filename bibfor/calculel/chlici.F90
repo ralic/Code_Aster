@@ -32,14 +32,14 @@ subroutine chlici(chaine, long)
 ! IN  LONG      : LA CHAINE EST VERIFIEE DE (1:LONG)
 ! ----------------------------------------------------------------------
     integer :: i, k
+    logical :: bool
 !-----------------------------------------------------------------------
 !
-    do 10,i = 1,long
-    k = ichar(chaine(i:i))
-    call assert((&
-                (k.eq.32) .or. (k.eq.46) .or. (k.eq.38)&
-                .or. (k.eq.95) .or. ((k.ge.48).and. (k.le.57)) .or.&
-                ((k.ge.65).and. ( k.le.90)) .or. ((k.ge.97).and. (k.le.122))&
-                ))
-    10 end do
+    do i = 1,long
+        k = ichar(chaine(i:i))
+        bool = (k.eq.32) .or. (k.eq.46) .or. (k.eq.38) .or. (k.eq.95) .or. &
+               ((k.ge.48).and. (k.le.57)) .or.&
+               ((k.ge.65).and. ( k.le.90)) .or. ((k.ge.97).and. (k.le.122))
+        ASSERT(bool)
+    end do
 end subroutine

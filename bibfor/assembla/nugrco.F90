@@ -76,7 +76,7 @@ subroutine nugrco(nu, base)
 !---- DETERMINATION DE QUI COMMUNIQUE AVEC QUI
     do 10 iddl = 0, neql-1
         numpro=zi(jpddl+iddl)
-        call assert(numpro.lt.nbproc)
+        ASSERT(numpro.lt.nbproc)
         zi(jcomm1+numpro)=zi(jcomm1+numpro)+1
 10  end do
     zi(jcomm1+rang)=0
@@ -133,7 +133,7 @@ subroutine nugrco(nu, base)
     80 end do
     do 90, iaux = 0,nbproc-1
     num=zi(jmasqu+rang*nbproc+iaux)
-    call assert(num.le.nmatch)
+    ASSERT(num.le.nmatch)
     if (num .ne. 0) then
         zi(jordjo+num-1)=iaux
 !
@@ -160,7 +160,7 @@ subroutine nugrco(nu, base)
         numpro=zi(jpddl+nulodd-1)
         if (numpro .ne. rang) then
             jjoint=zi(jpospr+2*numpro)
-            call assert(jjoint.ne.-1)
+            ASSERT(jjoint.ne.-1)
 !
             curpos=zi(jpospr+2*numpro+1)
             zi(jjoint+curpos)=nulodd
@@ -182,7 +182,7 @@ subroutine nugrco(nu, base)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
         do 120, iddl=0,nbddlj-1
         iddlg=zi(jnulg+zi(jjoint+iddl)-1)
-        call assert(iddlg.ne.0)
+        ASSERT(iddlg.ne.0)
         zi(jjoin2+iddl)=iddlg
 120      continue
 !
@@ -203,12 +203,12 @@ subroutine nugrco(nu, base)
                     rbid, numpro, iaux)
         do 130, iddl=0,nbddlj-1
         iddll=zi(jnugl+zi(jjoin2+iddl)-1)
-        call assert(iddll.ne.0)
+        ASSERT(iddll.ne.0)
         zi(jjoint+iddl)=iddll
 130      continue
         call jedetr('&&NUGRCO.TMP')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     110 end do
 !

@@ -80,7 +80,7 @@ subroutine apzonl(sdappa, izone, questz, vall)
         call apzoni(sdappa, izone, 'CALC_NORM_MAIT', iappa)
         vall = iappa.eq.1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

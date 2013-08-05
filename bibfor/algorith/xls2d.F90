@@ -122,7 +122,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
     if (ir2-1 .ne. nbmaf) then
         write (6,*) ir,ir2,nbmaf
 !     MAILLES MANQUANTES
-        call assert(ir2-1.eq.nbmaf)
+        ASSERT(ir2-1.eq.nbmaf)
     endif
 !
 !     BOUCLE SUR LES NOEUDS P DU MAILLAGE

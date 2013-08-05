@@ -83,7 +83,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         mpicou=comcou(1)
 !       --- ON EST CENSE FONCTIONNER JUSQUE LA EN COM LOCAL
 !       --- (POUR SOLVEUR LINEAIRE DU SOLVEUR MODAL)
-        if (mpicow .eq. mpicou) call assert(.false.)
+        if (mpicow .eq. mpicou) ASSERT(.false.)
         call mpiexe('MPI_RANG_SIZE', mpicou, ibid, rangl, ibid)
 !       ----------------------------------------------------------------
 !       --- STEP 0: COMM AU SEIN DU COM_WORLD
@@ -107,10 +107,10 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
             l1=2
         endif
         call mpiexe('MPI_COMM_SPLIT', mpicow, mpico0, l1, icom1)
-        if (mpicow .eq. mpico0) call assert(.false.)
+        if (mpicow .eq. mpico0) ASSERT(.false.)
         call mpiexe('MPI_RANG_SIZE', mpico0, ibid, rangll, l2)
-        if ((l2.ne.icom2) .and. (rangl.eq.0)) call assert(.false.)
-        if ((rangll.ne.(icom1-1)) .and. (rangl.eq.0)) call assert(.false.)
+        if ((l2.ne.icom2) .and. (rangl.eq.0)) ASSERT(.false.)
+        if ((rangll.ne.(icom1-1)) .and. (rangl.eq.0)) ASSERT(.false.)
 !
 !       --- VECTEUR DES DECALAGES (NCONV) PAR PROC POUR VECTEURS PROPRES
 !       --- CALCUL ET AFFECTATION DU NBRE TOTAL DE MODES CONVERGES
@@ -125,10 +125,10 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         call mpicm1('MPI_SUM', 'I', icom2, ibid, zi(jlcom),&
                     rbid, cbid)
         nconvg=somint(icom2,zi(jlcom))
-        if (nconvg .le. 0) call assert(.false.)
+        if (nconvg .le. 0) ASSERT(.false.)
         nconv=nconvg
         nconvm=maxint(icom2,zi(jlcom))
-        if (nconvm .le. 0) call assert(.false.)
+        if (nconvm .le. 0) ASSERT(.false.)
 !
 !       ----------------------------------------------------------------
 !       --- STEP 1: COMM ENTRE LES MAITRES DE CHAQUE SOUS-BANDES
@@ -153,7 +153,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                 do 114 j = 1, i-1
                     idecal=idecal+zi(jlcom+j-1)
 114              continue
-                if (idecal .lt. 0) call assert(.false.)
+                if (idecal .lt. 0) ASSERT(.false.)
                 i8=neq*zi(jlcom+i-1)
                 i4=i8
                 if (i .eq. icom1) call dcopy(i4, zr(jlbufs), 1, zr(jlbuff), 1)
@@ -234,7 +234,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         do 125 i = 1, nbpark
             j=1+(i-1)*mxresf
             k24b=resuk(j)
-            if (k24b .ne. resuk(j+1)) call assert(.false.)
+            if (k24b .ne. resuk(j+1)) ASSERT(.false.)
             call vecink(nconvg, k24b, resuk(j))
 125      continue
 !       ----------------------------------------------------------------

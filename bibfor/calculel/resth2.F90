@@ -84,7 +84,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 ! DEBUT DE LA SUBROUTINE
     call jemarq()
 !
-    call assert(ligrel(1:8).eq.modele)
+    ASSERT(ligrel(1:8).eq.modele)
 !
 ! RECHERCHE DU NOM DU CHAMP GEOMETRIE DANS LA SD MODELE OU CHARGE -----
 ! SURCOUCHE DE LA REQUETE D'EXISTENCE JEEXIN/JEVEUO DU DESCRIPTEUR DE
@@ -153,8 +153,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         if (iretep .ne. 0) then
             call u2mess('A', 'CALCULEL6_42')
         endif
-        if (((ireth.eq.0).and.(irett.ne.0)) .or. ((irett.eq.0).and.( ireth.ne.0))) call assert(&
-                                                                                   .false.)
+        if (((ireth.eq.0).and.(irett.ne.0)) .or. ((irett.eq.0).and.( ireth.ne.0))) ASSERT(.false.)
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE FLUX_REP/FLUN
         if (iretf .ne. 0) then
@@ -165,7 +164,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! EXTENSION DE LA CARTE CARTEF VIA CARTEF//'.PTMA' ET '.PTMS' SUR 'V'
             call etenca(cartf, ligrel, ier)
-            call assert(ier.eq.0)
+            ASSERT(ier.eq.0)
 !
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (cartef .ne. ' ') then
@@ -181,13 +180,13 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
             call dismoi('F', 'NOM_GD', carth, 'CARTE', ibid,&
                         nomgdh, ier)
             call etenca(carth, ligrel, ier)
-            call assert(ier.eq.0)
+            ASSERT(ier.eq.0)
 !
 ! TRAITEMENT DES CHARGEMENTS DE TYPE ECHANGE/TEMP_EXT
             call dismoi('F', 'NOM_GD', cartt, 'CARTE', ibid,&
                         nomgdt, ier)
             call etenca(cartt, ligrel, ier)
-            call assert(ier.eq.0)
+            ASSERT(ier.eq.0)
 !
 ! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
             if (carteh .ne. ' ') then

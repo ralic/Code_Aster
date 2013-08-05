@@ -154,7 +154,7 @@ subroutine xoripe(modele)
 !     ------------------------------------------------------------------
 !     II°) RECHERCHE DES MAILLES SUPPORT
 !     ------------------------------------------------------------------
-    call assert(ndim.eq.2.or.ndim.eq.3)
+    ASSERT(ndim.eq.2.or.ndim.eq.3)
     if (ndim .eq. 2) kdim='2D'
     if (ndim .eq. 3) kdim='3D'
 !
@@ -338,10 +338,10 @@ subroutine xoripe(modele)
                 call cesexi('S', jcesd(4), jcesl(4), numab, 1,&
                             ifiss, ihe, iad)
                 he=zi(jcesv(4)-1+iad)
-                call assert(he.eq.- 1.or.he.eq.1.or.he.eq.0.or.he.eq.99)
+                ASSERT(he.eq.- 1.or.he.eq.1.or.he.eq.0.or.he.eq.99)
                 if (he .eq. 99) then
 !             VERIF QUE C'EST NORMAL
-                    call assert(nse.eq.1)
+                    ASSERT(nse.eq.1)
 !             SIGNE LEVEL SET SUR LA MAILLE PRINCIPALE
                     nsignp=0
                     nsignm=0
@@ -356,11 +356,11 @@ subroutine xoripe(modele)
                         if (lsn .eq. 0.d0) nsignz = nsignz +1
                         if (lsn .lt. 0.d0) nsignm = nsignm +1
 440                  continue
-                    call assert(nsignz.ne.0)
+                    ASSERT(nsignz.ne.0)
 !             REMARQUE : LES DEUX TESTS SUIVANTS NE SONT PAS CORRECTS
 !             VOIR FICHE 13265
-!              CALL ASSERT(NSIGNP+NSIGNM.NE.0)
-!              CALL ASSERT(NSIGNP*NSIGNM.EQ.0)
+!              ASSERT(NSIGNP+NSIGNM.NE.0)
+!              ASSERT(NSIGNP*NSIGNM.EQ.0)
 !             ON ECRIT HE
                     if (nsignp .gt. 0) zi(jcesv(4)-1+iad)= 1
                     if (nsignm .gt. 0) zi(jcesv(4)-1+iad)=-1

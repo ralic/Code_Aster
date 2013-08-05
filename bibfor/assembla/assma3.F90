@@ -173,7 +173,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
             call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
                         mode, nec, ncmp, n1, k1,&
                         nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
-            call assert(nddl1.le.nmxcmp)
+            ASSERT(nddl1.le.nmxcmp)
             zi(jnulo1-1+2*(k1-1)+1)=iad1
             zi(jnulo1-1+2*(k1-1)+2)=nddl1
 10      continue
@@ -328,7 +328,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 80          continue
 90      continue
 100  end do
-    call assert(nbi1.le.nbi1mx)
+    ASSERT(nbi1.le.nbi1mx)
     call asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                 jsmdi, nbi1, ti1, ti2)
 !
@@ -337,11 +337,11 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !        CONTRIBUTIONS DES ELEMENTS VOISINS :
 !     -----------------------------------------------------------------
     if (exivf .eq. 'OUI') then
-        call assert(.not.lmesym)
+        ASSERT(.not.lmesym)
         call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
                     jptvoi, jelvoi, nbvois, livois, tyvois,&
                     nbnovo, nbsoco, lisoco)
-        call assert(nbvois.le.30)
+        ASSERT(nbvois.le.30)
         do 101, kvois=1,nbvois
         numav=livois(kvois)
         nnov =nbnovo(kvois)
@@ -354,7 +354,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
             call corddl(admodl, lcmodl, jprn1, jprn2, 1,&
                         mode2, nec, ncmp, n2, k2,&
                         nddl2, zi(jposd2-1+nmxcmp*(k2-1)+1))
-            call assert(nddl2.le.nmxcmp)
+            ASSERT(nddl2.le.nmxcmp)
             zi(jnulo2-1+2*(k2-1)+1)=iad2
             zi(jnulo2-1+2*(k2-1)+2)=nddl2
 102      continue

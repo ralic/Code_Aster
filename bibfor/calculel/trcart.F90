@@ -72,7 +72,7 @@ subroutine trcart(ific, nocc)
 !
         call getvtx('CARTE', 'NOM_CMP', iocc, iarg, 1,&
                     noddl, n1)
-        call assert(n1.eq.1)
+        ASSERT(n1.eq.1)
         nl1 = lxlgut(lign1)
         nl2 = lxlgut(lign2)
         lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CMP'
@@ -98,7 +98,7 @@ subroutine trcart(ific, nocc)
         else if (n2 .eq. 1) then
             typres = 'I'
         else
-            call assert(n3.eq.1)
+            ASSERT(n3.eq.1)
             typres = 'C'
         endif
 ! ----------------------------------------------------------------------
@@ -113,7 +113,7 @@ subroutine trcart(ific, nocc)
                         valir, n2r)
             call getvc8('CARTE', 'VALE_REFE_C', iocc, iarg, 1,&
                         valcr, n3r)
-            call assert(n1r.eq.n1 .and. n2r.eq.n2 .and. n3r.eq.n3)
+            ASSERT(n1r.eq.n1 .and. n2r.eq.n2 .and. n3r.eq.n3)
         endif
 ! ----------------------------------------------------------------------
 !
@@ -124,7 +124,7 @@ subroutine trcart(ific, nocc)
                     nomma, iret)
         call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc,&
                     iarg, 1, nomail, n1)
-        call assert(n1.eq.1)
+        ASSERT(n1.eq.1)
         nl1 = lxlgut(lign1)
         nl2 = lxlgut(lign2)
         lign1(1:nl1+16)=lign1(1:nl1-1)//' MAILLE'

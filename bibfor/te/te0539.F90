@@ -65,7 +65,7 @@ subroutine te0539(option, nomte)
                 npg, ipoids, ivf, idfde, jgano)
 !      FAMI='RIGI'
 !     MATNS MAL DIMENSIONNEE
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, ibid, ddlc,&
@@ -85,7 +85,7 @@ subroutine te0539(option, nomte)
             typmod(1) = 'D_PLAN  '
         else
 !          NOM D'ELEMENT ILLICITE
-            call assert(lteatt(' ', 'C_PLAN', 'OUI'))
+            ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
         endif
         if (nomte(1:2) .eq. 'MD') then
             typmod(2) = 'ELEMDISC'

@@ -103,7 +103,7 @@ subroutine rfrgen(trange)
             call rfmge1(trange)
         else
 !CC  FONCTIONNALITE NON DEVELOPPEE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 9999
 ! TRAITEMENT DU HARM_GENE
@@ -158,7 +158,7 @@ subroutine rfrgen(trange)
 !
 !     --- REMPLISSAGE DU .PROL ---
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = interp(1)//interp(2)

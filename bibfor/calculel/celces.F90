@@ -97,7 +97,7 @@ subroutine celces(celz, basez, cesz)
 !     -- SI CEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
     call dismoi('F', 'MPI_COMPLET', cel, 'CHAM_ELEM', ibid,&
                 kmpic, ibid)
-    call assert((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
+    ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
     if (kmpic .eq. 'NON') call sdmpic('CHAM_ELEM', cel)
 !
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
@@ -164,8 +164,8 @@ subroutine celces(celz, basez, cesz)
     if (imolo .eq. 0) goto 90
 !
     call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
-    call assert(zi(jmolo-1+1).le.3)
-    call assert(zi(jmolo-1+2).eq.gd)
+    ASSERT(zi(jmolo-1+1).le.3)
+    ASSERT(zi(jmolo-1+2).eq.gd)
     diff = (zi(jmolo-1+4).gt.10000)
     nbpt = mod(zi(jmolo-1+4),10000)
     nptmx = max(nptmx,nbpt)
@@ -209,7 +209,7 @@ subroutine celces(celz, basez, cesz)
 !
 80  continue
     90 end do
-    call assert(nptmx.ne.0)
+    ASSERT(nptmx.ne.0)
 !
 !
 !
@@ -275,7 +275,7 @@ subroutine celces(celz, basez, cesz)
         if (exisdg(zi(iadg),icmp)) then
             ico = ico + 1
             icmp1 = zi(jcorr1-1+icmp)
-            call assert(icmp1.eq.kcmp)
+            ASSERT(icmp1.eq.kcmp)
 !
             do 140,iel = 1,nbel
             numa = numail(igr,iel)
@@ -307,7 +307,7 @@ subroutine celces(celz, basez, cesz)
             else if (tsca.eq.'K24') then
                 zk24(jcesv-1+iad) = zk24(jcelv-1+ ieq)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 130          continue
 140          continue
@@ -328,9 +328,9 @@ subroutine celces(celz, basez, cesz)
         lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
         call jeveuo(jexnum('&CATA.TE.MODELOC', imolo), 'L', jmolo)
         diff = (zi(jmolo-1+4).gt.10000)
-        call assert(.not.diff)
+        ASSERT(.not.diff)
         nbpt = mod(zi(jmolo-1+4),10000)
-        call assert(nbpt.eq.lgcata)
+        ASSERT(nbpt.eq.lgcata)
         nbel = nbelem(ligrel,igr)
 !
         do 210,iel = 1,nbel
@@ -354,7 +354,7 @@ subroutine celces(celz, basez, cesz)
         if (tsca .eq. 'R') then
             zr(jcesv-1+iad) = zr(jcelv-1+ieq)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 180      continue
 190      continue

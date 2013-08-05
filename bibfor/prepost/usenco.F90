@@ -33,7 +33,7 @@ subroutine usenco(ai1, bi1, alphad, alphaf, ndim,&
             goto 12
         endif
 10  end do
-    call assert(.false.)
+    ASSERT(.false.)
 12  continue
 !
     do 20 i = ind, ndim

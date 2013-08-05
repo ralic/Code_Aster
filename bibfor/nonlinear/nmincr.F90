@@ -87,7 +87,7 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
         lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
         lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL DES INCREMENTS
@@ -117,7 +117,7 @@ subroutine nmincr(sddyna, ddincr, coedep, coevit, coeacc,&
         call vtaxpy(coevit, ddincr, ddvite)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

@@ -47,7 +47,7 @@ subroutine megeom(modelz, chgeoz)
     call jemarq()
     modele = modelz
 !
-    call assert(modele.ne.' ')
+    ASSERT(modele.ne.' ')
     call jeveuo(modele//'.MODELE    .LGRF', 'L', jlgrf)
     chgeom = zk8(jlgrf-1+1)//'.COORDO'
     chgeoz = chgeom

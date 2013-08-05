@@ -100,7 +100,7 @@ subroutine cazocd(char, motfac, izone, nzoco)
         call getvr8(motfac, 'E_N', izone, iarg, 1,&
                     coefpn, nocn)
         if (nocn .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             zr(jcmdf+zcmdf*(izone-1)+2-1) = coefpn
         endif
@@ -110,7 +110,7 @@ subroutine cazocd(char, motfac, izone, nzoco)
         call getvr8(motfac, 'E_T', izone, iarg, 1,&
                     coefpt, nocn)
         if (nocn .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             zr(jcmdf+zcmdf*(izone-1)+3-1) = coefpt
         endif
@@ -131,7 +131,7 @@ subroutine cazocd(char, motfac, izone, nzoco)
         else if ((glis(1:3) .eq. 'NON').or.(noc.eq.0)) then
             zr(jcmdf+zcmdf*(izone-1)+6-1) = 0.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

@@ -120,7 +120,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !              -- SI UN NOEUD EST ORPHELIN : II=0
 !                 (PAS D'OBJET JEVEUX DE LONG=0)
                 if (ii .eq. 0) then
-                    call assert(nbman.eq.1)
+                    ASSERT(nbman.eq.1)
                     goto 120
                 endif
                 if (nbmavo .eq. 0) then

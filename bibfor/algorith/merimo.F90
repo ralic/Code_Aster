@@ -172,7 +172,7 @@ subroutine merimo(base, modele, carele, mate, comref,&
         codint = .true.
         conext = .false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- AFFICHAGE

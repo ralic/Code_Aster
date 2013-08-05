@@ -1,6 +1,5 @@
 subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                   lcmin)
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"
@@ -184,7 +183,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
             j=j+1
 !           THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS BE
 !           LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
-            call assert(j.le.maxedg(ndim))
+            ASSERT(j.le.maxedg(ndim))
             nodcon(j) = ar(i,2)
         endif
 !
@@ -192,14 +191,14 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
             j = j+1
 !           THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS BE
 !           LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
-            call assert(j.le.maxedg(ndim))
+            ASSERT(j.le.maxedg(ndim))
             nodcon(j) = ar(i,1)
         endif
 1100  end do
 !
 !     THE NUMBER OF EDGES RETRIEVED SHOULD ALWAYS BE EQUAL TO
 !     THE NUMBER OF THE EXPECTED EDGES
-    call assert(j.eq.maxedg(ndim))
+    ASSERT(j.eq.maxedg(ndim))
 !
 !     RETRIEVE THE COORDINATES OF THE ORIGIN
     j = zi(jconx1-1+zi(jconx2-1+elmori)+1-1)
@@ -333,7 +332,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !              THE NODE SHOULD ALWAYS BE PRESENT INTO THE ELEMENT
 !              DEFINITION. HOWEVER IT IS BETTER TO CHECK IT, JUST IN THE
 !              CASE SOMETHING IS WRONG IN THE MESH DEFINITION
-                call assert(nodeps.gt.0)
+                ASSERT(nodeps.gt.0)
 !
 !              RETRIEVE ALL THE EDGES OF THE ELEMENT
                 call conare(typma, ar, nbar)
@@ -350,7 +349,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                         j = j+1
 !                   THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS
 !                   BE LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
-                        call assert(j.le.maxedg(ndim))
+                        ASSERT(j.le.maxedg(ndim))
                         nodcon(j) = ar(i,2)
                     endif
 !
@@ -361,14 +360,14 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
                         j = j+1
 !                   THE NUMBER OF EDGES SHARING THE NODE SHOULD ALWAYS
 !                   BE LOWER OR EQUAL TO THE MAXIMUM VALUE EXPECTED
-                        call assert(j.le.maxedg(ndim))
+                        ASSERT(j.le.maxedg(ndim))
                         nodcon(j) = ar(i,1)
                     endif
 350              continue
 !
 !              THE NUMBER OF EDGES RETRIEVED SHOULD ALWAYS BE EQUAL TO
 !              THE NUMBER OF THE EXPECTED EDGES
-                call assert(j.eq.maxedg(ndim))
+                ASSERT(j.eq.maxedg(ndim))
 !
 !              BUILD EACH EDGE SHARING THE CURRENT NODE AND EVALUATE ITS
 !              DIRECTION

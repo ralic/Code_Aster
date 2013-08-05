@@ -124,7 +124,7 @@ subroutine mdacce(typbas, neqgen, pulsa2, masgen, descm,&
             accgen(im) = fexgen(im) - work1(im)
 140      continue
 !
-        call assert(descm.ne.0)
+        ASSERT(descm.ne.0)
         matr = zk24(zi(descm+1))(1:19)
         call resoud(matr, ' ', ' ', ' ', 1,&
                     ' ', ' ', ' ', accgen, cbid,&

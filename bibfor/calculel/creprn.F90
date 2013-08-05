@@ -111,7 +111,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     nbsma = 0
     nbssa = 0
 !
-    call assert(ligrel.ne.'&MAILLA')
+    ASSERT(ligrel.ne.'&MAILLA')
 !
     call dismoi('F', 'EXI_ELEM', ligrel, 'LIGREL', ibid,&
                 exiel, ier)
@@ -157,7 +157,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         else if (moloc.eq.'DDL_THER') then
             nomgd='TEMP_R'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 20      continue
 !

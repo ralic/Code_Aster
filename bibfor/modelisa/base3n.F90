@@ -58,7 +58,7 @@ subroutine base3n(x1, mat33)
         v2(2)=0.d0
         v2(3)=-v1(1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call normev(v2, norme)
 !

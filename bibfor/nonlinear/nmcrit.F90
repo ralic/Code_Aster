@@ -92,7 +92,7 @@ subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
             lselec = .true.
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

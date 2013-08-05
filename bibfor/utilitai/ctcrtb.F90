@@ -57,7 +57,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    call assert(tych(1:2).eq.'EL'.or.tych.eq.'CART'.or.tych.eq.'NOEU')
+    ASSERT(tych(1:2).eq.'EL'.or.tych.eq.'CART'.or.tych.eq.'NOEU')
 !
 ! --- 0. INITIALISATION
 !     -----------------
@@ -137,12 +137,12 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
                 else if (tych.eq.'CART') then
                     call carces(zk24(jkcha+i-1), 'ELEM', ' ', 'V', chames,&
                                 ' ', iret)
-                    call assert(iret.eq.0)
+                    ASSERT(iret.eq.0)
                     call jeveuo(chames//'.CESD', 'L', jcesd)
                     call jeveuo(chames//'.CESC', 'L', jcesc)
                     n=zi(jcesd+1)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
         endif

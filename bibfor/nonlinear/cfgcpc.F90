@@ -99,7 +99,7 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai,&
     else if (precon.eq.'SANS') then
         call dcopy(nbliai, zr(jsgrap), 1, zr(jsgprp), 1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

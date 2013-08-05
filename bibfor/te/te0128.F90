@@ -110,7 +110,7 @@ subroutine te0128(option, nomte)
         if (option(11:14) .eq. 'COEF') then
             call fointe('A', zk8(iech), 4, nompar, valpar,&
                         echnp1, ier)
-            call assert(ier .eq. 0)
+            ASSERT(ier .eq. 0)
             do 104 i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1) + jac* theta* zr( ipoids+ipg-1)* zr(ivf+ldec+i-1)&
                                  &* echnp1 * tpg
@@ -118,10 +118,10 @@ subroutine te0128(option, nomte)
         else if (option(11:14).eq.'RAYO') then
             call fointe('A', zk8(iray), 4, nompar, valpar,&
                         sigma, ier)
-            call assert(ier .eq. 0)
+            ASSERT(ier .eq. 0)
             call fointe('A', zk8(iray+1), 4, nompar, valpar,&
                         epsil, ier)
-            call assert(ier .eq. 0)
+            ASSERT(ier .eq. 0)
             do 105 i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1) + jac* theta* zr( ipoids+ipg-1)* zr(ivf+ldec+i-1)&
                                  &* sigma* epsil* ( tpg + tz0 )**4

@@ -67,14 +67,14 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 ! 1.2. ==> VERIFICATIONS
 !
     call jeexin(nommai, ier)
-    call assert(ier.ne.0)
+    ASSERT(ier.ne.0)
 !
     call jeexin(grpmai, ier)
-    call assert(ier.ne.0)
+    ASSERT(ier.ne.0)
 !
     num = 0
     call jenonu(jexnom(nommai, nomma), num)
-    call assert(num.ne.0)
+    ASSERT(num.ne.0)
 !
 !====
 ! 2. BOUCLE SUR LES GROUP_MA

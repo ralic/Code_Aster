@@ -106,7 +106,7 @@ subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
     call jeveuo(nomchs(1:19)//'.CESL', 'L', jcesl)
     call jeveuo(nomchs(1:19)//'.CESV', 'L', jcesv)
     call jeveuo(nomchs(1:19)//'.CESC', 'L', jcesc)
-    call assert(nbcmp.le.nparx)
+    ASSERT(nbcmp.le.nparx)
 !
 ! --- ACCES LISTE DES MAILLES/POINTS/SOUS_POINTS
 !
@@ -179,7 +179,7 @@ subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
                         zr(jgaus+nbpi*nbspi*(ivalcp-1) +nbspi*(ipir-1)&
                         +(ispir-1)) = valr+val2r
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 47              continue
 46          continue
@@ -233,7 +233,7 @@ subroutine nmext3(noma, champ, nomcha, nomchs, nbcmp,&
                         nbspi*(ivalcp-1) +nbspi*(ipir-1) +(ispir-1)) =&
                         valr+val2r
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 77              continue
 76          continue

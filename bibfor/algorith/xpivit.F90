@@ -117,7 +117,7 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss, cncte,&
 !
         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                     ifiss, ndim*( iface-1)+pint, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         pint = zi(jcesv(4)-1+iad)
 !
 ! --- ON RECUPERE LE NUMERO D'ARETE COUPÉE ET L'INFO VITAL OU PAS DE
@@ -125,11 +125,11 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss, cncte,&
 !
         call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
                     ifiss, zxain*(pint- 1)+1, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         aret = nint(zr(jcesv(2)-1+iad))
         call cesexi('S', jcesd(2), jcesl(2), nummae, 1,&
                     ifiss, zxain*(pint- 1)+5, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         nvit = nint(zr(jcesv(2)-1+iad))
 !
         if ((nvit.eq.1) .and. (aret.ne.0)) then

@@ -61,7 +61,7 @@ subroutine nmsssv(modelz, mate, carele, lischa, vesstf)
 !
     call jeexin(fomul2, iret)
     if (iret .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         call memare('V', vesstf, modele, mate, carele(1:8),&
                     'CHAR_MECA')

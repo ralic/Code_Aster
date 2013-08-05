@@ -61,7 +61,7 @@ subroutine te0149(option, nomte)
      &             'CM'/
 ! --- ------------------------------------------------------------------
     okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
-    call assert(okopt)
+    ASSERT(okopt)
 !
     zero = 0.d0
 ! --- ------------------------------------------------------------------

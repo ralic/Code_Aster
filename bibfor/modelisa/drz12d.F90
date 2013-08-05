@@ -129,7 +129,7 @@ subroutine drz12d(lisnoz, lonlis, chargz, typlaz, lisrez)
     else if (oper(15:16).eq.'  ') then
         typval = 'REEL'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECUPERATION DES NOMS DES DDLS ET DES NUMEROS

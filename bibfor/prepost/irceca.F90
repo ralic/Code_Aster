@@ -2,7 +2,6 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                   vale, nomgd, ncmpgd, celd, nbnoma,&
                   typma, nomsym, nbmat, lresu, nbcput,&
                   ncmput, imodl, ncmpv, nucmpv, nive)
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"
@@ -162,7 +161,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
             lmode = .true.
             call jeveuo(jexnum('&CATA.TE.MODELOC', mode), 'L', jmod)
             nec = nbec (zi(jmod-1+2))
-            call assert(nec .le. 10)
+            ASSERT(nec .le. 10)
             call dgmode(mode, imodel, ilong, nec, tabec)
             if (nbcput .ne. 0) then
                 do 18 icm = 1, nbcput
@@ -380,7 +379,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 endif
                 jmod = imodel+zi(ilong-1+mode)-1
                 nec = nbec (zi(jmod-1+2))
-                call assert(nec .le. 10)
+                ASSERT(nec .le. 10)
                 call dgmode(mode, imodel, ilong, nec, tabec)
                 iad=celd(celd(4+igrel)+8)
                 nscal = digdel(mode)

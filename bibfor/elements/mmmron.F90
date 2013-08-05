@@ -81,7 +81,7 @@ subroutine mmmron(ndim, norm, tau1, tau2)
         endif
         call provec(tau1, norm, tau2)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

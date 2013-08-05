@@ -66,13 +66,13 @@ subroutine chvepg(chel1, chel2)
 !
     call celfpg(chel1, '&&CHVEPG.FAPG1', ibid)
     call jeexin('&&CHVEPG.FAPG1', iret1)
-    call assert(iret1.gt.0)
+    ASSERT(iret1.gt.0)
 !
 ! --- EXTRAIRE DE CHEL2 LE SCHEMA DE POINT DE GAUSS DES MAILLES
 !
     call celfpg(chel2, '&&CHVEPG.FAPG2', ibid)
     call jeexin('&&CHVEPG.FAPG2', iret2)
-    call assert(iret2.gt.0)
+    ASSERT(iret2.gt.0)
 !
 ! --- VERIFIER LA COHERENCE DES FAMILLES DE POINTS DE GAUSS
 !

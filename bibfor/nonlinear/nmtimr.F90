@@ -159,11 +159,11 @@ subroutine nmtimr(sdtime, timerz, phase, valr)
 !
     else if (timer.eq.'PAS_LOST') then
         if (phase .eq. 'T') valr = zr(jtimet-1+17)
-        if (phase .eq. 'P') call assert(.false.)
-        if (phase .eq. 'N') call assert(.false.)
+        if (phase .eq. 'P') ASSERT(.false.)
+        if (phase .eq. 'N') ASSERT(.false.)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -66,7 +66,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 !     ----------------------------------------
     call getfac('COQU_EXCENT', nocc)
     if (nocc .eq. 0) goto 30
-    call assert(nocc.lt.10)
+    ASSERT(nocc.lt.10)
 !
 !
     modeav=' '
@@ -79,10 +79,10 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
     motfac='COQU_EXCENT'
     call getvtx(motfac, 'NOM_CHAM', iocc, iarg, 1,&
                 nomsym, ibid)
-    call assert(nomsym.eq.'EFGE_ELNO'.or.nomsym.eq.'EFGE_ELGA')
+    ASSERT(nomsym.eq.'EFGE_ELNO'.or.nomsym.eq.'EFGE_ELGA')
     call getvtx(motfac, 'MODI_PLAN', iocc, iarg, 1,&
                 mplan, ibid)
-    call assert(mplan.eq.'OUI')
+    ASSERT(mplan.eq.'OUI')
     lnoeu=nomsym.eq.'EFGE_ELNO'
 !
 !
@@ -109,7 +109,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 !
         call rsexch(' ', nomres, nomsym, nuordr, chextr,&
                     iret)
-        call assert(iret.eq.100)
+        ASSERT(iret.eq.100)
 !
         call jelira(chin//'.CELV', 'TYPE', ibid, tsca)
         if (tsca .eq. 'R') then
@@ -117,7 +117,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
         else if (tsca.eq.'C') then
             lreel=.false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (lnoeu) then

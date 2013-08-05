@@ -158,9 +158,9 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 401      continue
 400  end do
 !
-    call assert(abs(sa21-s21) .le. max(1.d-8, abs(sa21)*1.d-8))
-    call assert(abs(sa22-s22) .le. max(1.d-8, abs(sa22)*1.d-8))
-    call assert(abs(sa23-s23) .le. max(1.d-8, abs(sa23)*1.d-8))
+    ASSERT(abs(sa21-s21) .le. max(1.d-8, abs(sa21)*1.d-8))
+    ASSERT(abs(sa22-s22) .le. max(1.d-8, abs(sa22)*1.d-8))
+    ASSERT(abs(sa23-s23) .le. max(1.d-8, abs(sa23)*1.d-8))
 !
 !
 !

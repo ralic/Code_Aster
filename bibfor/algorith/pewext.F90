@@ -124,14 +124,14 @@ subroutine pewext(resu)
 !
 !       CALCUL DU PRODUIT SCALAIRE F.U
         call cnsdot(depls1, forcs1, f1u1, ier)
-        call assert(ier.eq.0)
+        ASSERT(ier.eq.0)
 !
 !       CALCUL DE L'INTEGRALE I(F.DU)
         if (i .ge. 2) then
             call cnsdot(depls0, forcs1, f1u0, ier)
-            call assert(ier.eq.0)
+            ASSERT(ier.eq.0)
             call cnsdot(depls1, forcs0, f0u1, ier)
-            call assert(ier.eq.0)
+            ASSERT(ier.eq.0)
             w=w+0.5d0*(f0u1-f1u0+f1u1-f0u0)
         else
             w=0

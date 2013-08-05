@@ -86,7 +86,7 @@ subroutine tri(clef, tab, ntab, n)
 !
             else
 !
-                call assert(.false.)
+                ASSERT(.false.)
 !
             endif
 !

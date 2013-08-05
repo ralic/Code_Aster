@@ -124,7 +124,7 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
         carte=caelem//'.CARCOQUE  '
         cavale = carte//'.VALE'
         call jeexin(cavale, iret)
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
         call jelira(jexnom('&CATA.GD.NOMCMP', 'CACOQU'), 'LONMAX', ncaco, k1b)
 !

@@ -139,7 +139,7 @@ subroutine nmpred(modele, numedd, numfix, mate, carele,&
                     meelem, measse, veelem, veasse, ldccvg,&
                     faccvg, rescvg, codere)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TRANSFORMATION DES CODES RETOURS EN EVENEMENTS

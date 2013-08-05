@@ -45,7 +45,7 @@ subroutine dfftan(ndim, baslo, inoff, vtan)
 !
 !-----------------------------------------------------------------------
 !
-    call assert((ndim.eq.2).or.(ndim.eq.3))
+    ASSERT((ndim.eq.2).or.(ndim.eq.3))
 !
     if (ndim .eq. 3) then
 !

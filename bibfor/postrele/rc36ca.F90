@@ -108,7 +108,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
         ima = listma(im)
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
         ncmp = zi(jcesd-1+5+4*(ima-1)+3)
-        call assert(ncmp.eq.4 .and. nbpt.eq.2)
+        ASSERT(ncmp.eq.4 .and. nbpt.eq.2)
         do 110 ipt = 1, nbpt
             do 120 icmp = 1, ncmp
 !            POINT 1 : CMPS 1 ET 2 - POINT 2 : CMPS 3 ET 4
@@ -137,7 +137,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
                 endif
                 call cesexi('S', jcesdc, jceslc, ima, ipt,&
                             1, icmp+decal, iadc)
-                call assert(iadc.gt.0)
+                ASSERT(iadc.gt.0)
                 vc = zr(jcesvc-1+iadc)
 !            PASSAGE R A D : X2 (CMP 3)
                 if (icmp .eq. 3) then

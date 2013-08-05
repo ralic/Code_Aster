@@ -364,7 +364,7 @@ subroutine op0195()
     endif
     if (dbg .and. tychr(1:2) .eq. 'EL') then
         call cheksd(chou, 'SD_CHAM_ELEM', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
     endif
 !
 !

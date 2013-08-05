@@ -157,7 +157,7 @@ subroutine op0144()
         tmode = .true.
         numoi = nombm//'           .ORDR'
         call jelira(numoi, 'LONUTI', nbno, k8b)
-        call assert(nbam.eq.0 .or. abs(nbam).eq.nbno)
+        ASSERT(nbam.eq.0 .or. abs(nbam).eq.nbno)
     else
         nbno = abs(nbno)
     endif

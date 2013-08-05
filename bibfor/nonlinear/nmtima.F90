@@ -90,7 +90,7 @@ subroutine nmtima(sdtime, timer, vali)
             vali = 1
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

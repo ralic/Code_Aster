@@ -104,7 +104,7 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
     else if (typmav.eq.'PYRAM13') then
         nbnovo=13
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! ----- RECHERCHE DES ADRESSES POUR OBTENIR SIGMA SUR LES VOISINS ------
@@ -121,7 +121,7 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
 !
     iaux=jceld-1+zi(jceld-1+4+igrel)+4+4*(iel-1)+1
     jaux=zi(iaux)
-    call assert((jaux.eq.1) .or. (jaux.eq.0))
+    ASSERT((jaux.eq.1) .or. (jaux.eq.0))
 !
 ! --- FORMULES MAGIQUES DONNANT LE BON DECALAGE POUR NAVIGUER DANS .CELV
 !
@@ -156,7 +156,7 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
     ncher=zi(jad-1+ino)
     inov=indiis(zi(jadv),ncher,1,nbnovo)
 !       ON VERIFIE QUE L'ON TROUVE BIEN UN NOEUD DANS LA LISTE
-    call assert(inov.gt.0)
+    ASSERT(inov.gt.0)
     iaux = iaval-1+nbcmp*(inov-1)+1
     sigv11(in) = zr(iaux)
     sigv22(in) = zr(iaux+1)

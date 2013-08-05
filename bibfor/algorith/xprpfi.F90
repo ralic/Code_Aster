@@ -1,6 +1,5 @@
 subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
                   fiss, ndim, lsn, lst)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
@@ -352,7 +351,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !                       THIS CASE DOESN'T EXIST. FOR SAFETY IT'S BETTER
 !                       TO STOP THE CODE IF WE WILL ARRIVE IN THIS POINT
 !                       OF THE SUBROUTINE
-                            call assert(1.gt.2)
+                            ASSERT(1.gt.2)
 !
                         endif
 !

@@ -122,9 +122,9 @@ subroutine veevoc(nomo, mate, carele, varplu, lischa,&
 !
 ! ------- ON N'ATTEND PAS UNE CARTE !
 !
-            call assert(itypob(1).ne.1)
+            ASSERT(itypob(1).ne.1)
             call jeexin(nomobj, ier)
-            call assert(ier.ne.0)
+            ASSERT(ier.ne.0)
 !
 ! ------- NOM DE LA SD EVOL_CHAR
 !

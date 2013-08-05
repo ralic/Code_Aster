@@ -56,9 +56,9 @@ subroutine meamgy(modele, mate, cara, compor, matel)
 !
     call jemarq()
 !
-    call assert(modele.ne.' ')
-!      CALL ASSERT(MATE.NE.' ')
-    call assert(cara.ne.' ')
+    ASSERT(modele.ne.' ')
+!      ASSERT(MATE.NE.' ')
+    ASSERT(cara.ne.' ')
 !
     call jedetr(matel//'.RERR')
     call jedetr(matel//'.RELR')
@@ -67,7 +67,7 @@ subroutine meamgy(modele, mate, cara, compor, matel)
                 'MECA_GYRO')
 !
     call megeom(modele, chgeom)
-    call assert(chgeom.ne.' ')
+    ASSERT(chgeom.ne.' ')
 !
 !
 !    CHAMP DE CARACTERISTIQUES ELEMENTAIRES

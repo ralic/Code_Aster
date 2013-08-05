@@ -101,7 +101,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     call getvtx(' ', 'TOUT_CHAM', 1, iarg, 1,&
                 touch, n1)
     if (n1 .ne. 0) then
-        call assert(touch(1:3).eq.'OUI')
+        ASSERT(touch(1:3).eq.'OUI')
         nbcham = 3
         type(1) = 'DEPL            '
         type(2) = 'VITE            '
@@ -352,7 +352,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                     endif
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             chamno(20:24) = '.VALE'
             call jeexin(chamno, ibid)
@@ -363,7 +363,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             endif
             call jeveuo(chamno, 'E', lvale)
             call jelira(chamno, 'TYPE', ibid, type1)
-            call assert(type1.eq.'C')
+            ASSERT(type1.eq.'C')
 !
             if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq, k8b)
 !             IF (INTERP(1:3).NE.'NON') THEN

@@ -89,7 +89,7 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
 !        CALL UTDIDT('L'   ,SDDISC,'ECHE',IEVDAC,'SUBD_INCR'  ,
 !     &              DELTAC,IBID  ,K8BID )
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CONSTRUCTION DE LA LISTE DES INSTANTS

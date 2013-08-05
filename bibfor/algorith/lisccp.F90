@@ -96,7 +96,7 @@ subroutine lisccp(phenom, lischa)
                 lok = .true.
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (.not.lok) then

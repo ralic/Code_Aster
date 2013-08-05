@@ -179,7 +179,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                 zl(jlnsl-1+(ino-1)+1)=.true.
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                call assert(.not.callst)
+                ASSERT(.not.callst)
                 zr(jltsv-1+(ino-1)+1)= -1.d0
                 zl(jltsl-1+(ino-1)+1)=.true.
 !
@@ -351,7 +351,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             else if (geofis.eq.'DROITE') then
 !
 !           LEVEL SET TANGENTE PAS DEFINIE
-                call assert(.not.callst)
+                ASSERT(.not.callst)
                 zr(jltsv-1+(ino-1)+1)= -1.d0
                 zl(jltsl-1+(ino-1)+1)=.true.
 !

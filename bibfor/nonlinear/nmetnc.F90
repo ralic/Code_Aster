@@ -79,7 +79,7 @@ subroutine nmetnc(sdieto, icham, nomcha)
         else if (tychap.eq.'VEASSE') then
             nomcha = '&&NMCH5P.'//tyvari
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         nomcha = nomchx

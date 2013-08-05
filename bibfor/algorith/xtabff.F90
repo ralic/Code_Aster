@@ -120,7 +120,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
                         c16b, k8bid, 0)
 200      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     ------------------------------------------------------------------

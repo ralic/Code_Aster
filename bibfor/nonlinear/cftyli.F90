@@ -77,7 +77,7 @@ subroutine cftyli(resoco, iliac, type0)
     else if (zk8(jtypl-1+iliac).eq.typef2) then
         type0 = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 !

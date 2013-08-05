@@ -105,7 +105,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
-    call assert(iret.gt.0)
+    ASSERT(iret.gt.0)
     call jeveuo(ces1//'.CESK', 'L', jces1k)
     call jeveuo(ces1//'.CESC', 'L', jces1c)
     call jeveuo(ces1//'.CESD', 'L', jces1d)
@@ -129,7 +129,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         call copisd('CHAM_ELEM_S', base, ces1, ces2)
         goto 180
     endif
-    call assert(tsca.eq.'R'.or.tsca.eq.'C')
+    ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
 !
 !
 !
@@ -137,9 +137,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !     ---------------------------
     if ((typce1.eq.'ELNO') .and. (typces.eq.'ELGA')) then
         call exisd('CHAM_ELEM_S', mnoga, iret)
-        call assert(iret.gt.0)
+        ASSERT(iret.gt.0)
         call jeveuo(mnoga//'.CESK', 'L', jbref)
-        call assert(ma.eq.zk8(jbref-1+1))
+        ASSERT(ma.eq.zk8(jbref-1+1))
     endif
 !
 !
@@ -167,7 +167,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
     else if (typces.eq.'ELGA') then
         call exisd('CHAM_ELEM_S', cesmod, iret)
 !       TEST ARGUMENT CESMOD OBLIGATOIRE
-        call assert(iret.gt.0)
+        ASSERT(iret.gt.0)
         call jeveuo(cesmod//'.CESD', 'L', jcemd)
         do 30,ima = 1,nbma
         zi(jnbpt-1+ima) = zi(jcemd-1+5+4* (ima-1)+1)
@@ -176,7 +176,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 30      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -202,7 +202,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
         call jeveuo(mnoga//'.CESD', 'L', mnogad)
         call jeveuo(mnoga//'.CESL', 'L', mnogal)
         call jeveuo(mnoga//'.CESV', 'L', mnogav)
-        call assert(zk8(mnogak).eq.ma)
+        ASSERT(zk8(mnogak).eq.ma)
 !
         do 90,ima = 1,nbma
         call cesexi('C', mnogad, mnogal, ima, 1,&
@@ -226,9 +226,9 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
         nbno1 = zi(jces1d-1+5+4* (ima-1)+1)
 !
-        call assert(nbno.eq.nbno1)
-        call assert(nbno.eq.nbno2)
-        call assert(nbpg.eq.nbpg2)
+        ASSERT(nbno.eq.nbno1)
+        ASSERT(nbno.eq.nbno2)
+        ASSERT(nbpg.eq.nbpg2)
 !
         do 80 icmp = 1, ncmp
             do 70,isp = 1,nbsp
@@ -254,7 +254,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
                 call cesexi('C', jcesd, jcesl, ima, ipg,&
                             isp, icmp, iad1)
-                call assert(iad1.lt.0)
+                ASSERT(iad1.lt.0)
                 zl(jcesl-1-iad1) = .true.
                 zr(jcesv-1-iad1) = vr
 60              continue
@@ -271,7 +271,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
                 call cesexi('C', jcesd, jcesl, ima, ipg,&
                             isp, icmp, iad1)
-                call assert(iad1.lt.0)
+                ASSERT(iad1.lt.0)
                 zl(jcesl-1-iad1) = .true.
                 zc(jcesv-1-iad1) = vc
 61              continue
@@ -297,7 +297,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
             do 100,ipt = 1,nbpt
             call cesexi('C', jcesd, jcesl, ima, ipt,&
                         isp, icmp, iad)
-            call assert(iad.lt.0)
+            ASSERT(iad.lt.0)
             zl(jcesl-1-iad) = .true.
             if (tsca .eq. 'R') then
                 zr(jcesv-1-iad) = zr(jces1v-1+iad1)
@@ -343,7 +343,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
             if (nbv .eq. nbpt1) then
                 call cesexi('C', jcesd, jcesl, ima, 1,&
                             isp, icmp, iad)
-                call assert(iad.lt.0)
+                ASSERT(iad.lt.0)
                 zl(jcesl-1-iad) = .true.
                 if (tsca .eq. 'R') then
                     zr(jcesv-1-iad) = vr/dble(nbv)
@@ -363,7 +363,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
 !
     else
 !       CAS NON ENCORE PROGRAMME ...
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

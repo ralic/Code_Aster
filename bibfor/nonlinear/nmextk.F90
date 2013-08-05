@@ -192,10 +192,10 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
                 endif
                 do 45 ipi = 1, npi
                     num = zi(jpi-1+ipi )
-                    call assert(num.ne.0)
+                    ASSERT(num.ne.0)
                     do 46 ispi = 1, nspi
                         snum = zi(jspi-1+ispi )
-                        call assert(snum.ne.0)
+                        ASSERT(snum.ne.0)
                         call cesexi('C', jcesd, jcesl, nummai, num,&
                                     snum, icmp, iad)
                         if (iad .eq. 0) then
@@ -211,7 +211,7 @@ subroutine nmextk(noma, motfac, iocc, champ, nomcha,&
 31          continue
 30      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

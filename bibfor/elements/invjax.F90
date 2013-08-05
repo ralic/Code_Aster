@@ -67,7 +67,7 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
         end do
     end do
     if (ndim .ne. nderiv) then
-        call assert(ndim.eq.nderiv+1)
+        ASSERT(ndim.eq.nderiv+1)
         if (nderiv .eq. 1) then
             jacobi(1,2) = -1*jacobi(2,1)
             jacobi(2,2) = jacobi(1,1)

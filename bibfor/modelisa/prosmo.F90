@@ -178,7 +178,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     lcumu = 0
     do 30,jeq = 1,neq
     htc=zi(jhtc-1+jeq)
-    call assert(htc.le.lgbl)
+    ASSERT(htc.le.lgbl)
 !       -- SI ON CHANGE DE BLOC :
     if (lcumu + htc .gt. lgbl) then
         ibl1 = ibl1 + 1
@@ -264,7 +264,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
         call uttrii(zi(jbl1+zi(jpbl-1+jeq)), nterm)
         zi(jhtc-1+jeq) = nterm
         if (jeq .eq. 1) then
-            call assert(nterm.eq.1)
+            ASSERT(nterm.eq.1)
             zi(ismdi+1-1) = nterm
 !
         else

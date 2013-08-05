@@ -71,16 +71,16 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     call jelira(cart19//'.VALE', 'TYPE', ibid, type)
     if (type .ne. 'R' .and. type .ne. 'I' .and. type .ne. 'C') call u2mesk('E', 'UTILITAI5_29',&
                                                                            1, type)
-    call assert(type.eq.typsca)
+    ASSERT(type.eq.typsca)
 !
     call jenonu(jexnom(ma//'.NOMMAI', nomail), numa)
-    call assert(numa.gt.0)
+    ASSERT(numa.gt.0)
 !
 !
     ces='&&UTCHCA.CES'
     call carces(cart19, 'ELEM', ' ', 'V', ces,&
                 ' ', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     call jeveuo(ces//'.CESD', 'L', jcesd)
     call jeveuo(ces//'.CESC', 'L', jcesc)

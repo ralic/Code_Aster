@@ -235,7 +235,7 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
         call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                     fapg, nbpg, crrefe, vol)
 !
-        call assert(nbno .eq. nno)
+        ASSERT(nbno .eq. nno)
 !
 !       2.2.1 DETERMINATION DES COORDONNEES DE INO2 DANS L'ELEMENT
 !             DE REFERENCE : KSI , ETA ET DZETA

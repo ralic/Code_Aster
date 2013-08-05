@@ -73,7 +73,7 @@ subroutine te0073(option, nomte)
         ltext = .false.
     else
 !C OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !====
 ! 1.2 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
@@ -153,12 +153,12 @@ subroutine te0073(option, nomte)
 !
                 call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
                             coenp1, icode)
-                call assert(icode.eq.0)
+                ASSERT(icode.eq.0)
                 if (theta .ne. 1.0d0) then
                     valpar(3) = zr(itemps) - zr(itemps+1)
                     call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
                                 coen, icode)
-                    call assert(icode.eq.0)
+                    ASSERT(icode.eq.0)
                 else
                     coen = 0.d0
                 endif
@@ -166,12 +166,12 @@ subroutine te0073(option, nomte)
                 valpar(3) = zr(itemps)
                 call fointe('FM', zk8(itex), 3, nompar, valpar,&
                             texnp1, icode)
-                call assert(icode.eq.0)
+                ASSERT(icode.eq.0)
                 if (theta .ne. 1.0d0) then
                     valpar(3) = zr(itemps) - zr(itemps+1)
                     call fointe('FM', zk8(itex), 3, nompar, valpar,&
                                 texn, icode)
-                    call assert(icode.eq.0)
+                    ASSERT(icode.eq.0)
                 else
                     texn = 0.d0
                 endif
@@ -189,12 +189,12 @@ subroutine te0073(option, nomte)
 !
                 call fointe('FM', zk8(iray), 3, nompar, valpar,&
                             sigm1, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 if (theta .ne. 1.0d0) then
                     valpar(3) = zr(itemps) - zr(itemps+1)
                     call fointe('FM', zk8(iray), 3, nompar, valpar,&
                                 sigmn, ier)
-                    call assert(ier.eq.0)
+                    ASSERT(ier.eq.0)
                 else
                     sigmn = 0.d0
                 endif
@@ -202,12 +202,12 @@ subroutine te0073(option, nomte)
                 valpar(3) = zr(itemps)
                 call fointe('FM', zk8(iray+1), 3, nompar, valpar,&
                             eps1, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 if (theta .ne. 1.0d0) then
                     valpar(3) = zr(itemps) - zr(itemps+1)
                     call fointe('FM', zk8(iray+1), 3, nompar, valpar,&
                                 epsn, ier)
-                    call assert(ier.eq.0)
+                    ASSERT(ier.eq.0)
                 else
                     epsn = 0.d0
                 endif
@@ -215,12 +215,12 @@ subroutine te0073(option, nomte)
                 valpar(3) = zr(itemps)
                 call fointe('FM', zk8(iray+2), 3, nompar, valpar,&
                             tpf1, ier)
-                call assert(ier.eq.0)
+                ASSERT(ier.eq.0)
                 if (theta .ne. 1.0d0) then
                     valpar(3) = zr(itemps) - zr(itemps+1)
                     call fointe('FM', zk8(iray+2), 3, nompar, valpar,&
                                 tpfn, ier)
-                    call assert(ier.eq.0)
+                    ASSERT(ier.eq.0)
                 else
                     tpfn = 0.d0
                 endif

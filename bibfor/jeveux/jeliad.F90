@@ -60,7 +60,7 @@ subroutine jeliad(clas, numr, nboct)
 ! DEB ------------------------------------------------------------------
     kclas = clas
     ic = index ( classe , kclas )
-    call assert(ic .ne. 0)
+    ASSERT(ic .ne. 0)
 !
 !     L'OBJET $$RNOM CORRESPOND A L'INDICE 7
 !

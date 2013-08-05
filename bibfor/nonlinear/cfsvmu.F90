@@ -95,8 +95,8 @@ subroutine cfsvmu(defico, resoco, lconv)
 !
     do 10 iliai = 1, nbliai
         posnoe = zi(jnumli-1+4*(iliai-1)+2)
-        call assert(posnoe.le.nnoco)
-        call assert(zr(jsvmu-1+posnoe).eq.0.d0)
+        ASSERT(posnoe.le.nnoco)
+        ASSERT(zr(jsvmu-1+posnoe).eq.0.d0)
         zr(jsvmu-1+posnoe) = zr(jmu-1+iliai)
 10  end do
 !

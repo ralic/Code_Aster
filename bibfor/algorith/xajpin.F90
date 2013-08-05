@@ -72,7 +72,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
         ipt = ipt + 1
         cpt = cpt + 1
 !       TROP DE POINTS DANS LA LISTE
-        call assert(ipt .le. long)
+        ASSERT(ipt .le. long)
         do 101 j = 1, ndim
             list(ndim*(ipt-1)+j) = newpt(j)
 101      continue

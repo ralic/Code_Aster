@@ -71,8 +71,8 @@ subroutine tbajva(table, nbpara, nompar, vi, livi,&
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)
     call jeveuo(nomtab//'.TBNP', 'L', jtbnp)
     nbcol = zi(jtbnp )
-    call assert(nbcol.ne.0)
-    call assert(nbcol.eq.nbpara)
+    ASSERT(nbcol.ne.0)
+    ASSERT(nbcol.eq.nbpara)
 !
     ki = 0
     kr = 0

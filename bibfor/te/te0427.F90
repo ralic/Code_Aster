@@ -71,8 +71,8 @@ subroutine te0427(option, nomte)
     call jevech('PMATUNS', 'E', imatu)
     call tecach('OOO', 'PMATUNS', 'E', 1, imatu2,&
                 iret)
-    call assert(iret.eq.0)
-    call assert(imatu2.eq.imatu)
+    ASSERT(iret.eq.0)
+    ASSERT(imatu2.eq.imatu)
 !
     call tecael(iadzi, iazk24)
     numa=zi(iadzi-1+1)
@@ -94,7 +94,7 @@ subroutine te0427(option, nomte)
     numav=livois(kvois)
     call tecac2('OOO', numav, 'PGEOMER', 'L', 1,&
                 igeom2, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     do 2, k2=1,nnov
     do 3, k1=1,nno
     ico2=ico2+1

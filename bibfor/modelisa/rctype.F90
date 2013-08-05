@@ -54,7 +54,7 @@ subroutine rctype(jmat, nbpu, nompu, valpu, resu,&
 !
     nbmat=zi(jmat)
 !     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
-    call assert(nbmat.eq.1)
+    ASSERT(nbmat.eq.1)
     imate = jmat+zi(jmat+nbmat+1)
 !
     do 10 icomp = 1, zi(imate+1)

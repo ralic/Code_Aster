@@ -93,7 +93,7 @@ subroutine imppiv(nu, ieq)
         call u2mesk('F', 'UTILITAI2_31', 1, nomeq)
     endif
 !
-    call assert(nuli .ne. 1)
+    ASSERT(nuli .ne. 1)
 !
 !     ON PARCOURT LES MAILLES SUPPLEMENTAIRES DU LIGREL TROUVE
 !     POUR IMPRIMER LES CONNECTIVITES DE CES MAILLES :

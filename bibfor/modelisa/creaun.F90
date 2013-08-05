@@ -189,8 +189,8 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     cptnd = cptnd - 1
     ncmpg = ncmpg - 1
 !
-    call assert(cptd.eq.nnocu)
-    call assert(cptnd.eq.nnocu)
+    ASSERT(cptd.eq.nnocu)
+    ASSERT(cptnd.eq.nnocu)
 !
 ! --- QUELQUES INFOS DIMENSIONS
 !

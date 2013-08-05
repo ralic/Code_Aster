@@ -128,13 +128,13 @@ subroutine op0026()
 ! --- VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 !
     call nmchai('VALINC', 'LONMAX', long)
-    call assert(long.eq.zvalin)
+    ASSERT(long.eq.zvalin)
     call nmch1p(valinc)
 !
 ! --- VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 !
     call nmchai('SOLALG', 'LONMAX', long)
-    call assert(long.eq.zsolal)
+    ASSERT(long.eq.zsolal)
     call nmch2p(solalg)
 !
 ! --- RECUPERATION DES OPTIONS DEMANDEES
@@ -254,7 +254,7 @@ subroutine op0026()
     endif
     if (lmatr) then
         ldiri = .true.
-        call assert(lrigi)
+        ASSERT(lrigi)
     endif
 !
 ! --- OPTIONS DE CALCUL
@@ -392,10 +392,10 @@ subroutine op0026()
             endif
         enddo
 !
-        call assert(inoobj.ne.0)
-        call assert(inomsd.ne.0)
-        call assert(inuord.ne.0)
-        call assert(iinst .ne.0)
+        ASSERT(inoobj.ne.0)
+        ASSERT(inomsd.ne.0)
+        ASSERT(inuord.ne.0)
+        ASSERT(iinst .ne.0)
 !
 !       RECUPERATION DES POINTEURS POUR LIRE ET MODIFIER LA TABLE
         call jeveuo(zk24(jtblp+(inoobj-1)*4+2), 'L', jnobj)

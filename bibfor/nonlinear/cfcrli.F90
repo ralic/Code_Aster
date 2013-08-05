@@ -135,7 +135,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
                     numddl)
 !
         if (numddl .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             zi(jddl+iddl-1) = numddl
         endif
@@ -144,7 +144,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
                     numddl)
 !
         if (numddl .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             zi(jddl+iddl) = numddl
         endif
@@ -154,7 +154,7 @@ subroutine cfcrli(noma, numedd, defico, resoco)
                         numddl)
 !
             if (numddl .eq. 0) then
-                call assert(.false.)
+                ASSERT(.false.)
             else
                 zi(jddl+iddl+1) = numddl
             endif

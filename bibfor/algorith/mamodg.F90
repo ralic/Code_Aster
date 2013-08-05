@@ -78,7 +78,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     if (repon(1:3) .eq. 'NON') call jeveuo('&&DELAT.INDIC', 'L', idelat)
 !
     call jeexin(stolci//'.SCHC', iret1)
-    call assert(iret1.gt.0)
+    ASSERT(iret1.gt.0)
     call jeveuo(stolci//'.SCHC', 'L', ihcol)
     call jeveuo(stolci//'.SCDI', 'L', iadia)
     call jeveuo(stolci//'.SCBL', 'L', iablo)

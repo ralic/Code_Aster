@@ -98,7 +98,7 @@ subroutine jm1dn2(indn, indc, nb1, nb2, xr,&
     i4 = l2 + intsx2
     i5 = l3 + intsx2
 !
-    call assert((indc.eq.1).or.(indc.eq.0))
+    ASSERT((indc.eq.1).or.(indc.eq.0))
 !
     if (indc .eq. 1) then
 !

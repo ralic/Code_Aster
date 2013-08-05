@@ -1,5 +1,4 @@
 subroutine utpar1(typsd, nbpamx, lipara, nbpara)
-! aslint: disable=W1501
     implicit none
 #include "asterfort/assert.h"
     character(len=*) :: typsd
@@ -69,7 +68,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='DELTAT#P#R'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -86,7 +85,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='MODELE#P#K8'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -103,7 +102,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='MODELE#P#K8'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -120,7 +119,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='MODELE#P#K8'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -183,7 +182,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='STOCKAGE#P#K16'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -259,7 +258,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='INST_PREC#P#R'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -276,7 +275,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='EXCIT#P#K24'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -286,7 +285,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='XXX#P#K8'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -307,7 +306,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='NUME_MODE#A#I'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -328,7 +327,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='NUME_MODE#A#I'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -404,7 +403,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='TYPE_MODE#P#K16'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -433,7 +432,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='NOM_CAS#A#K16'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -453,7 +452,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='EXCIT#P#K24'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -462,7 +461,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='FREQ#A#R'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -479,7 +478,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='EXCIT#P#K24'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
 !
@@ -496,11 +495,11 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         ico=ico+1
         lipara(ico)='EXCIT#P#K24'
         nbpara=ico
-        call assert(nbpara.le.nbpamx)
+        ASSERT(nbpara.le.nbpamx)
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

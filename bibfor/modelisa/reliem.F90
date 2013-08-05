@@ -95,7 +95,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
     if (typem .ne. 'NO_MAILLE' .and. typem .ne. 'NO_NOEUD' .and. typem .ne. 'NU_MAILLE'&
         .and. typem .ne. 'NU_NOEUD') then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     type2 = typem(4:)
@@ -104,11 +104,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         typmcl = tymocl(imo)
         if (typmcl .eq. 'NOEUD' .or. typmcl .eq. 'GROUP_NO') then
             if (type2 .eq. 'MAILLE') then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             else if (typmcl.ne.'MAILLE' .and. typmcl.ne.'GROUP_MA' .and.&
         typmcl.ne.'TOUT') then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 10  end do
 !
@@ -205,9 +205,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
                 call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONMAX', ibid, k8b)
                 if (ibid .eq. 1) then
-                    call assert(nma.le.1)
+                    ASSERT(nma.le.1)
                 else
-                    call assert(nma.eq.ibid)
+                    ASSERT(nma.eq.ibid)
                 endif
 !
                 do 60 jma = 1, nma
@@ -226,9 +226,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
                 call jelira(jexnom(ma//'.GROUPENO', karg), 'LONMAX', ibid, k8b)
                 if (ibid .eq. 1) then
-                    call assert(nno.le.1)
+                    ASSERT(nno.le.1)
                 else
-                    call assert(nno.eq.ibid)
+                    ASSERT(nno.eq.ibid)
                 endif
 !
                 do 70 jno = 1, nno

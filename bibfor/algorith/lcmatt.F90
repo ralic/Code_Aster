@@ -58,7 +58,7 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
     else if (mod(1:6).eq.'C_PLAN') then
         ndt = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     ndi = 3
     typma = 'COHERENT'
@@ -69,7 +69,7 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
                     poum, coefel, coefpl, ndt, nvi,&
                     nr)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

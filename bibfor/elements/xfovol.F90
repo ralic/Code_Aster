@@ -87,8 +87,8 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !-----------------------------------------------------------------------
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(nnop.le.mxstac)
-    call assert(ndim.le.mxstac)
+    ASSERT(nnop.le.mxstac)
+    ASSERT(ndim.le.mxstac)
 !
     grdepl=.false.
 !
@@ -106,7 +106,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
     call elref5(elrese(ndim+irese), fami(ndim+irese), ndimb, nno, nnos,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
-    call assert(ndim.eq.ndimb)
+    ASSERT(ndim.eq.ndimb)
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT

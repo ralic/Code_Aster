@@ -194,7 +194,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         call as_mfdonv(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
                     numpt, numord, 1, nomprf, edcomp,&
                     npr, nomloc, ngaulu, n, iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         if (n .gt. 0) then
             nbtyel=nbtyel+1
             zk8(jtymed+nbtyel-1)=typma(ityg)
@@ -268,7 +268,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     else
         call jeveuo(jexnum('&CATA.TE.MODELOC', imod), 'L', jmod)
 !         CHAMP ELGA
-        call assert(zi(jmod-1+1).eq.3)
+        ASSERT(zi(jmod-1+1).eq.3)
 !
         igrd = zi(jmod-1+2)
         call jeveuo(jexnum('&CATA.GD.DESCRIGD', igrd), 'L', iadgd)

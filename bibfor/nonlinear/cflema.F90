@@ -112,7 +112,7 @@ subroutine cflema(defico, nsuco, nmaco0, listma, poinsm,&
             zi(jma+k-1) = zi(jmaco+i-1)
         endif
 120  end do
-    call assert(k.eq.nmaco)
+    ASSERT(k.eq.nmaco)
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !

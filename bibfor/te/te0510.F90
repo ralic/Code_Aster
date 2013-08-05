@@ -95,12 +95,12 @@ subroutine te0510(option, nomte)
 !     FACON STATIQUE POUR OPTIMISER LE CPU (CAR LES APPELS A WKVECT
 !     DANS LES TE SONT COUTEUX).
 !
-    call assert(option.eq.'TOPOFA')
+    ASSERT(option.eq.'TOPOFA')
 !
     call jemarq()
 !
     zxain = xxmmvd('ZXAIN')
-    call assert(zxain.eq.zxainx)
+    ASSERT(zxain.eq.zxainx)
 !
     call elref1(elp)
     call elref4(elp, 'RIGI', ndim, nnop, ibid,&
@@ -165,7 +165,7 @@ subroutine te0510(option, nomte)
     ncompp = jtab(2)
     call tecach('OOO', 'PGESCLA', 'E', 2, jtab,&
                 iret)
-    call assert(jtab(2).eq.ncompp)
+    ASSERT(jtab(2).eq.ncompp)
     call tecach('OOO', 'PAINTER', 'E', 2, jtab,&
                 iret)
     ncompa = jtab(2)
@@ -292,7 +292,7 @@ subroutine te0510(option, nomte)
                     if (ndim .eq. 3) tau1(3)=0.d0-nd(2)*nd(3)
                     call normev(tau1, norm2)
                 endif
-                call assert(norm2.gt.1.d-12)
+                ASSERT(norm2.gt.1.d-12)
             endif
             if (ndim .eq. 3) then
                 call provec(nd, tau1, tau2)

@@ -248,7 +248,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
                     call nmcvec('AJOU', 'CNMODC', ' ', .false., .true.,&
                                 nbvect, ltypve, loptve, lcalve, lassve)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -262,7 +262,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
                     call nmcvec('AJOU', 'CNIMPC', ' ', .true., .true.,&
                                 nbvect, ltypve, loptve, lcalve, lassve)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
         endif
@@ -287,7 +287,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
 !
     else if (mode.eq.'ACCI') then
         if (numins .ne. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- CHARGEMENTS MECANIQUES FIXES DONNES
@@ -351,7 +351,7 @@ subroutine nmchar(mode, phasez, modele, numedd, mate,&
                     numedd, parcon, veelem, veasse, measse,&
                     nbvect, ltypve, lcalve, loptve, lassve)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

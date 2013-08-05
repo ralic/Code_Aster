@@ -97,7 +97,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     else if (zi(lmat+3).eq.2) then
         type='C'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

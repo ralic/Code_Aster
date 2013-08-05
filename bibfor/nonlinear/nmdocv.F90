@@ -51,9 +51,9 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
     call jemarq()
 !
 !     VERIFICATIONS INITIALES
-    call assert(mcfact.eq.'COMP_ELAS'.or. mcfact.eq.'COMP_INCR')
+    ASSERT(mcfact.eq.'COMP_ELAS'.or. mcfact.eq.'COMP_INCR')
 !
-    call assert(nommc.eq.'RESI_INTE_RELA'.or. nommc.eq.'ITER_INTE_MAXI')
+    ASSERT(nommc.eq.'RESI_INTE_RELA'.or. nommc.eq.'ITER_INTE_MAXI')
 !
 !     RECUP DES VALEURS
     if (nommc .eq. 'RESI_INTE_RELA') then
@@ -65,7 +65,7 @@ subroutine nmdocv(mcfact, iocc, algo, nommc, valrmc)
         valrmc = valimc
     endif
 !
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
 !
 !     VERIFICATIONS DE COHERENCE
     if (iarg .eq. 0) then

@@ -134,7 +134,7 @@ subroutine op0025()
                 lisch2, solveu, para, numedd, lostat,&
                 levol, lnonl, sddisc, sdieto, mailla,&
                 sdcrit, time)
-    call assert(.not.lnonl)
+    ASSERT(.not.lnonl)
 !
 ! 2.5. ==> CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
 !

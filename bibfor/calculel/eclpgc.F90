@@ -182,10 +182,10 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
         call jeveuo('&&ECLPGC.CORR1', 'L', jcorr1)
     else
 !       -- POUR VARI_R :
-        call assert(nomg2.eq.'VAR2_R')
+        ASSERT(nomg2.eq.'VAR2_R')
         call dismoi('F', 'NB_CMP_MAX', nomg2, 'GRANDEUR', ncmpmx,&
                     kbid, ibid)
-        call assert(mxvari.le.ncmpmx)
+        ASSERT(mxvari.le.ncmpmx)
         ncmp=mxvari
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg2), 'L', jnocmp)
         call wkvect('&&ECLPGC.CORR1', 'V V I', ncmp, jcorr1)
@@ -193,7 +193,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
         zi(jcorr1-1+k)=k
 77      continue
     endif
-    call assert(ncmp.le.mxcmp)
+    ASSERT(ncmp.le.mxcmp)
 !
 !
 !
@@ -221,10 +221,10 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
     if (moloc1 .eq. 0) goto 80
 !
-    if (.not.lvari) call assert(mxvari.eq.1)
+    if (.not.lvari) ASSERT(mxvari.eq.1)
 !
     call jeveuo(jexnum('&CATA.TE.MODELOC', moloc1), 'L', iamol1)
-    call assert(zi(iamol1-1+1).eq.3)
+    ASSERT(zi(iamol1-1+1).eq.3)
     nbpg=zi(iamol1-1+4)
 !
     numa=numail(igr,1)
@@ -234,7 +234,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
 !
 !           -- ON VERIFIE QUE C'EST UN CHAMP "ELGA/IDEN" :
 !           ----------------------------------------------
-    call assert(.not.((nbpg.lt.0).or.(nbpg.gt.10000)))
+    ASSERT(.not.((nbpg.lt.0).or.(nbpg.gt.10000)))
 !
 !           -- ON ECLATE LE TYPE_ELEM :
 !           ---------------------------
@@ -251,7 +251,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
         endif
     else
 !            -- ON IGNORE LES AUTRES ELEMENTS :
-        call assert(nse1.eq.0)
+        ASSERT(nse1.eq.0)
         goto 80
 !
     endif

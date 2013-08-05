@@ -65,11 +65,11 @@ subroutine op0159()
 !
     call getvid('  ', 'MATR', 0, iarg, 1,&
                 matr, nb)
-    call assert(nb.eq.1)
+    ASSERT(nb.eq.1)
 !
     call getvid('  ', 'CHAM_NO', 0, iarg, 1,&
                 secmbr, nb)
-    call assert(nb.eq.1)
+    ASSERT(nb.eq.1)
     call chpver('F', secmbr, 'NOEU', '*', ier)
     secm19=secmbr
 !
@@ -96,7 +96,7 @@ subroutine op0159()
     else if (zi(lmat+3).eq.2) then
         type='C'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     nimpo=zi(lmat+7)
@@ -118,8 +118,8 @@ subroutine op0159()
     else
         imd=0
     endif
-    call assert(secm19.ne.' ')
-    call assert(csol19.ne.' ')
+    ASSERT(secm19.ne.' ')
+    ASSERT(csol19.ne.' ')
     if (csol19 .ne. secm19) then
         call detrsd('CHAMP_GD', csol19)
         call vtdefs(csol19, secm19, 'G', ' ')

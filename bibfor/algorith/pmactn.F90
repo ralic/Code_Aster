@@ -86,7 +86,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 !
 ! --- CONTINUER LA BOUCLE DE NEWTON EST IMPOSSIBLE ICI
 !
-    if (actite .eq. 2) call assert(.false.)
+    if (actite .eq. 2) ASSERT(.false.)
 !
 ! --- AFFICHAGE
 !
@@ -112,7 +112,7 @@ subroutine pmactn(sddisc, parcri, iterat, numins, itemax,&
 !
 ! --- ECHEC DE NEWTON: IL FAUT FAIRE QUELQUE CHOSE
 !
-    call assert(actite.eq.1)
+    ASSERT(actite.eq.1)
 !
 ! --- RECHERCHE DES EVENEMENTS ACTIVES
 !

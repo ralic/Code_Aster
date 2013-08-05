@@ -51,7 +51,7 @@ subroutine nmdep0(oper, solalg)
         depdel = '&&NMCH2P.DEPDEL'
         call nmchso(solalg, 'SOLALG', 'DEPDEL', depdel, solalg)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -102,7 +102,7 @@ subroutine cazocp(char)
     else if (lctcd) then
         algoge = 'POINT_FIXE'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (algoge .eq. 'POINT_FIXE') then
@@ -110,7 +110,7 @@ subroutine cazocp(char)
     else if (algoge.eq.'NEWTON') then
         zi(jparci+9-1) = 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PARAMETRES BOUCLE GEOMETRIQUE
@@ -135,7 +135,7 @@ subroutine cazocp(char)
             zi(jparci+1-1) = nbreac
             zr(jparcr+1-1) = resige
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (algoge .eq. 'NEWTON') then
         call getvr8(' ', 'RESI_GEOM', 1, iarg, 1,&
@@ -143,7 +143,7 @@ subroutine cazocp(char)
         zi(jparci+1-1) = 0
         zr(jparcr+1-1) = resige
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ALGORITHMES FROTTEMENT
@@ -161,7 +161,7 @@ subroutine cazocp(char)
         else if (lctcd) then
             algofr = 'POINT_FIXE'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -171,7 +171,7 @@ subroutine cazocp(char)
         else if (algofr.eq.'NEWTON') then
             zi(jparci+28-1) = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -213,7 +213,7 @@ subroutine cazocp(char)
     else if (lctcd) then
         algoco = 'POINT_FIXE'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (algoco .eq. 'POINT_FIXE') then
@@ -221,7 +221,7 @@ subroutine cazocp(char)
     else if (algoco.eq.'NEWTON') then
         zi(jparci+27-1) = 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- PARAMETRES BOUCLE CONTACT
@@ -245,7 +245,7 @@ subroutine cazocp(char)
                 zi(jparci+10-1) = reacca
                 zi(jparci+5-1) = -1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (lctcd) then
             call getvis(' ', 'ITER_CONT_MULT', 1, iarg, 1,&
@@ -253,12 +253,12 @@ subroutine cazocp(char)
             zi(jparci+5-1) = reacca
             zi(jparci+10-1) = -1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (algoco.eq.'NEWTON') then
 ! PAS DE PARAMETRES
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -273,7 +273,7 @@ subroutine cazocp(char)
         else if (isto .eq. 'NON') then
             zi(jparci+2-1) = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! ---   NOMBRE DE PAQUETS POUR LA RESOLUTION DES SYSTEMES LINEAIRES
         call getvis(' ', 'NB_RESOL', 1, iarg, 1,&
@@ -310,7 +310,7 @@ subroutine cazocp(char)
                             premax, noc)
                 zi(jparci+14-1) = premax
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
             call getvtx(' ', 'RECH_LINEAIRE', 1, iarg, 1,&
@@ -320,7 +320,7 @@ subroutine cazocp(char)
             else if (rech.eq.'NON_ADMISSIBLE') then
                 zi(jparci+15-1) = 1
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif
@@ -335,7 +335,7 @@ subroutine cazocp(char)
         else if (lissa(1:3) .eq. 'OUI') then
             zi(jparci+19-1) = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -349,7 +349,7 @@ subroutine cazocp(char)
         else if (isto.eq.'NON') then
             zi(jparci+25-1) = 0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

@@ -98,10 +98,10 @@ subroutine nxnoli(modele, mate, carele, lostat, lreuse,&
 !
     call getres(result, k16b1, k16b2)
     if (lreuse) then
-        call assert(numarc.ne.0)
+        ASSERT(numarc.ne.0)
         call rsrusd(result, numarc)
     else
-        call assert(numarc.eq.0)
+        ASSERT(numarc.eq.0)
         call rscrsd('G', result, 'EVOL_THER', 100)
     endif
 !

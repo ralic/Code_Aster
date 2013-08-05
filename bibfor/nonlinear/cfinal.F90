@@ -167,7 +167,7 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
         if (llagrc .and. liaact) then
             if (reageo) then
 ! --------- LA LIAISON N'EXISTE PAS ENCORE, FORCEMENT
-                if (liaexi) call assert(.false.)
+                if (liaexi) ASSERT(.false.)
             else
                 liaact = .false.
             endif
@@ -203,12 +203,12 @@ subroutine cfinal(defico, resoco, reapre, reageo, nbliac,&
         call jeveuo(statfr, 'E', jstfr)
         if (reageo) then
             do 30 iliac = 1, nbliac
-                call assert(zk8(jtypl-1+iliac).eq.'C0')
+                ASSERT(zk8(jtypl-1+iliac).eq.'C0')
                 iliai = zi(jliac -1+iliac)
                 posnoe = zi(jnumli-1+4*(iliai-1)+2)
                 typlia = zk8(jstfr -1+posnoe)(1:2)
                 if (typlia .ne. ' ') then
-                    call assert(typlia .eq. 'F0' .or. typlia .eq. 'F1' .or. typlia .eq. 'F2')
+                    ASSERT(typlia .eq. 'F0' .or. typlia .eq. 'F1' .or. typlia .eq. 'F2')
                     posit = nbliac + llf + llf1 + llf2 + 1
                     call cftabl(indic, nbliac, ajliai, spliai, llf,&
                                 llf1, llf2, resoco, typeaj, posit,&

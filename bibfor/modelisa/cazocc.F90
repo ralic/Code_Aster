@@ -127,7 +127,7 @@ subroutine cazocc(char, motfac, izone)
                     parint, noc)
         typint = 10.d0*parint + 4.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- OPTIONS CONTACT
@@ -143,7 +143,7 @@ subroutine cazocc(char, motfac, izone)
                     coefac, noc)
         algocr = 3.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- OPTIONS FROTTEMENT
@@ -160,7 +160,7 @@ subroutine cazocc(char, motfac, izone)
                         coefaf, noc)
             algofr = 3.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (algoc .ne. algof) call u2mess('F', 'CONTACT_89')
     else
@@ -254,7 +254,7 @@ subroutine cazocc(char, motfac, izone)
     else if (staco0 .eq. 'NON') then
         ctrini = 0.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- GLISSIERE
@@ -266,7 +266,7 @@ subroutine cazocc(char, motfac, izone)
     else if (glis(1:3) .eq. 'NON') then
         lgliss = .false.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     zr(jcmcf-1+zcmcf*(izone-1)+1) = typint

@@ -71,7 +71,7 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
         call apzoni(sdappa, izone, 'TYPE_NORM_MAIT', itype)
         call apzonv(sdappa, izone, 'VECT_MAIT', vector)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- REDEFINITION SI BASE LOCALE DANS LE CAS DES POUTRES
@@ -85,7 +85,7 @@ subroutine apcpou(sdappa, izone, nommai, typzon, tau1,&
         call normev(vector, norme)
         call dcopy(3, vector, 1, tau2, 1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

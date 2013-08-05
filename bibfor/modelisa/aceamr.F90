@@ -117,7 +117,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     endif
     if (ibid .eq. 3) ndim=3
 !     POUR LES DISCRETS C'EST OBLIGATOIREMENT DU 2D OU 3D
-    call assert((ndim.eq.2).or.(ndim.eq.3))
+    ASSERT((ndim.eq.2).or.(ndim.eq.3))
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
     cartdi = nomu//'.CARDINFO'
@@ -203,7 +203,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                             zk24(jdls), nbno, zk8(itbno), zr(irgno), zr(irgto),&
                             ndim)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
             do 255 ino = 1, nbno

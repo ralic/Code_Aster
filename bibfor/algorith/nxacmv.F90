@@ -337,7 +337,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
             zr(j2ni+k) = zr(j2ni1+k) + zr(j2ni2+k) + zr(j2ni3+k)
 23033          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! FIN IF REASVC
     endif

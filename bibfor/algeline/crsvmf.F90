@@ -56,7 +56,7 @@ subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
     call getvtx(motfac, 'RENUM', 1, iarg, 1,&
                 renum, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
 ! --- ON REMPLIT LA SD_SOLVEUR
     call jeveuo(solveu//'.SLVK', 'E', islvk)

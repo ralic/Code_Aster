@@ -60,7 +60,7 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
 !     2. IL S'AGIT D'UN NOUVEAU PARAMETRE ON L'AJOUTE :
 !     -------------------------------------------------
     if (indice .eq. 0) then
-        call assert(nbent.lt.maxent)
+        ASSERT(nbent.lt.maxent)
         nbent=nbent+1
         lpara(nbent)=para
         lcham(nbent)=cham
@@ -102,7 +102,7 @@ subroutine ajchca(para, cham, lpara, lcham, nbent,&
         lcham(indice)=cham
     else if (surch.eq.'N') then
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

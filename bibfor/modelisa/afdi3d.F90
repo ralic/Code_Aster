@@ -81,7 +81,7 @@ subroutine afdi3d(irep, eta, car, val, jdc,&
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_N
         if (car(3:7) .eq. 'T_D_N') then
             carbid = '_DIS_'//car(3:7)
-            call assert(isym .eq. 1)
+            ASSERT(isym .eq. 1)
             ncmp = 9
             if (car(1:1) .eq. 'M') then
                 zr (jdv(j) ) = val(iv)
@@ -97,7 +97,7 @@ subroutine afdi3d(irep, eta, car, val, jdc,&
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_T_D_L
         else if (car(3:7).eq.'T_D_L') then
             carbid = '_DIS_'//car(3:7)
-            call assert(isym .eq. 1)
+            ASSERT(isym .eq. 1)
             ncmp = 36
             if (car(1:1) .eq. 'M') then
                 zr (jdv(j)) = val(iv)
@@ -122,7 +122,7 @@ subroutine afdi3d(irep, eta, car, val, jdc,&
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_N
         else if (car(3:8).eq.'TR_D_N') then
             carbid = '_DIS_'//car(3:8)
-            call assert(isym .eq. 1)
+            ASSERT(isym .eq. 1)
             ncmp = 36
             if (car(1:1) .eq. 'M') then
                 zr(jdv(j)) = val(iv)
@@ -155,7 +155,7 @@ subroutine afdi3d(irep, eta, car, val, jdc,&
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- [K|M|A]_TR_D_L
         else if (car(3:8).eq.'TR_D_L') then
             carbid = '_DIS_'//car(3:8)
-            call assert(isym .eq. 1)
+            ASSERT(isym .eq. 1)
             ncmp = 144
             if (car(1:1) .eq. 'M') then
                 zr (jdv(j) ) = val(iv)

@@ -85,7 +85,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
     if (itype .ne. 0) then
         call jelira(nomsd//nomobj, 'TYPE', ibid, type)
         if (type(1:1) .eq. 'K') then
-            call assert(len(type).ge.2)
+            ASSERT(len(type).ge.2)
             call jelira(nomsd//nomobj, 'LTYP', iloty, k8b)
             call codent(iloty, 'G', k8b)
             type = type(1:1)//k8b

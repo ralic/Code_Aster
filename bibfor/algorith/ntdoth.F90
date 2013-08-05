@@ -221,7 +221,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 !
         if (typch(1:5) .eq. 'CITH_') then
             call jeexin(nomcha(1:19)//'.AFCK', iret)
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
             if (typch(5:7) .eq. '_FT') then
                 zi(jinf+ich) = -3
             else if (typch(5:7).eq.'_FO') then
@@ -266,7 +266,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
             nomfct = '&&'//nompro
             call jeexin(nomfct(1:19)//'.PROL', iret)
             if (iret .eq. 0) then
-                call assert(lxlgut(nomfct).le.24)
+                ASSERT(lxlgut(nomfct).le.24)
                 call wkvect(nomfct(1:19)//'.PROL', 'V V K24', 6, jpro)
                 zk24(jpro) = 'CONSTANT'
                 zk24(jpro+1) = 'CONSTANT'

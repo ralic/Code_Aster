@@ -70,7 +70,7 @@ subroutine mpistp(imode)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

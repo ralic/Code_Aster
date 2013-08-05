@@ -185,7 +185,7 @@ subroutine chprec(chou)
                 cara, n1)
     if (n1 .eq. 1) then
 !
-        call assert(nomch(1:1).eq.'.')
+        ASSERT(nomch(1:1).eq.'.')
         chextr = cara//nomch
         call exisd('CHAMP', chextr, iexi)
         if (iexi .eq. 0) call u2mesk('F', 'CALCULEL3_17', 1, chextr)
@@ -214,7 +214,7 @@ subroutine chprec(chou)
                 charme, n1)
     if (n1 .eq. 1) then
 !
-        call assert(nomch(1:1).eq.'.')
+        ASSERT(nomch(1:1).eq.'.')
         chextr = charme//nomch
         call exisd('CHAMP', chextr, iexi)
         if (iexi .eq. 0) call u2mesk('F', 'CALCULEL3_17', 1, chextr)
@@ -257,7 +257,7 @@ subroutine chprec(chou)
         if (interp(1:3) .eq. 'LIN') then
             call getvr8(' ', 'INST', 0, iarg, 1,&
                         inst, n4)
-            call assert(n4.eq.1)
+            ASSERT(n4.eq.1)
             proldr = 'EXCLUS'
             prolga = 'EXCLUS'
             acces = 'INST'

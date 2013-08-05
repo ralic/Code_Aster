@@ -1,7 +1,6 @@
 subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                   cnslt, isozro, levset, nodtor, eletor,&
                   poifi, trifi)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !
@@ -99,7 +98,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     real(kind=8) :: armin, longar, longmx, mp(3)
     character(len=8) :: k8b, typma
     character(len=19) :: maicou, nomcou, vnouls, vnoult, mai, poifis, trifis
-    logical :: dejain, dejadi, noemai, in, deja
+    logical :: dejain, dejadi, noemai, in, deja, bool
     real(kind=8) :: toll
 !
 !     DOMAIN RESTRICTION
@@ -300,7 +299,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !     IF EVERYTHING GOES CORRECTLY, I SHOULD FIND AT LEAST ONE ELEMENT
 !     CUT BY THE ISOZERO OF LSN. IT'S BETTER TO CHECK IT BEFORE
 !     CONTINUING.
-    call assert(nbmaco.gt.0)
+    ASSERT(nbmaco.gt.0)
 !
 !----------------------------------------------------------------------
 !     CREATE THE STRUCTURE WHERE THE TRIANGLES FORMING THE LSN=0 ARE
@@ -595,17 +594,16 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !              POINTS D'INTERSECTION AVEC L'ISO-ZERO DE 'LEVSET'
 !
 !
-                call assert(.not.(&
-                            (typma(1:5) .eq.'TETRA'.and.nptint.gt.4) .or.&
-                            (typma(1:5) .eq.'PENTA'.and.nptint.gt.5) .or.&
-                            (typma(1:4) .eq.'HEXA'.and.nptint.gt.6) .or.&
-                            (typma(1:4) .eq.'QUAD'.and.nptint.gt.2)&
-                            ))
+                bool = (typma(1:5) .eq.'TETRA'.and.nptint.gt.4) .or.&
+                       (typma(1:5) .eq.'PENTA'.and.nptint.gt.5) .or.&
+                       (typma(1:4) .eq.'HEXA'.and.nptint.gt.6) .or.&
+                       (typma(1:4) .eq.'QUAD'.and.nptint.gt.2)
+                ASSERT(.not. bool)
 !
                 if (ndim .eq. 2 .and. nptint .lt. 2) goto 310
                 if (ndim .eq. 3 .and. nptint .lt. 3) goto 310
 !
-                call assert(nptint.le.6)
+                ASSERT(nptint.le.6)
 !
 !              CORRECTION FOR THE 2D CASE
 !              ONLY TWO POINTS ARE FOUND FOR THE 2D CASE. IN ORDER TO
@@ -615,7 +613,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !              IS EVALUATED AS THE DISTANCE BETWEEN THE OTHER TWO (REAL)
 !              POINTS
                 if (ndim .eq. 2) then
-                    call assert(nptint.eq.2)
+                    ASSERT(nptint.eq.2)
                     nptint = nptint+1
                     x(nptint) = x(1)
                     y(nptint) = y(1)
@@ -743,7 +741,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             zl(ipproj-1+ino) = .true.
         endif
 !
-        call assert(dejadi)
+        ASSERT(dejadi)
         zl(jzero-1+nuno)=.true.
 !
 300  end do

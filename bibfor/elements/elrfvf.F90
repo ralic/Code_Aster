@@ -449,10 +449,10 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
 !     ------------------------------------------------------------------
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
-    call assert(dimf.ge.nno)
+    ASSERT(dimf.ge.nno)
 !
 !
 end subroutine

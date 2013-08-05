@@ -32,11 +32,11 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
     character(len=24) :: demr, liobj(nmaxob)
 ! DEB -----------------------------------------------------------------
 !
-    call assert(elrefe(1:6).eq.'THCOSE')
+    ASSERT(elrefe(1:6).eq.'THCOSE')
     demr = '&INEL.'//elrefe//'.DEMR'
 !
     nbobj = 1
-    call assert(nmaxob.gt.nbobj)
+    ASSERT(nmaxob.gt.nbobj)
     liobj(1) = demr
 !
     call jeexin(demr, iret)

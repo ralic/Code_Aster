@@ -165,7 +165,7 @@ subroutine mmmtff(phasep, ndim, nbcps, nnl, wpg,&
 483          continue
 484      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

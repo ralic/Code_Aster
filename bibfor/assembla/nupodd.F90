@@ -146,7 +146,7 @@ subroutine nupodd(nu, base, rang, nbproc)
     ldgrel=.false.
     call mpicm0(rang, nbproc)
     if (partit .ne. ' ') then
-        call assert(nbproc.gt.1)
+        ASSERT(nbproc.gt.1)
         ldist=.true.
         call jeveuo(partit//'.PRTK', 'L', jprtk)
         ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
@@ -156,7 +156,7 @@ subroutine nupodd(nu, base, rang, nbproc)
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
         endif
     endif
-    call assert(ldist)
+    ASSERT(ldist)
 !
 !---- LECTURE DE LA CONNECTIVITE
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
@@ -173,12 +173,12 @@ subroutine nupodd(nu, base, rang, nbproc)
 !---- CREATION DU TABLEAU DE POSSESSION DES DDL LOCAUX
     do 100 ili = 2, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', ili), nomlig)
-        if (ili .eq. 2) call assert(nomlig.eq.ligrmo)
+        if (ili .eq. 2) ASSERT(nomlig.eq.ligrmo)
         do 90 igr = 1, zzngel(ili)
             nel=zznelg(ili,igr)
             do 80 iel = 1, nel
                 numa=zzliel(ili,igr,iel)
-                call assert(numa.ne.0)
+                ASSERT(numa.ne.0)
 !
                 if (numa .gt. 0) then
                     if (ldgrel) then

@@ -92,7 +92,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
     newnom = '.0000000'
     vecele = vecelz
-    call assert(typres.eq.'R'.or.typres.eq.'C')
+    ASSERT(typres.eq.'R'.or.typres.eq.'C')
 !
 ! --- LE VECT_ELEM EXISTE-IL ?
 !
@@ -173,7 +173,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
         call dismoi('F', 'TYPE_CHAMP', resuel, 'CHAMP', ibid,&
                     tyresl, ibid)
-        call assert(tyresl.eq.'RESL'.or.tyresl.eq.'NOEU')
+        ASSERT(tyresl.eq.'RESL'.or.tyresl.eq.'NOEU')
 !
 ! ----- SI LE RESU_ELEM EST UN VRAI RESU_ELEM (ISSU DE CALCUL)
 !
@@ -187,7 +187,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             else if (typsca.eq.'C') then
                 ityprs = 2
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call assvec('V', chamno, 1, '&&ASVEPR           .RELR', 1.d0,&
                         numedd, ' ', 'ZERO', ityprs)

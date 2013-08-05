@@ -189,7 +189,7 @@ subroutine dglrdm()
     else if (gc .ne. 0.0d0) then
         icompr=2
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! DEFINITION DES PROPRIETES MECANIQUE DU FERRAILLAGE
 !      IF(NNAP .GT. 0) THEN

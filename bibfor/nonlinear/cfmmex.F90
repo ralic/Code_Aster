@@ -82,7 +82,7 @@ subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
         jsans = jsanf
         jpsans = jpsanf
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     nsans = zi(jpsans+izone) - zi(jpsans+izone-1)
 !

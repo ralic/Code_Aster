@@ -97,13 +97,13 @@ subroutine appcrs(kptsc, lmd)
         if (nbproc .gt. 1) then
             kspp=ksp
             call KSPGetPC(kspp, pcp, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             call PCSetType(pcp, PCBJACOBI, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             call KSPSetUp(kspp, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
             call PCBJacobiGetSubKSP(pcp, PETSC_NULL_INTEGER, PETSC_NULL_INTEGER, ksp, ierr)
-            call assert(ierr.eq.0)
+            ASSERT(ierr.eq.0)
         else
             goto 999
         endif
@@ -112,17 +112,17 @@ subroutine appcrs(kptsc, lmd)
 !     -- choix du preconditionneur :
 !     -------------------------------
     call KSPGetPC(ksp, pc, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     if (precon .eq. 'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCFactorSetLevels(pc, fill, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCFactorSetFill(pc, fillp, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
         call PCFactorSetMatOrderingType(pc, MATORDERINGNATURAL, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'LDLT_SP') then
 !        CREATION SOLVEUR BIDON SIMPLE PRECISION
@@ -140,25 +140,25 @@ subroutine appcrs(kptsc, lmd)
                 if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+1
             end do
 !
-            call assert(xlocal.eq.0)
+            ASSERT(xlocal.eq.0)
             call VecCreateMPI(mpicou, ndprop, neq, xlocal, ierr)
         else
             call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
             neq=nsmdi
 !
-            call assert(xlocal.eq.0)
+            ASSERT(xlocal.eq.0)
             call VecCreateMPI(mpicou, PETSC_DECIDE, neq, xlocal, ierr)
         endif
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !
-        call assert(xscatt.eq.0)
-        call assert(xglobal.eq.0)
+        ASSERT(xscatt.eq.0)
+        ASSERT(xglobal.eq.0)
         call VecScatterCreateToAll(xlocal, xscatt, xglobal, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SOR') then
         call PCSetType(pc, PCSOR, ierr)
-        call assert(ierr.eq.0)
+        ASSERT(ierr.eq.0)
     endif
 !-----------------------------------------------------------------------
 !

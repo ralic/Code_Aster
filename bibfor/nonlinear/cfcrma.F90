@@ -199,7 +199,7 @@ subroutine cfcrma(neqmat, noma, resoco)
             iblc = iblc + 1
         endif
 190  end do
-    call assert(iblc.eq.nblc)
+    ASSERT(iblc.eq.nblc)
     zi(jscbl+nblc) = neqmat
 !
 ! --- CREATION .SCIB
@@ -213,7 +213,7 @@ subroutine cfcrma(neqmat, noma, resoco)
             zi(jscib-1+icompt) = iblc
 200      continue
 210  end do
-    call assert(icompt.eq.neqmat)
+    ASSERT(icompt.eq.neqmat)
 !
 ! --- CREATION .SCDE
 !

@@ -19,7 +19,6 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
@@ -355,7 +354,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
                 ypg = 0.d0
                 hpg = 1.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (alias(1:3) .eq. 'SE3') then
             if (nord .eq. 1) then
@@ -371,7 +370,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
                 ypg = 0.d0
                 hpg = 4.d0 / 3.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if (alias(1:3) .eq. 'TR3') then
             if (nord .eq. 1) then
@@ -387,10 +386,10 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
                 ypg = 1.d0
                 hpg = 1.d0/6.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if ((alias(1:3).eq.'TR6').or.(alias(1:3).eq.'TR7')) then
-            call assert((nord.ge.1).and.(nord.le.6))
+            ASSERT((nord.ge.1).and.(nord.le.6))
             xpg = fpgtri(4,nord,1)
             ypg = fpgtri(4,nord,2)
             hpg = fpgtri(4,nord,3)
@@ -412,7 +411,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
                 ypg = 1.d0
                 hpg = 1.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else if ((alias(1:3).eq.'QU8').or.(alias(1:3).eq.'QU9')) then
             if (nord .eq. 1) then
@@ -452,10 +451,10 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
                 ypg = 0.d0
                 hpg = 16.d0 / 9.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !_______________________________________________________________________
 !
@@ -464,12 +463,12 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
     else if (mod(typi,10) .eq. 2) then
         param = typi/10
         if (alias(1:2) .eq. 'SE') then
-            call assert((nord.ge.1).and.(nord.le.param))
+            ASSERT((nord.ge.1).and.(nord.le.param))
             xpg = fpgseg(param,nord,1)
             ypg = 0.d0
             hpg = fpgseg(param,nord,2)
         else if (alias(1:2) .eq. 'TR') then
-            call assert((nord.ge.1).and.(nord.le.znpgtr))
+            ASSERT((nord.ge.1).and.(nord.le.znpgtr))
             xpg = fpgtri(param,nord,1)
             ypg = fpgtri(param,nord,2)
             hpg = fpgtri(param,nord,3)
@@ -482,7 +481,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
             ypg = fpgseg(param,j,1)
             hpg = fpgseg(param,i,2)*fpgseg(param,j,2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !_______________________________________________________________________
 !
@@ -642,7 +641,7 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
                 endif
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !_______________________________________________________________________
@@ -760,10 +759,10 @@ subroutine mmgaus(alias, typi, nord, xpg, ypg,&
 !
             hpg = pncseg(param,incseg)*pncseg(param,jncseg)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

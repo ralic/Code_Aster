@@ -57,7 +57,7 @@ subroutine nmtadp(ndimsi, crit, mat, sigel, vim,&
                 g, fds, gds, fdp, gdp,&
                 fdx, gdx, dpmax, sig, tang)
 !
-    call assert(f.gt.0.d0)
+    ASSERT(f.gt.0.d0)
 !
     x(2) = dp
     y(2) = f

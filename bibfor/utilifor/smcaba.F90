@@ -45,7 +45,7 @@ subroutine smcaba(ftrc, trc, nbhist, x, dz,&
                 ifail, work(1))
 !
 !     PROBLEME DANS LA RESOLUTION DU SYSTEME SOUS CONTRAINT VSRSRR
-    call assert(ifail .eq. 0)
+    ASSERT(ifail .eq. 0)
 !
     do 10 i = 1, 6
         alemb(i) = b(i)

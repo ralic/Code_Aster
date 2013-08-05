@@ -29,7 +29,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
 #include "asterfort/nbec.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), nbnoma(*)
+    integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), nbnoma(*)
     integer :: permut(maxnod, *), typma(*), nbmat, nummai(*), ncmpu, nucmp(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
     complex(kind=8) :: vale(*)
@@ -96,7 +96,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
     integer :: inogds, inos, ipg, ipoin1, ipoin2, ir, ires
     integer :: irvg, irvn, is0, isp, ispt, isup, itabl
     integer :: itseg2, itype, iutil, j, jmax, jmod, jspt
-    integer :: jtitr, maxnod, mode, nbcou, nbdats, nbelgr
+    integer :: jtitr, mode, nbcou, nbdats, nbelgr
     integer :: nbpg, ncmpp, nec, npcalc, nsca, nscal
 !-----------------------------------------------------------------------
     call jemarq()
@@ -336,7 +336,7 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                 endif
 28                          continue
 29                          continue
-                            call assert(inoa.ne.0)
+                            ASSERT(inoa.ne.0)
                             do 161 icou = 1, nbcou
                                 j=iachml-1+ncmpp*icoef*(inoa-1)+&
                                 (icou-1)*ncmpp*icoef*nnoe+ncmpp*(ico-&

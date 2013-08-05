@@ -192,7 +192,7 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
 !
 !        -- SI LE CHAMP EST UN RESUELEM DE TYPE "VOISIN_VF"
 !           ON NE SAIT PAS ENCORE FAIRE ...
-    call assert(.not.(evfini.eq.1.and.tych.eq.'RESL'))
+    ASSERT(.not.(evfini.eq.1.and.tych.eq.'RESL'))
 !
 !        -- SI LE CHAMP EST UN CHAM_ELEM( OU UN RESUELEM)
 !           ET QU'IL N'A PAS ETE CALCULE AVEC LE LIGREL DE CALCUL,

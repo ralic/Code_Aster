@@ -224,7 +224,7 @@ subroutine op0055()
         fonoeu = resu//'.FOND.NOEU'
         call jeveuo(fonoeu, 'L', ifonoe)
         if (typfon .eq. 'FERME') then
-            call assert(zk8(ifonoe+1-1).eq.zk8(ifonoe+nbnoff-1))
+            ASSERT(zk8(ifonoe+1-1).eq.zk8(ifonoe+nbnoff-1))
         endif
     else
         fonoeu = resu//'.FOND_SUP.NOEU'

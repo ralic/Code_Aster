@@ -62,7 +62,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
     nomk24 = nomobj
 !
     call jenonu(jexnom(noms2//'.NOVA', nompar), i1)
-    call assert(i1.gt.0)
+    ASSERT(i1.gt.0)
     call jeveuo(jexnum(noms2//'.TAVA', i1), 'L', jtava)
     nom1 = zk8(jtava-1+1)
     call jelira(noms2//nom1, 'TYPE', ibid, tsca)
@@ -79,7 +79,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
         else if (l1.eq.80) then
             tsca='K80'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -108,7 +108,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
         else if (tsca.eq.'K80') then
             zk80(j1-1+kk)=zk80(jpara)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
  1  end do
 !

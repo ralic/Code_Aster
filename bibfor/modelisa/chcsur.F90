@@ -130,7 +130,7 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
                     else if (type.eq.'F') then
                         zk8(jafcv-1+ibloc) = zk8(jcnsv+(ino-1)*ncmp+ icmp-1)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                 endif
             endif

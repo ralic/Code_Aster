@@ -69,7 +69,7 @@ subroutine te0009(option, nomte)
         call u2mess('F', 'CALCULEL_17')
     endif
 !     OPTION DE CALCUL INVALIDE
-    if (option .ne. 'MECA_GYRO') call assert(.false.)
+    if (option .ne. 'MECA_GYRO') ASSERT(.false.)
 !
     call infdis('SYMM', infodi, r8bid, k8bid)
     call jevech('PCADISM', 'L', jdc)

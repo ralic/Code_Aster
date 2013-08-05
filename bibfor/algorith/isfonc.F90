@@ -226,7 +226,7 @@ function isfonc(fonact, nomfoz)
         isfonc = fonact(56).eq.1
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

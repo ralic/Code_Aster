@@ -136,10 +136,10 @@ subroutine nmecsd(typesd, nomsd, nompar, vali, valr,&
         else if (nompar.eq.'PREC_INSTAB') then
             zr(jpinfr+8-1) = valr
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

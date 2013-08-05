@@ -72,7 +72,7 @@ function cosphi(coefb, gamcjs, type)
         racine = sqrt(fact4 + fact1)
         cosphi = trois/(fact3*racine)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 ! ======================================================================
 end function

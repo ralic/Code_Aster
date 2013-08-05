@@ -144,9 +144,9 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
     call dismoi('F', 'NB_EQUA', numedd, 'NUME_DDL', neq,&
                 k8bid, iret)
     call nmchai('VALINC', 'LONMAX', nmax)
-    call assert(nmax.eq.zvalin)
+    ASSERT(nmax.eq.zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
-    call assert(nmax.eq.zsolal)
+    ASSERT(nmax.eq.zsolal)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -240,7 +240,7 @@ subroutine nmcere(modele, numedd, mate, carele, comref,&
 !
 ! --- ON A FORCEMENT INTEGRE LA LDC !
 !
-    call assert(ldccvg.ge.0)
+    ASSERT(ldccvg.ge.0)
 !
 ! --- CALCUL DU RESIDU
 !

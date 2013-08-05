@@ -120,7 +120,7 @@ subroutine focain(method, nomfon, cste, sortie, base)
         nomres = 'TOUTRESU'
     endif
     prol = nomfs//'.PROL'
-    call assert(lxlgut(nomfs).le.24)
+    ASSERT(lxlgut(nomfs).le.24)
     call wkvect(prol, 'G V K24', 6, lpros)
     zk24(lpros ) = 'FONCTION'
     if (zk24(lpro+1)(1:3) .eq. 'INT') then

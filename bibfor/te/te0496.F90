@@ -44,7 +44,7 @@ subroutine te0496(option, nomte)
     call tecach('ONN', 'PCOMPOR', 'L', 2, itab,&
                 iret)
     if (itab(1) .ne. 0) then
-        call assert(itab(2).eq.1)
+        ASSERT(itab(2).eq.1)
         jcompo=itab(1)
         read (zk16(jcompo-1+1),'(I16)') nbvari
     else

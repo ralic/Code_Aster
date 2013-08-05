@@ -127,7 +127,7 @@ subroutine drzrot(lisnoz, nbno, chargz, typlaz, lisrez,&
     do 41 , kcmp=1,3
     cmp= nomcmp(kcmp)
     icmp = indik8(zk8(inom),cmp,1,nbcmp)
-    call assert(icmp.gt.0)
+    ASSERT(icmp.gt.0)
     if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp)) then
 !
         beta= zr(jgeom2-1+3*(ino-1)+kcmp) -zr(jcoor -1+3*(ino-&

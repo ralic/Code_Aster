@@ -179,12 +179,12 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
                     ddepl1, dtau, nbeffe, eta, pilcvg,&
                     typpil, carele)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
 ! --- RECADRAGE DANS LES BORNES ETA_PILO_R_MIN ET ETA_PILO_R_MAX
 !
@@ -210,7 +210,7 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
     call jedema()
 end subroutine

@@ -383,7 +383,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
             sig(k)=rac2*sig(k)
 18      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

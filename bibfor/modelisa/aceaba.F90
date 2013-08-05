@@ -153,7 +153,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         if (ntab .eq. 1) then
             call getvtx('BARRE', 'NOM_SEC', ioc, iarg, 1,&
                         nomsec, nnosec)
-            call assert(nnosec.eq.1)
+            ASSERT(nnosec.eq.1)
             call jeveuo(tabcar//'.TBNP', 'L', itbnp)
 !            NOMBRE DE CARACTERISTIQUES
             nbcolo = zi(itbnp)
@@ -202,7 +202,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
                         zk8(jcara), ncar)
             call getvr8('BARRE', 'VALE', ioc, iarg, nbval,&
                         zr(jvale), nval)
-            call assert(ncar.gt.0)
+            ASSERT(ncar.gt.0)
         endif
         fcx = '.'
         call getvid('BARRE', 'FCX', ioc, iarg, 1,&

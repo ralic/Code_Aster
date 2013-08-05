@@ -41,7 +41,7 @@ subroutine impmem()
             call u2mesr('I', 'SUPERVIS2_78', 4, rval)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -56,8 +56,8 @@ subroutine te0068(option, nomte)
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    call assert(nomte(1:6).eq.'THPLSE' .or. nomte(1:6).eq.'THPLSL')
-    call assert(option(11:16).ne.'FLUX_R')
+    ASSERT(nomte(1:6).eq.'THPLSE' .or. nomte(1:6).eq.'THPLSL')
+    ASSERT(option(11:16).ne.'FLUX_R')
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PTEMPSR', 'L', itemps)

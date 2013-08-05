@@ -73,7 +73,7 @@ subroutine nmerim(sderro)
         teven = zk16(jeeniv-1+ieven)(1:9)
         meven = zk24(jeemsg-1+ieven)
         if ((teven(1:3).eq.'ERR') .and. (icode.eq.1)) then
-            if (meven .eq. ' ') call assert(.false.)
+            if (meven .eq. ' ') ASSERT(.false.)
             if (meven .eq. 'MECANONLINE10_1') then
                 call u2mess('I', 'MECANONLINE10_1')
             else if (meven.eq.'MECANONLINE10_2') then
@@ -103,7 +103,7 @@ subroutine nmerim(sderro)
             else if (meven.eq.'MECANONLINE10_24') then
                 call u2mess('I', 'MECANONLINE10_24')
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 10  end do

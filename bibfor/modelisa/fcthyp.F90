@@ -36,13 +36,13 @@ subroutine fcthyp(typfct, x, y)
 !
 !
     if (typfct .eq. 'ACOSH') then
-        call assert((x*x-1).ge.r8prem() .and. (x+sqrt(x*x-1)) .gt.r8prem())
+        ASSERT((x*x-1).ge.r8prem() .and. (x+sqrt(x*x-1)) .gt.r8prem())
         y=log(x+sqrt(x*x-1))
     else if (typfct.eq.'ASINH') then
-        call assert((x+sqrt(x*x+1)).gt.r8prem())
+        ASSERT((x+sqrt(x*x+1)).gt.r8prem())
         y=log(x+sqrt(x*x+1))
     else if (typfct.eq.'DACOSH') then
-        call assert((x*x-1).gt.r8prem())
+        ASSERT((x*x-1).gt.r8prem())
         y=1/sqrt(x*x-1)
     else if (typfct.eq.'DASINH') then
         y=1/sqrt(x*x+1)

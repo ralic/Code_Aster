@@ -73,7 +73,7 @@ subroutine xmilac(ndim, igeom, ptint, tabco, tabdir,&
 ! --------------------------------------------------------------------
 !
     call jemarq()
-    call assert(ndim.eq.2)
+    ASSERT(ndim.eq.2)
 !
 ! --- INITIALISATION
     call elref1(elrefp)

@@ -72,7 +72,7 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
 !
-    call assert((tsca.eq.'R') .or. (tsca.eq.'C'))
+    ASSERT((tsca.eq.'R') .or. (tsca.eq.'C'))
     if (tsca .eq. 'R') then
 !         -----------
         if (nbnoz .eq. 0) then

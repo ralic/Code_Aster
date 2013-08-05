@@ -1,7 +1,6 @@
 subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
                   lcrpa, vi, vr, vc, vk,&
                   lprec, lcrit, iret)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 !
@@ -81,7 +80,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr,&
 !
 !     --- VERIFICATION DE LA BASE ---
 !
-    call assert(base.eq.'V' .or. base.eq.'G')
+    ASSERT(base.eq.'V' .or. base.eq.'G')
 !
 !     --- VERIFICATION DE LA TABLE ---
 !

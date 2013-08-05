@@ -77,7 +77,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    call assert(nbma.gt.0)
+    ASSERT(nbma.gt.0)
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyp, k1bid)
 !

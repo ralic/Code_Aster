@@ -68,15 +68,15 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
     real(kind=8) :: c, s
     save           t2ev,t2ve,matevn,matevg
 !
-    call assert(loue.eq.'L' .or. loue.eq.'E')
-    call assert(sens.eq.'UI' .or. sens.eq.'IU')
-    call assert(sour.eq.'S' .or. sour.eq.'R')
-    call assert(goun.eq.'G' .or. goun.eq.'N')
+    ASSERT(loue.eq.'L' .or. loue.eq.'E')
+    ASSERT(sens.eq.'UI' .or. sens.eq.'IU')
+    ASSERT(sour.eq.'S' .or. sour.eq.'R')
+    ASSERT(goun.eq.'G' .or. goun.eq.'N')
 !
 !     -- ADRESSE DU CHAMP LOCAL A MODIFIER + NBPT + NBSP
     call tecach('NOO', param, loue, 7, itab,&
                 iret)
-    call assert(iret.eq.0 .or. iret.eq.1)
+    ASSERT(iret.eq.0 .or. iret.eq.1)
 !
 !     -- SI IRET=1 : IL N'Y A RIEN A FAIRE :
     if (iret .eq. 1) then

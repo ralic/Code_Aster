@@ -54,7 +54,7 @@ subroutine te0599(option, nomte)
 !
 !     ON INTERDIT LES ELTS QUADRATIQUES
     call elref1(elrefp)
-    call assert(iselli(elrefp))
+    ASSERT(iselli(elrefp))
 !
 !     CHAMPS IN CLASSIQUES
     call jevech('PGEOMER', 'L', igeom)
@@ -71,7 +71,7 @@ subroutine te0599(option, nomte)
         call jevech('PHECHPF', 'L', ihechp)
         if (zk8(ihechp) .eq. '&FOZERO ') goto 9999
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     CHAMPS IN X-FEM

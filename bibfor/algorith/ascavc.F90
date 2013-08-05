@@ -164,7 +164,7 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst,&
     if (ieqmul .gt. 0) then
         call rgndas(numedd, ieqmul, nomno, nomcmp, tyddl,&
                     ligrel, infobl)
-        call assert(tyddl.eq.'A')
+        ASSERT(tyddl.eq.'A')
         valk(1)=nomno
         valk(2)=nomcmp
         call u2mesk('A', 'CALCULEL3_37', 2, valk)

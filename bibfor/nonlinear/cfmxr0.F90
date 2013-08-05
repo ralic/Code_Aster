@@ -117,10 +117,10 @@ subroutine cfmxr0(defico, resoco, noma)
     zresu = cfmmvd('ZRESU')
     zperc = cfmmvd('ZPERC')
     if (zresu .ne. nbcmp) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (zperc .ne. nbper) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TYPE DE CONTACT

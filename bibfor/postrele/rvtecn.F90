@@ -263,10 +263,10 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     30 end do
 !
     lc = ir+4+nbcmp
-    call assert(nbpar .le. lck)
-    call assert(ii+2 .le. 10)
-    call assert(ik+1 .le. 10)
-    call assert(lc .le. lcr)
+    ASSERT(nbpar .le. lck)
+    ASSERT(ii+2 .le. 10)
+    ASSERT(ik+1 .le. 10)
+    ASSERT(lc .le. lcr)
 !
     ilign = 0
 !

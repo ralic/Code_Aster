@@ -62,22 +62,22 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
 !     PARAMETRES FORCEMMENT PRESENTS
     call getvtx(motfac, 'ALGORITHME', 1, iarg, 1,&
                 kalgo, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'PRE_COND', 1, iarg, 1,&
                 kprec, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvtx(motfac, 'RENUM', 1, iarg, 1,&
                 renum, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvr8(motfac, 'RESI_RELA', 1, iarg, 1,&
                 epsmax, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvis(motfac, 'NMAX_ITER', 1, iarg, 1,&
                 nmaxit, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
     call getvr8(motfac, 'RESI_RELA_PC', 1, iarg, 1,&
                 resipc, ibid)
-    call assert(ibid.eq.1)
+    ASSERT(ibid.eq.1)
 !
 !     INITIALISATION DES PARAMETRES OPTIONNELS
     niremp = 0
@@ -89,18 +89,18 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
     if (kprec .eq. 'LDLT_INC') then
         call getvis(motfac, 'NIVE_REMPLISSAGE', 1, iarg, 1,&
                     niremp, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         call getvr8(motfac, 'REMPLISSAGE', 1, iarg, 1,&
                     fillin, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
 !     PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR SP
     else if (kprec.eq.'LDLT_SP') then
         call getvis(motfac, 'REAC_PRECOND', 1, iarg, 1,&
                     reacpr, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         call getvis(motfac, 'PCENT_PIVOT', 1, iarg, 1,&
                     pcpiv, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
         call gcncon('.', solvbd)
@@ -115,7 +115,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, syme,&
 !     RIEN DE PARTICULIER...
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ON REMPLIT LA SD_SOLVEUR

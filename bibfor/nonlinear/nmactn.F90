@@ -87,14 +87,14 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
                     solveu, ievdac, numins, iterat, retact)
     else if (etnewt.eq.'CONT') then
 ! ----- TROP TARD POUR CONTINUE NEWTON -> IMPOSSIBLE
-        call assert(.false.)
+        ASSERT(.false.)
     else if (etnewt.eq.'ERRE') then
 ! ----- ERRREUR NON TRAITE DANS NMCVGN -> IMPOSSIBLE
-        call assert(.false.)
+        ASSERT(.false.)
     else if (etnewt.eq.'STOP') then
         retact = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TRAITEMENT DE L'ACTION
@@ -137,7 +137,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
 !
         actnew = 3
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CHANGEMENT DE STATUT DE LA BOUCLE
@@ -151,7 +151,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
     else if (actnew.eq.3) then
         call nmeceb(sderro, 'NEWT', 'STOP')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

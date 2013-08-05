@@ -285,7 +285,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
 ! TEST D'EXISTENCE DU CHAMP DE TEMP A L'INSTANT
 ! PRECEDENT. SI IL EXISTE ON LANCE LE CALCUL SIN PB.
     call exisd('CHAMP_GD', chtn(1:19), iret)
-    call assert(iret.gt.0)
+    ASSERT(iret.gt.0)
     if (niv .eq. 2) then
         write (ifm,*) '-->  OPTION         :',option
         do 20 i = 1, nchin

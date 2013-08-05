@@ -161,7 +161,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
 !          --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
                 alpha = (hy - 2.d0 * epy ) / hy
                 beta = (hz - 2.d0 * epz ) / hz
-                call assert((alpha.ge.0.d0) .or. (beta.ge.0.d0))
+                ASSERT((alpha.ge.0.d0) .or. (beta.ge.0.d0))
                 if (alpha .gt. 0.95d0 .or. beta .gt. 0.95d0) then
                     call u2mess('F', 'MODELISA10_15')
                 endif
@@ -257,7 +257,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis,&
 !       --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
 !
             alpha = ri / re
-            call assert((alpha .ge. 0.d0) .or. (alpha .le. 1.d0))
+            ASSERT((alpha .ge. 0.d0) .or. (alpha .le. 1.d0))
             nompaf = 'ALPHA'
             valpaf = alpha
             call fointe('A', foncis, 1, nompaf, valpaf,&

@@ -162,7 +162,7 @@ subroutine op0046()
                 k8bla, ierd)
     call getvtx(' ', 'OPTION', 0, iarg, 1,&
                 nosy, n7)
-    call assert(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
+    ASSERT(nosy.eq.'SIEF_ELGA'.or.nosy.eq.'SANS')
 !
 !   A-t-on des POU_D_EM qui utilisent le champ STRX_ELGA en lineaire
     call dismoi('F', 'EXI_STR2', nomode, 'MODELE', ibid,&

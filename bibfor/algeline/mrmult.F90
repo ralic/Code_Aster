@@ -66,9 +66,9 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 !
     prepo2=prepos
     call jemarq()
-    call assert(cumul.eq.'ZERO' .or. cumul.eq.'CUMU')
+    ASSERT(cumul.eq.'ZERO' .or. cumul.eq.'CUMU')
     matas=zk24(zi(lmat+1))(1:19)
-    call assert(zi(lmat+3).eq.1)
+    ASSERT(zi(lmat+3).eq.1)
     call jeveuo(matas//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+3) .eq. 'ELIMF') call mtmchc(matas, 'ELIML')
     neq=zi(lmat+2)

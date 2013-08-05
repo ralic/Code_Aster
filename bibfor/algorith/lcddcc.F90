@@ -90,7 +90,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
     temp=  coeft(ifl+19)
     mu    =coeft(ifl+20)
     irr2   =nint(coeft(ifl+21))
-    call assert(irr2.eq.irr)
+    ASSERT(irr2.eq.irr)
     if (irr .gt. 0) then
         airr =coeft(ifl+22)
 !         XI    =COEFT(IFL+23)
@@ -156,7 +156,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm,&
 ! 2.  Calcul de Rs
     t1=1.d0-deltag/deltg0
     if (t1 .lt. 0.d0) then
-        call assert(.false.)
+        ASSERT(.false.)
     else if (t1.lt.rmin) then
         rs=rmax
     else

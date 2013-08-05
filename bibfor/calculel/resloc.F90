@@ -66,7 +66,6 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
 !
 ! REMARQUE : RESLOC ET QIRES1 DOIVENT RESTER TRES SIMILAIRES
 ! ......................................................................
-! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -219,14 +218,14 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             call dismoi('F', 'NOM_GD', carte1, 'CARTE', ibid,&
                         nomgd1, ier)
             call etenca(carte1, ligrel, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
 !GN        WRITE(6,*) 'ON A DU F1D2D'
         else if (iret2.ne.0) then
             carte1 = lchar(i)//'.CHME.F2D3D'
             call dismoi('F', 'NOM_GD', carte1, 'CARTE', ibid,&
                         nomgd1, ier)
             call etenca(carte1, ligrel, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
 !GN        WRITE(6,*) 'ON A DU F2D3D'
         endif
 !
@@ -238,7 +237,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
             call dismoi('F', 'NOM_GD', carte2, 'CARTE', ibid,&
                         nomgd2, ier)
             call etenca(carte2, ligrel, iret)
-            call assert(iret.eq.0)
+            ASSERT(iret.eq.0)
 !GN        WRITE(6,*) 'ON A DU PRESS AVEC CARTE2 : ',CARTE2
         endif
 !
@@ -251,7 +250,7 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca,&
                 call dismoi('F', 'NOM_GD', carte3, 'CARTE', ibid,&
                             nomgd3, ier)
                 call etenca(carte3, ligrel, iret)
-                call assert(iret.eq.0)
+                ASSERT(iret.eq.0)
             endif
         endif
 !

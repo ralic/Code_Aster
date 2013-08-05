@@ -104,7 +104,7 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
         call nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
                     ratio, optdec, retdec, ldcext, durdec)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

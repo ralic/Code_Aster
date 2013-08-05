@@ -93,7 +93,7 @@ subroutine surfcp(char, ifm)
     else if (iform.eq.3) then
         write (ifm,*) '<CONTACT> ... FORMULATION XFEM (NON MAILLEE)'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ALGORITHMES
@@ -122,7 +122,7 @@ subroutine surfcp(char, ifm)
         write (ifm,*) '<CONTACT> ... ALGO. GEOMETRIQUE - NEWTON'
         write (ifm,1071) 'RESI_GEOM       ',resige
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- FROTTEMENT
@@ -135,7 +135,7 @@ subroutine surfcp(char, ifm)
         write (ifm,*) '<CONTACT> ... ALGO. FROTTEMENT - NEWTON'
         write (ifm,1071) 'RESI_FROT       ',resifr
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CONTACT
@@ -147,7 +147,7 @@ subroutine surfcp(char, ifm)
     else if (iresoc.eq.1) then
         write (ifm,*) '<CONTACT> ... ALGO. CONTACT - NEWTON'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     1070 format (' <CONTACT> ...... PARAM. : ',a16,' - VAL. : ',i5)

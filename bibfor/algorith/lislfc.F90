@@ -94,7 +94,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
             if (nccplx .eq. 0) then
                 call getvr8('EXCIT', 'COEF_MULT', ichar, iarg, 1,&
                             rcoef, ncreel)
-                call assert(ncreel.eq.0)
+                ASSERT(ncreel.eq.0)
                 call focste(nomfct, 'TOUTRESU', rcoef, 'V')
             else
                 rcoef = dble ( ccoef )
@@ -114,7 +114,7 @@ subroutine lislfc(excit, ichar, indic, iexcit, nexci,&
             call getvid('EXCIT', 'FONC_MULT', indic, iarg, 1,&
                         k24bid, nfreel)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         if (lacce) then

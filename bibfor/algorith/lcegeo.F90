@@ -117,7 +117,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         do 50 kpg = 1, npg

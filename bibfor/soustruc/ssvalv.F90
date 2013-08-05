@@ -187,7 +187,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !

@@ -41,7 +41,7 @@ subroutine jevete(nomobj, code, iad)
 !
     nomob2 = nomobj
     ii = indk24(zk24(ininel),nomob2,1,nbobj)
-    call assert(ii.ne.0)
+    ASSERT(ii.ne.0)
     iad = zi(iainel-1+ii)
 ! FIN ------------------------------------------------------------------
 end subroutine

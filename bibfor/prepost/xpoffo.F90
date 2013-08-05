@@ -71,7 +71,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 !     DANS UNE BOUCLE SUR LES SOUS-ELEMENTS
     else if (ndim.ne.ndime) then
 !
-        call assert(ndim.eq.ndime+1)
+        ASSERT(ndim.eq.ndime+1)
 !
 !       CREATION D'UNE BASE LOCALE A LA MAILLE PARENT ABCD
         call vecini(3, 0.d0, ab)

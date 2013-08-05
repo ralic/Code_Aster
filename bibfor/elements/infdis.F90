@@ -126,7 +126,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
                 goto 9995
             endif
 20      continue
-        call assert(.false.)
+        ASSERT(.false.)
 9995      continue
         ivale = 0
         rvale = 0.0d0
@@ -150,7 +150,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
                 endif
             endif
 30      continue
-        call assert(ivale.ne.0)
+        ASSERT(ivale.ne.0)
     else if (quest .eq. 'INIT') then
         caracz = kvale
         if (caracz(1:3) .eq. 'REP') then
@@ -164,7 +164,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
         else if (caracz .eq. 'TYDI') then
             ivale = 0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         rvale = ivale
         goto 9999
@@ -204,7 +204,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
     else if (quest .eq. 'SKMA') then
         rvale = zr(jdc+3)+zr(jdc+4)+zr(jdc+5)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     ivale = nint(rvale)

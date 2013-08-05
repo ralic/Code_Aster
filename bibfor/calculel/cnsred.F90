@@ -106,7 +106,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', ncmpmx,&
                 kbid, ibid)
 !
-    call assert(nbcmp.ge.0)
+    ASSERT(nbcmp.ge.0)
     if (nbcmp .gt. 0) then
         ncmp2 = nbcmp
     else
@@ -136,7 +136,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
     zl(jexno-1+kno) = .false.
     10 end do
 !
-    call assert(nbno.ge.0)
+    ASSERT(nbno.ge.0)
     if (nbno .eq. 0) then
         do 20,kno = 1,nbnom
         zl(jexno-1+kno) = .true.
@@ -173,7 +173,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
             else if (tsca.eq.'K8') then
                 zk8(jcn2v-1+ (ino-1)*ncmp2+icmp2) = zk8( jcn1v- 1+ (ino-1 )*ncmp1+icmp1 )
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         endif

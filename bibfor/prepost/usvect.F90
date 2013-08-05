@@ -33,7 +33,7 @@ subroutine usvect(coef, alphad, alpham, alphaf, prof,&
             goto 12
         endif
 10  end do
-    call assert(.false.)
+    ASSERT(.false.)
 12  continue
 !
     ai1 = prof / ( alpham - alphad )

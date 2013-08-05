@@ -35,7 +35,7 @@ subroutine permr8(tab, shift, nbr)
     integer :: i
     real(kind=8) :: tampon(nbr)
 !
-    call assert((shift.ge.1).and.(shift.le.nbr))
+    ASSERT((shift.ge.1).and.(shift.le.nbr))
 !
     do 10 i = 1, nbr
         tampon(i) = tab( mod(i+shift-2,nbr) + 1 )

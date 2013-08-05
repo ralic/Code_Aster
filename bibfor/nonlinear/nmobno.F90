@@ -68,7 +68,7 @@ subroutine nmobno(sdobse, motfac, nbocc)
         call getvtx(motfac, 'TITRE', iocc, iarg, 0,&
                     k16bid, nbtit)
         nbtit = - nbtit
-        call assert(nbtit.le.1)
+        ASSERT(nbtit.le.1)
         if (nbtit .ne. 0) then
             call getvtx(motfac, 'TITRE', iocc, iarg, nbtit,&
                         titobs, ibid)

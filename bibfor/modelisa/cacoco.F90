@@ -105,7 +105,7 @@ subroutine cacoco(char, motfac, noma)
             call getvid(motfac, 'CARA_ELEM', izone, iarg, 1,&
                         carael, noc)
             if (noc .eq. 0) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 10  end do

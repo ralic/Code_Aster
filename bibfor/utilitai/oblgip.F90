@@ -67,7 +67,7 @@ subroutine oblgip(sdlist, idnvaz, indice)
 ! --- VERIFICATION
 !
     call obgett(sdlist, typesd)
-    if (typesd .ne. 'LISTE_STRUCTS') call assert(.false.)
+    if (typesd .ne. 'LISTE_STRUCTS') ASSERT(.false.)
 !
 ! --- RECHERCHE DANS LA LISTE
 !
@@ -76,13 +76,13 @@ subroutine oblgip(sdlist, idnvaz, indice)
         call oblgoi(sdlist, istru, nomstr)
         if (nomstr .eq. ' ') then
             write(6,*) 'LISTE DES STRUCTS VIDE (NON INIT)'
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call obgetk(nomstr, idnpar, valpar)
         if (idnvaz .eq. valpar) then
             if (indice .ne. 0) then
                 write(6,*) 'PLUSIEURS STRUCTS DANS LA LISTE '
-                call assert(.false.)
+                ASSERT(.false.)
             else
                 indice = istru
             endif
@@ -91,7 +91,7 @@ subroutine oblgip(sdlist, idnvaz, indice)
 !
     if (indice .eq. 0) then
         write(6,*) 'STRUCT INTROUVABLE DANS LA LISTE '
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

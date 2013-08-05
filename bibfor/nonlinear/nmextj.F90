@@ -82,7 +82,7 @@ subroutine nmextj(nomcha, nbcmp, listcp, extrcp, num,&
 !
     ieff = 1
     nbcmpx = zi(jcesd+4)
-    call assert(nbcmp.le.nparx)
+    ASSERT(nbcmp.le.nparx)
 !
 ! --- NOM DES COMPOSANTES
 !
@@ -123,7 +123,7 @@ subroutine nmextj(nomcha, nbcmp, listcp, extrcp, num,&
     call nmextv(neff, extrcp, nomcmp, valcmp, nvalcp,&
                 valres)
 !
-    call assert(nvalcp.le.nbcmp)
+    ASSERT(nvalcp.le.nbcmp)
 !
     call jedema()
 !

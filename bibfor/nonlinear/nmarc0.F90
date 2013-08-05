@@ -135,7 +135,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 ! --- ARCHIVAGE DE LA FREQUENCE DU MODE VIBRATOIRE
 !
     if (lvibr) then
-        call assert(ldyna)
+        ASSERT(ldyna)
         call nmarcp('VIBR', sdpost, k19bla, freqr, iret)
         if (iret .ne. 0) then
             call rsadpa(result, 'E', 1, 'FREQ', numarc,&
@@ -153,7 +153,7 @@ subroutine nmarc0(result, modele, mate, carele, fonact,&
 !  --- ARCHIVAGE DE L'INSTANT  PRECEDENT SI HHT
 !
     if (lmpas) then
-        call assert(ldyna)
+        ASSERT(ldyna)
         instam = ndynre(sddyna,'INST_PREC')
         call rsadpa(result, 'E', 1, 'INST_PREC', numarc,&
                     0, jinst, k8bid)

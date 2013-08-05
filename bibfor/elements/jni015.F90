@@ -50,7 +50,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 !
 !
     nbobj = 2
-    call assert(nmaxob.gt.nbobj)
+    ASSERT(nmaxob.gt.nbobj)
     liobj(1) = carac
     liobj(2) = ff
 !

@@ -82,7 +82,7 @@ subroutine rsrusd(nomsd, iordr)
 !        QUE IORDR > DERNIER NUMERO D'ORDRE
 !        ET ON RESSORT SANS RIEN FAIRE :
     if (irang .eq. 0) then
-        call assert(iordr.gt.zi(jordr-1+nbordr))
+        ASSERT(iordr.gt.zi(jordr-1+nbordr))
         goto 40
     endif
 !
@@ -109,7 +109,7 @@ subroutine rsrusd(nomsd, iordr)
     if (ier1 .gt. 0) then
         call jelira(nomobj, 'LONMAX', n1, kbid)
         n2=n1/nbormx
-        call assert(n1.eq.n2*nbormx)
+        ASSERT(n1.eq.n2*nbormx)
         call jeveuo(nomobj, 'E', jpara)
         do 1, kk=n2*irang, n2*nbormx
         zr(jpara-1+kk)=rundef

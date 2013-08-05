@@ -3,7 +3,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                   cnslt, grlt, tore, radtor, radimp,&
                   cnsdis, disfr, cnsbl, nodcal, elecal,&
                   liggrd, vcnt, grlrt)
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
@@ -564,7 +564,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
             if (zl(jlisno-1+i)) then
 !
-                call assert(j.le.nnodto)
+                ASSERT(j.le.nnodto)
 !
 !              STORE THE NUMBER OF THE NODE
                 zi(jnocal-1+j) = i
@@ -591,7 +591,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !
             if (zl(jelcal-1+i)) then
 !
-                call assert(j.le.neleto)
+                ASSERT(j.le.neleto)
                 zi(jeleca-1+j) = i
                 j=j+1
 !

@@ -138,7 +138,7 @@ subroutine te0520(option, nomte)
                 nddlm, nddlfa, nddlk, dimuel, ipoids,&
                 ivf, idfde, ipoid2, ivf2, idfde2,&
                 npi2, jgano)
-    call assert(vf)
+    ASSERT(vf)
 !
 !     -- RECHERCHE DE VOISINAGES
     call tecael(iadzi, iazk24)

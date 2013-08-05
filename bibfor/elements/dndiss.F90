@@ -350,7 +350,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
         ier = cier
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

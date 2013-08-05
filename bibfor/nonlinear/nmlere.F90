@@ -61,7 +61,7 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
     call jeveuo(infore, 'E', jifre)
     info = infz
 !
-    call assert((action.eq.'E').or.(action.eq.'L'))
+    ASSERT((action.eq.'E').or.(action.eq.'L'))
 !
     if (info .eq. 'VRELA') then
         if (action .eq. 'E') then
@@ -88,7 +88,7 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
                 valr(iter+1) = zr(jifre+3*iter+1-1)
 10          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (info.eq.'VMAXI_TOUS') then
         if (action .eq. 'L') then
@@ -96,7 +96,7 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
                 valr(iter+1) = zr(jifre+3*iter+2-1)
 15          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (info.eq.'VCHAR_TOUS') then
         if (action .eq. 'L') then
@@ -104,10 +104,10 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
                 valr(iter+1) = zr(jifre+3*iter+3-1)
 20          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

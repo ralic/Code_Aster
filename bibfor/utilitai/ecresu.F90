@@ -158,7 +158,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !              --- CREATION D'UNE STRUCTURE CHAM_NO "CHAMP" BASEE
 !                  SUR BASE MODALE (.REFD[3])
                 call vtcreb(chdeps, zk24(jrefe+3), 'G', 'C', n1)
-                call assert(n1.eq.neq)
+                ASSERT(n1.eq.neq)
             endif
 !           -------------------------------------------------------
 !
@@ -184,14 +184,14 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 call vtcrem(chdeps, raide, 'G', 'R')
             else
                 call vtcreb(chdeps, zk24(jrefe+3), 'G', 'R', n1)
-                call assert(n1.eq.neq)
+                ASSERT(n1.eq.neq)
             endif
 !
             call jeveuo(chdeps//'.VALE', 'E', lvals)
             call jelira(chdeps//'.VALE', 'LONMAX', n1, k1b)
-            call assert(n1.eq.neq)
+            ASSERT(n1.eq.neq)
             call jelira(chdeps//'.VALE', 'TYPE', ibid, ktyp)
-            call assert(ktyp.eq.'R')
+            ASSERT(ktyp.eq.'R')
             do 300 ieq = 1, neq
                 r1 = zr(npara+nbva*(ieq-1)+i-1)
                 zr(lvals+ieq-1) = r1

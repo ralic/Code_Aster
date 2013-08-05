@@ -136,14 +136,14 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, ddlm,&
         idebs = nbsig * idecpg
 !
         if (ndim .eq. 3) then
-            call assert(nbsig.eq.6)
+            ASSERT(nbsig.eq.6)
             call xrige3(elrefp, ndim, coorse, igeom, he,&
                         ddlh, ddlc, ddlm, nfe, basloc,&
                         nnop, npg, lsn, lst, sig(idebs+1),&
                         matuu)
 !
         else if (ndim.eq.2) then
-            call assert(nbsig.eq.4)
+            ASSERT(nbsig.eq.4)
             call xrige2(elrefp, elrese(ndim+irese), ndim, coorse, igeom,&
                         he, ddlh, ddlc, ddlm, nfe,&
                         basloc, nnop, npg, lsn, lst,&

@@ -137,7 +137,7 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
     else if (retpen.eq.1) then
         call u2mess('I', 'MECANONLINE10_45')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -107,7 +107,7 @@ subroutine op0030()
     call getvtx(' ', 'FORMULATION', 1, iarg, 1,&
                 formul, noc)
     if (noc .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (formul .eq. 'DISCRETE') then
@@ -119,7 +119,7 @@ subroutine op0030()
     else if (formul.eq.'LIAISON_UNIL') then
         iform = 4
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- LECTURE DES DONNEES

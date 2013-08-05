@@ -67,7 +67,7 @@ subroutine xfisno(noma, modelx)
 ! --- LE CONTACT EST-IL DÉCLARÉ
 !
     call jeveuo(modelx(1:8)//'.XFEM_CONT', 'L', jxc)
-    call assert(zi(jxc).le.1)
+    ASSERT(zi(jxc).le.1)
     lcont = zi(jxc).eq.1
     if (lcont) then
         heavno = modelx(1:8)//'.HEAVNO'
@@ -129,7 +129,7 @@ subroutine xfisno(noma, modelx)
                 do 30 ifiss = 1, nfiss
                     call cesexi('S', jcesfd, jcesfl, ima, ino,&
                                 ifiss, 1, iad)
-                    call assert(iad.gt.0)
+                    ASSERT(iad.gt.0)
                     if (zi(jcesfv-1+iad) .eq. 1) then
                         do 40 iheav = 1, nheav
                             call cesexi('S', jcesd, jcesl, ima, ino,&
@@ -140,7 +140,7 @@ subroutine xfisno(noma, modelx)
                                 if (lcont) then
                                     call cesexi('S', jcesd2, jcesl2, ima, ino,&
                                                 ifiss, 1, iad)
-                                    call assert(iad.lt.0)
+                                    ASSERT(iad.lt.0)
                                     zl(jcesl2-1-iad) = .true.
                                     zi(jcesv2-1-iad) = iheav
                                 endif
@@ -155,7 +155,7 @@ subroutine xfisno(noma, modelx)
                 do 50 ifiss = 1, nfiss
                     call cesexi('S', jcesfd, jcesfl, ima, ino,&
                                 ifiss, 1, iad)
-                    call assert(iad.gt.0)
+                    ASSERT(iad.gt.0)
                     if (zi(jcesfv-1+iad) .eq. 0) then
                         do 60 iheav = 1, nheav
                             call cesexi('S', jcesd, jcesl, ima, ino,&
@@ -166,7 +166,7 @@ subroutine xfisno(noma, modelx)
                                 if (lcont) then
                                     call cesexi('S', jcesd2, jcesl2, ima, ino,&
                                                 ifiss, 1, iad)
-                                    call assert(iad.lt.0)
+                                    ASSERT(iad.lt.0)
                                     zl(jcesl2-1-iad) = .true.
                                     zi(jcesv2-1-iad) = iheav
                                 endif

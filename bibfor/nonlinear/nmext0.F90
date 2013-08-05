@@ -72,7 +72,7 @@ subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
         call wkvect(chgaus, 'V V R', nbpi*nbspi*nbcmp, jgaus)
         call wkvect(chelga, 'V V R', nbma*nbpi*nbspi*nbcmp, jelga)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (extrch .eq. 'MAX') then
@@ -88,7 +88,7 @@ subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
     else if (extrch.eq.'MOY') then
         initch = 0.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (typcha .eq. 'ELGA') then
@@ -101,7 +101,7 @@ subroutine nmext0(typcha, nbma, nbno, nbpi, nbspi,&
         else if (extrga.eq.'MOY') then
             initga = 0.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

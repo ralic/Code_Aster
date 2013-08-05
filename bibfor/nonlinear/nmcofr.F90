@@ -142,7 +142,7 @@ subroutine nmcofr(noma, depplu, depdel, ddepla, solveu,&
 !
 ! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
 !
-    call assert(ctccvg.ge.0)
+    ASSERT(ctccvg.ge.0)
 !
     call jedema()
 end subroutine

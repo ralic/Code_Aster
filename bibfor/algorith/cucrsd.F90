@@ -155,7 +155,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
 200      continue
 100  end do
     if ((iddl-1) .ne. ncmpg) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- VECTEUR COEFFICIENTS DES DDLS DE GAUCHE

@@ -49,7 +49,7 @@ subroutine vpmain(modele, mate, cara, xmastr, nbpara)
     call jemarq()
 !
     call megeom(modele, chgeom)
-    call assert(chgeom.ne.' ')
+    ASSERT(chgeom.ne.' ')
 !
     call mecara(cara, lret, chcara)
 !

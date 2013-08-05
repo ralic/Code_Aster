@@ -74,7 +74,7 @@ subroutine nmcvgp(sddisc, numins, sderro, valinc, fonact,&
         else if (etfixe.eq.'ERRE') then
             call nmeceb(sderro, 'INST', 'ERRE')
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 99
     endif

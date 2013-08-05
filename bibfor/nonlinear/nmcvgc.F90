@@ -70,7 +70,7 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
         else if (etinst.eq.'ERRE') then
             call nmeceb(sderro, 'CALC', 'ERRE')
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         call nmevcv(sderro, fonact, 'CALC')

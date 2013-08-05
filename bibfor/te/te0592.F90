@@ -48,7 +48,7 @@ subroutine te0592(option, nomte)
 !
 ! - FONCTIONS DE FORME
     call elref2(nomte, 10, lielrf, ntrou)
-    call assert(ntrou.ge.3)
+    ASSERT(ntrou.ge.3)
     call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos,&
                 npg, iw, ivf3, idf3, jgn)
     call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&

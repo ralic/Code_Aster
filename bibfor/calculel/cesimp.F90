@@ -76,7 +76,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     ncmp = zi(jcesd-1+2)
 !
     call jeexin(ma//'.CONNEX', iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     call jeveuo(ma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
@@ -117,7 +117,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
         fmt = '(3(''|'',A12),XXX(''|'',A16,'' '',A16))'
     else
 !       ON ATTEND UN TYPE PARMI : I/R/K8/K16
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -133,7 +133,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !
 !     2- FORMAT DES LIGNES :
 !     ----------------------
-    call assert(ncmpu.le.997)
+    ASSERT(ncmpu.le.997)
     call codent(ncmpu, 'D', fmt1(13:15))
     call codent(ncmpu, 'D', fmt(13:15))
 !

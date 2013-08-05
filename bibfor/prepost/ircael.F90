@@ -77,6 +77,6 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
         endif
     endif
     10 end do
-    if (nbrfib .ne. 0) call assert(nbrgrf.ne.0)
+    if (nbrfib .ne. 0) ASSERT(nbrgrf.ne.0)
 !
 end subroutine

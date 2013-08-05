@@ -131,7 +131,7 @@ subroutine op0150()
     call getres(resu, concep, nomcmd)
     call getvtx(' ', 'TYPE_RESU', 0, iarg, 1,&
                 typres, n1)
-    call assert(typres.eq.concep)
+    ASSERT(typres.eq.concep)
     call getvtx(' ', 'NOM_FICHIER', 0, iarg, 1,&
                 fich, nfic)
 !
@@ -455,7 +455,7 @@ subroutine op0150()
 !     POUR LES FORMATS NON PREVUS
 !     ===========================
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! - STOCKAGE EVENTUEL : MODELE, CHAM_MATER, CARA_ELEM, EXCIT

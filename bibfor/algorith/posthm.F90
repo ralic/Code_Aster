@@ -79,14 +79,14 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
-        call assert(nno .le. nnomax)
-        call assert(npg .le. npgmax)
-        call assert(nnos .le. nnosma)
+        ASSERT(nno .le. nnomax)
+        ASSERT(npg .le. npgmax)
+        ASSERT(nnos .le. nnosma)
         if (option .eq. 'SIEF_ELNO  ') then
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
-            call assert(ncmp .le. dimmax)
+            ASSERT(ncmp .le. dimmax)
             do 100 i = 1, ncmp*npg
                 spg1(i) = vpg(i)
 100          continue
@@ -108,7 +108,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! =====================================================================
 ! --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 ! =====================================================================
-            call assert(ncmp .le. nvmax)
+            ASSERT(ncmp .le. nvmax)
             do 300 i = 1, ncmp*npg
                 vpg1(i) = vpg(i)
 300          continue

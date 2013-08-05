@@ -51,7 +51,7 @@ function dimge1(ige1, ige2)
         i1(3)=mod(ige1,10)
         i1(2)=(mod(ige1,100) -i1(3))/10
     else
-        call assert(ige1.ge.0.and.ige1.le.3)
+        ASSERT(ige1.ge.0.and.ige1.le.3)
         if (ige1 .eq. 1) i1(1)=1
         if (ige1 .eq. 2) i1(2)=2
         if (ige1 .eq. 3) i1(3)=3
@@ -66,7 +66,7 @@ function dimge1(ige1, ige2)
         i2(3)=mod(ige2,10)
         i2(2)=(mod(ige2,100) -i2(3))/10
     else
-        call assert(ige2.ge.0.and.ige2.le.3)
+        ASSERT(ige2.ge.0.and.ige2.le.3)
         if (ige2 .eq. 1) i2(1)=1
         if (ige2 .eq. 2) i2(2)=2
         if (ige2 .eq. 3) i2(3)=3
@@ -74,8 +74,8 @@ function dimge1(ige1, ige2)
 !
 !     -- ON CALCULE I3 :
     do 3, k=1,3
-    call assert(i1(k).eq.0 .or. i1(k).eq.k)
-    call assert(i2(k).eq.0 .or. i2(k).eq.k)
+    ASSERT(i1(k).eq.0 .or. i1(k).eq.k)
+    ASSERT(i2(k).eq.0 .or. i2(k).eq.k)
     i3(k)=max(i1(k),i2(k))
     3 end do
 !

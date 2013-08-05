@@ -94,7 +94,7 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
 10  end do
 !
 !     ON DOIT AVOIR UN NOMBRE PAIR D'EXTREMITES
-    call assert(mod(nbptex, 2).eq.0)
+    ASSERT(mod(nbptex, 2).eq.0)
 !
     zk16(jinfo-1+3) = 'OUVERT'
 !     CAS D'UN FOND FERME SI ABSCENCE D'EXTREMITES

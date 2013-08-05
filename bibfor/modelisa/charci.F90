@@ -121,13 +121,13 @@ subroutine charci(chcine, mfact, mo, type)
 !     ------------------------------------------------------------
     evoim=' '
     if (noc .eq. 0) then
-        call assert(mfac.eq.'MECA_IMPO'.or.mfac.eq.'THER_IMPO')
+        ASSERT(mfac.eq.'MECA_IMPO'.or.mfac.eq.'THER_IMPO')
         call getvid(' ', 'EVOL_IMPO', 1, iarg, 1,&
                     evoim, n1)
-        call assert(n1.eq.1)
+        ASSERT(n1.eq.1)
         call getvtx(' ', 'NOM_CMP', 1, iarg, 20,&
                     licmp, nlicmp)
-        call assert(nlicmp.ge.0)
+        ASSERT(nlicmp.ge.0)
 !
         call gettco(evoim, typco)
         if (typco .eq. 'EVOL_THER') then
@@ -135,7 +135,7 @@ subroutine charci(chcine, mfact, mo, type)
         else if (typco.eq.'EVOL_ELAS'.or.typco.eq.'EVOL_NOLI') then
             zk8(jafck-1+1)='CIME_FT'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         zk8(jafck-1+3)=evoim
 !
@@ -143,7 +143,7 @@ subroutine charci(chcine, mfact, mo, type)
         call rsorac(evoim, 'PREMIER', ibid, rbid, k8b,&
                     cbid, 0.d0, 'ABSOLU', iord, 1,&
                     iret)
-        call assert(iret.eq.1)
+        ASSERT(iret.eq.1)
         if (mfac .eq. 'MECA_IMPO') then
             call rsexch('F', evoim, 'DEPL', iord, depla,&
                         iret)
@@ -177,7 +177,7 @@ subroutine charci(chcine, mfact, mo, type)
     motcle(3) = 'GROUP_NO'
     motcle(4) = 'NOEUD'
     motcle(5) = 'TOUT'
-    call assert((type.eq.'F').or.(type.eq.'R').or.(type.eq.'C'))
+    ASSERT((type.eq.'F').or.(type.eq.'R').or.(type.eq.'C'))
 !
     if (type .eq. 'F') then
         typ = 'K8'
@@ -200,13 +200,13 @@ subroutine charci(chcine, mfact, mo, type)
     do 101 ioc = 1, noc
         call getmjm(mfac, ioc, mxcmp, chcino, chcity,&
                     nbobm)
-        call assert(nbobm.gt.0)
+        ASSERT(nbobm.gt.0)
         do 111 iddl = 1, nbobm
             icmp = indik8( zk8(jcmp), chcino(iddl)(1:8), 1, nbcmp )
             icmpmx=max(icmpmx,icmp)
 111      continue
 101  end do
-    call assert(icmpmx.gt.0)
+    ASSERT(icmpmx.gt.0)
     call cnscre(ma, gdcns, icmpmx, zk8(jcmp), 'V',&
                 cns)
 !
@@ -241,14 +241,14 @@ subroutine charci(chcine, mfact, mo, type)
 !
 ! ------- VERIFICATION QUE LA COMPOSANTE EXISTE DANS LA GRANDEUR
             icmp = indik8( zk8(jcmp), k16b(1:8), 1, nbcmp )
-            call assert(icmp .ne. 0)
+            ASSERT(icmp .ne. 0)
 !
 ! ------- VERIFICATION DE LA COMPOSANTE SUR LES NOEUDS XFEM
             if (lxfem) then
                 if (k16b(1:1) .eq. 'D') then
                     do 113 ino = 1, nbno
                         nuno = zi(idino-1+ino)
-                        call assert(.not.zl(jnoxfl-1+2*nuno))
+                        ASSERT(.not.zl(jnoxfl-1+2*nuno))
 113                  continue
                 endif
             endif

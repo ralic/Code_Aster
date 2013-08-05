@@ -63,7 +63,7 @@ subroutine lc0053(fami, kpg, ksp, ndim, imate,&
                     dsidep)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

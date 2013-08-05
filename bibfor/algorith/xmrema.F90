@@ -161,14 +161,14 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
         do 240 i = 1, ndim
             call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&
                         ifise, ( ifacee-1)*ndim+i, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             numpi(i) = zi(jcesv(4)-1+iad)
 240      continue
         do 250 i = 1, ndim
             do 260 j = 1, ndim
                 call cesexi('S', jcesd(6), jcesl(6), nummae, 1,&
                             ifise, ndim*(numpi(i)-1)+j, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 coorma(3*(i-1)+j)=zr(jcesv(6)-1+iad)
 260          continue
 250      continue
@@ -177,7 +177,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                     ximin, yimin, t1min, t2min, iprojm,&
                     niverr)
         if (niverr .eq. 1) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         nummin = nummae
         ifamin = ifacee
@@ -216,7 +216,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
         if (typma .eq. 'QUAD8') nbnos=8
         if (typma .eq. 'TRIA6') nbnos=6
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 200  continue
@@ -273,11 +273,11 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 !
         call cesexi('S', jcesd(1), jcesl(1), nummai, 1,&
                     ifiss, 2, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         nfacem = zi(jcesv(1)-1+iad)
         call cesexi('S', jcesd(1), jcesl(1), nummai, 1,&
                     ifiss, 3, iad)
-        call assert(iad.gt.0)
+        ASSERT(iad.gt.0)
         nptm = zi(jcesv(1)-1+iad)
 !
 ! ----- BOUCLE SUR LES FACETTES DE CONTACT DE LA MAILLE COURANTE
@@ -290,7 +290,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
             do 140 i = 1, nptm
                 call cesexi('S', jcesd(4), jcesl(4), nummai, 1,&
                             ifiss, (ifacem-1)*nptm+i, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 numpi(i) = zi(jcesv(4)-1+iad)
 140          continue
 !
@@ -301,7 +301,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
                 do 160 j = 1, ndim
                     call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
                                 ifiss, ndim*(numpi(i)-1)+j, iad)
-                    call assert(iad.gt.0)
+                    ASSERT(iad.gt.0)
                     coorma(3*(i-1)+j)=zr(jcesv(6)-1+iad)
 160              continue
 150          continue
@@ -316,7 +316,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 ! --- ECHEC DE NEWTON
 !
             if (niverr .eq. 1) then
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! --- CHOIX DE LA MAILLE

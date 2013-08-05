@@ -149,7 +149,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
                 iadm(jiadm(ic)+2*ix-1) = iadmi
                 iadm(jiadm(ic)+2*ix ) = iadyn
                 iret = hdfcld(ida)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
             else
 !-------- ON TRAITE UN REPERTOIRE DE NOMS
                 idgr=hdfopg(idfic,nomo)
@@ -160,7 +160,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
                 call jjecrs(iadmi, ic, ix, 0, 'E',&
                             imarq(jmarq(ic)+2*ix-1))
                 iret=hdftsd(idt1,typeb,ltypb,nbval)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
                 call jjhrsv(idt1, nbval, iadmi)
 !
 !           ON AJUSTE LA POSITION DES NOMS EN FONCTION DU TYPE D'ENTIER
@@ -168,17 +168,17 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
                 iszon(jiszon+iadmi-1+ideno)= (idehc+iszon(jiszon+&
                 iadmi-1+ilorep))*lois
                 iret=hdftsd(idt2,typeb,ltypb,nbval)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
                 kitab=jk1zon+(iadmi-1)*lois+iszon(jiszon+iadmi-1+&
                 ideno)+1
                 iret=hdfrsv(idt2,nbval,k1zon(kitab),iconv)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
                 iret=hdfclg(idgr)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
                 iadm(jiadm(ic)+2*ix-1) = iadmi
                 iadm(jiadm(ic)+2*ix ) = iadyn
                 iret = hdfcld(idt2)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
             endif
         endif
 20  end do
@@ -202,7 +202,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
         iadm(jiadm(ic)+2*ixdeso-1) = iadmi
         iadm(jiadm(ic)+2*ixdeso ) = iadyn
         iret = hdfcld(ida)
-        call assert(iret .eq. 0)
+        ASSERT(iret .eq. 0)
     else
 !       COLLECTION DISPERSEE, IL FAUT RELIRE LES OBJETS STOCKES SUR LE
 !       FICHIER HDF DANS LE GROUPE ASSOCIE ET UNIQUEMENT ACTUALISER LES
@@ -228,7 +228,7 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
             if (lonoi .gt. 0) then
                 ido=hdfopd(idfic,ngrc,nomo)
                 iret=hdftsd(ido,typeb,ltypb,lon)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
                 call jjlihd(ido, lon, lonoi, genri, typei,&
                             ltypi, ic, k, id, iszon(jiszon+ibmarq-1+2*k-1),&
                             iadmi, iadyn)
@@ -237,11 +237,11 @@ subroutine jjlchd(id, ic, idfic, idts, ngrp)
                 numec = k
                 call jjlide('JELIBE', rnom(jrnom(ic)+id)//'$$XNUM  ', 2)
                 iret = hdfcld(ido)
-                call assert(iret .eq. 0)
+                ASSERT(iret .eq. 0)
             endif
 30      continue
         iret = hdfclg(idgc)
-        call assert(iret .eq. 0)
+        ASSERT(iret .eq. 0)
     endif
     call jjlide('JELIBE', rnom(jrnom(ic)+id), 2)
 ! FIN ------------------------------------------------------------------

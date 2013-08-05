@@ -67,8 +67,8 @@ subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
 !
     nomcoe = nomcoz
     nzoco = cfdisi(defico,'NZOCO')
-    call assert(izone.le.nzoco)
-    call assert(izone.ge.1)
+    ASSERT(izone.le.nzoco)
+    ASSERT(izone.ge.1)
 !
 ! --- ACCES SD
 !
@@ -98,7 +98,7 @@ subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
         else if (nomcoe.eq.'COEF_STAB_FROT') then
             zr(jtabco+ztaco*(izone-1)+8 -1) = valr
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (action.eq.'L') then
         valr = 0.d0
@@ -123,10 +123,10 @@ subroutine cfmmco(defico, resoco, izone, nomcoz, action,&
         else if (nomcoe.eq.'COEF_STAB_FROT') then
             valr = zr(jtabco+ztaco*(izone-1)+8 -1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

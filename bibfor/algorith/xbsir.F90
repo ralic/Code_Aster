@@ -144,9 +144,9 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
 !
         codopt=0
         if (ndim .eq. 3) then
-            call assert(nbsig.eq.6)
+            ASSERT(nbsig.eq.6)
         else if (ndim.eq.2) then
-            call assert(nbsig.eq.4)
+            ASSERT(nbsig.eq.4)
         endif
 !
         call xxbsig(option, elrefp, elrese(ndim+irese), ndim, coorse,&

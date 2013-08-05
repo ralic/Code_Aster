@@ -471,7 +471,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     endif
 !
 !     ERREUR LORS DE LA VERIFICATION DES NOMS DE GROUPES:
-    call assert(.not.ierr)
+    ASSERT(.not.ierr)
 !
     if (nivinf .ge. 2) then
 !

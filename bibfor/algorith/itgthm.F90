@@ -103,7 +103,7 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
 ! ======================================================================
     call elref4(elref2, 'RIGI', ndim, nno2, nnos2,&
                 npi2, ipoid2, ivf2, idfde2, ibid)
-    call assert(nnos.eq.nno2)
+    ASSERT(nnos.eq.nno2)
 ! ======================================================================
 ! --- NFACE EN VF -------------
 ! ======================================================================

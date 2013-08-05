@@ -74,7 +74,7 @@ subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
         nbent = zi(jsuma+isurf) - zi(jsuma+isurf-1)
         jdec = zi(jsuma+isurf-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

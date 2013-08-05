@@ -54,7 +54,7 @@ subroutine nomcod(nom, num, ic, nc)
         endif
 20  end do
 !
-    call assert(.false.)
+    ASSERT(.false.)
 !
 21  continue
     write (nom(ic:ic+i-1),format) num

@@ -101,7 +101,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     call jeveuo(chmat//'.CHAMP_MAT .VALE', 'L', jvale)
     igd = zi(jdesc-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    call assert(nomgd.eq.'NOMMATER')
+    ASSERT(nomgd.eq.'NOMMATER')
     call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', ncmp, k8b)
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
                 k8b, ier)

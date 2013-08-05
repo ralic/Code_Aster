@@ -99,7 +99,7 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai,&
 !
     call cfnben(defico, posmai, 'CONNEX', nnomam, ibid)
     if (nnomam .gt. nbnmax) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TYPE DE LA MAILLE

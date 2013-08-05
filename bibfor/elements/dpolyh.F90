@@ -40,7 +40,7 @@ function dpolyh(n, a, x)
 !     LE POLYNOME EST DE DIMENSION 0 DONC UNE CONSTANTE
         dpolyh = a(1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

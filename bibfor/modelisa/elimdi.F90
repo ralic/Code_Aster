@@ -79,7 +79,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     call jeveuo(lisrel//'.RLBE', 'L', jrlbe)
 !
     nbrela=zi(jrlnr)
-    call assert(nbrela.gt.0)
+    ASSERT(nbrela.gt.0)
     typcoe=zk8(jrltc)(1:4)
     typval=zk8(jrltv)(1:4)
 !
@@ -87,7 +87,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     if (getexm(' ','METHODE') .eq. 1) then
         call getvtx(' ', 'METHODE', 0, iarg, 1,&
                     meth, ibid)
-        call assert(ibid.eq.1)
+        ASSERT(ibid.eq.1)
         elim=(meth.eq.'ELIMINATION')
     else
         elim=.false.
@@ -103,7 +103,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     do 10 irela = 1, nbrela
         indsur=zi(jrlsu-1+irela)
         if (indsur .eq. 1) goto 10
-        call assert(indsur.eq.0)
+        ASSERT(indsur.eq.0)
         nbterm=zi(jrlnt+irela-1)
         if (nbterm .eq. 1) then
             nelim=nelim+1
@@ -193,9 +193,9 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jncmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, kbid)
     call jelira(lisrel//'.RLCO', 'TYPE', ibid, kbid)
-    call assert(kbid.eq.'R'.or.kbid.eq.'C')
-    if (kbid .eq. 'R') call assert(typcoe.eq.'REEL')
-    if (kbid .eq. 'C') call assert(typcoe.eq.'COMP')
+    ASSERT(kbid.eq.'R'.or.kbid.eq.'C')
+    if (kbid .eq. 'R') ASSERT(typcoe.eq.'REEL')
+    if (kbid .eq. 'C') ASSERT(typcoe.eq.'COMP')
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
                 kbid, ibid)
     call jeveuo(modele//'.MODELE    .PRNM', 'L', jprnm)
@@ -212,13 +212,13 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
         else if (typval.eq.'COMP') then
             rcoef=abs(zc(jrlco-1+ideca1))
         endif
-        call assert(abs(rcoef-1.d0).lt.1.d-4)
+        ASSERT(abs(rcoef-1.d0).lt.1.d-4)
 !
         nono=zk8(jrlno-1+ideca1)
         nocmp=zk8(jrldd-1+ideca1)
         call jenonu(jexnom(mailla//'.NOMNOE', nono), nuno)
         nucmp=indik8(zk8(jncmp),nocmp,1,nbcmp)
-        call assert(nucmp.gt.0)
+        ASSERT(nucmp.gt.0)
 !
 !       -- ON COMPTE LES CMPS PORTEES PAR LE NOEUD <= NUCMP
         nucmp2 = 0
@@ -228,7 +228,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
                 if (icmp .eq. nucmp) goto 123
             endif
 122      continue
-        call assert(.false.)
+        ASSERT(.false.)
 123      continue
 !
         zi(jafci+3*(ico-1)+1)=nuno
@@ -238,7 +238,7 @@ subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
         else if (typval.eq.'COMP') then
             zc(jafcv-1+ico)=zc(jrlbe-1+irela)
         else if (typval.eq.'FONC') then
-            call assert(zk24(jrlbe-1+irela)(9:24).eq.' ')
+            ASSERT(zk24(jrlbe-1+irela)(9:24).eq.' ')
             zk8(jafcv-1+ico)=zk24(jrlbe-1+irela)(1:8)
         endif
 !

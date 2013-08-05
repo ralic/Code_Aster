@@ -83,7 +83,7 @@ subroutine avpic2(method, nbvec, nbordr, rtrv, itrv,&
 !
 ! ----- RECHERCHE DU POINT LE PLUS GRAND EN VALEUR ABSOLUE -----
 !
-        call assert(nbordr .ge. npoin(ivect))
+        ASSERT(nbordr .ge. npoin(ivect))
         adrs = (ivect-1)*(nbordr+2)
 !
         pmax = abs(valpoi((ivect-1)*nbordr + 1))

@@ -19,7 +19,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -131,7 +130,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
     lacce = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.3
     if (lgrot .and. .not.ldepl) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA
@@ -140,7 +139,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     ltheta = ndynlo(sddyna,'THETA_METHODE')
     lkrenk = ndynlo(sddyna,'KRENK')
     if (.not.(lnewma.or.ltheta.or.lkrenk)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- HHT COMPLET (MULTI-PAS)
@@ -180,7 +179,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coeamo = gamma*deltat
             coemas = un
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (lhhtc) then
             coeamo = coeamo/(un+alpha)
@@ -196,7 +195,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coeamo = theta
             coemas = un/deltat
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (lkrenk) then
         if (ldepl) then
@@ -208,10 +207,10 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coeamo = kappa/deux
             coemas = un/deltat
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     zr(jcfsc-1+1) = coerig
@@ -237,7 +236,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coevit = gamma*deltat
             coeacc = un
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (ltheta) then
         if (ldepl) then
@@ -249,7 +248,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coevit = un
             coeacc = deux/deltat
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (lkrenk) then
         if (ldepl) then
@@ -261,10 +260,10 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coevit = un
             coeacc = deux/deltat
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     zr(jcfsc-1+13) = coedep
     zr(jcfsc-1+14) = coevit
@@ -324,7 +323,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
                 coefa(3) = un
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (ltheta) then
         if (ldepl) then
@@ -348,7 +347,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coefa(2) = zero
             coefa(3) = -un
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (lkrenk) then
         if (ldepl) then
@@ -372,10 +371,10 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coefa(2) = zero
             coefa(3) = -un
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     zr(jcfsc-1+4) = coefd(1)
@@ -425,7 +424,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
                 coeex2 = un/deux
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         coeext = zero

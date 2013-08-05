@@ -202,7 +202,7 @@ subroutine te0342(option, nomte)
         call jevech('PCONTRR', 'E', jeffo)
     else
 ! OPTION NON PROGRAMMEE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     k = 0

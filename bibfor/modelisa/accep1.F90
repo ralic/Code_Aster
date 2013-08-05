@@ -95,7 +95,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION
 !             N'EST PRESENTE SUR LE MODELE EF...
 !             CE BLINDAGE EST REDONDANT AVEC LES REGLES DU CATALOGUE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

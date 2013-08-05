@@ -43,11 +43,11 @@ subroutine ccchci(critz, questz, repi)
         if (crit .eq. 'VMIS' .or. crit .eq. 'INVA_2' .or. crit .eq. 'TRACE') then
             repi = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
 !       QUESTION INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

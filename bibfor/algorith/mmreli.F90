@@ -111,7 +111,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt,&
 !
     do 1 iada = 1, nadamx
 !
-        call assert(abs(alpha1 - alpha2).gt.r8prem())
+        ASSERT(abs(alpha1 - alpha2).gt.r8prem())
         unsdet = (1.d0 / (alpha1 - alpha2))
         coeffa = unsdet*( res1/alpha1**2- res2/alpha2**2)
         coeffb = unsdet*(-alpha2*res1/alpha1**2+alpha1*res2/alpha2**2)

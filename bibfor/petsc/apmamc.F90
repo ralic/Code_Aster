@@ -88,23 +88,23 @@ subroutine apmamc(kptsc)
     else if (nvalm.eq.2) then
         lmnsy=.true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong, kbid)
-    call assert(nlong.eq.nz)
+    ASSERT(nlong.eq.nz)
     if (lmnsy) then
         call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvalm2)
         call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong, kbid)
-        call assert(nlong.eq.nz)
+        ASSERT(nlong.eq.nz)
     endif
 !
 !     low DONNE LA PREMIERE LIGNE STOCKEE LOCALEMENT
 !     high DONNE LA PREMIERE LIGNE STOCKEE PAR LE PROCESSUS DE (RANG+1)
 !     *ATTENTION* CES INDICES COMMENCENT A ZERO (CONVENTION C DE PETSc)
     call MatGetOwnershipRange(a, low, high, ierr)
-    call assert(ierr.eq.0)
+    ASSERT(ierr.eq.0)
 !
     call wkvect(idxi1, 'V V S', n, jdxi1)
     call wkvect(idxi2, 'V V S', n, jdxi2)

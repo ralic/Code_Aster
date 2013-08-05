@@ -1,5 +1,4 @@
 subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -253,7 +252,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
         if (nolili(1:8) .ne. '&MAILLA') goto 30
         k = i
 30  end do
-    call assert(k.ne.0)
+    ASSERT(k.ne.0)
     call jeveuo(jexnum(numddl//'.NUME.PRNO', k), 'L', iaprno)
 !
 ! --- -----------------------------------------------------------------

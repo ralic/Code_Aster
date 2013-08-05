@@ -76,7 +76,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
 !          AU DERNIER IORDR DEJA STOCKE (IORDR CROISSANTS) :
         if (irang .gt. 1) then
-            call assert(zi(jordr+irang-2).lt.iordr)
+            ASSERT(zi(jordr+irang-2).lt.iordr)
         endif
         zi(jordr-1+irang) = iordr
     else
@@ -103,7 +103,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !     -- ON VERIFIE L'EXISTENCE DE CHNOTE :
 !     -------------------------------------------
     if (iret .eq. 100) call u2mesk('F', 'UTILITAI_55', 1, chnote)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !
 !     --- ON STOCKE LE NOM DU CHAMP :

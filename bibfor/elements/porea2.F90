@@ -48,7 +48,7 @@ subroutine porea2(nno, nc, geom, gamma, pgl,&
     real(kind=8) :: utg(14), xug(6), xd(3), xl2, alfa1, beta1
     real(kind=8) :: tet1, tet2, gamma1, ang1(3)
 !
-    call assert(nno.eq.2)
+    ASSERT(nno.eq.2)
 !
     call tecach('ONN', 'PDEPLMR', 'L', 1, ideplm,&
                 iret)

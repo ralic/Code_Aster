@@ -67,7 +67,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !     1.2) LES NOEUDS MILIEUX SE DEDUISENT DES SOMMETS :
     if ((elrefa.eq.'H20') .or. (elrefa.eq.'H27')) then
-        call assert(nnos.eq.8)
+        ASSERT(nnos.eq.8)
         nosom(9,1) = demi
         nosom(9,2) = demi
         nosom(10,2) = demi
@@ -131,7 +131,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18')) then
-        call assert(nnos.eq.6)
+        ASSERT(nnos.eq.6)
         nosom(7,1) = demi
         nosom(7,2) = demi
         nosom(8,2) = demi
@@ -171,7 +171,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
         endif
 !
     else if (elrefa.eq.'T10') then
-        call assert(nnos.eq.4)
+        ASSERT(nnos.eq.4)
         nosom(5,1) = demi
         nosom(5,2) = demi
         nosom(6,2) = demi
@@ -187,7 +187,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if (elrefa.eq.'P13') then
-        call assert(nnos.eq.5)
+        ASSERT(nnos.eq.5)
         nosom(6,1) = demi
         nosom(6,2) = demi
         nosom(7,2) = demi
@@ -207,7 +207,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if (elrefa.eq.'TR6') then
-        call assert(nnos.eq.3)
+        ASSERT(nnos.eq.3)
         nosom(4,1) = demi
         nosom(4,2) = demi
         nosom(5,2) = demi
@@ -217,7 +217,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if (elrefa.eq.'TR7') then
-        call assert(nnos.eq.3)
+        ASSERT(nnos.eq.3)
         nosom(4,1) = demi
         nosom(4,2) = demi
         nosom(5,2) = demi
@@ -230,7 +230,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if (elrefa.eq.'QU8') then
-        call assert(nnos.eq.4)
+        ASSERT(nnos.eq.4)
         nosom(5,1) = demi
         nosom(5,2) = demi
         nosom(6,2) = demi
@@ -242,7 +242,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if (elrefa.eq.'QU9') then
-        call assert(nnos.eq.4)
+        ASSERT(nnos.eq.4)
         nosom(5,1) = demi
         nosom(5,2) = demi
         nosom(6,2) = demi
@@ -258,20 +258,20 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
 !
 !
     else if (elrefa.eq.'SE3') then
-        call assert(nnos.eq.2)
+        ASSERT(nnos.eq.2)
         nosom(3,1) = demi
         nosom(3,2) = demi
 !
 !
     else if (elrefa.eq.'SE4') then
-        call assert(nnos.eq.2)
+        ASSERT(nnos.eq.2)
         nosom(3,1) = 2.d0/3.d0
         nosom(3,2) = 1.d0/3.d0
         nosom(4,1) = 1.d0/3.d0
         nosom(4,2) = 2.d0/3.d0
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

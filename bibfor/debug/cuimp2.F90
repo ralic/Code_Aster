@@ -68,7 +68,7 @@ subroutine cuimp2(ifm, iliai, typope, typeou, resocu)
         chaiac = ' PIVOT NUL         ('
         write (ifm,1001) iliai,'(',noe,' - ',cmp,'): PIVOT NUL '
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

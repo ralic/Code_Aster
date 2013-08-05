@@ -88,7 +88,7 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
     else if (typpa1.eq.'O') then
         call obgeto(nomst1, nompa1, valo)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- REPERAGE PARAMETRE DANS LA SD OUT
@@ -97,7 +97,7 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
     if (typpa1 .ne. typpa2) then
         write(6,*) 'TYPE DES PARAMETRES INCOMPATIBLES: ',typpa1,&
         typpa2
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ECRITURE VALEUR DANS LA SD OUT
@@ -113,7 +113,7 @@ subroutine obtran(nomst1, nompa1, nomst2, nompa2)
     else if (typpa1.eq.'O') then
         call obseto(nomst2, nompa2, valo)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

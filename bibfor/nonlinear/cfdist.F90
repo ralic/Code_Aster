@@ -128,7 +128,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
         if (method .eq. 'DISCRETE') then
             call cfdism(defico, ldpou, ldcoq, posnoe, distst)
         else if (method.eq.'CONTINUE') then
-            call assert(posnoe.eq.0)
+            ASSERT(posnoe.eq.0)
             if (ldpou) then
                 distst = distst+zr(jjpou-1+posmae)
             endif
@@ -136,7 +136,7 @@ subroutine cfdist(defico, method, izone, posnoe, posmae,&
                 distst = distst+zr(jjcoq-1+posmae)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

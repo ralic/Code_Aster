@@ -53,7 +53,7 @@ subroutine te0451(option, nomte)
         nbsig=4
         nbeff=6
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- EPAISSEUR :
@@ -79,15 +79,15 @@ subroutine te0451(option, nomte)
                 0)
     if (icodre .eq. 0) lcoqmu=.true.
     if (lcoqmu) then
-        call assert(nbcou.le.100)
+        ASSERT(nbcou.le.100)
         do 10,icou=1,nbcou
         call codent(icou, 'G', num)
         nomres='C'//num//'_V'//val
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
                     r8bid, 1, nomres, epi, icodre,&
                     0)
-        call assert(icodre.eq.0)
-        call assert(epi.ge.0.d0)
+        ASSERT(icodre.eq.0)
+        ASSERT(epi.ge.0.d0)
         epcou(icou)=epi
 10      continue
     endif
@@ -101,8 +101,8 @@ subroutine te0451(option, nomte)
     npg=itab(3)
     nbsp=itab(7)
     npgh=3
-    call assert(nbsp.eq.nbcou*npgh)
-    call assert(itab(2).eq.nbsig*npg)
+    ASSERT(nbsp.eq.nbcou*npgh)
+    ASSERT(itab(2).eq.nbsig*npg)
 !
 !
 !     -- CALCUL DES EFFORTS PAR INTEGRATION DANS L'EPAISSEUR :
@@ -110,7 +110,7 @@ subroutine te0451(option, nomte)
     call tecach('OOO', 'PEFGER', 'E', 7, itab,&
                 iret)
     jeff=itab(1)
-    call assert(itab(2).eq.nbeff*npg)
+    ASSERT(itab(2).eq.nbeff*npg)
 !
 !     -- BOUCLE SUR LES POINTS DE GAUSS :
     do 30,kpg=1,npg

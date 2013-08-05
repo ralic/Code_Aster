@@ -182,7 +182,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 ! ----     DE PASSAGE N'EST PAS L'IDENTITE)
 !        ----------------------------------
-        call assert((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep.eq.1).or.(irep.eq.0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, d1orth, passag,&
                         work, d1)
@@ -241,7 +241,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 ! ----     DE PASSAGE N'EST PAS L'IDENTITE)
 !        ----------------------------------
-        call assert((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep.eq.1).or.(irep.eq.0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, d1orth, passag,&
                         work, d1)

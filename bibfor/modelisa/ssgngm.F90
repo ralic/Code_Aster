@@ -114,7 +114,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
                 call u2mesk('E', 'ELEMENTS_62', 1, nomgma)
             endif
 20      continue
-        call assert(ier.eq.0)
+        ASSERT(ier.eq.0)
     endif
     if (nbgma .eq. 0) goto 60
 !

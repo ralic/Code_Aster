@@ -107,17 +107,17 @@ subroutine nmini0(zpmet, zpcri, zconv, zpcon, znmeth,&
 ! --- VERIF. LONGUEURS VARIABLES CHAPEAUX (SYNCHRO OP0070/NMCHAI)
 !
     call nmchai('MEELEM', 'LONMAX', long)
-    call assert(long.eq.zmeelm)
+    ASSERT(long.eq.zmeelm)
     call nmchai('MEASSE', 'LONMAX', long)
-    call assert(long.eq.zmeass)
+    ASSERT(long.eq.zmeass)
     call nmchai('VEELEM', 'LONMAX', long)
-    call assert(long.eq.zveelm)
+    ASSERT(long.eq.zveelm)
     call nmchai('VEASSE', 'LONMAX', long)
-    call assert(long.eq.zveass)
+    ASSERT(long.eq.zveass)
     call nmchai('SOLALG', 'LONMAX', long)
-    call assert(long.eq.zsolal)
+    ASSERT(long.eq.zsolal)
     call nmchai('VALINC', 'LONMAX', long)
-    call assert(long.eq.zvalin)
+    ASSERT(long.eq.zvalin)
 !
 ! --- CREATION SD AFFICHAGE
 !

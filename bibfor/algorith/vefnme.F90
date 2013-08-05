@@ -126,7 +126,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
         call dismoi('F', 'NOM_MAILLA', sigma(1:19), 'CHAM_ELEM', ibid,&
                     mailla, ied)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     chgeom = mailla(1:8)//'.COORDO'
     if (vecele .eq. ' ') then

@@ -1,6 +1,5 @@
 subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                   iligs, icols, formr)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -111,7 +110,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             if (formrb(itmp:itmp) .eq. 'E') deb = itmp+1
             if (formrb(itmp:itmp) .eq. '.') fin = itmp-1
 300      continue
-        call assert(deb.ne.0.and.fin.ne.0)
+        ASSERT(deb.ne.0.and.fin.ne.0)
         read(formrb(deb:fin),'(I2)') lenf
     endif
 !
@@ -440,7 +439,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         (ctype(1:1).eq.'R')) then
                         goto 191
                     endif
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
             else
@@ -484,9 +483,9 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                     write(cgen(igen+1:igen+ilg),'(A)') zk80(iad)
                     igen = igen+ilg+1
                 else if (ctype(1:1).eq.'C') then
-                    call assert(.false.)
+                    ASSERT(.false.)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 191      continue

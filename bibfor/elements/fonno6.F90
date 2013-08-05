@@ -256,12 +256,12 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
 !           LE VECTEUR VDIR PRECEDENT EST EN CONFORMITE AVEC IFL=2
                 ifl=2
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         endif
 !
-        call assert(ifl.ne.0)
+        ASSERT(ifl.ne.0)
 !
         ndir = sqrt( vdir(ifl,1)**2 + vdir(ifl,2)**2 + vdir(ifl,3)**2 )
 !

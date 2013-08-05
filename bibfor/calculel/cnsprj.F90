@@ -120,7 +120,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 !
     endif
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    call assert(zk24(jxxk1-1+1).eq.ma1)
+    ASSERT(zk24(jxxk1-1+1).eq.ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)

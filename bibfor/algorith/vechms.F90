@@ -104,7 +104,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 ! --- LISTE DES INDEX DES CHARGES
 !
     call lisnol(lischa, 'NEUM_MECA', nomlis, nbch)
-    call assert(nbch.gt.0)
+    ASSERT(nbch.gt.0)
 !
 ! --- CALCUL
 !

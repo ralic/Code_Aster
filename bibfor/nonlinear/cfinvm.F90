@@ -59,7 +59,7 @@ subroutine cfinvm(defico, jdeciv, ima, posma)
 ! --- REPONSE
 !
     if (jdeciv .eq. -1) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     posma = zi(jmano+jdeciv+ima-1)
 !

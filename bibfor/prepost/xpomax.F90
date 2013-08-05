@@ -21,7 +21,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
@@ -281,7 +281,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !         VERIF QUE LE CHAMP DE SORTIE A BIEN ETE CREE
             call exisd('CHAM_ELEM_S', comps2, iret)
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
 !
 !         RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
             call jeveuo(comps2//'.CESD', 'L', jresd2)
@@ -357,13 +357,13 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       RECUPERATION DU NOMBRE DE NOEUDS (2 METHODES)
         call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n, k8b)
         nbnoma=zi(jconx2+ima) - zi(jconx2+ima-1)
-        call assert(n.eq.nbnoma)
+        ASSERT(n.eq.nbnoma)
 !
 !       RECUPERATION DU NOMBRE TOTAL DE SOUS ELEMENTS
 !       CORRESPOD AU NOMBRE DE MAILLES À CREER
         call cesexi('C', jcesd(3), jcesl(3), ima, 1,&
                     1, 1, iad3)
-        call assert(iad3.gt.0)
+        ASSERT(iad3.gt.0)
         nse=zi(jcesv(3)-1+iad3)
 !
 !       RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION
@@ -375,7 +375,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       RECUPERATION DU NOMBRE DE NOUVEAUX NOEUDS A CREER
         nnn=zi(jcesv(3)-1+iad3+2)
         if (nnn .eq. 0) goto 100
-!        CALL ASSERT(NNN.NE.0)
+!        ASSERT(NNN.NE.0)
 !
 !       NOMBRE DE FISSURES "VUES" DANS LA MAILLE
         nfiss = zi(jcesd(6)-1+5+4*(ima-1)+2)
@@ -450,13 +450,13 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       RECUPERATION DES COORDONNEES DES POINTS D'INTERSECTION
         call cesexi('C', jcesd(1), jcesl(1), ima, 1,&
                     1, 1, iad1)
-        call assert(iad1.gt.0)
+        ASSERT(iad1.gt.0)
 !
 !       RECUPERATION DES COORDONNEES DES POINTS MILIEUX
         if (.not.iselli(elrefp) .and. ndim .le. 2) then
             call cesexi('C', jcesd(9), jcesl(9), ima, 1,&
                         1, 1, iad9)
-            call assert(iad9.gt.0)
+            ASSERT(iad9.gt.0)
         else
             iad9=0
         endif
@@ -477,12 +477,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       RECUPERATION DE LA CONNECTIVITE DES SOUS-ELEMENTS
         call cesexi('C', jcesd(2), jcesl(2), ima, 1,&
                     1, 1, iad2)
-        call assert(iad2.gt.0)
+        ASSERT(iad2.gt.0)
 !
 !       RECUPERATION DE LA FONCTION HEAVISIDE
         call cesexi('C', jcesd(4), jcesl(4), ima, 1,&
                     1, 1, iad4)
-        call assert(iad4.gt.0)
+        ASSERT(iad4.gt.0)
 !
 !       RECUPERATION DES INFOS CONCERNANT LES GROUP_MA CONTENANT IMA
         if (opmail) then
@@ -501,11 +501,11 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             do 40 j = 1, n
                 call cesexi('C', jcesd(6), jcesl(6), ima, j,&
                             ifiss, 1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zr(jlsn-1+(j-1)*nfiss+ifiss) = zr(jcesv(6)-1+iad)
                 call cesexi('C', jcesd(7), jcesl(7), ima, j,&
                             ifiss, 1, iad)
-                call assert(iad.gt.0)
+                ASSERT(iad.gt.0)
                 zr(jlst-1+(j-1)*nfiss+ifiss) = zr(jcesv(7)-1+iad)
 40          continue
 30      continue
@@ -524,7 +524,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                     do 50 ifh = 1, nfh
                         call cesexi('C', jcesd(8), jcesl(8), ima, j,&
                                     ifh, 1, iad)
-                        call assert(iad.gt.0)
+                        ASSERT(iad.gt.0)
                         zi(jfisno-1+(j-1)*nfh+ifh) = zi(jcesv(8)-1+ iad)
 50                  continue
                 endif
@@ -575,7 +575,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             endif
 140      continue
 !
-        if (opmail) call assert(inn.eq.nnn)
+        if (opmail) ASSERT(inn.eq.nnn)
 !
         call jedetr(geom)
         call jedetr(dirno)

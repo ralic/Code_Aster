@@ -145,7 +145,7 @@ subroutine ssriu1(nomu)
     nlage = 0
 !
     do 10,i = 1,nddlt
-    call assert(zi(ianueq-1+i).eq.i)
+    ASSERT(zi(ianueq-1+i).eq.i)
 !
     nuno = zi(iadeeq-1+2* (i-1)+1)
     nuddl = zi(iadeeq-1+2* (i-1)+2)
@@ -180,7 +180,7 @@ subroutine ssriu1(nomu)
                 icoi = icoi + 1
             else
                 icoe = icoe + 1
-                call assert(icoe.le.nbnoe)
+                ASSERT(icoe.le.nbnoe)
             endif
         endif
     else
@@ -188,7 +188,7 @@ subroutine ssriu1(nomu)
     endif
     10 end do
 !
-    call assert(nbnoe.eq.icoe)
+    ASSERT(nbnoe.eq.icoe)
     if (icoi .eq. 0) call u2mess('F', 'SOUSTRUC_71')
     zi(iadesm-1+3) = icoi
     nddle = nddlt - nddli
@@ -252,7 +252,7 @@ subroutine ssriu1(nomu)
                 ico = ico + 1
                 zi(iaconx-1+3* (ico-1)+3) = itylag
                 ieqn = zi(ianueq-1+i)
-                call assert(ieqn.gt.nddli)
+                ASSERT(ieqn.gt.nddli)
                 zi(iawrk1-1+ieqn) = ico
             endif
         endif
@@ -264,7 +264,7 @@ subroutine ssriu1(nomu)
             zi(iaconx-1+3* (ico-1)+2) = nuno
             zi(iaconx-1+3* (ico-1)+3) = itylag
             ieqn = zi(ianueq-1+i)
-            call assert(ieqn.gt.nddli)
+            ASSERT(ieqn.gt.nddli)
             zi(iawrk1-1+ieqn) = ico
         endif
 !
@@ -283,7 +283,7 @@ subroutine ssriu1(nomu)
         ico = ico + 1
         zi(iaconx-1+3* (ico-1)+3) = itylag
         ieqn = zi(ianueq-1+i)
-        call assert(ieqn.gt.nddli)
+        ASSERT(ieqn.gt.nddli)
         zi(iawrk1-1+ieqn) = ico
     endif
     40 end do

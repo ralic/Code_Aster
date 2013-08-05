@@ -72,13 +72,13 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 !
     nomddl = ddlexc
     matres = zk24(zi(lres+1))
-    call assert(typres.eq.'R' .or. typres.eq.'C')
+    ASSERT(typres.eq.'R' .or. typres.eq.'C')
     neq = zi(lres+2)
     valmr = matres//'.VALM'
     lgbloc = zi(lres+14)
     call jelira(matres//'.REFA', 'CLAS', ibid, clas)
     call jeveuo(matres//'.REFA', 'L', jrefar)
-    call assert(zk24(jrefar-1+9) (1:1).eq.'M')
+    ASSERT(zk24(jrefar-1+9) (1:1).eq.'M')
     symr = zk24(jrefar-1+9) .eq. 'MS'
 !
     mxddl = 1
@@ -112,7 +112,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
 !     ----------------------------------
     iconst = 1
     do 30 imat = 1, nbcomb
-        call assert(typcst(imat).eq.'R')
+        ASSERT(typcst(imat).eq.'R')
         mati = zk24(zi(lmat(imat)+1))
         call dismoi('F', 'NOM_NUME_DDL', mati, 'MATR_ASSE', ibid,&
                     numi, ier)
@@ -121,10 +121,10 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         call jeveuo(mati//'.REFA', 'L', jrefai)
         valmi = mati//'.VALM'
         symi = zk24(jrefai-1+9) .eq. 'MS'
-        if (.not.symi) call assert(.not.symr)
+        if (.not.symi) ASSERT(.not.symr)
         call jelira(valmi, 'TYPE', ibid, typmat)
         call jeveuo(jexnum(valmi, 1), 'L', jvlmi1)
-        call assert(typmat.eq.'R')
+        ASSERT(typmat.eq.'R')
         if (.not.symi) call jeveuo(jexnum(valmi, 2), 'L', jvlmi2)
 !
         if (typres(1:1) .eq. 'R') then

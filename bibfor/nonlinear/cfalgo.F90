@@ -129,7 +129,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
             call frogdp(sdstat, resoco, numedd, matass, resigr)
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (icont.eq.1) then
         if (lgliss) then
@@ -144,7 +144,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
             call algocg(sdstat, defico, resoco, solveu, matass,&
                         ctccvg)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (icont.eq.5) then
@@ -163,13 +163,13 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
                 call frolgd(sdstat, defico, resoco, solveu, numedd,&
                             matass, noma, resigr, depdel, ctccvg)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- AFFICHAGE
@@ -196,7 +196,7 @@ subroutine cfalgo(noma, sdstat, resigr, iterat, defico,&
 !
 ! --- LE CALCUL DE CONTACT A FORCEMENT ETE REALISE
 !
-    call assert(ctccvg.ge.0)
+    ASSERT(ctccvg.ge.0)
 !
     call jedema()
 end subroutine

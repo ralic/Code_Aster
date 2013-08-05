@@ -65,7 +65,7 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 !     ----------------------------------------
     call getfac('MIN_MAX_SP', nocc)
     if (nocc .eq. 0) goto 30
-    call assert(nocc.lt.10)
+    ASSERT(nocc.lt.10)
 !
     do 20,iocc=1,nocc
 !
@@ -79,7 +79,7 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
     call getvtx(motfac, 'TYPE_MAXI', iocc, iarg, 1,&
                 tymaxi, ibid)
     tych=nomsym(6:9)
-    call assert(tych.eq.'ELNO' .or. tych.eq.'ELGA')
+    ASSERT(tych.eq.'ELNO' .or. tych.eq.'ELGA')
 !
 !
 !     -- 3. : BOUCLE SUR LES NUME_ORDRE
@@ -103,22 +103,22 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
         nomsy2='UTXX_'//tych
         call getvis(motfac, 'NUME_CHAM_RESU', iocc, iarg, 1,&
                     nchout, ibid)
-        call assert(nchout.ge.1 .and. nchout.le.20)
+        ASSERT(nchout.ge.1 .and. nchout.le.20)
         call codent(nchout, 'D0', nomsy2(3:4))
         if (tych .eq. 'ELGA') then
             nompar='PGAMIMA'
         else if (tych.eq.'ELNO') then
             nompar='PNOMIMA'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call rsexch(' ', nomres, nomsy2, nuordr, chextr,&
                     iret)
-        call assert(iret.eq.100)
+        ASSERT(iret.eq.100)
         call alchml(ligrel, 'MINMAX_SP', nompar, 'G', chextr,&
                     iret, ' ')
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call w155m2(chin, carele, ligrel, chextr, nomsym,&
                     nocmp, tymaxi)
         ico=ico+1

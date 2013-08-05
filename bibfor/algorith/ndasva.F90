@@ -95,7 +95,7 @@ subroutine ndasva(phase, sddyna, veasse, cnvady)
         else if (phase.eq.'CORR') then
             call nmchex(veasse, 'VEASSE', 'CNMODC', cnmoda)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         ifdo = ifdo+1
         cnvari(ifdo) = cnmoda
@@ -107,7 +107,7 @@ subroutine ndasva(phase, sddyna, veasse, cnvady)
         else if (phase.eq.'CORR') then
             call nmchex(veasse, 'VEASSE', 'CNIMPC', cnimpe)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         ifdo = ifdo+1
         cnvari(ifdo) = cnimpe

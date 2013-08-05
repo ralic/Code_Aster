@@ -83,7 +83,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 ! --- VERIFICATION DES DIMENSIONS / MODELISATIONS
     call verdis(nomo, noma, 'E', i3d, i2d,&
                 ndim1, ier)
-    call assert((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
+    ASSERT((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
 !
 ! --- BOUCLE SUR LES OCCURENCES :
 !     -------------------------

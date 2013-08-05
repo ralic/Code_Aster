@@ -81,7 +81,7 @@ subroutine xmmjac(alias, geom, dff, jac)
 30      continue
         jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

@@ -165,7 +165,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
             endif
         else
             mode = modatt(opt,te,'OUT',ipar)
-            call assert(mode.gt.0)
+            ASSERT(mode.gt.0)
             zi(desc-1+2+igr) = mode
             call jecroc(jexnum(nochou//'.RESL', igr))
             if (lmatvf) call jecroc(jexnum(nochou//'.RSVI', igr))

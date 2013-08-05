@@ -127,7 +127,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
 ! --- INITIALISATIONS
 !
@@ -259,7 +259,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
     call utdidt('L', sddisc, 'ECHE', ib, 'CHOIX_SOLU_PILO',&
                 r8bid, ibid, choix)
-    call assert(choix.eq.'NATUREL'.or.choix.eq.'AUTRE')
+    ASSERT(choix.eq.'NATUREL'.or.choix.eq.'AUTRE')
     if (choix .eq. 'AUTRE' .or. swloun) then
         switch = .true.
         txt = 'NATUREL'

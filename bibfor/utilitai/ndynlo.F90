@@ -131,7 +131,7 @@ function ndynlo(sddyna, chainz)
                 else if (ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2) then
                     ndynlo = .false.
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             else if (chaine(14:18).eq.'_VITE') then
                 if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 2) then
@@ -139,7 +139,7 @@ function ndynlo(sddyna, chainz)
                 else if (ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1) then
                     ndynlo = .false.
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             else
                 ndynlo = .true.
@@ -246,7 +246,7 @@ function ndynlo(sddyna, chainz)
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 9999  continue

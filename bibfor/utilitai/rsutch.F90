@@ -54,12 +54,12 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     resu19 = nomsd
 !
     call jenonu(jexnom(resu19//'.DESC', nomsy), isymb)
-    call assert(isymb.gt.0)
+    ASSERT(isymb.gt.0)
     call codent(isymb, 'D0', nuch)
 !
     call rsutrg(nomsd, iordr, irang, nbordr)
-    call assert(irang.ge.0)
-    call assert(irang.le.nbordr)
+    ASSERT(irang.ge.0)
+    ASSERT(irang.le.nbordr)
 !
 !
 !     -- NOMCH2 : NOM QUE LE CHAMP DOIT AVOIR :
@@ -75,7 +75,7 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     if (irang .gt. 0 .and. lverif) then
         call jeveuo(jexnum(resu19//'.TACH', isymb), 'L', jtach)
         nomch3 = zk24(jtach-1+irang)(1:19)
-        if (nomch3 .ne. ' ') call assert(nomch3.eq.nomch2)
+        if (nomch3 .ne. ' ') ASSERT(nomch3.eq.nomch2)
     endif
 !
     nomcha = nomch2

@@ -91,7 +91,7 @@ subroutine obcrcr(nomstr, nbparb, nbpari, nbparr, nbpark,&
 ! --- CREATION PARAMETRES
 !
     nbpara = nbparb+nbpari+nbparr+nbpark+nbparo
-    call assert(nbpara.gt.0)
+    ASSERT(nbpara.gt.0)
     call wkvect(sdpara, 'V V K24', nbpara, jspara)
 !
 ! --- NOM DES PARAMETRES

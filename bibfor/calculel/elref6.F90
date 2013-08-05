@@ -85,7 +85,7 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
 !
 !     POUR ETRE SUR QUE ELREF6 EST APPELE SOUS CALCUL
 !
-    call assert(iactif.eq.1)
+    ASSERT(iactif.eq.1)
 !
     famil = famiz
     elrf = elrz
@@ -117,12 +117,12 @@ subroutine elref6(elrz, nomtz, famiz, ndim, nno,&
     nufgpg = zi(jnolfp-1+nuflpg)
     if (nufgpg .eq. 0) call u2mesk('F', 'CALCULEL2_45', 1, noflpg)
     call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofgpg)
-    call assert(nofgpg(1:8).eq.elrf)
+    ASSERT(nofgpg(1:8).eq.elrf)
     call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
                 fapg, nbpg, x, vol)
-    call assert(nbfpg.lt.nbfamx)
+    ASSERT(nbfpg.lt.nbfamx)
     nufpg = indik8(fapg,nofgpg(9:16),1,nbfpg)
-    call assert(nufpg.gt.0)
+    ASSERT(nufpg.gt.0)
 !
 !
     call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)

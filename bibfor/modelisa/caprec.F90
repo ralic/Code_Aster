@@ -1,5 +1,4 @@
 subroutine caprec(charge, mailla)
-! aslint: disable=W1501
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -147,7 +146,7 @@ subroutine caprec(charge, mailla)
                     c16b, k1bid, 'ABSO', r8gaem(), 'AR_MIN',&
                     k1bid, ibid, armin, c16b, k1bid,&
                     ier)
-        call assert(armin.gt.0.d0)
+        ASSERT(armin.gt.0.d0)
 !
 !
 ! --- NOM DE LA LISTE DE RELATIONS
@@ -204,7 +203,7 @@ subroutine caprec(charge, mailla)
 30      continue
         if (irann .eq. 0) call u2mess('F', 'MODELISA3_35')
 !
-        call assert(irann.le.30)
+        ASSERT(irann.le.30)
         icodok = 2**irann
 !
         lcart1 = .true.

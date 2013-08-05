@@ -221,7 +221,7 @@ subroutine op0109()
             nbamor = nbmode
         else
 !           A MODIFIER
-            call assert(.false.)
+            ASSERT(.false.)
             call getvid(' ', 'AMOR_GENE', 1, iarg, 1,&
                         amogen, n1)
             refd(1:8) = amogen

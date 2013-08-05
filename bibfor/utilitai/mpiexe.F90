@@ -44,7 +44,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
 ! METHODES D'ACCES A L'OBJET 'COMMUNICATEUR_MPI.REFE' DE LA BASE GLOBALE
 !      SI OPTMPI='SET_COMM_REFE' -> CREE L'OBJET JEVEUX SI IL N'EXISTE
 !          PAS ET SI IL N'A JAMAIS ETE CREE. SI IL A DEJA ETE CREE ET
-!          DETRUIT, PLANTON VIA CALL ASSERT.
+!          DETRUIT, PLANTON VIA ASSERT.
 !          SI IL EXISTE, ON NE FAIT RIEN.
 !
 !      SI OPTMPI='AFFE_COMM_REFE' -> AFFECTE LE COMMUNICATEUR FOURNI
@@ -111,7 +111,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
                 zi(jco+1)=MPI_COMM_WORLD
                 firstc=.false.
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         if (dbg) write(ifm,*)'SET_COMM_REFE :',MPI_COMM_WORLD
@@ -121,9 +121,9 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
         k24bid='COMMUNICATEUR_MPI.REFE'
         call jeexin(k24bid, iret)
         if (iret .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
-            if (intcou .eq. 0) call assert(.false.)
+            if (intcou .eq. 0) ASSERT(.false.)
             call jeveuo(k24bid, 'E', jco)
             zi(jco+intcou)=mpico8
         endif
@@ -162,7 +162,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
 !
     else
 !     ----
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !     -----
@@ -197,7 +197,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
                 zi(jco+1)=-999
                 firstc=.false.
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -206,7 +206,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
         k24bid='COMMUNICATEUR_MPI.REFE'
         call jeexin(k24bid, iret)
         if (iret .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         else
             call jeveuo(k24bid, 'E', jco)
             zi(jco+intcou)=mpico8
@@ -230,7 +230,7 @@ subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
 !
     else
 !     ----
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !     -----

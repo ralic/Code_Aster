@@ -158,7 +158,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call wkvect('&&MANOPG.MAILREF', 'V V I', nbma, jmaref)
 !
     ligre1='&&MANOPG.LIGRE1'
-    call assert(nbgrel.gt.0)
+    ASSERT(nbgrel.gt.0)
     call jecrec(ligre1//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbgrel)
     lont1=0
@@ -278,7 +278,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !          FAMILLE "LISTE" :
         call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam, kbid)
         nbfam=nbfam-1
-        call assert(nbfam.le.nbflmx)
+        ASSERT(nbfam.le.nbflmx)
         call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
         elrefe=zk8(jfpgl-1+nbfam+1)
         do 18,k=1,nbfam
@@ -287,7 +287,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
         nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
         nufgpg = zi(jnolfp-1+nuflpg)
         call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofpg)
-        call assert(elrefe.eq.nofpg(1:8))
+        ASSERT(elrefe.eq.nofpg(1:8))
         lifapg(k)=nofpg(9:16)
 18      continue
 !
@@ -309,15 +309,15 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
     call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                 fapg, nbpgf, xno, vol)
-    call assert(nbfpg.le.nbfamx)
-    call assert(nno.le.nbnomx)
+    ASSERT(nbfpg.le.nbfamx)
+    ASSERT(nno.le.nbnomx)
 !
 !         4.2.1 CALCUL DE NPG ET XPG (SI FAMILLE != XFEM)
 !         ------------------------------------------------
     if (famil(1:4) .ne. 'XFEM') then
         call elraga(elrefe, famil, ndim, npg, xpg,&
                     poipg)
-        call assert(npg.le.nbpgmx)
+        ASSERT(npg.le.nbpgmx)
 !
 !         4.2.2 CALCUL DE NPG (SI FAMILLE == 'XFEM...')
 !         ------------------------------------------------
@@ -335,7 +335,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call cesexi('C', jcesd, jcesl, ima, 1,&
                 1, 1, iad0)
     iad0=abs(iad0)
-    call assert(iad0.gt.0)
+    ASSERT(iad0.gt.0)
 !
 !           -- SI CE N'EST PAS UNE MAILLE DE REFERENCE :
     if (zi(jmaref-1+ima) .lt. 0) then
@@ -343,7 +343,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
         zr(jcesv-1+iad0-1+1) = zi(jmaref-1+ima)
         goto 3
     endif
-    call assert(zi(jmaref-1+ima).eq.ima)
+    ASSERT(zi(jmaref-1+ima).eq.ima)
 !
 !
 !           -- LES 2 PREMIERES CMPS : NNO ET NPG :
@@ -353,26 +353,26 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
         zr(jcesv-1+iad0-1+1) = nno
         zr(jcesv-1+iad0-1+2) = npg
     else
-        call assert(nint(zr(jcesv-1+iad0-1+1)).eq.nno)
+        ASSERT(nint(zr(jcesv-1+iad0-1+1)).eq.nno)
         zr(jcesv-1+iad0-1+2) = zr(jcesv-1+iad0-1+2) + npg
     endif
 !
     call cesexi('C', jcesd, jcesl, ima, 1,&
                 1, 2+nno*(nbpgt+npg), iad)
-    call assert(iad.lt.0)
+    ASSERT(iad.lt.0)
     iad=iad0+2+nbpgt*nno
 !
 !           -- LES NNO*NPG AUTRES CMPS :
     do 20 kp = 1, npg
         if (famil(1:4) .eq. 'XFEM') then
-            call assert(.not.econom)
+            ASSERT(.not.econom)
             nbpt = zi(jcesgd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesgd-1+5+4* (ima-1)+2)
-            call assert(nbpt.eq.npg)
-            call assert(nbsp.eq.1)
+            ASSERT(nbpt.eq.npg)
+            ASSERT(nbsp.eq.1)
             call cesexi('C', jcesgd, jcesgl, ima, kp,&
                         1, 1, iad1)
-            call assert(iad1.gt.0)
+            ASSERT(iad1.gt.0)
             call elrfvf(elrefe, zr(jcesgv-1+iad1), nbnomx, ff, nno)
         else
             call elrfvf(elrefe, xpg(ndim*(kp-1)+1), nbnomx, ff, nno)

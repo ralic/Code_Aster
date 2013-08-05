@@ -138,7 +138,7 @@ subroutine nmpich(modele, numedd, mate, carele, comref,&
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
     call jedema()
 end subroutine

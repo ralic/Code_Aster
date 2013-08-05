@@ -127,7 +127,7 @@ subroutine srmedo(modele, mate, cara, kcha, ncha,&
         noobj='12345678.LIGR000000.LIEL'
         call gnomsd(' ', noobj, 14, 19)
         ligr1=noobj(1:19)
-        call assert(ligr1.ne.' ')
+        ASSERT(ligr1.ne.' ')
 !
         call exlim1(zi(jlisma), nbmato, modele, base, ligr1)
 !

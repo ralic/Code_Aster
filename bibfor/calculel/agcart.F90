@@ -78,7 +78,7 @@ subroutine agcart(ngdmxn, chinz)
     nec = nbec(igd)
     ngdmxa = zi(jdesca-1+2)
     nedit = zi(jdesca-1+3)
-    call assert(ngdmxn.gt.ngdmxa)
+    ASSERT(ngdmxn.gt.ngdmxa)
 !
     call jedetr(chin//'.DESC')
     call wkvect(chin//'.DESC', base//' V I', 3+ngdmxn*(2+nec), jdesc)

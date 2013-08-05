@@ -193,7 +193,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
             nbext2=nbext2+1
         endif
 40  end do
-!      CALL ASSERT (NBEXT1.EQ.NBEXT2)
+!      ASSERT(NBEXT1.EQ.NBEXT2)
     if (nbext1 .ne. nbext2) then
         call u2mess('F', 'MODELISA10_4')
     endif

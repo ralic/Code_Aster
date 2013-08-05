@@ -61,10 +61,10 @@ subroutine assach(preel2, pimag2, base2, chout2)
     chout=chout2
 !
     call jeexin(preel//'.CELK', ier)
-    call assert(ier.gt.0)
+    ASSERT(ier.gt.0)
 !
     call vrrefe(preel, pimag, ier)
-    call assert(ier.eq.0)
+    ASSERT(ier.eq.0)
 !
 !
 !
@@ -133,11 +133,11 @@ subroutine assach(preel2, pimag2, base2, chout2)
     call jeveuo(preel//'.CELV', 'L', ivalr)
     call jelira(pimag//'.CELV', 'LONMAX', nbvali, k8b)
     call jeveuo(pimag//'.CELV', 'L', ivali)
-    call assert(nbvalr.eq.nbvali)
+    ASSERT(nbvalr.eq.nbvali)
 !
     call jeveuo(chout//'.CELV', 'E', jvale)
     call jelira(chout//'.CELV', 'LONMAX', nbvalc, k8b)
-    call assert(nbvalr.eq.nbvalc)
+    ASSERT(nbvalr.eq.nbvalc)
 !
     do 40 i = 1, nbvalr
         zc(jvale-1+i)=dcmplx(zr(ivalr-1+i),zr(ivali-1+i))
@@ -147,7 +147,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
                 kmpicr, ibid)
     call dismoi('F', 'MPI_COMPLET', pimag, 'CHAM_ELEM', ibid,&
                 kmpici, ibid)
-    call assert(kmpicr.eq.kmpici)
+    ASSERT(kmpicr.eq.kmpici)
 !
     call jeveuo(chout//'.CELK', 'E', jcelk)
     if (kmpicr .eq. 'OUI') then

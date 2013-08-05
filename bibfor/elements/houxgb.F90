@@ -24,7 +24,7 @@ function houxgb(xx, n)
     integer :: n
     real(kind=8) :: houxgb
 !
-    call assert((n.eq.1).or.(n.eq.2).or.(n.eq.3).or.(n.eq.4))
+    ASSERT((n.eq.1).or.(n.eq.2).or.(n.eq.3).or.(n.eq.4))
 !
     if (n .eq. 1) then
         houxgb = xx(1) + xx(4) - xx(7) - xx(10) - xx(13) - xx(16) + xx(19) + xx(22)

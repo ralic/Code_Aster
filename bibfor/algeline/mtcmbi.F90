@@ -91,7 +91,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     call jeveuo(matres//'.REFA', 'L', jrefa)
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMHC', 'L', jsmhc)
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SMOS.SMDI', 'L', ibid)
-    call assert(ibid.eq.jsmdi)
+    ASSERT(ibid.eq.jsmdi)
 !
     valmr = matres//'.VALM'
 !

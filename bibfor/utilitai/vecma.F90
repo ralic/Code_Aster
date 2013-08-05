@@ -28,7 +28,7 @@ subroutine vecma(mv, n, mp, m)
     integer :: k, i, j
 ! ----------------------------------------------------------------------
 !
-    call assert(n.ge.m*(m+1)/2)
+    ASSERT(n.ge.m*(m+1)/2)
 !
     k = 0
     do 10 i = 1, m

@@ -170,7 +170,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
     else if (lacce) then
         veclag = accmoi
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CONDITIONS DE DIRICHLET B.U
@@ -230,7 +230,7 @@ subroutine ndassp(modele, numedd, mate, carele, comref,&
 ! --- CHARGEMENT DONNE
 !
     if (nbvec .gt. nbcoef) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 i = 1, nbvec
         call vtaxpy(coef(i), vect(i), cndonn)

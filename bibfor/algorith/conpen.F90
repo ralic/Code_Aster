@@ -78,7 +78,7 @@ subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
             locorr=.true.
             lface=face(1,2,3)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (lface) then
             i1=1

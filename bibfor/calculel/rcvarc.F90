@@ -90,7 +90,7 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !
     if (iactif .eq. 2) then
 !        ON VIENT DE CALC_POINT_MAT
-        call assert(fami.eq.'PMAT')
+        ASSERT(fami.eq.'PMAT')
         call rcvarp(arret, novrc, poum, valvrc, iret)
         goto 9999
     endif
@@ -101,8 +101,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !     1) CALCUL DE KPGMAT (FAMI,KPG) : NUMERO DU PG DANS LA
 !        FAMILLE "MATER" (ASSOCIEE A PVARCMR ET PVARCPR) :
 !     -----------------------------------------------------------
-!     CALL ASSERT(FAMI.NE.'MATER')
-!     CALL ASSERT(NFPG.NE.0)
+!     ASSERT(FAMI.NE.'MATER')
+!     ASSERT(NFPG.NE.0)
     k=indik8(zk8(jfpgl),fami,1,nfpg)
     if (k .eq. 0) then
         if (arret .eq. ' ') then
@@ -195,8 +195,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         if (nb2vrc .ne. nbcvrc) goto 9998
 !       NBPG=ITABR(3)
         nbsp=itabr(7)
-!       CALL ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
-!       CALL ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
+!       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
+!       ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
         kpgvrc=(kpgmat-1)*nbsp+ksp
         valvrc=zr(itabr(1) -1 + (kpgvrc-1)*nbcvrc + kcvrc)
 !
@@ -205,8 +205,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         if (nb2vrc .ne. nbcvrc) goto 9998
 !       NBPG=ITABP(3)
         nbsp=itabp(7)
-!       CALL ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
-!       CALL ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
+!       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
+!       ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
         kpgvrc=(kpgmat-1)*nbsp+ksp
         valvrc=zr(itabp(1) -1 + (kpgvrc-1)*nbcvrc + kcvrc)
 !
@@ -215,8 +215,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         if (nb2vrc .ne. nbcvrc) goto 9998
 !       NBPG=ITABM(3)
         nbsp=itabm(7)
-!       CALL ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
-!       CALL ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
+!       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
+!       ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
         kpgvrc=(kpgmat-1)*nbsp+ksp
         valvrc=zr(itabm(1) -1 + (kpgvrc-1)*nbcvrc + kcvrc)
 !
@@ -225,8 +225,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         if (nb2vrc .ne. nbcvrc) goto 9998
 !       NBPG=ITABM(3)
         nbsp=itabm(7)
-!       CALL ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
-!       CALL ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
+!       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
+!       ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
         kpgvrc=(kpgmat-1)*nbsp+ksp
         valvrm=zr(itabm(1) -1 + (kpgvrc-1)*nbcvrc + kcvrc)
 !
@@ -234,8 +234,8 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
         if (nb2vrc .ne. nbcvrc) goto 9998
 !       NBPG=ITABP(3)
         nbsp=itabp(7)
-!       CALL ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
-!       CALL ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
+!       ASSERT((KPGMAT.GE.1).AND.(KPGMAT.LE.NBPG))
+!       ASSERT((KSP.GE.1).AND.(KSP.LE.NBSP))
         kpgvrc=(kpgmat-1)*nbsp+ksp
         valvrp=zr(itabp(1) -1 + (kpgvrc-1)*nbcvrc + kcvrc)
 !
@@ -247,14 +247,14 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
                 valvrc=valvrm+(tf1-timed1)*(valvrp-valvrm)/(timef1-&
                 timed1)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             valvrc=rundf
         endif
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     iret=0

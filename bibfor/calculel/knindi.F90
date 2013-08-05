@@ -44,7 +44,7 @@ function knindi(long, kn, lkn, nbkn)
 ! DEB-------------------------------------------------------------------
 !
 !
-    call assert((long.eq.8).or.(long.eq.16).or.(long.eq.24))
+    ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
 !
     if (long .eq. 8) then
         k8 = kn

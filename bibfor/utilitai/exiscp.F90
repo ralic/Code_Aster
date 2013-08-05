@@ -92,7 +92,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call assert(nbec.le.10)
+    ASSERT(nbec.le.10)
 !
 ! --- RECUPERATION DES NOMS DES DDLS DISPONIBLES POUR UNE GRANDEUR
 !
@@ -109,7 +109,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
 !
 ! --- TROP DE DDLS POUR CETTE GRANDEUR
 !
-    call assert(nbcmp.le.nmocl)
+    ASSERT(nbcmp.le.nmocl)
 !
 ! --- NOM DES DDLS POUR CETTE GRANDEUR
 !
@@ -155,7 +155,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
         else if (typend.eq.'NOM') then
             call jenonu(jexnom(nomnoe, nomnd(i)), ino)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (ino .ne. 0) then
             if (exisdg(zi(jprnm-1+ (ino-1)*nbec+1),icmp)) then

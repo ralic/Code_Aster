@@ -68,7 +68,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
     ndim(1) = 0
     coefr(1) = 1.d0
-    call assert(fonree.eq.'REEL' .or. fonree.eq.'FONC')
+    ASSERT(fonree.eq.'REEL' .or. fonree.eq.'FONC')
     typval = fonree
     betar = 0.d0
     betaf = '&FOZERO'
@@ -124,7 +124,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
                                 'REEL', typval, '12', 0.d0, lisrel)
                     nrel = nrel + 2
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
             endif
@@ -140,7 +140,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !
 ! --- AFFECTATION DES RELATIONS LINEAIRES DANS LE LIGREL DE CHARGE
 !
-    call assert(nrel.gt.0)
+    ASSERT(nrel.gt.0)
     call aflrch(lisrel, char)
 !
     call jedema()

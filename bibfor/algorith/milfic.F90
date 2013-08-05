@@ -60,7 +60,7 @@ subroutine milfic(ndim, geom, xg)
 !     ABSCURV(M)=[ABSCURV(A)]/2
     s=s1/2
     call xinvac(elp, ndim, geom, s, xe)
-    call assert(xe.ge.-1 .and. xe.le.1)
+    ASSERT(xe.ge.-1 .and. xe.le.1)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
     call reerel(elp, nno, ndim, geom, xe,&

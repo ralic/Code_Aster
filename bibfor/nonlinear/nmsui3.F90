@@ -102,7 +102,7 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
         extrch.eq.'MAXI_ABS')) then
             nbnor = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -116,7 +116,7 @@ subroutine nmsui3(sdimpr, typcha, nbma, nbno, nbpi,&
         extrch.eq.'MAXI_ABS')) then
             nbmar = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

@@ -51,7 +51,7 @@ subroutine te0351(option, nomte)
         typmod(1) = 'D_PLAN  '
     else
 !       NOM D'ELEMENT ILLICITE
-        call assert(nomte(3:4).eq.'CP')
+        ASSERT(nomte(3:4).eq.'CP')
     endif
 !
     typmod(2) = 'ASSU    '

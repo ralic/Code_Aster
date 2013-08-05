@@ -148,7 +148,7 @@ subroutine op0161()
                                 iret)
                 else if (iret .eq. 100) then
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 angle = zr(jangl+ian-1) * r8dgrd()
                 call refode(k, angle, zk24(jnch), zi(jnha), zk8( jtch),&

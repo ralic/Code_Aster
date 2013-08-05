@@ -268,7 +268,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !       CAS NI 2D NI 3D
         else
 !
-            call assert(.false.)
+            ASSERT(.false.)
 !
         endif
 !

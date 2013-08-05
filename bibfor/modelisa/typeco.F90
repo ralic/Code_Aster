@@ -188,14 +188,14 @@ subroutine typeco(char, noma)
     do 1 ino = 1, nnoco
         posno = ino
         if (zi(jtypno+ztypn*(posno -1)+1-1) .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
  1  end do
 !
     do 2 ima = 1, nmaco
         posma = ima
         if (zi(jtypma+ztypm*(posma -1)+1-1) .eq. 0) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
  2  end do
 !

@@ -157,7 +157,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     lig19p=ligrep
     call jeveuo(lig19p//'.REPE', 'L', jrepp)
     call jelira(lig19p//'.REPE', 'LONMAX', n1, kbid)
-    call assert(n1.eq.2*nbma)
+    ASSERT(n1.eq.2*nbma)
 !
     call dismoi('F', 'NOM_LIGREL', varmoi, 'CHAM_ELEM', ibid,&
                 lig19m, iret)
@@ -189,14 +189,14 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         call jeveuo(copm//'.CESL', 'L', jcopml)
         call jeveuo(copm//'.CESK', 'L', jcopmk)
 !
-        call assert(zk8(jcopmk-1+1).eq.zk8(jcoppk-1+1))
+        ASSERT(zk8(jcopmk-1+1).eq.zk8(jcoppk-1+1))
     endif
 !
 !
 !     1.  SI COMPOM EST DONNE, ON VERIFIE LES NOMS DES COMPORTEMENTS :
 !     ---------------------------------------------------------------
     if (compom .ne. ' ') then
-        call assert(noma.eq.zk8(jcopmk-1+1))
+        ASSERT(noma.eq.zk8(jcopmk-1+1))
 !
         kma=0
         do 10,ima=1,nbma
@@ -262,7 +262,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         nbspp=0
         ncmpp=0
     else
-        call assert(iad2.gt.0)
+        ASSERT(iad2.gt.0)
         nbspp=zi(jdcelv-1+iad1)
         ncmpp=zi(jdcelv-1+iad2)
     endif
@@ -291,7 +291,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         endif
 !
 !         -- CE N'EST PAS GRAVE SI COMPOR "+" = 'ELAS' :
-        call assert(iadp.gt.0)
+        ASSERT(iadp.gt.0)
         relcop=zk16(jcoppv-1+iadp)
         if (relcop .eq. 'ELAS' .or. relcop .eq. 'SANS') goto 30
 !
@@ -299,7 +299,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         if (compom .ne. ' ') then
             call cesexi('C', jcopmd, jcopml, ima, 1,&
                         1, 1, iadm)
-            call assert(iadm.gt.0)
+            ASSERT(iadm.gt.0)
             relcom=zk16(jcopmv-1+iadm)
             if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS') goto 30
         else
@@ -308,7 +308,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
             if (ncmpm .eq. 1) then
                 call cesexi('C', jce2d, jce2l, ima, 1,&
                             1, 1, iad2)
-                call assert(iad2.gt.0)
+                ASSERT(iad2.gt.0)
                 tounul=0
                 do 20,k=1,nbpgm*nbspp
                 if (zr(jce2v-1+iad2+k-1) .ne. 0.d0) tounul=1

@@ -60,7 +60,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
     call jeveuo(noma19//'.REFA', 'L', jrefa)
     call jelira(noma19//'.REFA', 'CLAS', ibid, base)
-    call assert(zk24(jrefa-1+3).ne.'ELIML')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
 !
 !     -- ALLOCATION ET CALCUL DE L'OBJET .DIGS :
@@ -93,7 +93,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
 50          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         goto 9998
     endif
@@ -101,7 +101,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
 !
 !     CAS STOCKAGE MORSE INDISPONIBLE (OBJET .VALM):
 !     ---------------------------------------------
-    call assert((noma19.eq.'&&OP0070.RESOC.MATC') .or. (noma19.eq.'&&OP0070.RESUC.MATC'))
+    ASSERT((noma19.eq.'&&OP0070.RESOC.MATC') .or. (noma19.eq.'&&OP0070.RESUC.MATC'))
     call jeveuo(nu//'.SLCS.SCDI', 'L', jsxdi)
     call jeveuo(nu//'.SLCS.SCBL', 'L', jscbl)
     call jeveuo(nu//'.SLCS.SCIB', 'L', jscib)
@@ -109,7 +109,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     do 30 ibloc = 1, nbbloc
         call jeveuo(jexnum(noma19//'.UALF', ibloc), 'L', iavale)
         idern = zi(jscbl-1+ibloc+1)
-        call assert(idern.le.neq)
+        ASSERT(idern.le.neq)
         iprem = zi(jscbl-1+ibloc) + 1
         if (typvar .eq. 1) then
             do 10 i = iprem, idern
@@ -120,7 +120,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
                 zc(iadigs-1+i) = zc(iavale-1+zi(jsxdi+i-1))
 20          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call jelibe(jexnum(noma19//'.UALF', ibloc))
 30  end do

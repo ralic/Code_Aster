@@ -113,7 +113,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     ddl   = 'DEPL'
 !
     typcoe = 'REEL'
-    if (fonree .eq. 'COMP') call assert(.false.)
+    if (fonree .eq. 'COMP') ASSERT(.false.)
     nomo = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
@@ -128,7 +128,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call assert(nbec.le.10)
+    ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
     call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&

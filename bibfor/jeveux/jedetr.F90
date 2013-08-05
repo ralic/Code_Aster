@@ -182,10 +182,10 @@ subroutine jedetr(nomlu)
             ixmarq = iszon ( jiszon + ibacol + idmarq )
 !
 !         DESTRUCTION D''UN OBJET DE COLLECTION CONTIGUE REFUSEE
-            call assert(ixiadd .gt. 0)
+            ASSERT(ixiadd .gt. 0)
 !
 !         DESTRUCTION DANS UNE COLLECTION NON NOMMEE REFUSEE
-            call assert(ixnom .gt. 0)
+            ASSERT(ixnom .gt. 0)
 !
             ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
             iaddi(1) = iszon ( jiszon + ibiadd - 1 + 2*idatoc-1 )

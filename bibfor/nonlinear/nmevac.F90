@@ -82,7 +82,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
     retact = 3
     action = 'ARRET'
     trydec = .false.
-    call assert(ievdac.ne.0)
+    ASSERT(ievdac.ne.0)
 !
 ! --- RECUPERATION ERREURS PARTICULIERES
 !
@@ -112,10 +112,10 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         else if (retrpc.eq.1) then
             retact = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (action.eq.'ITER_SUPPL') then
-        call assert(iterat.ge.0)
+        ASSERT(iterat.ge.0)
         if (litmax) then
             call u2mess('I', 'MECANONLINE10_32')
             call nmitsp(sdimpr, sddisc, iterat, retsup)
@@ -127,7 +127,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         else if (retsup.eq.1) then
             retact = 2
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (action.eq.'DECOUPE') then
         trydec = .true.
@@ -143,7 +143,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         else if (retswa.eq.1) then
             retact = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (action.eq.'ADAPT_COEF_PENA') then
         call u2mess('I', 'MECANONLINE10_35')
@@ -154,12 +154,12 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         else if (retpen.eq.1) then
             retact = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (action.eq.'CONTINUE') then
         retact = 0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CAS DE LA DECOUPE
@@ -174,7 +174,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         else if (retdec.eq.2) then
             retact = 0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

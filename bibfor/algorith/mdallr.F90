@@ -99,7 +99,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 ! DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
             call juveca(chamge//'.REFE', 2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         call jeecra(chamge//'.DESC', 'DOCU', ibid, 'VGEN')
         call jeveuo(chamge//'.VALE', 'E', lvale)

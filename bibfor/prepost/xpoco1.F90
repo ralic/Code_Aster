@@ -148,7 +148,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
                 zi(iagma2-1+zi(jnivgr-1+i2)) = dirma(ima)
             endif
 610      continue
-        call assert(zi(jnivgr-1+i2).le.n2)
+        ASSERT(zi(jnivgr-1+i2).le.n2)
 600  end do
 !
     call jedema()

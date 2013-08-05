@@ -77,7 +77,7 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 !
     tpsext = sddisc(1:19)//'.AEXT'
     call jeveuo(tpsext, 'E', jtpsex)
-    call assert(durdec.gt.0.d0)
+    ASSERT(durdec.gt.0.d0)
     oldref = zr(jtpsex-1+1)
 !
 ! --- PREMIERE EXTENSION

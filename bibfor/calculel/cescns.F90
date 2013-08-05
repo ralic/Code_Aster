@@ -104,7 +104,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
 !        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
-    call assert(iret.gt.0)
+    ASSERT(iret.gt.0)
     call jeveuo(ces1//'.CESK', 'L', jcesk)
     call jeveuo(ces1//'.CESC', 'L', jcesc)
     call jeveuo(ces1//'.CESD', 'L', jcesd)
@@ -113,7 +113,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     ma = zk8(jcesk-1+1)
     nomgd = zk8(jcesk-1+2)
 !     TEST SI CHAMP ELNO
-    call assert(zk8(jcesk-1+3).eq.'ELNO')
+    ASSERT(zk8(jcesk-1+3).eq.'ELNO')
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
                 kbid, ibid)
     call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbnot,&
@@ -136,7 +136,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     endif
 !
 !     ON ATTEND SEULEMENT DES REELS OU DES COMPLEXES
-    call assert((tsca.eq.'R').or.(tsca.eq.'C'))
+    ASSERT((tsca.eq.'R').or.(tsca.eq.'C'))
 !
 !
 !     3- ALLOCATION DE CNS :
@@ -160,7 +160,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
     nbsp = zi(jcesd-1+5+4* (ima-1)+2)
     nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
 !
-    call assert(nbno.eq.nbpt)
+    ASSERT(nbno.eq.nbpt)
     if (nbsp .eq. 1) then
         do 10,ino = 1,nbno
         call cesexi('C', jcesd, jcesl, ima, ino,&

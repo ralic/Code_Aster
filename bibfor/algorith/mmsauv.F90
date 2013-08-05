@@ -77,7 +77,7 @@ subroutine mmsauv(resoco, izone, iptc, nummam, ksipr1,&
     tabfin = resoco(1:14)//'.TABFIN'
     call jeveuo(tabfin, 'E', jtabf)
     ztabf = cfmmvd('ZTABF')
-    call assert(izone.gt.0)
+    ASSERT(izone.gt.0)
 !
 ! --- STOCKAGE DES VALEURS POUR LE CHAM_ELEM (VOIR MMCHML)
 !

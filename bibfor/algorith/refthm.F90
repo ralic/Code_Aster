@@ -64,10 +64,10 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 ! --- LA DIMENSION MAX DE NPGU AU NOMBRE MAX DE PTS DE GAUSS PAR ELT ---
 ! --- LA DIMENSION MAX DE DIMCON (ROUTINE TE0600) ----------------------
 ! ======================================================================
-    call assert(nddls .le. 6)
-    call assert(nno .le. 27)
-    call assert(npi .le. 27)
-    call assert(dimcon .le. 31)
+    ASSERT(nddls .le. 6)
+    ASSERT(nno .le. 27)
+    ASSERT(npi .le. 27)
+    ASSERT(dimcon .le. 31)
 ! ======================================================================
 ! --- CES VERIFICATIONS ONT POUR OBJECTIF DE CONTROLER LA PRESENCE -----
 ! --- DES DIFFERENTS PARAMETRES DE REFERENCE ---------------------------

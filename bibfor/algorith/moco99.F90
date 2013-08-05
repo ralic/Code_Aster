@@ -138,7 +138,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
     call jeveuo(resul//'           .ORDR', 'L', jordr)
     do 10 i = 1, nbmod
 !       LRANG : CONTIENT DES NUMEROS DE RANGEMENT : 1,2, ..., NBMOD
-        call assert(lrang(i).eq.i)
+        ASSERT(lrang(i).eq.i)
         iorol=zi(jordr-1+lrang(i))
 !
 ! ------BOUCLE SUR LA LISTE DE CHAMPS AFIN D'IDENTIFIER CEUX QUI

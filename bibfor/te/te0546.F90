@@ -35,7 +35,7 @@ subroutine te0546(option, nomte)
 !
     call tecach('OOO', 'PSIEFR', 'L', 8, itab1,&
                 iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
     if (option .eq. 'SIGM_ELGA') then
         call tecach('OOO', 'PSIGMR', 'E', 8, itab2,&
@@ -44,27 +44,27 @@ subroutine te0546(option, nomte)
         call tecach('OOO', 'PEFGER', 'E', 8, itab2,&
                     iret)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
 !     -- VERIFICATIONS DE COHERENCE :
 !     --------------------------------
     nbpg=itab1(3)
-    call assert(nbpg.ge.1)
-    call assert(nbpg.eq.itab2(3))
+    ASSERT(nbpg.ge.1)
+    ASSERT(nbpg.eq.itab2(3))
 !
     nbsp=itab1(7)
-    call assert(nbsp.ge.1)
-    call assert(nbsp.eq.itab2(7))
+    ASSERT(nbsp.ge.1)
+    ASSERT(nbsp.eq.itab2(7))
 !
     n1=itab1(2)
     nbcmp=n1/nbpg
-    call assert(nbcmp*nbpg.eq.n1)
-    call assert(nbcmp*nbpg.eq.itab2(2))
+    ASSERT(nbcmp*nbpg.eq.n1)
+    ASSERT(nbcmp*nbpg.eq.itab2(2))
 !
-    call assert(itab1(6).le.1)
-    call assert(itab2(6).le.1)
+    ASSERT(itab1(6).le.1)
+    ASSERT(itab2(6).le.1)
 !
 !
 !     -- RECOPIE DES VALEURS :

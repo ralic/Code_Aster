@@ -84,7 +84,7 @@ subroutine impfor(unite, long, prec, valr, chaine)
         for9(8:8) = for1
         for9(9:9) = ')'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -94,7 +94,7 @@ subroutine impfor(unite, long, prec, valr, chaine)
         else if (lonfor.eq.9) then
             write(unite,for9) valr
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
         if (lonfor .eq. 8) then
@@ -102,7 +102,7 @@ subroutine impfor(unite, long, prec, valr, chaine)
         else if (lonfor.eq.9) then
             write(chaine,for9) valr
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

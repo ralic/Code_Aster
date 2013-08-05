@@ -39,7 +39,7 @@ subroutine ltcrsd(litab, base)
 ! DEB------------------------------------------------------------------
 !
     baselt = base(1:1)
-    call assert(baselt.eq.'V' .or. baselt.eq.'G')
+    ASSERT(baselt.eq.'V' .or. baselt.eq.'G')
 !
     listab = litab
 !

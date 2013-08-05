@@ -154,7 +154,7 @@ subroutine nmfext(eta, fonact, sddyna, veasse, cnfext)
 ! --- VECTEUR RESULTANT
 !
     if (ifdo .gt. 20) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfext)

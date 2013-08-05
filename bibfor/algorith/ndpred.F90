@@ -151,7 +151,7 @@ subroutine ndpred(sddyna, valinc, solalg)
 12      continue
         call copisd('CHAMP_GD', 'V', acckm1, accplu)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ...... PRED. DEPL. '

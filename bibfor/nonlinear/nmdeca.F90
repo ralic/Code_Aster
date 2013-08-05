@@ -99,8 +99,8 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
                 retdec)
 !
     if (retdec .eq. 1) then
-        call assert(nbrpas.gt.0)
-        call assert(ratio.gt.0.d0)
+        ASSERT(nbrpas.gt.0)
+        ASSERT(ratio.gt.0.d0)
     endif
 !
 ! --- PAS DE DECOUPE

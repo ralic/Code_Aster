@@ -79,7 +79,7 @@ subroutine nmevco(sddisc, numins, resoco, iechec, ievdac)
 !
     ievdac = 0
     levent = .false.
-    call assert(numins.gt.0)
+    ASSERT(numins.gt.0)
 !
 ! --- PARAMETRES
 !

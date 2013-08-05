@@ -83,7 +83,7 @@ subroutine surfco(char, noma)
     else if (iform.eq.3) then
         call surfc3(char, noma, ifm)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 999  continue

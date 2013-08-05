@@ -138,7 +138,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
 ! --- VECTEUR RESULTANT DES FORCES EXTERNES
 !
     if (ifdo .gt. 20) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 10 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfext)
@@ -172,7 +172,7 @@ subroutine ndthet(fonact, sddyna, foiner, veasse, cnfint,&
 ! --- VECTEUR RESULTANT DES FORCES INTERNES
 !
     if (ifdo .gt. 20) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     do 13 n = 1, ifdo
         call vtaxpy(coef(n), vect(n), cnfint)

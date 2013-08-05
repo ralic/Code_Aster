@@ -172,7 +172,7 @@ subroutine te0291(option, nomte)
                   &sigc33
             norsig = norsig + nor * poids / e
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 101  end do

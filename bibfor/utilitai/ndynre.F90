@@ -125,7 +125,7 @@ function ndynre(sddyna, chaine)
         ndynre = zr(jcfsc+24-1)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

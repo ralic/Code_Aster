@@ -77,7 +77,7 @@ subroutine jxveri()
             nom32 = rnom(jrnom(ic)+j)
 !
             isdc = iszon(jiszon + iadmi - 1) / isstat
-            call assert(isdc.eq.1 .or. isdc.eq.2)
+            ASSERT(isdc.eq.1 .or. isdc.eq.2)
             if (cgenr .eq. 'X' .and. isdc .eq. 2) then
                 call jjvern(nom32, 0, iret)
                 call jjallc(ic, j, 'L', ibacol)
@@ -91,11 +91,11 @@ subroutine jxveri()
                         if (iadyoc .ne. 0) then
                             idm = iadmoc - 4
                             isd = iszon(jiszon + idm + 3) / isstat
-                            call assert(isd.eq.1 .or. isd.eq.2)
+                            ASSERT(isd.eq.1 .or. isd.eq.2)
                             isf = iszon(jiszon + iszon(jiszon+idm) - 4 ) / isstat
-                            call assert(isf.eq.3 .or. isf.eq.4)
+                            ASSERT(isf.eq.3 .or. isf.eq.4)
                             il = iszon(jiszon+idm) - 8 - idm
-                            call assert(il .gt. 0)
+                            ASSERT(il .gt. 0)
                         endif
 210                  continue
                 endif
@@ -104,11 +104,11 @@ subroutine jxveri()
             else
                 idm = iadmi - 4
                 isd = iszon(jiszon + idm + 3) / isstat
-                call assert(isd.eq.1 .or. isd.eq.2)
+                ASSERT(isd.eq.1 .or. isd.eq.2)
                 isf = iszon(jiszon + iszon(jiszon+idm) - 4) / isstat
-                call assert(isf.eq.3 .or. isf.eq.4)
+                ASSERT(isf.eq.3 .or. isf.eq.4)
                 il = iszon(jiszon+idm) - 8 - idm
-                call assert(il .gt. 0)
+                ASSERT(il .gt. 0)
             endif
 205      continue
 200  end do

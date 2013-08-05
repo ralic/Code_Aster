@@ -305,7 +305,7 @@ subroutine utites(label1, label2, type, nbref, refi,&
 !
         nl1=lxlgut(tchva2(1))
         nl2=lxlgut(tchva2(2))
-        if (nl1 .ge. 48 .or. nl2 .ge. 48) call assert(.false.)
+        if (nl1 .ge. 48 .or. nl2 .ge. 48) ASSERT(.false.)
         if (nl1 .lt. 24) then
             if (nl2 .lt. 24) then
                 if (llab) write(ific,2424)(lign2(i), i=1,nl)

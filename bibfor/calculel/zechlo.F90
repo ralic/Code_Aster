@@ -65,11 +65,11 @@ subroutine zechlo(opt, te)
         if (iachlo .eq. -1) goto 40
 !
         typsca = zk8(iawtyp-1+iparg) (1:1)
-        call assert(typsca.eq.'R'.or.typsca.eq.'C'.or.typsca.eq.'I')
+        ASSERT(typsca.eq.'R'.or.typsca.eq.'C'.or.typsca.eq.'I')
 !
         lggrel=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+4)
         debugr=zi(iawlo2-1+5*(nbgr*(iparg-1)+igr-1)+5)
-        call assert(debugr.eq.1)
+        ASSERT(debugr.eq.1)
 !
 !
         if (typsca .eq. 'R') then

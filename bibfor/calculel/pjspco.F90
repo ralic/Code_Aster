@@ -32,7 +32,7 @@ subroutine pjspco(moa1, moa2, corres, base, noca)
     character(len=8) :: masp
 !     ----------------------------------------------
     call jemarq()
-    call assert(base.eq.'V')
+    ASSERT(base.eq.'V')
 !
 !
 !     CREATION DU MAILLAGE "SOUS-POINT" (MASP) ET

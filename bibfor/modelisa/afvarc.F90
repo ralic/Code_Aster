@@ -85,7 +85,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !     -------------------------------------------------
     call getvtx(' ', 'LIST_NOM_VARC', 1, iarg, nmxfac,&
                 livarc, n1)
-    call assert(n1.gt.0)
+    ASSERT(n1.gt.0)
     nbfac=n1
     do 1,ifac=1,nbfac
     motfac(ifac)='VARC_'//livarc(ifac)
@@ -95,15 +95,15 @@ subroutine afvarc(chmat, nomail, nomode)
     nbcvrc=0
     do 20,ifac = 1,nbfac
     mofac=motfac(ifac)
-    call assert(mofac(1:5).eq.'VARC_')
+    ASSERT(mofac(1:5).eq.'VARC_')
     call getvtx(mofac, 'NOM_VARC', 1, iarg, 1,&
                 novarc, n1)
-    call assert(n1.eq.1)
+    ASSERT(n1.eq.1)
     itrou=0
     do 21,iocc = 1,nboccv
     call getvtx('AFFE_VARC', 'NOM_VARC', iocc, iarg, 1,&
                 novar1, n1)
-    call assert(n1.eq.1)
+    ASSERT(n1.eq.1)
     if (novar1 .eq. novarc) itrou=1
 21  continue
     if (itrou .eq. 0) goto 20
@@ -112,7 +112,7 @@ subroutine afvarc(chmat, nomail, nomode)
     limfac(nbvarc) = mofac
     call getvtx(mofac, 'CMP_GD', 1, iarg, 0,&
                 k8b, ncmp)
-    call assert(ncmp.lt.0)
+    ASSERT(ncmp.lt.0)
     ncmp=-ncmp
     nbcvrc=nbcvrc+ncmp
     20 end do
@@ -165,10 +165,10 @@ subroutine afvarc(chmat, nomail, nomode)
                 nomgd, n1)
     call getvtx(mofac, 'CMP_GD', 1, iarg, nmxcmp,&
                 zk8(jcvcmp+nbcvrc), ncmp)
-    call assert(ncmp.ge.1)
+    ASSERT(ncmp.ge.1)
     call getvtx(mofac, 'CMP_VARC', 1, iarg, nmxcmp,&
                 zk8(jcvnom+nbcvrc), n1)
-    call assert(n1.eq.ncmp)
+    ASSERT(n1.eq.ncmp)
     do 49,k = 1,ncmp
     zk8(jcvvar+nbcvrc-1+k) = novarc
     zk8(jcvgd +nbcvrc-1+k) = nomgd
@@ -177,7 +177,7 @@ subroutine afvarc(chmat, nomail, nomode)
     do 80,iocc = 1,nboccv
     call getvtx('AFFE_VARC', 'NOM_VARC', iocc, iarg, 1,&
                 novar2, n1)
-    call assert(n1.eq.1)
+    ASSERT(n1.eq.1)
     if (novar2 .ne. novarc) goto 80
 !
 !         2.2 CALCUL DE  VRCREF(:) :
@@ -186,7 +186,7 @@ subroutine afvarc(chmat, nomail, nomode)
                 vrcref, n1)
 !         -- ON NE PEUT DONNER QU'UNE SEULE VALEUR (TEMP OU SECH) :
     nref=n1
-    call assert(n1.eq.0 .or. n1.eq.1)
+    ASSERT(n1.eq.0 .or. n1.eq.1)
     if (n1 .eq. 1) then
         vref=vrcref(1)
     else
@@ -209,7 +209,7 @@ subroutine afvarc(chmat, nomail, nomode)
                 chamgd, n1)
     call getvid('AFFE_VARC', 'EVOL', iocc, iarg, 1,&
                 evol, n2)
-    call assert(n1+n2.le.1)
+    ASSERT(n1+n2.le.1)
     if (n1 .eq. 1) then
         evouch='CHAMP'
     else if (n2.eq.1) then
@@ -219,7 +219,7 @@ subroutine afvarc(chmat, nomail, nomode)
         if (novarc .ne. 'TEMP') call u2mesk('F', 'CALCULEL4_11', 1, novarc)
 !           -- POUR LA THM, ON PEUT UTILISER VALE_REF SANS DONNER
 !              CHAM_GD NI EVOL :
-        call assert(nref.eq.1)
+        ASSERT(nref.eq.1)
     endif
 !
 !
@@ -289,7 +289,7 @@ subroutine afvarc(chmat, nomail, nomode)
 !           -- ON AFFECTE UNE CARTE CONTENANT DES R8NNEM :
         call gcncon('_', knumer)
         carvid = knumer
-        call assert(ncmp.le.10)
+        ASSERT(ncmp.le.10)
         do 31,k = 1,ncmp
         rcmp(k) = r8nnem()
 31      continue
@@ -368,13 +368,13 @@ subroutine afvarc(chmat, nomail, nomode)
     nbgdmx=zi(jdesc-1+2)
     nbgdut=zi(jdesc-1+3)
     call jelira(chmat//'.TEMP    .2.VALE', 'LONMAX', n1, kbid)
-    call assert(n1.eq.nbgdmx*ncmp)
+    ASSERT(n1.eq.nbgdmx*ncmp)
 !     3.2 ON PARCOURT LES SD STOCKEES DANS LA CARTE ET ON REGARDE S'IL
 !         EXISTE D'AUTRES CMPS QUE TEMP ET LAGR :  LAUTR=.TRUE.
 !     --------------------------------------------------------------
     do 93, k=1,nbgdut
     k16a=zk16(jvale-1+ncmp*(k-1)+1)
-    call assert(k16a.eq.'TEMP')
+    ASSERT(k16a.eq.'TEMP')
     k16a=zk16(jvale-1+ncmp*(k-1)+2)
     k16b=zk16(jvale-1+ncmp*(k-1)+3)
     k16c=zk16(jvale-1+ncmp*(k-1)+4)
@@ -400,7 +400,7 @@ subroutine afvarc(chmat, nomail, nomode)
             zk8(jcvcmp-1+ico)=zk8(jcvcmp-1+k)
         endif
 92      continue
-        call assert(ico.eq.nbcvrc-nbdetr)
+        ASSERT(ico.eq.nbcvrc-nbdetr)
         call juveca(cvnom, ico)
         call juveca(cvvar, ico)
         call juveca(cvgd, ico)

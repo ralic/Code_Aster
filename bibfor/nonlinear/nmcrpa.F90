@@ -87,7 +87,7 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
 ! --- RECUPERATION DU NOMBRE D'INSTANTS
 !
     if ((n2.ge.1) .and. (n3.ge.1)) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (n3 .ge. 1) then

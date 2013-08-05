@@ -1,5 +1,4 @@
 subroutine op0032()
-! aslint: disable=W1501
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -105,7 +104,7 @@ subroutine op0032()
 !     ------------------------------------------------------------------
     mpicow=comcou(0)
     mpicou=comcou(1)
-    if (mpicow .ne. mpicou) call assert(.false.)
+    if (mpicow .ne. mpicou) ASSERT(.false.)
     call mpiexe('MPI_RANG_SIZE', mpicow, ibid, rang, nbproc)
 !
 !     INFO // DS MACRO_MODE_MECA
@@ -135,8 +134,8 @@ subroutine op0032()
     typpar='XXXXXXXXXXXXXXXX'
     call getvtx(' ', 'NIVEAU_PARALLELISME', 1, iarg, 1,&
                 typpar, l)
-    if (l .ne. 1) call assert(.false.)
-    if ((typpar.ne.'COMPLET') .and. (typpar.ne.'PARTIEL')) call assert(.false.)
+    if (l .ne. 1) ASSERT(.false.)
+    if ((typpar.ne.'COMPLET') .and. (typpar.ne.'PARTIEL')) ASSERT(.false.)
     if ((typpar.eq.'COMPLET') .and. (nbproc.gt.1) .and. (.not.lcomod)) then
         lcoinf=.true.
         typeco=1
@@ -270,11 +269,11 @@ subroutine op0032()
         call wkvect(k24stu, 'V V I', nbmod-1, jstu)
         call getvr8(' ', 'FREQ', 1, iarg, nbmod,&
                     zr(jlmod), l)
-        if (l .ne. nbmod) call assert(.false.)
+        if (l .ne. nbmod) ASSERT(.false.)
         do 10 k = 1, nbmod-1
             zi(jstu+k-1)=izero
             zr(jlmoe+k-1)=rzero
-            if (zr(jlmod+k) .le. zr(jlmod+k-1)) call assert(.false.)
+            if (zr(jlmod+k) .le. zr(jlmod+k-1)) ASSERT(.false.)
 10      continue
         zr(jlmoe+nbmod-1)=rzero
 !
@@ -286,7 +285,7 @@ subroutine op0032()
                     rayonc, l2)
         call getvc8(' ', 'CENTRE_CONTOUR', 1, iarg, 1,&
                     centrc, l3)
-        if ((abs(l1)*abs(l2)*abs(l3)) .ne. 1) call assert(.false.)
+        if ((abs(l1)*abs(l2)*abs(l3)) .ne. 1) ASSERT(.false.)
         calpac(1) = dble(centrc)
         calpac(2) = dimag(centrc)
         calpac(3) = rayonc
@@ -304,21 +303,21 @@ subroutine op0032()
             call wkvect(k24stu, 'V V I', nbmod-1, jstu)
             call getvr8(' ', 'CHAR_CRIT', 1, iarg, nbmod,&
                         zr(jlmod), l)
-            if (l .ne. nbmod) call assert(.false.)
+            if (l .ne. nbmod) ASSERT(.false.)
             do 12 k = 1, nbmod-1
                 zi(jstu+k-1)=izero
                 zr(jlmoe+k-1)=rzero
-                if (zr(jlmod+k) .le. zr(jlmod+k-1)) call assert(.false.)
+                if (zr(jlmod+k) .le. zr(jlmod+k-1)) ASSERT(.false.)
 12          continue
             zr(jlmoe+nbmod-1)=rzero
         else
 !       --- PARAMETRIZATION PB
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else
 !     --- BAD VALUE OF TYMOD ---
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !
@@ -354,7 +353,7 @@ subroutine op0032()
 !        TYPCHA='ROMBOUT'
 !        CALL GETVTX('COMPTAGE','POLYNOME_CHARAC',1,IARG,1,TYPCHA,IBID)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !-----------------------------------------------------------------------
@@ -380,7 +379,7 @@ subroutine op0032()
 !      --- INFO_MODE OU MACRO_MODE_MECA // VALIDES QU'AVEC STURM
     if (lcomod .or. lcoinf) then
 !      --- PROBABLEMENT MAUVAISE PROGRAMMATION EN AMONT
-        if (typmet(1:5) .ne. 'STURM') call assert(.false.)
+        if (typmet(1:5) .ne. 'STURM') ASSERT(.false.)
     endif
 !
 !      --- INFO_MODE PARALLELE: INCOMPATIBILITES FONCTIONNELLES ET
@@ -448,7 +447,7 @@ subroutine op0032()
     nbrow=-9999
     if (typmet(1:5) .eq. 'STURM') then
 !
-        if (nbmod .lt. 2) call assert(.false.)
+        if (nbmod .lt. 2) ASSERT(.false.)
         nbrow=nbmod-1
 !
 !     ------------------------------------------------------------------
@@ -482,7 +481,7 @@ subroutine op0032()
 !         --- ULTIME VERIF (DEJA FAIT PAR AILLEURS NORMALEMENT)
             if ((nbproc.lt.nbrow) .or.&
                 ( (nbproc.gt.nbrow) .and. (metres( 1:5).ne.'MUMPS') .and. (typeco.eq.1) )) &
-            call assert(.false.)
+            ASSERT(.false.)
             if (typeco .eq. 1) then
                 l1=nbproc/nbrow
                 l11=l1+1
@@ -496,7 +495,7 @@ subroutine op0032()
                     call vecint(l1, k, zi(jkpar+l3+(k-l21)*l1))
 41              continue
             else if (typeco.eq.2) then
-                if (nbrow .ne. 1) call assert(.false.)
+                if (nbrow .ne. 1) ASSERT(.false.)
                 l1=nbproc/2
                 l2=nbproc-2*l1
                 l11=l1+l2
@@ -512,7 +511,7 @@ subroutine op0032()
 !         --- ULTIME VERIF VECTEUR COULEUR
             do 42 k = 1, nbproc
                 l1=zi(jkpar+k-1)
-                if ((l1.lt.0) .or. (l1.gt.nbrow)) call assert(.false.)
+                if ((l1.lt.0) .or. (l1.gt.nbrow)) ASSERT(.false.)
 42          continue
 !
 !         --- FREQUENCE COURANTE CAD FREQ A TRAITER PAR LE PROC COURANT
@@ -523,7 +522,7 @@ subroutine op0032()
 !         --- ON DETRUIT LE MPICOU QU'APRES LA DESTRUCTION DE L'OCCU
 !         --- RENCE MUMPS ASSOCIEE.
             call mpiexe('MPI_COMM_SPLIT', mpicow, mpicou, frecou, 0)
-            if (mpicow .eq. mpicou) call assert(.false.)
+            if (mpicow .eq. mpicou) ASSERT(.false.)
             call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                         rbid, cbid)
             call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
@@ -560,7 +559,7 @@ subroutine op0032()
                 k1=1
                 k2=0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         else
@@ -583,7 +582,7 @@ subroutine op0032()
             omin=zr(jlmod)
             omax=zr(jlmod+1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         if (lfirst) then
             call vpfopr(kopt1, typmod, lmasse, lraide, ldynam,&
@@ -723,7 +722,7 @@ subroutine op0032()
                 goto 31
             else if (impr.eq.'OUI') then
                 write(ifm,4020)
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 30      continue
 31      continue
@@ -732,7 +731,7 @@ subroutine op0032()
 !
     else
 !   --- ILLEGAL OPTION ---
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !-----------------------------------------------------------------------
@@ -842,7 +841,7 @@ subroutine op0032()
 55      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !  ---- DESTRUCTION OF THE TEMPORARY DATA STRUCTURES ---

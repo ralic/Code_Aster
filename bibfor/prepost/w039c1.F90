@@ -132,7 +132,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     else if (tsca.eq.'C') then
         if (zc(jvale-1+dec1) .ne. zc(jvale-1+dec2)) goto 20
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 10  continue
 !         -- IZONE == KZONE :
@@ -151,14 +151,14 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     -- ON TRANSFORME LA CARTE EN UN CHAM_ELEM_S DE NEUT_R :
 !     ------------------------------------------------------
     call jelira(cart1//'.DESC', 'DOCU', ibid, kbid)
-    call assert(kbid.eq.'CART')
+    ASSERT(kbid.eq.'CART')
     call dismoi('F', 'NOM_MAILLA', cart1, 'CARTE', ibid,&
                 ma, ierd)
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
                 kbid, ierd)
 !
     call etenca(cart1, ligrel, iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     call jeveuo(cart1//'.PTMA', 'L', jptma)
 !
     ces2='&&W039C1.CES2'
@@ -171,10 +171,10 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     izone=zi(jptma-1+ima)
     if (izone .gt. 0) then
         nuzone=zi(jzones-1+izone)
-        call assert(nuzone.gt.0)
+        ASSERT(nuzone.gt.0)
         call cesexi('C', jcesd, jcesl, ima, 1,&
                     1, 1, iad)
-        call assert(iad.le.0)
+        ASSERT(iad.le.0)
         zl(jcesl-1-iad)=.true.
         zr(jcesv-1-iad)=dble(nuzone)
     endif
@@ -185,7 +185,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     ----------------------------------------------------
     call cescel(ces2, ligrel, 'TOU_INI_ELEM', 'PNEU1_R', 'OUI',&
                 nncp, 'V', cel2, 'F', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
     call detrsd('CHAM_ELEM_S', ces2)
 !
 !
@@ -202,7 +202,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
                     0, ' ', ' ', ' ', 0,&
                     0.d0, 0, 0, 0, sdcarm,&
                     iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
 !
     else if (form.eq.'RESULTAT') then
@@ -211,7 +211,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call detrsd('CHAM_ELEM', cel2)
     call jedetr('&&W039C1.ZONES')

@@ -56,7 +56,7 @@ subroutine grpdbl(maz, typgz)
 !
     ma = maz
     typgr=typgz
-    call assert(typgr.eq.'GROUPENO'.or.typgr.eq.'GROUPEMA')
+    ASSERT(typgr.eq.'GROUPENO'.or.typgr.eq.'GROUPEMA')
     if (typgr .eq. 'GROUPENO') then
         ptrn='PTRNOMNOE'
         nvnogr='&&GRPDBL.GROUPENO'
@@ -104,30 +104,30 @@ subroutine grpdbl(maz, typgz)
         do 31,k=1,nbent
         if (zi(jlent-1+k) .gt. 1) nelim=nelim+1
 31      continue
-        call assert(nelim.gt.0)
+        ASSERT(nelim.gt.0)
         lnew=nbe-nelim
-        call assert(lnew.gt.0)
+        ASSERT(lnew.gt.0)
         call wkvect('&&GRPDBL.LNEW', 'V V I', lnew, jnew)
         je=0
         do 34,ie=1,nbe
         nue = zi(jgroup-1+ie)
         kk=zi(jlent-1+nue)
-        call assert(kk.ne.0)
+        ASSERT(kk.ne.0)
         if (kk .eq. 1) then
 !             -- ENTITE NON DOUBLONNEE :
             je=je+1
-            call assert(je.ge.1.and.je.le.lnew)
+            ASSERT(je.ge.1.and.je.le.lnew)
             zi(jnew-1+je)=nue
         else if (kk.gt.1) then
 !             -- ENTITE DOUBLONNEE VUE LA 1ERE FOIS:
             je=je+1
-            call assert(je.ge.1.and.je.le.lnew)
+            ASSERT(je.ge.1.and.je.le.lnew)
             zi(jnew-1+je)=nue
             zi(jlent-1+nue)=-1
         else if (kk.eq.-1) then
 !             -- ENTITE DOUBLONNEE DEJA VUE :
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 34      continue
     endif

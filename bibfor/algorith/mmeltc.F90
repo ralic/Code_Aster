@@ -57,7 +57,7 @@ function mmeltc(ityp)
 !
     mmeltc = '                '
     if ((ityp.le.0) .or. (ityp.gt.nbtyp)) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         mmeltc = nomtc(ityp)
     endif

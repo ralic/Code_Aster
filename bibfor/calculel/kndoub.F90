@@ -36,7 +36,7 @@ subroutine kndoub(long, lkn, nbkn, iret)
     integer :: k1, k2
 ! DEB
 !
-    call assert((long.eq.8).or.(long.eq.16).or.(long.eq.24))
+    ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
 !
     iret = 0
 !

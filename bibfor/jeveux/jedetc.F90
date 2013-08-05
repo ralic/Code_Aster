@@ -77,7 +77,7 @@ subroutine jedetc(clas, souch, ipos)
     character(len=1) :: kclas
 ! DEB ------------------------------------------------------------------
     l = len ( souch )
-    call assert(ipos+l .le. 25 .and. ipos .ge. 0 .and. l .ne. 0)
+    ASSERT(ipos+l .le. 25 .and. ipos .ge. 0 .and. l .ne. 0)
     kclas = clas (1:min(1,len(clas)))
     if (kclas .eq. ' ') then
         ncla1 = 1

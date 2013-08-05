@@ -98,10 +98,10 @@ subroutine mgauss(cara, a, b, dim, nordre,&
     call matfpe(-1)
 !
     cara2 = cara
-    call assert((cara2(1:1).eq.'N') .or. (cara2(1:1).eq.'T'))
-    call assert((cara2(2:2).eq.'F') .or. (cara2(2:2).eq.'C'))
-    call assert((cara2(3:3).eq.'V') .or. (cara2(3:3).eq.'S') .or. (cara2(3:3).eq.'W'))
-    call assert((cara2(4:4).eq.'D') .or. (cara2(4:4).eq.'P'))
+    ASSERT((cara2(1:1).eq.'N') .or. (cara2(1:1).eq.'T'))
+    ASSERT((cara2(2:2).eq.'F') .or. (cara2(2:2).eq.'C'))
+    ASSERT((cara2(3:3).eq.'V') .or. (cara2(3:3).eq.'S') .or. (cara2(3:3).eq.'W'))
+    ASSERT((cara2(4:4).eq.'D') .or. (cara2(4:4).eq.'P'))
 !
     ltrans = (cara2(1:1).eq.'T')
     lstop = (cara2(2:2).eq.'F')

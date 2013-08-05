@@ -106,7 +106,7 @@ subroutine ef0231(nomte)
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                     3, tgsup, iret3)
         iret4=iret1+iret2+iret3
-        call assert(iret4.eq.0 .or. iret4.eq.3)
+        ASSERT(iret4.eq.0 .or. iret4.eq.3)
 !
 !
 !---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR

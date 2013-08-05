@@ -167,7 +167,7 @@ subroutine dmatcp(fami, mater, instan, poum, igau,&
 ! ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 ! ----     DE PASSAGE N'EST PAS L'IDENTITE)
 !        ----------------------------------
-        call assert((irep.eq.1).or.(irep.eq.0))
+        ASSERT((irep.eq.1).or.(irep.eq.0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 4, 4, dorth, passag,&
                         work, d)

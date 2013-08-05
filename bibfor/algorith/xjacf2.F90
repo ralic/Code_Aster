@@ -93,8 +93,8 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
     axi = lteatt(' ','AXIS','OUI')
 !
-    call assert(ndim.eq.2)
-    call assert(nptf.le.nptfmx)
+    ASSERT(ndim.eq.2)
+    ASSERT(nptf.le.nptfmx)
 !
 ! --- INITIALISATION
     call vecini(3, 0.d0, nd)
@@ -201,7 +201,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
             tau1(2)=1.d0-nd(2)*nd(2)
             call normev(tau1, norm2)
         endif
-        call assert(norm2.gt.1.d-12)
+        ASSERT(norm2.gt.1.d-12)
     endif
 !
 !     CALCUL DES FF DE L'ÉLÉMENT PARENT EN CE POINT DE GAUSS

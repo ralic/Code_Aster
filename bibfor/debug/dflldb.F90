@@ -81,7 +81,7 @@ subroutine dflldb(sdlist, ifm)
         write(ifm,*) '<DEFILISTINST> GESTION AUTOMATIQUE '//&
      &               'DE LA LISTE D''INSTANTS'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     dtmin = zr(jlinr-1+5)
     write(ifm,*) '<DEFILISTINST> ... LA LISTE CONTIENT ',nbinst,&
@@ -134,7 +134,7 @@ subroutine dflldb(sdlist, ifm)
             else if (zr(jeevr-1+leevr*(iechec-1)+1).eq.5.d0) then
                 write(ifm,*) '<DEFILISTINST> ...... INSTABILITE'
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! ------- ACTION
@@ -169,7 +169,7 @@ subroutine dflldb(sdlist, ifm)
                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
                     call dflld2(sdlist, ifm, iechec)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
 !
@@ -197,7 +197,7 @@ subroutine dflldb(sdlist, ifm)
                 write(ifm,*) '<DEFILISTINST> ...... ON CONTINUE LE CALCUL'
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 10      continue
 !

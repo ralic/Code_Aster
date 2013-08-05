@@ -79,7 +79,7 @@ subroutine exchml(imodat, iparg)
     endif
 !
     tych=zk8(iachik-1+2*(iichin-1)+1)
-    call assert(tych(1:4).eq.'CHML')
+    ASSERT(tych(1:4).eq.'CHML')
 !
     jceld=zi(iachii-1+11*(iichin-1)+4)
     lggre2=zi(jceld-1+zi(jceld-1+4+igr)+4)
@@ -119,8 +119,8 @@ subroutine exchml(imodat, iparg)
     modlo2=iamloc-1+zi(ilmloc-1+imodat)
     itypl1=zi(modlo1-1+1)
     itypl2=zi(modlo2-1+1)
-    call assert(itypl1.le.3)
-    call assert(itypl2.le.3)
+    ASSERT(itypl1.le.3)
+    ASSERT(itypl2.le.3)
     nbpoi1=zi(modlo1-1+4)
     nbpoi2=zi(modlo2-1+4)
 !
@@ -128,8 +128,8 @@ subroutine exchml(imodat, iparg)
     ncmp2=lgcata/nbpoi2
 !
 !     -- ON VERIFIE QUE LES POINTS NE SONT PAS "DIFF__" :
-    call assert(nbpoi1.lt.10000)
-    call assert(nbpoi2.lt.10000)
+    ASSERT(nbpoi1.lt.10000)
+    ASSERT(nbpoi2.lt.10000)
 !
 !
 !
@@ -145,17 +145,17 @@ subroutine exchml(imodat, iparg)
             cas='COPIE'
             ncmp=ncmp1
 !         -- QUELQUES VERIFICATIONS :
-            call assert(itypl1.eq.itypl2)
+            ASSERT(itypl1.eq.itypl2)
 !         -- POUR LES CHAMPS ELGA, ON VERIFIE QUE C'EST LA MEME FAMILLE
             if (itypl1 .eq. 3) then
-                call assert(zi(modlo1+4+nec).eq.zi(modlo2+4+nec))
+                ASSERT(zi(modlo1+4+nec).eq.zi(modlo2+4+nec))
             endif
         else
             cas='TRICMP'
             lverec=.false.
         endif
     else
-        call assert(ncmp1.eq.ncmp2)
+        ASSERT(ncmp1.eq.ncmp2)
         ncmp=ncmp1
 !
         if (nbpoi1 .eq. 1) then
@@ -163,7 +163,7 @@ subroutine exchml(imodat, iparg)
         else if (nbpoi2.eq.1) then
             cas='MOYENN'
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -171,7 +171,7 @@ subroutine exchml(imodat, iparg)
 !       -- ON VERIFIE QUE LES CMPS SONT LES MEMES:
 !          (SINON IL FAUDRAIT TRIER ... => A FAIRE (TRIGD) )
         do 40,jec=1,nec
-        call assert(zi(modlo1-1+4+jec).eq.zi(modlo2-1+4+jec))
+        ASSERT(zi(modlo1-1+4+jec).eq.zi(modlo2-1+4+jec))
 40      continue
     endif
 !
@@ -191,7 +191,7 @@ subroutine exchml(imodat, iparg)
             call jacopo(ncmp, typegd, jad1, jad2)
 50          continue
         else if (cas.eq.'COPIE') then
-            call assert(nbpoi1.eq.nbpoi2)
+            ASSERT(nbpoi1.eq.nbpoi2)
             jad1=iachin-1+debgr2+(jel-1)*ncmp*nbpoi1
             jad2=iachlo-1+debugr+(jel-1)*ncmp*nbpoi1
             call jacopo(ncmp*nbpoi1, typegd, jad1, jad2)
@@ -212,13 +212,13 @@ subroutine exchml(imodat, iparg)
                 icmp1=icmp1+1
             else
 !             -- A FAIRE ... (GESTION DE ZL)
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             goto 52
         endif
-        call assert(icmp1.ge.1 .and. icmp1.le.ncmp1)
-        call assert(icmp2.ge.1 .and. icmp2.le.ncmp2)
+        ASSERT(icmp1.ge.1 .and. icmp1.le.ncmp1)
+        ASSERT(icmp2.ge.1 .and. icmp2.le.ncmp2)
         do 61,jel=1,nbelgr
         if (lparal) then
             if (.not.zl(jparal-1+jel)) goto 61
@@ -270,7 +270,7 @@ subroutine exchml(imodat, iparg)
 120              continue
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         do 150,jel=1,nbelgr
@@ -293,7 +293,7 @@ subroutine exchml(imodat, iparg)
 !
 !     -- AUTRES CAS PAS ENCORE PROGRAMMES :
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

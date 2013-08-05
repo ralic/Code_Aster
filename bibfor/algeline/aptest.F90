@@ -114,7 +114,7 @@ subroutine aptest(nk, imata, itest, cbd)
         valome=2.d0*sqrt(valm/valkk)
         n1=nk/2
 ! MODIFIER LA TAILLE FIXEE A 100 DU VECTEUR CBD (NE PAS OUBLIER APM012)
-        if (n1 .gt. 100) call assert(.false.)
+        if (n1 .gt. 100) ASSERT(.false.)
         do 7 i = 1, n1
             raux1=valome*sin(pi*0.5d0*(2*i-1)/(2*n1+1))
             raux2=0.5d0*((vala/raux1)+valb*raux1)
@@ -144,7 +144,7 @@ subroutine aptest(nk, imata, itest, cbd)
  8      continue
         write(ifm,*)'BASIC TEST 4'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     write(ifm,*)'*** WARNING WARNING WARNING WARNING WARNING ***'
     call jedema()

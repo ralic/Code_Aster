@@ -107,7 +107,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
                     'V', ces1)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !
@@ -154,7 +154,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !
     endif
 !     TEST SUR IDENTITE DES 2 MAILLAGES
-    call assert(zk24(jxxk1-1+1).eq.ma1)
+    ASSERT(zk24(jxxk1-1+1).eq.ma1)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)
@@ -219,7 +219,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 !
         call cesexi('S', jce2d, jce2l, ima2, ino2,&
                     1, icmp, iad2)
-        call assert(iad2.lt.0)
+        ASSERT(iad2.lt.0)
         zl(jce2l-1-iad2) = .true.
 !
         if (tsca .eq. 'R') then
@@ -228,7 +228,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
             coef1 = zr(iacocf+idecal-1+ino1)
             call cesexi('C', jce1d, jce1l, ima1, ino1,&
                         1, icmp, iad1)
-            call assert(iad1.gt.0)
+            ASSERT(iad1.gt.0)
             v1 = zr(jce1v-1+iad1)
             v2 = v2 + coef1*v1
 30          continue
@@ -240,7 +240,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
             coef1 = zr(iacocf+idecal-1+ino1)
             call cesexi('C', jce1d, jce1l, ima1, ino1,&
                         1, icmp, iad1)
-            call assert(iad1.gt.0)
+            ASSERT(iad1.gt.0)
             v1c = zc(jce1v-1+iad1)
             v2c = v2c + coef1*v1c
 40          continue

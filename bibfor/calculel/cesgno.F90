@@ -89,7 +89,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
 !        JNOFPG : ADRESSE DE CELFPG
 !     --------------------------------------------------------------
     call exisd('CHAM_ELEM_S', ces1, iret)
-    call assert(iret.gt.0)
+    ASSERT(iret.gt.0)
     call jeveuo(ces1//'.CESK', 'L', jces1k)
     call jeveuo(ces1//'.CESC', 'L', jces1c)
     call jeveuo(ces1//'.CESD', 'L', jces1d)
@@ -102,13 +102,13 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     call jelira(ces1//'.CESC', 'LONMAX', ncmp, kbid)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call assert(tsca.eq.'R'.or.tsca.eq.'C')
+    ASSERT(tsca.eq.'R'.or.tsca.eq.'C')
 !
     call jeveuo(ces2//'.CESD', 'L', jces2d)
     call jeveuo(ces2//'.CESV', 'E', jces2v)
     call jeveuo(ces2//'.CESL', 'E', jces2l)
 !
-    call assert(celfpg.ne.' ')
+    ASSERT(celfpg.ne.' ')
     call jeveuo(celfpg, 'E', jnofpg)
 !
 !
@@ -145,9 +145,9 @@ subroutine cesgno(ces1, celfpg, base, ces2)
         call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
                     fapg, nbpg, x, vol)
         nufpg = indik8(fapg,fapg1,1,nbfpg)
-        call assert(nufpg.gt.0)
+        ASSERT(nufpg.gt.0)
         call nuelrf(elrf, nujni)
-        call assert(nujni.eq.2)
+        ASSERT(nujni.eq.2)
         call jni002(elrf, 10, liobj, nbobj)
         call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
 !
@@ -176,8 +176,8 @@ subroutine cesgno(ces1, celfpg, base, ces2)
         nno = nint(zr(jganol-1+1))
         npg = nint(zr(jganol-1+2))
         jmat = jganol + 2
-        call assert(nno.le.nbnomx)
-        call assert(npg.le.nbpgmx)
+        ASSERT(nno.le.nbnomx)
+        ASSERT(npg.le.nbpgmx)
     endif
 !
 !
@@ -187,9 +187,9 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     nbsp1 = zi(jces1d-1+5+4* (ima-1)+2)
     nbpt2 = zi(jces2d-1+5+4* (ima-1)+1)
     nbsp2 = zi(jces2d-1+5+4* (ima-1)+2)
-    call assert(nbsp1.eq.nbsp2)
-    call assert(nbpt1.eq.npg)
-    call assert(nbpt2.eq.nno)
+    ASSERT(nbsp1.eq.nbsp2)
+    ASSERT(nbpt1.eq.npg)
+    ASSERT(nbpt2.eq.nno)
 !
 !
     do 100 icmp = 1, ncmp
@@ -203,7 +203,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
             do 30 ipg = 1, npg
                 call cesexi('C', jces1d, jces1l, ima, ipg,&
                             isp, icmp, iad1)
-                call assert(iad1.gt.0)
+                ASSERT(iad1.gt.0)
                 if (tsca .eq. 'R') then
                     vrpg(ipg) = zr(jces1v-1+iad1)
 !
@@ -237,7 +237,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
             do 80 ino = 1, nno
                 call cesexi('C', jces2d, jces2l, ima, ino,&
                             isp, icmp, iad2)
-                call assert(iad2.lt.0)
+                ASSERT(iad2.lt.0)
                 if (tsca .eq. 'R') then
                     zr(jces2v-1-iad2) = vrno(ino)
                 else

@@ -21,7 +21,6 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit      none
 #include "jeveux.h"
 #include "asterc/gcucon.h"
@@ -242,7 +241,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
                 fonact(3) = 1
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

@@ -122,7 +122,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
 !
     endif
 !
-    call assert(iret.ge.0)
-    call assert(iret.le.3)
+    ASSERT(iret.ge.0)
+    ASSERT(iret.le.3)
 !
 end subroutine

@@ -119,7 +119,7 @@ subroutine cfeven(phase, defico, resoco)
             else if (phase.eq.'FIN') then
                 etacfi = 1.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             if (phase .eq. 'INI') then
@@ -127,7 +127,7 @@ subroutine cfeven(phase, defico, resoco)
             else if (phase.eq.'FIN') then
                 etacfi = 0.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
         zr(jctevc+zeven*(ip-1)+1-1) = etacin

@@ -63,7 +63,7 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     nbterm=3*(1+n1+n2)
 !     -- L'EPAISSEUR EST LA NORME DE V1 :
     epais=sqrt(v1(1)*v1(1)+v1(2)*v1(2)+v1(3)*v1(3))
-    call assert(nbterm.le.165)
+    ASSERT(nbterm.le.165)
 !
 !
     call base3n(v1, mat33)

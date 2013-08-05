@@ -243,10 +243,10 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
 52      continue
     endif
 !
-    call assert(nbpar .le. 15)
-    call assert(ii+2 .le. 10)
-    call assert(ir+nbcmp2 .le. 10)
-    call assert(ik+2 .le. 10)
+    ASSERT(nbpar .le. 15)
+    ASSERT(ii+2 .le. 10)
+    ASSERT(ir+nbcmp2 .le. 10)
+    ASSERT(ik+2 .le. 10)
 !
     l = 6 * nbsp
     m = l * nbco

@@ -153,7 +153,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
                 compor, carcri, sdstat, sdtime, meelem,&
                 measse, veelem, nddle, ddlexc, modrig,&
                 ldccvg, matas2, matgeo)
-    call assert(ldccvg.eq.0)
+    ASSERT(ldccvg.eq.0)
 !
 ! --- RETABLISSEMENTS VALEURS
 !
@@ -181,7 +181,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
     else if (mod45 .eq. 'FLAM') then
         varacc = 'CHAR_CRIT'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     freqm = r8maem()
     numord = 0
@@ -215,7 +215,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
                         vecmo2)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- RECUPERATION DES MODES DANS LA SD MODE
@@ -242,7 +242,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
                         1, 1, csta)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DETECTION INSTABILITE SI DEMANDE
@@ -275,7 +275,7 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
                         k24bid)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- DESTRUCTION DE LA SD DE STOCKAGE DES MODES

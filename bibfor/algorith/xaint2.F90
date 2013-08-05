@@ -220,7 +220,7 @@ subroutine xaint2(noma, modele)
                                             ifis2, 1, iad)
                                 if (zi(jcesv(3)-1+iad) .eq. 1) nfh = nfh + 1
 240                          continue
-                            call assert(nfh.gt.1)
+                            ASSERT(nfh.gt.1)
 !
 !     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
 !
@@ -273,7 +273,7 @@ subroutine xaint2(noma, modele)
 235                      continue
 !     ELIM = TT <=> L'ARETE DOIT ÊTRE ENTIÈREMENT ÉLIMINÉE
 !     SINON IL FAUDRA RECONSIDÉRER PROPREMENT L'ELIM COMPLÈTE DE L'ARETE
-                        call assert(verif.eqv.(elim(1).and.elim(2)))
+                        ASSERT(verif.eqv.(elim(1).and.elim(2)))
                         do 300 j = 1, 2
                             if (.not.elim(j)) goto 300
 !

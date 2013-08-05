@@ -312,7 +312,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 15      continue
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (nbno .ne. 0) then

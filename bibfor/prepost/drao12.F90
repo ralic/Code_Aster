@@ -70,7 +70,7 @@ subroutine drao12(coord1, coord2, xo1o2, yo1o2, zo1o2,&
     if (abs(1.d0-n2) .le. 1.0d-10) n2 = 1.0d0
     if (abs(1.d0-n3) .le. 1.0d-10) n3 = 1.0d0
     if (abs(1.d0-n4) .le. 1.0d-10) n4 = 1.0d0
-    call assert(n4.eq.1.0d0)
+    ASSERT(n4.eq.1.0d0)
 !
     if (n2 .gt. 1.0d0 .or. n3 .gt. 1.0d0) then
         if (n2 .gt. 1.0d0) ray(2) = -1.0d0

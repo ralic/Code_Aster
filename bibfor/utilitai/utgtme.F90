@@ -45,7 +45,7 @@ subroutine utgtme(nbarg, nomarg, valarg, iret)
     character(len=8) :: nom
 ! ----------------------------------------------------------------------
     iret = 0
-    call assert(nbarg .ge.1)
+    ASSERT(nbarg .ge.1)
     lois = loisem()
     iv(1) = 0
     iv(2) = 0

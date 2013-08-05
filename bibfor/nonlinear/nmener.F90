@@ -137,7 +137,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
 !
     call nmchai('VEASSE', 'LONMAX', long)
-    call assert(long.eq.nveass)
+    ASSERT(long.eq.nveass)
     do 10 i = 1, nveass
         iret(i)=0
         call jeexin(veasse(i)//'.VALE', iret(i))

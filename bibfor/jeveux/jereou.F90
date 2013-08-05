@@ -62,7 +62,7 @@ subroutine jereou(clas, pcent)
     real(kind=8) :: valr(2)
 !
     klas = clas
-    call assert(klas .ne. ' ')
+    ASSERT(klas .ne. ' ')
     ic = index (classe , klas)
 !
     nomb = nombas(ic)

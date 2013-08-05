@@ -80,7 +80,7 @@ subroutine exresl(modatt, iparg, chin)
 !
     desc=zi(iachii-1+11*(iichin-1)+4)
 !
-    call assert(modatt.gt.0)
+    ASSERT(modatt.gt.0)
     mode=zi(desc-1+2+igr)
 !
     if (mode .eq. 0) then
@@ -90,9 +90,9 @@ subroutine exresl(modatt, iparg, chin)
         goto 9999
     endif
 !
-    call assert(mode.eq.modatt)
+    ASSERT(mode.eq.modatt)
     ncmpel=digde2(mode)
-    call assert(lggrel.eq.ncmpel*nbelgr)
+    ASSERT(lggrel.eq.ncmpel*nbelgr)
     call jeveuo(jexnum(chin//'.RESL', igr), 'L', jresl)
     if (lparal) then
         do 10 iel = 1, nbelgr

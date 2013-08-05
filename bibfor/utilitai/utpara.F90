@@ -70,7 +70,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
     do 2 i = 1, nbpara
         para=lipara(i)
         i1= index(para,'#')
-        call assert(i1.ge.2)
+        ASSERT(i1.ge.2)
         nopara=para(1:i1-1)
         call jecroc(jexnom(noms2//'.NOVA', nopara))
  2  end do
@@ -94,7 +94,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
     do 1 i = 1, nbpara
         para=lipara(i)
         i1= index(para,'#')
-        call assert(para(i1:i1+2).eq.'#A#'.or.para(i1:i1+2).eq.'#P#')
+        ASSERT(para(i1:i1+2).eq.'#A#'.or.para(i1:i1+2).eq.'#P#')
         type=para(i1+3:32)
         litype(i)=type
         acces=para(i1+1:i1+1)
@@ -120,7 +120,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         else if (type.eq.'K80') then
             nbk80=nbk80+1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
  1  end do
 !

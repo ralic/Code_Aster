@@ -91,9 +91,9 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !     -- ON VERIFIE QUE LE VACHAR A LES BONNES PROPRIETES:
 !     ----------------------------------------------------
     call jeexin(vachar, iret)
-    call assert(iret.ne.0)
+    ASSERT(iret.ne.0)
     call jelira(vachar, 'LONMAX', nbvec, k8bid)
-    call assert(nbvec.ne.0)
+    ASSERT(nbvec.ne.0)
     call jeveuo(vachar, 'L', jvec)
 !
 !
@@ -104,7 +104,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     else
         fct = .true.
         call jelira(fomult, 'LONMAX', nchar, k8bid)
-        call assert(nchar.ne.0)
+        ASSERT(nchar.ne.0)
         call jeveuo(fomult, 'L', jfonct)
     endif
 !
@@ -121,14 +121,14 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !         CALL UTIMS2('ASCOVA 1',K,CHAMNO,1,' ')
             call corich('L', chamno, ibid, icha)
 !
-            call assert((icha.ne.0).and.(icha.ge.-2))
+            ASSERT((icha.ne.0).and.(icha.ge.-2))
 !
             if (icha .eq. -1) then
                 valres = 1.d0
             else if (icha.eq.-2) then
                 valres = 0.d0
             else
-                call assert(icha.le.nchar)
+                ASSERT(icha.le.nchar)
                 valres = 1.d0
                 if (fct .and. zk24(jfonct+icha-1) .ne. ' ') then
                     call fointe('F ', zk24(jfonct+icha-1), 1, npara, vpara,&
@@ -163,7 +163,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
             chamno = zk24(jvec+k-1) (1:19)
             call corich('L', chamno, ibid, icha)
 !
-            call assert((icha.ne.0).and.(icha.ge.-2))
+            ASSERT((icha.ne.0).and.(icha.ge.-2))
 !
             if (icha .eq. -1) then
                 valre = 1.d0
@@ -172,7 +172,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
                 valre = 0.d0
                 valim = 0.d0
             else
-                call assert(icha.le.nchar)
+                ASSERT(icha.le.nchar)
                 valre = 1.d0
                 valim = 0.d0
                 if (fct) call fointc('F', zk24(jfonct+icha-1)(1:8), 1, npara, vpara,&
@@ -208,7 +208,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     else if (detr.eq.'G') then
 !       -- EN PRINCIPE UTILISE PAR DYNA_LINE_HARM
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

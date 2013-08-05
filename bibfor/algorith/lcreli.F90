@@ -146,7 +146,7 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
 !     INTERPOLATION QUADRATIQUE (ENTRE 0 ET 1)
 !     ----------------------------------------
 !
-    call assert(abs(fp0-f-df).gt.r8prem())
+    ASSERT(abs(fp0-f-df).gt.r8prem())
     rho1 = -0.5d0 * df /( fp0- f - df)
 !
 !     PROJECTION SUR L'INTERVALLE [RHOMIN,RHOMAX]
@@ -181,7 +181,7 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
         m(2,2) = rho0/(rho1**2)
         s(1) = fp0 - f - df * rho0
         s(2) = fp1 - f - df * rho1
-        call assert(abs(rho0-rho1).gt.r8prem())
+        ASSERT(abs(rho0-rho1).gt.r8prem())
         a = 1.d0/(rho0 - rho1) * ( m(1,1)*s(1) + m(1,2)*s(2) )
         b = 1.d0/(rho0 - rho1) * ( m(2,1)*s(2) + m(2,2)*s(2) )
         if (abs(3.d0*a) .le. r8prem()) goto 8888

@@ -86,7 +86,7 @@ subroutine nmeceb(sderro, nombcl, etabcl)
     else if (etabcl.eq.'CTCD') then
         iconve = 5
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ENREGISTREMENT DE LA CONVERGENCE
@@ -102,7 +102,7 @@ subroutine nmeceb(sderro, nombcl, etabcl)
     else if (nombcl.eq.'CALC') then
         zi(jeconv-1+5) = iconve
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

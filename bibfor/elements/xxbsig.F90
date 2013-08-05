@@ -18,9 +18,9 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+    integer :: ndim, nfe, nfh, nfiss, nnop, npg
     integer :: ddlc, ddlm, fisno(nnop, nfiss)
     integer :: codopt, idepl, igeom, ivectu
-    integer :: ndim, nfe, nfh, nfiss, nnop, npg
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
     real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
@@ -100,7 +100,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
     else if (option.eq.'CHAR_MECA_TEMP_R') then
         cinem = 'INI'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
@@ -126,7 +126,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis)
+    ASSERT(npg.eq.npgbis)
     do 178 n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
 178  end do
@@ -177,7 +177,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !
 !         PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
 !
         endif
 !
@@ -188,7 +188,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                 r = r + ff(n)*zr(igeom-1+2*(n-1)+1)
 120          continue
 !
-            call assert(r.gt.0d0)
+            ASSERT(r.gt.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
@@ -281,7 +281,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
 !
 145          continue
 !
-            call assert(cpt.eq.ddld)
+            ASSERT(cpt.eq.ddld)
 !
 140      continue
 !
@@ -323,7 +323,7 @@ subroutine xxbsig(option, elrefp, elrese, ndim, coorse,&
                         zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + abs(&
                         def(m,n,i)*sigma(1,1)*jac)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
 162              continue
 161          continue

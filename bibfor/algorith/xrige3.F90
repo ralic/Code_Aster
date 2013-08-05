@@ -99,7 +99,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
@@ -139,7 +139,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
 !
         endif
 !
@@ -173,7 +173,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                     cpt =cpt+1
                     pff(cpt,n,i) = dfdi(n,i)*fe(ig)+ff(n)*dgdgl(ig,i)
 126              continue
-                call assert(cpt.eq.ddldn)
+                ASSERT(cpt.eq.ddldn)
 128          continue
 127      continue
 !

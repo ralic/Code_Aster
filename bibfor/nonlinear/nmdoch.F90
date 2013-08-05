@@ -18,7 +18,6 @@ subroutine nmdoch(lischa, iexcit, excit)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -324,7 +323,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
             if (infoch .ne. 'RIEN') then
                 nbinfo = nbinfo + 1
-                call assert(nbinfo.lt.nbinmx)
+                ASSERT(nbinfo.lt.nbinmx)
                 lisinf(nbinfo) = infoch
             endif
 !
@@ -369,7 +368,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
             if (infoch .ne. 'RIEN') then
                 nbinfo = nbinfo + 1
-                call assert(nbinfo.lt.nbinmx)
+                ASSERT(nbinfo.lt.nbinmx)
                 lisinf(nbinfo) = infoch
             endif
 !
@@ -419,7 +418,7 @@ subroutine nmdoch(lischa, iexcit, excit)
                 endif
                 if (infoch .ne. 'RIEN') then
                     nbinfo = nbinfo + 1
-                    call assert(nbinfo.lt.nbinmx)
+                    ASSERT(nbinfo.lt.nbinmx)
                     lisinf(nbinfo) = infoch
                 endif
 70          continue
@@ -441,7 +440,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
             if (infoch .ne. 'RIEN') then
                 nbinfo = nbinfo + 1
-                call assert(nbinfo.lt.nbinmx)
+                ASSERT(nbinfo.lt.nbinmx)
                 lisinf(nbinfo) = infoch
             endif
 !
@@ -470,7 +469,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
             if (infoch .ne. 'RIEN') then
                 nbinfo = nbinfo + 1
-                call assert(nbinfo.lt.nbinmx)
+                ASSERT(nbinfo.lt.nbinmx)
                 lisinf(nbinfo) = infoch
             endif
 !
@@ -496,7 +495,7 @@ subroutine nmdoch(lischa, iexcit, excit)
             endif
             if (infoch .ne. 'RIEN') then
                 nbinfo = nbinfo + 1
-                call assert(nbinfo.lt.nbinmx)
+                ASSERT(nbinfo.lt.nbinmx)
                 lisinf(nbinfo) = infoch
             endif
 !

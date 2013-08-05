@@ -92,7 +92,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 !
 !----------------------------------------------------------------
 !     -- ON PLACE LE "ASSERT" ICI POUR LE FAIRE MOINS SOUVENT
-    call assert(nec.le.nec2)
+    ASSERT(nec.le.nec2)
 !
 !     2.1 ON DECALE LES TABLEAUX VERS LE "FOND" :
 !         ET ON AJOUTE LES NOUVELLES VALEURS EN KSAV=1
@@ -158,7 +158,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                 else if (itypgd.eq.6) then
                     zk24(iachlo-1+deb2-1+cmp)=zk24(iachin-1+ieq)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
 !
             else
@@ -169,7 +169,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                     zc(iachlo-1+deb2-1+cmp)=zc(iachlo-1+deb2-1+cmp)+&
                     zc(iachin-1+ieq)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !

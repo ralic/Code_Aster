@@ -116,7 +116,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
 120      continue
     else
 ! - OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! - PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
@@ -197,7 +197,7 @@ subroutine massup(option, ndim, dlns, nno, nnos,&
 200      continue
     else
 ! - OPTION DE CALCUL INVALIDE
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

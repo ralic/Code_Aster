@@ -85,7 +85,7 @@ subroutine ssmau2(nomu, option)
         matas = nomu//'.AMORMECA'
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !     -- MOSTRU=.TRUE. : CAS MODIFICATION STRUCTURALE
@@ -120,7 +120,7 @@ subroutine ssmau2(nomu, option)
     else if ((optio2(1:9).eq.'AMOR_MECA').and.(mostru)) then
         call wkvect(nomu//'.MAEL_AMOR_VALE', 'G V R', (nddle*(nddle+1)/ 2), iampee)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (mostru) then

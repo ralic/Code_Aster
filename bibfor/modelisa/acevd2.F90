@@ -72,7 +72,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     ier = 0
     call verdis(nomo, noma, 'F', i3d, i2d,&
                 ndim, ier)
-    call assert((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
+    ASSERT((mcf.eq.'DISCRET_2D').or.(mcf.eq.'DISCRET'))
 !
     call jeexin(modnem, ixnw)
     nbmtrd = 0
@@ -97,7 +97,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
         call getvtx(mcf, 'CARA', ioc, iarg, nbcar,&
                     car, ncar)
 !
-        if (ncar .gt. ncar) call assert(.false.)
+        if (ncar .gt. ncar) ASSERT(.false.)
         do 25 icar = 1, ncar
             if (car(icar)(3:4) .eq. 'TR') goto 28
 25      continue

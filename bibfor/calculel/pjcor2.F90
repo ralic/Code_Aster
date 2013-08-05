@@ -94,7 +94,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     else if (nomgd.eq.'NEUT_R') then
         nompar = 'PNEUMAT'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !------------------------------------------------------------------

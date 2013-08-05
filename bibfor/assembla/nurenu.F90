@@ -82,7 +82,7 @@ subroutine nurenu(nu, base)
         zi(jnbddl+iproc)=zi(jnbddl+iproc)+nbddpr
         nbddpr=zi(jnbddl+iproc)
 20  end do
-    call assert(neqg.eq.nbddpr)
+    ASSERT(neqg.eq.nbddpr)
 !
     call wkvect(nu//'.NUML.NLGP', base(1:1)//' V I', neql, jnulg)
     decals=0
@@ -127,7 +127,7 @@ subroutine nurenu(nu, base)
         zi(jnulg+numddl-1)=zi(jnewnu+iddl)
 60      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedetr('&&NURENU.TMP')
     40 end do

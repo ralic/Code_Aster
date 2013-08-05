@@ -138,7 +138,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
         vmin=r8maem()
         vmax=-r8maem()
         icmp=indik8(zk8(jcesc),nomcmp(i),1,nbcmpm)
-        call assert(icmp.ge.0)
+        ASSERT(icmp.ge.0)
         do 36 ino = 1, nbno
             if (zl(jcesl+(ino-1)*nbcmpm+icmp-1)) then
                 if (vmax .lt. zr(jcesv+(ino-1)*nbcmpm+icmp-1)) then

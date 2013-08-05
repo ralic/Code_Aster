@@ -82,7 +82,7 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
                         nbkit, nbnvi)
             do 103 ii = 1, 4
                 ncomel=ncomel+1
-                call assert(ncomel.le.10)
+                ASSERT(ncomel.le.10)
                 if (nomkit(ii) .eq. ' ') then
                     lcomel(ncomel)='VIDE'
                 else

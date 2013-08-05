@@ -162,7 +162,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
         call rsutc4(resu1, ' ', 1, 200, nomsym,&
                     nbsym, acceno)
-        call assert(nbsym.gt.0)
+        ASSERT(nbsym.gt.0)
 !
         call getvtx(' ', 'PROL_ZERO', 1, iarg, 1,&
                     prol0, ier)
@@ -242,7 +242,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
         call pjxxch(corres, ch1, ch2, tychv, prfchn,&
                     prol0, ligrel, base, iret)
     endif
-    call assert(iret.eq.0.or.iret.eq.1.or.iret.eq.10)
+    ASSERT(iret.eq.0.or.iret.eq.1.or.iret.eq.10)
 !         -- ELGA ET CART : ON NE FAIT RIEN :
     if (iret .eq. 10) goto 20
 !

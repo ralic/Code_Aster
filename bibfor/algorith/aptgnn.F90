@@ -159,7 +159,7 @@ subroutine aptgnn(sdappa, noma, defico, ndimg, jdecno,&
                     inocou = inomai
                 endif
 30          continue
-            call assert(inocou.ne.0)
+            ASSERT(inocou.ne.0)
 !
 ! ------- RECUPERATIONS DES TANGENTES EN CE NOEUD
 !

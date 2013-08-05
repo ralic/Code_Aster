@@ -19,7 +19,6 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -98,9 +97,9 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
 !
     nzoco = cfdisi(defico,'NZOCO' )
     iform = cfdisi(defico,'FORMULATION')
-    call assert(izone.gt.0)
+    ASSERT(izone.gt.0)
     if (nzoco .ne. 0) then
-        call assert(izone.le.nzoco)
+        ASSERT(izone.le.nzoco)
     endif
 !
 ! ---- INTERROGATION METHCO
@@ -175,7 +174,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirnor, 'L', jdirno)
             rrep(1) = zr(jdirno+zdirn*(izone-1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'VECT_MAIT_DIRY') then
@@ -184,7 +183,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirnor, 'L', jdirno)
             rrep(1) = zr(jdirno+zdirn*(izone-1)+1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'VECT_MAIT_DIRZ') then
@@ -193,7 +192,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirnor, 'L', jdirno)
             rrep(1) = zr(jdirno+zdirn*(izone-1)+2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! --- VECT_ESCL
     else if (questi.eq.'VECT_ESCL') then
@@ -206,7 +205,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirnor, 'L', jdirno)
             rrep(1) = zr(jdirno+zdirn*(izone-1)+3)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'VECT_ESCL_DIRY') then
@@ -215,7 +214,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirnor, 'L', jdirno)
             rrep(1) = zr(jdirno+zdirn*(izone-1)+4)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'VECT_ESCL_DIRZ') then
@@ -224,7 +223,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirnor, 'L', jdirno)
             rrep(1) = zr(jdirno+zdirn*(izone-1)+5)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! --- TYPE_APPA
     else if (questi.eq.'TYPE_APPA') then
@@ -241,7 +240,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirapp, 'L', jdirap)
             rrep(1) = zr(jdirap+3*(izone-1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'TYPE_APPA_DIRY') then
@@ -250,7 +249,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirapp, 'L', jdirap)
             rrep(1) = zr(jdirap+3*(izone-1)+1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'TYPE_APPA_DIRZ') then
@@ -259,7 +258,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(dirapp, 'L', jdirap)
             rrep(1) = zr(jdirap+3*(izone-1)+2)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! --- NBMAE
     else if (questi.eq.'NBMAE') then
@@ -325,7 +324,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
         else if (zi(jmeth+zmeth*(izone-1)-1+22).eq.1) then
             lrep(1) = .true.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 ! --- VERIF
     else if (questi.eq.'CALCUL') then
@@ -335,7 +334,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
         else if (zi(jmeth+zmeth*(izone-1)-1+22).eq.1) then
             lrep(1) = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---- INTERROGATION TOLECO
@@ -369,7 +368,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+11-1)
             irep(1) = nint(rrep(1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'ALGO_CONT_PENA') then
@@ -400,7 +399,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+13-1)
             irep(1) = nint(rrep(1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'ALGO_FROT_PENA') then
@@ -428,7 +427,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+16-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'XFEM_ALGO_LAGR') then
@@ -436,7 +435,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             irep(1) = nint(zr(jcmxf+zcmxf*(izone-1)+9-1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'CONT_XFEM_CZM') then
@@ -449,7 +448,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
                 lrep(1) = .false.
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---- INTERROGATION MIXTE CARADF/CARACF/CARAXF
@@ -466,7 +465,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             lrep(1) = nint(zr(jcmxf+zcmxf*(izone-1)+10-1)).eq.1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---- INTERROGATION MIXTE CARACF/CARAXF
@@ -479,7 +478,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             irep(1) = nint(zr(jcmxf+zcmxf*(izone-1)+1-1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !
@@ -494,7 +493,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caradf, 'L', jcmdf)
             rrep(1) = zr(jcmdf+zcmdf*(izone-1)+4-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'COEF_AUGM_CONT') then
@@ -505,7 +504,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+2-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'COEF_AUGM_FROT') then
@@ -516,7 +515,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+3-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'FROTTEMENT_ZONE') then
@@ -530,7 +529,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             irep(1) = nint(zr(jcmxf+zcmxf*(izone-1)+5-1))
             lrep(1) = (nint(zr(jcmxf+zcmxf*(izone-1)+5-1)).eq.3)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'SEUIL_INIT') then
@@ -541,7 +540,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+6-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 !
@@ -550,7 +549,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+12-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'COEF_PENA_FROT') then
@@ -558,7 +557,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             rrep(1) = zr(jcmxf+zcmxf*(izone-1)+14-1)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
     else if (questi.eq.'CONTACT_INIT') then
@@ -569,7 +568,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
             call jeveuo(caraxf, 'L', jcmxf)
             irep(1) = nint(zr(jcmxf+zcmxf*(izone-1)+7-1))
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ---- INTERROGATION CARADF
@@ -612,7 +611,7 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
         write(6,*) '   REPONSE  - I : <',irep(1),'>'
         write(6,*) '   REPONSE  - R : <',rrep(1),'>'
         write(6,*) '   REPONSE  - L : <',lrep(1),'>'
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

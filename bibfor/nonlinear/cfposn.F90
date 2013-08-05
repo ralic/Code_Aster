@@ -68,7 +68,7 @@ subroutine cfposn(defico, posmai, posnno, nnomai)
 ! --- NOMBRE DE NOEUDS ATTACHES A CETTE MAILLE
 !
     call cfnben(defico, posmai, 'CONNEX', nnomai, ibid)
-    call assert(nnomai.le.nbnmax)
+    ASSERT(nnomai.le.nbnmax)
 !
 ! --- NUMERO DES NOEUDS ATTACHES A CETTE MAILLE
 !

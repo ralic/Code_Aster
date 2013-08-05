@@ -74,14 +74,14 @@ subroutine te0347(option, nomte)
 !
     okelem = (nomte.eq.'MECA_POU_D_TG') .or. (nomte.eq.'MECA_POU_D_T') .or.&
              (nomte.eq.'MECA_POU_D_E')
-    call assert(okelem)
+    ASSERT(okelem)
 !
     nno = 2
     fami = 'RIGI'
 ! --- NOMBRE DE POINTS DE GAUSS
     call elref4(' ', fami, iplouf, iplouf, iplouf,&
                 npg, iplouf, iplouf, iplouf, iplouf)
-    call assert((npg.eq.2).or.(npg.eq.3))
+    ASSERT((npg.eq.2).or.(npg.eq.3))
 !
     if (nomte .eq. 'MECA_POU_D_TG') then
         nc = 7

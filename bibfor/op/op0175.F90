@@ -65,8 +65,8 @@ subroutine op0175()
                 crit, ie)
     call rsutnu(resu19, ' ', 0, '&&OP0175.NUME_ORDRE', nbordr,&
                 prec, crit, iret)
-    call assert(iret.eq.0)
-    call assert(nbordr.gt.0)
+    ASSERT(iret.eq.0)
+    ASSERT(nbordr.gt.0)
     call jeveuo('&&OP0175.NUME_ORDRE', 'L', jordr)
 !
 !
@@ -77,11 +77,11 @@ subroutine op0175()
     call rsadpa(resu, 'L', 1, 'MODELE', nuord,&
                 0, jpara, k8b)
     modele=zk8(jpara)
-    call assert(modele.ne.' ')
+    ASSERT(modele.ne.' ')
     call rsadpa(resu, 'L', 1, 'CARAELEM', nuord,&
                 0, jpara, k8b)
     cara=zk8(jpara)
-    call assert(cara.ne.' ')
+    ASSERT(cara.ne.' ')
 !
 !
 !

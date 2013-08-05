@@ -83,7 +83,7 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
     numreo = -1
     numrep = -1
     call getfac(motfac, nocc)
-    call assert(nocc.le.1)
+    ASSERT(nocc.le.1)
 !
 ! --- NOM SD ARCHIVAGE
 !
@@ -113,8 +113,8 @@ subroutine ntcrar(result, sddisc, lreuse, numreo)
 !
 ! --- NUMERO D'ARCHIVE COURANT ET NUMERO DE REUSE
 !
-    call assert(numarc.ge.0)
-    call assert(numreo.ge.0)
+    ASSERT(numarc.ge.0)
+    ASSERT(numreo.ge.0)
     call wkvect(arcinf, 'V V I', 3, jarinf)
     zi(jarinf-1+1) = numarc
     zi(jarinf-1+2) = numreo

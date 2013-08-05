@@ -106,7 +106,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     rac2 = sqrt(2.d0)
     call r8inir(6, rbid, tbid, 1)
 !
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
     if (typmod(1) .eq. 'C_PLAN') call u2mess('F', 'ALGORITH8_1')
 !
     axi = typmod(1).eq.'AXIS'

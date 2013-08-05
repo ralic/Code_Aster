@@ -50,7 +50,7 @@ subroutine zbinit(f0, coef, dimmem, mem)
 ! ----------------------------------------------------------------------
 !
     if (f0 .gt. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     parmul = coef
     dimcpl = dimmem

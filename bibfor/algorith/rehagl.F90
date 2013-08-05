@@ -325,7 +325,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
                 else if (iret.eq.100) then
                     call vtcrea(chamno, crefe, 'G', 'C', neq)
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 chamno(20:24) = '.VALE'
                 call jeveuo(chamno, 'E', ldnew)

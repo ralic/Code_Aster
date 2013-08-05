@@ -315,7 +315,7 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                     call cesexi('C', jcerd, jcerl, imap, ipg,&
                                 1, icmp, jad)
 !
-                    call assert(jad .ne. 0)
+                    ASSERT(jad .ne. 0)
                     jad = abs(jad)
                     zl(jcerl - 1 + jad) = .true.
                     zr(jcerv - 1 + jad) = vresu(icmp)

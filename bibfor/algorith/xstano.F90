@@ -208,7 +208,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                         c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                         ac(k)=c(k)-a(k)
 21                  continue
-                    call assert(ddot(ndim, ab, 1, ab, 1).gt.r8prem())
+                    ASSERT(ddot(ndim, ab, 1, ab, 1).gt.r8prem())
                     lstc = lsta + (lstb-lsta) * ddot(ndim,ab,1,ac,1) / ddot(ndim,ab,1,ab,1)
                     if (lstc .lt. minlst) minlst=lstc
                     if (lstc .gt. maxlst) maxlst=lstc
@@ -228,7 +228,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                     nrien=nrien+1
                 endif
 !           AUCUNE ARETE SUR LAQUELLE LSN S'ANNULE
-                call assert(nrien.ne.nbar)
+                ASSERT(nrien.ne.nbar)
 212          continue
 !
             call panbno(itypma, nbnott)

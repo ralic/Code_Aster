@@ -94,15 +94,15 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
 !
     if (num .eq. 1) then
 !     FCTF : FONCTION ABSCISSE CURVILIGNE POUR COEF1 NE 0 ET D=0
-        call assert(abs(coef1).gt.r8prem() .and. abs(d).le.r8prem())
+        ASSERT(abs(coef1).gt.r8prem() .and. abs(d).le.r8prem())
         fctf = coef1*ksi*ksi + coef2*ksi + coef2-coef1 -2*s*sqrt( coef1)
         dfctf = 2*coef1*ksi + coef2
-        call assert(abs(dfctf).gt.r8prem())
+        ASSERT(abs(dfctf).gt.r8prem())
         delta = fctf/dfctf
 !
     else if (num.eq.2) then
 !     FCTG : FONCTION ABSCISSE CURVILIGNE POUR COEF1 NE 0 ET D>0
-        call assert(abs(coef1).gt.r8prem() .and. d.gt.r8prem())
+        ASSERT(abs(coef1).gt.r8prem() .and. d.gt.r8prem())
         mu = sqrt(d/(4*coef1*coef1))
         coef4 = mu*mu*sqrt(coef1)/4
         typfct = 'ACOSH'
@@ -112,12 +112,12 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
         typfct = 'DACOSH'
         call fcthyp(typfct, (2*coef1*ksi+coef2)/(2*coef1*mu), dersup)
         dfctg= coef4*(2/mu)*dersup*(cosh(2*borsup)-1)
-        call assert(abs(dfctg).gt.r8prem())
+        ASSERT(abs(dfctg).gt.r8prem())
         delta = fctg/dfctg
 !
     else if (num.eq.3) then
 !     FCTH : FONCTION ABSCISSE CURVILIGNE POUR COEF1 NE 0 ET D<0
-        call assert(abs(coef1).gt.r8prem() .and. d.lt.r8prem())
+        ASSERT(abs(coef1).gt.r8prem() .and. d.lt.r8prem())
         mu = sqrt(-d/(4*coef1*coef1))
         coef4 = mu*mu*sqrt(coef1)/4
         typfct = 'ASINH'
@@ -127,7 +127,7 @@ subroutine xdelt1(num, ndim, ksi, tabar, s,&
         typfct = 'DASINH'
         call fcthyp(typfct, (2*coef1*ksi+coef2)/(2*coef1*mu), dersup)
         dfcth= coef4*(2/mu)*dersup*(cosh(2*borsup)+1)
-        call assert(abs(dfcth).gt.r8prem())
+        ASSERT(abs(dfcth).gt.r8prem())
         delta = fcth/dfcth
 !
     endif

@@ -107,7 +107,7 @@ subroutine cm27na(main, nbma, nbno, lima, typema,&
             nbtri=4
             call uttrii(noeud, nbtri)
 !
-            call assert(nbtri.eq.4)
+            ASSERT(nbtri.eq.4)
             no1=noeud(1)
             no2=noeud(2)
             no3=noeud(3)

@@ -122,7 +122,7 @@ subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
         extrch.eq.'MOY')) then
             nbnor = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -136,7 +136,7 @@ subroutine nmobs2(noma, sdobse, nomtab, instan, titobs,&
         extrch.eq.'MOY')) then
             nbmar = 1
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     endif
 !

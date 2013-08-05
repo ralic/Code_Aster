@@ -94,7 +94,7 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
     else if (oper.eq.'AJOU') then
         nbmatr = nbmatr + 1
         if (nbmatr .eq. 21) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         ltypma(nbmatr) = typmat
         loptme(nbmatr) = optcal
@@ -102,7 +102,7 @@ subroutine nmcmat(oper, typmaz, optcaz, optasz, lcalc,&
         lassme(nbmatr) = lasse
         lcalme(nbmatr) = lcalc
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

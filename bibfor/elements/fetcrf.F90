@@ -235,7 +235,7 @@ subroutine fetcrf(sdfet1)
             call u2mesk('E', 'ELEMENTS_62', 1, nomgma)
         endif
 21  end do
-    call assert(ier.eq.0)
+    ASSERT(ier.eq.0)
 !
 !     CREATION SDFETI / .FETB
     call jecrec(nomsdb, 'G V I', 'NO', 'DISPERSE', 'VARIABLE',&

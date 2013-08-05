@@ -49,7 +49,7 @@ subroutine lisnnl(phenoz, charge, prefob)
     else if (phenom.eq.'ACOUSTIQUE') then
         prefob = charge(1:8)//'.CHAC'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

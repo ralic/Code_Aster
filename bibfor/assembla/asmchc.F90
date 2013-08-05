@@ -54,7 +54,7 @@ subroutine asmchc(matas)
     mat = matas
 !     CALL CHEKSD('SD_MATR_ASSE',MAT,IRET)
     call jeexin(mat//'.CCVA', ier)
-    call assert(ier.eq.0)
+    ASSERT(ier.eq.0)
     call jeexin(mat//'.CCID', ier)
     if (ier .eq. 0) goto 9999
 !
@@ -72,7 +72,7 @@ subroutine asmchc(matas)
 !
 !
 !     -- ON DETRUIT LES OBJETS S'ILS EXISTENT DEJA :
-    call assert(zk24(jrefa-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
     call jedetr(mat//'.CCLL')
     call jedetr(mat//'.CCVA')
     call jedetr(mat//'.CCII')
@@ -94,7 +94,7 @@ subroutine asmchc(matas)
     else
         keta=zi(jccid-1+ieq)
     endif
-    call assert(keta.eq.1 .or. keta.eq.0)
+    ASSERT(keta.eq.1 .or. keta.eq.0)
     if (keta .eq. 1) then
         nelim=nelim+1
         zi(kkeli-1+ieq)=nelim
@@ -112,7 +112,7 @@ subroutine asmchc(matas)
 !
 !
     call jeexin(nomsto//'.SMHC', iret2)
-    call assert(iret2.gt.0)
+    ASSERT(iret2.gt.0)
     call jeveuo(nomsto//'.SMHC', 'L', jsmhc)
     call jeveuo(nomsto//'.SMDI', 'L', jsmdi)
 !
@@ -165,7 +165,7 @@ subroutine asmchc(matas)
     if (kbid(1:1) .eq. 'C') typmat = 2
     nonsym=.false.
     call jelira(mat//'.VALM', 'NMAXOC', nblocm, kbid)
-    call assert(nblocm.eq.1 .or. nblocm.eq.2)
+    ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
     if (nblocm .eq. 2) nonsym=.true.
     call jeveuo(jexnum(mat//'.VALM', 1), 'E', jvalm)
     if (nonsym) call jeveuo(jexnum(mat//'.VALM', 2), 'E', jvalm2)

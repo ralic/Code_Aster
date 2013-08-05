@@ -153,7 +153,7 @@ subroutine dfllad(sdlist)
         else if (even.eq.'SEUIL') then
             zr(jaevr-1+laevr*(iadapt-1)+1) = 2.d0
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ----- OPTIONS POUR L'ADAPTATION 'SEUIL'
@@ -171,7 +171,7 @@ subroutine dfllad(sdlist)
                             valei, ibid)
                 vale = valei
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             zr(jaevr-1+laevr*(iadapt-1)+5) = vale
             call getvtx(mcfact, 'CRIT_COMP', iadapt, iarg, 1,&
@@ -185,7 +185,7 @@ subroutine dfllad(sdlist)
             else if (cricom.eq.'GE') then
                 zr(jaevr-1+laevr*(iadapt-1)+4) = 4.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -205,7 +205,7 @@ subroutine dfllad(sdlist)
                 call u2mess('F', 'DISCRETISATION_14')
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! ----- OPTIONS MODE DE CALCUL DE T+, FIXE
@@ -228,7 +228,7 @@ subroutine dfllad(sdlist)
                         nocham, ibid)
             call getvtx(mcfact, 'NOM_CMP', iadapt, iarg, 1,&
                         nocmp, ibid)
-            call assert(ibid.eq.1)
+            ASSERT(ibid.eq.1)
             nomgd = dinogd(nocham)
             call utcmp2(nomgd, mcfact, iadapt, 1, nocmp,&
                         nucmp, ibid)

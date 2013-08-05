@@ -70,7 +70,7 @@ subroutine assma1(matas, ldist)
     nz=zi(jsmdi-1+n)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
-    call assert(nz.le.nsmhc)
+    ASSERT(nz.le.nsmhc)
 !
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelgg)
     call jelira(nonu//'.NUME.DELG', 'LONMAX', ng, kbid)
@@ -79,14 +79,14 @@ subroutine assma1(matas, ldist)
         call jeveuo(nonu//'.NUML.DELG', 'L', jdelgl)
     else
         jdelgl=jdelgg
-        call assert(ng.eq.n)
+        ASSERT(ng.eq.n)
     endif
 !
     call jelira(mat19//'.VALM', 'TYPE', ibid, ktyp)
     call jelira(mat19//'.VALM', 'CLAS', ibid, base1)
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalm1)
     call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
-    call assert(nlong.eq.nz)
+    ASSERT(nlong.eq.nz)
 !
     lmnsy=.false.
     call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
@@ -95,7 +95,7 @@ subroutine assma1(matas, ldist)
     if (lmnsy) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jvalm2)
         call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
-        call assert(nlong.eq.nz)
+        ASSERT(nlong.eq.nz)
     endif
 !
 !
@@ -156,7 +156,7 @@ subroutine assma1(matas, ldist)
         endif
     endif
     30 end do
-    call assert(jcol.eq.n)
+    ASSERT(jcol.eq.n)
 !
 !
 40  continue

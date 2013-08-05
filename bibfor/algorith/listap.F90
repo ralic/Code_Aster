@@ -55,7 +55,7 @@ subroutine listap(motfac, iexci, typapp)
     if (eximc .eq. 1) then
         call getvtx(motfac, 'TYPE_CHARGE', iexci, iarg, 1,&
                     typapp, n)
-        call assert(n.eq.1)
+        ASSERT(n.eq.1)
     else
         typapp = 'FIXE_CSTE'
     endif

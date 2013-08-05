@@ -86,7 +86,7 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder,&
         endif
 !
     else
-        call assert(numder.eq.0)
+        ASSERT(numder.eq.0)
         numarc = 0
     endif
 !

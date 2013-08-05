@@ -94,7 +94,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
 !     ON AUTORISE UNIQUEMENT L'ISOTROPIE
     call rccoma(imate, 'ELAS', 1, phenom, iret)
-    call assert(iret.eq.0 .and. phenom.eq.'ELAS')
+    ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
 !
 !     INITIALISATIONS
     instan = 0.d0
@@ -131,7 +131,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
@@ -173,7 +173,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
                         dgdgl, iret)
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS

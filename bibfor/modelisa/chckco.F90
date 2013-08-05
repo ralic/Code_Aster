@@ -130,7 +130,7 @@ subroutine chckco(char, noma, ndimg)
             else if (typno.eq.'MAIT') then
                 itype = mminfi(defico,'VECT_MAIT',izone)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
 ! ------- CALCUL DES TANGENTES EN CE NOEUD SI ELEMENT POINT

@@ -50,7 +50,7 @@ function iselli(elrefz)
 !
     else
 !
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

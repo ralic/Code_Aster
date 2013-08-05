@@ -41,7 +41,7 @@ subroutine knincl(long, lk1, l1, lk2, l2,&
     integer :: k1, k2
 ! DEB
 !
-    call assert((long.eq.8).or.(long.eq.16).or.(long.eq.24))
+    ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
 !
     iret = 0
     do 10,k1 = 1,l1

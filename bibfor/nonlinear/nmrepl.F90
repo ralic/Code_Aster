@@ -156,11 +156,11 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     ldccvg = -1
     k19bla = ' '
     call nmchai('VEASSE', 'LONMAX', nmax)
-    call assert(nmax.eq.zveass)
+    ASSERT(nmax.eq.zveass)
     call nmchai('SOLALG', 'LONMAX', nmax)
-    call assert(nmax.eq.zsolal)
+    ASSERT(nmax.eq.zsolal)
     call nmchai('VALINC', 'LONMAX', nmax)
-    call assert(nmax.eq.zvalin)
+    ASSERT(nmax.eq.zvalin)
 !
 ! --- PARAMETRES RECHERCHE LINEAIRE
 !
@@ -170,7 +170,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     rhoexm = -parmet(9)
     rhoexp = parmet(9)
     relirl = parmet(6)
-    call assert(itrlmx.le.1000)
+    ASSERT(itrlmx.le.1000)
 !
 ! --- DECOMPACTION VARIABLES CHAPEAUX
 !
@@ -360,7 +360,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE
 !
-    call assert(pilcvg.ge.0)
+    ASSERT(pilcvg.ge.0)
 !
     call jedema()
 end subroutine

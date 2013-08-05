@@ -58,10 +58,10 @@ subroutine jeccta(colle1)
     call jelira(colle1, 'MODELONG', ibid, modelo)
     call jelira(colle1, 'STOCKAGE', ibid, stock)
     call jelira(colle1, 'LONT', lont1, kbid)
-    call assert(type.ne.'K')
-    call assert(stock.eq.'CONTIG')
-    call assert(modelo.eq.'VARIABLE')
-    call assert(acces.eq.'NU')
+    ASSERT(type.ne.'K')
+    ASSERT(stock.eq.'CONTIG')
+    ASSERT(modelo.eq.'VARIABLE')
+    ASSERT(acces.eq.'NU')
 !
     call jeveuo(jexatr(colle1, 'LONCUM'), 'L', jloncu)
     lont2=zi(jloncu-1+nbobj+1)
@@ -88,7 +88,7 @@ subroutine jeccta(colle1)
         zc(jcoll2-1+k)=zc(jcoll1-1+k)
 30      continue
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     do 40,k=1,nbobj

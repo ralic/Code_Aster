@@ -135,7 +135,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         ces1='&&VRCIN1.CES1'
         call carces(cart2, 'ELEM', ' ', 'V', ces1,&
                     'A', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call jeveuo(ces1//'.CESD', 'L', jcesd1)
         call jeveuo(ces1//'.CESL', 'L', jcesl1)
         call jeveuo(ces1//'.CESV', 'L', jcesv1)
@@ -150,7 +150,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         prolga=zk16(jcesv1-1+iad+5)
         proldr=zk16(jcesv1-1+iad+6)
         finst =zk16(jcesv1-1+iad+7)
-        call assert((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
+        ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
         if (tysd .eq. 'VIDE') goto 2
 !
         k80=' '
@@ -201,7 +201,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
     call jelira(chmat//'.LISTE_SD', 'LONMAX', n1, kbid)
     nbchs=n1/7
-    call assert(n1.eq.7*nbchs)
+    ASSERT(n1.eq.7*nbchs)
     call jedetr(chmat//'.LISTE_CH')
     call wkvect(chmat//'.LISTE_CH', 'V V K24', nbchs, jlisch)
     chs=chmat//'.CHS000'
@@ -217,7 +217,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         call cesvar(carele, ' ', ligrmo, dceli)
         call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
                     iret, dceli)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
         call detrsd('CHAMP', dceli)
         call celces(celmod, 'V', cesmod)
         call jelira(celmod//'.CELV', 'LONMAX', nval1, kbid)
@@ -259,13 +259,13 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         endif
         call rsinch(nomevo, nomsym, 'INST', instev, nomch,&
                     proldr, prolga, 2, 'V', iret)
-        call assert(iret.le.12)
+        ASSERT(iret.le.12)
         if (iret .ge. 10) then
             codret = 'NO'
             goto 9999
         endif
     else
-        call assert(tysd.eq.'CHAMP')
+        ASSERT(tysd.eq.'CHAMP')
 !           -- SI TYSD='CHAMP', C'EST UN CHAMP INDEPENDANT DU TEMPS :
         nomch=zk16(jlissd-1+7*(ichs-1)+2)
     endif
@@ -281,7 +281,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !         --------------------------------------
 !         -- VERIFICATION DE NOMCH :
     itrou=indik8(zk8(jcvvar),varc,1,nbcvrc)
-    call assert(itrou.gt.0)
+    ASSERT(itrou.gt.0)
     nomgd=zk8(jcvgd-1+itrou)
     call dismoi('F', 'NOM_GD', nomch, 'CHAMP', ibid,&
                 nomgd2, iret)
@@ -298,7 +298,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     if (tych .eq. 'CART') then
         call carces(nomch, 'ELGA', cesmod, 'V', chs,&
                     'A', iret)
-        call assert(iret.eq.0)
+        ASSERT(iret.eq.0)
 !
     else if (tych.eq.'NOEU') then
         cns1='&&VRCIN1.CNS1'
@@ -338,13 +338,13 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         endif
 !
         call jelira(nomch//'.CELV', 'LONMAX', nval2, kbid)
-        call assert(nval1.eq.nval2)
+        ASSERT(nval1.eq.nval2)
 !
 !            2.2.3.2 : SIMPLE RECOPIE
         call celces(nomch, 'V', chs)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

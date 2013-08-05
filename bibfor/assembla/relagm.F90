@@ -130,7 +130,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
             else if (itypi.eq.-2) then
                 newn(ino)= inomax
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 23      continue

@@ -87,9 +87,9 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
                     solve2, ier)
     endif
 !
-    call assert(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
+    ASSERT(cumul.eq.'ZERO'.or.cumul.eq.'CUMU')
     if (cumul .eq. 'ZERO') call detrsd('MATR_ASSE', matas)
-    if (nbmat .gt. 150) call assert(.false.)
+    if (nbmat .gt. 150) ASSERT(.false.)
     do 10,k = 1,nbmat
     tlima2(k) = tlimat(k)
     10 end do
@@ -152,7 +152,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     ---------------------------------------------------------------
     if (cumul .eq. 'CUMU') then
         call jeexin(matas//'.REFA', iret)
-        call assert(iret.gt.0)
+        ASSERT(iret.gt.0)
         call jeveuo(matas//'.REFA', 'L', jrefa)
         if (matsym .eq. 'N' .and. zk24(jrefa-1+9) .eq. 'MS') call masyns(matas)
     endif
@@ -167,7 +167,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, solveu,&
 !     -- TRAITEMENT DES CHARGES CINEMATIQUES :
 !     ----------------------------------------
     call jeveuo(matas//'.REFA', 'L', jrefa)
-    call assert(zk24(jrefa-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
     call ascima(infc19, nu, matas, cumul)
 !
 !

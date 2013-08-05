@@ -73,7 +73,7 @@ subroutine xmilar(ndim, pinter, tabar, areint, milara,&
 !     TEL QUE ABSCISSE CURVILIGNE(D1)=ABSCISSE CURVILIGNE(I)/2
     s=sc/2
     call xinvac(elp, ndim, tabar, s, ksia)
-    call assert(ksia(1).ge.-1 .and. ksia(1).le.1)
+    ASSERT(ksia(1).ge.-1 .and. ksia(1).le.1)
 !
 ! --- COORDONNES DU POINT MILARA DANS L'ELEMENT REEL
     call reerel(elp, nno, ndim, tabar, ksia,&
@@ -87,7 +87,7 @@ subroutine xmilar(ndim, pinter, tabar, areint, milara,&
 !     TEL QUE ABSCURV(D2)=[ABSCURV(A)+ABSCURV(I)]/2
     s=(s1+sc)/2
     call xinvac(elp, ndim, tabar, s, ksib)
-    call assert(ksib(1).ge.-1 .and. ksib(1).le.1)
+    ASSERT(ksib(1).ge.-1 .and. ksib(1).le.1)
 !
 ! --- COORDONNES DU POINT MILARB DANS L'ELEMENT REEL
     call reerel(elp, nno, ndim, tabar, ksib,&

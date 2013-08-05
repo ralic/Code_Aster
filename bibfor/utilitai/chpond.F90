@@ -111,9 +111,9 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
             vefch1='&&PEECAL.FPGCHIN'
             vefch2='&&PEECAL.FPGCOOR'
             call celfpg(chin, vefch1, iret1)
-            call assert(iret1.eq.0)
+            ASSERT(iret1.eq.0)
             call celfpg(lchout(1), vefch2, iret2)
-            call assert(iret2.eq.0)
+            ASSERT(iret2.eq.0)
             call jeveuo(vefch1, 'L', jch1)
             call jeveuo(vefch2, 'L', jch2)
             do 5 ima = 1, nbma
@@ -175,7 +175,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                     do 21 ipt = 1, nbpt
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
                                     1, 1, iad2)
-                        call assert(iad2.gt.0)
+                        ASSERT(iad2.gt.0)
                         zr(jpdsm-1+ima)=zr(jpdsm-1+ima)+zr(jpoiv-1+&
                         iad2)
 21                  continue
@@ -197,17 +197,17 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                 if (tych .eq. 'ELGA') then
                     call cesexi('S', jpoid, jpoil, ima, ipt,&
                                 1, 1, iad2)
-                    call assert(iad2.gt.0)
+                    ASSERT(iad2.gt.0)
                     poids=zr(jpoiv-1+iad2)
                 else if (tych.eq.'ELEM') then
-                    call assert(nbpt.eq.1)
+                    ASSERT(nbpt.eq.1)
                     if (dejain .eq. 'NON') then
                         poids=zr(jpdsm-1+ima)
                     else
                         poids=1.d0
                     endif
                 else if (tych.eq.'ELNO') then
-                    call assert(nbpt.gt.0)
+                    ASSERT(nbpt.gt.0)
                     poids=zr(jpdsm-1+ima)/nbpt
                 endif
 !
@@ -222,7 +222,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                         if (iad1 .le. 0) then
                             goto 40
                         else
-                            call assert(iad3.gt.0)
+                            ASSERT(iad3.gt.0)
                             zr(joutv-1+iad3)=zr(jchsv-1+iad1)*poids
                         endif
 40                  continue

@@ -24,7 +24,6 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !     REFERENCE NOMTAB
 !     ------------------------------------------------------------------
 !
-! aslint: disable=W1501
     implicit   none
 !
 ! 0.1. ==> ARGUMENTS
@@ -256,7 +255,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !           CALL GETVIS(MCF,'NUME_CMP',IOCC,IARG,NUMCMP,ZI(JNUCP),N11)
             n11=0
             if (zk8(jcmp2)(1:4) .eq. 'VARI') then
-                call assert(nbc.eq.1)
+                ASSERT(nbc.eq.1)
                 do 120 i = 1, numcmp
                     call codent(zi(jnucp+i-1), 'G', k8b)
                     nomcmp = 'VARI_'//k8b(1:3)

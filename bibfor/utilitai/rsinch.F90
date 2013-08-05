@@ -118,7 +118,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     call lxliis(k8debu, idebu, ier1)
     k8maxi = zk8(iatava-1+3)
     call lxliis(k8maxi, imaxi, ier2)
-    call assert((abs(ier1)+abs(ier2)).eq.0)
+    ASSERT((abs(ier1)+abs(ier2)).eq.0)
     if (ier2 .ne. 0) then
         ier = 20
         goto 9998
@@ -169,14 +169,14 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     endif
     call rsutro(nomsd, i1, ip1, ierr1)
     call rsutro(nomsd, i2, ip2, ierr2)
-    call assert(ierr1+ierr2.le.0)
+    ASSERT(ierr1+ierr2.le.0)
     rbase = zr(iaobj-1+i2) - zr(iaobj-1+i1)
 !
     call rsexch(' ', nomsd, nomc2, ip1, ch1,&
                 l1)
     call rsexch(' ', nomsd, nomc2, ip2, ch2,&
                 l2)
-    call assert(l1+l2.le.0)
+    ASSERT(l1+l2.le.0)
 !
 !     -- SI LES 2 POINTS IP1 ET IP2 ONT MEME ABSCISSE, ON RECOPIE
 !     -- SIMPLEMENT LE CHAMP(IP1) DANS CHEXT2.
@@ -188,7 +188,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         else
 !         -- CAS DE L'EVOL_XXX QUI N'A QU'UN SEUL INSTANT :
 !            ON AUTORISE LE PROLONGEMENT CONSTANT ET ON ALARME
-            call assert(nbord2.eq.1)
+            ASSERT(nbord2.eq.1)
             r1=1.d0
             r2=0.d0
             if ((prold2.ne.'CONSTANT') .or. (prolg2.ne.'CONSTANT')) then

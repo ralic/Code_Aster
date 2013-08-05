@@ -124,7 +124,7 @@ subroutine nmpr2d(mode, laxi, nno, npg, poidsg,&
             endif
 !
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 100  end do

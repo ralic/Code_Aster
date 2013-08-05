@@ -294,7 +294,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
         if (nbvect .gt. nddlin) then
 !-- ON N'ARRIVE PAS A AVOIR UNE EXPANSION CORRECTE
-            call assert(.false.)
+            ASSERT(.false.)
         endif
         nbvect=nbvect+nbmod
 !
@@ -324,7 +324,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call wkvect(modet, 'V V R', nbeq1*nbmod, lmodet)
 !
     if (nc .ne. nddlin) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !-- EXPANSION STATIQUE

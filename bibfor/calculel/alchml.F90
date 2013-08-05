@@ -167,17 +167,17 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
             valk(2) = ma
             call u2mesk('F', 'CALCULEL_4', 2, valk)
         endif
-        call assert(zi(jdcesd-1+2).eq.2)
-        call assert(zi(jdcesd-1+3).eq.1)
-        call assert(zi(jdcesd-1+4).eq.1)
+        ASSERT(zi(jdcesd-1+2).eq.2)
+        ASSERT(zi(jdcesd-1+3).eq.1)
+        ASSERT(zi(jdcesd-1+4).eq.1)
 !
         kbid = zk8(jdcesk-1+2)
-        call assert(kbid.eq.'DCEL_I')
+        ASSERT(kbid.eq.'DCEL_I')
 !
         kbid = zk8(jdcesc-1+1)
-        call assert(kbid.eq.'NPG_DYN')
+        ASSERT(kbid.eq.'NPG_DYN')
         kbid = zk8(jdcesc-1+2)
-        call assert(kbid.eq.'NCMP_DYN')
+        ASSERT(kbid.eq.'NCMP_DYN')
     endif
 !
 !
@@ -325,7 +325,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     else if (itych1.eq.3) then
         zk24(jcelk-1+3) = 'ELGA'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     zk24(jcelk-1+4) = ' '
     zk24(jcelk-1+5) = ' '

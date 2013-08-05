@@ -48,7 +48,7 @@ subroutine te0538(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, ibid, ddlc,&

@@ -53,7 +53,7 @@ subroutine utnbnv(typmav, nbsv, nbnv)
 ! TRIANGLE
     if ((formv.eq.'TR') .or. (formv.eq.'TL')) then
         nbsv = 3
-        call assert(noeuv.eq.'3'.or.noeuv.eq.'6')
+        ASSERT(noeuv.eq.'3'.or.noeuv.eq.'6')
         if (noeuv .eq. '3') then
             nbnv = 3
         else if (noeuv.eq.'6') then
@@ -62,7 +62,7 @@ subroutine utnbnv(typmav, nbsv, nbnv)
 ! QUADRANGLE
     else if ((formv.eq.'QU').or.(formv.eq.'QL')) then
         nbsv = 4
-        call assert(noeuv.eq.'4'.or.noeuv.eq.'8'.or.noeuv.eq.'9')
+        ASSERT(noeuv.eq.'4'.or.noeuv.eq.'8'.or.noeuv.eq.'9')
         if (noeuv .eq. '4') then
             nbnv = 4
         else if (noeuv.eq.'8') then
@@ -72,7 +72,7 @@ subroutine utnbnv(typmav, nbsv, nbnv)
         endif
 ! HEXAEDRE
     else if (formv.eq.'HE') then
-        call assert(typmav(5:5) .eq. '8' .or. typmav(5:6) .eq. '20' .or. typmav(5:6) .eq. '27')
+        ASSERT(typmav(5:5) .eq. '8' .or. typmav(5:6) .eq. '20' .or. typmav(5:6) .eq. '27')
         if (typmav(5:5) .eq. '8') then
             nbnv = 8
         else if (typmav(5:6).eq.'20') then
@@ -82,7 +82,7 @@ subroutine utnbnv(typmav, nbsv, nbnv)
         endif
 ! PENTAEDRE
     else if (formv.eq.'PE') then
-        call assert(typmav(6:6).eq.'6'.or.typmav(6:7).eq.'15')
+        ASSERT(typmav(6:6).eq.'6'.or.typmav(6:7).eq.'15')
         if (typmav(6:6) .eq. '6') then
             nbnv = 6
         else if (typmav(6:7).eq.'15') then
@@ -90,14 +90,14 @@ subroutine utnbnv(typmav, nbsv, nbnv)
         endif
 ! TETRAEDRE
     else if (formv.eq.'TE') then
-        call assert(typmav(6:6).eq.'4'.or.typmav(6:7).eq.'10')
+        ASSERT(typmav(6:6).eq.'4'.or.typmav(6:7).eq.'10')
         if (typmav(6:6) .eq. '4') then
             nbnv = 4
         else if (typmav(6:7).eq.'10') then
             nbnv = 10
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

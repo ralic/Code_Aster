@@ -64,7 +64,7 @@ function dfllvd(vect)
     else if (vect.eq.'LATPK') then
         dfllvd = latpk
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end function

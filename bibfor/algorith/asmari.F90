@@ -97,7 +97,7 @@ subroutine asmari(fonact, meelem, numedd, solveu, lischa,&
     endif
 !
     if (nbmat .gt. 8) then
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- ASSEMBLAGE LISTE DES MATR_ELEM

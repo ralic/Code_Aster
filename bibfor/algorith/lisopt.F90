@@ -78,7 +78,7 @@ subroutine lisopt(prefob, nomo, typech, indxch, option,&
     if (itypob(1) .eq. 1) then
         carte = nomobj(1:19)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- NOM DU PARAMETRE D'ENTREE

@@ -283,7 +283,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !         CE POINT N'A PAS DEJA ETE TROUVE, ON LE GARDE
             ipt = ipt+1
 !         AUGMENTER NXPTFF
-            call assert(ipt.le.nxptff)
+            ASSERT(ipt.le.nxptff)
 !
 !         STOCKAGE DES COORDONNEES DU POINT M,
 !         DE LA BASE LOCALE (GRADIENT DE LSN ET LST) ET

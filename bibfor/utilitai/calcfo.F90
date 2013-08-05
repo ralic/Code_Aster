@@ -61,7 +61,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale,&
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lprol)
     if (compl) then
         zk24(lprol) = 'FONCT_C         '

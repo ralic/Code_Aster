@@ -132,7 +132,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !     (VOIR CRS 1404)
 !
     call lisnnb(lischa,nbchar)
-    call assert(nbchar.le.mxstac)
+    ASSERT(nbchar.le.mxstac)
     call infniv(ifm, niv)
     option = optioz
     if (optioz .eq. 'CALC_K_X') option = 'CALC_K_G'

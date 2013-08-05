@@ -97,7 +97,7 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
                 famg, nbpg, x, vol)
 !
     nufpg = indik8( famg, fapg, 1, nbfpg )
-    call assert(nufpg.gt.0)
+    ASSERT(nufpg.gt.0)
     npg = nbpg(nufpg)
 !
     if (ndim .eq. 2) then

@@ -91,7 +91,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
                 i=i+1
                 zi(jmafis-1+i)=nmaabs
 !           AUGMENTEZ NXMAFI
-                call assert((i-1).lt.nxmafi)
+                ASSERT((i-1).lt.nxmafi)
                 goto 100
             endif
 101      continue

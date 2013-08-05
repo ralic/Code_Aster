@@ -70,7 +70,7 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
     2 end do
 !
     nbpart=nbpar+nbpar2
-!     CALL ASSERT(NBPART.LE.NBPAMX)
+!     ASSERT(NBPART.LE.NBPAMX)
     call rcvala(jmat, nomat, phenom, nbpart, nompa2,&
                 valpa2, nbres, nomres, valres, codret,&
                 iarret)

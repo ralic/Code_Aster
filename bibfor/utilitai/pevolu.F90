@@ -383,7 +383,7 @@ subroutine pevolu(resu, modele, nbocc)
                 else if (infoma.eq.'3D') then
                     iresma=3
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 call utflmd(mailla, mesmai, iresma, ' ', nbma,&
                             mesmaf)
@@ -411,7 +411,7 @@ subroutine pevolu(resu, modele, nbocc)
                         borne, iret)
             if (iret .ne. 0) then
                 bfix=1
-                call assert(borne(1).lt.borne(2))
+                ASSERT(borne(1).lt.borne(2))
             else
                 borne(1)=0.d0
                 borne(2)=0.d0

@@ -45,7 +45,7 @@ subroutine ntfcma(jmat, ifon)
 !
 !
     nbmat=zi(jmat)
-    call assert(nbmat.eq.1)
+    ASSERT(nbmat.eq.1)
     imate = jmat+zi(jmat+nbmat+1)
 !
     do 10 k = 1, zi(imate+1)

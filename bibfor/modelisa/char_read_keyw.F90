@@ -8,6 +8,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
 !
 #include "jeveux.h"
 #include "asterc/getmjm.h"
+#include "asterfort/assert.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -76,13 +77,13 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
 !
     call jemarq()
 !
-    call assert(n_max_keyword.eq.300)
+    ASSERT(n_max_keyword.eq.300)
 !
 ! - Initial number of keywords
 !
     call getmjm(keywordfact, iocc, 0, keywordread, k16_dummy, n)
     n_keyword = -n
-    call assert(n_keyword .le. n_max_keyword)
+    ASSERT(n_keyword .le. n_max_keyword)
 !
 ! - Read all keywords
 !
@@ -113,7 +114,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
         keyword = keywordlist(i_keyword)
         call char_read_val(keywordfact, iocc, keyword, val_type, val_nb(i_keyword), &
                            val_r(i_keyword), val_f(i_keyword), val_c(i_keyword), val_t_dummy)
-        call assert(val_nb(i_keyword).eq.1)
+        ASSERT(val_nb(i_keyword).eq.1)
     end do
 !
     call jedema()

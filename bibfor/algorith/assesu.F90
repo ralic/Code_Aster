@@ -5,7 +5,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                   mecani, press1, press2, tempe, dimdef,&
                   dimcon, dimuel, nbvari, ndim, compor,&
                   typmod, typvf, axi, perman)
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
@@ -42,7 +42,6 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     character(len=16) :: option, compor(*)
     logical :: axi, perman
 !
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,9 +78,6 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 !
 ! ......................................................................
 !
-!
-!
-!
     integer :: con, dconp1, dconp2, diffu, ddifp1, ddifp2
     parameter(con=1,dconp1=2,dconp2=3,diffu=4,ddifp1=5,ddifp2=6)
 !
@@ -112,13 +108,12 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: rthmc, p10, p20
     real(kind=8) :: valcen(14, 6), valfac(maxfa, 14, 6)
 !
-    logical :: tange, cont
+    logical :: tange, cont, bool
 !
     integer :: codmes(1), kpg, spt
     character(len=8) :: fami, poum
     character(len=16) :: thmc, loi, meca, ther, hydr
     character(len=24) :: valk(2)
-!
 !
 ! ==============================================
 ! VARIABLES LOCALES POUR CALCULS VF
@@ -309,8 +304,9 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
         call u2mesg('F', 'VOLUFINI_9', 0, ' ', 1,&
                     typvf, 0, 0.d0)
     endif
-    call assert((option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) .or.&
-                (option(1:9).eq.'FULL_MECA' ))
+    bool = (option(1:9).eq.'RIGI_MECA' ) .or. (option(1:9).eq.'RAPH_MECA' ) &
+       .or.(option(1:9).eq.'FULL_MECA' )
+    ASSERT(bool)
 !
 !
     vf = .true.

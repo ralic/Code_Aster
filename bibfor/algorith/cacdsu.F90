@@ -69,8 +69,8 @@ subroutine cacdsu(maxfa, maxdim, alpha, ndim, nno,&
 !
 ! ----------------------------------------------------------------------
 !
-    call assert(maxfa1.eq.maxfa)
-    call assert(maxdi1.eq.maxdim)
+    ASSERT(maxfa1.eq.maxfa)
+    ASSERT(maxdi1.eq.maxdim)
 !
     if (ndim .eq. 2) then
         kint(1,1)=kdiag(1)
@@ -103,7 +103,7 @@ subroutine cacdsu(maxfa, maxdim, alpha, ndim, nno,&
         kuni(3,1)=0.d0
         kuni(3,2)=0.d0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     dim=ndim
     sqdim=sqrt(dim)

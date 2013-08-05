@@ -18,7 +18,6 @@ subroutine cfimp4(defico, resoco, noma, ifm)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-! aslint: disable=W1501
     implicit     none
 #include "jeveux.h"
 #include "asterfort/apinfi.h"
@@ -266,7 +265,7 @@ subroutine cfimp4(defico, resoco, noma, ifm)
             nommam = nomapp
             lnodal = .false.
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- NOMBRE DE DDLS TOTAL: NBDDLT

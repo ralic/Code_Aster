@@ -142,7 +142,7 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
 ! -- CLASSEMENT DES SOLUTIONS
 !
     nsol = ok(1)+ok(2)+ok(3)+ok(4)
-    call assert(nsol.le.2)
+    ASSERT(nsol.le.2)
 !
     j = 0
     do 20 i = 1, 4

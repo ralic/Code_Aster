@@ -197,7 +197,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !
 !     --- SI LA SD EXISTE DEJA, ON S'ARRETE EN ERREUR F :
     call jeexin(noms2//'.DESC', iret)
-    call assert(iret.eq.0)
+    ASSERT(iret.eq.0)
 !
 !     --- CREATION DE .DESC  ET  .ORDR ---
     call jecreo(noms2//'.DESC', bas1//' N K16')

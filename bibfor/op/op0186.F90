@@ -22,7 +22,6 @@ subroutine op0186()
 !
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 ! 0.2  ==> ARGUMENTS
@@ -163,7 +162,7 @@ subroutine op0186()
                 lischa, lisch2, solveu, para, numedd,&
                 lostat, levol, lnonl, sddisc, sdieto,&
                 vhydr, sdobse, mailla, sdcrit, time)
-    call assert(lnonl)
+    ASSERT(lnonl)
 !
     if (lostat) then
         numins=0

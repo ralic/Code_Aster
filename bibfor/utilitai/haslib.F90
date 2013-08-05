@@ -56,6 +56,6 @@ subroutine haslib(libraz, iret)
         iret=1
 #endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

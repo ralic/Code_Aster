@@ -122,7 +122,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 !       => VERIF : COMPOSANTES FOURNIES INCLUSES DANS LA LISTE DES
 !       COMPOSANTES DE LA GRANDEUR
         nbcmp=-nbcmp
-        call assert(nbcmp.gt.0)
+        ASSERT(nbcmp.gt.0)
         call wkvect('&&CNOAFF.LISTE_COMP', 'V V K8', nbcmp, jcmp)
         call getvtx('AFFE', 'NOM_CMP', iocc, iarg, nbcmp,&
                     zk8(jcmp), nbcmp)
@@ -256,7 +256,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
                         zr(jval), nbvar)
             do 52 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
-                call assert(icmp.gt.0)
+                ASSERT(icmp.gt.0)
                 do 53 j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zr(jcnsv+nbcmpt*(ino-1)+icmp-1)=zr(jval+i-1)
@@ -275,7 +275,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
                         zi(jval), nbval)
             do 54 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
-                call assert(icmp.gt.0)
+                ASSERT(icmp.gt.0)
                 do 55 j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zi(jcnsv+nbcmpt*(ino-1)+icmp-1)=zi(jval+i-1)
@@ -294,7 +294,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
                         zc(jval), nbvac)
             do 56 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
-                call assert(icmp.gt.0)
+                ASSERT(icmp.gt.0)
                 do 57 j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zc(jcnsv+nbcmpt*(ino-1)+icmp-1)=zc(jval+i-1)
@@ -313,7 +313,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
                         zk8(jval), nbvak)
             do 58 i = 1, ncmp
                 icmp=indik8(zk8(jcmpt),zk8(jcmp+i-1),1,nbcmpt)
-                call assert(icmp.gt.0)
+                ASSERT(icmp.gt.0)
                 do 59 j = 1, nbnoe
                     ino=zi(jlno+j-1)
                     zk8(jcnsv+nbcmpt*(ino-1)+icmp-1)=zk8(jval+i-1)

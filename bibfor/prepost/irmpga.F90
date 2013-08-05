@@ -227,7 +227,7 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
                     write(nonuma,'(I10)')numai
                     nomasu = 'SECT PMF '//nonuma
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 call irmase(nofimd, typsec, nbcou, nbsec, numai,&
                             sdcarm, nomasu)

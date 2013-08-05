@@ -266,7 +266,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     endif
 !
     call jelira(nvale, 'TYPE', ibid, type)
-    call assert((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
+    ASSERT((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
     if (type(1:1) .eq. 'R') then
         call jeveuo(nvale, 'L', avale)
     else

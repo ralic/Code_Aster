@@ -117,7 +117,7 @@ subroutine op0188()
     else if (typdis.eq.'INTERFACE') then
         mafond = fiss//'.MAILFISS  .HEAV'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(mafond, 'L', jmafon)

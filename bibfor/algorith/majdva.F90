@@ -133,7 +133,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
                             theta2, iran)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 20  end do
 !

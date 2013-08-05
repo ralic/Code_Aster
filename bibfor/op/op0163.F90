@@ -201,7 +201,7 @@ subroutine op0163()
                     call vtcrem(chamno, matrm, 'G', 'R')
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             idresr = itresr(ich)
             chamno(20:24) = '.VALE'

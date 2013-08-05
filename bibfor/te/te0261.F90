@@ -57,7 +57,7 @@ subroutine te0261(option, nomte)
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
 !     MATNS MAL DIMENSIONNEE
-    call assert(nno.le.27)
+    ASSERT(nno.le.27)
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, ibid, ddlc,&
                 nnom, ddls, nddl, ddlm, nfiss,&
@@ -76,7 +76,7 @@ subroutine te0261(option, nomte)
             typmod(1) = 'D_PLAN  '
         else
 !          NOM D'ELEMENT ILLICITE
-            call assert(lteatt(' ', 'C_PLAN', 'OUI'))
+            ASSERT(lteatt(' ', 'C_PLAN', 'OUI'))
         endif
         if (nomte(1:2) .eq. 'MD') then
             typmod(2) = 'ELEMDISC'

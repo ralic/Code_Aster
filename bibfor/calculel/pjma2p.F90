@@ -91,7 +91,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !     -- ON NE CONSERVE QUE LES MAILLES DE DIMENSION NDIM :
     call utflmd(mail2, limato, ndim, ' ', nbtrou,&
                 litrou)
-    call assert(nbtrou.gt.0)
+    ASSERT(nbtrou.gt.0)
     call jeveuo(litrou, 'L', jlitr)
     call exlim1(zi(jlitr), nbtrou, moa2, 'V', ligrel)
     call jedetr(limato)
@@ -132,7 +132,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
             do 30,icmp=1,3
             call cesexi('C', jcesd, jcesl, ima, ipt,&
                         1, icmp, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             xmoy(icmp)=xmoy(icmp)+zr(jcesv-1+iad)
 30          continue
 40          continue
@@ -145,7 +145,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
             do 60,icmp=1,3
             call cesexi('C', jcesd, jcesl, ima, ipt,&
                         1, icmp, iad)
-            call assert(iad.gt.0)
+            ASSERT(iad.gt.0)
             rayo=zr(jcesv-1+iad)-xmoy(icmp)
             zr(jcesv-1+iad)=zr(jcesv-1+iad)-0.6d0*rayo
 60          continue
@@ -254,7 +254,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jeveuo(jexnum('&CATA.TM.TMDIM', zi(jtypma-1+ima)), 'L', jdimt)
 !
     if (zi(jdimt) .eq. ndim) then
-        call assert(nbcmp.ge.3)
+        ASSERT(nbcmp.ge.3)
         do 150,ipt=1,nbpt
         ino2p=ino2p+1
         do 140,icmp=1,3
@@ -267,7 +267,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 150      continue
     endif
     160 end do
-    call assert(ino2p.eq.nbno2p)
+    ASSERT(ino2p.eq.nbno2p)
 !
 !
 !     -- CREATION DU .DESC DU NOUVEAU MAILLAGE

@@ -90,7 +90,7 @@ subroutine lc0001(fami, kpg, ksp, ndim, imate,&
 !
 !     RECUPERATION DE MCMATER (APPELE A TORT 'PHENOMENE')
     call rccoma(imate, 'ELAS', 1, mcmate, icodre)
-    call assert(icodre.eq.0)
+    ASSERT(icodre.eq.0)
 !
     if (mcmate .eq. 'ELAS') then
 !

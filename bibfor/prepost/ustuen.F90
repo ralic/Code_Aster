@@ -102,7 +102,7 @@ subroutine ustuen(dimtub, tubuse, rcray, nomt19, ns,&
         af = alphaf
         if (am .gt. alphaf) af = alphaf + 360.d0
 !
-        call assert(ad.lt.am .and. am.lt.af)
+        ASSERT(ad.lt.am .and. am.lt.af)
         call usvect(-1.d0, ad, am, af, prof,&
                     dimtub, tubuse)
 !

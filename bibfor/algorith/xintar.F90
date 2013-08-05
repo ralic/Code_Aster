@@ -121,7 +121,7 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
         c = c3
 !
     else
-        call assert(1.eq.2)
+        ASSERT(1.eq.2)
     endif
 !
     d = b*b-4*a*c
@@ -140,7 +140,7 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
                 if (sol2 .gt. min .and. sol2 .lt. max) then
                     sol=sol2
                 else
-                    call assert(1.eq.2)
+                    ASSERT(1.eq.2)
                 endif
             endif
         else if (d.lt.-r8prem()) then
@@ -187,7 +187,7 @@ subroutine xintar(elp, ndim, ia, tabco, tabls,&
             xe(2)=sol
         endif
     else
-        call assert(1.eq.2)
+        ASSERT(1.eq.2)
     endif
 !
     call reerel(elp, nno, ndim, tabco, xe,&

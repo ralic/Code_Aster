@@ -173,7 +173,7 @@ subroutine cflecq(iform, noma, nomo, defico, nsuco,&
             zi(jno+k-1) = zi(jnoco+i-1)
         endif
 120  end do
-    call assert(k.eq.nnoco)
+    ASSERT(k.eq.nnoco)
 !
 ! --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 !

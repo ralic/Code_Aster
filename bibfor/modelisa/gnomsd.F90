@@ -43,9 +43,9 @@ subroutine gnomsd(nomres, noojb, k1, k2)
     character(len=16) :: concep, cmd
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------
-    call assert(k2.gt.k1)
-    call assert(k1.gt.8)
-    call assert(k2.le.24)
+    ASSERT(k2.gt.k1)
+    ASSERT(k1.gt.8)
+    ASSERT(k2.le.24)
 !
     nomre2=nomres
     if (nomre2 .eq. ' ') then
@@ -96,9 +96,9 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 !
     endif
 20  continue
-    call assert(n1.ge.0)
-    call assert(n2.lt.nmaxsd)
-    call assert(n1.lt.n2)
+    ASSERT(n1.ge.0)
+    ASSERT(n2.lt.nmaxsd)
+    ASSERT(n1.lt.n2)
 !
 !
 !

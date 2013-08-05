@@ -71,7 +71,7 @@ subroutine apparr(sdappa, questz, valr)
     if (questi .eq. 'PROJ_NEWT_RESI') then
         valr = zr(jpinfr+1-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

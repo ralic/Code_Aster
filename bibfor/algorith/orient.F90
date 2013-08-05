@@ -94,7 +94,7 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo,&
         else if (itran.eq.0) then
             coordo(k)=xnew
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 20  end do
 !

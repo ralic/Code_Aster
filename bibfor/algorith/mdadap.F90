@@ -12,7 +12,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
                   monmot, nbpal, dtsto, vrotat, prdeff,&
                   method, nomres, nbexci, irevst, drevst)
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
@@ -45,8 +45,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: iorsto(*), iredst(*), itemax, descm, descr, desca
-    integer :: logcho(nbchoc, *), ichost(*)
+    integer :: iorsto(*), iredst(*), itemax, descm, descr, desca, nbchoc
+    integer :: logcho(nbchoc, *), ichost(*), neqgen
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
     real(kind=8) :: parcho(*), parred(*), depsto(*), vitsto(*), accsto(*)
     real(kind=8) :: passto(*), temsto(*), fchost(*), dchost(*), vchost(*)
@@ -145,8 +145,8 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
     integer :: jacgi1, jacgi2, jamogi, jcho2, jchor, jdep2, jdepl
     integer :: jfext, jfexti, jm, jmass, jphi2, jpuls, jredi
     integer :: jredr, jslvi, jtra1, jvint, jvip1, jvip2, jvit2
-    integer :: jvite, jvmin, nbacc, nbchoc, nbexci, nbmod1, nbpasc
-    integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, neqgen, npas
+    integer :: jvite, jvmin, nbacc, nbexci, nbmod1, nbpasc
+    integer :: nbrede, nbrevi, nbsauv, nbscho, ndt, npas
     integer :: nper, nr, nrmax
     integer :: isto4, jrevr, jrevi, irevst(*)
     real(kind=8) :: cdp, cmp, deux, dt1, dt2, dtarch, dtmin
@@ -223,7 +223,7 @@ subroutine mdadap(dti, dtmax, neqgen, pulsat, pulsa2,&
         mamass=zk24(zi(descm+1))(1:19)
         call dismoi('F', 'SOLVEUR', mamass, 'MATR_ASSE', ibid,&
                     solveu, ibid)
-        call assert(solveu.eq.'&&OP0074.SOLVEUR')
+        ASSERT(solveu.eq.'&&OP0074.SOLVEUR')
         matpre='&&OP0074.BIDON'
 !
 !       ISTOP MIS A 1 POUR NE PAS ARRETER L'EXECUTION EN CAS

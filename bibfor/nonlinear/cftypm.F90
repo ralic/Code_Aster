@@ -66,7 +66,7 @@ subroutine cftypm(defico, posma, typma)
     else if (zi(jtypma+ztypm*(posma-1)+1-1).eq.-1) then
         typma = 'ESCL'
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

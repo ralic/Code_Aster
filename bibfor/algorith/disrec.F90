@@ -49,7 +49,7 @@ subroutine disrec(pz, az, bz, r, h)
     p(2) = pz(2)
 !
 !     VERIFICATIONS
-    call assert(a.gt.0.d0 .and. b.gt.0.d0)
+    ASSERT(a.gt.0.d0 .and. b.gt.0.d0)
     if (a .lt. b) then
 !       SI A EST PLUS PETIT QUE B, ON INVERSE A ET B
 !       ET AUSSI LES COORDONNÉES DU POINT P
@@ -72,9 +72,9 @@ subroutine disrec(pz, az, bz, r, h)
     xc = a-r
     yc = b-r
 !
-    call assert(a.ge.b)
-    call assert(x.ge.0.d0)
-    call assert(y.ge.0.d0)
+    ASSERT(a.ge.b)
+    ASSERT(x.ge.0.d0)
+    ASSERT(y.ge.0.d0)
 !
 !     CALCUL DE LA DISTANCE SIGNEE
 !     ----------------------------

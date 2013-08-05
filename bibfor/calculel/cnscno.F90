@@ -101,7 +101,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 !
     base=basez
-    call assert((base.eq.'G') .or. (base.eq.'V'))
+    ASSERT((base.eq.'G') .or. (base.eq.'V'))
     cns=cnsz
     cno=cnoz
 !     CALL UTIMSD(6,2,.TRUE.,.TRUE.,CNS,1,' ')
@@ -142,7 +142,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     do 10,icmp1=1,ncmp1
     nomcmp=zk8(jcnsc-1+icmp1)
     icmp=indik8(zk8(jcmpgd),nomcmp,1,ncmpmx)
-    call assert(icmp.gt.0)
+    ASSERT(icmp.gt.0)
     zi(jnucmp-1+icmp)=icmp1
     zi(jnucm1-1+icmp1)=icmp
     10 end do
@@ -296,7 +296,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                 goto 70
 !
             else
-                call assert(prol0.eq.'OUI')
+                ASSERT(prol0.eq.'OUI')
                 if (tsca .eq. 'R') then
                     zr(jvale-1+ieq2)=0.d0
 !
@@ -313,7 +313,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                     zk8(jvale-1+ieq2)=' '
 !
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 goto 60
 !
@@ -337,7 +337,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                 zk8(jvale-1+ieq2)=zk8(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
         else
@@ -350,7 +350,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                 goto 70
 !
             else
-                call assert(prol0.eq.'OUI')
+                ASSERT(prol0.eq.'OUI')
                 if (tsca .eq. 'R') then
                     zr(jvale-1+ieq2)=0.d0
 !
@@ -367,7 +367,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                     zk8(jvale-1+ieq2)=' '
 !
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 goto 60
 !
@@ -400,7 +400,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !     -- MESSAGES D'ERREUR:
 !     ---------------------
 70  continue
-    call assert(kstop.eq.'F' .or. kstop.eq.'A' .or. kstop.eq.' ')
+    ASSERT(kstop.eq.'F' .or. kstop.eq.'A' .or. kstop.eq.' ')
     iret=1
     call detrsd('CHAMP', cno)
     if (kstop .eq. ' ') goto 80
@@ -410,7 +410,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     else if (messag.eq.'CALCULEL2_13') then
         call u2mesk(kstop, 'CALCULEL2_13', 3, valk)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 !

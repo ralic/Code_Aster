@@ -168,7 +168,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
     lpain(lastin) = 'PCOMPOR'
     lchin(lastin) = mate(1:8)//'.COMPOR'
 !
-    call assert(lastin.le.nbin)
+    ASSERT(lastin.le.nbin)
 !
     call jedema()
 end subroutine

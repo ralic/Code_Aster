@@ -270,10 +270,10 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
     call tbajpa(nomtab, nbcmp2, zk8(jnpar), zk8(jtpar))
 !
     lc = ir+4+nbcmp2
-    call assert(nbpar .le. lck)
-    call assert(ii+2 .le. 10)
-    call assert(lc .le. lcr)
-    call assert(ik .le. 10)
+    ASSERT(nbpar .le. lck)
+    ASSERT(ii+2 .le. 10)
+    ASSERT(lc .le. lcr)
+    ASSERT(ik .le. 10)
 !
     ilign = 0
 !

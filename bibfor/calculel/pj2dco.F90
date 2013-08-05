@@ -143,7 +143,7 @@ subroutine pj2dco(mocle, moa1, moa2, nbma1, lima1,&
     else if (itypm.eq.nutm(6)) then
         ico=ico+2
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     51 end do
     call wkvect('&&PJXXCO.TRIA3', 'V V I', 1+4*ico, iatr3)

@@ -57,7 +57,7 @@ subroutine gcncon(type, result)
         write (nomuni,'(A,I7.7)') type,zi(ipos)
         result=nomuni
         zi(ipos)=zi(ipos)+1
-        call assert(zi(ipos) .lt. 10000000)
+        ASSERT(zi(ipos) .lt. 10000000)
     else
         call u2mesk('F', 'SUPERVIS_8', 1, type)
     endif

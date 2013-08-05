@@ -86,9 +86,9 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !
 !     -- DDLS ELIMINES :
     call jeveuo(matas//'.REFA', 'L', jrefa)
-    call assert(zk24(jrefa-1+3).ne.'ELIMF')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIMF')
     if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(matas, 'ELIMF')
-    call assert(zk24(jrefa-1+3).ne.'ELIML')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
 !
 !

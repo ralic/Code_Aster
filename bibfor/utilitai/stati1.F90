@@ -30,7 +30,7 @@ subroutine stati1(nval, serie, moyenn, ectype)
 !
     integer :: k
 !----------------------------------------------------------------------
-    call assert(nval.ge.1)
+    ASSERT(nval.ge.1)
 !
 !
 !     -- MOYENNE :

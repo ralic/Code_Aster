@@ -108,7 +108,7 @@ subroutine chpeva(chou)
 !
 ! 3.  -- ON APPELLE LA ROUTINE D'EVAL APPROPRIEE :
 ! ------------------------------------------------------------
-    call assert((typ1.eq.'NOEU').or.(typ1(1:2).eq.'EL'))
+    ASSERT((typ1.eq.'NOEU').or.(typ1(1:2).eq.'EL'))
     if (typ1 .eq. 'NOEU') then
         call cnocns(chin, 'V', chins)
         call cnseva(chins, npara, zk24(jpara2), chs2)

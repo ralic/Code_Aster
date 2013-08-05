@@ -28,7 +28,7 @@ subroutine shvrot(rr, x, nn)
     integer :: i, j
 !
 !
-    call assert((nn.eq.1).or.(nn.eq.2))
+    ASSERT((nn.eq.1).or.(nn.eq.2))
     if (nn .eq. 2) then
         do 10 i = 1, 3
             do 20 j = 1, 3

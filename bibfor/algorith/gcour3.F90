@@ -148,7 +148,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
         chamno = resu(1:8)//'_CHAM'//kiord//'     '
         zk24(jresu+k-1) = chamno
         call jeexin(chamno(1:19)//'.DESC', iret)
-        call assert(iret.ge.0 .and. iret.le.100)
+        ASSERT(iret.ge.0 .and. iret.le.100)
         if (iret .eq. 0) then
             call jedetr(chamno(1:19)//'.DESC')
             call jedetr(chamno(1:19)//'.REFE')

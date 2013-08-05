@@ -1,5 +1,4 @@
 subroutine penorm(resu, modele)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 #include "asterc/getvid.h"
@@ -337,7 +336,7 @@ subroutine penorm(resu, modele)
             else if (infoma(1:2).eq.'3D') then
                 iresma=3
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             call utflmd(mailla, mesmai, iresma, ' ', nbma,&
                         mesmaf)

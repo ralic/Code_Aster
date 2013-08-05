@@ -62,7 +62,7 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
         call nmevcc(sddisc, numins, defico, resoco, iechec,&
                     ievdac)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

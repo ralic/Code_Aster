@@ -55,7 +55,7 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
 !
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
-    call assert(ndim*nnop.le.mxstac)
+    ASSERT(ndim*nnop.le.mxstac)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
@@ -69,7 +69,7 @@ subroutine xcgfvo(option, ndim, nnop, fno, rho)
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call tecach('ONN', 'PPESANR', 'L', 1, ipesa,&

@@ -146,7 +146,7 @@ subroutine te0365(option, nomte)
                     lpenaf, phasep)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL FORME FAIBLE FORCE DE CONTACT/FROTTEMENT
@@ -158,7 +158,7 @@ subroutine te0365(option, nomte)
                     lambda, coefff, dlagrc, dlagrf, djeu,&
                     rese, nrese, vectee, vectmm)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- CALCUL FORME FAIBLE LOI DE CONTACT/FROTTEMENT
@@ -170,7 +170,7 @@ subroutine te0365(option, nomte)
                     mprojt, dlagrc, dlagrf, djeu, rese,&
                     vectcc, vectff)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- MODIFICATIONS EXCLUSION

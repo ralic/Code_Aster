@@ -184,11 +184,11 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
             do 10 i = 1, nmaenr
                 ima = zi(jgrp-1+i)
-                call assert(ima.le.nbma)
+                ASSERT(ima.le.nbma)
 ! --- NOMBRE DE FISSURES VUE PAR LA MAILLE
                 nfisc = zi(jcesd2-1+5+4*(ima-1)+2)
                 nfisc2 = zi(jcesd1-1+5+4*(ima-1)+2)
-                call assert(nfisc.eq.nfisc2)
+                ASSERT(nfisc.eq.nfisc2)
                 nface = 0
 ! --- BOUCLE SUR CES FISSURES
                 do 12 ifima = 1, nfisc
@@ -201,11 +201,11 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 ! --- LE NOMBRE DE SOUS-POINTS
 !
                     if (nomfis .eq. nomfi2) then
-                        call assert(nface.eq.0)
+                        ASSERT(nface.eq.0)
                         call cesexi('S', jcesd2, jcesl2, ima, 1,&
                                     ifima, 2, iad)
                         nface = zi(jcesv2-1+iad)
-                        call assert(nface.le.6)
+                        ASSERT(nface.le.6)
                         zi(jnbsp-1+ima) = zi(jnbsp-1+ima)+nface*nnint
                     endif
 12              continue
@@ -257,7 +257,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
             else if (param.eq.'PGLISS') then
                 vall = mminfl(defico,'GLISSIERE_ZONE',izone )
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
             if (param .eq. 'PSEUIL') then
@@ -265,7 +265,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
             else if (param(1:5).eq.'PCOHE') then
                 valr = 0.d0
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
             vall = valr.ne.0.d0
         endif

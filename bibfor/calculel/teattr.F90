@@ -67,7 +67,7 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
     nomt2=typel
     noatt2=noattr
 !
-    if (nomt2 .eq. ' ') call assert(iactif.eq.1)
+    if (nomt2 .eq. ' ') ASSERT(iactif.eq.1)
     apelje=.true.
     if ((iactif.eq.1) .and. (nomt2.eq.' ')) apelje=.false.
     if (nomt2 .eq. ' ') nomt2=nomte
@@ -101,7 +101,7 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
         valk(2) = nomt2
         call u2mesk('F', 'CALCULEL4_94', 2, valk)
     endif
-    call assert(kstop.eq.'C')
+    ASSERT(kstop.eq.'C')
     goto 3
 !
  2  continue

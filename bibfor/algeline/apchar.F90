@@ -179,7 +179,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta,&
     else
 !
 !   --- ILLEGAL OPTION ---
-        call assert(.false.)
+        ASSERT(.false.)
 !
     endif
 !

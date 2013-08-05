@@ -136,10 +136,10 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
                         coeffp, seuil, tau1, tau2, mu,&
                         lact, mmat)
         else
-            call assert(algofr.eq.0)
+            ASSERT(algofr.eq.0)
         endif
 !
     else
-        call assert(indco.eq.0 .or. indco.eq.1)
+        ASSERT(indco.eq.0 .or. indco.eq.1)
     endif
 end subroutine

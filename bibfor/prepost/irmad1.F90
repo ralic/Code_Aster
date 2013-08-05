@@ -75,7 +75,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
 !
 ! --- ALLOCATION DES TABLEAUX DE TRAVAIL ---
 !
-    call assert((itype.eq.1).or.(itype.eq.2))
+    ASSERT((itype.eq.1).or.(itype.eq.2))
     if (itype .eq. 1) then
         call wkvect('&&IRMAD1.VAL', 'V V R', ndim, irval)
     else if (itype .eq. 2) then
@@ -138,7 +138,7 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq,&
 30      continue
 20  end do
 !
-    call assert(impre .le. 1)
+    ASSERT(impre .le. 1)
 !
     if (versio .eq. 5 .and. impre .eq. 1) then
         imat = 147

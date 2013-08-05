@@ -95,7 +95,7 @@ subroutine cfmmci(defico, resoco)
             call cfmmco(defico, resoco, izone, 'E_T', 'E',&
                         coefpt)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 10  end do
 !

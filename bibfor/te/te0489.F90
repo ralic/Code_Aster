@@ -156,7 +156,7 @@ subroutine te0489(option, nomte)
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfde, jgano)
-    call assert(npg.eq.npg1)
+    ASSERT(npg.eq.npg1)
 !
 ! ---- AFFECTATION DES VECTEURS DE TRAVAIL SIGMA1 ET SIGMA2
 ! ---- REPRESENTANT LES TENSEURS DE CONTRAINTES RESPECTIVEMENT

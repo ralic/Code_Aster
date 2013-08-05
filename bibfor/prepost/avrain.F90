@@ -79,7 +79,7 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
             goto 10
         endif
 !
-        call assert((nbordr+2) .ge. npic(ivect))
+        ASSERT((nbordr+2) .ge. npic(ivect))
         adrs = (ivect-1)*(nbordr+2)
         lresi = .false.
         npicb = npic(ivect)
@@ -175,7 +175,7 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
         endif
 !
 !
-        call assert((nbordr+2) .ge. ncycl(ivect))
+        ASSERT((nbordr+2) .ge. ncycl(ivect))
 !
 10  end do
 !

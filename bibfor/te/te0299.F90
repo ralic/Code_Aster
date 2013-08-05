@@ -141,7 +141,7 @@ subroutine te0299(option, nomte)
         fonc =.false.
         call jevech('PFRVOLU', 'L', iforc)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     lpesa = .false.
@@ -314,7 +314,7 @@ subroutine te0299(option, nomte)
         call rcvalb(fami, kp, 1, '+', zi(imate),&
                     ' ', phenom, 0, ' ', 0.d0,&
                     2, nomres, valres, icodre, 0)
-        call assert(icodre(1)+icodre(2).eq.0)
+        ASSERT(icodre(1)+icodre(2).eq.0)
 !
 !
 ! ----- RECUPERATION DE RHO
@@ -375,7 +375,7 @@ subroutine te0299(option, nomte)
 !
 ! ----- ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 ! ----- CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        call assert(iret.ne.0)
+        ASSERT(iret.ne.0)
 !
 ! ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
 !

@@ -52,7 +52,7 @@ subroutine te0278(option, nomte)
 !
 !-----------------------------------------------------------------------
     call elref2(nomte, 2, lirefe, nbelr)
-    call assert(nbelr.eq.2)
+    ASSERT(nbelr.eq.2)
     elrefe = lirefe(2)
 !
     call elref4(elrefe, 'RIGI', ndim, nno, nnos,&
@@ -108,7 +108,7 @@ subroutine te0278(option, nomte)
         valpar(3) = zz
         call fointe('A', zk8(ihechp), 4, nompar, valpar,&
                     hechp, ier)
-        call assert(ier.eq.0)
+        ASSERT(ier.eq.0)
 !
 !   CALCUL DE LA NORMALE AU POINT DE GAUSS IPG
 !

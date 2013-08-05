@@ -85,7 +85,7 @@ subroutine quadco(char, indqua)
     else if (iform.eq.3) then
         indqua = 1
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

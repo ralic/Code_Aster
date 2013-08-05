@@ -3,7 +3,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                   jdlm)
     implicit none
 #include "jeveux.h"
-! aslint: disable=W1501
 !
 #include "asterc/getres.h"
 #include "asterc/getvid.h"
@@ -169,7 +168,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
         if (ntab .eq. 1) then
             call getvtx('POUTRE', 'NOM_SEC', ioc, iarg, 1,&
                         nomsec, nnosec)
-            call assert(nnosec.eq.1)
+            ASSERT(nnosec.eq.1)
 !
             call jeveuo(tabcar//'.TBNP', 'L', itbnp)
 !            NOMBRE DE COLONNES
@@ -220,7 +219,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                         zk8(jcara), ncar)
             call getvr8('POUTRE', 'VALE', ioc, iarg, nbval,&
                         zr(jvale), nval)
-            call assert(ncar.gt.0)
+            ASSERT(ncar.gt.0)
             ncarac=ncar
         endif
 !

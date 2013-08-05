@@ -105,7 +105,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         ndim=3
     endif
 !     POUR MISS3D C'EST OBLIGATOIREMENT DU 3D
-    call assert(ndim.eq.3)
+    ASSERT(ndim.eq.3)
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
     cartdi = nomu//'.CARDINFO'

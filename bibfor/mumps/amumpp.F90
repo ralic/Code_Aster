@@ -142,7 +142,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         rmax=r8maem()*0.5
         rmin=r8miem()*2.0
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     nnbsol=n*nbsol
     n4=nnbsol
@@ -168,7 +168,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
             else if (type.eq.'Z') then
                 allocate(zmpsk%rhs(nnbsol))
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -208,13 +208,13 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 call jeveuo(vcival, 'L', idvalc)
                 call jelira(vcival, 'TYPE', ibid, rouc)
                 if (ltypr) then
-                    call assert(rouc.eq.'R')
+                    ASSERT(rouc.eq.'R')
                     do i = 1, nbsol
                         call csmbgg(lmat, rsolu(n*(i-1)+1), zr(idvalc), cbid, cbid,&
                                     'R')
                     enddo
                 else
-                    call assert(rouc.eq.'C')
+                    ASSERT(rouc.eq.'C')
                     do i = 1, nbsol
                         call csmbgg(lmat, rbid, rbid, csolu(n*(i-1)+1), zc(idvalc),&
                                     'C')
@@ -293,7 +293,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     zmpsk%rhs(i)=caux
                 enddo
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 !
@@ -317,7 +317,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                         write(ifmump,*) k,zmpsk%rhs(k)
                     enddo
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
                 write(ifmump,*) 'MUMPS FIN RHS'
             endif
@@ -349,7 +349,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                 call zcopy(n4, zmpsk%rhs, 1, csolu, 1)
                 deallocate(zmpsk%rhs)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
 !
             if (eli2lg) then
@@ -426,7 +426,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !       ------------------------------------------------
 !        MAUVAISE OPTION
 !       ------------------------------------------------
-        call assert(.false.)
+        ASSERT(.false.)
     endif
     call jedema()
 #endif

@@ -41,7 +41,7 @@ subroutine juvinn(ojb)
 !
     call jemarq()
     call jelira(ojb, 'TYPE  ', ibid, type)
-    call assert(type.eq.'R')
+    ASSERT(type.eq.'R')
 !
     call jeveuo(ojb, 'L', jojb)
     call jelira(ojb, 'LONMAX', n1, cbid)

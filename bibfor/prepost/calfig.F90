@@ -318,7 +318,7 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
     call gcncon('_', k8b)
     nomfon = resu(1:8)//k8b
 !
-    call assert(lxlgut(nomfon).le.24)
+    ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)
     zk24(lpro) = 'FONCTION'
     zk24(lpro+1) = 'LIN LIN '

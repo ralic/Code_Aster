@@ -84,7 +84,7 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
     call dismoi('C', 'TYPE_CHAMP', cham19, 'CHAMP', ibid,&
                 tych, iret1)
 !
-    call assert(nbcmp.eq.1)
+    ASSERT(nbcmp.eq.1)
 !
     if (tych(1:4) .eq. 'NOEU') then
 !         -------------------

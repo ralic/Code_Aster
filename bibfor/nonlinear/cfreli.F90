@@ -115,7 +115,7 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
             coefno(5) = - ff(5)
             coefno(6) = - ff(6)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else if (alias(1:2).eq.'QU') then
         if (alias .eq. 'QU4') then
@@ -153,13 +153,13 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
                 coefno(7) = - ff(7)
                 coefno(8) = - ff(8)
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

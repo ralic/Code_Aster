@@ -126,10 +126,10 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 !       CAS DE LA MECANIQUE
         nfe = nfe/ndim
         nfh = nfh/ndim
-        call assert(ndim.eq.ndc)
+        ASSERT(ndim.eq.ndc)
     else
 !       CAS DE LA THERMIQUE
-        call assert(ndc.eq.1)
+        ASSERT(ndc.eq.1)
     endif
 !
     call jedema()

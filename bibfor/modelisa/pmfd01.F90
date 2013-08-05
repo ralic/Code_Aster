@@ -123,7 +123,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
     do 12 icmp = 1, nbcp
         call cesexi('C', jces1d, jces1l, ima, 1,&
                     1, icmp, iad)
-        call assert(iad.lt.0)
+        ASSERT(iad.lt.0)
         zl(jces1l-1-iad) = .true.
         zi(jces1v-1-iad) = zi(jnbfib-1+(ima-1)*nbcp+icmp)
 12  continue
@@ -180,7 +180,7 @@ subroutine pmfd01(noma, carele, vnbfib, vpoint, vcarfi,&
         do 30,icmp = 1,ncarfi
         call cesexi('C', jces1d, jces1l, ima, 1,&
                     ispt, icmp, iad)
-!              CALL ASSERT(IAD.LT.0)
+!              ASSERT(IAD.LT.0)
         zl(jces1l-1-iad) = .true.
         zr(jces1v-1-iad)=zr(jcarfi-1+point-1+(ifib-1)*&
                     ncarfi+icmp)

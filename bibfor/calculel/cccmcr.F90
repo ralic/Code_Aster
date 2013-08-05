@@ -110,7 +110,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
         if (iad .gt. 0) then
             gamma = zr(jcesv-1+iad)
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         call mpglcp('P', nbnol, coordc, alpha, beta,&
@@ -130,7 +130,7 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1,&
                 coordc(idir,ino2) = zr(jcoord+3*(nuno-1)+idir-1)
 150          continue
 160      continue
-        call assert(inos.ne.0)
+        ASSERT(inos.ne.0)
 !
 !       RECHERCHE DE ALPHA ET BETA DANS .CARCOQUE
         call cesexi('S', jcesdc, jceslc, numma, 1,&

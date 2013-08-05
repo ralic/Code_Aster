@@ -108,13 +108,13 @@ subroutine op0039()
 !          - GETVID/MAILLAGE PAR NOMARE
     lrest=.false.
     call getfac('RESTREINT', nbrest)
-    call assert(nbrest.eq.0.or.nbrest.eq.1)
+    ASSERT(nbrest.eq.0.or.nbrest.eq.1)
     nomare=' '
     if (nbrest .eq. 1) then
         lrest=.true.
 !       -- SI RESTREINT, IL FAUT VERIFIER QUE RESU/RESULTAT EST
 !          TOUJOURS FOURNI :
-        call assert(nocc.le.9)
+        ASSERT(nocc.le.9)
         do 74,iocc=1,nocc
         call getvid('RESU', 'RESULTAT', iocc, iarg, 1,&
                     resur(iocc), nresu)
@@ -127,7 +127,7 @@ subroutine op0039()
         do 76,iocc=2,nocc
         call dismoi('F', 'NOM_MAILLA', resur(iocc), 'RESULTAT', ibid,&
                     noma2, ier)
-        call assert(noma2.ne.' ')
+        ASSERT(noma2.ne.' ')
         if (noma2 .ne. noma) then
             valk(1)=resur(1)
             valk(2)=resur(iocc)

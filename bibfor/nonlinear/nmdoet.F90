@@ -161,7 +161,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 ! --- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
 !
     call getfac(motfac, nocc)
-    call assert(nocc.le.1)
+    ASSERT(nocc.le.1)
     leinit = nocc.gt.0
     if (leinit) then
         call u2mess('I', 'ETATINIT_10')
@@ -183,7 +183,7 @@ subroutine nmdoet(modele, compor, fonact, numedd, sdpilo,&
 !
     call getvid(motfac, 'EVOL_NOLI', 1, iarg, 1,&
                 evol, nocc)
-    call assert(nocc.le.1)
+    ASSERT(nocc.le.1)
     evonol = nocc .gt. 0
 !
 ! --- ALARME SI CONTACT CONTINU AVEC UN CONCEPT REENTRANT

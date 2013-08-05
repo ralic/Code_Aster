@@ -53,7 +53,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
-    call assert(base.eq.'V')
+    ASSERT(base.eq.'V')
     corre1 = '&&PJEFTC.CORRES1'
     corre2 = '&&PJEFTC.CORRES2'
     corre3 = '&&PJEFTC.CORRES3'

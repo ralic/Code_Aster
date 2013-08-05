@@ -80,8 +80,8 @@ subroutine te0425(option, nomte)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, jpoids, jvf, jdf, jgano)
     nddl = 3*nno
-    call assert(nno .le.mxnoeu)
-    call assert(npg .le.mxnpg)
+    ASSERT(nno .le.mxnoeu)
+    ASSERT(npg .le.mxnpg)
 !
 ! --- ACCES CHAMPS
 !
@@ -149,10 +149,10 @@ subroutine te0425(option, nomte)
                 zr(jmatr-1+k) = matr((j-1)*nddl+i)
 120          continue
 110      end do
-        call assert(k.eq.nddl*nddl)
+        ASSERT(k.eq.nddl*nddl)
 !
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 end subroutine

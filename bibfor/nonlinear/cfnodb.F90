@@ -118,7 +118,7 @@ subroutine cfnodb(char)
                     call u2mesi('F', 'CONTACT2_13', 2, vali)
                 endif
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
 100  end do
@@ -165,7 +165,7 @@ subroutine cfnodb(char)
                                     call u2mesi('A', 'CONTACT2_15', 3, vali)
                                 endif
                             else
-                                call assert(.false.)
+                                ASSERT(.false.)
                             endif
                         endif
                     else if (iform.eq.2) then
@@ -174,10 +174,10 @@ subroutine cfnodb(char)
                         vali(3) = abs(ndoubl)
                         call u2mesi('F', 'CONTACT2_16', 3, vali)
                     else
-                        call assert(.false.)
+                        ASSERT(.false.)
                     endif
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 201      continue

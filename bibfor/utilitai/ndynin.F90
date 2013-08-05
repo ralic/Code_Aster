@@ -79,7 +79,7 @@ function ndynin(sddyna, chaine)
     else if (chaine.eq.'NBRE_MODE_PROJ') then
         ndynin = zi(jncha+5-1)
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

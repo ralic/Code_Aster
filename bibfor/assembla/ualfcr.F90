@@ -96,11 +96,11 @@ subroutine ualfcr(mataz, basz)
     nbloc= zi(jscde-1+3)
 !
     call jelira(matas//'.VALM', 'NMAXOC', nblocm, kbid)
-    call assert(nblocm.eq.1 .or. nblocm.eq.2)
+    ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
 !
 !     -- REEL OU COMPLEXE ?
     call jelira(matas//'.VALM', 'TYPE', ibid, tyrc)
-    call assert(tyrc.eq.'R' .or. tyrc.eq.'C')
+    ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
 !
 !
 !     1. ALLOCATION DE .UALF :
@@ -146,7 +146,7 @@ subroutine ualfcr(mataz, basz)
                     kterm)
     endif
  2  continue
-    call assert(ilig.eq.ieq)
+    ASSERT(ilig.eq.ieq)
 !
     ismdi0=ismdi
  1  continue

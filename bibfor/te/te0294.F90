@@ -55,7 +55,7 @@ subroutine te0294(option, nomte)
     else if (ndim.eq.3) then
         nbcmp = 6
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jevech('PGEOMER', 'L', igeom)

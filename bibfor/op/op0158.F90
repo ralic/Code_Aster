@@ -53,7 +53,7 @@ subroutine op0158()
     call getres(matfac, concep, nomcmd)
     call getvid('  ', 'MATR_ASSE', 0, iarg, 1,&
                 matass, ibid)
-    call assert(matass.eq.matfac)
+    ASSERT(matass.eq.matfac)
     mass = matass
     call dismoi('F', 'METH_RESO', mass, 'MATR_ASSE', ibid,&
                 metres, ibid)
@@ -64,7 +64,7 @@ subroutine op0158()
 !
     call jeveuo(mass//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+3) .eq. 'ELIML') call mtmchc(mass, 'ELIMF')
-    call assert(zk24(jrefa-1+3).ne.'ELIML')
+    ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
 !
     call titre()

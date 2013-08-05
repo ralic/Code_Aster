@@ -97,7 +97,7 @@ subroutine nmadev(sddisc, sderro, iterat)
             call utdidt('L', sddisc, 'ADAP', iadapt, 'VALE',&
                         vale, vali, k8bid)
 !
-            call assert(nopara.eq.'NB_ITER_NEWT')
+            ASSERT(nopara.eq.'NB_ITER_NEWT')
 !
 ! ------- RECUP DU NB DE SUCCES CONSECUTIFS : NBOK
 !

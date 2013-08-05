@@ -127,6 +127,6 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
         endif
 !
     else
-        call assert(indco.eq.0 .or. indco.eq.1)
+        ASSERT(indco.eq.0 .or. indco.eq.1)
     endif
 end subroutine

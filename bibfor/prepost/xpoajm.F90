@@ -140,7 +140,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     if (opmail) then
         inm = inm + 1
         inmtot = inmtot + 1
-        call assert(inm.le.nnm)
+        ASSERT(inm.le.nnm)
         call codent(inmtot, 'G', chn)
         call jecroc(jexnom(maxfem//'.NOMMAI', prefno(4)//chn))
         zi(jtypm2-1+nbmac + inmtot) = itypse

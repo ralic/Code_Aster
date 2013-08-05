@@ -132,7 +132,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
             if (ievdac .ne. 0) goto 8888
         else
             write(6,*) 'NOMEVD: ',nomevd
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 100  end do
 !

@@ -144,7 +144,7 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
                     x2)
         deno = x1 * x2 - 1.d0
 !
-        call assert(deno.ne.0.d0)
+        ASSERT(deno.ne.0.d0)
 !
 !
         var1 = (x1*x2*exp(ambda1*tdt) - exp(ambda2*tdt))/deno - 1.d0

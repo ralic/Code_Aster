@@ -106,7 +106,7 @@ subroutine contex(nomop, nompar)
             igd=zi(jdesop-1+4+itrou)
         else
             itrou=indik8(zk8(iapara-1+nbin+1),nompa2,1,nbou)
-            call assert(itrou.gt.0)
+            ASSERT(itrou.gt.0)
             call u2mesk('I', 'CALCULEL5_19', 1, nompa2)
             nblig=zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+1)
             indic=zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+2)
@@ -142,6 +142,6 @@ subroutine contex(nomop, nompar)
     endif
     call u2mess('I', 'CALCULEL5_23')
 !
-    call assert(.false.)
+    ASSERT(.false.)
 !
 end subroutine

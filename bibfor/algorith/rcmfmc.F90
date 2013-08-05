@@ -95,8 +95,8 @@ subroutine rcmfmc(chmatz, chmacz)
     call jenuno(jexnum('&CATA.GD.NOMCMP', zi(jdesc)), nomgd)
     call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmp,&
                 k8b, ier)
-    call assert(nbcmp.ge.30)
-    call assert((nbval/nbcmp)*nbcmp.eq.nbval)
+    ASSERT(nbcmp.ge.30)
+    ASSERT((nbval/nbcmp)*nbcmp.eq.nbval)
 !
     call copisd('CHAMP_GD', 'V', chemat, chmace)
     call jedetr(chmace//'.VALE')
@@ -113,7 +113,7 @@ subroutine rcmfmc(chmatz, chmacz)
     do 10 i = 1, nbval
         if (zk8(jchev-1+i) .ne. ' ') icompt=icompt+1
 10  end do
-    call assert(icompt.gt.0)
+    ASSERT(icompt.gt.0)
 !
     call jedetr(chmat//'.MATE_CODE.GRP')
     call jedetr(chmat//'.MATE_CODE.NGRP')

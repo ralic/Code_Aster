@@ -152,7 +152,7 @@ subroutine dimecz(char, noma, nzoco, iform)
                 nbpt = nbpt + nnint
 45          continue
         else
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
         zi(jmeth+zmeth*(izone-1)+20-1) = nbpt

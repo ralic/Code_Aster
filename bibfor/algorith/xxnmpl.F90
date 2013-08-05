@@ -132,7 +132,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 npgbis, ipoids, jcoopg, ivf, idfde,&
                 jdfd2, jgano)
 !
-    call assert(npg.eq.npgbis.and.ndim.eq.ndimb)
+    ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES LOIS DE COMPORTEMENT
     call lcegeo(nno, npg, ipoids, ivf, idfde,&
@@ -185,7 +185,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
             endif
 !         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            call assert(iret.ne.0)
+            ASSERT(iret.ne.0)
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
@@ -206,7 +206,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 120          continue
 !
-            call assert(r.gt.0d0)
+            ASSERT(r.gt.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
@@ -300,7 +300,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 endif
 135          continue
 !
-            call assert(cpt.eq.ddld)
+            ASSERT(cpt.eq.ddld)
 !
 130      continue
 !

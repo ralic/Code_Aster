@@ -78,7 +78,7 @@ subroutine te0322(option, nomte)
         typmod(2) = 'EJ_HYME'
     else
 !       MODELISATION NON SUPORTEE
-        call assert(typmod(2).eq.'ELEMJOIN'.or. typmod(2) .eq.'EJ_HYME')
+        ASSERT(typmod(2).eq.'ELEMJOIN'.or. typmod(2) .eq.'EJ_HYME')
     endif
 !
 ! DONNEES EN ENTREE

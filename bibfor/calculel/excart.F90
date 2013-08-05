@@ -83,7 +83,7 @@ subroutine excart(imodat, iparg)
 !     -------------------------------------------
     if ((ityplo.eq.2) .or. (ityplo.eq.3)) then
 !
-        call assert((ityplo.ne.2) .or. (nbpoin.le.10000))
+        ASSERT((ityplo.ne.2) .or. (nbpoin.le.10000))
         ncmp=lgcata/nbpoin
         call excar2(ngrmx, desc, zi(modloc-1+5), ncmp, debugr)
 !       ON DUPPLIQUE LES VALEURS PAR LA FIN POUR NE PAS
@@ -103,13 +103,13 @@ subroutine excart(imodat, iparg)
 !     2-  CAS: CART -> ASSE :
 !     -----------------------
     else if (ityplo.ge.4) then
-        call assert(.false.)
+        ASSERT(.false.)
 !
 !
 !     3-  CAS: CART -> ELEM :
 !     -----------------------
     else if (ityplo.eq.1) then
-        call assert(nbpoin.eq.1)
+        ASSERT(nbpoin.eq.1)
         ncmp=lgcata
         call excar2(ngrmx, desc, zi(modloc-1+5), ncmp, debugr)
 !

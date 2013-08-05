@@ -62,11 +62,11 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
     call jemarq()
 !
     if (kdim .eq. '3D') then
-        call assert(type(1:4).eq.'TRIA' .or. type(1:4).eq.'QUAD')
+        ASSERT(type(1:4).eq.'TRIA' .or. type(1:4).eq.'QUAD')
     else if (kdim.eq.'2D') then
-        call assert(type(1:3).eq.'SEG')
+        ASSERT(type(1:3).eq.'SEG')
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
 ! --- INITIALISATIONS :
@@ -116,7 +116,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 !
         endif
 30  end do
-    call assert(.false.)
+    ASSERT(.false.)
 40  continue
 !
 !
@@ -134,14 +134,14 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 !
         endif
 60  end do
-    call assert(.false.)
+    ASSERT(.false.)
 70  continue
 !
 !
 !     LES MAILLES 1 ET 2 SONT ELLES DU MEME COTE PAR RAPPORT
 !     A LA MAILLE DE PEAU ?
 !     -------------------------------------------------------
-    call assert(ps1.ne.0.d0 .and. ps2.ne.0.d0)
+    ASSERT(ps1.ne.0.d0 .and. ps2.ne.0.d0)
     ier=1
     if ((ps1.gt.0.and.ps2.gt.0) .or. (ps1.lt.0.and.ps2.lt.0)) ier=0
 !

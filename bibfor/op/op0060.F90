@@ -17,7 +17,6 @@ subroutine op0060()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1501
     implicit none
 !
 ! ----------------------------------------------------------------------
@@ -207,7 +206,7 @@ subroutine op0060()
 !
     call getvtx(' ', 'NOM_CHAM', 1, iarg, 3,&
                 nomsym, nbsym)
-    call assert(nbsym.le.3)
+    ASSERT(nbsym.le.3)
     if (typcon .eq. 'ACOU_HARMO') then
         nbsym = 1
         nomsym(1) = 'PRES'
@@ -229,7 +228,7 @@ subroutine op0060()
     amor = ' '
     call dylema(baseno, nbmat, nomat, raide, masse,&
                 amor, impe)
-    call assert(nbmat.le.4)
+    ASSERT(nbmat.le.4)
     call getvid(' ', 'MATR_AMOR', 0, iarg, 1,&
                 k19bid, lamor)
     call getvid(' ', 'MATR_IMPE_PHI', 0, iarg, 1,&

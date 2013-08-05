@@ -165,7 +165,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
         nbnoe = zi(ilcnx1+nummae) - zi(ilcnx1-1+nummae)
         nbnom = zi(ilcnx1+nummam) - zi(ilcnx1-1+nummam)
         if (nndel .ne. (nbnom+nbnoe)) then
-            call assert(.false.)
+            ASSERT(.false.)
         endif
 !
 ! --- CREATION DE L'ELEMENT DE CONTACT DANS LE LIGREL
@@ -199,7 +199,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 ! --- CREATION DE L'OBJET .LIEL
 !
     if (nbgrel .eq. 0) then
-        call assert(.false.)
+        ASSERT(.false.)
     else
         call jecrec(ligrcf//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbgrel)
@@ -223,7 +223,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
                 if (nomtm(1:3) .eq. 'SEG') then
                     nomte(7:7) = 'A'
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -243,7 +243,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
                     endif
                 endif
 80          continue
-            call assert(jco.eq.comptc(ityp))
+            ASSERT(jco.eq.comptc(ityp))
         endif
         if (comptf(ityp) .ne. 0) then
             ico = ico + 1
@@ -260,7 +260,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
                 if (nomtm(1:3) .eq. 'SEG') then
                     nomte(7:7) = 'A'
                 else
-                    call assert(.false.)
+                    ASSERT(.false.)
                 endif
             endif
 !
@@ -280,10 +280,10 @@ subroutine mmligr(noma, nomo, defico, resoco)
                     endif
                 endif
 85          continue
-            call assert(jco.eq.comptf(ityp))
+            ASSERT(jco.eq.comptf(ityp))
         endif
 90  end do
-    call assert(ico.eq.nbgrel)
+    ASSERT(ico.eq.nbgrel)
 !
 ! --- INITIALISATION DU LIGREL
 !

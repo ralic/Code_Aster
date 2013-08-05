@@ -36,6 +36,6 @@ subroutine vfcdet(maxdim, ndim, a, deta)
                )
     else
 !
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 end subroutine

@@ -293,9 +293,9 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         lgcata = zi(jceld-1+zi(jceld-1+4+igr)+3)
 ! LE CAS ZI(JMOLO-1+4).GT.10000
 ! N EST PAS PREVU : REALISER L EVOLUTION
-        call assert(zi(jmolo-1+4).le.10000)
+        ASSERT(zi(jmolo-1+4).le.10000)
         nbpt = mod(zi(jmolo-1+4),10000)
-        call assert(nbpt.eq.lgcata)
+        ASSERT(nbpt.eq.lgcata)
 !
         ipt = nupo2
 !
@@ -312,7 +312,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
             if ((ispt.le.nbspt) .and. (ipt.le.nbpt)) then
                 iddl = adiel - 1 + ((ipt-1)*nbspt+ispt-1)*ncdyn + icmp
             else
-                call assert(.false.)
+                ASSERT(.false.)
             endif
         endif
     endif

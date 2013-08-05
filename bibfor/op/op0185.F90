@@ -41,7 +41,7 @@ subroutine op0185()
                 sd1, iret)
 !
     typinf=cotsti(typsup)
-    call assert(typinf.ne.'INCONNU')
+    ASSERT(typinf.ne.'INCONNU')
     call copisd(typinf, 'G', sd1, sd2)
 !
     call jedema()

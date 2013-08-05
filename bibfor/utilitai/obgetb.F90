@@ -76,7 +76,7 @@ subroutine obgetb(nomstr, nompaz, vall)
         vali = zi(jsvalb-1+indice)
     else
         write(6,*) 'TYPE INCORRECT: ',typpar
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     if (vali .eq. 0) then
@@ -84,7 +84,7 @@ subroutine obgetb(nomstr, nompaz, vall)
     else if (vali.eq.1) then
         vall = .true.
     else
-        call assert(.false.)
+        ASSERT(.false.)
     endif
 !
     call jedema()

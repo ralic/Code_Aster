@@ -212,7 +212,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
                 ma, ierd)
     call dismoi('F', 'NOM_MAILLA', nu2, 'NUME_DDL', ibid,&
                 repk, ierd)
-    call assert(ma.eq.repk)
+    ASSERT(ma.eq.repk)
     call dismoi('F', 'NB_NO_MAILLA', ma, 'MAILLAGE', nbno,&
                 repk, ierd)
 !
@@ -231,12 +231,12 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     call wkvect('&&CHNUCN.CORR2', 'V V I', ncmmx2, icorr2)
     if (ncorr .eq. 0) then
 !       LES GRANDEURS G1 ET G2 DOIVENT ETRE IDENTIQUES
-        call assert(gd1.eq.gd2)
+        ASSERT(gd1.eq.gd2)
         do 5,i2=1,ncmmx2
         zi(icorr2-1+i2)=i2
  5      continue
     else
-        call assert(ncorr.eq.2*(ncorr/2))
+        ASSERT(ncorr.eq.2*(ncorr/2))
         do 4,i=1,ncorr/2
         cmp1=tcorr(2*(i-1)+1)
         cmp2=tcorr(2*(i-1)+2)
