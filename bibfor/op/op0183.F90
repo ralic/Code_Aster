@@ -207,7 +207,7 @@ subroutine op0183()
     endif
 !
 !
-    do 50 i = 1, nbordr
+    do i = 1, nbordr
         call jemarq()
         iordr=zi(jordr+i-1)
         charge=infcha//'.LCHA'
@@ -313,7 +313,7 @@ subroutine op0183()
         call vefnme(modele, sigma, carac, chdepl, chdep2,&
                     vfono, mater, compor, nh, fnoevo,&
                     partps, k24bid, chvarc, ligrel, option,&
-                    ' ')
+                    ' ', 'V')
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vfono, nume, 'R', vafono)
@@ -356,7 +356,7 @@ subroutine op0183()
         call detrsd('VECT_ELEM', vreno(1:8))
 40      continue
         call jedema()
-50  end do
+    end do
 !
     call jedetr(knum)
     call detrsd('CHAMP_GD', bidon)

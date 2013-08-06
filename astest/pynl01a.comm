@@ -19,8 +19,7 @@
 
 
 DEBUT(CODE=_F(NOM='PYNL01A',NIV_PUB_WEB='INTERNET'),
-IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),
-DEBUG=_F(SDVERI='OUI'))
+IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),)
 
 # IGNORE_ALARME: ARRET='NON' AUTORISE POUR TEST INTEGRATION LOI DE COMPORTEMENT
 
@@ -144,7 +143,8 @@ DV=RESOUDRE(MATR=MATAS,
 #=========================================================
 
 
-CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM',
+                    'FORC_NODA_ELEM'),
             MODELE=MO,
             CHAM_MATER=CHMAT,
             INCREMENT=_F(LIST_INST=LIST,
@@ -188,6 +188,17 @@ CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='CODE_RETOUR'),)
+
+
+FORC=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
+                 TABLE=CONT,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='FORC_NODA'),)
+
+
+FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,
+                    NUME_DDL=NU,);
 
 
 MATAS2=ASSE_MATRICE(MATR_ELEM=MATR,
@@ -241,6 +252,17 @@ VAR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
                    INST=1.
                     )
 
+CALC=CALC_CHAMP(reuse=CALC,
+                   TOUT_ORDRE='OUI',
+                   TOUT='OUI',
+                   FORCE='FORC_NODA',
+                   RESULTAT=CALC,);
+
+
+FOR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                   NOM_CHAM='FORC_NODA', RESULTAT=CALC,
+                   INST=1.
+                    )
 
 
 #=========================================================
@@ -279,6 +301,21 @@ DIF_VAR=CREA_CHAMP(OPERATION='ASSE',
                             COEF_R=-1.),
                         ))
 
+# DIF_FOR = FOR_REF - FORCAS
+DIF_FOR=CREA_CHAMP(OPERATION='ASSE',
+                   MODELE=MO,
+                   TYPE_CHAM='NOEU_DEPL_R',
+                   ASSE=(_F(CHAM_GD=FORCAS,
+                            TOUT='OUI',
+                            CUMUL='OUI',
+                            COEF_R=1.),
+                         _F(CHAM_GD=FOR_REF,
+                            TOUT='OUI',
+                            CUMUL='OUI',
+                            COEF_R=-1.),
+                        ))
+
+
 TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=1.E-08,
@@ -314,6 +351,25 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
                      ),
           )
 
+TEST_RESU(CHAM_NO=(_F(CRITERE='ABSOLU',
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-08,
+                        TYPE_TEST='MIN',
+                        CHAM_GD=DIF_FOR,
+                        VALE_CALC= 1.45519152E-11,
+                        VALE_REFE=0.0,
+                        VALE_ABS='OUI',),
+                     _F(CRITERE='ABSOLU',
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-08,
+                        TYPE_TEST='MAX',
+                        CHAM_GD=DIF_FOR,
+                        VALE_CALC= 0.00000000E+00,
+                        VALE_REFE=0.0,
+                        VALE_ABS='OUI',),
+                     ),
+          )
+
 #
 # ==============     VALIDATION DE : CALCUL/TABLE   ====================
 #
@@ -324,7 +380,8 @@ LIST2=DEFI_LIST_REEL(DEBUT=0.0,
 
 
 CONT=CALCUL(reuse=CONT,
-            OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+            OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM',
+                    'FORC_NODA_ELEM'),
             MODELE=MO,
             CHAM_MATER=CHMAT,
             INCREMENT=_F(LIST_INST=LIST2,

@@ -188,7 +188,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     lstr2=(kstr(1:3).eq.'OUI')
 !
     time=0.d0
-    do 290 i = 1, nbordr
+    do i = 1, nbordr
         call jemarq()
         iordr=zi(jordr+i-1)
 !
@@ -291,7 +291,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call vefnme(modele, sigma, carac, chdepl, chdep2,&
                     vfono, mater, compor, nh, fnoevo,&
                     partps, k24bid, chvarc, ligrel, option,&
-                    strx)
+                    strx, 'V')
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
         call asasve(vfono, nume, 'R', vafono)
@@ -537,9 +537,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call jedetr(vachmp(1:8)//'.ASCOVA')
         call jedetr(vacgmp(1:8)//'.ASCOVA')
         call jedetr(vafpip(1:8)//'.ASCOVA')
-280      continue
+280     continue
         call jedema()
-290  end do
+    end do
     call detrsd('CHAMP_GD', bidon)
     call jedema()
 end subroutine

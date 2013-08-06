@@ -214,7 +214,7 @@ subroutine op0008()
 !     ----------------------------------
 !       - ON CHERCHE LE NOM DU MODELE A ATTACHER AU VECT_ELEM :
         call jeveuo(cham(1:19)//'.CELK', 'L', iad)
-        k8b = zk24(iad)
+        k8b = zk24(iad)(1:8)
         call gettco(k8b, typco)
         if (typco(1:14) .eq. 'MODELE_SDASTER') then
             modele = k8b
@@ -232,7 +232,7 @@ subroutine op0008()
         call vefnme(modele, cham, cara, ' ', ' ',&
                     vfono, mate, ' ', nh, fnoevo,&
                     partps, ' ', ch24, ' ', suropt,&
-                    ' ')
+                    ' ', 'V')
         call jeveuo(vfono, 'L', jlvf)
         vafono = zk24(jlvf)
         call jelira(vfono, 'LONUTI', nbchme, k8bid)
@@ -251,15 +251,16 @@ subroutine op0008()
 !     ----------------------------------------------------
     call jelira(matel//'.RELR', 'LONMAX ', nbresu, kbid)
     call jeveuo(matel//'.RELR', 'L', jrelr)
-    do 101 iresu = 1, nbresu
-        resuel=zk24(jrelr+iresu-1)
+    do iresu = 1, nbresu
+        resuel=zk24(jrelr+iresu-1)(1:19)
         call jeexin(resuel//'.RESL', iexi)
         if (iexi .eq. 0) goto 101
         call dismoi('F', 'MPI_COMPLET', resuel, 'RESUELEM', ibid,&
                     kmpic, ibid)
         ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
         if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
-101  end do
+101     continue
+    end do
 !
 !
 !

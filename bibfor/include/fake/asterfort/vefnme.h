@@ -19,7 +19,7 @@ interface
     subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
                       vecelz, matcod, compor, nh, fnoevo,&
                       partps, carcri, chvarc, ligrez, option,&
-                      strx)
+                      strx, base)
         character(*) :: modele
         character(*) :: sigma
         character(*) :: caraz
@@ -36,5 +36,6 @@ interface
         character(*) :: ligrez
         character(len=16) :: option
         character(*) :: strx
+        character(len=1) :: base
     end subroutine vefnme
 end interface

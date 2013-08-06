@@ -183,7 +183,7 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
         call vefnme(modele, sigm, carele, depl, depdel,&
                     vecele, mate, compor, 0, fnoevo,&
                     partps, carcri, varc, ' ', optio2,&
-                    strx)
+                    strx, 'V')
         call nmdep0('OFF', solalg)
 !
 ! --- DEPLACEMENTS DIRICHLET FIXE

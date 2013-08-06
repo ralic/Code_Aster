@@ -66,7 +66,7 @@ subroutine op0026()
 #include "asterfort/vebtla.h"
 #include "asterfort/vrcomp.h"
     integer :: nbpar, nblibl
-    parameter       (nbpar=5,nblibl=6)
+    parameter       (nbpar=5,nblibl=7)
     character(len=19) :: nompar(nbpar), typpar(nbpar)
     character(len=24) :: vk(nbpar)
     character(len=24) :: knoobj(nblibl), vkk(nblibl), knotyp(nblibl)
@@ -79,11 +79,11 @@ subroutine op0026()
     integer :: iret, nuord, long
     integer :: inoobj, inomsd, inuord, iinst, jnobj, jnosd
     integer :: jnuor, jrins, jlins, nbli, j, jtblp
-    real(kind=8) :: instam, instap, vr(1)
+    real(kind=8) :: instam, instap, vr(1), partps(3)
     complex(kind=8) :: cbid
     character(len=2) :: codret
     character(len=8) :: result, table, tablu, k8b
-    character(len=16) :: lopt(3), option
+    character(len=16) :: lopt(4), option
     character(len=19) :: lischa, k19bla
     character(len=19) :: linst
     character(len=24) :: modele, mate, carele, compor, carcri
@@ -92,7 +92,7 @@ subroutine op0026()
     character(len=19) :: nomtab
     character(len=19) :: commoi, complu, depplu
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
-    character(len=19) :: mediri, merigi, vediri, vefint
+    character(len=19) :: mediri, merigi, vediri, vefint, veforc
     logical :: lmatr, lvect, lcomp, lrigi, ldiri
     logical :: tabret(0:10)
     integer :: fonact(100)
@@ -107,13 +107,15 @@ subroutine op0026()
      &                 'VARI_ELGA               ',&
      &                 'VECT_ELEM               ',&
      &                 'VEDIRI_EL               ',&
-     &                 'CODE_RETOUR             '/
+     &                 'CODE_RETOUR             ',&
+     &                 'FORC_NODA               '/
     data knotyp     /'MATR_ELEM_DEPL_R        ',&
      &                 'CHAM_ELEM               ',&
      &                 'CHAM_ELEM               ',&
      &                 'VECT_ELEM_DEPL_R        ',&
      &                 'VECT_ELEM_DEPL_R        ',&
-     &                 'CHAM_ELEM               '/
+     &                 'CHAM_ELEM               ',&
+     &                 'VECT_ELEM_DEPL_R        '/
 !
 ! ----------------------------------------------------------------------
 !
@@ -139,8 +141,7 @@ subroutine op0026()
 !
 ! --- RECUPERATION DES OPTIONS DEMANDEES
 !
-    call getvtx(' ', 'OPTION', 0, iarg, 3,&
-                lopt, nbopt)
+    call getvtx(' ', 'OPTION', 0, iarg, 4, lopt, nbopt)
 !
 ! --- RECUPERATION DU MODELE, DU MATERIAU, DES CHARGES
 !
@@ -224,6 +225,7 @@ subroutine op0026()
     call gcncon('_', mediri)
     call gcncon('_', vediri)
     call gcncon('_', codere)
+    call gcncon('_', veforc)
 !
 ! --- RE-DEFINITION DES NOMS DES SD
 !
@@ -284,6 +286,17 @@ subroutine op0026()
                     lischa, vediri)
     endif
 !
+    if (knindi(16,'FORC_NODA_ELEM',lopt,nbopt) .gt. 0) then
+        partps(1)=0.d0
+        partps(2)=0.d0
+        partps(3)=0.d0
+        call vefnme(modele, sigplu, carele, depplu, ' ',&
+                    veforc, mate, compor, 0, .false.,&
+                    partps, k24bid, complu, ligrmo, 'FORC_NODA',&
+                    ' ', 'G')
+!
+    endif
+!
 ! --- ECRITURE DES RESULTATS DANS LA TABLE
 !
     nompar(1) = 'NOM_OBJET'
@@ -310,6 +323,7 @@ subroutine op0026()
     vkk(4)=vefint
     vkk(5)=vediri
     vkk(6)=codere
+    vkk(7)=veforc
 !
     call getvid(' ', 'TABLE', 0, iarg, 0,&
                 k8b, n1)
@@ -353,7 +367,12 @@ subroutine op0026()
         vk(3)=vkk(6)
         call tbajli(table, nbpar, nompar, vi, vr,&
                     cbid, vk, 0)
-!
+
+        vk(1)=knoobj(7)
+        vk(2)=knotyp(7)
+        vk(3)=vkk(7)
+        call tbajli(table, nbpar, nompar, vi, vr,&
+                    cbid, vk, 0)
     else
 !
 !     -----------------------------------------------------
@@ -404,7 +423,7 @@ subroutine op0026()
         call jeveuo(zk24(jtblp+(iinst -1)*4+2), 'E', jrins)
         call jeveuo(zk24(jtblp+(iinst -1)*4+3), 'L', jlins)
 !
-!       POUR LES NBLIBL(=6) NOM_OBJET DE CALCUL
+!       POUR LES NBLIBL(=7) NOM_OBJET DE CALCUL
         do i = 1, nblibl
 !         ON PARCOURT LES LIGNES DE LA TABLE POUR:
             do j = 1, nbli

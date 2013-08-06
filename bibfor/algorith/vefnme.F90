@@ -1,7 +1,7 @@
 subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
                   vecelz, matcod, compor, nh, fnoevo,&
                   partps, carcri, chvarc, ligrez, option,&
-                  strx)
+                  strx, base)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 #include "asterfort/reajre.h"
     logical :: fnoevo
     real(kind=8) :: partps(*)
+    character(len=1) :: base
     character(len=*) :: modele, ligrez
     character(len=*) :: sigma, caraz, depmoi, depdel, vecelz
     character(len=*) :: matcod, compor, carcri, chvarc, strx
@@ -270,8 +271,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele, ' ', carele,&
-                'CHAR_MECA')
+    call memare(base, vecele, modele, ' ', carele, 'CHAR_MECA')
 !
     if (debug) then
         call dbgcal(optio2, ifmdbg, nbin, lpain, lchin,&
@@ -282,12 +282,11 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! --- APPEL A CALCUL
 !
     call calcul('S', optio2, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, 'V',&
-                'OUI')
+                lpain, nbout, lchout, lpaout, base, 'OUI')
 !
 !
 !
-    call reajre(vecele, lchout(1), 'V')
+    call reajre(vecele, lchout(1), base)
 !
     vecelz = vecele//'.RELR'
 !
