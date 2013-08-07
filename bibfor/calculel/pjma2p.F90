@@ -66,7 +66,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     integer :: ima, ipt, icmp, iad, iadime
     integer :: jtypma, jdimt, jpo2, nbtrou, jlitr
     integer :: jcesd, jcesl, jcesv, iatypm
-    character(len=8) :: nom, mail2, kbid, noma
+    character(len=8) :: nom, mail2, noma
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
     real(kind=8) :: xmoy(3), rayo
@@ -196,9 +196,9 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !     4. CREATION DU .NOMNOE ET DU .NOMMAI DU NOUVEAU MAILLAGE
 !     ---------------------------------------------------------
     call jecreo(ma2p//'.NOMNOE', 'V N K8')
-    call jeecra(ma2p//'.NOMNOE', 'NOMMAX', nbno2p, ' ')
+    call jeecra(ma2p//'.NOMNOE', 'NOMMAX', nbno2p)
     call jecreo(ma2p//'.NOMMAI', 'V N K8')
-    call jeecra(ma2p//'.NOMMAI', 'NOMMAX', nbno2p, ' ')
+    call jeecra(ma2p//'.NOMMAI', 'NOMMAX', nbno2p)
 !
 !
     nom(1:1)='N'
@@ -229,7 +229,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     zi(iatypm-1+ima)=ipoi1
     nno2=1
     call jecroc(jexnum(ma2p//'.CONNEX', ima))
-    call jeecra(jexnum(ma2p//'.CONNEX', ima), 'LONMAX', nno2, kbid)
+    call jeecra(jexnum(ma2p//'.CONNEX', ima), 'LONMAX', nno2)
     nuno2=nuno2+1
     zi(ibid-1+nuno2)=nuno2
     130 end do
@@ -276,8 +276,8 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
     call jecreo(coodsc, 'V V I')
-    call jeecra(coodsc, 'LONMAX', 3, ' ')
-    call jeecra(coodsc, 'DOCU', 0, 'CHNO')
+    call jeecra(coodsc, 'LONMAX', 3)
+    call jeecra(coodsc, 'DOCU', cval='CHNO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad)=ntgeo
     zi(iad+1)=-3

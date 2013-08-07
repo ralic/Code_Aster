@@ -46,7 +46,6 @@ function cmlqdi(nbma, nbno, lima, connez)
 !
 !
     integer :: m, ma, n, no, jnbma, nbnoma, jnoma, mxar
-    character(len=8) :: kbid
 ! ----------------------------------------------------------------------
 !
 !
@@ -67,7 +66,7 @@ function cmlqdi(nbma, nbno, lima, connez)
         ma = lima(m)
 !
 !      NOEUDS DE LA MAILLE
-        call jelira(jexnum(connex, ma), 'LONMAX', nbnoma, kbid)
+        call jelira(jexnum(connex, ma), 'LONMAX', nbnoma)
         call jeveuo(jexnum(connex, ma), 'L', jnoma)
 !
 !      COMPTABILISATION DES MAILLES PAR NOEUD

@@ -54,7 +54,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     integer :: imaa, imab, imac, itypma, numaa, numab, numac, nbmaco
     integer :: ndime, jtmdim
     character(len=19) :: mai
-    character(len=8) :: k8b, typma
+    character(len=8) ::  typma
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -64,15 +64,15 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
     call jeveuo('&CATA.TM.TMDIM', 'L', jtmdim)
 !
 !     RECUPERATION DES MAILLES CONTENANT LE NOEUD A
-    call jelira(jexnum(cnxinv, nunoa), 'LONMAX', nmanoa, k8b)
+    call jelira(jexnum(cnxinv, nunoa), 'LONMAX', nmanoa)
     call jeveuo(jexnum(cnxinv, nunoa), 'L', jmanoa)
 !
 !     RECUPERATION DES MAILLES CONTENANT LE NOEUD B
-    call jelira(jexnum(cnxinv, nunob), 'LONMAX', nmanob, k8b)
+    call jelira(jexnum(cnxinv, nunob), 'LONMAX', nmanob)
     call jeveuo(jexnum(cnxinv, nunob), 'L', jmanob)
 !
 !     RECUPERATION DES MAILLES CONTENANT LE NOEUD C
-    call jelira(jexnum(cnxinv, nunoc), 'LONMAX', nmanoc, k8b)
+    call jelira(jexnum(cnxinv, nunoc), 'LONMAX', nmanoc)
     call jeveuo(jexnum(cnxinv, nunoc), 'L', jmanoc)
 !
 !     ON COMPTE LE NBRE DE MAILLES VOLUMIQUES COMMUNES AUX 3 NOEUDS :

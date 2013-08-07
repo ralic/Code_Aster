@@ -124,7 +124,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call getvid(' ', 'LIST_FREQ', 1, iarg, 1,&
                         listr, n4)
             call jeveuo(listr//'.VALE', 'L', jinst)
-            call jelira(listr//'.VALE', 'LONMAX', nbinst, k8b)
+            call jelira(listr//'.VALE', 'LONMAX', nbinst)
         endif
     else
         nomacc = 'INST'
@@ -146,7 +146,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
             call getvid(' ', 'LIST_INST', 1, iarg, 1,&
                         listr, n2)
             call jeveuo(listr//'.VALE', 'L', jinst)
-            call jelira(listr//'.VALE', 'LONMAX', nbinst, k8b)
+            call jelira(listr//'.VALE', 'LONMAX', nbinst)
         endif
     endif
 !

@@ -122,7 +122,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
     desdef=intf//'.IDC_DEFO'
     call jeveuo(desdef, 'L', lldes)
-    call jelira(desdef, 'LONMAX', nbnot, k8bid)
+    call jelira(desdef, 'LONMAX', nbnot)
 !**************************************************************
     nbnot = nbnot/(2+nbec)
 !      NBNOT=NBNOT/3
@@ -131,7 +131,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
 !
 !------------REQUETTE ADRESSE DEFINITION INTERFACE ET TYPE--------------
 !
-    call jelira(intf//'.IDC_LINO', 'NMAXOC', nbint, k8bid)
+    call jelira(intf//'.IDC_LINO', 'NMAXOC', nbint)
     call jeveuo(intf//'.IDC_TYPE', 'L', lltyp)
 !
 !-----------COMPTAGE DU NOMBRE DE NOEUDS CB-HARM------------------------
@@ -140,7 +140,7 @@ subroutine camoch(nomres, numref, intf, raid, mass,&
     nbfin=0
 !
     do 10 j = 1, nbint
-        call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe, k8bid)
+        call jelira(jexnum(intf//'.IDC_LINO', j), 'LONMAX', nbnoe)
         typcou=zk8(lltyp+j-1)
         if (typcou .eq. 'CB_HARMO') then
             call jeveuo(jexnum(intf//'.IDC_LINO', j), 'L', llnoin)

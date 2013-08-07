@@ -36,7 +36,7 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
     integer :: nbloc, lgbloc(*), lonmat, adinit(lonmat), typsym
     character(len=24) :: factol, factou, valm
     character(len=*) :: nommat
-    integer :: fin, deb, mati, mats, ibid, ip, irefac, lgblib
+    integer :: fin, deb, mati, mats, ip, irefac, lgblib
 !===============================================================
 !     ASSEMBLAGE DE LA MATRICE INITIALE DANS LA MATRICE FACTOR
 !     VERSION ASTER
@@ -75,14 +75,14 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
     if (irefac .gt. 0) then
         call jedetr(factol)
     endif
-    call jelira(jexnum(valm, ip), 'CLAS', ibid, base)
+    call jelira(jexnum(valm, ip), 'CLAS', cval=base)
 !
     call jecrec(factol, base(1:1)//' V R ', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbloc)
     do 50 ib = 1, nbloc
         call jecroc(jexnum(factol, ib))
         lgblib = lgbloc(ib)
-        call jeecra(jexnum(factol, ib), 'LONMAX', lgblib, ' ')
+        call jeecra(jexnum(factol, ib), 'LONMAX', lgblib)
 50  end do
     fin =0
     if (typsym .eq. 0) then
@@ -91,13 +91,13 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
         if (irefac .gt. 0) then
             call jedetr(factou)
         endif
-        call jelira(jexnum(valm, ip), 'CLAS', ibid, base)
+        call jelira(jexnum(valm, ip), 'CLAS', cval=base)
         call jecrec(factou, base(1:1)//' V R ', 'NU', 'DISPERSE', 'VARIABLE',&
                     nbloc)
         do 51 ib = 1, nbloc
             call jecroc(jexnum(factou, ib))
             lgblib = lgbloc(ib)
-            call jeecra(jexnum(factou, ib), 'LONMAX', lgblib, ' ')
+            call jeecra(jexnum(factou, ib), 'LONMAX', lgblib)
 51      continue
         do 130 ib = 1, nbloc
             call jeveuo(jexnum(factol, ib), 'E', ifacl)

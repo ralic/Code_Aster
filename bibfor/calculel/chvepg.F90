@@ -47,7 +47,7 @@ subroutine chvepg(chel1, chel2)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: valk(3)
-    character(len=8) :: noma, nommai, k8bid
+    character(len=8) :: noma, nommai
     integer :: nbma, ima
     integer :: iret1, iret2, ibid
     integer :: j1, j2
@@ -78,7 +78,7 @@ subroutine chvepg(chel1, chel2)
 !
     call jeveuo('&&CHVEPG.FAPG1', 'L', j1)
     call jeveuo('&&CHVEPG.FAPG2', 'L', j2)
-    call jelira('&&CHVEPG.FAPG1', 'LONMAX', nbma, k8bid)
+    call jelira('&&CHVEPG.FAPG1', 'LONMAX', nbma)
     do 10 ima = 1, nbma
         fpg1 = zk16(j1-1+ima)
         fpg2 = zk16(j2-1+ima)

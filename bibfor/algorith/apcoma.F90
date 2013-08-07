@@ -52,7 +52,6 @@ subroutine apcoma(sdappa, noma, newgeo, numma, nnosdm,&
 !
 !
 !
-    character(len=24) :: k8bid
 !
     integer :: nbnmax
     parameter   (nbnmax = 9)

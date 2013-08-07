@@ -43,7 +43,6 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
     real(kind=8) :: spt2e(ncmp), spt12o(ncmp), spt12e(ncmp), spm1o(ncmp)
     real(kind=8) :: spm1e(ncmp), spm2o(ncmp), spm2e(ncmp), spm12o(ncmp)
     real(kind=8) :: spm12e(ncmp)
-    character(len=8) :: k8b
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -53,7 +52,7 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst,&
         call jeveuo(csmex, 'L', jsmoe)
     endif
     call jeveuo(cinst, 'L', jinst)
-    call jelira(cinst, 'LONMAX', nbinst, k8b)
+    call jelira(cinst, 'LONMAX', nbinst)
 !
     nbordr = (nbinst*(nbinst+1)) / 2
     call wkvect(cspo, 'V V R', nbordr, jspo)

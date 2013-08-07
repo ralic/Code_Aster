@@ -58,10 +58,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: numgd, iav, ibid, ierd, nocc, jcmpt, nbcmpt
+    integer :: numgd, iav, ibid, nocc, jcmpt, nbcmpt
     integer :: iocc, nbcmp, nbvar, nbvai, nbvac, nbvak, nbva, vali, jcmp
     integer :: i, iret, ncmp, jtmp, ncmpmx, jcmpmx, jcnsv, jcnsl
-    integer :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, jref, nt, nbval
+    integer :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, nt, nbval
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: tsca
@@ -69,7 +69,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
     character(len=8) :: k8b, kbid, typmcl(4)
     character(len=16) :: motcle(4)
     character(len=19) :: cnos
-    character(len=24) :: valk(2), mesnoe, mescmp, prchno, refe
+    character(len=24) :: valk(2), mesnoe, mescmp, prchno
     integer :: iarg
 !
 ! ----------------------------------------------------------------------

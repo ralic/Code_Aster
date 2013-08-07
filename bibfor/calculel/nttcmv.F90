@@ -132,7 +132,7 @@ subroutine nttcmv(modele, mate, carele, fomult, charge,&
         call ascova('D', vachtp, fomult, 'INST', tpsthe(1),&
                     typres, cnchtp)
         call jeveuo(cnchtp(1:19)//'.VALE', 'E', jchtp)
-        call jelira(cnchtp(1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+        call jelira(cnchtp(1:19)//'.VALE', 'LONMAX', lonch)
 !
 ! --- SECOND MEMBRE COMPLET                                  ---> VEC2ND
 !

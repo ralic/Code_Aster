@@ -48,13 +48,12 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 !
 #include "jeveux.h"
 !
-    integer :: jtyma, jma2d, numa, jcoor, jma3d
+    integer ::  jma2d, jcoor, jma3d
     integer :: ima, ibid, iret
     integer :: nbma, nbmamo, jlima, nbmat, jmato
 !
-    character(len=8) :: ma, typma, noma, limocl(3), tymocl(3), k8b, valk(2)
+    character(len=8) :: ma, limocl(3), tymocl(3), k8b
     character(len=24) :: mesmai, limamo
-    character(len=32) :: jexnum
 !
     data limocl/'TOUT','MAILLE','GROUP_MA'/
     data tymocl/'TOUT','MAILLE','GROUP_MA'/

@@ -55,7 +55,6 @@ subroutine acnoce(noma, type, liste, nb, coor,&
 ! OUT : ISPV   : SIGNE DU PRODUIT MIXTE  (XCEN-N1).(XCEN-N2),V1
 ! ----------------------------------------------------------------------
     integer :: vali
-    character(len=8) :: c8
     character(len=24) :: mlggma, mlgnma, mlgcnx, c24
     character(len=24) :: valk
     real(kind=8) :: x1(3), x2(3), xc1(3), xc2(3), pvec(3)
@@ -121,7 +120,7 @@ subroutine acnoce(noma, type, liste, nb, coor,&
     else if (type.eq.'GRMA') then
         do 53 ig = 1, nb
             call jeveuo(jexnom(mlggma, liste(ig)), 'L', jdgm)
-            call jelira(jexnom(mlggma, liste(ig)), 'LONUTI', nm, c8)
+            call jelira(jexnom(mlggma, liste(ig)), 'LONUTI', nm)
             do 54 im = 1, nm
                 img = zi(jdgm+im-1)
                 call jeveuo(jexnum(mlgcnx, img), 'L', jdno)

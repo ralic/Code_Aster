@@ -95,7 +95,7 @@ subroutine rvecha(dim, epsi, ssch19, nbcp, nbco,&
     nbpt = 2
 !
     call jeveuo(ssch19//'.NOMA', 'L', adr)
-    call jelira(ssch19//'.VALE', 'DOCU', i, docu)
+    call jelira(ssch19//'.VALE', 'DOCU', cval=docu)
 !
 !
     if (dim .eq. '3D') then

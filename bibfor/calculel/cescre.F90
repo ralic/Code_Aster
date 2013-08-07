@@ -141,7 +141,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     if (gd .eq. 0) call u2mesk('F', 'CALCULEL_67', 1, nomgd)
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, kbid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
 !
 !

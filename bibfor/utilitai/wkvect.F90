@@ -30,13 +30,10 @@ subroutine wkvect(nom, carac, dim, ldec)
 ! IN  CARAC : CH    : DESCRIPTION DES CARACTERISTIQUES POUR JECREO
 ! IN  DIM   : IS    : TAILLE DU VECTEUR
 ! OUT LDEC  : IS    : DECALAGE
-!     ------------------------------------------------------------------
-    character(len=4) :: cbid
-!     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jecreo(nom, carac)
-    call jeecra(nom, 'LONMAX', dim, cbid)
-    call jeecra(nom, 'LONUTI', dim, cbid)
+    call jeecra(nom, 'LONMAX', ival=dim)
+    call jeecra(nom, 'LONUTI', ival=dim)
     call jeveuo(nom, 'E', ldec)
 end subroutine

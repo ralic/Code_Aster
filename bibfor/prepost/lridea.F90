@@ -132,7 +132,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
 !- TABLEAU DE PERMUTATION POUR LES CONNECTIVITES DES MAILLES :
     call iradhs(versio)
     call jeveuo('&&IRADHS.PERMUTA', 'L', jperm)
-    call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1, k8bid)
+    call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1)
     maxnod=zi(jperm-1+lon1)
 !
 !- CREATION DE LA STRUCTURE DE DONNEES FORMAT_IDEAS ---
@@ -403,7 +403,7 @@ subroutine lridea(resu, typres, linoch, nbnoch, nomcmd,&
                         prolo, iret)
             if (prolo(1:3) .eq. 'OUI') then
                 call u2mesk('I', 'PREPOST_13', 1, nomch)
-                call jelira(chs//'.CNSV', 'LONMAX', nbval, k8bid)
+                call jelira(chs//'.CNSV', 'LONMAX', nbval)
                 if (zcmplx) then
                     do 85 iaux = 1, nbval
                         zc(jcnsv-1+iaux) = dcmplx(0.d0,0.d0)

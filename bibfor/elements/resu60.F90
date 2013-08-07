@@ -44,7 +44,6 @@ subroutine resu60(resu1, resu2)
 !
     integer :: nbsto1, nbsau1, nbsto2, nbsau2
     integer :: nbstoc, nbsauv
-    character(len=1) :: k1bid
     character(len=8) :: resu
     integer :: i
     integer :: flagd1, flagv1, flaga1, flagd2, flagv2, flaga2
@@ -82,14 +81,14 @@ subroutine resu60(resu1, resu2)
 !
 !     --- RECHERCHE DU NUMERO D'ORDRE DE LA FREQUENCE DE REPRISE
     if (flagd1 .gt. 0) then
-        call jelira(resu1//'           .DEPL', 'LONUTI', nbsto1, k1bid)
-        call jelira(resu2//'           .DEPL', 'LONUTI', nbsto2, k1bid)
+        call jelira(resu1//'           .DEPL', 'LONUTI', nbsto1)
+        call jelira(resu2//'           .DEPL', 'LONUTI', nbsto2)
     else if (flagv1.gt.0) then
-        call jelira(resu1//'           .VITE', 'LONUTI', nbsto1, k1bid)
-        call jelira(resu2//'           .VITE', 'LONUTI', nbsto2, k1bid)
+        call jelira(resu1//'           .VITE', 'LONUTI', nbsto1)
+        call jelira(resu2//'           .VITE', 'LONUTI', nbsto2)
     else
-        call jelira(resu1//'           .ACCE', 'LONUTI', nbsto1, k1bid)
-        call jelira(resu2//'           .ACCE', 'LONUTI', nbsto2, k1bid)
+        call jelira(resu1//'           .ACCE', 'LONUTI', nbsto1)
+        call jelira(resu2//'           .ACCE', 'LONUTI', nbsto2)
     endif
 !
     nbstoc = nbsto1+nbsto2
@@ -125,10 +124,10 @@ subroutine resu60(resu1, resu2)
 !     --- RECUPERATION DES CHAMPS ORDR
 !
     call jeveuo(resu1//'           .ORDR', 'E', jordr1)
-    call jelira(resu1//'           .ORDR', 'LONUTI', nbsau1, k1bid)
+    call jelira(resu1//'           .ORDR', 'LONUTI', nbsau1)
 !
     call jeveuo(resu2//'           .ORDR', 'E', jordr2)
-    call jelira(resu2//'           .ORDR', 'LONUTI', nbsau2, k1bid)
+    call jelira(resu2//'           .ORDR', 'LONUTI', nbsau2)
 !     --- CUMULER LES NUMEROS D'ORDRE POUR CONSERVER LA MONOTONIE
     do 20 i = 0, nbsau2-1
         zi(jordr2+i) = zi(jordr2+i) + zi(jordr1+nbsau1-1) + 1

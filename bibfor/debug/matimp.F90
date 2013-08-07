@@ -42,9 +42,8 @@ subroutine matimp(matz, ific, typimz)
 !
 !     ------------------------------------------------------------------
     integer :: iligl, jcoll, kterm, n, nz, jrefa, jsmdi, nsmdi, jsmhc, nsmhc
-    integer :: jdelg, n1, nvale, jvale, nlong, jval2, ibid, nuno, nucmp, k, jcmp
+    integer :: jdelg, n1, nvale, jvale, nlong, jval2, nuno, nucmp, k, jcmp
     integer :: jdeeq, jrefn, iligg, jcolg, jnlogl, coltmp
-    character(len=1) :: kbid
     character(len=8) :: nomgd, nocmp, noma, nono, typimp
     character(len=14) :: nonu
     character(len=1) :: ktyp
@@ -67,16 +66,16 @@ subroutine matimp(matz, ific, typimz)
     if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') lmd=.true.
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     if (lmd) then
         call jeveuo(nonu//'.NUML.DELG', 'L', jdelg)
-        call jelira(nonu//'.NUML.DELG', 'LONMAX', n1, kbid)
+        call jelira(nonu//'.NUML.DELG', 'LONMAX', n1)
         call jeveuo(nonu//'.NUML.NULG', 'L', jnlogl)
     else
         call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
-        call jelira(nonu//'.NUME.DELG', 'LONMAX', n1, kbid)
+        call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
         jnlogl=0
     endif
     ASSERT(n1.eq.nsmdi)
@@ -86,7 +85,7 @@ subroutine matimp(matz, ific, typimz)
     nz=zi(jsmdi-1+n)
 !
     ASSERT(nz.le.nsmhc)
-    call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
+    call jelira(mat19//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
         lsym=.true.
     else if (nvale.eq.2) then
@@ -96,15 +95,15 @@ subroutine matimp(matz, ific, typimz)
     endif
 !
     call jeveuo(jexnum(mat19//'.VALM', 1), 'L', jvale)
-    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
+    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
     if (.not.lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'L', jval2)
-        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
+        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong)
         ASSERT(nlong.eq.nz)
     endif
 !
-    call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, ktyp)
+    call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=ktyp)
     ltypr=(ktyp.eq.'R')
 !
 !     --- ENTETES
@@ -202,7 +201,7 @@ subroutine matimp(matz, ific, typimz)
         write(ific,*) '   NUM_EQUA NOEUD    CMP'
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-        call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1, kbid)
+        call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
         nomgd=zk24(jrefn-1+2)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
         ASSERT(n1.eq.2*n)

@@ -57,7 +57,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
     integer :: jtypm1, jtypm2, i, j, ino1, iret, nbgn, iagno
     integer :: iacoo1, iacoo2, iacon1, n, iacon2
     integer :: ino2, nbgm2, i1, i2, iagma1, iagma2, n1, n2, ima
-    character(len=8) :: noma2, nono2, k8bid
+    character(len=8) :: noma2, nono2
     character(len=24) :: nogma
 !
     call jemarq()
@@ -70,11 +70,11 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
 !
     call jeexin(ma2//'.GROUPENO', iret)
     nbgn = 0
-    if (iret .gt. 0) call jelira(ma2//'.GROUPENO', 'NUTIOC', nbgn, k8bid)
+    if (iret .gt. 0) call jelira(ma2//'.GROUPENO', 'NUTIOC', nbgn)
 !
     call jeexin(ma2//'.GROUPEMA', iret)
     nbgm2 = 0
-    if (iret .gt. 0) call jelira(ma2//'.GROUPEMA', 'NUTIOC', nbgm2, k8bid)
+    if (iret .gt. 0) call jelira(ma2//'.GROUPEMA', 'NUTIOC', nbgm2)
 !
 !     ---------------------------------------------------------------
 !     COPIE DES VECTEURS
@@ -110,8 +110,8 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
     do 400 i = 1, nbma
         if (dirma(i) .ne. 0) then
             call jeveuo(jexnum(ma1//'.CONNEX', i), 'L', iacon1)
-            call jelira(jexnum(ma1//'.CONNEX', i), 'LONMAX', n, k8bid)
-            call jeecra(jexnum(ma2//'.CONNEX', dirma(i)), 'LONMAX', n, k8bid)
+            call jelira(jexnum(ma1//'.CONNEX', i), 'LONMAX', n)
+            call jeecra(jexnum(ma2//'.CONNEX', dirma(i)), 'LONMAX', n)
             call jeveuo(jexnum(ma2//'.CONNEX', dirma(i)), 'E', iacon2)
             do 410 j = 1, n
                 ino1 = zi(iacon1-1+j)
@@ -124,7 +124,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
 !     .GROUPENO
     do 500 i = 1, nbgn
         call jeveuo(jexnum(ma2//'.GROUPENO', i), 'E', iagno)
-        call jelira(jexnum(ma2//'.GROUPENO', i), 'LONUTI', n, k8bid)
+        call jelira(jexnum(ma2//'.GROUPENO', i), 'LONUTI', n)
         do 501 j = 1, n
             if (dirno(zi(iagno-1+j)) .ne. 0) then
                 zi(iagno-1+j)=dirno(zi(iagno-1+j))
@@ -137,9 +137,9 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
         call jenuno(jexnum(ma2//'.GROUPEMA', i2), nogma)
         call jenonu(jexnom(ma1//'.GROUPEMA', nogma), i1)
         call jeveuo(jexnum(ma1//'.GROUPEMA', i1), 'L', iagma1)
-        call jelira(jexnum(ma1//'.GROUPEMA', i1), 'LONUTI', n1, k8bid)
+        call jelira(jexnum(ma1//'.GROUPEMA', i1), 'LONUTI', n1)
         call jeveuo(jexnum(ma2//'.GROUPEMA', i2), 'E', iagma2)
-        call jelira(jexnum(ma2//'.GROUPEMA', i2), 'LONUTI', n2, k8bid)
+        call jelira(jexnum(ma2//'.GROUPEMA', i2), 'LONUTI', n2)
         do 610 i = 1, n1
             ima = zi(iagma1-1+i)
             if (dirma(ima) .ne. 0) then

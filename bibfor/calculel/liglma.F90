@@ -42,19 +42,18 @@ subroutine liglma(ligrel, nbma, linuma, linute)
 ! IN/JXOUT LINUTE  : OBJET (V I) QUI CONTIENDRA LES NUMEROS DES
 !                    TYPE_ELEMENT ASSOCIES AUX ELEMENTS DU LIGREL
 ! ----------------------------------------------------------------------
-    character(len=8) :: kbid
     integer :: nbgrel, igrel, iel, numa, nute, n1, nbel
     integer :: jnuma, jnute, ico, jliel
 !
 ! ----------------------------------------------------------------------
     call jemarq()
 !
-    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel, kbid)
+    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
 !
 !     -- CALCUL DE NBMA :
     nbma=0
     do 10,igrel=1,nbgrel
-    call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1, kbid)
+    call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
     nbel=n1-1
     nbma=nbma+nbel
     10 end do
@@ -66,7 +65,7 @@ subroutine liglma(ligrel, nbma, linuma, linute)
 !
     ico=0
     do 30,igrel=1,nbgrel
-    call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1, kbid)
+    call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
     call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
     nbel=n1-1
     nute=zi(jliel-1+nbel)

@@ -49,10 +49,10 @@ subroutine dismca(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=19) :: nomfon, nomcar
-    character(len=8) :: k8b, typfon, nompf(10), type, nogd
+    character(len=8) ::  typfon, nompf(10), type, nogd
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, ibid, iexi, iret, jdesc, jnoma, jprol
+    integer :: iadesc, iexi, iret, jdesc, jnoma, jprol
     integer :: jvale, k, l, long, ltyp, nbpf
 !-----------------------------------------------------------------------
     call jemarq()
@@ -90,10 +90,10 @@ subroutine dismca(questi, nomobz, repi, repkz, ierd)
         repk = ' '
         nomcar = nomob
         call jeveuo(nomcar//'.VALE', 'L', jvale)
-        call jelira(nomcar//'.VALE', 'TYPE', ibid, type)
+        call jelira(nomcar//'.VALE', 'TYPE', cval=type)
         if (type(1:1) .eq. 'K') then
-            call jelira(nomcar//'.VALE', 'LONMAX', long, k8b)
-            call jelira(nomcar//'.VALE', 'LTYP', ltyp, k8b)
+            call jelira(nomcar//'.VALE', 'LONMAX', long)
+            call jelira(nomcar//'.VALE', 'LTYP', ltyp)
             do 10 k = 1, long
                 if (ltyp .eq. 8) then
                     nomfon = zk8(jvale+k-1)

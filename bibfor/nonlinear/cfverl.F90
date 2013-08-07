@@ -44,7 +44,7 @@ subroutine cfverl(defico, resoco)
 !
 !
 !
-    character(len=8) :: nomnoe, k8bid
+    character(len=8) :: nomnoe
     integer :: nnoeu, ier
     integer :: ino, nbno
     real(kind=8) :: angle
@@ -69,8 +69,8 @@ subroutine cfverl(defico, resoco)
     apvera = sdappa(1:19)//'.VERA'
     call jeveuo(apverk, 'L', jlistn)
     call jeveuo(apvera, 'L', jlista)
-    call jelira(apverk, 'LONUTI', nnoeu, k8bid)
-    call jelira(apverk, 'LONMAX', nbno, k8bid)
+    call jelira(apverk, 'LONUTI', ival=nnoeu)
+    call jelira(apverk, 'LONMAX', ival=nbno)
     if ((nnoeu.eq.0) .or. (lliss)) goto 999
 !
     call u2mesi('I', 'CONTACT3_19', 1, nnoeu)

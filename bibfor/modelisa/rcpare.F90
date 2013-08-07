@@ -36,7 +36,7 @@ subroutine rcpare(nommat, pheno, para, icodre)
 !
 ! ----------------------------------------------------------------------
 ! DEB ------------------------------------------------------------------
-    character(len=8) :: k8bid, nomma2
+    character(len=8) ::  nomma2
     character(len=10) :: pheno2
     character(len=32) :: ncomr, ncomc, ncomk
     integer :: nbpar, nbr, nbc, nbk
@@ -51,9 +51,9 @@ subroutine rcpare(nommat, pheno, para, icodre)
     ncomr = nomma2//'.'//pheno2//'.VALR        '
     ncomc = nomma2//'.'//pheno2//'.VALC        '
     ncomk = nomma2//'.'//pheno2//'.VALK        '
-    call jelira(ncomr, 'LONUTI', nbr, k8bid)
-    call jelira(ncomc, 'LONUTI', nbc, k8bid)
-    call jelira(ncomk, 'LONUTI', nbk, k8bid)
+    call jelira(ncomr, 'LONUTI', nbr)
+    call jelira(ncomc, 'LONUTI', nbc)
+    call jelira(ncomk, 'LONUTI', nbk)
     call jeveuo(ncomk, 'L', ipar)
     nbpar = nbr + nbc + nbk/2
     do 10 i = 1, nbpar

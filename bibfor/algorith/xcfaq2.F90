@@ -76,7 +76,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     integer :: iadzi, iazk24, ndim, ptmax
     integer :: zxain
     integer :: inm, inc, nm, nbnomx
-    logical :: ismali, iselli, cut
+    logical ::  cut
     character(len=8) :: typma, elp, elc
 !
     parameter       (ptmax=3, elc='SE3',nbnomx=27)

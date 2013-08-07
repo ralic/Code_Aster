@@ -89,7 +89,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     character(len=16) :: compo2(4)
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg, iret
     integer :: ddld, ddls, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
-    integer :: ibid, idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer ::  idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg, r8bid

@@ -53,7 +53,6 @@ subroutine uttcpu(nommes, action, nomlon)
 ! LES VALEURS STOCKEES SONT RECUPERABLES VIA UTTCPR
 ! ----------------------------------------------------------------------
     integer :: indi, iexi, jvalms, jnoml, jvalmi, k
-    character(len=8) :: kbid
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
     integer :: mtpniv, mtpsta, indmax
@@ -95,7 +94,7 @@ subroutine uttcpu(nommes, action, nomlon)
     call jeexin('&&UTTCPU.NOMMES', iexi)
     if (iexi .eq. 0) then
         call jecreo('&&UTTCPU.NOMMES', 'V N K24')
-        call jeecra('&&UTTCPU.NOMMES', 'NOMMAX', 100, kbid)
+        call jeecra('&&UTTCPU.NOMMES', 'NOMMAX', 100)
         call wkvect('&&UTTCPU.VALMES', 'V V R', 7*100, jvalms)
         call wkvect('&&UTTCPU.VALMEI', 'V V R', 7*100, jvalmi)
         call wkvect('&&UTTCPU.NOMLON', 'V V K80', 100, jnoml)

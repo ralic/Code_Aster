@@ -42,7 +42,6 @@ subroutine fetmon(infofe, nbi2, nbi, nbtot, nbsd,&
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: ifet2, ifet3, ifet4, ifet5, ifet6, ifet7, i, nbproc, iexist, imon
-    character(len=8) :: k8bid
     character(len=20) :: nomopt(11)
     character(len=24) :: nommon
     real(kind=8) :: r1, r2, r3, r1m, r2m, r3m, raux2
@@ -73,7 +72,7 @@ subroutine fetmon(infofe, nbi2, nbi, nbtot, nbsd,&
         call jeveuo('&FETI.INFO.CPU.ASSE', 'L', ifet5)
         call jeveuo('&FETI.INFO.CPU.FACN', 'L', ifet6)
         call jeveuo('&FETI.INFO.CPU.ELEM', 'L', ifet7)
-        call jelira('&FETI.INFO.CPU.ELEM', 'LONMAX', nbproc, k8bid)
+        call jelira('&FETI.INFO.CPU.ELEM', 'LONMAX', nbproc)
         write(ifm,*)
         write(ifm,*)'SOUS-DOMAINE   / MATRICE   / FACTORISEE   / NOEUDS'
         do 15 i = 1, nbsd

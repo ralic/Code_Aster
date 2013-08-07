@@ -79,7 +79,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
     if (docu .ne. 'LSTN' .and. docu .ne. 'CHMM' .and. docu .ne. 'SGTD' .and. docu .ne. 'ARCC'&
         .and. docu .ne. 'SGT3') goto 9999
 !
-    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari, k8b)
+    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
     if (nbvari .ne. 0) then
         call rvtec2(releve, absc, itcopt, itsppt, coor,&
                     nomnoe, nbcmp, nbpoin, docu, nomtab,&

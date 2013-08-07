@@ -197,19 +197,19 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
 !     LE '.NOMMAI' ET LE '.CONNEX'
 ! ----------------------------------------------------------------------
     call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail, ' ')
+    call jeecra(nommai, 'NOMMAX', nbmail)
 !
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
     call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
 !#MC  1*NBMAIL NE SUFFIT PAS ?
-    call jeecra(connex, 'LONT', ntyele*nbmail, ' ')
+    call jeecra(connex, 'LONT', ntyele*nbmail)
 !
     call jedetr('&&IRMGMS.LISMA')
     call jecrec('&&IRMGMS.LISMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
-    call jeecra('&&IRMGMS.LISMA', 'LONT', nbmail, k8b)
+    call jeecra('&&IRMGMS.LISMA', 'LONT', nbmail)
 !
     do 103 i = 1, ntyele
         nbel(i) = 0
@@ -229,7 +229,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
         nbcr = typd(ind,2)
         nbp = typd(ind,3)
         call jecroc(jexnum( '&&IRMGMS.LISMA', ima ))
-        call jeecra(jexnum( '&&IRMGMS.LISMA', ima ), 'LONMAX', nbcr, k8b)
+        call jeecra(jexnum( '&&IRMGMS.LISMA', ima ), 'LONMAX', nbcr)
         call jeveuo(jexnum( '&&IRMGMS.LISMA', ima), 'E', idlima)
 !
         do 110 i = 1, nbcr
@@ -248,7 +248,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
 !    STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
             zi(jnumol-1+ima2)=ima
 !
-            call jeecra(jexnum(connex, ima2), 'LONMAX', nbp, k8b)
+            call jeecra(jexnum(connex, ima2), 'LONMAX', nbp)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 115 ino = 1, nbp
                 zi(jnpt-1+ino) = zi(jopt-1+tdec(ind,i,ino))

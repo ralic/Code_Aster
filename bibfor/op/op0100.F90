@@ -148,7 +148,7 @@ subroutine op0100()
     vecord = '&&OP0100.VECTORDR'
     call cgcrio(resu, vecord)
     call jeveuo(vecord, 'L', ivec)
-    call jelira(vecord, 'LONMAX', nbord, k8bid)
+    call jelira(vecord, 'LONMAX', nbord)
 !
 !     MODE_MECA OU PAS
     lmoda = .false.

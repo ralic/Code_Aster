@@ -53,7 +53,6 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     integer :: ier, i3d, i2d, ndim, nbmtrd, ioc, ng, nm, nj, nn, ncar, icar
     integer :: ii, nbma, ialima, nbnogr, kk, ibid
     integer :: ixnw, jdnw, jddi, jdls, jdgn
-    character(len=1) :: k1bid
     character(len=8) :: k8b, nomu, car(nbcar)
     character(len=16) :: concep, cmd
     character(len=24) :: tmpdis, mlggno, mlgnno, modnem, grpma
@@ -77,7 +76,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     call jeexin(modnem, ixnw)
     nbmtrd = 0
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call jeveuo(modnem, 'L', jdnw)
         call wkvect(tmpdis, 'V V I', nbmtrd, jddi)
     endif
@@ -108,7 +107,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
         if (ng .gt. 0) then
             do 38 ii = 1, ng
-                call jelira(jexnom(grpma, zk24(jdls+ii-1)), 'LONUTI', nbma, k8b)
+                call jelira(jexnom(grpma, zk24(jdls+ii-1)), 'LONUTI', nbma)
                 call jeveuo(jexnom(grpma, zk24(jdls+ii-1)), 'L', ialima)
                 call acevtr(noma, nomo, 2, zk24(1), zi(ialima),&
                             nbma, ndim)
@@ -128,7 +127,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
             if (nj .gt. 0) then
                 do 42 ii = 1, nj
                     call jeveuo(jexnom(mlggno, zk24(jdls+ii-1)), 'L', jdgn)
-                    call jelira(jexnom(mlggno, zk24(jdls+ii-1)), 'LONUTI', nbnogr, k1bid)
+                    call jelira(jexnom(mlggno, zk24(jdls+ii-1)), 'LONUTI', nbnogr)
                     call crlinu('NUM', mlgnno, nbnogr, zi(jdgn), k8b,&
                                 nbmtrd, zi(jdnw), zi(jddi), kk)
                     if (kk .gt. 0) then

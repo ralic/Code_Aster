@@ -37,7 +37,7 @@ subroutine ordonp(nomfon)
 !     APPELE PAR ORDONN POUR REORDONNER LES FONCTIONS D UNE NAPPE
 !     PAR ORDRE CROISSANT DES PARAMETRES
     character(len=19) :: fonc0
-    character(len=24) :: chval, chpar, sfval, sfpar, chbid
+    character(len=24) :: chval, chpar, sfval, sfpar
     integer :: ipar, lpar, nbpara, ior, ival, lval
     integer :: i, j, it, nbp, nbpt
     real(kind=8) :: xt
@@ -52,11 +52,11 @@ subroutine ordonp(nomfon)
     sfval=fonc0//'.VALE'
     sfpar=fonc0//'.PARA'
 !
-    call jelira(chpar, 'LONUTI', nbpara, chbid)
+    call jelira(chpar, 'LONUTI', nbpara)
 !     RECUPERE LES PARAMETRES
     call jedupo(chpar, 'V', sfpar, .false.)
     call jeveuo(sfpar, 'E', ipar)
-    call jelira(sfpar, 'LONUTI', nbpara, chbid)
+    call jelira(sfpar, 'LONUTI', nbpara)
 !
 !      CALL JEDUPC('G',CHVAL,1,'V',SFVAL,.FALSE.)
     call jedupo(chval, 'V', sfval, .false.)
@@ -86,7 +86,7 @@ subroutine ordonp(nomfon)
 !     CALCULE LA TAILLE CUMULEE DE LA COLLECTION
     nbpt=0
     do 113 i = 1, nbpara
-        call jelira(jexnum(sfval, i), 'LONMAX', nbp, chbid)
+        call jelira(jexnum(sfval, i), 'LONMAX', nbp)
         nbpt=nbpt+nbp
 113  end do
 !
@@ -95,16 +95,16 @@ subroutine ordonp(nomfon)
 !     --- CREATION DE LA COLLECTION NOMFON.VALE ---
     call jecrec(chval, 'G V R', 'NU', 'CONTIG', 'VARIABLE',&
                 nbpara)
-    call jeecra(chval, 'LONT', nbpt, ' ')
+    call jeecra(chval, 'LONT', nbpt)
     do 100 i = 1, nbpara
 !        REMPLISSAGE DU .PARA
         zr(lpar-1+i)=zr(ipar-1+i)
 !        REMPLISSAGE DES .VALE EN FONCTION DE L'ORDRE
-        call jelira(jexnum(sfval, zi(ior-1+i)), 'LONMAX', nbp, chbid)
+        call jelira(jexnum(sfval, zi(ior-1+i)), 'LONMAX', nbp)
         call jeveuo(jexnum(sfval, zi(ior-1+i)), 'E', ival)
         call jecroc(jexnum(chval, i))
-        call jeecra(jexnum(chval, i), 'LONMAX', nbp, ' ')
-        call jeecra(jexnum(chval, i), 'LONUTI', nbp, ' ')
+        call jeecra(jexnum(chval, i), 'LONMAX', nbp)
+        call jeecra(jexnum(chval, i), 'LONUTI', nbp)
         call jeveuo(jexnum(chval, i), 'E', lval)
         do 101 j = 1, nbp
             zr(lval+j-1)=zr(ival+j-1)

@@ -52,7 +52,6 @@ subroutine nmrini(sdtime, sdstat, phase)
     character(len=24) :: stvip, stvit, stvin
     integer :: jstvip, jstvit, jstvin
     integer :: i, nmaxt, nmaxs
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,7 +65,7 @@ subroutine nmrini(sdtime, sdstat, phase)
     call jeveuo(timet, 'E', jtimet)
     call jeveuo(timep, 'E', jtimep)
     call jeveuo(timen, 'E', jtimen)
-    call jelira(timet, 'LONMAX', nmaxt, k8bid)
+    call jelira(timet, 'LONMAX', ival=nmaxt)
 !
 ! --- ACCES SDSTAT
 !
@@ -76,7 +75,7 @@ subroutine nmrini(sdtime, sdstat, phase)
     call jeveuo(stvip, 'E', jstvip)
     call jeveuo(stvit, 'E', jstvit)
     call jeveuo(stvin, 'E', jstvin)
-    call jelira(stvit, 'LONMAX', nmaxs, k8bid)
+    call jelira(stvit, 'LONMAX', ival=nmaxs)
 !
 ! --- ENREGISTREMENT DES TEMPS
 !

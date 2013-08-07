@@ -55,8 +55,8 @@ subroutine amogen(mat19)
                 k8bid, n2)
     call jeveuo(masse//'           .DESC', 'E', idesc)
     n=zi(idesc+1)
-    call jelira(masse//'           .VALM', 'LONMAX', m, k8bid)
-    call jelira(raid//'           .VALM', 'LONMAX', m2, k8bid)
+    call jelira(masse//'           .VALM', 'LONMAX', m)
+    call jelira(raid//'           .VALM', 'LONMAX', m2)
     if (m2 .ne. m) then
         vali (1) = m
         vali (2) = m2
@@ -69,7 +69,7 @@ subroutine amogen(mat19)
     else
         call getvid(nomcmd, 'LIST_AMOR', 1, iarg, 1,&
                     listam, nlist)
-        call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8bid)
+        call jelira(listam//'           .VALE', 'LONMAX', nbamor)
     endif
 !
     if (nbamor .gt. n) then
@@ -122,7 +122,7 @@ subroutine amogen(mat19)
     call jecrec(mat19//'.VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 1)
     call jecroc(jexnum(mat19//'.VALM', iblo))
-    call jeecra(mat19//'.VALM', 'LONMAX', m, k8bid)
+    call jeecra(mat19//'.VALM', 'LONMAX', m)
     call wkvect(mat19//'.LIME', 'G V K24', 1, ialime)
     call wkvect(mat19//'.CONL', 'G V R', n, iaconl)
     call wkvect(mat19//'.REFA', 'G V K24', 11, jrefa2)

@@ -186,7 +186,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
 !
         cara = 'K_T_D_N'
         if (ngp .ne. 0) then
-            call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma, k8b)
+            call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma)
             call jeveuo(jexnom(noma//'.GROUPEMA', nogp), 'L', ldgm)
             nbpo = nma
             call rigmi1(noma, nogp, ifreq, nfreq, impris,&
@@ -235,7 +235,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
         cara = 'K_T_D_L'
         if (ngl .ne. 0) then
             coef=20.d0
-            call jelira(jexnom(noma//'.GROUPEMA', nogl), 'LONMAX', nma, k8b)
+            call jelira(jexnom(noma//'.GROUPEMA', nogl), 'LONMAX', nma)
             call jeveuo(jexnom(noma//'.GROUPEMA', nogl), 'L', ldgm)
             nbli = nma
             do 22 in = 0, nma-1

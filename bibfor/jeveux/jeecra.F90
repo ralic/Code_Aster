@@ -26,8 +26,9 @@ subroutine jeecra(nomlu, catr, ival, cval)
 #include "asterfort/jjvern.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
-    character(len=*) :: nomlu, catr, cval
-    integer :: ival
+    character(len=*) :: nomlu, catr 
+    character(len=*), intent(in), optional :: cval
+    integer, intent(in), optional :: ival
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'AFFECTATION D'UN ATTRIBUT
 !

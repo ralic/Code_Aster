@@ -242,7 +242,7 @@ subroutine op0186()
     write (ifm,fmt4) '|','RESI_GLOB_RELA','RESI_GLOB_MAXI','RHO',&
      &      'TANGENTE','|'
     write (ifm,fmt1)
-    call jelira(vtempm(1:19)//'.VALE', 'LONMAX', neq, k8bid)
+    call jelira(vtempm(1:19)//'.VALE', 'LONMAX', neq)
 !
 ! RECUPERATION DE:
 ! RESULT --> NOM DE LA SD RESULTAT

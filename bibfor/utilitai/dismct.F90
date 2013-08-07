@@ -43,7 +43,6 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: k1bid
 !
 !
 !
@@ -56,7 +55,7 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
     repi = 0
     ierd = 0
 !
-    call jelira('&CATA.TM.NBNO', 'NUTIOC', nbtyma, k1bid)
+    call jelira('&CATA.TM.NBNO', 'NUTIOC', nbtyma)
 !
     if (questi .eq. 'NB_TYPE_MA') then
         repi=nbtyma

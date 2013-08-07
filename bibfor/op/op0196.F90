@@ -97,7 +97,7 @@ subroutine op0196()
 !     CREATION DE LA NOUVELLE SD RESULTAT
     ordr=resuco//'           .ORDR'
     call jeveuo(ordr, 'L', jord)
-    call jelira(ordr, 'LONUTI', nbordr, kbid)
+    call jelira(ordr, 'LONUTI', nbordr)
     call gettco(resuco, tysd)
     call rscrsd('G', resux, tysd, nbordr)
 !
@@ -154,7 +154,7 @@ subroutine op0196()
 !       6. ENREGISTREMENT DES CHAMPS DE SORTIES
 !       ----------------------------------------------------------------
 !
-        call jelira(licham, 'LONMAX', nbcham, k24b)
+        call jelira(licham, 'LONMAX', nbcham)
         call jeveuo(licham, 'L', jlicha)
         do 20 ic = 1, nbcham
             nomcha = zk16(jlicha-1+ic)

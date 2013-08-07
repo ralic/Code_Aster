@@ -113,7 +113,6 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !
 !     GENERAL PURPOSE
     integer :: i, ibid
-    character(len=8) :: k8b
     integer :: ifm, niv
 !
 !-----------------------------------------------------------------------
@@ -130,12 +129,12 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
     endif
 !
 !     RETREIVE THE LIST OF THE NODES IN THE DOMAIN ON THE PHYSICAL MESH
-    call jelira(ndomp, 'LONMAX', nunopr, k8b)
+    call jelira(ndomp, 'LONMAX', nunopr)
     call jeveuo(ndomp, 'L', jnto)
 !
 !     RETREIVE THE LIST OF THE ELEMENTS IN THE DOMAIN ON THE AUXILIARY
 !     GRID
-    call jelira(edomg, 'LONMAX', nbelpr, k8b)
+    call jelira(edomg, 'LONMAX', nbelpr)
     call jeveuo(edomg, 'L', jefrom)
 !
 !        PROJECT THE LEVELSETS FROM THE AUXILIARY MESH TO THE PHYSICAL

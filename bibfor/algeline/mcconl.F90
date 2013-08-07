@@ -51,7 +51,7 @@ subroutine mcconl(oper, lmat, neq2, typev, cvect,&
 !
     character(len=1) :: ftype(2), type, typecn
     character(len=24) :: conl
-    integer :: ibid, ieq, ii, ind, iret, ive, jconl, neq, neqc
+    integer ::  ieq, ii, ind, iret, ive, jconl, neq, neqc
     real(kind=8) :: realve, rimagv
 !     ------------------------------------------------------------------
     data ftype/'R','C'/
@@ -70,7 +70,7 @@ subroutine mcconl(oper, lmat, neq2, typev, cvect,&
     conl=zk24(zi(lmat+1))(1:19)//'.CONL'
     call jeexin(conl, iret)
     if (iret .ne. 0) then
-        call jelira(conl, 'TYPE', ibid, typecn)
+        call jelira(conl, 'TYPE', cval=typecn)
         call jeveuo(conl, 'L', jconl)
         jconl=jconl-1
         neqc=neq/2

@@ -120,7 +120,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
 !     ------------------------------------------------------------------
     msup = resu//'.LEVRESUP.MAIL'
     call jeveuo(msup, 'L', jsup)
-    call jelira(msup, 'LONMAX', nbma, k8b)
+    call jelira(msup, 'LONMAX', nbma)
 !
     call wkvect('&&'//nompro//'_TRAV', 'V V I', nbnoe, idlino)
     call wkvect('&&'//nompro//'_NOEU_NORM_SUP', 'V V I', nbnoe, jnols)
@@ -147,7 +147,7 @@ subroutine fonnof(resu, noma, typfon, nbnoff)
     if (isym .ne. 0) then
         minf = resu//'.LEVREINF.MAIL'
         call jeveuo(minf, 'L', jinf)
-        call jelira(minf, 'LONMAX', nbma, k8b)
+        call jelira(minf, 'LONMAX', nbma)
 !
         call wkvect('&&'//nompro//'_TRAV', 'V V I', nbnoe, idlino)
         call wkvect('&&'//nompro//'_NOEU_NORM_INF', 'V V I', nbnoe, jnoli)

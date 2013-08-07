@@ -193,7 +193,7 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
     nomnoi = main // '.NOMNOE'
     nomnoe = maout // '.NOMNOE'
     call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbtot, ' ')
+    call jeecra(nomnoe, 'NOMMAX', nbtot)
 !
     do 5 no = 1, nbno
         call jenuno(jexnum(nomnoi, no), nomnd)
@@ -227,7 +227,7 @@ subroutine cm2027(main, maout, nbma, lima, prefix,&
     call jeveuo(typema, 'E', jtypma)
     call jecrec(conneo, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)
-    call jeecra(conneo, 'LONT', nbnomx*nbmato, ' ')
+    call jeecra(conneo, 'LONT', nbnomx*nbmato)
 !
     call cm27ma(nbmato, nbma, nbno, nbnomi, lima,&
                 zi(jtypma), connei, conneo, zi(jnomim), nbtyma,&

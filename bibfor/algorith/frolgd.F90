@@ -113,7 +113,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
 !
     integer :: ifm, niv
-    integer :: ibid, ieq, iter
+    integer ::  ieq, iter
     integer :: llliai, llliac
     integer :: llf, llf1, llf2
     integer :: indic, indfac, ajliai, spliai
@@ -205,7 +205,7 @@ subroutine frolgd(sdstat, defico, resoco, solveu, numedd,&
 !
     macont = resoco(1:14)//'.MATC'
     call mtdsc3(macont)
-    call jeecra(macont(1:19)//'.REFA', 'DOCU', ibid, 'ASSE')
+    call jeecra(macont(1:19)//'.REFA', 'DOCU', cval='ASSE')
     call jeveuo(macont(1:19)//'.&INT', 'E', ldscon)
 !
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE GLOBALE

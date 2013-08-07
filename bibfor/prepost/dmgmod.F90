@@ -59,7 +59,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !       OUT    VDOMAG    VECTEUR DOMMAGE AUX POINTS
 !       ----------------------------------------------------------------
 !       ---------------------------------------------------------------
-    character(len=8) :: k8b, nomrm(1), nompar, kcorre, nomfon
+    character(len=8) ::  nomrm(1), nompar, kcorre, nomfon
     character(len=10) :: nomphe
     character(len=19) :: chequi, chequ2(nbordr)
     character(len=24) :: nomdmg
@@ -119,10 +119,10 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     su = val(1)
 !
     nomphe = 'FATIGUE   '
-    call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8b)
-    call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc, k8b)
+    call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
+    call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
     call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-    call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk, k8b)
+    call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
     nbf = (nbk-nbr-nbc)/2
     do 50 ik = 1, nbf
         if (zk8(ivalk-1+nbr+nbc+ik) .eq. 'WOHLER') then

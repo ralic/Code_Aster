@@ -243,8 +243,8 @@ subroutine ssdein(ul, ug, mail, nocas)
 !
 !     4-4  Q_I= Q_I + PHI_IE * Q_E :
 !     ------------------------------
-    call jelira(nomacr//'.PHI_IE', 'LONMAX', lgblph, kbid)
-    call jelira(nomacr//'.PHI_IE', 'NMAXOC', nblph, kbid)
+    call jelira(nomacr//'.PHI_IE', 'LONMAX', lgblph)
+    call jelira(nomacr//'.PHI_IE', 'NMAXOC', nblph)
     nlblph=lgblph/nddli
 !
     j=0

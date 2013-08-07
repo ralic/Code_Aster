@@ -41,7 +41,6 @@ subroutine op0076()
     character(len=8) :: nomres, trange, basemo, nomcha, interp, crit
     character(len=16) :: concep, nomcmd
     character(len=24) :: nddlge
-    character(len=1) :: k1bid
     integer :: iarg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -77,7 +76,7 @@ subroutine op0076()
     call jeveuo(trange//'           .DESC', 'L', iadesc)
     call jeveuo(trange//'           .REFD', 'L', iarefe)
     call jeveuo(trange//'           .DISC', 'L', idinst)
-    call jelira(trange//'           .DISC', 'LONMAX', nbinst, k1bid)
+    call jelira(trange//'           .DISC', 'LONMAX', nbinst)
     call jeveuo(trange//'           .'//nomcha(1:4), 'L', idcham)
 !
 !     --- RECUPERATION DE LA NUMEROTATION GENERALISEE NUME_DDL_GENE
@@ -88,7 +87,7 @@ subroutine op0076()
 !
     call wkvect(nomres//'           .REFE', 'G V K24', 2, idrefe)
     call wkvect(nomres//'           .DESC', 'G V I', 2, iddesc)
-    call jeecra(nomres//'           .DESC', 'DOCU', 0, 'VGEN')
+    call jeecra(nomres//'           .DESC', 'DOCU', cval='VGEN')
 !
     zi(iddesc) = 1
     zi(iddesc+1) = nbmode

@@ -71,7 +71,6 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
     integer :: nbtyp, i, ii, iret, itrou, itych
     integer :: itypma, idimto, jtypma, it, itempo
 !
-    character(len=1) :: k1bid
     character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
@@ -79,7 +78,7 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
     call jemarq()
     ASSERT(nbma.gt.0)
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyp, k1bid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyp)
 !
 !     -- SI DIM=-1, ON TRIE SUR TYPMAI :
     if (dim .eq. -1) then

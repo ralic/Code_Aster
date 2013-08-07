@@ -36,13 +36,12 @@ subroutine gverfo(cartei, ier)
 ! ======================================================================
 ! ----------------------------------------------------------------------
     integer :: ival, nbvale, in, iprol
-    character(len=8) :: k8b
     character(len=19) :: nch19
 !
     call jemarq()
 !
     call jeveuo(cartei//'.VALE', 'L', ival)
-    call jelira(cartei//'.VALE', 'LONMAX', nbvale, k8b)
+    call jelira(cartei//'.VALE', 'LONMAX', nbvale)
 !
     ier=0
     do 10 in = 1, nbvale

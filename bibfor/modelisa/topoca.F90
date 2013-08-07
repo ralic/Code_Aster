@@ -80,7 +80,6 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     logical :: ok1, ok2
-    character(len=1) :: k1b
     character(len=3) :: k3b
     character(len=8) :: k8b, noancr(2), nocour, noprec, nosui1, nosui2, nosuiv
     character(len=8) :: novois, tyancr(2)
@@ -135,7 +134,7 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
 !
         call getvem(mailla, 'GROUP_MA', 'DEFI_CABLE', 'GROUP_MA', icabl,&
                     iarg, 1, nogrma, ibid)
-        call jelira(jexnom(grmama, nogrma), 'LONUTI', nbmail, k1b)
+        call jelira(jexnom(grmama, nogrma), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmama, nogrma), 'L', jnumad)
 !
     endif
@@ -417,14 +416,14 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
             nbnoca(icabl) = nbno1
 !
             if (icabl .eq. 1) then
-                call jeecra(numaca, 'LONUTI', nbno1-1, ' ')
+                call jeecra(numaca, 'LONUTI', nbno1-1)
                 call jeveuo(numaca, 'E', jnumac)
                 do 100 imail = 1, nbno1-1
                     zi(jnumac+imail-1) = zi(jnuma1+imail-1)
 100              continue
             else
-                call jelira(numaca, 'LONUTI', lonuti, k1b)
-                call jeecra(numaca, 'LONUTI', lonuti+nbno1-1, ' ')
+                call jelira(numaca, 'LONUTI', lonuti)
+                call jeecra(numaca, 'LONUTI', lonuti+nbno1-1)
                 call jeveuo(numaca, 'E', jnumac)
                 do 110 imail = 1, nbno1-1
                     zi(jnumac+lonuti+imail-1) = zi(jnuma1+imail-1)
@@ -451,14 +450,14 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
             nbnoca(icabl) = nbno2
 !
             if (icabl .eq. 1) then
-                call jeecra(numaca, 'LONUTI', nbno2-1, ' ')
+                call jeecra(numaca, 'LONUTI', nbno2-1)
                 call jeveuo(numaca, 'E', jnumac)
                 do 130 imail = 1, nbno2-1
                     zi(jnumac+imail-1) = zi(jnuma2+imail-1)
 130              continue
             else
-                call jelira(numaca, 'LONUTI', lonuti, k1b)
-                call jeecra(numaca, 'LONUTI', lonuti+nbno2-1, ' ')
+                call jelira(numaca, 'LONUTI', lonuti)
+                call jeecra(numaca, 'LONUTI', lonuti+nbno2-1)
                 call jeveuo(numaca, 'E', jnumac)
                 do 140 imail = 1, nbno2-1
                     zi(jnumac+lonuti+imail-1) = zi(jnuma2+imail-1)

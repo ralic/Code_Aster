@@ -206,11 +206,11 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 !
 ! - Initial maximum linear relations number 
 !
-    call jelira(lisrel//'.RLNT', 'LONMAX', nbrmax, k8bid)
+    call jelira(lisrel//'.RLNT', 'LONMAX', nbrmax)
 !
 ! - Length of vectors for all relation terms
 !
-    call jelira(lisrel//'.RLCO', 'LONMAX', lveclr, k8bid)
+    call jelira(lisrel//'.RLCO', 'LONMAX', lveclr)
 !
 ! - Real length used
 !

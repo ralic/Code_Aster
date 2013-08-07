@@ -49,7 +49,6 @@ subroutine recuno(mailla, nbno, nbgr, nomno, nomgr,&
     character(len=8) :: mailla, nomno(nbno)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
     integer :: numnot(nbto)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -66,7 +65,7 @@ subroutine recuno(mailla, nbno, nbgr, nomno, nomgr,&
     if (nbgr .gt. 0) then
         do 10 i = 1, nbgr
             nomcou=nomgr(i)
-            call jelira(jexnom(mailla//'.GROUPENO', nomcou), 'LONUTI', nb, k1bid)
+            call jelira(jexnom(mailla//'.GROUPENO', nomcou), 'LONUTI', nb)
             call jeveuo(jexnom(mailla//'.GROUPENO', nomcou), 'L', iadg)
             do 20 j = 1, nb
                 icomp=icomp+1

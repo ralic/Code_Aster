@@ -91,12 +91,12 @@ subroutine rfbefl(base)
 !
 !     --- RECUPERATION DES OJB ---
     vite = basefl//'           .VITE'
-    call jelira(vite, 'LONUTI', npv, k8b)
+    call jelira(vite, 'LONUTI', npv)
     call jeveuo(vite, 'L', lvite)
     freq = basefl//'           .FREQ'
     call jeveuo(freq, 'L', lfreq)
     numo = basefl//'           .NUMO'
-    call jelira(numo, 'LONUTI', nbm, k8b)
+    call jelira(numo, 'LONUTI', nbm)
     call jeveuo(numo, 'L', lnumo)
 !
 !   --- VERIFICATION DE LA VALIDITE DES NUMEROS D'ORDRE DES VITESSES -

@@ -61,7 +61,6 @@ subroutine tran77(nomres, typres, nomin, basemo)
     integer :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     character(len=8) :: k8b, blanc, basemo, crit, interp, basem2, mailla, nomres
     character(len=8) :: nomin, mode, nomma, matgen, nomgd
     character(len=14) :: numddl
@@ -182,7 +181,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
-        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq, k8b)
+        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq)
         basem2 = ' '
         call jeveuo(nomcha, 'L', iadrif)
         matric=zk24(iadrif+1)
@@ -268,7 +267,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
     endif
 !
     call jeveuo(trange//'.DISC', 'L', idinsg)
-    call jelira(trange//'.DISC', 'LONMAX', nbinsg, k8b)
+    call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&TRAN77.VECTGENE', 'V V R', nbmode, idvecg)
     do 210 ich = 1, nbcham
         leffor=.true.
@@ -287,7 +286,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
         else
             nomcha(20:24)='.CELV'
         endif
-        if (leffor) call jelira(nomcha, 'LONMAX', neq, k1bid)
+        if (leffor) call jelira(nomcha, 'LONMAX', neq)
         call wkvect('&&TRAN77.BASE', 'V V R', nbmode*neq, idbase)
         if (tousno) then
             call copmod(basemo, typcha, neq, numddl, nbmode,&
@@ -361,7 +360,7 @@ subroutine tran77(nomres, typres, nomin, basemo)
             endif
             call jeveuo(chamno, 'E', lvale)
 !
-            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq, k8b)
+            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
                 call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
                             zr(jinst+i), zr(idresu), nbmode, zr(idvecg), ibid)

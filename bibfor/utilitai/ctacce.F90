@@ -170,7 +170,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                                 nlist, n1)
                 endif
                 nlist(20:24) = '.VALE'
-                call jelira(nlist, 'LONMAX', nbval, k8b)
+                call jelira(nlist, 'LONMAX', nbval)
                 call jeveuo(nlist, 'L', jlist)
                 call wkvect(nival, 'V V I', nbval, jival)
                 do 10 i = 1, nbval
@@ -207,7 +207,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
                                 nlist, n1)
                 endif
                 nlist(20:24) = '.VALE'
-                call jelira(nlist, 'LONMAX', nbval, k8b)
+                call jelira(nlist, 'LONMAX', nbval)
                 call jeveuo(nlist, 'L', jlist)
                 call wkvect(nrval, 'V V R', nbval, jrval)
                 do 20 i = 1, nbval

@@ -70,8 +70,7 @@ subroutine detrsd(typesd, nomsd)
     integer :: iret, iad, long, i, nbch, jrelr, ibid, nbsd, ifets, ilimpi, idd
     integer :: ifetm, ifetn, ifetc, ityobj, inomsd, nblg, nbpa, nblp, n1
     integer :: jltns
-    character(len=1) :: k1bid
-    character(len=8) :: metres, k8bid, k8
+    character(len=8) :: metres, k8
     character(len=12) :: vge
     character(len=14) :: nu, com
     character(len=16) :: typ2sd, corres
@@ -195,7 +194,7 @@ subroutine detrsd(typesd, nomsd)
         endif
 !
         if (lfeti) then
-            call jelira(k24b, 'LONMAX', nbsd, k8bid)
+            call jelira(k24b, 'LONMAX', nbsd)
             call jeveuo(k24b, 'L', ifets)
             call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
             do 10 idd = 1, nbsd
@@ -265,7 +264,7 @@ subroutine detrsd(typesd, nomsd)
         call jeexin(k19//'.LTNS', iret)
         if (iret .eq. 0) goto 70
         call jeveuo(k19//'.LTNS', 'L', jltns)
-        call jelira(k19//'.LTNS', 'LONMAX', n1, k1bid)
+        call jelira(k19//'.LTNS', 'LONMAX', n1)
         do 1, i=1,n1
         call detrs2('TABLE', zk24(jltns-1+i))
  1      continue
@@ -324,7 +323,7 @@ subroutine detrsd(typesd, nomsd)
             nbpa=zi(iad)
             ASSERT(nbpa.ge.3)
             call jeveuo(table//'.TBLP', 'L', iad)
-            call jelira(table//'.TBLP', 'LONMAX', long, k1bid)
+            call jelira(table//'.TBLP', 'LONMAX', long)
             nblp=long/nbpa
             do 25,i = 1,nbpa
             if (zk24(iad+nblp*(i-1))(1:10) .eq. 'TYPE_OBJET') then
@@ -361,7 +360,7 @@ subroutine detrsd(typesd, nomsd)
         call jeexin(table//'.TBLP', iret)
         if (iret .ne. 0) then
             call jeveuo(table//'.TBLP', 'L', iad)
-            call jelira(table//'.TBLP', 'LONMAX', long, k1bid)
+            call jelira(table//'.TBLP', 'LONMAX', long)
             do 20,i = 1,long
             call jedetr(zk24(iad-1+i))
 20          continue
@@ -420,7 +419,7 @@ subroutine detrsd(typesd, nomsd)
             call jedetr(matas//'.FETP')
             call jedetr(matas//'.FETR')
 !
-            call jelira(k24b, 'LONMAX', nbsd, k8bid)
+            call jelira(k24b, 'LONMAX', nbsd)
             call jeveuo(k24b, 'L', ifetm)
             call jeexin('&FETI.LISTE.SD.MPI', iret)
             if (iret .gt. 0) then
@@ -455,7 +454,7 @@ subroutine detrsd(typesd, nomsd)
         endif
 !
         if (lfeti) then
-            call jelira(k24b, 'LONMAX', nbsd, k8bid)
+            call jelira(k24b, 'LONMAX', nbsd)
             call jeveuo(k24b, 'L', ifetc)
             call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
             do 40 idd = 1, nbsd
@@ -610,7 +609,7 @@ subroutine detrsd(typesd, nomsd)
         endif
 !
         if (lfeti) then
-            call jelira(k24b, 'LONMAX', nbsd, k8bid)
+            call jelira(k24b, 'LONMAX', nbsd)
             call jeveuo(k24b, 'L', ifetn)
             call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
             do 50 idd = 1, nbsd
@@ -664,7 +663,7 @@ subroutine detrsd(typesd, nomsd)
         matel = nomsd
         call jeexin(matel//'.RELR', iret)
         if (iret .le. 0) goto 61
-        call jelira(matel//'.RELR', 'LONUTI', nbch, k1bid)
+        call jelira(matel//'.RELR', 'LONUTI', nbch)
         if (nbch .gt. 0) call jeveuo(matel//'.RELR', 'L', jrelr)
         do 60,i = 1,nbch
         champ=zk24(jrelr-1+i)(1:19)

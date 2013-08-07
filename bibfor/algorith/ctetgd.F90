@@ -64,7 +64,6 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
     parameter   (nbcpmx=300)
-    character(len=1) :: k1bid
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, typddl(10), nomnoe, tyd, intf, kbid
     real(kind=8) :: xd(10), xg(10), xtd(10), xtg(10), tet0(10, 10)
@@ -106,7 +105,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldesc)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
 !**************************************************************
     nbnot = nbnot/(2+nbec)
 !      NBNOT=NBNOT/3
@@ -120,9 +119,9 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !--------------RECUPERATION NOMBRE DE NOEUDS AUX INTERFACES-------------
 !
-    call jelira(jexnum(intf//'.IDC_LINO', numd), 'LONMAX', nbnod, k1bid)
+    call jelira(jexnum(intf//'.IDC_LINO', numd), 'LONMAX', nbnod)
 !
-    call jelira(jexnum(intf//'.IDC_LINO', numg), 'LONMAX', nbnog, k1bid)
+    call jelira(jexnum(intf//'.IDC_LINO', numg), 'LONMAX', nbnog)
 !
     if (nbnod .ne. nbnog) then
         vali (1) = nbnod

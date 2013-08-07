@@ -67,7 +67,6 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 !
     real(kind=8) :: epsi
-    character(len=1) :: k1bid
     character(len=4) :: champ(8)
     character(len=6) :: pgc
     character(len=8) :: chmp(3), crit, interp, k8b, nomres, basmod, mailsk
@@ -207,7 +206,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     call jeveuo(numgen//'.REFN', 'L', llref2)
     k24bid=zk24(llref2)
     modgen = k24bid(1:8)
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k1bid)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     k8bid = '  '
     call mgutdm(modgen, k8bid, 1, 'NB_CMP_MAX', nbcmp,&
                 k8bid)
@@ -227,7 +226,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 !
 ! --- CREATION DU PROF-CHAMNO
     call genugl(profno, indirf, modgen, mailsk)
-    call jelira(profno//'.NUEQ', 'LONMAX', neq, k8bid)
+    call jelira(profno//'.NUEQ', 'LONMAX', neq)
 !
 ! --- RECUPERATION DU NOMBRE DE NOEUDS
     call dismoi('F', 'NB_NO_MAILLA', mailsk, 'MAILLAGE', nbnot,&
@@ -389,7 +388,7 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
 60                          continue
 58                      continue
                         call jeveuo(jexnum(indirf, numsst), 'L', llind)
-                        call jelira(jexnum(indirf, numsst), 'LONMAX', nbcou, k8bid)
+                        call jelira(jexnum(indirf, numsst), 'LONMAX', nbcou)
                         nbcou = nbcou/2
                         do 65 l = 1, nbcou
                             idep = zi(llind+(l-1)*2)

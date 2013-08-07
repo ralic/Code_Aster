@@ -51,11 +51,10 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer :: neq2, jdesc1, jdesc2, jrefe1, jrefe2, jdeeq1, jdeeq2
     integer :: nnomx, ncpmx, jtrav1, nuno2, nucp2, nuno1, nucp1, jdeeq
     integer :: jcmpgd, ncmpmx, icmp
-    character(len=1) :: k1b, typ1, typ2
-    character(len=8) :: nomgd, k8b
+    character(len=1) ::  typ1, typ2
+    character(len=8) :: nomgd
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
-    character(len=32) :: jexnum
 !
 !     ------------------------------------------------------------------
 !
@@ -70,10 +69,10 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !     1. SI LES 2 CHAMPS ONT LES MEMES NUMEROTATIONS :
 !     -------------------------------------------------
     if (iret .eq. 0) then
-        call jelira(ch1//'.VALE', 'TYPE', ibid, typ1)
-        call jelira(ch1//'.VALE', 'LONMAX', neq1, k1b)
+        call jelira(ch1//'.VALE', 'TYPE', cval=typ1)
+        call jelira(ch1//'.VALE', 'LONMAX', neq1)
         call jeveuo(ch1//'.VALE', 'L', jvale1)
-        call jelira(ch2//'.VALE', 'TYPE', ibid, typ2)
+        call jelira(ch2//'.VALE', 'TYPE', cval=typ2)
         call jeveuo(ch2//'.VALE', 'E', jvale2)
         call dismoi('F', 'PROF_CHNO', ch2, 'CHAM_NO', ibid,&
                     pfchno, ibid)
@@ -124,11 +123,11 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !
 !     2. SI LES 2 CHAMPS N'ONT PAS LES MEMES NUMEROTATIONS :
 !     ------------------------------------------------------
-    call jelira(ch1//'.VALE', 'TYPE', ibid, typ1)
-    call jelira(ch1//'.VALE', 'LONMAX', neq1, k1b)
+    call jelira(ch1//'.VALE', 'TYPE', cval=typ1)
+    call jelira(ch1//'.VALE', 'LONMAX', neq1)
     call jeveuo(ch1//'.VALE', 'L', jvale1)
-    call jelira(ch2//'.VALE', 'TYPE', ibid, typ2)
-    call jelira(ch2//'.VALE', 'LONMAX', neq2, k1b)
+    call jelira(ch2//'.VALE', 'TYPE', cval=typ2)
+    call jelira(ch2//'.VALE', 'LONMAX', neq2)
     call jeveuo(ch2//'.VALE', 'E', jvale2)
 !
     call jeveuo(ch1//'.DESC', 'L', jdesc1)
@@ -232,7 +231,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     call dismoi('F', 'NOM_GD', ch2, 'CHAM_NO', ibid,&
                 nomgd, ibid)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     icmp=-200
     icmp=indik8(zk8(jcmpgd),'LAGR',1,ncmpmx)
 !

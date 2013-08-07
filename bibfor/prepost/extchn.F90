@@ -179,7 +179,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     logical :: utili
-    character(len=8) :: k8b, repere
+    character(len=8) ::  repere
     character(len=24) :: nomjv
     integer :: iarg
 ! ----------------------------------------------------------------------
@@ -192,7 +192,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     zero = 0.0d0
     epsi = 1.0d-6
 !
-    call jelira(nvalch, 'TYPE', ibid, type)
+    call jelira(nvalch, 'TYPE', cval=type)
     ASSERT((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
     if (type(1:1) .eq. 'R') then
         call jeveuo(nvalch, 'L', avalch)
@@ -270,7 +270,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
 !   ---------------------------------------------------------------
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acmpgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbtcmp, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbtcmp)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', adesgd)
 !
     nbec = zi(adesgd+3-1)
@@ -295,7 +295,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     endif
 !
     call jecreo('&&EXTRCHNNUMCP', 'V V I')
-    call jeecra('&&EXTRCHNNUMCP', 'LONMAX', nbc, ' ')
+    call jeecra('&&EXTRCHNNUMCP', 'LONMAX', nbc)
     call jeveuo('&&EXTRCHNNUMCP', 'E', anumcp)
 !
     do 20,i = 1,nbc,1
@@ -315,16 +315,16 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     nperr = nsschn//'.ERRE'
 !
     call jecreo(npadr, 'V V I')
-    call jeecra(npadr, 'LONMAX', nbtnd, ' ')
+    call jeecra(npadr, 'LONMAX', nbtnd)
     call jeveuo(npadr, 'E', apadr)
 !
     call jecreo(npcmp, 'V V I')
-    call jeecra(npcmp, 'LONMAX', nbtcmp, ' ')
+    call jeecra(npcmp, 'LONMAX', nbtcmp)
     call jeveuo(npcmp, 'E', apcmp)
 !
     call jecreo(npval, 'V V R')
-    call jeecra(npval, 'LONMAX', nbc*nbn, ' ')
-    call jeecra(npval, 'DOCU', nbc, 'CHNO')
+    call jeecra(npval, 'LONMAX', nbc*nbn)
+    call jeecra(npval, 'DOCU', cval='CHNO')
     call jeveuo(npval, 'E', apval)
 !
     call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
@@ -372,7 +372,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
         do 300,i = 1,nbn,1
 !
         call jecroc(jexnum(nperr, i))
-        call jeecra(jexnum(nperr, i), 'LONMAX', nbc, ' ')
+        call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
         call jeveuo(jexnum(nperr, i), 'E', aperr)
 !
         ind = numnd(i)
@@ -409,7 +409,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
         do 400,i = 1,nbn,1
 !
         call jecroc(jexnum(nperr, i))
-        call jeecra(jexnum(nperr, i), 'LONMAX', nbc, ' ')
+        call jeecra(jexnum(nperr, i), 'LONMAX', nbc)
         call jeveuo(jexnum(nperr, i), 'E', aperr)
 !
         ind = numnd(i)

@@ -82,7 +82,6 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: lp
-    character(len=1) :: k1b
     character(len=8) :: depla(3), config(4), depl, k8b, mailla, modele, nomno0
     character(len=14) :: numddl
     character(len=19) :: caelem, masse
@@ -322,7 +321,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 !------- 3.1.CREATION D'OBJETS DE TRAVAIL
 !
             mlgnma = noma//'.NOMMAI'
-            call jelira(mlgnma, 'NOMMAX', nbma, k1b)
+            call jelira(mlgnma, 'NOMMAX', nbma)
             call wkvect('&&MDCONF.TEMP.MAIL', 'V V I', nbma, imail)
 !
 !

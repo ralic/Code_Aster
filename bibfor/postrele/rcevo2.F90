@@ -117,7 +117,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         call getvid(motclf, 'LIST_INST', iocc, iarg, 1,&
                     nomf, n1)
         if (n1 .ne. 0) then
-            call jelira(nomf//'.VALE', 'LONMAX', nbins0, k8b)
+            call jelira(nomf//'.VALE', 'LONMAX', nbins0)
         else
             if (nbinti .eq. 1) then
                 table = tabl0
@@ -416,7 +416,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         call getvid(motclf, 'LIST_INST', iocc, iarg, 1,&
                     nomf, n1)
         if (n1 .ne. 0) then
-            call jelira(nomf//'.VALE', 'LONMAX', nbins0, k8b)
+            call jelira(nomf//'.VALE', 'LONMAX', nbins0)
             call jeveuo(nomf//'.VALE', 'L', kinst)
             call getvr8(motclf, 'PRECISION', iocc, iarg, 1,&
                         prec(1), n1)

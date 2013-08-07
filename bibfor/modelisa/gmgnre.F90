@@ -53,7 +53,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: k8bid, typm, notyma(19)
+    character(len=8) ::  typm, notyma(19)
     integer :: posini, posfin, jtypm, sel, nutyma
     integer :: pini(3, 19), pfin(3, 19)
 !
@@ -133,7 +133,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
     do 2 i = 1, nbma
         ima=listma(i)
         call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
-        call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma, k8bid)
+        call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
 !
         if (sel .eq. 0) then
             posini = 1

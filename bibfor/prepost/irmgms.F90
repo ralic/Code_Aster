@@ -61,7 +61,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 ! ---------------------------------------------------------------------
 !
     real(kind=8) :: zero
-    character(len=8) :: nomaou, k8bid, nomtyp
+    character(len=8) :: nomaou, nomtyp
     character(len=8) :: k8nno, k8nbma
     character(len=24) :: typmai, nommai, nomail, valk, nomgrm
     integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
@@ -191,7 +191,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
         if (ier .eq. 1) then
             numgrm = igm + numgrx
         endif
-        call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm, k8bid)
+        call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
         do 40 i = 1, nbm
             nbmli = zi(jdnbnu+zi(idgrma+i-1)-1)
             call jeveuo(jexnum( '&&IRMGMS.LISMA', zi(idgrma+i-1) ), 'L', idlima)

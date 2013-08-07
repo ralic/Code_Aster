@@ -49,7 +49,7 @@ subroutine op0027()
     integer :: idesc, ialime, iaconl, jrefa2, jrefa1
     integer :: jump, iret2
     real(kind=8) :: delta
-    character(len=8) :: nomres, nommat, k8b
+    character(len=8) :: nomres, nommat
     character(len=16) :: nomcmd, concep
     integer :: iarg
 ! DEB ------------------------------------------------------------------
@@ -97,7 +97,7 @@ subroutine op0027()
             call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         1)
             call jecroc(jexnum(nomres//'           .VALM', 1))
-            call jeecra(nomres//'           .VALM', 'LONMAX', m, k8b)
+            call jeecra(nomres//'           .VALM', 'LONMAX', m)
 !
 !
             call wkvect(nomres//'           .DESC', 'G V I', 3, idesc)

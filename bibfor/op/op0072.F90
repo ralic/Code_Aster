@@ -111,7 +111,7 @@ subroutine op0072()
     call jeveuo(vectas//'           .VALE', 'L', iadvec)
     call jeveuo(vectas//'           .REFE', 'L', iadref)
     call jeveuo(basemo//'           .REFD', 'L', iadrif)
-    call jelira(vectas//'           .VALE', 'TYPE', ibid, typvec)
+    call jelira(vectas//'           .VALE', 'TYPE', cval=typvec)
     typeba = zk24(iadrif+6)
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
@@ -170,7 +170,7 @@ subroutine op0072()
     endif
     call wkvect(nomres//'           .REFE', 'G V K24', 2, iarefe)
     call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
-    call jeecra(nomres//'           .DESC', 'DOCU', 0, 'VGEN')
+    call jeecra(nomres//'           .DESC', 'DOCU', cval='VGEN')
 !
 ! --- REMPLISSAGE DU .REFE ET .VALE
 !

@@ -53,7 +53,7 @@ subroutine ejinit(nomte, iu, ip)
     integer :: uh20(16), ph20(4)
     integer :: up15(12), pp15(3)
     integer :: uq8(6), pq8(2)
-    logical :: ifqu8, ifh20, ifp15, lteatt
+    logical :: ifqu8, ifh20, ifp15
 ! ----------------------------------------------------------------------
     data uh20 /1,2,3,4,9,10,11,12,5,6,7,8,17,18,19,20/
     data ph20 /13,14,15,16/

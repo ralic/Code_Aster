@@ -82,11 +82,10 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     integer :: n, nocc, nno, nnos,  nnn
     integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
     real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme
-    character(len=8) :: kangl, k8b, knumai
+    character(len=8) :: kangl, knumai
     character(len=8) :: nomtyp, nomnoe
     character(len=24) :: nomobj, nomob2, coninv
     character(len=24) :: valk(2)
-    character(len=1) :: k1b
     real(kind=8) :: dfse2(4), dfse3(9), armin, prec
     real(kind=8) :: dftr3(18), dftr6(72), dftr7(98)
     real(kind=8) :: dfqu4(32), dfqu8(128), dfqu9(162)
@@ -116,7 +115,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     if (type_calc .eq. 2) nomobj = '&&CANORT.TANGENT'
     call jedetr(nomobj)
     call jecreo(nomobj, 'V V R')
-    call jeecra(nomobj, 'LONMAX', ndim*nbno, ' ')
+    call jeecra(nomobj, 'LONMAX', ndim*nbno)
     call jeveuo(nomobj, 'E', jnorm)
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
@@ -133,7 +132,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     call jedetr(nomob2)
     isom = 0
     do i = 1, nbno
-        call jelira(jexnum(coninv, listno(i)), 'LONMAX', nnn, k8b)
+        call jelira(jexnum(coninv, listno(i)), 'LONMAX', nnn)
         isom = isom + nnn
     end do
 !
@@ -145,7 +144,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !     BOUCLE SUR TOUS LES NOEUDS CONCERNES
     do ino = 1, nbno
         numno=listno(ino)
-        call jelira(jexnum(coninv, numno), 'LONMAX', nnn, k8b)
+        call jelira(jexnum(coninv, numno), 'LONMAX', nnn)
         call jeveuo(jexnum(coninv, numno), 'L', iinver)
 !
 !    BOUCLE SUR TOUTES LES MAILLES CONNECTEES AU NOEUD ACTUEL
@@ -157,7 +156,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
             ityp=zi(iatyma-1+numail)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nomtyp)
             call jeveuo(jexnum(noma//'.CONNEX', numail), 'L', jdes)
-            call jelira(jexnum(noma//'.CONNEX', numail), 'LONMAX', nn, k1b)
+            call jelira(jexnum(noma//'.CONNEX', numail), 'LONMAX', nn)
             if (ndim .eq. 2 .and. nomtyp(1:4) .eq. 'SEG2') then
                 dimcoo = -zi(jcoode-1+2)
                 lino(1)=zi(jdes-1+1)
@@ -579,7 +578,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     ij = 0
     do n = 1, nbno
         ino = listno(n)
-        call jelira(jexnum(coninv, ino), 'LONMAX', nocc, k8b)
+        call jelira(jexnum(coninv, ino), 'LONMAX', nocc)
         if (ndim .eq. 2) then
             vnorm = zr(&
                     jnorm-1+2*(n-1)+1)*zr(jnorm-1+2*(n-1)+1) + zr(jnorm-1+2*(n-1)+2)*zr(jnorm-1+2&

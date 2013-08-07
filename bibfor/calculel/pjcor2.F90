@@ -45,7 +45,6 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: kbid
     character(len=8) :: nomgd, nompar
     character(len=19) :: cns1, ces2, cel2
     character(len=19) :: dcel
@@ -78,7 +77,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres,&
     call jeveuo(cns1//'.CNSC', 'L', jcns1c)
     call jeveuo(cns1//'.CNSV', 'L', jcns1v)
     call jeveuo(cns1//'.CNSL', 'L', jcns1l)
-    call jelira(cns1//'.CNSC', 'LONMAX', ncmp1, kbid)
+    call jelira(cns1//'.CNSC', 'LONMAX', ncmp1)
 !
     nomgd = zk8(jcns1k-1+2)
     nbno1 = zi(jcns1d-1+1)

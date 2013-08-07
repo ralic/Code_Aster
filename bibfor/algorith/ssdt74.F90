@@ -65,7 +65,6 @@ subroutine ssdt74(nomres, nomcmd)
     real(kind=8) :: xlambd, acrit, agene
     real(kind=8) :: valr(2)
     real(kind=8) :: dt, dts, dtu, dtmax, dtmin, r8b
-    character(len=1) :: k1bid
     character(len=4) :: k4bid(3)
     character(len=8) :: k8b, kbid, nomres, masgen, riggen, amogen, monmot
     character(len=8) :: basemo, modgen, mastem, amotem, vecgen, resgen, bamo1
@@ -198,7 +197,7 @@ subroutine ssdt74(nomres, nomcmd)
     call jeveuo(numgen//'.NUME.REFN', 'L', jrefa)
     modgen = zk24(jrefa-1+1)(1:8)
     call gettco(modgen, typbas)
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k1bid)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     nbmode = 0
     nbmody = 0
     do 20 k = 1, nbsst

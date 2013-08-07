@@ -88,7 +88,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
     nec = zi(iddes+2)
-    call jelira(mat//'.REFA', 'CLAS', ibid, base)
+    call jelira(mat//'.REFA', 'CLAS', cval=base)
 !
     if (cumul .eq. 'ZERO') then
         call jedetr(mat//'.CCID')

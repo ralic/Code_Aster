@@ -110,7 +110,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
     if (iret .eq. 0) then
         call jecroc(jexnom(typ(1:8)//'.NOMMAI', noma))
         call jecroc(jexnom(cnx, noma))
-        call jeecra(jexnom(cnx, noma), 'LONMAX', fmt(numtcl), ' ')
+        call jeecra(jexnom(cnx, noma), 'LONMAX', fmt(numtcl))
     else
         call u2mesk('F', 'MODELISA7_10', 1, noma)
     endif

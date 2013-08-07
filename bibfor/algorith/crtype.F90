@@ -373,7 +373,7 @@ subroutine crtype()
                         prec, ibid)
             call getvtx('AFFE', 'CRITERE', iocc, iarg, 1,&
                         criter, ibid)
-            call jelira(listr8//'.VALE', 'LONMAX', nbval, k8b)
+            call jelira(listr8//'.VALE', 'LONMAX', nbval)
 !
             nbinst = nbval
             numini = 1
@@ -466,11 +466,11 @@ subroutine crtype()
 !           NOM DES COMPOSANTES DU MEME RANG IDENTIQUE
             kjexn = jexnom('&CATA.GD.NOMCMP',typegd)
             call jeveuo(kjexn, 'L', icmpd)
-            call jelira(kjexn, 'LONMAX', nbcmpd, k8b)
+            call jelira(kjexn, 'LONMAX', nbcmpd)
 !
             kjexn = jexnom('&CATA.GD.NOMCMP',nogdsi)
             call jeveuo(kjexn, 'L', icmpi)
-            call jelira(kjexn, 'LONMAX', nbcmpi, k8b)
+            call jelira(kjexn, 'LONMAX', nbcmpi)
             do 300 j = 1, nbcmpi
                 if (zk8(icmpi+j-1) .ne. zk8(icmpd+j-1)) then
                     valkk(1) = typegd
@@ -525,7 +525,7 @@ subroutine crtype()
             endif
 !
             if (lfonc) then
-                call jelira(champ//'.VALE', 'LONMAX', lg, k8b)
+                call jelira(champ//'.VALE', 'LONMAX', lg)
                 call jeveuo(champ//'.VALE', 'L', jnomf)
                 call jeveuo(champ//'.REFE', 'L', jrefe)
                 call jeveuo(zk24(jrefe+1)(1:19)//'.DEEQ', 'L', jdeeq)

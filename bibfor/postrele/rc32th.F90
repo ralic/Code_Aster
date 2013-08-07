@@ -143,13 +143,13 @@ subroutine rc32th()
 !
     ndim = 4 * ncmp * 2
     call jecroc(jexnom(jvorig, knume))
-    call jeecra(jexnom(jvorig, knume), 'LONMAX', ndim, ' ')
-    call jeecra(jexnom(jvorig, knume), 'LONUTI', ndim, ' ')
+    call jeecra(jexnom(jvorig, knume), 'LONMAX', ndim)
+    call jeecra(jexnom(jvorig, knume), 'LONUTI', ndim)
     call jeveuo(jexnom(jvorig, knume), 'E', jorig)
 !
     call jecroc(jexnom(jvextr, knume))
-    call jeecra(jexnom(jvextr, knume), 'LONMAX', ndim, ' ')
-    call jeecra(jexnom(jvextr, knume), 'LONUTI', ndim, ' ')
+    call jeecra(jexnom(jvextr, knume), 'LONMAX', ndim)
+    call jeecra(jexnom(jvextr, knume), 'LONUTI', ndim)
     call jeveuo(jexnom(jvextr, knume), 'E', jextr)
 !
     do 116 k = 1, nbabsc*ncmp

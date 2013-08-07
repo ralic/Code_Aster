@@ -88,7 +88,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !        NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 !     ------------------------------------------------------------------
 !
-    character(len=1) :: k1bid, type
+    character(len=1) ::  type
     integer :: gd, lgconc, lgch16
     integer :: jvale, nuti
     logical :: lmasu
@@ -119,7 +119,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !     --- NOM DU PROFIL AUX NOEUDS ASSOCIE S'IL EXISTE
     nomnu = zk24(iarefe-1+2)
 !
-    call jelira(chamn//'.VALE', 'TYPE', ibid, type)
+    call jelira(chamn//'.VALE', 'TYPE', cval=type)
     if (type(1:1) .eq. 'R') then
         itype = 1
     else if (type(1:1).eq.'C') then
@@ -148,7 +148,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     call jeexin('&&IRDEPL.ENT_COD', iret)
     if (iret .ne. 0) call jedetr('&&IRDEPL.ENT_COD')
     call wkvect('&&IRDEPL.ENT_COD', 'V V I', nec, iaec)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call wkvect('&&IRDEPL.NUM_CMP', 'V V I', ncmpmx, jncmp)
 !
@@ -243,7 +243,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
                         ncmpmx, zr( iavale), nomgd, zk8(iad), nosy16,&
                         zi(jnu), lresu, nbcmp, nomcmp, nive)
         else if (itype.eq.2.and.num.ge.0) then
-            call jelira(chamn//'.VALE', 'LONUTI', nuti, k1bid)
+            call jelira(chamn//'.VALE', 'LONUTI', nuti)
             call wkvect('&&IRDEPL.VALE', 'V V R', nuti, jvale)
 !
             if (partie .eq. 'REEL') then
@@ -273,7 +273,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
         call jeexin(nomma//'           .TITR', iret)
         if (iret .ne. 0) then
             call jeveuo(nomma//'           .TITR', 'L', jtitr)
-            call jelira(nomma//'           .TITR', 'LONMAX', nbtitr, k1bid)
+            call jelira(nomma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
                 titmai=zk80(jtitr-1+1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then

@@ -58,7 +58,6 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
     character(len=8) :: nomfon(nbfonc)
     real(kind=8) :: long
 !
-    character(len=8) :: k8bid
     character(len=19) :: tbfonc, fonc1, fonc2
     character(len=24) :: lstfon, tbnp, tblp, vale1, vale2
     real(kind=8) :: l1, l2
@@ -110,10 +109,10 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
         vale1 = fonc1//'.VALE'
         vale2 = fonc2//'.VALE'
 !
-        call jelira(vale1, 'LONUTI', nbp1, k8bid)
+        call jelira(vale1, 'LONUTI', nbp1)
         nbp1 = nbp1/2
 !
-        call jelira(vale2, 'LONUTI', nbp2, k8bid)
+        call jelira(vale2, 'LONUTI', nbp2)
         nbp2 = nbp2/2
 !
 !-------ON VERIFIE QUE L'ON A AU MOINS 2 VALEURS DANS CHAQUE FONCTION

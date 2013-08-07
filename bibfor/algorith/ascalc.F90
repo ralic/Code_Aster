@@ -102,7 +102,6 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     parameter     ( nbpara = 5 )
     real(kind=8) :: temps
     logical :: prim, secon, glob
-    character(len=1) :: k1b
     character(len=4) :: ctyp
     character(len=8) :: k8b, nume, noeu, noma
     character(len=15) :: motfa1
@@ -198,7 +197,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                                 ier = ier + 1
                                 ASSERT(iret .ne. 0)
                             endif
-                            call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno, k1b)
+                            call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                             call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
 !
                             do 111 ino = 1, nno

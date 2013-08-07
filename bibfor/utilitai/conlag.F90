@@ -58,7 +58,7 @@ subroutine conlag(matasz, cond)
 !
     if (iret .ne. 0) then
         call jeveuo(matass//'.FETM', 'L', jfetm)
-        call jelira(matass//'.FETM', 'LONUTI', nbsd, k8bid)
+        call jelira(matass//'.FETM', 'LONUTI', nbsd)
         do 10 idd = 1, nbsd
             matdd=zk24(jfetm+idd-1)
             call jeexin(matdd//'.CONL', iret)

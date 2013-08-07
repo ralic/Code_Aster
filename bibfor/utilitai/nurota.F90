@@ -130,7 +130,7 @@ subroutine nurota(numedd, compor, sdnuro)
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR
 !
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
 !
 ! --- TABLEAU DE VALEURS DE LA CARTE COMPOR
 ! --- (CONTENANT LES VALEURS DU COMPORTEMENT)
@@ -169,7 +169,7 @@ subroutine nurota(numedd, compor, sdnuro)
                     if (compt .ne. deform) goto 130
 ! ---     RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
                     call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
-                    call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno, k8bid)
+                    call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
                     do 20 ino = 1, nbno
                         zi(itrav+zi(iconex+ino-1)-1) = 1
 20                  continue
@@ -198,7 +198,7 @@ subroutine nurota(numedd, compor, sdnuro)
 ! --- AUX DDLS DE ROTATION POUR LES NOEUDS EN GRANDES ROTATIONS   ---
 !
 ! --- RECUPERATION DU NOMBRE D'INCONNUES DU MODELE  ---
-    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', nequa, k8bid)
+    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', nequa)
     if (nbnoc .gt. 0) then
         call wkvect(sdnuro, 'V V I', nequa, indro)
     else
@@ -211,7 +211,7 @@ subroutine nurota(numedd, compor, sdnuro)
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR DEPL_R ---
 !
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iancmp)
 !
     nocmp = 'DRZ'
@@ -226,7 +226,7 @@ subroutine nurota(numedd, compor, sdnuro)
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE  ---
 !
-    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
+    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
     do 40 i = 1, nlili
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)

@@ -151,7 +151,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !
 !
 !     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
-    call jelira(matrig//'.VALM', 'TYPE', ibid, ktyp)
+    call jelira(matrig//'.VALM', 'TYPE', cval=ktyp)
 !
 !     --- RECUPERATION DE LA NUMEROTATION DE LA MATRICE DE RAIDEUR ---
     call dismoi('F', 'NOM_NUME_DDL', matrig, 'MATR_ASSE', ibid,&

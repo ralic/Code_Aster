@@ -167,11 +167,11 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
 !
     int1=lint1//'.IDC_LINO'
     call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
-    call jelira(jexnum(int1(1:17), ibid), 'LONMAX', nbno1, k8bid)
+    call jelira(jexnum(int1(1:17), ibid), 'LONMAX', nbno1)
 !
     int2=lint2//'.IDC_LINO'
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
-    call jelira(jexnum(int2(1:17), ibid), 'LONMAX', nbno2, k8bid)
+    call jelira(jexnum(int2(1:17), ibid), 'LONMAX', nbno2)
 !
     if (nbno1 .ne. nbno2) then
         valk (1) = sst1
@@ -385,11 +385,11 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2,&
         call jeexin(ordol, iret)
         if (iret .eq. 0) then
             call jecreo(ordol, 'V V I')
-            call jeecra(ordol, 'LONMAX', nbno, ' ')
+            call jeecra(ordol, 'LONMAX', nbno)
             call dismoi('F', 'NB_EC', lint2, 'INTERF_DYNA', nbec,&
                         k8bid, iret)
             call jecreo(ordod, 'V V I')
-            call jeecra(ordod, 'LONMAX', nbno*nbec, ' ')
+            call jeecra(ordod, 'LONMAX', nbno*nbec)
         endif
 !
         call jeveuo(ordol, 'E', llint3)

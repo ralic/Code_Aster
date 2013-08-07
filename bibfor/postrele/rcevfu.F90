@@ -39,13 +39,12 @@ subroutine rcevfu(cnoc, cfat, fut)
     integer :: jnock, jnocl, jfukl, indi, inds, k, l, ifm, niv
     real(kind=8) :: fum, fukl
     logical :: encore
-    character(len=8) :: k8b
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
     call infniv(ifm, niv)
 !
-    call jelira(cnoc, 'LONMAX', nbinst, k8b)
+    call jelira(cnoc, 'LONMAX', nbinst)
     call jeveuo(cnoc, 'L', jnocr)
     call jeveuo(cfat, 'L', jfu)
 !

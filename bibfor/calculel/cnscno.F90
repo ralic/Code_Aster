@@ -176,7 +176,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                 endif
             else
 !         -- SINON ON NE PEUT VERIFIER QUE LA LONGUEUR DE .PRNO :
-                call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', n1, kbid)
+                call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', n1)
                 if (n1 .ne. nbno*(nbec+2)) call u2mesk('F', 'CALCULEL4_6', 2, valk)
             endif
         endif
@@ -247,7 +247,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !     5- ON CREE LE .DESC :
 !     ------------------------
     call wkvect(cno//'.DESC', base//' V I', 2, jdesc)
-    call jeecra(cno//'.DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(cno//'.DESC', 'DOCU', cval='CHNO')
     zi(jdesc-1+1)=gd
     zi(jdesc-1+2)=1
 !
@@ -275,7 +275,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
 !     6- ON CREE ET ON REMPLIT LE .VALE :
 !     -----------------------------------
-    call jelira(prchno//'.NUEQ', 'LONMAX', neq2, kbid)
+    call jelira(prchno//'.NUEQ', 'LONMAX', neq2)
     call jeveuo(prchno//'.DEEQ', 'L', jdeeq)
     call wkvect(cno//'.VALE', base//' V '//tsca, neq2, jvale)
 !

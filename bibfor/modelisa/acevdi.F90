@@ -147,7 +147,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
             do 14 ig = 1, nbgrm
                 nogrm = zk24(jgrm+ig-1)
                 call verima(noma, nogrm, 1, 'GROUP_MA')
-                call jelira(jexnom(grmama, nogrm), 'LONUTI', nbmail, k8b)
+                call jelira(jexnom(grmama, nogrm), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, nogrm), 'L', jmail)
                 do 16 ima = 1, nbmail
                     numa = zi(jmail+ima-1)

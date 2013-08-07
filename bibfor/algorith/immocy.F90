@@ -45,7 +45,6 @@ subroutine immocy(nomres, ifm)
     character(len=8) :: droite, gauche, axe, valk(4)
     character(len=24) :: refe, typint, nosec, numint, diamod, freq
     character(len=24) :: cmode, desc
-    character(len=1) :: k1bid
     integer :: ifm
 !
 !-----------------------------------------------------------------------
@@ -116,7 +115,7 @@ subroutine immocy(nomres, ifm)
     nbdax=zi(lldesc+2)
     nbddge=nbmod+nbddr+nbdax
 !
-    call jelira(diamod, 'LONMAX', nbdiam, k1bid)
+    call jelira(diamod, 'LONMAX', nbdiam)
     nbdiam=nbdiam/2
 !
     call jeveuo(freq, 'L', llfre)

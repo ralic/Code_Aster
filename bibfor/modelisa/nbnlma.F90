@@ -58,7 +58,6 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
     integer :: iatyma, iret, it, itrou, j, jln, jnbn, jtyp, m, mi, n, nbna, nbnm
     integer :: nn, numtyp, p1, p2
     character(len=8) :: mk, valk
-    character(len=1) :: k1bid
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -109,12 +108,12 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
     call jeexin('&&NBNLMA.LN', iret)
     if (iret .ne. 0) call jedetr('&&NBNLMA.LN')
     call wkvect('&&NBNLMA.LN', 'V V I', nbnm, jln)
-    call jeecra('&&NBNLMA.LN', 'LONUTI', 0, ' ')
+    call jeecra('&&NBNLMA.LN', 'LONUTI', 0)
 !
     call jeexin('&&NBNLMA.NBN', iret)
     if (iret .ne. 0) call jedetr('&&NBNLMA.NBN')
     call wkvect('&&NBNLMA.NBN', 'V V I', nbnm, jnbn)
-    call jeecra('&&NBNLMA.NBN', 'LONUTI', 0, ' ')
+    call jeecra('&&NBNLMA.NBN', 'LONUTI', 0)
 !
     do 20 m = 1, nbm
         mi = limanu(m)
@@ -124,7 +123,7 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
 !
 !           NBNA EST LE NOMBRE DE NOEUDS ACTUELLEMENT STOCKES
 !
-            call jelira('&&NBNLMA.LN', 'LONUTI', nbna, k1bid)
+            call jelira('&&NBNLMA.LN', 'LONUTI', nbna)
             itrou = 0
 !
 !           SI LE NUMERO DE NOEUD EXISTE DEJA DANS .LN
@@ -145,8 +144,8 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp,&
                 nbna = nbna + 1
                 zi( jln-1+nbna) = zi(p1+zi(p2+mi-1)-1+n-1)
                 zi(jnbn-1+nbna) = 1
-                call jeecra('&&NBNLMA.LN', 'LONUTI', nbna, ' ')
-                call jeecra('&&NBNLMA.NBN', 'LONUTI', nbna, ' ')
+                call jeecra('&&NBNLMA.LN', 'LONUTI', nbna)
+                call jeecra('&&NBNLMA.NBN', 'LONUTI', nbna)
             endif
 22      continue
 20  end do

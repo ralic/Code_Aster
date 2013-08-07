@@ -75,7 +75,6 @@ subroutine nmetca(modele, noma, mate, sddisc, sdcriq,&
     real(kind=8) :: rcmp(npara)
 !
     integer :: ibid, icmp, codret, iret
-    logical :: lbid
     character(len=1) :: base
     character(len=8) :: kcmp
     character(len=24) :: ligrmo, chgeom

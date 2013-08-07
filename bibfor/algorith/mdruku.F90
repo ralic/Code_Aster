@@ -58,15 +58,15 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: descmm, descmr, descma, palmax, nbrede, nbrevi, dimnas, nbpas
+    integer :: descmm, descmr, descma, palmax, nbrede, nbrevi, dimnas
     integer :: neqgen, nbsauv, nbchoc, nbrfis, nbexci, logcho(nbchoc, *)
     integer :: liad(*), inumor(*), idescf(*), nbpal, nbobjs, iapp, iarchi, isto1
     integer :: isto2, isto3, isto4, jchor, jredi, jredr, jrevi, jrevr, jvint
-    integer :: nbconv, nbmxcv, nbsaui, nbscho, im, ind, iadrk, iarg, ibid, iveri
+    integer :: nbconv, nbmxcv, nbsaui, nbscho, im, ind, iadrk, iarg, ibid
     integer :: jacce, ier, iret, jacci, jaccs, jamgy, jdcho, jdepi, jdepl, jdeps
     integer :: jerde, jervi, jfcho, jfext, jicho, jinst, jkde, jkvi, jm, jmass
     integer :: jordr, jpass, jredc, jredd, jrevc, jrevd, jrigy, jtra1, jvcho
-    integer :: jvite, jviti, jvits, n1, n100, nbpasc, jrefa, nm, npm
+    integer :: jvite, jviti, jvits, n1, npm
     parameter    (palmax=20)
     parameter    (dimnas=8)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
@@ -82,7 +82,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     character(len=8) :: cnpal(palmax), basemo, noecho(nbchoc, *), fonred(*)
     character(len=8) :: fonrev(*), intitu, nomres, monmot, fk(2), dfk(2), vitvar
     character(len=8) :: nommas, nomrig, nofdep(*), nofvit(*), nofacc(*)
-    character(len=8) :: nomfon(*), foncv, fonca, foncp, namerk, nomamo, krefd
+    character(len=8) :: nomfon(*), foncv, fonca, foncp, namerk, nomamo
     character(len=14) :: matpre
     character(len=16) :: typbas, method
     character(len=19) :: matasm

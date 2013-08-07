@@ -35,7 +35,6 @@ subroutine i3crdm(descm)
 !     REMARQUE : MAILLES DECRITES = PENTA, HEXA, TETRA
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: kbid
 !
 !
     integer :: adescm, atetra, ahexa, apenta
@@ -47,16 +46,16 @@ subroutine i3crdm(descm)
     call jemarq()
     call wkvect(descm, 'V V I', 3, adescm)
     call jecreo('&&I3DESCM.DESC.TETRA', 'V V I')
-    call jeecra('&&I3DESCM.DESC.TETRA', 'LONMAX', 38, kbid)
-    call jeecra('&&I3DESCM.DESC.TETRA', 'LONUTI', 38, kbid)
+    call jeecra('&&I3DESCM.DESC.TETRA', 'LONMAX', 38)
+    call jeecra('&&I3DESCM.DESC.TETRA', 'LONUTI', 38)
     call jeveut('&&I3DESCM.DESC.TETRA', 'E', atetra)
     call jecreo('&&I3DESCM.DESC.PENTA', 'V V I')
-    call jeecra('&&I3DESCM.DESC.PENTA', 'LONMAX', 38, kbid)
-    call jeecra('&&I3DESCM.DESC.PENTA', 'LONUTI', 38, kbid)
+    call jeecra('&&I3DESCM.DESC.PENTA', 'LONMAX', 38)
+    call jeecra('&&I3DESCM.DESC.PENTA', 'LONUTI', 38)
     call jeveut('&&I3DESCM.DESC.PENTA', 'E', apenta)
     call jecreo('&&I3DESCM.DESC.HEXA ', 'V V I')
-    call jeecra('&&I3DESCM.DESC.HEXA ', 'LONMAX', 38, kbid)
-    call jeecra('&&I3DESCM.DESC.HEXA ', 'LONUTI', 38, kbid)
+    call jeecra('&&I3DESCM.DESC.HEXA ', 'LONMAX', 38)
+    call jeecra('&&I3DESCM.DESC.HEXA ', 'LONUTI', 38)
     call jeveut('&&I3DESCM.DESC.HEXA ', 'E', ahexa)
     zi(adescm + 1-1) = atetra
     zi(adescm + 2-1) = apenta

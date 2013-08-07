@@ -56,7 +56,6 @@ subroutine mtdefs(matout, matin, base, typc)
 !     ------------------------------------------------------------------
     integer :: nbval, ival, jrefao, jrefai
     character(len=1) :: classe, type
-    character(len=8) :: cbid
     character(len=19) :: nomout, nomin
     character(len=24) :: valm, refa, lime
 !     ------------------------------------------------------------------
@@ -72,11 +71,11 @@ subroutine mtdefs(matout, matin, base, typc)
 !     -- OBJET .REFA :
 !     ----------------------------
     refa = nomin//'.REFA'
-    call jelira(refa, 'LONMAX', nbval, cbid)
+    call jelira(refa, 'LONMAX', nbval)
     call jeveuo(refa, 'L', jrefai)
     refa = nomout//'.REFA'
     call jecreo(refa, classe//' V K24')
-    call jeecra(refa, 'LONMAX', nbval, '  ')
+    call jeecra(refa, 'LONMAX', nbval)
     call jeveuo(refa, 'E', jrefao)
     do 10 ival = 0, nbval-1
         zk24(jrefao+ival) = zk24(jrefai+ival)
@@ -90,12 +89,12 @@ subroutine mtdefs(matout, matin, base, typc)
     lime = nomin//'.LIME'
     call jeexin(lime, iret)
     if (iret .gt. 0) then
-        call jelira(lime, 'LONMAX', nbval, cbid)
+        call jelira(lime, 'LONMAX', nbval)
         call jeveuo(lime, 'L', jrefai)
 !
         lime = nomout//'.LIME'
         call jecreo(lime, classe//' V K24')
-        call jeecra(lime, 'LONMAX', nbval, '  ')
+        call jeecra(lime, 'LONMAX', nbval)
         call jeveuo(lime, 'E', jrefao)
         do 15 ival = 0, nbval-1
             zk24(jrefao+ival) = zk24(jrefai+ival)
@@ -107,13 +106,13 @@ subroutine mtdefs(matout, matin, base, typc)
 !     --------------------------------------------------------------
     valm = nomin//'.VALM'
     type = typc(1:1)
-    if (type .eq. ' ') call jelira(valm, 'TYPE', ival, type)
-    call jelira(valm, 'NMAXOC', nbbloc, cbid)
-    call jelira(jexnum(valm, 1), 'LONMAX', lgbloc, cbid)
+    if (type .eq. ' ') call jelira(valm, 'TYPE', cval=type)
+    call jelira(valm, 'NMAXOC', nbbloc)
+    call jelira(jexnum(valm, 1), 'LONMAX', lgbloc)
     valm = nomout//'.VALM'
     call jecrec(valm, classe//' V '//type, 'NU', 'DISPERSE', 'CONSTANT',&
                 nbbloc)
-    call jeecra(valm, 'LONMAX', lgbloc, cbid)
+    call jeecra(valm, 'LONMAX', lgbloc)
     do 20 ibloc = 1, nbbloc
         call jecroc(jexnum(valm, ibloc))
 !        -- IL FAUT FAIRE UN JEVEUO/'E' POUR QUE L'OBJET EXISTE VRAIMENT

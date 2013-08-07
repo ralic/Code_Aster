@@ -110,7 +110,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     integer :: nbnom, nbnot, nbsma, nbssa, nma
 !-----------------------------------------------------------------------
     call jemarq()
-    call jelira(nu//'.NUME.LILI', 'NOMMAX', nlili, kbid)
+    call jelira(nu//'.NUME.LILI', 'NOMMAX', nlili)
     do 41, i=1,nlili
     call jenuno(jexnum(nu//'.NUME.LILI', i), mo2)
     if (mo2(9:15) .eq. '.MODELE') then
@@ -173,7 +173,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     do 21, ima = 1, nbsma
     if (zi(iasssa-1+ima) .eq. 1) then
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
-        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm, kbid)
+        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
         do 23, i=1,nbnm
         ino=zi(iamail-1+i)
         if (ino .eq. 0) call u2mess('F', 'ASSEMBLA_36')
@@ -201,7 +201,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !
     call jeveuo(nomlig//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(nomlig//'.LIEL', 'LONCUM'), 'L', illiel)
-    call jelira(nomlig//'.LIEL', 'NMAXOC', nbgrel, kbid)
+    call jelira(nomlig//'.LIEL', 'NMAXOC', nbgrel)
 !
 !
     call jeexin(nomlig//'.NEMA', iret)

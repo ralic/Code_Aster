@@ -55,7 +55,6 @@ subroutine oblcre(sdlist, typstz, idnpaz, nbstru)
     character(len=24) :: lisnom, lisact
     integer :: jlisac
     character(len=24) :: typstr, idnpar
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,7 +77,7 @@ subroutine oblcre(sdlist, typstz, idnpaz, nbstru)
     lisnom = sdlist(1:19)//'.NOMS'
     call jecrec(lisnom, 'V V K24', 'NOM', 'CONTIG', 'CONSTANT',&
                 nbstru)
-    call jeecra(lisnom, 'LONMAX', 1, k8bid)
+    call jeecra(lisnom, 'LONMAX', 1)
 !
 ! --- LISTE DES STRUCTS ACTIFS
 !

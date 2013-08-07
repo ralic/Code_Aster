@@ -69,7 +69,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
     integer :: jioinf, jiolch
     integer :: icham, ich
     logical :: chaact(nbmax)
-    character(len=8) :: result, k8bid
+    character(len=8) :: result
     character(len=19) :: resu19
     integer :: ichsy, nbnosy
     character(len=24) :: charch, chnoms, nomsym
@@ -217,7 +217,7 @@ subroutine nmetcr(modele, compor, fonact, sddyna, sdpost,&
 ! --- VERIFICATIONS CONFORMITE SD RESULTAT
 !
     call rscrsd('V', result, 'EVOL_NOLI', 1)
-    call jelira(resu19//'.DESC', 'NOMMAX', nbnosy, k8bid)
+    call jelira(resu19//'.DESC', 'NOMMAX', nbnosy)
     do 50 icham = 1, nbcham
         charch = zk24(jiolch+zioch*(icham-1)+9-1)
         chnoms = zk24(jiolch+zioch*(icham-1)+1-1)

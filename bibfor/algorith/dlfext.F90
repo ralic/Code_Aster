@@ -122,7 +122,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
         call asasve(vechmp, numedd, typmat, vachmp)
         call ascova('D', vachmp, fomult, 'INST', temps,&
                     typmat, cnchmp)
-        call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch, k24bid)
+        call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'E', if1)
 !
         call dcopy(neq, zr(if1), 1, f, 1)
@@ -134,7 +134,7 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
         call asasve(vechmp, numedd, typmat, vachmp)
         call ascova('D', vachmp, fomult, para, temps,&
                     typmat, cnchmp)
-        call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch, k24bid)
+        call jelira(cnchmp(1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(cnchmp(1:19)//'.VALE', 'L', if2)
 !
 ! -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)

@@ -73,7 +73,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     integer :: jcont, jconl, jfrot, jfrol, jdepl, jlagv
     integer :: jcesk1, nbma, iret, ima, iad, i, ia, in, iadb, k
     integer :: ninter, jmai, itypma, nuno, jconx1, jconx2, j, ndim
-    integer :: jdepv, nomil, jcnsvr, jcnslr
+    integer :: jdepv, jcnsvr, jcnslr
     integer :: nsom, nosom(2), ar(12, 3), nbar, zresu
     integer :: zxain
     integer :: jxc

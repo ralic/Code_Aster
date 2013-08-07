@@ -49,7 +49,6 @@ subroutine dfllli(lisins, dtmin, nbinst)
     integer :: i
     integer :: jinst
     real(kind=8) :: deltat
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +61,7 @@ subroutine dfllli(lisins, dtmin, nbinst)
 ! --- RECUPERATION DE LA LISTE D'INSTANTS FOURNIE
 !
     call jeveuo(lisins//'.VALE', 'L', jinst)
-    call jelira(lisins//'.VALE', 'LONMAX', nbinst, k8bid)
+    call jelira(lisins//'.VALE', 'LONMAX', nbinst)
 !
 ! --- VERIFICATION IL Y A AU MOINS UN INSTANT DE CALCUL
 !

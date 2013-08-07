@@ -113,7 +113,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
         do 100, i = 1, nbordr, 1
         iordr = zi(avalac+i-1)
         call jecroc(jexnum(nlschp, i))
-        call jeecra(jexnum(nlschp, i), 'LONMAX', 1, ' ')
+        call jeecra(jexnum(nlschp, i), 'LONMAX', 1)
         call jeveuo(jexnum(nlschp, i), 'E', alschp)
         call rsexch(' ', nomsd, chpsym, iordr, zk24(alschp + 1-1),&
                     n1)
@@ -152,7 +152,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
 300          continue
             do 410, j = 1, nbordr, 1
             call jecroc(jexnum(nlschp, j))
-            call jeecra(jexnum(nlschp, j), 'LONMAX', 1, ' ')
+            call jeecra(jexnum(nlschp, j), 'LONMAX', 1)
             call jeveuo(jexnum(nlschp, j), 'E', alschp)
             call rsexch(' ', nomsd, chpsym, zi(avalac + j-1), zk24(alschp + 1-1),&
                         n2)
@@ -180,7 +180,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
             n1 = -n1
             call jecroc(jexnum(nlschp, i))
             n3=max(n1,1)
-            call jeecra(jexnum(nlschp, i), 'LONMAX', n3, ' ')
+            call jeecra(jexnum(nlschp, i), 'LONMAX', n3)
             call jeveuo(jexnum(nlschp, i), 'E', alschp)
             if (n1 .eq. 0) then
                 zk24(alschp + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
@@ -225,13 +225,13 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
             n1 = -n1
             call jecroc(jexnum(nlschp, i))
             n3=max(n1,1)
-            call jeecra(jexnum(nlschp, i), 'LONMAX', n3, ' ')
+            call jeecra(jexnum(nlschp, i), 'LONMAX', n3)
             call jeveuo(jexnum(nlschp, i), 'E', alschp)
             if (n1 .eq. 0) then
                 zk24(alschp + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
             else
                 call jecreo('&&OP0051.LISTE.ORDRE', 'V V I')
-                call jeecra('&&OP0051.LISTE.ORDRE', 'LONMAX', n1, ' ')
+                call jeecra('&&OP0051.LISTE.ORDRE', 'LONMAX', n1)
                 call jeveuo('&&OP0051.LISTE.ORDRE', 'E', aliste)
                 cbid = dcmplx(0,0)
                 call rsorac(nomsd, modacc, 0, zr(avalac + i-1), k8bid,&

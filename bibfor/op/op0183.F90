@@ -270,7 +270,7 @@ subroutine op0183()
 !
             chdep2='&&'//nompro//'.CHDEP_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chdep2)
-            call jelira(chdep2//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jelira(chdep2//'.VALE', 'LONMAX', nbddl)
             call jerazo(chdep2//'.VALE', nbddl, 1)
         endif
 !
@@ -282,7 +282,7 @@ subroutine op0183()
         if (iret .eq. 0) then
             chvive='&&'//nompro//'.CHVIT_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chvive)
-            call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chvive(1:19)//'.VALE', nbddl, 1)
         endif
         call rsexch(' ', resuco, 'ACCE', iordr, chacve,&
@@ -290,7 +290,7 @@ subroutine op0183()
         if (iret .eq. 0) then
             chacve='&&'//nompro//'.CHACC_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chacve)
-            call jelira(chacve(1:19)//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jelira(chacve(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chacve(1:19)//'.VALE', nbddl, 1)
         endif
 !
@@ -340,8 +340,8 @@ subroutine op0183()
 !
         call jeveuo(vafono, 'L', jfo)
         call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', jfono)
-        call jelira(zk24(jfo)(1:19)//'.VALE', 'LONMAX', lvafon, k8bid)
-        call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+        call jelira(zk24(jfo)(1:19)//'.VALE', 'LONMAX', lvafon)
+        call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
 !
         do 30 j = 0, lonch-1
             zr(jnoch+j)=zr(jfono+j)

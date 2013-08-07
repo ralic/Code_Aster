@@ -38,7 +38,7 @@ subroutine te0097(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: idim
-    integer :: i, icont, idepl, igeom, imate, nbsig, itabou(7), iret
+    integer :: i, icont, idepl, igeom, imate, nbsig
     integer :: igau, isig
 
     real(kind=8) :: sigma(162), repere(7), instan, nharm

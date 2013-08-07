@@ -63,7 +63,7 @@ subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma,&
     real(kind=8) :: ff(20)
     integer :: jconx1, jconx2, jma
     integer :: itypma, nno, ino, iad
-    character(len=8) :: typma, elref, k8bid
+    character(len=8) :: typma, elref
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ subroutine xmrlst(jcesd, jcesv, jcesl, noma, posma,&
 !
 ! --- ON RECUPERE LE NOMBRE DE NOEUDS DE LA MAILLE
 !
-    call jelira(jexnum(noma//'.CONNEX', posma), 'LONMAX', nno, k8bid)
+    call jelira(jexnum(noma//'.CONNEX', posma), 'LONMAX', nno)
 !
 ! --- FONCTIONS DE FORMES DU PT DE CONTACT DANS L'ELE PARENT
 !

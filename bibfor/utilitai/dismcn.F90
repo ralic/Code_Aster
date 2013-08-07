@@ -48,7 +48,6 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: nogd
-    character(len=8) :: k8bid
     integer :: iadesc, iarefe
 !-----------------------------------------------------------------------
     call jemarq()
@@ -60,7 +59,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
     questl = questi
 !
     if (questi .eq. 'NB_EQUA') then
-        call jelira(nomob//'.VALE', 'LONMAX', repi, k8bid)
+        call jelira(nomob//'.VALE', 'LONMAX', repi)
     else if (questi.eq.'NOM_MAILLA') then
         call jeveuo(nomob//'.REFE', 'L', iarefe)
         repk = zk24(iarefe-1+1) (1:8)

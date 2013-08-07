@@ -75,7 +75,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     character(len=8) :: elrese(3), fami(3), poum
     character(len=16) :: phenom
     logical :: axi
-    real(kind=8) :: baslog(3*ndim), tem, lsng, lstg, coorse(81), xg(ndim)
+    real(kind=8) :: baslog(3*ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
     real(kind=8) :: he
@@ -86,7 +86,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
     integer :: nbddl
     integer :: mxstac, icodre, spt, ipoids, idfde, nosema, ind1, lddl, jnp
     integer :: iddlma
-    integer :: idim, ind2
+    integer ::  ind2
 !
     parameter (mxstac=1000)
 !     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)

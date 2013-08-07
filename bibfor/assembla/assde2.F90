@@ -39,7 +39,6 @@ subroutine assde2(champ)
 !
 !
     integer :: iret, idd, nbsd, ifetc, ilimpi
-    character(len=8) :: k8bid
     character(len=24) :: k24b, k24b1
     character(len=19) :: champ2
 ! -DEB------------------------------------------------------------------
@@ -50,7 +49,7 @@ subroutine assde2(champ)
     call jeexin(k24b, iret)
 ! FETI OR NOT ?
     if (iret .ne. 0) then
-        call jelira(k24b, 'LONMAX', nbsd, k8bid)
+        call jelira(k24b, 'LONMAX', nbsd)
         call jeveuo(k24b, 'L', ifetc)
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
         do 5 idd = 1, nbsd

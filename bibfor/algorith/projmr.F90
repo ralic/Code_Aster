@@ -54,7 +54,6 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     integer :: idvec2, idbase, nbj, ldblo1, ldblo2
     real(kind=8) :: pij
     complex(kind=8) :: cbid
-    character(len=8) :: k8b
     character(len=16) :: typbas
     character(len=19) :: matr, resu
     logical :: lsym
@@ -83,7 +82,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                     2*nbloc)
     endif
 !
-    call jeecra(resu//'.UALF', 'LONMAX', ntbloc, k8b)
+    call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
     call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
     zk24(ialime)=' '

@@ -170,13 +170,13 @@ subroutine op0184()
                         listr8, nnu)
             if (nnu .ne. 0) then
                 call jeveuo(listr8//'.VALE', 'L', jnume)
-                call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8b)
+                call jelira(listr8//'.VALE', 'LONMAX', nbordr)
             else
                 call getvid(' ', 'LIST_INST', 0, iarg, 1,&
                             listr8, nlinst)
                 if (nlinst .ne. 0) then
                     call jeveuo(listr8//'.VALE', 'L', jlist)
-                    call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8b)
+                    call jelira(listr8//'.VALE', 'LONMAX', nbordr)
                 else
                     call getvr8(' ', 'INST', 0, iarg, 0,&
                                 rbid, nis)
@@ -211,7 +211,7 @@ subroutine op0184()
         call u2mess('F', 'UTILITAI3_12')
     else
         call jeveuo(nomapl//'           .TITR', 'L', jtitr)
-        call jelira(nomapl//'           .TITR', 'LONMAX', nbtitr, k8b)
+        call jelira(nomapl//'           .TITR', 'LONMAX', nbtitr)
         if (nbtitr .ge. 1) then
             if (zk80(jtitr) (10:31) .ne. 'AUTEUR=INTERFACE_IDEAS') then
                 call u2mess('F', 'UTILITAI3_12')
@@ -385,7 +385,7 @@ subroutine op0184()
             do 130 iel = 1, nbelgr
                 ima = zi(liel-1+iel)
                 call jeveuo(jexnum(connex, ima), 'L', iadno)
-                call jelira(jexnum(connex, ima), 'LONMAX', nno, k8b)
+                call jelira(jexnum(connex, ima), 'LONMAX', nno)
                 iad = jcelv - 1 + idec - 1 + nno* (iel-1)
                 do 120 i = 1, nno
                     ino = zi(iadno-1+i)

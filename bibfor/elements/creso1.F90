@@ -78,7 +78,6 @@ subroutine creso1(solveu, method, preco, renum, syme,&
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: islvk, islvr, islvi, i, nbmasd, ifeta, ibuff
-    character(len=8) :: k8bid
     character(len=24) :: nomlog, sdfeta
 !
 !------------------------------------------------------------------
@@ -145,7 +144,7 @@ subroutine creso1(solveu, method, preco, renum, syme,&
 ! REMPLISSAGE DU VECTEUR AUXILIAIRE '&FETI.MAILLE.NUMSD'
     if (numsd .ne. 0) then
         sdfeta = sdfeti(1:19)//'.FETA'
-        call jelira(jexnum(sdfeta, numsd), 'LONMAX', nbmasd, k8bid)
+        call jelira(jexnum(sdfeta, numsd), 'LONMAX', nbmasd)
         call jeveuo(jexnum(sdfeta, numsd), 'L', ifeta)
         do 10 i = 1, nbmasd
             ibuff = zi(ifeta+i-1)

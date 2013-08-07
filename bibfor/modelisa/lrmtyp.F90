@@ -68,7 +68,6 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
     integer :: iaux, jaux
     integer :: ityp
     character(len=8) :: nomast(ntymax)
-    character(len=1) :: k1
 !
 ! 0.4. ==> INITIALISATIONS
 !
@@ -115,7 +114,7 @@ subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
 !
 !     VERIFICATION QUE LE CATALOGUE EST ENCORE COHERENT AVEC LE FORTRAN
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', iaux, k1)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', iaux)
     if (ntymax .ne. iaux) then
         call u2mess('F', 'MED_38')
     endif

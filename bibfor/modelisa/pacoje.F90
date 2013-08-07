@@ -112,9 +112,9 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
         call jecroc(jexnum(conr, iocc))
 !
         if (ndim .eq. 2) then
-            call jeecra(jexnum(conr, iocc), 'LONMAX', 12*nbcoup, ' ')
+            call jeecra(jexnum(conr, iocc), 'LONMAX', 12*nbcoup)
         else
-            call jeecra(jexnum(conr, iocc), 'LONMAX', 22*nbcoup, ' ')
+            call jeecra(jexnum(conr, iocc), 'LONMAX', 22*nbcoup)
         endif
         call jeveuo(jexnum(conr, iocc), 'E', idrad)
     else

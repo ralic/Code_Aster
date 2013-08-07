@@ -68,7 +68,6 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     character(len=19) :: numddl
     character(len=24) :: chamva, noeint
     character(len=24) :: valk
-    character(len=1) :: k1bid
 !
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -127,19 +126,19 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     noeint=intf//'.IDC_LINO'
 !
     if (numl .gt. 0) then
-        call jelira(jexnum(noeint, numl), 'LONMAX', nbnol, k1bid)
+        call jelira(jexnum(noeint, numl), 'LONMAX', nbnol)
         call jeveuo(jexnum(noeint, numl), 'L', llnol)
     else
         nbnol=0
     endif
 !
-    call jelira(jexnum(noeint, numc), 'LONMAX', nbnoc, k1bid)
+    call jelira(jexnum(noeint, numc), 'LONMAX', nbnoc)
     call jeveuo(jexnum(noeint, numc), 'L', llnoc)
 !
 ! --- RECUPERATION DU DESCRIPTEUR DES DEFORMEES
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldes)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
     nbnot=nbnot/3
 !
 ! --- RECUPERATION DES NUMEROS D'ORDRE DES DEFORMEES (COLONNES)

@@ -52,11 +52,11 @@ subroutine ualfva(mataz, basz)
 !
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
-    character(len=1) :: base, kbid, tyrc
+    character(len=1) :: base, tyrc
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
     logical :: ldiag, lplein
-    integer :: jscde, neq, nbloc, ibid, nblocm, iret
+    integer :: jscde, neq, nbloc, nblocm, iret
     integer :: jsmhc, jsmdi, jscdi, jschc, jsmde
     integer :: itbloc, ieq, ibloc, jualf, jvale, kterm, nbterm, ilig
     integer :: ismdi, ismdi0, ibloav, iscdi, jrefa, jscib, kblocm, nblocl
@@ -67,7 +67,7 @@ subroutine ualfva(mataz, basz)
     call jemarq()
     matas=mataz
     base=basz
-    if (base .eq. ' ') call jelira(matas//'.UALF', 'CLAS', ibid, base)
+    if (base .eq. ' ') call jelira(matas//'.UALF', 'CLAS', cval=base)
 !
 !     -- .VALM NE DOIT PAS EXISTER :
     call jeexin(matas//'.VALM', iret)
@@ -111,13 +111,13 @@ subroutine ualfva(mataz, basz)
     call jeveuo(stomor//'.SMDE', 'L', jsmde)
     itbloc= zi(jsmde-1+2)
 !
-    call jelira(matas//'.UALF', 'NMAXOC', nblocl, kbid)
+    call jelira(matas//'.UALF', 'NMAXOC', nblocl)
     ASSERT(nblocl.eq.nbloc .or. nblocl.eq.2*nbloc)
     nblocm=1
     if (nblocl .eq. 2*nbloc) nblocm=2
 !
 !     -- REEL OU COMPLEXE ?
-    call jelira(matas//'.UALF', 'TYPE', ibid, tyrc)
+    call jelira(matas//'.UALF', 'TYPE', cval=tyrc)
     ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
 !
 !
@@ -125,7 +125,7 @@ subroutine ualfva(mataz, basz)
 !     ----------------------------------------
     call jecrec(matas//'.VALM', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nblocm)
-    call jeecra(matas//'.VALM', 'LONMAX', itbloc, kbid)
+    call jeecra(matas//'.VALM', 'LONMAX', itbloc)
     do 3,kblocm=1,nblocm
     call jecroc(jexnum(matas//'.VALM', kblocm))
     3 end do

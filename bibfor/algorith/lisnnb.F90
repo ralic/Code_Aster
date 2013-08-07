@@ -42,7 +42,6 @@ subroutine lisnnb(lischa, nbchar)
 !
 !
     character(len=24) :: nomcha
-    character(len=8) :: k8bid
     integer :: iret
 !
 ! ----------------------------------------------------------------------
@@ -54,7 +53,7 @@ subroutine lisnnb(lischa, nbchar)
     if (iret .eq. 0) then
         nbchar = 0
     else
-        call jelira(nomcha, 'LONMAX', nbchar, k8bid)
+        call jelira(nomcha, 'LONMAX', nbchar)
     endif
 !
     call jedema()

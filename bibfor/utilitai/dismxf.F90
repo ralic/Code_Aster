@@ -43,7 +43,6 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: jinfo, jmod, long
-    character(len=8) :: k8bid
 !
 !
     call jemarq()
@@ -73,12 +72,12 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'NB_FOND') then
 !
-        call jelira(nomob//'.FONDMULT', 'LONMAX', long, k8bid)
+        call jelira(nomob//'.FONDMULT', 'LONMAX', long)
         repi = long/2
 !
     else if (questi.eq.'NB_POINT_FOND') then
 !
-        call jelira(nomob//'.FONDFISS', 'LONMAX', long, k8bid)
+        call jelira(nomob//'.FONDFISS', 'LONMAX', long)
         repi = long/4
 !
     else

@@ -155,7 +155,7 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
         do 21 , ige = 1 , nbgrou
 !
         call jeveuo(jexnum(nomast//saux09, ige), 'L', jgren)
-        call jelira(jexnum(nomast//saux09, ige), 'LONMAX', nbeg, saux08)
+        call jelira(jexnum(nomast//saux09, ige), 'LONMAX', nbeg)
 !
         if (infmed .ge. 2) then
             if (typent .eq. tygeno) then

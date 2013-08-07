@@ -147,7 +147,7 @@ subroutine appcrs(kptsc, lmd)
             ASSERT(xlocal.eq.0)
             call VecCreateMPI(mpicou, ndprop, neq, xlocal, ierr)
         else
-            call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+            call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
             neq=nsmdi
 !
             ASSERT(xlocal.eq.0)

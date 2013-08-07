@@ -215,7 +215,7 @@ subroutine op0036()
     else if (nocc2.ne.0) then
         call getvid('FONCTION', 'FONCTION', 1, iarg, 1, nfct, ir)
 !
-        call jelira(nfct//'.VALE', 'LONMAX', ndim, kbid)
+        call jelira(nfct//'.VALE', 'LONMAX', ndim)
         call jeveuo(nfct//'.VALE', 'L', jvale)
         call jeveuo(nfct//'.PROL', 'L', jprol)
 !

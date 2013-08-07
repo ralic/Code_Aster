@@ -44,7 +44,7 @@ subroutine op0134()
     integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, lnova, nbnova, lprol
     real(kind=8) :: rval
     logical :: compl
-    character(len=8) :: k8b, nopn, nopf
+    character(len=8) ::  nopn, nopf
     character(len=16) :: nomcmd, typres
     character(len=19) :: nomfon, nomfin, listp, listf, typco
     character(len=24) :: noparp, noparf, valk(3)
@@ -75,7 +75,7 @@ subroutine op0134()
         call getvid(' ', 'LIST_PARA', 1, iarg, 1,&
                     listp, n1)
         call jeveuo(listp//'.VALE', 'L', lvalp)
-        call jelira(listp//'.VALE', 'LONUTI', nbvalp, k8b)
+        call jelira(listp//'.VALE', 'LONUTI', nbvalp)
     endif
 !
 ! --- NAPPE OU FONCTION
@@ -83,7 +83,7 @@ subroutine op0134()
     compl = .false.
     if (typco(1:7) .eq. 'FORMULE') then
         if (typco(1:9) .eq. 'FORMULE_C') compl = .true.
-        call jelira(nomfin//'.NOVA', 'LONUTI', nbnova, k8b)
+        call jelira(nomfin//'.NOVA', 'LONUTI', nbnova)
         call jeveuo(nomfin//'.NOVA', 'L', lnova)
         if (nbnova .eq. 1) then
             noparp = zk8(lnova)
@@ -132,7 +132,7 @@ subroutine op0134()
                         listf, n1)
             if (n1 .ne. 0) then
                 call jeveuo(listf//'.VALE', 'L', lvalf)
-                call jelira(listf//'.VALE', 'LONUTI', nbvalf, k8b)
+                call jelira(listf//'.VALE', 'LONUTI', nbvalf)
             else
                 call u2mess('F', 'FONCT0_49')
             endif

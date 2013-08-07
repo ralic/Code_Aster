@@ -68,9 +68,7 @@ subroutine nugeel(nugene, modgen)
     character(len=24) :: defli, nomsst, sizlia, sst
     character(len=24) :: valk, seliai
     logical :: pbcone
-    character(len=8) :: bid
 !
-    character(len=1) :: k8bid
 !
 !---------- VARIABLES PERSOS -------------------------------------------
 !
@@ -111,7 +109,7 @@ subroutine nugeel(nugene, modgen)
 !
     call jecreo(prgene//'.LILI', 'G N K8')
 !      CALL JEECRA(PRGENE//'.LILI','NOMMAX',2,K8BID)
-    call jeecra(prgene//'.LILI', 'NOMMAX', 1, k8bid)
+    call jeecra(prgene//'.LILI', 'NOMMAX', 1)
 !
     call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
 !      CALL JECROC(JEXNOM(PRGENE//'.LILI','LIAISONS'))
@@ -128,21 +126,21 @@ subroutine nugeel(nugene, modgen)
 !
 !----------------------RECUPERATION DES DIMENSIONS PRINCIPALES----------
 !
-    call jelira(defli, 'NMAXOC', nblia, bid)
-    call jelira(nomsst, 'NOMMAX', nbsst, bid)
+    call jelira(defli, 'NMAXOC', nblia)
+    call jelira(nomsst, 'NOMMAX', nbsst)
 !
 !-----------------------------ECRITURE DIMENSIONS-----------------------
 !
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
 !      CALL JEECRA(JEXNUM(PRGENE//'.PRNO',IBID),'LONMAX',NBSST*2,' ')
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
+    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
 !
 !      CALL JENONU(JEXNOM(PRGENE//'.LILI','LIAISONS'),IBID)
 !      CALL JEECRA(JEXNUM(PRGENE//'.PRNO',IBID),'LONMAX',1,' ')
 !
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
 !      CALL JEECRA(JEXNUM(PRGENE//'.ORIG',IBID),'LONMAX',NBSST,' ')
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1, ' ')
+    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1)
 !
 !      CALL JENONU(JEXNOM(PRGENE//'.LILI','LIAISONS'),IBID)
 !      CALL JEECRA(JEXNUM(PRGENE//'.ORIG',IBID),'LONMAX',1,' ')
@@ -209,7 +207,7 @@ subroutine nugeel(nugene, modgen)
     call wkvect('&&'//pgc//'.LIA.SST', 'V V I', nblia*2, ltlia)
     call jecrec('&&'//pgc//'.SST.LIA', 'V V I', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbsst)
-    call jeecra('&&'//pgc//'.SST.LIA', 'LONMAX', 2*nblia, ' ')
+    call jeecra('&&'//pgc//'.SST.LIA', 'LONMAX', 2*nblia)
 !
 !
 !   BOUCLE DE DETERMINATION DE LA RELATION

@@ -176,7 +176,7 @@ subroutine crsvfe(motfac, solveu, istop, nprec, syme,&
     zk24(iinf)=infofe
 !
 !     LECTURE NOMBRE DE SOUS-DOMAINES:NBSD
-    call jelira(sdfeti(1:19)//'.FETA', 'NUTIOC', nbsd, k8bid)
+    call jelira(sdfeti(1:19)//'.FETA', 'NUTIOC', nbsd)
     if (nbsd .le. 1) call u2mess('F', 'ALGORITH2_40')
 !     CONSTITUTION DE L'OBJET SOLVEUR.FETS
     call wkvect(solveu(1:19)//'.FETS', 'V V K24', nbsd, ifets)

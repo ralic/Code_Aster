@@ -41,7 +41,6 @@ subroutine irtitr(cham, noma, form, ifi, titre)
     integer :: nbtitr, jtitr
     integer :: i, ier, iret
 !
-    character(len=1) :: k1bid
     character(len=8) :: nomma
     character(len=16) :: date, typres
     character(len=19) :: cham19
@@ -61,7 +60,7 @@ subroutine irtitr(cham, noma, form, ifi, titre)
         call jeexin(cham19//'.TITR', ier)
         if (ier .ne. 0) then
             call jeveuo(cham19//'.TITR', 'L', jtitr)
-            call jelira(cham19//'.TITR', 'LONMAX', nbtitr, k1bid)
+            call jelira(cham19//'.TITR', 'LONMAX', nbtitr)
             titre=zk80(jtitr)
             if (form .eq. 'RESULTAT') then
                 write(ifi,'(1X,A)') (zk80(jtitr+i-1),i=1,nbtitr)
@@ -88,7 +87,7 @@ subroutine irtitr(cham, noma, form, ifi, titre)
             call jeexin(nomma//'           .TITR', iret)
             if (iret .ne. 0) then
                 call jeveuo(nomma//'           .TITR', 'L', jtitr)
-                call jelira(nomma//'           .TITR', 'LONMAX', nbtitr, k1bid)
+                call jelira(nomma//'           .TITR', 'LONMAX', nbtitr)
                 do 2 i = 1, min(6, nbtitr)
                     titsup(i+1) = zk80(jtitr-1+i)
  2              continue

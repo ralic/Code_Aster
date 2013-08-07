@@ -119,11 +119,11 @@ subroutine defint(mailla, nomres)
 !
     nomint=nomres//'.IDC_NOMS'
     call jecreo(nomint, 'G N K8')
-    call jeecra(nomint, 'NOMMAX', nbint, ' ')
+    call jeecra(nomint, 'NOMMAX', nbint)
 !
     notint='&&DEFINT.NOM.INTF'
     call jecreo(notint, 'V N K8')
-    call jeecra(notint, 'NOMMAX', nbint, ' ')
+    call jeecra(notint, 'NOMMAX', nbint)
 !
 !-------ALLOCATION VECTEURS DE TRAVAIL----------------------------------
 !
@@ -272,16 +272,16 @@ subroutine defint(mailla, nomres)
 !
         call jenonu(jexnom(nomint, nomcou), ibid)
         call jecroc(jexnum(noeint, ibid))
-        call jeecra(jexnum(noeint, ibid), 'LONMAX', nbno, ' ')
+        call jeecra(jexnum(noeint, ibid), 'LONMAX', nbno)
         call jeveuo(jexnum(noeint, ibid), 'E', llnin)
 !
         call jenonu(jexnom(nomint, nomcou), ibid)
         call jecroc(jexnum(ddlact, ibid))
-        call jeecra(jexnum(ddlact, ibid), 'LONMAX', nbno*nbec, ' ')
+        call jeecra(jexnum(ddlact, ibid), 'LONMAX', nbno*nbec)
         call jeveuo(jexnum(ddlact, ibid), 'E', ldact)
 !
         call jenonu(jexnom(nomint, nomcou), ibid)
-        call jeecra(jexnum(temmas, ibid), 'LONMAX', nbno*nbec, ' ')
+        call jeecra(jexnum(temmas, ibid), 'LONMAX', nbno*nbec)
         call jeveuo(jexnum(temmas, ibid), 'E', ltmas)
 !
 !------SOUS-BOUCLE DETERMINATION NUMERO NOEUDS INTERFACE COURANTE-------

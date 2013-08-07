@@ -69,7 +69,6 @@ subroutine iradhs(versio)
     parameter (maxnod=32,ntymax=69,maxfa=6)
     character(len=8) :: nomail(ntymax), nomtm
     integer :: limail(ntymax), indic(ntymax), indicf(ntymax), icas
-    character(len=1) :: k1bid
 !
     data axdpcp/'AX','DP','CP','PL'/
 !
@@ -92,10 +91,10 @@ subroutine iradhs(versio)
     call jeveuo('&&IRADHS.PERFSUP', 'E', jpefsu)
     call inistb(maxnod, nbtyms, nomail, indic, zi(jpersu),&
                 limail, indicf, zi(jpefsu), maxfa)
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyma, k1bid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyma)
     if (iret3 .eq. 0) then
         call jecreo('&&IRADHS.CODEGRA', 'V V I')
-        call jeecra('&&IRADHS.CODEGRA', 'LONMAX', nbtyma, ' ')
+        call jeecra('&&IRADHS.CODEGRA', 'LONMAX', nbtyma)
     endif
     call jeveuo('&&IRADHS.CODEGRA', 'E', jcod1)
     do 1 ima = 1, nbtyma
@@ -152,10 +151,10 @@ subroutine iradhs(versio)
         call jenuno(jexnum('&CATA.TM.NOMTM', ima), nommai)
         call utidea(nommai, zi(jcodd-1+ima), versio)
  4  end do
-    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbtyel, k1bid)
+    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbtyel)
     if (iret5 .eq. 0) then
         call jecreo('&&IRADHS.CODEPHY', 'V V I')
-        call jeecra('&&IRADHS.CODEPHY', 'LONMAX', nbtyel, ' ')
+        call jeecra('&&IRADHS.CODEPHY', 'LONMAX', nbtyel)
         call jeveuo('&CATA.TE.TYPEMA', 'L', ia1)
     endif
     call jeveuo('&&IRADHS.CODEPHY', 'E', jcod2)

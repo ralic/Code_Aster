@@ -44,7 +44,7 @@ subroutine medith(modele, charge, infcha, mediri)
 !
 !
 !
-    character(len=8) :: nomcha, lpain(1), lpaout(1), k8bid
+    character(len=8) :: nomcha, lpain(1), lpaout(1)
     character(len=19) :: matel
     character(len=16) :: option
     character(len=24) :: ligrch, lchin(1), lchout(1)
@@ -53,7 +53,7 @@ subroutine medith(modele, charge, infcha, mediri)
     call jemarq()
     call jeexin(charge, iret)
     if (iret .eq. 0) goto 20
-    call jelira(charge, 'LONMAX', nchar, k8bid)
+    call jelira(charge, 'LONMAX', nchar)
     call jeveuo(charge, 'L', jchar)
 !
     call jeexin(mediri, iret)
@@ -94,7 +94,7 @@ subroutine medith(modele, charge, infcha, mediri)
                 ilires = ilires + 1
             endif
 10      continue
-        call jeecra(mediri, 'LONUTI', ilires, k8bid)
+        call jeecra(mediri, 'LONUTI', ilires)
     endif
 20  continue
 ! FIN ------------------------------------------------------------------

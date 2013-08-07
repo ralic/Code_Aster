@@ -39,7 +39,7 @@ subroutine te0422(option, nomte)
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !     ------------------------------------------------------------------
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i, ipg, jcara, iret
+    integer :: i, jcara, iret
     integer :: jdepg, jeffg, jgeom
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), alpha, beta

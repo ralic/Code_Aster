@@ -63,7 +63,7 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
 !
 !
 !     ------------------------------------------------------------------
-    real(kind=8) :: si, mod2, a, b, nmabp, nmabm, am, om, rbid, eps, seuilr
+    real(kind=8) :: si, mod2, a, b, nmabp, nmabm, am, om, eps, seuilr
     real(kind=8) :: seuilp, c1, auxrj, seuilc, auxij, auxrk, auxik
     integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
     integer :: vali(5), nbfr, ibid

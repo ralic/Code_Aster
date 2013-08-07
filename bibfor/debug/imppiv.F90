@@ -63,11 +63,11 @@ subroutine imppiv(nu, ieq)
 !
     call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
-    call jelira(prno//'.PRNO', 'NMAXOC', nlili, k8b)
+    call jelira(prno//'.PRNO', 'NMAXOC', nlili)
     trouve = .false.
     do 10 i = 1, nlili
         call jenuno(jexnum(prno//'.LILI', i), ligrel)
-        call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ilo, k8b)
+        call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ilo)
         if (ilo .eq. 0) goto 10
         call jeveuo(jexnum(prno//'.PRNO', i), 'L', jprno)
         nbno = ilo / ( nec + 2 )
@@ -98,13 +98,13 @@ subroutine imppiv(nu, ieq)
 !     ON PARCOURT LES MAILLES SUPPLEMENTAIRES DU LIGREL TROUVE
 !     POUR IMPRIMER LES CONNECTIVITES DE CES MAILLES :
     call jenuno(jexnum(prno//'.LILI', nuli), ligrel)
-    call jelira(ligrel//'.NEMA', 'NMAXOC', nbmas, k8b)
+    call jelira(ligrel//'.NEMA', 'NMAXOC', nbmas)
     write(ifm,*) ' '
     write(ifm,*) 'IMPRESSION DE LA LISTE DES NOEUDS IMPLIQUES'
     write(ifm,*) 'DANS LA RELATION LINEAIRE SURABONDANTE:'
 !
     do 777,k=1,nbmas
-    call jelira(jexnum(ligrel//'.NEMA', k), 'LONMAX', nbno, k8b)
+    call jelira(jexnum(ligrel//'.NEMA', k), 'LONMAX', nbno)
 !       -- L'OBJET .NEMA CONTIENT LE TYPE_MAILLE AU BOUT :
     if (nbno .eq. 0) goto 777
     nbno=nbno-1

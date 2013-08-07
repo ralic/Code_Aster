@@ -73,7 +73,6 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     parameter   (edelst=5)
     parameter   (ednoda=0)
 !
-    character(len=1) :: k1bid
     character(len=8) :: saux08
     character(len=64) :: atepai, atangv, atrmax, atrmin
     parameter   (atepai = 'EPAISSEUR')
@@ -84,7 +83,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
     logical :: exicoq, exituy, exipmf
 !
     call jeveuo(nomaas//'.TYPMAIL', 'L', jtypma)
-    call jelira(nomaas//'.NOMMAI', 'NOMUTI', nbmail, k1bid)
+    call jelira(nomaas//'.NOMMAI', 'NOMUTI', nbmail)
     call jeveuo(jexatr(nomaas//'.CONNEX', 'LONCUM'), 'L', jpoin)
     call jeveuo(nomaas//'.CONNEX', 'L', jconx)
 !

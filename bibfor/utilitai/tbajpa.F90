@@ -43,7 +43,6 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
     character(len=1) :: base
     character(len=3) :: type
     character(len=4) :: knume
-    character(len=8) :: k8b
     character(len=19) :: nomtab
     character(len=24) :: nomjv, inpar, jnpar
 ! ----------------------------------------------------------------------
@@ -77,8 +76,8 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         ndim = 4 * nbpar
 !
         call jecreo(nomtab//'.TBLP', base//' V K24')
-        call jeecra(nomtab//'.TBLP', 'LONMAX', ndim, ' ')
-        call jeecra(nomtab//'.TBLP', 'LONUTI', ndim, ' ')
+        call jeecra(nomtab//'.TBLP', 'LONMAX', ndim)
+        call jeecra(nomtab//'.TBLP', 'LONUTI', ndim)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
 !
         do 10 i = 1, nbpar
@@ -89,13 +88,13 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
             type = '   '
             type = typpar(i)
             call jecreo(nomjv, base//' V '//type)
-            call jeecra(nomjv, 'LONMAX', nblign, ' ')
-            call jeecra(nomjv, 'LONUTI', 0, ' ')
+            call jeecra(nomjv, 'LONMAX', nblign)
+            call jeecra(nomjv, 'LONUTI', 0)
             call jeveuo(nomjv, 'E', iret)
             zk24(jtblp+4*(i-1)+2) = nomjv
             nomjv = nomtab(1:17)//'LG.'//knume
             call jecreo(nomjv, base//' V I')
-            call jeecra(nomjv, 'LONMAX', nblign, ' ')
+            call jeecra(nomjv, 'LONMAX', nblign)
             call jeveuo(nomjv, 'E', jnjv)
             do 12 j = 1, nblign
                 zi(jnjv+j-1) = 0
@@ -109,8 +108,8 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 !
     else
 !
-        call jelira(nomtab//'.TBLP', 'LONMAX', nbpm, k8b)
-        call jelira(nomtab//'.TBLP', 'LONUTI', nbpu, k8b)
+        call jelira(nomtab//'.TBLP', 'LONMAX', nbpm)
+        call jelira(nomtab//'.TBLP', 'LONUTI', nbpu)
         call jeveuo(nomtab//'.TBLP', 'L', jtblp)
 !
 !        IL FAUT INITIALISER LES COLONNES AU LONMAX ET NON PAS A NBLIGN
@@ -120,7 +119,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         j = 1
         call codent(j, 'D0', knume)
         nomjv = nomtab(1:17)//'LG.'//knume
-        call jelira(nomjv, 'LONMAX', nblign, k8b)
+        call jelira(nomjv, 'LONMAX', nblign)
 !
 !        --- ON VERIFIE QUE LES PARAMETRES N'EXISTENT PAS ---
         nbpar1 = 0
@@ -142,7 +141,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         if (ndim .gt. nbpm) then
             call juveca(nomtab//'.TBLP', ndim)
         endif
-        call jeecra(nomtab//'.TBLP', 'LONUTI', ndim, ' ')
+        call jeecra(nomtab//'.TBLP', 'LONUTI', ndim)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
         do 30 i = 1, nbpar
             inpar = nompar(i)
@@ -159,13 +158,13 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
             type = '   '
             type = typpar(i)
             call jecreo(nomjv, base//' V '//type)
-            call jeecra(nomjv, 'LONMAX', nblign, ' ')
-            call jeecra(nomjv, 'LONUTI', 0, ' ')
+            call jeecra(nomjv, 'LONMAX', nblign)
+            call jeecra(nomjv, 'LONUTI', 0)
             call jeveuo(nomjv, 'E', iret)
             zk24(jtblp+4*(j-1)+2) = nomjv
             nomjv = nomtab(1:17)//'LG.'//knume
             call jecreo(nomjv, base//' V I')
-            call jeecra(nomjv, 'LONMAX', nblign, ' ')
+            call jeecra(nomjv, 'LONMAX', nblign)
             call jeveuo(nomjv, 'E', jnjv)
             do 34 k = 1, nblign
                 zi(jnjv+k-1) = 0

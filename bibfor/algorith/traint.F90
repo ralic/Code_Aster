@@ -59,7 +59,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
 !
 !
     character(len=4) :: k4bid
-    character(len=8) :: modgen, resgen, sst1, sst2, intf1, intf2, kb, rest1
+    character(len=8) :: modgen, resgen, sst1, sst2, intf1, intf2, rest1
     character(len=8) :: rest2, mraid
     character(len=19) :: nume91
     character(len=24) :: indin1, indin2
@@ -77,7 +77,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
                 unit, ibid)
     i1=numlia
 !
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, kb)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 !
     call jeveuo('&&OP0091.NOM_SST', 'E', lnosst)
     call jeveuo('&&OP0091.NUME_SST', 'E', lnusst)
@@ -184,14 +184,14 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     call jeveuo('&&LIPSRB.TR_MOD_MAST_PRO', 'L', lmaobs)
 !
 !-- RECUPERATION D'INFOS (TAILLES, DDL INTERF, MODES RESTITUES, ETC.)
-    call jelira(indin1, 'LONMAX', nbddl1, kb)
-    call jelira(indin2, 'LONMAX', nbddl2, kb)
+    call jelira(indin1, 'LONMAX', nbddl1)
+    call jelira(indin2, 'LONMAX', nbddl2)
     call jeveuo(indin1, 'L', llint1)
     call jeveuo(indin2, 'L', llint2)
     call jeveuo(jexnum(rest1//'           .TACH', 1), 'L', tach1)
     call jeveuo(jexnum(rest2//'           .TACH', 1), 'L', tach2)
-    call jelira(zk24(tach1)(1:19)//'.VALE', 'LONMAX', nbeq1, kb)
-    call jelira(zk24(tach2)(1:19)//'.VALE', 'LONMAX', nbeq2, kb)
+    call jelira(zk24(tach1)(1:19)//'.VALE', 'LONMAX', nbeq1)
+    call jelira(zk24(tach2)(1:19)//'.VALE', 'LONMAX', nbeq2)
 !
 !-- ALLOCATION DES OBJETS TEMPORAIRE POUR LE CALCUL DES TRAVAUX
     call codent(i1, 'D0', k4bid)

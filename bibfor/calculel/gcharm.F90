@@ -59,7 +59,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
     integer :: jvalin, jvalou, jvalf, jprol
     integer :: nbvale, iret, in, k, i, nb, npt
     real(kind=8) :: const
-    character(len=8) :: k8bid,charge
+    character(len=8) :: charge
     character(len=19) :: nch19
 !
 ! ----------------------------------------------------------------------
@@ -76,7 +76,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
 !
     call jeveuo(cartei//'.VALE', 'L', jvalin)
     call jeveuo(carteo//'.VALE', 'E', jvalou)
-    call jelira(cartei//'.VALE', 'LONMAX', nbvale, k8bid)
+    call jelira(cartei//'.VALE', 'LONMAX', nbvale)
 !
 ! - 1. CHARGEMENT 'SCALAIRE'
 !
@@ -99,7 +99,7 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
                 call jeveuo(nch19//'.PROL', 'L', jprol)
                 if (zk24(jprol)(1:8) .ne. 'INTERPRE') then
                     call jeveuo(nch19//'.VALE', 'E', jvalf)
-                    call jelira(nch19//'.VALE', 'LONMAX', nb, k8bid)
+                    call jelira(nch19//'.VALE', 'LONMAX', nb)
                     npt=nb/2
                     do 30 i = 1, npt
                         zr(jvalf+npt+i-1)=const*zr(jvalf+npt+i-1)

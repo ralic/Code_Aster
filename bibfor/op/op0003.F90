@@ -57,7 +57,6 @@ subroutine op0003()
     character(len=19) :: nomfon, listpa, listfo
     character(len=24) :: nommas
     character(len=24) :: valk(2)
-    character(len=1) :: k1bid
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -198,7 +197,7 @@ subroutine op0003()
         call getvid(' ', 'MAILLAGE', 0, iarg, 1,&
                     nommai, ibid)
         nommas = nommai//'.NOMMAI'
-        call jelira(nommas, 'NOMUTI', nbrma, k1bid)
+        call jelira(nommas, 'NOMUTI', nbrma)
 !
         call wkvect('&&OP0003.VALEURS_LUES', 'V V R', nblv, jval)
         call wkvect('&&OP0003.NOEUDS_LUES', 'V V K8', nbln, jnoe)
@@ -254,8 +253,8 @@ subroutine op0003()
                     listpa, n1)
         call getvid(' ', 'VALE_FONC', 1, iarg, 1,&
                     listfo, n1)
-        call jelira(listpa//'.VALE', 'LONMAX', nbcoup, k1bid)
-        call jelira(listfo//'.VALE', 'LONMAX', nbcou2, k1bid)
+        call jelira(listpa//'.VALE', 'LONMAX', nbcoup)
+        call jelira(listfo//'.VALE', 'LONMAX', nbcou2)
         if (nbcou2 .ne. nbcoup) then
             if (nbcou2 .lt. nbcoup) then
                 valk(1) = listfo

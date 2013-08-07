@@ -77,7 +77,7 @@ subroutine orishb(noma)
 !
             gmat = zk24(jjj+igr-1)
 !
-            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
             call jeveuo(jexnom(grmama, gmat), 'L', jgro)
 !
 !      POUR CHAQUE MAILLE DU GROUPE
@@ -89,7 +89,7 @@ subroutine orishb(noma)
 !
                 if (typel(1:5) .eq. 'HEXA8') then
 !
-                    call jelira(jexnum(connex, numa), 'LONMAX', nbno, k8b)
+                    call jelira(jexnum(connex, numa), 'LONMAX', nbno)
 !
 ! RECUP DES COORDONNES DES NOEUDS DE LA MAILLE
                     call pacoor(noma, numa, nbno, coor)
@@ -121,7 +121,7 @@ subroutine orishb(noma)
                 endif
                 if (typel(1:6) .eq. 'PENTA6') then
 !
-                    call jelira(jexnum(connex, numa), 'LONMAX', nbno, k8b)
+                    call jelira(jexnum(connex, numa), 'LONMAX', nbno)
 !
 ! RECUP DES COORDONNES DES NOEUDS DE LA MAILLE
                     call pacoor(noma, numa, nbno, coor)
@@ -150,7 +150,7 @@ subroutine orishb(noma)
                 endif
                 if (typel(1:7) .eq. 'PENTA15') then
 !
-                    call jelira(jexnum(connex, numa), 'LONMAX', nbno, k8b)
+                    call jelira(jexnum(connex, numa), 'LONMAX', nbno)
 !
 ! RECUP DES COORDONNES DES NOEUDS DE LA MAILLE
                     call pacoor(noma, numa, nbno, coor)
@@ -188,7 +188,7 @@ subroutine orishb(noma)
                 endif
                 if (typel(1:6) .eq. 'HEXA20') then
 !
-                    call jelira(jexnum(connex, numa), 'LONMAX', nbno, k8b)
+                    call jelira(jexnum(connex, numa), 'LONMAX', nbno)
 !
 ! RECUP DES COORDONNES DES NOEUDS DE LA MAILLE
                     call pacoor(noma, numa, nbno, coor)

@@ -212,8 +212,8 @@ subroutine op0120()
             endif
 !
             call jecroc(jexnum(chvale, ipf))
-            call jeecra(jexnum(chvale, ipf), 'LONMAX', nbabs, ' ')
-            call jeecra(jexnum(chvale, ipf), 'LONUTI', nbabs, ' ')
+            call jeecra(jexnum(chvale, ipf), 'LONMAX', nbabs)
+            call jeecra(jexnum(chvale, ipf), 'LONUTI', nbabs)
             call jeveuo(jexnum(chvale, ipf), 'E', ispec)
 !
             do 150 k = 1, nbpts2

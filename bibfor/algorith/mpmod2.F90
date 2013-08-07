@@ -57,7 +57,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
     character(len=24) :: vnoeud, vrange, basepr, vcham
     integer :: nbmesu, nbmtot
 !
-    character(len=8) :: nomres, k8bid
+    character(len=8) :: nomres
     character(len=16) :: nomcha, corres, nomch, typres, k16bid, nomchm
     character(len=19) :: chamno, ch1s, ch2s
     character(len=24) :: vorien
@@ -257,7 +257,7 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr,&
 !
 151  end do
 !
-    call jeecra(basepr, 'LONUTI', nbmesu*nbmtot, k8bid)
+    call jeecra(basepr, 'LONUTI', nbmesu*nbmtot)
 !
 ! DESTRUCTION DES VECTEURS DE TRAVAIL
 !

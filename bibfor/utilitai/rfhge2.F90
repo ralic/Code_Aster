@@ -222,7 +222,7 @@ subroutine rfhge2(harmge)
         if (intres(1:3) .ne. 'NON') then
 ! ---   CAS OU ON INTERPOLE
             call jeveuo(resu//'.DISC', 'L', idinsg)
-            call jelira(resu//'.DISC', 'LONMAX', nbinsg, k8b)
+            call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             call wkvect('&&RFHGE2.VECTGENE', 'V V C', nbmode, idvecg)
             do 50 iordr = 0, nbordr-1
 !             EXTRACTION ET INTERPOLATION

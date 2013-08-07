@@ -72,7 +72,7 @@ subroutine xmiszl(vecinc, defico, noma)
     character(len=24) :: maescx
     integer :: jmaesx
     complex(kind=8) :: c16bid
-    character(len=8) :: k8bid, nommae
+    character(len=8) ::  nommae
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,7 +99,7 @@ subroutine xmiszl(vecinc, defico, noma)
         posmae = imae
         nummae = zi(jmaesx+zmesx*(posmae-1)+1-1)
         call jenuno(jexnum(noma//'.NOMMAI', nummae), nommae)
-        call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nno, k8bid)
+        call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nno)
         do 20 ino = 1, nno
             numno = zi(jconx1-1+zi(jconx2+nummae-1)+ino-1)
             do 30 i = 1, nbno

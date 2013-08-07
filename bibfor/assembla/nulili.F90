@@ -105,7 +105,6 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
     integer :: iad, ibid, ier, ierc, ierd, ifm, igr
     integer :: illigr, iligr, iret, kkk
     integer :: nbgr, nbsup, ncmp, niv, nligr, jmoloc, imode, ite
-    character(len=1) :: k1bid
 !
 !----------------------------------------------------------------------
     call infniv(ifm, niv)
@@ -117,7 +116,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !---- NBRE DE LIGRELS REFERENCES = DIM(LLIGR)
 !
     call jeveuo(lligr, 'L', illigr)
-    call jelira(lligr, 'LONUTI', nligr, k1bid)
+    call jelira(lligr, 'LONUTI', nligr)
 !
 !
     lligr2='&&NULILI.LLIGR2'
@@ -125,24 +124,24 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
     do 662,k=1,nligr
     zk24(jligr2-1+k) =zk24(illigr-1+k)
     662 end do
-    call jeecra(lligr2, 'LONUTI', nligr, k1bid)
+    call jeecra(lligr2, 'LONUTI', nligr)
     nlili = nligr+1
     if (nlili .eq. 1) call u2mess('F', 'ASSEMBLA_29')
 !
 !---- CREATION DU REPERTOIRE .LILI DE TOUS LES NOMS DE LIGRELS /=
 !
     call jecreo(lili, base//' N  K24 ')
-    call jeecra(lili, 'NOMMAX', nlili, ' ')
+    call jeecra(lili, 'NOMMAX', nlili)
 !---- LILI(1)= '&MAILLA'
     call jecroc(jexnom(lili, '&MAILLA'))
 !
 !
 !---- CREATION DES OBJETS .ADNE ET .ADLI SUR 'V'
     call jecreo(prefix//'.ADNE', ' V V I')
-    call jeecra(prefix//'.ADNE', 'LONMAX', 3*nlili, ' ')
+    call jeecra(prefix//'.ADNE', 'LONMAX', 3*nlili)
     call jeveuo(prefix//'.ADNE', 'E', iadnem)
     call jecreo(prefix//'.ADLI', ' V V I')
-    call jeecra(prefix//'.ADLI', 'LONMAX', 3*nlili, ' ')
+    call jeecra(prefix//'.ADLI', 'LONMAX', 3*nlili)
     call jeveuo(prefix//'.ADLI', 'E', iadlie)
 !
 !---- CHARGEMENT DE LILI, ADNE, ADLI
@@ -188,7 +187,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !
 !---- ADNE(3*(ILIGR)+1)=NBRE DE MAILLES SUP DU LIGREL NOMLI
 !
-            call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup, k1bid)
+            call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup)
             zi(iadnem+3* (iligr)) = nbsup
             call jeveut(nomli(1:19)//'.NEMA', 'L', iad)
             zi(iadnem+3* (iligr)+1) = iad
@@ -202,7 +201,7 @@ subroutine nulili(lligr, lili, base, molocz, nomgds,&
 !
 !---- ADLI(3*(ILIGR)+1)=NBRE DE MAILLES DU LIGREL NOMLI
 !
-        call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr, k1bid)
+        call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr)
         zi(iadlie+3* (iligr)) = nbgr
         call jeveut(nomli(1:19)//'.LIEL', 'L', iad)
         zi(iadlie+3* (iligr)+1) = iad

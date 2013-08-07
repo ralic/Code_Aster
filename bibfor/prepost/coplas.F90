@@ -61,8 +61,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
     real(kind=8) :: sigma, temp1, temp2, sigma1, sigma2, rest, pent
     real(kind=8) :: tempdi, lamb1, lamb2, tempd, coef1, coef2, rya, pi
     real(kind=8) :: betaa, betab, ca, cb, val1, val2
-    character(len=1) :: k1bid
-    character(len=8) :: proln, k8b
+    character(len=8) :: proln
     character(len=16) :: phenom, prolg
     character(len=19) :: valnom, romnom, tranom, fonct
     character(len=24) :: nomcmp, typnom, ty2nom, autnom, vaenom, cocnom, parnom
@@ -73,14 +72,14 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
     nomcmp = matrev//'.MATERIAU.NOMRC'
     pi = r8pi()
     call jeveuo(nomcmp, 'L', iadr)
-    call jelira(nomcmp, 'LONUTI', long, k1bid)
+    call jelira(nomcmp, 'LONUTI', long)
     do 3 i = 0, long-1
         phenom = zk16(iadr+i)
         if (phenom .eq. 'ECRO_LINE') then
             valnom = matrev//'.'//phenom
             typnom = valnom//'.VALR'
             ty2nom = valnom//'.VALK'
-            call jelira(typnom, 'LONUTI', lreel, k1bid)
+            call jelira(typnom, 'LONUTI', lreel)
             if (lreel .gt. 0) then
                 call jeveuo(typnom, 'L', ineut1)
                 call jeveuo(ty2nom, 'L', ineut2)
@@ -99,7 +98,7 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                         vaenom = fonct//'.VALE'
                         call jeveuo(autnom, 'L', ineut4)
                         call jeveuo(vaenom, 'L', ineut3)
-                        call jelira(vaenom, 'LONUTI', ldim, k1bid)
+                        call jelira(vaenom, 'LONUTI', ldim)
                         ldim = ldim / 2
                         if (tempa .lt. zr(ineut3)) then
                             prolg = zk24(ineut4+4)
@@ -156,13 +155,13 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
             call jeveuo(cocnom, 'L', ineut6)
             tranom = zk8(ineut6+1)
             parnom = tranom//'.PARA'
-            call jelira(parnom, 'LONUTI', npara, k1bid)
+            call jelira(parnom, 'LONUTI', npara)
             call jeveuo(parnom, 'L', ineut5)
             pronom = tranom//'.PROL'
             call jeveuo(pronom, 'L', ineut8)
             proln = zk24(ineut8+4)
             natnom = tranom//'.VALE'
-            call jelira(natnom, 'NUTIOC', nvale, k1bid)
+            call jelira(natnom, 'NUTIOC', nvale)
             valp = 0
             do 20 j = 1, npara
                 if (tempa .lt. zr(ineut5-1+j)) then
@@ -175,15 +174,15 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                 if (proln(1:1) .eq. 'E') then
                     call u2mess('F', 'PREPOST_8')
                 else if (proln(1:1).eq.'C') then
-                    call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1, k8b)
+                    call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, valp ), 'L', itot1)
                     sigma = zr(itot1-1+nbpt1/2+1)
                 else
                     temp1 = zr(ineut5-1+valp )
                     temp2 = zr(ineut5-1+valp+1)
-                    call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1, k8b)
+                    call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, valp ), 'L', itot10)
-                    call jelira(jexnum(natnom, valp+1), 'LONMAX', nbpt2, k8b)
+                    call jelira(jexnum(natnom, valp+1), 'LONMAX', nbpt2)
                     call jeveuo(jexnum(natnom, valp+1), 'L', itot11)
                     lamb1 = zr(itot10-1+nbpt1/2+1)
                     lamb2 = zr(itot11-1+nbpt2/2+1)
@@ -195,15 +194,15 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                 if (proln(2:2) .eq. 'E') then
                     call u2mess('F', 'PREPOST_9')
                 else if (proln(2:2).eq.'C') then
-                    call jelira(jexnum(natnom, npara), 'LONMAX', nbpt1, k8b)
+                    call jelira(jexnum(natnom, npara), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, npara), 'L', itot2)
                     sigma = zr(itot2-1+nbpt1/2+1)
                 else
                     temp1 = zr(ineut5-1+npara-1)
                     temp2 = zr(ineut5-1+npara )
-                    call jelira(jexnum(natnom, npara-1), 'LONMAX', nbpt1, k8b)
+                    call jelira(jexnum(natnom, npara-1), 'LONMAX', nbpt1)
                     call jeveuo(jexnum(natnom, npara-1), 'L', itot12)
-                    call jelira(jexnum(natnom, npara ), 'LONMAX', nbpt2, k8b)
+                    call jelira(jexnum(natnom, npara ), 'LONMAX', nbpt2)
                     call jeveuo(jexnum(natnom, npara ), 'L', itot13)
                     lamb1 = zr(itot12-1+nbpt1/2+1)
                     lamb2 = zr(itot13-1+nbpt2/2+1)
@@ -217,9 +216,9 @@ subroutine coplas(tempa, k1a, k1b, matrev, lrev,&
                 tempd = temp2 - temp1
                 coef1 = 1 - (tempa-temp1)/tempd
                 coef2 = 1 - (temp2-tempa)/tempd
-                call jelira(jexnum(natnom, valp-1), 'LONMAX', nbpt1, k8b)
+                call jelira(jexnum(natnom, valp-1), 'LONMAX', nbpt1)
                 call jeveuo(jexnum(natnom, valp-1), 'L', itot14)
-                call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt2, k8b)
+                call jelira(jexnum(natnom, valp ), 'LONMAX', nbpt2)
                 call jeveuo(jexnum(natnom, valp ), 'L', itot15)
                 lamb1 = zr(itot14-1+nbpt1/2+1)
                 lamb2 = zr(itot15-1+nbpt2/2+1)

@@ -90,7 +90,7 @@ subroutine op0191()
     call getres(resuou, concep, nomcmd)
     call getvid(' ', 'RESULTAT', 1, iarg, 1, resuin, n0)
 !
-    call jelira(resuin//'.DESC', 'NOMMAX', nbnosy, k8b)
+    call jelira(resuin//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) goto 9999
 !
 ! LE CONCEPT EST REENTRANT SI REPERE =

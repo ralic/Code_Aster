@@ -114,7 +114,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     chdynr = '&&MECALM.M.GAMMA'
     if ((typesd.eq.'MODE_MECA'.and.typemo(1:8).eq.'MODE_DYN' ) .or. (typesd.eq.'MODE_ACOU')) then
         call jeveuo(chdynr//'.VALE', 'E', lvale)
-        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq, k8b)
+        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch('F', resuin, 'DEPL', nordre, chamgd,&
                     ier)
         call jeveuo(chamgd(1:19)//'.VALE', 'L', ldepl)
@@ -126,7 +126,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         call jelibe(chamgd(1:19)//'.VALE')
     else if (typesd.eq.'DYNA_TRANS') then
         call jeveuo(chdynr//'.VALE', 'E', lvale)
-        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq, k8b)
+        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch(' ', resuin, 'ACCE', nordre, chacce,&
                     ier)
         if (ier .eq. 0) then
@@ -143,7 +143,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         endif
     else if (typesd.eq.'DYNA_HARMO') then
         call jeveuo(chdynr//'.VALE', 'E', lvale)
-        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq, k8b)
+        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch(' ', resuin, 'ACCE', nordre, chacce,&
                     ier)
         if (ier .eq. 0) then

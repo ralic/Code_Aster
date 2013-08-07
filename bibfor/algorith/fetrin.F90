@@ -104,7 +104,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
     integer :: icha, ifetl1, k, ifetl3, lfetl3, nivmpi, ilimpi, ifeti, nbpb
     integer :: lcon1, iaux1, iaux0, iaux2, ifetl5, jfel4, iaux3, ksol, nddl
     integer :: inoold, iretn, iretl, jmult, icol3
-    character(len=8) :: k8bid, nomsd
+    character(len=8) ::  nomsd
     character(len=19) :: matdd, chsmdd, prfchn, chamls, prfchg, k19b
     character(len=24) :: nomsdp, nomsdr, k24b, lilil, ligrl, prnol, kflin, ligr2
     character(len=24) :: nomsda, k24alp, k24val, kfcfl, k24mul, colau3
@@ -160,7 +160,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
         call jeveuo(chsol//'.REFE', 'L', irefe)
         prfchg=zk24(irefe+1)(1:19)
         call jeveuo(prfchg//'.PRNO', 'L', iprno)
-        call jelira(jexnum(prfchg//'.PRNO', 1), 'LONMAX', lprno, k8bid)
+        call jelira(jexnum(prfchg//'.PRNO', 1), 'LONMAX', lprno)
         call jeveuo(sdfeti//'.FDIM', 'L', idime)
 ! NBRE DE NOEUDS DU MAILLAGE
         nbno=zi(idime+4)
@@ -173,7 +173,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 !
         call jeveuo(sdfeti//'.FETI', 'L', ifeti)
 ! TAILLE DU PROBLEME GLOBAL
-        call jelira(k24val, 'LONMAX', nbpb, k8bid)
+        call jelira(k24val, 'LONMAX', nbpb)
 !
 ! CALCUL ALPHA SI MODES DE CORPS RIGIDES
         if (lrigid) then
@@ -431,7 +431,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 !
                     lilil=prfchn//'.LILI'
                     prnol=prfchn//'.PRNO'
-                    call jelira(lilil, 'NOMMAX', nblili, k8bid)
+                    call jelira(lilil, 'NOMMAX', nblili)
 ! LILI(1)=MAILLAGE, LILI(2)=MODELE, LILI(3...)=LIGREL TARDIF
 ! SI NECESSAIRE
                     call jeexin(jexnom(kflin, nomsd), iretn)
@@ -443,7 +443,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
                         if (iretn .ne. 0) then
                             call jeveuo(jexnom(kflin, nomsd), 'L', ikflin)
                             ikflin=ikflin-1
-                            call jelira(jexnom(kflin, nomsd), 'LONMAX', nbcha, k8bid)
+                            call jelira(jexnom(kflin, nomsd), 'LONMAX', nbcha)
                         endif
                     endif
                     do 90 ilil = 3, nblili
@@ -457,7 +457,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 ! ICI, IL NE S'AGIT DE REPORTER QUE LES VALEURS DES DDLS DES NOEUDS
 ! TARDIFS
                         if (iret .ne. 0) then
-                            call jelira(jexnum(prnol, ilil), 'LONMAX', lprnol, k8bid)
+                            call jelira(jexnum(prnol, ilil), 'LONMAX', lprnol)
                             call jeveuo(jexnum(prnol, ilil), 'L', iprnol)
                             lprnol=lprnol/nec2
 !
@@ -500,7 +500,7 @@ subroutine fetrin(nbsd, nbi, vdo, vd1, matas,&
 ! SI LIGREL DUPLIQUE, IL FAUT RETROUVER SON INDICE DANS LE  PRNO GLOBAL
                                 if (ldup) then
                                     call jeveuo(ligr2(1:19)//'.FEL3', 'L', ifetl3)
-                                    call jelira(ligr2(1:19)//'.FEL3', 'LONMAX', lfetl3, k8bid)
+                                    call jelira(ligr2(1:19)//'.FEL3', 'LONMAX', lfetl3)
                                     call jeexin(ligr2(1:19)//'.FEL5', iret)
                                     if (iret .ne. 0) call jeveuo(ligr2(1:19 )//'.FEL5', 'L',&
                                                                  ifetl5)

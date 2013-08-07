@@ -67,7 +67,6 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     integer :: idecp(nbcmpm), idecm(nbcmpm)
     integer :: vali(2)
     integer :: icodp(nbecmx), icodm(nbecmx)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
     data blanc /' '/
@@ -95,9 +94,9 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !
 !--------------VERIFICATION COHERENCE NOMBRE DE NOEUDS------------------
 !
-    call jelira(jexnum(fpli1, ii), 'LONMAX', idim1, k1bid)
+    call jelira(jexnum(fpli1, ii), 'LONMAX', idim1)
     nbnoe1=idim1/(1+nbec)
-    call jelira(jexnum(fpli2, ii), 'LONMAX', idim2, k1bid)
+    call jelira(jexnum(fpli2, ii), 'LONMAX', idim2)
     nbnoe2=idim2/(1+nbec)
 !
     if (nbnoe1 .ne. nbnoe2) then

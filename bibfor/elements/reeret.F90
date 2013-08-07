@@ -31,7 +31,7 @@ subroutine reeret(elrefp, nnop, geom, xg, ndim,&
 #include "asterfort/reereg.h"
     character(len=3) :: deriv
     character(len=8) :: elrefp
-    integer :: nnop, ndim, idepl
+    integer :: nnop, ndim
     real(kind=8) :: xg(ndim)
     real(kind=8) :: xe(ndim), ff(nnop), dfdi(nnop, ndim)
     real(kind=8) :: geom(*)
@@ -64,12 +64,11 @@ subroutine reeret(elrefp, nnop, geom, xg, ndim,&
     parameter   (nbnomx = 27)
 !
     real(kind=8) :: zero
-    integer :: i, j, k, n, p, ig, cpt
-    integer :: nno, nderiv, iret, nn
+    integer :: i, k, n
+    integer :: nno, nderiv, iret
     real(kind=8) :: invjac(3, 3)
     real(kind=8) :: dff(3, nbnomx)
-    real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
-    logical :: ldec
+    real(kind=8) :: kron(3, 3), epstab(3, 3)
 !
 ! ----------------------------------------------------------------------
 !

@@ -42,7 +42,6 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
 ! IN  : LISINS : NOM DE LA LISTE DES INSTANTS DE CALCUL
 !     ------------------------------------------------------------------
     real(kind=8) :: valr(4)
-    character(len=1) :: k1bid
     character(len=8) :: nomres, dyna, li
     character(len=16) :: typres, nomcmd
     integer :: iarg
@@ -71,8 +70,8 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
         call jeveuo(li//'           .NBPA', 'L', jnbpa)
         call jeveuo(li//'           .VALE', 'L', jvale)
         call jeveuo(li//'           .BINT', 'L', jbint)
-        call jelira(li//'           .VALE', 'LONUTI', nbinst, k1bid)
-        call jelira(li//'           .NBPA', 'LONUTI', nbgrpa, k1bid)
+        call jelira(li//'           .VALE', 'LONUTI', nbinst)
+        call jelira(li//'           .NBPA', 'LONUTI', nbgrpa)
         lispas = li//'           .LPAS'
         libint = li//'           .BINT'
         linbpa = li//'           .NBPA'
@@ -169,7 +168,7 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
             if (n1 .eq. 0) goto 9999
         else
             call jeveuo(li//'           .VALE', 'L', jvalr)
-            call jelira(li//'           .VALE', 'LONUTI', nbinsr, k1bid)
+            call jelira(li//'           .VALE', 'LONUTI', nbinsr)
             if (numef .ge. nbinsr) goto 9999
             tfin = zr(jvalr+numef)
         endif

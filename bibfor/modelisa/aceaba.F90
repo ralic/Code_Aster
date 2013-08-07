@@ -66,7 +66,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 ! IN  : JDLM   : ADRESSE DES MAILLES
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=6) :: kioc
     character(len=8) :: k8b, nomu, nommai, fcx
     character(len=16) :: k16b, sec, concep, cmd
@@ -111,7 +110,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
     ier = 0
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
@@ -132,10 +131,10 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 ! --- CREATION D UN OBJET TAMPON (SURDIMENSIONNE A NBO*NBARRE)  :
     call jecrec(tmpgen, 'V V R', 'NO', 'CONTIG', 'CONSTANT',&
                 nbarre)
-    call jeecra(tmpgen, 'LONMAX', nbo, ' ')
+    call jeecra(tmpgen, 'LONMAX', nbo)
     call jecrec(tmpgef, 'V V K8', 'NO', 'CONTIG', 'CONSTANT',&
                 nbarre)
-    call jeecra(tmpgef, 'LONMAX', 1, ' ')
+    call jeecra(tmpgef, 'LONMAX', 1)
     call wkvect('&&ACEABA.BARRE', 'V V K24', lmax, jdls)
     call wkvect('&&ACEABA.BARRE2', 'V V K8', lmax, jdls2)
 !
@@ -217,7 +216,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         if (ng .gt. 0) then
             do 40 i = 1, ng
                 call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
-                call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr, k1bid)
+                call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
                 do 42 j = 1, nbmagr
                     nummai = zi(jdgm+j-1)
                     call jenuno(jexnum(mlgnma, nummai), nommai)
@@ -262,7 +261,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         call u2mess('F', 'MODELISA_7')
     endif
 !
-    call jelira(tmpgen, 'NUTIOC', nbaaff, k1bid)
+    call jelira(tmpgen, 'NUTIOC', nbaaff)
 !
 ! --- IMPRESSION DES VALEURS AFFECTEES DANS LE TAMPON SI DEMANDE
     if (ivr(3) .eq. 1) then

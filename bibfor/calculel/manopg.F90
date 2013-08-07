@@ -120,7 +120,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     obnbno = '&&MANOPG.NBNO'
     obdime = '&&MANOPG.DIME'
 !
-    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel, kbid)
+    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
     call dismoi('F', 'NOM_MAILLA', ligrel, 'LIGREL', ibid,&
                 ma, ibid)
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
@@ -130,7 +130,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
 !
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
-    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg, kbid)
+    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
     call jeveuo('&CATA.TE.NOLOCFPG', 'L', jnolfp)
 !
 !
@@ -178,7 +178,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     nel = nbelem(ligrel,igr)
     if (econom .and. nel .gt. 1) then
         call jecroc(jexnum(ligre1//'.LIEL', igr))
-        call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', 2, kbid)
+        call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', 2)
         call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
         zi(jliel1-1+1)=zi(jliel-1+1)
@@ -194,7 +194,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 882      continue
     else
         call jecroc(jexnum(ligre1//'.LIEL', igr))
-        call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', nel+1, kbid)
+        call jeecra(jexnum(ligre1//'.LIEL', igr), 'LONMAX', nel+1)
         call jeveuo(jexnum(ligre1//'.LIEL', igr), 'E', jliel1)
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', jliel)
         zi(jliel1-1+nel+1)=zi(jliel-1+nel+1)
@@ -276,7 +276,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !       -- FAMILLE "LISTE"
     if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
-        call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam, kbid)
+        call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
         nbfam=nbfam-1
         ASSERT(nbfam.le.nbflmx)
         call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)

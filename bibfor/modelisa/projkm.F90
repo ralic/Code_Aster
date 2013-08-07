@@ -106,7 +106,6 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    character(len=32) :: jexnum
     character(len=8) :: mailla
     character(len=19) :: lnuma, licnx
     integer :: noebe, numail, nbcnx, cxma(*), itria, iproj, nbmabe
@@ -115,10 +114,9 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: icnx, imail, inoma, jcoor, jcxma, jlicnx, jlnuma, jnumab, jtyma
+    integer :: icnx, imail, inoma, jcoor, jlicnx, jlnuma, jnumab, jtyma
     integer :: nbmaok, noe, ntyma, jconx1, jconx2
     real(kind=8) :: d, dmax, dx, dy, dz, epsg, x3dp(3)
-    character(len=1) :: k1b
     character(len=24) :: conxma, coorno, tymama
 !
 !
@@ -167,11 +165,11 @@ subroutine projkm(nmabet, nbmabe, mailla, x3dca, noebe,&
 !............. NOEBE DANS LA TABLE DE CONNECTIVITE ASSOCIEE
 !
                 nbmaok = nbmaok + 1
-                call jeecra(lnuma, 'LONUTI', nbmaok, ' ')
+                call jeecra(lnuma, 'LONUTI', nbmaok)
                 call jeveuo(lnuma, 'E', jlnuma)
                 zi(jlnuma+nbmaok-1) = numail
                 call jelibe(lnuma)
-                call jeecra(licnx, 'LONUTI', nbmaok, ' ')
+                call jeecra(licnx, 'LONUTI', nbmaok)
                 call jeveuo(licnx, 'E', jlicnx)
                 zi(jlicnx+nbmaok-1) = icnx
                 call jelibe(licnx)

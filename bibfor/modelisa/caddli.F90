@@ -161,7 +161,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
         ASSERT(.false.)
     endif
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)
@@ -169,7 +169,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
+    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu)
     call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields

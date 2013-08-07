@@ -55,7 +55,6 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
 !
 !
     character(len=19) :: resu2
-    character(len=1) :: k1bid
     character(len=16) :: k16bid
     integer :: nbnosy, jl1, isy, n2, jl2, ibid, k, kk
     integer :: iarg
@@ -63,7 +62,7 @@ subroutine rsutc4(resu, motfac, iocc, dimlis, lisch,&
     resu2 = resu
 !
 !     --- ON REGARDE LA LISTE DES CHAMPS POSSIBLES POUR RESU:
-    call jelira(resu2//'.DESC', 'NOMUTI', nbnosy, k1bid)
+    call jelira(resu2//'.DESC', 'NOMUTI', nbnosy)
     call wkvect('&&RSUTC4.LITOU', 'V V K16', nbnosy, jl1)
     do 10 isy = 1, nbnosy
         call jenuno(jexnum(resu2//'.DESC', isy), zk16(jl1-1+isy))

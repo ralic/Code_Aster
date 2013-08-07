@@ -92,7 +92,6 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
     character(len=19) :: famplu, flimoi, fliplu, fnoplu
     character(len=19) :: lisbid
-    character(len=24) :: k8b
     character(len=8) :: k8bid
     integer :: idepmo, ideppl, ivitmo, ivitpl
     integer :: neq, i, j, iveass
@@ -111,7 +110,7 @@ subroutine nmener(valinc, veasse, measse, sddyna, eta,&
     call jeveuo(depmoi//'.VALE', 'L', idepmo)
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
     call jeveuo(depplu//'.VALE', 'L', ideppl)
-    call jelira(depmoi//'.VALE', 'LONMAX', neq, k8b)
+    call jelira(depmoi//'.VALE', 'LONMAX', ival=neq)
     ldyna=ndynlo(sddyna,'DYNAMIQUE')
     lamor=ndynlo(sddyna,'MAT_AMORT')
     lexpl=ndynlo(sddyna,'EXPLICITE')

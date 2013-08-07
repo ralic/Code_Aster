@@ -59,7 +59,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
     real(kind=8) :: doo, doe, dco, dce, stlin, stpar, ketho, kethe, tresca
     real(kind=8) :: valo(39), vale(39), spmo, spme, spto, spte
     complex(kind=8) :: c16b
-    character(len=8) :: k8b, nomres, typara(39), rpm, rpb, rpmpbo, rpmpbe, r1sno
+    character(len=8) ::  nomres, typara(39), rpm, rpb, rpmpbo, rpmpbe, r1sno
     character(len=8) :: r1sne, r2sno, r2sne
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
@@ -104,7 +104,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 !
     call jeveuo(cresu, 'L', jresu)
     call jeveuo(cinst, 'L', jinst)
-    call jelira(cinst, 'LONMAX', nbinst, k8b)
+    call jelira(cinst, 'LONMAX', nbinst)
 !
 ! --- CREATION DE LA TABLE
 !
@@ -516,7 +516,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 ! --- POUR L'OPTION "FATIGUE"
 !
     if (lfatig) then
-        call jelira(cspo, 'LONMAX', nbordr, k8b)
+        call jelira(cspo, 'LONMAX', nbordr)
         call jeveuo(cspo, 'L', jspo)
         call jeveuo(cspe, 'L', jspe)
         call jeveuo(cfao, 'L', jfao)

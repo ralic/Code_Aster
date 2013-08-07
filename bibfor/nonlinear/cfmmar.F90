@@ -80,7 +80,6 @@ subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
     integer :: jdecnm, jdecmm, jdecne, jdecme
     character(len=24) :: aptgel
     integer :: longc, longt, nnosd, ibid, posma, ima
-    character(len=8) :: k8bid
     integer :: zinzr, zinzi
 !
 ! ----------------------------------------------------------------------
@@ -207,7 +206,7 @@ subroutine cfmmar(noma, defico, newgeo, sdappa, nzoco,&
         posma = ima
         call cfnben(defico, posma, 'CONNEX', nnosd, ibid)
         longc = 6*nnosd
-        call jeecra(jexnum(aptgel, ima), 'LONMAX', longc, k8bid)
+        call jeecra(jexnum(aptgel, ima), 'LONMAX', ival=longc)
         call jecroc(jexnum(aptgel, ima))
         longt = longt + longc
 20  end do

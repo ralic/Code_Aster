@@ -149,7 +149,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     nueq=profno//'.NUEQ'
 !
     call jecreo(lili, 'G N K24')
-    call jeecra(lili, 'NOMMAX', 2, ' ')
+    call jeecra(lili, 'NOMMAX', 2)
 !
     call wkvect(deeq, 'G V I', nddlt*2, lddeeq)
 !
@@ -170,16 +170,16 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
     do 20 i = 1, nbsec
         call jecroc(jexnum(indirf, i))
         ntail=2*zi(lttds+i-1)
-        call jeecra(jexnum(indirf, i), 'LONMAX', ntail, ' ')
+        call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
         zi(lttds+i-1)=0
 20  end do
 !
 !
 !---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
 !
-    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nec), k8bid)
-    call jeecra(jexnum(prno, 2), 'LONMAX', 1, k8bid)
-    call jeecra(prno, 'LONT', nbnot*(2+nec)+1, ' ')
+    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nec))
+    call jeecra(jexnum(prno, 2), 'LONMAX', 1)
+    call jeecra(prno, 'LONT', nbnot*(2+nec)+1)
 !
 !-------------------------REMPLISSAGE DES OBJETS------------------------
 !

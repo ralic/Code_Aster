@@ -93,7 +93,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     call jeveuo(noma//'.TYPMAIL', 'L', jma)
 !
 !     RECUPERATION DES MAILLES CONTENANT LE NOEUD EXTREMITE DU FOND
-    call jelira(jexnum(cnxinv, inoext), 'LONMAX', nmanoe, k8b)
+    call jelira(jexnum(cnxinv, inoext), 'LONMAX', nmanoe)
     call jeveuo(jexnum(cnxinv, inoext), 'L', jmanoe)
 !
 !     BOUCLE SUR LE NOMBRE DE MAILLES CONNECTEES AU NOEUD EXTREMITE

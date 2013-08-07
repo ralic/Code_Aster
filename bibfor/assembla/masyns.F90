@@ -40,24 +40,24 @@ subroutine masyns(matas)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
     character(len=*) :: matas
-    character(len=1) :: base, ktyp, kbid
+    character(len=1) :: base, ktyp
     character(len=19) :: mat19
-    integer :: jrefa, i, nbloc, ibid, lgbloc, jvalmi, jvalms, jvalma
+    integer :: jrefa, i, nbloc, lgbloc, jvalmi, jvalms, jvalma
 !
 !---------------------------------------------------------------------
     call jemarq()
 !
     mat19 = matas(1:19)
-    call jelira(mat19//'.VALM', 'CLAS', ibid, base)
-    call jelira(mat19//'.VALM', 'TYPE', ibid, ktyp)
+    call jelira(mat19//'.VALM', 'CLAS', cval=base)
+    call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
     ASSERT(ktyp.eq.'R'.or.ktyp.eq.'C')
     call jeveuo(mat19//'.REFA', 'E', jrefa)
     ASSERT(zk24(jrefa-1+9).eq.'MS')
     zk24(jrefa-1+9)='MR'
 !
-    call jelira(mat19//'.VALM', 'NMAXOC', nbloc, kbid)
+    call jelira(mat19//'.VALM', 'NMAXOC', nbloc)
     ASSERT(nbloc.eq.1)
-    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', lgbloc, kbid)
+    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', lgbloc)
 !
 !
     call jedupo(mat19//'.VALM', 'V', '&&MASYNS.VALM', .false.)
@@ -65,7 +65,7 @@ subroutine masyns(matas)
 !
     call jecrec(mat19//'.VALM', base//' V '//ktyp, 'NU', 'DISPERSE', 'CONSTANT',&
                 2)
-    call jeecra(mat19//'.VALM', 'LONMAX', lgbloc, ' ')
+    call jeecra(mat19//'.VALM', 'LONMAX', lgbloc)
     call jecroc(jexnum(mat19//'.VALM', 1))
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalms)
     call jecroc(jexnum(mat19//'.VALM', 2))

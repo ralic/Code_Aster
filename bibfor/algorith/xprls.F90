@@ -115,13 +115,13 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(nodtor, 'L', jnodto)
 !
 !     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
-    call jelira(nodtor, 'LONMAX', nbno, k8b)
+    call jelira(nodtor, 'LONMAX', nbno)
 !
 !     RETRIEVE THE LIST OF THE ELEMENTS SUPPORTING THE NODES IN THE TORE
     call jeveuo(eletor, 'L', jelcal)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
-    call jelira(eletor, 'LONMAX', neleto, k8b)
+    call jelira(eletor, 'LONMAX', neleto)
 !
 !     RETRIEVE THE correction to give to the level set at the node
 !     projeted on the virtual front

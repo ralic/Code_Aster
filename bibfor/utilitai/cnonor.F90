@@ -142,7 +142,7 @@ subroutine cnonor(nomo, gran, base, cno)
 !-----------------------------------------------------------------------
 !
     nomnoe = noma//'.NOMNOE'
-    call jelira(nomnoe, 'NOMMAX', nbnoeu, k8b)
+    call jelira(nomnoe, 'NOMMAX', nbnoeu)
     typval = 'R'
 !
 !     AFFE DU CHAMP AUX NOEUDS

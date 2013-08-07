@@ -318,7 +318,7 @@ subroutine nxacmv(modele, mate, carele, fomult, charge,&
 !
         call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
         if (.not.llin) call jeveuo(vec2ni(1:19)//'.VALE', 'E', j2ni)
-        call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+        call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch)
         loncm1 = lonch - 1
 !
 ! 2.3.3. ==> CUMUL DES DIFFERENTS TERMES

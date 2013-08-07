@@ -66,7 +66,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
     integer :: ibid, nbmode, itresu(8)
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid, type1
+    character(len=1) ::  type1
     character(len=8) :: k8b, basemo, crit, champ(8), interp, nomres, nomin, mode
     character(len=8) :: touch, mailla, matgen
     character(len=8) :: nomgd, basem2, blanc
@@ -202,7 +202,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
         mailla = zk24(llcha)(1:8)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
-        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq, k8b)
+        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq)
         basem2 = ' '
     endif
 !
@@ -261,7 +261,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
 !     --- RESTITUTION SUR LA BASE REELLE ---
 !
     call jeveuo(hrange//'.DISC', 'L', idinsg)
-    call jelira(hrange//'.DISC', 'LONMAX', nbinsg, k8b)
+    call jelira(hrange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&HARM75.VECTGENE', 'V V C', nbmode, idvecg)
     do 210 ich = 1, nbcham
         leffor=.true.
@@ -281,7 +281,7 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
             nomcha(20:24)='.CELV'
         endif
 !
-        if (leffor) call jelira(nomcha, 'LONMAX', neq, k1bid)
+        if (leffor) call jelira(nomcha, 'LONMAX', neq)
         call wkvect('&&HARM75.BASE', 'V V R', nbmode*neq, idbase)
 ! CAS DE LA RESTITUTION SUR TOUTE LA STRUCTURE
         if (tousno) then
@@ -362,10 +362,10 @@ subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
                 chamno(20:24) = '.CELV'
             endif
             call jeveuo(chamno, 'E', lvale)
-            call jelira(chamno, 'TYPE', ibid, type1)
+            call jelira(chamno, 'TYPE', cval=type1)
             ASSERT(type1.eq.'C')
 !
-            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq, k8b)
+            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
 !             IF (INTERP(1:3).NE.'NON') THEN
 !               CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),
 !     &               ZR(JFREQ+I),ZC(IDRESU),NBMODE,ZR(IDVECG), IBID)

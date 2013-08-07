@@ -103,7 +103,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
     character(len=24) :: nomcha, criter
     character(len=*) :: mate
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     integer :: iadg, iadx, iady, iadz, iaut, ichad, ichar
     integer :: ichav, idsc, ierd, ilires, imodg, inoe, inomcd
     integer :: inomcr, inomcv, inueq, iprn, iref, iret, ival
@@ -140,11 +139,11 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
 ! LA ROTATION DEFINIE POUR LA SOUS-STRUCTURE EN QUESTION
 !
     call jeveuo(nomcha(1:19)//'.VALE', 'L', inomcv)
-    call jelira(nomcha(1:19)//'.VALE', 'LONMAX', nbchav, k1bid)
+    call jelira(nomcha(1:19)//'.VALE', 'LONMAX', nbchav)
     call jeveuo(nomcha(1:19)//'.REFE', 'L', inomcr)
-    call jelira(nomcha(1:19)//'.REFE', 'LONMAX', nbchar, k1bid)
+    call jelira(nomcha(1:19)//'.REFE', 'LONMAX', nbchar)
     call jeveuo(nomcha(1:19)//'.DESC', 'L', inomcd)
-    call jelira(nomcha(1:19)//'.DESC', 'LONMAX', nbchad, k1bid)
+    call jelira(nomcha(1:19)//'.DESC', 'LONMAX', nbchad)
 !
 !
 ! CHANGEMENT DE VALEUR POUR DX ET DY (OU DZ)

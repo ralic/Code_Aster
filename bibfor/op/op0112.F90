@@ -205,11 +205,11 @@ subroutine op0112()
 !        CALL GETVID('VIS_A_VIS','GROUP_MA_1',IOCC,IARG,1,NOMGMA,IBID)
         call getvtx('VIS_A_VIS', 'GROUP_MA_1', iocc, iarg, 1,&
                     nomgma, ibid)
-        call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1, kbid)
+        call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1)
         call jeveuo(jexnom(grpma, nomgma), 'L', jalim1)
         do ii = 1, nbmag1
             ima = zi(jalim1-1+ii)
-            call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog1, kbid)
+            call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog1)
             call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', jcxma1)
             do jj = 1, nbnog1
                 ino1 = zi(jcxma1-1+jj)
@@ -228,7 +228,7 @@ subroutine op0112()
 !        CALL GETVID('VIS_A_VIS','GROUP_NO_2',IOCC,IARG,1,NOMGNO,IBID)
         call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc, iarg, 1,&
                     nomgno, ibid)
-        call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2, kbid)
+        call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2)
         call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
         do jj = 1, nbno2
             ino2 = zi(ialin2-1+jj)
@@ -253,7 +253,7 @@ subroutine op0112()
 !     ! ===================================== !
     carte = charg//'.CHME.FORNO'
     liel = charg//'.CHME.LIGRE.LIEL'
-    call jelira(liel, 'NUTIOC', nbval, kbid)
+    call jelira(liel, 'NUTIOC', nbval)
     if (nbval .ne. 1) call u2mess('F', 'COUPLAGEIFS_7')
     call detrsd('CARTE', carte)
     call alcart('G', carte, ma, 'FORC_R')

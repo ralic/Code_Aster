@@ -89,7 +89,7 @@ subroutine arg126(nomres)
     trasst=nomres//'      .MODG.SSTR'
 !
     call jecreo(repsst, 'G N K8')
-    call jeecra(repsst, 'NOMMAX', nbsst, ' ')
+    call jeecra(repsst, 'NOMMAX', nbsst)
     call jecrec(nommcl, 'G V K8', 'NU', 'CONTIG', 'CONSTANT',&
                 nbsst)
     call jecrec(rotsst, 'G V R', 'NU', 'CONTIG', 'CONSTANT',&
@@ -101,9 +101,9 @@ subroutine arg126(nomres)
         call jecroc(jexnum(rotsst, i))
         call jecroc(jexnum(trasst, i))
 300  end do
-    call jeecra(nommcl, 'LONT', nbsst, ' ')
-    call jeecra(rotsst, 'LONT', 3*nbsst, ' ')
-    call jeecra(trasst, 'LONT', 3*nbsst, ' ')
+    call jeecra(nommcl, 'LONT', nbsst)
+    call jeecra(rotsst, 'LONT', 3*nbsst)
+    call jeecra(trasst, 'LONT', 3*nbsst)
 !
 !
 !-----BOUCLE SUR LES SOUS-STRUCTURES DEFINIES-------------------------
@@ -204,7 +204,7 @@ subroutine arg126(nomres)
     famli=nomres//'      .MODG.LIDF'
     call jecrec(famli, 'G V K8', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblia)
-    call jeecra(famli, 'LONMAX', 5, ' ')
+    call jeecra(famli, 'LONMAX', 5)
 !
 !-----BOUCLE SUR LES LIAISONS------------------------------------------
 !

@@ -52,7 +52,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    call jelira(csno, 'LONMAX', nbordr, k8b)
+    call jelira(csno, 'LONMAX', nbordr)
     call jeveuo(csno, 'L', jsno)
     call jeveuo(csne, 'L', jsne)
     call jeveuo(cspo, 'L', jspo)
@@ -63,7 +63,7 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno,&
         call jeveuo(cspmo, 'L', jspmo)
         call jeveuo(cspme, 'L', jspme)
     endif
-    call jelira(cnoc, 'LONMAX', nbinst, k8b)
+    call jelira(cnoc, 'LONMAX', nbinst)
     call jeveuo(cnoc, 'L', jnoc)
 !
     call wkvect(cfao, 'V V R', 5*nbordr, jfao)

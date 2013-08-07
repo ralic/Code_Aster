@@ -60,14 +60,14 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     character(len=24) :: ob1
     character(len=1) :: xous, typ1
     real(kind=8) :: sommr, sommr2
-    integer :: resume, sommi, iret0, ibid, lonuti, lonmax
+    integer :: resume, sommi, iret0, lonuti, lonmax
     integer :: sommi2, ltyp, ni
     integer(kind=8) :: sommi3
     integer :: iret, iadm, iadd, long, lon2, iad, kk, nbign
     integer :: nbob2, itrou, iobj
     logical :: contig
     character(len=24) :: k24
-    character(len=8) :: kbid, stock
+    character(len=8) ::  stock
     character(len=3) :: type
     character(len=1) :: genr
 !
@@ -88,9 +88,9 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     call jeexin(ob1, iret0)
     if (iret0 .eq. 0) goto 9999
 !
-    call jelira(ob1, 'TYPE', ibid, typ1)
+    call jelira(ob1, 'TYPE', cval=typ1)
     if (typ1 .eq. 'K') then
-        call jelira(ob1, 'LTYP', ltyp, kbid)
+        call jelira(ob1, 'LTYP', ltyp)
         if (ltyp .eq. 8) then
             type='K8'
         else if (ltyp.eq.16) then
@@ -107,27 +107,27 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
     endif
 !
 !
-    call jelira(ob1, 'XOUS', ibid, xous)
-    call jelira(ob1, 'GENR', ibid, genr)
+    call jelira(ob1, 'XOUS', cval=xous)
+    call jelira(ob1, 'GENR', cval=genr)
 !
 !
 !       - CAS DES OBJETS SIMPLES :
 !       --------------------------
     if (xous .eq. 'S') then
 !         -- POUR SE PROTEGER DES OBJETS EN COURS DE CREATION :
-        call jelira(ob1, 'IADM', iadm, kbid)
-        call jelira(ob1, 'IADD', iadd, kbid)
+        call jelira(ob1, 'IADM', iadm)
+        call jelira(ob1, 'IADD', iadd)
         if (abs(iadm)+abs(iadd) .eq. 0) goto 9999
 !
         if (genr .ne. 'N') then
-            call jelira(ob1, 'LONMAX', long, kbid)
-            call jelira(ob1, 'LONUTI', lon2, kbid)
+            call jelira(ob1, 'LONMAX', long)
+            call jelira(ob1, 'LONUTI', lon2)
             lonuti=lon2
             lonmax=long
             call jeveuo(ob1, 'L', iad)
         else
-            call jelira(ob1, 'NOMMAX', lon2, kbid)
-            call jelira(ob1, 'NOMUTI', long, kbid)
+            call jelira(ob1, 'NOMMAX', lon2)
+            call jelira(ob1, 'NOMUTI', long)
             lonuti=long
             lonmax=lon2
             call wkvect('&&TSTOBJ.PTEUR_NOM', 'V V '//type, long, iad)
@@ -156,8 +156,8 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
 !       - CAS DES COLLECTIONS :
 !       -----------------------
     if (xous .eq. 'X') then
-        call jelira(ob1, 'NMAXOC', nbob2, kbid)
-        call jelira(ob1, 'STOCKAGE', ibid, stock)
+        call jelira(ob1, 'NMAXOC', nbob2)
+        call jelira(ob1, 'STOCKAGE', cval=stock)
         contig=stock.eq.'CONTIG'
         itrou=0
         lonuti=0
@@ -169,14 +169,14 @@ subroutine tstobj(ob, perm, resume, sommi, sommr,&
         if (iret0 .le. 0) goto 2
 !
 !            -- POUR SE PROTEGER DES OBJETS EN COURS DE CREATION :
-        call jelira(jexnum(ob1, iobj), 'IADM', iadm, kbid)
-        call jelira(jexnum(ob1, iobj), 'IADD', iadd, kbid)
+        call jelira(jexnum(ob1, iobj), 'IADM', iadm)
+        call jelira(jexnum(ob1, iobj), 'IADD', iadd)
         if (abs(iadm)+abs(iadd) .eq. 0) goto 2
 !
         itrou=1
 !
-        call jelira(jexnum(ob1, iobj), 'LONUTI', lon2, kbid)
-        call jelira(jexnum(ob1, iobj), 'LONMAX', long, kbid)
+        call jelira(jexnum(ob1, iobj), 'LONUTI', lon2)
+        call jelira(jexnum(ob1, iobj), 'LONMAX', long)
         lonuti=lonuti+lon2
         lonmax=lonmax+long
         call jeveuo(jexnum(ob1, iobj), 'L', iad)

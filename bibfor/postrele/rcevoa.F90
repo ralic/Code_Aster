@@ -191,8 +191,8 @@ subroutine rcevoa(typtab, nommat)
         if (n1 .ne. 0) then
             nbins0 = -n1
             call jecroc(jexnum('&&RCEVOA.SITUATION', ioc))
-            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONMAX', nbins0, ' ')
-            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0, ' ')
+            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONMAX', nbins0)
+            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0)
             call jeveuo(jexnum('&&RCEVOA.SITUATION', ioc), 'E', kinst)
             call getvr8(motclf, 'INST', ioc, iarg, nbins0,&
                         zr(kinst), n1)
@@ -200,7 +200,7 @@ subroutine rcevoa(typtab, nommat)
             call getvid(motclf, 'LIST_INST', ioc, iarg, 1,&
                         nomf, n1)
             if (n1 .ne. 0) then
-                call jelira(nomf//'.VALE', 'LONMAX', nbins0, k8b)
+                call jelira(nomf//'.VALE', 'LONMAX', nbins0)
                 call jeveuo(nomf//'.VALE', 'L', jinst)
             else
                 call tbexv1(table, valek(2), instan, 'V', nbins0,&
@@ -208,8 +208,8 @@ subroutine rcevoa(typtab, nommat)
                 call jeveuo(instan, 'L', jinst)
             endif
             call jecroc(jexnum('&&RCEVOA.SITUATION', ioc))
-            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONMAX', nbins0, ' ')
-            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0, ' ')
+            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONMAX', nbins0)
+            call jeecra(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0)
             call jeveuo(jexnum('&&RCEVOA.SITUATION', ioc), 'E', kinst)
             do 24 i = 1, nbins0
                 zr(kinst-1+i) = zr(jinst-1+i)
@@ -229,7 +229,7 @@ subroutine rcevoa(typtab, nommat)
     do 30 ioc = 1, nbtran
 !
         call jeveuo(jexnum('&&RCEVOA.SITUATION', ioc), 'L', kinst)
-        call jelira(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0, k8b)
+        call jelira(jexnum('&&RCEVOA.SITUATION', ioc), 'LONUTI', nbins0)
 !
         call getvis(motclf, 'NB_OCCUR', ioc, iarg, 1,&
                     nbcycl, n1)

@@ -65,9 +65,9 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
     integer :: i, k
 !
-    real(kind=8) :: vim(9), vip(9), jeu
+    real(kind=8) :: vim(9), vip(9)
     real(kind=8) :: am2d(2), dam2d(2), dsid2d(6, 6), dam(3)
-    real(kind=8) :: sigma(6), sqrnor, sqrtan, r8prem, eps
+    real(kind=8) :: sigma(6), eps
 !
     character(len=16) :: option
 !

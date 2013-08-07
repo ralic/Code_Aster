@@ -63,10 +63,9 @@ subroutine alcart(base, chinz, maz, nomgdz)
     character(len=8) :: scal
     character(len=1) :: bas2
     integer :: noma, jbid
-    character(len=1) :: k1bid
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, j1
+    integer ::  j1
 !-----------------------------------------------------------------------
     call jemarq()
 !     NGDMX ET NMAMX : SERVENT A DIMENSIONNER LES OBJETS
@@ -92,13 +91,13 @@ subroutine alcart(base, chinz, maz, nomgdz)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), gd)
     if (gd .eq. 0) call u2mesk('F', 'CALCULEL_3', 1, nomgd)
     nec = nbec(gd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     scal = scalai(gd)
 !
 !     ALLOCATION DE DESC:
 !
     call wkvect(chin//'.DESC', bas2//' V I', 3+ngdmx*(2+nec), jdesc)
-    call jeecra(chin//'.DESC', 'DOCU', ibid, 'CART')
+    call jeecra(chin//'.DESC', 'DOCU', cval='CART')
     zi(jdesc-1+1) = gd
     zi(jdesc-1+2) = ngdmx
     zi(jdesc-1+3) = 0

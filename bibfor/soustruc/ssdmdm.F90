@@ -151,7 +151,7 @@ subroutine ssdmdm(mag)
     nbnoet =nbnoe+nbnol
     zi(iadim2-1+4*(isma-1)+1)= nbnoe
     zi(iadim2-1+4*(isma-1)+2)= nbnol
-    call jeecra(jexnom(mag//'.SUPMAIL', nomail), 'LONMAX', nbnoet, kbid)
+    call jeecra(jexnom(mag//'.SUPMAIL', nomail), 'LONMAX', nbnoet)
 !
     do 5,k=1,9
     zr(iaparr-1+14*(isma-1)+k)=lisr8(k)

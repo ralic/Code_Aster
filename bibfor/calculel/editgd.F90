@@ -55,16 +55,15 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
     integer :: nocmp, wnocmp, lshift
     character(len=8) :: nomcmp, ctype
     character(len=24) :: valk
-    character(len=1) :: k1bid
     character(len=19) :: chin
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iad1, iad2, ibid, ico, indgd, ncmp2
+    integer :: iad1, iad2, ico, indgd, ncmp2
 !-----------------------------------------------------------------------
     call jemarq()
     chin=chinz
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     debgd = (nedit-1)*ncmpmx
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', nocmp)
     call jeveuo(chin//'.NCMP', 'L', wnocmp)
@@ -89,7 +88,7 @@ subroutine editgd(chinz, ncmp, gd, nedit, dg)
             dg(iec) = ior(dg(iec),code)
             deb2 = debgd + indgd
             call jeveuo(chin//'.VALV', 'L', iad1)
-            call jelira(chin//'.VALV', 'TYPELONG', ibid, ctype)
+            call jelira(chin//'.VALV', 'TYPELONG', cval=ctype)
             call jeveuo(chin//'.VALE', 'E', iad2)
             call jacopo(1, ctype, iad1+j-1, iad2+deb2-1)
         endif

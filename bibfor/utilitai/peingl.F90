@@ -349,7 +349,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---    NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR  ---
 !
-            call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8b)
+            call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
 !
 ! ---    TABLEAU DE VALEURS DE LA CARTE COMPO     ---
 ! ---    (CONTENANT LES VALEURS DU COMPORTEMENT)  ---
@@ -385,7 +385,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! ---        RECUPERATION DES NUMEROS DES NOEUDS DE LA MAILLE
                     call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
-                    call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno, k8b)
+                    call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
 !
                 endif
 20          continue
@@ -617,7 +617,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     if (iret .eq. 0) then
                         call u2mesk('F', 'UTILITAI3_46', 1, nomgrm)
                     endif
-                    call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma, k8b)
+                    call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call u2mesk('F', 'UTILITAI3_47', 1, nomgrm)
                     endif

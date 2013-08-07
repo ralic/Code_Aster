@@ -69,7 +69,7 @@ subroutine op0168()
     integer :: lpar(3)
     integer :: vali(2)
     real(kind=8) :: r8b, prec, zero, mastot, valr(7)
-    character(len=1) :: k1b, typmod
+    character(len=1) ::  typmod
     character(len=3) :: ouinon
     character(len=8) :: k8b, modeou, modein
     character(len=16) :: typcon, nomcmd, critfi, nompar(3), nomsy, nompav
@@ -116,7 +116,7 @@ subroutine op0168()
         do 10 i = 1, nbfilt
             call getvid('FILTRE_MODE', 'MODE', i, iarg, 1,&
                         modein, n1)
-            call jelira(modein//'           .ORDR', 'LONUTI', iret, k8b)
+            call jelira(modein//'           .ORDR', 'LONUTI', iret)
             if (iret .eq. 0) goto 10
             nbmr = nbmr + 1
 !
@@ -150,7 +150,7 @@ subroutine op0168()
                         ibid)
 !
             call jecroc(jexnum(kmode, nbmr))
-            call jeecra(jexnum(kmode, nbmr), 'LONMAX', nbmodt, ' ')
+            call jeecra(jexnum(kmode, nbmr), 'LONMAX', nbmodt)
             call jeveuo(jexnum(kmode, nbmr), 'E', jordr)
 !
             call getvtx('FILTRE_MODE', 'TOUT_ORDRE', i, iarg, 1,&
@@ -160,7 +160,7 @@ subroutine op0168()
                 do 12 j = 1, nbmode
                     zi(jordr+j-1) = zi(jor+j-1)
 12              continue
-                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode, ' ')
+                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
                 goto 10
@@ -187,7 +187,7 @@ subroutine op0168()
                     call u2mesg('A', 'ALGELINE4_55', 1, valk, 1,&
                                 vali, 0, 0.d0)
 20              continue
-                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode, ' ')
+                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_MODE')
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -214,7 +214,7 @@ subroutine op0168()
                         endif
 32                  continue
 30              continue
-                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode, ' ')
+                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_MODE')
                 call jedetr('&&OP0168.NUME_ORDRE')
@@ -240,7 +240,7 @@ subroutine op0168()
                     nbmode = nbmode + 1
                     zi(jordr+nbmode-1) = iord
 40              continue
-                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode, ' ')
+                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
                 call jedetr('&&OP0168.NUME_MODE')
@@ -269,7 +269,7 @@ subroutine op0168()
                         zi(jordr+nbmode-1) = iord
                     endif
 50              continue
-                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode, ' ')
+                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
                 goto 10
@@ -345,7 +345,7 @@ subroutine op0168()
                         endif
 62                  continue
                 endif
-                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode, ' ')
+                call jeecra(jexnum(kmode, nbmr), 'LONUTI', nbmode)
                 ndimt = ndimt + nbmode
                 call jedetr('&&OP0168.NUME_ORDRE')
                 goto 10
@@ -363,7 +363,7 @@ subroutine op0168()
         call jemarq()
         call jerecu('V')
         modein = zk8(jnom+i-1)
-        call jelira(jexnum(kmode, i), 'LONUTI', nbmode, k1b)
+        call jelira(jexnum(kmode, i), 'LONUTI', nbmode)
         if (nbmode .eq. 0) then
             valk(1) = modein
             call u2mesg('A', 'ALGELINE4_56', 1, valk, 0,&

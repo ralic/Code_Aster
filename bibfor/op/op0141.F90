@@ -121,11 +121,11 @@ subroutine op0141()
     c2 = .false.
 !
     call dcapno(base1, depl, 1, chamol)
-    call jelira(chamol, 'TYPE', ibid, typsca)
+    call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') c1 = .true.
 !
     call dcapno(base2, depl, 1, chamol)
-    call jelira(chamol, 'TYPE', ibid, typsca)
+    call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') c2 = .true.
 !
     if (c1 .and. c2) then

@@ -84,7 +84,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     integer :: l1, l2, l3, l5, l6, l7, ioc, ico, isgt, isp, k, i, n, inoe
     real(kind=8) :: m1, m2, ma, mi, s1, s2, t1, t2, s12, xl, t12, smil
     logical :: deja
-    character(len=1) :: k1bid, bl
+    character(len=1) ::  bl
     character(len=4) :: docul, docu
     character(len=24) :: nvale, npnbn, npadr, nabsc, nnocp, ntab
 !
@@ -105,12 +105,12 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !
     nabsc = sdlieu(1:19)//'.ABSC'
 !
-    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', n, docul)
-    call jelira(nvale, 'DOCU', n, docu)
-    call jelira(nabsc, 'NMAXOC', nboc, k1bid)
+    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', cval=docul)
+    call jelira(nvale, 'DOCU', cval=docu)
+    call jelira(nabsc, 'NMAXOC', nboc)
     call jeexin(nnocp, iret)
     if (iret .eq. 0) call u2mess('F', 'POSTRELE_5')
-    call jelira(nnocp, 'LONMAX', nbcp, k1bid)
+    call jelira(nnocp, 'LONMAX', nbcp)
     call jecrec(sdmoye, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 nboc)
 !
@@ -137,9 +137,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
     do 100, ioc = 1, nboc, 1
 !
     call jecroc(jexnum(sdmoye, ioc))
-    call jeecra(jexnum(sdmoye, ioc), 'LONMAX', lmoye, bl)
+    call jeecra(jexnum(sdmoye, ioc), 'LONMAX', lmoye)
     call jeveuo(jexnum(sdmoye, ioc), 'E', amoye)
-    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbsgt, k1bid)
+    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbsgt)
     call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
     deja = .false.
 !

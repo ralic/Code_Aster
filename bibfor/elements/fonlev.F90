@@ -128,7 +128,7 @@ subroutine fonlev(resu, noma, nbnoff)
         if (nent .eq. 0) then
             do 110 igr = 1, ngr
 !
-                call jelira(jexnom(grouma, zk24(jjj2-1 + igr)), 'LONMAX', nbmai, k8b)
+                call jelira(jexnom(grouma, zk24(jjj2-1 + igr)), 'LONMAX', nbmai)
                 call jeveuo(jexnom(grouma, zk24(jjj2-1 + igr)), 'L', jadr)
 !
 !
@@ -213,14 +213,14 @@ subroutine fonlev(resu, noma, nbnoff)
 !
         call jeexin(resu//'.FOND.NOEU', iret)
         if (iret .ne. 0) then
-            call jelira(resu//'.FOND.NOEU', 'LONUTI', nbnoff, k8b)
+            call jelira(resu//'.FOND.NOEU', 'LONUTI', nbnoff)
             call jeveuo(resu//'.FOND.NOEU', 'L', jnoe1)
         else
             if (motfac .eq. 'LEVRE_SUP') then
-                call jelira(resu//'.FOND_SUP.NOEU', 'LONUTI', nbnoff, k8b)
+                call jelira(resu//'.FOND_SUP.NOEU', 'LONUTI', nbnoff)
                 call jeveuo(resu//'.FOND_SUP.NOEU', 'L', jnoe1)
             else if (motfac .eq. 'LEVRE_INF') then
-                call jelira(resu//'.FOND_INF.NOEU', 'LONUTI', nbnoff, k8b)
+                call jelira(resu//'.FOND_INF.NOEU', 'LONUTI', nbnoff)
                 call jeveuo(resu//'.FOND_INF.NOEU', 'L', jnoe1)
             endif
         endif
@@ -276,8 +276,8 @@ subroutine fonlev(resu, noma, nbnoff)
     if ((iret1.ne.0) .and. (iret2.ne.0)) then
         call jeveuo(resu//'.LEVRESUP.MAIL', 'L', jsup)
         call jeveuo(resu//'.LEVREINF.MAIL', 'L', jinf)
-        call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas1, k8b)
-        call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas2, k8b)
+        call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas1)
+        call jelira(resu//'.LEVRESUP.MAIL', 'LONMAX', nbmas2)
         do 710 i = 1, nbmas1
             do 715 j = 1, nbmas2
                 if (zk8(jsup-1 + i) .eq. zk8(jinf-1 + j)) then

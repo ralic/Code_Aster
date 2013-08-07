@@ -99,7 +99,7 @@ subroutine rvechd(dim, epsi, ssch19, nbcp, nbco,&
     nbpt = 2
 !
     call jeveuo(ssch19//'.NOMA', 'L', adr)
-    call jelira(ssch19//'.VALE', 'DOCU', i, docu)
+    call jelira(ssch19//'.VALE', 'DOCU', cval=docu)
 !
     nmaila = zk8(adr)
 !

@@ -61,7 +61,6 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     integer :: lvale, nout, nbvin, nbvout, lfon2, j
     real(kind=8) :: r8b, dimag
     complex(kind=8) :: c16b
-    character(len=1) :: k1b
     character(len=4) :: grande
     character(len=8) :: k8b
     character(len=16) :: sym
@@ -74,7 +73,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     ier = 0
 !
     call gettco(resin, typres)
-    call jelira(resin//'.ORDR', 'LONUTI', nbordr, k1b)
+    call jelira(resin//'.ORDR', 'LONUTI', nbordr)
     call rsorac(resin, 'LONUTI', ibid, r8b, k8b,&
                 c16b, r8b, k8b, nbordr, 1,&
                 ibid)
@@ -102,11 +101,11 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         call jeveuo(chdep//'.VALE', 'L', lval)
 !        --- NOMBRE D'EQUATIONS : NEQ
         chdep2 = chdep(1:19)//'.VALE'
-        call jelira(chdep2, 'LONMAX', neq, k1b)
+        call jelira(chdep2, 'LONMAX', neq)
     else
         call jeveuo(resin//'.'//grande, 'L', lval)
         chdep2 = resin//'.'//grande
-        call jelira(chdep2, 'LONMAX', neq, k1b)
+        call jelira(chdep2, 'LONMAX', neq)
         neq = neq / nbordr
         call jeveuo(resin//'.DISC', 'L', lacce)
 !        --- LACCE : ACCES A LA LISTE D'INSTANTS/FREQUENCES

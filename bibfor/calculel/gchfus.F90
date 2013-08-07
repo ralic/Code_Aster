@@ -35,7 +35,6 @@ subroutine gchfus(fonct1, fonct2, fonct3)
 ! ----------------------------------------------------------------------
     integer :: nptf1, nptf2, jprol, jvale, iret, jval, nptf, i
     real(kind=8) :: y
-    character(len=8) :: k8b
     character(len=19) :: fo1, fo2, fo3, fotmp1, fotmp2
 !
     call jemarq()
@@ -44,8 +43,8 @@ subroutine gchfus(fonct1, fonct2, fonct3)
     fo2=fonct2
     fo3=fonct3
 !
-    call jelira(fo1//'.VALE', 'LONMAX', nptf1, k8b)
-    call jelira(fo2//'.VALE', 'LONMAX', nptf2, k8b)
+    call jelira(fo1//'.VALE', 'LONMAX', nptf1)
+    call jelira(fo2//'.VALE', 'LONMAX', nptf2)
 !
     nptf1=nptf1/2
     nptf2=nptf2/2

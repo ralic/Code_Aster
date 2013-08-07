@@ -36,7 +36,6 @@ subroutine echell(geomi, ech)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     integer :: n1, i, iadcoo
-    character(len=8) :: k8bid
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: ech
@@ -44,7 +43,7 @@ subroutine echell(geomi, ech)
     call jemarq()
     coorjv=geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
-    call jelira(coorjv, 'LONMAX', n1, k8bid)
+    call jelira(coorjv, 'LONMAX', n1)
     iadcoo=iadcoo-1
     do 10 i = 1, n1
         zr(iadcoo+i)=zr(iadcoo+i)*ech

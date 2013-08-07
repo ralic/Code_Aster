@@ -53,7 +53,6 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !
     integer :: jdim, nbtno, jnon, i, inoeu, nbno, nbtgno, nbnogr, jname, jval1
     integer :: jval2, j, jgnoi, jgnou, kk, jnogr, jrefe, iret, ij
-    character(len=1) :: kbid
     character(len=8) :: nnoi
     character(len=19) :: coordo, coordi
     character(len=24) :: nom, nomnoi, nomnoe, grpno, dime, gpptnn
@@ -98,7 +97,7 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !     ----------------------------
     call jecreo(nomnoe, 'G N K8')
     call jeveuo(dime, 'L', jdim)
-    call jeecra(nomnoe, 'NOMMAX', nbno, kbid)
+    call jeecra(nomnoe, 'NOMMAX', nbno)
     do 31 i = 1, nbno
         call jecroc(jexnom(nomnoe, zk24(jname+i-1)))
 31  end do
@@ -111,7 +110,7 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
     call jeveuo(coordo//'.REFE', 'E', jrefe)
     zk24(jrefe) = maout
     call jecreo(coordo//'.VALE', 'G V R')
-    call jeecra(coordo//'.VALE', 'LONMAX', nbno*3, kbid)
+    call jeecra(coordo//'.VALE', 'LONMAX', nbno*3)
     call jeveuo(main//'.COORDO    .VALE', 'L', jval1)
     call jeveuo(coordo//'.VALE', 'E', jval2)
     do 40 i = 1, nbno
@@ -128,10 +127,10 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
     call jeexin(main//'.GROUPENO', iret)
 !
     if (iret .ne. 0) then
-        call jelira(main//'.GROUPENO', 'NMAXOC', nbtgno, kbid)
+        call jelira(main//'.GROUPENO', 'NMAXOC', nbtgno)
         gpptnn = maout//'.PTRNOMNOE'
         call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbtgno, ' ')
+        call jeecra(gpptnn, 'NOMMAX', nbtgno)
         call jecrec(grpno, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     nbtgno)
         do 50 i = 1, nbtgno
@@ -139,7 +138,7 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !           ON RECUPERE LES NOEUDS DU GROUPE QUI DOIVENT ETRE PRESENTS
 !           DANS LA NOUVELLE SD MAILLAGE
             call jenuno(jexnum(main//'.GROUPENO', i), nom)
-            call jelira(jexnom(main//'.GROUPENO', nom), 'LONUTI', nbnogr, kbid)
+            call jelira(jexnom(main//'.GROUPENO', nom), 'LONUTI', nbnogr)
             call jeveuo(jexnom(main//'.GROUPENO', nom), 'L', jgnoi)
             call wkvect('&&CMQLNO.NOEUD_GROUP', 'V V I', nbnogr, jnogr)
             kk=0
@@ -155,8 +154,8 @@ subroutine cmqlno(main, maout, nbnm, nunomi)
 !           ON AJOUTE DANS '.GROUPENO' LES NUMEROS DES NOEUDS
             if (nbnogr .ne. 0) then
                 call jecroc(jexnom(grpno, nom))
-                call jeecra(jexnom(grpno, nom), 'LONMAX', max(1, nbnogr), kbid)
-                call jeecra(jexnom(grpno, nom), 'LONUTI', nbnogr, kbid)
+                call jeecra(jexnom(grpno, nom), 'LONMAX', max(1,nbnogr))
+                call jeecra(jexnom(grpno, nom), 'LONUTI', nbnogr)
                 call jeveuo(jexnom(grpno, nom), 'E', jgnou)
                 do 70 j = 1, nbnogr
                     ij=zi(jnogr+j-1)

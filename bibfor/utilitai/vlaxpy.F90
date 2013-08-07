@@ -37,7 +37,6 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
     integer :: neq, ival1, ival2, iret1, iret2, i, ibid, jnum
-    character(len=8) :: k8bid
     character(len=19) :: prno
     character(len=24) :: chamn1, chamn2
     logical :: lfeti
@@ -66,7 +65,7 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 ! --- MISE A JOUR DES VALEURS DES LAGRANGE
     call jeveuo(chamn1(1:19)//'.VALE', 'L', ival1)
     call jeveuo(chamn2(1:19)//'.VALE', 'E', ival2)
-    call jelira(chamn2(1:19)//'.VALE', 'LONMAX', neq, k8bid)
+    call jelira(chamn2(1:19)//'.VALE', 'LONMAX', neq)
     do 10 i = 1, neq
         if (zi(jnum-1+i) .ne. 0) zr(ival2-1+i)=alpha*zr(ival1-1+i) + zr( ival2-1+i)
 10  end do

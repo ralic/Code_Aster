@@ -62,7 +62,7 @@ subroutine cnonua(nx, chno, lno, nuage)
     call jeveuo(kchno//'.DESC', 'L', jdesc)
     gd = zi(jdesc-1+1)
     num = zi(jdesc-1+2)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
     nec = nbec(gd)
@@ -77,7 +77,7 @@ subroutine cnonua(nx, chno, lno, nuage)
     call jeveuo(noma//'.COORDO    .VALE', 'L', kcoor)
 !
     if (klno .ne. ' ') then
-        call jelira(klno, 'LONUTI', np, k8b)
+        call jelira(klno, 'LONUTI', np)
         call jeveuo(klno, 'L', jlno)
     else
         call wkvect('&&CNONUA.NOEUD', 'V V I', np, jlno)
@@ -86,7 +86,7 @@ subroutine cnonua(nx, chno, lno, nuage)
 10      continue
     endif
 !
-    call jelira(kchno//'.VALE', 'TYPE', ibid, type)
+    call jelira(kchno//'.VALE', 'TYPE', cval=type)
     call jeveuo(kchno//'.VALE', 'L', kvale)
     if (type(1:1) .eq. 'R') then
         itype = 1

@@ -37,7 +37,6 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
 !-----------------------------------------------------------------------
 !
     integer :: i, j, iblo, iadesc, ialime, iaconl, jrefa, ldblo
-    character(len=8) :: k8b
     character(len=19) :: matrge
 ! DEB------------------------------------------------------------------
 !
@@ -67,7 +66,7 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto,&
 !
     call jecrec(matrge//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
-    call jeecra(matrge//'.UALF', 'LONMAX', nterm, k8b)
+    call jeecra(matrge//'.UALF', 'LONMAX', nterm)
 !
     iblo = 1
 !

@@ -55,13 +55,12 @@ subroutine utmamo(modele, nbtrou, litrou)
     integer :: nbmail
     integer :: itrma
 !
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jelira(modele//'.MAILLE', 'LONMAX', nbmail, k8bid)
+    call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
 !
     call wkvect(litrou, 'V V I', nbmail, itrma)
 !

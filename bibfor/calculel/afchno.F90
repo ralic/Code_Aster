@@ -44,7 +44,6 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
     character(len=8) :: k8b
     character(len=19) :: chamno
-    character(len=1) :: k1bid
     integer :: ncmp, ncmpmx, jcorr2
 !
 !-----------------------------------------------------------------------
@@ -56,7 +55,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
     chamno = chamn
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', numgd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', numgd), 'LONMAX', ncmpmx)
     call dismoi('F', 'NB_EC', gran, 'GRANDEUR', nec,&
                 k8b, ie)
 !

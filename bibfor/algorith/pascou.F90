@@ -114,7 +114,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
     call jeveuo(chams//'.CESD', 'L', jcesd)
 !
-    call jelira(mo//'.MAILLE', 'LONMAX', nbma, k8bid)
+    call jelira(mo//'.MAILLE', 'LONMAX', nbma)
     call jeveuo(chams//'.CESL', 'L', jcesl)
     call jeveuo(chams//'.CESV', 'L', jcesv)
 !

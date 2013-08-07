@@ -49,7 +49,6 @@ subroutine resu74(tran, nomres)
     integer :: nbsto3, nbstoc, nbsau2, nbsauv, ntem2, ntemp
     integer :: nbchoc, ntem1
     real(kind=8) :: prec, tinit, prec2
-    character(len=1) :: k1bid
     character(len=8) :: resu, crit
     integer :: iarg
 !     ------------------------------------------------------------------
@@ -81,11 +80,11 @@ subroutine resu74(tran, nomres)
 !
     call jeveuo(tran//'           .DISC', 'E', jinst1)
     if (ni .eq. 0) then
-        call jelira(tran//'           .DISC', 'LONUTI', nbinst, k1bid)
+        call jelira(tran//'           .DISC', 'LONUTI', nbinst)
         tinit = zr(jinst1+nbinst-1)
     endif
-    call jelira(tran//'           .DISC', 'LONUTI', nbinst, k1bid)
-    call jelira(tran//'           .DEPL', 'LONUTI', nbsto1, k1bid)
+    call jelira(tran//'           .DISC', 'LONUTI', nbinst)
+    call jelira(tran//'           .DEPL', 'LONUTI', nbsto1)
     nbsto1 = nbsto1/nbmode
     prec2 = prec
     if (crit(1:7) .eq. 'RELATIF') prec2 = prec * zr(jinst1)
@@ -111,7 +110,7 @@ subroutine resu74(tran, nomres)
 !
     call jeveuo(tran//'           .DEPL', 'E', jdepl1)
     call jeveuo(nomres//'           .DEPL', 'E', jdepl2)
-    call jelira(nomres//'           .DEPL', 'LONUTI', nbsto2, k1bid)
+    call jelira(nomres//'           .DEPL', 'LONUTI', nbsto2)
 !
     nbsto3 = nbinst*nbmode
     nbstoc = nbsto3 + nbsto2 - nbmode
@@ -134,7 +133,7 @@ subroutine resu74(tran, nomres)
 !
     call jeveuo(tran//'           .ORDR', 'E', jordr1)
     call jeveuo(nomres//'           .ORDR', 'E', jordr2)
-    call jelira(nomres//'           .ORDR', 'LONUTI', nbsau2, k1bid)
+    call jelira(nomres//'           .ORDR', 'LONUTI', nbsau2)
 !
     nbsauv = nbinst + nbsau2 - 1
 !
@@ -152,8 +151,8 @@ subroutine resu74(tran, nomres)
 !
 !     --- RECUPERATION DES PAS DE TEMPS
 !
-    call jelira(tran//'           .PTEM', 'LONUTI', ntem1, k1bid)
-    call jelira(nomres//'           .PTEM', 'LONUTI', ntem2, k1bid)
+    call jelira(tran//'           .PTEM', 'LONUTI', ntem1)
+    call jelira(nomres//'           .PTEM', 'LONUTI', ntem2)
     if (ntem2 .gt. 1) then
         call jeveuo(tran//'           .PTEM', 'L', jtem1)
         call jeveuo(nomres//'           .PTEM', 'L', jtem2)

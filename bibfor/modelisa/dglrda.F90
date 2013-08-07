@@ -328,11 +328,11 @@ subroutine dglrda()
 !---------ELASTIQUE---------------
     lonobj = 5
     call wkvect(mater//'.ELAS      .VALK', 'G V K8', 2*lonobj, jmelk)
-    call jeecra(mater//'.ELAS      .VALK', 'LONUTI', lonobj, ' ')
+    call jeecra(mater//'.ELAS      .VALK', 'LONUTI', lonobj)
     call wkvect(mater//'.ELAS      .VALR', 'G V R', lonobj, jmelr)
-    call jeecra(mater//'.ELAS      .VALR', 'LONUTI', lonobj, ' ')
+    call jeecra(mater//'.ELAS      .VALR', 'LONUTI', lonobj)
     call wkvect(mater//'.ELAS      .VALC', 'G V C', lonobj, jmelc)
-    call jeecra(mater//'.ELAS      .VALC', 'LONUTI', 0, ' ')
+    call jeecra(mater//'.ELAS      .VALC', 'LONUTI', 0)
     zk8(jmelk ) = 'E       '
     zr(jmelr ) = eeq
     zk8(jmelk+1) = 'NU      '

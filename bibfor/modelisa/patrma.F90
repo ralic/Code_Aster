@@ -75,7 +75,6 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
     character(len=8) :: nomma1, nomma2, nomma3
     character(len=24) :: l1, l2, lt, coor1, coor2, couple, wcpl, connex, biject
     character(len=24) :: valk(3)
-    character(len=8) :: k8bid
     real(kind=8) :: centre(3)
     real(kind=8) :: mrot(3, 3)
 !-----------------------------------------------------------------------
@@ -202,7 +201,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma,&
             if (ntypm .gt. 1) call jelibe(jexnum(lt, ntypm-1))
             call jecroc(jexnum(lt, ntypm))
             lonmx =3+nbmaty*(2+2*nbntot)
-            call jeecra(jexnum(lt, ntypm), 'LONMAX', lonmx, k8bid)
+            call jeecra(jexnum(lt, ntypm), 'LONMAX', lonmx)
             call jeveuo(jexnum(lt, ntypm), 'E', idlt)
             zi(idlt) = ityp1
             zi(idlt+1) = nbmaty

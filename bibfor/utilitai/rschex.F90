@@ -40,7 +40,6 @@ subroutine rschex(noresz, nomsym, codret)
 !     ------------------------------------------------------------------
 !
     integer :: iaux, nbtono, jordr, jtach
-    character(len=1) :: k1bid
     character(len=19) :: noresu
 !     ------------------------------------------------------------------
 !
@@ -51,7 +50,7 @@ subroutine rschex(noresz, nomsym, codret)
     noresu = '                   '
     noresu(1:iaux) = noresz(1:iaux)
 !
-    call jelira(noresu//'.ORDR', 'LONUTI', nbtono, k1bid)
+    call jelira(noresu//'.ORDR', 'LONUTI', nbtono)
     call jeveuo(noresu//'.ORDR', 'L', jordr)
     call jenonu(jexnom(noresu//'.DESC', nomsym), iaux)
     call jeveuo(jexnum(noresu//'.TACH', iaux), 'L', jtach)

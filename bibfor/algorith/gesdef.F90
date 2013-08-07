@@ -92,7 +92,7 @@ subroutine gesdef(nomres, numddl)
 !
     desdef = nomres//'.IDC_DEFO'
     call jeveuo(desdef, 'E', lldes)
-    call jelira(desdef, 'LONMAX', nbnot, k8bid)
+    call jelira(desdef, 'LONMAX', nbnot)
     nbnot = nbnot/(2+nbec)
 !
 !---------------COMPTAGE DES NOEUDS DES DIVERS TYPES INTERFACE----------
@@ -124,7 +124,7 @@ subroutine gesdef(nomres, numddl)
 !
     deeq = numddl//'.DEEQ'
     call jeveuo(deeq, 'L', lldeeq)
-    call jelira(deeq, 'LONMAX', neq, k8bid)
+    call jelira(deeq, 'LONMAX', neq)
     call dismoi('F', 'NB_EQUA', numddl, 'NUME_DDL', neq,&
                 k8bid, iret)
 !

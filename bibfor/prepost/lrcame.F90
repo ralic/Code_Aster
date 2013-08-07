@@ -647,7 +647,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
             call jedetr(ntproa)
             call lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
             call jeveuo(ntproa, 'L', jntpro)
-            call jelira(ntproa, 'LONMAX', lgprof, k2bid)
+            call jelira(ntproa, 'LONMAX', lgprof)
         endif
 !
 !====

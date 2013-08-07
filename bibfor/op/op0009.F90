@@ -221,7 +221,7 @@ subroutine op0009()
 !     ----------------------------------------------------
     call jeexin(matel//'.RELR', iexi)
     if (iexi .gt. 0) then
-        call jelira(matel//'.RELR', 'LONMAX ', nbresu, kbid)
+        call jelira(matel//'.RELR', 'LONMAX', nbresu)
         call jeveuo(matel//'.RELR', 'L', jrelr)
         do 101 iresu = 1, nbresu
             resuel=zk24(jrelr+iresu-1)

@@ -35,7 +35,6 @@ subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
 ! IN  DIM   : IS    : TAILLE DE L'OBJET
 ! OUT LDEC  : IS    : DECALAGE
 !     ------------------------------------------------------------------
-    character(len=4) :: cbid
     character(len=32) :: nom
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -46,7 +45,7 @@ subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
         nom = jexnom(nomc,nooc)
     endif
     call jecroc(nom)
-    call jeecra(nom, 'LONMAX', dim, cbid)
-    call jeecra(nom, 'LONUTI', dim, cbid)
+    call jeecra(nom, 'LONMAX', dim)
+    call jeecra(nom, 'LONUTI', dim)
     call jeveuo(nom, 'E', ldec)
 end subroutine

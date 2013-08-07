@@ -113,7 +113,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     ASSERT(tsca.eq.'R')
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    call jelira(cns//'.CNSC', 'LONMAX', ncmp, kbid)
+    call jelira(cns//'.CNSC', 'LONMAX', ncmp)
 !
 !
 !     2. CALCUL DES OBJETS  '&&CNSCES.NBPT','&CNSCES.NBSP'

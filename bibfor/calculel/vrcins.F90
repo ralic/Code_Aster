@@ -58,7 +58,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     integer :: jcvvar, jce1d, jce1l, jce1v, jcesvi, nncp, n1, k
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
-    character(len=8) :: kbid, valk(4)
+    character(len=8) ::  valk(4)
     logical :: avrc, dbg
     integer :: ibid, nbcvrc
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2
@@ -102,11 +102,11 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !     3. CONCATENATION DES CHAMPS DE .LISTE_CH  DANS CHVARS :
 !     -----------------------------------------------------
     call jeveuo(chmat//'.LISTE_CH', 'L', jlisch)
-    call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs, kbid)
+    call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
     call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
     call jeveuo(chmat//'.CVRCCMP', 'L', jcvcmp)
-    call jelira(chmat//'.CVRCCMP', 'LONMAX', nbcvrc, kbid)
+    call jelira(chmat//'.CVRCCMP', 'LONMAX', nbcvrc)
 !
     call jeveuo(chvars//'.CESD', 'L', jce1d)
     call jeveuo(chvars//'.CESL', 'E', jce1l)
@@ -114,7 +114,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !     -- IL FAUT REMETTRE CESV A NAN:
     rundef=r8nnem()
     call jeveuo(chvars//'.CESV', 'E', jce1v)
-    call jelira(chvars//'.CESV', 'LONMAX', n1, kbid)
+    call jelira(chvars//'.CESV', 'LONMAX', n1)
     do 5, k=1,n1
     zr(jce1v-1+k)=rundef
     5 end do
@@ -126,7 +126,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     call jeveuo(chs//'.CESL', 'L', jcesl)
     call jeveuo(chs//'.CESV', 'L', jcesv)
     call jeveuo(chs//'.CESC', 'L', jcesc)
-    call jelira(chs//'.CESC', 'LONMAX', nbcmp, kbid)
+    call jelira(chs//'.CESC', 'LONMAX', nbcmp)
 !
     do 2,kcmp=1,nbcmp
     nocmp1=zk8(jcesc-1+kcmp)

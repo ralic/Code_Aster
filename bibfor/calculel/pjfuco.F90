@@ -44,7 +44,7 @@ subroutine pjfuco(c1, c2, base, c3)
 !
 !
 !
-    character(len=8) :: ma1, ma2, kbid
+    character(len=8) :: ma1, ma2
     character(len=24) :: valk(2)
     integer :: i1, i2, i3, j1, j2, j3, k
     integer :: ino2, iatmp1, deca1, deca2, deca3, nbno, lont, nbno2
@@ -74,7 +74,7 @@ subroutine pjfuco(c1, c2, base, c3)
 !
 !     2- OBJETS  .PJEF_NB et .PJEF_M1 :
 !     ---------------------------------
-    call jelira(c1//'.PJEF_NB', 'LONMAX', nbno2, kbid)
+    call jelira(c1//'.PJEF_NB', 'LONMAX', nbno2)
     call jeveuo(c1//'.PJEF_NB', 'L', i1)
     call jeveuo(c2//'.PJEF_NB', 'L', i2)
     call jeveuo(c1//'.PJEF_M1', 'L', j1)

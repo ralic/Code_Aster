@@ -49,7 +49,6 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
     character(len=8) :: nomu
     character(len=16) :: concep, cmd
     character(len=24) :: mlgnma, modmai, modnoe, modnem
-    character(len=1) :: k1bid
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -66,10 +65,10 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
     call jeexin(modnem, ixnw)
     call jeexin(modmai, ixma)
     call jeexin(modnoe, ixno)
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     nbmtrd = 0
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call jeveuo(modnem, 'L', jdnw)
     endif
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)

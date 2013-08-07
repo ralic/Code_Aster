@@ -64,7 +64,6 @@ function ischar(lischa, typcha, soutyp, ichar)
 !
 !
     integer :: iret, icha, deb, fin
-    character(len=8) :: k8bid
     integer :: nchar
     logical :: ldiri, lelim, ldual, ldidi
     logical :: lneum, londe, llapl, lsigm, lelem, lsuiv
@@ -104,7 +103,7 @@ function ischar(lischa, typcha, soutyp, ichar)
             ischar = .false.
             goto 99
         endif
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (ichar .eq. 0) then
             deb = 1
             fin = nchar

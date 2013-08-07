@@ -155,7 +155,7 @@ subroutine op0030()
     if (iret .ne. 0) then
         call adalig(ligrch)
         call cormgi('G', ligrch)
-        call jeecra(ligrch//'.LGRF', 'DOCU', ibid, 'MECA')
+        call jeecra(ligrch//'.LGRF', 'DOCU', cval='MECA')
         call initel(ligrch)
     endif
 !

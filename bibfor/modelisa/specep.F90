@@ -167,7 +167,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
         mlgnno = noma//'.NOMNOE'
         call jenonu(jexnom(mlgnno, nomno0), numno0)
         mlgnma = noma//'.NOMMAI'
-        call jelira(mlgnma, 'NOMMAX', nbma, k8b)
+        call jelira(mlgnma, 'NOMMAX', nbma)
         call wkvect('&&SPECEP.TEMP.MAIL', 'V V I', nbma, imail)
         call exmano(noma, numno0, zi(imail), nbmano)
         if (nbmano .ne. 2) call u2mess('F', 'ALGELINE_70')
@@ -347,7 +347,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
         do 71 im1 = ideb, im2
             ij = ij + 1
             call jeveuo(jexnum(chvale, ij), 'E', ivale)
-            call jelira(jexnum(chvale, ij), 'LONMAX', nbval, k8b)
+            call jelira(jexnum(chvale, ij), 'LONMAX', nbval)
 !
             im2b = im2 - imodi + 1
             im1b = im1 - imodi + 1

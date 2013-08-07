@@ -63,7 +63,6 @@ subroutine calich(chargz)
 ! -----  ARGUMENTS
     character(len=*) :: chargz
 ! ------ VARIABLES LOCALES
-    character(len=1) :: k1bid
     character(len=2) :: typlag
     character(len=4) :: tych, typval, typcoe
     character(len=8) :: k8bid, chamno, noma, nomcmp, nomnoe, betaf
@@ -206,7 +205,7 @@ subroutine calich(chargz)
 !
 ! ---   RECUPERATION DU NOMBRE DE COMPOSANTES ASSOCIEES A LA LA GRANDEUR
 !       ----------------------------------------------------------------
-        call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, k1bid)
+        call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
 !
 ! ---   RECUPERATION DU NOM DES COMPOSANTES ASSOCIEES A LA LA GRANDEUR
 !       --------------------------------------------------------------

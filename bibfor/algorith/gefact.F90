@@ -130,8 +130,8 @@ subroutine gefact(duree, nominf)
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
     call jeveuo(chfreq, 'L', lfreq)
-    call jelira(chnumi, 'LONMAX', nbmr, k8b)
-    call jelira(chfreq, 'LONMAX', nbfreq, k8b)
+    call jelira(chnumi, 'LONMAX', nbmr)
+    call jelira(chfreq, 'LONMAX', nbfreq)
 !
     nomobj = '&&GEFACT.TEMP.NUOR'
     call wkvect(nomobj, 'V V I', nbmr, jnuor)

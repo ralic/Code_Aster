@@ -114,7 +114,7 @@ subroutine mltpre(mat19, renumz)
 !
     call dismoi('F', 'NOM_NUME_DDL', mat19, 'MATR_ASSE', ibid,&
                 nu, ierd)
-    call jelira(nu//'.SMOS.SMDI', 'CLAS', ibid, base)
+    call jelira(nu//'.SMOS.SMDI', 'CLAS', cval=base)
 !
 !
 !     -- RENUM : RENUMEROTATION SOUHAITEE POUR LA RESOLUTION

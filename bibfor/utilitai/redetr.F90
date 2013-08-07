@@ -44,7 +44,6 @@ subroutine redetr(matelz)
     integer :: jrelr, iret1, iexi, iexiav, jtemp, jadet
     integer :: izero, ico, k, nb1, nbdet, nb1av
     logical :: ldetr
-    character(len=4) :: cbid
     character(len=19) :: matele, resuel
 !
     call jemarq()
@@ -63,7 +62,7 @@ subroutine redetr(matelz)
     if (iexi .eq. 0) goto 60
 !
     call jeveuo(matele//'.RELR', 'E', jrelr)
-    call jelira(matele//'.RELR', 'LONUTI', nb1, cbid)
+    call jelira(matele//'.RELR', 'LONUTI', nb1)
 !
 !     -- LE MATR_ELEM DOIT CONTENIR LE MEME NOMBRE DE RESUELEM
 !        SUR TOUS LES PROCESSEURS :
@@ -154,7 +153,7 @@ subroutine redetr(matelz)
     40 end do
     ASSERT(ico.gt.0)
 !
-    call jeecra(matele//'.RELR', 'LONUTI', ico, cbid)
+    call jeecra(matele//'.RELR', 'LONUTI', ico)
     do 50,k=1,ico
     zk24(jrelr-1+k) = zk24(jtemp-1+k)
     50 end do

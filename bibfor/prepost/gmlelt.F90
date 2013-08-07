@@ -148,7 +148,7 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
             read(igmsh,*) ibid,ibid,nbtag
 !
             call jecroc(jexnum('&&PREGMS.TAGS', ima))
-            call jeecra(jexnum('&&PREGMS.TAGS', ima), 'LONMAX', nbtag, k8bid)
+            call jeecra(jexnum('&&PREGMS.TAGS', ima), 'LONMAX', nbtag)
             call jeveuo(jexnum('&&PREGMS.TAGS', ima), 'E', jtag)
 !
             backspace(igmsh)
@@ -199,16 +199,16 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
     if (nbgrou .ne. 0) then
 !
         indmax = nbgrou
-        call jeecra('&&PREGMS.INDICE.GROUP_MA', 'LONUTI', indmax, k8bid)
+        call jeecra('&&PREGMS.INDICE.GROUP_MA', 'LONUTI', indmax)
 !
 ! --- CREATION DE LA COLLECTION DES GROUPES DE MAILLES :
 !     ------------------------------------------------
         call jecrec('&&PREGMS.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                     indmax)
-        call jeecra('&&PREGMS.LISTE.GROUP_MA', 'LONT', nbmail, k8bid)
+        call jeecra('&&PREGMS.LISTE.GROUP_MA', 'LONT', nbmail)
 !
         do 40 i = 1, indmax
-            call jeecra(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'LONMAX', zi(jnbmag+i-1), k8bid)
+            call jeecra(jexnum('&&PREGMS.LISTE.GROUP_MA', i), 'LONMAX', zi(jnbmag+i-1))
             zi(jnbmag+i-1) = 0
 40      continue
 !

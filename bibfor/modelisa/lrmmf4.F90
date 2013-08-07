@@ -83,7 +83,6 @@ subroutine lrmmf4(nbrfam, carafa, nbnoeu, nbmail, nomgro,&
     integer :: jnogno, jnogma, jlggno, jlggma
     integer :: jfnomg, jfnumg
 !
-    character(len=8) :: saux08
     character(len=24) :: nomgrp
     character(len=24) :: nomgno, nomgma, longno, longma
     character(len=32) :: nomj
@@ -131,7 +130,7 @@ subroutine lrmmf4(nbrfam, carafa, nbnoeu, nbmail, nomgro,&
 !
         nbnufa = carafa(3,iaux)
         call jeveuo(nomj, 'L', jfnomg)
-        call jelira(nomj, 'LONMAX', nbgrou, saux08)
+        call jelira(nomj, 'LONMAX', nbgrou)
         call jeveuo(jexnum(numgro, iaux), 'L', jfnumg)
 !
         if (infmed .ge. 3) then

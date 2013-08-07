@@ -52,7 +52,6 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
     integer :: iret, nbpara, nblign, jtbnp, nbpm, nbpu
     integer :: ndim, jtblp, i, j, jvale, jlogq, ki, kr, kc, kk
     character(len=3) :: type
-    character(len=8) :: k8b
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
 ! ----------------------------------------------------------------------
@@ -84,8 +83,8 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 !
     call jeveuo(nomtab//'.TBLP', 'L', jtblp)
     nomjv = zk24(jtblp+2)
-    call jelira(nomjv, 'LONMAX', nbpm, k8b)
-    call jelira(nomjv, 'LONUTI', nbpu, k8b)
+    call jelira(nomjv, 'LONMAX', nbpm)
+    call jelira(nomjv, 'LONUTI', nbpu)
 !
     ndim = nbpu + 1
     if (ndim .gt. nbpm) then
@@ -104,7 +103,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr,&
 !
         do 20 i = 1, nbpara
             nomjv = zk24(jtblp+4*(i-1)+2)
-            call jeecra(nomjv, 'LONUTI', nblign, ' ')
+            call jeecra(nomjv, 'LONUTI', nblign)
 20      continue
 !
         ki = 0

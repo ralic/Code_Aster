@@ -52,7 +52,7 @@ subroutine mertth(modele, charge, infcha, carele, mate,&
 !
 !
 !
-    character(len=8) :: nomcha, lpain(6), lpaout(1), k8bid
+    character(len=8) :: nomcha, lpain(6), lpaout(1)
     character(len=16) :: option
     character(len=24) :: ligrel(2), lchin(6), lchout(1)
     character(len=24) :: chgeom, chcara(18)
@@ -78,7 +78,7 @@ subroutine mertth(modele, charge, infcha, carele, mate,&
     call jemarq()
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         call jeveuo(charge, 'L', jchar)
     else
         nchar = 0

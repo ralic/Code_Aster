@@ -85,11 +85,11 @@ subroutine rec110(nomres, nomsqu, modgen)
     call jeveuo(nomres//'           .LTNS', 'E', jltns)
     zk24(jltns-1+1)(1:8)=nomres
 !
-    call jelira(nomres//'         .NOMSST', 'LONUTI', nbstac, k8bid)
+    call jelira(nomres//'         .NOMSST', 'LONUTI', nbstac)
     call jeveuo(nomres//'         .NOMSST', 'L', lstac)
     call jeveuo(nomres//'.COORDO    .VALE', 'E', lcoord)
-    call jelira(nomres//'.COORDO    .VALE', 'LONUTI', nbcoor, k8bid)
-    call jelira(nomres//'.INV.SKELETON   ', 'LONUTI', nbnd2, k8bid)
+    call jelira(nomres//'.COORDO    .VALE', 'LONUTI', nbcoor)
+    call jelira(nomres//'.INV.SKELETON   ', 'LONUTI', nbnd2)
     call jeveuo(nomres//'.INV.SKELETON   ', 'E', lsk)
     nbnd = nbnd2/2
     lsk2 = lsk + nbnd
@@ -138,7 +138,7 @@ subroutine rec110(nomres, nomsqu, modgen)
             nomsst = zk8(lstac-1+istac)
             call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                         lintf)
-            call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes, k8bid)
+            call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes)
             call dismoi('F', 'NB_EC', lintf, 'INTERF_DYNA', nbec,&
                         k8bid, iret)
             nbni = nnodes/(2+nbec)
@@ -181,7 +181,7 @@ subroutine rec110(nomres, nomsqu, modgen)
                 nomsst = zk8(lstac-1+jstac)
                 call mgutdm(modgen, nomsst, ibid, 'NOM_LIST_INTERF', ibid,&
                             ljntf)
-                call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes, k8bid)
+                call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes)
                 call dismoi('F', 'NB_EC', ljntf, 'INTERF_DYNA', nbec,&
                             k8bid, iret)
                 nbnj = nnodes/(2+nbec)
@@ -302,7 +302,7 @@ subroutine rec110(nomres, nomsqu, modgen)
                 call u2mesg('E', 'ALGORITH15_65', 4, valk, 0,&
                             0, 0, 0.d0)
             endif
-            call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes, k8bid)
+            call jelira(lintf//'.IDC_DEFO', 'LONUTI', nnodes)
             call dismoi('F', 'NB_EC', lintf, 'INTERF_DYNA', nbec,&
                         k8bid, iret)
             nbni = nnodes/(2+nbec)
@@ -345,7 +345,7 @@ subroutine rec110(nomres, nomsqu, modgen)
                 call u2mesg('E', 'ALGORITH15_67', 4, valk, 0,&
                             0, 0, 0.d0)
             endif
-            call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes, k8bid)
+            call jelira(ljntf//'.IDC_DEFO', 'LONUTI', nnodes)
             call dismoi('F', 'NB_EC', ljntf, 'INTERF_DYNA', nbec,&
                         k8bid, iret)
             nbnj = nnodes/(2+nbec)
@@ -447,10 +447,10 @@ subroutine rec110(nomres, nomsqu, modgen)
     call jeveuo(nomres//'.DIME', 'L', ldime)
 !     NOMBRE DE MAILLES NBMA
     nbma = zi(ldime+2)
-    call jelira(nomres//'.CONNEX', 'NUTIOC', nbocc, k8bid)
+    call jelira(nomres//'.CONNEX', 'NUTIOC', nbocc)
     do 220 iocc = 1, nbma
         call jeveuo(jexnum(nomres//'.CONNEX', iocc), 'E', lconn)
-        call jelira(jexnum(nomres//'.CONNEX', iocc), 'LONMAX', nbn, k8bid)
+        call jelira(jexnum(nomres//'.CONNEX', iocc), 'LONMAX', nbn)
         do 210 i = 1, nbn
             zi(lconn-1+i) = zi(linver-1+ zi(lconn-1+i))
 210      continue
@@ -478,7 +478,7 @@ subroutine rec110(nomres, nomsqu, modgen)
 ! --- OBJET .NOMNOE
     call jedetr(nomres//'.NOMNOE')
     call jecreo(nomres//'.NOMNOE', 'G N K8')
-    call jeecra(nomres//'.NOMNOE', 'NOMMAX', nbnew, ' ')
+    call jeecra(nomres//'.NOMNOE', 'NOMMAX', nbnew)
     do 240 i = 1, nbnew
         iold = zi(lcorr-1+i)
         call jenuno(jexnum(nomsqu//'.NOMNOE', iold), nomnoe)

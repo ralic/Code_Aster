@@ -310,8 +310,8 @@ subroutine op0077()
     if ((concep(1:9).ne.'TRAN_GENE') .and. (concep(1:9).ne.'MODE_CYCL') .and.&
         (concep(1:9).ne.'HARM_GENE')) then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
-        call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8b)
-        call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8b)
+        call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
+        call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
 !
         call getvid(' ', 'SQUELETTE', 1, iarg, 0,&
                     k8b, isk)

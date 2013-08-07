@@ -143,7 +143,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
 !
 !     RECUPERATION DU NOMBRE DE NOEUD
 !
-    call jelira(fond//'.FOND.NOEU', 'LONUTI', nbnoff, k8b)
+    call jelira(fond//'.FOND.NOEU', 'LONUTI', nbnoff)
 !
 !  SI LEVRE_SUP EST DEFINIE DANS LE CONCEPT FOND
 !
@@ -208,7 +208,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
         call chpver('F', dirth(1:19), 'NOEU', 'DEPL_R', ierd)
         dirth(20:24) = '.VALE'
         call jeveuo(dirth, 'L', idirth)
-        call jelira(dirth, 'LONMAX', lndir, k1bid)
+        call jelira(dirth, 'LONMAX', lndir)
         dirth(20:24) = '.REFE'
         call jeveuo(dirth, 'L', irefe)
         call jeveuo(zk24(irefe+1)(1:19)//'.DEEQ', 'L', ideeq)
@@ -337,7 +337,7 @@ subroutine gcouro(base, resu, noma, nomno, coorn,&
                 k1bid, ibid)
     call wkvect(chamno, base//' V I', 2+nec, idesc)
 !
-    call jeecra(chamno, 'DOCU', 0, 'CHNO')
+    call jeecra(chamno, 'DOCU', cval='CHNO')
     call jenonu(jexnom('&CATA.GD.NOMGD', 'DEPL_R'), numa)
     zi(idesc+1-1) = numa
     zi(idesc+2-1) = -3

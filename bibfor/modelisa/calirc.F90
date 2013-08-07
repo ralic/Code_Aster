@@ -261,7 +261,7 @@ subroutine calirc(chargz)
 ! ---        DU TABLEAU DES NORMALES ET LES NUMEROS DES NOEUDS :
 !            -------------------------------------------------
             call wkvect('&&CALIRC.INDIRE', 'V V I', nnomx, indire)
-            call jelira('&&NBNLMA.LN', 'LONUTI', lno, kb)
+            call jelira('&&NBNLMA.LN', 'LONUTI', lno)
 !
             do 30 i = 1, lno
                 zi(indire+zi(jnunoe+i-1)-1)=i
@@ -370,7 +370,7 @@ subroutine calirc(chargz)
             call jeveuo(corre2//'.PJEF_NU', 'L', jconu2)
             call jeveuo(corre2//'.PJEF_CF', 'L', jcocf2)
         endif
-        call jelira(corres//'.PJEF_NB', 'LONMAX', nbno2t, kb)
+        call jelira(corres//'.PJEF_NB', 'LONMAX', nbno2t)
         ASSERT(nbno2t.eq.nnomx)
 !
 !

@@ -44,7 +44,7 @@ subroutine op0016()
     character(len=32) :: noml32
     character(len=80) :: txt
     character(len=16) :: noment
-    character(len=1) :: nomcla, k1bid
+    character(len=1) :: nomcla
     integer :: iarg
 !
 !-----------------------------------------------------------------------
@@ -175,7 +175,7 @@ subroutine op0016()
                 call jeprat(iuni, noml32, nom(1:8), txt)
                 write(iuni,*) ' '
             else
-                call jelira(nomobj, 'NMAXOC', noc, k1bid)
+                call jelira(nomobj, 'NMAXOC', noc)
                 do 1 i = 1, noc
                     call jeexin(jexnum(nomobj, i), iret)
                     if (iret .ne. 0) then

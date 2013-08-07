@@ -150,7 +150,7 @@ subroutine op0182()
                 c16b, tabk, 0)
 !
 !     utiliser uniquement par CALFIG
-    call jelira(nomfon(1:19)//'.VALE', 'LONMAX', npo, k8b)
+    call jelira(nomfon(1:19)//'.VALE', 'LONMAX', npo)
 !
     ns = 12
     dinst = 0.d0
@@ -217,7 +217,7 @@ subroutine op0182()
     if (irett .ne. 0 .or. iret2 .ne. 0) then
         call u2mess('F', 'PREPOST4_96')
     endif
-    call jelira(nomfg(1:19)//'.VALE', 'LONMAX', nco, k8b)
+    call jelira(nomfg(1:19)//'.VALE', 'LONMAX', nco)
     nco = nco/2
     nomob1 = type(1:7)
 !
@@ -304,7 +304,7 @@ subroutine op0182()
                 rtube = 4.825d-3
                 goto 61
             endif
-            call jelira(nomobc(1:19)//'.VALE', 'LONMAX', ncr, k8b)
+            call jelira(nomobc(1:19)//'.VALE', 'LONMAX', ncr)
             ncr = ncr/2
             guidag = ' '
 61          continue

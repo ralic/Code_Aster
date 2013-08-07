@@ -132,7 +132,7 @@ subroutine xoripe(modele)
             call jeexin(grp(kk), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(kk), 'L', jgrp)
-                call jelira(grp(kk), 'LONMAX', nmaenr, k8bid)
+                call jelira(grp(kk), 'LONMAX', nmaenr)
 !
 !           BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
                 do 120 i = 1, nmaenr

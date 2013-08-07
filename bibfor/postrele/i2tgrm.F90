@@ -53,7 +53,7 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
     cycle = .true.
 !
     call jecreo('&INTPLACE', 'V V L')
-    call jeecra('&INTPLACE', 'LONMAX', nbm, ' ')
+    call jeecra('&INTPLACE', 'LONMAX', nbm)
     call jeveuo('&INTPLACE', 'E', aplace)
 !
     do 10, i = 1, nbm, 1

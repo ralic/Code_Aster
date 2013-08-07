@@ -139,7 +139,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     nbopt = 0
     if (lisopt .ne. ' ') then
         call jeveuo(lisopt, 'E', jliopg)
-        call jelira(lisopt, 'LONMAX', nbopt, k8b)
+        call jelira(lisopt, 'LONMAX', nbopt)
     endif
 !
     exitim = .false.

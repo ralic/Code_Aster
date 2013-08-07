@@ -69,9 +69,9 @@ subroutine copich(base, ch1z, ch2z)
     if (max(iret1,iret2) .eq. 0) goto 9999
 !
     if (iret1 .gt. 0) then
-        call jelira(ch1//'.DESC', 'DOCU', ibid, docu)
+        call jelira(ch1//'.DESC', 'DOCU', cval=docu)
     else
-        call jelira(ch1//'.CELD', 'DOCU', ibid, docu)
+        call jelira(ch1//'.CELD', 'DOCU', cval=docu)
     endif
 !
 !     -- CAS DES CHAM_NO :
@@ -122,7 +122,7 @@ subroutine copich(base, ch1z, ch2z)
 ! --- SI FETI, ON DUPLIQUE AUSSI LES CHAM_NO ESCLAVES
         call jeexin(ch1//'.FETC', ifeti)
         if (ifeti .ne. 0) then
-            call jelira(ch1//'.FETC', 'LONMAX', nbsd, k8bid)
+            call jelira(ch1//'.FETC', 'LONMAX', nbsd)
             call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
             call jeveuo(ch1//'.FETC', 'L', ifetc1)
             call jeexin(ch2//'.FETC', iret)

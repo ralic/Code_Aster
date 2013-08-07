@@ -59,7 +59,7 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
 !---------------------DESCRIPTION D' UNE MAILLE----------------------
 !
     integer :: m, nbcote, nbneud, ima, iatyma
-    character(len=8) :: typm, k8b
+    character(len=8) :: typm
 !
 !---------------------DESCRIPTION D' UNE FACE------------------------
 !
@@ -157,25 +157,25 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
 !---------CREATION DES TABLEAUX LOCAUX JEVEUX-----------------------
 !
     call jecreo('&INTERSLOC', 'V V R')
-    call jeecra('&INTERSLOC', 'LONMAX', 8, ' ')
+    call jeecra('&INTERSLOC', 'LONMAX', 8)
     call jecreo('&INTERR1LOC', 'V V R')
-    call jeecra('&INTERR1LOC', 'LONMAX', 8, ' ')
+    call jeecra('&INTERR1LOC', 'LONMAX', 8)
     call jecreo('&INTERR2LOC', 'V V R')
-    call jeecra('&INTERR2LOC', 'LONMAX', 8, ' ')
+    call jeecra('&INTERR2LOC', 'LONMAX', 8)
     call jecreo('&INTERF1LOC', 'V V I')
-    call jeecra('&INTERF1LOC', 'LONMAX', 8, ' ')
+    call jeecra('&INTERF1LOC', 'LONMAX', 8)
     call jecreo('&INTERF2LOC', 'V V I')
-    call jeecra('&INTERF2LOC', 'LONMAX', 8, ' ')
+    call jeecra('&INTERF2LOC', 'LONMAX', 8)
     call jecreo('&INTERCOTDR', 'V V L')
-    call jeecra('&INTERCOTDR', 'LONMAX', 4, ' ')
+    call jeecra('&INTERCOTDR', 'LONMAX', 4)
     call jecreo('&INTERXSOM', 'V V R')
-    call jeecra('&INTERXSOM', 'LONMAX', 5, ' ')
+    call jeecra('&INTERXSOM', 'LONMAX', 5)
     call jecreo('&INTERYSOM', 'V V R')
-    call jeecra('&INTERYSOM', 'LONMAX', 5, ' ')
+    call jeecra('&INTERYSOM', 'LONMAX', 5)
     call jecreo('&INTERXINT', 'V V R')
-    call jeecra('&INTERXINT', 'LONMAX', 4, ' ')
+    call jeecra('&INTERXINT', 'LONMAX', 4)
     call jecreo('&INTERYINT', 'V V R')
-    call jeecra('&INTERYINT', 'LONMAX', 4, ' ')
+    call jeecra('&INTERYINT', 'LONMAX', 4)
 !
 !---------RECUPERATION DES ADRESSES DES TABLEAUX LOCAUX-----------
 !
@@ -202,7 +202,7 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
         ima = numail(m)
 !
         call jeveuo(jexnum(conec, ima), 'L', adrvlc)
-        call jelira(jexnum(conec, ima), 'LONMAX', nbneud, k8b)
+        call jelira(jexnum(conec, ima), 'LONMAX', nbneud)
 !
 !---------------RECUPERATION DU NOM DU TYPE DE LA MAILLE COURANTE----
 !

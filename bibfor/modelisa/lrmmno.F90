@@ -130,7 +130,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 ! 1.2. ==> TRANSFERT DANS LA STRUCTURE GLOBALE
 !
     call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoeu, ' ')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
     do 13 , iaux = 1 , nbnoeu
     call jecroc(jexnom(nomnoe, zk16(jnomno+iaux-1)(1:8)))
     13 end do
@@ -145,7 +145,7 @@ subroutine lrmmno(fid, nomam2, ndim, nbnoeu, nomu,&
 !
     call wkvect(coordo, 'G V R', nbnoeu*3, jcoord)
     call codent(ndim, 'G', dimesp)
-    call jeecra(coordo, 'DOCU', 0, dimesp)
+    call jeecra(coordo, 'DOCU', cval=dimesp)
 !
 ! 2.1. ==> EN DIMENSION 3, ON LIT LE TABLEAU DES COORDONNEES
 !

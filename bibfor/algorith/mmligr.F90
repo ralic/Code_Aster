@@ -77,7 +77,6 @@ subroutine mmligr(noma, nomo, defico, resoco)
     integer :: jnbno, long, jad, ityte, ityma
     integer :: nndel, ntpc, nbnom, nbnoe, nbgrel, nndtot
     integer :: comptc(nbtyp), comptf(nbtyp)
-    character(len=8) :: k8bid
     character(len=16) :: nomtm, nomte
     character(len=24) :: tabfin, crnudd
     integer :: jtabf, jcrnud
@@ -154,7 +153,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 !
     call jecrec(ligrcf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 ntpc)
-    call jeecra(ligrcf//'.NEMA', 'LONT', nndtot, k8bid)
+    call jeecra(ligrcf//'.NEMA', 'LONT', nndtot)
     do 50 iptc = 1, ntpc
 !
 ! --- VERIF NOMBRE DE NOEUDS SUR ELEMENT DE CONTACT
@@ -171,7 +170,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
 ! --- CREATION DE L'ELEMENT DE CONTACT DANS LE LIGREL
 !
         call jecroc(jexnum(ligrcf//'.NEMA', iptc))
-        call jeecra(jexnum(ligrcf//'.NEMA', iptc), 'LONMAX', nndel+1, k8bid)
+        call jeecra(jexnum(ligrcf//'.NEMA', iptc), 'LONMAX', nndel+1)
         call jeveuo(jexnum(ligrcf//'.NEMA', iptc), 'E', jad)
         zi(jad-1+nndel+1) = zi(jtynma-1+2*(iptc-1)+1)
 !
@@ -205,13 +204,13 @@ subroutine mmligr(noma, nomo, defico, resoco)
                     nbgrel)
     endif
 !
-    call jeecra(ligrcf//'.LIEL', 'LONT', long, k8bid)
+    call jeecra(ligrcf//'.LIEL', 'LONT', long)
     ico = 0
     do 90 ityp = 1, nbtyp
         if (comptc(ityp) .ne. 0) then
             ico = ico + 1
             call jecroc(jexnum(ligrcf//'.LIEL', ico))
-            call jeecra(jexnum(ligrcf//'.LIEL', ico), 'LONMAX', comptc( ityp)+1, k8bid)
+            call jeecra(jexnum(ligrcf//'.LIEL', ico), 'LONMAX', comptc( ityp)+1)
             call jeveuo(jexnum(ligrcf//'.LIEL', ico), 'E', jad)
 !
             nomte = mmeltc(ityp)
@@ -248,7 +247,7 @@ subroutine mmligr(noma, nomo, defico, resoco)
         if (comptf(ityp) .ne. 0) then
             ico = ico + 1
             call jecroc(jexnum(ligrcf//'.LIEL', ico))
-            call jeecra(jexnum(ligrcf//'.LIEL', ico), 'LONMAX', comptf( ityp)+1, k8bid)
+            call jeecra(jexnum(ligrcf//'.LIEL', ico), 'LONMAX', comptf( ityp)+1)
             call jeveuo(jexnum(ligrcf//'.LIEL', ico), 'E', jad)
 !
             nomte = mmeltf(ityp)

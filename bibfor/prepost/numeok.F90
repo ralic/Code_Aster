@@ -50,7 +50,6 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
     integer :: jlist, nbordr, iord
     integer :: i
     character(len=19) :: listis, listr8
-    character(len=8) :: k8b
 !
     call jemarq()
 !
@@ -69,7 +68,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
 !
     if (acces .eq. 'NUME_ORDRE') then
         call jeveuo(listis//'.VALE', 'L', jlist)
-        call jelira(listis//'.VALE', 'LONMAX', nbordr, k8b)
+        call jelira(listis//'.VALE', 'LONMAX', nbordr)
         do 10 i = 1, nbordr
             if (ilu .eq. zi(jlist-1+i)) then
                 astock = .true.
@@ -82,7 +81,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
 !
     if (acces .eq. 'INST') then
         call jeveuo(listr8//'.VALE', 'L', jlist)
-        call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8b)
+        call jelira(listr8//'.VALE', 'LONMAX', nbordr)
         do 20 i = 1, nbordr
             if (rlu .eq. zr(jlist)) then
                 astock = .true.
@@ -95,7 +94,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
 !
     if (acces .eq. 'LIST_INST') then
         call jeveuo(listr8//'.VALE', 'L', jlist)
-        call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8b)
+        call jelira(listr8//'.VALE', 'LONMAX', nbordr)
         do 30 i = 1, nbordr
             if (ilu .eq. zr(jlist)) then
                 astock = .true.
@@ -108,7 +107,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
 !
     if (acces .eq. 'FREQ') then
         call jeveuo(listr8//'.VALE', 'L', jlist)
-        call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8b)
+        call jelira(listr8//'.VALE', 'LONMAX', nbordr)
         do 40 i = 1, nbordr
             if (ilu .eq. zr(jlist)) then
                 astock = .true.
@@ -121,7 +120,7 @@ subroutine numeok(acces, ilu, rlu, listrz, listiz,&
 !
     if (acces .eq. 'LIST_FREQ') then
         call jeveuo(listr8//'.VALE', 'L', jlist)
-        call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8b)
+        call jelira(listr8//'.VALE', 'LONMAX', nbordr)
         do 50 i = 1, nbordr
             if (ilu .eq. zr(jlist)) then
                 astock = .true.

@@ -46,7 +46,6 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
     integer :: im, jdepi, jviti
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
-    character(len=1) :: k1bid
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -115,7 +114,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
                     tinit, ni)
         call jeveuo(tran//'           .DEPL', 'E', jdeplt)
         call jeveuo(tran//'           .DISC', 'E', jinst)
-        call jelira(tran//'           .DISC', 'LONUTI', nbinst, k1bid)
+        call jelira(tran//'           .DISC', 'LONUTI', nbinst)
         if (ni .eq. 0) tinit = zr(jinst+nbinst-1)
         inter = 'NON'
         call extrac(inter, prec, crit, nbinst, zr(jinst),&

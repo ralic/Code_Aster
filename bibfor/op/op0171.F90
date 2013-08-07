@@ -240,7 +240,7 @@ subroutine op0171()
     call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
     call jeveuo(vtempp(1:19)//'.VALE', 'E', jtempp)
     call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
-    call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+    call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch)
 !
 ! --- COMPTEUR ET CRITERES D'ARRET
 !
@@ -295,7 +295,7 @@ subroutine op0171()
 !
         if (prem) then
 !
-            call jelira(chlapp(1:19)//'.CELV', 'LONUTI', lglap, k8bid)
+            call jelira(chlapp(1:19)//'.CELV', 'LONUTI', lglap)
             call jeveuo(chlapp(1:19)//'.CELV', 'L', jlagp)
             call copisd('CHAMP_GD', 'V', chlapp(1:19), chlapm(1:19))
             prem = .false.

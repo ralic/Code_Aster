@@ -69,7 +69,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     integer :: jnotuy, nno, nbtuy4, nbext1, jzkpar, jmmt, ibid
     integer :: ier, nbmail
     real(kind=8) :: val(3), epsi
-    character(len=1) :: k1bid
     character(len=8) :: nomu, car, crit
     character(len=16) :: concep, cmd, nunoel
     character(len=24) :: mlgnma, mlgnno, mlggno, mlgcoo, mlgcnx, modmai, nomlu
@@ -88,7 +87,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
     mlgcnx = noma//'.CONNEX'
     mlggno = noma//'.GROUPENO'
     mlgcoo = noma//'.COORDO    .VALE'
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     call jeveuo(mlgcoo, 'L', jdco)
 !
     modmai = nomo//'.MAILLE'
@@ -260,7 +259,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr,&
                 if (nj .gt. 0) then
                     if (nj .eq. 1) then
                         call jeveuo(jexnom(mlggno, nomlu), 'L', jdgn)
-                        call jelira(jexnom(mlggno, nomlu), 'LONUTI', nng, k1bid)
+                        call jelira(jexnom(mlggno, nomlu), 'LONUTI', nng)
                         if (nng .eq. 1) then
                             inn=inn+1
                             zi(jnozk-1+inn) = zi(jdgn)

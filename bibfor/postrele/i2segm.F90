@@ -64,7 +64,6 @@ subroutine i2segm(nomail, nbpars, nbpara)
     real(kind=8) :: point(2), poina(2), poinb(2), dgrd
     real(kind=8) :: epsi, xa, xb, xc, ya, yb, yc, r, alfinf, alfsup
     real(kind=8) :: epsi2, tole, dm, xrc1, xrc2, xex, xor, yex, yor
-    character(len=1) :: k1b
     character(len=8) :: k8b, nomcrb, nomm1, nomm2, crit
     character(len=16) :: opera, typcrb, motcle(3), typmcl(2)
     character(len=24) :: conec, coord, type, nommai, lismai
@@ -89,7 +88,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
     coord = nomail//'.COORDO    .VALE'
     type = nomail//'.TYPMAIL        '
     nommai = nomail//'.NOMMAI         '
-    call jelira(conec, 'NMAXOC', nbmail, k1b)
+    call jelira(conec, 'NMAXOC', nbmail)
 !
 !     --- TRAITEMENT DES GROUP_MA ET MAILLE ---
 !
@@ -296,28 +295,28 @@ subroutine i2segm(nomail, nbpars, nbpara)
         if (nbsgt .gt. 0) then
             occ = occa + occs - 2
             call jecroc(jexnum('&ORSGT', occ))
-            call jeecra(jexnum('&ORSGT', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&ORSGT', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&ORSGT', occ), 'E', aorsgt)
             call jecroc(jexnum('&EXSGT', occ))
-            call jeecra(jexnum('&EXSGT', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&EXSGT', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&EXSGT', occ), 'E', aexsgt)
             call jecroc(jexnum('&PAROR', occ))
-            call jeecra(jexnum('&PAROR', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&PAROR', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&PAROR', occ), 'E', aparor)
             call jecroc(jexnum('&PAREX', occ))
-            call jeecra(jexnum('&PAREX', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&PAREX', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&PAREX', occ), 'E', aparex)
             call jecroc(jexnum('&MAIL1', occ))
-            call jeecra(jexnum('&MAIL1', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&MAIL1', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&MAIL1', occ), 'E', amail1)
             call jecroc(jexnum('&MAIL2', occ))
-            call jeecra(jexnum('&MAIL2', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&MAIL2', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&MAIL2', occ), 'E', amail2)
             call jecroc(jexnum('&FACOR', occ))
-            call jeecra(jexnum('&FACOR', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&FACOR', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&FACOR', occ), 'E', afacor)
             call jecroc(jexnum('&FACEX', occ))
-            call jeecra(jexnum('&FACEX', occ), 'LONMAX', nbsgt, ' ')
+            call jeecra(jexnum('&FACEX', occ), 'LONMAX', nbsgt)
             call jeveuo(jexnum('&FACEX', occ), 'E', afacex)
 !
 !        /* SAUVEGARDE DE L' INTERSECTION DANS CETTE STRUCTURE */
@@ -353,10 +352,10 @@ subroutine i2segm(nomail, nbpars, nbpara)
 !        /* ASSOCIEE AUX COMPOSANTES CONNEXES DE L' INTERSECTION*/
 !
             call jecroc(jexnum('&CNXOR', occ))
-            call jeecra(jexnum('&CNXOR', occ), 'LONMAX', nbcnx, ' ')
+            call jeecra(jexnum('&CNXOR', occ), 'LONMAX', nbcnx)
             call jeveuo(jexnum('&CNXOR', occ), 'E', acnxor)
             call jecroc(jexnum('&CNXEX', occ))
-            call jeecra(jexnum('&CNXEX', occ), 'LONMAX', nbcnx, ' ')
+            call jeecra(jexnum('&CNXEX', occ), 'LONMAX', nbcnx)
             call jeveuo(jexnum('&CNXEX', occ), 'E', acnxex)
 !
 !        /* SAUVEGARDE DE L' INTERSECTION DANS CETTE STRUCTURE */
@@ -407,26 +406,26 @@ subroutine i2segm(nomail, nbpars, nbpara)
     lcnx = 0
     nbpart = nbpara + nbpars
     do 80,occ = 1,nbpart,1
-    call jelira(jexnum('&ORSGT', occ), 'LONMAX', n1, k1b)
+    call jelira(jexnum('&ORSGT', occ), 'LONMAX', n1)
     lsgt = lsgt + n1
-    call jelira(jexnum('&CNXOR', occ), 'LONMAX', n1, k1b)
+    call jelira(jexnum('&CNXOR', occ), 'LONMAX', n1)
     lcnx = lcnx + n1
     80 end do
-    call jeecra(norsgt, 'LONT', lsgt, ' ')
-    call jeecra(nexsgt, 'LONT', lsgt, ' ')
-    call jeecra(nparor, 'LONT', lsgt, ' ')
-    call jeecra(nparex, 'LONT', lsgt, ' ')
-    call jeecra(nmail1, 'LONT', lsgt, ' ')
-    call jeecra(nmail2, 'LONT', lsgt, ' ')
-    call jeecra(nfacor, 'LONT', lsgt, ' ')
-    call jeecra(nfacex, 'LONT', lsgt, ' ')
-    call jeecra(ncnxor, 'LONT', lcnx, ' ')
-    call jeecra(ncnxex, 'LONT', lcnx, ' ')
+    call jeecra(norsgt, 'LONT', lsgt)
+    call jeecra(nexsgt, 'LONT', lsgt)
+    call jeecra(nparor, 'LONT', lsgt)
+    call jeecra(nparex, 'LONT', lsgt)
+    call jeecra(nmail1, 'LONT', lsgt)
+    call jeecra(nmail2, 'LONT', lsgt)
+    call jeecra(nfacor, 'LONT', lsgt)
+    call jeecra(nfacex, 'LONT', lsgt)
+    call jeecra(ncnxor, 'LONT', lcnx)
+    call jeecra(ncnxex, 'LONT', lcnx)
 !
 !        /* RECOPIE DES RESULTATS DANS LA STRUCTURE PRODUIT */
 !
     do 110,occ = 1,nbpart,1
-    call jelira(jexnum('&ORSGT', occ), 'LONMAX', n1, k1b)
+    call jelira(jexnum('&ORSGT', occ), 'LONMAX', n1)
     call jeveuo(jexnum('&ORSGT', occ), 'E', vorsgt)
     call jeveuo(jexnum('&EXSGT', occ), 'E', vexsgt)
     call jeveuo(jexnum('&PAROR', occ), 'E', vparor)
@@ -436,28 +435,28 @@ subroutine i2segm(nomail, nbpars, nbpara)
     call jeveuo(jexnum('&MAIL1', occ), 'E', vmail1)
     call jeveuo(jexnum('&MAIL2', occ), 'E', vmail2)
     call jecroc(jexnum(norsgt, occ))
-    call jeecra(jexnum(norsgt, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(norsgt, occ), 'LONMAX', n1)
     call jeveuo(jexnum(norsgt, occ), 'E', aorsgt)
     call jecroc(jexnum(nexsgt, occ))
-    call jeecra(jexnum(nexsgt, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nexsgt, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nexsgt, occ), 'E', aexsgt)
     call jecroc(jexnum(nparor, occ))
-    call jeecra(jexnum(nparor, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nparor, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nparor, occ), 'E', aparor)
     call jecroc(jexnum(nparex, occ))
-    call jeecra(jexnum(nparex, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nparex, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nparex, occ), 'E', aparex)
     call jecroc(jexnum(nfacor, occ))
-    call jeecra(jexnum(nfacor, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nfacor, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nfacor, occ), 'E', afacor)
     call jecroc(jexnum(nfacex, occ))
-    call jeecra(jexnum(nfacex, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nfacex, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nfacex, occ), 'E', afacex)
     call jecroc(jexnum(nmail1, occ))
-    call jeecra(jexnum(nmail1, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nmail1, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nmail1, occ), 'E', amail1)
     call jecroc(jexnum(nmail2, occ))
-    call jeecra(jexnum(nmail2, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nmail2, occ), 'LONMAX', n1)
     call jeveuo(jexnum(nmail2, occ), 'E', amail2)
     do 90,i = 1,n1,1
     zr(aorsgt+i-1) = zr(vorsgt+i-1)
@@ -469,14 +468,14 @@ subroutine i2segm(nomail, nbpars, nbpara)
     zi(afacor+i-1) = zi(vfacor+i-1)
     zi(afacex+i-1) = zi(vfacex+i-1)
 90  continue
-    call jelira(jexnum('&CNXOR', occ), 'LONMAX', n1, k1b)
+    call jelira(jexnum('&CNXOR', occ), 'LONMAX', n1)
     call jeveuo(jexnum('&CNXOR', occ), 'E', vcnxor)
     call jeveuo(jexnum('&CNXEX', occ), 'E', vcnxex)
     call jecroc(jexnum(ncnxor, occ))
-    call jeecra(jexnum(ncnxor, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(ncnxor, occ), 'LONMAX', n1)
     call jeveuo(jexnum(ncnxor, occ), 'E', acnxor)
     call jecroc(jexnum(ncnxex, occ))
-    call jeecra(jexnum(ncnxex, occ), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(ncnxex, occ), 'LONMAX', n1)
     call jeveuo(jexnum(ncnxex, occ), 'E', acnxex)
 !
 !        /* SAUVEGARDE DE L' INTERSECTION DANS CETTE STRUCTURE */
@@ -516,10 +515,10 @@ subroutine i2segm(nomail, nbpars, nbpara)
         call jeveuo(npcarc, 'L', acarc)
         call jeveuo(nsarc, 'L', asarc)
         call jeveuo(nrarc, 'L', ararc)
-        call jelira(npasgt, 'LONMAX', nbseg, k1b)
+        call jelira(npasgt, 'LONMAX', nbseg)
         if (nbseg .eq. 2) goto 140
         do 130,occ = 1,nbpars,1
-        call jelira(jexnum(norsgt, occ), 'LONMAX', nbm, k1b)
+        call jelira(jexnum(norsgt, occ), 'LONMAX', nbm)
         call jeveuo(jexnum(norsgt, occ), 'L', aorsgt)
         call jeveuo(jexnum(nexsgt, occ), 'L', aexsgt)
         call jeveuo(jexnum(nmail1, occ), 'L', amail1)
@@ -527,7 +526,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
         call jeveuo(jexnum(nfacor, occ), 'L', afacor)
         call jeveuo(jexnum(nfacex, occ), 'L', afacex)
         call jeveuo(jexnum(ncnxor, occ), 'L', acnxor)
-        call jelira(jexnum(ncnxor, occ), 'LONMAX', nbsor, k1b)
+        call jelira(jexnum(ncnxor, occ), 'LONMAX', nbsor)
         write (ifm,2020) occ,nbsor
         write (ifm,2030) 0.d0,zr(aasgt+2*occ),zr(aasgt+2*occ+1)
         do 120,im = 1,nbm,1
@@ -556,7 +555,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
         yor = zr(acarc+2*ia+1) + zr(ararc+ia)*sin(zr(asarc+2*ia))
         xex = zr(acarc+2*ia) + zr(ararc+ia)*cos(zr(asarc+2*ia+1))
         yex = zr(acarc+2*ia+1) + zr(ararc+ia)*sin(zr(asarc+2*ia+1) )
-        call jelira(jexnum(norsgt, occ), 'LONMAX', nbm, k1b)
+        call jelira(jexnum(norsgt, occ), 'LONMAX', nbm)
         call jeveuo(jexnum(norsgt, occ), 'L', aorsgt)
         call jeveuo(jexnum(nexsgt, occ), 'L', aexsgt)
         call jeveuo(jexnum(nmail1, occ), 'L', amail1)
@@ -564,7 +563,7 @@ subroutine i2segm(nomail, nbpars, nbpara)
         call jeveuo(jexnum(nfacor, occ), 'L', afacor)
         call jeveuo(jexnum(nfacex, occ), 'L', afacex)
         call jeveuo(jexnum(ncnxor, occ), 'L', acnxor)
-        call jelira(jexnum(ncnxor, occ), 'LONMAX', nbsor, k1b)
+        call jelira(jexnum(ncnxor, occ), 'LONMAX', nbsor)
         write (ifm,2120) occ,nbsor
         write (ifm,2030) zr(asarc+2*ia),xor,yor
         do 150,im = 1,nbm,1

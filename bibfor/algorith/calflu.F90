@@ -38,7 +38,6 @@ subroutine calflu(chamno, modele, mate, nu, vectas,&
 !  OUT : I   : ND,NR,NV : LONGUEURS DES .DESC, .REFE, .VALE
 !------------------------------------------------------------------
     real(kind=8) :: r8bid
-    character(len=1) :: k1bid
     character(len=24) :: ve
 !------------------------------------------------------------------
 !
@@ -57,8 +56,8 @@ subroutine calflu(chamno, modele, mate, nu, vectas,&
                 nu, ' ', 'ZERO', 1)
     call jedetr(ve)
 !
-    call jelira(vectas(1:19)//'.DESC', 'LONMAX', nd, k1bid)
-    call jelira(vectas(1:19)//'.REFE', 'LONMAX', nr, k1bid)
-    call jelira(vectas(1:19)//'.VALE', 'LONMAX', nv, k1bid)
+    call jelira(vectas(1:19)//'.DESC', 'LONMAX', nd)
+    call jelira(vectas(1:19)//'.REFE', 'LONMAX', nr)
+    call jelira(vectas(1:19)//'.VALE', 'LONMAX', nv)
 !
 end subroutine

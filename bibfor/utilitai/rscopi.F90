@@ -53,10 +53,10 @@ subroutine rscopi(base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
+    integer ::  i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
     integer :: iatava, jordr
     logical :: dejfai
-    character(len=1) :: bas2, kbid
+    character(len=1) :: bas2
     character(len=4) :: type, typacc
     character(len=5) :: nomobj
     character(len=16) :: nopara, nomsy
@@ -70,8 +70,8 @@ subroutine rscopi(base, sd1, sd2)
 !
     sdr1 = sd1
     sdr2 = sd2
-    call jelira(sdr1//'.DESC', 'NOMMAX', nbcham, kbid)
-    call jelira(sdr1//'.ORDR', 'LONUTI', nbordr, kbid)
+    call jelira(sdr1//'.DESC', 'NOMMAX', nbcham)
+    call jelira(sdr1//'.ORDR', 'LONUTI', nbordr)
     call jeveuo(sdr1//'.ORDR', 'L', jordr)
 !
 !     --- LE .DESC, .NOVA, .TAVA, .ORDR ---
@@ -86,7 +86,7 @@ subroutine rscopi(base, sd1, sd2)
 !
     call jecrec(sdr2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT',&
                 nbcham)
-    call jeecra(sdr2//'.TACH', 'LONMAX', nbordr, ' ')
+    call jeecra(sdr2//'.TACH', 'LONMAX', nbordr)
 !
 !     --- ON DUPLIQUE LES CHAMPS ---
 !
@@ -120,7 +120,7 @@ subroutine rscopi(base, sd1, sd2)
         nomobj = zk8(iatava-1+1) (1:5)
         typacc = zk8(iatava-1+4) (1:4)
 !
-        call jelira(sdr1//nomobj, 'TYPE', ibid, type(1:1))
+        call jelira(sdr1//nomobj, 'TYPE', cval=type(1:1))
 !
         if (typacc .eq. 'PARA' .and. type(1:1) .eq. 'R') then
             if (dejfai) goto 30

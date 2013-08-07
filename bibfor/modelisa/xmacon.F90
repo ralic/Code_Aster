@@ -245,7 +245,7 @@ subroutine xmacon(char, noma, nomo)
 ! --- NOMBRE DE MAILLES ESCLAVES
 !
     ntmae = posmae
-    call jeecra(maescx, 'LONUTI', zmesx*ntmae, k8bid)
+    call jeecra(maescx, 'LONUTI', zmesx*ntmae)
     zi(jdim+9 -1) = ntmae
     zi(jdim+13-1) = ntmae
 !

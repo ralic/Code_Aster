@@ -53,7 +53,6 @@ subroutine deelpo(caelem, noma, numail, phie)
 !
     real(kind=8) :: difr, r1, r2, tolr
 !
-    character(len=1) :: k1bid
     character(len=8) :: nomcmp(2), nomail, k8bid
     character(len=19) :: carte
     character(len=24) :: cadesc, cavale, calima, gpmama, nomama
@@ -87,11 +86,11 @@ subroutine deelpo(caelem, noma, numail, phie)
 !        SI AFFECATION SUR UN GROUPE DE MAILLE
         if (icode .eq. 2) then
             call jeveuo(jexnum(gpmama, nuenti), 'L', iglma)
-            call jelira(jexnum(gpmama, nuenti), 'LONMAX', nbma, k1bid)
+            call jelira(jexnum(gpmama, nuenti), 'LONMAX', nbma)
 !        SI AFFECATION SUR UNE LISTE DE MAILLE
         else if (icode.eq.3) then
             call jeveuo(jexnum(calima, nuenti), 'L', iglma)
-            call jelira(jexnum(calima, nuenti), 'LONMAX', nbma, k1bid)
+            call jelira(jexnum(calima, nuenti), 'LONMAX', nbma)
         endif
 !        RECHERCHE DE LA MAILLE
         do 30 ima = 1, nbma
@@ -117,7 +116,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 !       LE DIAMETRE EXTERIEUR
 !
     igrand = zi(icad)
-    call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', inomcp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('F', 'NB_EC', 'CAGEPO', 'GRANDEUR', nbec,&

@@ -47,7 +47,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
 #include "asterfort/vpcrea.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
-    integer :: nbmode, nbsauv, ldlim, imode, ier, ibid, lvale, i, jrefa
+    integer :: nbmode, nbsauv, ldlim, imode, ier, lvale, i, jrefa
     logical :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ
     character(len=14) :: nugene
@@ -101,7 +101,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
         else
             ASSERT(.false.)
         endif
-        call jeecra(chamge//'.DESC', 'DOCU', ibid, 'VGEN')
+        call jeecra(chamge//'.DESC', 'DOCU', cval='VGEN')
         call jeveuo(chamge//'.VALE', 'E', lvale)
         do 110 ier = 1, nbmode
             if (.not. zcmplx) then

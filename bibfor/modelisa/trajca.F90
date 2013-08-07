@@ -90,7 +90,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
     integer :: ibid, idecal, ino, ipara, iret, isub, jabsc, jalph, jcoor, jcord
     integer :: jnoca, jtblp, jtbnp, jd2x, jd2y, jd2z, jx, jy, jz, nblign, nbno
     integer :: nbpara, numnoe, icmima, jalphd, nbvar, nbvar2, svar, vali(3)
-    real(kind=8) :: absc, alpha, corde, alphcu, d1m, d1p, eps, dcp, d1x, d1x1
+    real(kind=8) :: absc, alpha, corde, alphcu, d1m, d1p, dcp, d1x, d1x1
     real(kind=8) :: d1xn, d1y, d1y1, d1yn, d1z, d1z1, d1zn, d2x, d2y, d2z, dc
     real(kind=8) :: dc1, dcn, det1, det2, det3, du, dx, dy, dz, normv2
     real(kind=8) :: valpar(2), dx1, dy1, dz1, psc, du1
@@ -143,11 +143,11 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca,&
 20  continue
     idecal = nblign - nbno
 !
-    call jeecra(xnoca, 'LONUTI', nblign, ' ')
+    call jeecra(xnoca, 'LONUTI', nblign)
     call jeveuo(xnoca, 'E', jx)
-    call jeecra(ynoca, 'LONUTI', nblign, ' ')
+    call jeecra(ynoca, 'LONUTI', nblign)
     call jeveuo(ynoca, 'E', jy)
-    call jeecra(znoca, 'LONUTI', nblign, ' ')
+    call jeecra(znoca, 'LONUTI', nblign)
     call jeveuo(znoca, 'E', jz)
 !
     call jeveuo(comima, 'E', icmima)

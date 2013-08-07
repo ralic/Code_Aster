@@ -63,9 +63,7 @@ subroutine te0140(option, nomte)
     character(len=8) :: nompar, nomres(nbres), nomail, fami, poum
     character(len=16) :: opti
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), klv(105)
-    real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, xjg, ez, ey, mat(105)
-    integer :: inbfib, nbfib, jacf
-    real(kind=8) :: carsec(6)
+    real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, xjg, ez, ey
 !     ------------------------------------------------------------------
     data nomres/'E','NU'/
 !     ------------------------------------------------------------------

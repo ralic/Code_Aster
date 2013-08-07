@@ -54,9 +54,9 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
 !
 ! ======================================================================
 !
-    character(len=8) :: conf, k8b
+    character(len=8) :: conf
     character(len=24) :: fonoeu, chfond, basfon, taillr
-    character(len=24) :: noeuin, fondin, basein, tailin
+    character(len=24) :: noeuin, fondin, basein
     integer :: ier, ibid, lnoff
 !
     call jemarq()
@@ -97,7 +97,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
         call jedupo(noeuin, 'V', fonoeu, .false.)
 !
 !       RECUP DE LNOFF
-        call jelira(noeuin, 'LONMAX', lnoff, k8b)
+        call jelira(noeuin, 'LONMAX', lnoff)
 !
 !       2) CHFOND = COORDONNEES DES POINTS/NOEUDS DU FOND DE FISSURE
         fondin=nomfis//'.FONDFISS'

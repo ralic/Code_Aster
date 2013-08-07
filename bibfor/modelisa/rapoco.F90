@@ -82,7 +82,6 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
     parameter (nmocl=300)
-    character(len=1) :: k1bid
     character(len=2) :: typlag
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, poslag, cara
@@ -214,7 +213,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nomte = 'D_DEPL_R_'
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     nddla = nbcmp - 1
     if (nddla .gt. nmocl) then
         vali (1) = nmocl
@@ -239,7 +238,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE :
 !     -----------------------------------------
-    call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili, k1bid)
+    call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili)
 !
     k = 0
     do 30 i = 1, nlili
@@ -307,7 +306,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         endif
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
                     iarg, nbgno, nogrno, nno)
-        call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1, k1bid)
+        call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
         if (n1 .ne. 1) then
             call u2mesk('F', 'MODELISA6_43', 1, nogrno)
         else

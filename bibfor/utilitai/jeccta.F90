@@ -39,9 +39,9 @@ subroutine jeccta(colle1)
 ! IN  COLLE1  : K24 : NOM DE LA COLLECTION CONTIGUE A RETASSER
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: base, type, kbid, acces, stock, modelo
+    character(len=8) :: base, type, acces, stock, modelo
     character(len=24) :: colle2
-    integer :: k, nbobj, lont1, lont2, jloncu, ibid
+    integer :: k, nbobj, lont1, lont2, jloncu
     integer :: n1, jcoll1, jcoll2
 !-----------------------------------------------------------------------
     call jemarq()
@@ -51,13 +51,13 @@ subroutine jeccta(colle1)
 !        BASE, TYPE, NBOBJ,
 !        ACCES, STOCK, MODELO, LONT1 ET LONT2 :
 !     -------------------------------------------------------
-    call jelira(colle1, 'CLAS', ibid, base)
-    call jelira(colle1, 'TYPE', ibid, type)
-    call jelira(colle1, 'NMAXOC', nbobj, kbid)
-    call jelira(colle1, 'ACCES', ibid, acces)
-    call jelira(colle1, 'MODELONG', ibid, modelo)
-    call jelira(colle1, 'STOCKAGE', ibid, stock)
-    call jelira(colle1, 'LONT', lont1, kbid)
+    call jelira(colle1, 'CLAS', cval=base)
+    call jelira(colle1, 'TYPE', cval=type)
+    call jelira(colle1, 'NMAXOC', nbobj)
+    call jelira(colle1, 'ACCES', cval=acces)
+    call jelira(colle1, 'MODELONG', cval=modelo)
+    call jelira(colle1, 'STOCKAGE', cval=stock)
+    call jelira(colle1, 'LONT', lont1)
     ASSERT(type.ne.'K')
     ASSERT(stock.eq.'CONTIG')
     ASSERT(modelo.eq.'VARIABLE')
@@ -72,7 +72,7 @@ subroutine jeccta(colle1)
     colle2='&&JECCTA.COLLEC2'
     call jecrec(colle2, 'V V '//type, acces, stock, modelo,&
                 nbobj)
-    call jeecra(colle2, 'LONT', lont2, kbid)
+    call jeecra(colle2, 'LONT', lont2)
     call jeveuo(colle1, 'L', jcoll1)
     call jeveuo(colle2, 'E', jcoll2)
     if (type .eq. 'I') then
@@ -94,7 +94,7 @@ subroutine jeccta(colle1)
     do 40,k=1,nbobj
     n1=zi(jloncu-1+k+1)-zi(jloncu-1+k)
     call jecroc(jexnum(colle2, k))
-    call jeecra(jexnum(colle2, k), 'LONMAX', n1, kbid)
+    call jeecra(jexnum(colle2, k), 'LONMAX', n1)
     40 end do
 !
 !

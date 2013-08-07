@@ -332,7 +332,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
             if (zr(jdisfr-1+i) .le. radtor) then
 !
 !              RETRIEVE THE ELEMENTS CONTAINING THE NODE
-                call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno, k8b)
+                call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno)
                 call jeveuo(jexnum(cnxinv, i), 'L', jnoel)
 !
 !              ALL THE NODES OF THE ELEMENTS CONTAINING THE SELECTED
@@ -413,7 +413,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
             if (zl(jlisno-1+i)) then
 !
 !              RETRIEVE THE ELEMENTS CONTAINING THE NODE
-                call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno, k8b)
+                call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno)
                 call jeveuo(jexnum(cnxinv, i), 'L', jnoel)
 !
 !              CHECK EACH ELEMENT CONTAINING THE NODE

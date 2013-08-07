@@ -45,7 +45,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: kbid, mater, nomf
+    character(len=8) ::  mater, nomf
     character(len=10) :: nomrc
     character(len=24) :: quest2, nomobj(100)
     logical :: trouve
@@ -76,7 +76,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
     .or.questi.eq.'EXI_AMOR_BETA') then
 !     ---------------------------------------------------------------
         call jeveuo(nomob//'.CHAMP_MAT .VALE', 'L', iavale)
-        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat, kbid)
+        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         trouve=.false.
         quest2=questi
@@ -95,7 +95,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 do 20,ii=1,n
                 if (nomobj(ii)(20:24) .eq. '.VALK') then
                     call jeveuo(nomobj(ii), 'L', iaobj)
-                    call jelira(nomobj(ii), 'LONMAX', lonobj, kbid)
+                    call jelira(nomobj(ii), 'LONMAX', lonobj)
                     do 10,iii=1,lonobj
                     if (zk8(iaobj-1+iii) .eq. quest2(5:12)) then
                         trouve=.true.
@@ -116,7 +116,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !     -----------------------------------
         repk='NON'
         call jeveuo(nomob//'.CHAMP_MAT .VALE', 'L', iavale)
-        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat, kbid)
+        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         nbzone=zi(jdesc+2)
 !
@@ -128,7 +128,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (mater .eq. 'TREF=>') goto 80
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
-                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc, kbid)
+                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
                 do 60,irc=1,nbrc
                 nomrc=zk16(ianorc-1+irc)(1:10)
                 if (nomrc .eq. 'ELAS_COQUE') then
@@ -166,7 +166,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------------
         repk='NON'
         call jeveuo(nomob//'.CHAMP_MAT .VALE', 'L', iavale)
-        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat, kbid)
+        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         nbzone=zi(jdesc+2)
 !
@@ -178,7 +178,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (mater .eq. 'TREF=>') goto 140
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
-                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc, kbid)
+                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
                 do 110,irc=1,nbrc
                 nomrc=zk16(ianorc-1+irc)(1:10)
 !
@@ -187,9 +187,9 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                 if (nomrc(1:4) .ne. 'THER') goto 110
                 call jeveuo(mater//'.'//nomrc//'.VALK', 'L', iavalk)
-                call jelira(mater//'.'//nomrc//'.VALK', 'LONUTI', n1, kbid)
-                call jelira(mater//'.'//nomrc//'.VALR', 'LONUTI', nr, kbid)
-                call jelira(mater//'.'//nomrc//'.VALC', 'LONUTI', nc, kbid)
+                call jelira(mater//'.'//nomrc//'.VALK', 'LONUTI', n1)
+                call jelira(mater//'.'//nomrc//'.VALR', 'LONUTI', nr)
+                call jelira(mater//'.'//nomrc//'.VALC', 'LONUTI', nc)
                 nf=(n1-nr-nc)/2
                 do 100,if=1,nf
                 nomf=zk8(iavalk-1+nr+nc+nf+if)
@@ -222,7 +222,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------------
         repk='NON'
         call jeveuo(nomob//'.CHAMP_MAT .VALE', 'L', iavale)
-        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat, kbid)
+        call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
         nbzone=zi(jdesc+2)
 !
@@ -234,7 +234,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (mater .eq. 'TREF=>') goto 190
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
-                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc, kbid)
+                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
                 do 160,irc=1,nbrc
                 nomrc=zk16(ianorc-1+irc)(1:10)
 !
@@ -243,9 +243,9 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 !
                 if (nomrc(1:4) .ne. 'ELAS') goto 160
                 call jeveuo(mater//'.'//nomrc//'.VALK', 'L', iavalk)
-                call jelira(mater//'.'//nomrc//'.VALK', 'LONUTI', n1, kbid)
-                call jelira(mater//'.'//nomrc//'.VALR', 'LONUTI', nr, kbid)
-                call jelira(mater//'.'//nomrc//'.VALC', 'LONUTI', nc, kbid)
+                call jelira(mater//'.'//nomrc//'.VALK', 'LONUTI', n1)
+                call jelira(mater//'.'//nomrc//'.VALR', 'LONUTI', nr)
+                call jelira(mater//'.'//nomrc//'.VALC', 'LONUTI', nc)
                 nf=(n1-nr-nc)/2
                 do 150,if=1,nf
                 nomf=zk8(iavalk-1+nr+nc+nf+if)

@@ -42,7 +42,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: k8b, noeu
+    character(len=8) ::  noeu
     character(len=19) :: trange
     real(kind=8) :: coef(*), ang(*), temps(*)
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
@@ -94,7 +94,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
 12          continue
 !
             call jeveuo(trange//'.DISC', 'L', jinst)
-            call jelira(trange//'.DISC', 'LONMAX', nbpt, k8b)
+            call jelira(trange//'.DISC', 'LONMAX', nbpt)
             tmax = zr(jinst+nbpt-1)
             tmin = zr(jinst)
             if (n2 .eq. 0) then

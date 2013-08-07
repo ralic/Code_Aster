@@ -52,11 +52,11 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp,&
 !
     call jecrec(nomfon//'.VALE', ' G V R', 'NU', 'CONTIG', 'VARIABLE',&
                 nbvalp)
-    call jeecra(nomfon//'.VALE', 'LONT', lont, ' ')
+    call jeecra(nomfon//'.VALE', 'LONT', lont)
     do 10 i = 1, nbvalp
         call jecroc(jexnum(nomfon//'.VALE', i))
-        call jeecra(jexnum(nomfon//'.VALE', i), 'LONMAX', 2*nbvalf, ' ')
-        call jeecra(jexnum(nomfon//'.VALE', i), 'LONUTI', 2*nbvalf, ' ')
+        call jeecra(jexnum(nomfon//'.VALE', i), 'LONMAX', 2*nbvalf)
+        call jeecra(jexnum(nomfon//'.VALE', i), 'LONUTI', 2*nbvalf)
         call jeveuo(jexnum(nomfon//'.VALE', i), 'E', lval)
         lfon = lval + nbvalf
         vale(2) = valep(i)

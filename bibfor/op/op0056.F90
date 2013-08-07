@@ -121,7 +121,7 @@ subroutine op0056()
         call getvid('COUCHE', 'MATER', icou, iarg, 1,&
                     mater, n)
         call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', iadr)
-        call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad, k8b)
+        call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad)
         do 10 i = 1, nbad
             if (zk16(iadr+i-1) .eq. 'ELAS_ORTH       ') then
                 elas = .true.
@@ -165,11 +165,11 @@ subroutine op0056()
         zk16(jrela) = 'ELAS_COQMU      '
         lonobj = 56 + nv*nbcou
         call wkvect(multic//'.ELAS_COQMU.VALK', 'G V K8', 2*lonobj, jmate)
-        call jeecra(multic//'.ELAS_COQMU.VALK', 'LONUTI', lonobj, ' ')
+        call jeecra(multic//'.ELAS_COQMU.VALK', 'LONUTI', lonobj)
         call wkvect(multic//'.ELAS_COQMU.VALR', 'G V R', lonobj, jobme)
-        call jeecra(multic//'.ELAS_COQMU.VALR', 'LONUTI', lonobj, ' ')
+        call jeecra(multic//'.ELAS_COQMU.VALR', 'LONUTI', lonobj)
         call wkvect(multic//'.ELAS_COQMU.VALC', 'G V C', lonobj, jobmc)
-        call jeecra(multic//'.ELAS_COQMU.VALC', 'LONUTI', 0, ' ')
+        call jeecra(multic//'.ELAS_COQMU.VALC', 'LONUTI', 0)
         eptot = 0.d0
         do 30 i = 1, 56
             call codent(i, 'G', num)
@@ -695,11 +695,11 @@ subroutine op0056()
         zk16(jrela) = 'THER_COQMU      '
         lonobj = 31 + 3*nbcou
         call wkvect(multic//'.THER_COQMU.VALK', 'G V K8', 2*lonobj, jmate)
-        call jeecra(multic//'.THER_COQMU.VALK', 'LONUTI', lonobj, ' ')
+        call jeecra(multic//'.THER_COQMU.VALK', 'LONUTI', lonobj)
         call wkvect(multic//'.THER_COQMU.VALR', 'G V R', lonobj, jobth)
-        call jeecra(multic//'.THER_COQMU.VALR', 'LONUTI', lonobj, ' ')
+        call jeecra(multic//'.THER_COQMU.VALR', 'LONUTI', lonobj)
         call wkvect(multic//'.THER_COQMU.VALC', 'G V C', lonobj, jobtc)
-        call jeecra(multic//'.THER_COQMU.VALC', 'LONUTI', 0, ' ')
+        call jeecra(multic//'.THER_COQMU.VALC', 'LONUTI', 0)
         eptot = 0.d0
         do 250 i = 1, 31
             call codent(i, 'G', num)

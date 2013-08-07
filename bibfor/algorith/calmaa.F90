@@ -46,7 +46,7 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
 #include "asterfort/wkvect.h"
     character(len=*) :: moint, mate
     character(len=1) :: dir
-    character(len=8) :: k8bid, lpain(1), lpaout(1)
+    character(len=8) ::  lpain(1), lpaout(1)
     character(len=14) :: num
     character(len=16) :: option
     character(len=19) :: matel, maa
@@ -74,7 +74,7 @@ subroutine calmaa(moint, mate, dir, ligrmo, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
     zk24(jlva) = lchout(1)
-    call jeecra(maa2, 'LONUTI', 1, k8bid)
+    call jeecra(maa2, 'LONUTI', 1)
 !
 !
 !-------------------- NUMEROTATION ----------------------------------

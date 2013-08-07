@@ -52,7 +52,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     integer :: jvaler, jvalei, ivale, ier, iret1, iret2
     integer :: nmax1, nmax2, jncmpr, jncmpc, i, jceld, jcelk, icelv, jcelvr
     integer :: jcelvi, ibid, nbsp
-    character(len=8) :: nomgd, nomre, k8b
+    character(len=8) :: nomgd, nomre
     character(len=4) :: typch, kbid
     character(len=19) :: canbva, chin
     character(len=24) :: ligrel, option, param, valk(2)
@@ -94,8 +94,8 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
     nomre=nomgd(1:4)//'_R'
     call jenonu(jexnom('&CATA.GD.NOMGD', nomre), gdre)
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nmax1, k8b)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gdre), 'LONMAX', nmax2, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nmax1)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gdre), 'LONMAX', nmax2)
 !
     if (nmax1 .ne. nmax2) then
         valk(1) = nomgd
@@ -131,7 +131,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         call jeveuo(chimag//'.DESC', 'E', jdesci)
         zi(jdesci)=gdre
 !
-        call jelira(chin//'.VALE', 'LONMAX', nbval, k8b)
+        call jelira(chin//'.VALE', 'LONMAX', nbval)
         call jeveuo(chin//'.VALE', 'L', ivale)
 !
         call wkvect(chreel//'.VALE', base//' V R', nbval, jvaler)
@@ -174,10 +174,10 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !
         ASSERT((iret1.eq.0).or.(iret2.eq.0))
 !
-        call jelira(chin//'.CELV', 'LONMAX', nbval, k8b)
+        call jelira(chin//'.CELV', 'LONMAX', nbval)
         call jeveuo(chin//'.CELV', 'L', icelv)
 !
-        call jelira(chreel//'.CELV', 'LONMAX', nbval2, k8b)
+        call jelira(chreel//'.CELV', 'LONMAX', nbval2)
         if (nbval2 .ne. nbval) then
             ASSERT(nbval.gt.nbval2)
             call juveca(chreel//'.CELV', nbval)
@@ -211,7 +211,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         call jeveuo(chimag//'.DESC', 'E', jdesci)
         zi(jdesci)=gdre
 !
-        call jelira(chin//'.VALE', 'LONMAX', nbval, k8b)
+        call jelira(chin//'.VALE', 'LONMAX', nbval)
         call jeveuo(chin//'.VALE', 'L', ivale)
 !
         call wkvect(chreel//'.VALE', base//' V R', nbval, jvaler)

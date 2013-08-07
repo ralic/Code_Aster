@@ -86,7 +86,6 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     character(len=24) :: valk
     character(len=10) :: adnom
     integer :: inumbl(*)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -108,7 +107,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     prgene=nugene//'.NUME'
     stolci=nugene//'.SLCS'
     call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst, k1bid)
+    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst)
     nbsst=nbsst/2
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
@@ -134,7 +133,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
-    call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno, k1bid)
+    call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno)
     ntprno=ntprno/2
 !
     call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
@@ -190,10 +189,10 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
         ntail=nbcol*(nbcol+1)/2
 !
         call jecroc(jexnum(tmnobl, ibl1))
-        call jeecra(jexnum(tmnobl, ibl1), 'LONMAX', ntail, ' ')
+        call jeecra(jexnum(tmnobl, ibl1), 'LONMAX', ntail)
         call jeveuo(jexnum(tmnobl, ibl1), 'E', ltnobl)
         call jecroc(jexnum(tmadbl, ibl1))
-        call jeecra(jexnum(tmadbl, ibl1), 'LONMAX', ntail, ' ')
+        call jeecra(jexnum(tmadbl, ibl1), 'LONMAX', ntail)
         call jeveuo(jexnum(tmadbl, ibl1), 'E', ltadbl)
 !
 !     BOUCLES SUR LES TERMES DU BLOC ELEMENTAIRE

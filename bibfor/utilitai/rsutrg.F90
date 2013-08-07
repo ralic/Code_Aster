@@ -38,7 +38,6 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 ! ----------------------------------------------------------------------
 !
     character(len=19) :: nomd2
-    character(len=1) :: k1bid
     integer :: nbordr, jordr, i, debut, milieu, fin, diff, maxit
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +46,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
     nomd2 = nomsd
 !
 !     --- RECUPERATION DU .ORDR :
-    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr, k1bid)
+    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     if (nbordr .eq. 0) then
         irang = 0
         goto 20

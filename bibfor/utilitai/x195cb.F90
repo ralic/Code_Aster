@@ -43,7 +43,6 @@ subroutine x195cb(tychr, nomgd, chou)
     integer :: ib, nbocc, iocc, k, jvale1, jvale2, n1, n2
     real(kind=8) :: coefr
     character(len=8) :: nomgd, nomgd1, ma1, ma2
-    character(len=8) :: kbid
     character(len=3) :: tsca
     character(len=19) :: ch1, ch2, pfcn1, pfcn2
     integer :: iarg
@@ -66,7 +65,7 @@ subroutine x195cb(tychr, nomgd, chou)
     call copisd('CHAMP', 'V', ch1, ch2)
 !     -- INITIALISATION A ZERO :
     call jeveuo(ch2//'.VALE', 'E', jvale2)
-    call jelira(ch2//'.VALE', 'LONMAX', n1, kbid)
+    call jelira(ch2//'.VALE', 'LONMAX', n1)
     call jerazo(ch2//'.VALE', n1, 1)
     call dismoi('F', 'NOM_MAILLA', ch2, 'CHAMP', ib,&
                 ma2, ib)
@@ -93,7 +92,7 @@ subroutine x195cb(tychr, nomgd, chou)
                 pfcn1, ib)
     if (.not.idensd('PROF_CHNO',pfcn1,pfcn2)) call u2mess('F', 'MODELISA5_12')
 !
-    call jelira(ch1//'.VALE', 'LONMAX', n2, kbid)
+    call jelira(ch1//'.VALE', 'LONMAX', n2)
     if (n2 .ne. n1) ASSERT(.false.)
 !
     call dismoi('F', 'NOM_GD', ch1, 'CHAMP', ib,&

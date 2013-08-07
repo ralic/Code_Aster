@@ -62,7 +62,7 @@ subroutine resyme(resu1z, basez, resu2z)
 ! -----  VARIABLES LOCALES
     character(len=1) :: base
     character(len=8) :: symel
-    character(len=8) :: modele, k8bid
+    character(len=8) :: modele
     character(len=16) :: phenom, option
     character(len=19) :: resl1, resl2, resul1, resul2
     character(len=19) :: ligrel
@@ -97,7 +97,7 @@ subroutine resyme(resu1z, basez, resu2z)
     call jedetr(resul2//'.RERR')
     call jedupc(' ', resul1//'.RERR', 1, 'V', resul2//'.RERR',&
                 .false.)
-    call jelira(resul1//'.RELR', 'LONUTI', nbresu, k8bid)
+    call jelira(resul1//'.RELR', 'LONUTI', nbresu)
     call wkvect(resul2//'.RELR', base//' V K24', nbresu, idlre2)
     call jeveuo(resul1//'.RELR', 'L', idlre1)
 !
@@ -142,7 +142,7 @@ subroutine resyme(resu1z, basez, resu2z)
             zk24(idlre2+kresu-1) = resl2
         endif
 20  end do
-    call jeecra(resul2//'.RELR', 'LONUTI', kresu, k8bid)
+    call jeecra(resul2//'.RELR', 'LONUTI', kresu)
 !
 !
     call jedema()

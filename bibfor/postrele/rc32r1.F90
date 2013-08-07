@@ -94,7 +94,7 @@ subroutine rc32r1(nomres)
     call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
                 typtab, n1)
 !
-    call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr, k8b)
+    call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
     call jeveuo('&&RC3200.SITU_SEISME', 'L', jseigr)
 !
@@ -133,7 +133,7 @@ subroutine rc32r1(nomres)
         numgr = abs(zi(jnumgr+ig-1))
         iocs = zi(jseigr+ig-1)
         valei(1) = numgr
-        call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONMAX', nbsigr, k8b)
+        call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONMAX', nbsigr)
         call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
 !
 !        --------------------------------------------------------------

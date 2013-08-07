@@ -103,12 +103,12 @@ subroutine macr78(nomres, trange, typres)
     call dismoi('F', 'NOM_MAILLA', numedd(1:14), 'NUME_DDL', ibid,&
                 mailla, iret)
     lintf = zk24(iadrif+4)
-    call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe, k8b)
+    call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
     call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
                 k8b, ierd)
 !      CALL BMNBMD(BASEMO,'DEFORMEE',NBMDEF)
     nbmdyn = nbmode-nbmdef
-    call jelira(macrel//'.LINO', 'LONMAX', nbntot, k8b)
+    call jelira(macrel//'.LINO', 'LONMAX', nbntot)
     nec = nbmode/nbntot
     nbndyn = nbmdyn/nec
     nbndef = nbntot-nbndyn

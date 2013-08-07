@@ -83,7 +83,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     real(kind=8) :: time, instf, tps1(4), tps2(4), tps3(4), tcpu, partps(3)
     real(kind=8) :: rbid, valr(3)
     character(len=1) :: base
-    character(len=8) :: k8bid, repk, result
+    character(len=8) ::  repk, result
     character(len=14) :: nuposs
     character(len=16) :: k16bid
     character(len=19) :: maprec, vecass, chdepl, k19b, matass
@@ -124,7 +124,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !
 !
 ! 1.3. ==> ALLOCATION DES RESULTATS
-    call jelira(ltps//'           .VALE', 'LONMAX', nbval, k8bid)
+    call jelira(ltps//'           .VALE', 'LONMAX', nbval)
     call utcrre(result, nbval)
 !
 ! 1.4. ==> ON REGARDE SI LE MATERIAU EST UNE FONCTION DU TEMPS

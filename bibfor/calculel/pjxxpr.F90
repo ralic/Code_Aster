@@ -360,7 +360,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
     if (mo2 .ne. ' ') then
         call jeveuo(resu2//'           .ORDR', 'L', jordr)
-        call jelira(resu2//'           .ORDR', 'LONUTI', nbordr, k8b)
+        call jelira(resu2//'           .ORDR', 'LONUTI', nbordr)
         do 11 i = 1, nbordr
             call rsadpa(resu2, 'E', 1, 'MODELE', zi(jordr-1+i),&
                         0, jpara, k8b)

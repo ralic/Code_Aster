@@ -43,7 +43,7 @@ subroutine op0147()
     integer :: nnn, npv, i1, i3, ivitef
 !-----------------------------------------------------------------------
     logical :: casint
-    character(len=8) :: k8b, table, nomu, option
+    character(len=8) ::  table, nomu, option
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
@@ -69,7 +69,7 @@ subroutine op0147()
     call jeveuo(masg, 'L', imasg)
 !
     call jeveuo(vite, 'L', ivite)
-    call jelira(vite, 'LONUTI', npv, k8b)
+    call jelira(vite, 'LONUTI', npv)
     call getvr8(' ', 'VITE_FLUI', 0, iarg, 1,&
                 vitef, zi)
     call getvr8(' ', 'PRECISION', 0, iarg, 1,&
@@ -84,7 +84,7 @@ subroutine op0147()
 300  end do
 !
     call jeveuo(freq, 'L', ifreq)
-    call jelira(freq, 'LONUTI', nbm, k8b)
+    call jelira(freq, 'LONUTI', nbm)
     nbm = nbm / ( 2 * npv )
 !
     call jeveuo(numo, 'L', inumo)
@@ -98,7 +98,7 @@ subroutine op0147()
 !
     chnumi = table//'.NUMI'
     call jeveuo(chnumi, 'L', lnumi)
-    call jelira(chnumi, 'LONMAX', nbmr, k8b)
+    call jelira(chnumi, 'LONMAX', nbmr)
 !
     nomobj = '&&OP0147.TEMP.NUOR'
     call wkvect(nomobj, 'V V I', nbmr, jnuor)

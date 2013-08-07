@@ -102,7 +102,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     igd = zi(jdesc-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NOMMATER')
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', ncmp, k8b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', ncmp)
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
                 k8b, ier)
     ngdmax=zi(jdesc-1+2)
@@ -140,7 +140,7 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     call copisd('FONCTION', 'V', ch19, chwork)
 !
 ! --- RECUPERATION DU NOMBRE DE POINTS DEFINISSANT LA FONCTION :
-    call jelira(chwork(1:19)//'.VALE', 'LONMAX', nbpts, k8b)
+    call jelira(chwork(1:19)//'.VALE', 'LONMAX', nbpts)
 !
 ! --- NOMBRE DE POINTS DE LA FONCTION :
     nbpts = nbpts/2

@@ -82,7 +82,7 @@ subroutine chcsur(chcine, cnsz, type, mo, nomgd)
 !     -- ON CALCULE LA CORRESPONDANCE ENTRE LES CMPS DE CNS
 !        ET CELLES DE LA GRANDEUR.
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call wkvect('&&CHCSUR.CORRES', 'V V I', ncmpmx, jcorr)
     do 10, kcmp=1,ncmpmx
     icmp = indik8(zk8(jcnsc),zk8(jcmp-1+kcmp),1,ncmp)

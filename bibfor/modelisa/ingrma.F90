@@ -50,7 +50,6 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=24) :: nommai, grpmai
-    character(len=1) :: k1b
     integer :: i, j, ier, num, nbg, nbmag, jgrma
 !
 !====
@@ -80,10 +79,10 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 ! 2. BOUCLE SUR LES GROUP_MA
 !====
 !
-    call jelira(grpmai, 'NOMUTI', nbg, k1b)
+    call jelira(grpmai, 'NOMUTI', nbg)
     do 200 i = 1, nbg
         call jeveuo(jexnum(grpmai, i), 'L', jgrma)
-        call jelira(jexnum(grpmai, i), 'LONUTI', nbmag, k1b)
+        call jelira(jexnum(grpmai, i), 'LONUTI', nbmag)
 !     --- BCLE SUR LES MAILLES DU GROUP_MA
         do 210 j = 1, nbmag
             if (zi(jgrma-1+j) .eq. num) then

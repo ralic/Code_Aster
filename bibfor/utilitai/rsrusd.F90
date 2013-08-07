@@ -61,7 +61,6 @@ subroutine rsrusd(nomsd, iordr)
     character(len=16) :: nomsy
     character(len=19) :: noms2, chextr
     character(len=24) :: nomobj
-    character(len=1) :: kbid
     integer :: jordr, kordr, krang, irang, nbcham, nbordr, k, ibid, jtach
     integer :: nbormx, n1, n2, kk, iundef, jpara, ier1
     real(kind=8) :: rundef
@@ -72,8 +71,8 @@ subroutine rsrusd(nomsd, iordr)
     iundef = isnnem()
 !
     noms2 = nomsd
-    call jelira(noms2//'.DESC', 'NOMMAX', nbcham, kbid)
-    call jelira(noms2//'.ORDR', 'LONMAX', nbormx, kbid)
+    call jelira(noms2//'.DESC', 'NOMMAX', nbcham)
+    call jelira(noms2//'.ORDR', 'LONMAX', nbormx)
     call jeveuo(noms2//'.ORDR', 'E', jordr)
 !
     call rsutrg(noms2, iordr, irang, nbordr)
@@ -107,7 +106,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RSPR'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         ASSERT(n1.eq.n2*nbormx)
         call jeveuo(nomobj, 'E', jpara)
@@ -120,7 +119,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RSPC'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 2, kk=n2*irang, n2*nbormx
@@ -132,7 +131,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RSPI'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 3, kk=n2*irang, n2*nbormx
@@ -144,7 +143,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RSP8'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 4, kk=n2*irang, n2*nbormx
@@ -156,7 +155,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RS16'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 5, kk=n2*irang, n2*nbormx
@@ -168,7 +167,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RS24'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 6, kk=n2*irang, n2*nbormx
@@ -180,7 +179,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RS32'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 7, kk=n2*irang, n2*nbormx
@@ -192,7 +191,7 @@ subroutine rsrusd(nomsd, iordr)
     nomobj=noms2//'.RS80'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, kbid)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
         do 8, kk=n2*irang, n2*nbormx
@@ -201,7 +200,7 @@ subroutine rsrusd(nomsd, iordr)
     endif
 !
 !     -- ON EFFACE .ORDR :
-    call jeecra(noms2//'.ORDR', 'LONUTI', irang-1, kbid)
+    call jeecra(noms2//'.ORDR', 'LONUTI', irang-1)
     do 30 krang = irang, nbormx
         zi(jordr-1+krang)=0
 30  end do

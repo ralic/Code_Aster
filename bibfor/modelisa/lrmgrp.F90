@@ -91,7 +91,6 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
     integer :: adnogm, adadgm
     integer :: adnogr, adadgr, nbgr, nugrm1
 !
-    character(len=8) :: saux08, nomail
     character(len=24) :: ntnogn, ntadgn
     character(len=24) :: ntnogm, ntadgm
     character(len=24) :: nomgrp
@@ -128,7 +127,7 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
     if (nbgrno .gt. 0) then
 !
         call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbgrno, ' ')
+        call jeecra(gpptnn, 'NOMMAX', nbgrno)
         call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     nbgrno)
         call wkvect(ntnogn, 'V V K24', nbgrno, adnogn)
@@ -153,7 +152,7 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
     if (nbgrma .gt. 0) then
 !
         call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbgrma, ' ')
+        call jeecra(gpptnm, 'NOMMAX', nbgrma)
         call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbgrma)
         call wkvect(ntnogm, 'V V K24', nbgrma, adnogm)
@@ -191,14 +190,14 @@ subroutine lrmgrp(grpnoe, gpptnn, nbgrno, jnogno, jlggno,&
 !          JFNUM  : POINTEUR SUR LE CONTENU DE LA FAMILLE
 !
         call jeveuo(nomj, 'L', jfnomg)
-        call jelira(nomj, 'LONMAX', nbg, saux08)
+        call jelira(nomj, 'LONMAX', nbg)
 !
         nomj = jexnum(numgro,ifam)
         call jeveuo(nomj, 'L', jfnumg)
 !
         nomj = jexnum(nument,ifam)
         call jeveuo(nomj, 'L', jfnum)
-        call jelira(nomj, 'LONMAX', naux, saux08)
+        call jelira(nomj, 'LONMAX', naux)
 !
 ! 3.2. ==> ON BOUCLE SUR LES NBG GROUPES DEFINISSANT LA FAMILLE
 !          CHAQUE GROUPE EST CONNU PAR SON NOM.

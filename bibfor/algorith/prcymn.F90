@@ -67,7 +67,6 @@ subroutine prcymn(nomres, soumat, repmat)
     character(len=8) :: nomres, basmod, intf, kbid, k8bid
     character(len=19) :: numddl, raid
     character(len=24) :: repmat, soumat, noeint, chamva
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -117,7 +116,7 @@ subroutine prcymn(nomres, soumat, repmat)
     endif
 !
     call jecreo(repmat, 'V N K8')
-    call jeecra(repmat, 'NOMMAX', nbsma, ' ')
+    call jeecra(repmat, 'NOMMAX', nbsma)
 !
 ! --- CREATION DE LA FAMILLE DES SOUS-MATRICES
 !
@@ -130,30 +129,30 @@ subroutine prcymn(nomres, soumat, repmat)
 !
     call jecroc(jexnom(repmat, 'K0II'))
     call jenonu(jexnom(repmat, 'K0II'), ibid)
-    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail, ' ')
+    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail)
 !
     call jecroc(jexnom(repmat, 'M0II'))
     call jenonu(jexnom(repmat, 'M0II'), ibid)
-    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail, ' ')
+    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail)
 !
     ntrian=nbddr*(nbddr+1)/2
     ntail=nbddr*nbddr
 !
     call jecroc(jexnom(repmat, 'K0JI'))
     call jenonu(jexnom(repmat, 'K0JI'), ibid)
-    call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbddr, ' ')
+    call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbddr)
 !
     call jecroc(jexnom(repmat, 'K0JJ'))
     call jenonu(jexnom(repmat, 'K0JJ'), ibid)
-    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntrian, ' ')
+    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntrian)
 !
     call jecroc(jexnom(repmat, 'KPLUSJI'))
     call jenonu(jexnom(repmat, 'KPLUSJI'), ibid)
-    call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbddr, ' ')
+    call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbddr)
 !
     call jecroc(jexnom(repmat, 'KPLUSJJ'))
     call jenonu(jexnom(repmat, 'KPLUSJJ'), ibid)
-    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail, ' ')
+    call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail)
 !
     if (nbdax .gt. 0) then
 !
@@ -161,27 +160,27 @@ subroutine prcymn(nomres, soumat, repmat)
 !
         call jecroc(jexnom(repmat, 'K0AI'))
         call jenonu(jexnom(repmat, 'K0AI'), ibid)
-        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbdax, ' ')
+        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbdax)
 !
         call jecroc(jexnom(repmat, 'K0AJ'))
         call jenonu(jexnom(repmat, 'K0AJ'), ibid)
-        call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail, ' ')
+        call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail)
 !
         call jecroc(jexnom(repmat, 'K0AA'))
         call jenonu(jexnom(repmat, 'K0AA'), ibid)
-        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbdax**2, ' ')
+        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbdax**2)
 !
         call jecroc(jexnom(repmat, 'KPLUSAA'))
         call jenonu(jexnom(repmat, 'KPLUSAA'), ibid)
-        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbdax**2, ' ')
+        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbdax**2)
 !
         call jecroc(jexnom(repmat, 'KPLUSAI'))
         call jenonu(jexnom(repmat, 'KPLUSAI'), ibid)
-        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbdax, ' ')
+        call jeecra(jexnum(soumat, ibid), 'LONMAX', nbmod*nbdax)
 !
         call jecroc(jexnom(repmat, 'KPLUSAJ'))
         call jenonu(jexnom(repmat, 'KPLUSAJ'), ibid)
-        call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail, ' ')
+        call jeecra(jexnum(soumat, ibid), 'LONMAX', ntail)
 !
     endif
 !
@@ -226,14 +225,14 @@ subroutine prcymn(nomres, soumat, repmat)
 !
     noeint=intf//'.IDC_LINO'
 !
-    call jelira(jexnum(noeint, numd), 'LONMAX', nbnod, k1bid)
+    call jelira(jexnum(noeint, numd), 'LONMAX', nbnod)
     call jeveuo(jexnum(noeint, numd), 'L', llnod)
 !
-    call jelira(jexnum(noeint, numg), 'LONMAX', nbnog, k1bid)
+    call jelira(jexnum(noeint, numg), 'LONMAX', nbnog)
     call jeveuo(jexnum(noeint, numg), 'L', llnog)
 !
     if (nbdax .gt. 0) then
-        call jelira(jexnum(noeint, numa), 'LONMAX', nbnoa, k1bid)
+        call jelira(jexnum(noeint, numa), 'LONMAX', nbnoa)
         call jeveuo(jexnum(noeint, numa), 'L', llnoa)
     endif
 !

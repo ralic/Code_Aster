@@ -94,7 +94,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !     NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! ----------------------------------------------------------------------
 !
-    character(len=1) :: k1bid, type
+    character(len=1) ::  type
     integer :: gd, nuti, jcelv, iprem
     integer :: vali(2), versio
     character(len=8) :: nomma, nomgd, nomel, nomno, cbid
@@ -122,7 +122,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     chame = chamel(1:19)
     nomsy2 = nomsym
     nbcmpt=0
-    call jelira(chame//'.CELV', 'TYPE', ibid, type)
+    call jelira(chame//'.CELV', 'TYPE', cval=type)
     if (type(1:1) .eq. 'R') then
         itype = 1
     else if (type(1:1).eq.'C') then
@@ -176,7 +176,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     gd = zi(jceld-1+1)
     ngr = zi(jceld-1+2)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call wkvect('&&IRCHML.NUM_CMP', 'V V I', ncmpmx, jncmp)
     if (nbcmp .ne. 0 .and. nomgd .ne. 'VARI_R') then
@@ -188,7 +188,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     call jeveuo(nolili(1:19)//'.LGRF', 'L', ianoma)
     nomma = zk8(ianoma)
 !     RECHERCHE DU NOMBRE D'ELEMENTS : NBEL
-    call jelira(nomma//'.NOMMAI', 'NOMMAX', nbel, k1bid)
+    call jelira(nomma//'.NOMMAI', 'NOMMAX', nbel)
     call dismoi('F', 'NB_NO_MAILLA', nomma, 'MAILLAGE', nbno,&
                 cbid, ier)
     call wkvect('&&IRCHML.NOMMAI', 'V V K8', nbel, jnoel)
@@ -196,12 +196,12 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     do 11 iel = 1, nbel
         call jenuno(jexnum(nomma//'.NOMMAI', iel), nomel)
         zk8(jnoel-1+iel) = nomel
-        call jelira(jexnum(nomma//'.CONNEX', iel), 'LONMAX', nbn, k1bid)
+        call jelira(jexnum(nomma//'.CONNEX', iel), 'LONMAX', nbn)
         zi(jnbnm-1+iel) = nbn
 11  end do
     call jeveuo(chame//'.CELV', 'L', jcelv)
     call jeveuo(nolili(1:19)//'.LIEL', 'L', jligr)
-    call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+    call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel)
     call jeveuo(jexatr(nolili(1:19)//'.LIEL', 'LONCUM'), 'L', jlongr)
     if (ngr .ne. nbgrel) then
         vali(1) = ngr
@@ -218,7 +218,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !
         if (nbmat .eq. 0 .and. nbnot .ne. 0) then
             nconec = nomma//'.CONNEX'
-            call jelira(nconec, 'NMAXOC', nbtma, k1bid)
+            call jelira(nconec, 'NMAXOC', nbtma)
             call wkvect('&&IRCHML.MAILLE', 'V V I', nbtma, jliste)
             ncncin = '&&IRCHML.CONNECINVERSE  '
             call jeexin(ncncin, n2)
@@ -296,7 +296,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         call jeexin(nomma//'           .TITR', iret)
         if (iret .ne. 0) then
             call jeveuo(nomma//'           .TITR', 'L', jtitr)
-            call jelira(nomma//'           .TITR', 'LONMAX', nbtitr, k1bid)
+            call jelira(nomma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
                 titmai=zk80(jtitr-1+1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') lmasu= .true.
@@ -308,7 +308,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         call jeexin('&IRCHML.PERMUTA', iret)
         if (iret .eq. 0) call iradhs(versio)
         call jeveuo('&&IRADHS.PERMUTA', 'L', jperm)
-        call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1, k1bid)
+        call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1)
         maxnod=zi(jperm-1+lon1)
         if (itype .eq. 1) then
             call ircers(ifi, zi(jligr), nbgrel, zi(jlongr), ncmpmx,&
@@ -338,7 +338,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         if (.not. lresu) call lxcaps(nomsy2)
 !
         call jeveuo('&&OP0039.NOM_MODELE', 'L', jmode)
-        call jelira('&&OP0039.NOM_MODELE', 'LONUTI', nbmodl, cbid)
+        call jelira('&&OP0039.NOM_MODELE', 'LONUTI', nbmodl)
         do 200 imod = 1, nbmodl
             if (nolili .eq. zk24(jmode-1+imod)) goto 202
 200      continue
@@ -358,7 +358,7 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         else if (itype.eq.2) then
             call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
             if (loc .eq. 'ELNO') then
-                call jelira(chame//'.CELV', 'LONUTI', nuti, k1bid)
+                call jelira(chame//'.CELV', 'LONUTI', nuti)
                 call wkvect('&&IRCHML.VALE', 'V V R', nuti, jvale)
                 if (partie .eq. 'REEL') then
                     do 180 i = 1, nuti

@@ -41,7 +41,6 @@ subroutine maxblo(nomob, xmax)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: nomob
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -52,7 +51,7 @@ subroutine maxblo(nomob, xmax)
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(nomob(1:32), 'L', llblo)
-    call jelira(nomob(1:32), 'LONMAX', nbterm, k1bid)
+    call jelira(nomob(1:32), 'LONMAX', nbterm)
 !
     do 10 i = 1, nbterm
         xmax=max(xmax,abs(zr(llblo+i-1)))

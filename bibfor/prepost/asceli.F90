@@ -53,7 +53,7 @@ subroutine asceli(mailla)
     integer :: inuma, nbpt, jpoin, ino, inov, nbmat, ifm, jpoin2
     integer :: nbno, jgrn1, jgrn2, jvi1, jvi2, iret, igr, k, jind2
     integer :: idime, nbnot, nbgrno, jcoor, i, jind, nbno2, jcor, kk
-    character(len=8) :: k8b, tmp, nomno
+    character(len=8) ::  tmp, nomno
     character(len=24) :: grpnoe, connex, liso1, liso2, nogrn1, nogrn2, nomgrn
 !     ------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ subroutine asceli(mailla)
     if (iret .eq. 0) then
         call u2mesk('F', 'PREPOST_1', 1, nogrn2)
     endif
-    call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbno, k8b)
+    call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbno)
     call jeveuo(jexnom(grpnoe, nogrn1), 'L', jgrn1)
     call jeveuo(jexnom(grpnoe, nogrn2), 'L', jgrn2)
     liso1 = '&&ASCELI.NOEUD_1'
@@ -92,10 +92,10 @@ subroutine asceli(mailla)
 !
 !     OBJET .GROUPENO : ON CHANGE LES NUMEROS DE NOEUDS DES GROUPENO
 !     --------------------------------------------------------------
-    call jelira(grpnoe, 'NUTIOC', nbgrno, k8b)
+    call jelira(grpnoe, 'NUTIOC', nbgrno)
     do 70 igr = 1, nbgrno
         call jenuno(jexnum(grpnoe, igr), nomgrn)
-        call jelira(jexnom(grpnoe, nomgrn), 'LONUTI', nbpt, k8b)
+        call jelira(jexnom(grpnoe, nomgrn), 'LONUTI', nbpt)
         call jeveuo(jexnom(grpnoe, nomgrn), 'E', jpoin)
         do 80 ino = 1, nbpt
             do 90 inov = 1, nbno
@@ -114,7 +114,7 @@ subroutine asceli(mailla)
 !     OBJET .CONNEX : ON CHANGE LES CONNECTIVITES
 !     --------------------------------------------------------
     do 200 inuma = 1, nbmat
-        call jelira(jexnum(connex, inuma), 'LONMAX', nbpt, k8b)
+        call jelira(jexnum(connex, inuma), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, inuma), 'E', jpoin)
         do 202 ino = 1, nbpt
             do 204 inov = 1, nbno
@@ -141,10 +141,10 @@ subroutine asceli(mailla)
 !
     call jedetr(mailla//'.NOMNOE')
     call jecreo(mailla//'.NOMNOE', 'G N K8')
-    call jeecra(mailla//'.NOMNOE', 'NOMMAX', nbno2, k8b)
+    call jeecra(mailla//'.NOMNOE', 'NOMMAX', nbno2)
     call jedetr(mailla//'.COORDO    .VALE')
     call jecreo(mailla//'.COORDO    .VALE', 'G V R')
-    call jeecra(mailla//'.COORDO    .VALE', 'LONMAX', 3*nbno2, ' ')
+    call jeecra(mailla//'.COORDO    .VALE', 'LONMAX', 3*nbno2)
     call jeveuo(mailla//'.COORDO    .VALE', 'E', jcoor)
     call jeveuo(tmp//'.COORDO    .VALE', 'L', jcor)
 !
@@ -184,7 +184,7 @@ subroutine asceli(mailla)
 !     CAR LES NOMS DES NOEUDS ONT CHANGE
 !     ----------------------------------
     do 210 inuma = 1, nbmat
-        call jelira(jexnum(tmp//'.CONNEX', inuma), 'LONMAX', nbpt, k8b)
+        call jelira(jexnum(tmp//'.CONNEX', inuma), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, inuma), 'E', jpoin)
         call jeveuo(jexnum(tmp//'.CONNEX', inuma), 'L', jpoin2)
         do 212 ino = 1, nbpt
@@ -195,7 +195,7 @@ subroutine asceli(mailla)
 !
     do 270 igr = 1, nbgrno
         call jenuno(jexnum(grpnoe, igr), nomgrn)
-        call jelira(jexnom(grpnoe, nomgrn), 'LONUTI', nbpt, k8b)
+        call jelira(jexnom(grpnoe, nomgrn), 'LONUTI', nbpt)
         call jeveuo(jexnom(grpnoe, nomgrn), 'E', jpoin)
         call jeveuo(jexnom(tmp//'.GROUPENO', nomgrn), 'L', jpoin2)
         do 280 ino = 1, nbpt

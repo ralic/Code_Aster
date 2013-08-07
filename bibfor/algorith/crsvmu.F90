@@ -60,10 +60,10 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     integer :: jmail, nbma, islvk, islvr, islvi, iret
     real(kind=8) :: eps
     character(len=4) :: klag2
-    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, kbid, matra
+    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
     character(len=12) :: kooc
     character(len=19) :: k19b
-    character(len=24) :: kmonit(12), k24b
+    character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod, jprti, jprtk
     integer :: iarg, jpart, iexi
     logical :: ldgrel
@@ -143,7 +143,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
             if (.not.ldgrel) then
                 call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
-                call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1, kbid)
+                call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1)
                 ASSERT(zi(jnumsd-1+n1).eq.nbproc)
                 nbma=n1-1
                 compt=0
@@ -154,7 +154,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
         else
 !       -- CENTRALISE
             call jeveuo(modele//'.MAILLE', 'L', jmail)
-            call jelira(modele//'.MAILLE', 'LONMAX', nbma, k24b)
+            call jelira(modele//'.MAILLE', 'LONMAX', nbma)
             compt=0
             do 60 i = 1, nbma
                 if (zi(jmail-1+i) .ne. 0) compt=compt+1

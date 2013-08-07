@@ -106,7 +106,7 @@ subroutine chmima(nomsd, nomsy, typmax, nocham)
     else
         sufv= '.CELV'
     endif
-    call jelira(nocha2(1:19)//sufv, 'LONMAX', neq, k8b)
+    call jelira(nocha2(1:19)//sufv, 'LONMAX', neq)
     call jeveuo(nocha2(1:19)//sufv, 'E', nvale)
 !
     call wkvect('&&CHMIMA.INST', 'V V I', neq, inumer)

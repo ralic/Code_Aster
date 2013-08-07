@@ -47,7 +47,6 @@ subroutine giecas(nfic, ndim, nbobj)
 !
     integer :: vali
 !     VARIABLES LOCALES:
-    character(len=50) :: kbid
     character(len=7) :: k7bid, k7nom(7)
     character(len=8) :: tymail, nomobj, nomno, k8nom(7), nomobg
     logical :: magoui, trouve, indir
@@ -71,7 +70,7 @@ subroutine giecas(nfic, ndim, nbobj)
     call giinco()
 !
     call jeveuo('&&GILIRE.COORDO   ', 'L', iacoor)
-    call jelira('&&GILIRE.COORDO   ', 'LONMAX', ncoo, kbid)
+    call jelira('&&GILIRE.COORDO   ', 'LONMAX', ncoo)
 !
     call jeexin('&&GILIRE.NOMOBJ', iret)
     if (iret .eq. 0) call u2mess('F', 'PREPOST_46')
@@ -109,7 +108,7 @@ subroutine giecas(nfic, ndim, nbobj)
     call jeexin('&&GILIRE.INDIRECT', iret)
     if (iret .ne. 0) then
         indir =.true.
-        call jelira('&&GILIRE.INDIRECT', 'LONMAX', nbnoto, cbid)
+        call jelira('&&GILIRE.INDIRECT', 'LONMAX', nbnoto)
         call jeveuo('&&GILIRE.INDIRECT', 'L', iaptin)
         call wkvect('&&GILIRE.NOENOM', 'V V I', nbnoto, inutri)
         call jacopo(nbnoto, 'I', iaptin, inutri)
@@ -142,12 +141,12 @@ subroutine giecas(nfic, ndim, nbobj)
 !     --ECRITURE DES MAILLES:
 !     -----------------------------------------------------------------
 !
-    call jelira('&&GILIRE.OBJET_NOM', 'LONMAX', nbobno, cbid)
+    call jelira('&&GILIRE.OBJET_NOM', 'LONMAX', nbobno)
     call wkvect('&&GILIRE.OBJTRI_NUM', 'V V I', nbobj, itrnu)
     call wkvect('&&GILIRE.ECRIGRM', 'V V L', nbobj, iecrit)
 !
     call jeveuo('&&GILIRE.NUMANEW', 'L', ianema)
-    call jelira('&&GILIRE.NUMANEW', 'LONUTI', itot, cbid)
+    call jelira('&&GILIRE.NUMANEW', 'LONUTI', itot)
 !
 !   CALCUL DU NB TOT D'ELEMENTS
     call wkvect('&&GILIRE.ECRMAIL', 'V V L', itot, iecrma)
@@ -241,7 +240,7 @@ subroutine giecas(nfic, ndim, nbobj)
     if (iret .gt. 0) then
         call jeveuo('&&GILIRE.POINT_NOM', 'L', iaptno)
         call jeveuo('&&GILIRE.POINT_NUM', 'L', iaptnu)
-        call jelira('&&GILIRE.POINT_NOM', 'LONMAX', nbnono, kbid)
+        call jelira('&&GILIRE.POINT_NOM', 'LONMAX', nbnono)
     else
         nbnono=0
     endif
@@ -261,7 +260,7 @@ subroutine giecas(nfic, ndim, nbobj)
 !     --ECRITURE DES GROUP_MA:
 !     -----------------------------------------------------------------
 !
-    call jelira('&&GILIRE.OBJET_NOM', 'LONMAX', nbobno, cbid)
+    call jelira('&&GILIRE.OBJET_NOM', 'LONMAX', nbobno)
     do 4, ii=1,nbobj
     trouve =.false.
     do 21 inu = 1, nbobno

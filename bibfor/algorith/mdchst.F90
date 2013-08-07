@@ -84,7 +84,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
     real(kind=8) :: alpha, beta, axe(3)
     complex(kind=8) :: cbid
     logical :: lnoue2, memail
-    character(len=8) :: kbid, repere, mailla, nomno1, nomno2, k8typ, k8bid
+    character(len=8) :: kbid, repere, mailla, nomno1, nomno2, k8typ
     character(len=10) :: motfac
     character(len=24) :: mdgene, refo, nomgr1, nomgr2, mamai
     character(len=24) :: valk(2)
@@ -153,7 +153,7 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                     mamai = zk8(jmail-1+im)
                     call jenonu(jexnom(mailla//'.NOMMAI', mamai), numai)
                     call jeveuo(jexnum(mailla//'.CONNEX', numai), 'L', jmama)
-                    call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbnma, kbid)
+                    call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbnma)
                     if (nbnma .ne. 2) then
                         valk (1) = mamai
                         valk (2) = 'SEG2'
@@ -181,13 +181,13 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                             iarg, ngrm, zk24(jmail), ibid)
                 do 120 ig = 1, ngrm
                     mamai = zk24(jmail-1+ig)
-                    call jelira(jexnom(mailla//'.GROUPEMA', mamai), 'LONMAX', nmgr, kbid)
+                    call jelira(jexnom(mailla//'.GROUPEMA', mamai), 'LONMAX', nmgr)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', mamai), 'L', kma)
                     nmliai = nmliai + nmgr
                     do 122 im = 1, nmgr
                         numai = zi(kma-1+im)
                         call jeveuo(jexnum(mailla//'.CONNEX', numai), 'L', jmama)
-                        call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbnma, kbid)
+                        call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbnma)
                         if (nbnma .ne. 2) then
                             call jenuno(jexnum(mailla//'.NOMMAI', numai), kbid)
                             valk (1) = kbid
@@ -544,9 +544,9 @@ subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
 ! DETERMINATION DES DIRECTION ET ORIENTATION DU ROTOR
             compt1=0
             compt2=0
-            call jelira(mailla//'.CONNEX', 'NMAXOC', nbmail, k8bid)
+            call jelira(mailla//'.CONNEX', 'NMAXOC', nbmail)
             do 66 numai = 1, nbmail
-                call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbno, k8bid)
+                call jelira(jexnum(mailla//'.CONNEX', numai), 'LONMAX', nbno)
                 if ((nbno.gt.1) .and. (nbno.lt.4)) then
                     call jeveuo(jexnum(mailla//'.CONNEX', numai), 'L', ibid)
                     do 77 j1 = 1, nbno

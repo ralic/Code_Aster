@@ -62,7 +62,7 @@ subroutine iredmi(macr)
     call jeveuo(mael//'.MAEL_REFE', 'L', jrefe)
     basemo = zk24(jrefe)(1:8)
     noma = zk24(jrefe+1)(1:8)
-    call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt, k8b)
+    call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt)
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
     call jeveuo(basemo//'           .REFD', 'L', jval)
 !
@@ -184,7 +184,7 @@ subroutine iredmi(macr)
         else
             call getvid(' ', 'LIST_AMOR', 0, iarg, 1,&
                         listam, n2)
-            call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8b)
+            call jelira(listam//'           .VALE', 'LONMAX', nbamor)
             call jeveuo(listam//'           .VALE', 'L', jamor)
         endif
         if (nbamor .gt. nbmode) then

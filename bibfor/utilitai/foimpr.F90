@@ -42,7 +42,6 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 !     ROUTINE D'IMPRESSION D'UNE FONCTION SUR UN FICHIER
 !     ----------------------------------------------------------------
 !
-    character(len=8) :: k8b
     character(len=19) :: nomfon, nomf1, listr
     character(len=24) :: prol, vale, para
     character(len=24) :: nompar, nomres, titr
@@ -77,7 +76,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     call jeexin(titr, iret)
     if (iret .ne. 0) then
         call jeveuo(titr, 'L', ltitr)
-        call jelira(titr, 'LONMAX', nbtitr, k8b)
+        call jelira(titr, 'LONMAX', nbtitr)
         do 10 i = 1, nbtitr
             write(iul,*) zk80(ltitr+i-1)
 10      continue
@@ -87,13 +86,13 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     call jeexin(nomfon//'.NOVA', iret)
     if (iret .ne. 0 .and. ind .ne. 0) then
         call jeveuo(nomfon//'.NOVA', 'L', lnova)
-        call jelira(nomfon//'.NOVA', 'LONUTI', nbnova, k8b)
+        call jelira(nomfon//'.NOVA', 'LONUTI', nbnova)
         if (nbnova .ne. 1) then
             call u2mess('A', 'UTILITAI2_8')
             goto 9999
         endif
         call jeveuo(listr//'.VALE', 'L', jval)
-        call jelira(listr//'.VALE', 'LONUTI', nbval, k8b)
+        call jelira(listr//'.VALE', 'LONUTI', nbval)
         nbv = 2 * nbval
         call wkvect(nomf1//'.VALE', 'V V R8', nbv, lval1)
         lfon1 = lval1 + nbval
@@ -136,9 +135,9 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 !
 !        --- NOMBRE DE VALEURS DE LA FONCTION ---
         if (ind .ne. 0) then
-            call jelira(listr//'.VALE', 'LONUTI', nbval, k8b)
+            call jelira(listr//'.VALE', 'LONUTI', nbval)
         else
-            call jelira(vale, 'LONUTI', nbval, k8b)
+            call jelira(vale, 'LONUTI', nbval)
             nbval= nbval/2
         endif
 !
@@ -170,7 +169,7 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
     else if (zk24(lprol) .eq. 'NAPPE   ') then
 !
         para = nomfon//'.PARA'
-        call jelira(para, 'LONMAX', nbfonc, k8b)
+        call jelira(para, 'LONMAX', nbfonc)
         call foec1n(iul, nomfon, zk24(lprol), nbfonc, 'RIEN')
         if (impr .ge. 2) then
             call jeveuo(para, 'L', lval)
@@ -183,14 +182,14 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 !
         nbpu = 1
         nompu = ' '
-        call jelira(vale, 'LONUTI', nbval, k8b)
+        call jelira(vale, 'LONUTI', nbval)
         nbval= nbval/3
         call foec1c(iul, nomfon, zk24(lprol), nbval, 'RIEN')
         if (impr .ge. 2) then
             call jeveuo(vale, 'L', lval)
             if (ind .ne. 0) then
                 call jeveuo(listr//'.VALE', 'L', jval)
-                call jelira(listr//'.VALE', 'LONUTI', nbval, k8b)
+                call jelira(listr//'.VALE', 'LONUTI', nbval)
                 nbv2 = 3 * nbval
                 call wkvect(nomf1//'.VALE', 'V V R8', nbv2, lval)
                 lfon = lval + nbval

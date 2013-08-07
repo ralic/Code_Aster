@@ -73,7 +73,6 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
     character(len=16) :: concep, cmd
     character(len=24) :: mlgnma, mlgnno, mlggno, mlggma
     character(len=24) :: modmai, modnem, modnoe, nommai, nomnoe
-    character(len=1) :: k1bid
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -93,7 +92,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
     mlgnno = noma//'.NOMNOE'
     mlggno = noma//'.GROUPENO'
     mlggma = noma//'.GROUPEMA'
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     call jeexin(modnem, ixnw)
     call jeexin(modmai, ixma)
     call jeexin(modnoe, ixno)
@@ -101,7 +100,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
     if (ixno .ne. 0) call jeveuo(modnoe, 'L', jdne)
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call jeveuo(modnem, 'L', jdnw)
     endif
 !
@@ -154,7 +153,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 if (mcl .eq. 14) locamb = .true.
                 do 34 i = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
-                    call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr, k1bid)
+                    call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
                     do 36 j = 1, nbmagr
                         nummai = zi(jdgm+j-1)
                         call jenuno(jexnum(mlgnma, nummai), nommai)
@@ -192,7 +191,7 @@ subroutine aceinc(noma, nomo, nbmcf, mclf, ntyele,&
                 if (nj .gt. 0) then
                     do 48 i = 1, nj
                         call jeveuo(jexnom(mlggno, zk24(jdls+i-1)), 'L', jdgn)
-                        call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr, k1bid)
+                        call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr)
                         do 50 j = 1, nbnogr
                             numnoe = zi(jdgn+j-1)
                             if (mcl .ne. 4) then

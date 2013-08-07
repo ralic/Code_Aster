@@ -72,7 +72,7 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
     integer :: id1, i, maxi, err, isd, nbma, ima, nbre, idma, jvg, jgg, ifm, niv
     integer :: nbgma
     real(kind=8) :: tmps(3)
-    character(len=8) :: ktmp, k8bid
+    character(len=8) :: ktmp
     character(len=24) :: sdbord, nom, grpmav, grpma, gpptnm, grpema
     integer :: iarg
 !----------------------------------------------------------------------
@@ -144,27 +144,27 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
     call jeexin(grpma, err)
     if (err .eq. 0) then
         call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbpart, ' ')
+        call jeecra(gpptnm, 'NOMMAX', nbpart)
         call jecrec(grpma, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbpart)
     else
-        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre, k8bid)
-        call jelira(grpma, 'NOMUTI', nbgma, k8bid)
+        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
+        call jelira(grpma, 'NOMUTI', nbgma)
         nbre = nbgma + nbpart
         call cpclma(ma, '&&OP0029', 'GROUPEMA', 'V')
         call jedetr(grpma)
         call jedetr(gpptnm)
         call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbre, ' ')
+        call jeecra(gpptnm, 'NOMMAX', nbre)
         call jecrec(grpma, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbre)
         do 100 i = 1, nbgma
             call jenuno(jexnum(grpmav, i), nom)
             call jecroc(jexnom(grpma, nom))
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbma, k8bid)
-            call jeecra(jexnom(grpma, nom), 'LONMAX', max(1, nbma), ' ')
-            call jeecra(jexnom(grpma, nom), 'LONUTI', nbma, ' ')
+            call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
+            call jeecra(jexnom(grpma, nom), 'LONMAX', max(1,nbma))
+            call jeecra(jexnom(grpma, nom), 'LONUTI', nbma)
             call jeveuo(jexnom(grpma, nom), 'E', jgg)
             do 102 ima = 0, nbma-1
                 zi(jgg+ima) = zi(jvg+ima)
@@ -179,8 +179,8 @@ subroutine creagm(nbmato, nbpart, sdb, ma, sdbord,&
         nbma=zi(nbmasd-1+isd)
         if (nbma .ne. 0) then
             call jecroc(jexnom(ma//'.GROUPEMA', grpema))
-            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONMAX', max(1, nbma), k8bid)
-            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONUTI', nbma, k8bid)
+            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONMAX', max(1,nbma))
+            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONUTI', nbma)
             call jeveuo(jexnom(ma//'.GROUPEMA', grpema), 'E', idma)
             do 41 ima = 0, nbma - 1
                 zi(idma+ima) = zi(masd+zi(idmasd-1+isd)-1+ima)

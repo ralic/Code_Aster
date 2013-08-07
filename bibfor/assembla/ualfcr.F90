@@ -47,7 +47,7 @@ subroutine ualfcr(mataz, basz)
 !
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
-    character(len=1) :: base, kbid, tyrc, basto
+    character(len=1) :: base, tyrc, basto
     character(len=4) :: kmpic
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
@@ -66,7 +66,7 @@ subroutine ualfcr(mataz, basz)
     call dismoi('F', 'MPI_COMPLET', matas, 'MATR_ASSE', ibid,&
                 kmpic, ibid)
     if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
-    if (base .eq. ' ') call jelira(matas//'.VALM', 'CLAS', ibid, base)
+    if (base .eq. ' ') call jelira(matas//'.VALM', 'CLAS', cval=base)
 !
 !     -- ON DETRUIT .UALF S'IL EXISTE DEJA :
     call jedetr(matas//'.UALF')
@@ -79,7 +79,7 @@ subroutine ualfcr(mataz, basz)
 !     -- SI LE STOCKAGE STOLCI N'EST PAS ENCORE CREE, ON LE FAIT :
     call jeexin(stolci//'.SCDE', iret)
     if (iret .eq. 0) then
-        call jelira(stomor//'.SMDI', 'CLAS', ibid, basto)
+        call jelira(stomor//'.SMDI', 'CLAS', cval=basto)
         rtbloc=jevtbl('TAILLE_BLOC')
         call smosli(stomor, stolci, basto, rtbloc)
     endif
@@ -95,11 +95,11 @@ subroutine ualfcr(mataz, basz)
     itbloc= zi(jscde-1+2)
     nbloc= zi(jscde-1+3)
 !
-    call jelira(matas//'.VALM', 'NMAXOC', nblocm, kbid)
+    call jelira(matas//'.VALM', 'NMAXOC', nblocm)
     ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
 !
 !     -- REEL OU COMPLEXE ?
-    call jelira(matas//'.VALM', 'TYPE', ibid, tyrc)
+    call jelira(matas//'.VALM', 'TYPE', cval=tyrc)
     ASSERT(tyrc.eq.'R' .or. tyrc.eq.'C')
 !
 !
@@ -107,7 +107,7 @@ subroutine ualfcr(mataz, basz)
 !     ----------------------------------------
     call jecrec(matas//'.UALF', base//' V '//tyrc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nblocm*nbloc)
-    call jeecra(matas//'.UALF', 'LONMAX', itbloc, kbid)
+    call jeecra(matas//'.UALF', 'LONMAX', itbloc)
     do 3,ibloc=1,nblocm*nbloc
     call jecroc(jexnum(matas//'.UALF', ibloc))
     3 end do

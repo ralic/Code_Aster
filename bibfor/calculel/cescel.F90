@@ -175,7 +175,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !     -- OBJET .COPI TEMPORAIRE POUR VERIFIER QUE TOUTES LES
 !        COMPOSANTES DE CES ONT ETE RECOPIEES
-    call jelira(ces//'.CESV', 'LONMAX', nbvces, kbid)
+    call jelira(ces//'.CESV', 'LONMAX', nbvces)
     call wkvect('&&CESCEL.COPI', 'V V I', nbvces, jcopi)
 !
     ma = zk8(jcesk-1+1)
@@ -340,7 +340,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !     3- ON REMPLIT LE .CELV :
 !     ===================================================
     call jeveuo(cel//'.CELV', 'E', jcelv)
-    call jelira(cel//'.CELV', 'LONMAX', neq, kbid)
+    call jelira(cel//'.CELV', 'LONMAX', neq)
     call jeveuo(cel//'.CELD', 'L', jceld)
     nbgr = zi(jceld-1+2)
     call jeveuo(ligrel//'.LIEL', 'L', ialiel)

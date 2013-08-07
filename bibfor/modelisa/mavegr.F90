@@ -40,7 +40,6 @@ subroutine mavegr(nomu)
 ! ----------------------------------------------------------------------
 !
     integer :: iret, i, j, nbgrma, nbgrmt, nbgrno, nbgrnt, nbma, nbno, jvg, jgg
-    character(len=8) :: k8b
     character(len=24) :: grpnoe, grpnov, grpmai, grpmav, gpptnn, gpptnm
     character(len=24) :: nomg, blanc
 ! ----------------------------------------------------------------------
@@ -58,7 +57,7 @@ subroutine mavegr(nomu)
 !
     call jeexin(grpmai, iret)
     if (iret .gt. 0) then
-        call jelira(grpmai, 'NMAXOC', nbgrma, k8b)
+        call jelira(grpmai, 'NMAXOC', nbgrma)
         nbgrmt = nbgrma
         do 100 i = 1, nbgrma
             call jeexin(jexnum ( grpmai, i ), iret)
@@ -76,7 +75,7 @@ subroutine mavegr(nomu)
             call jedetr(grpmai)
             call jedetr(gpptnm)
             call jecreo(gpptnm, 'G N K24')
-            call jeecra(gpptnm, 'NOMMAX', nbgrmt, ' ')
+            call jeecra(gpptnm, 'NOMMAX', nbgrmt)
             call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                         nbgrmt)
             do 110 i = 1, nbgrma
@@ -86,9 +85,9 @@ subroutine mavegr(nomu)
                 if (nomg .eq. blanc) goto 110
                 call jecroc(jexnom ( grpmai, nomg ))
                 call jeveuo(jexnum(grpmav, i), 'L', jvg)
-                call jelira(jexnum(grpmav, i), 'LONUTI', nbma, k8b)
-                call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma), ' ')
-                call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma, ' ')
+                call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
+                call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1,nbma))
+                call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
                 call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
                 do 112 j = 0, nbma-1
                     zi(jgg+j) = zi(jvg+j)
@@ -102,7 +101,7 @@ subroutine mavegr(nomu)
 !
     call jeexin(grpnoe, iret)
     if (iret .gt. 0) then
-        call jelira(grpnoe, 'NMAXOC', nbgrno, k8b)
+        call jelira(grpnoe, 'NMAXOC', nbgrno)
         nbgrnt = nbgrno
         do 200 i = 1, nbgrno
             call jeexin(jexnum ( grpnoe, i ), iret)
@@ -120,7 +119,7 @@ subroutine mavegr(nomu)
             call jedetr(grpnoe)
             call jedetr(gpptnn)
             call jecreo(gpptnn, 'G N K24')
-            call jeecra(gpptnn, 'NOMMAX', nbgrnt, ' ')
+            call jeecra(gpptnn, 'NOMMAX', nbgrnt)
             call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                         nbgrnt)
             do 210 i = 1, nbgrno
@@ -130,9 +129,9 @@ subroutine mavegr(nomu)
                 if (nomg .eq. blanc) goto 210
                 call jecroc(jexnom ( grpnoe, nomg ))
                 call jeveuo(jexnum(grpnov, i), 'L', jvg)
-                call jelira(jexnum(grpnov, i), 'LONUTI', nbno, k8b)
-                call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno), ' ')
-                call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno, ' ')
+                call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
+                call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1,nbno))
+                call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
                 call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
                 do 212 j = 0, nbno-1
                     zi(jgg+j) = zi(jvg+j)

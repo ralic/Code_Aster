@@ -63,7 +63,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     integer :: jcns1c, jcns1l, jcns1v, jcns1k, jcns1d
     integer :: nbno1, nbmax, ncmp1,ncmp2
     integer :: iad2, ier, nval
-    integer :: icmp, iad, nbpt, nbsp, icmp1
+    integer ::  iad, nbpt, nbsp, icmp1
 !
     integer :: ima, ipt, isp, jcesc, jlgrf
 !
@@ -83,7 +83,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call jeveuo(cns1//'.CNSC', 'L', jcns1c)
     call jeveuo(cns1//'.CNSV', 'L', jcns1v)
     call jeveuo(cns1//'.CNSL', 'L', jcns1l)
-    call jelira(cns1//'.CNSC', 'LONMAX', ncmp1, kbid)
+    call jelira(cns1//'.CNSC', 'LONMAX', ncmp1)
 !
     nomgd = zk8(jcns1k-1+2)
     nbno1 = zi(jcns1d-1+1)
@@ -184,9 +184,9 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel,&
     call jeveuo(ces2//'.CESV', 'E', jce2v)
     call jeveuo(ces2//'.CESL', 'E', jce2l)
     call jeveuo(ces2//'.CESK', 'L', jce2k)
-    call jelira(ces2//'.CESC', 'LONMAX', ncmp2, kbid)
+    call jelira(ces2//'.CESC', 'LONMAX', ncmp2)
 !   -- on met les booleens a .false. :
-    call jelira(ces2//'.CESL', 'LONMAX', nval, kbid)
+    call jelira(ces2//'.CESL', 'LONMAX', nval)
     zl(jce2l-1+1:jce2l-1+nval)=.false.
 !
 !

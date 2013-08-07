@@ -38,7 +38,6 @@ subroutine rsutro(nomsd, iordg, iordr, ierr)
 !                       AUTORISE
 ! ----------------------------------------------------------------------
     character(len=19) :: nomd2
-    character(len=1) :: k1bid
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -49,7 +48,7 @@ subroutine rsutro(nomsd, iordg, iordr, ierr)
     nomd2 = nomsd
 !
 !     --- RECUPERATION DU .ORDR ---
-    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr, k1bid)
+    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     if (nbordr .eq. 0) then
         ierr = 10
     else if (iordg.gt.nbordr) then

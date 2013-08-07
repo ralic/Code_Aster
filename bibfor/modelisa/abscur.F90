@@ -54,13 +54,12 @@ subroutine abscur(nomu, it)
 !
 !     CREATION D'UNE CARTE: (APPEL A ALCART)
 !
-    character(len=8) :: typm, k8bid
+    character(len=8) :: typm
     character(len=24) :: conseg, typseg
     character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
     integer :: ptch, adrm
 !
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
     integer :: iab1, iab2, iach, iacnex, iadr2, iagm, iancmp
@@ -81,7 +80,7 @@ subroutine abscur(nomu, it)
 !
     if (it .eq. 1) then
         nommai = nomu//'.NOMMAI'
-        call jelira(nommai, 'NOMUTI', nbrma, k1bid)
+        call jelira(nommai, 'NOMUTI', nbrma)
         call wkvect('&&ABSCURV.TEMP', 'V V I', nbrma, iagm)
         do 11 ij = 1, nbrma
             zi(iagm+ij-1) = ij
@@ -140,12 +139,12 @@ subroutine abscur(nomu, it)
     nbnoma=2*nbseg2
     call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbseg2)
-    call jeecra(conseg, 'LONT', nbnoma, ' ')
+    call jeecra(conseg, 'LONT', nbnoma)
     do 14 iseg2 = 1, nbseg2
         im=zi(ima2+iseg2-1)
-        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma, k8bid)
+        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma)
         call jeveuo(jexnum(connex, im ), 'L', iacnex)
-        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma, ' ')
+        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma)
         call jeveuo(jexnum(conseg, iseg2), 'E', jgcnx)
         do 3 ino = 1, nbnoma
             numno=zi(iacnex-1+ino)

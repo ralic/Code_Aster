@@ -36,7 +36,6 @@ subroutine foordn(vecpar, vecnom, ne, ns, ier)
 !                = 1 , SINON
 ! ----------------------------------------------------------------------
     integer :: vali
-    character(len=8) :: k8bid
 !     ------------------------------------------------------------------
     real(kind=8) :: x
     character(len=24) :: c
@@ -67,8 +66,8 @@ subroutine foordn(vecpar, vecnom, ne, ns, ier)
         if (vecpar(i) .eq. vecpar(i+1)) then
             if (vecnom(i) .ne. vecnom(i+1)) then
                 if (vecnom(i) (1:1) .eq. '&' .and. vecnom(i+1)(1:1) .eq. '&') then
-                    call jelira(vecnom(i), 'LONUTI', nbval1, k8bid)
-                    call jelira(vecnom(i+1), 'LONUTI', nbval2, k8bid)
+                    call jelira(vecnom(i), 'LONUTI', nbval1)
+                    call jelira(vecnom(i+1), 'LONUTI', nbval2)
                     if (nbval1 .eq. nbval2) then
                         call jeveuo(vecnom(i), 'L', lval1)
                         call jeveuo(vecnom(i+1), 'L', lval2)

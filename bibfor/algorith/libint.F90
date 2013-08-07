@@ -68,7 +68,6 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    character(len=8) :: kb
     character(len=19) :: imped, nume91
     character(len=24) :: indin1
     integer :: j1, k1, l1, m1, n1, nbeq1, llint1, nbddl1, lintf, nbint, lklibr
@@ -90,7 +89,7 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 !
         indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
         call jeveuo(indin1, 'L', llint1)
-        call jelira(indin1, 'LONMAX', nbddl1, kb)
+        call jelira(indin1, 'LONMAX', nbddl1)
 !
         do 190 m1 = 1, nbddl1
             if (zi(llint1+m1-1) .gt. 0) then

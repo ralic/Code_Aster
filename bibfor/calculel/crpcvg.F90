@@ -49,7 +49,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
     real(kind=8) :: x1, y1, z1, x2, y2, z2, v1, v2, v3
     real(kind=8) :: valr(3)
     logical :: erreur
-    character(len=8) :: k8b, noma1, noma2
+    character(len=8) ::  noma1, noma2
     character(len=24) :: valk(4)
     character(len=24) :: grpma1, grpma2, coova1, coova2, typma1, typma2, conne1
     character(len=24) :: conne2
@@ -84,8 +84,8 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
     call jeveuo(conne2, 'L', iamac2)
     call jeveuo(jexatr(conne2, 'LONCUM'), 'L', ilmac2)
 !
-    call jelira(jexnom(grpma1, gma1), 'LONUTI', nbma1, k8b)
-    call jelira(jexnom(grpma2, gma2), 'LONUTI', nbma2, k8b)
+    call jelira(jexnom(grpma1, gma1), 'LONUTI', nbma1)
+    call jelira(jexnom(grpma2, gma2), 'LONUTI', nbma2)
     if (nbma1 .ne. nbma2) then
         valk (1) = gma1
         valk (2) = gma2

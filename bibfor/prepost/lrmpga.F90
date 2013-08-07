@@ -241,7 +241,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
                 k8b, iret)
     if (.not.(dime.eq.2.or.dime.eq.3)) call u2mess('F', 'MODELISA2_6')
     liel=ligrel//'.LIEL'
-    call jelira(liel, 'NMAXOC', nbgrel, k8b)
+    call jelira(liel, 'NMAXOC', nbgrel)
 !
 !  =========================================
 !  == 2 : EXPLOITATION DES DONNEES ASTER  ==
@@ -259,7 +259,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
 !       NOMBRE D'ELEMENTS DU GREL : NBMAG-1
     call jeveuo(jexnum(liel, igrel), 'L', igr)
-    call jelira(jexnum(liel, igrel), 'LONMAX', nbmag, k8b)
+    call jelira(jexnum(liel, igrel), 'LONMAX', nbmag)
 !
 !       MODE LOCAL ASSOCIE AU PARAMETRE PARAM DE L'OPTION OPTION
     imod = modat2(iopt, numte, param)

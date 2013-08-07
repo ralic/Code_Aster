@@ -89,7 +89,6 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: kemax, pmmax, pbmax
     logical :: seisme, cfait
     character(len=4) :: lieu(2)
-    character(len=8) :: k8b
     character(len=24) :: k24as, k24ss, k24ca, k24cs, k24fu
 !
     data lieu / 'ORIG' , 'EXTR' /
@@ -99,7 +98,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     call infniv(ifm, niv)
 !
     call jeveuo('&&RC3200.SITU_NUMERO', 'L', jnsitu)
-    call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr, k8b)
+    call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
     call jeveuo('&&RC3200.SITU_SEISME', 'L', jseigr)
 !
@@ -108,9 +107,9 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
     call jeveuo('&&RC3200.SITU_PRES_B', 'L', jpresb)
     call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', jnbocc)
 !
-    call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12, k8b)
-    call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23, k8b)
-    call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13, k8b)
+    call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
+    call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
+    call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
 !
 ! --- IL FAUT CALCULER LE FACTEUR D'USAGE A CHAQUE EXTREMITE
 !
@@ -197,7 +196,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
 !
             iocs = zi(jseigr+ig-1)
 !
-            call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr, k8b)
+            call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
             if (niv .ge. 2) then
                 write (ifm,3000) numgr,nbsigr
@@ -205,24 +204,24 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 nbsigr)
             endif
             call jecroc(jexnum(k24as, ig))
-            call jeecra(jexnum(k24as, ig), 'LONMAX', 10*nbsigr, ' ')
+            call jeecra(jexnum(k24as, ig), 'LONMAX', 10*nbsigr)
             call jeveuo(jexnum(k24as, ig), 'E', jreas)
 !
             call jecroc(jexnum(k24ss, ig))
-            call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr, ' ')
+            call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr)
             call jeveuo(jexnum(k24ss, ig), 'E', jress)
 !
             ndim = max(5,int(5*nbsigr*(nbsigr-1)/2))
             call jecroc(jexnum(k24ca, ig))
-            call jeecra(jexnum(k24ca, ig), 'LONMAX', ndim, ' ')
+            call jeecra(jexnum(k24ca, ig), 'LONMAX', ndim)
             call jeveuo(jexnum(k24ca, ig), 'E', jreca)
 !
             call jecroc(jexnum(k24cs, ig))
-            call jeecra(jexnum(k24cs, ig), 'LONMAX', ndim, ' ')
+            call jeecra(jexnum(k24cs, ig), 'LONMAX', ndim)
             call jeveuo(jexnum(k24cs, ig), 'E', jrecs)
 !
             call jecroc(jexnum(k24fu, ig))
-            call jeecra(jexnum(k24fu, ig), 'LONMAX', 4*50, ' ')
+            call jeecra(jexnum(k24fu, ig), 'LONMAX', 4*50)
             call jeveuo(jexnum(k24fu, ig), 'E', jfact)
 !
             if (ig .eq. 1) then
@@ -267,7 +266,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             numgr = zi(jnumgr+ig-1)
             if (numgr .lt. 0) goto 200
 !
-            call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr, k8b)
+            call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
 !
             npass = 0
@@ -279,7 +278,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 call jeexin(jexnum(k24as, ig), iret)
                 if (iret .eq. 0) then
                     call jecroc(jexnum(k24as, ig))
-                    call jeecra(jexnum(k24as, ig), 'LONMAX', 10*nbsigr, ' ')
+                    call jeecra(jexnum(k24as, ig), 'LONMAX', 10*nbsigr)
                 endif
                 call jeveuo(jexnum(k24as, ig), 'E', jreas)
                 do 212 j = 1, 10
@@ -289,7 +288,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 call jeexin(jexnum(k24ss, ig), iret)
                 if (iret .eq. 0) then
                     call jecroc(jexnum(k24ss, ig))
-                    call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr, ' ')
+                    call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr)
                 endif
                 call jeveuo(jexnum(k24ss, ig), 'E', jress)
 !
@@ -438,7 +437,7 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                 seisme = .true.
             endif
 !
-            call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr, k8b)
+            call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
             if (niv .ge. 2) then
                 write (ifm,3004)
@@ -447,24 +446,24 @@ subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
             endif
 !
             call jecroc(jexnum(k24as, ig))
-            call jeecra(jexnum(k24as, ig), 'LONMAX', 10*nbsigr, ' ')
+            call jeecra(jexnum(k24as, ig), 'LONMAX', 10*nbsigr)
             call jeveuo(jexnum(k24as, ig), 'E', jreas)
 !
             call jecroc(jexnum(k24ss, ig))
-            call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr, ' ')
+            call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr)
             call jeveuo(jexnum(k24ss, ig), 'E', jress)
 !
             ndim = max(5,5*nbsigr*(nbsigr-1)/2)
             call jecroc(jexnum(k24ca, ig))
-            call jeecra(jexnum(k24ca, ig), 'LONMAX', ndim, ' ')
+            call jeecra(jexnum(k24ca, ig), 'LONMAX', ndim)
             call jeveuo(jexnum(k24ca, ig), 'E', jreca)
 !
             call jecroc(jexnum(k24cs, ig))
-            call jeecra(jexnum(k24cs, ig), 'LONMAX', ndim, ' ')
+            call jeecra(jexnum(k24cs, ig), 'LONMAX', ndim)
             call jeveuo(jexnum(k24cs, ig), 'E', jrecs)
 !
             call jecroc(jexnum(k24fu, ig))
-            call jeecra(jexnum(k24fu, ig), 'LONMAX', 4*50, ' ')
+            call jeecra(jexnum(k24fu, ig), 'LONMAX', 4*50)
             call jeveuo(jexnum(k24fu, ig), 'E', jfact)
 !
             npass = 7

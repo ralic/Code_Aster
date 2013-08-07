@@ -156,7 +156,7 @@ subroutine op0144()
     if (nbno .eq. 0) then
         tmode = .true.
         numoi = nombm//'           .ORDR'
-        call jelira(numoi, 'LONUTI', nbno, k8b)
+        call jelira(numoi, 'LONUTI', nbno)
         ASSERT(nbam.eq.0 .or. abs(nbam).eq.nbno)
     else
         nbno = abs(nbno)
@@ -294,7 +294,7 @@ subroutine op0144()
 !
     call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibid,&
                 mailla, iret)
-    call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoeu, k8b)
+    call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoeu)
     long = 6*nbnoeu
 !
     gran = 'DEPL_R  '
@@ -360,13 +360,13 @@ subroutine op0144()
 ! .DESC
             chdesc = cham19//'.DESC'
             call wkvect(chdesc, 'G V I', 2, jcdesc)
-            call jeecra(chdesc, 'DOCU', 0, 'CHNO')
+            call jeecra(chdesc, 'DOCU', cval='CHNO')
             zi(jcdesc) = numgd
             zi(jcdesc+1) = 6
 ! .VALE
             chvale = cham19//'.VALE'
             call jecreo(chvale, 'G V R')
-            call jeecra(chvale, 'LONMAX', long, k8b)
+            call jeecra(chvale, 'LONMAX', long)
 ! .REFE
             chrefe = cham19//'.REFE'
             call wkvect(chrefe, 'G V K24', 4, jcrefe)

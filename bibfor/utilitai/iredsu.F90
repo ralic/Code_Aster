@@ -177,7 +177,7 @@ subroutine iredsu(macr, form, ifc, versio)
 !     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     nomsym = 'DEPL'
     call jeveuo(basemo//'.ORDR', 'L', jordr)
-    call jelira(basemo//'.ORDR', 'LONMAX', nbordr, k8b)
+    call jelira(basemo//'.ORDR', 'LONMAX', nbordr)
     call wkvect('&&IREDSU.MODE_STAT', 'V V K24', nbordr, jmst)
     nstat = 0
     do 100 i = 1, nbordr

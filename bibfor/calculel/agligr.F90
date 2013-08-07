@@ -46,30 +46,29 @@ subroutine agligr(long, ligrch)
 !
 ! DEB-------------------------------------------------------------------
 !
-    character(len=8) :: k8bid
     character(len=1) :: base
     character(len=24) :: ligr1, ligr2
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, lon1, lon2, long1, long2, long3, nmax1
+    integer ::  lon1, lon2, long1, long2, long3, nmax1
     integer :: nmax2
 !-----------------------------------------------------------------------
     ligr1 = ligrch//'.TRA1'
     ligr2 = ligrch//'.TRA2'
 !
 !
-    call jelira(ligrch//'.LIEL', 'CLAS', ibid, base)
+    call jelira(ligrch//'.LIEL', 'CLAS', cval=base)
 !
 !
 ! --- COPIE DE LIGRCH.LIEL ET LIGRCH.NEMA SUR LIGR1 ET LIGR2
 !
-    call jelira(ligrch//'.LIEL', 'LONT', lon1, k8bid)
-    call jelira(ligrch//'.LIEL', 'NMAXOC', nmax1, k8bid)
+    call jelira(ligrch//'.LIEL', 'LONT', lon1)
+    call jelira(ligrch//'.LIEL', 'NMAXOC', nmax1)
     call jedupo(ligrch//'.LIEL', 'V', ligr1, .false.)
     call jedetr(ligrch//'.LIEL')
 !
-    call jelira(ligrch//'.NEMA', 'LONT', lon2, k8bid)
-    call jelira(ligrch//'.NEMA', 'NMAXOC', nmax2, k8bid)
+    call jelira(ligrch//'.NEMA', 'LONT', lon2)
+    call jelira(ligrch//'.NEMA', 'NMAXOC', nmax2)
     call jedupo(ligrch//'.NEMA', 'V', ligr2, .false.)
     call jedetr(ligrch//'.NEMA')
 !

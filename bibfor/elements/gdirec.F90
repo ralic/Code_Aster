@@ -91,7 +91,6 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 !
     logical :: sommet, milieu
 !
-    character(len=1) :: k1bid
 !
 ! OBJETS DEFINISSANT LA CONNECTIVITE  ET LE TYPE DES MAILLES
 !
@@ -106,7 +105,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 ! OBJET CONTENANT LES MAILLES DE LA LEVRE
 !
     obj3 = fond//'.'//chaine//'.MAIL'
-    call jelira(obj3, 'LONMAX', lobj3, k1bid)
+    call jelira(obj3, 'LONMAX', lobj3)
     call jeveuo(obj3, 'L', iadrlv)
     call jeveuo(coorn, 'L', iadrco)
 !

@@ -112,7 +112,7 @@ subroutine asgeel(nomres, option, nugene)
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
 !
-    call jelira(nomsst, 'NOMMAX', nbsst, k1bid)
+    call jelira(nomsst, 'NOMMAX', nbsst)
 !
 !--
 !

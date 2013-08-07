@@ -71,7 +71,6 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
     integer :: ibid, id, iddl, ier, igr, im, in, ino, ioc, iret, is, jddl1
     integer :: jddl2, jdgn, jgrn, jnoe, lvale, nba, nbb, n1, nbbd, nbl, nbliai
     integer :: nbocc, nbtrou, ngr, nno, nt, vali(2)
-    character(len=1) :: k1b
     character(len=4) :: ctyp, dir(3)
     character(len=8) :: k8b, noma, noeu, nomcmp(3)
     character(len=15) :: motfac
@@ -222,7 +221,7 @@ subroutine asmsup(masse, meca, nbmode, neq, nbsup,&
                                 call u2mesk('E', 'SEISME_2', 2, valk)
                                 goto 50
                             else
-                                call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno, k1b)
+                                call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                                 call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
                                 do 52 ino = 1, nno
                                     call jenuno(jexnum(obj2, zi(jdgn+ ino-1)), noeu)

@@ -120,7 +120,7 @@ subroutine op0157()
                         zk16( jnosy), n)
         else if (toucha .eq. 'OUI') then
             if (typcon .eq. 'MODE_GENE') then
-                call jelira(gene//'.DESC', 'NOMUTI', nbnosy, k8b)
+                call jelira(gene//'.DESC', 'NOMUTI', nbnosy)
                 call wkvect('&&OP0157.NOM_SYMB', 'V V K16', nbnosy, jnosy)
                 do 20 isy = 1, nbnosy
                     call jenuno(jexnum(gene//'.DESC', isy), zk16(jnosy- 1+isy))

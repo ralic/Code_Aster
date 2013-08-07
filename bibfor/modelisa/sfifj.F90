@@ -83,7 +83,7 @@ subroutine sfifj(nomres)
                     base, ibid)
 !
         call jeveuo(base//'.ORDR', 'L', jordr)
-        call jelira(base//'.ORDR', 'LONUTI', nbm, k8b)
+        call jelira(base//'.ORDR', 'LONUTI', nbm)
 !
 ! RECUPERATION DE LA FREQUENCE MINIMALE ET MAX DES MODES
 !
@@ -303,8 +303,8 @@ subroutine sfifj(nomres)
                     nbabs = 2*nbpoin
                 endif
 !
-                call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs, ' ')
-                call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs, ' ')
+                call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
+                call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
                 call jeveuo(jexnum(chvale, ij), 'E', lvale)
 !
 ! BOUCLE SUR LES FREQUENCES ET REMPLISSAGE DU .VALE

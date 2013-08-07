@@ -102,7 +102,7 @@ subroutine cla110(nomres, modgen)
 !
     call jemarq()
     repnom=modgen//'      .MODG.SSNO'
-    call jelira(repnom, 'NOMMAX', nbsst, k8bid)
+    call jelira(repnom, 'NOMMAX', nbsst)
 !
 !-----PRISE EN COMPTE DE LA PRESENCE DES SST DANS LE SQUELETTE----------
 !
@@ -256,7 +256,7 @@ subroutine cla110(nomres, modgen)
                         k8bid, iret)
             call jeexin(mailla//'.GROUPEMA', iret)
             if (iret .ne. 0) then
-                call jelira(mailla//'.GROUPEMA', 'NUTIOC', ngrma, k8bid)
+                call jelira(mailla//'.GROUPEMA', 'NUTIOC', ngrma)
                 call wkvect(tt//'.GR.'//nomsst, 'V V K24', ngrma, igrma)
             endif
             do 215 igr = 1, ngrma
@@ -339,7 +339,7 @@ subroutine cla110(nomres, modgen)
         icomp=0
         do 270 j = 1, nbskma
             numma=zi(ltlima+j-1)
-            call jelira(jexnum(maicon, numma), 'LONMAX', nbno, k8bid)
+            call jelira(jexnum(maicon, numma), 'LONMAX', nbno)
             icomp=icomp+nbno
 270      continue
         zi(ltnbno+i-1)=icomp
@@ -367,7 +367,7 @@ subroutine cla110(nomres, modgen)
         icomp=0
         do 320 j = 1, nbma
             numma=zi(ltlima-1+j)
-            call jelira(jexnum(maicon, numma), 'LONMAX', nbtmp, k8bid)
+            call jelira(jexnum(maicon, numma), 'LONMAX', nbtmp)
             call jeveuo(jexnum(maicon, numma), 'L', llma)
             nctail=nctail+nbtmp
             do 330 k = 1, nbtmp
@@ -423,25 +423,25 @@ subroutine cla110(nomres, modgen)
     call wkvect(nomres//'         .NOMSST', 'G V K8', nbstac, lstac)
 !
     call jecreo(nomres//'.NOMMAI', 'G N K8')
-    call jeecra(nomres//'.NOMMAI', 'NOMMAX', nbmat, ' ')
+    call jeecra(nomres//'.NOMMAI', 'NOMMAX', nbmat)
     call jecrec(nomcon, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmat)
-    call jeecra(nomcon, 'LONT', nctail, k8bid)
+    call jeecra(nomcon, 'LONT', nctail)
     call wkvect(nomres//'.TYPMAIL', 'G V I', nbmat, ibid)
 !
     call jecreo(nomres//'.NOMNOE', 'G N K8')
-    call jeecra(nomres//'.NOMNOE', 'NOMMAX', nbnot, ' ')
+    call jeecra(nomres//'.NOMNOE', 'NOMMAX', nbnot)
 !
     gpptnm = nomres//'.PTRNOMMAI'
     call jecreo(gpptnm, 'G N K24')
-    call jeecra(gpptnm, 'NOMMAX', nbstac+ngrmat, ' ')
+    call jeecra(gpptnm, 'NOMMAX', nbstac+ngrmat)
     call jecrec(nomres//'.GROUPEMA', 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                 nbstac+ngrmat)
 !
     call wkvect(nomres//'.COORDO    .REFE', 'G V K24', 4, ldref)
     zk24(ldref) = nomres
     call wkvect(nomres//'.COORDO    .DESC', 'G V I', 3, lddes)
-    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', cval='CHNO')
     call wkvect(nomres//'.COORDO    .VALE', 'G V R', 3*nbnot, ldcoo)
 !
 !-----REMPLISSAGE DU TITRE----------------------------------------------
@@ -547,8 +547,8 @@ subroutine cla110(nomres, modgen)
         nbma=zi(ltnbma+i-1)
         call jeveuo(jexnum(tt//'.LISTE.MA', i), 'L', ltlima)
         call jecroc(jexnom(nomres//'.GROUPEMA', nomsst))
-        call jeecra(jexnom(nomres//'.GROUPEMA', nomsst), 'LONMAX', max(1, nbma), k8bid)
-        call jeecra(jexnom(nomres//'.GROUPEMA', nomsst), 'LONUTI', nbma, k8bid)
+        call jeecra(jexnom(nomres//'.GROUPEMA', nomsst), 'LONMAX', max(1, nbma))
+        call jeecra(jexnom(nomres//'.GROUPEMA', nomsst), 'LONUTI', nbma)
         call jeveuo(jexnom(nomres//'.GROUPEMA', nomsst), 'E', ldgrma)
         nbtgrm = nbtgrm+1
         do 450 j = 1, nbma
@@ -565,8 +565,8 @@ subroutine cla110(nomres, modgen)
 !
             zi(ldgrma+j-1)=nbtmma
             call jecroc(jexnom(nomres//'.NOMMAI', nomcou))
-            call jelira(jexnum(maicon, numma), 'LONMAX', nbcon, k8bid)
-            call jeecra(jexnum(nomcon, nbtmma), 'LONMAX', nbcon, k8bid)
+            call jelira(jexnum(maicon, numma), 'LONMAX', nbcon)
+            call jeecra(jexnum(nomcon, nbtmma), 'LONMAX', nbcon)
             call jeveuo(jexnum(maicon, numma), 'L', llcona)
 !
             do 460 k = 1, nbcon

@@ -52,7 +52,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     integer :: k, k2, nbma, ncmp, icmp, jcesl1, jcesv1, jcesd1
     integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, jcvvar, ibid
     integer :: jdcld, jdcll, jdclv, nncp, iret, jcvrc
-    character(len=8) :: kbid, varc, noma1, noma2
+    character(len=8) ::  varc, noma1, noma2
     character(len=19) :: dceli, celmod, cart1, ces1, ligrmo, csvref
     character(len=24) :: valk(4)
     real(kind=8) :: valref
@@ -97,7 +97,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
     avrc=.false.
     if (iret .gt. 0) then
         call jeveuo(chmat//'.CVRCVARC', 'L', jcvrc)
-        call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc, kbid)
+        call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
         do 10 k = 1, nbcvrc
             if (zk8(jcvrc-1+k) .ne. ' ') then
                 avrc=.true.
@@ -117,7 +117,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 !     -- CAS AFFE_VARC  :
 !     ------------------------
     call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
-    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc, kbid)
+    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
 !
 !
 !     0. VERIFICATION DE LA COHERENCE DE MODELE  ET CHMAT (FICHE 19507)
@@ -163,12 +163,12 @@ subroutine vrcref(modele, chmat, carele, chvref)
     call celces(celmod, 'V', csvref)
     call detrsd('CHAMP', celmod)
 !
-    call jelira(csvref//'.CESV', 'LONMAX', n1, kbid)
+    call jelira(csvref//'.CESV', 'LONMAX', n1)
 !
     call jeveuo(csvref//'.CESD', 'L', jcesd)
     call jeveuo(csvref//'.CESL', 'E', jcesl)
     call jeveuo(csvref//'.CESV', 'E', jcesv)
-    call jelira(csvref//'.CESL', 'LONMAX', n1, kbid)
+    call jelira(csvref//'.CESL', 'LONMAX', n1)
     do 777, k=1,n1
     zl(jcesl-1+k)=.false.
     777 end do

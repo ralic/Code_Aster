@@ -82,7 +82,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     integer :: jac1er, ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
     integer :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, ier, jrefa
     integer :: i, jsmde, ibid, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
-    character(len=1) :: k1bid, base
+    character(len=1) ::  base
     character(len=14) :: numddl, numedd
     character(len=19) :: ata
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
@@ -111,7 +111,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     un = 1.0d0
 !
 !
-    call jelira(a, 'NMAXOC', nblig2, k1bid)
+    call jelira(a, 'NMAXOC', nblig2)
     ASSERT(nblig.gt.0)
     ASSERT(nblig.le.nblig2)
 !
@@ -258,7 +258,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz,&
     kvalm = ata//'.VALM'
     call jecrec(kvalm, base//' V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 1)
-    call jeecra(kvalm, 'LONMAX', ncoef, ' ')
+    call jeecra(kvalm, 'LONMAX', ncoef)
     call jecroc(jexnum(kvalm, 1))
     call jeveuo(jexnum(kvalm, 1), 'E', jvalm)
     do 140 ilig = 1, nblig

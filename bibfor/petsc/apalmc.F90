@@ -75,9 +75,9 @@ subroutine apalmc(kptsc)
     nonu = nonus(kptsc)
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     neq = nsmdi
     nz = zi(jsmdi-1+nsmdi)
 !

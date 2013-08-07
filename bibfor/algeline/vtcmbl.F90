@@ -65,7 +65,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     integer :: nbdes1, nbref1, nbval1
     real(kind=8) :: dimag
     complex(kind=8) :: c8cst
-    character(len=4) :: docu, type, kbid
+    character(len=4) :: docu, type
     character(len=5) :: refe, desc, vale, fetc
     character(len=8) :: k8b
     character(len=19) :: ch19, ch19r
@@ -88,10 +88,10 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     call jeexin(k24b, ibid)
     if (ibid .gt. 0) then
         k24b=ch19//'.DESC'
-        call jelira(k24b, 'DOCU', ibid, docu)
+        call jelira(k24b, 'DOCU', cval=docu)
     else
         k24b=ch19//'.CELD'
-        call jelira(k24b, 'DOCU', ibid, docu)
+        call jelira(k24b, 'DOCU', cval=docu)
     endif
 !
 ! INIT. POUR FETI: NOMBRE DE SOUS-DOMAINES
@@ -119,7 +119,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
         k24b=ch19//refe
         call jeexin(k24b, iret)
         if (iret .ne. 0) then
-            call jelira(k24b, 'LONMAX', nbrefe, k8b)
+            call jelira(k24b, 'LONMAX', nbrefe)
         else
             if (niv .ge. 2) write (ifm, *)'<FETI/VTCMBL> CHAM_NO SANS REFE ', k24b(1:19)
             nbrefe=0
@@ -138,7 +138,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
             k24b=ch19//refe
             call jeexin(k24b, iret)
             if (iret .ne. 0) then
-                call jelira(k24b, 'LONMAX', nbrefe, k8b)
+                call jelira(k24b, 'LONMAX', nbrefe)
             else
                 if (niv .ge. 2) write (ifm, * )'<FETI/VTCMBL> CHAM_NO SANS REFE ', k24b(1:19)
                 nbrefe=0
@@ -206,9 +206,9 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 ! OBTENTION DES ADRESSES ET DES TAILLES DES .DESC, .REFE ET .VALE
 ! DU PREMIER CHAM_NO (GLOBAL OU LOCAL) A CONCATENER. ON SUPPOSE QUE
 ! TOUS LES CHAM_NOS DE LA LISTE NOMCH SONT HOMOGENES SUR CE POINT.
-            call jelira(ch19//desc, 'LONMAX', nbdesc, k8b)
-            call jelira(ch19//vale, 'LONMAX', nbvale, k8b)
-            call jelira(ch19//refe, 'LONMAX', nbrefe, k8b)
+            call jelira(ch19//desc, 'LONMAX', nbdesc)
+            call jelira(ch19//vale, 'LONMAX', nbvale)
+            call jelira(ch19//refe, 'LONMAX', nbrefe)
             call jeveuo(ch19//desc, 'L', jdesc)
             call jeveuo(ch19//refe, 'L', jrefe)
 !
@@ -239,10 +239,10 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
                                                               kfetc)
             else
                 call jeveuo(ch19r//desc, 'E', kdesc)
-                call jelira(ch19r//desc, 'LONMAX', nbdes1, kbid)
+                call jelira(ch19r//desc, 'LONMAX', nbdes1)
                 call jeveuo(ch19r//refe, 'E', krefe)
-                call jelira(ch19r//refe, 'LONMAX', nbref1, kbid)
-                call jelira(ch19r//vale, 'LONMAX', nbval1, kbid)
+                call jelira(ch19r//refe, 'LONMAX', nbref1)
+                call jelira(ch19r//vale, 'LONMAX', nbval1)
 ! VERIFICATION DE LA COHERENCE DES DIMENSIONS
                 ASSERT(nbdes1.eq.nbdesc)
                 ASSERT(nbref1.eq.nbrefe)
@@ -250,7 +250,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 ! SI FETI CONNEXION A L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
                 if ((nbsd.gt.0) .and. (idd.eq.0)) call jeveuo(ch19r// fetc, 'E', kfetc)
             endif
-            call jeecra(ch19r//desc, 'DOCU', ibid, docu)
+            call jeecra(ch19r//desc, 'DOCU', cval=docu)
 ! RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
 ! DANS CEUX DU CHAM_NO SOLUTION
             do 30 i = 0, nbdesc-1

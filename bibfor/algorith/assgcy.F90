@@ -63,7 +63,6 @@ subroutine assgcy(nomres, nugene)
 !
     integer :: iblo, ldlim, neq, ntbloc, nbloc, iaconl, jrefa, iadesc, iscdi
     integer :: iscbl, ischc, ldblo, n1bloc, n2bloc, i, j, llref
-    character(len=8) :: k8bid
 !
 !-----------------------------------------------------------------------
 !
@@ -99,7 +98,7 @@ subroutine assgcy(nomres, nugene)
 !
     call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
-    call jeecra(resu//'.UALF', 'LONMAX', ntbloc, k8bid)
+    call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
     call wkvect(resu//'.CONL', 'G V R', neq, iaconl)
     do 10 i = 1, neq

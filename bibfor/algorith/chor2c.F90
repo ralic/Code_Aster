@@ -53,7 +53,7 @@ subroutine chor2c(lischa, vecele)
     character(len=19) :: chamno
     integer :: jcn
     character(len=24) :: resuel
-    character(len=8) :: k8bid, typech, typsca
+    character(len=8) ::  typech, typsca
     integer :: iret, kvale, ibid, ichar
     integer :: ivec, nbvec, nbvdim, ivale, nbvale, jvec
     character(len=4) :: tyresl
@@ -68,7 +68,7 @@ subroutine chor2c(lischa, vecele)
     vachar = vecele//'.CHNO'
     call jeexin(vachar, iret)
     ASSERT(iret.ne.0)
-    call jelira(vachar, 'LONMAX', nbvec, k8bid)
+    call jelira(vachar, 'LONMAX', nbvec)
     ASSERT(nbvec.ne.0)
 !
 ! --- DIMENSIONNEMENT SD DE SAUVEGARDE
@@ -76,7 +76,7 @@ subroutine chor2c(lischa, vecele)
     call jeveuo(vachar, 'L', jvacha)
     chamno = zk24(jvacha+1-1)(1:19)
     call jeveuo(vecele//'.RELR', 'L', jvec)
-    call jelira(chamno//'.VALE', 'LONMAX', nbvdim, k8bid)
+    call jelira(chamno//'.VALE', 'LONMAX', nbvdim)
     call wkvect('&&CHOR2C.COPIE_TRAVAIL', 'V V R', nbvdim, kvale)
 !
 ! --- BOUCLES SUR LES CHAMNO
@@ -122,7 +122,7 @@ subroutine chor2c(lischa, vecele)
 !
         if (typchn .eq. 'R') then
             call jeveuo(chamno//'.VALE', 'L', jcn)
-            call jelira(chamno//'.VALE', 'LONMAX', nbvale, k8bid)
+            call jelira(chamno//'.VALE', 'LONMAX', nbvale)
             if (nbvdim .ne. nbvale) ASSERT(.false.)
 !
 ! ------- SAUVEGARDE DES VALEURS

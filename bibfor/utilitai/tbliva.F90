@@ -63,7 +63,6 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
     real(kind=8) :: refr, xr, epsi
     complex(kind=8) :: refc, xc
     character(len=4) :: rela, type
-    character(len=8) :: k8b
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     logical :: lok
@@ -118,7 +117,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr,&
 16  continue
 !
     nomjv = zk24(jtblp+2)
-    call jelira(nomjv, 'LONUTI', nbpu, k8b)
+    call jelira(nomjv, 'LONUTI', nbpu)
     call wkvect('&&TBLIVA.NUMERO', 'V V I', nbpu, jnumi)
     do 18 i = 1, nbpu
         zi(jnumi+i-1) = i

@@ -44,7 +44,6 @@ subroutine asctri(mailla, rm)
     integer :: iret2, jgrn3, jgrn4, iret3, iret4, iret5
     real(kind=8) :: x, y, z, xmin, zmax, ymax, pi, zinf, zsup, rnorm, xor, yor
     real(kind=8) :: zor, xex, yex, zex
-    character(len=8) :: k8b
     character(len=24) :: grpnoe, coord, nogrn1, nogrn2, nogrn3, nogrn4, nogrn5
 !     ------------------------------------------------------------------
 !
@@ -64,11 +63,11 @@ subroutine asctri(mailla, rm)
     if (iret1 .ne. 0 .or. iret2 .ne. 0) then
 !
         if (iret1 .ne. 0) then
-            call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnop, k8b)
+            call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnop)
             call jeveuo(jexnom(grpnoe, nogrn1), 'E', jgrn1)
         endif
         if (iret2 .ne. 0) then
-            call jelira(jexnom(grpnoe, nogrn2), 'LONUTI', nbnop, k8b)
+            call jelira(jexnom(grpnoe, nogrn2), 'LONUTI', nbnop)
             call jeveuo(jexnom(grpnoe, nogrn2), 'E', jgrn2)
         endif
 !
@@ -117,11 +116,11 @@ subroutine asctri(mailla, rm)
     if (iret1 .ne. 0 .or. iret2 .ne. 0) then
 !
         if (iret1 .ne. 0) then
-            call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnop, k8b)
+            call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnop)
             call jeveuo(jexnom(grpnoe, nogrn1), 'E', jgrn1)
         endif
         if (iret2 .ne. 0) then
-            call jelira(jexnom(grpnoe, nogrn2), 'LONUTI', nbnop, k8b)
+            call jelira(jexnom(grpnoe, nogrn2), 'LONUTI', nbnop)
             call jeveuo(jexnom(grpnoe, nogrn2), 'E', jgrn2)
         endif
 !
@@ -173,11 +172,11 @@ subroutine asctri(mailla, rm)
     if (iret1 .ne. 0 .or. iret2 .ne. 0) then
 !
         if (iret1 .ne. 0) then
-            call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnog, k8b)
+            call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnog)
             call jeveuo(jexnom(grpnoe, nogrn1), 'E', jgrn1)
         endif
         if (iret2 .ne. 0) then
-            call jelira(jexnom(grpnoe, nogrn2), 'LONUTI', nbnog, k8b)
+            call jelira(jexnom(grpnoe, nogrn2), 'LONUTI', nbnog)
             call jeveuo(jexnom(grpnoe, nogrn2), 'E', jgrn2)
         endif
 !
@@ -264,7 +263,7 @@ subroutine asctri(mailla, rm)
 !
     if (iret1 .ne. 0) then
 !
-        call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnog, k8b)
+        call jelira(jexnom(grpnoe, nogrn1), 'LONUTI', nbnog)
         call jeveuo(jexnom(grpnoe, nogrn1), 'E', jgrn1)
 !
 ! -- AUTRES ORIENTATION DE FISSURE : TRI DE Z<0 A Z>0
@@ -348,7 +347,7 @@ subroutine asctri(mailla, rm)
 !
         else
 !
-            call jelira(jexnom(grpnoe, 'P_AXE_2'), 'LONUTI', nbnog, k8b)
+            call jelira(jexnom(grpnoe, 'P_AXE_2'), 'LONUTI', nbnog)
             call jeveuo(jexnom(grpnoe, 'P_AXE_2'), 'L', jgrn1)
 !
             xor = zr(icoor+3*(zi(jgrn1)-1))
@@ -364,7 +363,7 @@ subroutine asctri(mailla, rm)
             zr(icoor+3*(zi(jgrn3)-1)+1)= yor + (yor - yex)/rnorm
             zr(icoor+3*(zi(jgrn3)-1)+2)= zor + (zor - zex)/rnorm
 !
-            call jelira(jexnom(grpnoe, 'G_AXE_2'), 'LONUTI', nbnog, k8b)
+            call jelira(jexnom(grpnoe, 'G_AXE_2'), 'LONUTI', nbnog)
             call jeveuo(jexnom(grpnoe, 'G_AXE_2'), 'L', jgrn1)
 !
             xor = zr(icoor+3*(zi(jgrn1)-1))

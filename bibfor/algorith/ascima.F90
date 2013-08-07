@@ -50,7 +50,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     character(len=4) :: cumul
-    character(len=8) :: kbid, charge
+    character(len=8) ::  charge
     character(len=19) :: infch2
     integer :: iret, iret1, iret2, iret3, ich, ncharg, jlcha, jinfc, jlchci, ier
 !-----------------------------------------------------------------------
@@ -103,7 +103,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !     -- CAS LISTE DE CHARGES CINEMATIQUES :
     else
         call jeveuo(infcha, 'L', jlchci)
-        call jelira(infcha, 'LONMAX', nchci, kbid)
+        call jelira(infcha, 'LONMAX', nchci)
         call asschc(matass, nchci, zk24(jlchci), nu, cumul)
     endif
 !

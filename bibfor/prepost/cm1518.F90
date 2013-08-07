@@ -187,7 +187,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
     nomnoi = main // '.NOMNOE'
     nomnoe = maout // '.NOMNOE'
     call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbtot, ' ')
+    call jeecra(nomnoe, 'NOMMAX', nbtot)
 !
     do 5 no = 1, nbno
         call jenuno(jexnum(nomnoi, no), nomnd)
@@ -219,7 +219,7 @@ subroutine cm1518(main, maout, nbma, lima, prefix,&
     call jeveuo(typema, 'E', jtypma)
     call jecrec(conneo, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)
-    call jeecra(conneo, 'LONT', nbnomx*nbmato, ' ')
+    call jeecra(conneo, 'LONT', nbnomx*nbmato)
     call cm18ma(nbmato, nbma, nbno, lima, zi(jtypma),&
                 connei, conneo, zi(jnomim), nbtyma, nomast,&
                 reftyp, nbref, impmai)

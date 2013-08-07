@@ -144,7 +144,7 @@ subroutine asecon(nomsy, neq, mome, resu)
             zr(jlin+in-1)= 0.0d0
             zr(jabs+in-1)= 0.0d0
  4      continue
-        call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas, k8b)
+        call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
         do 20 icas = 1, ncas
             nucas = zi(jcas+icas-1)
@@ -156,10 +156,10 @@ subroutine asecon(nomsy, neq, mome, resu)
                     call codent(nucas, 'D0', knum(2:8))
                     kdir = 'D       '
                     call codent(nucas, 'D0', kdir(2:8))
-                    call jelira(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno, k8b)
+                    call jelira(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno)
                     call jeveuo(jexnom('&&ASENAP.LINOEU', knum), 'L', jno)
                     lnod = 3*nbno
-                    call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod, k8b)
+                    call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod)
                     call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'L', jdir)
                     call jeveuo('&&ASENAP.STAT', 'L', jsta)
                     stat = zk8(jsta+icas-1)

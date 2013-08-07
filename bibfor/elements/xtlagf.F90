@@ -63,7 +63,7 @@ subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
 !
 !
     integer :: idim, ino, nn, nns, nddls
-    integer :: in, xoula, pl
+    integer ::  pl
 !
 ! ----------------------------------------------------------------------
 !

@@ -33,7 +33,7 @@ subroutine op0160()
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
     integer :: versio, n1, ific, vali(2)
-    character(len=8) :: format, macrel, basemo, k8b
+    character(len=8) :: format, macrel, basemo
     character(len=16) :: fichie
     integer :: iarg, jrefe, nbmodt, nbvect, jdesm
 !     ------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine op0160()
 !     1. RECUPERATION DU NOMBRE DES MODES -----
     call jeveuo(macrel//'.MAEL_REFE', 'L', jrefe)
     basemo = zk24(jrefe)(1:8)
-    call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt, k8b)
+    call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt)
 !
 !     2. RECUPERATION DU NOMBRE DE VECTEURS DE BASE -----
     call jeveuo(macrel//'.DESM', 'L', jdesm)

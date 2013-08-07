@@ -113,7 +113,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/lcplas.h"
 #include "asterfort/lcpopl.h"
 #include "blas/dcopy.h"
-    integer :: nmat, nsg, nfs, nrm, iret, i, j
+    integer :: nmat, nsg, nfs, nrm, iret
     parameter  ( nsg=30)
     parameter  ( nfs=5)
     parameter  ( nrm=nfs*nsg+6)

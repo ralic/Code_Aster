@@ -101,7 +101,7 @@ subroutine op0176()
 !
 !     --- CHAMPS ---
 !
-    call jelira(resuin//'.DESC', 'NOMMAX', nbnosy, k8b)
+    call jelira(resuin//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) goto 9997
 !
 !     --- NOMBRE DE NUMERO D'ORDRE ---

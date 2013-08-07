@@ -42,7 +42,6 @@ subroutine asmael(ma1, ma2, mag)
 !
 !-----------------------------------------------------------------------
 !
-    character(len=8) :: kbid
     character(len=8) :: noma, nono, nosma, nomacr
     character(len=24) :: valk(3), nogma, nogno
     real(kind=8) :: x, y, z, drefe, dij
@@ -153,10 +152,10 @@ subroutine asmael(ma1, ma2, mag)
                     nbsma)
         do 18,i=1,nbsm1
         call jeveuo(jexnum(ma1//'.SUPMAIL', i), 'L', iasup1)
-        call jelira(jexnum(ma1//'.SUPMAIL', i), 'LONMAX', n, kbid)
+        call jelira(jexnum(ma1//'.SUPMAIL', i), 'LONMAX', n)
         call jenuno(jexnum(ma1//'.SUPMAIL', i), nosma)
         call jecroc(jexnom(mag//'.SUPMAIL', nosma))
-        call jeecra(jexnum(mag//'.SUPMAIL', i), 'LONMAX', n, kbid)
+        call jeecra(jexnum(mag//'.SUPMAIL', i), 'LONMAX', n)
         call jeveuo(jexnum(mag//'.SUPMAIL', i), 'E', iasupm)
         do 181,ii=1,n
         if (zi(iasup1-1+ii) .le. nbn1) then
@@ -169,12 +168,12 @@ subroutine asmael(ma1, ma2, mag)
         do 19,i=1,nbsm2
         i1= i+nbsm1
         call jeveuo(jexnum(ma2//'.SUPMAIL', i), 'L', iasup2)
-        call jelira(jexnum(ma2//'.SUPMAIL', i), 'LONMAX', n, kbid)
+        call jelira(jexnum(ma2//'.SUPMAIL', i), 'LONMAX', n)
         call jenuno(jexnum(ma2//'.SUPMAIL', i), nosma)
         call jeexin(jexnom(mag//'.SUPMAIL', nosma), iret)
         if (iret .gt. 0) call u2mesk('F', 'SOUSTRUC_2', 1, nosma)
         call jecroc(jexnom(mag//'.SUPMAIL', nosma))
-        call jeecra(jexnum(mag//'.SUPMAIL', i1), 'LONMAX', n, kbid)
+        call jeecra(jexnum(mag//'.SUPMAIL', i1), 'LONMAX', n)
         call jeveuo(jexnum(mag//'.SUPMAIL', i1), 'E', iasupm)
         do 191,ii=1,n
         if (zi(iasup2-1+ii) .le. nbn2) then
@@ -192,7 +191,7 @@ subroutine asmael(ma1, ma2, mag)
     ico=0
     if (nbma .gt. 0) then
         call jecreo(mag//'.NOMMAI', 'G N K8')
-        call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma, kbid)
+        call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma)
         do 21,i=1,nbm1
         call jenuno(jexnum(ma1//'.NOMMAI', i), noma)
         call jecroc(jexnom(mag//'.NOMMAI', noma))
@@ -218,14 +217,14 @@ subroutine asmael(ma1, ma2, mag)
                     nbma)
         l1=0
         l2=0
-        if (nbm1 .gt. 0) call jelira(ma1//'.CONNEX', 'LONT', l1, kbid)
-        if (nbm2 .gt. 0) call jelira(ma2//'.CONNEX', 'LONT', l2, kbid)
+        if (nbm1 .gt. 0) call jelira(ma1//'.CONNEX', 'LONT', l1)
+        if (nbm2 .gt. 0) call jelira(ma2//'.CONNEX', 'LONT', l2)
         l3= l1+l2
-        call jeecra(mag//'.CONNEX', 'LONT', l3, kbid)
+        call jeecra(mag//'.CONNEX', 'LONT', l3)
         do 25,i=1,nbm1
         call jeveuo(jexnum(ma1//'.CONNEX', i), 'L', iacon1)
-        call jelira(jexnum(ma1//'.CONNEX', i), 'LONMAX', n, kbid)
-        call jeecra(jexnum(mag//'.CONNEX', i), 'LONMAX', n, kbid)
+        call jelira(jexnum(ma1//'.CONNEX', i), 'LONMAX', n)
+        call jeecra(jexnum(mag//'.CONNEX', i), 'LONMAX', n)
         call jeveuo(jexnum(mag//'.CONNEX', i), 'E', iaconx)
         do 251,ii=1,n
         zi(iaconx-1+ii)=zi(iacon1-1+ii)
@@ -234,8 +233,8 @@ subroutine asmael(ma1, ma2, mag)
         do 26,i=1,nbm2
         i1= i+nbm1
         call jeveuo(jexnum(ma2//'.CONNEX', i), 'L', iacon2)
-        call jelira(jexnum(ma2//'.CONNEX', i), 'LONMAX', n, kbid)
-        call jeecra(jexnum(mag//'.CONNEX', i1), 'LONMAX', n, kbid)
+        call jelira(jexnum(ma2//'.CONNEX', i), 'LONMAX', n)
+        call jeecra(jexnum(mag//'.CONNEX', i1), 'LONMAX', n)
         call jeveuo(jexnum(mag//'.CONNEX', i1), 'E', iaconx)
         do 261,ii=1,n
         zi(iaconx-1+ii)=zi(iacon2-1+ii)+nbn1
@@ -272,21 +271,21 @@ subroutine asmael(ma1, ma2, mag)
     call jeexin(ma2//'.GROUPEMA', iret2)
     nbgm1 = 0
     nbgm2 = 0
-    if (iret1 .gt. 0) call jelira(ma1//'.GROUPEMA', 'NUTIOC', nbgm1, kbid)
-    if (iret2 .gt. 0) call jelira(ma2//'.GROUPEMA', 'NUTIOC', nbgm2, kbid)
+    if (iret1 .gt. 0) call jelira(ma1//'.GROUPEMA', 'NUTIOC', nbgm1)
+    if (iret2 .gt. 0) call jelira(ma2//'.GROUPEMA', 'NUTIOC', nbgm2)
     nbgma = nbgm1 + nbgm2
     if (nbgma .gt. 0) then
         call jecreo(mag//'.PTRNOMMAI', 'G N K24')
-        call jeecra(mag//'.PTRNOMMAI', 'NOMMAX', nbgma, ' ')
+        call jeecra(mag//'.PTRNOMMAI', 'NOMMAX', nbgma)
         call jecrec(mag//'.GROUPEMA', 'G V I', 'NO '//mag//'.PTRNOMMAI', 'DISPERSE', 'VARIABLE',&
                     nbgma)
         do 31,i=1,nbgm1
         call jeveuo(jexnum(ma1//'.GROUPEMA', i), 'L', iagma1)
-        call jelira(jexnum(ma1//'.GROUPEMA', i), 'LONUTI', n, kbid)
+        call jelira(jexnum(ma1//'.GROUPEMA', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPEMA', i), nogma)
         call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONMAX', max(1, n), kbid)
-        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONUTI', n, kbid)
+        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPEMA', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPEMA', i), 'E', iagmax)
         do 311, ii=1,n
         zi(iagmax-1+ii)=zi(iagma1-1+ii)
@@ -295,7 +294,7 @@ subroutine asmael(ma1, ma2, mag)
         icompt = 0
         do 32,i=1,nbgm2
         call jeveuo(jexnum(ma2//'.GROUPEMA', i), 'L', iagma2)
-        call jelira(jexnum(ma2//'.GROUPEMA', i), 'LONUTI', n, kbid)
+        call jelira(jexnum(ma2//'.GROUPEMA', i), 'LONUTI', n)
         call jenuno(jexnum(ma2//'.GROUPEMA', i), nogma)
         call jeexin(jexnom(mag//'.GROUPEMA', nogma), iret)
         if (iret .gt. 0) then
@@ -305,8 +304,8 @@ subroutine asmael(ma1, ma2, mag)
         icompt = icompt + 1
         i1 = nbgm1 + icompt
         call jecroc(jexnom(mag//'.GROUPEMA', nogma))
-        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1, n), kbid)
-        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONUTI', n, kbid)
+        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPEMA', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPEMA', i1), 'E', iagmax)
         do 321, ii=1,n
         zi(iagmax-1+ii)=zi(iagma2-1+ii)+nbm1
@@ -321,21 +320,21 @@ subroutine asmael(ma1, ma2, mag)
     call jeexin(ma2//'.GROUPENO', iret2)
     nbgn1 = 0
     nbgn2 = 0
-    if (iret1 .gt. 0) call jelira(ma1//'.GROUPENO', 'NUTIOC', nbgn1, kbid)
-    if (iret2 .gt. 0) call jelira(ma2//'.GROUPENO', 'NUTIOC', nbgn2, kbid)
+    if (iret1 .gt. 0) call jelira(ma1//'.GROUPENO', 'NUTIOC', nbgn1)
+    if (iret2 .gt. 0) call jelira(ma2//'.GROUPENO', 'NUTIOC', nbgn2)
     nbgno = nbgn1 + nbgn2
     if (nbgno .gt. 0) then
         call jecreo(mag//'.PTRNOMNOE', 'G N K24')
-        call jeecra(mag//'.PTRNOMNOE', 'NOMMAX', nbgno, ' ')
+        call jeecra(mag//'.PTRNOMNOE', 'NOMMAX', nbgno)
         call jecrec(mag//'.GROUPENO', 'G V I', 'NO '//mag//'.PTRNOMNOE', 'DISPERSE', 'VARIABLE',&
                     nbgno)
         do 33,i=1,nbgn1
         call jeveuo(jexnum(ma1//'.GROUPENO', i), 'L', iagno1)
-        call jelira(jexnum(ma1//'.GROUPENO', i), 'LONUTI', n, kbid)
+        call jelira(jexnum(ma1//'.GROUPENO', i), 'LONUTI', n)
         call jenuno(jexnum(ma1//'.GROUPENO', i), nogma)
         call jecroc(jexnom(mag//'.GROUPENO', nogma))
-        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1, n), kbid)
-        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n, kbid)
+        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i), 'E', iagnox)
         do 331, ii=1,n
         zi(iagnox-1+ii)=zi(iagno1-1+ii)
@@ -344,7 +343,7 @@ subroutine asmael(ma1, ma2, mag)
         icompt = 0
         do 34,i=1,nbgn2
         call jeveuo(jexnum(ma2//'.GROUPENO', i), 'L', iagno2)
-        call jelira(jexnum(ma2//'.GROUPENO', i), 'LONUTI', n, kbid)
+        call jelira(jexnum(ma2//'.GROUPENO', i), 'LONUTI', n)
         call jenuno(jexnum(ma2//'.GROUPENO', i), nogno)
         call jeexin(jexnom(mag//'.GROUPENO', nogno), iret)
         if (iret .gt. 0) then
@@ -354,8 +353,8 @@ subroutine asmael(ma1, ma2, mag)
         icompt = icompt + 1
         i1 = nbgn1 + icompt
         call jecroc(jexnom(mag//'.GROUPENO', nogno))
-        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1, n), kbid)
-        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n, kbid)
+        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONMAX', max(1,n))
+        call jeecra(jexnum(mag//'.GROUPENO', i1), 'LONUTI', n)
         call jeveuo(jexnum(mag//'.GROUPENO', i1), 'E', iagnox)
         do 341, ii=1,n
         zi(iagnox-1+ii)=zi(iagno2-1+ii)+nbn1

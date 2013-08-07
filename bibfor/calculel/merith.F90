@@ -73,7 +73,6 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: k8bid
 !-----------------------------------------------------------------------
     integer :: i, iret, jlire1, jlire2, jlire3, long1, long2
     integer :: long3, nh, numor3
@@ -92,7 +91,7 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
     call jeexin('&MERITH1           .RELR', iret)
     long1=0
     if (iret .ne. 0) then
-        call jelira('&MERITH1           .RELR', 'LONUTI', long1, k8bid)
+        call jelira('&MERITH1           .RELR', 'LONUTI', long1)
         call jeveuo('&MERITH1           .RELR', 'L', jlire1)
     endif
 !
@@ -102,7 +101,7 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
     call jeexin('&MERITH2           .RELR', iret)
     long2=0
     if (iret .ne. 0) then
-        call jelira('&MERITH2           .RELR', 'LONUTI', long2, k8bid)
+        call jelira('&MERITH2           .RELR', 'LONUTI', long2)
         call jeveuo('&MERITH2           .RELR', 'L', jlire2)
     endif
 !
@@ -113,7 +112,7 @@ subroutine merith(modelz, nchar, lchar, mate, caraz,&
     call jeexin('&MERITH3           .RELR', iret)
     long3=0
     if (iret .ne. 0) then
-        call jelira('&MERITH3           .RELR', 'LONUTI', long3, k8bid)
+        call jelira('&MERITH3           .RELR', 'LONUTI', long3)
         call jeveuo('&MERITH3           .RELR', 'L', jlire3)
     endif
 !

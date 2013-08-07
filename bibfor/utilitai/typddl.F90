@@ -69,7 +69,6 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
     character(len=8) :: modgen, basemo
     character(len=16) :: typrep
     character(len=24) :: nprno, ndeeq, kbid, norig
-    character(len=8) :: k8b
 !
 !
 !-----------------------------------------------------------------------
@@ -142,7 +141,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
         if (typrep .eq. 'MODELE_GENE     ') then
             modgen = zk24(jrefe)
             call jenonu(jexnom(norig(1:19)//'.LILI', '&SOUSSTR'), ibid)
-            call jelira(jexnum(norig, ibid), 'LONMAX', nbsst, k8b)
+            call jelira(jexnum(norig, ibid), 'LONMAX', nbsst)
 ! On compte que si il y a plus d'une sous-structure
             if (nbsst .gt. 2) then
                 call jeveuo(jexnum(norig, ibid), 'L', jorig)

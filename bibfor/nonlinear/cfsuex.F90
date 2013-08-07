@@ -49,7 +49,6 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
 !
     integer :: ksans, kpsans, jpsans, jsans, jnoes
     integer :: i, izone, ind, jdec, nbold, nbnew, lsansn
-    character(len=8) :: kbid
     character(len=24) :: psans, sansno
 !
 ! ----------------------------------------------------------------------
@@ -62,7 +61,7 @@ subroutine cfsuex(defico, noesup, nbexcl, nzoco)
     call jeveuo(sansno, 'L', jsans)
     call jeveuo(psans, 'E', jpsans)
     call jeveuo(noesup, 'L', jnoes)
-    call jelira(sansno, 'LONMAX', lsansn, kbid)
+    call jelira(sansno, 'LONMAX', ival=lsansn)
     call wkvect('&&CFSUEX.SSNOCO', 'V V I', lsansn, ksans)
     call wkvect('&&CFSUEX.PSSNOCO', 'V V I', nzoco+1, kpsans)
     do 10 i = 1, lsansn

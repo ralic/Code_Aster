@@ -132,7 +132,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
             manono = mailla//'.NOMNOE'
             ii = -1
             do 20 i = 1, nbgr
-                call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb, kbid)
+                call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb)
                 call jeveuo(jexnom(magrno, zk24(idgn+i-1)), 'L', ldgn)
                 do 22 in = 0, nb-1
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)

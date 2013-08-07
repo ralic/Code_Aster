@@ -46,7 +46,6 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 !
 ! 0.3. ==> VARIABLES LOCALES
     integer :: nbval, nbocc, iocc, nbgno2, vali(2)
-    character(len=1) :: kbid
     character(len=16) :: nomgma, nomgno
     character(len=16) :: corre1, corre2, corre3
     integer :: iarg
@@ -65,7 +64,7 @@ subroutine pjeftc(ma1, ma2, resuou, base)
 !
 !     COHERENCE ENTRE GROUP_MAILLE ET GOURP_NOEUDS
 !     --------------------------------------------
-    call jelira(ma2//'.GROUPENO', 'NMAXOC', nbgno2, kbid)
+    call jelira(ma2//'.GROUPENO', 'NMAXOC', nbgno2)
     if (nbgno2 .ne. nbocc) then
         vali(1) = nbgno2
         vali(2) = nbocc

@@ -117,14 +117,14 @@ subroutine paligi(pheno, modl, ligrch, igrel, inema,&
 ! --- ON CREE ET ON REMPLI LE GREL
 !
     call jecroc(jexnum(liel, igrel))
-    call jeecra(jexnum(liel, igrel), 'LONMAX', nbma+1, ' ')
+    call jeecra(jexnum(liel, igrel), 'LONMAX', nbma+1)
     call jeveuo(jexnum(liel, igrel), 'E', idliel)
     do 20 ima = 1, nbma
         inema = inema + 1
         jma = 3 + (ima-1)*2* (nbno+1)
         zi(idliel-1+ima) = -inema
         call jecroc(jexnum(nema, inema))
-        call jeecra(jexnum(nema, inema), 'LONMAX', 2*nbno+1, ' ')
+        call jeecra(jexnum(nema, inema), 'LONMAX', 2*nbno+1)
         call jeveuo(jexnum(nema, inema), 'E', idnema)
         do 10 ino = 1, nbno
             zi(idnema-1+ino) = iliste(jma+2+2*ino-1)

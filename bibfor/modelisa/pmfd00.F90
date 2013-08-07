@@ -70,7 +70,7 @@ subroutine pmfd00()
     integer :: nbocc0, nbocc1, nbocc2, nbocc3, nbocc4
     integer :: iret, ibid, ifm, niv, iarg, iasbon, iasedi, iasmax
     integer :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
-    integer :: ii, jj, ioc, ipos, icmp, ier, izone, nbcmp, nbec
+    integer :: ii, jj, ioc, ipos, ier, izone, nbcmp, nbec
     integer :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
     integer :: jdnm, jnf, jmp
     integer :: jnbfg, nbgf, jngf, jcarfi, jpoint, ipoint, ngf, ig, ng, ig1
@@ -89,7 +89,6 @@ subroutine pmfd00()
     real(kind=8) :: airpou, moinoy, moinoz, erre, precai
     parameter  (zero=0.d+0)
 !
-    character(len=1) :: k1bid
     character(len=8) :: carele, nomo, noma, k8b, modele, sdgf, ngrand
     character(len=16) :: concep, cmd, ltymcl(3)
     character(len=19) :: cesdec, ligrmo, celbid
@@ -122,7 +121,7 @@ subroutine pmfd00()
         vcarfi = sdgf//'.CARFI'
         rnomgf = sdgf//'.NOMS_GROUPES'
 !        NOMBRE DE GROUPES TOTAL = DIMENSION DE VNBFIG
-        call jelira(vnbfig, 'LONMAX', nbgf, k1bid)
+        call jelira(vnbfig, 'LONMAX', nbgf)
         call jeveuo(vnbfig, 'L', jnbfg)
         call jeveuo(vcarfi, 'L', jcarfi)
         call jeveuo(vpoint, 'L', jpoint)
@@ -137,7 +136,7 @@ subroutine pmfd00()
     call jeveuo(modnom, 'L', jdnm)
     noma = zk8(jdnm)
     mommai = noma//'.NOMMAI'
-    call jelira(mommai, 'NOMMAX', nmailp, k1bid)
+    call jelira(mommai, 'NOMMAX', nmailp)
 !
 ! --- -------------------------------------------------------
 !     S'IL N'Y A PAS D'ELEMENTS A SOUS-POINTS, ON SAUTE TOUT:
@@ -174,7 +173,7 @@ subroutine pmfd00()
 !     NOM DE LA GRANDEUR
     call jenuno(jexnum('&CATA.GD.NOMGD', igrand), ngrand)
 !     NOMBRE ET NOM DES COMPOSANTES DANS LA GRANDEUR
-    call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igrand), 'LONMAX', nbcmp)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igrand), 'L', inomcp)
 !     NOMBRE D'ENTIER CODE DANS LA CARTE
     call dismoi('F', 'NB_EC', ngrand, 'GRANDEUR', nbec,&
@@ -246,12 +245,12 @@ subroutine pmfd00()
                 if (icode .eq. 3) then
                     k24bid = carele//'.CARGENPO  .LIMA'
                     call jeveuo(jexnum(k24bid, izone), 'L', ilima)
-                    call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza, k1bid)
+                    call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !              SI C'EST UN GROUPE DE MAILLE
                 else if (icode.eq.2) then
                     k24bid = noma//'.GROUPEMA'
                     call jeveuo(jexnum(k24bid, izone), 'L', ilima)
-                    call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza, k1bid)
+                    call jelira(jexnum(k24bid, izone), 'LONMAX', nbmaza)
 !              SI C'EST TOUT LE MAILLAGE
                 else if (icode.eq.1) then
                     iasbon = ii

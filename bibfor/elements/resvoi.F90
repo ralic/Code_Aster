@@ -70,7 +70,6 @@ subroutine resvoi(moz, maz, chvoiz)
     logical :: troisd
 !
     integer :: debugr
-    character(len=1) :: k1bid
 !
 !   INITIALISATION DES NUMEROS DE SOMMETS DES FACES D'ELEMENTS 3D
 !     SOM (IN,IFA,TYMVOL) : IN     : NUMERO DU SOMMET DANS LA FACE
@@ -198,7 +197,7 @@ subroutine resvoi(moz, maz, chvoiz)
         ino1 = som(1,ifa,tymvol)
         noe1 = jexnum(coninv,zi(jad-1+ino1))
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO1 ',INO1
-        call jelira(noe1, 'LONMAX', nbmav1, k1bid)
+        call jelira(noe1, 'LONMAX', nbmav1)
         if (nbmav1 .eq. 1) goto 802
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV1 ',NBMAV1
         call jeveuo(noe1, 'L', iamav1)
@@ -206,7 +205,7 @@ subroutine resvoi(moz, maz, chvoiz)
         ino2 = som(2,ifa,tymvol)
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO2 ',INO2
         noe2 = jexnum(coninv,zi(jad-1+ino2))
-        call jelira(noe2, 'LONMAX', nbmav2, k1bid)
+        call jelira(noe2, 'LONMAX', nbmav2)
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV2 ',NBMAV2
         if (nbmav2 .eq. 1) goto 802
         call jeveuo(noe2, 'L', iamav2)
@@ -214,7 +213,7 @@ subroutine resvoi(moz, maz, chvoiz)
         ino3 = som(3,ifa,tymvol)
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO3 ',INO3
         noe3 = jexnum(coninv,zi(jad-1+ino3))
-        call jelira(noe3, 'LONMAX', nbmav3, k1bid)
+        call jelira(noe3, 'LONMAX', nbmav3)
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV3 ',NBMAV3
         if (nbmav3 .eq. 1) goto 802
         call jeveuo(noe3, 'L', iamav3)
@@ -224,7 +223,7 @@ subroutine resvoi(moz, maz, chvoiz)
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... INO4 ',INO4
         if (ino4 .ne. 0) then
             noe4 = jexnum(coninv,zi(jad-1+ino4))
-            call jelira(noe4, 'LONMAX', nbmav4, k1bid)
+            call jelira(noe4, 'LONMAX', nbmav4)
 !GN        IF (TYPEMA(1:4).EQ.'PYRA' ) WRITE(6,*) '... NBMAV4 ',NBMAV4
             if (nbmav4 .eq. 1) goto 802
             call jeveuo(noe4, 'L', iamav4)
@@ -371,7 +370,7 @@ subroutine resvoi(moz, maz, chvoiz)
 ! ---------- BOUCLE SUR LES SOMMETS DE LA MAILLE -------------------
 !
             do 602 ino = 1, nbs
-                call jelira(jexnum(coninv, zi(jad-1+ino)), 'LONMAX', nbmav1, k1bid)
+                call jelira(jexnum(coninv, zi(jad-1+ino)), 'LONMAX', nbmav1)
                 call jeveuo(jexnum(coninv, zi(jad-1+ino)), 'L', iamav1)
 !
                 nbvois = 0
@@ -385,7 +384,7 @@ subroutine resvoi(moz, maz, chvoiz)
                             ino2 = ino + 1
                         endif
 !
-                        call jelira(jexnum(coninv, zi(jad-1+ino2)), 'LONMAX', nbmav2, k1bid)
+                        call jelira(jexnum(coninv, zi(jad-1+ino2)), 'LONMAX', nbmav2)
                         call jeveuo(jexnum(coninv, zi(jad-1+ino2)), 'L', iamav2)
 !
                         do 604 jma = 1, nbmav2

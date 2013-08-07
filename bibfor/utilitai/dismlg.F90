@@ -49,8 +49,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer :: dimge(3)
     logical :: melang
-    character(len=1) :: k1bid
-    character(len=8) :: kbid, calcri, mailla, nomacr, modele
+    character(len=8) ::  calcri, mailla, nomacr, modele
     character(len=16) :: nomte, phenom, nomodl, tyvois
     character(len=19) :: nomob
     character(len=32) :: repk
@@ -101,10 +100,10 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         repk='NON'
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
             do 10,igrel=1,nbgrel
             call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
-            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             if (lteatt(nomte,'VF_AVEC_VOISIN','OUI')) then
@@ -121,10 +120,10 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         repk='NON'
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
             do 20,igrel=1,nbgrel
             call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
-            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             call teattr(nomte, 'C', 'TYPE_VOISIN', tyvois, iret)
@@ -149,11 +148,11 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !     -----------------------------------------------------------------
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
             do 30,igrel=1,nbgrel
             call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
-            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
 !
@@ -274,7 +273,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             repi=0
         else
             call jeveuo(nomob//'.SSSA', 'L', jsssa)
-            call jelira(nomob//'.SSSA', 'LONMAX', n1, kbid)
+            call jelira(nomob//'.SSSA', 'LONMAX', n1)
             if (questi .eq. 'NB_SM_MAILLA') then
                 repi=zi(jsssa-1+n1-2)
             else if (questi.eq.'NB_SS_ACTI') then
@@ -303,14 +302,14 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         ige2=0
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgr, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', nbgr)
             dimge(1)=0
             dimge(2)=0
             dimge(3)=0
             melang=.false.
             do 40,igr=1,nbgr
             call jeveuo(jexnum(nomob//'.LIEL', igr), 'L', jliel)
-            call jelira(jexnum(nomob//'.LIEL', igr), 'LONMAX', n1, k1bid)
+            call jelira(jexnum(nomob//'.LIEL', igr), 'LONMAX', n1)
             ite=zi(jliel-1+n1)
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
             call dismte(questi, nomte, ige1, repk, ierd)
@@ -329,7 +328,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !        -- SI IL EXISTE DES MACRO-ELEMENTS, IL FAUT EN TENIR COMPTE :
         call jeexin(nomob//'.SSSA', iexi2)
         if (iexi2 .gt. 0) then
-            call jelira(nomob//'.SSSA', 'LONMAX', n1, kbid)
+            call jelira(nomob//'.SSSA', 'LONMAX', n1)
             call jeveuo(nomob//'.SSSA', 'L', jsssa)
             call jeveuo(nomob//'.LGRF', 'L', jlgrf)
             mailla=zk8(jlgrf-1+1)
@@ -354,7 +353,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !     ----------------------------------
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', repi, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', repi)
         else
             repi=0
         endif
@@ -364,7 +363,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------
         call jeexin(nomob//'.NEMA', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob//'.NEMA', 'NUTIOC', repi, k1bid)
+            call jelira(nomob//'.NEMA', 'NUTIOC', repi)
         else
             repi=0
         endif
@@ -384,7 +383,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------
     else if (questi.eq.'PHENOMENE') then
 !     ------------------------------------
-        call jelira(nomob//'.LGRF', 'DOCU', ibid, phenom)
+        call jelira(nomob//'.LGRF', 'DOCU', cval=phenom)
         if (phenom(1:4) .eq. 'MECA') then
             repk='MECANIQUE'
         else if (phenom(1:4).eq.'THER') then
@@ -403,10 +402,10 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         call jeexin(nomob//'.LIEL', iexi)
         ico=0
         if (iexi .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
             do 60,igrel=1,nbgrel
             call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
-            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             if (lteatt(nomte,'AXIS','OUI')) then
@@ -423,10 +422,10 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------
         repk='NON'
 !        -- SI IL EXISTE DES ELEMENTS "ABSORBANT" :
-        call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel, kbid)
+        call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
         do 70 igrel = 1, nbgrel
             call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
-            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel, kbid)
+            call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             if ((nomte(1:9).eq.'MEAB_FACE') .or. (nomte(1:6) .eq.'MEPASE')) then
@@ -440,7 +439,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         if (repk .eq. 'NON') then
             call jeexin(nomob//'.SSSA', iexi2)
             if (iexi2 .gt. 0) then
-                call jelira(nomob//'.SSSA', 'LONMAX', n1, kbid)
+                call jelira(nomob//'.SSSA', 'LONMAX', n1)
                 call jeveuo(nomob//'.SSSA', 'L', jsssa)
                 call jeveuo(nomob//'.LGRF', 'L', jlgrf)
                 mailla=zk8(jlgrf-1+1)

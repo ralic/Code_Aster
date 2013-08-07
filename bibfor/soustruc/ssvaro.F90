@@ -188,7 +188,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr,&
 !
     call jeexin('&&SSVARO.IINO', iret)
     if (iret .gt. 0) then
-        call jelira('&&SSVARO.IINO', 'LONMAX', n1, kbid)
+        call jelira('&&SSVARO.IINO', 'LONMAX', n1)
         if (n1 .lt. nddlt) then
             call jedetr('&&SSVARO.IINO')
             call wkvect('&&SSVARO.IINO', 'V V I', 3*nddlt, iaiino)

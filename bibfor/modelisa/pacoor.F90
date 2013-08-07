@@ -47,7 +47,6 @@ subroutine pacoor(nomma, ima, nbno, coor)
 !                   COOR(3*(INO-1)+3)= X3(INO) ( EN 2D 0)
     character(len=24) :: desc, vale, connex
     real(kind=8) :: x(3)
-    character(len=8) :: k24bid
 ! --- DEBUT
 !-----------------------------------------------------------------------
     integer :: i, icmp, icoor, idconn, iddesc, idino, idvale
@@ -66,7 +65,7 @@ subroutine pacoor(nomma, ima, nbno, coor)
     call jeveuo(vale, 'L', idvale)
     if (nbno .gt. 0) then
         call jeveuo(jexnum(connex, ima), 'L', idconn)
-        call jelira(jexnum(connex, ima), 'LONMAX', nbnomx, k24bid)
+        call jelira(jexnum(connex, ima), 'LONMAX', nbnomx)
         if (nbno .gt. nbnomx) call u2mess('F', 'MODELISA6_5')
         do 1 inoma = 1, nbno
             ino = zi(idconn-1+inoma)

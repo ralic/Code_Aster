@@ -84,9 +84,9 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
             objdes=nomob//'.CELD'
         endif
 !
-        call jelira(objdes, 'GENR', ibid, k8bid)
+        call jelira(objdes, 'GENR', cval=k8bid)
         if (k8bid(1:1) .eq. 'N') then
-            call jelira(objdes, 'DOCU', ibid, docu)
+            call jelira(objdes, 'DOCU', cval=docu)
             call rsdocu(docu, repk, iret)
             if (iret .ne. 0) then
                 valk(1) = docu
@@ -139,7 +139,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'NOM_MAILLA') then
 !     ------------------------------------------
-        call jelira(jexnum(nomob//'.TACH', 1), 'LONMAX', nbch, k8bid)
+        call jelira(jexnum(nomob//'.TACH', 1), 'LONMAX', nbch)
         call jeveuo(jexnum(nomob//'.TACH', 1), 'L', iatach)
         do 1, i=1,nbch
         nomch=zk24(iatach-1+i)(1:19)
@@ -150,9 +150,9 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
  1      continue
 !
 !        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
-        call jelira(nomob//'.TACH', 'NMAXOC', nbsy, k8bid)
+        call jelira(nomob//'.TACH', 'NMAXOC', nbsy)
         do 2, j=2,nbsy
-        call jelira(jexnum(nomob//'.TACH', j), 'LONMAX', nbch, k8bid)
+        call jelira(jexnum(nomob//'.TACH', j), 'LONMAX', nbch)
         call jeveuo(jexnum(nomob//'.TACH', j), 'L', iatach)
         do 3, i=1,nbch
         nomch=zk24(iatach-1+i)(1:19)
@@ -168,9 +168,9 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'EXI_CHAM_ELEM') then
 !     ------------------------------------------
-        call jelira(nomob//'.TACH', 'NMAXOC', nbsy, k8bid)
+        call jelira(nomob//'.TACH', 'NMAXOC', nbsy)
         do 21, j=2,nbsy
-        call jelira(jexnum(nomob//'.TACH', j), 'LONMAX', nbch, k8bid)
+        call jelira(jexnum(nomob//'.TACH', j), 'LONMAX', nbch)
         call jeveuo(jexnum(nomob//'.TACH', j), 'L', iatach)
         do 31, i=1,nbch
         nomch=zk24(iatach-1+i)(1:19)
@@ -190,7 +190,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
         else if ( (questi.eq.'NB_CHAMP_MAX') .or. (&
     questi.eq.'NB_CHAMP_UTI')) then
 !     ------------------------------------------
-        call jelira(nomob//'.DESC', 'GENR', ibid, k8bid)
+        call jelira(nomob//'.DESC', 'GENR', cval=k8bid)
         if (k8bid(1:1) .eq. 'N') then
             call dismrc(questi, nomob, repi, repk, ierd)
         else

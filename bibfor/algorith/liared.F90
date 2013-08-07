@@ -117,7 +117,7 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia,&
 ! --- CREATION DE LA NOUVELLE MATRICE DE LIAISON
 !
         call jecroc(jexnum(fmli, iblo))
-        call jeecra(jexnum(fmli, iblo), 'LONMAX', nbcol*ncolia, ' ')
+        call jeecra(jexnum(fmli, iblo), 'LONMAX', nbcol*ncolia)
         call jeveuo(jexnum(fmli, iblo), 'E', ltemp)
 !
 ! --- INITIALISATION DES MATRICES ORIENTEES DE LIAISON----------

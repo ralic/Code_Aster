@@ -77,12 +77,12 @@ subroutine i2fnoe(courbe, listnd)
     zi(adr + i-1) = 0
     10 end do
     if (n .ne. 0) then
-        call jelira(courbe//'.NSDS', 'LONMAX', nbpart, k1bid)
+        call jelira(courbe//'.NSDS', 'LONMAX', nbpart)
         call jeveuo(courbe//'.NSDS', 'L', asds)
         do 100, p = 1, nbpart, 1
         nmail1 = zk24(asds+p-1)(1:13)//'.MAIL'
         call jeveuo(jexatr(nmail1, 'LONCUM'), 'L', vlccou)
-        call jelira(nmail1, 'NMAXOC', nbmail, k1bid)
+        call jelira(nmail1, 'NMAXOC', nbmail)
         call jeveuo(jexnum(nmail1, 1), 'L', adrm1)
         do 110, im = 1, nbmail, 1
         m = zi(adrm1 + zi(vlccou + im-1)-1)
@@ -98,9 +98,9 @@ subroutine i2fnoe(courbe, listnd)
         call jeveuo(courbe//'.TYPCOURBE', 'L', im)
         typcrb = zk8(im)
         nmail1 = courbe//'.MAIL1'
-        call jelira(nmail1, 'NMAXOC', nbpart, k1bid)
+        call jelira(nmail1, 'NMAXOC', nbpart)
         do 400, p = 1, nbpart, 1
-        call jelira(jexnum(nmail1, p), 'LONMAX', nbmail, k1bid)
+        call jelira(jexnum(nmail1, p), 'LONMAX', nbmail)
         call jeveuo(jexnum(nmail1, p), 'L', adrm1)
         if (typcrb .eq. 'LISTMAIL') then
             nbmail = nbmail - 1

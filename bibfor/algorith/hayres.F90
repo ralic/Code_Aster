@@ -45,14 +45,12 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 #include "asterfort/lcprsv.h"
 #include "blas/dscal.h"
     character(len=8) :: mod
-    integer :: iret, itens, ndi, nmat, nvi, ndt, ndim
+    integer :: iret, itens, ndi, nmat, ndt, ndim
     real(kind=8) :: hookf(6, 6), res(10), crit(*), theta, alphad
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), timed, timef, deps(6), dt
     real(kind=8) :: dtot
-    real(kind=8) :: yd(*), yf(*), dy(*), sigf(6), ecrou(2), gh, dmg, dmgmi
-    real(kind=8) :: epsed(6)
+    real(kind=8) :: yd(*), yf(*), dy(*), sigf(6), gh, dmg, dmgmi
     real(kind=8) :: depsp(6), devcum, decrou(2), ddmg, epsef(6), depsel(6), m13
-    real(kind=8) :: w(6)
     real(kind=8) :: ze, td, sinn, grj0, gh1, gh2, equi(17), rmin, sequid
     real(kind=8) :: eps0, pk, ph1, ph2, delta1, delta2, h1st, h2st, pkc, sig0
     real(kind=8) :: biga

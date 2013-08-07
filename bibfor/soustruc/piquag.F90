@@ -55,7 +55,6 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
     logical :: rota, plaq, piqu, allo
     logical :: zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8
     logical :: quar1, quar2, quar3, quar4
-    character(len=8) :: k8b
     character(len=24) :: grpnoe, cooval
 !     ------------------------------------------------------------------
 !
@@ -86,7 +85,7 @@ subroutine piquag(epsi, rip, rep, rit, ret,&
 !
     grpnoe = mailla//'.GROUPENO       '
     cooval = mailla//'.COORDO    .VALE'
-    call jelira(jexnom(grpnoe, nogrno), 'LONUTI', nbnoeu, k8b)
+    call jelira(jexnom(grpnoe, nogrno), 'LONUTI', nbnoeu)
     call jeveuo(jexnom(grpnoe, nogrno), 'L', iagrn)
     call jeveuo(cooval, 'E', jvale)
 !

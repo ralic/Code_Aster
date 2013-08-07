@@ -31,7 +31,6 @@ subroutine te0496(option, nomte)
 !
     integer :: nbcou, npgh, nbsect, nbfibr, nbvari, jcompo, jdcel, jnbsp
     integer :: itab(2), iret
-    logical :: lteatt
 !
 ! ----------------------------------------------------------------------
 !

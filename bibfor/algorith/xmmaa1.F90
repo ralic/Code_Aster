@@ -85,9 +85,9 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, l, ii, jj, in, pl, xoula, jjn, iin, nddle
+    integer :: i, j, k, l, ii, jj, pl, jjn, iin, nddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer :: ini, inj, pli, plj, ifh, iddl, jddl
+    integer ::  pli, plj, ifh, iddl, jddl
     real(kind=8) :: mm, iescl(6), jescl(6), imait(6), jmait(6)
 !
 ! ----------------------------------------------------------------------

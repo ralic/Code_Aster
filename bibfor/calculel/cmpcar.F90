@@ -53,7 +53,7 @@ subroutine cmpcar(carte)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: scal, ctype
-    character(len=1) :: k1bid, bas1
+    character(len=1) ::  bas1
 !
 !
 !     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
@@ -62,7 +62,7 @@ subroutine cmpcar(carte)
     integer :: i, i1, i2, i2lima, i3, i3desc, i3lima
     integer :: i3noli, i3vale, i4, iad, iad1, iad2, iadesc
     integer :: iadgp, ialim2, ialipr, ianoli, ianoma, ianumt, iavale
-    integer :: iavalp, iavret, iavtra, ibid, ico, icompt, iedit
+    integer :: iavalp, iavret, iavtra, ico, icompt, iedit
     integer :: igd, ii, irtnu, isigne, j, k, n
     integer :: n1, nb, nbedi3, nbedit, nbmato, nboc, ncmp
     integer :: nec, num1, num2
@@ -71,9 +71,9 @@ subroutine cmpcar(carte)
     call jeveuo(carte//'.DESC', 'L', iadesc)
     call jeveuo(carte//'.VALE', 'L', iavale)
     call jeveuo(carte//'.VALP', 'L', iad1)
-    call jelira(carte//'.VALP', 'TYPELONG', ibid, ctype)
+    call jelira(carte//'.VALP', 'TYPELONG', cval=ctype)
     call jeveuo(carte//'.NOMA', 'L', ianoma)
-    call jelira(carte//'.DESC', 'CLAS', ibid, bas1)
+    call jelira(carte//'.DESC', 'CLAS', cval=bas1)
 !
 !
     igd = zi(iadesc-1+1)
@@ -83,7 +83,7 @@ subroutine cmpcar(carte)
 !
 !     -- NCMP : NOMBRE MAXIMAL DE CMP POUR LA GRANDEUR.
 !     ----------------------------------------------------
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp)
 !
 !     -- RECUPERATION DES OBJETS  .NOLI .NUMT .VALP ET .DGP:
 !     ------------------------------------------------------
@@ -91,7 +91,7 @@ subroutine cmpcar(carte)
     call jeveuo(carte//'.NUMT', 'L', ianumt)
     call jeveuo(carte//'.VALP', 'L', iavalp)
     call jeveuo(carte//'.DGP ', 'L', iadgp)
-    call jelira(carte//'.DGP ', 'LONMAX', n1, k1bid)
+    call jelira(carte//'.DGP ', 'LONMAX', n1)
 !     NOMBRE TOTAL DE MAILLES:
 !     CELLES DU MAILLAGE TOUTES LES SUPPL. DES LIGREL ATACHES A LA CARTE
     nbmato = n1/nec
@@ -99,18 +99,18 @@ subroutine cmpcar(carte)
 !     -- ALLOCATION DES OBJETS: .LIPR .VRET .VTRA ET .LIM2 :
 !     ------------------------------------------------------
     call jecreo(carte//'.LIPR', 'V V I')
-    call jeecra(carte//'.LIPR', 'LONMAX', nbmato, ' ')
+    call jeecra(carte//'.LIPR', 'LONMAX', nbmato)
     call jeveuo(carte//'.LIPR', 'E', ialipr)
 !     --LIPR CONTIENT A CHAQUE ITERARION, LA LISTE  DES
 !     --MAILLES AFFECTEES A LA MEME GRANDEUR.
 !
     call jecreo(carte//'.VRET', 'V V I')
-    call jeecra(carte//'.VRET', 'LONMAX', nbmato, ' ')
+    call jeecra(carte//'.VRET', 'LONMAX', nbmato)
     call jeveuo(carte//'.VRET', 'E', iavret)
 !     --VRET NOTE POUR CHAQUE MAILLE SI ELLE A ETE RETENUE COMME MODELE
 !
     call jecreo(carte//'.VTRA', 'V V L')
-    call jeecra(carte//'.VTRA', 'LONMAX', nbmato, ' ')
+    call jeecra(carte//'.VTRA', 'LONMAX', nbmato)
     call jeveuo(carte//'.VTRA', 'E', iavtra)
     do 1,i = 1,nbmato
     zl(iavtra-1+i) = .false.
@@ -158,7 +158,7 @@ subroutine cmpcar(carte)
 !           -- RECOPIE DE LA LISTE DE MAILLES .LIPR DANS .LIM2 :
 !           -- ATTENTION .LIM2 CONTIENT LES NUMEROS TOTAUX DES MAILLES!
     call jecroc(jexnum(carte//'.LIM2', irtnu))
-    call jeecra(jexnum(carte//'.LIM2', irtnu), 'LONMAX', icompt, ' ')
+    call jeecra(jexnum(carte//'.LIM2', irtnu), 'LONMAX', icompt)
     do 14,k = 1,icompt
     zi(ialim2-1+ii+k) = zi(ialipr-1+k)
 14  continue
@@ -170,20 +170,20 @@ subroutine cmpcar(carte)
 !     -- ON RECOPIE CE QU'IL FAUT DANS LES OBJETS FINAUX:
 !     ---------------------------------------------------
 !
-    call jelira(carte//'.LIM2', 'NUTIOC', nbedi3, k1bid)
+    call jelira(carte//'.LIM2', 'NUTIOC', nbedi3)
     call jecreo(carte//'.DES3', 'V V I')
-    call jeecra(carte//'.DES3', 'LONMAX', 3+nbedi3* (2+nec), ' ')
+    call jeecra(carte//'.DES3', 'LONMAX', 3+nbedi3* (2+nec))
     call jeveuo(carte//'.DES3', 'E', i3desc)
     zi(i3desc-1+1) = zi(iadesc-1+1)
     zi(i3desc-1+2) = nbedi3
     zi(i3desc-1+3) = nbedi3
 !
     call jecreo(carte//'.NOL3', 'V V K24')
-    call jeecra(carte//'.NOL3', 'LONMAX', nbedi3, ' ')
+    call jeecra(carte//'.NOL3', 'LONMAX', nbedi3)
     call jeveuo(carte//'.NOL3', 'E', i3noli)
 !
     call jecreo(carte//'.VAL3', 'V V '//scal(1:4))
-    call jeecra(carte//'.VAL3', 'LONMAX', nbedi3*ncmp, ' ')
+    call jeecra(carte//'.VAL3', 'LONMAX', nbedi3*ncmp)
     call jeveuo(carte//'.VAL3', 'E', i3vale)
 !
     call jecrec(carte//'.LIM3', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
@@ -224,8 +224,8 @@ subroutine cmpcar(carte)
     else
         isigne = -1
     endif
-    call jelira(jexnum(carte//'.LIM2', icompt), 'LONMAX', nb, k1bid)
-    call jeecra(jexnum(carte//'.LIM3', icompt), 'LONMAX', nb, ' ')
+    call jelira(jexnum(carte//'.LIM2', icompt), 'LONMAX', nb)
+    call jeecra(jexnum(carte//'.LIM3', icompt), 'LONMAX', nb)
     call jeveuo(jexnum(carte//'.LIM2', icompt), 'L', i2lima)
     call jeveuo(jexnum(carte//'.LIM3', icompt), 'E', i3lima)
     num1 = zi(ianumt-1+ (iedit-1)*3+1)
@@ -245,36 +245,36 @@ subroutine cmpcar(carte)
 !     DESC :
 !     ------
     call jeveuo(carte//'.DES3', 'L', iad1)
-    call jelira(carte//'.DES3', 'LONMAX', n, k1bid)
-    call jelira(carte//'.DES3', 'TYPELONG', ibid, ctype)
+    call jelira(carte//'.DES3', 'LONMAX', n)
+    call jelira(carte//'.DES3', 'TYPELONG', cval=ctype)
     call jecreo(carte//'.DESC', bas1//' V I')
-    call jeecra(carte//'.DESC', 'LONMAX', n, ' ')
-    call jeecra(carte//'.DESC', 'DOCU', ibid, 'CART')
+    call jeecra(carte//'.DESC', 'LONMAX', n)
+    call jeecra(carte//'.DESC', 'DOCU', cval='CART')
     call jeveuo(carte//'.DESC', 'E', iad2)
     call jacopo(n, ctype, iad1, iad2)
 !     NOLI :
 !     ------
-    call jelira(carte//'.NOL3', 'LONMAX', n, k1bid)
-    call jelira(carte//'.NOL3', 'TYPELONG', ibid, ctype)
+    call jelira(carte//'.NOL3', 'LONMAX', n)
+    call jelira(carte//'.NOL3', 'TYPELONG', cval=ctype)
     call jeveuo(carte//'.NOL3', 'L', iad1)
     call jecreo(carte//'.NOLI', bas1//' V K24')
-    call jeecra(carte//'.NOLI', 'LONMAX', n, ' ')
+    call jeecra(carte//'.NOLI', 'LONMAX', n)
     call jeveuo(carte//'.NOLI', 'E', iad2)
     call jacopo(n, ctype, iad1, iad2)
 !     VALE :
 !     ------
-    call jelira(carte//'.VAL3', 'LONMAX', n, k1bid)
-    call jelira(carte//'.VAL3', 'TYPELONG', ibid, ctype)
+    call jelira(carte//'.VAL3', 'LONMAX', n)
+    call jelira(carte//'.VAL3', 'TYPELONG', cval=ctype)
     call jeveuo(carte//'.VAL3', 'E', iad1)
     call jecreo(carte//'.VALE', bas1//' V '//scal(1:4))
-    call jeecra(carte//'.VALE', 'LONMAX', n, ' ')
+    call jeecra(carte//'.VALE', 'LONMAX', n)
     call jeveuo(carte//'.VALE', 'E', iad2)
     call jacopo(n, ctype, iad1, iad2)
 !     LIMA :
 !     ------
-    call jelira(carte//'.LIM3', 'NMAXOC', nboc, k1bid)
-    call jelira(carte//'.LIM3', 'LONT', n, k1bid)
-    call jelira(carte//'.LIM3', 'TYPELONG', ibid, ctype)
+    call jelira(carte//'.LIM3', 'NMAXOC', nboc)
+    call jelira(carte//'.LIM3', 'LONT', n)
+    call jelira(carte//'.LIM3', 'TYPELONG', cval=ctype)
     call jeveuo(carte//'.LIM3', 'L', iad1)
     call jecrec(carte//'.LIMA', bas1//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nboc)
@@ -282,9 +282,9 @@ subroutine cmpcar(carte)
     call jeveuo(carte//'.LIMA', 'E', iad2)
 !
     do 31 i = 1, nboc
-        call jelira(jexnum(carte//'.LIM3', i), 'LONMAX', nb, k1bid)
+        call jelira(jexnum(carte//'.LIM3', i), 'LONMAX', nb)
         call jecroc(jexnum(carte//'.LIMA', i))
-        call jeecra(jexnum(carte//'.LIMA', i), 'LONMAX', nb, ' ')
+        call jeecra(jexnum(carte//'.LIMA', i), 'LONMAX', nb)
 31  end do
     call jacopo(n, ctype, iad1, iad2)
 !

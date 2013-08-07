@@ -36,7 +36,7 @@ subroutine eclau1(nomte, famil, elrefa, fapg)
 ! -----------------------------------------------------------
 !
     integer :: ntrou, jpnlfp, jnolfp, nblfpg, nuflpg, nufgpg
-    character(len=8) :: k8b, lielrf(10)
+    character(len=8) :: lielrf(10)
     character(len=16) :: nofgpg
     character(len=32) :: noflpg
 ! DEB ------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine eclau1(nomte, famil, elrefa, fapg)
 !
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
     call jeveuo('&CATA.TE.NOLOCFPG', 'L', jnolfp)
-    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg, k8b)
+    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
 !
     nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
     if (nuflpg .gt. 0) then

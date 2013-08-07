@@ -76,11 +76,11 @@ subroutine mdtr74(nomres)
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    character(len=1) :: niv, k1bid
-    character(len=4) :: k4bid(3), intk
+    character(len=1) :: niv
+    character(len=4) :: k4bid(3)
     character(len=8) :: k8b, k8var, nomres, masgen, riggen, amogen, gyogen
     character(len=8) :: basemo, matass, vecgen, monmot, listam, typflu, nombm
-    character(len=8) :: rigass, mailla, resgen, bamo1, bamo2, rgygen, namerk
+    character(len=8) :: rigass, mailla, resgen, bamo1, bamo2, rgygen
     character(len=14) :: numddl, numgem, numgek, numgec, numgeg, k14b
     character(len=16) :: typbas, typba2, method
     character(len=19) :: lisarc, nomstm, nomstk, nomstg, masse
@@ -351,7 +351,7 @@ subroutine mdtr74(nomres)
             else
                 call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 1,&
                             listam, n)
-                call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8b)
+                call jelira(listam//'           .VALE', 'LONMAX', nbamor)
             endif
             if (nbamor .gt. nbmode) then
 !
@@ -560,7 +560,7 @@ subroutine mdtr74(nomres)
         if (method .eq. 'ITMI') then
             nbf = 0
             do 100 i = 1, ntotex
-                call jelira(zk8(jnomfo-1+i)//'           .VALE', 'LONMAX', nbfv, k8b)
+                call jelira(zk8(jnomfo-1+i)//'           .VALE', 'LONMAX', nbfv)
                 nbfv = nbfv/2
                 nbf = max(nbf,nbfv)
 100          continue
@@ -588,7 +588,7 @@ subroutine mdtr74(nomres)
                 call getvtx('CHOC', 'GROUP_MA', ioc, iarg, ngr,&
                             zk24(jgr), n2)
                 do 210 ig = 0, ngr-1
-                    call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgr+ ig)), 'LONMAX', nbmg, k8b)
+                    call jelira(jexnom(mailla//'.GROUPEMA', zk24(jgr+ ig)), 'LONMAX', nbmg)
                     nbchoc = nbchoc + nbmg
 210              continue
                 call jedetr('&&MDTR74.GROUP_MA')
@@ -994,7 +994,7 @@ subroutine mdtr74(nomres)
 !        --- RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
         nomnoe = mailla//'.NOMNOE'
-        call jelira(nomnoe, 'NOMUTI', lnoe, k1bid)
+        call jelira(nomnoe, 'NOMUTI', lnoe)
         indic = lnoe
 !
         call mditm1(nbmode, nbmd, nbmp, nbnli, indic,&

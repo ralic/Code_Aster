@@ -39,7 +39,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     parameter    ( nbpara = 8 )
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
     complex(kind=8) :: c16b
-    character(len=8) :: k8b, nomres, typara(nbpara), valek(3)
+    character(len=8) ::  nomres, typara(nbpara), valek(3)
     character(len=16) :: nopara(nbpara)
     character(len=19) :: nomk19
     character(len=24) :: nomk24
@@ -66,7 +66,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     call jeveuo(nomk19//'.REDC', 'L', jredc)
     call jeveuo(nomk19//'.REDD', 'L', jredd)
     call jeveuo(nomk19//'.DISC', 'L', jinst)
-    call jelira(nomk19//'.DISC', 'LONUTI', nbinst, k8b)
+    call jelira(nomk19//'.DISC', 'LONUTI', nbinst)
     nbred = zi(jdesc+3)
 !
     do 10 inume = 0, nbred-1

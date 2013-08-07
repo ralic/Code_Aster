@@ -234,8 +234,8 @@ subroutine op0131()
                 nbabs = 6
             endif
             call jecroc(jexnum(chvale, ij1))
-            call jeecra(jexnum(chvale, ij1), 'LONMAX', nbabs, ' ')
-            call jeecra(jexnum(chvale, ij1), 'LONUTI', nbabs, ' ')
+            call jeecra(jexnum(chvale, ij1), 'LONMAX', nbabs)
+            call jeecra(jexnum(chvale, ij1), 'LONUTI', nbabs)
 402      continue
 401  end do
 !

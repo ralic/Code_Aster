@@ -48,7 +48,6 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=19) :: noligr
-    character(len=8) :: kbid
 !
 !
 !
@@ -63,8 +62,8 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !
     if (questi .eq. 'NB_DDLACT') then
 !     --------------------------------
-        call jelira(nomob//'.NUEQ', 'LONMAX', nequ, kbid)
-        call jelira(nomob//'.LILI', 'NUTIOC', nlili, kbid)
+        call jelira(nomob//'.NUEQ', 'LONMAX', nequ)
+        call jelira(nomob//'.LILI', 'NUTIOC', nlili)
         nbddlb=0
         do 10 i = 2, nlili
             call jenuno(jexnum(nomob//'.LILI', i), noligr)
@@ -76,7 +75,7 @@ subroutine dismpn(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'NB_EQUA') then
 !     --------------------------------
-        call jelira(nomob//'.NUEQ', 'LONMAX', repi, kbid)
+        call jelira(nomob//'.NUEQ', 'LONMAX', repi)
 !
 !
     else if (questi.eq.'NOM_GD') then

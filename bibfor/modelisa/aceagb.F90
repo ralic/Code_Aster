@@ -211,7 +211,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 numa = -1
                 do 120 igr = 0, ng-1
                     kjexn = jexnom(nomagr,zk24(jdls+igr))
-                    call jelira(kjexn, 'LONMAX', nbma, k8b)
+                    call jelira(kjexn, 'LONMAX', nbma)
                     call jeveuo(kjexn, 'L', jgrma)
                     nbmat = nbmat + nbma
                     do 122 ima = 0, nbma-1
@@ -234,7 +234,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
             do 200 ima = 1, nbmat
                 numa = zi(jnuma+ima-1)
                 kjexn = jexnum(connex,numa)
-                call jelira(kjexn, 'LONMAX', nbno, k8b)
+                call jelira(kjexn, 'LONMAX', nbno)
                 call jeveuo(kjexn, 'L', adrm)
 !              CALCUL DE LA NORMALE : VECTEUR Z LOCAL
                 noe1 = zi(adrm+1-1)

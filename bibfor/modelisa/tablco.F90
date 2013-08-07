@@ -65,7 +65,6 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
     integer :: isuco, jdecno, jdecma
     integer :: jtrav, jtrav2, inc, long
     character(len=24) :: defico
-    character(len=8) :: k8bid
     character(len=24) :: pzone, psurma, psurno, contma, contno
     integer :: jzone, jsuma, jsuno, jmaco, jnoco
     character(len=24) :: manoco, pmano, nomaco, pnoma
@@ -199,7 +198,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
     if (nmano .gt. long) then
         ASSERT(.false.)
     endif
-    call jeecra(manoco, 'LONUTI', nmano, k8bid)
+    call jeecra(manoco, 'LONUTI', nmano)
 !
 ! ======================================================================
 !         REMPLISSAGE DU TABLEAU DIRECT MAILLES->NOEUDS NOMACO
@@ -292,7 +291,7 @@ subroutine tablco(char, noma, nsuco, nmaco, nnoco)
     if (nnoma .gt. long) then
         ASSERT(.false.)
     endif
-    call jeecra(nomaco, 'LONUTI', nnoma, k8bid)
+    call jeecra(nomaco, 'LONUTI', nnoma)
 !
 !
     call jedetr('&&TABLCO.TRAV')

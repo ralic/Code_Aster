@@ -165,7 +165,7 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
 !
     call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nlima)
-    call jeecra(nom, 'LONT', nare, ' ')
+    call jeecra(nom, 'LONT', nare)
 !
 ! --- ON REMPLIT LA SD
 !
@@ -175,12 +175,12 @@ subroutine utmavo(mail, kdim, lima, nlima, base,&
         iad = zi(p2+numa-1)
         call jecroc(jexnum(nom, i))
         if (zi(jtr2-1+i) .eq. 0) then
-            call jeecra(jexnum(nom, i), 'LONMAX', 1, ' ')
-            call jeecra(jexnum(nom, i), 'LONUTI', 0, ' ')
+            call jeecra(jexnum(nom, i), 'LONMAX', 1)
+            call jeecra(jexnum(nom, i), 'LONUTI', 0)
             goto 200
         else
-            call jeecra(jexnum(nom, i), 'LONMAX', zi(jtr2-1+i), ' ')
-            call jeecra(jexnum(nom, i), 'LONUTI', zi(jtr2-1+i), ' ')
+            call jeecra(jexnum(nom, i), 'LONMAX', zi(jtr2-1+i))
+            call jeecra(jexnum(nom, i), 'LONUTI', zi(jtr2-1+i))
             call jeveuo(jexnum(nom, i), 'E', jmail)
         endif
 !

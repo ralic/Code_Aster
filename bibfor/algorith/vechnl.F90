@@ -54,7 +54,7 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
 !
 ! 0.3. ==> VARIABLES LOCALES
     character(len=1) :: c1
-    character(len=8) :: lpain(7), lpaout(1), k8bid, newnom, nomcha, nomch2
+    character(len=8) :: lpain(7), lpaout(1), newnom, nomcha, nomch2
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(7), lchout(1), chgeom, chcara(18)
     integer :: iret, ifm, niv, exicha, nchin, i, nchar, jchar, jinf, icha, ibid
@@ -81,7 +81,7 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
     call jeexin(charge, iret)
     if (iret .ne. 0) then
 ! LECTURE DU NBRE DE CHARGE NCHAR DANS L'OBJET JEVEUX CHARGE
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
 ! LECTURE DES ADRESSES JEVEUX DES CHARGES ET DES INFOS AFFERENTES
         call jeveuo(charge, 'L', jchar)
         call jeveuo(infcha, 'L', jinf)
@@ -98,7 +98,7 @@ subroutine vechnl(modele, charge, infcha, carele, inst,&
     call jeexin(lvechn, iret)
     if (iret .eq. 0) then
         call wkvect(lvechn, 'V V K24', 2*nchar, jlvn)
-        call jeecra(lvechn, 'LONUTI', 0, k8bid)
+        call jeecra(lvechn, 'LONUTI', 0)
     endif
 !
 ! PAS DE CHARGE ==> EXIT

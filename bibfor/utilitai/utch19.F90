@@ -65,7 +65,7 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
 !
     chm19z = cham19(1:19)
     typrez = typres(1:1)
-    call jelira(chm19z//'.CELV', 'TYPE', ibid, type)
+    call jelira(chm19z//'.CELV', 'TYPE', cval=type)
 !
     ASSERT(type.eq.typrez)
     call dismoi('F', 'MPI_COMPLET', cham19, 'CHAM_ELEM', ibid,&

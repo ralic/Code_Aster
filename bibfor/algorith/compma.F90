@@ -45,7 +45,6 @@ subroutine compma(mailla, nbgr, nomgr, nbto)
 #include "asterfort/u2mesg.h"
     character(len=8) :: mailla
     character(len=24) :: valk(2), nomcou, nomgr(nbgr)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -82,7 +81,7 @@ subroutine compma(mailla, nbgr, nomgr, nbto)
                         0, 0, 0.d0)
         endif
 !
-        call jelira(jexnom(mailla//'.GROUPEMA', nomcou), 'LONUTI', nb, k1bid)
+        call jelira(jexnom(mailla//'.GROUPEMA', nomcou), 'LONUTI', nb)
         nbto=nbto+nb
 !
 10  end do

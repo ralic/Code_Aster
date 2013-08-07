@@ -91,7 +91,7 @@ subroutine xfisco(noma, modelx)
             if (iret .ne. 0) then
                 call jeveuo(nomfis//'.JONFISS', 'L', jjonf)
                 call jeveuo(nomfis//'.JONCOEF', 'L', jjonc)
-                call jelira(nomfis//'.JONFISS', 'LONMAX', nfis2, kbid)
+                call jelira(nomfis//'.JONFISS', 'LONMAX', nfis2)
 !
 ! --- BOUCLE SUR LES FISSURES DE LA MAILLE IFIS3, AUTRE QUE IFISS
 !

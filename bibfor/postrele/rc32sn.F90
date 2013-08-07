@@ -58,7 +58,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
     real(kind=8) :: pij, mij(12), sn, sij(6), sigu, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6)
     character(len=4) :: typ2
-    character(len=8) :: k8b, type, knumes, knumet
+    character(len=8) ::  type, knumes, knumet
 ! DEB ------------------------------------------------------------------
     type = typz
     sn = 0.d0
@@ -98,7 +98,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
     if (numsip .ne. 0) then
         knumes = 'S       '
         call codent(numsip, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep, k8b)
+        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep)
         if (nbthep .eq. 0) then
             nbinst = 0
             indicp = 1
@@ -121,7 +121,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 numth = zi(jther+ith-1)
                 knumet = 'T       '
                 call codent(numth, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long, k8b)
+                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
                 call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthun)
                 nbinst = 2
                 if (type .eq. 'SN_COMB') then
@@ -161,7 +161,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
     if (numsiq .ne. 0) then
         knumes = 'S       '
         call codent(numsiq, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq, k8b)
+        call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq)
         if (nbtheq .eq. 0) then
             nbinst = 0
             indicq = 1
@@ -193,7 +193,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 numth = zi(jther+ith-1)
                 knumet = 'T       '
                 call codent(numth, 'D0', knumet(2:8))
-                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long, k8b)
+                call jelira(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'LONUTI', long)
                 call jeveuo(jexnom('&&RC3200.THER_UNIT .'//lieu, knumet), 'L', jthun)
                 nbinst = 2
                 if (type .eq. 'SN_COMB') then

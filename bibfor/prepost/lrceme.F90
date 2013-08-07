@@ -119,7 +119,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     parameter (edlect=0)
 !
     character(len=1) :: saux01
-    character(len=8) :: k8b, saux08
+    character(len=8) ::  saux08
     character(len=19) :: chames, ligrel
     character(len=64) :: nomcha
     character(len=200) :: nofimd
@@ -148,7 +148,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
         call u2mess('F', 'MED_65')
     endif
     call jeveuo(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'L', jnocmp)
-    call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf, saux01)
+    call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf)
 !
 ! 1.2. ==> ALLOCATION DU CHAM_ELEM_S
 !
@@ -161,7 +161,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     call jeexin(ncmpva, iret)
     if (iret .gt. 0) then
         call jeveuo(ncmpva, 'L', jcmpva)
-        call jelira(ncmpva, 'LONMAX', nbcmpa, k8b)
+        call jelira(ncmpva, 'LONMAX', nbcmpa)
         if (nomgd(1:4) .eq. 'VARI') then
             jnocmp=jcmpva
             ncmprf=nbcmpa
@@ -244,7 +244,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     endif
     if (nncp .gt. 0) then
         iaux=0
-        call jelira(chames//'.CESL', 'LONMAX', naux, saux01)
+        call jelira(chames//'.CESL', 'LONMAX', naux)
         do 40 i = 1, naux
             if (zl(jcesl+i-1)) iaux=iaux+1
 40      continue

@@ -52,7 +52,7 @@ function xxconi(defico, nomfis, typmai)
     character(len=24) :: xfimai
     integer :: jfimai
     integer :: nzoco, izone, iret
-    character(len=8) :: fiscou, k8bid
+    character(len=8) :: fiscou
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ function xxconi(defico, nomfis, typmai)
 !
     xfimai = defico(1:16)//'.XFIMAI'
     call jeveuo(xfimai, 'L', jfimai)
-    call jelira(xfimai, 'LONMAX', nzoco, k8bid)
+    call jelira(xfimai, 'LONMAX', nzoco)
 !
 ! --- RECHERCHE FISSURE DANS MAITRE
 !

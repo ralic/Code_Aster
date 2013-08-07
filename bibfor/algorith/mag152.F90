@@ -42,7 +42,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     integer :: jscde, n1bloc, n2bloc
     integer :: nbid, nbloc, ntbloc, nueq, nhmax
     integer :: n9, n10
-    character(len=8) :: nomres, k8bid, modmec, nummod
+    character(len=8) :: nomres, modmec, nummod
     character(len=8) :: modgen
     character(len=14) :: num14, nugene
     character(len=19) :: nomsto
@@ -107,7 +107,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
         call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                     nbloc)
-        call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc, k8bid)
+        call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
 !
 !
         call wkvect(nomres//'           .LIME', 'G V K24', 1, ialime)
@@ -124,7 +124,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
         call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                     nbloc)
-        call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc, k8bid)
+        call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
         call wkvect(nomres//'           .LIME', 'G V K24', 1, ialime)
         call wkvect(nomres//'           .CONL', 'G V R', nueq, iaconl)
 !

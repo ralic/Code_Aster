@@ -50,7 +50,7 @@ subroutine phi2el(modele, carele, mate, accel, phibar,&
 !
 !
 !
-    character(len=8) :: lpain(5), lpaout(1), k8bid, kbid
+    character(len=8) :: lpain(5), lpaout(1), kbid
     character(len=16) :: option
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
@@ -74,12 +74,12 @@ subroutine phi2el(modele, carele, mate, accel, phibar,&
                     'CHAR_THER')
         call wkvect(ve2, 'V V K24', 1, jlve)
         if (accel(9:14) .eq. '.BIDON') then
-            call jeecra(ve2, 'LONUTI', 0, k8bid)
+            call jeecra(ve2, 'LONUTI', 0)
             goto 10
         endif
     else
         prem = .false.
-        call jelira(ve2, 'LONUTI', nbchte, k8bid)
+        call jelira(ve2, 'LONUTI', nbchte)
         if (nbchte .eq. 0) then
             goto 10
         endif
@@ -124,7 +124,7 @@ subroutine phi2el(modele, carele, mate, accel, phibar,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         zk24(jlve) = lchout(1)
-        call jeecra(ve2, 'LONUTI', 1, k8bid)
+        call jeecra(ve2, 'LONUTI', 1)
     else
 !
 ! ----- LE VECT_ELEM EXISTE DEJA

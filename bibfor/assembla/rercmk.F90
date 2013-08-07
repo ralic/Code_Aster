@@ -165,7 +165,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
     do 11, ima = 1, nbsma
     if (zi(iasssa-1+ima) .eq. 1) then
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
-        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm, kbid)
+        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
         do 13, i=1,nbnm
         ino=zi(iamail-1+i)
         iino=ino
@@ -209,7 +209,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm,&
 !
     call jeveuo(nomlig//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(nomlig//'.LIEL', 'LONCUM'), 'L', illiel)
-    call jelira(nomlig//'.LIEL', 'NMAXOC', nbgrel, kbid)
+    call jelira(nomlig//'.LIEL', 'NMAXOC', nbgrel)
 !
     call jeexin(nomlig//'.NEMA', iret)
     if (iret .gt. 0) then

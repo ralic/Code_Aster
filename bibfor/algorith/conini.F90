@@ -98,7 +98,6 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     logical :: inval
     logical :: cas2d, cas3d, valid
 !
-    character(len=1) :: k1bid
     integer :: noecon(nbnoe), maicon(nbmar), marcon(nbmar)
     integer :: mbcor(nbmar), jmicor(nbmar)
     character(len=8) :: nommar(nbmar), nomtyr(nbmar)
@@ -159,7 +158,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE MAILLE DU GROUP_MA
 !     ------------------------------------------------------------------
-            call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONMAX', nbmag, k1bid)
+            call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONMAX', nbmag)
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES MAILLES DU GROUP_MA
 !     ------------------------------------------------------------------
@@ -202,7 +201,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                call jelira(jexnum(ma//'.CONNEX', imac), 'LONMAX', nbcoc, k1bid)
+                call jelira(jexnum(ma//'.CONNEX', imac), 'LONMAX', nbcoc)
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
@@ -250,7 +249,7 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-        call jelira(jexnum(ma//'.CONNEX', imar), 'LONMAX', nbcor, k1bid)
+        call jelira(jexnum(ma//'.CONNEX', imar), 'LONMAX', nbcor)
         mbcor(imar)=nbcor
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE

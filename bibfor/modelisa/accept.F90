@@ -44,7 +44,6 @@ subroutine accept(f, nbm, method, imode, jmode,&
     real(kind=8) :: f, pi, deuxpi, omega, uc, kl, kt, dir(3, 3)
     real(kind=8) :: d1, d2, d3, mes(3), coeh, jc, l, local(3), uflui
     real(kind=8) :: uct, lt, rayon, dist, dteta, jc1
-    character(len=1) :: k1bid
     character(len=8) :: method
 !
     parameter (pi=3.14159265d0)
@@ -65,7 +64,7 @@ subroutine accept(f, nbm, method, imode, jmode,&
     jc=0.d0
     jc1=0.d0
     call jeveuo('&&GROTAB.TAB', 'L', itab)
-    call jelira('&&GROTAB.TAB', 'LONUTI', ntail, k1bid)
+    call jelira('&&GROTAB.TAB', 'LONUTI', ntail)
     if (method(1:7) .eq. 'AU_YANG') rayon = zr(itab+ntail-1)
     ntail = ntail - 1
     ntail1=ntail/(6*nbm)

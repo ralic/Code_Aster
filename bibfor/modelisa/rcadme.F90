@@ -42,7 +42,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 !
     integer :: iret, ivalk, nbr, nbc, nbk, nbco, ik, iadtrc, nbcb1, nbcb2, nblb2
     integer :: nbhist, nbtrc
-    character(len=8) :: nommat, k8b
+    character(len=8) :: nommat
     character(len=10) :: nomphe
     character(len=19) :: ch19, listr
 ! DEB ------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
         icodre = 1
         goto 9999
     else
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8b)
+        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
     endif
 !
     call jeexin(nommat//'.'//nomphe//'.VALC', iret)
@@ -64,7 +64,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
         icodre = 1
         goto 9999
     else
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc, k8b)
+        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
     endif
 !
     call jeexin(nommat//'.'//nomphe//'.VALK', iret)
@@ -73,7 +73,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
         goto 9999
     else
         call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk, k8b)
+        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
     endif
 !
     nbco = ( nbk - nbr - nbc ) / 2

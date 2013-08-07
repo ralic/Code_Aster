@@ -47,7 +47,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     integer :: ier, numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
     integer :: jligr, jpnt, ipoin, ianoma, imodel, ilong
     real(kind=8) :: sg(6), sl(6)
-    character(len=8) :: k8b, nomcmp, nomma
+    character(len=8) ::  nomcmp, nomma
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
@@ -62,7 +62,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     call jeveuo(chelm//'.CELD', 'L', jceld)
     gd = zi(jceld-1+1)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
     call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
 !
@@ -94,7 +94,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     call jeveuo(noligr//'.REPE', 'L', irepe)
     call jeveuo(noligr//'.LIEL', 'L', jligr)
     call jeveuo(jexatr(noligr//'.LIEL', 'LONCUM'), 'L', jlongr)
-    call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel, k8b)
+    call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
     call jeveuo(noligr//'.LGRF', 'L', ianoma)
     nomma = zk8(ianoma)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpnt)

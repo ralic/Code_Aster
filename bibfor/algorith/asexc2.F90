@@ -75,7 +75,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     real(kind=8) :: echsp0(3), valpu(2), omega, omega2, r8b
     real(kind=8) :: resu, un, uns2pi, xnorm, zero
 !
-    character(len=1) :: k1b, dir(3)
+    character(len=1) ::  dir(3)
     character(len=4) :: knat
     character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2)
     character(len=9) :: niveau
@@ -242,7 +242,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             call u2mesk('E', 'SEISME_2', 2, valk)
                             goto 30
                         endif
-                        call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno, k1b)
+                        call jelira(jexnom(obj1, grnoeu), 'LONUTI', nno)
                         call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
                         do 32 ino = 1, nno
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
@@ -345,7 +345,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
             do 62 is = 1, nsupp(id)
                 vale(1:8) = nomspe(id,is)
                 call jeveuo(jexnum(vale, 1), 'L', jvar1)
-                call jelira(jexnum(vale, 1), 'LONMAX', nbpt1, k1b)
+                call jelira(jexnum(vale, 1), 'LONMAX', nbpt1)
                 nbpt2 = nbpt1 / 2
                 omega = deuxpi * zr(jvar1+nbpt2-1)
                 coef = dirspe(id,is)*echspe(id,is)

@@ -202,7 +202,7 @@ subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
     call wkvect('&&PJXXCO.LIMA1', 'V V I', nma1, ialim1)
     if (mo1 .ne. ' ') then
         call jeveuo(mo1//'.MAILLE', 'L', iad)
-        call jelira(mo1//'.MAILLE', 'LONMAX', long, kb)
+        call jelira(mo1//'.MAILLE', 'LONMAX', long)
         do 20,i=1,long
         if (zi(iad-1+i) .ne. 0) zi(ialim1-1+i)=1
 20      continue

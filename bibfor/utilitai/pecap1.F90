@@ -96,7 +96,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
 ! -----  VARIABLES LOCALES
     integer :: gd
-    character(len=1) :: k1bid
     character(len=8) :: lpain(2), lpaout(1)
     character(len=8) :: temper, nomail
     character(len=8) :: crit, modele, k8bid, noma
@@ -243,7 +242,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !       --------------------------------------------
         nec = nbec(gd)
         call jenuno(jexnum(prchno//'.LILI', 1), nolili)
-        call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid, k1bid)
+        call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid)
 !
 ! ---   RECUPERATION DU PRNO DU CHAMP DE TEMPERATURES :
 !       ---------------------------------------------
@@ -269,7 +268,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---   RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 !       ---------------------------------------------
-            call jelira(jexnom(noma//'.GROUPEMA', lisgma(igr)), 'LONUTI', nbmail, k1bid)
+            call jelira(jexnom(noma//'.GROUPEMA', lisgma(igr)), 'LONUTI', nbmail)
 !
 ! ---   NUMERO DE LA PREMIERE MAILLE  DU BORD :
 !       -------------------------------------
@@ -310,7 +309,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---     NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ------------------------------------
-                call jelira(jexnum(noma//'.CONNEX', numa), 'LONMAX', nbno, k1bid)
+                call jelira(jexnum(noma//'.CONNEX', numa), 'LONMAX', nbno)
 !
 ! ---     RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 !         -------------------------------------------

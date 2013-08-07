@@ -65,7 +65,6 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     integer :: nbgrpn, nbneud, nbcrb, grel, nbgrel, jceld, amod, mod
     integer :: j, k, n1, ierd, ibid
     logical :: chelok
-    character(len=1) :: k1bid
     integer :: iarg
 !
 !=====================================================================
@@ -102,9 +101,9 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         nchp19 = ncheff(1:19)
         call jeexin(nchp19//'.DESC', ibid)
         if (ibid .gt. 0) then
-            call jelira(nchp19//'.DESC', 'DOCU', n1, docu)
+            call jelira(nchp19//'.DESC', 'DOCU', cval=docu)
         else
-            call jelira(nchp19//'.CELD', 'DOCU', n1, docu)
+            call jelira(nchp19//'.CELD', 'DOCU', cval=docu)
         endif
 !
         if (docu .eq. 'CHML') then
@@ -127,7 +126,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
         endif
 !
 !        --- VERIFICATION SUR LES CMPS ---
-        call jelira(jexnum(xdicmp, i), 'LONMAX', nbcmp, k1bid)
+        call jelira(jexnum(xdicmp, i), 'LONMAX', nbcmp)
         call jeveuo(jexnum(xdicmp, i), 'L', anumcp)
         do 110, j = 1, nbcmp, 1
         if (zi(anumcp + j-1) .eq. 0) then
@@ -172,7 +171,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
             nbneud = -nbneud
             if (nbgrpn .ne. 0) then
                 call jecreo('&&OP0051.NOM.GRPN', 'V V K24')
-                call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn, ' ')
+                call jeecra('&&OP0051.NOM.GRPN', 'LONMAX', nbgrpn)
                 call jeveuo('&&OP0051.NOM.GRPN', 'E', agrpnd)
                 call getvtx('ACTION', 'GROUP_NO', i, iarg, nbgrpn,&
                             zk24(agrpnd), n1)

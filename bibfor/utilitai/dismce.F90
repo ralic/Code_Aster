@@ -43,7 +43,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, iret, gd, jceld, jcelk
+    integer ::  iret, gd, jceld, jcelk
     character(len=8) :: nogd, docu
     character(len=19) :: nomob
     character(len=24) :: questl, k24
@@ -66,7 +66,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
     endif
 !
     call jeveuo(nomob//'.CELD', 'L', jceld)
-    call jelira(nomob//'.CELD', 'DOCU', ibid, docu)
+    call jelira(nomob//'.CELD', 'DOCU', cval=docu)
     ASSERT(docu.eq. 'CHML')
     gd = zi(jceld)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nogd)

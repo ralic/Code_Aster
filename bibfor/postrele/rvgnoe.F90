@@ -58,7 +58,6 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     integer :: i, j, k, libre, numnd, nbtnd, n1, nbn, iret, iera
     integer :: asgtu, i1, i2, jvale, ny
     real(kind=8) :: vecty(3), tole
-    character(len=1) :: k1b
     character(len=8) :: courbe, crit
     character(len=24) :: nomgrn
     character(len=15) :: nrepnd
@@ -87,7 +86,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
         call getvem(nmaila, 'GROUP_NO', mcf, 'GROUP_NO', iocc,&
                     iarg, nbrgpn, zk24(agrpn), n1)
         do 10, i = 1, nbrgpn, 1
-        call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1, k1b)
+        call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1)
         nbtnd = nbtnd + n1
 10      continue
     endif
@@ -113,7 +112,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     if (nbrgpn .ne. 0) then
         do 100, i = 1, nbrgpn, 1
         nomgrn = zk24(agrpn + i-1)
-        call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn, k1b)
+        call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
         call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
         do 110, j = 1, nbn, 1
         zi(alndtp + libre-1 + j-1) = zi(agneud + j-1)
@@ -180,7 +179,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
             iera = 0
             if (nbrgpn .eq. 1) then
                 nomgrn = zk24(agrpn + 1-1)
-                call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn, k1b)
+                call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
                 if (nbn .lt. 2) call u2mess('F', 'POSTRELE_21')
             endif
         else

@@ -40,7 +40,6 @@ subroutine foston(chval, vecnom, nbfonc)
 !         CHFVAL=VECNOM(I)//'.VALE'
 !     OBJETS SIMPLES CREES
 !         JEXNUM(CHVAL,I)
-    character(len=1) :: k1bid
 !     ------------------------------------------------------------------
     integer :: i, j, nbp, lvaln, lvalf, nbpt
     character(len=24) :: chfval
@@ -52,17 +51,17 @@ subroutine foston(chval, vecnom, nbfonc)
     chfval(20:24) = '.VALE'
     do 1 i = 1, nbfonc
         chfval(1:19) = vecnom(i)
-        call jelira(chfval, 'LONUTI', nbp, k1bid)
+        call jelira(chfval, 'LONUTI', nbp)
         nbpt=nbpt+nbp
  1  end do
-    call jeecra(chval, 'LONT', nbpt, ' ')
+    call jeecra(chval, 'LONT', nbpt)
     do 3 i = 1, nbfonc
         chfval(1:19) = vecnom(i)
         call jeveuo(chfval, 'L', lvalf)
-        call jelira(chfval, 'LONUTI', nbp, k1bid)
+        call jelira(chfval, 'LONUTI', nbp)
         call jecroc(jexnum(chval, i))
-        call jeecra(jexnum(chval, i), 'LONMAX', nbp, ' ')
-        call jeecra(jexnum(chval, i), 'LONUTI', nbp, ' ')
+        call jeecra(jexnum(chval, i), 'LONMAX', nbp)
+        call jeecra(jexnum(chval, i), 'LONUTI', nbp)
         call jeveuo(jexnum(chval, i), 'E', lvaln)
         do 2 j = 1, nbp
             zr(lvaln+j-1)=zr(lvalf+j-1)

@@ -152,7 +152,7 @@ subroutine nmmoam(sdammz, nbmoda)
         else
             call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 1,&
                         listam, n)
-            call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8bid)
+            call jelira(listam//'           .VALE', 'LONMAX', ival=nbamor)
             call jeveuo(listam//'           .VALE', 'L', iamor)
             do 30 iam = 1, nbmoda
                 zr(jamor+iam-1) = zr(iamor+iam-1)

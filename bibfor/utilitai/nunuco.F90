@@ -100,7 +100,7 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
     nomgd = 'DEPL_R'
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
                 k8bid, ier)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
 !
 ! --- LOCALISATION DE LAGS_C DANS LA LISTE DES DDLS ASSOCIES
@@ -115,12 +115,12 @@ subroutine nunuco(numedd, defico, lcont, sdnuco)
 !
 ! --- RECUPERATION DU NOMBRE D'INCONNUES DU MODELE
 !
-    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', neq, k8bid)
+    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', neq)
     call wkvect(sdnuco, 'V V I', neq, jnuco)
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE
 !
-    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
+    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
     do 40 i = 1, nlili
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)

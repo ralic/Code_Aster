@@ -64,7 +64,7 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
     integer :: ino1, nuno1, ino2, nuno2, j1, j2, i, j, iexcor, trouv1, trouv2
     integer :: jfac1, jfac2, jfond, im, nbfa, nbfo
     real(kind=8) :: dmin, d, x1(3), x2(3)
-    character(len=8) :: noma, k8b
+    character(len=8) :: noma
     character(len=8) :: nomno1, nomno2, nomno3
     character(len=24) :: lisou1, lisou2
     character(len=24) :: valk(3)
@@ -87,9 +87,9 @@ subroutine pacoa1(noeud1, noeud2, lonlis, nomaz, liso1z,&
     else
         call jeveuo(jexnom(grpnoe, 'FACE1'), 'L', jfac1)
         call jeveuo(jexnom(grpnoe, 'FACE2'), 'L', jfac2)
-        call jelira(jexnom(grpnoe, 'FACE2'), 'LONUTI', nbfa, k8b)
+        call jelira(jexnom(grpnoe, 'FACE2'), 'LONUTI', nbfa)
         call jeveuo(jexnom(grpnoe, 'FONDFISS'), 'L', jfond)
-        call jelira(jexnom(grpnoe, 'FONDFISS'), 'LONUTI', nbfo, k8b)
+        call jelira(jexnom(grpnoe, 'FONDFISS'), 'LONUTI', nbfo)
     endif
 !
     call jeexin(lisou1, iret)

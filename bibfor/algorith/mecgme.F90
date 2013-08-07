@@ -135,7 +135,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
         nchar = 0
         goto 99
     else
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         call jeveuo(charge, 'L', jchar)
         call jeveuo(infcha, 'L', jinf)
     endif
@@ -150,7 +150,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
         prem = .true.
     else
         prem = .false.
-        call jelira(mesuiv//'.RELR', 'LONUTI', nbchme, k8bid)
+        call jelira(mesuiv//'.RELR', 'LONUTI', nbchme)
         if (nbchme .gt. 0) call jeveuo(mesuiv//'.RELR', 'L', jlme)
     endif
 !
@@ -332,7 +332,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
         enddo
     endif
 !
-    call jelira(mesuiv//'.RELR', 'LONUTI', nbchme, k8bid)
+    call jelira(mesuiv//'.RELR', 'LONUTI', nbchme)
 !
 !
 99  continue

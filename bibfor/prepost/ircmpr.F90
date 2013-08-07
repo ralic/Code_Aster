@@ -110,7 +110,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     integer :: adnucm
     integer :: adauxi
 !
-    character(len=8) :: saux08, k8b
+    character(len=8) ::  k8b
     character(len=24) :: ntprom, exicmp, ntpror
     character(len=24) :: ntauxi
 !
@@ -188,7 +188,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     else if (typech(1:2).eq.'EL') then
 !
         call jeveuo(nomaas//'.TYPMAIL', 'L', adtypm)
-        call jelira(nomaas//'.TYPMAIL', 'LONUTI', nbmail, saux08)
+        call jelira(nomaas//'.TYPMAIL', 'LONUTI', nbmail)
         call wkvect('&&IRCMPR.TYPMA', 'V V I', nbmail, adtyp2)
         do 20 ima = 1, nbmail
             if (zi(adtypm+ima-1) .eq. ipe18) then

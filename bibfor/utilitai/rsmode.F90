@@ -88,8 +88,8 @@ subroutine rsmode(resu)
     champt='&&RSMODE.CHAMPT'
 !
     call jeveuo(resu19//'.ORDR', 'L', jordr)
-    call jelira(resu19//'.ORDR', 'LONUTI', nbordr, kbid)
-    call jelira(resu19//'.DESC', 'NOMUTI', nbnosy, kbid)
+    call jelira(resu19//'.ORDR', 'LONUTI', nbordr)
+    call jelira(resu19//'.DESC', 'NOMUTI', nbnosy)
 !
     do 40 isymb = 1, nbnosy
         call jenuno(jexnum(resu19//'.DESC', isymb), nomsym)
@@ -120,7 +120,7 @@ subroutine rsmode(resu)
 !
 !        -- SI LE CHAMP NOMCHA N'A PAS LA BONNE NUMEROTATION,
 !           IL FAUT LA MODIFIER :
-            call jelira(nomcha//'.VALE', 'TYPE', ibid, typ1)
+            call jelira(nomcha//'.VALE', 'TYPE', cval=typ1)
             call vtcreb(champt, nu, 'V', typ1, neq)
             call vtcopy(nomcha, champt, 'F', iret)
             call detrsd('CHAM_NO', nomcha)

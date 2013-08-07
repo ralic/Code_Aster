@@ -72,7 +72,6 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
     integer :: nblign, nbcoln, llmat, nbcolo, icompn, iblo
     parameter    (nbcmpm=10)
     integer :: ideco(nbcmpm), idecn(nbcmpm), icar(3)
-    character(len=1) :: k1bid
     character(len=8) :: nomres, sst, intf, nommcl, basmod, nomg, kbid
     character(len=24) :: fmli, fplin, fplio, nomatn, famli
     real(kind=8) :: rot(3), matrot(nbcmpm, nbcmpm), fact, matbuf(nbcmpm, nbcmpm)
@@ -128,7 +127,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
 !     ET ORIENTEE
 !
     call jeveuo(jexnum(fplin, ii), 'L', llplin)
-    call jelira(jexnum(fplin, ii), 'LONMAX', nbnoe, k1bid)
+    call jelira(jexnum(fplin, ii), 'LONMAX', nbnoe)
     nbnoe=nbnoe/(1+nbec)
     call jeveuo(jexnum(fplio, ii), 'L', llplio)
 !
@@ -155,7 +154,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio,&
     nbcolo=icar(2)
     iblo=icar(3)
     call jecroc(jexnum(fmli, iblo))
-    call jeecra(jexnum(fmli, iblo), 'LONMAX', nbcolo*nbligo, ' ')
+    call jeecra(jexnum(fmli, iblo), 'LONMAX', nbcolo*nbligo)
     call jeveuo(jexnum(fmli, iblo), 'E', ldmat)
 !
 ! --- CALCUL PROPREMENT DIT DES MATRICES ORIENTEES DE LIAISON----------

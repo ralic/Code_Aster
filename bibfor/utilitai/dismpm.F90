@@ -46,7 +46,6 @@ subroutine dismpm(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: nbtm, jphen, imode
-    character(len=8) :: kbid
     character(len=16) :: phen, mode
 ! DEB-------------------------------------------------------------------
     repk = ' '
@@ -57,7 +56,7 @@ subroutine dismpm(questi, nomobz, repi, repkz, ierd)
     phen=nomob(1:16)
     mode=nomob(17:32)
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jenonu(jexnom('&CATA.'//phen(1:13)//'.MODL', mode), imode)
     ASSERT(imode.gt.0)
     call jeveuo(jexnum('&CATA.'//phen, imode), 'L', jphen)

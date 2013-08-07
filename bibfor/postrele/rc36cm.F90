@@ -51,7 +51,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
     integer :: jnume, jcham, nbresu, nbcmp, icha, ir, jlich, jlicm, jlicr
     integer :: vali(2)
     logical :: seisme, autre
-    character(len=8) :: k8b, nocmp(3)
+    character(len=8) ::  nocmp(3)
     character(len=24) :: chams0
     complex(kind=8) :: cbid
 ! DEB ------------------------------------------------------------------
@@ -59,7 +59,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
 !
     call jeveuo('&&RC3600.NUME_CHAR', 'L', jnume)
     call jeveuo('&&RC3600.CHAMP', 'L', jcham)
-    call jelira('&&RC3600.NUME_CHAR', 'LONMAX', nbresu, k8b)
+    call jelira('&&RC3600.NUME_CHAR', 'LONMAX', nbresu)
 !
     nbcmp = 3
     nocmp(1) = 'MT'

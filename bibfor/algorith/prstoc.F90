@@ -39,7 +39,6 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
 #include "blas/dcopy.h"
     integer :: ivale, idesc, irefe, ivalp, idesp, irefp, j, k
     integer :: nbrefe, nbvale, nbdesc, iad, nbvec
-    character(len=1) :: k1bid
     character(len=19) :: vecsol, vestoc
     character(len=24) :: chaine
 !
@@ -63,7 +62,7 @@ subroutine prstoc(vecsol, vestoc, j, k, iad,&
     call wkvect(zk24(iad+k-1)(1:19)//'.DESC', 'V V I', nbdesc, idesp)
 !
     call jeveuo(vecsol//'.VALE', 'L', ivale)
-    call jelira(vecsol//'.VALE', 'LONMAX', nbvec, k1bid)
+    call jelira(vecsol//'.VALE', 'LONMAX', nbvec)
     call jeveuo(vecsol//'.DESC', 'L', idesc)
     call jeveuo(vecsol//'.REFE', 'L', irefe)
 !

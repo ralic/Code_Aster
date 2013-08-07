@@ -118,7 +118,7 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz,&
                 kbid, ibid)
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    call jelira(ces1//'.CESC', 'LONMAX', ncmp, kbid)
+    call jelira(ces1//'.CESC', 'LONMAX', ncmp)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
 !

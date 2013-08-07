@@ -411,8 +411,8 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     call getvid('MODELE_MESURE', 'MODELE', 1, iarg, 1,&
                 modmes, ibid)
 !
-    call jeecra(vnoeud, 'LONUTI', nbmesu, k8bid)
-    call jeecra(vrange, 'LONUTI', nbmesu, k8bid)
+    call jeecra(vnoeud, 'LONUTI', nbmesu)
+    call jeecra(vrange, 'LONUTI', nbmesu)
 !
     zk16(lref-1 +1) = modmes
 ! PAS DE CALCUL DE MODIF STRUCTURALE POUR LES SDMIXTES

@@ -189,7 +189,7 @@ subroutine lrmmf3(fid, nomamd, rangfa, carafa, nbnoeu,&
     call as_mfanfg(fid, nomamd, rangfa, nbgrou, codret)
 !
     call jeveuo('&&LRMMF1.NOM_GR_LONG', 'E', jnogrl)
-    call jelira('&&LRMMF1.NOM_GR_LONG', 'LONMAX', nogrlo, kbid)
+    call jelira('&&LRMMF1.NOM_GR_LONG', 'LONMAX', nogrlo)
     call jeveuo('&&LRMMF1.NOM_GR_COURT', 'E', jnogrc)
 !
 ! 1.2. ==> INFORMATION EVENTUELLE

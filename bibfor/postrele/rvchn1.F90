@@ -64,7 +64,7 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
     nec = nbec( gd )
     if (nec .gt. 10) call u2mess('F', 'POSTRELE_53')
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
     call jedupo(depla//'.VALE', 'V', nomjv, .false.)
     call jeveuo(nomjv, 'E', iavald)

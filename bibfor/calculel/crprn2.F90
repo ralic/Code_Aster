@@ -48,7 +48,6 @@ subroutine crprn2(pfchno, base, nbnoeu, nequa, nec)
     integer :: nbval, nbnoeu, nequa, nec, lprno, lonprn, ianueq, i
     character(len=*) :: pfchno, base
     character(len=1) :: classe
-    character(len=8) :: cbid
     character(len=24) :: lili, prno, nueq
 !     ------------------------------------------------------------------
     data lili/'                   .LILI'/
@@ -64,7 +63,7 @@ subroutine crprn2(pfchno, base, nbnoeu, nequa, nec)
     nbval = 1
     lili(1:19) = pfchno
     call jecreo(lili, classe//' N K24')
-    call jeecra(lili, 'NOMMAX', nbval, '  ')
+    call jeecra(lili, 'NOMMAX', nbval)
 !
 !
 !
@@ -76,7 +75,7 @@ subroutine crprn2(pfchno, base, nbnoeu, nequa, nec)
     lonprn = (2+nec)*nbnoeu
     call jecrec(prno, classe//' V I', 'NU', 'CONTIG', 'CONSTANT',&
                 1)
-    call jeecra(prno, 'LONMAX', lonprn, cbid)
+    call jeecra(prno, 'LONMAX', lonprn)
     call jecroc(jexnom(prno(1:19)//'.LILI', '&MAILLA'))
     call jecroc(jexnum(prno, 1))
     call jeveuo(prno, 'E', lprno)

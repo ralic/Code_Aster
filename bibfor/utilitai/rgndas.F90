@@ -81,7 +81,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
                     noma, ier)
         call dismoi('F', 'NUM_GD_SI', nu, 'NUME_DDL', gd,&
                     k8b, ier)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', inocmp)
         call jeveuo(nume//'.DEEQ', 'L', jdeeq)
         call jeveuo(nume//'.NUEQ', 'L', jnueq)
@@ -99,13 +99,13 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
 !
 !       -- 1.2 CAS MOINS FACILE : DDL PORTE PAR NOEUD TARDIF :
 !          CALCUL DE TROUVE, NUNO, NUCMP :
-        call jelira(nume//'.PRNO', 'NMAXOC', nlili, k8b)
+        call jelira(nume//'.PRNO', 'NMAXOC', nlili)
         ASSERT(nlili.gt.1)
         nec=nbec(gd)
         trouve=.false.
         do 30 i = 2, nlili
             call jenuno(jexnum(nume//'.LILI', i), ligrel)
-            call jelira(jexnum(nume//'.PRNO', i), 'LONMAX', ilo, k8b)
+            call jelira(jexnum(nume//'.PRNO', i), 'LONMAX', ilo)
             if (ilo .le. 0) goto 30
             call jeveuo(jexnum(nume//'.PRNO', i), 'L', jprno)
             nbno=ilo/(nec+2)
@@ -168,7 +168,7 @@ subroutine rgndas(nu, ieq, nomno, nomcmp, tyddl,&
         call jeveuo(nume//'.DESC', 'L', jdesc)
         ASSERT(zi(jdesc).eq.2)
         call jeveuo(nume//'.DEEQ', 'L', jdeeq)
-        call jelira(nume//'.DEEQ', 'LONMAX', neq, k8b)
+        call jelira(nume//'.DEEQ', 'LONMAX', neq)
         neq=neq/2
         nuno=zi(jdeeq+2*ieq-1)
         nucmp=zi(jdeeq+2*ieq-2)

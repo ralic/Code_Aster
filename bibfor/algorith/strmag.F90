@@ -51,9 +51,7 @@ subroutine strmag(nugene, typrof)
     character(len=8) :: nomprn, modgen, sst(2)
     character(len=19) :: stomor, stolci, prgene
     character(len=14) :: nugene
-    character(len=8) :: bid
     character(len=24) :: typrof
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !
@@ -94,19 +92,19 @@ subroutine strmag(nugene, typrof)
 !          ET NOMBRE DE SOUS-STRUCTURE
     call jeveuo(prgene//'.REFN', 'L', llref)
     modgen=zk24(llref)(1:8)
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k1bid)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 !
 !
 !---------------DETERMINATION DU PROFIL(LIGNE DE CIEL)------------------
     call wkvect(stolci//'.SCHC', 'G V I', neq, jschc)
 !
     call jeveuo(prgene//'.NUEQ', 'L', llnueq)
-    call jelira(prgene//'.PRNO', 'NMAXOC', nbprno, k1bid)
+    call jelira(prgene//'.PRNO', 'NMAXOC', nbprno)
     if (typrof .eq. 'LIGN_CIEL') then
 !
 !  BOUCLE SUR LIGRELS DU PRNO
         do 10 i = 1, nbprno
-            call jelira(jexnum(prgene//'.PRNO', i), 'LONMAX', ntprno, bid)
+            call jelira(jexnum(prgene//'.PRNO', i), 'LONMAX', ntprno)
             ntprno=ntprno/2
             call jenuno(jexnum(prgene//'.LILI', i), nomprn)
 !

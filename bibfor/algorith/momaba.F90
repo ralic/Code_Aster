@@ -316,7 +316,7 @@ subroutine momaba(mailla)
 ! --- LECTURE DE LA LISTE DE NOEUDS
 !
     call jeveuo(mailla//'.COORDO    .VALE', 'L', jconm)
-    call jelira(mailla//'.COORDO    .VALE', 'LONMAX', ndim, k8b)
+    call jelira(mailla//'.COORDO    .VALE', 'LONMAX', ndim)
 !
 !     ON STOCKE LES COORDONNEES DES NOEUDS DU FOND DE FISSURE AVANT
 !     LEURS MODIFICATIONS

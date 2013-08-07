@@ -63,7 +63,6 @@ subroutine nugllo(nu, base, solveu)
 !
     character(len=8) :: k8b, noma, partit, mo
     character(len=19) :: ligrmo, nomlig
-    character(len=24) :: kbid
 !----------------------------------------------------------------------
     integer :: zzprno, izzpr2, zzprn2, nunoel, l
     integer :: zzngel, zznelg, zzliel, zznsup, zznema, jprtk
@@ -148,7 +147,7 @@ subroutine nugllo(nu, base, solveu)
     call jeveuo(nu//'.NUME.DELG', 'L', jdelgg)
     call jeveuo(nu//'.NUME.PRNO', 'L', idprn1)
     call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili, kbid)
+    call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
     call jeveuo(nu//'.NUME.NEQU', 'L', j1)
     neqg=zi(j1)
 !
@@ -187,8 +186,8 @@ subroutine nugllo(nu, base, solveu)
     call jecrec(nu//'.NUML.PRNO', base(1:1)//' V I ', 'NU', 'CONTIG', 'VARIABLE',&
                 nlili)
     do 10 ili = 1, nlili
-        call jelira(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', n1, kbid)
-        call jeecra(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', n1, kbid)
+        call jelira(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', n1)
+        call jeecra(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', n1)
 !       -- CALCUL DU NOMBRE D'ENTIERS CODES :
         if (ili .eq. 1) nec=n1/nbnoma-2
 10  end do
@@ -310,7 +309,7 @@ subroutine nugllo(nu, base, solveu)
     call wkvect(nu//'.NUML.NUEQ', base(1:1)//' V I', neql, jnueql)
 !
     do 140 ili = 1, nlili
-        call jelira(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', ntot, kbid)
+        call jelira(jexnum(nu//'.NUML.PRNO', ili), 'LONMAX', ntot)
         ntot=ntot/(nec+2)
 !
         do 130 ino = 1, ntot

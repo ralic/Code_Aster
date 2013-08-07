@@ -77,7 +77,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
     character(len=24) :: tmpnor, tmpvor, tmpori
     character(len=24) :: mlgnma, mlgnno, mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
     character(len=24) :: modnoe, modnem, modmai, nomnoe, nommai
-    character(len=1) :: k1bid
     integer :: iarg
 !     ------------------------------------------------------------------
     data carori  /'VECT_Y ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
@@ -109,7 +108,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
     mlggma = noma//'.GROUPEMA'
     mlgcoo = noma//'.COORDO    .VALE'
 !
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     call jeexin(modmai, ixma)
     call jeexin(modnem, ixnw)
     call jeexin(modnoe, ixno)
@@ -117,7 +116,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
     if (ixno .ne. 0) call jeveuo(modnoe, 'L', jdne)
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call jeveuo(modnem, 'L', jdnw)
     endif
     nbmtot = nbmail + nbmtrd
@@ -190,7 +189,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
             if (ng .gt. 0) then
                 do 36 i = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
-                    call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr, k1bid)
+                    call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
                     do 38 j = 1, nbmagr
                         nummai = zi(jdgm+j-1)
                         call jenuno(jexnum(mlgnma, nummai), nommai)
@@ -229,7 +228,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                 if (nj .gt. 0) then
                     do 42 i = 1, nj
                         call jeveuo(jexnom(mlggno, zk24(jdls+i-1)), 'L', jdgn)
-                        call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr, k1bid)
+                        call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr)
                         do 44 j = 1, nbnogr
                             numnoe = zi(jdgn+j-1)
                             do 46 k = 1, nbmtrd

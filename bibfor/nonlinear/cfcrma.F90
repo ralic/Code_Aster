@@ -60,7 +60,6 @@ subroutine cfcrma(neqmat, noma, resoco)
     integer :: itbloc, hmax, ivala, ntblc, nblc, nbcol, tbmax
     character(len=19) :: stoc, macont
     character(len=24) :: valk
-    character(len=8) :: k8bid
     integer :: ieq, icol, icompt, iblc
     integer :: jschc, jscdi, jscbl, jscib, jscde
     integer :: jrefa, jlime
@@ -246,7 +245,7 @@ subroutine cfcrma(neqmat, noma, resoco)
 !
     call jecrec(macont(1:19)//'.UALF', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblc)
-    call jeecra(macont(1:19)//'.UALF', 'LONMAX', tbmax, k8bid)
+    call jeecra(macont(1:19)//'.UALF', 'LONMAX', ival=tbmax)
     do 4 iblc = 1, nblc
         call jecroc(jexnum(macont(1:19)//'.UALF', iblc))
  4  end do

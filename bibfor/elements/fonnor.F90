@@ -99,12 +99,12 @@ subroutine fonnor(resu, noma, cnxinv)
 !       RECUPERATION DE L'ADRESSE DES NOEUDS DE FOND DE FISSURE
         call jeveuo(resu//'.FOND.NOEU', 'L', jnoe1)
 !       RECUPERATION DU NOMBRE DE NOEUD
-        call jelira(resu//'.FOND.NOEU', 'LONUTI', nbnoff, k8b)
+        call jelira(resu//'.FOND.NOEU', 'LONUTI', nbnoff)
     else
 !       RECUPERATION DE L'ADRESSE DES NOEUDS DE FOND DE FISSURE
         call jeveuo(resu//'.FOND_SUP.NOEU', 'L', jnoe1)
 !       RECUPERATION DU NOMBRE DE NOEUD
-        call jelira(resu//'.FOND_SUP.NOEU', 'LONUTI', nbnoff, k8b)
+        call jelira(resu//'.FOND_SUP.NOEU', 'LONUTI', nbnoff)
     endif
 !
 !     VERIFICATION DE LA PRESENCE DE LEVRE_SUP

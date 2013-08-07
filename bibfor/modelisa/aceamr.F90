@@ -78,7 +78,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     character(len=8) :: nomnoe, nommai, k8bid, nomu, car(nbcar), lamass
     character(len=16) :: rep, repdis(nrd), concep, cmd
     character(len=19) :: cart(3), cartdi
-    character(len=24) :: tmpnd(3), tmpvd(3), k24bid, nogp
+    character(len=24) :: tmpnd(3), tmpvd(3), nogp
     character(len=24) :: mlgnno, mlgnma, tmcinf, tmvinf
 !
 !
@@ -216,7 +216,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                 nbnoeu = 1
                 lokm = 5
 !
-                call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma, k24bid)
+                call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma)
                 call jeveuo(jexnom(noma//'.GROUPEMA', nogp), 'L', ldgm)
 !
                 if (nma .ne. nbno) then
@@ -229,7 +229,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
 !
                 do 22 in = 0, nma-1
 !                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
-                    call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma, k8bid)
+                    call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
                     call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
                     call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
 !                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE

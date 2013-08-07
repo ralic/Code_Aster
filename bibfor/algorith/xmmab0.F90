@@ -55,7 +55,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, l, ii, jj, ini, inj, pli, plj, xoula
+    integer :: i, j, k, l, ii, jj, pli, plj
     integer :: nne, nnes, ddles
     real(kind=8) :: tt(2, 2)
 !

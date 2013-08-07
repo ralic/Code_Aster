@@ -35,7 +35,6 @@ subroutine vrnoli(objet1, objet2, ier)
 !     ------------------------------------------------------------------
 !
     integer :: nbval, ival1, ival2
-    character(len=8) :: cbid
     character(len=19) :: nom1, nom2
     character(len=24) :: celk1, celk2
 !     ------------------------------------------------------------------
@@ -51,8 +50,8 @@ subroutine vrnoli(objet1, objet2, ier)
     celk2 = nom2//'.CELK'
 !
 !     --- RECUPERATION DES LONGUEURS DES TABLEAUX DE REFERENCE ---
-    call jelira(celk1, 'LONMAX', ival1, cbid)
-    call jelira(celk2, 'LONMAX', ival2, cbid)
+    call jelira(celk1, 'LONMAX', ival1)
+    call jelira(celk2, 'LONMAX', ival2)
     if (ival1 .ne. ival2) then
         ier = ier + abs(ival1-ival2)
         nbval = min(ival1,ival2)

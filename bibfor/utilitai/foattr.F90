@@ -29,7 +29,6 @@ subroutine foattr(motcle, iocc, nomfon)
 ! ======================================================================
 !     SURCHARGE LES ATTRIBUTS D'UN CONCEPT DE TYPE "FONCTION"
 !     ----------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=4) :: interp(2)
     character(len=8) :: prolg, prold
     character(len=16) :: npara, nresu
@@ -48,7 +47,7 @@ subroutine foattr(motcle, iocc, nomfon)
     ASSERT(lxlgut(temp).le.24)
     prol = temp//'.PROL'
     call jeveuo(prol, 'E', lpro)
-    call jelira(prol, 'LONUTI', nbprol, k1bid)
+    call jelira(prol, 'LONUTI', nbprol)
 !
     if (zk24(lpro) .eq. 'NAPPE   ') then
         nbfonc = ( nbprol - 7 ) / 2

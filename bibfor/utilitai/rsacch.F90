@@ -53,7 +53,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
 !
     integer :: ibid, iret, itab, i, numord, loncmp, icmp, c, j
     character(len=4) :: typech
-    character(len=8) :: k8bid, comp
+    character(len=8) ::  comp
     character(len=19) :: nomsd, champ, chs
     character(len=24) :: tabord
 ! ---------------------------------------------------------------------
@@ -84,12 +84,12 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
         if (typech .eq. 'NOEU') then
             call cnocns(champ, 'V', chs)
             call jeveuo(chs // '.CNSC', 'L', icmp)
-            call jelira(chs // '.CNSC', 'LONMAX', loncmp, k8bid)
+            call jelira(chs // '.CNSC', 'LONMAX', loncmp)
             else if (typech.eq.'ELGA' .or. typech.eq.'ELNO' .or.&
         typech.eq.'ELEM') then
             call celces(champ, 'V', chs)
             call jeveuo(chs // '.CESC', 'L', icmp)
-            call jelira(chs // '.CESC', 'LONMAX', loncmp, k8bid)
+            call jelira(chs // '.CESC', 'LONMAX', loncmp)
         else
             goto 20
         endif

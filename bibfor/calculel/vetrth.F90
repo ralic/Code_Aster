@@ -54,7 +54,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
 !
 !
     character(len=1) :: c1
-    character(len=8) :: nomcha, lpain(7), lpaout(4), k8bid, newnom
+    character(len=8) :: nomcha, lpain(7), lpaout(4), newnom
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(7), lchout(4)
     character(len=24) :: chvite, convch, chgeom, chcara(18)
@@ -71,7 +71,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
     ligrmo = modele(1:8)//'.MODELE'
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         call jeveuo(charge, 'L', jchar)
         call jeveuo(infcha, 'L', jinf)
     else

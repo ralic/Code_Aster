@@ -99,7 +99,7 @@ subroutine drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
 !
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)

@@ -92,7 +92,6 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     integer :: te, igr
     integer :: jinst, itps
 !
-    character(len=1) :: kbid
     character(len=8) :: k8b, chaine
     character(len=8) :: lpain(1), lpaout(1)
     character(len=16) :: dir, nomte
@@ -240,7 +239,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
                     do 412 iel = 1, nbelgr
                         ima = zi(liel-1+iel)
                         call jeveuo(jexnum(connex, ima), 'L', iadno)
-                        call jelira(jexnum(connex, ima), 'LONMAX', nno, kbid)
+                        call jelira(jexnum(connex, ima), 'LONMAX', nno)
                         do 413 ino = 1, nno
                             ii = indiis(zi(inopr),zi(iadno-1+ino),1, nbno)
                             if (ii .eq. 0) goto 415
@@ -284,7 +283,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
                     do 418 iel = 1, nbelgr
                         ima = zi(liel-1+iel)
                         call jeveuo(jexnum(connex, ima), 'L', iadno)
-                        call jelira(jexnum(connex, ima), 'LONMAX', nno, kbid)
+                        call jelira(jexnum(connex, ima), 'LONMAX', nno)
                         do 419 ino = 1, nno
                             ii = indiis(zi(inopr),zi(iadno-1+ino),1, nbno)
                             if (ii .eq. 0) goto 421

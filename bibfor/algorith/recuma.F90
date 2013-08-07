@@ -48,7 +48,6 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
     character(len=8) :: mailla, nomma(nbma)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
     integer :: numnot(nbto)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -65,7 +64,7 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
     if (nbgr .gt. 0) then
         do 10 i = 1, nbgr
             nomcou=nomgr(i)
-            call jelira(jexnom(mailla//'.GROUPEMA', nomcou), 'LONUTI', nb, k1bid)
+            call jelira(jexnom(mailla//'.GROUPEMA', nomcou), 'LONUTI', nb)
             call jeveuo(jexnom(mailla//'.GROUPEMA', nomcou), 'L', iadg)
             do 20 j = 1, nb
                 icomp=icomp+1

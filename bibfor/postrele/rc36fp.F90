@@ -55,9 +55,9 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij,&
     call infniv(ifm, niv)
 !
     call jeveuo('&&RC32SI.PASSAGE_SIT', 'L', jspas)
-    call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12, k8b)
-    call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23, k8b)
-    call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13, k8b)
+    call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
+    call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
+    call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
     nbsg1 = zi(jspas )
     nbsg2 = zi(jspas+1)
     nbsg3 = zi(jspas+2)

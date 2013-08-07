@@ -65,7 +65,6 @@ subroutine regeec(nomres, resgen, nomsst)
     integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref1, llref2, llref3
     integer :: llref4, elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid
-    character(len=1) :: k1bid
     character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr
     character(len=16) :: depl, nompar(6), typres, quamod
     character(len=19) :: raid, numddl, numgen, chamne
@@ -124,7 +123,7 @@ subroutine regeec(nomres, resgen, nomsst)
         call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
         call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
         call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst, kbid)
+        call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
 !
         nutars=0
         do 10 i = 1, nbsst
@@ -139,7 +138,7 @@ subroutine regeec(nomres, resgen, nomsst)
 !
     else
 !
-        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k1bid)
+        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
         call jeveuo(sst, 'L', ibid)
         do 12 i1 = 1, nbsst
             if (nomsst .eq. zk8(ibid+i1-1)) then

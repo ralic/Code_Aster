@@ -65,7 +65,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !     -- ON PARCOURT LA CONNECTIVITE POUR DETERMINER LES ENSEMBLES DE
 !        DE MAILLES DE MEME TYPE
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call jeveuo(ma//'.TYPMAIL', 'L', jtyma)
     call wkvect('&&LGPHMO.LITM', 'V V I', nbtm, jlitm)
     nbel=0
@@ -111,7 +111,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
  4      continue
         ASSERT(nbel.gt.0)
         call jecroc(jexnum(ligr19//'.LIEL', igr))
-        call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1, kbid)
+        call jeecra(jexnum(ligr19//'.LIEL', igr), 'LONMAX', nbel+1)
         ico=ico+1
         zi(jliel-1+ico)=te
     endif

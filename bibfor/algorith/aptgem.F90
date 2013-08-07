@@ -72,7 +72,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
 !
 !
-    character(len=8) :: alias, k8bid, nommai, nomnoe, valk(2)
+    character(len=8) :: alias, nommai, nomnoe, valk(2)
     integer :: numno(9), longc
     integer :: nnosdm, niverr
     logical :: lpoutr, lpoint
@@ -126,7 +126,7 @@ subroutine aptgem(sdappa, noma, newgeo, defico, ndimg,&
 !
 ! ----- LONGUEUR EFFECTIVE
 !
-        call jelira(jexnum(aptgel, posmai), 'LONMAX', longc, k8bid)
+        call jelira(jexnum(aptgel, posmai), 'LONMAX', longc)
         longc = longc /6
 !
 ! ----- TYPE DE MAILLE

@@ -81,7 +81,6 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
     character(len=24) :: valk, nomsst
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     integer :: iarg
 !
 !-----------------------------------------------------------------------
@@ -125,7 +124,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     modgen=zk24(llref3)
     call jelibe(numgen//'.REFN')
 !
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k1bid)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     kbid='  '
     call mgutdm(modgen, kbid, 1, 'NB_CMP_MAX', nbcmp,&
                 kbid)
@@ -145,7 +144,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
 !-----CREATION DU PROF-CHAMNO-------------------------------------------
 !
     call genugl(profno, indirf, modgen, mailsk)
-    call jelira(profno//'.NUEQ', 'LONMAX', neq, k1bid)
+    call jelira(profno//'.NUEQ', 'LONMAX', neq)
 !
 !-----RECUPERATION DU NOMBRE DE NOEUDS----------------------------------
 !
@@ -298,8 +297,8 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                 call mgutdm(modgen, kbid, k, 'NOM_MACR_ELEM', ibid,&
                             macrel)
                 call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', llmass)
-                call jelira(macrel//'.MAEL_MASS_VALE', 'LONMAX', nbmax, k1bid)
-                call jelira(macrel//'.MAEL_MASS_VALE', 'LONUTI', nbmas, k1bid)
+                call jelira(macrel//'.MAEL_MASS_VALE', 'LONMAX', nbmax)
+                call jelira(macrel//'.MAEL_MASS_VALE', 'LONUTI', nbmas)
                 call jeveuo(macrel//'.MAEL_INER_VALE', 'L', lliner)
 !
 !           --- CALCUL DE LA MATRICE DE ROTAION ---
@@ -350,7 +349,7 @@ subroutine regegl(nomres, resgen, mailsk, profno)
                     call jelibe(chamba)
 50              continue
                 call jeveuo(jexnum(indirf, k), 'L', llind)
-                call jelira(jexnum(indirf, k), 'LONMAX', nbcou, k1bid)
+                call jelira(jexnum(indirf, k), 'LONMAX', nbcou)
                 nbcou=nbcou/2
                 do 70 l = 1, nbcou
                     idep=zi(llind+(l-1)*2)

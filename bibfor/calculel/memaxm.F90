@@ -103,7 +103,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     else
         ASSERT(.false.)
     endif
-    call jelira(chams//'.CESV', 'TYPE', ibid, typ1)
+    call jelira(chams//'.CESV', 'TYPE', cval=typ1)
     ASSERT(typ1.eq.'R')
 !
 !

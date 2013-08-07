@@ -55,7 +55,6 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     integer :: l, lci, ln, lni, nbsi, niv
     integer :: lll, indic, indi1, indi2
     real(kind=8) :: xa, xb, ya, yb, za, zb, ax, s1, s2
-    character(len=1) :: k1bid
     character(len=4) :: docul, docu
     character(len=16) :: oper
     character(len=24) :: nvale, npnbn, npadr, nabsc, nnocp
@@ -76,11 +75,11 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     npnca = '&&RVAFFE.VECT.INTER.C'
     npnsa = '&&RVAFFE.VECT.INTER.S'
     nabsc = sdlieu(1:19)//'.ABSC'
-    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', i, docul)
+    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', cval=docul)
     call jeveuo(sdlieu(1:19)//'.DESC', 'L', anomnd)
-    call jelira(nvale, 'DOCU', i, docu)
-    call jelira(nabsc, 'NMAXOC', nboc, k1bid)
-    call jelira(nnocp, 'LONMAX', nbcp, k1bid)
+    call jelira(nvale, 'DOCU', cval=docu)
+    call jelira(nabsc, 'NMAXOC', nboc)
+    call jelira(nnocp, 'LONMAX', nbcp)
     call jeveuo(nvale, 'L', avale)
     call jeveuo(npadr, 'L', apadr)
     call jeveuo(npnbn, 'L', apnbn)
@@ -89,7 +88,7 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail,&
     call jeveuo(nnocp, 'L', anocp)
     fin = 0
     do 100, ioc = 1, nboc, 1
-    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt, k1bid)
+    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
     call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
     call jeveuo(jexnum(sdlieu(1:19)//'.COOR' , ioc), 'L', acoor)
     s1 = zr(aabsc + 1-1)

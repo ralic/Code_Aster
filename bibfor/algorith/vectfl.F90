@@ -43,7 +43,7 @@ subroutine vectfl(opt, modele, carele, mate, templu,&
 !
 !
 !
-    character(len=8) :: lpain(4), lpaout(1), k8bid, kbid
+    character(len=8) :: lpain(4), lpaout(1), kbid
     character(len=16) :: option
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
@@ -64,7 +64,7 @@ subroutine vectfl(opt, modele, carele, mate, templu,&
                 'CHAR_THER')
     call wkvect(ve2, 'V V K24', 1, jlve)
     if (templu(9:14) .eq. '.BIDON') then
-        call jeecra(ve2, 'LONUTI', 0, k8bid)
+        call jeecra(ve2, 'LONUTI', 0)
         goto 10
     endif
 !
@@ -116,7 +116,7 @@ subroutine vectfl(opt, modele, carele, mate, templu,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
     zk24(jlve) = lchout(1)
-    call jeecra(ve2, 'LONUTI', 1, k8bid)
+    call jeecra(ve2, 'LONUTI', 1)
 !
 10  continue
 !

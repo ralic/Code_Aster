@@ -43,7 +43,6 @@ subroutine gidoma(nbnoto)
 !     VARIABLES LOCALES:
 !     ------------------
 !
-    character(len=8) :: kbi
     logical :: iden
 !
 !
@@ -55,7 +54,7 @@ subroutine gidoma(nbnoto)
     integer :: nunok
 !-----------------------------------------------------------------------
     call jemarq()
-    call jelira('&&GILIRE.CONNEX2', 'NMAXOC', nbmato, kbi)
+    call jelira('&&GILIRE.CONNEX2', 'NMAXOC', nbmato)
     call jeveuo('&&GILIRE.CONNEX2', 'L', iacnx2)
     call jeveuo(jexatr('&&GILIRE.CONNEX2', 'LONCUM'), 'L', ilcnx2)
 !

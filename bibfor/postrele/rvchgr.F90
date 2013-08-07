@@ -69,7 +69,6 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !  -----------------------------------------
 !
 !
-    character(len=1) :: k1bid
 !
 !  ---------------------------------
 !
@@ -125,7 +124,7 @@ subroutine rvchgr(mailla, courbe, nlsnac, repere, sdnewr,&
 !
         ind = 1
 !
-        call jelira(nlsnac, 'LONMAX', nbnac, k1bid)
+        call jelira(nlsnac, 'LONMAX', nbnac)
         call jeveuo(nlsnac, 'L', alsnac)
         call jeveuo(mailla//'.COORDO    .VALE', 'L', acoord)
 !

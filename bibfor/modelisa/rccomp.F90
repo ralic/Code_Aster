@@ -44,7 +44,6 @@ subroutine rccomp(chmat, nomail, nomode)
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
     character(len=24) :: mesmai
-    character(len=1) :: k1bid
 !
     integer :: ncmpma, icmp, icpri, icprk, nbgmax, icp, numlc
     parameter (ncmpma=7+9+4)
@@ -90,7 +89,7 @@ subroutine rccomp(chmat, nomail, nomode)
 !    ALGO1D FONCTIONNE (AVEC UN SEUL GROUPE DE FIBRE)
         call jeveuo(sdcomp//'.CPRK', 'L', icprk)
 ! --- RECHERCHE DE LA PREMIERE RELATION NON VIDE
-        call jelira(sdcomp//'.CPRK', 'LONMAX', nbgmax, k1bid)
+        call jelira(sdcomp//'.CPRK', 'LONMAX', nbgmax)
         nbgmax=(nbgmax-1)/6
         do 20 j = 1, nbgmax
             icp=icprk-1+6*(j-1)

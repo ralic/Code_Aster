@@ -48,7 +48,6 @@ subroutine cglecc(typfis, resu, vecord, calsig)
 ! ======================================================================
 !
     integer :: ncelas, iarg, ier, i, jvec, nbord, iord, vali
-    character(len=8) :: k8b
     character(len=24) :: k24b
 !
     call jemarq()
@@ -77,7 +76,7 @@ subroutine cglecc(typfis, resu, vecord, calsig)
     if (calsig .eq. 'NON') then
 !
         call jeveuo(vecord, 'L', jvec)
-        call jelira(vecord, 'LONMAX', nbord, k8b)
+        call jelira(vecord, 'LONMAX', nbord)
 !
         do 10 i = 1, nbord
             iord = zi(jvec-1+i)

@@ -69,7 +69,7 @@ subroutine delat(modgen, nbsst, nbmo)
         call jeveuo(macel//'.MAEL_REFE', 'L', ibamo)
 !
 !       CALL JEVEUO(ZK24(IBAMO)(1:19)//'.TYPE','L',ITYPE)
-        call jelira(zk24(ibamo)(1:19)//'.ORDR', 'LONUTI', nbtype, k8bid)
+        call jelira(zk24(ibamo)(1:19)//'.ORDR', 'LONUTI', nbtype)
         do 3, ij=1,nbtype
         icompt=icompt+1
         call rsadpa(zk24(ibamo)(1:19), 'L', 1, 'TYPE_DEFO', ij,&

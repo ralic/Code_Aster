@@ -76,7 +76,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     real(kind=8) :: coef
     character(len=2) :: ires
     character(len=3) :: imo
-    character(len=8) :: modsta, modcor, k8bid
+    character(len=8) :: modsta, modcor
     character(len=8) :: matass, mailla, monmot(2)
     character(len=14) :: numddl
     character(len=19) :: veasge, fonct, facce
@@ -295,7 +295,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
         call getvr8('EXCIT_RESU', 'COEF_MULT', i, iarg, 1,&
                     alpha, m1)
 ! ----- NOMBRE DE PAS DE TEMPS DU RESULTAT
-        call jelira(resu//'.DISC', 'LONMAX', ninst, k8bid)
+        call jelira(resu//'.DISC', 'LONMAX', ninst)
         call jeveuo(resu//'.DISC', 'L', jinst)
 ! ----- EXCITATION STOCKEE DANS LE CHAMP DEPL (IDEM QUE DYNA_LINE_TRAN)
         call jeveuo(resu//'.DEPL', 'L', jdepl)

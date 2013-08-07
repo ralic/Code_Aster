@@ -55,7 +55,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     real(kind=8) :: zmax, zmin
     integer :: jdime, ibid, ier, ilmaco, ism, k, nbma, nbno
     integer :: nbsm, nno, typv, jtypma
-    character(len=8) :: kbid, typma
+    character(len=8) ::  typma
 !
 !
 !
@@ -93,7 +93,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
         nbsm = zi(jdime-1+4)
         repi = 0
         do 10,ism = 1,nbsm
-        call jelira(jexnum(nomob//'.SUPMAIL', ism), 'LONMAX', nno, kbid)
+        call jelira(jexnum(nomob//'.SUPMAIL', ism), 'LONMAX', nno)
         repi = max(repi,nno)
 10      continue
 !

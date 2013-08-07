@@ -44,7 +44,6 @@ function nbelem(ligrlz, igrel)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
     integer :: n1
-    character(len=1) :: k1bid
     character(len=19) :: ligrel
 ! DEB-------------------------------------------------------------------
     ligrel=ligrlz
@@ -54,7 +53,7 @@ function nbelem(ligrlz, igrel)
     if (iactif .eq. 1) then
         n1=zi(illiel-1+igrel+1)-zi(illiel-1+igrel)
     else
-        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1, k1bid)
+        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
     endif
     nbelem=n1-1
 !

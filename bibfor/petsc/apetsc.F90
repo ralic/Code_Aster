@@ -130,7 +130,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     endif
 !
     ASSERT(matas.ne.' ')
-    call jelira(matas//'.VALM', 'TYPE', ibid, rouc)
+    call jelira(matas//'.VALM', 'TYPE', cval=rouc)
 !
 !     1. INFORMATIONS SUR LA MATRICE :
 !     --------------------------------

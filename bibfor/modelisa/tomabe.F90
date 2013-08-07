@@ -97,7 +97,6 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     integer :: npen6, npen15, nhex8, nhex20, nhex27
 !
     logical :: mail3d, trouv1, trouv2
-    character(len=1) :: k1b
     character(len=3) :: k3mai
     character(len=8) :: beton
     character(len=19) :: carte, nomrc, chsmat, cartez, chtmp
@@ -193,7 +192,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! ---
     do 40 imail = 1, nbmabe
         numail = zi(jnumab+imail-1)
-        call jelira(jexnum(conxma, numail), 'LONMAX', nbconx, k1b)
+        call jelira(jexnum(conxma, numail), 'LONMAX', nbconx)
         call jeveuo(jexnum(conxma, numail), 'L', jconx)
         do 41 ino = 1, nbconx
             numnoe = zi(jconx+ino-1)
@@ -208,7 +207,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         if (zi(jncoch+ino-1) .gt. 0) nbnobe = nbnobe + 1
 50  end do
 !
-    call jeecra(nunobe, 'LONUTI', nbnobe, ' ')
+    call jeecra(nunobe, 'LONUTI', nbnobe)
     call jeveuo(nunobe, 'E', jnunob)
     idecal = 0
     do 60 ino = 1, nbnoma
@@ -286,7 +285,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         rcvalr = nomrc//'.VALR'
         call jeveuo(rcvalk, 'L', jvalk)
         call jeveuo(rcvalr, 'L', jvalr)
-        call jelira(rcvalr, 'LONMAX', nbcste, k1b)
+        call jelira(rcvalr, 'LONMAX', nbcste)
         trouv1 = .false.
         trouv2 = .false.
         do 150 icste = 1, nbcste
@@ -321,7 +320,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 rcvalr = nomrc//'.VALR'
                 call jeveuo(rcvalk, 'L', jvalk)
                 call jeveuo(rcvalr, 'L', jvalr)
-                call jelira(rcvalr, 'LONMAX', nbcste, k1b)
+                call jelira(rcvalr, 'LONMAX', nbcste)
 !
                 ias = zi(jptma+numail-1)
                 if (ias .eq. 0) then

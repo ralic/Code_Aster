@@ -5,11 +5,10 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 #include "jeveux.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    integer :: ndim, nnol, nnof
-    integer :: ivff, ipgf, pla(27), ifa, cface(5, 3), lact(8)
+    integer :: ndim, nnol
+    integer ::  pla(27), cface(5, 3), lact(8)
     real(kind=8) :: vtmp(400), tau1(3), tau2(3)
     real(kind=8) :: ffc(8), jac, reac12(3)
-    logical :: noeud
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

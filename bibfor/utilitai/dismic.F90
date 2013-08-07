@@ -47,7 +47,7 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ire1, ire2, ire3, ire4, ire5, ire6
+    integer ::  ire1, ire2, ire3, ire4, ire5, ire6
     integer :: ire7, iret, jpro
 !-----------------------------------------------------------------------
     call jemarq()
@@ -81,7 +81,7 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
     else if (questi(1:7) .eq. 'CHAM_NO') then
         call jeexin(nomob//'.DESC', iret)
         if (iret .gt. 0) then
-            call jelira(nomob//'.DESC', 'DOCU', ibid, docu)
+            call jelira(nomob//'.DESC', 'DOCU', cval=docu)
             if (docu .eq. 'CHNO') then
                 repk = 'OUI'
                 goto 9999
@@ -106,7 +106,7 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !
         call jeexin(nomob//'.DESC', ire1)
         if (ire1 .gt. 0) then
-            call jelira(nomob//'.DESC', 'DOCU', ibid, docu)
+            call jelira(nomob//'.DESC', 'DOCU', cval=docu)
             if (docu .eq. 'CHNO') then
                 repk = 'CHAM_NO'
                 goto 9999

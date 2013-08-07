@@ -47,7 +47,7 @@ subroutine asmchc(matas)
     integer :: typmat, ielim, jelim, kdeb, kfin, nccva, kkeli, ilig, jcol
     integer :: jsmhc, jsmdi, jvalm, jvalm2, jccva, jccll, nelim, jnulg
     integer :: jrefa, iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
-    integer :: iret, nblocm, jccii, jremp, decjel, iremp, jccid, keta, ibid
+    integer ::  nblocm, jccii, jremp, decjel, iremp, jccid, keta
     logical :: nonsym
 !----------------------------------------------------------------------
     call jemarq()
@@ -58,7 +58,7 @@ subroutine asmchc(matas)
     call jeexin(mat//'.CCID', ier)
     if (ier .eq. 0) goto 9999
 !
-    call jelira(mat//'.REFA', 'CLAS', ibid, base)
+    call jelira(mat//'.REFA', 'CLAS', cval=base)
     call jeveuo(mat//'.REFA', 'E', jrefa)
     nu = zk24(jrefa-1+2)(1:14)
     call jeexin(nu//'.NUML.DELG', imatd)
@@ -160,11 +160,11 @@ subroutine asmchc(matas)
 !     -- RECUPERATION DE .VALM
 !        CALCUL DE TYPMAT ET NONSYM :
 !     ------------------------------------
-    call jelira(jexnum(mat//'.VALM', 1), 'TYPE', iret, kbid)
+    call jelira(jexnum(mat//'.VALM', 1), 'TYPE', cval=kbid)
     typmat = 1
     if (kbid(1:1) .eq. 'C') typmat = 2
     nonsym=.false.
-    call jelira(mat//'.VALM', 'NMAXOC', nblocm, kbid)
+    call jelira(mat//'.VALM', 'NMAXOC', nblocm)
     ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
     if (nblocm .eq. 2) nonsym=.true.
     call jeveuo(jexnum(mat//'.VALM', 1), 'E', jvalm)

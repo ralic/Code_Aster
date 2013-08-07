@@ -53,7 +53,6 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
 !         SI NVAL > NMAX  : ON  S'ARRETE EN ERREUR FATALE
 !
 ! ----------------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=24) :: noliel
     character(len=16) :: nomte
     integer :: liel, l, te, k
@@ -62,7 +61,7 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
 !
     noliel = ligrel(1:19)//'.LIEL'
     call jeveuo(jexnum(noliel, igrel), 'L', liel)
-    call jelira(jexnum(noliel, igrel), 'LONMAX', l, k1bid)
+    call jelira(jexnum(noliel, igrel), 'LONMAX', l)
     te = zi(liel-1+l)
     call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
 !

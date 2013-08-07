@@ -82,7 +82,7 @@ subroutine cfapno(noma, newgeo, defico, resoco, lctfd,&
     real(kind=8) :: r8bid, jeu
     real(kind=8) :: coornm(3)
     character(len=8) :: nomnoe
-    integer :: numnom, nbnom
+    integer :: numnom
     real(kind=8) :: coefno(9)
 !
 ! ----------------------------------------------------------------------

@@ -109,7 +109,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
     endif
     lonigr = absnb*irepe + 1
     call jecroc(jexnum(liel, igrel))
-    call jeecra(jexnum(liel, igrel), 'LONMAX', lonigr, ' ')
+    call jeecra(jexnum(liel, igrel), 'LONMAX', lonigr)
     call jeveuo(jexnum(liel, igrel), 'E', jligr)
     call jeveuo(ligr//'.LGNS', 'E', jdlgns)
     call jeveuo(ligr//'.LGRF', 'E', jnoma)
@@ -125,7 +125,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
             if (code .eq. 1) then
                 inema = inema + 1
                 call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 2, ' ')
+                call jeecra(jexnum(nema, inema), 'LONMAX', 2)
                 call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = numpoi
@@ -134,7 +134,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
             else if (code.eq.2) then
                 inema = inema + 1
                 call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 4, ' ')
+                call jeecra(jexnum(nema, inema), 'LONMAX', 4)
                 call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 nbno(1) = nbno(1) + 1
@@ -147,7 +147,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
             else if (code.eq.3) then
                 inema = inema + 1
                 call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 4, ' ')
+                call jeecra(jexnum(nema, inema), 'LONMAX', 4)
                 call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = -nbno(1)+1
@@ -160,7 +160,7 @@ subroutine noligr(ligrz, igrel, numel, nb, li,&
             else if (code.eq.4) then
                 inema = inema + 1
                 call jecroc(jexnum(nema, inema))
-                call jeecra(jexnum(nema, inema), 'LONMAX', 4, ' ')
+                call jeecra(jexnum(nema, inema), 'LONMAX', 4)
                 call jeveuo(jexnum(nema, inema), 'E', jnema)
                 zi(jnema-1+1) = nunoeu
                 zi(jnema-1+2) = -nbno(k)+1

@@ -79,7 +79,7 @@ subroutine nudlg2(nu)
                 nogd, ier)
     call dismoi('F', 'NB_EC', nogd, 'GRANDEUR', nec,&
                 kbid, ier)
-    call jelira(nu14//'.NUME.PRNO', 'NMAXOC', nbligr, kbid)
+    call jelira(nu14//'.NUME.PRNO', 'NMAXOC', nbligr)
     call jeveuo(nu14//'.NUME.NUEQ', 'L', jnueq)
 !
 !
@@ -93,10 +93,10 @@ subroutine nudlg2(nu)
         if (iexi .eq. 0) goto 31
 !
         call jeveuo(ligr19//'.NEMA', 'L', j1nema)
-        call jelira(ligr19//'.NEMA', 'NUTIOC', nbma, kbid)
+        call jelira(ligr19//'.NEMA', 'NUTIOC', nbma)
         call jeveuo(jexatr(ligr19//'.NEMA', 'LONCUM'), 'L', j2nema)
 !
-        call jelira(jexnum(nu14//'.NUME.PRNO', ili), 'LONMAX', n4, kbid)
+        call jelira(jexnum(nu14//'.NUME.PRNO', ili), 'LONMAX', n4)
         if (n4 .eq. 0) goto 31
         call jeveuo(jexnum(nu14//'.NUME.PRNO', ili), 'L', jprno)
         do 21 ima = 1, nbma

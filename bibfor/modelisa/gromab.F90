@@ -60,7 +60,6 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
     integer :: ino, iret, jcoor, nbno, ima, iad
     real(kind=8) :: xmax, xk, ymax, yk, zmax, zk, x, y, z, epmax
     real(kind=8) :: ep, sqrt
-    character(len=1) :: k1b
     character(len=19) :: carte
     character(len=24) :: coorno, connex, cavale
 !
@@ -126,9 +125,9 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem,&
         call jeexin(cavale, iret)
         ASSERT(iret.ne.0)
 !
-        call jelira(jexnom('&CATA.GD.NOMCMP', 'CACOQU'), 'LONMAX', ncaco, k1b)
+        call jelira(jexnom('&CATA.GD.NOMCMP', 'CACOQU'), 'LONMAX', ncaco)
 !
-        call jelira(cavale, 'LONMAX', ncava, k1b)
+        call jelira(cavale, 'LONMAX', ncava)
         call jeveuo(cavale, 'L', ival)
 !
         nep = ncava/ncaco

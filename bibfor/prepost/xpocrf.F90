@@ -68,7 +68,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
     mo = modele
     nom = mo//'.FISS                   '
     call jeveuo(nom, 'L', jnom)
-    call jelira(nom, 'LONUTI', nfiss, k8b)
+    call jelira(nom, 'LONUTI', nfiss)
 !
     call dismoi('F', 'NB_NO_MAILLA', maxfem, 'MAILLAGE', nnntot,&
                 k8b, iret)
@@ -108,7 +108,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                 call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
                 call ltnotb(fiss, 'FOND_FISS', nomtab)
                 call jeveuo(nomtab//'.0001', 'L', jva0)
-                call jelira(nomtab//'.0001', 'LONUTI', nfon, k8b)
+                call jelira(nomtab//'.0001', 'LONUTI', nfon)
                 if (ndim .eq. 3) then
                     call jeveuo(nomtab//'.0002', 'L', jva00)
                     call jeveuo(nomtab//'.0004', 'L', jva1)
@@ -141,16 +141,15 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 !           CONSTRUCTION DES GROUPES DE MAILLES DU FOND DE FISSURE
                     call jecroc(jexnom(maxfem//'.GROUPEMA', nogma))
                     call jenonu(jexnom(maxfem//'.GROUPEMA', nogma), igr)
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONMAX', nfon, k8b)
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONUTI', max((ntail-1), 1),&
-                                k8b)
+                    call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONMAX', nfon)
+                    call jeecra(jexnum(maxfem//'.GROUPEMA', igr), 'LONUTI', max((ntail-1),1))
                     call jeveuo(jexnum(maxfem//'.GROUPEMA', igr), 'E', iagma)
 !
 !           CONSTRUCTION DES GROUPES DE NOEUDS DU FOND DE FISSURE
                     call jecroc(jexnom(maxfem//'.GROUPENO', nogno))
                     call jenonu(jexnom(maxfem//'.GROUPENO', nogno), igr)
-                    call jeecra(jexnum(maxfem//'.GROUPENO', igr), 'LONMAX', nfon, k8b)
-                    call jeecra(jexnum(maxfem//'.GROUPENO', igr), 'LONUTI', ntail, k8b)
+                    call jeecra(jexnum(maxfem//'.GROUPENO', igr), 'LONMAX', nfon)
+                    call jeecra(jexnum(maxfem//'.GROUPENO', igr), 'LONUTI', ntail)
                     call jeveuo(jexnum(maxfem//'.GROUPENO', igr), 'E', iagno)
 !
 !           COORDONNEES DES NOEUDS
@@ -178,7 +177,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                             if (nufon .gt. 1) then
                                 ima = nbmax-mftot+icompt+1
                                 zi(jtypm2-1+ima) = ntseg2
-                                call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 2, k8b)
+                                call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 2)
                                 call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                                 do 3121 j = 1, 2
                                     zi(jconx-1+j)=ino+j-2
@@ -189,7 +188,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
                         else if (ntail.eq.1) then
                             ima = nbmax-mftot+icompt+1
                             zi(jtypm2-1+ima) = ntpoi1
-                            call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 1, k8b)
+                            call jeecra(jexnum(maxfem//'.CONNEX', ima), 'LONMAX', 1)
                             call jeveuo(jexnum(maxfem//'.CONNEX', ima), 'E', jconx)
                             zi(jconx) = ino
                             icompt = icompt + 1

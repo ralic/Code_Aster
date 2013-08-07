@@ -210,7 +210,7 @@ subroutine op0079()
             call jeveuo(nochno//'.VALE', 'L', iadvec)
             call jeveuo(nochno//'.REFE', 'L', iadref)
             call jeveuo(basemo//'           .REFD', 'L', iadrif)
-            call jelira(nochno//'.VALE', 'TYPE', ibid, typvec)
+            call jelira(nochno//'.VALE', 'TYPE', cval=typvec)
 ! --- LE CAS COMPLEXE (SD HARMONIQUES) N'EST PAS TRAITE
             if (typvec .eq. 'C') then
                 call u2mess('F', 'ALGORITH17_19')

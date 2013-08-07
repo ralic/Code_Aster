@@ -82,7 +82,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
     nomst= '&&IRECRI.SOUS_TITRE.TITR'
     call jeveuo(nomst, 'L', jtitr)
     stitr = zk80(jtitr)
-    call jelira(nomst, 'LONMAX', nbtitr, k8bid)
+    call jelira(nomst, 'LONMAX', nbtitr)
     if (nbtitr .ge. 2) then
         stitrb = zk80(jtitr+1)
     else

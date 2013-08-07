@@ -86,7 +86,7 @@ subroutine caraff(noma, gran, base, cartz)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), gd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
 !
     if (gran .eq. 'VAR2_R') then

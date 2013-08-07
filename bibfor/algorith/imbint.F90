@@ -51,7 +51,6 @@ subroutine imbint(nomres, ifm)
     integer :: nbno, nbnot, ncomp, numgd
 !-----------------------------------------------------------------------
     parameter    (nbcpmx=300)
-    character(len=1) :: k1bid
     character(len=8) :: nomcou, typcou, nomnoe, typ, typbas(3), nomtyp
     character(len=8) :: nomres, mailla, flec, craigb, mneal, aucun, cbharm
     character(len=8) :: k8bid
@@ -114,8 +113,8 @@ subroutine imbint(nomres, ifm)
 !
     call jeveuo(typint, 'L', lltyp)
     call jeveuo(desdef, 'L', lldes)
-    call jelira(nomint, 'NOMMAX', nbint, k1bid)
-    call jelira(desdef, 'LONMAX', nbnot, k1bid)
+    call jelira(nomint, 'NOMMAX', nbint)
+    call jelira(desdef, 'LONMAX', nbnot)
     nbnot=nbnot/(2+nbec)
 !
     idau=nbnot+1
@@ -148,7 +147,7 @@ subroutine imbint(nomres, ifm)
         call jeveuo(jexnum(ddact, i), 'L', llact)
         call jenuno(jexnum(nomint, i), nomcou)
         call jeveuo(jexnum(noeint, i), 'L', llnoe)
-        call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         write(ifm,*)' INTERFACE: ',nomcou
         write(ifm,*) '---------- '
         write(ifm,*)'              TYPE: ',typcou

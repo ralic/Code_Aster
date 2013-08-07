@@ -195,7 +195,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
         call jeexin(grp(k), iret)
         if (iret .eq. 0) goto 10
         call jeveuo(grp(k), 'L', jgrp)
-        call jelira(grp(k), 'LONMAX', nmaenr, k8bid)
+        call jelira(grp(k), 'LONMAX', nmaenr)
 !
 ! --- BOUCLE SUR LES MAILLES DU GROUPE
 !
@@ -213,7 +213,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     call jeexin(gr, iret)
     if (iret .eq. 0) goto 99
     call jeveuo(gr, 'L', jgrp)
-    call jelira(gr, 'LONMAX', nmaenr, k8bid)
+    call jelira(gr, 'LONMAX', nmaenr)
 !
 ! --- BOUCLE SUR LES MAILLES DE CONTACT
 !

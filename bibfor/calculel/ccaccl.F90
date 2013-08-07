@@ -71,21 +71,19 @@ subroutine ccaccl(option, modele, resuin, mateco, carael,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     logical :: exicar
 !
-    integer :: iret1, iret2, ibid, jainst, kparin
-    integer :: jains2, ipara, inume, nbsp
+    integer :: iret1, iret2, ibid, kparin
+    integer ::  ipara, inume, nbsp
 !
-    real(kind=8) :: r8b, time, time2
+    real(kind=8) :: r8b
 !
     complex(kind=8) :: cbid
 !
-    character(len=2) :: chdret, kbid
+    character(len=2) ::  kbid
     character(len=8) :: k8b, noma, curpar, carae2, parain
-    character(len=16) :: vari, concep, nomcmd
-    character(len=19) :: chvac2, compor, compo2, canbva
-    character(len=24) :: chmass, chnlin
-    character(len=24) :: chnova
+    character(len=16) ::  concep, nomcmd
+    character(len=19) ::  compor, compo2, canbva
+    character(len=24) ::  chnlin
     character(len=24) :: chcara(18)
-    character(len=24) :: chsig, chsigf
 !
     call jemarq()
 !

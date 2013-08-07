@@ -43,7 +43,7 @@ subroutine chreco(chou)
     integer :: iret, ibid, jvale, nbval, jvalin, i
     character(len=3) :: tsca
     character(len=4) :: docu
-    character(len=8) :: chou, chin, nomgd, partie, k8b
+    character(len=8) :: chou, chin, nomgd, partie
     character(len=24) :: k24b, vale, valin
     real(kind=8) :: x, y, c1
     integer :: iarg
@@ -76,10 +76,10 @@ subroutine chreco(chou)
     call jeexin(k24b, ibid)
     if (ibid .gt. 0) then
         k24b=vale(1:19)//'.DESC'
-        call jelira(k24b, 'DOCU', ibid, docu)
+        call jelira(k24b, 'DOCU', cval=docu)
     else
         k24b=vale(1:19)//'.CELD'
-        call jelira(k24b, 'DOCU', ibid, docu)
+        call jelira(k24b, 'DOCU', cval=docu)
     endif
 !
     if (docu .eq. 'CHNO') then
@@ -90,10 +90,10 @@ subroutine chreco(chou)
         call u2mess('F', 'UTILITAI_21')
     endif
 !
-    call jelira(vale, 'LONMAX', nbval, k8b)
+    call jelira(vale, 'LONMAX', nbval)
     call jedetr(vale)
     call jecreo(vale, 'G V R')
-    call jeecra(vale, 'LONMAX', nbval, k8b)
+    call jeecra(vale, 'LONMAX', nbval)
     call jeveuo(vale, 'E', jvale)
 !
     valin=vale

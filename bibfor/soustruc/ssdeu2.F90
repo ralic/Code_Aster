@@ -43,7 +43,6 @@ subroutine ssdeu2(nval, iliste, nvalap)
 !        NVALAP:  NOMBRE D'ENTIERS DIFFERENTS TROUVES DANS LA LISTE.
 !
 ! ----------------------------------------------------------------------
-    character(len=8) :: kbid
 !
 !
 !     -- L'OBJET DE TRAVAIL "&&SSDEU2.WK1" CONTIENDRA DES "1" AU NIVEAU
@@ -58,7 +57,7 @@ subroutine ssdeu2(nval, iliste, nvalap)
         ndim=max(1000,2*nval)
         call wkvect('&&SSDEU2.WK1', 'V V I', ndim, iawk1)
     else
-        call jelira('&&SSDEU2.WK1', 'LONMAX', ndim, kbid)
+        call jelira('&&SSDEU2.WK1', 'LONMAX', ndim)
         if (ndim .lt. nval) then
             call jedetr('&&SSDEU2.WK1')
             call wkvect('&&SSDEU2.WK1', 'V V I', 2*nval, iawk1)

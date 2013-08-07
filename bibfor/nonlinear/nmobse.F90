@@ -73,7 +73,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
     character(len=24) :: nomcha, nomchs
     character(len=4) :: typcha
     character(len=19) :: champ
-    character(len=8) :: extrcp, extrch, extrga, k8bid
+    character(len=8) :: extrcp, extrch, extrga
     character(len=19) :: chgaus, chnoeu, chelga
     logical :: lobsv
 !
@@ -103,7 +103,7 @@ subroutine nmobse(noma, sdieto, sdobse, instan)
 !
     obscha = sdobse(1:14)//'     .CHAM'
     call jeveuo(obscha, 'L', jobsch)
-    call jelira(obscha, 'LONMAX', nbcham, k8bid)
+    call jelira(obscha, 'LONMAX', ival=nbcham)
     nbcham = nbcham / 2
 !
 ! --- SD TYPE D'EXTRACTIONS

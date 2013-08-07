@@ -47,7 +47,6 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     real(kind=8) :: stotal, dx, dy, ddx, ddy, rbig, xxmax, xxmin, xmax, xmin
     real(kind=8) :: yymax, yymin, ymax, ymin
     real(kind=8) :: dz, ddz, zmin, zmax, zzmin, zzmax
-    character(len=8) :: kb
     character(len=24) :: maille
     integer :: p1, q1, r1, p2, q2, r2, p, q, r, nx, ny, nz, ndec, nno
     integer :: iatr3, ntr3, ialin1, ialin2, nno1, nno2, i, iposi, ifm, niv
@@ -78,8 +77,8 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
 !
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
-    call jelira('&&PJXXCO.LINO1', 'LONMAX', nno1, kb)
-    call jelira('&&PJXXCO.LINO2', 'LONMAX', nno2, kb)
+    call jelira('&&PJXXCO.LINO1', 'LONMAX', nno1)
+    call jelira('&&PJXXCO.LINO2', 'LONMAX', nno2)
 !
 !
 !     1. : ON CALCULE XMIN,XMAX,YMIN,YMAX,NX,NY,NZ,DX,DY,DZ...

@@ -40,9 +40,9 @@ function zerobj(obj)
 !                .FALSE.   SINON
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    character(len=1) :: typsca, xous, genr, kbid
+    character(len=1) :: typsca, xous, genr
     character(len=24) :: obj2
-    integer :: i, j, n, jval, long, ibid, iret, iexi
+    integer :: i, j, n, jval, long, iret, iexi
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -50,11 +50,11 @@ function zerobj(obj)
     zerobj=.true.
     obj2=obj
 !
-    call jelira(obj2, 'TYPE', ibid, typsca)
+    call jelira(obj2, 'TYPE', cval=typsca)
     ASSERT(typsca.eq.'R' .or. typsca.eq.'C')
-    call jelira(obj2, 'XOUS', ibid, xous)
-    call jelira(obj2, 'XOUS', ibid, xous)
-    call jelira(obj2, 'GENR', ibid, genr)
+    call jelira(obj2, 'XOUS', cval=xous)
+    call jelira(obj2, 'XOUS', cval=xous)
+    call jelira(obj2, 'GENR', cval=genr)
     ASSERT(genr.eq.'V')
 !
 !
@@ -62,7 +62,7 @@ function zerobj(obj)
 !     --------------------------------
     if (xous .eq. 'S') then
         call jeveuo(obj2, 'L', jval)
-        call jelira(obj2, 'LONMAX', long, kbid)
+        call jelira(obj2, 'LONMAX', long)
 !
         if (typsca .eq. 'R') then
             do 2, j=1,long
@@ -79,7 +79,7 @@ function zerobj(obj)
 !     2) CAS DES COLLECTIONS :
 !     --------------------------------
     if (xous .eq. 'X') then
-        call jelira(obj2, 'NMAXOC', n, kbid)
+        call jelira(obj2, 'NMAXOC', n)
 !
         do 10,i=1,n
         call jeexin(jexnum(obj2, i), iret)
@@ -89,7 +89,7 @@ function zerobj(obj)
         call jaexin(jexnum(obj2, i), iexi)
         if (iexi .eq. 0) goto 10
         call jeveuo(jexnum(obj2, i), 'L', jval)
-        call jelira(jexnum(obj2, i), 'LONMAX', long, kbid)
+        call jelira(jexnum(obj2, i), 'LONMAX', long)
 !
         if (typsca .eq. 'R') then
             do 20, j=1,long

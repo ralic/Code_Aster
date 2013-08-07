@@ -239,7 +239,7 @@ subroutine op0096()
     do 120, m = 1, nbtma, 1
     ima = zi(jnuma+m-1)
     call jeveuo(jexnum(nomail//'.CONNEX', ima), 'L', adrmc)
-    call jelira(jexnum(nomail//'.CONNEX', ima), 'LONMAX', nbn, k8b)
+    call jelira(jexnum(nomail//'.CONNEX', ima), 'LONMAX', nbn)
     call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma-1+ima)), typm)
     call jenuno(jexnum(nommai, ima), nomm1)
 !
@@ -298,7 +298,7 @@ subroutine op0096()
     if (zi(atmp3 + i-1) .gt. 0) then
         n = n + 1
         m = m + 1
-        call jelira(jexnum(temp4, i), 'LONMAX', l, k1bid)
+        call jelira(jexnum(temp4, i), 'LONMAX', l)
         long = long + l
         zi(aindir + m-1) = i
     endif
@@ -378,7 +378,7 @@ subroutine op0096()
         call wkvect(nsds10, 'G V I', n, asds10)
         call jecrec(nsds4, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     n)
-        call jeecra(nsds4, 'LONT', long, ' ')
+        call jeecra(nsds4, 'LONT', long)
         do 140, i = 1, n, 1
         m = zi(aindir + i-1)
         zr(asds1 + i-1) = zr(atmp1 + m-1)
@@ -399,9 +399,9 @@ subroutine op0096()
         zi(asds9 + i-1) = zi(atmp9 + m-1)
         zi(asds10 + i-1) = zi(atmp10 + m-1)
         call jeveuo(jexnum(temp4, m), 'E', atmp4)
-        call jelira(jexnum(temp4, m), 'LONMAX', l, k1bid)
+        call jelira(jexnum(temp4, m), 'LONMAX', l)
         call jecroc(jexnum(nsds4, i))
-        call jeecra(jexnum(nsds4, i), 'LONMAX', l, ' ')
+        call jeecra(jexnum(nsds4, i), 'LONMAX', l)
         call jeveuo(jexnum(nsds4, i), 'E', asds4)
         do 145, j = 1, l, 1
         zi(asds4 + j-1) = zi(atmp4 + j-1)
@@ -487,8 +487,8 @@ subroutine op0096()
 !
         if (info .ge. 2) then
             write(ifm,1002) isgt
-            call jelira(nsds1, 'LONMAX', n, k1bid)
-            call jelira(nsds11, 'LONMAX', m, k1bid)
+            call jelira(nsds1, 'LONMAX', n)
+            call jelira(nsds11, 'LONMAX', m)
             write(ifm,1004) n
             write(ifm,1006) m
             write(ifm,1008) xa, ya, za
@@ -499,7 +499,7 @@ subroutine op0096()
             j2 = zi(asds12 + i-1)
             do 210, j = j1, j2, 1
             call jeveuo(jexnum(nsds4, j), 'L', asds4)
-            call jelira(jexnum(nsds4, j), 'LONMAX', l, k1bid)
+            call jelira(jexnum(nsds4, j), 'LONMAX', l)
             call jenuno(jexnum(nommai, zi(asds4)), nomm1)
             if (l .ge. 2) then
                 nnbm = min( 7 , l-1 )

@@ -35,12 +35,11 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
 !     ------------------------------------------------------------------
     integer :: nbsips, jnpass, i, k, ioc1, nsitup
     character(len=3) :: typass
-    character(len=8) :: k8b
 !     ------------------------------------------------------------------
 !
     typass = '1_2'
     if (nbp12 .eq. 0) goto 9999
-    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips, k8b)
+    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips)
     call jeveuo('&&RC32SI.PASSAGE_'//typass, 'L', jnpass)
     do 10 i = 1, nbsips
         nsitup = zi(jnpass+i-1)
@@ -61,7 +60,7 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
 9999  continue
     typass = '2_3'
     if (nbp23 .eq. 0) goto 9997
-    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips, k8b)
+    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips)
     call jeveuo('&&RC32SI.PASSAGE_'//typass, 'L', jnpass)
     do 20 i = 1, nbsips
         nsitup = zi(jnpass+i-1)
@@ -82,7 +81,7 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
 9997  continue
     typass = '1_3'
     if (nbp13 .eq. 0) goto 9995
-    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips, k8b)
+    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips)
     call jeveuo('&&RC32SI.PASSAGE_'//typass, 'L', jnpass)
     do 30 i = 1, nbsips
         nsitup = zi(jnpass+i-1)

@@ -169,10 +169,10 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     call wkvect('&&PROJCA.CNX_MAILLE', 'V V I', nnomax, jcxma)
     write(lnuma,'(A19)') '&&PROJCA.NUMA_NOEBE'
     call jecreo(lnuma, 'V V I')
-    call jeecra(lnuma, 'LONMAX', nbmabe, ' ')
+    call jeecra(lnuma, 'LONMAX', nbmabe)
     write(licnx,'(A19)') '&&PROJCA.ICNX_NOEBE'
     call jecreo(licnx, 'V V I')
-    call jeecra(licnx, 'LONMAX', nbmabe, ' ')
+    call jeecra(licnx, 'LONMAX', nbmabe)
 !
 ! 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
 ! ---

@@ -75,7 +75,6 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     integer :: adr, aconec, i, nd, nloc, j, adrm, adrn, lcoi, lndi, lndo, lcoo
 !
     logical :: trouve
-    character(len=1) :: k1bid
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -99,7 +98,7 @@ subroutine rvchlm(ssch19, m2d, noeud, nbn, nbcmp,&
     mailla = zk8(adr)
 !
     call jeveuo(jexnum(mailla//'.CONNEX', m2d), 'L', aconec)
-    call jelira(jexnum(mailla//'.CONNEX', m2d), 'LONMAX', nbtnd, k1bid)
+    call jelira(jexnum(mailla//'.CONNEX', m2d), 'LONMAX', nbtnd)
 !
     lndi = nbcmp*zi(apnsp + m2d-1)
     lcoi = lndi*nbtnd

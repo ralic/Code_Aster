@@ -53,7 +53,6 @@ subroutine rsagsd(nomsd, ilong)
     real(kind=8) :: rundef
     integer :: n1, n2, kk, ier1
     character(len=24) :: nomobj
-    character(len=8) :: k8b
     character(len=19) :: nomd2
 ! ----------------------------------------------------------------------
     call jemarq()
@@ -65,9 +64,9 @@ subroutine rsagsd(nomsd, ilong)
     call jeexin(nomd2//'.DESC', iret)
     if (iret .eq. 0) call u2mesk('F', 'UTILITAI_40', 1, nomd2)
 !
-    call jelira(nomd2//'.DESC', 'NOMMAX', nbcham, k8b)
-    call jelira(nomd2//'.ORDR', 'LONMAX', nbordr, k8b)
-    call jelira(nomd2//'.ORDR', 'LONUTI', nborlu, k8b)
+    call jelira(nomd2//'.DESC', 'NOMMAX', nbcham)
+    call jelira(nomd2//'.ORDR', 'LONMAX', nbordr)
+    call jelira(nomd2//'.ORDR', 'LONUTI', nborlu)
     if (ilong .eq. 0) then
         newnb = 2*nbordr
     else
@@ -102,14 +101,14 @@ subroutine rsagsd(nomsd, ilong)
     call jedetr(nomd2//'.ORDR')
     call jecrec(nomd2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT',&
                 nbcham)
-    call jeecra(nomd2//'.TACH', 'LONMAX', newnb, ' ')
+    call jeecra(nomd2//'.TACH', 'LONMAX', newnb)
     call jeveuo(nomd2//'.TACH', 'E', jtachg)
     do 40,k = 1,nbcham
     call jecroc(jexnum(nomd2//'.TACH', k))
     40 end do
 !
     call wkvect(nomd2//'.ORDR', 'G V I', newnb, jordrg)
-    call jeecra(nomd2//'.ORDR', 'LONUTI', neworl, ' ')
+    call jeecra(nomd2//'.ORDR', 'LONUTI', neworl)
 !
     do 50 i = 0, neworl - 1
         zi(jordrg+i) = zi(jordrv+i)
@@ -132,7 +131,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RSPR'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         ASSERT(n1.eq.n2*nbordr)
         call juveca(nomobj, n2*newnb)
@@ -146,7 +145,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RSPC'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
@@ -159,7 +158,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RSPI'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
@@ -172,7 +171,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RSP8'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
     endif
@@ -181,7 +180,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RS16'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
     endif
@@ -190,7 +189,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RS24'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
     endif
@@ -199,7 +198,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RS32'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
     endif
@@ -208,7 +207,7 @@ subroutine rsagsd(nomsd, ilong)
     nomobj=nomd2//'.RS80'
     call jeexin(nomobj, ier1)
     if (ier1 .gt. 0) then
-        call jelira(nomobj, 'LONMAX', n1, k8b)
+        call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
     endif

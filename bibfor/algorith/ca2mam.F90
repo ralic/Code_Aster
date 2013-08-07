@@ -49,7 +49,7 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
 #include "asterfort/wkvect.h"
     character(len=*) :: moint
     character(len=3) :: incr
-    character(len=8) :: k8bid, lpain(2), lpaout(1)
+    character(len=8) ::  lpain(2), lpaout(1)
     character(len=14) :: num
     character(len=16) :: option
     character(len=19) :: matel, nu19
@@ -78,7 +78,7 @@ subroutine ca2mam(moint, incr, ligrmo, lchin, lpain,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
     zk24(jlva) = lchout(1)
-    call jeecra(madeel, 'LONUTI', 1, k8bid)
+    call jeecra(madeel, 'LONUTI', 1)
 !
 !
 !-------------------- NUMEROTATION ----------------------------------

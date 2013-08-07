@@ -66,7 +66,7 @@ subroutine surfcl(char, noma, ifm)
 !
     character(len=24) :: defico
 !
-    character(len=8) :: chain1, chain2, k8bid
+    character(len=8) :: chain1, chain2
 !
     character(len=24) :: pzone, psurma, psurno, contma, contno
     integer :: jzone, jsuma, jsuno, jmaco, jnoco
@@ -388,8 +388,8 @@ subroutine surfcl(char, noma, ifm)
     write (ifm,*) '<CONTACT> INFOS SPECIFIQUES SUR LES FORMULATIONS'//&
      &              ' MAILLEES - CONNECTIVITES INVERSES'
     write (ifm,*)
-    call jelira(manoco, 'LONUTI', nmano, k8bid)
-    call jelira(nomaco, 'LONUTI', nnoma, k8bid)
+    call jelira(manoco, 'LONUTI', nmano)
+    call jelira(nomaco, 'LONUTI', nnoma)
 !
 !
 !

@@ -107,7 +107,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
     call wkvect('&&OP0131.LIADRLEX1', 'V V I', ndim+2, illex)
 !
     chfreq = intexc//'.FREQ'
-    call jelira(chfreq, 'LONMAX', nbfreq, k8b)
+    call jelira(chfreq, 'LONMAX', nbfreq)
     call jeveuo(chfreq, 'L', ifreq)
     zi(illex) = nbfreq
     zi(illex+ndim+1) = ifreq
@@ -120,7 +120,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
         chnumj = intexc//'.NUMJ'
         call jeveuo(chnumi, 'L', lnumi)
         call jeveuo(chnumj, 'L', lnumj)
-        call jelira(chnumi, 'LONMAX', mxval, k8b)
+        call jelira(chnumi, 'LONMAX', mxval)
         do 103 i1 = 1, nindex
             do 108 i2 = i1, nindex
                 ij2 = (i2*(i2-1))/2+i1
@@ -129,7 +129,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                         (zi(lnumj-1+num) .eq. zi(ilindj-1+i2))) then
                         exiind = .true.
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
-                        call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2), k8b)
+                        call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
                     endif
 111              continue
 108          continue
@@ -143,7 +143,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
         call jeveuo(chnoej, 'L', lnumj)
         call jeveuo(chcmpi, 'L', lcmpi)
         call jeveuo(chcmpj, 'L', lcmpj)
-        call jelira(chnoei, 'LONMAX', mxval, k8b)
+        call jelira(chnoei, 'LONMAX', mxval)
         do 120 i1 = 1, nindex
             do 122 i2 = i1, nindex
                 ij2 = (i2*(i2-1))/2+i1
@@ -154,7 +154,7 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                         (zk8(lcmpj-1+num) .eq. zk8(ilcmpj-1+i2))) then
                         exiind = .true.
                         call jeveuo(jexnum(chvale, num), 'L', zi(ilfex-1+ ij2))
-                        call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2), k8b)
+                        call jelira(jexnum(chvale, num), 'LONMAX', zi( illex+ij2))
                     endif
 121              continue
 122          continue

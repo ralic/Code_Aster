@@ -59,7 +59,6 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
 !
     character(len=16) :: noms2
     character(len=19) :: nomd2, chext2, chext3
-    character(len=1) :: k1bid
     character(len=24) :: valk(3)
     integer :: iexi, irang, isymb, jtach, nbordr, nbormx, jordr
     real(kind=8) :: rbid
@@ -100,7 +99,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
 !     --- LE NUMERO DE RANGEMENT N'EXISTE PAS :
 !     -----------------------------------------
     else
-        call jelira(nomd2//'.ORDR', 'LONMAX', nbormx, k1bid)
+        call jelira(nomd2//'.ORDR', 'LONMAX', nbormx)
         if (nbordr .ge. nbormx) then
             icode = 110
             goto 10

@@ -49,7 +49,7 @@ subroutine ssdmte(mag)
 !     IN:
 !        MAG : NOM DU MAILLAGE RESULTAT.
 !
-    character(len=8) :: nomacr, kbid, nomnoe
+    character(len=8) :: nomacr, nomnoe
     logical :: recom
     character(len=19) :: coordo
 ! ----------------------------------------------------------------------
@@ -101,7 +101,7 @@ subroutine ssdmte(mag)
     nbnoco= nbnoph-nbnop2
 !
     call jecreo(mag//'.NOMNOE', 'G N K8')
-    call jeecra(mag//'.NOMNOE', 'NOMMAX', nbnot2, kbid)
+    call jeecra(mag//'.NOMNOE', 'NOMMAX', nbnot2)
 !
 !
 !     -- CREATION DE .TYPL :
@@ -242,10 +242,10 @@ subroutine ssdmte(mag)
 !     ----------------------------
     call jeexin(mag//'.GROUPENO', iret)
     if (iret .gt. 0) then
-        call jelira(mag//'.GROUPENO', 'NUTIOC', nbgno, kbid)
+        call jelira(mag//'.GROUPENO', 'NUTIOC', nbgno)
         do 9 ,igno=1,nbgno
         call jeveuo(jexnum(mag//'.GROUPENO', igno), 'E', iagno)
-        call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn, kbid)
+        call jelira(jexnum(mag//'.GROUPENO', igno), 'LONUTI', nbnogn)
         do 91, i=1,nbnogn
         ino=zi(iagno-1+i)
         jno=zi(ianeno-1+ zi(iancnf-1+ino))

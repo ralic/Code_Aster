@@ -57,7 +57,6 @@ subroutine cormgi(basez, ligrez)
 !
 !
     character(len=19) :: ligtmp
-    character(len=1) :: k1bid
 !
     call jemarq()
     base = basez
@@ -73,8 +72,8 @@ subroutine cormgi(basez, ligrez)
     call jeexin(nmaila//'.CONNEX', iret)
     if (iret .eq. 0) goto 9999
 !
-    call jelira(nmaila//'.CONNEX', 'NMAXOC', nbmail, k1bid)
-    call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+    call jelira(nmaila//'.CONNEX', 'NMAXOC', nbmail)
+    call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
     if (nbmail*nbgrel .eq. 0) goto 9999
 !
 !
@@ -82,7 +81,7 @@ subroutine cormgi(basez, ligrez)
 !
     exima=.false.
     do 100,i = 1,nbgrel,1
-    call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nbmgre, k1bid)
+    call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nbmgre)
     call jeveuo(jexnum(ligrel//'.LIEL', i), 'L', jgrel)
 !
     do 110,j = 1,nbmgre - 1,1

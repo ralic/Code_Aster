@@ -75,7 +75,7 @@ subroutine crasse()
         call getvid('ASSE', 'RESULTAT', iocc, iarg, 1,&
                     resu1, n1)
         resu19=resu1
-        call jelira(resu19//'.ORDR', 'LONUTI', nbord1, k8b)
+        call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
         nordmx=nordmx+nbord1
 101  end do
 !
@@ -96,9 +96,9 @@ subroutine crasse()
         call getvid('ASSE', 'RESULTAT', iocc, iarg, 1,&
                     resu1, n1)
         resu19=resu1
-        call jelira(resu19//'.ORDR', 'LONUTI', nbord1, k8b)
+        call jelira(resu19//'.ORDR', 'LONUTI', nbord1)
         call jeveuo(resu19//'.ORDR', 'L', jord1)
-        call jelira(resu19//'.DESC', 'NOMUTI', nbcham, k8b)
+        call jelira(resu19//'.DESC', 'NOMUTI', nbcham)
 !
 !       BOUCLE SUR LES CHAMPS 'TEMP' DE RESU1 ET RECOPIE DANS RESU2:
 !       -----------------------------------------------------------

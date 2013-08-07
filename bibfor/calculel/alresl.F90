@@ -127,7 +127,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 !
 !     ----CREATION DE L'OBJET DESC :
     call wkvect(nochou//'.DESC', bas2//' V I', 2+ngrel, idesc)
-    call jeecra(nochou//'.DESC', 'DOCU', ibid, 'RESL')
+    call jeecra(nochou//'.DESC', 'DOCU', cval='RESL')
 !
 !     ---CREATION DE LA COLLECTION DIPERSEE RESL  :
     call jecrec(nochou//'.RESL', bas2//' V '//scal(1:4), 'NU', 'DISPERSE', 'VARIABLE',&
@@ -160,7 +160,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
             zi(desc-1+2+igr) = 0
 !          -- LES COLLECTIONS NUMEROTEES CONTIG DOIVENT ETRE COMPLETES:
             if (lmatvf) then
-                call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', 1, ' ')
+                call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', 1)
                 call jeveuo(jexnum(nochou//'.RSVI', igr), 'E', jrsvi)
             endif
         else
@@ -172,9 +172,9 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 !
             if (.not.lmatvf) then
                 ncmpel = digde2(mode)
-                call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', ncmpel*nel, ' ')
+                call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', ncmpel*nel)
             else
-                call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', nel+ 1, ' ')
+                call jeecra(jexnum(nochou//'.RSVI', igr), 'LONMAX', nel+ 1)
                 call jeveuo(jexnum(nochou//'.RSVI', igr), 'E', jrsvi)
                 call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
                 call teattr(nomte, 'S', 'TYPE_VOISIN', codvoi, ibid)
@@ -188,7 +188,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
                 lontot=lontot+lon1
                 zi(jrsvi-1+iel+1)=lontot+1
 21              continue
-                call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', lontot, ' ')
+                call jeecra(jexnum(nochou//'.RESL', igr), 'LONMAX', lontot)
             endif
         endif
 20  end do

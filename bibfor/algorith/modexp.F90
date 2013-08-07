@@ -69,7 +69,6 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     integer :: lclin, rank, lwork, jwork, info, lphiex, lcpet
     real(kind=8) :: shift, swork(1)
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     character(len=4) :: k4bid
     character(len=8) :: modgen, sst1, kb
     character(len=14) :: nume, nume91
@@ -106,10 +105,10 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 !
 !-- REMPLISSAGE DES VECTEURS D'INDICES ASSOCIES AUX DDL D'INTERFACE
 !--      POUR LA CREATION DES MATRICES
-    call jelira(indin1, 'LONMAX', nbddl, k1bid)
+    call jelira(indin1, 'LONMAX', nbddl)
     call jeveuo(indin1, 'L', lindin)
     noddli='&&MOIN93.NOEUDS_DDL_INT'
-    call jelira(lino1, 'LONMAX', nbno, k1bid)
+    call jelira(lino1, 'LONMAX', nbno)
     call jeveuo(lino1, 'L', llino)
 !
     call wkvect(noddli, 'V V I', 9*nbno, lnoint)
@@ -175,11 +174,11 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call codent(numlia, 'D0', k4bid)
 !-- MOUVEMENTS DE L'INTERFACE ESCLAVE A ETENDRE
     call jeveuo('&&OP0091.MAS'//k4bid, 'L', lmast)
-    call jelira('&&OP0091.MAS'//k4bid, 'LONMAX', ibid, kb)
+    call jelira('&&OP0091.MAS'//k4bid, 'LONMAX', ibid)
     nl=int(ibid/nbmod)
 !
 !-- MATRICE D'OBSERVATION
-    call jelira(tramod, 'LONMAX', ibid, kb)
+    call jelira(tramod, 'LONMAX', ibid)
     nc=int(ibid/nl)
     call jeveuo(tramod, 'L', ltramo)
 !

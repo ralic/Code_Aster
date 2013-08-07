@@ -81,7 +81,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 !
         do 40 iem = 1, ngst
             karg = zk24(jgnst-1+iem)
-            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno, k8b)
+            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno1 = nbno1 + nno
 40      continue
 !
@@ -91,7 +91,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
         nbno1 =0
         do 60 iem = 1, ngst
             karg = zk24(jgnst-1+iem)
-            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno, k8b)
+            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
             do 50 jno = 1, nno
                 zi(jnost-1+nbno1+jno) = zi(kno+jno-1)
@@ -113,7 +113,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
 !
         do 70 iem = 1, ngap
             karg = zk24(jgnap-1+iem)
-            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno, k8b)
+            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             nbno2 = nbno2 + nno
 70      continue
 !
@@ -123,7 +123,7 @@ subroutine defapp(ma, geomi, alpha, depla, base,&
         nbno2 = 0
         do 80 iem = 1, ngap
             karg = zk24(jgnap-1+iem)
-            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno, k8b)
+            call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
             call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
             do 90 jno = 1, nno
                 zi(jnoap-1+nbno2+jno)= zi(kno+jno-1)

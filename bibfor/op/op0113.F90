@@ -181,20 +181,20 @@ subroutine op0113()
 !
     call jecrec(liel2, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nelt)
-    call jeecra(liel2, 'LONT', 2*nelt, k8bid)
+    call jeecra(liel2, 'LONT', 2*nelt)
 !
     iel=0
     do 300 ima = 1, nbma
         if (zi(jtab-1+5*(ima-1)+5) .eq. 0) goto 300
         iel=iel+1
         call jecroc(jexnum(liel2, iel))
-        call jeecra(jexnum(liel2, iel), 'LONMAX', 2, k8bid)
+        call jeecra(jexnum(liel2, iel), 'LONMAX', 2)
         call jeveuo(jexnum(liel2, iel), 'E', j2)
         zi(j2-1+1)=ima
         zi(j2-1+2)=zi(jtab-1+5*(ima-1)+5)
 300  end do
 !
-    call jelira(liel2, 'NUTIOC', nb1, k8bid)
+    call jelira(liel2, 'NUTIOC', nb1)
     ASSERT(nb1.eq.nelt)
 !
 !-----------------------------------------------------------------------

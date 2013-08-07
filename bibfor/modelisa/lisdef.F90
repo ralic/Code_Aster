@@ -518,7 +518,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
         if (lveac .or. lveas .or. lveag) then
             call liscva(prefob, chamno)
-            call jelira(chamno//'.VALE', 'TYPE', ibid, nomgd)
+            call jelira(chamno//'.VALE', 'TYPE', cval=nomgd)
             if (nomgd(1:1) .eq. 'R') then
                 typech = 'REEL'
             else if (nomgd(1:1).eq.'C') then

@@ -65,7 +65,6 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     character(len=8) :: repon
     character(len=8) :: nomres
     character(len=19) :: max, may, maz, stolci
-    character(len=1) :: k1bid
     integer :: iarg
 ! ------------------------------------------------------------------
 !----- ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE ---
@@ -84,7 +83,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     call jeveuo(stolci//'.SCBL', 'L', iablo)
     call jeveuo(stolci//'.SCIB', 'L', ldiabl)
 !
-    call jelira(zk24(iprsto)(1:19)//'.VALE', 'LONMAX', nbpres, k1bid)
+    call jelira(zk24(iprsto)(1:19)//'.VALE', 'LONMAX', nbpres)
     call wkvect('&&MAMODG.VECTX', 'V V R', nbpres, ivx)
     call wkvect('&&MAMODG.VECTY', 'V V R', nbpres, ivy)
 !

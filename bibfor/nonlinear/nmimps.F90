@@ -48,7 +48,6 @@ subroutine nmimps(sdimpr, sdconv, sderro)
     character(len=24) :: cnvtyp, cnvlie, cnvval, cnvact
     integer :: jcnvty, jcnvli, jcnvva, jcnvac
     integer :: iresi, iarg, ibid, nresi
-    character(len=8) :: k8bid
     real(kind=8) :: valr(1)
     character(len=16) :: valk(2)
     logical :: lprint, maxrel, maxnod
@@ -67,7 +66,7 @@ subroutine nmimps(sdimpr, sdconv, sderro)
     call jeveuo(cnvlie, 'L', jcnvli)
     call jeveuo(cnvval, 'L', jcnvva)
     call jeveuo(cnvact, 'L', jcnvac)
-    call jelira(cnvtyp, 'LONMAX', nresi, k8bid)
+    call jelira(cnvtyp, 'LONMAX', ival=nresi)
 !
 ! --- MESSAGE DE BASCULEMENT DES CONVERGENCES
 !

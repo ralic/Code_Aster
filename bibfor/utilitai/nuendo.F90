@@ -113,7 +113,7 @@ subroutine nuendo(numedd, sdnuen)
             do 130 iel = 1, nbelgr
                 ima = zi(liel-1+iel)
                 call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iconex)
-                call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno, k8bid)
+                call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbno)
                 do 20 ino = 1, nbno
                     zi(itrav+zi(iconex+ino-1)-1) = 1
 20              continue
@@ -139,7 +139,7 @@ subroutine nuendo(numedd, sdnuen)
 !
 ! --- RECUPERATION DU NOMBRE D'INCONNUES DU MODELE
 !
-    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', neq, k8bid)
+    call jelira(numedd(1:14)//'.NUME.NUEQ', 'LONUTI', neq)
     if (nbnoc .gt. 0) then
         call wkvect(sdnuen, 'V V I', neq, jnuen)
     else
@@ -151,7 +151,7 @@ subroutine nuendo(numedd, sdnuen)
     nomgd = 'DEPL_R'
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nec,&
                 k8bid, ier)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', iancmp)
     nocmp = 'DAMG'
 !
@@ -163,7 +163,7 @@ subroutine nuendo(numedd, sdnuen)
 !
 ! --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE
 !
-    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
+    call jelira(numedd(1:14)//'.NUME.PRNO', 'NMAXOC', nlili)
     k = 0
     do 40 i = 1, nlili
         call jenuno(jexnum(numedd(1:14)//'.NUME.LILI', i), nolili)

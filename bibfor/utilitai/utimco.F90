@@ -45,11 +45,10 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 !     ------------------
     character(len=24) :: ob1
     character(len=50) :: acces
-    character(len=8) :: kbid
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ioc, iret, nmaxoc
+    integer ::  ioc, iret, nmaxoc
 !-----------------------------------------------------------------------
     ob1 = obin
 !
@@ -59,8 +58,8 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
         goto 999
     endif
 !
-    call jelira(ob1, 'NMAXOC', nmaxoc, kbid)
-    call jelira(ob1, 'ACCES', ibid, acces)
+    call jelira(ob1, 'NMAXOC', nmaxoc)
+    call jelira(ob1, 'ACCES', cval=acces)
 !
     write(unit,*)'IMPRESSION DE LA COLLECTION : ',ob1
 !

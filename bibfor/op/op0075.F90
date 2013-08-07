@@ -168,7 +168,7 @@ subroutine op0075()
     call gettco(resin, concep)
     if ((concep(1:9).eq.'MODE_GENE')) then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
-        call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8bid)
+        call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         do 50 iord = 1, nbord
             call rsadpa(resin, 'L', 3, param, zi(jord+iord-1),&
                         0, lpain, k8bid)

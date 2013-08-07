@@ -35,7 +35,6 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
 !     ET STATISTIQUES POUR LES IMPACTS SOUS SEISME
 !
 ! ----------------------------------------------------------------------
-    character(len=8) :: k8b
     character(len=19) :: nomk19
     logical :: loptio
 !     ------------------------------------------------------------------
@@ -56,7 +55,7 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset,&
     nbchoc = zi(iddesc+2)
 !
     call jeveuo(nomk19//'.DISC', 'L', idinst)
-    call jelira(nomk19//'.DISC', 'LONMAX', nbpt, k8b)
+    call jelira(nomk19//'.DISC', 'LONMAX', nbpt)
     write(6,*) ' NB DE PAS DE TEMPS :',nbpt
     tmax = zr(idinst+nbpt-1)
     tmin = zr(idinst)

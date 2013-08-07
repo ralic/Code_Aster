@@ -63,7 +63,7 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, ini, inj, pli, plj, xoula, nne, nnes, ddles
+    integer :: i, j, pli, plj, nne, nnes, ddles
 !
 ! ----------------------------------------------------------------------
 !

@@ -58,7 +58,6 @@ subroutine ssriu2(nomu)
 !
 !
     integer :: i, scdi, schc, iblo, ibid
-    character(len=8) :: kbid
     character(len=8) :: promes
     logical :: modif
 !
@@ -108,7 +107,7 @@ subroutine ssriu2(nomu)
     call jeveuo(zk24(zi(lmat+1)) (1:19)//'.REFA', 'L', jrefa)
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SLCS.SCHC', 'L', iaschc)
     call mtdsc2(zk24(zi(lmat+1)), 'SCBL', 'L', iascbl)
-    call jelira(matas//'.UALF', 'NMAXOC', nbbloc, kbid)
+    call jelira(matas//'.UALF', 'NMAXOC', nbbloc)
     call jeveuo(stock//'.SCIB', 'L', iascib)
 !
 !     NLBLPH : NOMBRE DE LIGNES DE PHI_IE QUE L'ON PEUT REGROUPER
@@ -124,7 +123,7 @@ subroutine ssriu2(nomu)
 !
     call jecrec(nomu//'.PHI_IE', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblph)
-    call jeecra(nomu//'.PHI_IE', 'LONMAX', lgblph, kbid)
+    call jeecra(nomu//'.PHI_IE', 'LONMAX', lgblph)
 !
     call wkvect(nomu//'.MAEL_RAID_VALE', 'G V R', (nddle*(nddle+1)/2), iakpee)
 !

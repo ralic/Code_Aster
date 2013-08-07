@@ -45,11 +45,10 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
 ! OUT IADVAR  I  LISTE DES ADRESSES DU TABLEAU
 ! OUT NOMOB   K* POUR UNE COLLECTION : NOM DE L OBJET SI EXISTE
 !
-    character(len=8) :: k8bid
     character(len=4) :: type
     character(len=2) :: acces
     character(len=1) :: xous, genr
-    integer :: jres, iret, ibid, lobj, iad, kk
+    integer :: jres, iret, lobj, iad, kk
     character(len=32) :: noml32
 !     ------------------------------------------------------------------
     ctype = -1
@@ -63,8 +62,8 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
 !     CET OBJET N'EXISTE PAS
         goto 999
     endif
-    call jelira(noml32, 'XOUS', ibid, xous)
-    call jelira(noml32, 'GENR', ibid, genr)
+    call jelira(noml32, 'XOUS', cval=xous)
+    call jelira(noml32, 'GENR', cval=genr)
     nomob=' '
     if (xous .eq. 'X') then
 !     ------------------------------------------------------------------
@@ -73,13 +72,13 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
         ctype=0
         call jeexin(jexnum(noml32, iob), iret)
         if (iret .le. 0) goto 999
-        call jelira(noml32, 'ACCES', ibid, acces)
+        call jelira(noml32, 'ACCES', cval=acces)
         if (acces .eq. 'NO') then
             call jenuno(jexnum(noml32, iob), nomob)
         endif
         call jeveuo(jexnum(noml32, iob), 'L', jres)
-        call jelira(jexnum(noml32, iob), 'LONMAX', lobj, k8bid)
-        call jelira(jexnum(noml32, iob), 'TYPELONG', ibid, type)
+        call jelira(jexnum(noml32, iob), 'LONMAX', lobj)
+        call jelira(jexnum(noml32, iob), 'TYPELONG', cval=type)
         lcon = lobj
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
@@ -126,13 +125,9 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
 !     CET OBJET EXISTE ET EST SIMPLE. ON PEUT AVOIR SA VALEUR
 !     ------------------------------------------------------------------
         call jeveuo(noml32, 'L', jres)
-!          CALL JELIRA(NOML32,'LONUTI',LCON,K8BID)
-!          IF (LCON.EQ.0) THEN
-!              CALL JELIRA(NOML32,'LONMAX',LCON,K8BID)
-!          ENDIF
-        call jelira(noml32, 'LONMAX', lcon, k8bid)
+        call jelira(noml32, 'LONMAX', lcon)
         if (ilng .ne. 0) lcon=ilng
-        call jelira(noml32, 'TYPELONG', ibid, type)
+        call jelira(noml32, 'TYPELONG', cval=type)
         if (type .eq. 'R') then
 !     LES VALEURS SONT REELLES
             ctype=1
@@ -177,12 +172,8 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype,&
 !     ------------------------------------------------------------------
 !     CET OBJET EST SIMPLE MAIS C EST UN REPERTOIRE DE NOMS
 !     ------------------------------------------------------------------
-!          CALL JELIRA(NOML32,'NOMUTI',LCON,K8BID)
-!          IF (LCON.EQ.0) THEN
-!              CALL JELIRA(NOML32,'NOMMAX',LCON,K8BID)
-!          ENDIF
-        call jelira(noml32, 'NOMMAX', lcon, k8bid)
-        call jelira(noml32, 'TYPELONG', ibid, type)
+        call jelira(noml32, 'NOMMAX', lcon)
+        call jelira(noml32, 'TYPELONG', cval=type)
         call jedetr('&&GETCON.PTEUR_NOM')
         call wkvect('&&GETCON.PTEUR_NOM', 'V V '//type, lcon, iad)
         if (type .eq. 'K8') then

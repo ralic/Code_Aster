@@ -147,7 +147,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     endif
 !
     call jeveuo(mailx, 'L', jmax)
-    call jelira(mailx, 'LONMAX', nbmax, k8b)
+    call jelira(mailx, 'LONMAX', nbmax)
 !
     chs(1) = '&&XPOMAX.PINTTO'
     chs(2) = '&&XPOMAX.CNSETO'
@@ -355,7 +355,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         inm = 0
 !
 !       RECUPERATION DU NOMBRE DE NOEUDS (2 METHODES)
-        call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n, k8b)
+        call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n)
         nbnoma=zi(jconx2+ima) - zi(jconx2+ima-1)
         ASSERT(n.eq.nbnoma)
 !
@@ -486,7 +486,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !       RECUPERATION DES INFOS CONCERNANT LES GROUP_MA CONTENANT IMA
         if (opmail) then
-            call jelira(jexnum(listgr, ima), 'LONMAX', ngrm, k8b)
+            call jelira(jexnum(listgr, ima), 'LONMAX', ngrm)
             if (ngrm .gt. 0) call jeveuo(jexnum(listgr, ima), 'L', iagma)
         endif
 !
@@ -594,12 +594,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       ON SAIT QUE LE .GROUPENO N'EXISTE PAS
         gpptnn = maxfem//'.PTRNOMNOE'
         call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', 1+ngfon, ' ')
+        call jeecra(gpptnn, 'NOMMAX', 1+ngfon)
         call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     1+ngfon)
         call jecroc(jexnom(grpnoe, nogno))
-        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1, nbnofi), k8b)
-        call jeecra(jexnom(grpnoe, nogno), 'LONUTI', nbnofi, k8b)
+        call jeecra(jexnom(grpnoe, nogno), 'LONMAX', max(1,nbnofi))
+        call jeecra(jexnom(grpnoe, nogno), 'LONUTI', nbnofi)
         call jeveuo(jexnom(grpnoe, nogno), 'E', iagno)
         do 210 j = 1, nbnofi
             zi(iagno-1+j) = zi(inofi-1+j)

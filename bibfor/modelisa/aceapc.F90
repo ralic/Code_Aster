@@ -59,7 +59,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
     integer :: vali
     real(kind=8) :: xcen(3), xtan(3), x1(3), x2(3), xc1(3), xc2(3)
     real(kind=8) :: angl(3), xm(3), v1(3), tm(3)
-    character(len=8) :: crit, zk8bid
+    character(len=8) :: crit
     character(len=16) :: mclept(3), mclepc(3)
     character(len=19) :: cartar
     character(len=24) :: tmpnar, tmpvar, mlggma, mlgnma, mlgcnx, mlgcoo
@@ -176,7 +176,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
             if (nc .eq. 0 .and. np .eq. 0) then
                 do 556 igm = 1, ng
                     call jeveuo(jexnom(mlggma, zk24(jdls-1+igm)), 'L', jdgm)
-                    call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg, zk8bid)
+                    call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg)
                     do 576 ijm = 1, nmg
                         img = zi(jdgm+ijm-1)
                         zr(jdvc) = xrc
@@ -225,7 +225,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                                 rr, xcen, tole, v1, ispv)
                     do 557 igm = 1, ng
                         call jeveuo(jexnom(mlggma, zk24(jdls-1+igm)), 'L', jdgm)
-                        call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg, zk8bid)
+                        call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg)
                         do 57 ijm = 1, nmg
                             img = zi(jdgm+ijm-1)
                             call jeveuo(jexnum(mlgcnx, img), 'L', jdno)
@@ -285,7 +285,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                                 rr, xcen, tole, v1, ispv)
                     do 558 igm = 1, ng
                         call jeveuo(jexnom(mlggma, zk24(jdls-1+igm)), 'L', jdgm)
-                        call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg, zk8bid)
+                        call jelira(jexnom(mlggma, zk24(jdls-1+igm)), 'LONUTI', nmg)
                         do 58 ijm = 1, nmg
                             img = zi(jdgm+ijm-1)
                             call jeveuo(jexnum(mlgcnx, img), 'L', jdno)

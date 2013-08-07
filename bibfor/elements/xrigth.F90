@@ -74,11 +74,11 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     character(len=8) :: elrese(3), fami(3), poum
     character(len=16) :: phenom
     logical :: axi
-    real(kind=8) :: baslog(3*ndim), tem, lsng, lstg, coorse(81), xg(ndim)
+    real(kind=8) :: baslog(3*ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
     real(kind=8) :: he
-    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), deltat, valpar(1), valres(1), lambda
+    real(kind=8) :: ffenr(nnop, 1+nfh+nfe), valpar(1), valres(1), lambda
     real(kind=8) :: r
     real(kind=8) :: jac, theta, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal

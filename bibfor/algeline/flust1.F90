@@ -146,7 +146,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor,&
 !-----RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
     nomnoe = mailla//'.NOMNOE'
-    call jelira(nomnoe, 'NOMUTI', lnoe, k8b)
+    call jelira(nomnoe, 'NOMUTI', lnoe)
 !
 !-----CREATION ET REMPLISSAGE DES OBJETS DE TRAVAIL DEPENDANT DU
 !-----TYPE DU CONFIGURATION

@@ -116,8 +116,8 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr,&
             endif
 !
             call jecroc(jexnum(chvals, ij))
-            call jeecra(jexnum(chvals, ij), 'LONMAX', nbabs, ' ')
-            call jeecra(jexnum(chvals, ij), 'LONUTI', nbabs, ' ')
+            call jeecra(jexnum(chvals, ij), 'LONMAX', nbabs)
+            call jeecra(jexnum(chvals, ij), 'LONUTI', nbabs)
             call jeveuo(jexnum(chvals, ij), 'E', ispec)
 !
             do 90 il = 1, nbpf

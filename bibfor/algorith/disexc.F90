@@ -46,7 +46,7 @@ subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
 #include "asterfort/wkvect.h"
     integer :: ij1, i1, i2, ireim1, ireim2
     integer :: ilong1
-    character(len=8) :: chlist(5), kbid
+    character(len=8) :: chlist(5)
     character(len=24) :: k24bd1
 !
 !-----------------------------------------------------------------------
@@ -63,8 +63,8 @@ subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
             '.VALE'
             ij1=(i2*(i2-1))/2+i1
             call jecreo(k24bd1, 'V V R8')
-            call jeecra(k24bd1, 'LONMAX', npdsc3*3, kbid)
-            call jeecra(k24bd1, 'LONUTI', npdsc3*3, kbid)
+            call jeecra(k24bd1, 'LONMAX', npdsc3*3)
+            call jeecra(k24bd1, 'LONUTI', npdsc3*3)
             call jeveut(k24bd1, 'E', zi(ilfex2-1+ij1))
 404      continue
 403  end do

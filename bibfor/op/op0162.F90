@@ -268,7 +268,7 @@ subroutine op0162()
         goto 81
 80      continue
         fonc = nomfon
-        call jelira(fonc//'.VALE', 'LONMAX', nbval, kbid)
+        call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
         if (niv .gt. 1) write(ifm, '(''FONC CHAR'',1X,I6, ''VALE'',1X,I6)') ic, nbval
@@ -298,7 +298,7 @@ subroutine op0162()
         call getvid('EXCIT_SOL', 'FONC_SIGNAL', ic, iarg, 1,&
                     nomfon, n)
         fonc = nomfon
-        call jelira(fonc//'.VALE', 'LONMAX', nbval, kbid)
+        call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
         if (niv .gt. 1) write(ifm, '(''FONC SOLS'',1X,I6,1X, ''VALE'',1X,I6)' ) ic, nbval
@@ -331,7 +331,7 @@ subroutine op0162()
         call getvid('SOURCE_SOL', 'FONC_SIGNAL', ic, iarg, 1,&
                     nomfon, n)
         fonc = nomfon
-        call jelira(fonc//'.VALE', 'LONMAX', nbval, kbid)
+        call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
         if (niv .gt. 1) write(ifm, '(''FONC SOUS'',1X,I6,1X, ''VALE'',1X,I6)' ) ic, nbval
@@ -362,7 +362,7 @@ subroutine op0162()
         call getvid('SOURCE_FLUIDE', 'FONC_SIGNAL', ic, iarg, 1,&
                     nomfon, n)
         fonc = nomfon
-        call jelira(fonc//'.VALE', 'LONMAX', nbval, kbid)
+        call jelira(fonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(fonc//'.VALE', 'L', jfonc)
         nbval = nbval/2
         if (niv .gt. 1) write(ifm, '(''FONC SOUF'',1X,I6,1X, ''VALE'',1X,I6)' ) ic, nbval

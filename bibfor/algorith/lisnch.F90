@@ -43,7 +43,6 @@ subroutine lisnch(lischa, nchar)
 !
     character(len=24) :: charge
     integer :: iret
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,7 +57,7 @@ subroutine lisnch(lischa, nchar)
     if (iret .eq. 0) then
         goto 999
     else
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
     endif
 !
 999  continue

@@ -68,7 +68,6 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
     character(len=24) :: vachar
     integer :: ivec, ivecc, nbvec, jvacha
     character(len=8) :: nomfct
-    character(len=8) :: k8bid
     character(len=24) :: chamno
     real(kind=8) :: valres, valre, valim
     complex(kind=8) :: calpha
@@ -87,7 +86,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
     vachar = vecele(1:19)//'.CHNO'
     call jeexin(vachar, iret)
     ASSERT(iret.ne.0)
-    call jelira(vachar, 'LONMAX', nbvec, k8bid)
+    call jelira(vachar, 'LONMAX', nbvec)
     ASSERT(nbvec.ne.0)
     call jeveuo(vachar, 'L', jvacha)
     ASSERT(typres.eq.'R'.or.typres.eq.'C')

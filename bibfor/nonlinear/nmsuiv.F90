@@ -63,7 +63,7 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
     character(len=24) :: nomcha, nomchs
     character(len=4) :: typcha
     character(len=19) :: champ
-    character(len=8) :: extrcp, extrch, extrga, k8bid
+    character(len=8) :: extrcp, extrch, extrga
     character(len=19) :: chgaus, chnoeu, chelga
 !
 ! ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine nmsuiv(noma, sdieto, sdsuiv, sdimpr)
 !
     suicha = sdsuiv(1:14)//'     .CHAM'
     call jeveuo(suicha, 'L', jsuich)
-    call jelira(suicha, 'LONMAX', nbcham, k8bid)
+    call jelira(suicha, 'LONMAX', ival=nbcham)
     nbcham = nbcham / 2
 !
 ! --- SD TYPE D'EXTRACTIONS

@@ -48,7 +48,6 @@ subroutine cocali(lis1z, lis2z, typz)
 !
 !
 !
-    character(len=1) :: k1bid
     character(len=2) :: type
     character(len=24) :: lis1, lis2
     character(len=24) :: valk(2)
@@ -68,7 +67,7 @@ subroutine cocali(lis1z, lis2z, typz)
         call u2mesk('F', 'MODELISA4_25', 2, valk)
     else
         call jeveuo(lis2, 'L', idlis2)
-        call jelira(lis2, 'LONMAX', lonli2, k1bid)
+        call jelira(lis2, 'LONMAX', lonli2)
     endif
 !
     call jeexin(lis1, iret)
@@ -94,7 +93,7 @@ subroutine cocali(lis1z, lis2z, typz)
         endif
     else
         call jeveuo(lis1, 'E', idlis1)
-        call jelira(lis1, 'LONMAX', lonli1, k1bid)
+        call jelira(lis1, 'LONMAX', lonli1)
         call juveca(lis1, lonli1+lonli2)
         call jeveuo(lis1, 'E', idlis1)
     endif

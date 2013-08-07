@@ -57,7 +57,6 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
     character(len=16) :: typsd
     character(len=19) :: profno
     character(len=24) :: indirf
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -116,7 +115,7 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !----------DETERMINATION DU NOMBRE DE MODES PHYSIQUE A RESTITUER--------
 !
     call jeveuo(modcyc//'.CYCL_DIAM', 'L', lldia)
-    call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia, k1bid)
+    call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
     nbdia=nbdia/2
 !
     icomp=0

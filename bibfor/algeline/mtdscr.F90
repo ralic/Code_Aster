@@ -79,7 +79,7 @@ subroutine mtdscr(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ier, iret, jccid, jnequ, jrefa
+    integer ::  ier, iret, jccid, jnequ, jrefa
     integer :: jscde, jsmde, k, lccid, lmat, lnom, nb1
     integer :: nb2
 !-----------------------------------------------------------------------
@@ -91,7 +91,7 @@ subroutine mtdscr(nommat)
     call jeexin(mat19//'.&INT', ier)
     if (ier .eq. 0) then
         call jecreo(mat19//'.&INT', ' V V I')
-        call jeecra(mat19//'.&INT', 'LONMAX', 19, '  ')
+        call jeecra(mat19//'.&INT', 'LONMAX', 19)
     endif
 !
     call jeveuo(mat19//'.&INT', 'E', lmat)
@@ -140,9 +140,9 @@ subroutine mtdscr(nommat)
     call jeexin(mat19//'.VALM', iret)
 !     -- POUR TRAITER LE CAS OU ON A DETRUIT VOLONTAIREMENT LE .VALM
     if (iret .gt. 0) then
-        call jelira(mat19//'.VALM', 'TYPE', ibid, kbid)
+        call jelira(mat19//'.VALM', 'TYPE', cval=kbid)
     else
-        call jelira(mat19//'.UALF', 'TYPE', ibid, kbid)
+        call jelira(mat19//'.UALF', 'TYPE', cval=kbid)
     endif
 !
     ASSERT(kbid(1:1).eq.'R' .or. kbid(1:1).eq.'C')
@@ -167,7 +167,7 @@ subroutine mtdscr(nommat)
         endif
 !
     else
-        call jelira(mat19//'.UALF', 'NMAXOC', nb1, kbid)
+        call jelira(mat19//'.UALF', 'NMAXOC', nb1)
         call jeveuo(nu//'.SLCS.SCDE', 'L', jscde)
         nb2 = zi(jscde-1+3)
         if (nb1 .eq. nb2) then
@@ -188,7 +188,7 @@ subroutine mtdscr(nommat)
     call jeexin(mat19//'.CCID', ier)
     if (ier .ne. 0) then
         call jeveuo(mat19//'.CCID', 'L', jccid)
-        call jelira(mat19//'.CCID', 'LONMAX', lccid, kbid)
+        call jelira(mat19//'.CCID', 'LONMAX', lccid)
         zi(lmat+7) = zi(jccid-1+lccid+1)
     else
         zi(lmat+7) = 0

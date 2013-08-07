@@ -68,7 +68,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     integer :: jrefam, jvint, jfreq
     real(kind=8) :: r1, rbid
     real(kind=8) :: dt
-    character(len=1) :: k1b, ktyp
+    character(len=1) ::  ktyp
     character(len=4) :: grande, k4bid, nomsym(3)
     character(len=8) :: k8b
     character(len=8) :: masgen, riggen, amogen, basemo
@@ -113,12 +113,12 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         call jeveuo(chdep//'.VALE', 'L', lval)
 !  Nombre d'equations : NEQ
         chdep2 = chdep(1:19)//'.VALE'
-        call jelira(chdep2, 'LONMAX', neq, k1b)
+        call jelira(chdep2, 'LONMAX', neq)
     else
-        call jelira(resin(1:19)//'.ORDR', 'LONUTI', nbordr, k1b)
+        call jelira(resin(1:19)//'.ORDR', 'LONUTI', nbordr)
         call jeveuo(resin(1:19)//'.'//grande, 'L', lval)
         chdep2 = resin(1:19)//'.'//grande
-        call jelira(chdep2, 'LONMAX', neq, k1b)
+        call jelira(chdep2, 'LONMAX', neq)
         neq = neq / nbordr
     endif
     nbordr = nbva
@@ -188,9 +188,9 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
             endif
 !
             call jeveuo(chdeps//'.VALE', 'E', lvals)
-            call jelira(chdeps//'.VALE', 'LONMAX', n1, k1b)
+            call jelira(chdeps//'.VALE', 'LONMAX', n1)
             ASSERT(n1.eq.neq)
-            call jelira(chdeps//'.VALE', 'TYPE', ibid, ktyp)
+            call jelira(chdeps//'.VALE', 'TYPE', cval=ktyp)
             ASSERT(ktyp.eq.'R')
             do 300 ieq = 1, neq
                 r1 = zr(npara+nbva*(ieq-1)+i-1)
@@ -283,7 +283,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !               ALORS MODIFIER DIRECTEMENT LES VALEURS DANS LA SD
 !               (FONCTION AVEC APPELS RECURSIFS)
             call jeveuo(resou(1:8)//'           .'//grande, 'E', lvals)
-            call jelira(resou(1:8)//'           .'//grande, 'LONMAX', ibid, k1b)
+            call jelira(resou(1:8)//'           .'//grande, 'LONMAX', ibid)
             do 700 j = 0, nbordr-1
                 iarchi = j
                 isto1 = j
@@ -386,7 +386,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !               ALORS MODIFIER DIRECTEMENT LES VALEURS DANS LA SD
 !               (FONCTION AVEC APPELS RECURSIFS)
             call jeveuo(resou(1:8)//'           .'//grande, 'E', lvals)
-            call jelira(resou(1:8)//'           .'//grande, 'LONMAX', ibid, k1b)
+            call jelira(resou(1:8)//'           .'//grande, 'LONMAX', ibid)
             do 23 j = 0, nbordr-1
                 iarchi = j
                 isto1 = j

@@ -62,7 +62,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     character(len=24) :: ob1, chain2
     character(len=40) :: lb
     character(len=1) :: xous, bas2
-    integer :: long, nbval, nbobj, ialiob, i, ibid
+    integer :: long, nbval, nbobj, ialiob, i
     logical :: tout
     character(len=8) :: kbid
 !
@@ -141,7 +141,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
             write(unit,*) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
             do 2 i = 1, nbobj
                 ob1 = zk24(ialiob-1+i)
-                call jelira(ob1, 'XOUS', ibid, xous)
+                call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .true., .false.,&
                             xous)
  2          continue
@@ -154,7 +154,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
             write(unit,*) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
             do 3 i = 1, nbobj
                 ob1 = zk24(ialiob-1+i)
-                call jelira(ob1, 'XOUS', ibid, xous)
+                call jelira(ob1, 'XOUS', cval=xous)
                 call utimob(unit, ob1, niveau, .false., .true.,&
                             xous)
  3          continue

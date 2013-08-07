@@ -72,7 +72,7 @@ subroutine op0119()
     character(len=8) :: sdgf, nomas, ktyma, ksudi, nommai, nogfma
     character(len=6) :: knbv, kioc, knumai
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
-    character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, k24bid, mlgtno, nomgf
+    character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, mlgtno, nomgf
     character(len=24) :: vnbfig, vcafig, vpocfg, rnomgf, gfmagl, valk(3)
     integer :: iarg
 !
@@ -151,9 +151,9 @@ subroutine op0119()
         nbfigr=nmails
         call jeveuo('&&PMFD00.MAILLSEC', 'L', jms)
 !        RECUPERATION DE LA TAILLE DE NOMAS//'.CONNEX'
-        call jelira(mlgcnx, 'LONT', nbnomm, k24bid)
+        call jelira(mlgcnx, 'LONT', nbnomm)
 !        RECUPERATION DU NOMBRE DE NOEUX DU MAILLAGE
-        call jelira(mlgtno, 'NOMMAX', nbno, k24bid)
+        call jelira(mlgtno, 'NOMMAX', nbno)
         nbnoeu=nbnoeu+nbno
 !
         do 30 j = 1, nmails
@@ -242,7 +242,7 @@ subroutine op0119()
         call reliem(' ', nomas, 'NU_MAILLE', 'SECTION', ioc,&
                     3, limcls, ltymcl, '&&OP0119.MAILLSEC', nmails)
         call jeveuo('&&OP0119.MAILLSEC', 'L', jms)
-        call jelira(mlgtno, 'NOMMAX', nbno, k24bid)
+        call jelira(mlgtno, 'NOMMAX', nbno)
 ! ---    COPIE DES COORDONNEES DES NOEUDS DU MAILLAGE DU GROUPE
         call gfmaco(nogfma, nbnoeu, nbno, jdco, axep)
         nbfib = 0

@@ -112,11 +112,11 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     repsst='&&MODL91      .MODG.SSNO'
     nommcl='&&MODL91      .MODG.SSME'
     call jecreo(repsst, 'V N K8')
-    call jeecra(repsst, 'NOMMAX', 1, ' ')
+    call jeecra(repsst, 'NOMMAX', 1)
     call jecrec(nommcl, 'V V K8', 'NU', 'CONTIG', 'CONSTANT',&
                 1)
     call jecroc(jexnum(nommcl, 1))
-    call jeecra(nommcl, 'LONT', 1, ' ')
+    call jeecra(nommcl, 'LONT', 1)
     call jecroc(jexnom(repsst, 'MODLINTF'))
     call jenonu(jexnom(repsst, 'MODLINTF'), ibid)
     call jeveuo(jexnum(nommcl, 1), 'E', ibid)
@@ -124,7 +124,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !-- FIN DU MODELE_GENE
 !
     call jecreo(prgene//'.LILI', 'V N K8')
-    call jeecra(prgene//'.LILI', 'NOMMAX', 1, k8bid)
+    call jeecra(prgene//'.LILI', 'NOMMAX', 1)
     call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
     call jecrec(prgene//'.PRNO', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 1)
@@ -132,9 +132,9 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
                 1)
 !
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
+    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1, ' ')
+    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1)
 !
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprs)

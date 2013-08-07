@@ -44,9 +44,9 @@ subroutine jeundf(obj)
     character(len=24) :: k24df
     character(len=32) :: k32df
     character(len=80) :: k80df
-    character(len=1) :: xous, type, kbid
+    character(len=1) :: xous, type
     complex(kind=8) :: c1undf
-    integer :: long, i1undf, ibid, ltyp, iad, k
+    integer :: long, i1undf, ltyp, iad, k
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
@@ -64,9 +64,9 @@ subroutine jeundf(obj)
 !
 !     -- DETERMINATION DE TYPSCA :
 !     -----------------------------
-    call jelira(obj2, 'TYPE', ibid, type)
+    call jelira(obj2, 'TYPE', cval=type)
     if (type .eq. 'K') then
-        call jelira(obj2, 'LTYP', ltyp, kbid)
+        call jelira(obj2, 'LTYP', ltyp)
         if (ltyp .eq. 8) then
             typsca='K8'
         else if (ltyp.eq.16) then
@@ -84,11 +84,11 @@ subroutine jeundf(obj)
         typsca=type
     endif
 !
-    call jelira(obj2, 'XOUS', ibid, xous)
+    call jelira(obj2, 'XOUS', cval=xous)
 !     TEST CAS NON PROGRAMME
     ASSERT(xous.ne.'X')
 !
-    call jelira(obj2, 'LONMAX', long, kbid)
+    call jelira(obj2, 'LONMAX', long)
     call jeveuo(obj2, 'E', iad)
 !
 !

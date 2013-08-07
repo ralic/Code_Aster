@@ -34,7 +34,6 @@ subroutine numel2(cham, ima, igrel, iel)
 !     SI ON NE TROUVE PAS LA MAILLE, ON REND IGREL=IEL=0
 ! ----------------------------------------------------------------------
 !
-    character(len=8) :: k8b
     character(len=19) :: cham19, noligr
 !
 !-----------------------------------------------------------------------
@@ -48,9 +47,9 @@ subroutine numel2(cham, ima, igrel, iel)
     call jeveuo(cham19//'.CELK', 'L', iacelk)
     noligr = zk24(iacelk)(1:19)
 !
-    call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel, k8b)
+    call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
     do 10 igr = 1, nbgrel
-        call jelira(jexnum(noligr//'.LIEL', igr), 'LONMAX', nel, k8b)
+        call jelira(jexnum(noligr//'.LIEL', igr), 'LONMAX', nel)
         call jeveuo(jexnum(noligr//'.LIEL', igr), 'L', ialiel)
         do 20 i = 1, nel-1
             if (zi(ialiel-1+i) .eq. ima) then

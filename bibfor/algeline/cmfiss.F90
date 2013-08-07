@@ -62,7 +62,6 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
     integer :: n1, n2, n3, n4
     integer :: inoma, iconne, ityma, igpma, ingma, jcon, jgno1, jgno2
     integer :: lgma, lgpref
-    character(len=8) :: k8b
     character(len=80) :: knume
 ! ----------------------------------------------------------------------
 !
@@ -75,8 +74,8 @@ subroutine cmfiss(main, gno1, gno2, prefix, mainit,&
     call jeexin(jexnom(main//'.GROUPENO', gno2), iret)
     if (iret .eq. 0) call u2mesk('F', 'ALGELINE_19', 1, gno2)
 !
-    call jelira(jexnom(main//'.GROUPENO', gno1), 'LONUTI', nb1, k8b)
-    call jelira(jexnom(main//'.GROUPENO', gno2), 'LONUTI', nb2, k8b)
+    call jelira(jexnom(main//'.GROUPENO', gno1), 'LONUTI', nb1)
+    call jelira(jexnom(main//'.GROUPENO', gno2), 'LONUTI', nb2)
 !
     if (nb1 .ne. nb2) call u2mess('F', 'ALGELINE_20')
     if (nb1 .le. 1) call u2mess('F', 'ALGELINE_21')

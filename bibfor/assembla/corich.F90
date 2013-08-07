@@ -105,15 +105,15 @@ subroutine corich(action, champ, ichin, ichout)
     call jeexin(repert, iret)
     if (iret .eq. 0) then
         call jecreo(repert, 'V N K24')
-        call jeecra(repert, 'NOMMAX', 50, kbid)
+        call jeecra(repert, 'NOMMAX', 50)
         call wkvect(numich, 'V V I', 50, ibid)
     endif
 !
 !
 !     -- AGGRANDISSEMENT DE REPERT ET NUMICH SI NECESSAIRE:
 !     ------------------------------------------------------
-    call jelira(repert, 'NOMMAX', longmx, kbid)
-    call jelira(repert, 'NOMUTI', long, kbid)
+    call jelira(repert, 'NOMMAX', longmx)
+    call jelira(repert, 'NOMUTI', long)
     if (long .gt. longmx-1) then
 !
         call juveca(numich, 2*longmx)
@@ -121,7 +121,7 @@ subroutine corich(action, champ, ichin, ichout)
         call jedupo(repert, 'V', reptmp, .false.)
         call jedetr(repert)
         call jecreo(repert, 'V N K24')
-        call jeecra(repert, 'NOMMAX', 2*longmx, kbid)
+        call jeecra(repert, 'NOMMAX', 2*longmx)
         do 10,k = 1,long
         call jenuno(jexnum(reptmp, k), nomch)
         call jecroc(jexnom(repert, nomch))
@@ -181,8 +181,8 @@ subroutine corich(action, champ, ichin, ichout)
 !     ----------------------------
     if (.false.) then
         write (6,*) 'CORICH FIN ',action,' ',champ,ichin,ichout
-        call jelira(repert, 'NOMUTI', long, kbid)
-        call jelira(repert, 'NOMMAX', longmx, kbid)
+        call jelira(repert, 'NOMUTI', long)
+        call jelira(repert, 'NOMMAX', longmx)
         call jeveuo(numich, 'L', jnumic)
         write (6,*) 'CORICH FIN ETAT DU REP.: ',longmx,' ',long
         do 20,k = 1,long

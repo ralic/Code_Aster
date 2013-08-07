@@ -54,7 +54,6 @@ subroutine mecgm2(lischa, instan, mesuiv)
     integer :: nbchme, nchar
     integer :: iret, ichar, icha, ier
     integer :: jmec
-    character(len=8) :: k8bid
     logical :: fct
     character(len=24) :: licoef, fomult
     integer :: jlicoe, jfonct
@@ -75,7 +74,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
 !
     call jeexin(mesuiv(1:19)//'.RELR', iret)
     if (iret .ne. 0) then
-        call jelira(mesuiv(1:19)//'.RELR', 'LONUTI', nbchme, k8bid)
+        call jelira(mesuiv(1:19)//'.RELR', 'LONUTI', nbchme)
         if (nbchme .eq. 0) then
             bidon = .true.
         else
@@ -98,7 +97,7 @@ subroutine mecgm2(lischa, instan, mesuiv)
         fct = .false.
     else
         fct = .true.
-        call jelira(fomult, 'LONMAX', nchar, k8bid)
+        call jelira(fomult, 'LONMAX', nchar)
         if (nchar .eq. 0) then
             ASSERT(.false.)
         endif

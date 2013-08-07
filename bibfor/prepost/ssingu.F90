@@ -65,7 +65,7 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
     integer :: jcesc, jcesd, jcesl, jcesv, iad1, iad2, iad3
     integer :: nbcmp, ncmp1, ncmp2, ncmp3
     integer :: icmp, inel, nncp, ibid
-    character(len=8) :: k8bid, nompaz, licmp(3)
+    character(len=8) ::  nompaz, licmp(3)
     character(len=16) :: opti
     character(len=19) :: chsing
 !
@@ -84,7 +84,7 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
 ! 2 - STOCKAGE DANS CHSING DE ALPHA ET RE
 !
     call jeveuo(chsing//'.CESC', 'L', jcesc)
-    call jelira(chsing//'.CESC', 'LONMAX', nbcmp, k8bid)
+    call jelira(chsing//'.CESC', 'LONMAX', nbcmp)
     call jeveuo(chsing//'.CESD', 'L', jcesd)
     call jeveuo(chsing//'.CESL', 'E', jcesl)
     call jeveuo(chsing//'.CESV', 'E', jcesv)

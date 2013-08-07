@@ -159,7 +159,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     nbtemp = 0
     do 10 i = 1, nbskma
         numa = zi(ltnuma+i-1)
-        call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno, k8bid)
+        call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
         nbtemp = nbtemp + nbno
 10  end do
 !
@@ -176,7 +176,7 @@ subroutine cyc110(nomres, mailla, nbsect)
     icomp = 0
     do 20 i = 1, nbskma
         numa = zi(ltnuma+i-1)
-        call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno, k8bid)
+        call jelira(jexnum(mailla//'.CONNEX', numa), 'LONMAX', nbno)
         call jeveuo(jexnum(mailla//'.CONNEX', numa), 'L', llcox)
         do 30 j = 1, nbno
             icomp = icomp + 1
@@ -213,28 +213,28 @@ subroutine cyc110(nomres, mailla, nbsect)
     call wkvect(nomres//'.DIME', 'G V I', 6, lddime)
 !
     call jecreo(nomres//'.NOMMAI', 'G N K8')
-    call jeecra(nomres//'.NOMMAI', 'NOMMAX', nbmato, k8bid)
+    call jeecra(nomres//'.NOMMAI', 'NOMMAX', nbmato)
 !
     call jecrec(nomres//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)
-    call jeecra(nomres//'.CONNEX', 'LONT', ntacon, k8bid)
+    call jeecra(nomres//'.CONNEX', 'LONT', ntacon)
 !
     call wkvect(nomres//'.TYPMAIL', 'G V I', nbmato, ibid)
 !
 !
     call jecreo(nomres//'.NOMNOE', 'G N K8')
-    call jeecra(nomres//'.NOMNOE', 'NOMMAX', nbnoto, k8bid)
+    call jeecra(nomres//'.NOMNOE', 'NOMMAX', nbnoto)
 !
     gpptnm = nomres//'.PTRNOMMAI'
     call jecreo(gpptnm, 'G N K24')
-    call jeecra(gpptnm, 'NOMMAX', nbsect, ' ')
+    call jeecra(gpptnm, 'NOMMAX', nbsect)
     call jecrec(nomres//'.GROUPEMA', 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                 nbsect)
 !
 !
     call wkvect(nomres//'.COORDO    .REFE', 'G V K24', 4, ldref)
     call wkvect(nomres//'.COORDO    .DESC', 'G V I', 3, lddesc)
-    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(nomres//'.COORDO    .DESC', 'DOCU', cval='CHNO')
     call wkvect(nomres//'.COORDO    .VALE', 'G V R', 3*nbnoto, ldcoo)
 !
 !
@@ -292,8 +292,8 @@ subroutine cyc110(nomres, mailla, nbsect)
         call codent(i, 'D0', knusec)
         grmcou = 'MASEC'//knusec
         call jecroc(jexnom(nomres//'.GROUPEMA', grmcou))
-        call jeecra(jexnom(nomres//'.GROUPEMA', grmcou), 'LONMAX', max(1, nbskma), k8bid)
-        call jeecra(jexnom(nomres//'.GROUPEMA', grmcou), 'LONUTI', nbskma, k8bid)
+        call jeecra(jexnom(nomres//'.GROUPEMA', grmcou), 'LONMAX', max(1, nbskma))
+        call jeecra(jexnom(nomres//'.GROUPEMA', grmcou), 'LONUTI', nbskma)
         call jeveuo(jexnom(nomres//'.GROUPEMA', grmcou), 'E', ldgrma)
 !
 !   BOUCLE SUR NOEUD GENERIQUES SECTEUR
@@ -336,11 +336,11 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
             zi(ldgrma+j-1) = ntemna
 !
-            call jelira(jexnum(mailla//'.CONNEX', numma), 'LONMAX', nbcon, k8bid)
+            call jelira(jexnum(mailla//'.CONNEX', numma), 'LONMAX', nbcon)
             call jecroc(jexnom(nomres//'.NOMMAI', nomcou))
             call jenonu(jexnom(nomres//'.NOMMAI', nomcou), ibid)
-            call jeecra(jexnum(nomres//'.CONNEX', ibid), 'LONMAX', nbcon, k8bid)
-            call jeecra(jexnum(nomres//'.CONNEX', ibid), 'LONUTI', nbcon, k8bid)
+            call jeecra(jexnum(nomres//'.CONNEX', ibid), 'LONMAX', nbcon)
+            call jeecra(jexnum(nomres//'.CONNEX', ibid), 'LONUTI', nbcon)
             call jeveuo(jexnum(mailla//'.CONNEX', numma), 'L', llcona)
 !
             do 80 k = 1, nbcon

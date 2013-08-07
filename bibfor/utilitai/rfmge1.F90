@@ -40,7 +40,7 @@ subroutine rfmge1(modgen)
 !                                CONCEPT MODE_GENE
 !     ------------------------------------------------------------------
     integer :: n1, ncmp, iret, jordr, lpro, lvar, lfon, nbordr, im, iord, iad
-    integer :: jvale, jrefe, jdeeq, jnume, nbmode, i, istru, ibid
+    integer :: jvale, jrefe, jdeeq, jnume, nbmode, i, istru
     real(kind=8) :: epsi
     character(len=4) :: interp(2)
     character(len=8) :: k8b, crit, mode
@@ -117,7 +117,7 @@ subroutine rfmge1(modgen)
         zr(lvar+iord) = zr(iad)
 !
         call jeveuo(noch19//'.VALE', 'L', jvale)
-        call jelira(noch19//'.VALE', 'TYPE', ibid, k16b)
+        call jelira(noch19//'.VALE', 'TYPE', cval=k16b)
         if (k16b(1:1) .ne. 'R') then
             call u2mess('F', 'UTILITAI4_17')
         endif

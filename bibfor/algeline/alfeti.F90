@@ -114,7 +114,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
     integer :: ninfma, niter1, iterm, iteri, irg1, irefe, nbddl, iadval
     real(kind=8) :: anorm, anormk, anorm0, epsik, paraaf, alpha, alphan, alphad
     real(kind=8) :: rmin, temps(6), rbid, anormd, resmin, gainre, valr(2)
-    character(len=8) :: nomsd, k8bid, k8bid1
+    character(len=8) :: nomsd, k8bid1
     character(len=19) :: matdd, k19bid, crit19
     character(len=24) :: colaux, colaui, colau2, nomggt, infofe, nomgi, k24bid
     character(len=24) :: sdfetg, kfetf, kfval, k24irr, k24lai, k24ir2, k24irg
@@ -292,7 +292,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
                 call jeveuo(chsmdd(1:19)//'.REFE', 'L', irefe)
                 prfdee=zk24(irefe+1)(1:19)//'.DEEQ'
                 call jeveuo(prfdee, 'L', ideeq)
-                call jelira(prfdee, 'LONMAX', nbddl, k8bid)
+                call jelira(prfdee, 'LONMAX', nbddl)
                 nbddl=nbddl/2
                 call fettsd(infofe, idd, nbddl, ibid, sdfeti(1:19),&
                             k24bid, ideeq, iadval, ibid, ibid,&
@@ -399,13 +399,13 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
                 call jecroc(jexnom(colau3, nomsd))
                 call jecroc(jexnom(colaux, nomsd))
                 nb=zi(ifeth+idd-1)
-                call jeecra(jexnom(colaux, nomsd), 'LONMAX', nb, k8bid)
+                call jeecra(jexnom(colaux, nomsd), 'LONMAX', nb)
 ! ATTENTION DECALAGE DE 1, LE PREMIER ENTIER VAUT  SI L'OBJET A DEJA
 ! ETE REMPLI PAR FETRIN
-                call jeecra(jexnom(colau3, nomsd), 'LONMAX', nb+1, k8bid)
+                call jeecra(jexnom(colau3, nomsd), 'LONMAX', nb+1)
                 if (lumpe) then
                     call jecroc(jexnom(colau2, nomsd))
-                    call jeecra(jexnom(colau2, nomsd), 'LONMAX', nb, k8bid)
+                    call jeecra(jexnom(colau2, nomsd), 'LONMAX', nb)
                 endif
             endif
 10      continue
@@ -462,7 +462,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
             call jenuno(jexnum(sdfetg, idd), nomsd)
             call jeveuo(jexnom(sdfetg, nomsd), 'L', zi(iaux3))
             iaux3=iaux3+1
-            call jelira(jexnom(sdfetg, nomsd), 'LONMAX', long, k8bid)
+            call jelira(jexnom(sdfetg, nomsd), 'LONMAX', long)
             if (mod(long,2) .ne. 0) then
                 call u2mesk('F', 'ALGELINE_2', 1, sdfeti)
             else
@@ -1168,7 +1168,7 @@ subroutine alfeti(opt, sdfeti, matas, chsecm, chsol,&
         call jedetr(kmpi)
         call jedetr(kmpib)
 ! DESTRUCTION DES LIGRELS DE MODELE CONSTRUIT PAR SD DANS NUMERO.F
-        call jelira(kfval, 'LONMAX', nbsd, k8bid)
+        call jelira(kfval, 'LONMAX', nbsd)
         nbsd=nbsd-1
         call jeveuo(kcf, 'L', ir1)
         do 600 idd = 1, nbsd

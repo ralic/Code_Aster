@@ -85,7 +85,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     integer :: npg1, nbpi, iagepi, iagese, nno2, nbnoma, nuse, nse1
     integer :: ima, nbelgr, numail, nupoin, npoini, iterm, ipoini
     integer :: iret, ich, jrefe, nch2
-    character(len=8) :: mo, ma1, ma2, nom, kbid, elrefa, fapg, famil, nompar
+    character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, famil, nompar
     character(len=8) :: tych
     character(len=16) :: nomte, lisch(nch)
     character(len=19) :: ligrel, ligrmo, cel, cham1, ligre1
@@ -357,9 +357,9 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
 !     3.2 CREATION DES OBJETS .NOMNOE ET .NOMMAI :
 !     --------------------------------------------
     call jecreo(ma2//'.NOMNOE', 'G N K8')
-    call jeecra(ma2//'.NOMNOE', 'NOMMAX', nbnoeu, ' ')
+    call jeecra(ma2//'.NOMNOE', 'NOMMAX', nbnoeu)
     call jecreo(ma2//'.NOMMAI', 'G N K8')
-    call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail, ' ')
+    call jeecra(ma2//'.NOMMAI', 'NOMMAX', nbmail)
 !
     nom(1:1)='N'
     do 51,k=1,nbnoeu
@@ -384,7 +384,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
     do 53,ima=1,nbmail
     nno2=zi(ianno2-1+ima)
     call jecroc(jexnum(ma2//'.CONNEX', ima))
-    call jeecra(jexnum(ma2//'.CONNEX', ima), 'LONMAX', nno2, kbid)
+    call jeecra(jexnum(ma2//'.CONNEX', ima), 'LONMAX', nno2)
     do 54,ino2=1,nno2
     nuno2=nuno2+1
     zi(ibid-1+nuno2)=nuno2

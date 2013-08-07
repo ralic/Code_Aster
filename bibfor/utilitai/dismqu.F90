@@ -46,7 +46,6 @@ subroutine dismqu(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=16) :: nomte
-    character(len=1) :: k1bid
 !
 !
 !
@@ -66,10 +65,10 @@ subroutine dismqu(questi, nomobz, repi, repkz, ierd)
         call jeexin(nomob//'.LIEL', iret)
         ierd=1
         if (iret .gt. 0) then
-            call jelira(nomob//'.LIEL', 'NUTIOC', nbgr, k1bid)
+            call jelira(nomob//'.LIEL', 'NUTIOC', nbgr)
             do 1, igr=1,nbgr
             call jeveuo(jexnum(nomob//'.LIEL', igr), 'L', iagrel)
-            call jelira(jexnum(nomob//'.LIEL', igr), 'LONMAX', n1, k1bid)
+            call jelira(jexnum(nomob//'.LIEL', igr), 'LONMAX', n1)
             ite=zi(iagrel-1+n1)
             call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
             if (nomte .eq. 'MECA_HEXA20' .or. nomte .eq. 'MECA_HEXA27' .or. nomte .eq.&

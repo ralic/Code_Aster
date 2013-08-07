@@ -121,7 +121,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !
     common /tdim/   ndt  , ndi
 !
-    integer :: i, intg, codret, j
+    integer ::  intg, codret
 !
     integer :: nbcomm(nmat, 3), verjac, nfs, nsg
     real(kind=8) :: pgl(3, 3), epstr(6)

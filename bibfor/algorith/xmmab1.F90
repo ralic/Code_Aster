@@ -81,8 +81,8 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  NVIT   : POINT VITAL OU PAS
 ! I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, l, m, ii, jj, ini, pli, inj, plj
-    integer :: xoula, jjn, iin, ddle
+    integer :: i, j, k, l, m, ii, jj, pli, plj
+    integer ::  jjn, iin, ddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
     real(kind=8) :: e(3, 3), a(3, 3), c(3, 3), mp, mb, mbt, mm, mmt
     real(kind=8) :: tt(3, 3), v(2)

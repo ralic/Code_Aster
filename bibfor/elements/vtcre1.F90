@@ -61,7 +61,7 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: jchamp, jrefn, ibid, ierd, jneq, lchp
+    integer :: jchamp, jrefn, ierd, jneq, lchp
     character(len=8) :: k8bid
     character(len=24) :: vale, refe, desc
 !
@@ -96,7 +96,7 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
 !
     desc(1:19) = champ
     call wkvect(desc, classe//' V I', 2, jchamp)
-    call jeecra(desc, 'DOCU', ibid, 'CHNO')
+    call jeecra(desc, 'DOCU', cval='CHNO')
     call dismoi('F', 'NUM_GD_SI', numedd, 'NUME_DDL', zi(jchamp),&
                 k8bid, ierd)
     zi(jchamp+1) = 1
@@ -109,7 +109,7 @@ subroutine vtcre1(champ, numedd, classe, type, method,&
     neq = zi(jneq)
     vale(1:19) = champ
     call jecreo(vale, classe//' V '//type)
-    call jeecra(vale, 'LONMAX', neq, k8bid)
+    call jeecra(vale, 'LONMAX', neq)
     call jeveuo(vale, 'E', lchp)
 !
 ! --- CHANGER LA GRANDEUR

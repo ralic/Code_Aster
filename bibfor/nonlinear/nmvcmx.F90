@@ -56,7 +56,6 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 !
 !
     integer :: nbcmp, nbcmp2
-    character(len=1) :: k1bid
     character(len=8) :: valk(5)
     character(len=19) :: chsref, chscom
     character(len=24) :: vrcplu, vrcref
@@ -100,7 +99,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
     call jeveuo(chsref//'.CESV', 'L', jcrsv)
 !
 !     RECUPERATION DES NOMS DES VARC
-    call jelira(mate(1:8)//'.CVRCNOM', 'LONMAX', nbcmp2, k1bid)
+    call jelira(mate(1:8)//'.CVRCNOM', 'LONMAX', ival=nbcmp2)
     call jeveuo(mate(1:8)//'.CVRCNOM', 'L', jnom)
     call jeveuo(mate(1:8)//'.CVRCVARC', 'L', jvarc)
 !

@@ -64,7 +64,6 @@ subroutine callis(nomres)
 #include "asterfort/wkvect.h"
 !
 !
-    character(len=1) :: k1bid
     character(len=8) :: nomres, option
     character(len=24) :: famli, fmlia, promli
     character(len=24) :: fpli1o, fpli2o, fpli1n, fpli2n, int1, int2, indin1
@@ -104,7 +103,7 @@ subroutine callis(nomres)
 !-----------------RECUPERATION DU NOMBRE DE LIAISONS--------------------
 !             ET DECLARATION DES FAMILLES
 !
-    call jelira(famli, 'NMAXOC', nblis, k1bid)
+    call jelira(famli, 'NMAXOC', nblis)
 !
     call wkvect(promli, 'G V IS', nblis*9, ldpmli)
 !
@@ -175,11 +174,11 @@ subroutine callis(nomres)
 !--------------LES NOMBRES DES NOEUDS DES INTERFACES
         int1=lint1//'.IDC_LINO'
         call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
-        call jelira(jexnum(int1, ibid), 'LONMAX', nbno1, k8bid)
+        call jelira(jexnum(int1, ibid), 'LONMAX', nbno1)
 !
         int2=lint2//'.IDC_LINO'
         call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
-        call jelira(jexnum(int2, ibid), 'LONMAX', nbno2, k8bid)
+        call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
 !
 !--------------LES LISTES DES NUMEROS DES NOEUDS DES INTERFACES
         call jenonu(jexnom(lint1 //'.IDC_NOMS', intf1), ibid)

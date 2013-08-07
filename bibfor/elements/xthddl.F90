@@ -47,13 +47,13 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !-----------------------------------------------------------------------
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 !
-    integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
-    integer :: ifh, nddl
+    integer :: ier, istatu, ino, i, j, ielim, in, ddlmax
+    integer ::  nddl
 !      AU PLUS 8*3=24 DDL (MAX ATTEINT POUR L'HEXA8 XHT)
     parameter    (ddlmax=24)
     integer :: posddl(ddlmax)
     character(len=8) :: tyenel
-    logical :: lelim, lmultc
+    logical :: lelim
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------

@@ -292,7 +292,7 @@ subroutine peepot(resu, modele, mate, cara, nh,&
                         call u2mesk('A', 'UTILITAI3_46', 1, nomgrm)
                         goto 40
                     endif
-                    call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma, k8b)
+                    call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call u2mesk('A', 'UTILITAI3_47', 1, nomgrm)
                         goto 40

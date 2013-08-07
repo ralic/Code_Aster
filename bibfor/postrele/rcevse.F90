@@ -36,13 +36,12 @@ subroutine rcevse(csigm, cinst, csno, csne)
     parameter  ( ncmp = 6 )
     real(kind=8) :: sn1o(ncmp), sn1e(ncmp), sn2o(ncmp), sn2e(ncmp), sn12o(ncmp)
     real(kind=8) :: sn12e(ncmp), tresca
-    character(len=8) :: k8b
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
     call jeveuo(csigm, 'L', jsigm)
     call jeveuo(cinst, 'L', jinst)
-    call jelira(cinst, 'LONMAX', nbinst, k8b)
+    call jelira(cinst, 'LONMAX', nbinst)
 !
     nbordr = (nbinst*(nbinst+1)) / 2
     call wkvect(csno, 'V V R', nbordr, jsno)

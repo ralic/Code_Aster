@@ -53,7 +53,6 @@ subroutine cm27ma(nbmato, nbma, nbno, nbnomi, lima,&
 !
     integer :: m, ma, tymain, tymaou, nbnoin, nbnoou, n, jmamo, jposma, jconxi
     integer :: jconxo, ifm, niv, nbhe20
-    character(len=8) :: kbid
     character(len=24) :: connei, conneo, mamo, posmai
 ! ----------------------------------------------------------------------
 !
@@ -88,7 +87,7 @@ subroutine cm27ma(nbmato, nbma, nbno, nbnomi, lima,&
     do 20 ma = 1, nbmato
 !
 ! ------ ANCIENNE CONNECTIVITE
-        call jelira(jexnum(connei, ma), 'LONMAX', nbnoin, kbid)
+        call jelira(jexnum(connei, ma), 'LONMAX', nbnoin)
         call jeveuo(jexnum(connei, ma), 'L', jconxi)
 !
 ! ------ NOUVEAU NOMBRE DE NOEUD POUR LA MAILLE COURANTE
@@ -100,7 +99,7 @@ subroutine cm27ma(nbmato, nbma, nbno, nbnomi, lima,&
         endif
 !
 ! ------ NOUVELLE CONNECTIVITE
-        call jeecra(jexnum(conneo, ma), 'LONMAX', nbnoou, kbid)
+        call jeecra(jexnum(conneo, ma), 'LONMAX', nbnoou)
         call jeveuo(jexnum(conneo, ma), 'E', jconxo)
 !
 ! ------ RECOPIE DES NOEUDS INCHANGES

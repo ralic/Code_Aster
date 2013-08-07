@@ -136,7 +136,7 @@ subroutine op0115()
         fonc = zk8(lfonc-1+ifonc)
         chfonc = fonc//'           '
         call jeveuo(chfonc//'.VALE', 'L', lvale)
-        call jelira(chfonc//'.VALE', 'LONMAX', nbval, k8bid)
+        call jelira(chfonc//'.VALE', 'LONMAX', nbval)
         call jeveuo(chfonc//'.PROL', 'L', lprol)
         tfonc = zk24(lprol)(1:8)
         if (tfonc .eq. 'FONCTION') nbfreq = nbval/2
@@ -159,8 +159,8 @@ subroutine op0115()
             endif
         endif
         call jecroc(jexnum(chvale, ifonc))
-        call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs, ' ')
-        call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs, ' ')
+        call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs)
+        call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
         if ((diag) .and. (tfonc .eq. 'FONCT_C')) then
             do 107 inum = 1, nbabs
@@ -256,8 +256,8 @@ subroutine op0115()
         nbfreq=int((fmax-fmin)/pas) + 1
         ifonc = iocpf + ikt
         call jecroc(jexnum(chvale, ifonc))
-        call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbfreq, ' ')
-        call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbfreq, ' ')
+        call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbfreq)
+        call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbfreq)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
         do 210 ifreq = 1, nbfreq
             freq = fmin + pas*(ifreq-1)
@@ -352,8 +352,8 @@ subroutine op0115()
             endif
         endif
         call jecroc(jexnum(chvale, ifonc))
-        call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs, ' ')
-        call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs, ' ')
+        call jeecra(jexnum(chvale, ifonc), 'LONMAX', nbabs)
+        call jeecra(jexnum(chvale, ifonc), 'LONUTI', nbabs)
         call jeveuo(jexnum(chvale, ifonc), 'E', ispec)
         do 310 ifreq = 1, nbfreq
             if (diag) then

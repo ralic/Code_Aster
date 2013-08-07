@@ -37,7 +37,6 @@ subroutine vrdesc(objet1, objet2, ier)
 !     ------------------------------------------------------------------
 !
     integer :: nbval, ival1, ival2
-    character(len=8) :: cbid
     character(len=19) :: nom1, nom2
     character(len=24) :: desc1, desc2
 !     ------------------------------------------------------------------
@@ -62,8 +61,8 @@ subroutine vrdesc(objet1, objet2, ier)
 !
 !
 !     --- RECUPERATION DES LONGUEURS DES TABLEAUX DE REFERENCE ---
-    call jelira(desc1, 'LONMAX', ival1, cbid)
-    call jelira(desc2, 'LONMAX', ival2, cbid)
+    call jelira(desc1, 'LONMAX', ival1)
+    call jelira(desc2, 'LONMAX', ival2)
     if (ival1 .ne. ival2) then
         ier = ier + abs(ival1-ival2)
         nbval = min(ival1,ival2)

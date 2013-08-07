@@ -48,7 +48,6 @@ subroutine versst(nomres)
     character(len=24) :: valk(4)
     character(len=8) :: nomres, nmsstr, nmsst, nmmclr, nmmcl, blanc
     logical :: pblog
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -63,7 +62,7 @@ subroutine versst(nomres)
 !
 !------------RECUPERATION DU NOMBRE DE MACR_ELEM MIS EN JEU-------------
 !
-    call jelira(nomres//'      .MODG.SSME', 'LONMAX', nbsst, k1bid)
+    call jelira(nomres//'      .MODG.SSME', 'LONMAX', nbsst)
 !
 !------RECUPERATION VALEURS DE REFERENCE GRANDEUR SOUS-JACENTE----------
 !      (ON PREND CELLES DU PREMIER MACR_ELEM)

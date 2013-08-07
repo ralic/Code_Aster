@@ -54,7 +54,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     logical :: newk, axe
     character(len=1) :: base
     character(len=3) :: tsca, dir
-    character(len=8) :: ma1, ma2, ma3, nomgd, promes, macrel, k8bid
+    character(len=8) :: ma1, ma2, ma3, nomgd, promes, macrel
     character(len=8) :: model3, kcmp, nono, kcmp2
     character(len=8) :: basemo, mail, numddl, licmp, ksto
     character(len=16) :: k16bid
@@ -117,7 +117,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     vrefpm = promes//'.PROJM    .PJMRF'
 !
     call jeveuo(vnoeud, 'L', lnoeud)
-    call jelira(vnoeud, 'LONUTI', nbmesu, k8bid)
+    call jelira(vnoeud, 'LONUTI', nbmesu)
 !
 ! MODEL3 : MODELE MESURE
     call jeveuo(vrange, 'L', lrange)
@@ -192,12 +192,12 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     vrangm = macrel//'.PROJM    .PJMRG'
     call jeveuo(vnoeum, 'L', lnoeum)
     call jeveuo(vrangm, 'L', lrangm)
-    call jelira(vnoeum, 'LONUTI', nddle, k8bid)
+    call jelira(vnoeum, 'LONUTI', nddle)
 !
 ! INVERSE DE LA MATRICE DE PASSAGE : VSU = (TIT*PHI)-1
     vsu = macrel//'.PROJM    .PJMIG'
     call jeveuo(vsu, 'L', lvsu)
-    call jelira(vsu, 'LONUTI', nbord, k8bid)
+    call jelira(vsu, 'LONUTI', nbord)
     nbord = nbord/nddle
 ! NBORD : NOMBRE DE NUMERO D'ORDRE (MODE MESURE)
 !

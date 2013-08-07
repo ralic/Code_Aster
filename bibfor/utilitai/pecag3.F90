@@ -40,7 +40,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) :: k8b, noma8
+    character(len=8) ::  noma8
     character(len=24) :: mlggma, mlgval, mlgcox
 !     ------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
     mlgcox = noma8//'.CONNEX'
     mlgval = noma8//'.COORDO    .VALE'
     call jeveuo(mlgval, 'L', jcoor)
-    call jelira(mlgval, 'LONMAX', nbnoeu, k8b)
+    call jelira(mlgval, 'LONMAX', nbnoeu)
     nbnoeu = nbnoeu / 3
 !
     if (ndim .eq. 2) then
@@ -101,7 +101,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
         do 20 im = 1, nbmail
             call jenonu(jexnom(noma8//'.NOMMAI', noment(im)), ibid)
             call jeveuo(jexnum(mlgcox, ibid), 'L', jdes)
-            call jelira(jexnum(mlgcox, ibid), 'LONMAX', nbno, k8b)
+            call jelira(jexnum(mlgcox, ibid), 'LONMAX', nbno)
             do 22 in = 1, nbno
                 nuno = zi(jdes+in-1)
                 x0 = zr(jcoor-1+3*(nuno-1)+1)-cdx
@@ -122,11 +122,11 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
     else if (motcle(1:8) .eq. 'GROUP_MA') then
         do 30 ig = 1, nbmail
             call jeveuo(jexnom(mlggma, noment(ig)), 'L', jgro)
-            call jelira(jexnom(mlggma, noment(ig)), 'LONUTI', nbma, k8b)
+            call jelira(jexnom(mlggma, noment(ig)), 'LONUTI', nbma)
             do 32 im = 1, nbma
                 numail = zi(jgro+im-1)
                 call jeveuo(jexnum(mlgcox, numail), 'L', jdes)
-                call jelira(jexnum(mlgcox, numail), 'LONMAX', nbno, k8b)
+                call jelira(jexnum(mlgcox, numail), 'LONMAX', nbno)
                 do 34 in = 1, nbno
                     nuno = zi(jdes+in-1)
                     x0 = zr(jcoor-1+3*(nuno-1)+1)-cdx

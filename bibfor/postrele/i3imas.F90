@@ -70,7 +70,6 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
 !     ------------------------------------------------------------------
 !     L_MAILLE SUPPOSEE NON VIDE IE : TETE <> NIL
 !     ------------------------------------------------------------------
-    character(len=8) :: kbid
 !
 !
     character(len=24) :: r1d1, r1d2, r1d3
@@ -81,7 +80,6 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
     integer :: ar1d1, ar1d2, ar1d3, n1, nbma, arom9
     real(kind=8) :: zero, un, t1, t2
     logical :: fini, find, atrv, btrv, adansm, bdansm
-    character(len=1) :: k1bid
 !
 !======================================================================
 !
@@ -102,28 +100,28 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
     bdansm = .false.
     call wkvect('&&I3IMAS.LISTE.POINT', 'V V I', 6, alstpt)
     call jecreo('&&I3IMAS.LSTPT.ABSC.SGT ', 'V V R')
-    call jeecra('&&I3IMAS.LSTPT.ABSC.SGT ', 'LONMAX', 14, kbid)
-    call jeecra('&&I3IMAS.LSTPT.ABSC.SGT ', 'LONUTI', 14, kbid)
+    call jeecra('&&I3IMAS.LSTPT.ABSC.SGT ', 'LONMAX', 14)
+    call jeecra('&&I3IMAS.LSTPT.ABSC.SGT ', 'LONUTI', 14)
     call jeveut('&&I3IMAS.LSTPT.ABSC.SGT ', 'E', zi(alstpt+1-1))
     call jecreo('&&I3IMAS.LSTPT.FACE     ', 'V V I')
-    call jeecra('&&I3IMAS.LSTPT.FACE     ', 'LONMAX', 14, kbid)
-    call jeecra('&&I3IMAS.LSTPT.FACE     ', 'LONUTI', 14, kbid)
+    call jeecra('&&I3IMAS.LSTPT.FACE     ', 'LONMAX', 14)
+    call jeecra('&&I3IMAS.LSTPT.FACE     ', 'LONUTI', 14)
     call jeveut('&&I3IMAS.LSTPT.FACE     ', 'E', zi(alstpt+2-1))
     call jecreo('&&I3IMAS.LSTPT.ARETE    ', 'V V I')
-    call jeecra('&&I3IMAS.LSTPT.ARETE    ', 'LONMAX', 14, kbid)
-    call jeecra('&&I3IMAS.LSTPT.ARETE    ', 'LONUTI', 14, kbid)
+    call jeecra('&&I3IMAS.LSTPT.ARETE    ', 'LONMAX', 14)
+    call jeecra('&&I3IMAS.LSTPT.ARETE    ', 'LONUTI', 14)
     call jeveut('&&I3IMAS.LSTPT.ARETE    ', 'E', zi(alstpt+3-1))
     call jecreo('&&I3IMAS.LSTPT.TYPE.FACE', 'V V I')
-    call jeecra('&&I3IMAS.LSTPT.TYPE.FACE', 'LONMAX', 14, kbid)
-    call jeecra('&&I3IMAS.LSTPT.TYPE.FACE', 'LONUTI', 14, kbid)
+    call jeecra('&&I3IMAS.LSTPT.TYPE.FACE', 'LONMAX', 14)
+    call jeecra('&&I3IMAS.LSTPT.TYPE.FACE', 'LONUTI', 14)
     call jeveut('&&I3IMAS.LSTPT.TYPE.FACE', 'E', zi(alstpt+4-1))
     call jecreo('&&I3IMAS.LSTPT.COORD.REF', 'V V R')
-    call jeecra('&&I3IMAS.LSTPT.COORD.REF', 'LONMAX', 28, kbid)
-    call jeecra('&&I3IMAS.LSTPT.COORD.REF', 'LONUTI', 28, kbid)
+    call jeecra('&&I3IMAS.LSTPT.COORD.REF', 'LONMAX', 28)
+    call jeecra('&&I3IMAS.LSTPT.COORD.REF', 'LONUTI', 28)
     call jeveut('&&I3IMAS.LSTPT.COORD.REF', 'E', zi(alstpt+5-1))
     call jecreo('&&I3IMAS.LSTPT.ORDRE    ', 'V V I')
-    call jeecra('&&I3IMAS.LSTPT.ORDRE    ', 'LONMAX', 14, kbid)
-    call jeecra('&&I3IMAS.LSTPT.ORDRE    ', 'LONUTI', 14, kbid)
+    call jeecra('&&I3IMAS.LSTPT.ORDRE    ', 'LONMAX', 14)
+    call jeecra('&&I3IMAS.LSTPT.ORDRE    ', 'LONUTI', 14)
     call jeveut('&&I3IMAS.LSTPT.ORDRE    ', 'E', zi(alstpt+6-1))
     r1d1 = sdrp1d(1:13)//'.SGTEL.ORIG'
     r1d2 = sdrp1d(1:13)//'.SGTEL.EXTR'
@@ -166,7 +164,7 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
         call jeveuo(rom7, 'E', arom7)
         call jeveuo(rom8, 'E', arom8)
         call jeveuo(rom9, 'E', arom9)
-        call jelira(rom1, 'NMAXOC', mxsgel, k1bid)
+        call jelira(rom1, 'NMAXOC', mxsgel)
         call jedetr(rom1)
     endif
     call jecrec(rom1, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
@@ -286,10 +284,10 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
             call juveca(rom9, 2*mxsgel)
             call jeveuo(rom9, 'E', arom9)
             do 20, i = 1, ptsgel, 1
-            call jelira(jexnum(rom1, i), 'LONMAX', n1, k1bid)
+            call jelira(jexnum(rom1, i), 'LONMAX', n1)
             call jeveuo(jexnum(rom1, i), 'L', i2)
             call jecroc(jexnum('&&I3IMAS.XD.TMP', i))
-            call jeecra(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1, ' ')
+            call jeecra(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1)
             call jeveuo(jexnum('&&I3IMAS.XD.TMP', i), 'E', i1)
             do 21, j = 1, n1, 1
             zi(i1 + j-1) = zi(i2 + j-1)
@@ -299,10 +297,10 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
             call jecrec(rom1, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                         mxsgel)
             do 30, i = 1, ptsgel, 1
-            call jelira(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1, k1bid)
+            call jelira(jexnum('&&I3IMAS.XD.TMP', i), 'LONMAX', n1)
             call jeveuo(jexnum('&&I3IMAS.XD.TMP', i), 'L', i2)
             call jecroc(jexnum(rom1, i))
-            call jeecra(jexnum(rom1, i), 'LONMAX', n1, ' ')
+            call jeecra(jexnum(rom1, i), 'LONMAX', n1)
             call jeveuo(jexnum(rom1, i), 'E', i1)
             do 31, j = 1, n1, 1
             zi(i1 + j-1) = zi(i2 + j-1)
@@ -386,7 +384,7 @@ subroutine i3imas(epsi, nil, tete, queue, succ,&
         call i3crk3(desc(maille), f1, zr(zi(alstpt+5-1)+2*(j1-1)), zr(arom4 + 3*ptsgel))
         call i3crk3(desc(maille), f2, zr(zi(alstpt+5-1)+2*(j2-1)), zr(arom5 + 3*ptsgel))
         call jecroc(jexnum(rom1, ptsgel+1))
-        call jeecra(jexnum(rom1, ptsgel+1), 'LONMAX', nbma, ' ')
+        call jeecra(jexnum(rom1, ptsgel+1), 'LONMAX', nbma)
         call jeveuo(jexnum(rom1, ptsgel+1), 'E', arom1)
         do 120, j = 1, nbma, 1
         zi(arom1 + j-1) = lma(j)

@@ -130,7 +130,7 @@ subroutine tbajco(nomta, para, type, nbval, vi,&
         call u2mess('F', 'UTILITAI4_73')
     endif
 !
-    call jeecra(nomjv, 'LONUTI', nblign, ' ')
+    call jeecra(nomjv, 'LONUTI', nblign)
     call jeveuo(nomjv, 'E', jvale)
     call jeveuo(nomjvl, 'E', jlogq)
 !

@@ -48,7 +48,6 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
     character(len=7) :: typmat, kmpic, zero
     integer :: iret, i, i1, ialire, iarefe, nbresu, iexi
     character(len=8) :: mo, partit
-    character(len=8) :: kbid
 !
 !
 !
@@ -68,7 +67,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         repk='SYMETRI'
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
-            call jelira(nomob//'.RELR', 'LONUTI', nbresu, kbid)
+            call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do 1, i=1,nbresu
             call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
@@ -85,7 +84,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         repk='OUI'
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
-            call jelira(nomob//'.RELR', 'LONUTI', nbresu, kbid)
+            call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do 4, i=1,nbresu
             call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
@@ -102,7 +101,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         repk=' '
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
-            call jelira(nomob//'.RELR', 'LONUTI', nbresu, kbid)
+            call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do 2, i=1,nbresu
             call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)
@@ -117,7 +116,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         repk=' '
         call jeexin(nomob//'.RELR', iret)
         if (iret .gt. 0) then
-            call jelira(nomob//'.RELR', 'LONUTI', nbresu, kbid)
+            call jelira(nomob//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(nomob//'.RELR', 'L', ialire)
             do 3, i=1,nbresu
             call jeexin(zk24(ialire-1+i)(1:19)//'.NOLI', iexi)

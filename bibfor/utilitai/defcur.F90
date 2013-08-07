@@ -51,7 +51,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     integer :: ptch, pnoe
     real(kind=8) :: vecr1(nb), vecr2(nv)
     character(len=2) :: prolgd
-    character(len=8) :: nommai, k8bid, interp, veck1(nb)
+    character(len=8) :: nommai, interp, veck1(nb)
     character(len=24) :: cooabs, nomnoe, connex, typmai
     character(len=8) :: typm
     character(len=24) :: conseg, typseg
@@ -131,12 +131,12 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     nbrse2=nbseg2*2
     call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbseg2)
-    call jeecra(conseg, 'LONT', nbnoma, ' ')
+    call jeecra(conseg, 'LONT', nbnoma)
     do 14 iseg2 = 1, nbseg2
         im=zi(ima2+iseg2-1)
-        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma, k8bid)
+        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma)
         call jeveuo(jexnum(connex, im ), 'L', iacnex)
-        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma, ' ')
+        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma)
         call jeveuo(jexnum(conseg, iseg2), 'E', jgcnx)
         do 3 ino = 1, nbnoma
             numno=zi(iacnex-1+ino)

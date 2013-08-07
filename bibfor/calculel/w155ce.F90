@@ -111,7 +111,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
                     iret)
         ASSERT(iret.eq.100)
 !
-        call jelira(chin//'.CELV', 'TYPE', ibid, tsca)
+        call jelira(chin//'.CELV', 'TYPE', cval=tsca)
         if (tsca .eq. 'R') then
             lreel=.true.
         else if (tsca.eq.'C') then

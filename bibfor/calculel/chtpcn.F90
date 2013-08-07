@@ -75,7 +75,6 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
     character(len=24) :: valk(2)
     character(len=8) :: diff, chnaff
     character(len=19) :: cn1, cn2, pchno1, pchno2
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
     integer :: iaval1, iaval2, ibid, ieq1, ieq2, ierd, ino2
@@ -101,7 +100,7 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi,&
 !
 !
     call jeveuo(cn1//'.VALE', 'L', iaval1)
-    call jelira(cn1//'.VALE', 'LONMAX', nbcn1, k1bid)
+    call jelira(cn1//'.VALE', 'LONMAX', nbcn1)
 !
 !
     call jeveuo(cn2//'.VALE', 'E', iaval2)

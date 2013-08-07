@@ -111,7 +111,6 @@ subroutine op0019()
     integer :: ngribt, nmembr, iclf, ioc, icle, ng, iarg
     integer :: depart, jdnm, ixnw, jdln, jdlm, jdls
     logical :: locaco, locagb, locamb
-    character(len=1) :: k1bid
     character(len=6) :: kioc
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclf(nbmcf), mcle(4), k16bid
@@ -422,7 +421,7 @@ subroutine op0019()
 !
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DU NB DE MAILLES INITIALES (MAILLAGE)
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
 !
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DU NB DE MAILLES TARDIVES  (MODELE)
@@ -432,7 +431,7 @@ subroutine op0019()
     nbmtrd = 0
     call jeexin(modnem, ixnw)
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call wkvect(tmplno, 'V V I', nbmtrd, jdln)
     endif
     call wkvect(tmplma, 'V V I', nbmail, jdlm)

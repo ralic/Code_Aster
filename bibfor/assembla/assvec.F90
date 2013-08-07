@@ -99,7 +99,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     integer :: nbecmx
     parameter(nbecmx=10)
 !
-    character(len=1) :: k1bid, bas, ktyp
+    character(len=1) ::  bas, ktyp
     character(len=8) :: nomsd, kbid, ma, mo, mo2, nogdsi, nogdco, nomcas, partit
     character(len=11) :: k11b
     character(len=14) :: k14b, nudev
@@ -174,7 +174,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     endif
 !
 !      --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE FETI
-    call jelira(nudev(1:14)//'.NUME.REFN', 'LONMAX', nbrefn, kbid)
+    call jelira(nudev(1:14)//'.NUME.REFN', 'LONMAX', nbrefn)
     if (nbrefn .ne. 4) then
         write (ifm,*)'<FETI/ASSVEC> NUME_DDL/CHAM_NO NON ETENDU '//&
         'POUR FETI',nudev(1:14)//'.NUME.REFN'
@@ -201,7 +201,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !         -- IL N'Y A AUCUN RESUELEM A ASSEMBLER MAIS IL PEUT
 !            Y AVOIR DES CHAM_NO (VECT_ASSE):
             knueq=nudev//'.NUME.NUEQ'
-            call jelira(knueq, 'LONMAX', nequa, kbid)
+            call jelira(knueq, 'LONMAX', nequa)
             call vtcreb(vecas, nu, bas, 'R', nequa)
             goto 270
 !
@@ -336,7 +336,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         if (lfeti) call u2mesk('F', 'ASSEMBLA_12', 1, ma(1:8))
         call jeveuo(ma//'.NOMACR', 'L', ianmcr)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
-        call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp, kbid)
+        call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
         icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
         if (icmp .eq. 0) call u2mess('F', 'ASSEMBLA_9')
         if (icmp .gt. 30) call u2mess('F', 'ASSEMBLA_10')
@@ -407,7 +407,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
             call jeveuo(k24prn, 'L', idprn1)
             call jeveuo(jexatr(k24prn, 'LONCUM'), 'L', idprn2)
             call jeveuo(knueq, 'L', ianueq)
-            call jelira(knueq, 'LONMAX', nequa, kbid)
+            call jelira(knueq, 'LONMAX', nequa)
 !
 !       --  REMPLISSAGE DES .REFE ET .DESC
             if (idd .eq. 0) then
@@ -433,11 +433,11 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 sdfeti=zk24(irefn+3)
             endif
             call jecreo(kveref, bas//' V K24')
-            call jeecra(kveref, 'LONMAX', 4, ' ')
+            call jeecra(kveref, 'LONMAX', 4)
             call jeveuo(kveref, 'E', idverf)
             call jecreo(kvedsc, bas//' V I')
-            call jeecra(kvedsc, 'LONMAX', 2, ' ')
-            call jeecra(kvedsc, 'DOCU', ibid, 'CHNO')
+            call jeecra(kvedsc, 'LONMAX', 2)
+            call jeecra(kvedsc, 'DOCU', cval='CHNO')
             call jeveuo(kvedsc, 'E', idveds)
             zk24(idverf)=ma
             zk24(idverf+1)=k24prn(1:14)//'.NUME'
@@ -456,7 +456,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
             else
                 call u2mess('F', 'ASSEMBLA_11')
             endif
-            call jeecra(kvale, 'LONMAX', nequa, ' ')
+            call jeecra(kvale, 'LONMAX', nequa)
             call jeveuo(kvale, 'E', jvale)
 !
 !       -- PREPARATION DE DONNEES AUXILIAIRES POUR TEST
@@ -493,7 +493,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                     call jeveuo(mo//'.MODELE    .SSSA', 'L', iasssa)
                     call ssvalv('DEBUT', nomcas, mo, ma, 0,&
                                 jresl, ncmpel)
-                    call jelira(vecel//'.RELC', 'NUTIOC', nbchar, kbid)
+                    call jelira(vecel//'.RELC', 'NUTIOC', nbchar)
 !
                     do 90 ichar = 1, nbchar
                         call jenuno(jexnum(vecel//'.RELC', ichar), nomcas)
@@ -504,7 +504,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                             if (zi(iasssa-1+ima) .eq. 0) goto 80
                             if (zi(ialcha-1+ima) .eq. 0) goto 80
                             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
-                            call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe, kbid)
+                            call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
                             call ssvalv(' ', nomcas, mo, ma, ima,&
                                         jresl, ncmpel)
                             nomacr=zk8(ianmcr-1+ima)
@@ -568,7 +568,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !           ==========================
 !            BOUCLE SUR LES RESU_ELEM
 !           ==========================
-                    call jelira(vecel//'.RELR', 'LONUTI ', nbresu, k1bid)
+                    call jelira(vecel//'.RELR', 'LONUTI', nbresu)
                     if (nbresu .gt. 0) call jeveuo(vecel//'.RELR', 'L', idlres)
                     do 230 iresu = 1, nbresu
                         resu=zk24(idlres+iresu-1)(1:19)
@@ -595,7 +595,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                 llimo=.false.
                                 if (idd .eq. 0) then
                                     lsaute=.true.
-                                    call jelira(nomlog, 'LONMAX', nblog, kbid)
+                                    call jelira(nomlog, 'LONMAX', nblog)
                                     do 100 i = 1, nblog
                                         if (zk24(ifel1-1+i) .ne. ' ') lsaute=.false.
 100                                  continue
@@ -1031,14 +1031,14 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     call jeexin(a19//'.RELR', iexi)
     if (iexi .eq. 0) goto 300
     call jeveuo(a19//'.RELR', 'L', jrelr)
-    call jelira(a19//'.RELR', 'LONUTI', n1, kbid)
+    call jelira(a19//'.RELR', 'LONUTI', n1)
     do 290,k=1,n1
     b19=zk24(jrelr-1+k)(1:19)
     call jeexin(b19//'.VALE', iexi)
     if (iexi .gt. 0) then
         ASSERT(.not.lfeti)
         call jeveuo(kvale, 'E', jvale1)
-        call jelira(kvale, 'TYPE', ibid, ktyp)
+        call jelira(kvale, 'TYPE', cval=ktyp)
         ASSERT(ktyp.eq.'R')
         ASSERT(type.eq.1)
         c19='&&ASSVEC.CHAMNO'

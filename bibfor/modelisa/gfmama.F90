@@ -86,7 +86,7 @@ subroutine gfmama(noma, numagl, nutyma, jcnx, nttri3,&
     else
         ASSERT(.false.)
     endif
-    call jeecra(jexnum(connex, numagl), 'LONMAX', nno, ' ')
+    call jeecra(jexnum(connex, numagl), 'LONMAX', nno)
     call jeveuo(jexnum(connex, numagl), 'E', jconnx)
     do 15 i = 1, nno
         zi(jconnx+i-1) = zi(jcnx+i-1)+nbnoeu

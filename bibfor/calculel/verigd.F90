@@ -53,7 +53,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
     integer :: gd, jcmpgd, ncmpmx, i1, k, ibid
-    character(len=8) :: kbid, lcmp2(3000), nomgd
+    character(len=8) ::  lcmp2(3000), nomgd
 ! DEB
     call jemarq()
     iret = 0
@@ -69,7 +69,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
         goto 30
     endif
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', jcmpgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, kbid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
 !
 !     2. ON RECOPIE LCMP DANS LCMP2 (K8) :

@@ -199,11 +199,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 zi4(itrma-1+ima) = 1
 !
             else if (typmcl.eq.'GROUP_MA') then
-                call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONUTI', nma, k8b)
+                call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONUTI', nma)
                 call jeveuo(jexnom(ma//'.GROUPEMA', karg), 'L', kma)
 !
 !           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
-                call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONMAX', ibid, k8b)
+                call jelira(jexnom(ma//'.GROUPEMA', karg), 'LONMAX', ibid)
                 if (ibid .eq. 1) then
                     ASSERT(nma.le.1)
                 else
@@ -220,11 +220,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 zi4(itrno-1+ino) = 1
 !
             else if (typmcl.eq.'GROUP_NO') then
-                call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno, k8b)
+                call jelira(jexnom(ma//'.GROUPENO', karg), 'LONUTI', nno)
                 call jeveuo(jexnom(ma//'.GROUPENO', karg), 'L', kno)
 !
 !           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
-                call jelira(jexnom(ma//'.GROUPENO', karg), 'LONMAX', ibid, k8b)
+                call jelira(jexnom(ma//'.GROUPENO', karg), 'LONMAX', ibid)
                 if (ibid .eq. 1) then
                     ASSERT(nno.le.1)
                 else
@@ -246,7 +246,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         do 110 ima = 1, nbma
             if (zi4(itrma-1+ima) .ne. 0) then
                 call jeveuo(jexnum(ma//'.CONNEX', ima), 'L', iacnex)
-                call jelira(jexnum(ma//'.CONNEX', ima), 'LONMAX', nbnoma, k8b)
+                call jelira(jexnum(ma//'.CONNEX', ima), 'LONMAX', nbnoma)
                 do 100 ino = 1, nbnoma
                     numno = zi(iacnex-1+ino)
                     zi4(itrno-1+numno) = 1

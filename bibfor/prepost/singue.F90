@@ -84,7 +84,6 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
     integer :: icmp, inel, nbr(nelem), nalpha
     real(kind=8) :: erreur(nelem), taille(nelem), energi(nelem)
     real(kind=8) :: alpha(nelem), re(nelem), he(nelem)
-    character(len=8) :: k8bid
 !
     call jemarq()
 !
@@ -111,7 +110,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 !       0 SINON
 !
     call jeveuo(cherrs//'.CESC', 'L', jcesc)
-    call jelira(cherrs//'.CESC', 'LONMAX', nbcmp, k8bid)
+    call jelira(cherrs//'.CESC', 'LONMAX', nbcmp)
     call jeveuo(cherrs//'.CESD', 'L', jcesd)
     call jeveuo(cherrs//'.CESL', 'L', jcesl)
     call jeveuo(cherrs//'.CESV', 'L', jcesv)
@@ -153,7 +152,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
 ! 4 - RECUPERATION DE L'ENERGIE EN CHAQUE EF ENERGI(EF)
 !
     call jeveuo(chenes//'.CESC', 'L', jcesc)
-    call jelira(chenes//'.CESC', 'LONMAX', nbcmp, k8bid)
+    call jelira(chenes//'.CESC', 'LONMAX', nbcmp)
     call jeveuo(chenes//'.CESD', 'L', jcesd)
     call jeveuo(chenes//'.CESL', 'L', jcesl)
     call jeveuo(chenes//'.CESV', 'L', jcesv)

@@ -56,7 +56,6 @@ subroutine melima(chin, ma, icode, ient, lima,&
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=1) :: k1bid
 !
 !
 !     TRAITE LES 2 CAS :  - GROUPE NOMME DU MAILLAGE MA
@@ -67,12 +66,12 @@ subroutine melima(chin, ma, icode, ient, lima,&
     if (icode .eq. 2) then
 !
 !        GROUPE DE MAILLES DU MAILLAGE:
-        call jelira(jexnum(ma//'.GROUPEMA', ient), 'LONUTI', nb, k1bid)
+        call jelira(jexnum(ma//'.GROUPEMA', ient), 'LONUTI', nb)
         call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', lima)
     else if (abs(icode).eq.3) then
 !
 !        GROUPE TARDIF :
-        call jelira(jexnum(chin(1:19)//'.LIMA', ient), 'LONMAX', nb, k1bid)
+        call jelira(jexnum(chin(1:19)//'.LIMA', ient), 'LONMAX', nb)
         call jeveuo(jexnum(chin(1:19)//'.LIMA', ient), 'L', lima)
     else
         ASSERT(.false.)

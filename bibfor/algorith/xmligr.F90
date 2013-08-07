@@ -163,7 +163,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
     call jecrec(ligrxf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbpc)
-    call jeecra(ligrxf//'.NEMA', 'LONT', long, k8bid)
+    call jeecra(ligrxf//'.NEMA', 'LONT', long)
     nbgrel = 0
     do 50,ipc = 1,nbpc
     nummae = nint(zr(jtabf+ztabf*(ipc-1)+1))
@@ -175,7 +175,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
     call jecroc(jexnum(ligrxf//'.NEMA', ipc))
     nndel = nno(1)+nno(2)
-    call jeecra(jexnum(ligrxf//'.NEMA', ipc), 'LONMAX', nndel+1, k8bid)
+    call jeecra(jexnum(ligrxf//'.NEMA', ipc), 'LONMAX', nndel+1)
     call jeveuo(jexnum(ligrxf//'.NEMA', ipc), 'E', jad)
     if (iatt(1) .ne. 3) then
         nomtm = mail2(ndim-1,imail(1))//mail2(ndim-1,imail(2))
@@ -226,12 +226,12 @@ subroutine xmligr(noma, nomo, resoco)
                 nbgrel)
 !
     long = nbgrel + nbpc
-    call jeecra(ligrxf//'.LIEL', 'LONT', long, k8bid)
+    call jeecra(ligrxf//'.LIEL', 'LONT', long)
     ico = 0
     do 90,k = 1,nbgrel
     ico = ico + 1
     call jecroc(jexnum(ligrxf//'.LIEL', ico))
-    call jeecra(jexnum(ligrxf//'.LIEL', ico), 'LONMAX', compt(k)+1, k8bid)
+    call jeecra(jexnum(ligrxf//'.LIEL', ico), 'LONMAX', compt(k)+1)
     call jeveuo(jexnum(ligrxf//'.LIEL', ico), 'E', jad)
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', nomte2(k)), ityte)
@@ -254,7 +254,7 @@ subroutine xmligr(noma, nomo, resoco)
 !
 ! --- INITIALISATION DU LIGREL
 !
-    call jeecra(ligrxf//'.LGRF', 'DOCU', ibid, 'MECA')
+    call jeecra(ligrxf//'.LGRF', 'DOCU', cval='MECA')
     call initel(ligrxf)
 !
 ! --- MENAGE

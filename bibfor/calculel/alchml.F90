@@ -191,7 +191,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 !
     long = 4 + ngrel + 4*ngrel + 4*neltot
     call wkvect(cel//'.CELD', base//' V I', long, jceld)
-    call jeecra(cel//'.CELD', 'DOCU', ibid, 'CHML')
+    call jeecra(cel//'.CELD', 'DOCU', cval='CHML')
 !
     zi(jceld-1+1) = gd
     zi(jceld-1+2) = ngrel

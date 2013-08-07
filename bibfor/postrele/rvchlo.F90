@@ -78,7 +78,6 @@ subroutine rvchlo(epsi, ssch19, nbcp, nbco, nbsp,&
     integer :: apcmp, avale, apadr, apnbn, avalcm, andfac
     integer :: adrm, i, adr, nbnf, j, nbf, nbnm, fac, iatyma
     real(kind=8) :: acc
-    character(len=1) :: k1bid
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -102,14 +101,14 @@ subroutine rvchlo(epsi, ssch19, nbcp, nbco, nbsp,&
     call jeveuo(nvale, 'L', avale)
     call jeveuo(npcmp, 'L', apcmp)
     call jeveuo(npadr, 'L', apadr)
-    call jelira(nvale, 'DOCU', i, docu)
+    call jelira(nvale, 'DOCU', cval=docu)
 !
 !  VALEUR DES CMP SUR TOUTE LA MAILLE
 !  ----------------------------------
 !
     if (docu .eq. 'CHNO') then
 !
-        call jelira(jexnum(mailla//'.CONNEX', m), 'LONMAX', nbnm, k1bid)
+        call jelira(jexnum(mailla//'.CONNEX', m), 'LONMAX', nbnm)
 !
 !
     else if (docu .eq. 'CHLM') then

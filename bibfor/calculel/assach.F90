@@ -47,7 +47,7 @@ subroutine assach(preel2, pimag2, base2, chout2)
     integer :: nmax1, nmax2, nbvalr, ivalr, nbvali, ivali, jvale, iret
     integer :: jceldr, jceldi, jcelkr, nbvalc, jcelk
 !
-    character(len=8) :: nomgdr, nomgdi, nomcpx, k8b, kmpicr, kmpici
+    character(len=8) :: nomgdr, nomgdi, nomcpx, kmpicr, kmpici
     character(len=24) :: ligrel, option, param
     character(len=24) :: valk(2)
 !
@@ -92,8 +92,8 @@ subroutine assach(preel2, pimag2, base2, chout2)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', nomcpx), gdcpx)
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', gdr), 'LONMAX', nmax1, k8b)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gdcpx), 'LONMAX', nmax2, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gdr), 'LONMAX', nmax1)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gdcpx), 'LONMAX', nmax2)
 !
     if (nmax1 .ne. nmax2) then
         valk(1)=nomgdr
@@ -129,14 +129,14 @@ subroutine assach(preel2, pimag2, base2, chout2)
                     ier, ' ')
     endif
 !
-    call jelira(preel//'.CELV', 'LONMAX', nbvalr, k8b)
+    call jelira(preel//'.CELV', 'LONMAX', nbvalr)
     call jeveuo(preel//'.CELV', 'L', ivalr)
-    call jelira(pimag//'.CELV', 'LONMAX', nbvali, k8b)
+    call jelira(pimag//'.CELV', 'LONMAX', nbvali)
     call jeveuo(pimag//'.CELV', 'L', ivali)
     ASSERT(nbvalr.eq.nbvali)
 !
     call jeveuo(chout//'.CELV', 'E', jvale)
-    call jelira(chout//'.CELV', 'LONMAX', nbvalc, k8b)
+    call jelira(chout//'.CELV', 'LONMAX', nbvalc)
     ASSERT(nbvalr.eq.nbvalc)
 !
     do 40 i = 1, nbvalr

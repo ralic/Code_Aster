@@ -289,7 +289,7 @@ subroutine ritz99(nomres)
     if (nam .ne. 0) then
         call getvid(' ', 'LIST_AMOR', 0, iarg, 1,&
                     listam, n)
-        call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8b)
+        call jelira(listam//'           .VALE', 'LONMAX', nbamor)
         if (nbamor .gt. nbmoda) then
             vali (1) = nbmoda
             vali (2) = nbamor

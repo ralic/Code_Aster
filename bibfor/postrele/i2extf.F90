@@ -55,7 +55,6 @@ subroutine i2extf(m, f, conec, type, n1,&
 !
 !
 !
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
     integer :: iatyma
@@ -79,7 +78,7 @@ subroutine i2extf(m, f, conec, type, n1,&
 !
     else
 !
-        call jelira(jexnum(conec, m), 'LONMAX', nbn, k1bid)
+        call jelira(jexnum(conec, m), 'LONMAX', nbn)
         call i2nbrf(nbn, nbf)
 !
         n1 = zi(adrm + f-1)

@@ -71,11 +71,10 @@ subroutine rvechc(dim, ssch19, sdlieu, sdeval, nbndf,&
     integer :: arefe, adesc, nbcmp, nbtcmp, aipnsp, aopnsp, aartor, aartex
     integer :: amail1, amail2, afacor, afacex, aparor, aparex, acnxor
     integer :: adrin, adrou, isd, anume, nbco, nbsp, nbma3, acnxex
-    integer :: nbpart, nbsgpc, nbocer, iocer, ibid, vlcma3, nbmpst, nbnpst
+    integer :: nbpart, nbsgpc, nbocer, iocer, vlcma3, nbmpst, nbnpst
     integer :: n1, ipart, ptadr, icnxor, icnxex, j, i, k, long
 !
     character(len=1) :: cbid
-    character(len=1) :: k1bid
     data cbid/' '/
 !
 !======================================================================
@@ -100,22 +99,22 @@ subroutine rvechc(dim, ssch19, sdlieu, sdeval, nbndf,&
     nrefe = sdlieu//'.REFE'
     ndesc = sdlieu//'.DESC'
     nnume = sdlieu//'.NUME'
-    call jelira(nrefe, 'DOCU', ibid, docu)
+    call jelira(nrefe, 'DOCU', cval=docu)
     call jeveuo(nrefe, 'L', arefe)
     call jeveuo(ndesc, 'L', adesc)
     call jeveuo(nnume, 'L', anume)
-    call jelira(nabsc, 'NMAXOC', nbpart, cbid)
+    call jelira(nabsc, 'NMAXOC', nbpart)
     isd = zi(anume)
     nbnpst = 0
     nbmpst = 0
     nbcmp = 0
     do 10, ipart = 1, nbpart, 1
-    call jelira(jexnum(nabsc, ipart), 'LONMAX', n1, k1bid)
+    call jelira(jexnum(nabsc, ipart), 'LONMAX', n1)
     nbnpst = nbnpst + n1
     10 end do
     nbmpst = nbnpst - nbpart
     call jeveuo(inpcmp, 'L', aipcmp)
-    call jelira(inpcmp, 'LONMAX', nbtcmp, k1bid)
+    call jelira(inpcmp, 'LONMAX', nbtcmp)
     call wkvect(oupcmp, 'V V I', nbtcmp, aopcmp)
     do 20, i = 1, nbtcmp, 1
     nbcmp = nbcmp + min(zi(aipcmp + i-1),1)
@@ -224,7 +223,7 @@ subroutine rvechc(dim, ssch19, sdlieu, sdeval, nbndf,&
                 nbocer)
     do 30, iocer = 1, nbocer, 1
     call jecroc(jexnum(ouerre, iocer))
-    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp, ' ')
+    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp)
     call jeveuo(jexnum(ouerre, iocer), 'E', aoerre)
     do 31, i = 1, nbcmp, 1
     zi(aoerre + i-1) = 0
@@ -232,7 +231,7 @@ subroutine rvechc(dim, ssch19, sdlieu, sdeval, nbndf,&
     30 end do
     call wkvect(ouvale, 'V V R', long*nbadr, aovale)
     call wkvect(oupadr, 'V V I', nbadr, aopadr)
-    call jeecra(ouvale, 'DOCU', ibid, doco)
+    call jeecra(ouvale, 'DOCU', cval=doco)
     zi(aopadr + 1-1) = 1
     do 60, i = 1, nbadr-1, 1
     zi(aopadr + i+1-1) = zi(aopadr + i-1) + long

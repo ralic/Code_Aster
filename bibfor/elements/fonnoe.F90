@@ -63,7 +63,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
     integer :: jjj, ino, it, nbnoff, nbma, nbmb, na, nb, adra, adrb
     integer :: iret
     character(len=6) :: nompro
-    character(len=8) :: k8b, noeud, type, motcle(2), typmcl(2), typmp, valk(8)
+    character(len=8) ::  noeud, type, motcle(2), typmcl(2), typmp, valk(8)
     character(len=8) :: typm
     character(len=24) :: noeord, trav
     character(len=24) :: entree, obtrav
@@ -209,7 +209,7 @@ subroutine fonnoe(resu, noma, cnxinv, nomobj, typfon,&
             call u2mesk('F', 'RUPTURE0_68', 2, valk)
         endif
     endif
-    call jelira(noeord, 'LONUTI', nbnoff, k8b)
+    call jelira(noeord, 'LONUTI', nbnoff)
 !
     call jedema()
 end subroutine

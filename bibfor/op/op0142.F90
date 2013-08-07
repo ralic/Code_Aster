@@ -57,13 +57,12 @@ subroutine op0142()
     integer :: pnoe, ptch, ier
     character(len=2) :: prolgd
     character(len=4) :: interp(2)
-    character(len=8) :: nommai, k8bid, nod, nof
+    character(len=8) :: nommai, nod, nof
     character(len=16) :: nomcmd, tprof, typfon
     character(len=19) :: nomfon
     character(len=24) :: cooabs, nomnoe, nommas, typmai, connex
     character(len=24) :: conseg, typseg
     character(len=8) :: typm
-    character(len=1) :: k1bid
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -143,7 +142,7 @@ subroutine op0142()
 !     --- LECTURE DES CARACTERISTIQUES DU GROUPE DE MAILLES : ADRESSE
 !                   ET NOMBRE DE MAILLES
 !
-    call jelira(nommas, 'NOMUTI', nbrma, k1bid)
+    call jelira(nommas, 'NOMUTI', nbrma)
     call wkvect('&&OP0142.MAILL.TEMP', 'V V I', nbrma, iagm)
     do 10 ij = 1, nbrma
         zi(iagm+ij-1) = ij
@@ -195,12 +194,12 @@ subroutine op0142()
     nbrse2=nbseg2*2
     call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbseg2)
-    call jeecra(conseg, 'LONT', nbnoma, ' ')
+    call jeecra(conseg, 'LONT', nbnoma)
     do 14 iseg2 = 1, nbseg2
         im=zi(ima2+iseg2-1)
-        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma, k8bid)
+        call jelira(jexnum(connex, im ), 'LONMAX', nbnoma)
         call jeveuo(jexnum(connex, im ), 'L', iacnex)
-        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma, ' ')
+        call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma)
         call jeveuo(jexnum(conseg, iseg2), 'E', jgcnx)
         do 3 ino = 1, nbnoma
             numno=zi(iacnex-1+ino)

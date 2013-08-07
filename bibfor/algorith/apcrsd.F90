@@ -68,7 +68,6 @@ subroutine apcrsd(sdappa, nbzone, ntpt, ntma, ntno,&
     integer :: jptgno
     character(len=24) :: apverk, apvera
     integer :: jlistn, jlista
-    character(len=8) :: k8bid
     integer :: zinzr, zinzi, zinfi, zinfr
 !
 ! ----------------------------------------------------------------------
@@ -152,7 +151,7 @@ subroutine apcrsd(sdappa, nbzone, ntpt, ntma, ntno,&
     aptgel = sdappa(1:19)//'.TGEL'
     call jecrec(aptgel, 'V V R', 'NU', 'CONTIG', 'VARIABLE',&
                 ntma)
-    call jeecra(aptgel, 'LONT', 6*ntmano, k8bid)
+    call jeecra(aptgel, 'LONT', 6*ntmano)
 !
 ! --- CREATION SD VERIFICATION FACETTISATION
 !
@@ -160,7 +159,7 @@ subroutine apcrsd(sdappa, nbzone, ntpt, ntma, ntno,&
     apvera = sdappa(1:19)//'.VERA'
     call wkvect(apverk, 'V V K8', nbno, jlistn)
     call wkvect(apvera, 'V V R', nbno, jlista)
-    call jeecra(apverk, 'LONUTI', 0, k8bid)
+    call jeecra(apverk, 'LONUTI', 0)
 !
     call jedema()
 !

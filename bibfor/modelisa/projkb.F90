@@ -108,7 +108,6 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
     integer :: i1, i2, i3, icnx, ima, imail, inoma, jcoor, jcxma, jlnuma, jlicnx
     integer :: jsomno, nbmaok, nbsom, noe, somn12, somn23
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2, x3dp(3), xbw(2)
-    character(len=1) :: k1b
     character(len=24) :: conxma, coorno
     logical :: dejavu
 !
@@ -128,7 +127,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
     coorno = mailla//'.COORDO    .VALE'
     call jeveuo(coorno, 'L', jcoor)
 !
-    call jelira(lnuma, 'LONUTI', nbmaok, k1b)
+    call jelira(lnuma, 'LONUTI', nbmaok)
     call jeveuo(lnuma, 'L', jlnuma)
     call jeveuo(licnx, 'L', jlicnx)
 !
@@ -159,7 +158,7 @@ subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
 ! 2.1    RECUPERATION DES INFORMATIONS CARACTERISANT LA TOPOLOGIE
 ! ---    DE LA MAILLE
 !
-        call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx, k1b)
+        call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx)
         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
         if ((nbcnx.eq.3) .or. (nbcnx.eq.6)) then
             nbsom = 3

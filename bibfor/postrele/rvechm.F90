@@ -84,11 +84,10 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
 !
     integer :: aivale, aipadr, aipcmp, iocer, j, nbtcmp, adrnl, aopnco, aopnsp
     integer :: aopnbn, aovale, aopadr, aopcmp, aoerre, ml, long, aipnco, aipnsp
-    integer :: arefe, adesc, nbcmp, anume, adrm, adrnd, i, ibid, inl
+    integer :: arefe, adesc, nbcmp, anume, adrm, adrnd, i, inl
     integer :: amail1, amail2, achmin, adrin, adrou, isd, anumnd, atypm, atab1
     integer :: m2d, m2d1, m2d2, nbadr, nbmpst, nbnpst, nbocer, nd, n1
     integer :: iatyma
-    character(len=1) :: k1bid
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -122,19 +121,19 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
     ndesc = sdlieu//'.DESC'
     nnume = sdlieu//'.NUME'
 !
-    call jelira(invale, 'DOCU', ibid, docu)
+    call jelira(invale, 'DOCU', cval=docu)
     call jeveuo(nrefe, 'L', arefe)
     call jeveuo(ndesc, 'L', adesc)
     call jeveuo(nnume, 'L', anume)
 !
     isd = zi(anume)
 !
-    call jelira(jexnum(nabsc, 1), 'LONMAX', nbnpst, k1bid)
+    call jelira(jexnum(nabsc, 1), 'LONMAX', nbnpst)
 !
     nbmpst = nbnpst - 1
 !
     call jeveuo(inpcmp, 'L', aipcmp)
-    call jelira(inpcmp, 'LONMAX', nbtcmp, k1bid)
+    call jelira(inpcmp, 'LONMAX', nbtcmp)
     call wkvect(oupcmp, 'V V I', nbtcmp, aopcmp)
 !
     nbcmp = 0
@@ -165,7 +164,7 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
     nchmin = courbe//'.CHEMIN'
 !
     call jeveuo(jexnum(nmail1, isd), 'L', amail1)
-    call jelira(jexnum(nmail1, isd), 'LONMAX', n1, k1bid)
+    call jelira(jexnum(nmail1, isd), 'LONMAX', n1)
     call jeveuo(jexnum(nmail2, isd), 'L', amail2)
     call jeveuo(jexnum(nchmin, isd), 'L', achmin)
 !
@@ -222,7 +221,7 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
     do 30, iocer = 1, nbocer, 1
 !
     call jecroc(jexnum(ouerre, iocer))
-    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp, ' ')
+    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp)
     call jeveuo(jexnum(ouerre, iocer), 'E', aoerre)
 !
     do 31, i = 1, nbcmp, 1
@@ -265,7 +264,7 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
 !
 100      continue
 !
-        call jeecra(ouvale, 'DOCU', ibid, 'CHNO')
+        call jeecra(ouvale, 'DOCU', cval='CHNO')
 !
     else if (docu .eq. 'CHLM') then
 !
@@ -359,7 +358,7 @@ subroutine rvechm(ssch19, sdlieu, sdeval)
 !
         endif
 !
-        call jeecra(ouvale, 'DOCU', ibid, 'CHLM')
+        call jeecra(ouvale, 'DOCU', cval='CHLM')
 !
         call jedetr(ntab1)
         call jedetr(nnumnd)

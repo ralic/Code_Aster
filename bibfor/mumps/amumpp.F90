@@ -205,7 +205,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     enddo
                 endif
                 call jeveuo(vcival, 'L', idvalc)
-                call jelira(vcival, 'TYPE', ibid, rouc)
+                call jelira(vcival, 'TYPE', cval=rouc)
                 if (ltypr) then
                     ASSERT(rouc.eq.'R')
                     do i = 1, nbsol

@@ -79,7 +79,7 @@ subroutine gfmafi(noma, numagl, centre, nunoeu, nomgrf,&
 !
 ! - STOCKAGE DES NUMERO DES NOEUDS DE LA MAILLE
 !
-    call jeecra(jexnum(connex, numagl), 'LONMAX', 1, ' ')
+    call jeecra(jexnum(connex, numagl), 'LONMAX', 1)
     call jeveuo(jexnum(connex, numagl), 'E', jconnx)
     zi(jconnx) = nunoeu
 !

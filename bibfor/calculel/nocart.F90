@@ -82,14 +82,14 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
 !-----------------------------------------------------------------------
     integer :: nec, nedit, ngdmx, iaddg, gr, dim, i, numero, gd
     integer :: jdesc, jlima, ldim
-    character(len=8) :: ma, kbid, base
+    character(len=8) :: ma, base
     integer :: noma, noli
     character(len=24) :: clima, trav
     logical :: laggr
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, illima, lontap, lontav
+    integer ::  illima, lontap, lontav
 !-----------------------------------------------------------------------
     call jemarq()
     chin = chinz
@@ -155,7 +155,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
 !     RECOPIE DANS LIMA DES NUMEROS DE MAILLES DU GROUPE TARDIF:
 !
 !     -- FAUT-IL AGRANDIR .LIMA ?
-    call jelira(chin//'.LIMA', 'LONT', lontav, kbid)
+    call jelira(chin//'.LIMA', 'LONT', lontav)
     call jeveuo(jexatr(chin//'.LIMA', 'LONCUM'), 'L', illima)
     lontap=zi(illima-1+nedit)+max(dim,1)
     if (lontap .gt. lontav) then
@@ -166,7 +166,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
         clima=chin//'.LIMA'
         trav=chin//'.TRAV'
         call jedupo(clima, 'V', trav, .false.)
-        call jelira(clima, 'CLAS', ibid, base)
+        call jelira(clima, 'CLAS', cval=base)
         call jedetr(chin//'.LIMA')
         call jeagco(trav, clima, ngdmx, lontap, base)
         call jedetr(trav)
@@ -174,7 +174,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
 !
     call jecroc(jexnum(chin//'.LIMA', nedit))
     ldim = max(dim,1)
-    call jeecra(jexnum(chin//'.LIMA', nedit), 'LONMAX', ldim, ' ')
+    call jeecra(jexnum(chin//'.LIMA', nedit), 'LONMAX', ldim)
     call jeveuo(jexnum(chin//'.LIMA', nedit), 'E', jlima)
     do 100 i = 1, dim
         if (mode .eq. 'NUM') then

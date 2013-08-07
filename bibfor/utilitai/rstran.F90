@@ -91,7 +91,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
     if (ier1 .gt. 0) then
 !     --- CAS D'UNE SD DYNA_GENE (HARM_GENE OU TRAN_GENE)
         call jeveuo(resu//'.DISC', 'L', ldisc)
-        call jelira(resu//'.DISC', 'LONMAX', nbi, k8b)
+        call jelira(resu//'.DISC', 'LONMAX', nbi)
     else
 !     --- CAS D'UNE SD RESULTAT
         call rslipa(resu, 'INST', '&&RSTRAN.LIINST', ldisc, nbi)
@@ -106,7 +106,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
 !   10   CONTINUE
     else
         call jeveuo(resu//'.ORDR', 'L', jordr)
-        call jelira(resu//'.ORDR', 'LONUTI', nbi2, k8b)
+        call jelira(resu//'.ORDR', 'LONUTI', nbi2)
         if (nbi .ne. nbi2) call u2mess('F', 'ALGORITH17_27')
     endif
 !
@@ -146,7 +146,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
                     listr, lli)
         if (lli .ne. 0) then
             call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbdisc, k8b)
+            call jelira(listr//'.VALE', 'LONMAX', nbdisc)
         else
             goto 80
         endif
@@ -204,7 +204,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc,&
                         listr, lli)
             if (lli .ne. 0) then
                 call jeveuo(listr//'.VALE', 'L', laccr)
-                call jelira(listr//'.VALE', 'LONMAX', nbdisc, k8b)
+                call jelira(listr//'.VALE', 'LONMAX', nbdisc)
             else
                 goto 81
             endif

@@ -90,7 +90,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
 !---------------------------------------------------------------------
 !     -----------------------------------------------------------------
     character(len=1) :: base, bas2, typres
-    character(len=8) :: kbid, typmat, kmpic, kmpic1, kmatd
+    character(len=8) ::  typmat, kmpic, kmpic1, kmatd
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
 !     -----------------------------------------------------------------
@@ -106,10 +106,10 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     matres = matrez
     mat1=limat(1)
     ASSERT(nbcomb.ge.1)
-    call jelira(matres//'.REFA', 'CLAS', ibid, base)
-    call jelira(matres//'.VALM', 'TYPE', ibid, typres)
-    call jelira(matres//'.VALM', 'NMAXOC', nbloc, kbid)
-    call jelira(matres//'.VALM', 'LONMAX', lgbloc, kbid)
+    call jelira(matres//'.REFA', 'CLAS', cval=base)
+    call jelira(matres//'.VALM', 'TYPE', cval=typres)
+    call jelira(matres//'.VALM', 'NMAXOC', nbloc)
+    call jelira(matres//'.VALM', 'LONMAX', lgbloc)
     ASSERT(nbloc.eq.1.or.nbloc.eq.2)
     call jeveuo(matres//'.REFA', 'E', jrefar)
     ASSERT(zk24(jrefar-1+9) (1:1).eq.'M')
@@ -130,8 +130,8 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
         if (zk24(jrefai-1+3) .eq. 'ELIMF') call mtmchc(mati, 'ELIML')
         call mtdscr(mati)
         call jeveuo(mati//'.&INT', 'E', zi(idlima+i-1))
-        call jelira(mati//'.VALM', 'TYPE', ibid, typmat)
-        call jelira(mati//'.VALM', 'NMAXOC', nbloc, kbid)
+        call jelira(mati//'.VALM', 'TYPE', cval=typmat)
+        call jelira(mati//'.VALM', 'NMAXOC', nbloc)
         call jeveuo(mati//'.REFA', 'L', jrefai)
         symi = zk24(jrefai-1+9) .eq. 'MS'
         if (symi) then
@@ -154,7 +154,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
     else
         matemp = matres
     endif
-    call jelira(matemp//'.REFA', 'CLAS', ibid, bas2)
+    call jelira(matemp//'.REFA', 'CLAS', cval=bas2)
 !
 !
 ! --- VERIF. DE LA COHERENCE MPI DES MATRICES A COMBINER

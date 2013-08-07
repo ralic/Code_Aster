@@ -45,7 +45,6 @@ subroutine mcmmvc(cumul, lmat, smdi, smhc, neq,&
 !
 !
     complex(kind=8) :: czero
-    character(len=1) :: kbid
     character(len=19) :: nom19
     character(len=24) :: valm
     integer :: nbloc, jmat1, jmat2, jcol, i, j, kdeb, kfin, ki, jvec, k
@@ -58,7 +57,7 @@ subroutine mcmmvc(cumul, lmat, smdi, smhc, neq,&
     call jemarq()
     nom19=zk24(zi(lmat+1))
     valm=nom19//'.VALM'
-    call jelira(valm, 'NMAXOC', nbloc, kbid)
+    call jelira(valm, 'NMAXOC', nbloc)
     ASSERT(nbloc.eq.1 .or. nbloc.eq.2)
     nonsym=(nbloc.eq.2)
     czero=dcmplx(0.d0,0.d0)

@@ -116,7 +116,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             call getvid('MINMAX', 'LIST_INST', 1, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, kbid)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
         if (nlo .ne. 0) then
@@ -124,7 +124,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
             call getvid('MINMAX', 'LIST_ORDRE', 1, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, kbid)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
         nn=nlo+nli+no+ni

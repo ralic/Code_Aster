@@ -52,7 +52,6 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
     integer :: ibid
     character(len=8) :: nomtm
     character(len=16) :: nophen, nomodl
-    character(len=8) :: kbid
     integer :: ite, nbphen, nbtm, ico, iphen, nbmodl, imodl, iamodl, ii
     integer :: iaopte, nbopt, iopt, ioptte, nrig, irig
     parameter(nrig=5)
@@ -74,13 +73,13 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 !
     if (questi .eq. 'PHENOMENE') then
 !     --------------------------------------
-        call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen, kbid)
-        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
+        call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
+        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
         ico=0
         do 20,iphen=1,nbphen
         call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl, kbid)
+        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
         do 10,imodl=1,nbmodl
         call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
         ii=indiis(zi(iamodl),ite,1,nbtm)
@@ -97,13 +96,13 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'MODELISATION') then
 !     --------------------------------------
-        call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen, kbid)
-        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
+        call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
+        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
         ico=0
         do 50,iphen=1,nbphen
         call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl, kbid)
+        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
         do 40,imodl=1,nbmodl
         call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
         ii=indiis(zi(iamodl),ite,1,nbtm)
@@ -130,13 +129,13 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 !
     else if ((questi.eq.'PHEN_MODE')) then
 !     --------------------------------------
-        call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen, kbid)
-        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
+        call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
+        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
 !
         ico=0
         do 80,iphen=1,nbphen
         call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl, kbid)
+        call jelira('&CATA.'//nophen, 'NMAXOC', nbmodl)
         do 70,imodl=1,nbmodl
         call jeveuo(jexnum('&CATA.'//nophen, imodl), 'L', iamodl)
         ii=indiis(zi(iamodl),ite,1,nbtm)
@@ -185,7 +184,7 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 !     --------------------------------------
         repk='NON'
         call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
-        call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt, kbid)
+        call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
         do 90,irig=1,nrig
         call jenonu(jexnom('&CATA.OP.NOMOPT', optrig(irig)), iopt)
         ASSERT(iopt.gt.0)

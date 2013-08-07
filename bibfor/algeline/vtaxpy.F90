@@ -44,7 +44,6 @@ subroutine vtaxpy(alpha, chamna, chamnb)
 ! DECLARATION VARIABLES LOCALES
     integer :: nbsd, ilimpi, ifetc1, ifetc2, idd, neq, ival1, ival2, iret1
     integer :: iret2
-    character(len=8) :: k8bid
     character(len=24) :: kval1, kval2, chamn1, chamn2
     logical :: iddok, lfeti
 !
@@ -64,7 +63,7 @@ subroutine vtaxpy(alpha, chamna, chamnb)
         lfeti=.false.
     endif
     if (lfeti) then
-        call jelira(chamn1(1:19)//'.FETC', 'LONMAX', nbsd, k8bid)
+        call jelira(chamn1(1:19)//'.FETC', 'LONMAX', nbsd)
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
         call jeveuo(chamn1(1:19)//'.FETC', 'L', ifetc1)
         call jeveuo(chamn2(1:19)//'.FETC', 'L', ifetc2)
@@ -90,7 +89,7 @@ subroutine vtaxpy(alpha, chamna, chamnb)
             endif
             call jeveuo(kval1, 'L', ival1)
             call jeveuo(kval2, 'E', ival2)
-            call jelira(kval2, 'LONMAX', neq, k8bid)
+            call jelira(kval2, 'LONMAX', neq)
             call daxpy(neq, alpha, zr(ival1), 1, zr(ival2),&
                        1)
         endif

@@ -54,7 +54,6 @@ subroutine carbe3(charge)
 ! ----------------------------------------------------------------------
     integer :: vali(2)
 !
-    character(len=1) :: k1bid
     character(len=2) :: typlag
     character(len=4) :: typcoe, typval
     character(len=7) :: typcha
@@ -153,7 +152,7 @@ subroutine carbe3(charge)
                     zk24(jlises), nbgrou)
         if (nbgrou .ne. 0) then
             do idxgro = 1, nbgrou
-                call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbnoeu, k1bid)
+                call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbnoeu)
                 if (nbnoeu .eq. 0) then
                     call u2mesk('F', 'MODELISA10_8', 1, zk24(jlises-1+ idxgro))
                 endif
@@ -208,7 +207,7 @@ subroutine carbe3(charge)
             call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_MAIT', idxrbe,&
                         iarg, 1, gromai, nbent)
             call jeveuo(jexnom(grouno, gromai), 'L', jnogro)
-            call jelira(jexnom(grouno, gromai), 'LONUTI', nbent, k1bid)
+            call jelira(jexnom(grouno, gromai), 'LONUTI', nbent)
             if (nbent .ne. 1) then
                 call u2mesg('F', 'MODELISA10_9', 1, gromai, 1,&
                             nbent, 0, rbid)
@@ -266,7 +265,7 @@ subroutine carbe3(charge)
             cntnoe = 0
             do  idxgro = 1, nbgrou
                 call jeveuo(jexnom(grouno, zk24(jlises-1+idxgro)), 'L', jnogro)
-                call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbent, k1bid)
+                call jelira(jexnom(grouno, zk24(jlises-1+idxgro)), 'LONUTI', nbent)
                 nbnoeu = nbnoeu + nbent
                 do  idxnoe = 1, nbent
                     cntnoe = cntnoe + 1

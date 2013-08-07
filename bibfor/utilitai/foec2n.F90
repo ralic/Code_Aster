@@ -47,7 +47,6 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
 !     ------------------------------------------------------------------
     integer :: n1, n2, jv, n
     character(len=8) :: nompan, nomres, nompaf
-    character(len=24) :: chbid
     character(len=8) :: tprol(3), prolgd, interp
 !-----------------------------------------------------------------------
     integer :: i, ik, j, k, lf, lfon, lr
@@ -66,10 +65,10 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
 !
 !     --- NAPPE DONT LES FONCTIONS SONT DEFINIES AUX MEME INSTANTS ? ---
     ndom = 1
-    call jelira(jexnum(chval, n1), 'LONMAX', n0, chbid)
+    call jelira(jexnum(chval, n1), 'LONMAX', n0)
     call jeveuo(jexnum(chval, n1), 'L', lr)
     do 10 i = n1+1, n2
-        call jelira(jexnum(chval, i), 'LONMAX', n, chbid)
+        call jelira(jexnum(chval, i), 'LONMAX', n)
         if (n0 .ne. n) then
             ndom = ndom + 1
             goto 12
@@ -122,7 +121,7 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
                 endif
 210          continue
             call jeveuo(jexnum(chval, i), 'L', jv)
-            call jelira(jexnum(chval, i), 'LONMAX', n, chbid)
+            call jelira(jexnum(chval, i), 'LONMAX', n)
             n = n/2
             nf1 = 1
             nf2 = min(10,n)

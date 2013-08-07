@@ -88,7 +88,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
 !
 ! --- VERIFICATION QUE LES COMPOSANTES SONT DANS LE CHAMP
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     ier = 0
     do 2 icp = 1, ncmp

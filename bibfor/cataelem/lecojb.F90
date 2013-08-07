@@ -42,7 +42,6 @@ subroutine lecojb(ob, unite, base, iret)
 ! IN    BASE (K1)  : G/V/L
 ! OUT   IRET  (I)  : CODE RETOUR : 0 -> OK ; 1 : IL N'Y RIEN A LIRE
     character(len=24) :: ob1
-    character(len=8) :: kbid
     character(len=3) :: type
     character(len=40) :: acces
     character(len=8) :: stock, modlon, nomk8, genr
@@ -75,7 +74,7 @@ subroutine lecojb(ob, unite, base, iret)
         call jecreo(ob1, base//' N '//type)
         call wkvect('&&LECOJB.PTNOM', base//' V '//type, long, jtmp)
         call lecvec(jtmp, long, type, unite)
-        call jeecra(ob1, 'NOMMAX', long, kbid)
+        call jeecra(ob1, 'NOMMAX', long)
         if (type .eq. 'K8') then
             do 10, k=1,long
             call jecroc(jexnom(ob1, zk8(jtmp-1+k)))
@@ -111,9 +110,8 @@ subroutine lecojb(ob, unite, base, iret)
         call jecrec(ob1, base//' V '//type, acces(1:2), stock, modlon,&
                     nmaxoc)
 !
-        if (stock .eq. 'CONTIG') call jeecra(ob1, 'LONT', lont, kbid)
-        if ((modlon.eq.'CONSTANT') .and. (stock.ne.'CONTIG')) call jeecra(ob1, 'LONMAX', lonmax,&
-                                                                          kbid)
+        if (stock .eq. 'CONTIG') call jeecra(ob1, 'LONT', lont)
+        if ((modlon.eq.'CONSTANT') .and. (stock.ne.'CONTIG')) call jeecra(ob1, 'LONMAX', lonmax)
         do 2,iobj=1,nutioc
 !
         if (acces(1:2) .eq. 'NO') then
@@ -121,13 +119,13 @@ subroutine lecojb(ob, unite, base, iret)
             ASSERT(mocle1.eq.'|NOM=')
             ASSERT(mocle2.eq.'|LONMAX=')
             call jecroc(jexnom(ob1, nomk8))
-            if (modlon .ne. 'CONSTANT') call jeecra(jexnom(ob1, nomk8), 'LONMAX', long, kbid)
+            if (modlon .ne. 'CONSTANT') call jeecra(jexnom(ob1, nomk8), 'LONMAX', long)
             if (long .gt. 0) call jeveuo(jexnom(ob1, nomk8), 'E', iad)
         else
             read (unite,1006) mocle1,long
             ASSERT(mocle1.eq.'|LONMAX=')
             call jecroc(jexnum(ob1, iobj))
-            if (modlon .ne. 'CONSTANT') call jeecra(jexnum(ob1, iobj), 'LONMAX', long, kbid)
+            if (modlon .ne. 'CONSTANT') call jeecra(jexnum(ob1, iobj), 'LONMAX', long)
             if (long .gt. 0) call jeveuo(jexnum(ob1, iobj), 'E', iad)
         endif
         call lecvec(iad, long, type, unite)

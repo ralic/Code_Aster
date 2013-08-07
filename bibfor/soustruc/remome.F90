@@ -68,7 +68,7 @@ subroutine remome(promes, modmes, nommac)
     vrange = promes//'.PROJM    .PJMRG'
     vorien = promes//'.PROJM    .PJMOR'
 !
-    call jelira(vnoeud, 'LONUTI', nbmesu, k8bid)
+    call jelira(vnoeud, 'LONUTI', nbmesu)
 !
     vref = nommac//'.PROJM    .PJMRF'
     call jeveuo(vref, 'L', lref)
@@ -107,7 +107,7 @@ subroutine remome(promes, modmes, nommac)
                 zcmplx = .false.
                 call wkvect(vmes, 'G V R', nbmesu*nbmtot, lmesu)
             endif
-            call jeecra(vmes, 'LONUTI', nbmesu*nbmtot, k8bid)
+            call jeecra(vmes, 'LONUTI', nbmesu*nbmtot)
         endif
 !
 ! TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS

@@ -82,7 +82,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 !
 ! --- NOMS SYMBOLIQUES
 !
-    call jelira(nomsd//'.DESC', 'NOMMAX', nbnosy, k8b)
+    call jelira(nomsd//'.DESC', 'NOMMAX', nbnosy)
     do 100 isy = 1, nbnosy
         call jenuno(jexnum(nomsd//'.DESC', isy), nomsym)
         call jenonu(jexnom(nomsd//'.DESC', nomsym), ibid)
@@ -101,17 +101,17 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
                 call jeexin(chextr//'.VALE', iret)
                 if (iret .ne. 0) then
                     call jeveuo(chextr//'.VALE', 'L', jvale)
-                    call jelira(chextr//'.VALE', 'LONMAX', long, k8b)
+                    call jelira(chextr//'.VALE', 'LONMAX', long)
                     if (long .eq. 0) goto 110
-                    call jelira(chextr//'.VALE', 'TYPE', ibid, type)
+                    call jelira(chextr//'.VALE', 'TYPE', cval=type)
                     goto 120
                 endif
                 call jeexin(chextr//'.CELV', iret)
                 if (iret .ne. 0) then
                     call jeveuo(chextr//'.CELV', 'L', jvale)
-                    call jelira(chextr//'.CELV', 'LONMAX', long, k8b)
+                    call jelira(chextr//'.CELV', 'LONMAX', long)
                     if (long .eq. 0) goto 110
-                    call jelira(chextr//'.CELV', 'TYPE', ibid, type)
+                    call jelira(chextr//'.CELV', 'TYPE', cval=type)
                     goto 120
                 endif
                 goto 110

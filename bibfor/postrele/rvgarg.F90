@@ -68,7 +68,6 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     character(len=16) :: nchsym
     character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50)
     character(len=4) :: typech
-    character(len=1) :: k1bid
     logical :: existe
     integer :: anomcp, anumcp, ancpu1, ancpu2, adesc, acpgd, avchef
     integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, ie, avcodo
@@ -179,10 +178,10 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     if (.not. existe) then
 !        /* LE CHAMPS SYMBOLIQUE EST ILEGAL, OU                 */
 !        /* IL EST LEGAL, MAIS IL N' ADMET AUCUN CHAMP EFFECTIF */
-        call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1, ' ')
+        call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1)
         call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
         zk8(anomcp) = '&NOEXIST'
-        call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1, ' ')
+        call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
         call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
         zi(anumcp) = 0
         zk24(avchef + iocc-1) = '&NONEXISTEOUNONCREE     '
@@ -200,7 +199,7 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
         endif
 !
         gd = zi(adesc + 1-1)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd, k1bid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
         call getvtx('ACTION', 'NOM_CMP', iocc, iarg, 0,&
                     k8b, nbcmp)
@@ -244,8 +243,8 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
                 call utcmp2(granch, 'ACTION', iocc, 50, nomcp,&
                             numecp, nbnc)
-                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbnc, ' ')
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbnc, ' ')
+                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbnc)
+                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbnc)
                 call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
                 do 112 i = 1, nbnc
                     zi(jxvar+i-1) = numecp(i)
@@ -253,12 +252,12 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                 nbcmp = 1
                 zk8(ancpu1) = 'VARI'
             else
-                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbcmp, ' ')
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0, ' ')
+                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbcmp)
+                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
             endif
-            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbcmp, ' ')
+            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbcmp)
             call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
-            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbcmp, ' ')
+            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbcmp)
             call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
             do 110, i = 1, nbcmp, 1
             zk8(anomcp + i-1) = zk8(ancpu1 + i-1)
@@ -271,9 +270,9 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             call utncmp(nchp19, nbc, nomobj)
             if (nbc .eq. 0) call u2mesi('F', 'POSTRELE_54', 1, iocc)
             call jeveuo(nomobj, 'L', ancpu2)
-            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbc, ' ')
+            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', nbc)
             call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
-            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbc, ' ')
+            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', nbc)
             call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
             do 120, i = 1, nbc, 1
             zk8(anomcp + i-1) = zk8(ancpu2 + i-1)
@@ -281,18 +280,18 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
             call numek8(zk8(acpgd), zk8(anomcp), nbcpgd, nbc, zi(anumcp))
             call jedetr(nomobj)
             if (typech .eq. 'ELNO' .and. granch .eq. 'VARI_R') then
-                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbc, ' ')
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbc, ' ')
+                call jeecra(jexnum(nxdvar, iocc), 'LONMAX', nbc)
+                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', nbc)
                 call jeveuo(jexnum(nxdvar, iocc), 'E', jxvar)
                 zi(jxvar) = -1
             else
-                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0, ' ')
+                call jeecra(jexnum(nxdvar, iocc), 'LONUTI', 0)
             endif
         else
 !           /* PASSAGE DE CMPS IMPLICITES */
-            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1, ' ')
+            call jeecra(jexnum(nxdnom, iocc), 'LONMAX', 1)
             call jeveuo(jexnum(nxdnom, iocc), 'E', anomcp)
-            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1, ' ')
+            call jeecra(jexnum(nxdnum, iocc), 'LONMAX', 1)
             call jeveuo(jexnum(nxdnum, iocc), 'E', anumcp)
             zk8(anomcp) = 'IMPLICIT'
             zi (anumcp) = -1

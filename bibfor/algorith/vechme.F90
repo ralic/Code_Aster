@@ -141,7 +141,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
     bidon = .true.
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (nchar .ne. 0) then
             bidon = .false.
             call jeveuo(charge, 'L', jchar)

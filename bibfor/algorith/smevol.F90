@@ -89,7 +89,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
     ch24 = mate(1:8)//'.CHAMP_MAT'
     chmate = mate(1:8)//'.MATE_CODE'
     call jeveuo(ch24(1:19)//'.VALE', 'E', jmate)
-    call jelira(ch24(1:19)//'.VALE', 'LONMAX', long, k8b)
+    call jelira(ch24(1:19)//'.VALE', 'LONMAX', long)
     call exlima(' ', 0, 'V', modele, ligrmo)
 !
     nbhist = 0

@@ -69,7 +69,6 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     integer :: lnumi, lnumj, lfreq, i1, nbabs
     integer :: lrnumi, lrnumj, lrfreq, mxval, mrxval, ipf
     real(kind=8) :: mgi, ksi, hdenom
-    character(len=8) :: k8b
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     character(len=24) :: crnumi, crnumj, crfreq, crvale
 !
@@ -86,8 +85,8 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
     call jeveuo(chfreq, 'L', lfreq)
-    call jelira(chnumi, 'LONMAX', mxval, k8b)
-    call jelira(chfreq, 'LONMAX', nbpf, k8b)
+    call jelira(chnumi, 'LONMAX', mxval)
+    call jelira(chfreq, 'LONMAX', nbpf)
 !
     crnumi = nomu//'.NUMI'
     crnumj = nomu//'.NUMJ'
@@ -174,8 +173,8 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
             else
                 nbabs = 2*nbpf
             endif
-            call jeecra(jexnum(crvale, ipf), 'LONMAX', nbabs, ' ')
-            call jeecra(jexnum(crvale, ipf), 'LONUTI', nbabs, ' ')
+            call jeecra(jexnum(crvale, ipf), 'LONMAX', nbabs)
+            call jeecra(jexnum(crvale, ipf), 'LONUTI', nbabs)
             call jeveuo(jexnum(crvale, ipf), 'E', lvale)
             ipf = ipf + 1
 !

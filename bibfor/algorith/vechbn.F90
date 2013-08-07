@@ -59,7 +59,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
     mdnoms = mdgene(1:14)//'.MODG.SSME'
 !
     k8bid = '        '
-    call jelira(mdliai, 'NUTIOC', nbliai, k8bid)
+    call jelira(mdliai, 'NUTIOC', nbliai)
 !
     do 10 iliai = 1, nbliai
         call jeveuo(jexnum(mdliai, iliai), 'L', lliai)
@@ -90,7 +90,7 @@ subroutine vechbn(mdgene, nomno1, sst1, nomno2, sst2)
             call jenonu(jexnom(lino2(1:13)//'NOMS', liai2), ibid)
             call jeveuo(jexnum(lino2, ibid), 'L', llino2)
             k8bid = '        '
-            call jelira(jexnum(lino2, ibid), 'LONMAX', nbnoeu, k8bid)
+            call jelira(jexnum(lino2, ibid), 'LONMAX', nbnoeu)
             call jeveuo(intf1(1:8)//'.IDC_DEFO', 'L', ldefo1)
             call jeveuo(intf2(1:8)//'.IDC_DEFO', 'L', ldefo2)
             call jeveuo(intf1(1:8)//'.IDC_REFE', 'L', lrefe1)

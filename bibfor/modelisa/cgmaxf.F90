@@ -105,7 +105,7 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         do 10 ifiss = 1, nfiss
             fiss = zk8(jfiss-1+ifiss)
             call jeveuo(fiss//maifis, 'L', zi(jtem3-1+ifiss))
-            call jelira(fiss//maifis, 'LONMAX', n, k8bid)
+            call jelira(fiss//maifis, 'LONMAX', n)
             zi(jtem4-1+ifiss) = n
             nbma = nbma + n
 10      continue

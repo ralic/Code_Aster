@@ -84,7 +84,7 @@ subroutine rsinfo(nomcon, ifi)
 ! 1.1. ==> EXISTENCE DE LA STRUCTURE
 !
     nomd2 = nomcon
-    call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy, k8b)
+    call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) then
         call u2mesk('A', 'UTILITAI4_34', 1, nomd2)
         goto 9999

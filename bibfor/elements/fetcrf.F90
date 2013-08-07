@@ -192,7 +192,7 @@ subroutine fetcrf(sdfet1)
     nbmatr=nbmato
     grpma = ma//'.GROUPEMA       '
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    call jelira(ligrmo//'.PRNM', 'LONMAX', n, k8b)
+    call jelira(ligrmo//'.PRNM', 'LONMAX', n)
     nec = n/nbnoto
     nec30=30*nec
 !
@@ -266,7 +266,7 @@ subroutine fetcrf(sdfet1)
     call wkvect('&&FETCRF.TMP  ', 'V V I', nbnot2, jtmp)
     do 22 i = 1, nbsd
         nomgma=zk24(lstgma-1+i)
-        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmail, k8b)
+        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmail)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
         zi(iafeta+i-1)=ialima
         zi(ianbma-1+i)=nbmail
@@ -309,7 +309,7 @@ subroutine fetcrf(sdfet1)
         k24buf=zk24(nomsd-1+i)
         call jecroc(jexnom(nomsdb, k24buf))
         intbuf=2*nbnosd
-        call jeecra(jexnom(nomsdb, k24buf), 'LONMAX', intbuf, k8bid)
+        call jeecra(jexnom(nomsdb, k24buf), 'LONMAX', intbuf)
         call jeveuo(jexnom(nomsdb, k24buf), 'E', jadr)
         zi(iajadr-1+i)=jadr
 ! **** SOUS-BOUCLE 2.1 SUR LES NOEUDS POUR DETERMINER LE NBRE DE DDLS
@@ -362,7 +362,7 @@ subroutine fetcrf(sdfet1)
         zi(nbmabd-1+i)=0
         if (zi(nbrd-1+i) .eq. 1) then
             nomgma=zk24(lstbrd-1+i)
-            call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmabo, k8b)
+            call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmabo)
             call jeveuo(jexnom(grpma, nomgma), 'L', ialibd)
             zi(nbmabd-1+i)=nbmabo
             lbord=.true.
@@ -375,7 +375,7 @@ subroutine fetcrf(sdfet1)
 !       NB MAILLES TOTALES (BORDS+VOLUME) DU SD I
         nbid=nbmail+nbmabo
 !       REMPLISSAGE EFFECTIF DE FETA
-        call jeecra(jexnom(nomsda, k24buf), 'LONMAX', nbid, k8bid)
+        call jeecra(jexnom(nomsda, k24buf), 'LONMAX', nbid)
         call jeveuo(jexnom(nomsda, k24buf), 'E', jadr)
 !       MAILLES VOLUMIQUES
         do 90 j = 1, nbmail
@@ -395,7 +395,7 @@ subroutine fetcrf(sdfet1)
 100  end do
 !
 ! **** TEST NBRE DE MAILLES MODELE = SOMME DES MAILLES DES GROUP_MA
-    call jelira(nomo(1:8)//'.MAILLE', 'LONMAX', nbma, k8b)
+    call jelira(nomo(1:8)//'.MAILLE', 'LONMAX', nbma)
     call jeveuo(nomo(1:8)//'.MAILLE', 'L', ial)
     nbmama=0
     nber=0
@@ -733,7 +733,7 @@ subroutine fetcrf(sdfet1)
         k24buf=zk24(nomsd-1+i)
         call jecroc(jexnom(nomsdg, k24buf))
         intbuf=2*nn
-        call jeecra(jexnom(nomsdg, k24buf), 'LONMAX', intbuf, k8bid)
+        call jeecra(jexnom(nomsdg, k24buf), 'LONMAX', intbuf)
         call jeveuo(jexnom(nomsdg, k24buf), 'E', jadr)
         do 610 j = 1, nn
             j2=2*(j-1)
@@ -781,7 +781,7 @@ subroutine fetcrf(sdfet1)
             zk24(ilscha-1+i)= ligrch
             call jeexin(ligrch//'.NEMA', n2)
             if (n2 .ne. 0) then
-                call jelira(ligrch//'.NEMA', 'NUTIOC', nbobj1, k8bid)
+                call jelira(ligrch//'.NEMA', 'NUTIOC', nbobj1)
                 nbmata=nbmata+nbobj1
                 zi(inbmch-1+i)=nbobj1
             endif
@@ -875,9 +875,9 @@ subroutine fetcrf(sdfet1)
             if (n2 .ne. 0) then
                 if (lcfc1) call u2mess('F', 'ELEMENTS5_33')
 !           NB MAILLES TARDIVES
-                call jelira(ligrch//'.NEMA', 'NUTIOC', nbobj1, k8bid)
+                call jelira(ligrch//'.NEMA', 'NUTIOC', nbobj1)
 !           LONGUEUR TOTALE DE LA COLLECTION
-                call jelira(ligrch//'.NEMA', 'LONT', lonli1, k8bid)
+                call jelira(ligrch//'.NEMA', 'LONT', lonli1)
 !           ADRESSE DE DEBUT DE LA COLLECTION
                 call jeveuo(ligrch//'.NEMA', 'L', idlig1)
 !           DIMENSIONNEMENT DES OBJETS TEMPORAIRES
@@ -890,7 +890,7 @@ subroutine fetcrf(sdfet1)
                 iadr=idlig1
                 do 802 j = 1, nbobj1
 !             NB NOEUDS DE CHAQUE MAILLE
-                    call jelira(jexnum(ligrch//'.NEMA', j), 'LONMAX', n3, k8b)
+                    call jelira(jexnum(ligrch//'.NEMA', j), 'LONMAX', n3)
                     n31=n3-1
 !             ON PARCOURS LES NOEUDS DE LA MAILLE TARDIVE
                     do 803 k = 1, n31
@@ -1202,7 +1202,7 @@ subroutine fetcrf(sdfet1)
                             if (zi(bifln-1+isd) .eq. 0) then
                                 k24buf=zk24(nomsd-1+isd)
                                 call jecroc(jexnom(nomsln, k24buf))
-                                call jeecra(jexnom(nomsln, k24buf), 'LONMAX', n1, k8b)
+                                call jeecra(jexnom(nomsln, k24buf), 'LONMAX', n1)
                                 call jeveuo(jexnom(nomsln, k24buf), 'E', jadr)
 !                   ADDR DE DEPART POUR FLIN/ISD
                                 zi(bifln-1+isd)=jadr
@@ -1221,7 +1221,7 @@ subroutine fetcrf(sdfet1)
                             if (zi(biflii-1+isd) .eq. 0) then
                                 k24buf=zk24(nomsd-1+isd)
                                 call jecroc(jexnom(nomsli, k24buf))
-                                call jeecra(jexnom(nomsli, k24buf), 'LONMAX', n1, k8b)
+                                call jeecra(jexnom(nomsli, k24buf), 'LONMAX', n1)
                                 call jeveuo(jexnom(nomsli, k24buf), 'E', jadr)
 !                   ADDR DE DEPART POUR FLII/ISD
                                 zi(biflii-1+isd)=jadr
@@ -1241,7 +1241,7 @@ subroutine fetcrf(sdfet1)
                             if (zi(biflim-1+isd) .eq. 0) then
                                 k24buf=zk24(nomsd-1+isd)
                                 call jecroc(jexnom(nomslm, k24buf))
-                                call jeecra(jexnom(nomslm, k24buf), 'LONMAX', n1, k8b)
+                                call jeecra(jexnom(nomslm, k24buf), 'LONMAX', n1)
                                 call jeveuo(jexnom(nomslm, k24buf), 'E', jadr)
 !                   ADDR DE DEPART POUR FLIM/ISD
                                 zi(biflim-1+isd)=jadr
@@ -1380,7 +1380,7 @@ subroutine fetcrf(sdfet1)
 ! ILS ONT DES MAILLES DE BORD OU PAS ?
                             if (zi(nbrd-1+idd) .eq. 1) then
                                 nomgma=zk24(lstbrd-1+idd)
-                                call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmabo, k8b)
+                                call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmabo)
                                 call jeveuo(jexnom(grpma, nomgma), 'L', ialibd)
                                 nbmabo=nbmabo-1
 ! BOUCLE SUR LES MAILLES DE BORD
@@ -1453,27 +1453,27 @@ subroutine fetcrf(sdfet1)
         k24buf=zk24(nomsd-1+idd)
         if (iaux .ne. 0) then
 ! TRAVAIL PREPARATOIRE 1 POUR CALCULER DDLS DE CONTACT SUPPLEMENTAIRES
-            call jelira(jexnom(nomsdb, k24buf), 'LONMAX', lfetb, k8b)
+            call jelira(jexnom(nomsdb, k24buf), 'LONMAX', lfetb)
             lfetb=lfetb/2
             call jeveuo(jexnom(nomsdb, k24buf), 'L', ifetb)
 ! CREATION NOMFCL
             call jecroc(jexnom(nomfcl, k24buf))
-            call jeecra(jexnom(nomfcl, k24buf), 'LONMAX', iaux, k8b)
+            call jeecra(jexnom(nomfcl, k24buf), 'LONMAX', iaux)
             call jeveuo(jexnom(nomfcl, k24buf), 'E', jadr)
             iiaux1=0
             iaux1=0
 ! CREATION NOMFCI
             call jecroc(jexnom(nomfci, k24buf))
-            call jeecra(jexnom(nomfci, k24buf), 'LONMAX', 2*iaux, k8b)
+            call jeecra(jexnom(nomfci, k24buf), 'LONMAX', 2*iaux)
             call jeveuo(jexnom(nomfci, k24buf), 'E', madr)
 ! CREATION NOMFCM
             call jecroc(jexnom(nomfcm, k24buf))
-            call jeecra(jexnom(nomfcm, k24buf), 'LONMAX', zi(ifcfm+idd-1), k8b)
+            call jeecra(jexnom(nomfcm, k24buf), 'LONMAX', zi(ifcfm+idd-1))
             call jeveuo(jexnom(nomfcm, k24buf), 'E', kadr)
             iaux2=0
 ! CREATION NOMFCN
             call jecroc(jexnom(nomfcn, k24buf))
-            call jeecra(jexnom(nomfcn, k24buf), 'LONMAX', zi(ifcfn+idd-1), k8b)
+            call jeecra(jexnom(nomfcn, k24buf), 'LONMAX', zi(ifcfn+idd-1))
             call jeveuo(jexnom(nomfcn, k24buf), 'E', ladr)
             iaux3=0
             do 961 ich = 1, nbchar

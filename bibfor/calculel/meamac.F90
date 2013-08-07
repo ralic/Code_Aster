@@ -57,7 +57,7 @@ subroutine meamac(modelz, ncha, lcha, mate, matelz)
 !     VARIABLES LOCALES:
 !     ------------------
 !
-    character(len=8) :: k8bid, modele
+    character(len=8) ::  modele
     character(len=19) :: matel
 !
 !-----------------------------------------------------------------------
@@ -73,7 +73,7 @@ subroutine meamac(modelz, ncha, lcha, mate, matelz)
 !
 !*    -- ON RECOPIE LES .RELR DE &MEAMAC2 DANS MATEL.
 !**
-    call jelira('&MEAMAC2           .RELR', 'LONUTI', long2, k8bid)
+    call jelira('&MEAMAC2           .RELR', 'LONUTI', long2)
     call jeveuo('&MEAMAC2           .RELR', 'L', jlire2)
 !**
     call jedetr(matel//'.RERR')

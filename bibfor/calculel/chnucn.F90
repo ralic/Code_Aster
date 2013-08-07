@@ -138,7 +138,6 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
     character(len=8) :: gd1, gd2, repk, tysca1, tysca2, ma, cmp1, cmp2
     character(len=14) :: nu2
     character(len=19) :: cn1, cn2, pchno1, pchno2
-    character(len=1) :: k1bid
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2
     integer :: iaval1, iaval2, ibid, ico1, ico2, icorr2, ieq1
@@ -188,7 +187,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 ! ------------------------------- DESC --------------------------------
 !
     call wkvect(cn2//'.DESC', base2//' V I', 2, i1)
-    call jeecra(cn2//'.DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(cn2//'.DESC', 'DOCU', cval='CHNO')
     call dismoi('F', 'NUM_GD', gd2, 'GRANDEUR', nugd2,&
                 repk, ierd)
     zi(i1 ) = nugd2
@@ -223,8 +222,8 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base,&
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gd1), 'L', iacmp1)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gd2), 'L', iacmp2)
-    call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', ncmmx1, k1bid)
-    call jelira(jexnom('&CATA.GD.NOMCMP', gd2), 'LONMAX', ncmmx2, k1bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', ncmmx1)
+    call jelira(jexnom('&CATA.GD.NOMCMP', gd2), 'LONMAX', ncmmx2)
 !
 !     -- REMPLISSAGE DE L'OBJET '.CORR2' :
 !     ------------------------------------

@@ -66,7 +66,6 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !          : LONLIS : <0 SI CONTACT ET POI1
 ! ----------------------------------------------------------------------
 !
-    character(len=1) :: k1bid
     character(len=8) :: k8bid, noma, nomnoe, nomail
     character(len=16) :: motfac, motcle
     character(len=16) :: mgrma1, mgrma2, mgrno1, mgrno2
@@ -98,7 +97,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
 !
     call jeexin(listyp, iret)
     if (iret .ne. 0) then
-        call jelira(listyp, 'LONMAX', lonlit, k1bid)
+        call jelira(listyp, 'LONMAX', lonlit)
         call jeveuo(listyp, 'L', idtypk)
         if (lonlit .ne. 0) then
             call jedetr('&&PAMANO.LISTYP')
@@ -151,7 +150,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                         iarg, ng, zk24(jjj), ngr)
             do 10 igr = 1, ngr
                 call jeveuo(jexnom(grmama, zk24(jjj+igr-1)), 'L', jgro)
-                call jelira(jexnom(grmama, zk24(jjj+igr-1)), 'LONUTI', nbmail, k1bid)
+                call jelira(jexnom(grmama, zk24(jjj+igr-1)), 'LONUTI', nbmail)
                 do 20 m = 1, nbmail
                     numail = zi(jgro-1+m)
                     call jenuno(jexnum(mailma, numail), nomail)
@@ -173,7 +172,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                         endif
                     endif
                     call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
-                    call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1, k1bid)
+                    call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                     idim1 = idim1 + n1
                     n1max = max ( n1max, n1)
 20              continue
@@ -216,7 +215,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                     endif
                 endif
                 call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj+ima-1)), ibid)
-                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2, k1bid)
+                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
                 idim2 = idim2 + n2
                 n1max = max ( n1max, n2)
 30          continue
@@ -242,7 +241,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
             call getvem(noma, 'GROUP_NO', motfac, motcle, iocc,&
                         iarg, ng, zk24(jjj), ngr)
             do 40 igr = 1, ngr
-                call jelira(jexnom(grnoma, zk24(jjj+igr-1)), 'LONUTI', n3, k1bid)
+                call jelira(jexnom(grnoma, zk24(jjj+igr-1)), 'LONUTI', n3)
                 idim3 = idim3 + n3
 40          continue
         endif
@@ -303,13 +302,13 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                         zk24(jjj), ngr)
             do 50 igr = 1, ngr
                 call jeveuo(jexnom(grmama, zk24(jjj+igr-1)), 'L', jgro)
-                call jelira(jexnom(grmama, zk24(jjj+igr-1)), 'LONUTI', nbmail, k1bid)
+                call jelira(jexnom(grmama, zk24(jjj+igr-1)), 'LONUTI', nbmail)
                 do 60 m = 1, nbmail
                     numail = zi(jgro-1+m)
                     call jenuno(jexnum(mailma, numail), nomail)
                     call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
                     call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
-                    call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1, k1bid)
+                    call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                     do 70 ino = 1, n1
                         call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
                         indnoe = indnoe + 1
@@ -333,7 +332,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                 call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj+ima-1)), ibid)
                 call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
                 call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj+ima-1)), ibid)
-                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2, k1bid)
+                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
                 do 90 ino = 1, n2
                     call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
                     indnoe = indnoe + 1
@@ -354,7 +353,7 @@ subroutine pamano(motfaz, moclez, nomaz, listyz, iocc,&
                         zk24(jjj), ngr)
             do 100 igr = 1, ngr
                 call jeveuo(jexnom(grnoma, zk24(jjj+igr-1)), 'L', jgro)
-                call jelira(jexnom(grnoma, zk24(jjj+igr-1)), 'LONUTI', n3, k1bid)
+                call jelira(jexnom(grnoma, zk24(jjj+igr-1)), 'LONUTI', n3)
                 do 110 ino = 1, n3
                     in = zi(jgro+ino-1)
                     indnoe = indnoe + 1

@@ -101,7 +101,6 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
     integer :: nbjeve, ijeveo
     character(len=1) :: base
     character(len=8) :: lpain(9), lpaout(1), licmp(19)
-    character(len=19) :: kbid
     character(len=24) :: lchin(9), lchout(1), kcmp(19), charev
     real(kind=8) :: rcmp
     complex(kind=8) :: ccmp
@@ -136,17 +135,17 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum,&
         call jeveuo(cartef//'.DESC', 'L', iadef)
         call jeveuo(cartef//'.VALE', 'L', iavaf)
         igd = zi(iadef)
-        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpf, kbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpf)
     endif
     if (carteh .ne. ' ') then
         call jeveuo(carteh//'.DESC', 'L', iadeh)
         call jeveuo(carteh//'.VALE', 'L', iavah)
         igd = zi(iadeh)
-        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmph, kbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmph)
         call jeveuo(cartet//'.DESC', 'L', iadet)
         call jeveuo(cartet//'.VALE', 'L', iavat)
         igd = zi(iadet)
-        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpt, kbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpt)
     endif
 !
 ! STOCKAGE DE CES DONNEES DANS UN VECTEUR D'ENTIER DONT LE NOM SERA

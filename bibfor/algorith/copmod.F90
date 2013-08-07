@@ -84,7 +84,7 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     logical :: modnum, exnume
-    integer :: i, ib, iret, procho
+    integer :: i, ib, iret
     integer :: jref, jdeeq, jval
     character(len=19) :: numer1, numer2, nomcha, tmpcha
     character(len=24) :: maill1, maill2, valk(4), crefe(2), valcha

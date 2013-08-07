@@ -36,7 +36,6 @@ subroutine nulvec(nomsd)
     real(kind=8) :: zero
     parameter (zero=0.d0)
 !
-    character(len=8) :: k8bid
 !
     integer :: jvec, nc, n
 !
@@ -45,7 +44,7 @@ subroutine nulvec(nomsd)
     call jemarq()
 !
     call jeveuo(nomsd(1:19)//'.VALE', 'E', jvec)
-    call jelira(nomsd(1:19)//'.VALE', 'LONMAX', nc, k8bid)
+    call jelira(nomsd(1:19)//'.VALE', 'LONMAX', nc)
     do 1 n = 1, nc
         zr(jvec+n-1) = zero
  1  end do

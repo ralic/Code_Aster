@@ -38,16 +38,16 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
 ! OUT IER     I   <0=ERREUR 1=OK
 !
     character(len=4) :: type
-    character(len=1) :: xous, genr, kbid
-    integer :: jres, iret, ibid, i, nbindj
+    character(len=1) :: xous, genr
+    integer :: jres, iret, i, nbindj
     character(len=32) :: noml32
 !     ------------------------------------------------------------------
     call jemarq()
     noml32=nomres
 !
     call jjvern(noml32, 0, iret)
-    call jelira(noml32, 'XOUS', ibid, xous)
-    call jelira(noml32, 'GENR', ibid, genr)
+    call jelira(noml32, 'XOUS', cval=xous)
+    call jelira(noml32, 'GENR', cval=genr)
     if (iret .eq. 0) then
 !     CET OBJET N'EXISTE PAS
         ier=0
@@ -56,8 +56,8 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
 !     CET OBJET EXISTE ET EST SIMPLE. ON PEUT AVOIR SA VALEUR
 !     ------------------------------------------------------------------
         call jeveuo(noml32, 'E', jres)
-        call jelira(noml32, 'TYPELONG', ibid, type)
-        call jelira(noml32, 'LONMAX', nbindj, kbid)
+        call jelira(noml32, 'TYPELONG', cval=type)
+        call jelira(noml32, 'LONMAX', nbindj)
         if (nbind .gt. nbindj) then
             ier=0
         endif
@@ -83,8 +83,8 @@ subroutine putcon(nomres, nbind, ind, valr, vali,&
 !     LE NUMERO D'ORDRE DANS LA COLLECTION
 !     ------------------------------------------------------------------
         call jeveuo(jexnum(noml32, num), 'E', jres)
-        call jelira(noml32, 'TYPELONG', ibid, type)
-        call jelira(jexnum(noml32, num), 'LONMAX', nbindj, kbid)
+        call jelira(noml32, 'TYPELONG', cval=type)
+        call jelira(jexnum(noml32, num), 'LONMAX', nbindj)
         if (nbind .gt. nbindj) then
             ier=0
         endif

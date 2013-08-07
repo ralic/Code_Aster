@@ -41,7 +41,6 @@ subroutine w18imp(ligrel, noma, nomo)
     integer :: ntypoi, jdtm, nutype, ibid, jc, j, numnoe
     integer :: jdnw, k, niv, iexi, nbte, jnbele, jmodli, jtypma
     integer :: jtypel, nbele
-    character(len=8) :: k8b
     character(len=8) :: typema, nomail, tabmai(8)
     character(len=16) :: typele, typemo
     character(len=24) :: nommai, nomnoe
@@ -58,7 +57,7 @@ subroutine w18imp(ligrel, noma, nomo)
     if (iexi .eq. 0) goto 50
 !
 !
-    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel, k8b)
+    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
     call jeveuo(ligrel//'.LIEL', 'L', jdli)
     call jeveuo(noma//'.TYPMAIL', 'L', jdtm)
     call jeexin(nomo//'.MODELE    .NEMA', iexi)
@@ -69,7 +68,7 @@ subroutine w18imp(ligrel, noma, nomo)
 !
 !     -- 1. ON COMPTE LES ELEMENTS DE CHAQUE TYPE :
 !     ------------------------------------------------
-    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte, k8b)
+    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
     call wkvect('&&W18IMP.NBELE', 'V V I', nbte, jnbele)
     call wkvect('&&W18IMP.MODELI', 'V V K16', nbte, jmodli)
     call wkvect('&&W18IMP.TYPMA', 'V V K8', nbte, jtypma)
@@ -78,7 +77,7 @@ subroutine w18imp(ligrel, noma, nomo)
     numvec=1
     typemo=' '
     do 10 i = 1, nbgrel
-        call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nmgrel, k8b)
+        call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nmgrel)
         if (nmgrel .eq. 1) goto 9
         nutype=zi(jdli+numvec+nmgrel-2)
         if (nutype .eq. 0) goto 10
@@ -130,7 +129,7 @@ subroutine w18imp(ligrel, noma, nomo)
         numvec=1
         typemo=' '
         do 40 i = 1, nbgrel
-            call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nmgrel, k8b)
+            call jelira(jexnum(ligrel//'.LIEL', i), 'LONMAX', nmgrel)
             if (nmgrel .eq. 1) goto 39
             numail=zi(jdli+numvec-1)
             if (numail .lt. 0) then

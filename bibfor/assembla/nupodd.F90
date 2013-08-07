@@ -60,7 +60,6 @@ subroutine nupodd(nu, base, rang, nbproc)
 !
     character(len=8) :: noma, k8b, mo, partit
     character(len=19) :: ligrmo, nomlig
-    character(len=24) :: kbid
 !
     logical :: ldist, ldgrel
 !----------------------------------------------------------------------
@@ -131,8 +130,8 @@ subroutine nupodd(nu, base, rang, nbproc)
     call jeveuo(nu//'     .ADLI', 'L', jadli)
     call jeveuo(nu//'.NUME.PRNO', 'L', idprn1)
     call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
-    call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili, kbid)
-    call jelira(jexnum(nu//'.NUME.PRNO', 1), 'LONMAX', n1, kbid)
+    call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
+    call jelira(jexnum(nu//'.NUME.PRNO', 1), 'LONMAX', n1)
 !
 !     -- CALCUL DU NOMBRE D'ENTIERS CODES :
     nec=n1/nbnoma-2

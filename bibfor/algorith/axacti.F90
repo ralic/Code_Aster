@@ -62,7 +62,6 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
     integer :: nbnoa, nbnot, numa
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
-    character(len=1) :: k1bid
     character(len=8) :: basmod, intf, k8bid
     logical :: okass
     integer :: idec(nbcpmx), lisnu(nblis)
@@ -92,7 +91,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldesc)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
 !**************************************************************
     nbnot = nbnot/(2+nbec)
 !      NBNOT=NBNOT/3
@@ -104,7 +103,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
 !
     call jeveuo(jexnum(intf//'.IDC_LINO', numa), 'L', llnoa)
 !
-    call jelira(jexnum(intf//'.IDC_LINO', numa), 'LONMAX', nbnoa, k1bid)
+    call jelira(jexnum(intf//'.IDC_LINO', numa), 'LONMAX', nbnoa)
 !
 !--------------------------ON DETERMINE LA LISTE------------------------
 !

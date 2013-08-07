@@ -81,7 +81,7 @@ subroutine rsmena(resu)
 !
 !     1.1 LISTE DES PROF_CHNO EXISTANTS
     call jecreo('&&RSMENA.DICO', 'V N K24')
-    call jeecra('&&RSMENA.DICO', 'NOMMAX', n2, kbid)
+    call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
     do 10,k=1,n2
     noobj=zk24(jlist-1+k)
@@ -94,7 +94,7 @@ subroutine rsmena(resu)
     if (nbcon .eq. 0) goto 50
 !
 !     1.2 ON "COCHE" LES  PROF_CHNO REFERENCES :
-    call jelira(res19//'.DESC', 'NOMMAX', nbnosy, kbid)
+    call jelira(res19//'.DESC', 'NOMMAX', nbnosy)
     call rsorac(res19, 'LONUTI', ibid, r8b, kbid,&
                 c16b, r8b, kbid, nbordr, 1,&
                 ibid)
@@ -140,7 +140,7 @@ subroutine rsmena(resu)
 !
 !     2.1 LISTE DES LISTE_CHARGE EXISTANTS
     call jecreo('&&RSMENA.DICO', 'V N K24')
-    call jeecra('&&RSMENA.DICO', 'NOMMAX', n2, kbid)
+    call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
     do 60,k=1,n2
     noobj=zk24(jlist-1+k)
@@ -153,7 +153,7 @@ subroutine rsmena(resu)
     if (nbcon .eq. 0) goto 90
 !
 !     2.2 ON "COCHE" LES  LISTE_CHARGE REFERENCES :
-    call jelira(res19//'.RS24', 'LONMAX', n1, kbid)
+    call jelira(res19//'.RS24', 'LONMAX', n1)
     call jeveuo(res19//'.RS24', 'L', jrs24)
     call wkvect('&&RSMENA.COCHE', 'V V I', nbcon, jcoche)
 !
@@ -183,7 +183,7 @@ subroutine rsmena(resu)
 !
 !     3.1 LISTE DES LIGREL EXISTANTS
     call jecreo('&&RSMENA.DICO', 'V N K24')
-    call jeecra('&&RSMENA.DICO', 'NOMMAX', n2, kbid)
+    call jeecra('&&RSMENA.DICO', 'NOMMAX', n2)
     nbcon=0
     do 100,k=1,n2
     noobj=zk24(jlist-1+k)

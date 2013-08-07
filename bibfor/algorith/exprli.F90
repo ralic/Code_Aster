@@ -68,7 +68,6 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     integer :: ier
     parameter   (nbcmpm=10)
     character(len=*) :: basmdz, nmintz, lintfz, famprz
-    character(len=1) :: k1bid
     character(len=4) :: nliai
     character(len=8) :: basmod, nomint, lintf, kbid, blanc, nomg, temp
     character(len=24) :: ordod
@@ -100,7 +99,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
     if (nbec .gt. 10) then
         call u2mess('F', 'MODELISA_94')
     endif
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
 !
 !----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 !
@@ -124,7 +123,7 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz,&
 !
 !-------ALLOCATION DU MINI PROFNO LIAISON INTERFACE COURANTE------------
 !
-    call jeecra(jexnum(famprl, ii), 'LONMAX', nbnoe*(1+nbec), ' ')
+    call jeecra(jexnum(famprl, ii), 'LONMAX', nbnoe*(1+nbec))
     call jeveuo(jexnum(famprl, ii), 'E', ldmap)
 !
 !--------------------------DETERMINATION DU PRNO------------------------

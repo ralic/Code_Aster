@@ -111,7 +111,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     integer :: typnoe
     parameter (typnoe=0)
 !
-    character(len=1) :: saux01, k1bid
+    character(len=1) :: saux01
     character(len=8) :: saux08, k8bid
     character(len=8) :: nomaas
     character(len=8) :: nomtyp(ntymax)
@@ -238,7 +238,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     if (etiqcp .ne. ' ') then
         call jeveuo(ntncmp, 'L', jnocm1)
         call jeveuo(etiqcp, 'L', jnocm2)
-        call jelira(etiqcp, 'LONMAX', nbcmp2, k1bid)
+        call jelira(etiqcp, 'LONMAX', nbcmp2)
         nbcmp2=nbcmp2/2
         do 10,icmp1 = 1,ncmpve
         do 20,icmp2 = 1,nbcmp2

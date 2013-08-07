@@ -38,7 +38,7 @@ subroutine norton(nvi, vini, coeft, nmat, sigi,&
 #include "asterfort/r8inir.h"
     integer :: iret, itens, ndi, nmat, nvi, ndt
     real(kind=8) :: coeft(nmat), vini(nvi), dvin(nvi), smx(6), sigi(6)
-    real(kind=8) :: dp, n, unsurk, grj2v, epsi, deps(6)
+    real(kind=8) :: dp, n, unsurk, grj2v, epsi
 !     ----------------------------------------------------------------
     common /tdim/   ndt,    ndi
 !     ----------------------------------------------------------------

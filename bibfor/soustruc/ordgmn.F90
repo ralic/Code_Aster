@@ -46,7 +46,6 @@ subroutine ordgmn(noma, nomgrp)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: k8bid
     character(len=24) :: grpma, grpno
     integer :: nbma, nbno
     integer :: iret, ialino, ialima, i, ima, numno, iacnex, nbnoma
@@ -56,14 +55,14 @@ subroutine ordgmn(noma, nomgrp)
 !
     call jeexin(jexnom(grpma, nomgrp), iret)
     if (iret .eq. 0) goto 9999
-    call jelira(jexnom(grpma, nomgrp), 'LONUTI', nbma, k8bid)
+    call jelira(jexnom(grpma, nomgrp), 'LONUTI', nbma)
     call jeveuo(jexnom(grpma, nomgrp), 'L', ialima)
 !
     call jeexin(jexnom(grpno, nomgrp), iret)
     if (iret .eq. 0) then
         call u2mess('F', 'SOUSTRUC_17')
     endif
-    call jelira(jexnom(grpno, nomgrp), 'LONUTI', nbno, k8bid)
+    call jelira(jexnom(grpno, nomgrp), 'LONUTI', nbno)
     call jeveuo(jexnom(grpno, nomgrp), 'E', ialino)
 !
     if (nbma .ne. nbno) then
@@ -73,7 +72,7 @@ subroutine ordgmn(noma, nomgrp)
     do 10 i = 1, nbma
         ima=zi(ialima+i-1)
         call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
-        call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma, k8bid)
+        call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
         if (nbnoma .ne. 1) then
             call u2mess('F', 'SOUSTRUC_19')
         endif

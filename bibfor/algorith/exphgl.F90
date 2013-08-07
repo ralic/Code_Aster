@@ -108,7 +108,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
-    call jelira(profno//'.DEEQ', 'LONMAX', neq, k8b)
+    call jelira(profno//'.DEEQ', 'LONMAX', neq)
     neq = neq / 2
 !
 !-----RECUPERATION DES FREQUENCES---------------------------------------
@@ -204,7 +204,7 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf,&
 !
         do 20 k = 1, nbsec
             call jeveuo(jexnum(indirf, k), 'L', ltinds)
-            call jelira(jexnum(indirf, k), 'LONMAX', nddcou, k8b)
+            call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
             nddcou = nddcou/2
             do 40 j = 1, nddcou
                 ieqi = zi(ltinds+(j-1)*2)

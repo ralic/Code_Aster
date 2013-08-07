@@ -119,15 +119,15 @@ subroutine fetskp()
     else
         write(ifm,*)' -- PRISE EN COMPTE DU MODELE :',mod
         nbmato=0
-        call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc, k8bid)
+        call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
         do 94 iocc = 1, nocc
-            call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma, k8bid)
+            call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
             nbmato=nbmato+nbma-1
 94      continue
         call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
         id=1
         do 93 iocc = 1, nocc
-            call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma, k8bid)
+            call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
             call jeveuo(jexnum(mod//'.MODELE    .LIEL', iocc), 'L', idma)
             do 91 ima = 1, nbma-1
                 zi(renum-1+id)=zi(idma-1+ima)
@@ -178,12 +178,12 @@ subroutine fetskp()
     do 116 iocc = 1, nocc
         call getvtx('GROUPAGE', 'GROUP_MA', iocc, iarg, 1,&
                     grpema, err)
-        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre, k8bid)
+        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
         nbma=0
         do 118 j = 1, nbre
             call jenuno(jexnum(ma//'.GROUPEMA', j), nom)
             if (nom .eq. grpema) then
-                call jelira(jexnum(ma//'.GROUPEMA', j), 'LONUTI', nbma, k8bid)
+                call jelira(jexnum(ma//'.GROUPEMA', j), 'LONUTI', nbma)
                 call jeveuo(jexnum(ma//'.GROUPEMA', j), 'L', idma)
             endif
 118      continue
@@ -210,12 +210,12 @@ subroutine fetskp()
     do 117 iocc = 1, nocc
         call getvtx('POIDS_MAILLES', 'GROUP_MA', iocc, iarg, 1,&
                     grpema, err)
-        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre, k8bid)
+        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
         nbma=0
         do 207 j = 1, nbre
             call jenuno(jexnum(ma//'.GROUPEMA', j), nom)
             if (nom .eq. grpema) then
-                call jelira(jexnum(ma//'.GROUPEMA', j), 'LONUTI', nbma, k8bid)
+                call jelira(jexnum(ma//'.GROUPEMA', j), 'LONUTI', nbma)
                 call jeveuo(jexnum(ma//'.GROUPEMA', j), 'L', idma)
             endif
 207      continue

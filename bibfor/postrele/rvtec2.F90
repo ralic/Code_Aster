@@ -78,7 +78,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor,&
 !
     call jemarq()
 !
-    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari, k8b)
+    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
     call jeveuo(jexnum(xnovar, iocc), 'L', jvari)
     if (nbvari .eq. 1 .and. zi(jvari) .eq. -1) then
         nbcmp2 = itsppt(1)

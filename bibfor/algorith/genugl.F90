@@ -94,7 +94,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----RECUPERATION DU NOMBRE DE SOUS-STRUCTURES-------------------------
 !
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k8bid)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
 !
 !-----RECUPERATION DIMENSION MAILLAGE SQUELETTE-------------------------
 !
@@ -139,7 +139,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
     nueq=profno//'.NUEQ'
 !
     call jecreo(lili, 'G N K24')
-    call jeecra(lili, 'NOMMAX', 2, ' ')
+    call jeecra(lili, 'NOMMAX', 2)
     call wkvect(deeq, 'G V I', nddlt*2, lddeeq)
     call wkvect(nueq, 'G V I', nddlt, ldnueq)
     call jecrec(prno, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
@@ -152,16 +152,16 @@ subroutine genugl(profno, indirf, modgen, mailsk)
     do 40 i = 1, nbsst
         ntail=2*zi(lttds+i-1)
         if (ntail .gt. 0) then
-            call jeecra(jexnum(indirf, i), 'LONMAX', ntail, ' ')
+            call jeecra(jexnum(indirf, i), 'LONMAX', ntail)
             call jecroc(jexnum(indirf, i))
         endif
 40  end do
 !
 !-----REMPLISSAGE DES OBJETS EVIDENTS-----------------------------------
 !
-    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nbec), kbid)
-    call jeecra(jexnum(prno, 2), 'LONMAX', 1, kbid)
-    call jeecra(prno, 'LONT', nbnot*(2+nbec)+1, ' ')
+    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nbec))
+    call jeecra(jexnum(prno, 2), 'LONMAX', 1)
+    call jeecra(prno, 'LONT', nbnot*(2+nbec)+1)
 !
 !-----REMPLISSAGE DES OBJETS--------------------------------------------
 !

@@ -77,7 +77,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
     call getvr8('ACTION', 'PRECISION', iocc, iarg, 1, prec, n1)
     call getvtx('ACTION', 'CRITERE', iocc, iarg, 1, crit, n1)
 !
-    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari, k8b)
+    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
     if (nbvari .eq. 0) then
         nbcmp2 = nbcp
     else

@@ -69,7 +69,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
     integer :: nbvale, nbrefe, nbdesc, ibid, nbid, nbmode, ilires
     integer :: i, icor(2), ndble, tabad(5), jj, kk
     real(kind=8) :: const(2)
-    character(len=1) :: typech(2), typcst(2), kbid
+    character(len=1) :: typech(2), typcst(2)
     character(len=2) :: model
     character(len=6) :: chaine
     character(len=8) :: nomch(2)
@@ -123,27 +123,27 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! PRESSION ASSOCIE A CHAQUE MODE PROPRE
 !
     call jecreo('&&MAJOU.TXSTO', 'V V K24')
-    call jeecra('&&MAJOU.TXSTO', 'LONMAX', nbmode, k8bid)
-    call jeecra('&&MAJOU.TXSTO', 'LONUTI', nbmode, k8bid)
+    call jeecra('&&MAJOU.TXSTO', 'LONMAX', nbmode)
+    call jeecra('&&MAJOU.TXSTO', 'LONUTI', nbmode)
     call jeveut('&&MAJOU.TXSTO', 'E', iadx)
     call jecreo('&&MAJOU.TYSTO', 'V V K24')
-    call jeecra('&&MAJOU.TYSTO', 'LONMAX', nbmode, k8bid)
-    call jeecra('&&MAJOU.TYSTO', 'LONUTI', nbmode, k8bid)
+    call jeecra('&&MAJOU.TYSTO', 'LONMAX', nbmode)
+    call jeecra('&&MAJOU.TYSTO', 'LONUTI', nbmode)
     call jeveut('&&MAJOU.TYSTO', 'E', iady)
     if (model .eq. '3D') then
         call jecreo('&&MAJOU.TZSTO', 'V V K24')
-        call jeecra('&&MAJOU.TZSTO', 'LONMAX', nbmode, k8bid)
-        call jeecra('&&MAJOU.TZSTO', 'LONUTI', nbmode, k8bid)
+        call jeecra('&&MAJOU.TZSTO', 'LONMAX', nbmode)
+        call jeecra('&&MAJOU.TZSTO', 'LONUTI', nbmode)
         call jeveut('&&MAJOU.TZSTO', 'E', iadz)
     endif
     call jecreo('&&MAJOU.PRES', 'V V K24')
-    call jeecra('&&MAJOU.PRES', 'LONMAX', nbmode, k8bid)
-    call jeecra('&&MAJOU.PRES', 'LONUTI', nbmode, k8bid)
+    call jeecra('&&MAJOU.PRES', 'LONMAX', nbmode)
+    call jeecra('&&MAJOU.PRES', 'LONUTI', nbmode)
     call jeveut('&&MAJOU.PRES', 'E', iadpr)
 !
     call jecreo('&&TABIRG', 'V V I')
-    call jeecra('&&TABIRG', 'LONMAX', nbmode, k8bid)
-    call jeecra('&&TABIRG', 'LONUTI', nbmode, k8bid)
+    call jeecra('&&TABIRG', 'LONMAX', nbmode)
+    call jeecra('&&TABIRG', 'LONUTI', nbmode)
     call jeveut('&&TABIRG', 'E', iadirg)
 !
     do 6 i = 1, nbmode
@@ -181,7 +181,7 @@ subroutine majou(model, modmec, solveu, num, nu,&
 ! CORRESPONDENT A DES NUMEROS EXISTANTS DANS LES LES MODES
 ! UTILISES
 !      CALL JEVEUO(MODMEC//'           .NUMO','L',INUMO)
-    call jelira(modmec//'           .ORDR', 'LONMAX', nbnumo, kbid)
+    call jelira(modmec//'           .ORDR', 'LONMAX', nbnumo)
     call jeveuo(modmec//'           .ORDR', 'L', jordr)
     do 100 jj = 1, nbsel
         do 200 kk = 1, nbnumo

@@ -81,7 +81,7 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex,&
     k24bd1=modsta//'           .NOEU'
 !     CALL JELIRA(K24BD1,'LONMAX',NMOST2,K24BD2)
 !     CALL JEVEUO(K24BD1,'L',IAD1)
-    call jelira(modsta//'           .ORDR', 'LONMAX', nmost2, k24bd2)
+    call jelira(modsta//'           .ORDR', 'LONMAX', nmost2)
     call jeveuo(modsta//'           .ORDR', 'L', jordr)
     call wkvect('&&OP0131.LISTADORMOSTA', 'V V I', nnoeex, ilorms)
     do 212,i1=1,nnoeex

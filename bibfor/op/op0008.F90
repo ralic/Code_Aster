@@ -93,7 +93,7 @@ subroutine op0008()
         ncha = -ncha
         call jecreo(matel(1:8)//'.CHARGES', 'V V K8')
         n3=max(1,ncha)
-        call jeecra(matel(1:8)//'.CHARGES', 'LONMAX', n3, ' ')
+        call jeecra(matel(1:8)//'.CHARGES', 'LONMAX', n3)
         call jeveuo(matel(1:8)//'.CHARGES', 'E', icha)
         call getvid(' ', 'CHARGE', 0, iarg, ncha,&
                     zk8(icha), ibid)
@@ -235,7 +235,7 @@ subroutine op0008()
                     ' ', 'V')
         call jeveuo(vfono, 'L', jlvf)
         vafono = zk24(jlvf)
-        call jelira(vfono, 'LONUTI', nbchme, k8bid)
+        call jelira(vfono, 'LONUTI', nbchme)
         vmatel = matel//'.RELR'
         call memare('G', matel, modele, mate, cara,&
                     'CHAR_MECA')
@@ -249,7 +249,7 @@ subroutine op0008()
 !
 !     -- SI MATEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
 !     ----------------------------------------------------
-    call jelira(matel//'.RELR', 'LONMAX ', nbresu, kbid)
+    call jelira(matel//'.RELR', 'LONMAX', nbresu)
     call jeveuo(matel//'.RELR', 'L', jrelr)
     do iresu = 1, nbresu
         resuel=zk24(jrelr+iresu-1)(1:19)

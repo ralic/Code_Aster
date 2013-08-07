@@ -146,7 +146,7 @@ subroutine nmvgme(modele, ligrel, carele, charge, icha,&
         resu = '&&MNVGME.RESU_PROJE'
 !
 !       VERIF AVANT DE COMMENCER
-        call jelira(chfnoe//'.VALE', 'LONMAX', nbequa, k8bid)
+        call jelira(chfnoe//'.VALE', 'LONMAX', ival=nbequa)
         call dismoi('F', 'NOM_MAILLA', chfnoe, 'CHAMP', ibid,&
                     noma1, ier)
 !

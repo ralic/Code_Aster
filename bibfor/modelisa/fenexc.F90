@@ -64,7 +64,6 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
     integer :: nbn, nuno(*), nbnfen, noefen(*)
     real(kind=8) :: long, diax(*), disfen(*)
 !
-    character(len=1) :: k1bid
     character(len=24) :: connex, typmai, nnoema, nommai
 !
 !-----------------------------------------------------------------------
@@ -135,7 +134,7 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno,&
     connex = noma//'.CONNEX'
     typmai = noma//'.TYPMAIL'
     nommai = noma//'.NOMMAI'
-    call jelira(nommai, 'NOMUTI', nbrma, k1bid)
+    call jelira(nommai, 'NOMUTI', nbrma)
 !
 ! --- 5.DETERMINATION DE L'ENSEMBLE DES NOEUDS APPARTENANT A LA
 ! ---   DEMI-FENETRE EXCITEE EN AMONT DU NOEUD CENTRAL D'APPLICATION

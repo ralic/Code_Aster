@@ -89,12 +89,12 @@ subroutine apalmd(kptsc)
     nonu = nonus(kptsc)
 !
     call jeveuo(nonu//'.NUML.JOIN', 'L', jnbjoi)
-    call jelira(nonu//'.NUML.JOIN', 'LONMAX', nbjoin, kbid)
+    call jelira(nonu//'.NUML.JOIN', 'LONMAX', nbjoin)
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     nz = zi(jsmdi-1+nsmdi)
 !
     call apbloc(nomat, nosolv, tbloc)
@@ -187,7 +187,7 @@ subroutine apalmd(kptsc)
 !
             nojoin=nonu//'.NUML.'//chnbjo
             call jeveuo(nojoin, 'L', jjoint)
-            call jelira(nojoin, 'LONMAX', lgenvo, k8bid)
+            call jelira(nojoin, 'LONMAX', lgenvo)
             if (lgenvo .gt. 0) then
                 call wkvect('&&CPYSOL.TMP1', 'V V S', lgenvo, jvaleu)
 !

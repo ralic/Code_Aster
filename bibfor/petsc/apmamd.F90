@@ -80,9 +80,9 @@ subroutine apmamd(kptsc)
     a = ap(kptsc)
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
     call jeveuo(nonu//'.NUML.NLGP', 'L', jnugll)
@@ -96,7 +96,7 @@ subroutine apmamd(kptsc)
     neqg = nglo
     nz=zi(jsmdi-1+nloc)
 !
-    call jelira(nomat//'.VALM', 'NMAXOC', nvalm, kbid)
+    call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
         lmnsy=.false.
     else if (nvalm.eq.2) then
@@ -107,11 +107,11 @@ subroutine apmamd(kptsc)
     endif
 !
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
-    call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong, kbid)
+    call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
     if (lmnsy) then
         call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvalm2)
-        call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong, kbid)
+        call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
         ASSERT(nlong.eq.nz)
     endif
 !

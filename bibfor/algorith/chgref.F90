@@ -44,7 +44,6 @@ subroutine chgref(geomi, x, y, bidim)
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
     logical :: bidim
-    character(len=8) :: k8bid
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: x(3), y(3), z(3), p(3), prec, r1, r2
@@ -55,7 +54,7 @@ subroutine chgref(geomi, x, y, bidim)
     call jemarq()
     coorjv=geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
-    call jelira(coorjv, 'LONMAX', n1, k8bid)
+    call jelira(coorjv, 'LONMAX', n1)
     prec=1.d-14
     n1=n1/3
     iadcoo=iadcoo-1

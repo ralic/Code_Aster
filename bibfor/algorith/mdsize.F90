@@ -30,36 +30,35 @@ subroutine mdsize(nomres, nbsauv, nbmode, nbchoc, nbrede,&
 ! IN  : NBCHOC : NOMBRE DE CHOCS
 ! IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 !-----------------------------------------------------------------------
-    character(len=8) :: k8bid
 !
 !-----------------------------------------------------------------------
     integer :: nbchoc, nbmode, nbrede, nbsauv, nbsto1, nbstoc, nbrevi
 !-----------------------------------------------------------------------
     nbstoc = nbsauv * nbmode
-    call jeecra(nomres//'           .DEPL', 'LONUTI', nbstoc, k8bid)
-    call jeecra(nomres//'           .VITE', 'LONUTI', nbstoc, k8bid)
-    call jeecra(nomres//'           .ACCE', 'LONUTI', nbstoc, k8bid)
-    call jeecra(nomres//'           .ORDR', 'LONUTI', nbsauv, k8bid)
-    call jeecra(nomres//'           .DISC', 'LONUTI', nbsauv, k8bid)
-    call jeecra(nomres//'           .PTEM', 'LONUTI', nbsauv, k8bid)
+    call jeecra(nomres//'           .DEPL', 'LONUTI', nbstoc)
+    call jeecra(nomres//'           .VITE', 'LONUTI', nbstoc)
+    call jeecra(nomres//'           .ACCE', 'LONUTI', nbstoc)
+    call jeecra(nomres//'           .ORDR', 'LONUTI', nbsauv)
+    call jeecra(nomres//'           .DISC', 'LONUTI', nbsauv)
+    call jeecra(nomres//'           .PTEM', 'LONUTI', nbsauv)
 !
     if (nbchoc .gt. 0) then
         nbstoc = 3 * nbchoc * nbsauv
         nbsto1 = nbchoc * nbsauv
-        call jeecra(nomres//'           .FCHO', 'LONUTI', nbstoc, k8bid)
-        call jeecra(nomres//'           .DLOC', 'LONUTI', nbstoc, k8bid)
-        call jeecra(nomres//'           .VCHO', 'LONUTI', nbstoc, k8bid)
-        call jeecra(nomres//'           .ICHO', 'LONUTI', nbsto1, k8bid)
+        call jeecra(nomres//'           .FCHO', 'LONUTI', nbstoc)
+        call jeecra(nomres//'           .DLOC', 'LONUTI', nbstoc)
+        call jeecra(nomres//'           .VCHO', 'LONUTI', nbstoc)
+        call jeecra(nomres//'           .ICHO', 'LONUTI', nbsto1)
     endif
     if (nbrede .gt. 0) then
         nbstoc = nbrede * nbsauv
-        call jeecra(nomres//'           .REDC', 'LONUTI', nbstoc, k8bid)
-        call jeecra(nomres//'           .REDD', 'LONUTI', nbstoc, k8bid)
+        call jeecra(nomres//'           .REDC', 'LONUTI', nbstoc)
+        call jeecra(nomres//'           .REDD', 'LONUTI', nbstoc)
     endif
 !
     if (nbrevi .gt. 0) then
         nbstoc = nbrevi * nbsauv
-        call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc, k8bid)
-        call jeecra(nomres//'           .REVD', 'LONUTI', nbstoc, k8bid)
+        call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc)
+        call jeecra(nomres//'           .REVD', 'LONUTI', nbstoc)
     endif
 end subroutine

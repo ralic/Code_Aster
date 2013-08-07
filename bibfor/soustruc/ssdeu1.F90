@@ -49,7 +49,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 !        ILISTE:  LISTE DES NUMEROS DE NOEUDS TROUVES
 !                 (SI MOTCLE='LISTE' SEULEMENT.)
 !
-    character(len=8) :: kbi81, kbid
+    character(len=8) :: kbi81
     character(len=24) :: valk(2)
     integer :: iarg
 ! ----------------------------------------------------------------------
@@ -68,7 +68,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
         ndim=100
         call wkvect('&&SSDEU1.WK1', 'V V K8', ndim, iawk1)
     else
-        call jelira('&&SSDEU1.WK1', 'LONMAX', ndim, kbid)
+        call jelira('&&SSDEU1.WK1', 'LONMAX', ndim)
         call jeveuo('&&SSDEU1.WK1', 'E', iawk1)
     endif
 !
@@ -117,7 +117,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
                 valk(2) = noma
                 call u2mesk('F', 'SOUSTRUC_49', 2, valk)
             endif
-            call jelira(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'LONMAX', n4, kbid)
+            call jelira(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'LONMAX', n4)
             nbno= nbno+n4
             if (motcle .eq. 'LISTE') then
                 call jeveuo(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), 'L', iagpno)

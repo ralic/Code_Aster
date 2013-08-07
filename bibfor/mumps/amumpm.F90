@@ -85,7 +85,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     integer :: jnequ, kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
     integer :: nfilt3, isizemu, nsizemu, rang, esizemu
     mumps_int :: nbeq, nz2, iligg, jcolg
-    character(len=4) :: kbid, etam
+    character(len=4) ::  etam
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
@@ -169,7 +169,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !     ------------------------------------------
 !     DETERMINATION DE LA SYMETRIE DE LA MATRICE
 !     ------------------------------------------
-    call jelira(nomat//'.VALM', 'NMAXOC', nvale, kbid)
+    call jelira(nomat//'.VALM', 'NMAXOC', nvale)
 ! --- LMNSY EST INDEPENDANT DE XMPSK%SYM POUR POUVOIR TRAITER
 ! --- DES CAS SYMETRIQUES EN MUMPS NON SYMETRIQUE
     if (nvale .eq. 1) then
@@ -186,15 +186,15 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 !       ------------------------------------------------
     if (((rang.eq.0).and.(.not.ldist)) .or. (ldist)) then
         call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-        call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+        call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
         call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-        call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+        call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
         if (lmd) then
             call jeveuo(nonu//'.NUML.DELG', 'L', jdelg)
-            call jelira(nonu//'.NUML.DELG', 'LONMAX', n1, kbid)
+            call jelira(nonu//'.NUML.DELG', 'LONMAX', n1)
         else
             call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
-            call jelira(nonu//'.NUME.DELG', 'LONMAX', n1, kbid)
+            call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
         endif
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
         nbeq=to_mumps_int(zi(jnequ))
@@ -224,11 +224,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
         if (sym .eq. 0) nz2=to_mumps_int(2*nz-n)
 !
         call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvale)
-        call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong, kbid)
+        call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
         ASSERT(nlong.eq.nz)
         if (lmnsy) then
             call jeveuo(jexnum(nomat//'.VALM', 2), 'L', jvale2)
-            call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong, kbid)
+            call jelira(jexnum(nomat//'.VALM', 2), 'LONMAX', nlong)
             ASSERT(nlong.eq.nz)
         endif
 !

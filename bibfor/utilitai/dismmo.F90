@@ -47,7 +47,6 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     integer :: ialiel, ianoma, ico, igrel, jnfis
     integer :: iret, itypel, nbgrel, nel
 !
-    character(len=1) :: k1bid
     character(len=4) :: tytm
     character(len=8) :: ma, nomob
     character(len=16) :: nomte, nomodl, nomod2
@@ -105,7 +104,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !     -------------------------------------------
         call jeexin(nolig//'.LIEL', iret)
         if (iret .eq. 0) goto 20
-        call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+        call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
         if (nbgrel .le. 0) goto 20
 !
         ico=0
@@ -113,7 +112,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !
         do 10,igrel=1,nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
         itypel=zi(ialiel-1+nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
         call dismte('MODELISATION', nomte, repi, repk, ierd)
@@ -172,11 +171,11 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !     ----------------------------------------
         call jeexin(nolig//'.LIEL', iret)
         if (iret .gt. 0) then
-            call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+            call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
             do 40,igrel=1,nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(ialiel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             call dismte('MODELISATION', nomte, repi, repk, ierd)
@@ -198,11 +197,11 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !
         call jeexin(nolig//'.LIEL', iret)
         if (iret .gt. 0) then
-            call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+            call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
             do 50,igrel=1,nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(ialiel-1+nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             call dismte('TYPE_TYPMAIL', nomte, repi, tytm, ierd)

@@ -320,7 +320,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
                             k8typ, ibid, r8bid, cbid, nomfon,&
                             irett)
                 ASSERT(irett.eq.0)
-                call jelira(nomfon(1:19)//'.VALE', 'LONMAX', nbval, kbid)
+                call jelira(nomfon(1:19)//'.VALE', 'LONMAX', nbval)
                 nbseg = nbval/2
                 zi(jns+ic-1) = nbseg
                 if (nbseg .gt. nbseg0) nbseg0 = nbseg
@@ -338,7 +338,7 @@ subroutine mditm1(nbm, nbmcd, nbmp, nbnl, indic,&
                             irett)
                 ASSERT(irett.eq.0)
                 call jeveuo(nomfon(1:19)//'.VALE', 'L', idthet)
-                call jelira(nomfon(1:19)//'.VALE', 'LONMAX', nbval, kbid)
+                call jelira(nomfon(1:19)//'.VALE', 'LONMAX', nbval)
                 nbseg = nbval/2
                 idrayo = idthet + nbseg
                 do 81 i = 1, nbseg

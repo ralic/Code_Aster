@@ -68,7 +68,6 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij, ug, sn, sp, smm, mpi(3), mpj(3)
     real(kind=8) :: mqi(3), mqj(3), mse(3), matpi(14), matpj(14), matqi(14)
     real(kind=8) :: matqj(14), matse(14)
-    character(len=8) :: k8b
     character(len=24) :: momepi, momepj, momeqi, momeqj, matepi, matepj, mateqi
     character(len=24) :: mateqj
     real(kind=8) :: typeke, spmeca, spther
@@ -87,8 +86,8 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
 !
     call jeveuo('&&RC3600.MATERIAU', 'L', jchmat)
 !
-    call jelira('&&RC3600.SITU_PRES_A', 'LONUTI', nbsitu, k8b)
-    call jelira(jexnum('&&RC3600.LES_GROUPES', ig), 'LONMAX', nbsigr, k8b)
+    call jelira('&&RC3600.SITU_PRES_A', 'LONUTI', nbsitu)
+    call jelira(jexnum('&&RC3600.LES_GROUPES', ig), 'LONMAX', nbsigr)
     call jeveuo(jexnum('&&RC3600.LES_GROUPES', ig), 'L', jnsg)
     if (niv .ge. 2) then
         write (ifm,1000) ig,nbsigr
@@ -157,7 +156,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
         call rcma01(matepj, ima, ipt, nbm, adrm,&
                     matpj)
 !
-        call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'LONUTI', nbth1, k8b)
+        call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'LONUTI', nbth1)
         if (nbth1 .ne. 0) then
             call jeveuo(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'L', jth1)
         else
@@ -242,7 +241,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima,&
             call rcma01(mateqj, ima, ipt, nbm, adrm,&
                         matqj)
 !
-            call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc2), 'LONUTI', nbth2, k8b)
+            call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc2), 'LONUTI', nbth2)
             if (nbth2 .ne. 0) then
                 call jeveuo(jexnum('&&RC3600.SITU_THERMIQUE', ioc2), 'L', jth2)
             else

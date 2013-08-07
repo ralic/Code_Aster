@@ -39,7 +39,7 @@ subroutine op0145()
 #include "asterfort/wkvect.h"
     integer :: ibid, dim, mxval
     character(len=1) :: typspe
-    character(len=8) :: k8b, k8bid, intspe, caelem, modele, nomzon
+    character(len=8) ::  k8bid, intspe, caelem, modele, nomzon
     character(len=16) :: concep, cmd, nommcf, mcfac(9)
     character(len=19) :: nomu
     character(len=24) :: vain, vare, vate, nnoe, chnumi
@@ -123,7 +123,7 @@ subroutine op0145()
             call getvid(nommcf, 'INTE_SPEC', 1, iarg, 1,&
                         intspe, ibid)
             chnumi = intspe//'.NUMI'
-            call jelira(chnumi, 'LONMAX', mxval, k8b)
+            call jelira(chnumi, 'LONMAX', mxval)
             if (ispect .eq. 11) then
                 call getvid(nommcf, 'FONCTION', 1, iarg, 0,&
                             k8bid, ifonct)

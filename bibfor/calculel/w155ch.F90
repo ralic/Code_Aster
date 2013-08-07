@@ -144,7 +144,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac,&
     call jeveuo(ces3//'.CESC', 'L', jce3c)
     call jeveuo(ces3//'.CESL', 'L', jce3l)
     call jeveuo(ces3//'.CESV', 'L', jce3v)
-    call jelira(ces3//'.CESC', 'LONMAX', ncmp, kbid)
+    call jelira(ces3//'.CESC', 'LONMAX', ncmp)
     typces=zk8(jce3k-1+3)
     call wkvect('&&W155CH.NBPT', 'V V I', nbmat, jnbpt)
     do 10,kma=1,nbma

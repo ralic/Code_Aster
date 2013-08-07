@@ -64,7 +64,6 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/utlcal.h"
-    character(len=1) :: k1bid
     character(len=8) :: noma, k8b, typmcl(2)
     character(len=16) :: tymatg, comp, algo, mocles(2), moclef(2), crirup
     character(len=16) :: texte(3), comcod, method, k16bid, nomcmd
@@ -106,7 +105,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
     call jeveuo(carcri(1:19)//'.VALV', 'E', jvalv)
     call jenonu(jexnom('&CATA.GD.NOMGD' , 'CARCRI'), numgd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', jacmp)
-    call jelira(jexnum('&CATA.GD.NOMCMP', numgd), 'LONMAX', nbcrit, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', numgd), 'LONMAX', ival=nbcrit)
     do 95 icmp = 1, nbcrit
         zk8(jncmp+icmp-1) = zk8(jacmp+icmp-1)
 95  end do

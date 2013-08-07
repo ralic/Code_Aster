@@ -81,7 +81,7 @@ subroutine crmema(promes, iampee)
 !
 ! RECUPERATION DES ELEMENTS RELATIFS A L'EXPANSION
     noeums = promes//'.PROJM    .PJMNO'
-    call jelira(noeums, 'LONUTI', nbmesu, k8bid)
+    call jelira(noeums, 'LONUTI', nbmesu)
 !
     refms = promes//'.PROJM    .PJMRF'
     call jeveuo(refms, 'L', lrefms)
@@ -93,7 +93,7 @@ subroutine crmema(promes, iampee)
 !
     basepr = promes//'.PROJM    .PJMBP'
     call jeveuo(basepr, 'L', lred)
-    call jelira(basepr, 'LONUTI', nbvecb, k8bid)
+    call jelira(basepr, 'LONUTI', nbvecb)
     nbvecb = nbvecb/nbmesu
 ! NBVECB : NOMBRE DE VECTEURS DE BASE
 !
@@ -127,7 +127,7 @@ subroutine crmema(promes, iampee)
         call remome(promes, modmes, nomres)
     endif
     call jeveuo(modid, 'L', lmesu)
-    call jelira(modid, 'LONUTI', nbord, k8bid)
+    call jelira(modid, 'LONUTI', nbord)
     nbord = nbord/nbmesu
 ! NBORD : NOMBRE DE NUMERO D'ORDRE
 !
@@ -194,9 +194,9 @@ subroutine crmema(promes, iampee)
 !
 220      continue
 !
-        call jeecra(vnoeud, 'LONUTI', nddle, k8bid)
-        call jeecra(vrange, 'LONUTI', nddle, k8bid)
-        call jeecra(baseit, 'LONUTI', nddle*nbvecb, k8bid)
+        call jeecra(vnoeud, 'LONUTI', nddle)
+        call jeecra(vrange, 'LONUTI', nddle)
+        call jeecra(baseit, 'LONUTI', nddle*nbvecb)
 !
 ! FIN CREATION DE LA BASE RESTREINTE AUX DDL EXTERIEUR (LREDI)
 !
@@ -361,7 +361,7 @@ subroutine crmema(promes, iampee)
 150          continue
 130      continue
 !
-        call jeecra(vsu, 'LONUTI', nbord*nddle, k8bid)
+        call jeecra(vsu, 'LONUTI', nbord*nddle)
 !
         call jedetr(sol)
 !

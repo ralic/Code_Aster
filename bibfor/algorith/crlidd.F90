@@ -67,7 +67,6 @@ subroutine crlidd(nomres, mailla)
     character(len=24) :: temmn, temcb, temha, temau, temmas
     character(len=24) :: typint, noeint, desdef
     logical :: doubok
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -97,7 +96,7 @@ subroutine crlidd(nomres, mailla)
 !
 !--------------------RECHERCHE DU NOMBRE D'INTERFACES-------------------
 !
-    call jelira(noeint, 'NMAXOC', nbint, k1bid)
+    call jelira(noeint, 'NMAXOC', nbint)
 !
 !------- BOUCLE DE COMPTAGE DES NOEUDS PAR TYPE INTERFACES--------------
 !
@@ -111,28 +110,28 @@ subroutine crlidd(nomres, mailla)
 !    COMPTEUR CRAIG BAMPTON
 !
         if (nomtyp .eq. cb) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             nbcb=nbcb+nbno
         endif
 !
 !    COMPTEUR MAC NEAL
 !
         if (nomtyp .eq. mn) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             nbmn=nbmn+nbno
         endif
 !
 !    COMPTEUR CRAIG-BAMPTON-HARMONIQUE
 !
         if (nomtyp .eq. ha) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             nbha=nbha+nbno
         endif
 !
 !    COMPTEUR AUCUN
 !
         if (nomtyp .eq. au) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             nbau=nbau+nbno
         endif
 !
@@ -187,7 +186,7 @@ subroutine crlidd(nomres, mailla)
 !    NOEUDS DE CRAIG BAMPTON
 !
         if (nomtyp .eq. cb) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
             do 30 j = 1, nbno
                 zi(ltcb+nbcb)=zi(llnin+j-1)
@@ -198,7 +197,7 @@ subroutine crlidd(nomres, mailla)
 !    NOEUD DE MAC NEAL
 !
         if (nomtyp .eq. mn) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
             do 40 j = 1, nbno
                 zi(ltmn+nbmn)=zi(llnin+j-1)
@@ -209,7 +208,7 @@ subroutine crlidd(nomres, mailla)
 !    NOEUD DE CB_HARMO
 !
         if (nomtyp .eq. ha) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
             do 50 j = 1, nbno
                 zi(ltha+nbha)=zi(llnin+j-1)
@@ -220,7 +219,7 @@ subroutine crlidd(nomres, mailla)
 !    NOEUD DE AUCUN
 !
         if (nomtyp .eq. au) then
-            call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+            call jelira(jexnum(noeint, i), 'LONMAX', nbno)
             call jeveuo(jexnum(noeint, i), 'L', llnin)
             do 60 j = 1, nbno
                 zi(ltau+nbau)=zi(llnin+j-1)
@@ -302,7 +301,7 @@ subroutine crlidd(nomres, mailla)
 !
     do 100 i = 1, nbint
         nomtyp=zk8(lltyp+i-1)
-        call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         call jeveuo(jexnum(noeint, i), 'E', llnin)
         call jeveuo(jexnum(temmas, i), 'L', ltmas)
 !

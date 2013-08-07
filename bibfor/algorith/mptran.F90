@@ -261,7 +261,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
             endif
             call wkvect(nomcmd//'.PONDER', 'V V R', nbmode*nbabs, lcoef)
             do 210 i = 1, nbmode
-                call jelira(zk8(lfonc-1 + i)//'           .VALE', 'LONMAX', lonmax, k8bid)
+                call jelira(zk8(lfonc-1 + i)//'           .VALE', 'LONMAX', lonmax)
                 if (lonmax .ne. 2*nbabs) call u2mess('F', 'ALGORITH6_31')
 !
                 call jeveuo(zk8(lfonc-1 + i)//'           .VALE', 'L', lvale)
@@ -424,7 +424,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 ! --- STOCKAGE
     if (typres(1:9) .eq. 'MODE_GENE') then
         call jeveuo(nomres//'           .ORDR', 'L', jord)
-        call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8b)
+        call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         call gettco(nombas, typba)
         call jeveuo(nombas//'           .REFD', 'L', jraid)
         typba=zk24(jraid+6)

@@ -90,7 +90,6 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    logical :: lbid
     integer :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
     integer :: jcesd, jcesl, jcesv, ja0a1, ja0, ja1, ja2, ja3, jtrav
     integer :: iret, ibid, ja4

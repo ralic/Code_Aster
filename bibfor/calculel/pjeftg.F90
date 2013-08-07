@@ -57,7 +57,6 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !
 !
     character(len=8) :: lfonc(3), lparx(3)
-    character(len=8) :: kbid
     integer :: n1, nbnoi, ifonc
     integer :: nfonc, jgeomi, inoi, ier
 !
@@ -89,7 +88,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         endif
         call jedetr(geomi)
         call jedupo(nomai//'.COORDO    .VALE', 'V', geomi, .false.)
-        call jelira(geomi, 'LONMAX', n1, kbid)
+        call jelira(geomi, 'LONMAX', n1)
         call jeveuo(geomi, 'E', jgeomi)
         nbnoi=n1/3
         ASSERT(n1.eq.nbnoi*3)

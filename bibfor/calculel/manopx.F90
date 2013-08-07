@@ -91,10 +91,10 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
                 ma, ibid)
     call dismoi('F', 'NOM_MODELE', ligrel, 'LIGREL', ibid,&
                 mo, ibid)
-    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel, kbid)
+    call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
 !
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
-    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg, kbid)
+    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
     call jeveuo('&CATA.TE.NOLOCFPG', 'L', jnolfp)
 !
 !
@@ -128,7 +128,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 !       -- FAMILLE "LISTE"
     if (kfpg .lt. 0) then
 !          FAMILLE "LISTE" :
-        call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam, kbid)
+        call jelira(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'LONMAX', nbfam)
         nbfam=nbfam-1
         call jeveuo(jexnum('&CATA.TE.FPG_LISTE', -kfpg), 'L', jfpgl)
         elrefe=zk8(jfpgl-1+nbfam+1)

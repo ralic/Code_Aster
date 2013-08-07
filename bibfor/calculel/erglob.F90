@@ -87,7 +87,7 @@ subroutine erglob(cheler, yathm, perman, option, iord,&
 !
     call celver(chele2, 'NBSPT_1', 'STOP', ibid)
 !
-    call jelira(chele2//'.CELD', 'DOCU', ibid, docu)
+    call jelira(chele2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
         call u2mess('F', 'CALCULEL5_44')
     endif

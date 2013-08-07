@@ -69,7 +69,7 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
             call getvtx('ARCHIVAGE', 'CRITERE', 1, iarg, 1,&
                         rela, n1)
             call jeveuo(numarc//'.VALE', 'L', jnum)
-            call jelira(numarc//'.VALE', 'LONUTI', lnum, k8b)
+            call jelira(numarc//'.VALE', 'LONUTI', lnum)
             call dyarc1(zr(jinsc), nbpas, zr(jnum), lnum, zi(jarch),&
                         epsi, rela)
             zi(jarch+nbpas-1) = 1

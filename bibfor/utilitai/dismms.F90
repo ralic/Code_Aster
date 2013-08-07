@@ -177,7 +177,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         else if((questi.eq.'CHAM_MATER').or. (questi.eq.'CARA_ELEM'))&
     then
         call jeveuo(nomob//'.LIME', 'L', ialime)
-        call jelira(nomob//'.LIME', 'LONMAX', nblime, kbid)
+        call jelira(nomob//'.LIME', 'LONMAX', nblime)
         p1=' '
         p2=' '
         ier=0

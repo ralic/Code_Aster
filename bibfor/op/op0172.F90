@@ -230,7 +230,7 @@ subroutine op0172()
     call wkvect('&&OP0172.NOEUD', 'V V I', nbno, idno)
     ii = -1
     do 20 i = 1, nbgr
-        call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb, k8b)
+        call jelira(jexnom(magrno, zk24(idgn+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrno, zk24(idgn+i-1)), 'L', ldgn)
         do 22 in = 0, nb-1
             ii = ii + 1
@@ -249,10 +249,10 @@ subroutine op0172()
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
                 iarg, nbgr, zk24(idgm), nbv)
     do 21 i = 1, nbgr
-        call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb, k8b)
+        call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
         do 23 in = 0, nb-1
-            call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm, k8b)
+            call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 24 nn = 1, nm
                 inoe = zi(ldnm+nn-1)

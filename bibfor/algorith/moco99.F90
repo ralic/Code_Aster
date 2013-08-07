@@ -72,7 +72,6 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
     real(kind=8) :: genek, genem, omeg2, rbid, epsi
 !
-    character(len=1) :: k1bid
     character(len=8) :: k8bid, interf, typi
     character(len=16) :: typres, bmpara(nbpabm), chmeca, typmo
     character(len=19) :: chamol, chamne
@@ -133,7 +132,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 !
 !
 ! ----- RECUPERATION DU NOMBRE DE CHAMP POSSIBLE DE LA SD
-    call jelira(resul//'           .DESC', 'NOMMAX', nbcham, k1bid)
+    call jelira(resul//'           .DESC', 'NOMMAX', nbcham)
 !
     call jeveuo(resul//'           .ORDR', 'L', jordr)
     do 10 i = 1, nbmod

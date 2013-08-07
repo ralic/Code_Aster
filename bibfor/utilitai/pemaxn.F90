@@ -119,7 +119,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 ! --- RECUPERATION DE LA LISTE DES CMPS DU CATALOGUE :
 !     (POUR LA GRANDEUR VARI_* , IL FAUT CONSTITUER :(V1,V2,...,VN))
     nomgd = zk8(jcesk-1+2)
-    call jelira(cesout//'.CNSC', 'LONMAX', ncmpm, k8b)
+    call jelira(cesout//'.CNSC', 'LONMAX', ncmpm)
     if (nomgd(1:5) .ne. 'VARI_') then
         call jeveuo(cesout//'.CNSC', 'L', jcmpgd)
     else

@@ -95,7 +95,6 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
     integer :: adncmp, aducmp, adncmc, adncfi, nseqca
     logical :: ficexi, dejouv
 !
-    character(len=1) :: k1bid
     character(len=8) :: saux08
     character(len=16) :: saux16
     character(len=24) :: nonbch, nonoch, nocmch, nomcmp
@@ -252,7 +251,7 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc,&
 ! 2.2.4.1. ==> TRANSFERT DES NOMS DES COMPOSANTES DANS LE TABLEAU
 !              DE SORTIE
 !
-            call jelira(nomcmp, 'LONMAX', nbcmfi, k1bid)
+            call jelira(nomcmp, 'LONMAX', nbcmfi)
             call jeveuo(nomcmp, 'L', adncmp)
 !
             call wkvect(nmcmfi, 'V V K16', nbcmfi, adncfi)

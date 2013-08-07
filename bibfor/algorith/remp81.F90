@@ -36,17 +36,13 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    character(len=1) :: classe, typ1
-    character(len=8) :: basmod, k8bid, blanc
-    character(len=19) :: nommat
-    character(len=14) :: num
+    character(len=8) :: basmod, blanc
     character(len=18) :: nomres
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ldres, ldref, lddes, nbmod, imod
-    integer :: neq, ntail, lpar, i, iad
-    real(kind=8) :: xprod, ddot
+    integer ::  ntail, lpar, i, iad
 !-----------------------------------------------------------------------
     data blanc/'        '/
 !-----------------------------------------------------------------------

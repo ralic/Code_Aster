@@ -72,7 +72,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 !
     call jeveuo(resu//'.DESC', 'L', jdesc)
     nbchoc = zi(jdesc+2)
-    call jelira(resu//'.DISC', 'LONUTI', nbinst, k8b)
+    call jelira(resu//'.DISC', 'LONUTI', nbinst)
     call jeveuo(resu//'.DISC', 'L', jinst)
     call jeveuo(resu//'.NCHO', 'L', jncho)
     call jeveuo(resu//'.INTI', 'L', jinti)
@@ -283,7 +283,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
 110      continue
 !
         call jeveuo(listr//'.VALE', 'L', jval)
-        call jelira(listr//'.VALE', 'LONUTI', nbpara, k8b)
+        call jelira(listr//'.VALE', 'LONUTI', nbpara)
 !
         ASSERT(lxlgut(nomfon).le.24)
         call wkvect(nomfon//'.PROL', base//' V K24', 6, lpro)

@@ -160,7 +160,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---   AFFECTATION DE LA LONGUEUR :
 !       --------------------------
-        call jeecra(ligrel//'.LIEL', 'LONT', lonlie, ' ')
+        call jeecra(ligrel//'.LIEL', 'LONT', lonlie)
 !
 ! ---   CREATION DE L'OBJET LIGREL.NBNO :
 !       -------------------------------
@@ -198,7 +198,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---       LONGUEUR DU IEME OBJET DE COLLECTION :
 !           ------------------------------------
-                call jeecra(jexnum(ligrel//'.LIEL', k), 'LONMAX', nbmaty+ 1, ' ')
+                call jeecra(jexnum(ligrel//'.LIEL', k), 'LONMAX', nbmaty+ 1)
 !
 ! ---       AFFECTATION DU IEME OBJET DE COLLECTION :
 !           ---------------------------------------
@@ -233,7 +233,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---       LONGUEUR DU IEME OBJET DE COLLECTION :
 !           ------------------------------------
-            call jeecra(jexnum(ligrel//'.LIEL', k), 'LONMAX', nbmaty+1, ' ')
+            call jeecra(jexnum(ligrel//'.LIEL', k), 'LONMAX', nbmaty+1)
 !
 ! ---       AFFECTATION DU IEME OBJET DE COLLECTION :
 !           ---------------------------------------
@@ -268,7 +268,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---     LONGUEUR DU IEME OBJET DE COLLECTION :
 !         ------------------------------------
-            call jeecra(jexnum(ligrel//'.LIEL', i+k), 'LONMAX', nbno+1, ' ')
+            call jeecra(jexnum(ligrel//'.LIEL', i+k), 'LONMAX', nbno+1)
 !
 ! ---     AFFECTATION DU IEME OBJET DE COLLECTION :
 !         ---------------------------------------
@@ -293,7 +293,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---   AFFECTATION DE LA LONGUEUR DU LIGREL.NEMA :
 !       -----------------------------------------
-        call jeecra(ligrel//'.NEMA', 'LONT', 2*nbnoto, ' ')
+        call jeecra(ligrel//'.NEMA', 'LONT', 2*nbnoto)
 !
 ! ---   BOUCLE SUR LE NOMBRE D'AFFECTATIONS DU LIGRET PAR DES NOEUDS :
 !       ------------------------------------------------------------
@@ -314,7 +314,7 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 !
 ! ---     LONGUEUR DU IEME OBJET DE COLLECTION :
 !         ------------------------------------
-            call jeecra(jexnum(ligrel//'.NEMA', i), 'LONMAX', 2*nbno2, ' ')
+            call jeecra(jexnum(ligrel//'.NEMA', i), 'LONMAX', 2*nbno2)
 !
 ! ---     AFFECTATION DU IEME OBJET DE COLLECTION :
 !         ---------------------------------------

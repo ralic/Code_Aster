@@ -46,7 +46,7 @@ subroutine vrcdec()
 !
     integer :: jtmfpg, kfpgl, kpgmat, nbpg
     integer :: nuflpg, nufgpg, k
-    character(len=8) :: fapg, kbid, elrefe
+    character(len=8) :: fapg, elrefe
     character(len=32) :: noflpg
 ! ---------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ subroutine vrcdec()
 !
     call jeveuo('&CATA.TM.TMFPG', 'L', jtmfpg)
     call jeveuo(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'L', jfpgl)
-    call jelira(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'LONMAX', nfpg, kbid)
+    call jelira(jexnum('&CATA.TE.FPG_LISTE', kfpgl), 'LONMAX', nfpg)
     nfpg=nfpg-1
     ASSERT(nfpg.le.nfpgmx)
     kpgmat=0

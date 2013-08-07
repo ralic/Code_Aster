@@ -84,7 +84,7 @@ subroutine vedime(modele, charge, infcha, instap, typres,&
     bidon = .true.
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (nchar .ne. 0) then
             bidon = .false.
             call jeveuo(charge, 'L', jchar)

@@ -58,12 +58,11 @@ subroutine adalig(ligrz)
 !
     character(len=1) :: clas
     character(len=24) :: liel, tliel
-    character(len=8) :: kbid
     integer :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2, jnteut
     integer :: jteut, jtliel, igrel, itype, j, jtype
     integer :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
     integer :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
-    integer :: ktype, jgteut, k, nbelgv, lont, ibid
+    integer :: ktype, jgteut, k, nbelgv, lont
     mpi_int :: mrank, msize
 !
     call jemarq()
@@ -75,7 +74,7 @@ subroutine adalig(ligrz)
     liel=ligr(1:19)//'.LIEL'
     call jeexin(liel, iret)
     if (iret .eq. 0) goto 9999
-    call jelira(liel, 'NUTIOC', nbgrel, kbid)
+    call jelira(liel, 'NUTIOC', nbgrel)
     if (nbgrel .eq. 0) goto 9999
 !
 !
@@ -83,12 +82,12 @@ subroutine adalig(ligrz)
 !
 !
 ! --- RECOPIE DE LIEL DANS TLIEL ET DESTRUCTION DE LIEL
-    call jelira(liel, 'CLAS', ibid, clas)
+    call jelira(liel, 'CLAS', cval=clas)
     call jedupo(liel, 'V', tliel, .true.)
     call jedetr(liel)
 !
 !
-    call jelira(tliel, 'NMAXOC', nbtg, kbid)
+    call jelira(tliel, 'NMAXOC', nbtg)
 !
 !     -- 3 OBJETS DE TRAVAIL (SUR-DIMENSIONNES) :
 !     .TEUT  : LISTE DES TYPE_ELEM UTILISES DANS LE LIGREL
@@ -144,7 +143,7 @@ subroutine adalig(ligrz)
 !     ------------------------------------
     call jecrec(liel, clas//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbgrel)
-    call jeecra(liel, 'LONT', lont, ' ')
+    call jeecra(liel, 'LONT', lont)
     igrel=0
     do 41 ktype = 1, nbtype
         itype = zi(jteut-1+ktype)
@@ -164,7 +163,7 @@ subroutine adalig(ligrz)
             nbelgv=nbelgr
             if (k .le. np1) nbelgv=nbelgv+1
             call jecroc(jexnum(liel, igrel+k))
-            call jeecra(jexnum(liel, igrel+k), 'LONMAX', nbelgv+1, kbid)
+            call jeecra(jexnum(liel, igrel+k), 'LONMAX', nbelgv+1)
             call jeveuo(jexnum(liel, igrel+k), 'E', jliel)
             zi(jliel+nbelgv) = itype
 42      continue

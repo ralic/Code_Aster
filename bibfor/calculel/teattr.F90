@@ -58,7 +58,7 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
     common /caii06/nbgr,igr,nbelgr,jcteat,lcteat,iawloc,iawlo2,iawtyp
 !
 !  VARIABLES LOCALES :
-    character(len=16) :: nomt2, noatt2, vattr2, kbid
+    character(len=16) :: nomt2, noatt2, vattr2
     character(len=24) :: valk(2)
     integer :: jcte, n1, nbattr, k, ite
     logical :: apelje
@@ -75,7 +75,7 @@ subroutine teattr(typel, kstop, noattr, vattr, iret)
 !
     if (apelje) then
         call jenonu(jexnom('&CATA.TE.NOMTE', nomt2), ite)
-        call jelira(jexnum('&CATA.TE.CTE_ATTR', ite), 'LONMAX', n1, kbid)
+        call jelira(jexnum('&CATA.TE.CTE_ATTR', ite), 'LONMAX', n1)
         if (n1 .gt. 0) then
             call jeveuo(jexnum('&CATA.TE.CTE_ATTR', ite), 'L', jcte)
         else

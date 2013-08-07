@@ -48,7 +48,6 @@ function didern(sddisc, numins)
 !
 !
     integer :: nbtemp, iret
-    character(len=8) :: k8bid
     character(len=24) :: tpsdit
 !
 ! ----------------------------------------------------------------------
@@ -62,7 +61,7 @@ function didern(sddisc, numins)
     if (iret .eq. 0) then
         didern = .true.
     else
-        call jelira(tpsdit, 'LONMAX', nbtemp, k8bid)
+        call jelira(tpsdit, 'LONMAX', nbtemp)
         nbtemp = nbtemp - 1
         didern = numins .eq. nbtemp
     endif

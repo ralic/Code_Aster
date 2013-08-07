@@ -60,13 +60,12 @@ subroutine rveche(ssch19, sdlieu, sdeval)
 !
     integer :: aipadr, aipcmp, iocer, j, anmail, anuma, aipnco, aipnsp, aopnco
     integer :: aopnbn, aovale, aopadr, aopcmp, aoerre, ainugd, aivale, aopnsp
-    integer :: arefe, adesc, nbcmp, i, ibid, anumnd, acmpgd, lpt
+    integer :: arefe, adesc, nbcmp, i, anumnd, acmpgd, lpt
     integer :: nbmpst, nbnpst, nbocer, n, m, adrin, adrou, nbm, numm
     integer :: nbtcmp, sdnund, sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
     integer :: vali, ilong, k, l, lnc, ncom, nspm
 !
     logical :: trouve
-    character(len=1) :: k1bid
 !
     character(len=1) :: cbid
     data cbid/' '/
@@ -95,12 +94,12 @@ subroutine rveche(ssch19, sdlieu, sdeval)
     nabsc = sdlieu//'.ABSC'
     nrefe = sdlieu//'.REFE'
     ndesc = sdlieu//'.DESC'
-    call jelira(invale, 'DOCU', ibid, docu)
+    call jelira(invale, 'DOCU', cval=docu)
     call jeveuo(nrefe, 'L', arefe)
     call jeveuo(ndesc, 'L', adesc)
-    call jelira(jexnum(nabsc, 1), 'LONMAX', nbnpst, k1bid)
+    call jelira(jexnum(nabsc, 1), 'LONMAX', nbnpst)
     nbmpst = nbnpst
-    call jelira(inpcmp, 'LONMAX', nbtcmp, k1bid)
+    call jelira(inpcmp, 'LONMAX', nbtcmp)
     call jeveuo(inpcmp, 'L', aipcmp)
     call wkvect(oupcmp, 'V V I', nbtcmp, aopcmp)
 !
@@ -122,7 +121,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
                 nbocer)
     do 30, iocer = 1, nbocer, 1
     call jecroc(jexnum(ouerre, iocer))
-    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp, ' ')
+    call jeecra(jexnum(ouerre, iocer), 'LONMAX', nbcmp)
     call jeveuo(jexnum(ouerre, iocer), 'E', aoerre)
     do 31, i = 1, nbcmp, 1
     zi(aoerre + i-1) = 0
@@ -159,7 +158,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
         call wkvect(oupnsp, 'V V I', nbnpst, aopnsp)
         call wkvect(nindir, 'V V I', nbnpst, aindir)
         call jeveuo(sdemno//'.NUND', 'L', sdnund)
-        call jelira(sdemno//'.NUND', 'LONMAX', lpt, cbid)
+        call jelira(sdemno//'.NUND', 'LONMAX', lpt)
         call jeveuo(inpnco, 'L', aipnco)
         call jeveuo(inpnsp, 'L', aipnsp)
         nnmail = sdeval//'.MAIL'
@@ -172,7 +171,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
         if ((.not. trouve) .and. (pt .le. lpt)) then
             if (zi(sdnund + pt-1) .eq. n) then
                 trouve = .true.
-                call jelira(jexnum(sdemno//'.NUMA', pt), 'LONMAX', nbm, cbid)
+                call jelira(jexnum(sdemno//'.NUMA', pt), 'LONMAX', nbm)
                 zi(aindir + i-1) = pt
                 zi(aopnbn + i-1) = nbm
             endif
@@ -209,7 +208,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
         do 427, i = 1, nbnpst, 1
         l = zi(aopnbn + i-1)
         call jecroc(jexnum(nnmail, i))
-        call jeecra(jexnum(nnmail, i), 'LONMAX', l, ' ')
+        call jeecra(jexnum(nnmail, i), 'LONMAX', l)
         call jeveuo(jexnum(nnmail, i), 'E', anmail)
         call jeveuo(jexnum(sdemno//'.NUMA', zi(aindir + i-1)), 'L', anuma)
         do 428, j = 1, l, 1
@@ -265,7 +264,7 @@ subroutine rveche(ssch19, sdlieu, sdeval)
         call jedetr(nindir)
     else
     endif
-    call jeecra(ouvale, 'DOCU', ibid, docu)
+    call jeecra(ouvale, 'DOCU', cval=docu)
     call jedetr(nnumnd)
     call jedema()
 end subroutine

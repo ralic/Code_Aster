@@ -69,7 +69,7 @@ subroutine regene(nomres, resgen, profno)
     integer :: llref5, llref6
     real(kind=8) :: freq, genek, genem, omeg2, rbid, xsi
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid, typsca
+    character(len=1) ::  typsca
     character(len=8) :: basmod, respro, kbid, k8b, modmec, mailsk, modgen
     character(len=14) :: numddl
     character(len=16) :: depl, nompar(7), typrep
@@ -91,7 +91,7 @@ subroutine regene(nomres, resgen, profno)
     zcmplx = .false.
 !
     call dcapno(resgen, depl, 1, chamol)
-    call jelira(chamol, 'TYPE', ibid, typsca)
+    call jelira(chamol, 'TYPE', cval=typsca)
     if (typsca .eq. 'C') zcmplx = .true.
 !
     call rsorac(resgen, 'LONUTI', ibid, rbid, kbid,&
@@ -179,7 +179,7 @@ subroutine regene(nomres, resgen, profno)
 ! ------ CREATION DU PROF-CHAMNO
 !
         call genugl(profno, indirf, modgen, mailsk)
-        call jelira(profno//'.NUEQ', 'LONMAX', neq, k1bid)
+        call jelira(profno//'.NUEQ', 'LONMAX', neq)
 !
 ! ------ RECUPERATION DU NOMBRE DE NOEUDS
 !

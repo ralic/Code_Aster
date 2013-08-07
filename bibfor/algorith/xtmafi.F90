@@ -62,7 +62,7 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
     integer :: ifiss, kk, jgrp, nmaenr, i, ima, jma, cpt, iret
     integer :: jtmdim, jtypma, ndime, jmad, jmai, mxstac
-    character(len=8) :: nomail, k8bid
+    character(len=8) :: nomail
     character(len=24) :: nommai, grp(nfiss, 3)
 !
     parameter (mxstac=100)
@@ -88,7 +88,7 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
         do 20 kk = 1, 3
             call jeexin(grp(ifiss, kk), iret)
             if (iret .eq. 0) goto 20
-            call jelira(grp(ifiss, kk), 'LONMAX', nmaenr, k8bid)
+            call jelira(grp(ifiss, kk), 'LONMAX', nmaenr)
             cpt = cpt + nmaenr
 20      continue
 10  end do
@@ -109,7 +109,7 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
             call jeexin(grp(ifiss, kk), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(ifiss, kk), 'L', jgrp)
-                call jelira(grp(ifiss, kk), 'LONMAX', nmaenr, k8bid)
+                call jelira(grp(ifiss, kk), 'LONMAX', nmaenr)
 !
 !           BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
                 do 120 i = 1, nmaenr

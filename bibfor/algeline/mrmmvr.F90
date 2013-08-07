@@ -47,7 +47,6 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
 !
 !
     real(kind=8) :: zero
-    character(len=1) :: kbid
     character(len=14) :: numddl
     character(len=19) :: nom19
     character(len=24) :: valm, refa
@@ -63,7 +62,7 @@ subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
     nom19=zk24(zi(lmat+1))
 !
     valm=nom19//'.VALM'
-    call jelira(valm, 'NMAXOC', nbloc, kbid)
+    call jelira(valm, 'NMAXOC', nbloc)
     ASSERT(nbloc.eq.1 .or. nbloc.eq.2)
     nonsym=(nbloc.eq.2)
 !

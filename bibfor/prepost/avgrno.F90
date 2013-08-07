@@ -96,7 +96,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     logical :: lbid, crsigm
 !
-    character(len=8) :: chmat1, nommat, k8b
+    character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=16) :: typcha
     character(len=19) :: chmat, cesmat, ncncin
@@ -234,7 +234,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
         if (.not. post) then
 !
             nunoe = lisnoe(inop)
-            call jelira(jexnum(ncncin, nunoe), 'LONMAX', nbma, k8b)
+            call jelira(jexnum(ncncin, nunoe), 'LONMAX', nbma)
             call jeveuo(jexnum(ncncin, nunoe), 'L', adrma)
 !
             k = 0

@@ -57,7 +57,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
     mo = modele
     nom = mo//'.FISS                   '
     call jeveuo(nom, 'L', jnom)
-    call jelira(nom, 'LONUTI', nfiss, k8b)
+    call jelira(nom, 'LONUTI', nfiss)
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE INITIAL
     call dismoi('F', 'NOM_MAILLA', mo, 'MODELE', ibid,&

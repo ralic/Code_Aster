@@ -190,7 +190,7 @@ subroutine retrec(nomres, resgen, nomsst)
         call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
         call jeveuo(jexnum(numgen//'.ORIG', ibid), 'L', llors)
         call jenonu(jexnom(numgen//'.LILI', soutr), ibid)
-        call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst, kbid)
+        call jelira(jexnum(numgen//'.ORIG', ibid), 'LONMAX', nbsst)
 !
         nutars=0
         do 20 i = 1, nbsst
@@ -208,7 +208,7 @@ subroutine retrec(nomres, resgen, nomsst)
 !
         neqet=0
         ieq=0
-        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, kbid)
+        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
         call jeveuo(numgen//'.NEQU', 'L', ibid)
         neqred=zi(ibid)
         call jeveuo(seliai, 'L', lmapro)
@@ -284,7 +284,7 @@ subroutine retrec(nomres, resgen, nomsst)
     iarchi = 0
     if (interp(1:3) .ne. 'NON') then
         call jeveuo(trange//'.DISC', 'L', idinsg)
-        call jelira(trange//'.DISC', 'LONMAX', nbinsg, k8b)
+        call jelira(trange//'.DISC', 'LONMAX', nbinsg)
 !
         if (elim .eq. 0) then
             call wkvect('&&RETREC.VECTGENE', 'V V R', neqgen, idvecg)

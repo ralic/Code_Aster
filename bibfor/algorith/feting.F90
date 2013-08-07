@@ -66,7 +66,7 @@ subroutine feting(nbsd, sdfeti, chsecm, colaui, infofe,&
 ! DECLARATION VARIABLES LOCALES
     integer :: idd, ifetg, iaux1, nb, k, ifetc, ideeq, nbddl, irefe, iaux2
     integer :: nbddl1, iaux3, icmp, ieq, nbcmp, ifetb, icol, j, testa
-    character(len=8) :: k8bid, nomsd
+    character(len=8) ::  nomsd
     character(len=19) :: chsmdd, prfchn
     character(len=24) :: ch24b, chdeeq, chfeta, chfetb
     logical :: first
@@ -98,16 +98,16 @@ subroutine feting(nbsd, sdfeti, chsecm, colaui, infofe,&
 ! NOMBRE DE DDL DU SOUS-DOMAINE IDD
             chdeeq=prfchn//'.DEEQ'
             call jeveuo(chdeeq, 'L', ideeq)
-            call jelira(chdeeq, 'LONMAX', nbddl, k8bid)
+            call jelira(chdeeq, 'LONMAX', nbddl)
             nbddl1=(nbddl/2)-1
             call jenuno(jexnum(chfeta, idd), nomsd)
 !
             call jeveuo(jexnom(ch24b, nomsd), 'L', ifetg)
-            call jelira(jexnom(ch24b, nomsd), 'LONMAX', nb, k8bid)
+            call jelira(jexnom(ch24b, nomsd), 'LONMAX', nb)
 !
 ! CREATION DE LA COLLECTION COLAUI
             call jecroc(jexnom(colaui, nomsd))
-            call jeecra(jexnom(colaui, nomsd), 'LONMAX', nb, k8bid)
+            call jeecra(jexnom(colaui, nomsd), 'LONMAX', nb)
 ! NOMBRE D'ELEMENTS A RECHERCHER DANS .FETG
             nb=(nb/2)-1
 ! ZONE DE STOCKAGE DANS COLAUI

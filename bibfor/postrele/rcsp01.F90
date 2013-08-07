@@ -36,7 +36,6 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4,&
     integer :: jmoye, jmoy2, jther, vali(2)
     real(kind=8) :: tint, text, ta, tb, tab, dt1, dt2, term1, term2, dt1max
     real(kind=8) :: dt2max, tabmax
-    character(len=8) :: k8b
     character(len=24) :: chtemp
 !
 ! DEB ------------------------------------------------------------------
@@ -64,7 +63,7 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4,&
                     vali, 0, 0.d0)
     endif
     call jeveuo(zk24(jcesv-1+iad), 'L', jther)
-    call jelira(zk24(jcesv-1+iad), 'LONMAX', nbinst, k8b)
+    call jelira(zk24(jcesv-1+iad), 'LONMAX', nbinst)
     nbinst = nbinst / 2
 !
     icmp = 2

@@ -44,7 +44,6 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     real(kind=8) :: stotal, sboite, dx, dy, ddx, ddy, rbig, xxmax, xxmin, xmax
     real(kind=8) :: xmin
     real(kind=8) :: yymax, yymin, ymax, ymin
-    character(len=8) :: kb
     integer :: p1, q1, p2, q2, p, q, nx, ny
     logical :: dbg
 !
@@ -61,8 +60,8 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !
     call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
     call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
-    call jelira('&&PJXXCO.LINO1', 'LONMAX', nno1, kb)
-    call jelira('&&PJXXCO.LINO2', 'LONMAX', nno2, kb)
+    call jelira('&&PJXXCO.LINO1', 'LONMAX', nno1)
+    call jelira('&&PJXXCO.LINO2', 'LONMAX', nno2)
 !
 !
 !     1. : ON CALCULE XMIN,XMAX,YMIN,YMAX,NX,NY,DX,DY

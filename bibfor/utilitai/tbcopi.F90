@@ -44,7 +44,7 @@ subroutine tbcopi(base, sd1, sd2)
 !
     integer :: i, j, nbpm, nbpu, jnjv, knjv, kvale, jvale, nbpara, jtbba, ktbnp
     integer :: nblign, jtbnp, ndim, jtblp, ktblp
-    character(len=1) :: bas2, kbid
+    character(len=1) :: bas2
     character(len=4) :: type, knume
     character(len=19) :: tab1, tab2
     character(len=24) :: nomjv
@@ -68,8 +68,8 @@ subroutine tbcopi(base, sd1, sd2)
     zi(jtbnp+1) = nblign
     ndim = 4 * nbpara
     call jecreo(tab2//'.TBLP', bas2//' V K24')
-    call jeecra(tab2//'.TBLP', 'LONMAX', ndim, ' ')
-    call jeecra(tab2//'.TBLP', 'LONUTI', ndim, ' ')
+    call jeecra(tab2//'.TBLP', 'LONMAX', ndim)
+    call jeecra(tab2//'.TBLP', 'LONUTI', ndim)
     call jeveuo(tab2//'.TBLP', 'E', jtblp)
     call jeveuo(tab1//'.TBLP', 'L', ktblp)
     do 10 i = 1, nbpara
@@ -77,14 +77,14 @@ subroutine tbcopi(base, sd1, sd2)
         type = zk24(ktblp+4*(i-1)+1)
         zk24(jtblp+4*(i-1)+1) = type
         nomjv = zk24(ktblp+4*(i-1)+2)
-        call jelira(nomjv, 'LONMAX', nbpm, kbid)
-        call jelira(nomjv, 'LONUTI', nbpu, kbid)
+        call jelira(nomjv, 'LONMAX', nbpm)
+        call jelira(nomjv, 'LONUTI', nbpu)
         call codent(i, 'D0', knume)
         nomjv = tab2(1:17)//'LG.'//knume
         zk24(jtblp+4*(i-1)+3) = nomjv
         call jecreo(nomjv, bas2//' V I')
-        call jeecra(nomjv, 'LONMAX', nbpm, ' ')
-        call jeecra(nomjv, 'LONUTI', nbpu, ' ')
+        call jeecra(nomjv, 'LONMAX', nbpm)
+        call jeecra(nomjv, 'LONUTI', nbpu)
         call jeveuo(nomjv, 'E', jnjv)
         nomjv = tab1(1:17)//'LG.'//knume
         call jeveuo(nomjv, 'L', knjv)
@@ -96,8 +96,8 @@ subroutine tbcopi(base, sd1, sd2)
         nomjv = tab2//'.'//knume
         zk24(jtblp+4*(i-1)+2) = nomjv
         call jecreo(nomjv, bas2//' V '//type)
-        call jeecra(nomjv, 'LONMAX', nbpm, ' ')
-        call jeecra(nomjv, 'LONUTI', nbpu, ' ')
+        call jeecra(nomjv, 'LONMAX', nbpm)
+        call jeecra(nomjv, 'LONUTI', nbpu)
         call jeveuo(nomjv, 'E', jvale)
         if (type(1:1) .eq. 'I') then
             do 20 j = 1, nbpm
@@ -132,7 +132,7 @@ subroutine tbcopi(base, sd1, sd2)
                 zk8(jvale+j-1) = zk8(kvale+j-1)
 27          continue
         endif
-        call jeecra(nomjv, 'LONUTI', nbpu, ' ')
+        call jeecra(nomjv, 'LONUTI', nbpu)
 10  end do
 !
     call jedema()

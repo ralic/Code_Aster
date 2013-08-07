@@ -53,9 +53,9 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
 !             ELLE NE DOIT ETRE APPELEE QUE DANS TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, iret, numa, iad1, jcesc, jcesd, jcesl
+    integer ::  iret, numa, iad1, jcesc, jcesd, jcesl
     integer :: jcesv, kcmp, nbcmp
-    character(len=1) :: typsca, kbid
+    character(len=1) :: typsca
     character(len=4) :: type
     character(len=19) :: cart19, ces
     character(len=8) :: ma, nomail
@@ -68,7 +68,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     ma=maz
     typsca = typrez
 !
-    call jelira(cart19//'.VALE', 'TYPE', ibid, type)
+    call jelira(cart19//'.VALE', 'TYPE', cval=type)
     if (type .ne. 'R' .and. type .ne. 'I' .and. type .ne. 'C') call u2mesk('E', 'UTILITAI5_29',&
                                                                            1, type)
     ASSERT(type.eq.typsca)
@@ -87,7 +87,7 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez,&
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
 !
-    call jelira(ces//'.CESC', 'LONMAX', nbcmp, kbid)
+    call jelira(ces//'.CESC', 'LONMAX', nbcmp)
     kcmp = indik8(zk8(jcesc),nocmp,1,nbcmp)
     if (kcmp .eq. 0) call u2mesk('F', 'CALCULEL3_5', 1, nocmp)
 !

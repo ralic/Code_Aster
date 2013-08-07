@@ -48,7 +48,6 @@ function diincl(sddisc, nomchz, force)
 !
 !
     integer :: iret, nb, i
-    character(len=8) :: k8bid
     character(len=16) :: nomcha
     character(len=19) :: sdarch
     character(len=24) :: arcexc
@@ -79,7 +78,7 @@ function diincl(sddisc, nomchz, force)
 !
     diincl = .false.
     call jeveuo(arcexc, 'L', jarexc)
-    call jelira(arcexc, 'LONMAX', nb, k8bid)
+    call jelira(arcexc, 'LONMAX', nb)
     do 10 i = 1, nb
         if (nomcha .eq. zk16(jarexc-1 + i)) then
             diincl = .false.

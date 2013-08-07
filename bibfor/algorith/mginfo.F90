@@ -71,7 +71,7 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !
 ! --- NOMBRE DE MODES
 !
-    call jelira(modmec//'           .ORDR', 'LONMAX', nbmode, k8bid)
+    call jelira(modmec//'           .ORDR', 'LONMAX', nbmode)
 !
     call jedema()
 end subroutine

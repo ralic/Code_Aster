@@ -62,7 +62,6 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
     integer :: adtabo, jordr, jtach
     integer :: nbtono
 !
-    character(len=1) :: k1bid
     character(len=16) :: nomsym
     character(len=19) :: noresu
     character(len=24) :: chextr
@@ -90,7 +89,7 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 ! 2.1. ==> REPERAGES POUR LE COUPLE (NORESU,NOMSYM)
 ! NBTONO : NOMBRE TOTAL DE NUMEROS D'ORDRE DANS LA STRUCTURE NORESU
 !
-    call jelira(noresu//'.ORDR', 'LONUTI', nbtono, k1bid)
+    call jelira(noresu//'.ORDR', 'LONUTI', nbtono)
     call jeveuo(noresu//'.ORDR', 'L', jordr)
     call jenonu(jexnom(noresu//'.DESC', nomsym), iaux)
     call jeveuo(jexnum(noresu//'.TACH', iaux), 'L', jtach)

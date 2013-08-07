@@ -99,7 +99,6 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     integer :: nbno, ncaba, ntyele, numail, nbcmp, ier, idebgd
     real(kind=8) :: eps, rbid
     logical :: trouv1, trouv2, trouv3, trouv4, trouv5
-    character(len=1) :: k1b
     character(len=3) :: k3cab, k3mai
     character(len=8) :: acier, k8b
     character(len=19) :: carte, nomrc
@@ -129,7 +128,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !
     nbno = nbnoca(icabl)
 !
-    call jelira(numaca, 'LONUTI', lonuti, k1b)
+    call jelira(numaca, 'LONUTI', lonuti)
     idecma = lonuti - nbno + 1
     call jeveuo(numaca, 'L', jnumac)
 !
@@ -208,7 +207,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     rcvalr = nomrc//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
     call jeveuo(rcvalr, 'L', jvalr)
-    call jelira(rcvalr, 'LONMAX', nbcste, k1b)
+    call jelira(rcvalr, 'LONMAX', nbcste)
 !
     trouv1 = .false.
     do 30 icste = 1, nbcste
@@ -247,7 +246,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     rcvalr = nomrc//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
     call jeveuo(rcvalr, 'L', jvalr)
-    call jelira(rcvalr, 'LONMAX', nbcste, k1b)
+    call jelira(rcvalr, 'LONMAX', nbcste)
 !
 !  2.3.1 CAS BPEL
     if (regl .eq. 'BPEL') then
@@ -339,7 +338,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     call jeveuo(captma, 'L', jptma)
 !
     iasmax = zi(jdesc+1)
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba, k1b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('F', 'NB_EC', 'CAGNBA', 'GRANDEUR', nbec,&
                 k8b, iret)

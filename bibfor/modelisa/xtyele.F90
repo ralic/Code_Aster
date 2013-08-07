@@ -238,7 +238,7 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 ! --- LE NOEUD EST COUPÉ SI LE MAX DE LSN DE SA CONNECTIVITÉ
 ! --- EST STRICTEMENT POSITIF
                                     maxlsn=-1*r8maem()
-                                    call jelira(jexnum(cnxinv, nngl), 'LONMAX', nmasup, k8bid)
+                                    call jelira(jexnum(cnxinv, nngl), 'LONMAX', nmasup)
                                     call jeveuo(jexnum(cnxinv, nngl), 'L', jmasup)
                                     do 210 j = 1, nmasup
                                         ima2 = zi(jmasup-1+j)

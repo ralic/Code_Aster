@@ -65,7 +65,7 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
     integer :: lmalia, lmats, lsilia, lwork, jwork, info, lselia, ltau, neq
     integer :: ldiaqr
 !
-    character(len=8) :: int1, int2, k8bid
+    character(len=8) :: int1, int2
     character(len=24) :: deflia, fprofl, nomsst, nomlia, matlia, mats
     real(kind=8) :: eps, tol, swork(1), temp
     parameter    (eps=2.3d-16)
@@ -90,10 +90,10 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst,&
     nomlia=modgen//'      .MODG.LIMA'
 !
 !-- NOMBRE DE SOUS STRUCTURES
-    call jelira(nomsst, 'NOMMAX', nbsst, k8bid)
+    call jelira(nomsst, 'NOMMAX', nbsst)
 !
 !-- NOMBRE D'INTERFACES
-    call jelira(deflia, 'NMAXOC', nblia, k8bid)
+    call jelira(deflia, 'NMAXOC', nblia)
 !
 !-- LISTE DES NOMS DES SOUS-STRUCTURES
     call wkvect(sst, 'G V K8', nbsst, lknoms)

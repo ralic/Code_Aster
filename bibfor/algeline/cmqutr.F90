@@ -58,7 +58,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     logical :: logic
     character(len=1) :: k1b, base
     character(len=24) :: valk
-    character(len=8) :: k8b, typm, nima
+    character(len=8) ::  typm, nima
     character(len=16) :: knume
     character(len=24) :: nommai, typmai, connex, nodime, nomnoe, grpnoe, cooval
     character(len=24) :: coodsc, cooref, grpmai, nomg
@@ -189,7 +189,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3' ), typtri)
 !
     call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail, ' ')
+    call jeecra(nommai, 'NOMMAX', ival=nbmail)
 !
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
@@ -199,24 +199,24 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
     call jecrec(connex, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
-    call jeecra(connex, 'LONT', nbnomx*nbmail, ' ')
+    call jeecra(connex, 'LONT', ival=nbnomx*nbmail)
 !
 ! 4.2. ==> LE .GROUPMA EST CREE ICI,
 !          LES GROUPES EUX-MEMES SERONT REMPLIS A LA VOLEE
 !
     call jeexin(grpmav, igrma)
     if (igrma .ne. 0) then
-        call jelira(grpmav, 'NOMUTI', nbgrm, k1b)
+        call jelira(grpmav, 'NOMUTI', ival=nbgrm)
         gpptnm = nomaou//'.PTRNOMMAI'
         call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbgrm, ' ')
+        call jeecra(gpptnm, 'NOMMAX', ival=nbgrm)
         call jecrec(grpmai, base//' V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbgrm)
 !     --- BCLE SUR LES GROUP_MA DU MAILLAGE INITIAL
         do 421 i = 1, nbgrm
             call jenuno(jexnum(grpmav, i), nomg)
             call jeveuo(jexnum(grpmav, i), 'L', jgrma)
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbmag, k1b)
+            call jelira(jexnum(grpmav, i), 'LONUTI', ival=nbmag)
             nbma2 = nbmag
 !        --- BCLE SUR LES MAILLES DU GROUP_MA
             do 4210 j = 1, nbmag
@@ -227,9 +227,9 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 4210          continue
             call jecroc(jexnom(grpmai, nomg))
 !        --- LE NOUVEAU GROUP_MA CONTIENDRA NBMA2 MAILLES
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma2), ' ')
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma2, ' ')
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', 0, ' ')
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', ival=max(1, nbma2))
+            call jeecra(jexnom(grpmai, nomg), 'LONUTI', ival=nbma2)
+            call jeecra(jexnom(grpmai, nomg), 'LONUTI', ival=0)
             if (niv .gt. 1) then
                 write(ifm,*) 'GROUP_MA '//nomg,' (',i,') PASSE DE ',&
                 nbmag,' A ',nbma2,' MAILLES'
@@ -252,7 +252,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
         ind = zi(jtypm+ima-1)
         call jenuno(jexnum('&CATA.TM.NOMTM', ind), typm)
         call jeveuo(jexnum(connev, ima), 'L', jopt)
-        call jelira(jexnum(connev, ima), 'LONMAX', nbpt, k1b)
+        call jelira(jexnum(connev, ima), 'LONMAX', ival=nbpt)
 !
 ! 5.0. ==> PREPARE LA MISE DES GROUPES DE MAILLES
 !
@@ -283,7 +283,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
             call jenonu(jexnom(nommai, nima), ima2)
             zi(iatyma-1+ima2) = zi(jtypm+ima-1)
 !
-            call jeecra(jexnum(connex, ima2), 'LONMAX', nbpt, k8b)
+            call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 521 ino = 1, nbpt
                 zi(jnpt-1+ino) = zi(jopt+ino-1)
@@ -295,11 +295,11 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 do 522 i = 1, nbgm
                     ig = zi(jlgrma-1+i)
                     call jeveuo(jexnum(grpmai, ig), 'E', jgrma)
-                    call jelira(jexnum(grpmai, ig), 'LONUTI', im, k1b)
+                    call jelira(jexnum(grpmai, ig), 'LONUTI', ival=im)
                     im = im + 1
 !                  print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                     zi(jgrma-1+im) = ima2
-                    call jeecra(jexnum(grpmai, ig), 'LONUTI', im, k1b)
+                    call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
 522              continue
             endif
 !
@@ -327,7 +327,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 call jenonu(jexnom(nommai, nomg), ima2)
                 zi(iatyma-1+ima2) = typtri
 !
-                call jeecra(jexnum(connex, ima2), 'LONMAX', nbpt, k8b)
+                call jeecra(jexnum(connex, ima2), 'LONMAX', ival=nbpt)
                 call jeveuo(jexnum(connex, ima2), 'E', jnpt)
                 do 5300 ino = 1, nbpt
 !              --- TABLEAU DE DECOUPAGE SELON LE TYPE
@@ -338,11 +338,11 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                     do 5301 j = 1, nbgm
                         ig = zi(jlgrma-1+j)
                         call jeveuo(jexnum(grpmai, ig), 'E', jgrma)
-                        call jelira(jexnum(grpmai, ig), 'LONUTI', im, k1b)
+                        call jelira(jexnum(grpmai, ig), 'LONUTI', ival=im)
                         im = im + 1
 !                     print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
                         zi(jgrma-1+im) = ima2
-                        call jeecra(jexnum(grpmai, ig), 'LONUTI', im, k1b)
+                        call jeecra(jexnum(grpmai, ig), 'LONUTI', ival=im)
 5301                  continue
                 endif
 !
@@ -360,17 +360,17 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
 !
     call jeexin(grpnov, iret)
     if (iret .ne. 0) then
-        call jelira(grpnov, 'NOMUTI', nbgrno, k1b)
+        call jelira(grpnov, 'NOMUTI', ival=nbgrno)
         gpptnn = nomaou//'.PTRNOMNOE'
         call jedetr(gpptnn)
         call jecreo(gpptnn, base//' N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbgrno, ' ')
+        call jeecra(gpptnn, 'NOMMAX', ival=nbgrno)
         call jecrec(grpnoe, base//' V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     nbgrno)
         do 20 i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
-            call jelira(jexnum(grpnov, i), 'LONUTI', nbno, k1b)
+            call jelira(jexnum(grpnov, i), 'LONUTI', ival=nbno)
             call jeexin(jexnom(grpnoe, nomg), iret)
             if (iret .eq. 0) then
                 call jecroc(jexnom( grpnoe, nomg ))
@@ -380,8 +380,8 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai,&
                 call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
                             0, 0, 0.d0)
             endif
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno), ' ')
-            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno, ' ')
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', ival=max(1, nbno))
+            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', ival=nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 22 j = 1, nbno
                 zi(jgg-1+j) = zi(jvg-1+j)

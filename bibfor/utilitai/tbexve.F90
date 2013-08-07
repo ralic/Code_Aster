@@ -176,7 +176,7 @@ subroutine tbexve(nomta, para, nomobj, basobj, nbval,&
 !
     typval = type
     nbval = iv
-    call jeecra(nomobj, 'LONUTI', nbval, ' ')
+    call jeecra(nomobj, 'LONUTI', nbval)
 !
     call jedema()
 end subroutine

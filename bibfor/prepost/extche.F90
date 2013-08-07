@@ -217,7 +217,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     logical :: utili
-    character(len=8) :: k8b, repere
+    character(len=8) ::  repere
     character(len=24) :: nomjv, nomaux
     integer :: iarg
 !
@@ -265,7 +265,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !
     endif
 !
-    call jelira(nvale, 'TYPE', ibid, type)
+    call jelira(nvale, 'TYPE', cval=type)
     ASSERT((type(1:1).eq.'R').or.(type(1:1).eq.'C'))
     if (type(1:1) .eq. 'R') then
         call jeveuo(nvale, 'L', avale)
@@ -346,7 +346,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   RECUPERATION DES NBR TOTAUX DE MAILLE ET DE GRELS
 !   -------------------------------------------------
 !
-    call jelira(nmaila//'.CONNEX', 'NMAXOC', nbtmai, k8b)
+    call jelira(nmaila//'.CONNEX', 'NMAXOC', nbtmai)
 !
 !
 !   CONSERVATION DU NUMERO DE LA GRANDEUR
@@ -362,7 +362,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   -------------------------------------
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acmpgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbtcmp, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbtcmp)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', adesgd)
 !
     call wkvect('&&EXTRCHE.NUMCP', 'V V I', nbc, anumcp)
@@ -394,7 +394,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     mod = zi(jceld-1+zi(jceld-1+4+grel)+2)
 !
 !
-    call jelira(jexnum(nmaila//'.CONNEX', numm), 'LONMAX', nbn, k8b)
+    call jelira(jexnum(nmaila//'.CONNEX', numm), 'LONMAX', nbn)
 !
     if (mod .ne. 0) then
 !
@@ -442,7 +442,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
 !   ------------------------------------------------------
 !
     call wkvect(nvalcp, 'V V R', nbval, avalcp)
-    call jeecra(nvalcp, 'DOCU', nbval, 'CHLM')
+    call jeecra(nvalcp, 'DOCU', cval='CHLM')
 !
     call jecrec(nperr, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbm)
@@ -450,7 +450,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm,&
     do 70,m = 1,nbm,1
 !
     call jecroc(jexnum(nperr, m))
-    call jeecra(jexnum(nperr, m), 'LONMAX', nbc, ' ')
+    call jeecra(jexnum(nperr, m), 'LONMAX', nbc)
     call jeveuo(jexnum(nperr, m), 'E', aperr)
 !
     numm = nummai(m)

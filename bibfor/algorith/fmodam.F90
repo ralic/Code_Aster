@@ -46,7 +46,6 @@ subroutine fmodam(neq, vite, valmod, basmod, force)
 !
 !
 !
-    character(len=8) :: k8bid
     integer :: imode, n1, nbmode
     real(kind=8) :: amor, masgen, puls, somme
     integer :: jvalmo, jbasmo
@@ -55,7 +54,7 @@ subroutine fmodam(neq, vite, valmod, basmod, force)
 !
     call jemarq()
 !
-    call jelira(valmod, 'LONMAX', nbmode, k8bid)
+    call jelira(valmod, 'LONMAX', nbmode)
     nbmode = nbmode/3
     call jeveuo(valmod, 'L', jvalmo)
     call jeveuo(basmod, 'L', jbasmo)

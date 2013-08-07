@@ -85,7 +85,6 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
 !
     character(len=24) :: valk(2)
     character(len=8) :: k8bid
-    character(len=1) :: k1bid
     integer :: iarg, l2
 !
 !-----------------------------------------------------------------------
@@ -162,7 +161,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
                     call u2mesk('F', 'RUPTURE1_8', 2, valk)
                 else
 !
-                    call jelira(jexnom(grpno, zk24(jjj2+igr-1)), 'LONUTI', n1, k1bid)
+                    call jelira(jexnom(grpno, zk24(jjj2+igr-1)), 'LONUTI', n1)
                     if (n1 .gt. 1) then
                         call u2mess('F', 'RUPTURE1_10')
                     else
@@ -205,7 +204,7 @@ subroutine gver2d(noma, nocc, motfaz, nomno, noeud,&
             if (n1 .ne. 0) then
 !           CAS CLASSIQUE
                 chfond = fond//'.FOND.NOEU'
-                call jelira(chfond, 'LONMAX', lnoff, k8b)
+                call jelira(chfond, 'LONMAX', lnoff)
                 if (lnoff .ne. 1) then
                     call u2mess('F', 'RUPTURE1_10')
                 else

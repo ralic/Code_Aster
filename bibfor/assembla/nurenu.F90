@@ -52,7 +52,7 @@ subroutine nurenu(nu, base)
     integer :: num
 !
     character(len=4) :: chnbjo
-    character(len=24) :: kbid, nonbdd, nojoin
+    character(len=24) ::  nonbdd, nojoin
     mpi_int :: mrank, msize
     parameter    (nonbdd='&&NUPODD.NBDDL')
 !
@@ -97,7 +97,7 @@ subroutine nurenu(nu, base)
 30  end do
 !
     call jeveuo(nu//'.NUML.JOIN', 'L', jordjo)
-    call jelira(nu//'.NUML.JOIN', 'LONMAX', njoint, kbid)
+    call jelira(nu//'.NUML.JOIN', 'LONMAX', njoint)
 !
     do 40, iaux=0,njoint-1
     numpro=zi(jordjo+iaux)
@@ -107,7 +107,7 @@ subroutine nurenu(nu, base)
     call codent(num, 'G', chnbjo)
     nojoin=nu//'.NUML.'//chnbjo
     call jeveuo(nojoin, 'L', jjoint)
-    call jelira(nojoin, 'LONMAX', nbddlj, kbid)
+    call jelira(nojoin, 'LONMAX', nbddlj)
     call wkvect('&&NURENU.TMP', 'V V I', nbddlj, jnewnu)
     if (rang .lt. numpro) then
 !     !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX

@@ -54,7 +54,6 @@ subroutine cfmema(defico, nsuco, nmaco0, listma, poinsm,&
     integer :: jmaco, jsuma
     integer :: jelima, jma
     integer :: isuco, i
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +86,7 @@ subroutine cfmema(defico, nsuco, nmaco0, listma, poinsm,&
     do 180 i = nmaco + 1, nmaco0
         zi(jmaco+i-1) = 0
 180  end do
-    call jeecra(contma, 'LONUTI', nmaco, k8bid)
+    call jeecra(contma, 'LONUTI', ival=nmaco)
 !
     call jedema()
 end subroutine

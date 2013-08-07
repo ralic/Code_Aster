@@ -41,7 +41,6 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 !-----------------------------------------------------------------------
     parameter            (mxligs=50 )
     character(len=1) :: kavant, kcoura
-    character(len=16) :: cbid
 !     ------------------------------------------------------------------
     call jemarq()
     call wkvect('&&TITRE1.TAMPON.SORTIE', 'V V K80', mxligs, ldons)
@@ -132,7 +131,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
         call wkvect(nomobj, base(1:1)//' V K80', iligs, lsort)
         lonmax = 0
     else if (st.eq.'C') then
-        call jelira(nomobj, 'LONMAX', lonmax, cbid)
+        call jelira(nomobj, 'LONMAX', lonmax)
         call juveca(nomobj, lonmax+iligs)
         call jeveuo(nomobj, 'E', lsort)
     else

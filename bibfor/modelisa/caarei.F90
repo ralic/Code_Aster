@@ -163,7 +163,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)

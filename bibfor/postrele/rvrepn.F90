@@ -65,14 +65,13 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
 !  -----------------
 !
     integer :: acoord, avec1, avec2, nbn, alsnac
-    character(len=1) :: k1bid
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    call jelira(nlsnac, 'LONMAX', nbn, k1bid)
+    call jelira(nlsnac, 'LONMAX', nbn)
     call jeveuo(nlsnac, 'L', alsnac)
 !
     call jeveuo(mailla//'.COORDO    .VALE', 'L', acoord)
@@ -83,8 +82,8 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
                 1)
     call jecroc(jexnum(sdnewr//'.VEC1', 1))
     call jecroc(jexnum(sdnewr//'.VEC2', 1))
-    call jeecra(jexnum(sdnewr//'.VEC1', 1), 'LONMAX', 2*nbn, ' ')
-    call jeecra(jexnum(sdnewr//'.VEC2', 1), 'LONMAX', 2*nbn, ' ')
+    call jeecra(jexnum(sdnewr//'.VEC1', 1), 'LONMAX', 2*nbn)
+    call jeecra(jexnum(sdnewr//'.VEC2', 1), 'LONMAX', 2*nbn)
     call jeveuo(jexnum(sdnewr//'.VEC1', 1), 'E', avec1)
     call jeveuo(jexnum(sdnewr//'.VEC2', 1), 'E', avec2)
 !

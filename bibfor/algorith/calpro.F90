@@ -89,7 +89,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
     call rsexch('F', basmod, 'DEPL', 1, nomcha,&
                 iret)
-    call jelira(nomcha(1:19)//'.VALE', 'TYPE', ibid, typ1)
+    call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
     if (typ1 .eq. 'C') then
         valk = basmod
         call u2mesg('F', 'ALGORITH12_16', 1, valk, 0,&

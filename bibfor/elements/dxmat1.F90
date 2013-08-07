@@ -41,15 +41,14 @@ subroutine dxmat1(fami, epais, df, dm, dmf,&
 !     CONTRAINTES THERMIQUES
 !     ------------------------------------------------------------------
     integer :: jcoqu, jmate, iret
-    integer :: i, j, k, nbpar, elasco, indalf
+    integer ::  nbpar
     real(kind=8) :: cdf, cdm, valres(56)
     real(kind=8) :: young, nu, epais, valpar
     real(kind=8) :: xab1(3, 3), dh(3, 3)
-    real(kind=8) :: dx, dy, dz, s, c, norm
+    real(kind=8) :: dx, dy, dz, norm
     real(kind=8) :: ps, pjdx, pjdy, pjdz, alphat
     real(kind=8) :: alpha, beta
     integer :: icodre(56)
-    character(len=3) :: num
     character(len=8) :: nomres(56), nompar
     character(len=10) :: phenom
 !     ------------------------------------------------------------------

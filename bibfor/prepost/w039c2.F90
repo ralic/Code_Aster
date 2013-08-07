@@ -48,7 +48,7 @@ subroutine w039c2(nuzone, jvale, jdesc, nomgd, ifm,&
                 kbid, ibid)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, kbid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     ASSERT(nuzone.gt.0)
     nzonmx=zi(jdesc-1+2)

@@ -52,7 +52,7 @@ subroutine iscoqu(nomo, numail, lcoque)
     integer :: iret, igrel, iel
     integer :: ialiel, itypel
     integer :: nbgrel, nel, numai2
-    character(len=8) :: nomte, k8bid
+    character(len=8) :: nomte
     character(len=19) :: ligrmo
 !
 ! ----------------------------------------------------------------------
@@ -73,7 +73,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 !
 ! --- NOMBRE DE GREL
 !
-    call jelira(ligrmo(1:19)//'.LIEL', 'NUTIOC', nbgrel, k8bid)
+    call jelira(ligrmo(1:19)//'.LIEL', 'NUTIOC', nbgrel)
 !
 ! --- BOUCLE SUR LES GREL
 !
@@ -82,7 +82,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 ! --- TYPE DU GREL COURANT
 !
         call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(ligrmo(1:19)//'.LIEL', igrel), 'LONMAX', nel, k8bid)
+        call jelira(jexnum(ligrmo(1:19)//'.LIEL', igrel), 'LONMAX', nel)
         itypel = zi(ialiel-1+nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
 !

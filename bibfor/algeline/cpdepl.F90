@@ -45,7 +45,6 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     character(len=19) :: melflu
 !
     integer :: iddl(6)
-    character(len=1) :: k1bid
     character(len=8) :: mailla, k8bid
     character(len=14) :: numddl
     character(len=24) :: nomcha, refei, matria, nomnoe
@@ -74,7 +73,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
     call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibi,&
                 mailla, iret)
     nomnoe = mailla//'.NOMNOE'
-    call jelira(nomnoe, 'NOMUTI', lnoe, k1bid)
+    call jelira(nomnoe, 'NOMUTI', lnoe)
 !
     do 10 im = 1, nbm
         write(nomcha(14:16),'(I3.3)') nuor(im)

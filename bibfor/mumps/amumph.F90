@@ -107,7 +107,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     integer :: jslvk, jslvi, nprec, iretz, pcentp(2)
     logical :: lbid, lpreco
     character(len=1) ::  rouc, prec
-    character(len=4) :: etamat, kbid, etam
+    character(len=4) :: etamat, etam
     character(len=12) :: k12bid
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
@@ -191,8 +191,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
     call dismoi('F', 'NOM_NUME_DDL', matas, 'MATR_ASSE', ibid,&
                 nu, ierd)
-    call jelira(matas//'.VALM', 'TYPE', ibid, rouc)
-    call jelira(nu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jelira(matas//'.VALM', 'TYPE', cval=rouc)
+    call jelira(nu//'.SMOS.SMDI', 'LONMAX', nsmdi)
 !
     call jeveuo(matas//'.REFA', 'L', jrefa)
     if (zk24(jrefa-1+11) .eq. 'MATR_DISTR') then
@@ -301,7 +301,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     do 4, k=1,nmxins
     if (nomats(k) .eq. ' ') then
         kxmps=k
-        call jelira(matas//'.VALM', 'TYPE', ibid, rouc)
+        call jelira(matas//'.VALM', 'TYPE', cval=rouc)
         goto 2
     endif
     4 end do

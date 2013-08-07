@@ -41,22 +41,22 @@ subroutine juveca(nom, long)
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) :: base, type, cbid
+    character(len=8) :: base, type
     character(len=32) :: valk(2)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ldec, ll, lonma2, lonmax, lonuti
+    integer :: i, ldec, ll, lonma2, lonmax, lonuti
     integer :: ltamp, ltyp
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(nom, 'L', ldec)
 !
 !     --- TYPE, LONGUEUR ET BASE DE L'OBJET A REDIMENSIONNER
-    call jelira(nom, 'TYPE  ', ibid, type)
-    call jelira(nom, 'LONMAX', lonmax, cbid)
-    call jelira(nom, 'LONUTI', lonuti, cbid)
-    call jelira(nom, 'CLAS', ibid, base)
+    call jelira(nom, 'TYPE  ', cval=type)
+    call jelira(nom, 'LONMAX', lonmax)
+    call jelira(nom, 'LONUTI', lonuti)
+    call jelira(nom, 'CLAS', cval=base)
 !
 !     -- LONMA2 : LONGUEUR DE RECOPIE :
     ASSERT(lonmax.gt.0)
@@ -67,7 +67,7 @@ subroutine juveca(nom, long)
     if (type(1:1) .ne. 'K') then
         call wkvect('&&JUVECA.TAMPON', 'V V '//type, lonma2, ltamp)
     else
-        call jelira(nom, 'LTYP', ltyp, cbid)
+        call jelira(nom, 'LTYP', ltyp)
         call codent(ltyp, 'G', type(2:))
         call wkvect('&&JUVECA.TAMPON', 'V V '//type, lonma2, ltamp)
     endif
@@ -169,7 +169,7 @@ subroutine juveca(nom, long)
         endif
     endif
     ll = min(lonuti,long)
-    if (lonuti .gt. 0) call jeecra(nom, 'LONUTI', ll, cbid)
+    if (lonuti .gt. 0) call jeecra(nom, 'LONUTI', ll)
 !
 !     --- DESTRUCTION DU TAMPON ---
     call jedetr('&&JUVECA.TAMPON')

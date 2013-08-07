@@ -53,7 +53,7 @@ subroutine rcmfmc(chmatz, chmacz)
     integer :: nbval, jchev, iret, jvale, igd, jdesc, kk
     integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, ier, j, k, nbmat
     integer :: inbmat
-    character(len=4) :: knumat, kbid
+    character(len=4) :: knumat
     character(len=8) :: k8b, chmat, nomgd
     character(len=19) :: codi
     character(len=19) :: chemat, chmace
@@ -66,7 +66,7 @@ subroutine rcmfmc(chmatz, chmacz)
     chemat=chmat//'.CHAMP_MAT'
     chmace=chmat//'.MATE_CODE'
 !
-    call jelira(chemat//'.VALE', 'LONMAX', nbval, k8b)
+    call jelira(chemat//'.VALE', 'LONMAX', nbval)
     call jeveuo(chemat//'.VALE', 'L', jchev)
 !
 !
@@ -82,7 +82,7 @@ subroutine rcmfmc(chmatz, chmacz)
     call jeexin(chmat//'.CVRCNOM', iret)
     if (iret .ne. 0) then
         call jeveut(chmat//'.CVRCNOM', 'L', jvcnom)
-        call jelira(chmat//'.CVRCNOM', 'LONMAX', nbcvrc, kbid)
+        call jelira(chmat//'.CVRCNOM', 'LONMAX', nbcvrc)
     else
         nbcvrc=0
         jvcnom=ismaem()

@@ -82,7 +82,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     integer :: nh, nop
     integer :: nbres1
     character(len=2) :: codret
-    character(len=8) :: k8b, nomgd
+    character(len=8) ::  nomgd
     character(len=19) :: ligre1, chvarc
     character(len=24) :: rigich, massch, ligrmo, ligrch
     character(len=24) :: chgeom, chcara(18), chharm, argu
@@ -132,7 +132,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
         call jeexin(merigi(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
             call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
-            call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1, k8b)
+            call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
             do 10 i = 1, nbres1
                 rigich = zk24(ialir1-1+i)
                 call dismoi('F', 'NOM_LIGREL', rigich(1:19), 'RESUELEM', ibid,&
@@ -154,7 +154,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
         call jeexin(memass(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
             call jeveuo(memass(1:19)//'.RELR', 'L', ialir1)
-            call jelira(memass(1:19)//'.RELR', 'LONUTI', nbres1, k8b)
+            call jelira(memass(1:19)//'.RELR', 'LONUTI', nbres1)
             do 30 i = 1, nbres1
                 massch = zk24(ialir1-1+i)
                 call dismoi('F', 'NOM_LIGREL', massch(1:19), 'RESUELEM', ibid,&
@@ -261,7 +261,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
             if (iret .le. 0) goto 50
 !
             lpain(1) = 'PDDLMUR'
-            call jelira(meamor(1:19)//'.RELR', 'LONUTI', ilires, k8b)
+            call jelira(meamor(1:19)//'.RELR', 'LONUTI', ilires)
             call codent(ilires+1, 'D0', lchout(3) (12:14))
             option = 'MECA_DDLM_R'
             call calcul('S', option, ligrch, 1, lchin,&

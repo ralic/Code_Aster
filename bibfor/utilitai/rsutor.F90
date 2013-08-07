@@ -36,7 +36,7 @@ subroutine rsutor(nomsd, champ, nomsym, iordr)
 ! OUT : IORDR  : NUMERO D'ORDRE
 ! ----------------------------------------------------------------------
 !
-    character(len=3) :: chnoch, kbid
+    character(len=3) :: chnoch
     character(len=6) :: chorch
     character(len=19) :: nomd2
     integer :: nunoch, jordr, irang, i1, nbordr
@@ -50,7 +50,7 @@ subroutine rsutor(nomsd, champ, nomsym, iordr)
     read(chorch,'(I6)') i1
     irang=i1+1
 !
-    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr, kbid)
+    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     ASSERT(irang.ge.1 .and. irang.le.nbordr)
 !
     call jeveuo(nomd2//'.ORDR', 'L', jordr)

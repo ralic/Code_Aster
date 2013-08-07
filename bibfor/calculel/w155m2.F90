@@ -121,7 +121,7 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym,&
     call jeveuo(ces3//'.CESC', 'L', jce3c)
     call jeveuo(ces3//'.CESL', 'L', jce3l)
     call jeveuo(ces3//'.CESV', 'L', jce3v)
-    call jelira(ces3//'.CESC', 'LONMAX', ncmp, kbid)
+    call jelira(ces3//'.CESC', 'LONMAX', ncmp)
 !
 !
 !     4. REMPLISSAGE DU CHAM_ELEM_S RESULTAT CES4 :

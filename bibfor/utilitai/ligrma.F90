@@ -67,12 +67,12 @@ subroutine ligrma(ma, listgr)
     call jeexin(ma//'.GROUPEMA', iret)
     nbgma = 0
     nbmat = 0
-    if (iret .gt. 0) call jelira(ma//'.GROUPEMA', 'NUTIOC', nbgma, kbid)
+    if (iret .gt. 0) call jelira(ma//'.GROUPEMA', 'NUTIOC', nbgma)
 !
 !     ON PARCOURT LES GROUPES DE MAILLES ET ON REMPLIT L'OBJET LONG
     do 10,i=1,nbgma
     call jeveuo(jexnum(ma//'.GROUPEMA', i), 'L', iagma)
-    call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n, kbid)
+    call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n)
     do 11, ii=1,n
     ima=zi(iagma-1+ii)
     zi(jlong-1+ima)=zi(jlong-1+ima)+1
@@ -84,16 +84,16 @@ subroutine ligrma(ma, listgr)
 !     TOTALE EGALE A NBMAT
     call jecrec(listgr, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbma)
-    call jeecra(listgr, 'LONT', nbmat, kbid)
+    call jeecra(listgr, 'LONT', nbmat)
     do 20 ima = 1, nbma
-        call jeecra(jexnum(listgr, ima), 'LONMAX', zi(jlong-1+ima), kbid)
+        call jeecra(jexnum(listgr, ima), 'LONMAX', zi(jlong-1+ima))
         call jecroc(jexnum(listgr, ima))
 20  end do
 !
 !     REMPLISSAGE DE LISTGR AVEC LES NUMEROS DES GROUPES
     do 30,i=1,nbgma
     call jeveuo(jexnum(ma//'.GROUPEMA', i), 'L', iagma)
-    call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n, kbid)
+    call jelira(jexnum(ma//'.GROUPEMA', i), 'LONUTI', n)
     do 31, ii=1,n
     ima=zi(iagma-1+ii)
     call jeveuo(jexnum(listgr, ima), 'E', jlist)

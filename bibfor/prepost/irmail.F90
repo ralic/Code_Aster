@@ -72,7 +72,6 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !
     logical :: lmasu, lgmsh
 !
-    character(len=1) :: k1bid
     character(len=8) :: cbid
     character(len=80) :: titmai
 !     ------------------------------------------------------------------
@@ -84,7 +83,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
                 cbid, ier)
 !
 !     --- RECUPERATION DU NOMBRE DE MAILLES
-    call jelira(noma//'.NOMMAI', 'NOMUTI', nbmai, k1bid)
+    call jelira(noma//'.NOMMAI', 'NOMUTI', nbmai)
 !
 !     --- NBNOE = NOMBRE DE NOEUDS DU MAILLAGE (RECUPERATION VALEUR)
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbnoe,&
@@ -103,7 +102,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     call jeexin(noma//'           .TITR', iret)
     if (iret .gt. 0) then
         call jeveuo(noma//'           .TITR', 'L', jtitr)
-        call jelira(noma//'           .TITR', 'LONMAX', nbtitr, k1bid)
+        call jelira(noma//'           .TITR', 'LONMAX', nbtitr)
     else
         nbtitr=1
         call wkvect(noma//'           .TITR', 'V V K80', nbtitr, jtitr)
@@ -130,7 +129,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     call jeexin(noma//'.GROUPENO', iret)
     if (iret .ne. 0) then
 !         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE NOEUDS
-        call jelira(noma//'.GROUPENO', 'NUTIOC', nbgrn, k1bid)
+        call jelira(noma//'.GROUPENO', 'NUTIOC', nbgrn)
         if (nbgrn .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRNO', 'V V K24', nbgrn, jnogn)
             do 30 ign = 1, nbgrn
@@ -148,7 +147,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
     call jeexin(noma//'.GROUPEMA', iret)
     if (iret .ne. 0) then
 !         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE MAILLES
-        call jelira(noma//'.GROUPEMA', 'NUTIOC', nbgrm, k1bid)
+        call jelira(noma//'.GROUPEMA', 'NUTIOC', nbgrm)
         if (nbgrm .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRMA', 'V V K24', nbgrm, jnogm)
             do 40 igm = 1, nbgrm
@@ -203,7 +202,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
         call jeexin(noma//'           .TITR', iret)
         if (iret .ne. 0) then
             call jeveuo(noma//'           .TITR', 'L', jtitr)
-            call jelira(noma//'           .TITR', 'LONMAX', nbtitr, k1bid)
+            call jelira(noma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
                 titmai=zk80(jtitr-1+1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_GMSH') then
@@ -221,7 +220,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
         call jeexin(noma//'           .TITR', iret)
         if (iret .ne. 0) then
             call jeveuo(noma//'           .TITR', 'L', jtitr)
-            call jelira(noma//'           .TITR', 'LONMAX', nbtitr, k1bid)
+            call jelira(noma//'           .TITR', 'LONMAX', nbtitr)
             if (nbtitr .ge. 1) then
                 titmai=zk80(jtitr-1+1)
                 if (titmai(10:31) .eq. 'AUTEUR=INTERFACE_IDEAS') then
@@ -235,7 +234,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
         call jeveuo('&&IRADHS.CODEPHY', 'L', jcod2)
         call jeveuo('&&IRADHS.CODEPHD', 'L', jcodd)
         call jeveuo('&&IRADHS.PERMUTA', 'L', jperm)
-        call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1, k1bid)
+        call jelira('&&IRADHS.PERMUTA', 'LONMAX', lon1)
         maxnod=zi(jperm-1+lon1)
         call irmasu(ifi, ndim, nbnoe, zr(jcoor), nbmai,&
                     zi(jconx), zi(jpoin), zi(jtypm), zi(jtypl), zi(jcod1),&

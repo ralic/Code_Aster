@@ -190,7 +190,6 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     real(kind=8) :: rv
 !
-    character(len=1) :: k1bid
     character(len=4) :: dimesp
     character(len=8) :: mcltit(nbmtit), mclgrp(nbmgrp)
     character(len=8) :: mclmai(nbmmax), mclcoo(nbmcoo)
@@ -270,7 +269,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
 ! -     LECTURE DES NOMS/NBNO DES TYPES DE MAILLES DANS LE CATALOGUE
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai, k1bid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
     if (nbmmai .gt. nbmmax) then
         call u2mess('F', 'MODELISA5_1')
     endif
@@ -421,12 +420,12 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 ! -   OBJET NOMMAI    = REPERTOIRE NOMS DE MAILLES  K8 SUR GLOBALE
 !
     call jecreo(nommai, 'G N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail, ' ')
+    call jeecra(nommai, 'NOMMAX', nbmail)
 !
 ! -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
 !
     call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoeu, ' ')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
 !
 !
     nbgrmp = nbgrma
@@ -436,10 +435,10 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     call jecreo(titre, 'G V K80')
     if (nbltit .ne. 0) then
-        call jeecra(titre, 'LONMAX', nbltit, ' ')
+        call jeecra(titre, 'LONMAX', nbltit)
     else
         nbltit = 1
-        call jeecra(titre, 'LONMAX', 1, ' ')
+        call jeecra(titre, 'LONMAX', 1)
         call jeveuo(titre, 'E', iad)
         call enlird(dat)
         zk80(iad)=dat
@@ -455,9 +454,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 ! -   OBJET COORDO.VALE = VECTEUR DE R8 CONTENANT LES COORDONNEES
 !
     call jecreo(cooval, 'G V R')
-    call jeecra(cooval, 'LONMAX', nbnoeu*3, ' ')
+    call jeecra(cooval, 'LONMAX', nbnoeu*3)
     call codent(nbcoor, 'G', dimesp)
-    call jeecra(cooval, 'DOCU', 0, dimesp)
+    call jeecra(cooval, 'DOCU', cval=dimesp)
 !
 ! -   OBJET COORDO.DESC = VECTEUR 3*IS DESCRIPTEUR DU CHAMP
 !
@@ -466,7 +465,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
 !
     call jecreo(coodsc, 'G V I')
-    call jeecra(coodsc, 'LONMAX', 3, ' ')
+    call jeecra(coodsc, 'LONMAX', 3)
     call jeecra(coodsc, 'DOCU', 0, 'CHNO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad) = ntgeo
@@ -485,10 +484,10 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     if (nbgrno .ne. 0) then
         call jecreo(gpptnv, 'V N K24')
-        call jeecra(gpptnv, 'NOMMAX', nbgrno, ' ')
+        call jeecra(gpptnv, 'NOMMAX', nbgrno)
         call jecrec(grpnov, 'V V K8', 'NO '//gpptnv, 'CONTIG', 'VARIABLE',&
                     nbgrno)
-        call jeecra(grpnov, 'LONT', nbnogn, ' ')
+        call jeecra(grpnov, 'LONT', nbnogn)
     endif
 !
 ! -      OBJET GROUPMAV = FAMILLE CONTIGUE DE VECTEURS N*K8 VOLATILE
@@ -498,10 +497,10 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     if (nbgrma .ne. 0) then
         call jecreo(gpptmv, 'V N K24')
-        call jeecra(gpptmv, 'NOMMAX', nbgrma, ' ')
+        call jeecra(gpptmv, 'NOMMAX', nbgrma)
         call jecrec(grpmav, 'V V K8', 'NO '//gpptmv, 'CONTIG', 'VARIABLE',&
                     nbgrma)
-        call jeecra(grpmav, 'LONT', nbmagm, ' ')
+        call jeecra(grpmav, 'LONT', nbmagm)
     endif
 !
 ! -     OBJET CONXV     = FAMILLE CONTIGUE DE VECTEURS N*K8 VOLATILE
@@ -511,7 +510,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     call jecrec(conxv, 'V V K8', 'NO', 'CONTIG', 'VARIABLE',&
                 nbmail)
-    call jeecra(conxv, 'LONT', nbnoma, ' ')
+    call jeecra(conxv, 'LONT', nbnoma)
 !
 ! -   OBJET GROUPENO   = FAMILLE DISPERSEE DE VECTEURS N*IS
 !                       POINTEUR DE LONGUEUR  = GROUPENO.$$LONC
@@ -519,7 +518,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     if (nbgrno .ne. 0) then
         call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbgrnp, ' ')
+        call jeecra(gpptnn, 'NOMMAX', nbgrnp)
         call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
                     nbgrnp)
     endif
@@ -530,7 +529,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     if (nbgrma .ne. 0) then
         call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbgrmp, ' ')
+        call jeecra(gpptnm, 'NOMMAX', nbgrmp)
         call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                     nbgrmp)
     endif
@@ -542,7 +541,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
-    call jeecra(connex, 'LONT', nbnoma, ' ')
+    call jeecra(connex, 'LONT', nbnoma)
 !
 ! -   OBJET ADAPMA   = INFORMATION SUR L'ADAPTATION DE MAILLAGE
 !
@@ -612,9 +611,9 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     do 500 i = 1, nbmail
         call jenuno(jexnum(conxv, i), nomn)
         call jeveuo(jexnum(conxv, i), 'L', jvcnx)
-        call jelira(jexnum(conxv, i), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(conxv, i), 'LONMAX', nbno)
         call jenonu(jexnom(nomu//'.NOMMAI', nomn), ibid)
-        call jeecra(jexnum(connex, ibid), 'LONMAX', nbno, ' ')
+        call jeecra(jexnum(connex, ibid), 'LONMAX', nbno)
         call jeveuo(jexnum(connex, ibid), 'E', jgcnx)
         do 550 j = 1, nbno
             nom = zk8(jvcnx+j-1)
@@ -644,7 +643,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
-            call jelira(jexnum(grpnov, i), 'LONUTI', nbno, k1bid)
+            call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
 !         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
             nbno1 = 0
             do 610 im1 = 1, nbno
@@ -669,8 +668,8 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                 zi(jnoeu+nbno1-1) = num
 610          continue
             call jecroc(jexnom(grpnoe, nomg))
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno1, 1), ' ')
-            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno1, ' ')
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno1,1))
+            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno1)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             zi(jgg)=-ismaem()
             do 650 j = 0, nbno1-1
@@ -695,7 +694,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 706          continue
             call jenuno(jexnum(grpmav, i), nomg)
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbma, k1bid)
+            call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
 !         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTES ---
             nbma1 = 0
             do 710 im1 = 1, nbma
@@ -719,8 +718,8 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                 zi(jmail+nbma1-1) = num
 710          continue
             call jecroc(jexnom(grpmai, nomg))
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma1, 1), ' ')
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma1, ' ')
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma1,1))
+            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma1)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             zi(jgg)=-ismaem()
             do 750 j = 0, nbma1-1

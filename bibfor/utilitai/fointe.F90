@@ -74,9 +74,9 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 ! IER = 200 : ERREUR AVEC UNE FORMULE
 !     ------------------------------------------------------------------
 !
-    integer :: nupar, i, nbvn, izero, isave, lprol, lvar, nbpt, lpara, ibid
+    integer :: nupar, i, nbvn, izero, isave, lprol, lvar, nbpt, lpara
     integer :: iret, lfon, iadzi, iazk24
-    character(len=1) :: coli, cbid, k1bid, xous
+    character(len=1) :: coli, cbid, xous
     character(len=2) :: codme2
     character(len=8) :: nomail
     character(len=19) :: nomfon
@@ -157,16 +157,16 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu,&
 !
     call jeveut(chvale, 'L', lvar)
 !     -- SI L'OBJET .VALE EST UN OBJET SIMPLE, ON STOCKE 'LONUTI'
-    call jelira(chvale, 'XOUS', ibid, xous)
+    call jelira(chvale, 'XOUS', cval=xous)
     if (xous .eq. 'S') then
-        call jelira(chvale, 'LONUTI', nbpt, k1bid)
+        call jelira(chvale, 'LONUTI', nbpt)
     else
         nbpt=0
     endif
     call jeexin(chpara, iret)
     if (iret .gt. 0) then
         call jeveut(chpara, 'L', lpara)
-        call jelira(chpara, 'LONUTI', nbvn, k1bid)
+        call jelira(chpara, 'LONUTI', nbvn)
     else
         lpara=0
         nbvn=0

@@ -71,7 +71,7 @@ subroutine rscrmo(iocc, nomsd, nomjv)
         call getvtx('RESU', 'NOM_CHAM', iocc, iarg, nbnosy,&
                     zk16(jnosy), n22)
     else
-        call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy, k8b)
+        call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
         if (nbnosy .eq. 0) goto 9999
         call wkvect('&&RSCRMO.NOM_SYMBOL', 'V V K16', nbnosy, jnosy)
         do 10 isy = 1, nbnosy
@@ -84,11 +84,11 @@ subroutine rscrmo(iocc, nomsd, nomjv)
         call wkvect(nomjv, 'V V K24', 10, jmodl)
         nbmodl = 0
         nbmmod = 10
-        call jeecra(nomjv, 'LONUTI', nbmodl, ' ')
+        call jeecra(nomjv, 'LONUTI', nbmodl)
     else
         call jeveuo(nomjv, 'E', jmodl)
-        call jelira(nomjv, 'LONUTI', nbmodl, k8b)
-        call jelira(nomjv, 'LONMAX', nbmmod, k8b)
+        call jelira(nomjv, 'LONUTI', nbmodl)
+        call jelira(nomjv, 'LONMAX', nbmmod)
     endif
 !
     do 20 i = 1, nbordt
@@ -99,9 +99,9 @@ subroutine rscrmo(iocc, nomsd, nomjv)
             if (iret .eq. 0) then
                 call jeexin(noch19//'.DESC', ibid)
                 if (ibid .gt. 0) then
-                    call jelira(noch19//'.DESC', 'DOCU', ibid, docu)
+                    call jelira(noch19//'.DESC', 'DOCU', cval=docu)
                 else
-                    call jelira(noch19//'.CELD', 'DOCU', ibid, docu)
+                    call jelira(noch19//'.CELD', 'DOCU', cval=docu)
                 endif
 !
                 if (docu(1:4) .eq. 'CHML') then
@@ -116,7 +116,7 @@ subroutine rscrmo(iocc, nomsd, nomjv)
                         call jeveuo(nomjv, 'E', jmodl)
                     endif
                     zk24(jmodl+nbmodl-1) = zk24(iacelk)
-                    call jeecra(nomjv, 'LONUTI', nbmodl, ' ')
+                    call jeecra(nomjv, 'LONUTI', nbmodl)
 28                  continue
                 endif
             endif

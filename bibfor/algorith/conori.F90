@@ -102,7 +102,6 @@ subroutine conori(ma)
     character(len=8) :: ma, kbid
 !
     logical :: lomodi, loreo0, loreor, lomod0, locor0, lface, lface0
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
     integer :: i, ikmar, iktyr, imai, imarc, imaz, inoe
@@ -133,7 +132,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE GROUP_MA DANS .MAIL
 !     ------------------------------------------------------------------
-        call jelira(ma//'.GROUPEMA', 'NUTIOC', nbgma, kbid)
+        call jelira(ma//'.GROUPEMA', 'NUTIOC', nbgma)
         if (niv .eq. 2) then
             write (ifm,*)' '
             write (ifm,*)' LA LISTE DES GROUP_MA '
@@ -168,8 +167,8 @@ subroutine conori(ma)
             write (ifm,*)' '
         endif
 !     ------------------------------------------------------------------
-        call jelira(ma//'.NOMMAI', 'NOMUTI', nbmar, kbid)
-        call jelira(ma//'.NOMNOE', 'NOMUTI', nbnoe, kbid)
+        call jelira(ma//'.NOMMAI', 'NOMUTI', nbmar)
+        call jelira(ma//'.NOMNOE', 'NOMUTI', nbnoe)
 !
         call wkvect('&&OP0154.NOE', 'V V I', nbnoe, inoe)
         call wkvect('&&OP0154.MAI', 'V V I', nbmar, imai)
@@ -217,7 +216,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE MAILLE DU GROUP_MA
 !     ------------------------------------------------------------------
-                call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONMAX', nbmag, k1bid)
+                call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONMAX', nbmag)
                 if (niv .eq. 2) then
                     write (ifm,*)'   LA LISTE DES MAILLES DU GROUPE '
                     write (ifm,*)' '
@@ -256,7 +255,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
 !     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 !     ------------------------------------------------------------------
-                    call jelira(jexnum(ma//'.CONNEX', imac), 'LONMAX', nbcoc, k1bid)
+                    call jelira(jexnum(ma//'.CONNEX', imac), 'LONMAX', nbcoc)
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES CONNEXIONS DE LA MAILLE

@@ -61,7 +61,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
     character(len=19) :: vci19, solveu
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
-    integer :: k, kdeb, ibid, idvalc, lmat, neq, nimpo, islvk
+    integer :: k, kdeb, idvalc, lmat, neq, nimpo, islvk
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -85,7 +85,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu,&
         idvalc=0
     else
         call jeveuo(vci19//'.VALE', 'L', idvalc)
-        call jelira(vci19//'.VALE', 'TYPE', ibid, type)
+        call jelira(vci19//'.VALE', 'TYPE', cval=type)
         if (((type.eq.'R').and.(zi(lmat+3).ne.1)) .or.&
             ((type.eq.'C') .and.(zi(lmat+3).ne.2))) then
             call u2mess('F', 'ALGELINE3_42')

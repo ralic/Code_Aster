@@ -46,7 +46,6 @@ subroutine etenc2(cartz, iret)
 !              1 --> LA CARTE CONCERNE AUSSI DES MAILLES TARDIVES
 ! ----------------------------------------------------------------------
     character(len=24) :: valk
-    character(len=1) :: k1bid
     integer :: nbma, nbedit, igd, code, ient, i, ii, nb
     integer :: desc, grpma, lima
     integer :: jptma, iret0, ibid
@@ -98,7 +97,7 @@ subroutine etenc2(cartz, iret)
 !
 !        ------- GROUPE DE MAILLES DU MAILLAGE:
         if (code .eq. 2) then
-            call jelira(jexnum(ma//'.GROUPEMA', ient), 'LONUTI', nb, k1bid)
+            call jelira(jexnum(ma//'.GROUPEMA', ient), 'LONUTI', nb)
             call jeveuo(jexnum(ma//'.GROUPEMA', ient), 'L', grpma)
             do 20 i = 1, nb
                 ii = zi(grpma-1+i)
@@ -109,7 +108,7 @@ subroutine etenc2(cartz, iret)
 !
 !        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
         if (abs(code) .eq. 3) then
-            call jelira(jexnum(cart//'.LIMA', ient), 'LONMAX', nb, k1bid)
+            call jelira(jexnum(cart//'.LIMA', ient), 'LONMAX', nb)
             call jeveuo(jexnum(cart//'.LIMA', ient), 'L', lima)
             if (code .gt. 0) then
                 do 30 i = 1, nb

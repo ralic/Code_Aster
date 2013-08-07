@@ -97,7 +97,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     character(len=19) :: vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
     character(len=24) :: knequa, kvale
-    character(len=1) :: k1bid
     integer :: admodl, lcmodl, iexi
     logical :: ldist, ldgrel
 ! ----------------------------------------------------------------------
@@ -205,11 +204,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 ! --- CREATION DE REFE ET DESC
     call jecreo(kveref, bas//' V K24')
-    call jeecra(kveref, 'LONMAX', 4, ' ')
+    call jeecra(kveref, 'LONMAX', 4)
     call jeveuo(kveref, 'E', idverf)
     call jecreo(kvedsc, bas//' V I')
-    call jeecra(kvedsc, 'LONMAX', 2, ' ')
-    call jeecra(kvedsc, 'DOCU', ibid, 'CHNO')
+    call jeecra(kvedsc, 'LONMAX', 2)
+    call jeecra(kvedsc, 'DOCU', cval='CHNO')
     call jeveuo(kvedsc, 'E', idveds)
 !
 ! --- CALCUL D UN LILI POUR VECAS
@@ -314,7 +313,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
         if (iret .eq. 0) goto 90
 !
         call jeveuo(vecel//'.RELR', 'L', idlres)
-        call jelira(vecel//'.RELR', 'LONUTI ', nbresu, k1bid)
+        call jelira(vecel//'.RELR', 'LONUTI', nbresu)
         do 80 iresu = 1, nbresu
             resu=zk24(idlres+iresu-1)(1:19)
             call jeveuo(resu//'.NOLI', 'L', iad)
@@ -334,14 +333,14 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                 mode=zi(iddesc+igr+1)
                 if (mode .gt. 0) then
                     nnoe=nbno(mode)
-                    nel=zi(zi(iadlie+3*(ilive-1)+2)+igr)- zi(zi(&
-                    iadlie+3*(ilive-1)+2)+igr-1)-1
+                    nel=zi(zi(iadlie+3*(ilive-1)+2)+igr)- &
+                        zi(zi(iadlie+3*(ilive-1)+2)+igr-1)-1
                     call jeveuo(jexnum(resu//'.RESL', igr), 'L', jresl)
                     ncmpel=digdel(mode)
 !
                     do 60 iel = 1, nel
-                        numa=zi(zi(iadlie+3*(ilive-1)+1)-1+ zi(zi(&
-                        iadlie+3*(ilive-1)+2)+igr-1)+iel-1)
+                        numa=zi(zi(iadlie+3*(ilive-1)+1)-1+ &
+                             zi(zi(iadlie+3*(ilive-1)+2)+igr-1)+iel-1)
                         r=rcoef
 !
                         if (ldist .and. .not.ldgrel) then

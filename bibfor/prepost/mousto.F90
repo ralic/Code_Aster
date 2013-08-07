@@ -303,7 +303,7 @@ subroutine mousto(guidag, dimtub, voltub, tubuse, dimobs,&
                     iret2)
         ASSERT(irett.eq.0.and.iret2.eq.0)
         call jeveuo(nomf(1:19)//'.VALE', 'L', ithet)
-        call jelira(nomf(1:19)//'.VALE', 'LONMAX', nbval, k8b)
+        call jelira(nomf(1:19)//'.VALE', 'LONMAX', nbval)
         nco = nbval/2
         irayo = ithet + nco
         call usoben(guidag, dimobs, obsuse, nco, zr(irayo),&

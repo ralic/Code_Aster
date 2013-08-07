@@ -83,7 +83,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
     character(len=1) :: k1bid
     character(len=24) :: int1, indin1, lino1, maint1, restmo, tramo1, ordol
     character(len=19) :: kint
-    character(len=8) :: sst1, intf1, lint1, k8bid, bamo1, kbid, nmacr1, temp
+    character(len=8) :: sst1, intf1, lint1, bamo1, kbid, nmacr1, temp
     character(len=8) :: sst2
     character(len=4) :: nliai
     integer :: ibid, nbno1, llint1, nbeq1, lmod1, numlia, lonmod, i1, j1, k1, l1
@@ -125,7 +125,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- NOMBRE DE NOEUDS DE L'INTERFACE
     int1=lint1//'.IDC_LINO'
     call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
-    call jelira(jexnum(int1, ibid), 'LONMAX', nbno1, k8bid)
+    call jelira(jexnum(int1, ibid), 'LONMAX', nbno1)
 !
 !-- LISTE DES NUMEROS DES NOEUDS DE L'INTERFACE
     call jenonu(jexnom(lint1 //'.IDC_NOMS', intf1), ibid)
@@ -311,7 +311,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             call jeveuo(kint//'.VALE', 'L', ibid)
 !
             if (i1 .eq. 1) then
-                call jelira(kint//'.VALE', 'LONMAX', lonmod, k1bid)
+                call jelira(kint//'.VALE', 'LONMAX', lonmod)
             endif
 !
             norme=0.d0

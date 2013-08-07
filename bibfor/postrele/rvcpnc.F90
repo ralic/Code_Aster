@@ -78,7 +78,6 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc, alcpc2
     integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, ier, iexi, nn
     logical :: dirx, diry, dirz
-    character(len=1) :: k1bid
     integer :: iarg
 !
 !======================================================================
@@ -106,7 +105,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
     nomnew = '&&RVCPNC.NUM.CMP.COURANT'
     nomaux = '&&RVCPNC.CMP.NC.TEMPORAI'
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acpgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcpgd)
     call jenuno(jexnum('&CATA.GD.NOMGD' , gd), nomgd)
     call jeveuo(nlscpc, 'L', alscpc)
     if (mcf(1:6) .eq. 'ACTION') then
@@ -474,9 +473,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
 !
         call jeexin(nch19//'.DESC', ibid)
         if (ibid .gt. 0) then
-            call jelira(nch19//'.DESC', 'DOCU', i, docu)
+            call jelira(nch19//'.DESC', 'DOCU', cval=docu)
         else
-            call jelira(nch19//'.CELD', 'DOCU', i, docu)
+            call jelira(nch19//'.CELD', 'DOCU', cval=docu)
         endif
 !
         if (repere .eq. 'GLOBAL') then
@@ -489,7 +488,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd,&
             call wkvect('&&RVCPNC.LISTE.IS', 'V V I', nbcpgd, alsi)
             if ((nomgd(1:6).eq.'SIEF_R') .or. (nomgd.eq.'EPSI_R')) then
 !          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
-                call jelira(nlscpc, 'LONMAX', nn, k8b)
+                call jelira(nlscpc, 'LONMAX', nn)
                 call wkvect('&&RVCPNC.TMP', 'V V K8', nbcpgd, alcpc2)
                 do 369 i = 1, nbcpgd
                     zk8(alcpc2+i-1)=' '

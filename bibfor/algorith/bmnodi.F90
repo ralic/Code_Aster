@@ -69,7 +69,6 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
     integer :: ivcord(nbdef), idec(300)
     integer :: vali, ier
     character(len=10) :: typbas(3)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -152,14 +151,14 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !
     noeint=intf//'.IDC_LINO'
 !
-    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe, k1bid)
+    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe)
     call jeveuo(jexnum(noeint, numint), 'L', llnoe)
 !
 !-------------RECUPERATION DU DESCRIPTEUR DES DEFORMEES-----------------
 !
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldes)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
     nbnot = nbnot/(2+nbec)
 !
 !-----------RECUPERATION DES NUMERO ORDRE DEFORMEES --------------------

@@ -103,7 +103,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
     nchar = 0
     call jeexin(lcharg, iret)
     if (iret .ne. 0) then
-        call jelira(lcharg, 'LONMAX', nchar, k8bid)
+        call jelira(lcharg, 'LONMAX', nchar)
         call jeveuo(lcharg, 'L', jchar)
     endif
     lligr = '&&NUMERO.LISTE_LIGREL'
@@ -134,7 +134,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
         endif
 10  end do
 !
-    call jeecra(lligr, 'LONUTI', nblig, k8bid)
+    call jeecra(lligr, 'LONUTI', nblig)
 !
 ! SOLVEUR FETI ?
     call jeveuo(solveu(1:19)//'.SLVK', 'L', islvk)
@@ -184,7 +184,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 !
 ! VERIFICATION COHERENCE SD_FETI AVEC PARAMETRAGE OPERATEUR
         call jeveuo(sdfeti(1:19)//'.FREF', 'L', irefe)
-        call jelira(sdfeti(1:19)//'.FREF', 'LONMAX', ncharf, k8bid)
+        call jelira(sdfeti(1:19)//'.FREF', 'LONMAX', ncharf)
         ncharf=ncharf-1
         nbpb=0
         if (zk8(irefe) .ne. modele) nbpb=nbpb+1
@@ -287,7 +287,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
                 endif
                 call jemarq()
                 call jeveuo(jexnum(nomsda, i), 'L', ilima)
-                call jelira(jexnum(nomsda, i), 'LONMAX', nbma, k8bid)
+                call jelira(jexnum(nomsda, i), 'LONMAX', nbma)
 !
 ! OBJET TEMPORAIRE CONTENANT LES NOMS DES MAILLES DU SD I
                 call jenuno(jexnum(nomsda, i), nomsd)
@@ -399,7 +399,7 @@ subroutine numero(nuposs, modelz, infchz, solveu, base,&
 ! SOUS-STRUCTURATION QUI EST ILLICITE AVEC FETI, MAIS ON NE SAIT JAMAIS)
         k24b=nu(1:14)//'.NUME.NUEQ'
         call jeveuo(k24b, 'L', inueq)
-        call jelira(k24b, 'LONMAX', ldeeqg, k8bid)
+        call jelira(k24b, 'LONMAX', ldeeqg)
         do 40 i = 1, ldeeqg
             ibid=zi(inueq+i-1)
             if (ibid .ne. i) then

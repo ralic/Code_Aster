@@ -182,7 +182,7 @@ subroutine op0046()
     call dismoi('F', 'EXI_POUX', modele, 'MODELE', ibid,&
                 k8bla, ierd)
     if (k8bla(1:3) .eq. 'OUI') exipou = .true.
-    call jelira(charge, 'LONMAX', nchar, k8bla)
+    call jelira(charge, 'LONMAX', nchar)
 !
     if (exipou) then
 !

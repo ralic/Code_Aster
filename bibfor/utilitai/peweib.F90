@@ -223,7 +223,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                     chmat, n3)
         if (n3 .eq. 0) chmat = mate(1:8)
     endif
-    call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm, k8b)
+    call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
     call wkvect('&&PEWEIB.L_NOM_MAT', 'V V K8', nbmtcm, anommt)
     nomrc = 'WEIBULL         '
     call chmrck(chmat, nomrc, zk8(anommt), nbmtrc)
@@ -242,7 +242,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     kvalrk(9:24) = '.WEIBULL   .VALK'
     call jeveuo(kvalrc, 'L', ibid)
     call jeveuo(kvalrk, 'L', ibik)
-    call jelira(kvalrk, 'LONMAX', imc, k8b)
+    call jelira(kvalrk, 'LONMAX', imc)
     sref = 0.d0
     do 30 i = 1, imc
         if (zk8(ibik+i-1) .eq. 'SIGM_CNV') sref = zr(ibid+i-1)
@@ -396,7 +396,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         call u2mesk('A', 'UTILITAI3_46', 1, nomgrm)
                         goto 50
                     endif
-                    call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma, k8b)
+                    call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call u2mesk('A', 'UTILITAI3_47', 1, nomgrm)
                         goto 50

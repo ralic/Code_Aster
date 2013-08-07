@@ -99,7 +99,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
     noma=zk8(jnoma)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
     nddla=nbcmp-1
     ASSERT(nddla.le.nmocl)
 !
@@ -246,7 +246,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !     2. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
 !     ----------------------------------------------------------------
     call jecreo('&&ORDLRL.KIDREL', 'V N K16')
-    call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela, k8bid)
+    call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela)
     do irela1 = nbrela, 1, -1
         nbter1=zi(jrlnt+irela1-1)
         if (nbter1 .le. 1) then

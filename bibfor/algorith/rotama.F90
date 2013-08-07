@@ -45,7 +45,6 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 #include "blas/dnrm2.h"
     integer :: n1, i, iadcoo
     logical :: bidim
-    character(len=8) :: k8bid
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: angl, pt(3), d(3), p1mx, p1my, p1mz, ca, sa, p1m, prec
@@ -56,7 +55,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
     call jemarq()
     coorjv=geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
-    call jelira(coorjv, 'LONMAX', n1, k8bid)
+    call jelira(coorjv, 'LONMAX', n1)
     prec=1.d-14
     n1=n1/3
     angl=angl*r8dgrd()

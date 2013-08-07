@@ -43,7 +43,7 @@ subroutine pjfuc2(c1, c2, base, c3)
     integer :: jno1, nbno1, jnb1, jm11, jcf1, jnu1
     integer :: jno2, nbno2, jnb2, jm12, jcf2, jnu2
     integer :: jnb3, jm13, jcf3, jnu3
-    character(len=8) :: ma1, ma2, kbid
+    character(len=8) :: ma1, ma2
     character(len=24) :: valk(2)
 !
 ! DEB ------------------------------------------------------------------
@@ -71,8 +71,8 @@ subroutine pjfuc2(c1, c2, base, c3)
 !
 !     2- RECUPERATION DES POINTEURS
 !     -----------------------------
-    call jelira(c1//'.PJEF_NB', 'LONMAX', nbno1, kbid)
-    call jelira(c2//'.PJEF_NB', 'LONMAX', nbno2, kbid)
+    call jelira(c1//'.PJEF_NB', 'LONMAX', nbno1)
+    call jelira(c2//'.PJEF_NB', 'LONMAX', nbno2)
     call jeveuo(c1//'.PJEF_NB', 'L', jnb1)
     call jeveuo(c2//'.PJEF_NB', 'L', jnb2)
     call jeveuo(c1//'.PJEF_M1', 'L', jm11)

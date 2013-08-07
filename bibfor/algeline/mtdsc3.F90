@@ -61,7 +61,7 @@ subroutine mtdsc3(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, ier, jrefa, jscde, k, lmat
+    integer ::  ier, jrefa, jscde, k, lmat
     integer :: lnom
 !-----------------------------------------------------------------------
     call jemarq()
@@ -72,7 +72,7 @@ subroutine mtdsc3(nommat)
     call jeexin(mat19//'.&INT', ier)
     if (ier .eq. 0) then
         call jecreo(mat19//'.&INT', ' V V I')
-        call jeecra(mat19//'.&INT', 'LONMAX', 19, '  ')
+        call jeecra(mat19//'.&INT', 'LONMAX', 19)
     endif
 !
     call jeveuo(mat19//'.&INT', 'E', lmat)
@@ -107,7 +107,7 @@ subroutine mtdsc3(nommat)
 !
 !     -- LMAT+3 :
 !     ------------
-    call jelira(mat19//'.UALF', 'TYPE', ibid, kbid)
+    call jelira(mat19//'.UALF', 'TYPE', cval=kbid)
     ASSERT(kbid(1:1).eq.'R')
     zi(lmat+3) = 1
 !

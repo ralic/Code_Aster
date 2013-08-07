@@ -42,7 +42,6 @@ subroutine reajre(matelz, resuez, basez)
     integer :: iret, nlmax, nluti, ndim, jrelr, iret1, iret2
     parameter(ndim=10)
     character(len=1) :: base
-    character(len=4) :: cbid
     character(len=19) :: matele, resuel
 !
     call jemarq()
@@ -56,7 +55,7 @@ subroutine reajre(matelz, resuez, basez)
 !     ALLOCATION
     if (iret .eq. 0) then
         call wkvect(matele//'.RELR', base//' V K24', ndim, jrelr)
-        call jeecra(matele//'.RELR', 'LONUTI', 0, cbid)
+        call jeecra(matele//'.RELR', 'LONUTI', 0)
     endif
 !
 !     EXISTENCE DU RESU_ELEM ?
@@ -70,15 +69,15 @@ subroutine reajre(matelz, resuez, basez)
 !
 !     REDIMENSIONNEMENT DE .RELR SI NECESSAIRE :
 !     -------------------------------------------
-    call jelira(matele//'.RELR', 'LONMAX', nlmax, cbid)
-    call jelira(matele//'.RELR', 'LONUTI', nluti, cbid)
+    call jelira(matele//'.RELR', 'LONMAX', nlmax)
+    call jelira(matele//'.RELR', 'LONUTI', nluti)
     if (nlmax .eq. nluti) call juveca(matele//'.RELR', nlmax+ndim)
 !
 !     STOCKAGE :
 !     -----------
     call jeveuo(matele//'.RELR', 'E', jrelr)
     zk24(jrelr+nluti) = resuel
-    call jeecra(matele//'.RELR', 'LONUTI', nluti+1, cbid)
+    call jeecra(matele//'.RELR', 'LONUTI', nluti+1)
 !
 9999  continue
 !

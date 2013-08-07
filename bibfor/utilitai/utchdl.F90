@@ -118,7 +118,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         icmp = ivari
         if (icmp .le. 0) icmp = 0
     else
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
         icmp = indik8(zk8(iancmp),nocmp,1,ncmpmx)
         call wkvect(ncmp, 'V V K8', ncmpmx, incmp)
@@ -161,7 +161,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
         endif
 !        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         call jeveuo(jexnum(nommaz//'.CONNEX', ima), 'L', iaconx)
-        call jelira(jexnum(nommaz//'.CONNEX', ima), 'LONMAX', nbno, k8b)
+        call jelira(jexnum(nommaz//'.CONNEX', ima), 'LONMAX', nbno)
         ipo = indiis(zi(iaconx),ino,1,nbno)
         if (ipo .le. 0) then
             valk(1) = nonoez

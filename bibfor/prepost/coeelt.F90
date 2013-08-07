@@ -144,7 +144,7 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! --- ECRITURE DES GROUP_MA :
 !     ---------------------
-    call jelira('&&PRECOU.INDICE.GROUP_MA', 'LONUTI', indmax, k8bid)
+    call jelira('&&PRECOU.INDICE.GROUP_MA', 'LONUTI', indmax)
 !
     maxmai = 0
     do 50 i = 1, indmax

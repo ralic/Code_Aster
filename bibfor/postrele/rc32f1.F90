@@ -45,7 +45,6 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
     integer :: sipass, npass, ioc1, ioc2
     real(kind=8) :: salmia, salt1, saltam
     logical :: chemin
-    character(len=8) :: k8b
 !     ------------------------------------------------------------------
 !
     call jeveuo('&&RC32SI.SITU_GROUP', 'L', jsigr)
@@ -127,7 +126,7 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
 !
 ! --- RECHERCHE DU CHEMIN DE PASSAGE
 !
-    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips, k8b)
+    call jelira('&&RC32SI.PASSAGE_'//typass, 'LONUTI', nbsips)
     call jeveuo('&&RC32SI.PASSAGE_'//typass, 'L', jnpass)
     chemin = .false.
     salmia = 1.d+50

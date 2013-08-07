@@ -116,7 +116,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
     endif
 !
     call jeveuo(xfonfi, 'L', ifon)
-    call jelira(xfonfi, 'LONMAX', long, k8bid)
+    call jelira(xfonfi, 'LONMAX', long)
     nfon = long/4
 !
 ! --- RÉCUPÉRATION DES GRADIENTS DE LST ET LSN

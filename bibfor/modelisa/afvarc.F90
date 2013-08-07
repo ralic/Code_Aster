@@ -364,10 +364,10 @@ subroutine afvarc(chmat, nomail, nomode)
     cart2 = chmat//'.TEMP    .2'
     call jeveuo(cart2//'.DESC', 'L', jdesc)
     call jeveuo(cart2//'.VALE', 'L', jvale)
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'NEUT_K16'), 'LONMAX', ncmp, kbid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'NEUT_K16'), 'LONMAX', ncmp)
     nbgdmx=zi(jdesc-1+2)
     nbgdut=zi(jdesc-1+3)
-    call jelira(chmat//'.TEMP    .2.VALE', 'LONMAX', n1, kbid)
+    call jelira(chmat//'.TEMP    .2.VALE', 'LONMAX', n1)
     ASSERT(n1.eq.nbgdmx*ncmp)
 !     3.2 ON PARCOURT LES SD STOCKEES DANS LA CARTE ET ON REGARDE S'IL
 !         EXISTE D'AUTRES CMPS QUE TEMP ET LAGR :  LAUTR=.TRUE.

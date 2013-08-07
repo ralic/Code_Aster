@@ -117,12 +117,12 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
         endif
 !------------
         k24bd1=mailla//'.CONNEX'
-        call jelira(k24bd1, 'NMAXOC', inbmai, kbid)
+        call jelira(k24bd1, 'NMAXOC', inbmai)
         inoe1=1
         inoe2=1
         do 307 imai1 = 1, inbmai
             call jeveuo(jexnum(k24bd1, imai1), 'L', iad1)
-            call jelira(jexnum(k24bd1, imai1), 'LONMAX', inbnoe, kbid)
+            call jelira(jexnum(k24bd1, imai1), 'LONMAX', inbnoe)
             do 308 inoe1 = 1, inbnoe
                 inuno3=zi(iad1-1+inoe1)
                 if (inuno1 .eq. inuno3) then
@@ -166,10 +166,10 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !--------ON RECHERCHE LE PREMIER GROUP_MAI QUI CONTIENT LA MAILLE
 !        ET QUI A UN MATERIAU AFFECTE
 !
-                call jelira(mailla//'.GROUPEMA', 'NUTIOC', ingrma, kbid)
+                call jelira(mailla//'.GROUPEMA', 'NUTIOC', ingrma)
                 do 312 igrma1 = 1, ingrma
                     call jeveuo(jexnum(mailla//'.GROUPEMA', igrma1), 'L', iad1)
-                    call jelira(jexnum(mailla//'.GROUPEMA', igrma1), 'LONUTI', inbmai, kbid)
+                    call jelira(jexnum(mailla//'.GROUPEMA', igrma1), 'LONUTI', inbmai)
                     do 313 imai2 = 1, inbmai
                         imai3=zi(iad1-1+imai2)
                         if (imai3 .eq. imai1) then
@@ -187,7 +187,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !----------DANS CE CAS LA MAILLE A ETE DEFINIE PAR AFFE_MATERIAU
                 ilima=zi(iadesc+3-1+2*ilien1)
                 call jeveuo(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'L', iadlma)
-                call jelira(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'LONMAX', nmalim, kbid)
+                call jelira(jexnum(chamat//'.CHAMP_MAT .LIMA', ilima), 'LONMAX', nmalim)
                 do 326 ima1 = 1, nmalim
                     if (zi(iadlma-1+ima1) .eq. imai1) then
                         ilien2=ilien1
@@ -205,7 +205,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
         mater=zk8(iad1-1+ilien2)
         k24bd1=mater//'.FLUIDE    .VALK'
         call jeveuo(k24bd1, 'L', iad1)
-        call jelira(k24bd1, 'LONMAX', invalk, kbid)
+        call jelira(k24bd1, 'LONMAX', invalk)
         do 317 ivalk1 = 1, invalk
             kbid=zk8(iad1-1+ivalk1)
             if (kbid(1:3) .eq. 'RHO') then
@@ -288,8 +288,8 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
                 iapp1,iapp2, '.VALE'
                 ij1=(iapp2*(iapp2-1))/2+iapp1
                 call jecreo(k24bd1, 'V V R8')
-                call jeecra(k24bd1, 'LONMAX', npdsc3*3, kbid)
-                call jeecra(k24bd1, 'LONUTI', npdsc3*3, kbid)
+                call jeecra(k24bd1, 'LONMAX', npdsc3*3)
+                call jeecra(k24bd1, 'LONUTI', npdsc3*3)
                 call jeveut(k24bd1, 'E', zi(ilfex3-1+ij1))
                 iadfx3=zi(ilfex3-1+ij1)
                 iapp1b=(iapp1+ipar1)/2

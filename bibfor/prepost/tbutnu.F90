@@ -66,7 +66,7 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
                 listr, n1)
     if (n1 .ne. 0) then
         call jeveuo(listr//'.VALE', 'L', jinstd)
-        call jelira(listr//'.VALE', 'LONMAX', nbinst, k8b)
+        call jelira(listr//'.VALE', 'LONMAX', nbinst)
         call wkvect(nomjv, 'V V R', nbinst, jinst)
         call wkvect('&&TBUTNU.ORDRE', 'V V I', nbinst, jordr)
         do 10 ii = 1, nbinst

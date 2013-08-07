@@ -106,12 +106,12 @@ subroutine alligr(char, oper, noma, fonree, ligrcz)
         call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbgrel)
         lonlig = max(lonlig,1)
-        call jeecra(ligrch//'.LIEL', 'LONT', lonlig, ' ')
+        call jeecra(ligrch//'.LIEL', 'LONT', lonlig)
         nbmata = max(nbmata,1)
         call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbmata)
         lonema = max(lonema,1)
-        call jeecra(ligrch//'.NEMA', 'LONT', lonema, ' ')
+        call jeecra(ligrch//'.NEMA', 'LONT', lonema)
         call wkvect(ligrch//'.LGRF', 'G V K8', 2, jlgrf)
         zk8(jlgrf) = noma
         call wkvect(ligrch//'.NBNO', 'G V I', 1, idnbno)

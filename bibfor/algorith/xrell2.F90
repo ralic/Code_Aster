@@ -63,11 +63,10 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
     integer :: cpt, deja, k, noeud(2*narz), ik, tabdir(narz, 2), nbno, ii, ia
     integer :: scorar(narz), bestar, maxi, ir, t1(2*narz)
     integer :: mi, ma, npaq, t2(narz), nreleq, ip, dimeq, eq(narz), ie, ipaq
-    integer :: liseqt(narz, 2), jlis1, nrelrl, ih, iext
-    integer :: coefi(2), jlis2, jlis3, npil
+    integer :: liseqt(narz, 2), jlis1
+    integer ::  npil
     integer :: ifm, niv
-    real(kind=8) :: tabco(narz, ndim), r8maem, dist, dismin, tabcr(narz)
-    real(kind=8) :: coefr(2)
+    real(kind=8) :: tabco(narz, ndim), tabcr(narz)
     integer :: nunoa, nunob
     character(len=8) :: k8bid
     integer :: iarg

@@ -42,7 +42,6 @@ subroutine exmano(noma, numnoe, numano, nbmano)
     character(len=8) :: noma
     integer :: numnoe, numano(*), nbmano
 !
-    character(len=1) :: k1bid
     character(len=24) :: mlgnma, mlgtma, mlgcnx
 !
 !-----------------------------------------------------------------------
@@ -55,7 +54,7 @@ subroutine exmano(noma, numnoe, numano, nbmano)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), ntseg)
 !
     mlgnma = noma//'.NOMMAI'
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     mlgtma = noma//'.TYPMAIL'
     call jeveuo(mlgtma, 'L', jdtm)
     mlgcnx = noma//'.CONNEX'

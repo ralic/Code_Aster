@@ -46,7 +46,6 @@ subroutine op0155()
 #include "asterfort/w155mx.h"
     integer :: ifm, niv, n0, iret, jordr, nbordr, ie, nuordr
     integer :: i, j, jnompa, iadin, iadou, nbac, nbpa, nbpara
-    character(len=1) :: k1bid
     character(len=16) :: crit, typesd, k16b, nopara
     character(len=8) :: resu, nomres
     character(len=3) :: type
@@ -110,7 +109,7 @@ subroutine op0155()
     call jeveuo(nompar, 'L', jnompa)
     nomr19 = nomres
     call jeveuo(nomr19//'.ORDR', 'L', jordr)
-    call jelira(nomr19//'.ORDR', 'LONUTI', nbordr, k1bid)
+    call jelira(nomr19//'.ORDR', 'LONUTI', nbordr)
 !
     do 20 i = 1, nbordr
         nuordr=zi(jordr-1+i)

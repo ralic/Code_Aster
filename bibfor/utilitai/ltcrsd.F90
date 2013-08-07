@@ -46,11 +46,11 @@ subroutine ltcrsd(litab, base)
 !     --- CREATION DU .LTNT ---
 !
     call wkvect(listab//'.LTNT', baselt//' V K16', 7, jbid)
-    call jeecra(listab//'.LTNT', 'LONUTI', 0, ' ')
+    call jeecra(listab//'.LTNT', 'LONUTI', 0)
 !
 !     --- CREATION DU .LTNS ---
 !
     call wkvect(listab//'.LTNS', baselt//' V K24', 7, jbid)
-    call jeecra(listab//'.LTNS', 'LONUTI', 0, ' ')
+    call jeecra(listab//'.LTNS', 'LONUTI', 0)
 !
 end subroutine

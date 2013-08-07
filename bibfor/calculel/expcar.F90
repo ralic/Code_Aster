@@ -52,7 +52,6 @@ subroutine expcar(carte)
     logical :: dejavu
     character(len=8) :: scal, noma, kbid
     character(len=24) :: noli
-    character(len=1) :: k1bid
 !
 !
 !     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
@@ -79,7 +78,7 @@ subroutine expcar(carte)
 !
 !     -- NCMPMX : NOMBRE MAXIMAL DE CMP POUR LA GRANDEUR.
 !     ----------------------------------------------------
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx)
 !
 !     -- NBEDIT : NOMBRE DE VALEURS EDITEES DANS LA CARTE:
 !     ----------------------------------------------------
@@ -104,7 +103,7 @@ subroutine expcar(carte)
     ASSERT(iret.ne.0)
     call jeveuo(carte//'.NOLI', 'L', ianoli)
     call jecreo(carte//'.NUMT', 'V V I')
-    call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit, ' ')
+    call jeecra(carte//'.NUMT', 'LONMAX', 3*nbedit)
     call jeveuo(carte//'.NUMT', 'E', ianumt)
     nbmato = 0
     do 1,iedit = 1,nbedit
@@ -126,7 +125,7 @@ subroutine expcar(carte)
         zi(ianumt-1+3* (iedit-1)+1) = nbmato + 1
         if (noli(1:8) .eq. '        ') then
 !              MAILLES DU MAILLAGE:
-            call jelira(noma//'.NOMMAI', 'NOMMAX', nbma, k1bid)
+            call jelira(noma//'.NOMMAI', 'NOMMAX', nbma)
             nbmato = nbmato + nbma
         else
 !              MAILLES SUPPLEMENTAIRES D'1 LIGREL:
@@ -145,8 +144,8 @@ subroutine expcar(carte)
 !
     call jecreo(carte//'.VALP', 'V V '//scal(1:4))
     call jecreo(carte//'.DGP ', 'V V I')
-    call jeecra(carte//'.VALP', 'LONMAX', ncmpmx*nbmato, ' ')
-    call jeecra(carte//'.DGP ', 'LONMAX', nec*nbmato, ' ')
+    call jeecra(carte//'.VALP', 'LONMAX', ncmpmx*nbmato)
+    call jeecra(carte//'.DGP ', 'LONMAX', nec*nbmato)
     call jeveuo(carte//'.VALP', 'E', iavalp)
     call jeveuo(carte//'.DGP ', 'E', iadgp)
 !

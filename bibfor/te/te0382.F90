@@ -84,7 +84,7 @@ subroutine te0382(option, nomte)
     integer :: nse, ise, in, j, ipg,levois
     integer :: irese, kpg, spt, noe(9,6,4)
 !
-    real(kind=8) :: r8bid, rtbid3(3)
+    real(kind=8) :: r8bid
     real(kind=8) :: dfdxp(9), dfdyp(9), poidp, he, hse, hf, coeff
     real(kind=8) :: sg11(nbnamx), sg22(nbnamx), sg12(nbnamx), jaco(9)
     real(kind=8) :: nx(9), ny(9), nz(9), tx(nbnamx), ty(nbnamx)

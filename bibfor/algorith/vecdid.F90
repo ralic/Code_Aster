@@ -125,7 +125,7 @@ subroutine vecdid(modele, lischa, depdid, vecelz)
 !
 ! --- LISTE DES CHARGES
 !
-    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar, k8bid)
+    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
     call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
     call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
 !

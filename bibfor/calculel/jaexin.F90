@@ -28,7 +28,6 @@ subroutine jaexin(nomlu, iret)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32
-    character(len=8) :: kbid
     integer :: iexi, iadm, iadd
 ! DEB ------------------------------------------------------------------
     noml32 = nomlu
@@ -36,8 +35,8 @@ subroutine jaexin(nomlu, iret)
     call jeexin(noml32, iexi)
     if (iexi .eq. 0) goto 9998
 !
-    call jelira(noml32, 'IADD', iadd, kbid)
-    call jelira(noml32, 'IADM', iadm, kbid)
+    call jelira(noml32, 'IADD', iadd)
+    call jelira(noml32, 'IADM', iadm)
     if (iadm .eq. 0 .and. iadd .eq. 0) goto 9998
 !
     iret=1

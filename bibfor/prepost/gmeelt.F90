@@ -153,7 +153,7 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 ! --- ECRITURE DES GROUP_MA :
 !     ---------------------
     ier = 0
-    call jelira('&&PREGMS.INDICE.GROUP_MA', 'LONUTI', indmax, k8bid)
+    call jelira('&&PREGMS.INDICE.GROUP_MA', 'LONUTI', indmax)
 !
     maxmai = 0
     do 50 i = 1, indmax

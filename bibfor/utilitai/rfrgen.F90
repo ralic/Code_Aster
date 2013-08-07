@@ -173,7 +173,7 @@ subroutine rfrgen(trange)
 !
     if (nomcha(1:4) .eq. 'PTEM') then
         call jeveuo(resu//'.PTEM', 'L', ipas)
-        call jelira(resu//'.PTEM', 'LONMAX', nbpas, k8b)
+        call jelira(resu//'.PTEM', 'LONMAX', nbpas)
 ! NORMALEMENT ON SORT LE dt SI ADAPT. MAIS AVEC DYNA_GENE ON PEUT
 ! TOUJOURS LE SORTIR
         call wkvect('&&RFRGEN.DT', 'V V R', nbpas, lpas)
@@ -186,7 +186,7 @@ subroutine rfrgen(trange)
         lfon = lvar + nbordr
         if (intres(1:3) .ne. 'NON') then
             call jeveuo(resu//'.DISC', 'L', idinsg)
-            call jelira(resu//'.DISC', 'LONMAX', nbinsg, k8b)
+            call jelira(resu//'.DISC', 'LONMAX', nbinsg)
             do 54 iordr = 0, nbordr-1
                 call extrac(intres, epsi, crit, nbinsg-2, zr(idinsg),&
                             zr(jinst+iordr), zr(lpas), 1, rep1, ierd)
@@ -217,7 +217,7 @@ subroutine rfrgen(trange)
             lfon = lvar + nbordr
             if (intres(1:3) .ne. 'NON') then
                 call jeveuo(resu//'.DISC', 'L', idinsg)
-                call jelira(resu//'.DISC', 'LONMAX', nbinsg, k8b)
+                call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 do 40 iordr = 0, nbordr-1
                     ASSERT(nbmode == 1)
                     call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
@@ -305,7 +305,7 @@ subroutine rfrgen(trange)
             lfon = lvar + nbordr
             if (intres(1:3) .ne. 'NON') then
                 call jeveuo(resu//'.DISC', 'L', idinsg)
-                call jelira(resu//'.DISC', 'LONMAX', nbinsg, k8b)
+                call jelira(resu//'.DISC', 'LONMAX', nbinsg)
                 call wkvect('&&RFRGEN.VECTGENE', 'V V R', nbmode, idvecg)
                 do 50 iordr = 0, nbordr-1
                     call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
@@ -337,7 +337,7 @@ subroutine rfrgen(trange)
             if (nonmot(1:3) .eq. 'OUI') then
                 call jeveuo(resu//'.F'//nomcha(1:3), 'L', jfon)
                 call jeveuo(resu//'.IPSD', 'L', ipsdel)
-                call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci, k8b)
+                call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci)
                 nbexci = nbexci / 2
                 do 100 iordr = 0, nbordr-1
                     call mdgep4(neq, nbexci, zr(ipsdel), zr(lvar+ iordr), zk8(jfon),&

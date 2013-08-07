@@ -62,7 +62,6 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
     integer :: ibid, nbordr, nrang, jordr, i, ipara, ier, irang, ifr
     integer :: vali(2)
     real(kind=8) :: r8bid
-    character(len=8) :: k8b
     character(len=24) :: valk(3)
     character(len=16) :: param, k16b
     character(len=19) :: noms2
@@ -82,7 +81,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         endif
     else
         if (irang .eq. 0) then
-            call jelira(noms2//'.ORDR', 'LONMAX', nbordr, k8b)
+            call jelira(noms2//'.ORDR', 'LONMAX', nbordr)
             nrang = nrang + 1
             if (nrang .gt. nbordr) then
                 valk (1) = nomsd
@@ -91,7 +90,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
                 call u2mesg('F', 'UTILITAI6_78', 1, valk, 2,&
                             vali, 0, r8bid)
             endif
-            call jeecra(noms2//'.ORDR', 'LONUTI', nrang, ' ')
+            call jeecra(noms2//'.ORDR', 'LONUTI', nrang)
             call jeveuo(noms2//'.ORDR', 'E', jordr)
             if (nrang .gt. 1) then
                 ASSERT(zi(jordr+nrang-2).lt.iordr)
@@ -101,7 +100,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         endif
     endif
 !
-    call jelira(jexnum(noms2//'.TACH', 1), 'LONMAX', nbordr, k8b)
+    call jelira(jexnum(noms2//'.TACH', 1), 'LONMAX', nbordr)
     if (irang .gt. nbordr) then
         valk (1) = nomsd
         vali (1) = irang

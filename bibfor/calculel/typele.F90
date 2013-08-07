@@ -42,7 +42,6 @@ function typele(ligrez, igrel)
 !     ------------------
     character(len=19) :: ligrel
     integer :: liel, n1
-    character(len=1) :: k1bid
 ! ----------------------------------------------------------------------
 !     COMMONS DE CALCUL.F :
     integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
@@ -60,7 +59,7 @@ function typele(ligrez, igrel)
     else
         call jemarq()
         call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', liel)
-        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1, k1bid)
+        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', n1)
         typele = zi(liel-1+n1)
         call jedema()
     endif

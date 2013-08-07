@@ -236,7 +236,7 @@ subroutine op0152()
 ! EN CAS D'UTILISATION DU MOT CLE CHAM-NO, CECI POUR
 ! MAT152
             call jecreo('&&OP0152.VEC', 'V V K8')
-            call jeecra('&&OP0152.VEC', 'LONMAX', n7, ' ')
+            call jeecra('&&OP0152.VEC', 'LONMAX', n7)
             call jeveuo('&&OP0152.VEC', 'E', ivalk)
             call getvid(' ', 'CHAM_NO', 0, iarg, n7,&
                         zk8(ivalk), n6)

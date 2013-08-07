@@ -36,7 +36,7 @@ subroutine infoma(nomu)
     character(len=32) :: comnoe, commai, comgrn, comgrm
     character(len=24) :: conxv, grpnov, grpmav, nomnoe, titre, cooval
     character(len=24) :: nom, nommai
-    character(len=8) :: type, kbid
+    character(len=8) :: type
     integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, jtyma, nbma
     integer :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
     integer :: nbmmai, n1, nbmmax, ityp
@@ -72,27 +72,27 @@ subroutine infoma(nomu)
 !
     call jeexin(grpmav, iret)
     if (iret .gt. 0) then
-        call jelira(grpmav, 'NMAXOC', nbgrma, kbid)
+        call jelira(grpmav, 'NMAXOC', nbgrma)
     else
         nbgrma=0
     endif
     call jeexin(grpnov, iret)
     if (iret .gt. 0) then
-        call jelira(grpnov, 'NMAXOC', nbgrno, kbid)
+        call jelira(grpnov, 'NMAXOC', nbgrno)
     else
         nbgrno=0
     endif
 !
 !
-    call jelira(titre, 'LONMAX', nbltit, kbid)
-    call jelira(nomnoe, 'NOMMAX', nbnoeu, kbid)
-    call jelira(nommai, 'NOMMAX', nbmail, kbid)
+    call jelira(titre, 'LONMAX', nbltit)
+    call jelira(nomnoe, 'NOMMAX', nbnoeu)
+    call jelira(nommai, 'NOMMAX', nbmail)
     call jeveuo(nomu//'.DIME', 'L', jdime)
     call jeveuo(nomu//'.TYPMAIL', 'L', jtyma)
     nbcoor=zi(jdime-1+6)
 !
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai, kbid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
     do 20 i = 1, nbmmai
         dimmai(i) = 0
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
@@ -126,7 +126,7 @@ subroutine infoma(nomu)
                 call jeexin(jexnum(grpnov, i), iret)
                 if (iret .eq. 0) goto 60
                 call jenuno(jexnum(grpnov, i), nom)
-                call jelira(jexnum(grpnov, i), 'LONUTI', n1, kbid)
+                call jelira(jexnum(grpnov, i), 'LONUTI', n1)
                 write (ifm,808) nom,n1
 60          continue
         endif
@@ -137,7 +137,7 @@ subroutine infoma(nomu)
                 call jeexin(jexnum(grpmav, i), iret)
                 if (iret .eq. 0) goto 70
                 call jenuno(jexnum(grpmav, i), nom)
-                call jelira(jexnum(grpmav, i), 'LONUTI', n1, kbid)
+                call jelira(jexnum(grpmav, i), 'LONUTI', n1)
                 write (ifm,808) nom,n1
 70          continue
         endif
@@ -159,7 +159,7 @@ subroutine infoma(nomu)
         do 90 i = 1, nbmail
             call jenuno(jexnum(nommai, i), nom)
             call jeveuo(jexnum(conxv, i), 'L', iad1)
-            call jelira(jexnum(conxv, i), 'LONMAX', nbno, kbid)
+            call jelira(jexnum(conxv, i), 'LONMAX', nbno)
             ityp=zi(jtyma-1+i)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), type)
             if (nbno .le. 5) then
@@ -177,7 +177,7 @@ subroutine infoma(nomu)
                 if (iret .eq. 0) goto 100
                 call jenuno(jexnum(grpnov, i), nom)
                 call jeveuo(jexnum(grpnov, i), 'L', iad)
-                call jelira(jexnum(grpnov, i), 'LONUTI', nbno, kbid)
+                call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
                 nn = nbno
                 if (nn .le. 5) then
                     write (ifm,704) i,nom,nbno, (zi(iad+j-1),j=1,nn)
@@ -195,7 +195,7 @@ subroutine infoma(nomu)
                 if (iret .eq. 0) goto 110
                 call jenuno(jexnum(grpmav, i), nom)
                 call jeveuo(jexnum(grpmav, i), 'L', iad)
-                call jelira(jexnum(grpmav, i), 'LONUTI', nbma, kbid)
+                call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
                 nn = nbma
                 if (nbma .le. 5) then
                     write (ifm,704) i,nom,nbma, (zi(iad+j-1),j=1,nn)

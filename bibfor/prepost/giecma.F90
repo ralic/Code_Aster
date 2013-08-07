@@ -65,7 +65,6 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
     parameter (nbelem = 18)
     character(len=7) :: k7nom(8)
     character(len=8) :: k8nom(8), tymagi(nbelem), tymaas(nbelem)
-    character(len=1) :: cbid
 !
 !
 !     COGIAS EST UN TAMPON POUR ECRIRE LA CONNECTIVITE DES MAILLES
@@ -86,7 +85,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
 !
     call jeveuo('&&GILIRE'//nomobj//'.CONNEX', 'L', iacnex)
     call jeveuo('&&GILIRE.NUMANEW', 'E', ianema)
-    call jelira('&&GILIRE.NUMANEW', 'LONUTI', nmtot, cbid)
+    call jelira('&&GILIRE.NUMANEW', 'LONUTI', nmtot)
     call jeexin('&&GILIRE.INDIRECT', ibid)
     if (ibid .eq. 0) then
         call u2mess('F', 'PREPOST_55')

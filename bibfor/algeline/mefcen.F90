@@ -77,7 +77,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: i, j, iret, rangr1
-    character(len=19) :: carte, carsd, kbid
+    character(len=19) :: carte, carsd
     character(len=3) :: note
 !     ------------------------------------------------------------------
 !
@@ -159,7 +159,7 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot,&
         call jeveuo(carte//'.DESC', 'L', idesc)
         call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGEPO'), 'L', icmp)
 !
-        call jelira(jexnum('&CATA.GD.NOMCMP', zi(idesc)), 'LONMAX', npmax, kbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', zi(idesc)), 'LONMAX', npmax)
 !
         rangr1= indik8(zk8(icmp),'R1      ',1,npmax)
 !

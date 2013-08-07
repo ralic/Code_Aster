@@ -41,7 +41,6 @@ subroutine symema(geomi, perp, pt)
 #include "blas/dnrm2.h"
     character(len=24) :: coorjv
     character(len=19) :: geomi
-    character(len=8) :: k8bid
     real(kind=8) :: norm, prec, xd, pti(3), pt(3), perp(3), dist
     integer :: i, iadcoo, n1
 !
@@ -53,7 +52,7 @@ subroutine symema(geomi, perp, pt)
 !     RECUPERATION DE L'ADRESSE DES COORDONNEES ET DU NOMBRE DE POINTS
     coorjv=geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
-    call jelira(coorjv, 'LONMAX', n1, k8bid)
+    call jelira(coorjv, 'LONMAX', n1)
     iadcoo = iadcoo - 1
     n1=n1/3
 !

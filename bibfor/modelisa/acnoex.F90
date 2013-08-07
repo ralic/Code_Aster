@@ -46,7 +46,6 @@ subroutine acnoex(noma, type, liste, nb, no1,&
 ! OUT : NO1    : NOEUD EXTREMITE DE L'ENSEMBLE DES MAILLES
 ! OUT : NO2    : NOEUD AUTRE EXTREMITE DE L'ENSEMBLE DES MAILLES
 ! ----------------------------------------------------------------------
-    character(len=8) :: c8
     character(len=24) :: mlggma, mlgnma, mlgcnx, c24
     character(len=24) :: valk
 !     ------------------------------------------------------------------
@@ -75,7 +74,7 @@ subroutine acnoex(noma, type, liste, nb, no1,&
     else if (type.eq.'GRMA') then
         do 53 ig = 1, nb
             call jeveuo(jexnom(mlggma, liste(ig)), 'L', jdgm)
-            call jelira(jexnom(mlggma, liste(ig)), 'LONUTI', nm, c8)
+            call jelira(jexnom(mlggma, liste(ig)), 'LONUTI', nm)
             do 54 im = 1, nm
                 img = zi(jdgm+im-1)
                 call jeveuo(jexnum(mlgcnx, img), 'L', jdno)

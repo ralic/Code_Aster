@@ -41,7 +41,6 @@ subroutine op0040()
 #include "asterfort/ulopen.h"
     integer :: ifm, niv, ibid, ncmp1, ncmpmx, icmp, jatach, nbcham
     integer :: jnocmp, isy, iord, ifi, n2
-    character(len=8) :: k8b
     character(len=16) :: nomsym, nomfi
     character(len=19) :: resuin, nomcha
     integer :: iarg
@@ -68,7 +67,7 @@ subroutine op0040()
      & 'COMPOSANTES DES CHAMPS PRESENTS DANS LE RESULTAT : ',resuin
 !
 !     LECTURE DU NOMBRE DE CHAMPS PRESENTS ET DU NOMBRE D'ORDRE
-    call jelira(resuin//'.DESC', 'NOMMAX', nbcham, k8b)
+    call jelira(resuin//'.DESC', 'NOMMAX', nbcham)
 !
     do 10 isy = 1, nbcham
         call jenuno(jexnum(resuin//'.DESC', isy), nomsym)

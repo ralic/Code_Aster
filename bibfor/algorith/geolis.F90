@@ -66,7 +66,6 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
     real(kind=8) :: coor1(3), coor2(3), zero, un, rot1(3, 3), rot2(3, 3)
     character(len=1) :: kb
     character(len=8) :: modgen, lint2, sst1, sst2, intf1, intf2, mail1, mail2
-    character(len=8) :: k8bid
     character(len=24) :: repnom, int2, toto, geom2, geom1
     character(len=*) :: limail
 !
@@ -163,7 +162,7 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2,&
                 lint2)
     int2=lint2//'.IDC_LINO'
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
-    call jelira(jexnum(int2, ibid), 'LONMAX', nbno2, k8bid)
+    call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
     call jeveuo(jexnum(lint2 //'.IDC_LINO', ibid), 'L', llint2)
     call jeveuo(lint2//'.IDC_DEFO', 'L', lnuno2)
 !

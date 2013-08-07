@@ -41,14 +41,13 @@ subroutine xpogma(nbgma, nb, listgr, ima, jlogma)
 !       JLOGMA  : ADRESSE DES VECTEUR DE TAILLE
 !
     integer :: ngrm, iagma, i, ig
-    character(len=8) :: k8b
 !
 !
     call jemarq()
 !
     if (nbgma .eq. 0) goto 999
 !
-    call jelira(jexnum(listgr, ima), 'LONMAX', ngrm, k8b)
+    call jelira(jexnum(listgr, ima), 'LONMAX', ngrm)
 !
 !     NGRM = 0 : MAILLE N'APPARTENANT A AUCUN GROUPE, ON SORT
     if (ngrm .eq. 0) goto 999

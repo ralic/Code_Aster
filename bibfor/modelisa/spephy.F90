@@ -94,7 +94,6 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 !
     real(kind=8) :: speci, specr
 !
-    character(len=8) :: k8b
     character(len=24) :: kval(5), valk(2), chvals, chfreq
     character(len=24) :: chnumi, chnumj, chvale, chnoei, chnoej, chcmpi, chcmpj
 !
@@ -109,7 +108,7 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
     call jeveuo(chfreq, 'L', lfreq)
-    call jelira(chnumi, 'LONMAX', mxval, k8b)
+    call jelira(chnumi, 'LONMAX', mxval)
 !
 !
 ! --- POUR CHAQUE PAS EN VITESSE ON CALCULE L INTERSPECTRE DE REPONSE
@@ -235,8 +234,8 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
             endif
 !
             call jecroc(jexnum(chvals, ij))
-            call jeecra(jexnum(chvals, ij), 'LONMAX', nbabs, ' ')
-            call jeecra(jexnum(chvals, ij), 'LONUTI', nbabs, ' ')
+            call jeecra(jexnum(chvals, ij), 'LONMAX', nbabs)
+            call jeecra(jexnum(chvals, ij), 'LONUTI', nbabs)
             call jeveuo(jexnum(chvals, ij), 'E', ispec)
 !
             do 90 il = 1, nbpf

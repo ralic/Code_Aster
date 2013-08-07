@@ -45,7 +45,6 @@ subroutine vtcopy(chin, chout, kstop, codret)
 !
 !
     integer :: iret, nbsd, ilimpi, iret1, ifetc1, ifetc2, idd
-    character(len=8) :: k8bid
     character(len=19) :: ch1, ch2
     character(len=24) :: ch1esc, ch2esc
 !     ------------------------------------------------------------------
@@ -61,7 +60,7 @@ subroutine vtcopy(chin, chout, kstop, codret)
 !
 ! --- SI FETI, ON DUPLIQUE AUSSI LES CHAM_NO ESCLAVES
     if (iret .ne. 0) then
-        call jelira(ch1(1:19)//'.FETC', 'LONMAX', nbsd, k8bid)
+        call jelira(ch1(1:19)//'.FETC', 'LONMAX', nbsd)
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
         call jeveuo(ch1(1:19)//'.FETC', 'L', ifetc1)
         call jeexin(ch2(1:19)//'.FETC', iret1)

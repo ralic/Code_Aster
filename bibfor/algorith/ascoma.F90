@@ -58,7 +58,6 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
     integer :: nbchme, jmec, iret
     integer :: k, jcoef, jlicoe
     character(len=24) :: licoef
-    character(len=8) :: k8bid
     character(len=19) :: mesuiv
 !
 ! ----------------------------------------------------------------------
@@ -76,7 +75,7 @@ subroutine ascoma(meelem, numedd, solveu, lischa, matass)
     if (iret .eq. 0) then
         goto 999
     else
-        call jelira(licoef, 'LONUTI', nbchme, k8bid)
+        call jelira(licoef, 'LONUTI', nbchme)
         call jeveuo(mesuiv(1:19)//'.RELR', 'L', jmec)
         call jeveuo(licoef, 'L', jlicoe)
     endif

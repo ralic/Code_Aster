@@ -76,7 +76,7 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
     integer :: jdeeq, ncmpmx, nec, jnueq, nbligr, n1, jprno, i2
     integer :: nbno, j, iddl, iadg, k, ieq
 !
-    character(len=1) :: k1bid, base
+    character(len=1) ::  base
 !
 !
     call jemarq()
@@ -85,16 +85,16 @@ subroutine pteequ(prchno, basz, neq, gds, ncmp,&
     call jedetr(prchno(1:19)//'.DEEQ')
     call wkvect(prchno(1:19)//'.DEEQ', base//' V I', 2*neq, jdeeq)
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx)
     nec = nbec(gds)
     if (ncmpmx .eq. 0) call u2mess('F', 'ASSEMBLA_24')
     if (nec .eq. 0) call u2mess('F', 'ASSEMBLA_25')
 !
     call jeveuo(prchno(1:19)//'.NUEQ', 'L', jnueq)
-    call jelira(prchno(1:19)//'.PRNO', 'NMAXOC', nbligr, k1bid)
+    call jelira(prchno(1:19)//'.PRNO', 'NMAXOC', nbligr)
     if (nbligr .ne. 1) call u2mess('F', 'ASSEMBLA_33')
 !
-    call jelira(jexnum(prchno(1:19)//'.PRNO', 1), 'LONMAX', n1, k1bid)
+    call jelira(jexnum(prchno(1:19)//'.PRNO', 1), 'LONMAX', n1)
     if (n1 .le. 0) call u2mess('F', 'ASSEMBLA_34')
     call jeveuo(jexnum(prchno(1:19)//'.PRNO', 1), 'L', jprno)
 !

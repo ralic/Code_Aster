@@ -65,7 +65,7 @@ subroutine utncmp(cham19, ncmp, nomobj)
     call jeveuo('&CATA.GD.DESCRIGD', 'L', idescr)
     nec = nbec( gd)
     ASSERT(nec.le.10)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     call wkvect('&&UTNCMP.ICMP', 'V V I', ncmpmx, jcmp)
 !

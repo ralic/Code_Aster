@@ -192,7 +192,7 @@ subroutine op0060()
                 lifreq, n1)
     if (n1 .gt. 0) then
         call jeveuo(lifreq//'.VALE', 'L', lfreq)
-        call jelira(lifreq//'.VALE', 'LONMAX', nbfreq, k8bid)
+        call jelira(lifreq//'.VALE', 'LONMAX', nbfreq)
     else
         call getvr8(' ', 'FREQ', 0, iarg, 0,&
                     r8bid, nbfreq)
@@ -583,7 +583,7 @@ subroutine op0060()
         call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', ibid,&
                     carele, iret)
         call jeveuo(result//'           .ORDR', 'L', jord)
-        call jelira(result//'           .ORDR', 'LONUTI', nbord, k8bid)
+        call jelira(result//'           .ORDR', 'LONUTI', nbord)
         do 43 i = 1, nbord
             call rsadpa(result, 'E', 1, 'MODELE', zi(jord+i-1),&
                         0, ladpa, k8bid)

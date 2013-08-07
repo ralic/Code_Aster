@@ -58,7 +58,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 #include "blas/ddot.h"
     character(len=1) :: listyp(2)
     character(len=4) :: k4bid
-    character(len=8) :: modgen, kb, rest1, mraid, mmass
+    character(len=8) :: modgen, rest1, mraid, mmass
     character(len=19) :: imped, lismat(2), nume91, solveu
     character(len=24) :: indin1
     integer :: i1, ibid, iret, j1, k1, l1, nbeq1, nbmod, isst1, llint1, nbddl1
@@ -151,7 +151,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         do 90 k1 = 1, nbint
             indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
             call jeveuo(indin1, 'L', llint1)
-            call jelira(indin1, 'LONMAX', nbddl1, kb)
+            call jelira(indin1, 'LONMAX', nbddl1)
             do 140 l1 = 1, nbddl1
                 if (zi(llint1+l1-1) .gt. 0) then
                     zr(lmod1+zi(llint1+l1-1)-1)=0
@@ -186,7 +186,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         do 160 k1 = 1, nbint
             indin1='&&VEC_DDL_INTF_'//zk8(lintf+k1-1)
             call jeveuo(indin1, 'L', llint1)
-            call jelira(indin1, 'LONMAX', nbddl1, kb)
+            call jelira(indin1, 'LONMAX', nbddl1)
             do 170 l1 = 1, nbddl1
                 ibid=zi(llint1+l1-1)
                 if (ibid .gt. 0) then

@@ -49,7 +49,6 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy,&
     real(kind=8) :: xa, xb, ya, yb, ax, s1, s2, za, zb
     character(len=4) :: docul
     character(len=24) :: nabsc, nnocp
-    character(len=1) :: k1bid
 !======================================================================
 !
     call jemarq()
@@ -58,17 +57,17 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy,&
                                 oper, rep(1:1))
     nnocp = sdeval//'.NOCP'
     nabsc = sdlieu(1:19)//'.ABSC'
-    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', i, docul)
+    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', cval=docul)
     call jeveuo(sdlieu(1:19)//'.DESC', 'L', anomnd)
-    call jelira(nabsc, 'NMAXOC', nboc, k1bid)
-    call jelira(nnocp, 'LONMAX', nbcp, k1bid)
+    call jelira(nabsc, 'NMAXOC', nboc)
+    call jelira(nnocp, 'LONMAX', nbcp)
     call jeveuo(nnocp, 'L', anocp)
     call jeveuo(sdeval//'.PNCO', 'L', i)
     nbco = zi(i)
     call jeveuo(sdeval//'.PNSP', 'L', i)
     nbsp = zi(i)
     do 100, ioc = 1, nboc, 1
-    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt, k1bid)
+    call jelira(jexnum(nabsc , ioc), 'LONMAX', nbpt)
     call jeveuo(jexnum(nabsc , ioc), 'L', aabsc)
     call jeveuo(jexnum(sdmoy , ioc), 'L', asdmo)
     s1 = zr(aabsc + 1-1)

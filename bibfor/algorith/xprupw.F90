@@ -231,13 +231,13 @@ subroutine xprupw(cmnd, noma, fispre, vcn, grlr,&
     call jeveuo(nodtor, 'L', jnodto)
 !
 !     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
-    call jelira(nodtor, 'LONMAX', nbno, k8b)
+    call jelira(nodtor, 'LONMAX', nbno)
 !
 !     RETRIEVE THE LIST OF THE ELEMENTS DEFINING THE TORE
     call jeveuo(eletor, 'L', jelcal)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
-    call jelira(eletor, 'LONMAX', neleto, k8b)
+    call jelira(eletor, 'LONMAX', neleto)
 !
 !     CHECK IF THE LOCALISATION OF THE DOMAIN HAS BEEN REQUESTED
     if (nbnoma .eq. nbno) then

@@ -76,7 +76,6 @@ subroutine op0180()
     real(kind=8) :: delta, ea, f0, frco, frli, mu0, rh1000, sa, fprg, xflu, xret
     real(kind=8) :: trelax
     logical :: mail2d, relax
-    character(len=1) :: k1b
     character(len=3) :: k3b
     character(len=8) :: caelem, chmat, k8b, mailla, modele, noancr(2), nomu
     character(len=8) :: typanc(2)
@@ -240,21 +239,21 @@ subroutine op0180()
 !
     nunobe = '&&OP0180.NUMNOE_BET'
     call jecreo(nunobe, 'V V I')
-    call jeecra(nunobe, 'LONMAX', nbnoma, ' ')
+    call jeecra(nunobe, 'LONMAX', nbnoma)
 !
     numaca = '&&OP0180.NUMAIL_CAB'
     call jecreo(numaca, 'V V I')
-    call jeecra(numaca, 'LONMAX', nbmama, ' ')
+    call jeecra(numaca, 'LONMAX', nbmama)
 !
     xnoca = '&&OP0180.X_NOEU_CAB'
     call jecreo(xnoca, 'V V R')
-    call jeecra(xnoca, 'LONMAX', nbnoma, ' ')
+    call jeecra(xnoca, 'LONMAX', nbnoma)
     ynoca = '&&OP0180.Y_NOEU_CAB'
     call jecreo(ynoca, 'V V R')
-    call jeecra(ynoca, 'LONMAX', nbnoma, ' ')
+    call jeecra(ynoca, 'LONMAX', nbnoma)
     znoca = '&&OP0180.Z_NOEU_CAB'
     call jecreo(znoca, 'V V R')
-    call jeecra(znoca, 'LONMAX', nbnoma, ' ')
+    call jeecra(znoca, 'LONMAX', nbnoma)
 !
 ! 4.3 EXTENSION DES CARTES ELEMENTAIRES : CREATION DE VECTEURS
 ! --- D'ADRESSES DES CARACTERISTIQUES POINTES PAR LE NUMERO DE
@@ -279,7 +278,7 @@ subroutine op0180()
 !.... DETERMINATION DU RANG DE LA COMPOSANTE <A1>
 !.... DE LA GRANDEUR <CAGNBA>
 !
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba, k1b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'LONMAX', ncaba)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'CAGNBA'), 'L', jcaba)
     irana1 = 0
     do 20 icmp = 1, ncaba
@@ -309,7 +308,7 @@ subroutine op0180()
     carsig = nomu//'.CHME.SIGIN'
     call alcart('G', carsig, mailla, 'SIEF_R')
 !
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'LONMAX', nsief, k1b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'LONMAX', nsief)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'L', jsief)
     call jeveuo(carsig//'.NCMP', 'E', jncmp)
     call jeveuo(carsig//'.VALV', 'E', jvalv)

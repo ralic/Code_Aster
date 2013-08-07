@@ -35,7 +35,6 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
     integer :: jchth, iad, icmp, nbcmp, decal, jcesd, jcesv, jcesl, nbinst, i
     integer :: jmoye, jmoy2
     real(kind=8) :: ta, tb, tab, dt1, dt1max, tabmax
-    character(len=8) :: k8b
     character(len=24) :: chtemp
 !
 ! DEB ------------------------------------------------------------------
@@ -62,7 +61,7 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
                     vali, 0, 0.d0)
     endif
     call jeveuo(zk24(jcesv-1+iad), 'L', jmoye)
-    call jelira(zk24(jcesv-1+iad), 'LONMAX', nbinst, k8b)
+    call jelira(zk24(jcesv-1+iad), 'LONMAX', nbinst)
     nbinst = nbinst / 2
 !
     if (nbm .gt. 1) then

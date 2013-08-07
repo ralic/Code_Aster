@@ -47,7 +47,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 !     ------------------------------------------------------------------
 !
     integer :: ipara, iatava, ire1, ire2, idebu, imaxi, iloty
-    integer :: ibid, iaobj, len
+    integer ::  iaobj, len
     character(len=8) :: k8b, nomobj, k8debu, k8maxi
     character(len=24) :: valk(3)
     character(len=16) :: nopara
@@ -83,10 +83,10 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
     iad = iaobj - 1 + (iordr-1)*imaxi + idebu
 !
     if (itype .ne. 0) then
-        call jelira(nomsd//nomobj, 'TYPE', ibid, type)
+        call jelira(nomsd//nomobj, 'TYPE', cval=type)
         if (type(1:1) .eq. 'K') then
             ASSERT(len(type).ge.2)
-            call jelira(nomsd//nomobj, 'LTYP', iloty, k8b)
+            call jelira(nomsd//nomobj, 'LTYP', iloty)
             call codent(iloty, 'G', k8b)
             type = type(1:1)//k8b
         endif

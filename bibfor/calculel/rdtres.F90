@@ -123,9 +123,9 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         zi(jcoinv-1+ima1)=ima2
 10      continue
 !
-        call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel, kbid)
+        call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
         do 30,igr=1,nbgrel
-        call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1, kbid)
+        call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
         do 20,iel=1,n1-1
         ima1=zi(j1-1+iel)
@@ -150,7 +150,7 @@ subroutine rdtres(resu1, resu2, noma1, noma2, corrn,&
         model2=resu2
         call wkvect(model2//'.MAILLE', 'V V I', nbma2, jmail2)
         do 31,igr=1,nbgrel
-        call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1, kbid)
+        call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
         call jeveuo(jexnum(ligrel//'.LIEL', igr), 'E', j1)
         ite=zi(j1-1+n1)
         do 21,iel=1,n1-1

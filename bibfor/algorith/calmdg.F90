@@ -103,7 +103,7 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !---------------------------------------------------------------------
 !=====================================================================
 !
-    call jelira(modgen//'      .MODG.SSNO        ', 'NOMMAX', nbsst, k8bid)
+    call jelira(modgen//'      .MODG.SSNO        ', 'NOMMAX', nbsst)
     call getvtx(' ', 'AVEC_MODE_STAT', 0, iarg, 1,&
                 repon, nn)
     if (repon(1:3) .eq. 'NON') then
@@ -199,25 +199,25 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 !
         call codent(isst, 'D0', chaine(1:6))
         call jecreo('&&CALMDG.TXSTO'//chaine, 'V V K24')
-        call jeecra('&&CALMDG.TXSTO'//chaine, 'LONMAX', nbmodg, k8bid)
-        call jeecra('&&CALMDG.TXSTO'//chaine, 'LONUTI', nbmodg, k8bid)
+        call jeecra('&&CALMDG.TXSTO'//chaine, 'LONMAX', nbmodg)
+        call jeecra('&&CALMDG.TXSTO'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.TXSTO'//chaine, 'E', iadx)
         zi(iadrx+isst-1)=iadx
         call jecreo('&&CALMDG.TYSTO'//chaine, 'V V K24')
-        call jeecra('&&CALMDG.TYSTO'//chaine, 'LONMAX', nbmodg, k8bid)
-        call jeecra('&&CALMDG.TYSTO'//chaine, 'LONUTI', nbmodg, k8bid)
+        call jeecra('&&CALMDG.TYSTO'//chaine, 'LONMAX', nbmodg)
+        call jeecra('&&CALMDG.TYSTO'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.TYSTO'//chaine, 'E', iady)
         zi(iadry+isst-1)=iady
         if (model .eq. '3D') then
             call jecreo('&&CALMDG.TZSTO'//chaine, 'V V K24')
-            call jeecra('&&CALMDG.TZSTO'//chaine, 'LONMAX', nbmodg, k8bid)
-            call jeecra('&&CALMDG.TZSTO'//chaine, 'LONUTI', nbmodg, k8bid)
+            call jeecra('&&CALMDG.TZSTO'//chaine, 'LONMAX', nbmodg)
+            call jeecra('&&CALMDG.TZSTO'//chaine, 'LONUTI', nbmodg)
             call jeveut('&&CALMDG.TZSTO'//chaine, 'E', iadz)
             zi(iadrz+isst-1)=iadz
         endif
         call jecreo('&&CALMDG.PRES'//chaine, 'V V K24')
-        call jeecra('&&CALMDG.PRES'//chaine, 'LONMAX', nbmodg, k8bid)
-        call jeecra('&&CALMDG.PRES'//chaine, 'LONUTI', nbmodg, k8bid)
+        call jeecra('&&CALMDG.PRES'//chaine, 'LONMAX', nbmodg)
+        call jeecra('&&CALMDG.PRES'//chaine, 'LONUTI', nbmodg)
         call jeveut('&&CALMDG.PRES'//chaine, 'E', iprs)
         zi(iadrp+isst-1)=iprs
 !
@@ -263,26 +263,26 @@ subroutine calmdg(model, modgen, nugene, num, nu,&
 ! DES SOUS STRUCTURES
 !
     call jecreo('&&TPXSTO', 'V V K24')
-    call jeecra('&&TPXSTO', 'LONMAX', nbmo, k8bid)
-    call jeecra('&&TPXSTO', 'LONUTI', nbmo, k8bid)
+    call jeecra('&&TPXSTO', 'LONMAX', nbmo)
+    call jeecra('&&TPXSTO', 'LONUTI', nbmo)
     call jeveut('&&TPXSTO', 'E', itxsto)
     call jecreo('&&TPYSTO', 'V V K24')
-    call jeecra('&&TPYSTO', 'LONMAX', nbmo, k8bid)
-    call jeecra('&&TPYSTO', 'LONUTI', nbmo, k8bid)
+    call jeecra('&&TPYSTO', 'LONMAX', nbmo)
+    call jeecra('&&TPYSTO', 'LONUTI', nbmo)
     call jeveut('&&TPYSTO', 'E', itysto)
     if (model .eq. '3D') then
         call jecreo('&&TPZSTO', 'V V K24')
-        call jeecra('&&TPZSTO', 'LONMAX', nbmo, k8bid)
-        call jeecra('&&TPZSTO', 'LONUTI', nbmo, k8bid)
+        call jeecra('&&TPZSTO', 'LONMAX', nbmo)
+        call jeecra('&&TPZSTO', 'LONUTI', nbmo)
         call jeveut('&&TPZSTO', 'E', itzsto)
     endif
     call jecreo('&&VESTOC', 'V V K24')
-    call jeecra('&&VESTOC', 'LONMAX', nbmo, k8bid)
-    call jeecra('&&VESTOC', 'LONUTI', nbmo, k8bid)
+    call jeecra('&&VESTOC', 'LONMAX', nbmo)
+    call jeecra('&&VESTOC', 'LONUTI', nbmo)
     call jeveut('&&VESTOC', 'E', iprsto)
     call jecreo('&&TABIRG', 'V V I')
-    call jeecra('&&TABIRG', 'LONMAX', nbmo, k8bid)
-    call jeecra('&&TABIRG', 'LONUTI', nbmo, k8bid)
+    call jeecra('&&TABIRG', 'LONMAX', nbmo)
+    call jeecra('&&TABIRG', 'LONUTI', nbmo)
     call jeveut('&&TABIRG', 'E', iadirg)
 !
     ind=0

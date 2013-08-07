@@ -73,7 +73,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
     real(kind=8) :: valr8, e1, ei, precma, valrr(4)
     character(len=8) :: valtx
-    character(len=8) :: valch, k8bid, nomcle(5)
+    character(len=8) :: valch, nomcle(5)
     character(len=8) :: mcle8, table
     character(len=19) :: rdep, nomfct, nomint
     character(len=24) :: prol1, prol2, valkk(2)
@@ -95,7 +95,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !     8 PREMIERS CARACTERES :
 !     -----------------------------------------------------------
     call jecreo('&&RCSTOC.TEMPOR', 'V N K8')
-    call jeecra('&&RCSTOC.TEMPOR', 'NOMMAX', nbobj, k8bid)
+    call jeecra('&&RCSTOC.TEMPOR', 'NOMMAX', nbobj)
     do 777,i=1,nbobj
 !
 !        ON EST OBLIGE DE RECOPIER LA GLUTE ELAS_FLUI :
@@ -277,7 +277,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 !
             call jeveuo(nomfct//'.PROL', 'L', jfct)
             if (zk24(jfct)(1:1) .eq. 'F') then
-                call jelira(nomfct//'.VALE', 'LONMAX', nbptm, k8bid)
+                call jelira(nomfct//'.VALE', 'LONMAX', nbptm)
                 if (nomrc(1:8) .eq. 'TRACTION') then
                     if (nbptm .lt. 4) then
                         call u2mesk('F', 'MODELISA6_71', 1, nomcle(ii))
@@ -339,10 +339,10 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                 endif
 !
             else if (zk24(jfct)(1:1) .eq. 'N') then
-                call jelira(nomfct//'.VALE', 'NUTIOC', nbfct, k8bid)
+                call jelira(nomfct//'.VALE', 'NUTIOC', nbfct)
                 nbptm = 0
                 do 160 k = 1, nbfct
-                    call jelira(jexnum(nomfct//'.VALE', k), 'LONMAX', nbpts, k8bid)
+                    call jelira(jexnum(nomfct//'.VALE', k), 'LONMAX', nbpts)
                     nbcoup = nbpts / 2
                     if (nbpts .ge. nbmax) nbmax = nbpts
                     if (nomrc(1:8) .eq. 'TRACTION') then

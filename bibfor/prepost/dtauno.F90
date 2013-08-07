@@ -99,7 +99,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
     real(kind=8) :: coefpa
 !
     integer :: icodwo
-    character(len=8) :: chmat1, nommat, k8b
+    character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat, ncncin
     character(len=24) :: typma
@@ -224,7 +224,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 ! QUI PORTENT LE NOEUD COURANT.
         if (.not. post) then
             nunoe = lisnoe(inop)
-            call jelira(jexnum(ncncin, nunoe), 'LONMAX', nbma, k8b)
+            call jelira(jexnum(ncncin, nunoe), 'LONMAX', nbma)
             call jeveuo(jexnum(ncncin, nunoe), 'L', adrma)
 !
             ki = 0

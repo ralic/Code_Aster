@@ -227,7 +227,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     lonlis = lonli1
 !
     call jecroc(jexnum(coni, iocc))
-    call jeecra(jexnum(coni, iocc), 'LONMAX', 2*lonlis+1, ' ')
+    call jeecra(jexnum(coni, iocc), 'LONMAX', 2*lonlis+1)
     call jeveuo(jexnum(coni, iocc), 'E', idconi)
 !
     zi(idconi) = lonlis

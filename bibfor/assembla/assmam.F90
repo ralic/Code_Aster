@@ -100,7 +100,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !-----------------------------------------------------------------------
     character(len=16) :: optio, optio2, codvoi, nomte
 !-----------------------------------------------------------------------
-    character(len=1) :: base1, typsca, kbid
+    character(len=1) :: base1, typsca
     character(len=2) :: tt
     character(len=8) :: k8bid, nogdco, nogdsi, ma, ma2, mo, mo2, partit
     character(len=8) :: knumer, symel, kempic, kampic, exivf
@@ -230,7 +230,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     else if (motcle(1:4).eq.'CUMU') then
         cumul=.true.
         acreer=.false.
-        call jelira(matdev//'.VALM', 'NMAXOC', nblc, kbid)
+        call jelira(matdev//'.VALM', 'NMAXOC', nblc)
         ASSERT(nblc.eq.1 .or. nblc.eq.2)
         if (nblc .eq. 2) lmasym=.false.
     else
@@ -254,7 +254,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !           * SDFETI : NOM DU PARTITIONNEMENT FETI (SI FETI)
 !           * METHOD : METHODE DE RESOLUTION : FETI / AUTRE
 ! ------------------------------------------------------------------
-    call jelira(nudev//'.NUME.REFN', 'LONMAX', n1, kbid)
+    call jelira(nudev//'.NUME.REFN', 'LONMAX', n1)
     ASSERT(n1.eq.4)
     call jeveuo(nudev//'.NUME.REFN', 'L', jrefn)
     method=zk24(jrefn+2)
@@ -563,7 +563,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                 call jecrec(mat19//'.VALM', base1//' V '//tt(2:2), 'NU', 'DISPERSE', 'CONSTANT',&
                             nblc)
 !
-                call jeecra(mat19//'.VALM', 'LONMAX', itbloc, ' ')
+                call jeecra(mat19//'.VALM', 'LONMAX', itbloc)
                 do 30 i = 1, nblc
                     call jecroc(jexnum(mat19//'.VALM', i))
 30              continue
@@ -577,7 +577,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
 !         -- MISE EN MEMOIRE DES 1 (OU 2) BLOCS DE .VALM :
             call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalm(1))
-            call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, typsca)
+            call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=typsca)
             ASSERT(tt(2:2).eq.typsca)
             if (.not.lmasym) then
                 call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jvalm(2))
@@ -627,7 +627,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                 call jeexin(matel//'.RELR', iret)
                 if (iret .eq. 0) goto 80
 !
-                call jelira(matel//'.RELR', 'LONUTI ', nbresu, kbid)
+                call jelira(matel//'.RELR', 'LONUTI', nbresu)
                 if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', jlres)
 !
 !           BOUCLE SUR LES RESU_ELEM

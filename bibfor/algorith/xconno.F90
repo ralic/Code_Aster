@@ -157,7 +157,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
         call jeexin(grp(ii), iret)
         if (iret .ne. 0) then
             call jeveuo(grp(ii), 'L', jg)
-            call jelira(grp(ii), 'LONMAX', nmaenr, k8bid)
+            call jelira(grp(ii), 'LONMAX', nmaenr)
             do 120 i = 1, nmaenr
                 ima = zi(jg-1+i)
                 nbnom = zi(jlcnx+ima)-zi(jlcnx-1+ima)

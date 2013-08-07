@@ -194,7 +194,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
 !     LE '.NOMMAI' ET LE '.CONNEX'
 ! ----------------------------------------------------------------------
     call jecreo(nommai, base//' N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail, ' ')
+    call jeecra(nommai, 'NOMMAX', nbmail)
 !
     call wkvect(typmai, base//' V I', nbmail, iatyma)
 !
@@ -235,7 +235,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz,&
 !    STOCKAGE DU NUMERO DE LA MAILLE INITIALE DANS NUMOLD POUR IRGMCE
             zi(jnumol-1+ima2)=ima
 !
-            call jeecra(jexnum(connex, ima2), 'LONMAX', nbp, k8b)
+            call jeecra(jexnum(connex, ima2), 'LONMAX', nbp)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 115 ino = 1, nbp
                 zi(jnpt-1+ino) = zi(jopt-1+tdec(ind,i,ino))

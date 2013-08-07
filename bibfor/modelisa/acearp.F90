@@ -79,7 +79,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     integer :: vali(2)
 !
     real(kind=8) :: val(nbval), eta, vale(nbval), rirot(3), r8bid
-    character(len=1) :: kma(3), k1bid
+    character(len=1) :: kma(3)
     character(len=8) :: nomnoe, nommai, k8bid, nomu, car(nbcar), lamass
     character(len=16) :: rep, repdis(nrd), concep, cmd
     character(len=19) :: cart(3), ligmo, cartdi
@@ -105,7 +105,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     call jeexin(modnem, ixnw)
     nbmtrd = 0
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call jeveuo(modnem, 'L', jdnw)
         call wkvect(tmpdis, 'V V I', nbmtrd, jddi)
     endif
@@ -323,7 +323,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                 if (car(nc)(lokm:lokm) .eq. 'L') nbnoeu = 2
                 ASSERT((nbnoeu.gt.0).and.(lokm.gt.0))
 !
-                call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma, k8bid)
+                call jelira(jexnom(noma//'.GROUPEMA', nogp), 'LONMAX', nma)
                 call jeveuo(jexnom(noma//'.GROUPEMA', nogp), 'L', ldgm)
 !
                 if (nma .ne. nbno) then
@@ -336,7 +336,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
 !
                 do 22 in = 0, nma-1
 !                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
-                    call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma, k8bid)
+                    call jelira(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'LONMAX', nbnma)
                     call jeveuo(jexnum(noma//'.CONNEX', zi(ldgm+in)), 'L', ldnm)
                     call jenuno(jexnum(mlgnma, zi(ldgm+in)), nommai)
 !                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE

@@ -85,7 +85,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nunopa, nunopb, nunopc, nunopd
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
-    real(kind=8) :: padist, loncar, normi
+    real(kind=8) ::  normi
     character(len=8) :: typma, k8b, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn
     logical :: fabord, indic

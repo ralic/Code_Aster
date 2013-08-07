@@ -82,7 +82,6 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
     integer :: jcesl, jcesv, jcesdb, jceslb, jcesvb, ima, ipt, icmp
     integer :: nbcmpc, isp, nbpt, nbsp, iad, iad2, icmp2, nbma2, jnocm2
 !
-    character(len=1) :: k1bid
     character(len=7) :: saux07
     character(len=8) :: base, saux08
     parameter ( base = '&&IRVARI' )
@@ -103,7 +102,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
                 iret)
     call jeveuo(noch19//'.DESC', 'L', jcdesc)
     call jeveuo(noch19//'.VALE', 'L', jvale)
-    call jelira(noch19//'.VALE', 'LONMAX', lon3, k1bid)
+    call jelira(noch19//'.VALE', 'LONMAX', lon3)
     ligrel=modele//'.MODELE'
 !
 !     NOMBRE DE COMPORTEMENT

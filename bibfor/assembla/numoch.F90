@@ -69,7 +69,7 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
         if (iret .eq. 0) goto 100
 !
         call jeveuo(matel//'.RELR', 'L', idlres)
-        call jelira(matel//'.RELR', 'LONUTI', nbresu, k8bid)
+        call jelira(matel//'.RELR', 'LONUTI', nbresu)
         idiml = idiml + nbresu
 100  end do
 !
@@ -100,7 +100,7 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
         if (iret .eq. 0) goto 110
 !
         call jeveuo(matel//'.RELR', 'L', idlres)
-        call jelira(matel//'.RELR', 'LONUTI ', nbresu, k8bid)
+        call jelira(matel//'.RELR', 'LONUTI', nbresu)
         do 120 iresu = 1, nbresu
             resu = zk24(idlres+iresu-1)
             call jeexin(resu//'.NOLI', iret)
@@ -117,6 +117,6 @@ subroutine numoch(tlimat, nbmat, base, lmoch)
             endif
 120      continue
 110  end do
-    call jeecra(lmoch, 'LONUTI', nlmoch, k8bid)
+    call jeecra(lmoch, 'LONUTI', nlmoch)
     call jedema()
 end subroutine

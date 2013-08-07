@@ -76,7 +76,6 @@ subroutine aflrch(lisrez, chargz)
     character(len=19) :: ca1, ca2
     character(len=19) :: ligrmo, ligrch
     integer :: ntypel(nmocl)
-    character(len=1) :: k1bid
     real(kind=8) :: beta
     integer :: i, ibid, icmp, iddl, idecal, ier, ierd, ifm, igrel
     integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
@@ -176,7 +175,7 @@ subroutine aflrch(lisrez, chargz)
 !
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, k1bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
     nddla=nbcmp-1
     ASSERT(nddla.le.nmocl)
     ASSERT(nbcmp.le.nmocl)

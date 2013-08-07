@@ -50,7 +50,7 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
-    character(len=8) :: nomma, k8bid
+    character(len=8) :: nomma
     integer :: jnuma, ima, iad, in, jtopo, imai, igr, iret, nbn, lnuma
     integer :: jdime, nbmama, jexma, numa
 !
@@ -60,7 +60,7 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
     nbmat= 0
     call jeveuo(noltop, 'E', jtopo)
     call jeveuo(nummai, 'E', jnuma)
-    call jelira(nummai, 'LONMAX', lnuma, k8bid)
+    call jelira(nummai, 'LONMAX', lnuma)
 !
 !  --- TRAITEMENT DES LISTES DE MAILLES----
     if (nbma .ne. 0) then
@@ -98,7 +98,7 @@ subroutine irmama(noma, nbma, nomai, nbgr, nogrm,&
                             0, 0, 0.d0)
                 nogrm(igr) = ' '
             else
-                call jelira(jexnom(nomma//'.GROUPEMA', nogrm(igr)), 'LONMAX', nbn, k8bid)
+                call jelira(jexnom(nomma//'.GROUPEMA', nogrm(igr)), 'LONMAX', nbn)
                 if (nbn .eq. 0) then
                     valk (1) = nogrm(igr)
                     valk (2) = ' '

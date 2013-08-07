@@ -65,7 +65,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
     integer :: ixnw, nbmtrd, jddi, jdls, i, j, ioc, irep, isym, ng, nj, ncar
     integer :: nval, jdgn, nbomp, jdls2
     real(kind=8) :: val(nbval), eta, r8bid
-    character(len=1) :: kma(3), k1bid
+    character(len=1) :: kma(3)
     character(len=6) :: ki
     character(len=8) :: k8b, nomu, k8bid
     character(len=9) :: car(nbcar)
@@ -97,7 +97,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
     call jeexin(modnem, ixnw)
     nbmtrd = 0
     if (ixnw .ne. 0) then
-        call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+        call jelira(modnem, 'NMAXOC', nbmtrd)
         call jeveuo(modnem, 'L', jdnw)
         call wkvect(tmpdis, 'V V I', nbmtrd, jddi)
     endif
@@ -256,7 +256,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
             if (nj .gt. 0) then
                 do 42 i = 1, nj
                     call jeveuo(jexnom(mlggno, zk24(jdls+i-1)), 'L', jdgn)
-                    call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr, k1bid)
+                    call jelira(jexnom(mlggno, zk24(jdls+i-1)), 'LONUTI', nbnogr)
                     call crlinu('NUM', mlgnno, nbnogr, zi(jdgn), k8b,&
                                 nbmtrd, zi(jdnw), zi(jddi), kk)
                     if (kk .gt. 0) then

@@ -39,10 +39,9 @@ subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
     character(len=16) :: nomte
     character(len=*) :: option
     integer :: nb1, nb2, npgsr, npgsn
-    integer :: iret, iret1, iret2, iret3
 !-----------------------------------------------------------------------
-    integer :: i, inte, intsn, intsr, j
-    integer :: jcara, jdepg, k, k1, kwgt, lzi
+    integer :: i, intsn, intsr, j
+    integer :: jcara, jdepg, k, kwgt, lzi
     integer :: lzr
 !-----------------------------------------------------------------------
     real(kind=8) :: xi(3, 9)

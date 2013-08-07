@@ -51,7 +51,7 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
     parameter (nompro='VEDITH')
 !
     character(len=8) :: nomch0, nomcha
-    character(len=8) :: k8bid, lpain(3), paout, newnom
+    character(len=8) ::  lpain(3), paout, newnom
     character(len=16) :: option
     character(len=19) :: vecele
     character(len=24) :: ligrch, lchin(3), resuel, chgeom
@@ -68,7 +68,7 @@ subroutine vedith(modele, charge, infcha, inst, vecelz)
 !
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (nchar .ne. 0) then
             bidon = .false.
             call jeveuo(charge, 'L', jchar)

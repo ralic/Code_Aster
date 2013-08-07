@@ -78,7 +78,6 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
     character(len=24) :: nrefe, descm
     character(len=19) :: sdlieu, sdeval
     character(len=4) :: docu
-    character(len=1) :: k1bid
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -86,7 +85,7 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
 !-----------------------------------------------------------------------
     call jemarq()
     descm = '&&RVPSTE.PTR.DESC.TYP.MA'
-    call jelira(lieu, 'LONMAX', nbl, k1bid)
+    call jelira(lieu, 'LONMAX', nbl)
     call jeveuo(lieu, 'L', alieu)
     call wkvect(nomsd, 'V V K24', nbl, anomsd)
     call i3crdm(descm)
@@ -108,7 +107,7 @@ subroutine rvpste(dim, lieu, ssch19, nomsd, typaff)
     sdeval(1:8) = '&&RVPSTE'
     zk24(anomsd + l-1) = sdeval//'     '
     nrefe = sdlieu//'.REFE'
-    call jelira(nrefe, 'DOCU', ibid, docu)
+    call jelira(nrefe, 'DOCU', cval=docu)
     if (docu .eq. 'SGTD') then
         call rvechc(dim, ssch19, sdlieu, sdeval, zi(anbndf),&
                     zi(aclocf))

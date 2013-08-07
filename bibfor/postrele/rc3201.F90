@@ -88,7 +88,7 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     real(kind=8) :: spmecs(2), spthes(2), spthem, spmecm, simpij, kemeca, kether
     real(kind=8) :: kemecs, kethes, pm, pb, pmpb, pms, pbs, pmpbs, spmec2(2)
     real(kind=8) :: spmecp, spmecq(2), spthe2(2), spthep(2), sptheq(2)
-    character(len=8) :: k8b, knumes, kbid
+    character(len=8) ::  knumes, kbid
 !CC
     integer :: icodre
     logical :: endur, cmax, meca
@@ -103,8 +103,8 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
     call jeveuo('&&RC3200.SITU_PRES_B', 'L', jpresb)
     call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', jnbocc)
 !
-    call jelira('&&RC3200.SITU_PRES_A', 'LONUTI', nbsitu, k8b)
-    call jelira(jexnum('&&RC3200.LES_GROUPES', ig), 'LONUTI', nbsigr, k8b)
+    call jelira('&&RC3200.SITU_PRES_A', 'LONUTI', nbsitu)
+    call jelira(jexnum('&&RC3200.LES_GROUPES', ig), 'LONUTI', nbsigr)
     call jeveuo(jexnum('&&RC3200.LES_GROUPES', ig), 'L', jnsg)
 !
     do 11 is1 = 1, nbsigr
@@ -489,10 +489,10 @@ subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
 ! NOMBRE DE PAS DE TEMPS POUR DISTINGUER LE CAS MECANIQUE PUR
             knumes = 'S       '
             call codent(nsitup, 'D0', knumes(2:8))
-            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep, k8b)
+            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbthep)
             knumes = 'S       '
             call codent(nsituq, 'D0', knumes(2:8))
-            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq, k8b)
+            call jelira(jexnom('&&RC3200.SITU_THERMIQUE', knumes), 'LONUTI', nbtheq)
 !
             meca = .false.
             if ((nbthep+nbtheq) .eq. 0) meca = .true.

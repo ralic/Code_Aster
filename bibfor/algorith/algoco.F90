@@ -96,7 +96,7 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 !
     integer :: ifm, niv
     logical :: lechec
-    integer :: ibid, ieq, iter
+    integer ::  ieq, iter
     integer :: llliai, llliac
     integer :: kkliai, kkliac
     integer :: llf, llf1, llf2
@@ -139,7 +139,7 @@ subroutine algoco(sdstat, defico, resoco, solveu, matass,&
 !
     macont = resoco(1:14)//'.MATC'
     call mtdsc3(macont)
-    call jeecra(macont(1:19)//'.REFA', 'DOCU', ibid, 'ASSE')
+    call jeecra(macont(1:19)//'.REFA', 'DOCU', cval='ASSE')
     call jeveuo(macont(1:19)//'.&INT', 'E', ldscon)
 !
 ! --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE GLOBALE

@@ -76,7 +76,6 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
     integer :: asds
     logical :: sgtarc, okcrb, sgt3d
     real(kind=8) :: a, b, c, d, e, f, s, l, zero
-    character(len=1) :: k1bid
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -93,8 +92,8 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             sgtarc = ( zk8(adr) .eq. 'SGTDARCC' )
             sgt3d = .false.
             if (sgtarc) then
-                call jelira(courbe//'.XYASGT', 'LONMAX', nbsgt, k1bid)
-                call jelira(courbe//'.XYCARC', 'LONMAX', nbarc, k1bid)
+                call jelira(courbe//'.XYASGT', 'LONMAX', nbsgt)
+                call jelira(courbe//'.XYCARC', 'LONMAX', nbarc)
                 call jeveuo(courbe//'.XYASGT', 'L', aasgt)
                 call jeveuo(courbe//'.XYBSGT', 'L', absgt)
                 call jeveuo(courbe//'.XYCARC', 'L', acarc)
@@ -107,16 +106,16 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
                     call u2mess('F', 'POSTRELE_23')
                 endif
             else
-                call jelira(courbe//'.CHEMIN', 'NMAXOC', nbsd, k1bid)
+                call jelira(courbe//'.CHEMIN', 'NMAXOC', nbsd)
                 call jeveuo(courbe//'.CHEMIN', 'L', achm)
             endif
         else
-            call jelira(courbe//'.NSDS', 'LONMAX', nbsd, k1bid)
+            call jelira(courbe//'.NSDS', 'LONMAX', nbsd)
             call jeveuo(courbe//'.NSDS', 'L', asds)
             sgt3d = .true.
         endif
     else
-        call jelira(nlsnac, 'LONMAX', nbpt, k1bid)
+        call jelira(nlsnac, 'LONMAX', nbpt)
         nbsd = 1
     endif
     call wkvect(sdlieu, 'V V K24', nbsd, ansdl)
@@ -133,7 +132,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
     call wkvect(nnume, 'V V I', 1, anume)
     zi(anume) = isd
     if (okcrb .and. sgtarc) then
-        call jelira(jexnum(courbe//'.CNXOR', isd), 'LONMAX', nboc, k1bid)
+        call jelira(jexnum(courbe//'.CNXOR', isd), 'LONMAX', nboc)
         call jeveuo(jexnum(courbe//'.CNXOR', isd), 'L', acnxo)
         call jeveuo(jexnum(courbe//'.CNXEX', isd), 'L', acnxe)
         call jeveuo(jexnum(courbe//'.ORSGT', isd), 'L', aosgt)
@@ -162,10 +161,10 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             ifin = zi(acnxe + ioc-1)
             nbpt = ifin - ideb + 2
             call jecroc(jexnum(nabsc, ioc))
-            call jeecra(jexnum(nabsc, ioc), 'LONMAX', nbpt, ' ')
+            call jeecra(jexnum(nabsc, ioc), 'LONMAX', nbpt)
             call jeveuo(jexnum(nabsc, ioc), 'E', aabsc)
             call jecroc(jexnum(ncoor, ioc))
-            call jeecra(jexnum(ncoor, ioc), 'LONMAX', 3*nbpt, ' ')
+            call jeecra(jexnum(ncoor, ioc), 'LONMAX', 3*nbpt)
             call jeveuo(jexnum(ncoor, ioc), 'E', acoor)
             do 10, ipt = 1, nbpt-1, 1
             s = zr(aosgt + ideb-1 + ipt-1)
@@ -198,10 +197,10 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             ifin = zi(acnxe + ioc-1)
             nbpt = ifin - ideb + 2
             call jecroc(jexnum(nabsc, ioc))
-            call jeecra(jexnum(nabsc, ioc), 'LONMAX', nbpt, ' ')
+            call jeecra(jexnum(nabsc, ioc), 'LONMAX', nbpt)
             call jeveuo(jexnum(nabsc, ioc), 'E', aabsc)
             call jecroc(jexnum(ncoor, ioc))
-            call jeecra(jexnum(ncoor, ioc), 'LONMAX', 3*nbpt, ' ')
+            call jeecra(jexnum(ncoor, ioc), 'LONMAX', 3*nbpt)
             call jeveuo(jexnum(ncoor, ioc), 'E', acoor)
             do 11, ipt = 1, nbpt-1, 1
             s = zr(aosgt + ideb-1 + ipt-1)
@@ -221,7 +220,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
         ncrb3d = zk24(asds + isd-1)
         docu = 'SGT3'
         zk8(arefe) = courbe
-        call jelira(ncrb3d(1:13)//'.CONEX.ORIG', 'LONMAX', nboc, k1bid)
+        call jelira(ncrb3d(1:13)//'.CONEX.ORIG', 'LONMAX', nboc)
         call jeveuo(ncrb3d(1:13)//'.SGTEL.ORIG', 'L', aosgt)
         call jeveuo(ncrb3d(1:13)//'.SGTEL.EXTR', 'L', aesgt)
         call jeveuo(ncrb3d(1:13)//'.CONEX.ORIG', 'L', acnxo)
@@ -253,10 +252,10 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
         ifin = zi(acnxe + ioc-1)
         nbpt = ifin - ideb + 2
         call jecroc(jexnum(nabsc, ioc))
-        call jeecra(jexnum(nabsc, ioc), 'LONMAX', nbpt, ' ')
+        call jeecra(jexnum(nabsc, ioc), 'LONMAX', nbpt)
         call jeveuo(jexnum(nabsc, ioc), 'E', aabsc)
         call jecroc(jexnum(ncoor, ioc))
-        call jeecra(jexnum(ncoor, ioc), 'LONMAX', 3*nbpt, ' ')
+        call jeecra(jexnum(ncoor, ioc), 'LONMAX', 3*nbpt)
         call jeveuo(jexnum(ncoor, ioc), 'E', acoor)
         do 20, ipt = 1, nbpt-1, 1
         s = zr(aosgt + ideb-1 + ipt-1)
@@ -276,15 +275,15 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             zk8(arefe) = courbe
             docu = 'CHMM'
             call jeveuo(jexnum(courbe//'.CHEMIN', isd), 'L', achm)
-            call jelira(jexnum(courbe//'.CHEMIN', isd), 'LONMAX', nbm, k1bid)
+            call jelira(jexnum(courbe//'.CHEMIN', isd), 'LONMAX', nbm)
             nbm = nbm - 1
             call rvnchm(mailla, zi(achm), nbm, lnumnd, ndesc)
-            call jelira(ndesc, 'LONMAX', nbpt, k1bid)
+            call jelira(ndesc, 'LONMAX', nbpt)
             call jeveuo(lnumnd, 'L', anumnd)
         else
             zk8(arefe) = mailla
             docu = 'LSTN'
-            call jelira(nlsnac, 'LONMAX', nbpt, k1bid)
+            call jelira(nlsnac, 'LONMAX', nbpt)
             call jeveuo(nlsnac, 'L', anumnd)
             call wkvect(ndesc, 'V V K8', nbpt, adesc)
             do 30, ipt = 1, nbpt, 1
@@ -294,12 +293,12 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
         call jecrec(nabsc, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                     1)
         call jecroc(jexnum(nabsc, 1))
-        call jeecra(jexnum(nabsc, 1), 'LONMAX', nbpt, ' ')
+        call jeecra(jexnum(nabsc, 1), 'LONMAX', nbpt)
         call jeveuo(jexnum(nabsc, 1), 'E', aabsc)
         call jecrec(ncoor, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                     1)
         call jecroc(jexnum(ncoor, 1))
-        call jeecra(jexnum(ncoor, 1), 'LONMAX', 3*nbpt, ' ')
+        call jeecra(jexnum(ncoor, 1), 'LONMAX', 3*nbpt)
         call jeveuo(jexnum(ncoor, 1), 'E', acoor)
         call rvabsc(mailla, zi(anumnd), nbpt, zr(aabsc), zr(acoor))
         call jeexin(lnumnd, adr)
@@ -307,7 +306,7 @@ subroutine rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
             call jedetr(lnumnd)
         endif
     endif
-    call jeecra(nrefe, 'DOCU', adr, docu)
+    call jeecra(nrefe, 'DOCU', cval=docu)
     100 end do
     call jedema()
 end subroutine

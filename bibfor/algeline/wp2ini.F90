@@ -90,7 +90,6 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
 ! IN  SOLVEU : K19: SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: kbid
 !
 !     ------------------------------------------------------------------
     character(len=12) :: strg
@@ -137,12 +136,12 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
     do 10, i = 1, nbvect, 1
     call codent(i, 'G', strg)
     call jecreo('&&WP2INI.BYH'//strg, 'V V R')
-    call jeecra('&&WP2INI.BYH'//strg, 'LONMAX', neq, kbid)
-    call jeecra('&&WP2INI.BYH'//strg, 'LONUTI', neq, kbid)
+    call jeecra('&&WP2INI.BYH'//strg, 'LONMAX', neq)
+    call jeecra('&&WP2INI.BYH'//strg, 'LONUTI', neq)
     call jeveut('&&WP2INI.BYH'//strg, 'E', zi(aptbyh + i-1))
     call jecreo('&&WP2INI.BYB'//strg, 'V V R')
-    call jeecra('&&WP2INI.BYB'//strg, 'LONMAX', neq, kbid)
-    call jeecra('&&WP2INI.BYB'//strg, 'LONUTI', neq, kbid)
+    call jeecra('&&WP2INI.BYB'//strg, 'LONMAX', neq)
+    call jeecra('&&WP2INI.BYB'//strg, 'LONUTI', neq)
     call jeveut('&&WP2INI.BYB'//strg, 'E', zi(aptbyb + i-1))
     10 end do
 !

@@ -221,7 +221,7 @@ subroutine op0150()
         acces = 'LIST_ORDRE'
         iinst=0
         call jeveuo(listis//'.VALE', 'L', jnume)
-        call jelira(listis//'.VALE', 'LONMAX', nbordr, k8bid)
+        call jelira(listis//'.VALE', 'LONMAX', nbordr)
         call uttrii(zi(jnume), nbordr)
         goto 20
     endif
@@ -245,7 +245,7 @@ subroutine op0150()
         acces = 'LIST_INST'
         iinst=1
         call jeveuo(listr8//'.VALE', 'L', jlist)
-        call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8bid)
+        call jelira(listr8//'.VALE', 'LONMAX', nbordr)
         goto 20
     endif
 !
@@ -268,7 +268,7 @@ subroutine op0150()
         acces = 'LIST_FREQ'
         iinst=1
         call jeveuo(listr8//'.VALE', 'L', jlist)
-        call jelira(listr8//'.VALE', 'LONMAX', nbordr, k8bid)
+        call jelira(listr8//'.VALE', 'LONMAX', nbordr)
         goto 20
     endif
 !

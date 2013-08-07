@@ -74,10 +74,9 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
 !     ------------------
     character(len=1) :: type, bas2
     character(len=8) :: noma
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
-    integer :: i, ianoma, ibid, iret, jncmp, jvalv, ltyp
+    integer :: i, ianoma, iret, jncmp, jvalv, ltyp
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -123,8 +122,8 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     call alcart(bas2, nomca2, noma, nomgd)
     call jeveuo(nomca2(1:19)//'.NCMP', 'E', jncmp)
     call jeveuo(nomca2(1:19)//'.VALV', 'E', jvalv)
-    call jelira(nomca2(1:19)//'.VALV', 'TYPE', ibid, type)
-    call jelira(nomca2(1:19)//'.VALV', 'LTYP', ltyp, k1bid)
+    call jelira(nomca2(1:19)//'.VALV', 'TYPE', cval=type)
+    call jelira(nomca2(1:19)//'.VALV', 'LTYP', ltyp)
     do 1,i = 1,ncmp
     zk8(jncmp-1+i) = licmp(i)
     if (type(1:1) .eq. 'R') then

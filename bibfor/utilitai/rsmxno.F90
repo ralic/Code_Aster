@@ -28,14 +28,13 @@ function rsmxno(nomsd)
 ! ----------------------------------------------------------------------
 ! IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT"
     character(len=19) :: nomd2
-    character(len=1) :: k1bid
     integer :: nbordr, jordr, k, ival
 ! ----------------------------------------------------------------------
     call jemarq()
     ival = 0
     nomd2 = nomsd
 !
-    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr, k1bid)
+    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     if (nbordr .gt. 0) then
         call jeveuo(nomd2//'.ORDR', 'L', jordr)
         ival = zi(jordr)

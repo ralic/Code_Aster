@@ -74,7 +74,7 @@ subroutine calfig(guidag, resu, dimobs, dimtub, obsuse,&
 !
     nomf = resu(1:8)//'_INITIAL'
     call jeveuo(nomf(1:19)//'.VALE', 'L', idthe)
-    call jelira(nomf(1:19)//'.VALE', 'LONMAX', nbval, k8b)
+    call jelira(nomf(1:19)//'.VALE', 'LONMAX', nbval)
     no = nbval/2
     idray = idthe + no
 !

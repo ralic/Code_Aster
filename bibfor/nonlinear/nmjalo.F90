@@ -49,7 +49,6 @@ subroutine nmjalo(sddisc, inst, prec, jalon)
 !
     character(len=24) :: tpsipo
     integer :: jipo
-    character(len=8) :: k8bid
     integer :: ipo, nipo
 !
 ! ----------------------------------------------------------------------
@@ -63,7 +62,7 @@ subroutine nmjalo(sddisc, inst, prec, jalon)
 ! --- LISTE DES JALONS
 !
     tpsipo = sddisc(1:19)//'.LIPO'
-    call jelira(tpsipo, 'LONMAX', nipo, k8bid)
+    call jelira(tpsipo, 'LONMAX', ival=nipo)
     call jeveuo(tpsipo, 'L', jipo)
 !
 ! --- RECHERCHE PROCHAIN JALON

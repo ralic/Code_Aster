@@ -56,8 +56,8 @@ subroutine xsigth(ndim, nnop, nfh, igeom, lonch,&
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: r8bi7(7), r8bi3(3), epsth(6), d(36)
-    integer :: nse, idecpg, idebs, iret, ipg, i, ise, in, ino, npg, j
-    integer :: imate, irese, nno, ig, ibid, kpg
+    integer :: nse, idecpg, idebs, iret, ipg, i, ise, npg, j
+    integer :: imate, irese, nno, ibid, kpg
     character(len=2) :: k2bid
     character(len=8) :: elrefp, elrese(6), fami(6)
     character(len=16) :: phenom, option

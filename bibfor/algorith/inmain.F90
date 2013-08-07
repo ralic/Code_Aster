@@ -86,7 +86,7 @@ subroutine inmain(nommat, neq, nozero)
 !
     call jecroc(jexnum(nommat//'.VALM', 1))
 !
-    call jeecra(jexnum(nommat//'.VALM', 1), 'LONMAX', nozero, ' ')
+    call jeecra(jexnum(nommat//'.VALM', 1), 'LONMAX', nozero)
 !
 !---------C
 !--     --C

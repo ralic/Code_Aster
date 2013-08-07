@@ -106,7 +106,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     parameter (edlect=0)
 !
     character(len=1) :: saux01
-    character(len=8) :: k8b, saux08, parbid
+    character(len=8) ::  saux08, parbid
     character(len=19) :: chamn
     character(len=19) :: chamns, ligbid
     character(len=24) :: optbid
@@ -127,7 +127,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
         call u2mess('F', 'MED_65')
     endif
     call jeveuo(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'L', jnocmp)
-    call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf, saux01)
+    call jelira(jexnom ( '&CATA.GD.NOMCMP', nomgd ), 'LONMAX', ncmprf)
 !
 ! 1.2. ==> ALLOCATION DU CHAM_NO_S
 !
@@ -138,7 +138,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     call jeexin(ncmpva, iret)
     if (iret .gt. 0) then
         call jeveuo(ncmpva, 'L', jcmpva)
-        call jelira(ncmpva, 'LONMAX', nbcmpa, k8b)
+        call jelira(ncmpva, 'LONMAX', nbcmpa)
         if (nbcmpa .le. ncmprf) then
             do 20 i = 1, nbcmpa
                 ttt=.false.

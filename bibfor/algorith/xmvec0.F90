@@ -53,7 +53,7 @@ subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
 ! I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 ! ----------------------------------------------------------------------
 !
-    integer :: i, in, pl, xoula, nne, nnes, ddles
+    integer :: i, pl, nne, nnes, ddles
 !
 ! ----------------------------------------------------------------------
 !

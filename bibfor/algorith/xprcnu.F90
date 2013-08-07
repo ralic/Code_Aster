@@ -304,7 +304,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
         nodxyz(1,3) = zr(jcoor-1+3*(node-1)+3)
 !
 !        RETRIEVE THE ELEMENTS CONTAINING THE NODE
-        call jelira(jexnum(cnxinv, node), 'LONMAX', nbelno, k8b)
+        call jelira(jexnum(cnxinv, node), 'LONMAX', nbelno)
         call jeveuo(jexnum(cnxinv, node), 'L', jelno)
 !
 !        FOR EACH OF THESE ELEMENTS, RETRIEVE THE THREE EDGES CONTAINING

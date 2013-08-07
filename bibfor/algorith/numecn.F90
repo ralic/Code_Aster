@@ -47,7 +47,7 @@ subroutine numecn(modele, champ, nume)
 ! EN COMPARANT 2 APPELS SUCCESSIFS
 ! ----------------------------------------------------------------------
 !
-    character(len=8) :: kbid, mo
+    character(len=8) ::  mo
     character(len=24) :: lligr, lligrs, noojb
     character(len=19) :: prfchn, nomlig, numes
     integer :: ibid, nb1, jlligr, i1, i2, iret, nb2, iexi
@@ -61,7 +61,7 @@ subroutine numecn(modele, champ, nume)
     mo=modele
     call dismoi('F', 'PROF_CHNO', champ, 'CHAM_NO', ibid,&
                 prfchn, ibid)
-    call jelira(prfchn//'.LILI', 'NOMMAX', nb1, kbid)
+    call jelira(prfchn//'.LILI', 'NOMMAX', nb1)
 !
 !
 !

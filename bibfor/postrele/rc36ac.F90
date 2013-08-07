@@ -114,7 +114,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     call jeveuo(jexatr(connex, 'LONCUM'), 'L', jconx2)
 !
     call jeveuo('&&RC3600.SITU_NUMERO', 'L', jnsitu)
-    call jelira('&&RC3600.SITU_NUME_GROUP', 'LONMAX', nbgr, k8b)
+    call jelira('&&RC3600.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3600.SITU_NUME_GROUP', 'L', jnumgr)
     call jeveuo('&&RC3600.SITU_SEISME', 'L', jseigr)
 !
@@ -126,9 +126,9 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
     call jeveuo('&&RC3600.SITU_NB_OCCUR', 'L', jnbocc)
     call jeveuo('&&RC3600.SITU_PASSAGE', 'L', jpassa)
 !
-    call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12, k8b)
-    call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23, k8b)
-    call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13, k8b)
+    call jelira('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
+    call jelira('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
+    call jelira('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
 !
     call jeveuo('&&RC3600.MATERIAU', 'L', jchmat)
     call jeveuo('&&RC3600.NOM_MATERIAU', 'L', jmat)
@@ -175,7 +175,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
 !
             ino = zi(jconx1-1+zi(jconx2+ima-1)+ipt-1)
             call jeveuo(jexnum(ncncin, ino), 'L', adrm)
-            call jelira(jexnum(ncncin, ino), 'LONMAX', nbm, k8b)
+            call jelira(jexnum(ncncin, ino), 'LONMAX', nbm)
             if (niv .ge. 2) then
                 call jenuno(jexnum(nommai, ima), k8b)
                 call jenuno(jexnum(nomnoe, ino), noeud)
@@ -299,7 +299,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                 numgr = zi(jnumgr+ig-1)
                 if (numgr .lt. 0) goto 200
 !
-                call jelira(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr, k8b)
+                call jelira(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr)
                 call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'L', jnsg)
 !
                 npass = 0
@@ -324,7 +324,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     call rcma01(matepj, ima, ipt, nbm, zi(adrm),&
                                 matpj)
 !
-                    call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'LONUTI', nbth1, k8b)
+                    call jelira(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'LONUTI', nbth1)
                     if (nbth1 .ne. 0) then
                         call jeveuo(jexnum('&&RC3600.SITU_THERMIQUE', ioc1), 'L', jth1)
                     else
@@ -406,7 +406,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma,&
                     seisme = .true.
                 endif
 !
-                call jelira(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr, k8b)
+                call jelira(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr)
                 call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'L', jnsg)
                 if (niv .ge. 2) then
                     write (ifm,3004)

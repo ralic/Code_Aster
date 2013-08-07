@@ -64,7 +64,6 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
 !
 !
     integer :: jpoi, jtri, elcut, elshar, i, j, nptint, occur, np
-    character(len=1) :: k1bid
     real(kind=8) :: a(3), b(3), v1(3), vnp(3), pdir
 !
 !-----------------------------------------------------------------------
@@ -79,7 +78,7 @@ subroutine xprali(p1, p2, vnele, nelcou, poifis,&
     call jeveuo(trifis, 'L', jtri)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS CUT BY THE LSN=0
-    call jelira(trifis, 'LONMAX', elcut, k1bid)
+    call jelira(trifis, 'LONMAX', elcut)
     elcut = elcut/7
 !
 !     ******************************************************************

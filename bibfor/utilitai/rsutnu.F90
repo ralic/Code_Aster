@@ -88,7 +88,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     ier = 0
 !
     resuin = resu
-    call jelira(resuin//'.ORDR', 'LONUTI', iret, k8b)
+    call jelira(resuin//'.ORDR', 'LONUTI', iret)
     if (iret .eq. 0) then
         ier = 10
         goto 100
@@ -333,7 +333,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                         ibid)
             nomacc = 'INST'
             call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbinst, k8b)
+            call jelira(listr//'.VALE', 'LONMAX', nbinst)
             call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
             call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
             nbordr = 1
@@ -383,7 +383,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                         ibid)
             nomacc = 'FREQ'
             call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbfreq, k8b)
+            call jelira(listr//'.VALE', 'LONMAX', nbfreq)
             call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
             call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
             nbordr = 1
@@ -429,7 +429,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                     listr, n1)
         if (n1 .ne. 0) then
             call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbordr, k8b)
+            call jelira(listr//'.VALE', 'LONMAX', nbordr)
             call wkvect(knum, 'V V I', nbordr, jordr)
             do 90 iord = 0, nbordr - 1
                 zi(jordr+iord) = zi(laccr+iord)
@@ -458,7 +458,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !        BIEN A RESU ; SINON ON LES RETIRE DE LA LISTE :
 !     ------------------------------------------------------------
     if (nbordr .gt. 0) then
-        call jelira(resuin//'.ORDR', 'LONUTI', long1, k8b)
+        call jelira(resuin//'.ORDR', 'LONUTI', long1)
         call jeveuo(resuin//'.ORDR', 'L', jordr1)
         call jeveuo(knum, 'L', jordr2)
         nbtrop=0

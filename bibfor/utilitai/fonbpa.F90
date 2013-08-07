@@ -41,7 +41,6 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 !     ------------------------------------------------------------------
     integer :: lnova, ipa
     integer :: vali(2)
-    character(len=8) :: k8b
     character(len=24) :: valk
     character(len=19) :: nomfon
 !     ------------------------------------------------------------------
@@ -68,7 +67,7 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf,&
 !
     else if (vec(1)(1:8).eq.'INTERPRE') then
         nomfon = nomf
-        call jelira(nomfon//'.NOVA', 'LONUTI', nbpf, k8b)
+        call jelira(nomfon//'.NOVA', 'LONUTI', nbpf)
         call jeveuo(nomfon//'.NOVA', 'L', lnova)
         do 12 ipa = 1, nbpf
             nompf(ipa) = zk8(lnova+ipa-1)

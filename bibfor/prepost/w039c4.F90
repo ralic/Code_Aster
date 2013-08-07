@@ -79,7 +79,7 @@ subroutine w039c4(carte, ifi, form)
 !     CALL IMPRSD('CHAMP',CHELS1,6,'AJACOT CHELS1')
 !
 !     -- LE FORMAT MED REFUSE DE TRAITER PLUS DE 80 CMPS :
-    call jelira(jexnum('&CATA.GD.NOMCMP', nugd), 'LONMAX', n1, k8bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', nugd), 'LONMAX', n1)
     if (n1 .gt. 80) then
 !       -- ON NE GARDE QUE LES 80 PREMIERES :
         call u2mesk('A', 'CALCULEL4_24', 1, cart1)

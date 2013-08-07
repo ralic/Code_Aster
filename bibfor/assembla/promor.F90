@@ -213,13 +213,13 @@ subroutine promor(nuz, base)
     lmadis=(imd.ne.0)
     if (.not.lmadis) then
         call jeveuo(nu//'.NUME.NEQU', 'L', iadequ)
-        call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili, kbid)
+        call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
         call jeveuo(nu//'.NUME.PRNO', 'L', idprn1)
         call jeveuo(jexatr(nu//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
         call jeveuo(nu//'.NUME.NUEQ', 'L', jnueq)
     else
         call jeveuo(nu//'.NUML.NEQU', 'L', iadequ)
-        call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili, kbid)
+        call jelira(nu//'.NUME.PRNO', 'NMAXOC', nlili)
         call jeveuo(nu//'.NUML.PRNO', 'L', idprn1)
         call jeveuo(jexatr(nu//'.NUML.PRNO', 'LONCUM'), 'L', idprn2)
         call jeveuo(nu//'.NUML.NUEQ', 'L', jnueq)
@@ -455,7 +455,7 @@ subroutine promor(nuz, base)
             if (zi(iasssa-1+ima) .eq. 0) goto 130
             nddlt=0
             call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
-            call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe, kbid)
+            call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
             do 110 k1 = 1, nnoe
                 n1=zi(iamail-1+k1)
                 ASSERT(n1.ne.0)

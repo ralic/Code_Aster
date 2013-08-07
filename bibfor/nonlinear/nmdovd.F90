@@ -47,7 +47,7 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
 !
 !
     character(len=16) :: notype, texte(3), typmod, typmo2
-    character(len=24) :: k24bid, ligrel, mailma
+    character(len=24) :: ligrel, mailma
     character(len=19) :: ces2
     character(len=8) :: noma, nomail
     integer :: nutyel, irett, iad, nugrel
@@ -95,7 +95,7 @@ subroutine nmdovd(modele, mesmai, nbma, ces2, comcod,&
 !           NUMERO DU GREL CONTENANT LA MAILLE IMA
         nugrel=zi(irepe-1+2*(ima-1)+1)
         call jeveuo(jexnum(ligrel, nugrel), 'L', igrel)
-        call jelira(jexnum(ligrel, nugrel), 'LONMAX', nbmagl, k24bid)
+        call jelira(jexnum(ligrel, nugrel), 'LONMAX', ival=nbmagl)
         nutyel = zi(igrel+nbmagl-1)
         call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
 !

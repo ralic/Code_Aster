@@ -106,7 +106,6 @@ subroutine tremno(ncmp, nssche, nomsd)
     character(len=24) :: nconec, ncncin
     character(len=8) :: tk8(1), nmaila
     logical :: trouve
-    character(len=1) :: k1bid
 !
 !================= FIN DES DECLARATIONS ============================
 !
@@ -161,7 +160,7 @@ subroutine tremno(ncmp, nssche, nomsd)
     call wkvect(nnucp, 'V V I', 1, anucp)
 !
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', acmpgd)
-    call jelira(npcmp, 'LONMAX', nbtcmp, k1bid)
+    call jelira(npcmp, 'LONMAX', nbtcmp)
     call numek8(zk8(acmpgd), tk8, nbtcmp, 1, zi(anucp))
 !
     numcp = zi(anucp)
@@ -169,7 +168,7 @@ subroutine tremno(ncmp, nssche, nomsd)
 !   RECUPERATION DU NBR TOTAL DE MAILLES
 !   ------------------------------------
 !
-    call jelira(npnbn, 'LONMAX', nbtmai, k1bid)
+    call jelira(npnbn, 'LONMAX', nbtmai)
 !
 !   CALCUL DU NBR DE CMP ACTIVES
 !   ----------------------------
@@ -190,7 +189,7 @@ subroutine tremno(ncmp, nssche, nomsd)
                 cbid, ier)
 !
     call jecreo('&&TREMNO.LISTE.ENTIER', 'V V I')
-    call jeecra('&&TREMNO.LISTE.ENTIER', 'LONMAX', nbtnd, ' ')
+    call jeecra('&&TREMNO.LISTE.ENTIER', 'LONMAX', nbtnd)
     call jeveuo('&&TREMNO.LISTE.ENTIER', 'E', aliste)
     call jeveuo(nconec, 'L', iconec)
     call jeveuo(jexatr(nconec, 'LONCUM'), 'L', lconec)
@@ -217,7 +216,7 @@ subroutine tremno(ncmp, nssche, nomsd)
     nbtnd = libre - 1
 !
     call jecreo(nnund, 'V V I')
-    call jeecra(nnund, 'LONMAX', nbtnd, ' ')
+    call jeecra(nnund, 'LONMAX', nbtnd)
     call jeveuo(nnund, 'E', anund)
 !
     do 110, in = 1, nbtnd, 1
@@ -269,11 +268,11 @@ subroutine tremno(ncmp, nssche, nomsd)
     endif
 !
     call jecroc(jexnum(nvacp, in))
-    call jeecra(jexnum(nvacp, in), 'LONMAX', lngv, ' ')
+    call jeecra(jexnum(nvacp, in), 'LONMAX', lngv)
     call jeveuo(jexnum(nvacp, in), 'E', avacp)
 !
     call jecroc(jexnum(nnuma, in))
-    call jeecra(jexnum(nnuma, in), 'LONMAX', lngm, ' ')
+    call jeecra(jexnum(nnuma, in), 'LONMAX', lngm)
     call jeveuo(jexnum(nnuma, in), 'E', anuma)
 !
     ptm = 1

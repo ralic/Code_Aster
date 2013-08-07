@@ -114,7 +114,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
     iadval=nbi2
     if ((infofe(12:12).eq.'T') .and. ((option.eq.3).or.(option.eq.4))) then
         call jeveuo('&TEST.DIAG.FETI', 'L', itest)
-        call jelira('&TEST.DIAG.FETI', 'LONMAX', nbii, k8bid)
+        call jelira('&TEST.DIAG.FETI', 'LONMAX', nbii)
         compt=zi(itest-1+nbii)
     endif
 ! POUR ECRITURE DANS UN FICHIER DE LA MATRICE, DU SECOND MEMBRE,
@@ -225,7 +225,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
         do 30 idd = 1, nbsd
             call jenuno(jexnum(sdfetb, idd), nomsd)
             call jeveuo(jexnom(sdfetb, nomsd), 'L', iret3)
-            call jelira(jexnom(sdfetb, nomsd), 'LONMAX', nb, k8bid)
+            call jelira(jexnom(sdfetb, nomsd), 'LONMAX', nb)
             nb=nb/2
             do 25 i = 1, nb
 ! ON NE COMPTE QUE LES NOEUDS PHYSIQUES HORS INTERFACE
@@ -243,7 +243,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
             call jeexin(jexnom(sdfetl, nomsd), iret)
             if (iret .ne. 0) then
                 call jeveuo(jexnom(sdfetl, nomsd), 'L', iret4)
-                call jelira(jexnom(sdfetl, nomsd), 'LONMAX', nb, k8bid)
+                call jelira(jexnom(sdfetl, nomsd), 'LONMAX', nb)
                 nb=nb/2
 ! ON SUPPOSE QUE CHAQUE MAILLE TARDIVE CORRESPOND A DEUX LAGRANGES ET
 ! QU'ILS NE SONT PAS SUR L'INTERFACE !
@@ -309,7 +309,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
         if (iret1 .eq. 0) then
             call jeveuo(sdfeti(1:19)//'.FETI', 'L', ifeti1)
             call jeveuo(sdfeti(1:19)//'.FETJ', 'L', ifetj)
-            call jelira(sdfeti(1:19)//'.FETI', 'LONMAX', nbii, k8bid)
+            call jelira(sdfeti(1:19)//'.FETI', 'LONMAX', nbii)
             nbii=nbii/4
             call wkvect('&TEST.DIAG.FETI', 'V V I', 3*nbii+1, itest)
             compt=0
@@ -336,7 +336,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
         k14b=zk24(ifetn+idd-1)(1:14)
         call jeveuo(k14b//'.NUME.DEEQ', 'L', ideeq)
         call jeveuo(k14b//'.SMOS.SMDI', 'L', jsmdi)
-        call jelira(k14b//'.SMOS.SMDI', 'LONMAX', nsmdi, k8bid)
+        call jelira(k14b//'.SMOS.SMDI', 'LONMAX', nsmdi)
         call jeveuo(k14b//'.SMOS.SMHC', 'L', jsmhc)
         nz=zi(jsmdi-1+nsmdi)
         jcol=1
@@ -382,7 +382,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 ! (1...1)T / NBRE DE SECOND MEMBRE (POUR FAIRE 1)
 !-----------------------------
     else if ((infofe(12:12).eq.'T').and.(option.eq.4)) then
-        call jelira(sdfeti(1:19)//'.FREF', 'LONMAX', nbchar, k8bid)
+        call jelira(sdfeti(1:19)//'.FREF', 'LONMAX', nbchar)
         nbchar=nbchar-1
         ltest=.true.
         if (idd .eq. 0) then
@@ -456,7 +456,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
     .and.(option.eq.6).and.(idd.ne.0)) then
         k14b=zk24(ifetn+idd-1)(1:14)
         call jeveuo(k14b//'.SMOS.SMDI', 'L', jsmdi)
-        call jelira(k14b//'.SMOS.SMDI', 'LONMAX', nsmdi, k8bid)
+        call jelira(k14b//'.SMOS.SMDI', 'LONMAX', nsmdi)
         call jeveuo(k14b//'.SMOS.SMHC', 'L', jsmhc)
         nz=zi(jsmdi-1+nsmdi)
         jcol=1
@@ -497,7 +497,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !-----------------------------
     else if ((infofe(14:14).eq.'T').and.(option.eq.11)) then
         call jeveuo(sdfeti(1:19)//'.FETI', 'L', ifeti1)
-        call jelira(sdfeti(1:19)//'.FETI', 'LONMAX', nbii, k8bid)
+        call jelira(sdfeti(1:19)//'.FETI', 'LONMAX', nbii)
         nbii=nbii/4
         compt=0
         do 97 i = 1, nequa

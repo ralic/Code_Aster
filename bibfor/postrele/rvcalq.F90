@@ -78,14 +78,13 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 !
 !
 !
-    character(len=80) :: kbid
     character(len=24) :: nvalee, npadre, npnbne, nvaleq, npadrq, npnbnq, npcmpe
     character(len=24) :: nnocpq, npncoe, npnspe
     character(len=4) :: docu, docul, k4
     character(len=2) :: tq
     character(len=1) :: k1
 !
-    integer :: nbpt, lpadr, lpnbn, apnbnq, avaleq, apadrq, ibid, anocpq, apncoe
+    integer :: nbpt, lpadr, lpnbn, apnbnq, avaleq, apadrq, anocpq, apncoe
     integer :: apnbne, avalee, apadre, idecq, idece, nvp, n, nboc
     integer :: adre, adrq, ll, i, j, k, ioc, apcmpe, anumcp, iadr, acpgd, apnspe
     integer :: av1x, av2x, av1y, av2y, ipadr, apnspq
@@ -135,9 +134,9 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
     npadrq = sdcalq(1:19)//'.PADR'
     npnbnq = sdcalq(1:19)//'.PNBN'
 !
-    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', ibid, docul)
-    call jelira(nvalee, 'DOCU', ibid, docu)
-    call jelira(npadre, 'LONMAX', lpadr, kbid)
+    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', cval=docul)
+    call jelira(nvalee, 'DOCU', cval=docu)
+    call jelira(npadre, 'LONMAX', lpadr)
     call jeveuo(nvalee, 'L', avalee)
     call jeveuo(npadre, 'L', apadre)
 !
@@ -269,7 +268,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         nbpt = lpadr
         lpnbn = lpadr
     else
-        call jelira(npnbne, 'LONMAX', lpnbn, kbid)
+        call jelira(npnbne, 'LONMAX', lpnbn)
         call jeveuo(npnbne, 'L', apnbne)
         do 10,i = 1,lpnbn,1
         nbpt = nbpt + zi(apnbne+i-1)
@@ -690,9 +689,9 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         endif
 !
     else if (quant(1:7).eq.'TRACE_N') then
-        call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc, kbid)
+        call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
         if (docu .eq. 'CHNO') then
-            call jelira(npadrq, 'LONMAX', l, kbid)
+            call jelira(npadrq, 'LONMAX', l)
             do 250,n = 1,l,1
             idece = zi(apadre+n-1)
             idecq = zi(apadrq+n-1)
@@ -702,7 +701,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
 250          continue
         else
             if (docul .eq. 'LSTN') then
-                call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l, kbid)
+                call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
                 do 290,m = 1,l,1
                 idece = zi(apadre+m-1)
                 idecq = zi(apadrq+m-1)
@@ -731,7 +730,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             else
                 mder = 0
                 do 330,ioc = 1,nboc,1
-                call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', l, kbid)
+                call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', l)
                 do 320,m = mder + 1,mder + l - 1,1
                 n = m + ioc - 1
                 idece = zi(apadre+m-1)
@@ -767,13 +766,13 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         do 340,i = 1,nbcpcd,1
         zk8(anocpq+i-1) = nomcp(i)
 340      continue
-        call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l, kbid)
-        call jelira(npadrq, 'LONMAX', nbadrq, kbid)
-        call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc, kbid)
+        call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
+        call jelira(npadrq, 'LONMAX', nbadrq)
+        call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
         call jeveuo(npcmpe, 'L', apcmpe)
         call jeveuo(sdeval(1:19)//'.NUGD', 'L', iadr)
         call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(iadr)), 'L', acpgd)
-        call jelira(jexnum('&CATA.GD.NOMCMP', zi(iadr)), 'LONMAX', nc, kbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', zi(iadr)), 'LONMAX', nc)
         call wkvect('&&RVCALQ.NUM.CP.CD', 'V V I', nbcpcd, anumcp)
         call numek8(zk8(acpgd), nomcp, nc, nbcpcd, zi(anumcp))
         ioc = 1
@@ -918,7 +917,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             pt = pt + 1
 360          continue
         else if (tq.eq.'AS') then
-            call jelira(nvalee, 'LONMAX', l, kbid)
+            call jelira(nvalee, 'LONMAX', l)
             do 362,il = 1,l,1
             zr(avaleq+il-1) = zr(avalee+il-1)
 362          continue
@@ -937,19 +936,19 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
         zk8(anocpq+i-1) = nomcp(i)
 410      continue
         if (repere(1:1) .eq. 'G') then
-            call jelira(nvalee, 'LONMAX', l, kbid)
+            call jelira(nvalee, 'LONMAX', l)
             do 420,i = 1,l,1
             zr(avaleq+i-1) = zr(avalee+i-1)
 420          continue
         else
-            call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l, kbid)
+            call jelira(jexnum(sdlieu(1:19)//'.ABSC', 1), 'LONMAX', l)
 !
-            call jelira(npadrq, 'LONMAX', nbadrq, kbid)
-            call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc, kbid)
+            call jelira(npadrq, 'LONMAX', nbadrq)
+            call jelira(sdlieu(1:19)//'.ABSC', 'NMAXOC', nboc)
             call jeveuo(npcmpe, 'L', apcmpe)
             call jeveuo(sdeval(1:19)//'.NUGD', 'L', iadr)
             call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(iadr)), 'L', acpgd)
-            call jelira(jexnum('&CATA.GD.NOMCMP', zi(iadr)), 'LONMAX', nc, kbid)
+            call jelira(jexnum('&CATA.GD.NOMCMP', zi(iadr)), 'LONMAX', nc)
             call wkvect('&&RVCALQ.NUM.CP.CD', 'V V I', nbcpcd, anumcp)
             call numek8(zk8(acpgd), nomcp, nc, nbcpcd, zi(anumcp))
             ioc = 1
@@ -997,7 +996,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                     n = n + 2
                     ioc = ioc + 1
                     if (ioc .le. nboc) then
-                        call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', ll, kbid)
+                        call jelira(jexnum(sdlieu(1:19)//'.ABSC', ioc), 'LONMAX', ll)
                         l = l + ll - 1
                     endif
                 endif
@@ -1265,7 +1264,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
             call jedetr('&&RVCALQ.NUM.CP.CD')
         endif
     endif
-    call jeecra(nvaleq, 'DOCU', i, docu)
+    call jeecra(nvaleq, 'DOCU', cval=docu)
     if (docu .eq. 'CHNO') then
         call jedetr('&&RVCALQ.CHNO.PNSP')
         call jedetr('&&RVCALQ.CHNO.PNCO')

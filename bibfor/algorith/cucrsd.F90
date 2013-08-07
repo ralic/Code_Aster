@@ -235,7 +235,7 @@ subroutine cucrsd(noma, numedd, deficu, resocu)
     cm1a = resocu(1:14)//'.CM1A'
     call jecrec(cm1a, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 ncmpg)
-    call jeecra(cm1a, 'LONMAX', neq, k8bid)
+    call jeecra(cm1a, 'LONMAX', neq)
     do 40 i = 1, ncmpg
         call jecroc(jexnum(cm1a, i))
 40  end do

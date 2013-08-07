@@ -59,7 +59,7 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
                 kmpic, ibid)
     if (kmpic .ne. 'OUI') call u2mess('F', 'CALCULEL6_54')
     call jeveuo(noma19//'.REFA', 'L', jrefa)
-    call jelira(noma19//'.REFA', 'CLAS', ibid, base)
+    call jelira(noma19//'.REFA', 'CLAS', cval=base)
     ASSERT(zk24(jrefa-1+3).ne.'ELIML')
 !
 !

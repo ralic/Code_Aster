@@ -55,7 +55,7 @@ subroutine asenap(masse)
 !     ------------------------------------------------------------------
 ! IN  : MASSE  : MATRICE DE MASSE DE LA STRUCTURE
 !     ------------------------------------------------------------------
-    integer :: ibid, icas, ier, ino, iocc, ire1, iref, iret, jcas, jdgn, jdir
+    integer :: ibid, icas, ier, ino, iocc, ire1, iref, iret, jcas, jdir
     integer :: jdref, jno, jnoeu, jnref, jref, jsta, jtyp, nbmc, nbno, nbocc, nc
     integer :: ncas, nocas, ns, nt, nucas, nx, ny, nz
     real(kind=8) :: dx, dy, dz, epsima
@@ -101,7 +101,7 @@ subroutine asenap(masse)
                 call u2mess('F', 'SEISME_21')
             endif
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
-            call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas, ' ')
+            call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
             do 12 icas = 1, ncas
                 call getvis('DEPL_MULT_APPUI', 'NUME_CAS', icas, iarg, 1,&
@@ -116,7 +116,7 @@ subroutine asenap(masse)
                 call u2mess('F', 'SEISME_22')
             endif
             call jecroc(jexnum('&&ASENAP.LISTCAS', iocc))
-            call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', nc, ' ')
+            call jeecra(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', nc)
             call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'E', jcas)
             call getvis(motfac, 'LIST_CAS', iocc, iarg, nc,&
                         zi(jcas), nc)
@@ -184,8 +184,8 @@ subroutine asenap(masse)
         call jeveuo(mesnoe, 'L', jnoeu)
 !
         call jecroc(jexnom('&&ASENAP.LINOEU', knum))
-        call jeecra(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno, ' ')
-        call jeecra(jexnom('&&ASENAP.LINOEU', knum), 'LONUTI', nbno, ' ')
+        call jeecra(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno)
+        call jeecra(jexnom('&&ASENAP.LINOEU', knum), 'LONUTI', nbno)
         call jeveuo(jexnom('&&ASENAP.LINOEU', knum), 'E', jno)
         do 34 ino = 1, nbno
             zk8(jno+ino-1) = zk8(jnoeu+ino-1)
@@ -216,8 +216,8 @@ subroutine asenap(masse)
         kdir = 'D       '
         call codent(nucas, 'D0', kdir(2:8))
         call jecroc(jexnom('&&ASENAP.LIDIR', kdir))
-        call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', 3*nbno, ' ')
-        call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONUTI', 3*nbno, ' ')
+        call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', 3*nbno)
+        call jeecra(jexnom('&&ASENAP.LIDIR', kdir), 'LONUTI', 3*nbno)
         call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'E', jdir)
         do 36 ino = 1, 3*nbno
             zr(jdir+ino-1)= epsima

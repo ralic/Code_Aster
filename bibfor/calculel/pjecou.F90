@@ -49,7 +49,6 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     real(kind=8) :: normgl, rbid, normlo
     real(kind=8) :: con1m2(3), con1m1(3), con2m1(3), con3m1(3)
     real(kind=8) :: cobary(3), ksi(2), ff(27), coefno(27), crrefe(81)
-    character(len=1) :: kbid
     character(len=8) :: ntypma, elref, cbt(15)
     character(len=24) :: grpma, grpno
     logical :: inmail
@@ -60,7 +59,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     grpma = ma1//'.GROUPEMA'
     call jeexin(jexnom(grpma, nomgma), iret)
     if (iret .eq. 0) call u2mesk('F', 'ELEMENTS_62', 1, nomgma)
-    call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1, kbid)
+    call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1)
     call jeveuo(jexnom(grpma, nomgma), 'L', ialim1)
 !
 !
@@ -69,7 +68,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     grpno = ma2//'.GROUPENO'
     call jeexin(jexnom(grpno, nomgno), iret)
     if (iret .eq. 0) call u2mesk('F', 'ELEMENTS_62', 1, nomgno)
-    call jelira(jexnom(grpno, nomgno), 'LONMAX', nbnog2, kbid)
+    call jelira(jexnom(grpno, nomgno), 'LONMAX', nbnog2)
     call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
 !
 !
@@ -117,7 +116,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !  ON RECUPERE LE NOM DU TYPE DE LA MAILLE
 !  ET LE NOMBRE DE PTS D INTEGRATION ASSOCIE
 !-----------------------------------------------------------------------
-            call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog, kbid)
+            call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog)
             call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', icxma1)
             call jeveuo(ma1//'.TYPMAIL', 'L', jtypma)
             itypma = zi(jtypma-1 + ima)
@@ -247,7 +246,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
             nodegl = 0
             do 130 ima1 = 1, nbmag1
                 ima = zi(ialim1-1+ima1)
-                call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog, kbid)
+                call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog)
                 call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', icxma1)
                 do 140 inom1 = 1, nbnog
                     inol = jcoor1-1+3*(zi(icxma1-1+inom1)-1)

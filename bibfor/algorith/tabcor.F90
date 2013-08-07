@@ -50,7 +50,6 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
 !
 !---------------------------------------------------------------------
-    character(len=8) :: kbid
     integer :: nbvale, nbrefe, nbdesc, ibid, neq, nbno1
     integer :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
     integer :: nec2, igeom1, igeom2, ierd, iprn2, inueq2, nbid
@@ -105,8 +104,8 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 ! AVEC NOEUDS DU FLUIDE DE L'INTERFACE (NOEUDS SIMPLES)
 !
     call jecreo('&&TABCOR.CORRE1', 'V V I')
-    call jeecra('&&TABCOR.CORRE1', 'LONMAX', nbno1, kbid)
-    call jeecra('&&TABCOR.CORRE1', 'LONUTI', nbno1, kbid)
+    call jeecra('&&TABCOR.CORRE1', 'LONMAX', nbno1)
+    call jeecra('&&TABCOR.CORRE1', 'LONUTI', nbno1)
     call jeveut('&&TABCOR.CORRE1', 'E', itb1)
     icor(1)=itb1
 !
@@ -114,8 +113,8 @@ subroutine tabcor(model, mate, ma1, ma2, moint,&
 !
     if (ndble .eq. 1) then
         call jecreo('&&TABCOR.CORRE2', 'V V I')
-        call jeecra('&&TABCOR.CORRE2', 'LONMAX', nbno1, kbid)
-        call jeecra('&&TABCOR.CORRE2', 'LONUTI', nbno1, kbid)
+        call jeecra('&&TABCOR.CORRE2', 'LONMAX', nbno1)
+        call jeecra('&&TABCOR.CORRE2', 'LONUTI', nbno1)
         call jeveut('&&TABCOR.CORRE2', 'E', itb2)
         icor(2)=itb2
     endif

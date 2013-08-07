@@ -58,7 +58,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 !
 !
     integer :: alglag, i, nddl
-    character(len=8) :: nomap, nomo, kbid, k8bid
+    character(len=8) :: nomap, nomo, kbid
     character(len=19) :: nlisco, nliseq, nlisrl, nbasco
     integer :: jlicmp, iadrma
     integer :: nbarvi, ibid, iret
@@ -67,7 +67,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 ! ----------------------------------------------------------------------
 !
     call jeveuo(liscmp, 'E', jlicmp)
-    call jelira(liscmp, 'LONMAX', nddl, k8bid)
+    call jelira(liscmp, 'LONMAX', ival=nddl)
     call getvid(' ', 'MODELE', 1, iarg, 1,&
                 nomo, ibid)
     call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)
@@ -84,7 +84,7 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
                 nliseq)
 !
 !
-    call jelira(nliseq, 'LONMAX', nbarvi, k8bid)
+    call jelira(nliseq, 'LONMAX', ival=nbarvi)
     nbarvi=nbarvi/2
     call nmaret(nbarvi, nno, ndim, nliseq, nbno,&
                 numnod, gro1, gro2)

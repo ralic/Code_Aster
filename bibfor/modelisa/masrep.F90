@@ -112,12 +112,12 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
     call jeveuo(matyma, 'L', ltyp)
     do 20 i = 1, nbgr
-        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb, k8b)
+        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do 22 in = 0, nb-1
             numa=zi(ldgm+in)
             ASSERT(numa.gt.0)
-            call jelira(jexnum(manoma, numa), 'LONMAX', nm, k8b)
+            call jelira(jexnum(manoma, numa), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, numa), 'L', ldnm)
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(ltyp-1+numa)), typm)
@@ -173,11 +173,11 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     surtyz = zero
     surtzz = zero
     do 21 i = 1, nbgr
-        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb, k8b)
+        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do 23 in = 0, nb-1
             im = im + 1
-            call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm, k8b)
+            call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             xc = zero
             yc = zero
@@ -263,11 +263,11 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
 !
     im = 0
     do 31 i = 1, nbgr
-        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb, k8b)
+        call jelira(jexnom(magrma, ligrma(i)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, ligrma(i)), 'L', ldgm)
         do 33 in = 0, nb-1
             im = im + 1
-            call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm, k8b)
+            call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
             call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
             do 35 nn = 1, nm
                 do 37 ij = 1, noemax

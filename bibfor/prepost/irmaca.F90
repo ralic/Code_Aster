@@ -93,7 +93,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         nbmodl = 0
     else
         call jeveuo(nomjv, 'L', jmodl)
-        call jelira(nomjv, 'LONUTI', nbmodl, kbid)
+        call jelira(nomjv, 'LONUTI', nbmodl)
     endif
 !
 !     ECRITURE DES INFORMATIONS GENERALES DU MAILLAGE
@@ -111,7 +111,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
      &                    ' DIMENSION',ndim
     write (ifc,'(A,E12.5)')   ' DENSITE',rbid
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyma, kbid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyma)
     call wkvect('&&IRMACA.JM', 'V V I', nbtyma, jjm)
     call wkvect('&&IRMACA.LOGIQ', 'V V L', nbtyma, jjl)
 !
@@ -143,7 +143,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         call wkvect('&&IRMACA.NNOEU', 'V V K24', nbgrn, jnn)
         do 50 ign = 1, nbgrn
             call jeveuo(jexnum(noma//'.GROUPENO', ign), 'L', iagrno)
-            call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn, kbid)
+            call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
             if (nbn .eq. 1) then
                 nbobjn = nbobjn + 1
                 zi(jgn-1+nbobjn) = zi(iagrno-1+1)
@@ -188,7 +188,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
     if (nbgrn .ne. 0) then
         ijp = 0
         do 51 ign = 1, nbgrn
-            call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn, kbid)
+            call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
             if (nbn .ne. 1) then
                 ijp =ijp+1
                 zi(jpos-1+ijp) = ijp + 1
@@ -208,7 +208,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 zl(jjl-1+i)= .false.
 15          continue
             call jeveuo(jexnum(noma//'.GROUPEMA', igm), 'L', iagrma)
-            call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm, kbid)
+            call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
             if (nbm .eq. 0) goto 21
             nmamax = max(nmamax,nbm)
             nbgma = nbgma + 1
@@ -289,11 +289,11 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         do 200 i = 1, nbmodl
             nolili = zk24(jmodl+i-1)
             call jeveuo(nolili(1:19)//'.LIEL', 'L', jligr)
-            call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel, kbid)
+            call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel)
             call jeveuo(jexatr(nolili(1:19)//'.LIEL', 'LONCUM'), 'L', jlongr)
 !
             ilong = nbgrel*(nbgrel+4)+1
-            call jeecra(jexnum('&&OP0039.LIGREL', i), 'LONMAX', ilong, kbid)
+            call jeecra(jexnum('&&OP0039.LIGREL', i), 'LONMAX', ilong)
             call jeveuo(jexnum('&&OP0039.LIGREL', i), 'E', jgrele)
 !
             do 202 igre = 1, nbgrel
@@ -408,7 +408,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
 !
     do 155 ign = 1, nbgrn
         call jeveuo(jexnum(noma//'.GROUPENO', ign), 'L', iagrno)
-        call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn, kbid)
+        call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
         if (nbn .ne. 1) then
             do 156 j = 1, nbn
                 zi(jpoi-1+j) = zi(iagrno-1+j)
@@ -510,7 +510,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
         do 300 imodl = 1, nbmodl
             nolili = zk24(jmodl+imodl-1)
             call jeveuo(nolili(1:19)//'.LIEL', 'L', jligr)
-            call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel, kbid)
+            call jelira(nolili(1:19)//'.LIEL', 'NUTIOC', nbgrel)
             call jeveuo(jexatr(nolili(1:19)//'.LIEL', 'LONCUM'), 'L', jlongr)
             call jeveuo(jexnum('&&OP0039.LIGREL', imodl), 'E', jgrele)
             nbsmo = zi(jgrele-1+1)

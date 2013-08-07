@@ -41,8 +41,8 @@ subroutine te0594(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, ibid, itempn, igeom, nnop, jptint, jaint, jcface
-    integer :: jcnset, jheavt, jlonch, jbaslo, jlst, itps, ihechp, jstno, jbasec
+    integer :: ndim, nfh, nfe, ibid, igeom, nnop, jptint, jaint, jcface
+    integer ::  jlonch, jlst, itps, ihechp, jstno, jbasec
     integer :: imattt, nddlno
     real(kind=8) :: r8bid
     character(len=8) :: elrefp

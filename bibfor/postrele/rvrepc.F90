@@ -68,7 +68,6 @@ subroutine rvrepc(courbe, repere, sdnewr)
     integer :: nbpart, nbsgt, nbarc, ipart, nbpt, ipt, aabsce, acnxe, acnxo
     integer :: nbcx, icx, pt, dcx, fcx
     real(kind=8) :: x, y, xa, xb, xc, ya, yb, yc, r, s, t1, t2, n1, n2
-    character(len=1) :: k1bid
 !
 !====================== CORPS DE LA ROUTINE ===========================
 !
@@ -82,8 +81,8 @@ subroutine rvrepc(courbe, repere, sdnewr)
     ncnxor = courbe//'.CNXOR'
     ncnxex = courbe//'.CNXEX'
 !
-    call jelira(courbe//'.XYASGT', 'LONMAX', nbsgt, k1bid)
-    call jelira(courbe//'.XYCARC', 'LONMAX', nbarc, k1bid)
+    call jelira(courbe//'.XYASGT', 'LONMAX', nbsgt)
+    call jelira(courbe//'.XYCARC', 'LONMAX', nbarc)
     call jeveuo(courbe//'.XYASGT', 'L', aasgt)
     call jeveuo(courbe//'.XYBSGT', 'L', absgt)
     call jeveuo(courbe//'.XYCARC', 'L', acarc)
@@ -101,17 +100,17 @@ subroutine rvrepc(courbe, repere, sdnewr)
 !
     do 100, ipart = 1, nbpart, 1
 !
-    call jelira(jexnum(ncnxor, ipart), 'LONMAX', nbcx, k1bid)
+    call jelira(jexnum(ncnxor, ipart), 'LONMAX', nbcx)
     call jeveuo(jexnum(ncnxor, ipart), 'L', acnxo)
     call jeveuo(jexnum(ncnxex, ipart), 'L', acnxe)
-    call jelira(jexnum(nabscr, ipart), 'LONMAX', nbpt, k1bid)
+    call jelira(jexnum(nabscr, ipart), 'LONMAX', nbpt)
     call jeveuo(jexnum(nabscr, ipart), 'L', aabscr)
     call jeveuo(jexnum(nabsce, ipart), 'L', aabsce)
     call jecroc(jexnum(nvec1, ipart))
-    call jeecra(jexnum(nvec1, ipart), 'LONMAX', 2*(nbpt+nbcx), ' ')
+    call jeecra(jexnum(nvec1, ipart), 'LONMAX', 2*(nbpt+nbcx))
     call jeveuo(jexnum(nvec1, ipart), 'E', avec1)
     call jecroc(jexnum(nvec2, ipart))
-    call jeecra(jexnum(nvec2, ipart), 'LONMAX', 2*(nbpt+nbcx), ' ')
+    call jeecra(jexnum(nvec2, ipart), 'LONMAX', 2*(nbpt+nbcx))
     call jeveuo(jexnum(nvec2, ipart), 'E', avec2)
 !
     xa = zr(aasgt + 2*ipart+1 -1)

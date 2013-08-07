@@ -110,7 +110,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 ! -----------------
     integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, jtblp, jtbnp, nblign
     integer :: nbpara, iarg, n1, irt, jtabx, jtaby, nbval
-    real(kind=8) :: df, flim, krelax, zero, fi, dfr, f2
+    real(kind=8) :: df, flim, krelax, zero, fi, f2
     complex(kind=8) :: cbid
     logical :: trouv1, trouv2, exi1, exi2
     character(len=3) :: k3b

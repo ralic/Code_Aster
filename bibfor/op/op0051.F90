@@ -205,7 +205,7 @@ subroutine op0051()
                         1)
 !
             call jecroc(jexnum(ncheff//'.LSCHEFF', 1))
-            call jeecra(jexnum(ncheff//'.LSCHEFF', 1), 'LONMAX', 1, ' ')
+            call jeecra(jexnum(ncheff//'.LSCHEFF', 1), 'LONMAX', 1)
             call jeveuo(jexnum(ncheff//'.LSCHEFF', 1), 'E', jacc)
 !
             call getvid(mcf, 'CHAM_GD', iocc, iarg, 1,&
@@ -250,7 +250,7 @@ subroutine op0051()
 !        I     EFFECTIFS                                     I
 !        =====================================================
 !
-        call jelira(ncheff//'.LSCHEFF', 'NMAXOC', nbvchf, k8b)
+        call jelira(ncheff//'.LSCHEFF', 'NMAXOC', nbvchf)
 !
         ivchf = 0
         trouve = .false.
@@ -261,7 +261,7 @@ subroutine op0051()
             ivchf = ivchf + 1
             ichef = 0
 !
-            call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef, k8b)
+            call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
             call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
 !
 310          continue
@@ -300,7 +300,7 @@ subroutine op0051()
 !
                 do 400, ivchf = 1, nbvchf, 1
 !
-                call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef, k8b)
+                call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
                 call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
 !
 !

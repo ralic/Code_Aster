@@ -109,7 +109,7 @@ subroutine sinoz1(modele, sigma, signo)
 !
     call numoch(massel, 1, 'V', kmoch)
     call jeveuo(kmoch, 'L', jkmoch)
-    call jelira(kmoch, 'LONUTI', nbligr, kbid)
+    call jelira(kmoch, 'LONUTI', nbligr)
     call numer2(' ', nbligr, zk24(jkmoch), 'DDL_NOZ1', solveu,&
                 'VV', nupgm, ibid)
     call jedetr(kmoch)

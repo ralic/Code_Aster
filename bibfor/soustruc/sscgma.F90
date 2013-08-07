@@ -87,7 +87,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
     call getres(kbid, concep, cmd)
     lisma = '&&SSCGMA.LISTE_MAILLES'
-    call jelira(ma//'.GROUPEMA', 'NMAXOC', nbgrmn, kbid)
+    call jelira(ma//'.GROUPEMA', 'NMAXOC', nbgrmn)
     nbis = nbgrmn
     nbk8 = nbgrmn
     call wkvect('&&SSCGMA.LIK8', 'V V K24', nbk8, ialik8)
@@ -195,7 +195,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
         call getvtx('CREA_GROUP_MA', 'POSITION', iocc, iarg, 0,&
                     kpos, n6b)
         call jenonu(jexnom(ma//'.GROUPEMA', nogma2), igm2)
-        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
         ind1 = 0
         ind2 = 0
@@ -247,7 +247,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 50      continue
 !
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
-        call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
         if (ili1 .gt. nbis) then
             nbis = 2*ili1
@@ -263,7 +263,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
         do 80,igm = 2,n3
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
-        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
         call utlisi('INTER', zi(ialii1), n, zi(iagm2), ili2,&
                     zi( ialii2), nbis, ntrou)
@@ -299,7 +299,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 100      continue
 !
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
-        call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
         if (ili1 .gt. nbis) then
             nbis = 2*ili1
@@ -315,7 +315,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
         do 130,igm = 2,n4
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
-        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
         call utlisi('UNION', zi(ialii1), n, zi(iagm2), ili2,&
                     zi( ialii2), nbis, ntrou)
@@ -361,7 +361,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 150      continue
 !
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8)), igm1)
-        call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm1), 'LONUTI', ili1)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm1), 'L', iagm1)
         if (ili1 .gt. nbis) then
             nbis = 2*ili1
@@ -377,7 +377,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !
         do 180,igm = 2,n5
         call jenonu(jexnom(ma//'.GROUPEMA', zk24(ialik8-1+igm)), igm2)
-        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2, kbid)
+        call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
         call jeveuo(jexnum(ma//'.GROUPEMA', igm2), 'L', iagm2)
         call utlisi('DIFFE', zi(ialii1), n, zi(iagm2), ili2,&
                     zi( ialii2), nbis, ntrou)
@@ -473,8 +473,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
         call jeveuo(lisma, 'L', idlima)
 !
         call jecroc(jexnom(ma//'.GROUPEMA', nogma))
-        call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONMAX', max(1, nbma), kbid)
-        call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONUTI', nbma, kbid)
+        call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONMAX', max(1,nbma))
+        call jeecra(jexnom(ma//'.GROUPEMA', nogma), 'LONUTI', nbma)
         call jeveuo(jexnom(ma//'.GROUPEMA', nogma), 'E', jgma)
 !
         do 200 ii = 1, nbma
@@ -502,7 +502,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
         do 220 i = 1, nbgnaj
             ii = nbgmin + i
             call jenuno(jexnum(ma//'.GROUPEMA', ii), nogma)
-            call jelira(jexnum(ma//'.GROUPEMA', ii), 'LONUTI', nbma, kbid)
+            call jelira(jexnum(ma//'.GROUPEMA', ii), 'LONUTI', nbma)
             write (ifm,'(15X,A,2X,A24,5X,A,2X,I8,10X,A)') '!',nogma,'!',&
      &      nbma,'!'
 220      continue
@@ -517,7 +517,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
             ii = nbgmin + i
             call jeveuo(jexnum(ma//'.GROUPEMA', ii), 'L', jlisma)
             call jenuno(jexnum(ma//'.GROUPEMA', ii), nogma)
-            call jelira(jexnum(ma//'.GROUPEMA', ii), 'LONUTI', nbma, kbid)
+            call jelira(jexnum(ma//'.GROUPEMA', ii), 'LONUTI', nbma)
             write (ifm,'(/,3A,/,28(''-''))') 'MAILLES DU GROUPE ',&
             nogma, ' :'
             nbline = nbma/maxcol

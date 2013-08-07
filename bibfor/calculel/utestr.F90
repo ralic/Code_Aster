@@ -72,7 +72,6 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
     character(len=8) :: nomma
     character(len=19) :: prchno, valk(3)
     character(len=24) :: nolili
-    character(len=1) :: k1bid
 !
 !
 !-----------------------------------------------------------------------
@@ -90,7 +89,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
     nomma = zk24(iarefe-1+1)(1:8)
     prchno = zk24(iarefe-1+2)(1:19)
 !
-    call jelira(cham19//'.VALE', 'TYPE', ibid, type)
+    call jelira(cham19//'.VALE', 'TYPE', cval=type)
     if (type .ne. typres) then
         valk(1) = cham19
         valk(2) = type
@@ -108,7 +107,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
     nec = nbec(gd)
 !
 !     -- ON RECHERCHE LE NUMERO CORRESPONDANT A NOCMP:
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
     icmp = indik8(zk8(iancmp),nocmp,1,ncmpmx)
     if (icmp .eq. 0) then
@@ -153,7 +152,7 @@ subroutine utestr(cham19, nonoeu, nocmp, nbref, tbtxt,&
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
 !
         call jenuno(jexnum(prchno//'.LILI', 1), nolili)
-        call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid, k1bid)
+        call jelira(jexnum(prchno//'.PRNO', 1), 'LONMAX', ibid)
         if (ibid .eq. 0) then
             write (ific,*) testok,' : 2'
             goto 9999

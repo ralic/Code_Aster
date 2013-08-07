@@ -37,14 +37,13 @@ subroutine rccome(nommat, pheno, phenom, icodre)
 !
 ! ----------------------------------------------------------------------
 ! DEB ------------------------------------------------------------------
-    character(len=8) :: k8bid
     character(len=32) :: ncomp
 !-----------------------------------------------------------------------
     integer :: i, icomp, nbcomp
 !-----------------------------------------------------------------------
     icodre = 0
     ncomp = nommat//'.MATERIAU.NOMRC         '
-    call jelira(ncomp, 'LONUTI', nbcomp, k8bid)
+    call jelira(ncomp, 'LONUTI', nbcomp)
     call jeveuo(ncomp, 'L', icomp)
     do 10 i = 1, nbcomp
         if (pheno .eq. zk16(icomp+i-1)(1:len(pheno))) then

@@ -182,7 +182,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 ! --- RECUPERATION DE LA LISTE DES CMPS DU CATALOGUE :
 !     (POUR LA GRANDEUR VARI_* , IL FAUT CONSTITUER :(V1,V2,...,VN))
     nomgd = zk8(jcesk-1+2)
-    call jelira(cesout//'.CESC', 'LONMAX', ncmpm, k8b)
+    call jelira(cesout//'.CESC', 'LONMAX', ncmpm)
     if (nomgd(1:5) .ne. 'VARI_') then
         call jeveuo(cesout//'.CESC', 'L', jcmpgd)
     else

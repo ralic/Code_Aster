@@ -132,7 +132,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                 k8b, ibid)
     call wkvect(chamno, base//' V I', 2+nec, idesc)
 !
-    call jeecra(chamno, 'DOCU', 0, 'CHNO')
+    call jeecra(chamno, 'DOCU', cval='CHNO')
     call jenonu(jexnom('&CATA.GD.NOMGD', 'DEPL_R'), numa)
     zi(idesc+1-1) = numa
     zi(idesc+2-1) = -2

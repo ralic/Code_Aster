@@ -84,7 +84,6 @@ subroutine op0010()
     character(len=24) :: lismae, lisnoe, vcn, grlr, vcnt, grlrt
     real(kind=8) :: meserr(3), r8b
     character(len=8) :: test, msgout(2)
-    character(len=1) :: k1bid
 !     MESSAGES
 !
 !     CRACK ADVANCEMENT
@@ -388,7 +387,7 @@ subroutine op0010()
 !     LOCALISATION HAS BEEN REQUESTED (ONLY FOR 3D MESHES)
     if (locdom .and. (ndim.eq.3)) then
         call jeveuo(vbeta, 'L', jbeta)
-        call jelira(vbeta, 'LONMAX', j, k1bid)
+        call jelira(vbeta, 'LONMAX', j)
         bmax = 0.d0
         do 500 i = 1, j
             if (abs(zr(jbeta-1+i)) .gt. bmax) bmax=abs(zr(jbeta-1+i))
@@ -615,7 +614,7 @@ subroutine op0010()
         write(ifm,*)'      RAYON DU TORE DE LOCALISATION = ',&
      &                sqrt(radtor)
 !
-        call jelira(nodtor, 'LONMAX', i, k1bid)
+        call jelira(nodtor, 'LONMAX', i)
         write(ifm,*)'      NOMBRE DE NOEUDS DU DOMAINE   = ',i
     endif
 !
@@ -835,7 +834,7 @@ subroutine op0010()
         call wkvect(fiss//'.PRO.NOEUD_PROJ', 'G V L', j, iret)
 !
         call jeveuo(ndomp, 'L', ibid)
-        call jelira(ndomp, 'LONMAX', j, k1bid)
+        call jelira(ndomp, 'LONMAX', j)
 !
         do 1001 i = 1, j
             zl(iret-1+zi(ibid-1+i)) = .true.
@@ -880,7 +879,7 @@ subroutine op0010()
     if ((.not.grille) .and. locdom) then
 !        RETRIEVE THE LIST OF THE NODES USED IN THE LAST LOCALIZATION
         call jeveuo(fiss//'.PRO.NOEUD_TORE', 'E', jlisno)
-        call jelira(fiss//'.PRO.NOEUD_TORE', 'LONMAX', nbno, k8bid)
+        call jelira(fiss//'.PRO.NOEUD_TORE', 'LONMAX', nbno)
 !
         grltc = '&&OP0010.GRLTC'
         grlnc = '&&OP0010.GRLNC'

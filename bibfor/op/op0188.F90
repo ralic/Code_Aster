@@ -121,7 +121,7 @@ subroutine op0188()
     endif
 !
     call jeveuo(mafond, 'L', jmafon)
-    call jelira(mafond, 'LONMAX', nmafon, k8b)
+    call jelira(mafond, 'LONMAX', nmafon)
     do 10 i = 1, nmafon
         zi(jma-1+i)=zi(jmafon-1+i)
 10  end do

@@ -91,7 +91,6 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
     character(len=24) :: nomlia, knombl(*)
     real(kind=8) :: zero, conlbl(*), conleq(*)
     integer :: inumbl(*), ibl(3)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -119,7 +118,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
     stolci=nugene//'.SLCS'
 !
     call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst, k1bid)
+    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst)
     nbsst=nbsst/2
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
@@ -133,7 +132,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
-    call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno, k1bid)
+    call jelira(jexnum(tminbl, ibid), 'LONMAX', ntprno)
     ntprno=ntprno/3
 !
     call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
@@ -190,10 +189,10 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
             ntail=nblig*nbcol
 !
             call jecroc(jexnum(tmadbl, iblc))
-            call jeecra(jexnum(tmadbl, iblc), 'LONMAX', ntail, ' ')
+            call jeecra(jexnum(tmadbl, iblc), 'LONMAX', ntail)
             call jeveuo(jexnum(tmadbl, iblc), 'E', ltadbl)
             call jecroc(jexnum(tmnobl, iblc))
-            call jeecra(jexnum(tmnobl, iblc), 'LONMAX', ntail, ' ')
+            call jeecra(jexnum(tmnobl, iblc), 'LONMAX', ntail)
             call jeveuo(jexnum(tmnobl, iblc), 'E', ltnobl)
 ! DETERMINATION MAX DU BLOC
             sconl=zero
@@ -238,10 +237,10 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
         call maxblo(jexnum(nomlia, nublo), sconl)
         conlbl(iblc)=max(conlbl(iblc),sconl)
         call jecroc(jexnum(tmnobl, iblc))
-        call jeecra(jexnum(tmnobl, iblc), 'LONMAX', nblig*2, ' ')
+        call jeecra(jexnum(tmnobl, iblc), 'LONMAX', nblig*2)
         call jeveuo(jexnum(tmnobl, iblc), 'E', ltnobl)
         call jecroc(jexnum(tmadbl, iblc))
-        call jeecra(jexnum(tmadbl, iblc), 'LONMAX', nblig*2, ' ')
+        call jeecra(jexnum(tmadbl, iblc), 'LONMAX', nblig*2)
         call jeveuo(jexnum(tmadbl, iblc), 'E', ltadbl)
         do 70 k = 1, nblig
             ieql=zi(llnueq+(inul-1)+(k-1))

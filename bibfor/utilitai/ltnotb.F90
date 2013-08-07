@@ -39,7 +39,6 @@ subroutine ltnotb(litab, nomtab, nomsd)
 !     -----------------------------------------------------------------
     character(len=24) :: noojb
     integer :: iret, nbtm, nbtu, jltnt, i, jltns
-    character(len=8) :: k8b
     character(len=16) :: nomsym
     character(len=19) :: listab
     character(len=24) :: valk(2)
@@ -56,8 +55,8 @@ subroutine ltnotb(litab, nomtab, nomsd)
     endif
 !
     nomsym = nomtab
-    call jelira(listab//'.LTNT', 'LONMAX', nbtm, k8b)
-    call jelira(listab//'.LTNT', 'LONUTI', nbtu, k8b)
+    call jelira(listab//'.LTNT', 'LONMAX', nbtm)
+    call jelira(listab//'.LTNT', 'LONUTI', nbtu)
     call jeveuo(listab//'.LTNT', 'L', jltnt)
 !
 !
@@ -79,8 +78,8 @@ subroutine ltnotb(litab, nomtab, nomsd)
         call juveca(listab//'.LTNT', nbtu+6)
         call juveca(listab//'.LTNS', nbtu+6)
     endif
-    call jeecra(listab//'.LTNT', 'LONUTI', nbtu, ' ')
-    call jeecra(listab//'.LTNS', 'LONUTI', nbtu, ' ')
+    call jeecra(listab//'.LTNT', 'LONUTI', nbtu)
+    call jeecra(listab//'.LTNS', 'LONUTI', nbtu)
 !
     call jeveuo(listab//'.LTNT', 'E', jltnt)
     zk16(jltnt+nbtu-1) = nomsym

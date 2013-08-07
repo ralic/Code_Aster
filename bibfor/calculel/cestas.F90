@@ -60,7 +60,7 @@ subroutine cestas(cesz)
     call jeveuo(ces//'.CESL', 'L', jcesl)
     call jeveuo(ces//'.CESV', 'L', jcesv)
 !
-    call jelira(ces//'.CESK', 'CLAS', ibid, base)
+    call jelira(ces//'.CESK', 'CLAS', cval=base)
 !
     ma = zk8(jcesk-1+1)
     nomgd = zk8(jcesk-1+2)

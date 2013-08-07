@@ -132,7 +132,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
         if (abs(n21)+abs(n22) .eq. 0) n21=1
         if (n21 .gt. 0 .and. toucha .eq. 'OUI' .and. nnrmed .eq. 0) then
 !         - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
-            call jelira(leresu//'           .DESC', 'NOMUTI', nbnosy, k1bid)
+            call jelira(leresu//'           .DESC', 'NOMUTI', nbnosy)
             call wkvect(nchsym, 'V V K16', nbnosy, jnosy)
             do 12 isy = 1, nbnosy
                 call jenuno(jexnum(leresu//'           .DESC', isy), zk16(jnosy-1+isy))
@@ -162,7 +162,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                 valk(2)='NOM_RESU_MED'
                 call u2mesk('F', 'MED2_6', 2, valk)
             endif
-            call jelira(leresu//'           .DESC', 'NOMUTI', nbcmdu, k8b)
+            call jelira(leresu//'           .DESC', 'NOMUTI', nbcmdu)
             call getvtx('RESU', 'NOM_RESU_MED', ioccur, iarg, 1,&
                         resmed, nnrmed)
             call wkvect(nchsym, 'V V K16', nbcmdu, jnosy)
@@ -240,7 +240,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
                                 nbcmpt = nbcmpt + 1
                                 goto 17
                             endif
-                            call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1bid)
+                            call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
                             call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
                             call irvcmp(ncmpmx, zk8(iad), zk8(jvcmp+ icmp), nbcmpt)
                         endif

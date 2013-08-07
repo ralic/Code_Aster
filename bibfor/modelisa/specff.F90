@@ -64,7 +64,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 #include "asterfort/wkvect.h"
     logical :: casint, ltable, exiind
     integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
-    character(len=8) :: nomu, k8b, caelem, modele, table, nomnoa, noma
+    character(len=8) :: nomu, caelem, modele, table, nomnoa, noma
     character(len=19) :: spectr, base, typflu
 !
     integer :: ibid, dim, dimint, mxval, itab, nbfreq, nbval, ifreq
@@ -126,7 +126,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         chnumj = table//'.NUMJ'
         call jeveuo(chnumi, 'L', lnumi)
         call jeveuo(chnumj, 'L', lnumj)
-        call jelira(chnumi, 'LONMAX', mxval, k8b)
+        call jelira(chnumi, 'LONMAX', mxval)
         r8b = (-1.d0+sqrt(1.d0+8.d0*mxval))/2.d0
         nbfonc = int(r8b)
         call wkvect('&&SPECFF.TEMP.NOMF', 'V V K8', nbfonc, inomf)
@@ -179,7 +179,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 ! --- 5.2.CREATION D'UNE LISTE ORDONNEE DE NOEUDS : ORDRE CROISSANT
 ! ---     DU PARAMETRE LE LONG DE L'AXE DIRECTEUR DE LA POUTRE
 !
-    call jelira(noma//'.NOMNOE', 'NOMUTI', nbn, k8b)
+    call jelira(noma//'.NOMNOE', 'NOMUTI', nbn)
     if (nbn .lt. 3) then
         call u2mess('F', 'MODELISA7_6')
     endif
@@ -259,7 +259,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
 320              continue
                 if (.not. exiind) call u2mess('F', 'MODELISA2_89')
                 call jeveuo(jexnum(chtab, ind), 'L', itab)
-                call jelira(jexnum(chtab, ind), 'LONMAX', nbval, k8b)
+                call jelira(jexnum(chtab, ind), 'LONMAX', nbval)
                 if (ifo2 .eq. ifo1) then
                     nbfreq = nbval
                     call jeexin('&&SPECFF.SRE', ibid)
@@ -368,7 +368,7 @@ subroutine specff(casint, nomu, spectr, base, nuor,&
         do 91 im1 = ideb, im2
             ij = ij + 1
             call jeveuo(jexnum(chvale, ij), 'E', ivale)
-            call jelira(jexnum(chvale, ij), 'LONMAX', nbval, k8b)
+            call jelira(jexnum(chvale, ij), 'LONMAX', nbval)
             im2b = im2 - imodi + 1
             im1b = im1 - imodi + 1
 !

@@ -1,4 +1,4 @@
-subroutine jelira(nomlu, catr, ival, cval)
+subroutine jelira (nomlu, catr, ival, cval)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,9 @@ subroutine jelira(nomlu, catr, ival, cval)
 #include "asterfort/jjlirs.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/u2mesk.h"
-    character(len=*) :: nomlu, catr, cval
-    integer :: ival
+    character(len=*) :: nomlu, catr
+    character(len=*), intent(out), optional :: cval
+    integer, intent(out), optional :: ival
 !     ------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
@@ -64,8 +65,8 @@ subroutine jelira(nomlu, catr, ival, cval)
     integer :: ivnmax, iddeso, idiadd, idiadm, idnom, idlong, idlono, idluti
     integer :: idnum
     parameter    ( ivnmax = 0 , iddeso = 1 ,idiadd = 2 , idiadm = 3 ,&
-     &                            idnom  = 5 ,             idlong = 7 ,&
-     &               idlono = 8 , idluti = 9 ,idnum  = 10 )
+     &                          idnom  = 5 ,             idlong = 7 ,&
+     &             idlono = 8 , idluti = 9 ,idnum  = 10 )
 !     ------------------------------------------------------------------
     character(len=32) :: nom32, noml32
     character(len=33) :: cva
@@ -298,9 +299,13 @@ subroutine jelira(nomlu, catr, ival, cval)
     endif
 100  continue
     if (lcv .ne. 0) then
-        cval = cva(1:lcv)
+        if (present(cval)) then
+            cval = cva(1:lcv)
+        endif     
     else
-        ival = iva
+       if (present(ival)) then
+            ival = iva
+        endif     
     endif
 !
     if (lcol) then

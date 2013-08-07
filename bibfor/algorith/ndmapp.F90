@@ -53,7 +53,6 @@ subroutine ndmapp(sddyna, valinc)
     integer :: jdepab, jvitab, jaccab
     integer :: jdepp, jvitp, jaccp
     integer :: neq, ie
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +86,7 @@ subroutine ndmapp(sddyna, valinc)
         call jeveuo(depabs(1:19)//'.VALE', 'E', jdepab)
         call jeveuo(vitabs(1:19)//'.VALE', 'E', jvitab)
         call jeveuo(accabs(1:19)//'.VALE', 'E', jaccab)
-        call jelira(depent(1:19)//'.VALE', 'LONMAX', neq, k8bid)
+        call jelira(depent(1:19)//'.VALE', 'LONMAX', neq)
         do 20 ie = 1, neq
             zr(jdepab+ie-1) = zr(jdepen+ie-1) + zr(jdepp+ie-1)
             zr(jvitab+ie-1) = zr(jviten+ie-1) + zr(jvitp+ie-1)

@@ -34,17 +34,17 @@ subroutine juvinn(ojb)
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) :: type, cbid
-    integer :: n1, k, jojb, ibid
+    character(len=8) :: type
+    integer :: n1, k, jojb
     real(kind=8) :: rvid, rnan
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    call jelira(ojb, 'TYPE  ', ibid, type)
+    call jelira(ojb, 'TYPE  ', cval=type)
     ASSERT(type.eq.'R')
 !
     call jeveuo(ojb, 'L', jojb)
-    call jelira(ojb, 'LONMAX', n1, cbid)
+    call jelira(ojb, 'LONMAX', n1)
 !
     rvid=r8vide()
     rnan=r8nnem()

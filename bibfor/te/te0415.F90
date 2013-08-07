@@ -31,21 +31,20 @@ subroutine te0415(optioz, nomtz)
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, ic, ichg, icompo
-    integer :: ino, inp, inte, intsn, intsr, iret
-    integer :: j, j1, jcara, jconn, jgeom, jj
-    integer :: jvari, k, k1, k2, kpgs, l, lgpg
-    integer :: lzi, lzr, nbcou, nbvari, ncmp, nep, np1
+    integer :: ino, inp, iret
+    integer :: j, j1
+    integer :: jvari, k1, k2, l, lgpg
+    integer :: lzi, lzr, nbcou, nbvari, nep, np1
     integer :: np2, np3, np4, npge, npgt, npo, npp
     integer :: nso
     real(kind=8) :: s
 !-----------------------------------------------------------------------
     parameter (npge=3)
     parameter (npgt=10)
-    integer :: jnumc, icou, nordo, jmat, jnbspi
+    integer ::  icou, jmat, jnbspi
     integer :: nb2, npgsn, jtab(7)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
-    real(kind=8) :: epais
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
     real(kind=8) :: sigm(6, 270), sigma(6, 120), siggn(6, 9)
     real(kind=8) :: pk2(6, 270), siggnu(6, 9)

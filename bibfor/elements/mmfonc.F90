@@ -26,13 +26,12 @@ subroutine mmfonc(fepx, fmin, fmax)
 ! ======================================================================
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
-    character(len=8) :: k8bid
     integer :: rl, jfon, i, nf0
     real(kind=8) :: val
 !
     call jemarq()
 !
-    call jelira(fepx//'           .VALE', 'LONUTI', rl, k8bid)
+    call jelira(fepx//'           .VALE', 'LONUTI', rl)
     call jeveuo(fepx//'           .VALE', 'L', jfon)
 !
     fmax = -1.0d100

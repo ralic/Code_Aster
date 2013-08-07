@@ -106,7 +106,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 !     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 !-----------------------------------------------------------------------
-    character(len=1) :: k1bid
 !----------------------------------------------------------------------
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
@@ -157,7 +156,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
         call jeexin(matel//'.RELR', iret)
         if (iret .gt. 0) then
-            call jelira(matel//'.RELR', 'LONUTI', nbresu, k1bid)
+            call jelira(matel//'.RELR', 'LONUTI', nbresu)
             if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
             idimli = idimli + nbresu
         else
@@ -190,7 +189,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     call jeexin(k24lil, iret)
     if (iret .gt. 0) call jedetr(k24lil)
     call jecreo(k24lil, base//' N  K24 ')
-    call jeecra(k24lil, 'NOMMAX', idimli, ' ')
+    call jeecra(k24lil, 'NOMMAX', idimli)
 !---- LILI(1)= '&MAILLA'
     call jecroc(jexnom(k24lil, kmaill))
 !---- SI LES RESUELEM SONT VIDES .LILI NE CONTIENT QUE &MAILLA
@@ -203,7 +202,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         matel = zk24(ilimat+imat-1)(1:19)
         call jeexin(matel//'.RELR', iret)
         if (iret .eq. 0) goto 110
-        call jelira(matel//'.RELR', 'LONUTI ', nbresu, k1bid)
+        call jelira(matel//'.RELR', 'LONUTI', nbresu)
         if (nbresu .gt. 0) call jeveuo(matel//'.RELR', 'L', idlres)
         do 120 iresu = 1, nbresu
             resu = zk24(idlres+iresu-1)
@@ -290,7 +289,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
 !---- ADNE(3*(ILI-1)+1)=NBRE DE MAILLES SUP DU LIGREL NOMLI
 !
-            call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup, k1bid)
+            call jelira(nomli(1:19)//'.NEMA', 'NUTIOC', nbsup)
             zi(iadnem+3* (ili-1)) = nbsup
             call jeveut(nomli(1:19)//'.NEMA', 'L', iad)
             zi(iadnem+3* (ili-1)+1) = iad
@@ -306,7 +305,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
         call jeexin(nomli(1:19)//'.LIEL', iret)
         if (iret .gt. 0) then
-            call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr, k1bid)
+            call jelira(nomli(1:19)//'.LIEL', 'NUTIOC', nbgr)
             zi(iadlie+3* (ili-1)) = nbgr
             call jeveut(nomli(1:19)//'.LIEL', 'L', iad)
             zi(iadlie+3* (ili-1)+1) = iad

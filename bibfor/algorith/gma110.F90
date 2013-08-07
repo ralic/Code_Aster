@@ -90,7 +90,7 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
         endif
         if (exclu .eq. 'OUI' .and. nomut .eq. ' ') goto 40
         call jeveuo(jexnom(mailla//'.GROUPEMA', nomgr), 'L', ilstma)
-        call jelira(jexnom(mailla//'.GROUPEMA', nomgr), 'LONMAX', nbgrma, k8bid)
+        call jelira(jexnom(mailla//'.GROUPEMA', nomgr), 'LONMAX', nbgrma)
         if (nomut .eq. ' ') then
             leng1 = lxlgut(nomsst)
             leng2 = lxlgut(nomgr)
@@ -119,8 +119,8 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
             endif
 20      continue
         call jecroc(jexnom(nomres//'.GROUPEMA', nomut))
-        call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONMAX', max(1, nbgrma), k8bid)
-        call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONUTI', nbgrma, k8bid)
+        call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONMAX', max(1,nbgrma))
+        call jeecra(jexnom(nomres//'.GROUPEMA', nomut), 'LONUTI', nbgrma)
         call jeveuo(jexnom(nomres//'.GROUPEMA', nomut), 'E', ilstno)
         nbtgrm = nbtgrm+1
         do 30 ima = 1, nbgrma

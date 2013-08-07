@@ -53,7 +53,7 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
-    character(len=8) :: nomma, k8bid
+    character(len=8) :: nomma
     integer :: jtopo, inoe, ino, igr, iret, nbn, iad, in, lnuno, jnuno
 !
 !
@@ -62,7 +62,7 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
     nbnot= 0
     call jeveuo(noltop, 'E', jtopo)
     call jeveuo(numno, 'E', jnuno)
-    call jelira(numno, 'LONMAX', lnuno, k8bid)
+    call jelira(numno, 'LONMAX', lnuno)
 !
 !  --- TRAITEMENT DES LISTES DE NOEUDS ----
     if (nbno .ne. 0) then
@@ -101,7 +101,7 @@ subroutine irnono(noma, nbnoe, nbno, nonoe, nbgr,&
                             0, 0, 0.d0)
                 nogrn(igr) = ' '
             else
-                call jelira(jexnom(nomma//'.GROUPENO', nogrn(igr)), 'LONMAX', nbn, k8bid)
+                call jelira(jexnom(nomma//'.GROUPENO', nogrn(igr)), 'LONMAX', nbn)
                 if (nbn .eq. 0) then
                     valk (1) = nogrn(igr)
                     valk (2) = ' '

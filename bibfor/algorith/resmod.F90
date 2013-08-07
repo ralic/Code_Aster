@@ -54,7 +54,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
 !
 !
     integer :: nbmode, ddl(6), neq
-    character(len=8) :: basmod, nomsst, soutr, kb, numddl, noeud, noecho(3)
+    character(len=8) :: basmod, nomsst, soutr, numddl, noeud, noecho(3)
     character(len=16) :: depl
     character(len=24) :: chamba, mdgene, numgen
     real(kind=8) :: bmodal(neq, *), coord(3), modsst(nbmode, 6)
@@ -79,7 +79,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
     call jenonu(jexnom(mdgene(1:14)//'.MODG.SSNO', nomsst), nusst)
     call jenonu(jexnom(numgen(1:19)//'.LILI', soutr), ibid)
     call jeveuo(jexnum(numgen(1:19)//'.ORIG', ibid), 'L', llors)
-    call jelira(jexnum(numgen(1:19)//'.ORIG', ibid), 'LONMAX', nsst, kb)
+    call jelira(jexnum(numgen(1:19)//'.ORIG', ibid), 'LONMAX', nsst)
     do 10 i = 1, nsst
         if (zi(llors+i-1) .eq. nusst) nutars=i
 10  end do

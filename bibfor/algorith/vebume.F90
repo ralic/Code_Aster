@@ -101,7 +101,7 @@ subroutine vebume(modelz, matasz, deplaz, lischa, vecelz)
 !
     call jeexin(lischa(1:19)//'.LCHA', iret)
     if (iret .eq. 0) goto 9999
-    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar, k8bid)
+    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
     call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
     call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
 !

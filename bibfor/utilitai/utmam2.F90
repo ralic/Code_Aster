@@ -55,14 +55,13 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
     integer :: nbmail, ima, itrou
     integer :: itempo, jmamo
 !
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     call jeveuo(modele//'.MAILLE', 'L', jmamo)
-    call jelira(modele//'.MAILLE', 'LONMAX', nbmail, k8bid)
+    call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
     ASSERT(nbma.eq.nbmail)
 !
     call wkvect('&&UTMAM2.LISTE_M_TEMP', 'V V I', nbmail, itempo)

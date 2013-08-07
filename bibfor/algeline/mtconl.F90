@@ -55,7 +55,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, icomb, iconst, ier1, ier2, jcomb, lconl1
+    integer ::  icomb, iconst, ier1, ier2, jcomb, lconl1
     integer :: lconl2, neq
 !-----------------------------------------------------------------------
     call jemarq()
@@ -73,14 +73,14 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
 !           --- CREATION (EVENTUELLE)  D'UN .CONL AU TYPE "TYPRES" ---
             call jeexin(cbid(1)//'.CONL', ier1)
             if (ier1 .ne. 0) then
-                call jelira(cbid(1)//'.CONL', 'TYPE', ibid, type)
+                call jelira(cbid(1)//'.CONL', 'TYPE', cval=type)
                 if (type .ne. typrez) then
                     call jedetr(cbid(1)//'.CONL')
                     ier1 = 0
                 endif
             endif
             if (ier1 .eq. 0) then
-                call jelira(cbid(1)//'.VALM', 'CLAS', ibid, clas)
+                call jelira(cbid(1)//'.VALM', 'CLAS', cval=clas)
                 call wkvect(cbid(1)//'.CONL', clas(1:1)//' V '//typrez, neq, lconl1)
             else
                 call jeveuo(cbid(1)//'.CONL', 'E', lconl1)
@@ -94,7 +94,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres,&
                 if (ier2 .ne. 0) then
 !                 --- MOULINEX ----
                     call jeveuo(cbid(2)//'.CONL', 'L', lconl2)
-                    call jelira(cbid(2)//'.CONL', 'TYPE', ibid, type)
+                    call jelira(cbid(2)//'.CONL', 'TYPE', cval=type)
 !
 !                 SI LE COEFFICIENT EST COMPLEXE : ATTENTION !
 !                 CAR LES MATRICES INITIALES ET RESULTATS .CONL SONT

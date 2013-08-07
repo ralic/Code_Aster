@@ -42,7 +42,6 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 !
 !
     integer :: nmax, jcvvar, i, iret1
-    character(len=1) :: k1bid
     character(len=8) :: index, chmat8
 !
     call jemarq()
@@ -51,7 +50,7 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
     exivc=.false.
     call jeexin(chmat8// '.CVRCVARC', iret1)
     if (iret1 .ne. 0) then
-        call jelira(chmat8// '.CVRCVARC', 'LONMAX', nmax, k1bid)
+        call jelira(chmat8// '.CVRCVARC', 'LONMAX', ival=nmax)
         call jeveuo(chmat8// '.CVRCVARC', 'L', jcvvar)
         do 1 i = 1, nmax
             if (zk8(jcvvar-1+i) .eq. index) then

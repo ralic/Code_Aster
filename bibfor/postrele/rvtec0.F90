@@ -85,9 +85,9 @@ subroutine rvtec0(t, co, sp, absc, x,&
     if (docu .ne. 'LSTN' .and. docu .ne. 'CHMM' .and. docu .ne. 'SGTD' .and. docu .ne. 'ARCC'&
         .and. docu .ne. 'SGT3') goto 9999
 !
-    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari, k8b)
+    call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
     if (nbvari .ne. 0) then
-        call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari, k8b)
+        call jelira(jexnum(xnovar, iocc), 'LONUTI', nbvari)
         call jeveuo(jexnum(xnovar, iocc), 'L', jvari)
         if (nbvari .eq. 1 .and. zi(jvari) .eq. -1) then
             nbcmp2 = sp(1)
@@ -327,7 +327,7 @@ subroutine rvtec0(t, co, sp, absc, x,&
 !
     if (docu .eq. 'LSTN') then
         call jeveuo(jexnum(sdm, i), 'L', jam)
-        call jelira(jexnum(sdm, i), 'LONMAX', nbmail, k8b)
+        call jelira(jexnum(sdm, i), 'LONMAX', nbmail)
         l = 0
         nbco = co(i)
         nbsp = sp(i)

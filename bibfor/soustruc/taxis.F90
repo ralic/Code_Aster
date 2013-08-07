@@ -74,7 +74,7 @@ subroutine taxis(noma, indic, nbma)
     do 2 ima = 1, nbma
         if (indic(ima) .ne. 0) then
             call jeveuo(jexnum(noma//'.CONNEX', ima), 'L', iacnex)
-            call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma, k8b)
+            call jelira(jexnum(noma//'.CONNEX', ima), 'LONMAX', nbnoma)
             do 3 ino = 1, nbnoma
                 numno=zi(iacnex-1+ino)-1
                 if (zr(jvale+3*numno) .lt. toler) then

@@ -70,7 +70,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  RRM    : SQRT LST MAITRE
 ! I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, ii, in, pl, xoula, iin, nddle
+    integer :: i, j, ii, pl, iin, nddle
     integer :: nne, nnes, nnem, nnm, nnms, ddles, ddlem, ddlms, ddlmm
     integer :: ifh, iddl
     real(kind=8) :: vv, iescl(6), imait(6)

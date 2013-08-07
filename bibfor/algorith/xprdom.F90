@@ -288,7 +288,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !        THE NODE IS INSIDE THE TORUS. RETRIEVE ALL THE ELEMENTS
 !        CONTAINING THIS NODE
-            call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno, k8b)
+            call jelira(jexnum(cnxinv, i), 'LONMAX', nbelno)
             call jeveuo(jexnum(cnxinv, i), 'L', jelno)
 !
             do 1150 j = 1, nbelno
@@ -393,7 +393,7 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
 !
 !           THE NODE IS INSIDE THE TORUS. RETRIEVE ALL THE ELEMENTS
 !           CONTAINING THIS NODE
-            call jelira(jexnum(dcnxin, i), 'LONMAX', nbelno, k8b)
+            call jelira(jexnum(dcnxin, i), 'LONMAX', nbelno)
             call jeveuo(jexnum(dcnxin, i), 'L', jelno)
 !
             do 150 j = 1, nbelno

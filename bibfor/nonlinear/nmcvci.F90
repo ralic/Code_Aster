@@ -46,7 +46,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     real(kind=8) :: instap, coefr(2)
     integer :: jdlci, neq, ieq, neq2, jcncim, iret, j1, jinfc, ichar
     integer :: nbchar, iexi, jlchar
-    character(len=1) :: kbid, typch(2)
+    character(len=1) :: typch(2)
     logical :: lvcine
 !----------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !     --------------------------------------
     call exisd('CHAMP_GD', cncine, iret)
     if (iret .eq. 0) call vtcreb(cncine, numedd, 'V', 'R', neq)
-    call jelira(cncine(1:19)//'.VALE', 'LONMAX', neq, kbid)
-    call jelira(depmoi(1:19)//'.VALE', 'LONMAX', neq2, kbid)
+    call jelira(cncine(1:19)//'.VALE', 'LONMAX', ival=neq)
+    call jelira(depmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
     ASSERT(neq.eq.neq2)
     call jeveuo(cncine(1:19)//'.VALE', 'E', j1)
     do 2, ieq=1,neq
@@ -76,7 +76,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
     call jeveuo(charge, 'L', jlchar)
-    call jelira(charge, 'LONMAX', nbchar, kbid)
+    call jelira(charge, 'LONMAX', ival=nbchar)
     do 11 ichar = 1, nbchar
         char1=zk24(jlchar-1+ichar)(1:8)
         call jeexin(char1//'.ELIM      .AFCK', iexi)

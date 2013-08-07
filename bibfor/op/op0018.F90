@@ -189,7 +189,7 @@ subroutine op0018()
         call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', 1, iarg, 1,&
                     phenom, ibid)
     endif
-    call jeecra(nomu//'.MODELE    .LGRF', 'DOCU', ibid, phenom(1:4))
+    call jeecra(nomu//'.MODELE    .LGRF', 'DOCU', cval=phenom(1:4))
 !
 !       -- S'IL N'Y A PAS D'ELEMENTS ON SAUTE QUELQUES ETAPES:
     if (nboc .eq. 0) goto 190
@@ -216,8 +216,8 @@ subroutine op0018()
     cptnem=nomu//'.MODELE    .NEMA'
 !
 !     --  CREATION DES VECTEURS TAMPONS MAILLES ET NOEUDS
-    call jelira(nommai, 'NOMMAX', nbmail, k8b)
-    call jelira(nomnoe, 'NOMMAX', nbnoeu, k8b)
+    call jelira(nommai, 'NOMMAX', nbmail)
+    call jelira(nomnoe, 'NOMMAX', nbnoeu)
     call jeveuo(typmai, 'L', jdtm)
 !
     call wkvect(cptmai, 'G V I', nbmail, jdma)
@@ -287,7 +287,7 @@ subroutine op0018()
                 lmail=.true.
                 do 40 i = 1, ngm
                     call jeveuo(jexnom(grpmai, zk24(jdef+i-1)), 'L', jdgm)
-                    call jelira(jexnom(grpmai, zk24(jdef+i-1)), 'LONUTI', nbgrma, k8b)
+                    call jelira(jexnom(grpmai, zk24(jdef+i-1)), 'LONUTI', nbgrma)
                     do 30 j = 1, nbgrma
                         numail=zi(jdgm+j-1)
                         nutypm=zi(jdtm+numail-1)
@@ -319,7 +319,7 @@ subroutine op0018()
                 lnoeu=.true.
                 do 70 i = 1, ngn
                     call jeveuo(jexnom(grpnoe, zk24(jdef+i-1)), 'L', jdgn)
-                    call jelira(jexnom(grpnoe, zk24(jdef+i-1)), 'LONUTI', nbgrno, k8b)
+                    call jelira(jexnom(grpnoe, zk24(jdef+i-1)), 'LONUTI', nbgrno)
                     do 60 j = 1, nbgrno
                         numnoe=zi(jdgn+j-1)
                         if (zi(jdpm+ntypoi-1) .gt. 0) zi(jdno+numnoe-1)= zi(jdpm+ ntypoi-1)
@@ -448,14 +448,14 @@ subroutine op0018()
 ! -     OBJET LIEL
     call jecrec(cptlie, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbgrel)
-    call jeecra(cptlie, 'LONT', lonlie, ' ')
+    call jeecra(cptlie, 'LONT', lonlie)
     call jeveuo(cptlie, 'E', jdli)
 !
 ! -     OBJET NEMA
     if (nbnoaf .ne. 0) then
         call jecrec(cptnem, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbnoaf)
-        call jeecra(cptnem, 'LONT', lonnem, ' ')
+        call jeecra(cptnem, 'LONT', lonnem)
         call jeveuo(cptnem, 'E', jdnw)
     endif
 !
@@ -473,7 +473,7 @@ subroutine op0018()
                 numvec=numvec+1
                 zi(jdli+numvec-1)=nutype
                 call jecroc(jexnum(cptlie, nugrel))
-                call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel, ' ')
+                call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
                 nmgrel=0
             endif
             nmgrel=nmgrel+1
@@ -487,7 +487,7 @@ subroutine op0018()
             numvec=numvec+1
             zi(jdli+numvec-1)=nutype
             call jecroc(jexnum(cptlie, nugrel))
-            call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel, ' ')
+            call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
         endif
 160  end do
 !
@@ -503,7 +503,7 @@ subroutine op0018()
                 numvec=numvec+1
                 zi(jdli+numvec-1)=nutype
                 call jecroc(jexnum(cptlie, nugrel))
-                call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel, ' ')
+                call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
                 nmgrel=0
             endif
             nmgrel=nmgrel+1
@@ -518,7 +518,7 @@ subroutine op0018()
             numvec=numvec+1
             zi(jdli+numvec-1)=nutype
             call jecroc(jexnum(cptlie, nugrel))
-            call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel, ' ')
+            call jeecra(jexnum(cptlie, nugrel), 'LONMAX', nmgrel)
         endif
 170  end do
 !
@@ -534,7 +534,7 @@ subroutine op0018()
                 numvec=numvec+2
                 numsup=numsup+1
                 call jecroc(jexnum(cptnem, numsup))
-                call jeecra(jexnum(cptnem, numsup), 'LONMAX', 2, ' ')
+                call jeecra(jexnum(cptnem, numsup), 'LONMAX', 2)
             endif
 180      continue
     endif

@@ -101,7 +101,7 @@ subroutine charci(chcine, mfact, mo, type)
     call dismoi('F', 'NOM_GD_SI', nomgd, 'GRANDEUR', ibid,&
                 nogdsi, ier)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', jcmp)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', nbcmp, k8b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', nbcmp)
     cns='&&CHARCI.CNS'
 !
 !    --------------------------------------------------------

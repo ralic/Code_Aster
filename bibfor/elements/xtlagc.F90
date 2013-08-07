@@ -64,7 +64,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
 !
 !
     integer :: ino
-    integer :: in, xoula, pl, nn, nns, nddls
+    integer ::  pl, nn, nns, nddls
 !
 ! ----------------------------------------------------------------------
 !

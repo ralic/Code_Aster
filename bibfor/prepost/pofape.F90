@@ -173,7 +173,7 @@ subroutine pofape()
 !
     if (nbf .ne. 0) then
         fvale(1) = nomten(1)//'           .VALE'
-        call jelira(fvale(1), 'LONMAX', nbpts, k8b)
+        call jelira(fvale(1), 'LONMAX', nbpts)
     endif
 !
 !CCCCCCCCC RECUPERER LA DEFORMATION TOTALE
@@ -193,7 +193,7 @@ subroutine pofape()
 !
     if (nbeps .ne. 0) then
         etvale(1) = nomeps(1)//'           .VALE'
-        call jelira(etvale(1), 'LONMAX', nbpts, k8b)
+        call jelira(etvale(1), 'LONMAX', nbpts)
     endif
 !
 !CCCCCCCCC RECUPERER LA DEFORMATION PLASTIQUE
@@ -213,7 +213,7 @@ subroutine pofape()
 !
     if (nbepsp .ne. 0) then
         ptvale(1) = nomepp(1)//'           .VALE'
-        call jelira(ptvale(1), 'LONMAX', nbpts, k8b)
+        call jelira(ptvale(1), 'LONMAX', nbpts)
     endif
 !
 !C  CONTRUIRE TABLEAU CONTRAINTE
@@ -227,7 +227,7 @@ subroutine pofape()
         nbptot = nbpts
         do 20 i = 2, nbf
             fvale(i) = nomten(i)//'           .VALE'
-            call jelira(fvale(i), 'LONMAX', nbpts, k8b)
+            call jelira(fvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
 20      continue
         call wkvect('&&POFAPE.ORDO', 'V V R', nbptot/2*nbf, iordo)
@@ -260,7 +260,7 @@ subroutine pofape()
         nbptot = nbpts
         do 21 i = 2, nbeps
             etvale(i) = nomeps(i)//'           .VALE'
-            call jelira(etvale(i), 'LONMAX', nbpts, k8b)
+            call jelira(etvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
 21      continue
         call wkvect('&&POFAPE.ORDOE', 'V V R', nbptot*nbeps/2, iordoe)
@@ -293,7 +293,7 @@ subroutine pofape()
         nbptot = nbpts
         do 22 i = 2, nbepsp
             ptvale(i) = nomepp(i)//'           .VALE'
-            call jelira(ptvale(i), 'LONMAX', nbpts, k8b)
+            call jelira(ptvale(i), 'LONMAX', nbpts)
             if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
 22      continue
         call wkvect('&&POFAPE.ORDOP', 'V V R', nbptot*nbepsp/2, iordop)

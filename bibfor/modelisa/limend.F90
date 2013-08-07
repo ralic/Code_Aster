@@ -51,7 +51,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
     integer :: jprof, nbmx, np, ibid
     real(kind=8) :: vallim, nlimim
     character(len=10) :: nomphe
-    character(len=8) :: nomfon, k8bid, nommat, nompf
+    character(len=8) :: nomfon, nommat, nompf
     character(len=16) :: typfon
     character(len=24) :: chnom, cbid
 !
@@ -74,12 +74,12 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
         ASSERT(iret .ne. 0)
 !
         call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
 !
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
         call jeexin(nommat//'.'//nomphe//'.VALK', iret)
         call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
 !
 !    NOMBRE DE FONCTIONS PRESENTES
 !
@@ -114,12 +114,12 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
         ASSERT(iret .ne. 0)
 !
         call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
 !
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
         call jeexin(nommat//'.'//nomphe//'.VALK', iret)
         call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
 !
 !    NOMBRE DE FONCTIONS PRESENTES
 !
@@ -165,7 +165,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
             call jeveuo(chnom, 'L', jprof)
 !
-            call jelira(chnom, 'LONMAX', nbr, k8bid)
+            call jelira(chnom, 'LONMAX', nbr)
 !
             nbf = nbr/2
 !

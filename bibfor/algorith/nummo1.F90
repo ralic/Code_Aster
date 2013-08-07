@@ -74,7 +74,7 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 !     CREATION DE LA COLLECTION .LILI
 !
     call jecreo(prgene//'.LILI', 'G N K8')
-    call jeecra(prgene//'.LILI', 'NOMMAX', 2, ' ')
+    call jeecra(prgene//'.LILI', 'NOMMAX', 2)
     call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
     call jecroc(jexnom(prgene//'.LILI', 'LIAISONS'))
 !
@@ -94,18 +94,18 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 !
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
 !
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
+    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprs)
 !
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2, ' ')
+    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2)
     call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldors)
 !
     call jenonu(jexnom(prgene//'.LILI', 'LIAISONS'), ibid)
 !
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
+    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
     call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprl)
 !
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2, ' ')
+    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2)
     call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldorl)
 !
     zi(ldors)=1

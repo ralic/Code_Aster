@@ -69,7 +69,6 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=*) :: mofaz, nomaz, lismaz
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    character(len=1) :: k1bid
     character(len=4) :: cdim
     character(len=8) :: noma, k8bid, nomail, nomtyp, ouinon
     character(len=16) :: motfac
@@ -245,7 +244,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 !
 ! --- RECUPERATION DE LA DIMENSION DE L'ESPACE DES COORDONNEES :
 !     --------------------------------------------------------
-    call jelira(noma//'.COORDO    .VALE', 'DOCU', ibid, cdim)
+    call jelira(noma//'.COORDO    .VALE', 'DOCU', cval=cdim)
 !
     if (cdim .eq. '2   ') then
         ndim=2
@@ -283,7 +282,7 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---     RECUPERATION DU NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ----------------------------------------------------
         call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
-        call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', nbno)
 !
 ! ---     RECUPERATION DU TYPE DE LA MAILLE :
 !         ---------------------------------

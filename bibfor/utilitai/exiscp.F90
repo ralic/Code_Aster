@@ -70,7 +70,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
     integer :: i, ier, icmp, ibid, ino
     integer :: nbcmp, nmocl, nbec
     parameter    (nmocl=300)
-    character(len=1) :: k1bid
     character(len=8) :: nomddl(nmocl), k8bid, noma, mod
     character(len=16) :: pheno
     character(len=19) :: ligrmo
@@ -101,7 +100,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend,&
         call u2mess('F', 'UTILITAI_73')
     endif
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jnom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, k1bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp)
 !
 ! --- NOMBRE DE DDL POUR CETTE GRANDEUR
 !

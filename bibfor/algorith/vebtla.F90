@@ -65,7 +65,7 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=6) :: masque
-    character(len=8) :: nomcha, k8bid
+    character(len=8) :: nomcha
     character(len=16) :: option
     character(len=24) :: ligrch
     integer :: iret, nchar, ndir, icha
@@ -102,7 +102,7 @@ subroutine vebtla(base, modelz, mate, carele, deplaz,&
 !
     call jeexin(lischa(1:19)//'.LCHA', iret)
     if (iret .eq. 0) goto 9999
-    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar, k8bid)
+    call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
     call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
     call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
 !

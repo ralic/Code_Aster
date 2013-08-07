@@ -126,7 +126,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
 !
 ! 3.  RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !     --------------------------------------------
-    call jelira(basefl//'.NUMO', 'LONMAX', nbmcfc, k8b)
+    call jelira(basefl//'.NUMO', 'LONMAX', nbmcfc)
     call jeveuo(basefl//'.NUMO', 'L', knumo)
     write(chrefe,'(A8,A5,2I3.3,A5)') basefl(1:8),'.C01.',zi(knumo),&
      &                                 iv,'.REFE'
@@ -206,7 +206,7 @@ subroutine mditmi(typflu, nombm, icoupl, nbm0, nbmode,&
         else
             call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 0,&
                         listam, ib)
-            call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8b)
+            call jelira(listam//'           .VALE', 'LONMAX', nbamor)
         endif
         if (nbamor .gt. nbmode) then
             vali (1) = nbmode

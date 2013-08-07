@@ -125,7 +125,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     call u2mesg('A', 'PREPOST5_31', 1, valk, 0,&
                                 0, 0, 0.d0)
                 else
-                    call jelira(jexnom(nomma//'.GROUPEMA', group(igr)), 'LONMAX', nbn, k8bid)
+                    call jelira(jexnom(nomma//'.GROUPEMA', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPEMA', group(igr)), 'L', iad)
                     do 14 in = 1, nbn
                         ima = zi(iad-1+in)
@@ -272,7 +272,7 @@ subroutine prcoch(noche8, nochs8, nocmp, ktype, itopo,&
                     call u2mesg('A', 'PREPOST5_31', 1, valk, 0,&
                                 0, 0, 0.d0)
                 else
-                    call jelira(jexnom(nomma//'.GROUPENO', group(igr)), 'LONMAX', nbn, k8bid)
+                    call jelira(jexnom(nomma//'.GROUPENO', group(igr)), 'LONMAX', nbn)
                     call jeveuo(jexnom(nomma//'.GROUPENO', group(igr)), 'L', iad)
                     do 140 in = 1, nbn
                         ino = zi(iad-1+in)

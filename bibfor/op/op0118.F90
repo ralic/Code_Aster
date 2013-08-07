@@ -54,7 +54,7 @@ subroutine op0118()
     real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, r8b, tini
     real(kind=8) :: tfin, duree
     complex(kind=8) :: c16b
-    character(len=8) :: k8b, typar(2), nomvec
+    character(len=8) ::  typar(2), nomvec
     character(len=16) :: typvec, nomcmd, nopar(2)
     character(len=19) :: nominf, nomfon
     integer :: iarg
@@ -99,7 +99,7 @@ subroutine op0118()
 !===============
 ! 4. RECUPERATION DE L'INTERSPECTRE FACTORISE (NOMINF)
 !===============
-    call jelira(nominf//'.VALE', 'LONUTI', nbval, k8b)
+    call jelira(nominf//'.VALE', 'LONUTI', nbval)
     call jeveuo(nominf//'.VALE', 'L', lvale)
     call jeveuo(nominf//'.DESC', 'L', ldesc)
     call jeveuo(nominf//'.NUOR', 'L', lnuor)

@@ -46,7 +46,7 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 ! ----------------------------------------------------------------------
     integer :: i, ifr, icho, ipas, ix, iy, iz, nbtitr
-    character(len=8) :: k8b, typeob, blan8
+    character(len=8) ::  typeob, blan8
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -81,7 +81,7 @@ subroutine mdicho(nomres, nbstoc, temps, forcho, deploc,&
     call jeexin(nomres//'           .TITR', iret)
     if (iret .ne. 0) then
         call jeveuo(nomres//'           .TITR', 'L', ltitr)
-        call jelira(nomres//'           .TITR', 'LONMAX', nbtitr, k8b)
+        call jelira(nomres//'           .TITR', 'LONMAX', nbtitr)
         do 2 i = 1, nbtitr
             if (nimpr .ne. 0) write(ifr,1010) zk80(ltitr+i-1)
  2      continue

@@ -97,10 +97,10 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !     ET NE SERONT PAS POST TRAITEES
     ligrel=mo//'.MODELE'
     liel=ligrel//'.LIEL'
-    call jelira(liel, 'NMAXOC', ngr, k8b)
+    call jelira(liel, 'NMAXOC', ngr)
     do 100 igr = 1, ngr
         call jeveuo(jexnum(liel, igr), 'L', j1)
-        call jelira(jexnum(liel, igr), 'LONMAX', n1, k8b)
+        call jelira(jexnum(liel, igr), 'LONMAX', n1)
         nbelt=n1-1
         do 110 iel = 1, nbelt
             ima=zi(j1-1+iel)
@@ -125,7 +125,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
 !     CREATION DU VECTEUR DIMENTIONNANT LA TAILLE DES NOUVEAUX GROUP_MA
     call jeexin(malini//'.GROUPEMA', iret1)
     nbgma = 0
-    if (iret1 .gt. 0) call jelira(malini//'.GROUPEMA', 'NUTIOC', nbgma, k8b)
+    if (iret1 .gt. 0) call jelira(malini//'.GROUPEMA', 'NUTIOC', nbgma)
     if (nbgma .gt. 0) call wkvect(logrma, 'V V I', nbgma, jlogma)
 !
     nbmac = 0
@@ -180,7 +180,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             zi(isepma-1+ima)= 1
             nbmac = nbmac + 1
 !         N : NOMBRE DE NOEUDS DE LA MAILLE
-            call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n, k8b)
+            call jelira(jexnum(malini//'.CONNEX', ima), 'LONMAX', n)
             ncotot = ncotot + n
 !
 !         AUGMENTATION DE LA TAILLE DES GROUP_MA

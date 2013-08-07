@@ -78,7 +78,7 @@ subroutine op0140()
     else
         call vecgcy(nomres, numeg)
     endif
-    call jeecra(nomres//'           .DESC', 'DOCU', 0, 'VGEN')
+    call jeecra(nomres//'           .DESC', 'DOCU', cval='VGEN')
 !
     call jedema()
 end subroutine

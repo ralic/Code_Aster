@@ -55,7 +55,6 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 #include "asterfort/zzcala.h"
 #include "asterfort/zzcalb.h"
 #include "asterfort/zzpoly.h"
-    character(len=1) :: k1bid
     character(len=8) :: modele, kbid, ma, typema, licmp(4), vecass, elrefe
     character(len=8) :: famil
     character(len=14) :: nu14
@@ -122,7 +121,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
         if (typema(1:4) .eq. 'TRIA' .or. typema(1:4) .eq. 'QUAD') then
             call jeveuo(jexnum(connex, ima), 'L', jcon)
-            call jelira(jexnum(connex, ima), 'LONMAX', nbn, k1bid)
+            call jelira(jexnum(connex, ima), 'LONMAX', nbn)
             do 10 ino = 1, nbn
                 num = zi(jcon-1+ino)
                 zi(ialcv-1+num) = zi(ialcv-1+num) + 1
@@ -131,7 +130,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 20  end do
 !
     do 30,ino = 1,nbno
-    call jeecra(jexnum(coninv, ino), 'LONMAX', zi(ialcv-1+ino), kbid)
+    call jeecra(jexnum(coninv, ino), 'LONMAX', zi(ialcv-1+ino))
     30 end do
 !
     call wkvect('&&SINOZ2.INDIC', 'V V I', nbno, iindic)
@@ -141,7 +140,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(iad)), typema)
         if (typema(1:4) .eq. 'TRIA' .or. typema(1:4) .eq. 'QUAD') then
             call jeveuo(jexnum(connex, ima), 'L', jcon)
-            call jelira(jexnum(connex, ima), 'LONMAX', nbn, k1bid)
+            call jelira(jexnum(connex, ima), 'LONMAX', nbn)
             do 40 ino = 1, nbn
                 num = zi(jcon-1+ino)
                 call jeveuo(jexnum(coninv, num), 'E', jconin)
@@ -268,7 +267,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
     ipa = 0
     do 240 ino = 1, nbno
         if (.not.zl(jnoeu-1+ino)) then
-            call jelira(jexnum(coninv, ino), 'LONMAX', nbmav, k1bid)
+            call jelira(jexnum(coninv, ino), 'LONMAX', nbmav)
 !
 !    TRAITEMENT DES SOMMETS
 !
@@ -296,7 +295,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 ymax = -1.d+10
                 do 140 ima = 1, nbmav
                     numav = zi(iamav-1+ima)
-                    call jelira(jexnum(connex, numav), 'LONMAX', nbnoma, k1bid)
+                    call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                     call jeveuo(jexnum(connex, numav), 'L', ianov)
                     do 130 inoma = 1, nbnoma
                         num = zi(ianov-1+inoma)
@@ -315,7 +314,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                     numav = zi(iamav-1+ima)
                     numgr = zi(iarepe-1+2*(numav-1)+1)
                     numel = zi(iarepe-1+2*(numav-1)+2)
-                    call jelira(jexnum(connex, numav), 'LONMAX', nbnoma, k1bid)
+                    call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                     call jeveuo(jexnum(connex, numav), 'L', ianov)
 !
 !        RECUPERATION DES COORDONNEES DES NOEUDS
@@ -403,7 +402,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 if (nno .ge. 6) then
                     do 220 ima = 1, nbmav
                         numav = zi(iamav-1+ima)
-                        call jelira(jexnum(connex, numav), 'LONMAX', nbnoma, k1bid)
+                        call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                         call jeveuo(jexnum(connex, numav), 'L', ianov)
 !
 !       RECUPERATION DU NOEUD MILIEU ASSOCIE AU NOEUD SOMMET DU PATCH
@@ -436,7 +435,7 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
                 if (nno .eq. 9) then
                     do 230 ima = 1, nbmav
                         numav = zi(iamav-1+ima)
-                        call jelira(jexnum(connex, numav), 'LONMAX', nbnoma, k1bid)
+                        call jelira(jexnum(connex, numav), 'LONMAX', nbnoma)
                         call jeveuo(jexnum(connex, numav), 'L', ianov)
 !
 !     RECUPERATION DU NOEUD BARYCENTRE

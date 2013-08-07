@@ -43,7 +43,6 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
 !-----------------------------------------------------------------------
     integer :: iret, nbgrel, igrel, ialiel, nel, itypel, ima, ier, numail, iel
     integer :: traite
-    character(len=1) :: k1b
     character(len=8) :: modele, dmo, dma
     character(len=16) :: nomte
     character(len=19) :: nolig
@@ -57,13 +56,13 @@ subroutine chbord(nomo, nbmail, listma, mabord, nbmapr,&
     call jeexin(nolig//'.LIEL', iret)
     if (iret .eq. 0) goto 999
 !
-    call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k1b)
+    call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
     if (nbgrel .le. 0) goto 999
 !
     traite = 0
     do 10 igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k1b)
+        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
         itypel = zi(ialiel -1 +nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
         do 20 ima = 1, nbmail

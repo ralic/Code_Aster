@@ -52,7 +52,7 @@ subroutine ordonn(nomfon, iret)
     logical :: isnap, inv
     character(len=1) :: codmes
     character(len=16) :: typfon
-    character(len=24) :: chval, chbid
+    character(len=24) :: chval
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -73,7 +73,7 @@ subroutine ordonn(nomfon, iret)
 !     --------------------------------------------
     else if (typfon.eq.'FONCTION') then
         call jeveuo(chval, 'E', ival)
-        call jelira(chval, 'LONUTI', nbval, chbid)
+        call jelira(chval, 'LONUTI', nbval)
         nbpts=nbval/2
         if (nbpts .eq. 1) goto 999
         ier=0
@@ -97,7 +97,7 @@ subroutine ordonn(nomfon, iret)
 !     --------------------------------------------
     else if (typfon.eq.'FONCT_C') then
         call jeveuo(chval, 'E', ival)
-        call jelira(chval, 'LONUTI', nbval, chbid)
+        call jelira(chval, 'LONUTI', nbval)
         nbpts=nbval/3
         if (nbpts .eq. 1) goto 999
         ier=0
@@ -122,7 +122,7 @@ subroutine ordonn(nomfon, iret)
     else if (typfon.eq.'NAPPE') then
         isnap=.true.
         call jeveuo(nomfon//'.PARA', 'E', ipar)
-        call jelira(nomfon//'.PARA', 'LONUTI', nbpara, chbid)
+        call jelira(nomfon//'.PARA', 'LONUTI', nbpara)
         ier=0
         call foverf(zr(ipar), nbpara, ier)
         if (ier .le. 0) then
@@ -133,7 +133,7 @@ subroutine ordonn(nomfon, iret)
 !        VERIFIER CHAQUE FONCTION COMME CI-DESSUS
         typfon='FONCTION'
         do 100 i = 1, nbpara
-            call jelira(jexnum(chval, i), 'LONMAX', nbval, chbid)
+            call jelira(jexnum(chval, i), 'LONMAX', nbval)
             call jeveuo(jexnum(chval, i), 'E', ival)
             nbpts=nbval/2
             if (nbpts .eq. 1) goto 99

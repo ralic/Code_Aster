@@ -71,7 +71,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
     call jenonu(jexnom(noma//'.NOMNOE', noepou), inopou)
     do 55 i = 1, nma
         call jeveuo(jexnum(noma//'.CONNEX', i), 'L', iconex)
-        call jelira(jexnum(noma//'.CONNEX', i), 'LONMAX', nbno, k8bid)
+        call jelira(jexnum(noma//'.CONNEX', i), 'LONMAX', nbno)
         do 56 j = 1, nbno
             if (zi(iconex+j-1) .eq. inopou) then
                 if (ima .eq. 0) then
@@ -109,7 +109,7 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig,&
 !
 ! --- NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR CF NUROTA
 !
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
 !
 ! --- TABLEAU DE VALEURS DE LA CARTE CHCARA
 !

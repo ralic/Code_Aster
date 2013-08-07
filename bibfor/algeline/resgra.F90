@@ -68,7 +68,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     character(len=4) :: type
     character(len=24) :: precon
     integer :: ifm, niv, ier, idvalc, idin, idip, jsmde, neq, nblc, islvk
-    integer :: ibid, idac, idinpc, idippc, idacpc, idw1, idw2, idw3
+    integer ::  idac, idinpc, idippc, idacpc, idw1, idw2, idw3
     integer :: jrefa, jrefaf, k, lmat, kdeb, ieq, idw4, ismbr
 !
 !----------------------------------------------------------------------
@@ -127,7 +127,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     if (niter .eq. 0) niter=neq/2
     nblc=zi(jsmde-1+3)
     if (nblc .ne. 1) call u2mess('F', 'ALGELINE3_22')
-    call jelira(jexnum(matas//'.VALM', 1), 'TYPE', ibid, type)
+    call jelira(jexnum(matas//'.VALM', 1), 'TYPE', cval=type)
     if (type .ne. 'R') call u2mess('F', 'ALGELINE3_37')
 !
     call jeveuo(jexnum(matas//'.VALM', 1), 'L', idac)

@@ -33,7 +33,6 @@ subroutine aidty2(impr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: kbid
     character(len=16) :: nomte, noop
     integer :: iaopte, nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
     integer :: impr
@@ -44,8 +43,8 @@ subroutine aidty2(impr)
 !        &&CALCUL/MECA_XT_FACE3   /CHAR_MECA_PRES_R
 !     ------------------------------------------------------------------
     call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
-    call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte, kbid)
-    call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop, kbid)
+    call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte)
+    call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
     call wkvect('&&AIDTY2.NOP2', 'V V K16', nbop, ianop2)
     do 7,iop=1,nbop

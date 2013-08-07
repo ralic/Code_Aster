@@ -73,7 +73,6 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
     integer :: iresi, nresi
     real(kind=8) :: vale
     character(len=16) :: lieu
-    character(len=8) :: k8bid
     character(len=9) :: colonn
     logical :: laffe
 !
@@ -89,7 +88,7 @@ subroutine nmimre(numedd, sdimpr, sdconv, vrela, vmaxi,&
     call jeveuo(cnvlie, 'E', jcnvli)
     call jeveuo(cnvval, 'E', jcnvva)
     call jeveuo(cnvnco, 'L', jcnvnc)
-    call jelira(cnvnco, 'LONMAX', nresi, k8bid)
+    call jelira(cnvnco, 'LONMAX', ival=nresi)
 !
 ! --- NOM DES DDLS
 !

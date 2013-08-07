@@ -68,7 +68,6 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     integer :: jrepmo
     real(kind=8) :: dx, dy, dz, r8b, xx1, xxx
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     character(len=8) :: k8b, noeu, cmp, nomcmp(3), noma
     character(len=8) :: noeref
     character(len=16) :: monacc
@@ -163,7 +162,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
                         call u2mesk('E', 'SEISME_2', 2, valk)
                         goto 26
                     else
-                        call jelira(jexnom(obj1, grnoeu), 'LONUTI', nn, k1bid)
+                        call jelira(jexnom(obj1, grnoeu), 'LONUTI', nn)
                         call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
                         do 28 ino = 1, nn
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)

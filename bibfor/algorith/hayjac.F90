@@ -54,7 +54,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
     character(len=8) :: mod
 !
     integer :: ndt, ndi, itens, ndim
-    real(kind=8) :: fkooh(6, 6), dev(6), lcnrts, s, n(6), n1(6)
+    real(kind=8) :: fkooh(6, 6), dev(6), n(6)
     real(kind=8) :: kron(6), eps0, pk, ph1, ph2, delta1, delta2, h1st, h2st
     real(kind=8) :: biga, sig0, pkc, alphad, sequid, dt, theta, epsi, coef
     real(kind=8) :: h1, h2, h, d, dp, cosh1, cosh2, sinh1, sinh2, dmgmi, grj0

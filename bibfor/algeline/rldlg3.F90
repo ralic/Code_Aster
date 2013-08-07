@@ -38,7 +38,6 @@ subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
 !
     integer :: typvar, typsym
     character(len=19) :: mat19
-    character(len=8) :: kbid
 !------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: jscbl, jscdi, jschc, nbbloc, neq
@@ -51,7 +50,7 @@ subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
 !
     if (metres .eq. 'LDLT') then
 !     ---------------------------------
-        call jelira(mat19//'.UALF', 'NMAXOC', nbbloc, kbid)
+        call jelira(mat19//'.UALF', 'NMAXOC', nbbloc)
         call mtdsc2(mat19, 'SCHC', 'L', jschc)
         call mtdsc2(mat19, 'SCDI', 'L', jscdi)
         call mtdsc2(mat19, 'SCBL', 'L', jscbl)

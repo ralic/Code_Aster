@@ -59,7 +59,7 @@ subroutine cacoeq(chargz, nomaz)
     complex(kind=8) :: betac, coemuc(3)
     character(len=2) :: typlag
     character(len=4) :: fonree, typcoe
-    character(len=8) :: betaf, ddl(3), nono(3), char, noma, type1, type2, k8bid
+    character(len=8) :: betaf, ddl(3), nono(3), char, noma, type1, type2
     character(len=19) :: lisrel
     character(len=24) :: conoqu, noesup, coninv
     integer :: iexcl, nbexcl
@@ -110,7 +110,7 @@ subroutine cacoeq(chargz, nomaz)
         nbelqu = 0
     else
         call jeveuo(conoqu, 'L', jnoqu)
-        call jelira(conoqu, 'LONUTI', nbelqu, k8bid)
+        call jelira(conoqu, 'LONUTI', nbelqu)
     endif
 !
 ! --- PAS DE LIAISON SI PAS DE NOEUDS QUADRA

@@ -148,7 +148,7 @@ subroutine op0148()
 !
     vite = base//'.VITE'
     call jeveuo(vite, 'L', ivite)
-    call jelira(vite, 'LONUTI', npv, k8b)
+    call jelira(vite, 'LONUTI', npv)
     call getvr8(' ', 'VITE_FLUI', 0, iarg, 1,&
                 vitef, zi)
     call getvr8(' ', 'PRECISION', 0, iarg, 1,&
@@ -164,7 +164,7 @@ subroutine op0148()
 !
     numo = base//'.NUMO'
     call jeveuo(numo, 'L', inumo)
-    call jelira(numo, 'LONUTI', nbm, k8b)
+    call jelira(numo, 'LONUTI', nbm)
 !
     freq = base//'.FREQ'
     call jeveuo(freq, 'L', ifreq)
@@ -177,7 +177,7 @@ subroutine op0148()
     call jeveuo(chrefe, 'L', ichref)
     nommai = zk24(ichref)(1:8)
     nomnoe = nommai//'.NOMNOE'
-    call jelira(nomnoe, 'NOMUTI', nbp, k8b)
+    call jelira(nomnoe, 'NOMUTI', nbp)
 !
 !
 ! --- 3.RECUPERATION DU NOM DE LA TABLE ---
@@ -191,7 +191,7 @@ subroutine op0148()
     chnumi = table//'.NUMI'
     chfreq = table//'.FREQ'
     call jeveuo(chnumi, 'L', lnumi)
-    call jelira(chnumi, 'LONMAX', nbmr, k8b)
+    call jelira(chnumi, 'LONMAX', nbmr)
 !
     nomobj = '&&OP0148.TEMP.NUOR'
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
@@ -217,7 +217,7 @@ subroutine op0148()
     call u2mess('F', 'MODELISA5_78')
 31  continue
 !
-    call jelira(chfreq, 'LONMAX', nbpf, k8b)
+    call jelira(chfreq, 'LONMAX', nbpf)
     call jeveuo(chfreq, 'L', lfreq)
 !
 ! --- 4.RECUPERATION DES NOEUDS ---

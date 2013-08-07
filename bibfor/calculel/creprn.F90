@@ -287,7 +287,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call jeveuo(noma//'.NOMACR', 'L', ianmcr)
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iancmp)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', lgncmp, k8bid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', lgncmp)
         icmp = indik8(zk8(iancmp),'LAGR',1,lgncmp)
         if (icmp .eq. 0) then
             call u2mess('F', 'ASSEMBLA_9')
@@ -306,7 +306,7 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
         call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', iaprno)
         if (zi(iasssa-1+ima) .eq. 1) then
             call jeveuo(jexnum(noma//'.SUPMAIL', ima), 'L', iamail)
-            call jelira(jexnum(noma//'.SUPMAIL', ima), 'LONMAX', nbnm, k8bid)
+            call jelira(jexnum(noma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
             do 110,i = 1,nbnm
             ino = zi(iamail-1+i)

@@ -76,7 +76,7 @@ subroutine crperm()
     call getvr8(' ', 'INST_INIT', 1, iarg, 1,&
                 inst1, n1)
     if (n1 .eq. 0) then
-        call jelira(resu1//'           .ORDR', 'LONUTI', ibid, k8b)
+        call jelira(resu1//'           .ORDR', 'LONUTI', ibid)
         call jeveuo(resu1//'           .ORDR', 'L', jordr)
         iord1 = zi(jordr+ibid-1)
     else
@@ -132,7 +132,7 @@ subroutine crperm()
                     0, 0, 0.d0)
     endif
 !
-    call jelira(resu2//'           .ORDR', 'LONUTI', ibid, k8b)
+    call jelira(resu2//'           .ORDR', 'LONUTI', ibid)
     if (ibid .ne. 1) then
         valk (1) = resu2
         valk (2) = k8b
@@ -208,7 +208,7 @@ subroutine crperm()
         call crpcvg(ma1, ma2, gma1, gma2, tran,&
                     prec, lima1, lima2, zi(jlino))
 !
-        call jelira(lima1, 'LONMAX', nbma, k8b)
+        call jelira(lima1, 'LONMAX', nbma)
         call jeveuo(lima1, 'L', jlim1)
         call jeveuo(lima2, 'L', jlim2)
 !

@@ -52,7 +52,6 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
     integer :: ii, irang, iranv, jj, ll, nbcmp
 !
 !
-    character(len=1) :: k1bid
     character(len=8) :: k8bid
     character(len=24) :: carav, carad
     character(len=32) :: kexnom
@@ -66,7 +65,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
     call jeveuo(carad, 'L', icard)
 !
     kexnom = jexnom('&CATA.GD.NOMCMP','CAGEPO')
-    call jelira(kexnom, 'LONMAX', nbcmp, k1bid)
+    call jelira(kexnom, 'LONMAX', nbcmp)
     call jeveuo(kexnom, 'L', icmp)
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
     call dismoi('F', 'NB_EC', 'CAGEPO', 'GRANDEUR', nbec,&

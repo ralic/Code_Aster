@@ -45,8 +45,8 @@ subroutine gfmagr(noma, nomgrf, nbfigr)
     grpmai = noma// '.GROUPEMA       '
 !
     call jecroc(jexnom(grpmai, nomgrf))
-    call jeecra(jexnom(grpmai, nomgrf), 'LONMAX', nbfigr, ' ')
-    call jeecra(jexnom(grpmai, nomgrf), 'LONUTI', nbfigr, ' ')
+    call jeecra(jexnom(grpmai, nomgrf), 'LONMAX', nbfigr)
+    call jeecra(jexnom(grpmai, nomgrf), 'LONUTI', nbfigr)
 !
 !
     call jedema()

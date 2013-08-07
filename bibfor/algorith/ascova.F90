@@ -77,7 +77,6 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     integer :: icha, ier, n1, npuis, n2, ibid
     real(kind=8) :: valres, valre, valim, dgrd, omega, phase
     logical :: fct
-    character(len=8) :: k8bid
     character(len=19) :: chamno
     character(len=24) :: fomult
     complex(kind=8) :: calpha
@@ -92,7 +91,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !     ----------------------------------------------------
     call jeexin(vachar, iret)
     ASSERT(iret.ne.0)
-    call jelira(vachar, 'LONMAX', nbvec, k8bid)
+    call jelira(vachar, 'LONMAX', nbvec)
     ASSERT(nbvec.ne.0)
     call jeveuo(vachar, 'L', jvec)
 !
@@ -103,7 +102,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
         nchar = 0
     else
         fct = .true.
-        call jelira(fomult, 'LONMAX', nchar, k8bid)
+        call jelira(fomult, 'LONMAX', nchar)
         ASSERT(nchar.ne.0)
         call jeveuo(fomult, 'L', jfonct)
     endif

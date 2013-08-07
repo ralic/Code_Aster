@@ -50,14 +50,13 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis,&
     integer :: i, imae, in, jma, itypma, nbnott(3)
     integer :: nmaabs, nuno, nbmae, nnos
     real(kind=8) :: lsnp, lsn
-    character(len=8) :: k8b
     character(len=19) :: mai
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jelira(lisma, 'LONMAX', nbmae, k8b)
+    call jelira(lisma, 'LONMAX', nbmae)
     call jeveuo(lisma, 'L', jdlima)
 !
     call jeveuo(noma//'.CONNEX', 'L', jconx1)

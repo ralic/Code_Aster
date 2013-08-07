@@ -21,7 +21,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: basemo, masgen, riggen, amogen
-    character(len=8) :: nomres, intitu(*), kbid, kb
+    character(len=8) :: nomres, intitu(*)
     integer :: nbrevi
     character(len=8) :: noecho(nbchoc, *), fonred(nbrede, *), fonrev(nbrevi, *)
     character(len=16) :: method
@@ -184,8 +184,8 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         do 140 inom = 1, nbsym
 !
             call jecreo(nomres//bl11pt//nomsym(inom), attrib)
-            call jeecra(nomres//bl11pt//nomsym(inom), 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//bl11pt//nomsym(inom), 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//bl11pt//nomsym(inom), 'LONMAX', nbstoc)
+            call jeecra(nomres//bl11pt//nomsym(inom), 'LONUTI', nbstoc)
             call jeveut(nomres//bl11pt//nomsym(inom), 'E', jchmp)
 !
 !         INITIALISATION DES CHAMPS A ZERO
@@ -206,18 +206,18 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 !
 !       OBJETS COMMUNS
         call jecreo(nomres//'           .ORDR', typsau//' I')
-        call jeecra(nomres//'           .ORDR', 'LONMAX', nbsauv, kbid)
-        call jeecra(nomres//'           .ORDR', 'LONUTI', nbsauv, kbid)
+        call jeecra(nomres//'           .ORDR', 'LONMAX', nbsauv)
+        call jeecra(nomres//'           .ORDR', 'LONUTI', nbsauv)
         call jeveut(nomres//'           .ORDR', 'E', jordr)
         call jecreo(nomres//'           .DISC', typsau//' R')
-        call jeecra(nomres//'           .DISC', 'LONMAX', nbsauv, kbid)
-        call jeecra(nomres//'           .DISC', 'LONUTI', nbsauv, kbid)
+        call jeecra(nomres//'           .DISC', 'LONMAX', nbsauv)
+        call jeecra(nomres//'           .DISC', 'LONUTI', nbsauv)
         call jeveut(nomres//'           .DISC', 'E', jdisc)
 !
         if (typcal .eq. 'TRAN') then
             call jecreo(nomres//'           .PTEM', typsau//' R')
-            call jeecra(nomres//'           .PTEM', 'LONMAX', nbsauv, kbid)
-            call jeecra(nomres//'           .PTEM', 'LONUTI', nbsauv, kbid)
+            call jeecra(nomres//'           .PTEM', 'LONMAX', nbsauv)
+            call jeecra(nomres//'           .PTEM', 'LONUTI', nbsauv)
             call jeveut(nomres//'           .PTEM', 'E', jptem)
             zr(jptem) = dt
         endif
@@ -233,25 +233,25 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         if (iret .eq. 0) call wkvect(nomres//'           .SST', typsau//' K8', 2*nbchoc, jsst)
         if (nbsauv .ne. 0) then
             call jecreo(nomres//'           .FCHO', typsau//' R')
-            call jeecra(nomres//'           .FCHO', 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//'           .FCHO', 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//'           .FCHO', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .FCHO', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .FCHO', 'E', jfcho)
             call jecreo(nomres//'           .DLOC', typsau//' R')
-            call jeecra(nomres//'           .DLOC', 'LONMAX', 2*nbstoc, kbid)
-            call jeecra(nomres//'           .DLOC', 'LONUTI', 2*nbstoc, kbid)
+            call jeecra(nomres//'           .DLOC', 'LONMAX', 2*nbstoc)
+            call jeecra(nomres//'           .DLOC', 'LONUTI', 2*nbstoc)
             call jeveut(nomres//'           .DLOC', 'E', jdcho)
             call jecreo(nomres//'           .VCHO', typsau//' R')
-            call jeecra(nomres//'           .VCHO', 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//'           .VCHO', 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//'           .VCHO', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .VCHO', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .VCHO', 'E', jvcho)
             call jecreo(nomres//'           .ICHO', typsau//' I')
-            call jeecra(nomres//'           .ICHO', 'LONMAX', nbsto1, kbid)
-            call jeecra(nomres//'           .ICHO', 'LONUTI', nbsto1, kbid)
+            call jeecra(nomres//'           .ICHO', 'LONMAX', nbsto1)
+            call jeecra(nomres//'           .ICHO', 'LONUTI', nbsto1)
             call jeveut(nomres//'           .ICHO', 'E', jadcho)
 !          --- OBJET POUR LE FLAMBEMENT : VARIABLE INTERNE ---
             call jecreo(nomres//'           .VINT', typsau//' R')
-            call jeecra(nomres//'           .VINT', 'LONMAX', nbsto1, kb)
-            call jeecra(nomres//'           .VINT', 'LONUTI', nbsto1, kb)
+            call jeecra(nomres//'           .VINT', 'LONMAX', nbsto1)
+            call jeecra(nomres//'           .VINT', 'LONUTI', nbsto1)
 !              INITIALISATION
             call jeveuo(nomres//'           .VINT', 'E', jvint)
             call r8inir(nbsto1, 0.d0, zr(jvint), 1)
@@ -274,12 +274,12 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         nbstoc = nbrede * nbsauv
         if (nbsauv .ne. 0) then
             call jecreo(nomres//'           .REDC', typsau//' I')
-            call jeecra(nomres//'           .REDC', 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//'           .REDC', 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//'           .REDC', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .REDC', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .REDC', 'E', jredc)
             call jecreo(nomres//'           .REDD', typsau//' R')
-            call jeecra(nomres//'           .REDD', 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//'           .REDD', 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//'           .REDD', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .REDD', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .REDD', 'E', jredd)
         endif
         call jeexin(nomres//'           .REDN', iret)
@@ -296,12 +296,12 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
         nbstoc = nbrevi * nbsauv
         if (nbsauv .ne. 0) then
             call jecreo(nomres//'           .REVC', typsau//' I')
-            call jeecra(nomres//'           .REVC', 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//'           .REVC', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .REVC', 'E', jrevc)
             call jecreo(nomres//'           .REVD', typsau//' R')
-            call jeecra(nomres//'           .REVD', 'LONMAX', nbstoc, kbid)
-            call jeecra(nomres//'           .REVD', 'LONUTI', nbstoc, kbid)
+            call jeecra(nomres//'           .REVD', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .REVD', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .REVD', 'E', jrevd)
         endif
         call jeexin(nomres//'           .REVN', iret)

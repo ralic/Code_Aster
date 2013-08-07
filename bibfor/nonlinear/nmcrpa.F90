@@ -61,7 +61,6 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
     integer :: n2, n3, i, iret
     character(len=19) :: list
     integer :: jlist, jslist
-    character(len=8) :: k8bid
     real(kind=8) :: r8bid
     character(len=16) :: motfac
     integer :: iarg
@@ -93,7 +92,7 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
     if (n3 .ge. 1) then
         nbinst = n3
     else if (n2.ge.1) then
-        call jelira(list//'.VALE', 'LONMAX', nbinst, k8bid)
+        call jelira(list//'.VALE', 'LONMAX', ival=nbinst)
     else
         nbinst = 0
         goto 99

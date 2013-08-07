@@ -39,7 +39,6 @@ subroutine maxblc(nomob, xmax)
 !
 !
 !
-    character(len=1) :: k1bid
     integer :: i, nbterm, llblo
 !
 !-----------------------------------------------------------------------
@@ -47,7 +46,7 @@ subroutine maxblc(nomob, xmax)
 !
     call jemarq()
     call jeveuo(nomob(1:32), 'L', llblo)
-    call jelira(nomob(1:32), 'LONMAX', nbterm, k1bid)
+    call jelira(nomob(1:32), 'LONMAX', nbterm)
 !
     do 10 i = 1, nbterm
         xmax=max(xmax,abs(zc(llblo+i-1)))

@@ -64,7 +64,6 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     integer :: jgro1, jgro2, j, jgro, i, l, nreleq, repere, jlis1
     integer :: effac, nar, narm, iret, vali(2)
     logical :: noeuad
-    character(len=8) :: k8bid
     character(len=19) :: nlisco, nlisrl, nlise2
 !
 ! ----------------------------------------------------------------------
@@ -136,7 +135,7 @@ subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
     call jeexin(nlise2, iret)
     if (iret .ne. 0) then
         call jeveuo(nlise2, 'L', jlis1)
-        call jelira(nlise2, 'LONMAX', nreleq, k8bid)
+        call jelira(nlise2, 'LONMAX', ival=nreleq)
         nreleq = nreleq/2
         ASSERT(nreleq.eq.nar)
         if (nreleq .gt. 0) then

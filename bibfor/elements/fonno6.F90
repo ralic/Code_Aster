@@ -151,7 +151,7 @@ subroutine fonno6(resu, noma, ndim, ina, nbnose,&
         if (ilev .ne. 0) then
 !
             call jeveuo(resu//'.LEVRESUP.MAIL', 'L', jmale)
-            call jelira(resu//'.LEVRESUP.MAIL', 'LONUTI', nblev, k8b)
+            call jelira(resu//'.LEVRESUP.MAIL', 'LONUTI', nblev)
 !
             call jeveuo(noma//'.TYPMAIL', 'L', iatyma)
 !

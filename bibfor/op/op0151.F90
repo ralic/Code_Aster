@@ -85,7 +85,7 @@ subroutine op0151()
 #include "asterfort/wkvect.h"
 !       ---------------------------------------------------------------
     integer :: icodre, icodwo, icodba, icodhs, icodma
-    character(len=8) :: nomu, nomres, nommai, k8b, nommat
+    character(len=8) :: nomu, nomres, nommai, nommat
     character(len=8) :: nomfon, nomnap, cara, nommod, grdvie, inscri
     character(len=16) :: concep, cmd, pheno, phenom, typcal, nomcri, nommet
     character(len=16) :: proaxe, nomsym, typcha, nomopt, nomgde, nomfor
@@ -392,7 +392,7 @@ subroutine op0151()
         endif
 !
 ! --- VERIFICATION DU NOMBRE DE PAS DE TEMPS
-        call jelira(nomsd//'.ORDR', 'LONUTI', nbord, k8b)
+        call jelira(nomsd//'.ORDR', 'LONUTI', nbord)
         if (nbord .lt. 2) then
             call u2mesi('F', 'FATIGUE1_76', 1, nbord)
         endif
@@ -413,7 +413,7 @@ subroutine op0151()
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
         ligrel=zk24(jcelk-1+1)(1:19)
-        call jelira(chelrs//'.CELV', 'LONMAX', nval, k8b)
+        call jelira(chelrs//'.CELV', 'LONMAX', nval)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
         nbpt = nval / ntcmp
@@ -486,7 +486,7 @@ subroutine op0151()
 !
 ! --- CONTRAINTE STATIQUE
 !
-        call jelira(nomsd//'.ORDR', 'LONUTI', nbord, k8b)
+        call jelira(nomsd//'.ORDR', 'LONUTI', nbord)
         if (nbord .gt. 1) then
             call u2mesi('F', 'FATIGUE1_84', 1, nbord)
         endif
@@ -507,7 +507,7 @@ subroutine op0151()
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
         ligrel=zk24(jcelk-1+1)(1:19)
-        call jelira(chelrs//'.CELV', 'LONMAX', nval, k8b)
+        call jelira(chelrs//'.CELV', 'LONMAX', nval)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
         nbpt = nval / ntcmp
@@ -530,7 +530,7 @@ subroutine op0151()
         endif
         call jeveuo(chelrs//'.CELK', 'L', jcelk)
         ligrel=zk24(jcelk-1+1)(1:19)
-        call jelira(chelrs//'.CELV', 'LONMAX', nval, k8b)
+        call jelira(chelrs//'.CELV', 'LONMAX', nval)
 !
 !  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
         nbpt2 = nval / ntcmp
@@ -597,7 +597,7 @@ subroutine op0151()
 !
 !
     call jeveuo(chelem//'.CELV', 'E', jcelv)
-    call jelira(chelem//'.CELV', 'LONMAX', ibid, k8b)
+    call jelira(chelem//'.CELV', 'LONMAX', ibid)
     ASSERT(ibid.eq.nbpt)
     do 222 i = 1, nbpt
         zr(jcelv+i-1) = zr(ivdmg+i-1)

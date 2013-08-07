@@ -43,7 +43,6 @@ subroutine vrrefe(objet1, objet2, ier)
     logical :: ok
 !
     integer :: ival1, ival2
-    character(len=8) :: cbid
     character(len=19) :: nom1, nom2
     character(len=24) :: refe1, refe2
     logical :: refa, celk, lgene
@@ -85,8 +84,8 @@ subroutine vrrefe(objet1, objet2, ier)
 !
 !
 !     --- RECUPERATION DES LONGUEURS DES TABLEAUX DE REFERENCE ---
-    call jelira(refe1, 'LONMAX', ival1, cbid)
-    call jelira(refe2, 'LONMAX', ival2, cbid)
+    call jelira(refe1, 'LONMAX', ival1)
+    call jelira(refe2, 'LONMAX', ival2)
     if (ival1 .ne. ival2) ier = ier + abs(ival1-ival2)
 !
 !     --- RECUPERATION DES TABLEAUX D'INFORMATIONS DE REFERENCE ---

@@ -208,7 +208,7 @@ subroutine op0199()
         call wkvect(nomres//'           .VALE', 'G V R', nbmo, ivale)
         call wkvect(nomres//'           .REFE', 'G V K24', 2, iarefe)
         call wkvect(nomres//'           .DESC', 'G V I', 3, iadesc)
-        call jeecra(nomres//'           .DESC', 'DOCU', ibid, 'VGEN')
+        call jeecra(nomres//'           .DESC', 'DOCU', cval='VGEN')
 !
 ! --- REMPLISSAGE DU .REFE ET .VALE
 !

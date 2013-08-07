@@ -48,7 +48,6 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
     integer :: nbmc, nbma, jnoma
     parameter     ( nbmc = 3 )
     logical :: lnume, lgrpma
-    character(len=1) :: k1b
     character(len=8) :: noma, prfm, nommai, knume, k8b
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
     character(len=24) :: nomama, nomjv, grpma
@@ -63,7 +62,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
 !
     call jeveuo(nomvei, 'E', ilist)
     call jeveuo(nomvek, 'E', klist)
-    call jelira(nomvek, 'LONMAX', nbv1, k1b)
+    call jelira(nomvek, 'LONMAX', nbv1)
     ier = 0
 !
     call getvtx(mcfact, 'PREF_MAILLE', iocc, iarg, 1,&
@@ -142,7 +141,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                 call juveca(nomvei, 2*nbmst)
                 call jeveuo(nomvei, 'E', ilist)
                 call jeveuo(nomvek, 'E', klist)
-                call jelira(nomvek, 'LONMAX', nbv1, k1b)
+                call jelira(nomvek, 'LONMAX', nbv1)
             endif
             zk8(klist+nbmst-1) = nommai
             zi(ilist+nbmst-1) = numa

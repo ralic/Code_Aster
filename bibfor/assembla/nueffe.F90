@@ -260,7 +260,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 ! --- LE LIGREL ILI DE LILI :
 !     ---------------------
     call jecreo(nnli, 'V V I')
-    call jeecra(nnli, 'LONMAX', nlili, ' ')
+    call jeecra(nnli, 'LONMAX', nlili)
     call jeveuo(nnli, 'E', idnbno)
     call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE',&
                 nlili)
@@ -282,8 +282,8 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
                 cbid, ier)
     nbnom = nbno + nbnl
     zi(idnbno) = nbnom
-    call jeecra(jexnum(nuno, 1), 'LONMAX', nbnom, kbid)
-    call jeecra(jexnum(nu//'.NUME.PRNO', 1), 'LONMAX', nbnom* (nec+2), kbid)
+    call jeecra(jexnum(nuno, 1), 'LONMAX', nbnom)
+    call jeecra(jexnum(nu//'.NUME.PRNO', 1), 'LONMAX', nbnom* (nec+2))
 !
 !
 ! --- N CONTIENDRA LE NOMBRE TOTAL (MAX) DE NOEUDS DE NUME_DDL
@@ -306,9 +306,9 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 ! ---    AFFECTATION DU CHAMP .NNLI DE NU :
 !        --------------------------------
         zi(idnbno+ili-1) = nbn
-        call jeecra(jexnum(nuno, ili), 'LONMAX', nbn, kbid)
+        call jeecra(jexnum(nuno, ili), 'LONMAX', nbn)
 !
-        call jeecra(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', nbn* (nec+2), kbid)
+        call jeecra(jexnum(nu//'.NUME.PRNO', ili), 'LONMAX', nbn* (nec+2))
         n = n + nbn
 10  end do
 !
@@ -777,7 +777,7 @@ subroutine nueffe(lligr, base, nuz, renum, moloc,&
 ! ---  NBNORE EST LE NOMBRE DE NOEUDS DU MAILLAGE PARTICIPANTS A LA
 ! ---  NUMEROTATION:
 !      ------------
-    call jelira(oldn, 'LONUTI', nbnore, cbid)
+    call jelira(oldn, 'LONUTI', nbnore)
 !
 ! ---  BOUCLE SUR LES NOEUDS PHYSIQUES :
 !      -------------------------------

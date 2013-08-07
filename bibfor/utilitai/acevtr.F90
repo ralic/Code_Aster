@@ -41,7 +41,6 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
     integer :: repi
-    character(len=1) :: k1bid
     character(len=16) :: nomte, nomodl, chaine
     character(len=19) :: nolig
     character(len=24) :: repk
@@ -65,7 +64,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
     nolig = nomo//'.MODELE'
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
-        call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+        call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
         if (nbgrel .le. 0) then
             call u2mess('F', 'UTILITAI_1')
         endif
@@ -73,7 +72,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab,&
         ierr=0
         do 10 igrel = 1, nbgrel
             call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+            call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
             itypel= zi(ialiel -1 +nel)
             call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
             call dismoi('F', 'MODELISATION', nomte, 'TYPE_ELEM', repi,&

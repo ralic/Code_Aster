@@ -252,13 +252,13 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
-    call jeecra(connex, 'LONT', nbnoma, ' ')
+    call jeecra(connex, 'LONT', nbnoma)
 !
     do 31 , ima = 1 , nbmail
 !
     idec = (ima-1)*2
     ityp = zi(jmatyp+idec)
-    call jeecra(jexnum(connex, ima), 'LONMAX', nnotyp(ityp), ' ')
+    call jeecra(jexnum(connex, ima), 'LONMAX', nnotyp(ityp))
     call jeveuo(jexnum(connex, ima), 'E', jcnxma)
 !
     imatyp = zi(jmatyp+idec+1)
@@ -286,7 +286,7 @@ subroutine lrmmma(fid, nomamd, nbmail, nbnoma, nbtyp,&
 !====
 !
     call jecreo(nommai, 'G N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail, ' ')
+    call jeecra(nommai, 'NOMMAX', nbmail)
 !
     do 41 , iaux = 1 , nbmail
     call jecroc(jexnom(nommai, zk8(jnomma+iaux-1)))

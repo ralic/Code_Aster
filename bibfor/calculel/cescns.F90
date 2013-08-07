@@ -122,7 +122,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp,&
                 tsca, ibid)
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    call jelira(ces1//'.CESC', 'LONMAX', ncmp, kbid)
+    call jelira(ces1//'.CESC', 'LONMAX', ncmp)
 !
     cret = 0
 !     EMISSION D'UN MESSAGE POUR SIGNIFIER QU'ON VA FILTRER

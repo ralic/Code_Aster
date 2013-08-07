@@ -54,7 +54,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ibid, jzcar1, nbma, p1, p2, nmazo, jdes1, jdes2, jdes
+    integer :: iret, jzcar1, nbma, p1, p2, nmazo, jdes1, jdes2, jdes
     integer :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
     integer :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
     integer :: k, jval1, icmp, jval2, kk
@@ -116,7 +116,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     call jeveuo(jexatr(charg1//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg1//'.LIMA', 'L', p1)
-    call jelira(charg1//'.LIMA', 'ACCES', ibid, acces)
+    call jelira(charg1//'.LIMA', 'ACCES', cval=acces)
     ASSERT(acces(1:2).eq.'NU')
 !
     nbzo1=zi(jdes1+3-1)
@@ -131,7 +131,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
     call jeveuo(jexatr(charg2//'.LIMA', 'LONCUM'), 'L', p2)
     call jeveuo(charg2//'.LIMA', 'L', p1)
-    call jelira(charg2//'.LIMA', 'ACCES', ibid, acces)
+    call jelira(charg2//'.LIMA', 'ACCES', cval=acces)
     ASSERT(acces(1:2).eq.'NU')
 !
     nbzo2=zi(jdes2+3-1)
@@ -195,7 +195,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !
 !     ALLOCATION DE DESC:
     call wkvect(charg//'.DESC', 'V V I', 3+nbzo*3, jdes)
-    call jeecra(charg//'.DESC', 'DOCU', ibid, 'CART')
+    call jeecra(charg//'.DESC', 'DOCU', cval='CART')
     zi(jdes-1+1) = zi(jdes1-1+1)
     zi(jdes-1+2) = nbzo
     zi(jdes-1+3) = nbzo
@@ -206,13 +206,13 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 90  end do
 !
 !     ALLOCATION DE VALE:
-    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmpmx)
     if (.not.fonc1 .and. .not.fonc2) then
         call wkvect(charg//'.VALE', 'V V R', nbzo*ncmpmx, jval)
     else if (fonc1) then
         call wkvect(charg//'.VALE', 'V V K8', nbzo*ncmpmx, jval)
     else if (fonc2) then
-        call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'LONMAX', ncmpmx, k8b)
+        call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'LONMAX', ncmpmx)
         call wkvect(charg//'.VALE', 'V V K8', nbzo*ncmpmx, jval)
     endif
 !
@@ -231,7 +231,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
         if (zi(jmazo+izo-1) .ne. 0) then
             nuzo=zi(jnumz+izo-1)
             call jecroc(jexnum(charg//'.LIMA', nuzo))
-            call jeecra(jexnum(charg//'.LIMA', nuzo), 'LONMAX', zi( jmazo+izo-1), k8b)
+            call jeecra(jexnum(charg//'.LIMA', nuzo), 'LONMAX', zi( jmazo+izo-1))
             call jeveuo(jexnum(charg//'.LIMA', nuzo), 'E', ilim)
             k=0
             do 110 ima = 1, nbma

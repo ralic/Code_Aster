@@ -173,7 +173,7 @@ subroutine op0153()
     else
         call getvid(' ', 'LIST_INST', 1, iarg, 1,&
                     linst, n1)
-        call jelira(linst//'.VALE', 'LONUTI', nbinst, k8b)
+        call jelira(linst//'.VALE', 'LONUTI', nbinst)
         call jeveuo(linst//'.VALE', 'L', jinst)
     endif
     call wkvect('&&OP0153.INSTAN2', 'V V R', nbinst, jins2)

@@ -77,7 +77,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: rela
 !
     real(kind=8) :: cohes, copilo(5), dtau, ffc(8), ffp(27)
-    real(kind=8) :: lamb(3), mat3bd(3, 3), mat6bd(6, 6)
+    real(kind=8) ::  mat3bd(3, 3), mat6bd(6, 6)
     real(kind=8) :: jac, mud(3), mup(3), r3bd(3), ma3bd(3, 3)
     real(kind=8) :: nd(3), r8bid, r6bid(6), rb, r3bid(3)
     real(kind=8) :: rr, rbid, sud(3), sud2d(2), sudd(3), sup(3)

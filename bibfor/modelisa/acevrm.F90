@@ -36,7 +36,6 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
 ! ----------------------------------------------------------------------
     character(len=24) :: magrma
     character(len=24) :: nogp, nogl
-    character(len=8) :: k8b
     integer :: iarg
 !-----------------------------------------------------------------------
     integer :: in, ioc, ldgm, ngl, ngp, nma, noemaf
@@ -54,7 +53,7 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
                     nogl, ngl)
 !
         if (ngp .ne. 0) then
-            call jelira(jexnom(magrma, nogp), 'LONUTI', nma, k8b)
+            call jelira(jexnom(magrma, nogp), 'LONUTI', nma)
             call jeveuo(jexnom(magrma, nogp), 'L', ldgm)
             do 11 in = 0, nma-1
                 noemaf = max(noemaf,zi(ldgm+in))
@@ -62,7 +61,7 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
             noemax = noemax + nma
         endif
         if (ngl .ne. 0) then
-            call jelira(jexnom(magrma, nogl), 'LONUTI', nma, k8b)
+            call jelira(jexnom(magrma, nogl), 'LONUTI', nma)
             call jeveuo(jexnom(magrma, nogl), 'L', ldgm)
             do 12 in = 0, nma-1
                 noemaf = max(noemaf,zi(ldgm+in))

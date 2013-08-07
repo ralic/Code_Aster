@@ -26,7 +26,7 @@ subroutine xthini(nomte, nfh, nfe)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
     character(len=16) :: nomte
-    integer :: nfh, nfe, nddl
+    integer :: nfh, nfe
 !
 !
 !          BUT : INITIALISER LES DIMENSIONS DES DDL DANS UN TE
@@ -40,7 +40,7 @@ subroutine xthini(nomte, nfh, nfe)
 !     ------------------------------------------------------------------
 !
     integer :: nno, ibid, ier, nnos, nfiss
-    integer :: ddld, iadzi, jtab(7), iret
+    integer ::  jtab(7), iret
     character(len=8) :: enr
 !
 ! ----------------------------------------------------------------------

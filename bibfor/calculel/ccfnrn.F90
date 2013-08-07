@@ -248,7 +248,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !         POUR LE CALCUL DE FORC_NODA DANS LES POU_D_T_GD
             chdep2='&&'//nompro//'.CHDEP_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chdep2)
-            call jelira(chdep2//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jelira(chdep2//'.VALE', 'LONMAX', nbddl)
             call jerazo(chdep2//'.VALE', nbddl, 1)
         endif
 !
@@ -264,7 +264,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         if (iret .eq. 0) then
             chvive='&&'//nompro//'.CHVIT_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chvive)
-            call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jelira(chvive(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chvive(1:19)//'.VALE', nbddl, 1)
         endif
         call rsexch(' ', resuin, 'ACCE', iordr, chacve,&
@@ -272,7 +272,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         if (iret .eq. 0) then
             chacve='&&'//nompro//'.CHACC_NUL'
             call copisd('CHAMP_GD', 'V', chdepl, chacve)
-            call jelira(chacve(1:19)//'.VALE', 'LONMAX', nbddl, k8bid)
+            call jelira(chacve(1:19)//'.VALE', 'LONMAX', nbddl)
             call jerazo(chacve(1:19)//'.VALE', nbddl, 1)
         endif
 !
@@ -314,7 +314,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !       --- REMPLISSAGE DE L'OBJET .VALE DU CHAM_NO ---
         call jeveuo(vafono, 'L', jfo)
         call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', jfono)
-        call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+        call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
 !
 !       --- STOCKAGE DES FORCES NODALES ---
         if (option .eq. 'FORC_NODA') then
@@ -389,7 +389,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                         0, iad, ctyp)
             omega2=zr(iad)
             call jeveuo(chdepl(1:19)//'.VALE', 'L', ldepl)
-            call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2, k8bid)
+            call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
             call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
             if (lmat .eq. 0) call u2mess('F', 'PREPOST3_81')
             call mrmult('ZERO', lmat, zr(ldepl), zr(ltrav), 1,&
@@ -410,7 +410,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 inume=zi(iad)
                 zr(jnoch+inume-1)=zr(jnoch+inume-1)-1.d0
             else if (zk16(iad)(1:9).eq.'ACCE_IMPO') then
-                call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2, k8bid)
+                call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
                 call rsadpa(resuin, 'L', 1, 'COEF_X', iordr,&
                             0, iad, ctyp)
                 coef(1)=zr(iad)

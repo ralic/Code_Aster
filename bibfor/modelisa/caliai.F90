@@ -66,7 +66,7 @@ subroutine caliai(fonree, charge)
     character(len=24) :: trav, grouno, noeuma
     character(len=24) :: valk(3)
     character(len=15) :: coordo
-    character(len=1) :: k1bid, nompar(3)
+    character(len=1) ::  nompar(3)
     real(kind=8) :: valpar(3), vale
     integer :: iarg
 !-----------------------------------------------------------------------
@@ -139,7 +139,7 @@ subroutine caliai(fonree, charge)
                 valk(2) = noma
                 call u2mesk('F', 'MODELISA2_95', 2, valk)
             else
-                call jelira(jexnom(grouno, zk24(jjj+igr-1)), 'LONUTI', n1, k1bid)
+                call jelira(jexnom(grouno, zk24(jjj+igr-1)), 'LONUTI', n1)
                 nbgt = nbgt + n1
             endif
 20      continue
@@ -235,7 +235,7 @@ subroutine caliai(fonree, charge)
             indnoe = 0
             do 70 j = 1, ng
                 call jeveuo(jexnom(grouno, zk24(jlist1-1+j)), 'L', jgr0)
-                call jelira(jexnom(grouno, zk24(jlist1-1+j)), 'LONUTI', n, k1bid)
+                call jelira(jexnom(grouno, zk24(jlist1-1+j)), 'LONUTI', n)
                 do 60 k = 1, n
                     in = zi(jgr0-1+k)
                     indnoe = indnoe + 1

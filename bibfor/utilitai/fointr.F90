@@ -59,7 +59,6 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
 !     ------------------------------------------------------------------
 !     SI CHPROL(1) /= 'CONSTANT'/'FONCTION'  ALORS ERREUR (AVEC ARRET)
 !     ------------------------------------------------------------------
-    character(len=8) :: k8bid
 !     ------------------------------------------------------------------
     character(len=19) :: nomf
     character(len=24) :: valk(3)
@@ -248,7 +247,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon,&
             fonres(jres) = fon(1)
 1100      continue
     else if (chprol(1) .eq.'INTERPRE') then
-        call jelira(nomf//'.NOVA', 'LONUTI', lonuti, k8bid)
+        call jelira(nomf//'.NOVA', 'LONUTI', lonuti)
         if (lonuti .ne. 1) then
             call u2mesg('F', 'FONCT0_24', 1, nomf, 1,&
                         lonuti, 0, 0.d0)

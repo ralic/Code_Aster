@@ -43,7 +43,7 @@ subroutine rfinte(ispec)
     integer :: ifm, niv, iarg, n2, n3, n4, mxval, numi, numj, nbfreq, ifreq
     integer :: lnumi, lnumj, lvale, lfreq, lrefe
     integer :: lnoei, lnoej, lcmpi, lcmpj
-    character(len=8) :: nospec, k8b, noei, noej, cmpi, cmpj
+    character(len=8) :: nospec, noei, noej, cmpi, cmpj
     character(len=16) :: nomcmd, typcon, noch, nocham
     character(len=19) :: nomfon
     character(len=24) :: chnumi, chnumj, chfreq, chvale
@@ -116,7 +116,7 @@ subroutine rfinte(ispec)
         call jeveuo(chnoej, 'L', lnoej)
         call jeveuo(chcmpi, 'L', lcmpi)
         call jeveuo(chcmpj, 'L', lcmpj)
-        call jelira(chnoei, 'LONMAX', mxval, k8b)
+        call jelira(chnoei, 'LONMAX', mxval)
         do 120 i1 = 1, mxval
             if ((zk8(lnoei-1+i1) .eq. noei) .and. (zk8(lnoej-1+i1) .eq. noej) .and.&
                 (zk8(lcmpi-1+i1) .eq. cmpi) .and. (zk8(lcmpj-1+i1) .eq. cmpj)) then
@@ -139,7 +139,7 @@ subroutine rfinte(ispec)
         chnumj = nospec//'.NUMJ'
         call jeveuo(chnumi, 'L', lnumi)
         call jeveuo(chnumj, 'L', lnumj)
-        call jelira(chnumi, 'LONMAX', mxval, k8b)
+        call jelira(chnumi, 'LONMAX', mxval)
         do 110 i1 = 1, mxval
             if ((zi(lnumi-1+i1) .eq. numi) .and. (zi(lnumj-1+i1) .eq. numj)) then
                 indi = i1
@@ -153,12 +153,12 @@ subroutine rfinte(ispec)
     endif
 !
     chfreq = nospec//'.FREQ'
-    call jelira(chfreq, 'LONMAX', nbfreq, k8b)
+    call jelira(chfreq, 'LONMAX', nbfreq)
     call jeveuo(chfreq, 'L', ifreq)
 !
     chvale = nospec//'.VALE'
     call jeveuo(jexnum(chvale, indi), 'L', lvale)
-    call jelira(jexnum(chvale, indi), 'LONMAX', nbval, k8b)
+    call jelira(jexnum(chvale, indi), 'LONMAX', nbval)
 !
     ASSERT(lxlgut(nomfon).le.24)
     call wkvect(nomfon//'.PROL', 'G V K24', 6, lpro)

@@ -54,11 +54,11 @@ subroutine lctel3()
     integer :: nbdg, nbec, nbml, nbpt, nbte
 !-----------------------------------------------------------------------
     call jemarq()
-    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte, k8bid)
+    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
     call wkvect('&CATA.TE.DIM_GEOM', 'G V I', nbte, iadige)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igdgeo)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', 'GEOM_R'), 'L', inocmp)
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'GEOM_R'), 'LONMAX', nbcmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'GEOM_R'), 'LONMAX', nbcmp)
     ix=indik8(zk8(inocmp),'X',1,nbcmp)
     iy=indik8(zk8(inocmp),'Y',1,nbcmp)
     iz=indik8(zk8(inocmp),'Z',1,nbcmp)
@@ -67,7 +67,7 @@ subroutine lctel3()
     ASSERT(nbec.le.1)
 !
 !     - BOUCLE SUR TOUS LES MODES LOCAUX DES CATALOGUES :
-    call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbml, k8bid)
+    call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbml)
     do 1, iml=1,nbml
     call jeveuo(jexnum('&CATA.TE.MODELOC', iml), 'L', iamolo)
     icode=zi(iamolo-1+1)

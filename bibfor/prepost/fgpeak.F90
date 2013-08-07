@@ -34,7 +34,6 @@ subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
 ! OUT VALPOI : R   : TABLEAU DES VALEURS DES PICS
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: k8bid
     character(len=32) :: fvale
     integer :: ifonc, pass, sortie
     real(kind=8) :: max, min, valeur
@@ -45,7 +44,7 @@ subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
     call jemarq()
 !
     fvale = nomfon//'           .VALE       '
-    call jelira(fvale, 'LONMAX', nbpts, k8bid)
+    call jelira(fvale, 'LONMAX', nbpts)
     call jeveuo(fvale, 'L', ifonc)
 !
 !     -------  LE PREMIER POINT EST UN PIC ------

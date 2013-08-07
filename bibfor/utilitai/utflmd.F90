@@ -65,13 +65,12 @@ subroutine utflmd(mailla, limail, dim, typmai, nbtrou,&
     integer :: nbmail
     integer :: ilimai, itrma
 !
-    character(len=1) :: k1bid
 !
 ! ----------------------------------------------------------------------
     call jemarq()
 !
     call jeveuo(limail, 'L', ilimai)
-    call jelira(limail, 'LONMAX', nbmail, k1bid)
+    call jelira(limail, 'LONMAX', nbmail)
     call wkvect(litrou, 'V V I', nbmail, itrma)
 !
     call utflm2(mailla, zi(ilimai), nbmail, dim, typmai,&

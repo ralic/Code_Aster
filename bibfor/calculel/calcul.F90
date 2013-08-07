@@ -139,7 +139,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     integer :: opt, afaire
     integer :: iel, numc, numail
     integer :: i, ipar, nin2, nin3, nou2, nou3, jtypma, jprti, jprtk
-    character(len=1) :: base2, kbid
+    character(len=1) :: base2
     character(len=8) :: nompar, cas, exiele, k8bid, partit, tych
     character(len=10) :: k10b
     character(len=16) :: k16bid, cmde
@@ -240,7 +240,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                 call jeexin(kfel, iret1)
                 if (iret1 .ne. 0) then
 !         -   LIGREL A MAILLES TARDIVES
-                    call jelira(kfel, 'LONMAX', nbsd, k8bid)
+                    call jelira(kfel, 'LONMAX', nbsd)
                     call jeveuo(kfel, 'L', ifel1)
                     call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
                     do 20 idd = 1, nbsd
@@ -319,7 +319,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
         ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
-            call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1, kbid)
+            call jelira(partit//'.NUPROC.MAILLE', 'LONMAX', n1)
         endif
     endif
 !
@@ -455,7 +455,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
                     phemod, ibid)
         pheno=phemod(1:16)
         modeli=phemod(17:32)
-        call jelira(jexnum('&CATA.TE.CTE_ATTR', nute), 'LONMAX', lcteat, kbid)
+        call jelira(jexnum('&CATA.TE.CTE_ATTR', nute), 'LONMAX', lcteat)
         if (lcteat .gt. 0) then
             call jeveuo(jexnum('&CATA.TE.CTE_ATTR', nute), 'L', jcteat)
         else

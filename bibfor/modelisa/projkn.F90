@@ -93,7 +93,6 @@ subroutine projkn(mailla, x3dca, lnuma, licnx, numail,&
 ! -----------------
     integer :: icnx, inoma, jcoor, jcxma, jlicnx, jlnuma, noe
     real(kind=8) :: epsg, nrm2
-    character(len=1) :: k1b
     character(len=24) :: conxma, coorno
 !
 !
@@ -127,7 +126,7 @@ subroutine projkn(mailla, x3dca, lnuma, licnx, numail,&
 ! --- DE LA PREMIERE MAILLE A LAQUELLE APPARTIENT
 !     LE NOEUD BETON LE PLUS PROCHE
 !
-    call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx, k1b)
+    call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx)
     call jeveuo(jexnum(conxma, numail), 'L', jcxma)
 !.... AFFECTATION DE ITRIA
     if ((nbcnx.eq.3) .or. (nbcnx.eq.6)) then

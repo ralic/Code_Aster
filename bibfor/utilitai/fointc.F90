@@ -51,7 +51,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     integer :: lprol, i, i1, i2, lvale, lfonc, nbvale
     real(kind=8) :: linlin, linlog, loglog, loglin, x, x1, y1, x2, y2
     real(kind=8) :: epsi, tole, valr, resu(2)
-    character(len=1) :: coli, k1bid
+    character(len=1) :: coli
     character(len=24) :: interp, prolgd
     character(len=19) :: nomfon
     character(len=24) :: chprol, chvale
@@ -131,7 +131,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     prolgd = svprgd(isave)
 !
     call jeveuo(chvale, 'L', lvale)
-    call jelira(chvale, 'LONUTI', nbvale, k1bid)
+    call jelira(chvale, 'LONUTI', nbvale)
     nbvale = nbvale / 3
     lfonc = lvale + nbvale - 1
 !

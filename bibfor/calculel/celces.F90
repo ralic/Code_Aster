@@ -120,7 +120,7 @@ subroutine celces(celz, basez, cesz)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
     nbgr = zi(jceld-1+2)
 !
-    call jelira(ligrel//'.LIEL', 'NUTIOC', nbgr2, kbid)
+    call jelira(ligrel//'.LIEL', 'NUTIOC', nbgr2)
     if (nbgr2 .ne. nbgr) then
         valk(1)=cel
         valk(2)=ligrel

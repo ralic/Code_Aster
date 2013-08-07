@@ -43,7 +43,7 @@ subroutine vethbt(modele, charge, infcha, carele, mate,&
 !
 !
 !
-    character(len=8) :: nomcha, lpain(2), lpaout(1), k8bid, newnom
+    character(len=8) :: nomcha, lpain(2), lpaout(1), newnom
     character(len=16) :: option
     character(len=19) :: vecel
     character(len=24) :: lchin(2), lchout(1), ligrch
@@ -54,7 +54,7 @@ subroutine vethbt(modele, charge, infcha, carele, mate,&
     call jemarq()
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         call jeveuo(charge, 'L', jchar)
     else
         nchar = 0
@@ -70,7 +70,7 @@ subroutine vethbt(modele, charge, infcha, carele, mate,&
     else
         call jeveuo(vebtla, 'E', jdir)
     endif
-    call jeecra(vebtla, 'LONUTI', 0, k8bid)
+    call jeecra(vebtla, 'LONUTI', 0)
 !
     if (nchar .gt. 0) then
         call jeveuo(infcha, 'L', jinf)
@@ -100,7 +100,7 @@ subroutine vethbt(modele, charge, infcha, carele, mate,&
             endif
 !
 10      continue
-        call jeecra(vebtla, 'LONUTI', ndir, k8bid)
+        call jeecra(vebtla, 'LONUTI', ndir)
 !
     endif
 ! FIN ------------------------------------------------------------------

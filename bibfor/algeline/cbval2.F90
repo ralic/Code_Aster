@@ -76,7 +76,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
     neq = zi(lres+2)
     valmr = matres//'.VALM'
     lgbloc = zi(lres+14)
-    call jelira(matres//'.REFA', 'CLAS', ibid, clas)
+    call jelira(matres//'.REFA', 'CLAS', cval=clas)
     call jeveuo(matres//'.REFA', 'L', jrefar)
     ASSERT(zk24(jrefar-1+9) (1:1).eq.'M')
     symr = zk24(jrefar-1+9) .eq. 'MS'
@@ -122,7 +122,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres,&
         valmi = mati//'.VALM'
         symi = zk24(jrefai-1+9) .eq. 'MS'
         if (.not.symi) ASSERT(.not.symr)
-        call jelira(valmi, 'TYPE', ibid, typmat)
+        call jelira(valmi, 'TYPE', cval=typmat)
         call jeveuo(jexnum(valmi, 1), 'L', jvlmi1)
         ASSERT(typmat.eq.'R')
         if (.not.symi) call jeveuo(jexnum(valmi, 2), 'L', jvlmi2)

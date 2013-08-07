@@ -124,7 +124,7 @@ subroutine cmpcha(nomcha, nomcmp, corr1, corr2, ncmp,&
 !        -- 1.1.1 CAS DES CHAM_NO A REPRESENTATION CONSTANTE :
         if (zi(jdesc-1+2) .lt. 0) then
             profcn=' '
-            call jelira(ch19//'.DESC', 'LONMAX', long, kbid)
+            call jelira(ch19//'.DESC', 'LONMAX', long)
             ASSERT(long.eq.(2+nec))
             iadg=jdesc-1+3
             do 20,k=1,nec

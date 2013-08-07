@@ -58,20 +58,18 @@ subroutine chveno(fonree, noma, nomo)
     integer :: nbt
     parameter    (nbt = 5 )
     integer :: ier, ier1, iret, zero
-    integer :: imfac, nbmfac, nbpar, ibid, n, ndim, ndim1, vali
+    integer :: imfac, nbmfac, ibid, n, ndim, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
     integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
     integer :: jcoor, jtyma, jgroup, jgro, jnma, jmab, jpri, jbor
     integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
     integer :: norien, norie1, norie2, jlima, nbmamo
-    real(kind=8) :: r8b, dnor
+    real(kind=8) ::  dnor
     logical :: reorie, mcfl(nbt)
-    complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     character(len=8) :: k8b, mot, nomma, nommo, typel
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
-    character(len=19) :: nomt19, limamo
-    character(len=24) :: grmama, mailma, para, nogr, nomail
+    character(len=19) ::  limamo
+    character(len=24) :: grmama, mailma, nogr, nomail
     character(len=24) :: valk(2)
     integer :: iarg
 !
@@ -181,7 +179,7 @@ subroutine chveno(fonree, noma, nomo)
 !
 ! ---             RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 !                 ---------------------------------------------
-                            call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail, k1bid)
+                            call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
                             call jeveuo(jexnom(grmama, nogr), 'L', jgro)
 !
                             do 213 ima = 1, nbmail
@@ -221,7 +219,7 @@ subroutine chveno(fonree, noma, nomo)
                         endif
                         norie1 = 0
                         norie2 = 0
-                        call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail, k1bid)
+                        call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
                         call jeveuo(jexnom(grmama, nogr), 'L', jgro)
 !
                         if (mcfl(ic) .and. (nbmail.gt.0)) then

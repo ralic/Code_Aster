@@ -114,7 +114,7 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
         nbre=zi(nutyma-1+mail)
         call jenuno(jexnum('&CATA.TM.NOMTM', nbre), nom)
         call jeveuo(jexnum(ma//'.CONNEX', mail), 'L', idnoeu)
-        call jelira(jexnum(ma//'.CONNEX', mail), 'LONMAX', nbnoeu, k8bid)
+        call jelira(jexnum(ma//'.CONNEX', mail), 'LONMAX', nbnoeu)
         zi(idno-1+ima)=idnoeu
 !
 !      ------- ON LINEARISE LES ELEMENTS -------

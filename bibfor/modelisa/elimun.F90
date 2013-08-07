@@ -75,7 +75,6 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
     integer :: jdebut, juelim, jdecal, jdecat
     integer :: nbelim
-    character(len=1) :: k1bid
     character(len=8) :: k8bla, cmp, nomnoe
     integer :: i, j, icmp, izone, ino, numno1, numno2
     integer :: nbno, nbsup, nb, nbcmp, ntsup
@@ -140,7 +139,7 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu,&
 !
 ! --- ELIMINATION DES SANS_GROUP_NO, SANS_NOEUD
 !
-        call jelira(nelim, 'LONMAX', nbelim, k1bid)
+        call jelira(nelim, 'LONMAX', nbelim)
         call jeveuo(nelim, 'E', jelim)
         do 20 i = 1, nbelim
             numno1 = zi(juelim-1+i)

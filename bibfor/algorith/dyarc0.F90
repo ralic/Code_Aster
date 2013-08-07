@@ -153,7 +153,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                 numarc, n1)
     if (n1 .ne. 0) then
         call jeveuo(numarc//'.VALE', 'L', jnum)
-        call jelira(numarc//'.VALE', 'LONUTI', lnum, k8b)
+        call jelira(numarc//'.VALE', 'LONUTI', lnum)
         do 10 k = 1, lnum
             karch = zi(jnum+k-1)
             if (karch .le. 0) then

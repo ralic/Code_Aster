@@ -77,7 +77,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     integer :: icodr2(nbmx)
     character(len=2) :: kstop
     character(len=10) :: phen, phepre
-    character(len=8) :: matpre, nomrep(nbmx), nomfop(nbmx), k8bid
+    character(len=8) :: matpre, nomrep(nbmx), nomfop(nbmx)
     character(len=10) :: nomphe
     character(len=8) :: nommat
     save  matpre,phepre,nbfp,nbresp,nomrep,valrep,icodr2,nomfop
@@ -133,10 +133,10 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
         endif
 !
         call jeveuo(nommat//'.'//nomphe//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr, k8bid)
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
+        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
         call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk, k8bid)
+        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
         do 130 ires = 1, nbres
             icodre(ires) = 1
             nomfop(ires) = ' '

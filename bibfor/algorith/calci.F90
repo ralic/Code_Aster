@@ -36,7 +36,6 @@ subroutine calci(phib24, phi1j, bj, cij1)
 #include "blas/ddot.h"
     integer :: ibarre, iphi1, imade, nphi1
     real(kind=8) :: cij1
-    character(len=1) :: k1bid
     character(len=19) :: phib24, phi1j, bj
 !--------------------------------------------------------------------
 !
@@ -46,7 +45,7 @@ subroutine calci(phib24, phi1j, bj, cij1)
     call jemarq()
     call jeveuo(phi1j//'.VALE', 'L', iphi1)
     call jeveuo(phib24//'.VALE', 'L', ibarre)
-    call jelira(phi1j//'.VALE', 'LONMAX', nphi1, k1bid)
+    call jelira(phi1j//'.VALE', 'LONMAX', nphi1)
 !
     call wkvect('&&CALCI.PRODUIT', 'V V R', nphi1, iprod)
 !

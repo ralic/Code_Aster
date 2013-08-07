@@ -54,7 +54,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     integer :: lnumi, lnumj, nbabs
     real(kind=8) :: valpar(7), freq, pdgi
     complex(kind=8) :: val
-    character(len=8) :: isz, kbid, nocmpi, nomres, k8b
+    character(len=8) :: isz, nocmpi, nomres
     character(len=19) :: pg, phi, sphi, phii, sphii
     character(len=24) :: chnumi, chnumj, chfreq, chvale
 !
@@ -70,7 +70,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     nma=zi(idpg)
 !
 ! NOMBRE DE MODES
-    call jelira(phi, 'LONMAX', nbm, kbid)
+    call jelira(phi, 'LONMAX', nbm)
 !
 ! PAS DE FREQUENCE COURANT
     valpar(7)=freq
@@ -130,7 +130,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
 ! CALCUL DE LA LONGUEUR DES CHAMPS PHI ET S.PHI. NB : ON SUPPOSE QUE
 ! TOUS LES MODES ONT LA MEME TAILLE
     phii=zk24(iphi)(1:19)
-    call jelira(phii//'.CESV', 'LONMAX', nbval, kbid)
+    call jelira(phii//'.CESV', 'LONMAX', nbval)
 !
     chnumi = nomres//'.NUMI'
     call jeveuo(chnumi, 'E', lnumi)
@@ -138,7 +138,7 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
     call jeveuo(chnumj, 'E', lnumj)
     chvale = nomres//'.VALE'
     chfreq = nomres//'.FREQ'
-    call jelira(chfreq, 'LONMAX', nbpoin, k8b)
+    call jelira(chfreq, 'LONMAX', nbpoin)
 !
 ! PRODUIT PHI^T.S.PHI (UNIQUEMENT LA PARTIE TRIANGULAIRE SUPERIEURE)
     ind=1
@@ -153,8 +153,8 @@ subroutine evalis(isz, pg, phi, sphi, freq,&
                     nbabs = 2*nbpoin
                 endif
                 call jecroc(jexnum(chvale, ind))
-                call jeecra(jexnum(chvale, ind), 'LONMAX', nbabs, ' ')
-                call jeecra(jexnum(chvale, ind), 'LONUTI', nbabs, ' ')
+                call jeecra(jexnum(chvale, ind), 'LONMAX', nbabs)
+                call jeecra(jexnum(chvale, ind), 'LONUTI', nbabs)
             endif
             call jeveuo(jexnum(chvale, ind), 'E', lvale)
 !

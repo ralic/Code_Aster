@@ -53,9 +53,8 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !
 !     ------------------------------------------------------------------
     integer :: ilig, jcol, kterm, n, nz, jrefa, jsmdi, nsmdi, jsmhc, nsmhc
-    integer :: jdelg, n1, nvale, jvale, nlong, jval2, ibid, nucmp, k, jcmp
+    integer :: jdelg, n1, nvale, jvale, nlong, jval2, nucmp, k, jcmp
     integer :: jdeeq, jrefn, kcmp, jlddl, jllag
-    character(len=1) :: kbid
     character(len=8) :: nomgd, nocmp
     character(len=14) :: nonu
     character(len=1) :: ktyp
@@ -73,11 +72,11 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     nonu=zk24(jrefa-1+2)
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
-    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
-    call jelira(nonu//'.NUME.DELG', 'LONMAX', n1, kbid)
+    call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
     ASSERT(n1.eq.nsmdi)
 !     --- CALCUL DE N
     n=nsmdi
@@ -85,7 +84,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     nz=zi(jsmdi-1+n)
 !
     ASSERT(nz.le.nsmhc)
-    call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
+    call jelira(mat19//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
         lsym=.true.
     else if (nvale.eq.2) then
@@ -95,15 +94,15 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
     endif
 !
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvale)
-    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
+    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
     if (.not.lsym) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jval2)
-        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
+        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong)
         ASSERT(nlong.eq.nz)
     endif
 !
-    call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', ibid, ktyp)
+    call jelira(jexnum(mat19//'.VALM', 1), 'TYPE', cval=ktyp)
     ltypr=(ktyp.eq.'R')
 !
 !     -- CALCUL DE LA LISTE DES DDLS A ELIMINER :
@@ -113,7 +112,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
 !
     call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
     call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-    call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1, kbid)
+    call jelira(nonu//'.NUME.DEEQ', 'LONMAX', n1)
     nomgd=zk24(jrefn-1+2)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
     ASSERT(n1.eq.2*n)

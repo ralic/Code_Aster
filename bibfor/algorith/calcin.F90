@@ -46,7 +46,6 @@ subroutine calcin(option, max, may, maz, model,&
     real(kind=8) :: mij
     character(len=*) :: model, option
     character(len=19) :: modx, mody, modz, veprj, max, may, maz
-    character(len=1) :: k1bid
 !--------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -59,7 +58,7 @@ subroutine calcin(option, max, may, maz, model,&
     call jeveuo(mody//'.VALE', 'L', imody)
 !
     call jeveuo(veprj//'.VALE', 'L', ipres)
-    call jelira(veprj//'.VALE', 'LONMAX', nbpres, k1bid)
+    call jelira(veprj//'.VALE', 'LONMAX', nbpres)
 !
     call wkvect('&&CALCIN.VECTX', 'V V R', nbpres, ivecx)
     call wkvect('&&CALCIN.VECTY', 'V V R', nbpres, ivecy)

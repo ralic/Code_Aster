@@ -40,7 +40,6 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/mminfr.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxconi.h"
-    character(len=32) :: jexnum
     character(len=8) :: noma
     character(len=8) :: modele
     integer :: nfiss
@@ -74,15 +73,13 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
     integer :: ifm, niv, iret
     integer :: ibid, iad, i, ima, ifis, izone
-    integer :: nmaenr, nbma, jnbsp, jceld, ispt, icmp
+    integer :: nmaenr, nbma, jnbsp, ispt, icmp
     character(len=8) :: nomfis, k8bid
     integer :: jcesl, jcesv, jcesd, jmofis
     character(len=24) :: grp
     integer :: jgrp
     character(len=19) :: chelsi
     real(kind=8) :: coef(nbcmp)
-    character(len=19) :: valk(2)
-    integer :: vali(1)
     integer :: jmail
 !
     data licmp    /'RHON','MU','RHOTK','INTEG','COECH',&
@@ -167,7 +164,7 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
         call jeexin(grp, iret)
         if (iret .ne. 0) then
             call jeveuo(grp, 'L', jgrp)
-            call jelira(grp, 'LONMAX', nmaenr, k8bid)
+            call jelira(grp, 'LONMAX', nmaenr)
             do 120 i = 1, nmaenr
                 ima = zi(jgrp-1+i)
 !

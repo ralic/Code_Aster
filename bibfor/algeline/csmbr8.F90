@@ -45,7 +45,6 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    character(len=8) :: kbid
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
@@ -61,7 +60,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
     mat = nommat
 !
     call jeveuo(mat//'.CCVA', 'L', jccva)
-    call jelira(mat//'.CCLL', 'LONMAX', nelim, kbid)
+    call jelira(mat//'.CCLL', 'LONMAX', nelim)
     nelim=nelim/3
 !
     call jeveuo(mat//'.REFA', 'L', jrefa)

@@ -48,7 +48,7 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    character(len=16) :: k16bid, nompar
+    character(len=16) ::  nompar
     character(len=19) :: nomd2
 ! ----------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
     nbpara = 0
     nbacc = 0
 !
-    call jelira(nomd2//'.NOVA', 'NOMMAX', nbpar, k16bid)
+    call jelira(nomd2//'.NOVA', 'NOMMAX', nbpar)
     if (nbpar .ne. 0) then
         call wkvect('&&RSNOPA.NOM_ACCE', 'V V K16', nbpar, jac)
         call wkvect('&&RSNOPA.NOM_PARA', 'V V K16', nbpar, jpa)

@@ -42,7 +42,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
 !
 !     IMPRESSION D'UN CONCEPT GENERALISE
 !     ------------------------------------------------------------------
-    character(len=1) :: cecr, k1bid
+    character(len=1) :: cecr
     character(len=16) :: typcon, typrem
     character(len=19) :: gene, noch19
     character(len=24) :: nomst
@@ -94,7 +94,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                                 '(1PE12.5)')
                     write(ifi,2010)
                     call jeveuo(nomst, 'L', jtitr)
-                    call jelira(nomst, 'LONMAX', nbtitr, k1bid)
+                    call jelira(nomst, 'LONMAX', nbtitr)
                     write(ifi,'(1X,A)') (zk80(jtitr+i-1),i=1,nbtitr)
                     call irvgen(noch19, ifi, nbcmpg, cmpg, lhist)
                 endif

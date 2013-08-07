@@ -183,7 +183,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         call jeexin(vcine//'.VALE', ierd)
         if (ierd .ne. 0) then
             call jeveuo(vcine//'.VALE', 'L', idvalc)
-            call jelira(vcine//'.VALE', 'TYPE', ibid, rouc)
+            call jelira(vcine//'.VALE', 'TYPE', cval=rouc)
             ASSERT(rouc.eq.'R')
             call csmbgg(lmat, rsolu, zr(idvalc), cbid, cbid,&
                         'R')

@@ -77,7 +77,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     character(len=24) :: vachar
     integer :: jvacha
     character(len=24) :: resuel
-    character(len=8) :: k8bid, newnom, modele, typech, typsca
+    character(len=8) ::  newnom, modele, typech, typsca
     integer :: ivach, nbvach
     integer :: neq, nbvec
     integer :: iret, ibid, ivec, ichar, ityprs
@@ -100,7 +100,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     if (iret .eq. 0) then
         nbvec = 0
     else
-        call jelira(vecele//'.RELR', 'LONUTI', nbvec, k8bid)
+        call jelira(vecele//'.RELR', 'LONUTI', nbvec)
     endif
 !
 ! --- NOM DU CHAMNO
@@ -116,7 +116,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     call jeexin(vachar, iret)
     if (iret .gt. 0) then
         call jeveuo(vachar, 'L', jvacha)
-        call jelira(vachar, 'LONMAX', nbvach, k8bid)
+        call jelira(vachar, 'LONMAX', nbvach)
         do 10 ivach = 1, nbvach
             call detrsd('CHAMP_GD', zk24(jvacha-1+ivach)(1:19))
 10      continue

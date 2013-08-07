@@ -125,7 +125,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     lont = nbtyel * (nbmam+1)
     call jecrec(cptlie, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbtyel)
-    call jeecra(cptlie, 'LONT', lont, ' ')
+    call jeecra(cptlie, 'LONT', lont)
     call jeveuo(cptlie, 'E', jdli)
 !
 ! --- STOCKAGE DES GROUPES ELEMENTS DANS LIEL
@@ -136,7 +136,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
         nmel = zi(jnel-1+i)
 !
         call jecroc(jexnum(cptlie, i))
-        call jeecra(jexnum(cptlie, i), 'LONMAX', nmel+1, ' ')
+        call jeecra(jexnum(cptlie, i), 'LONMAX', nmel+1)
 !
         do 22 j = 1, nmel
             numvec = numvec + 1

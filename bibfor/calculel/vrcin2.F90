@@ -57,7 +57,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, jcvvar
     integer :: jdcld, jdcll, jdclv, jcesk, jcesk2
     character(len=16) :: tysd1, tysd2, nosd1, nosd2, nosy1, nosy2
-    character(len=8) :: kbid, varc
+    character(len=8) ::  varc
     character(len=19) :: dceli, celmod, cart2, ces2, ligrmo
     character(len=24) :: valk(5)
 ! ----------------------------------------------------------------------
@@ -65,13 +65,13 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     call jemarq()
 !
     call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
-    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc, kbid)
+    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
     ligrmo=modele//'.MODELE'
 !
 !     -- CALCUL DE JLISSD ET NBCHS :
-    call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs, kbid)
+    call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
-    call jelira(chmat//'.LISTE_SD', 'LONMAX', n1, kbid)
+    call jelira(chmat//'.LISTE_SD', 'LONMAX', n1)
     ASSERT(n1.eq.nbchs*7)
 !
 !
@@ -105,13 +105,13 @@ subroutine vrcin2(modele, chmat, carele, chvars)
     call celces(celmod, 'V', chvars)
     call detrsd('CHAMP', celmod)
 !
-    call jelira(chvars//'.CESV', 'LONMAX', n1, kbid)
+    call jelira(chvars//'.CESV', 'LONMAX', n1)
     call wkvect(chmat//'.CESVI', 'V V I', n1, jcesvi)
 !
     call jeveuo(chvars//'.CESK', 'L', jcesk)
     call jeveuo(chvars//'.CESD', 'L', jcesd)
     call jeveuo(chvars//'.CESL', 'E', jcesl)
-    call jelira(chvars//'.CESL', 'LONMAX', n1, kbid)
+    call jelira(chvars//'.CESL', 'LONMAX', n1)
     do 777, k=1,n1
     zl(jcesl-1+k)=.false.
     777 end do

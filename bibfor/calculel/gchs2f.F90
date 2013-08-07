@@ -49,7 +49,7 @@ subroutine gchs2f(char1, char2, char3)
     integer :: jdes1, jdes2, jdes3, ncmp1, ncmp2, i, jval1, jval3, k, izo, jfpro
     integer :: jfval, kk, iec, reste, code, jncmp1, jncmp2, j, nec, ior
     real(kind=8) :: epsi
-    character(len=8) :: k8b, nocmp1, nomfon
+    character(len=8) ::  nocmp1, nomfon
     character(len=19) :: nomf19
 !
     call jemarq()
@@ -69,8 +69,8 @@ subroutine gchs2f(char1, char2, char3)
     call jeveuo(char3//'.DESC', 'E', jdes3)
     zi(jdes3)=zi(jdes2)
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmp1, k8b)
-    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'LONMAX', ncmp2, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'LONMAX', ncmp1)
+    call jelira(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'LONMAX', ncmp2)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(jdes1)), 'L', jncmp1)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', zi(jdes2)), 'L', jncmp2)
 !

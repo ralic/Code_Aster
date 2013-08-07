@@ -176,7 +176,7 @@ subroutine op0146()
         numo = base//'.NUMO'
 !
         call jeveuo(vite, 'L', ivite)
-        call jelira(vite, 'LONUTI', npv, k8b)
+        call jelira(vite, 'LONUTI', npv)
         call getvr8(' ', 'VITE_FLUI', 0, iarg, 1,&
                     vitef, zi)
         call getvr8(' ', 'PRECISION', 0, iarg, 1,&
@@ -191,7 +191,7 @@ subroutine op0146()
 300      continue
 !
         call jeveuo(freq, 'L', ifreq)
-        call jelira(freq, 'LONUTI', nbm, k8b)
+        call jelira(freq, 'LONUTI', nbm)
         call jeveuo(numo, 'L', inumo)
 !
         nbm = nbm/(2*npv)
@@ -224,7 +224,7 @@ subroutine op0146()
             nzex = zi(lfsvi+1)
             pvite = zk8(lfsvk+4)
             pvite = pvite(1:19)//'.VALE'
-            call jelira(pvite, 'LONUTI', lnoe, k8b)
+            call jelira(pvite, 'LONUTI', lnoe)
             lnoe = lnoe / 2
 !
             do 40 is = 1, nbspec
@@ -394,8 +394,8 @@ subroutine op0146()
                 else
                     nbabs = 2*nbpf
                 endif
-                call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs, ' ')
-                call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs, ' ')
+                call jeecra(jexnum(chvale, ij), 'LONMAX', nbabs)
+                call jeecra(jexnum(chvale, ij), 'LONUTI', nbabs)
 !
 210          continue
 220      continue

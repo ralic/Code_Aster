@@ -39,7 +39,6 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
 !      REAL*8       FREQ, RIGMA(*), RIGTO(*)
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: k8b
     character(len=8) :: nommai
     character(len=24) :: mlgnma, magrma, manoma, tabrig
 !
@@ -59,7 +58,7 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
     noemax = 0
 !
 !
-    call jelira(jexnom(magrma, nogr), 'LONUTI', nb, k8b)
+    call jelira(jexnom(magrma, nogr), 'LONUTI', nb)
     call jeveuo(jexnom(magrma, nogr), 'L', ldgm)
     do 22 in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
@@ -71,7 +70,7 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
 !
     call wkvect('&&RIGMI1.PARNO', 'V V I', noemax, iparno)
 !
-    call jelira(jexnom(magrma, nogr), 'LONUTI', nb, k8b)
+    call jelira(jexnom(magrma, nogr), 'LONUTI', nb)
     call jeveuo(jexnom(magrma, nogr), 'L', ldgm)
     do 23 in = 0, nb-1
         call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)

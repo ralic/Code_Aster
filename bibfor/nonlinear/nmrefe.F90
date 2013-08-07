@@ -38,7 +38,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=24) :: modele
     character(len=24) :: compor
     character(len=24) :: mate
-    character(len=24) :: carele, resoco
+    character(len=24) :: carele
     character(len=19) :: depmoi
 !
 ! ----------------------------------------------------------------------
@@ -91,7 +91,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=24) :: chgeom
     character(len=24) :: chcara(18)
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
-    character(len=19) :: xdonco, pinter, ainter, baseco, ccface, lonfac
+    character(len=19) ::  pinter, ainter, baseco, ccface, lonfac
     logical :: debug
     integer :: ifmdbg, nivdbg
     character(len=16) :: option

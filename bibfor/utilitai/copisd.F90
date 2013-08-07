@@ -66,7 +66,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
     integer :: iret, i, nbtu, jltn1, jltn2, idd, nbsd, ilimpi
     character(len=1) :: bas2
-    character(len=8) :: k8b, k81, k82
+    character(len=8) ::  k81, k82
     character(len=12) :: k121, k122
     character(len=14) :: com1, com2, nu1, nu2
     character(len=16) :: typ2sd, corr1, corr2
@@ -294,7 +294,7 @@ subroutine copisd(typesd, base, sd1, sd2)
             call jedup1(k191//'.FETP', bas2, k192//'.FETP')
             call jedup1(k191//'.FETR', bas2, k192//'.FETR')
 !
-            call jelira(masfe1, 'LONMAX', nbsd, k8b)
+            call jelira(masfe1, 'LONMAX', nbsd)
             call jeveuo(masfe1, 'L', ifetm1)
             call jeveuo(masfe2, 'E', ifetm2)
             call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
@@ -385,7 +385,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         if (iret .ne. 0) then
             call jedup1(k191//'.LTNS', bas2, k192//'.LTNS')
             call jedup1(k191//'.LTNT', bas2, k192//'.LTNT')
-            call jelira(k191//'.LTNT', 'LONUTI', nbtu, k8b)
+            call jelira(k191//'.LTNT', 'LONUTI', nbtu)
             call jeveuo(k191//'.LTNS', 'L', jltn1)
             call jeveuo(k192//'.LTNS', 'E', jltn2)
             k192(1:8) = k192

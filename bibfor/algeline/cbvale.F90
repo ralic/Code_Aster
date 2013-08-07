@@ -84,7 +84,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     else
         neq = zi(lres+2)
     endif
-    call jelira(matres//'.REFA', 'CLAS', ibid, clas)
+    call jelira(matres//'.REFA', 'CLAS', cval=clas)
     valmr = matres//'.VALM'
     lgbloc = zi(lres+14)
 !
@@ -154,7 +154,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
         endif
         mati = zk24(zi(lmat(imat)+1))
         valmi = mati//'.VALM'
-        call jelira(valmi, 'TYPE', ibid, typmat)
+        call jelira(valmi, 'TYPE', cval=typmat)
         ASSERT(typmat.eq.'R' .or. typmat.eq.'C')
         call jeveuo(jexnum(valmi, 1), 'L', jvami1)
         symi = zi(lmat(imat)+4) .eq. 1

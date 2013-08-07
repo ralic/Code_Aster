@@ -55,7 +55,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
 !
     integer :: iret, jtbnp, nbpara, nblign
     integer :: ltitr, lonmax, ititr
-    character(len=8) :: k8b, format
+    character(len=8) ::  format
     character(len=19) :: nomtab
 !     ------------------------------------------------------------------
 !
@@ -100,7 +100,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim,&
     call jeexin(nomtab//'.TITR', iret)
     if (iret .ne. 0) then
         call jeveuo(nomtab//'.TITR', 'L', ltitr)
-        call jelira(nomtab//'.TITR', 'LONMAX', lonmax, k8b)
+        call jelira(nomtab//'.TITR', 'LONMAX', lonmax)
         do 10 ititr = 1, lonmax
             if (format .eq. 'ASTER') then
                 write(ifr,2000) '#TITRE',zk80(ltitr+ititr-1)

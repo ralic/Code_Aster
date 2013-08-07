@@ -79,7 +79,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 !                        POUR CHAQUE COMPOSANTE ET ON 'NORME'
 !       ----------------------------------------------------------------
 !       ---------------------------------------------------------------
-    character(len=8) :: k8b, kcmp
+    character(len=8) ::  kcmp
     character(len=19) :: chequi
     character(len=24) :: nomdmg, nompic
     character(len=24) :: nomitv, nomrtv
@@ -150,7 +150,7 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon,&
 !
                 if ((icmp .eq. 1) .and. (ipt .eq. 1)) then
                     call jeveuo(chequi//'.CELV', 'L', ivord)
-                    call jelira(chequi//'.CELV', 'LONMAX', ibid, k8b)
+                    call jelira(chequi//'.CELV', 'LONMAX', ibid)
                     if (ibid .ne. (nbpt*ntcmp)) then
                         valk(2) = nomsym
                         vali = ntcmp

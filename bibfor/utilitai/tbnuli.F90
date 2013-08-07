@@ -53,7 +53,6 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
     integer :: jvale, itrouv, ki, kr, kc, kk, jvall
     real(kind=8) :: prec, refr
     character(len=4) :: type, crit
-    character(len=8) :: k8b
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     character(len=24) :: valk
@@ -95,7 +94,7 @@ subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
 10  end do
 !
     nomjv = zk24(jtblp+2)
-    call jelira(nomjv, 'LONUTI', nbpu, k8b)
+    call jelira(nomjv, 'LONUTI', nbpu)
     call wkvect('&&TBNULI.NUMERO', 'V V I', nbpu, jnumi)
     do 18 i = 1, nbpu
         zi(jnumi+i-1) = i

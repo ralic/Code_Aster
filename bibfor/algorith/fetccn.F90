@@ -52,7 +52,6 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
     integer :: idd, iret, nbsd, i1, i2, i3, i4, ir, nbval, k, j1, j2, j3, j4, jr
     integer :: idd1, ifm, niv, iinf, ilimpi
     character(len=5) :: vale, fetc
-    character(len=8) :: k8bid
     character(len=19) :: cham1b, cham2b, cham3b, cham4b, chamrb
     character(len=24) :: k24b, infofe
     logical :: lfeti, iddok
@@ -72,7 +71,7 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
     if (iret .gt. 0) then
         lfeti=.true.
 ! NBRE DE SOUS-DOMAINES NBSD
-        call jelira(k24b, 'LONMAX', nbsd, k8bid)
+        call jelira(k24b, 'LONMAX', nbsd)
 !
 ! PREPARATION POUR LA BOUCLE SUR LES SOUS-DOMAINES. STOCKAGE
 ! DES ADRESSES DES .FETC DE CHACUN DES CHAM_NOS A CONCATENER
@@ -132,7 +131,7 @@ subroutine fetccn(chamn1, chamn2, chamn3, chamn4, typcum,&
             if (typcum .gt. 2) call jeveuo(cham3b//vale, 'L', j3)
             if (typcum .gt. 3) call jeveuo(cham4b//vale, 'L', j4)
             call jeveuo(chamrb//vale, 'E', jr)
-            call jelira(chamrb//vale, 'LONMAX', nbval, k8bid)
+            call jelira(chamrb//vale, 'LONMAX', nbval)
             nbval=nbval-1
 !
 !----------------------------------------------------------------------

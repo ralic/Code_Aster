@@ -61,7 +61,6 @@ subroutine i2chem(nomail, nbparm)
     integer :: vali(7)
     real(kind=8) :: epsi
     logical :: ouvert
-    character(len=1) :: k1b
     character(len=8) :: k8b, nomcrb, typm, nomma, nomse, nomm1, nomm2
     character(len=16) :: typcrb, opera
     character(len=24) :: conec, type, nommai, nomnoe, noeud, nomgr
@@ -143,7 +142,7 @@ subroutine i2chem(nomail, nbparm)
             call u2mesg('E', 'INTEMAIL_16', 2, valk, 1,&
                         occ, 0, 0.d0)
         else
-            call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm, k1b)
+            call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
             call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm1)
             do 20,im = 1,nbm,1
             call jeveuo(type, 'L', iatyma)
@@ -190,7 +189,7 @@ subroutine i2chem(nomail, nbparm)
                     zk24( jgrma), n2)
         do 70,ig = 1,n2,1
         nomgr = zk24(jgrma+ig-1)
-        call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm, k1b)
+        call jelira(jexnom(grpmai, nomgr), 'LONUTI', nbm)
         call jeveuo(jexnom(grpmai, nomgr), 'L', jgrm2)
         do 60,im = 1,nbm,1
         numm = zi(jgrm2+im-1)
@@ -313,15 +312,15 @@ subroutine i2chem(nomail, nbparm)
     n1 = zi(aptstr+ (nbcnx+1)-1) - 1
     call jecrec(nchmin, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbcnx)
-    call jeecra(nchmin, 'LONT', n1, ' ')
+    call jeecra(nchmin, 'LONT', n1)
 !
     call jecrec(nmail1, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbcnx)
-    call jeecra(nmail1, 'LONT', n1, ' ')
+    call jeecra(nmail1, 'LONT', n1)
 !
     call jecrec(nmail2, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbcnx)
-    call jeecra(nmail2, 'LONT', n1, ' ')
+    call jeecra(nmail2, 'LONT', n1)
 !
     call wkvect(ntpcrb, 'G V K8', 1, ktypcb)
     zk8(ktypcb) = 'LISTMAIL'
@@ -334,13 +333,13 @@ subroutine i2chem(nomail, nbparm)
     finchm = zi(aptstr+chm) - 1
     n1 = finchm - debchm + 1
     call jecroc(jexnum(nchmin, chm))
-    call jeecra(jexnum(nchmin, chm), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nchmin, chm), 'LONMAX', n1)
     call jeveuo(jexnum(nchmin, chm), 'E', kchm)
     call jecroc(jexnum(nmail1, chm))
-    call jeecra(jexnum(nmail1, chm), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nmail1, chm), 'LONMAX', n1)
     call jeveuo(jexnum(nmail1, chm), 'E', kmail1)
     call jecroc(jexnum(nmail2, chm))
-    call jeecra(jexnum(nmail2, chm), 'LONMAX', n1, ' ')
+    call jeecra(jexnum(nmail2, chm), 'LONMAX', n1)
     call jeveuo(jexnum(nmail2, chm), 'E', kmail2)
     do 160,sgcour = debchm,finchm,1
     ind = zi(astrct+sgcour-1)
@@ -367,7 +366,7 @@ subroutine i2chem(nomail, nbparm)
         write (ifm,1000)
         write (ifm,1010) nbcnx
         do 190,chm = 1,nbcnx,1
-        call jelira(jexnum(nchmin, chm), 'LONMAX', nbm, k1b)
+        call jelira(jexnum(nchmin, chm), 'LONMAX', nbm)
         call jeveuo(jexnum(nchmin, chm), 'L', kchm)
         call jeveuo(jexnum(nmail1, chm), 'L', kmail1)
         call jeveuo(jexnum(nmail2, chm), 'L', kmail2)

@@ -63,7 +63,7 @@ subroutine rfnapp(nappe)
     call getvtx(' ', 'CRITERE', 0, iarg, 1,&
                 crit, nc)
 !
-    call jelira(nappe//'.PARA', 'LONUTI', npar, k8b)
+    call jelira(nappe//'.PARA', 'LONUTI', npar)
     call jeveuo(nappe//'.PARA', 'L', jpara)
 !
     do 10 indic = 1, npar
@@ -92,7 +92,7 @@ subroutine rfnapp(nappe)
     zk24(lpro+5) = zk24(jprol+5)
 !
     call jeveuo(jexnum(nappe//'.VALE', indic), 'L', jval)
-    call jelira(jexnum(nappe//'.VALE', indic), 'LONMAX', nbvr, k8b)
+    call jelira(jexnum(nappe//'.VALE', indic), 'LONMAX', nbvr)
     call wkvect(nomfon//'.VALE', 'G V R', nbvr, lval)
     do 30 ival = 1, nbvr
         zr(lval+ival-1)=zr(jval+ival-1)

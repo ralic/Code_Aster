@@ -133,7 +133,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                     iret)
         call jeveut(nomcha(1:19)//'.VALE', 'L', zi(ilamod+im-1))
 211  end do
-    call jelira(nomcha(1:19)//'.VALE', 'TYPE', ibid, tymmec)
+    call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=tymmec)
 !
 !-----RECUPERATION DE LA MASSE GENERALISEE
 !

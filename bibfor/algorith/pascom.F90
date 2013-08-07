@@ -74,7 +74,7 @@ subroutine pascom(meca, sddyna, sddisc)
 !
 !     --- RECUPERATION DES FREQUENCES PROPRES
 !
-    call jelira(meca//'           .ORDR', 'LONUTI', nbmode, k8bid)
+    call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
     call jeveuo(meca//'           .ORDR', 'L', jordm)
     iorol = zi(jordm)
     call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&

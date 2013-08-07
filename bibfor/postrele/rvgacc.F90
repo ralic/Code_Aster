@@ -48,7 +48,7 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
     integer :: nbis, nbnc, nbnf, nbni, nbnm, nbno, nbr8, nbto, nbtrou
     real(kind=8) :: prec, r8b
     complex(kind=8) :: c16b
-    character(len=8) :: k8b, resu, crit
+    character(len=8) ::  resu, crit
     character(len=16) :: nomcas
     character(len=24) :: nlist
     integer :: iarg
@@ -141,7 +141,7 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
                             nlist, n1)
             endif
             nlist(9:24) = '           .VALE'
-            call jelira(nlist, 'LONMAX', nbval, k8b)
+            call jelira(nlist, 'LONMAX', nbval)
             call jeveuo(nlist, 'L', alist)
             call wkvect(nival, 'V V I', nbval, aival)
             do 10, i = 1, nbval, 1
@@ -174,7 +174,7 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
                             nlist, n1)
             endif
             nlist(9:24) = '           .VALE'
-            call jelira(nlist, 'LONMAX', nbval, k8b)
+            call jelira(nlist, 'LONMAX', nbval)
             call jeveuo(nlist, 'L', alist)
             call wkvect(nrval, 'V V R', nbval, arval)
             do 20, i = 1, nbval, 1

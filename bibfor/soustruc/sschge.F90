@@ -90,7 +90,7 @@ subroutine sschge(nomacr)
     vecas = nomacr//'.CHARMECA'
 !
     call jeveuo(nomacr//'.DESM', 'E', iadesm)
-    call jelira(nomacr//'.LICH', 'LONMAX', nch, kbid)
+    call jelira(nomacr//'.LICH', 'LONMAX', nch)
     nch= nch-1
     vprof= ' '
     nddle= zi(iadesm-1+4)

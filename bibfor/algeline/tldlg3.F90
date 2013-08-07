@@ -90,7 +90,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/ualfcr.h"
-    character(len=1) :: codmes, kbid
+    character(len=1) :: codmes
     character(len=19) :: noma19, ligrel, stolci, solvop
     character(len=14) :: nu
     character(len=*) :: metrez, renum
@@ -173,7 +173,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         if ((noma19.ne.'&&OP0070.RESOC.MATC') .and. (noma19.ne.'&&OP0070.RESUC.MATC')) then
             call ualfcr(noma19, ' ')
         endif
-        call jelira(noma19//'.UALF', 'NMAXOC', nbbloc, kbid)
+        call jelira(noma19//'.UALF', 'NMAXOC', nbbloc)
 !
         stolci=nu//'.SLCS'
         call jeveuo(stolci//'.SCDI', 'L', iscdi)

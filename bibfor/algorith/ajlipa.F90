@@ -88,7 +88,7 @@ subroutine ajlipa(modelz, base)
     call jeexin(ligrmo//'.LIEL', iexi)
     if (iexi .eq. 0) goto 99
 !
-    call jelira(ligrmo//'.LIEL', 'NUTIOC', nbgrel, kbid)
+    call jelira(ligrmo//'.LIEL', 'NUTIOC', nbgrel)
     call jeveuo(ligrmo//'.REPE', 'L', jrepe)
 !
 !     -- S'IL EXISTE DEJA UNE PARTITION, ON LA DETRUIT :
@@ -150,7 +150,7 @@ subroutine ajlipa(modelz, base)
 !     CREATION DE LA PARTITION :
 !     ----------------------------------------------------
     call jeveuo(modele//'.MAILLE', 'L', jmail)
-    call jelira(modele//'.MAILLE', 'LONMAX', nbma, k24b)
+    call jelira(modele//'.MAILLE', 'LONMAX', nbma)
     call wkvect(partit//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1)=nbproc
     call wkvect(partit//'.PRTK', base//' V K24', 2, jprtk)
@@ -241,7 +241,7 @@ subroutine ajlipa(modelz, base)
         do 30 idd = 1, nbsd
             if (zi(jparsd-1+idd) .eq. 1) then
                 call jeveuo(jexnum(sdfeti//'.FETA', idd), 'L', jfeta)
-                call jelira(jexnum(sdfeti//'.FETA', idd), 'LONMAX', nbmasd, k24b)
+                call jelira(jexnum(sdfeti//'.FETA', idd), 'LONMAX', nbmasd)
                 do 20 i = 1, nbmasd
                     i2 = zi(jfeta-1+i)
                     if (zi(jnumsd-1+i2) .ne. -999) then

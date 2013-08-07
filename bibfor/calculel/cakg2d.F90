@@ -119,7 +119,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
 !
-    character(len=1) :: k1bid
     integer :: iarg
     data chvarc/'&&CAKG2D.CH_VARC_R'/
     data chvref/'&&CAKG2D.CHVREF'/
@@ -213,7 +212,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     if (ixfem .eq. 0) then
         fond = fondf(1:8)
         obj2 = fond//'.FOND.NOEU'
-        call jelira(obj2, 'LONMAX', lobj2, k1bid)
+        call jelira(obj2, 'LONMAX', lobj2)
         if (lobj2 .ne. 1) then
             call u2mess('F', 'RUPTURE1_10')
         endif

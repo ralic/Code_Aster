@@ -100,7 +100,6 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=4) :: tych
     character(len=6) :: chnumo
     character(len=8) :: nomco
@@ -242,7 +241,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !              ---- SEPARATION DES DIVERS CHAMPS -----
                         write(ifi,'(/,1X,A)') '------>'
                         call jeveuo(nomst, 'L', jtitr)
-                        call jelira(nomst, 'LONMAX', nbtitr, k1bid)
+                        call jelira(nomst, 'LONMAX', nbtitr)
                         write(ifi,'(1X,A)') (zk80(jtitr+i-1),i=1,&
                         nbtitr)
                     endif

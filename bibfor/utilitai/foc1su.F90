@@ -46,7 +46,6 @@ subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
     real(kind=8) :: eps
     character(len=24) :: prol, vale, nomtem(2)
     character(len=16) :: nopara, noresu, interp, prolgd
-    character(len=1) :: k1bid
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ier, iocc, iperm, isuite, lfon, lpro
@@ -73,7 +72,7 @@ subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
     if (lpara(1:1) .eq. ' ') then
         do 200 iocc = 1, nbfon
             vale(1:19) = nomfon(iocc)
-            call jelira(vale, 'LONUTI', nbval, k1bid)
+            call jelira(vale, 'LONUTI', nbval)
             call jeveuo(vale, 'L', lvar)
 !
             if (fcplx(iocc)) then
@@ -105,7 +104,7 @@ subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
 !
     else
         vale(1:19) = lpara
-        call jelira(vale, 'LONUTI', nbinst, k1bid)
+        call jelira(vale, 'LONUTI', nbinst)
         call jeveuo(vale, 'L', lvar)
 !
 !           --- CREATION DE L'OBJET DES INSTANTS ET DES VALEURS ---
@@ -126,7 +125,7 @@ subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
         call jeveuo(prol, 'L', lpro)
 !
         vale(1:19) = nomfon(iocc)
-        call jelira(vale, 'LONUTI', nbval, k1bid)
+        call jelira(vale, 'LONUTI', nbval)
         call jeveuo(vale, 'L', lvar)
 !
         if (fcplx(iocc)) then
@@ -172,7 +171,7 @@ subroutine foc1su(sortie, nbfon, nomfon, coef, coefz,&
 !
 !     FIN DU REMPLISSAGE
     vale(1:19) = sortie
-    call jeecra(vale, 'LONUTI', nn*nbinst, ' ')
+    call jeecra(vale, 'LONUTI', nn*nbinst)
 !
     call focoat(nomfon, nbfon, nopara, noresu, interp,&
                 prolgd)

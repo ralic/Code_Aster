@@ -138,7 +138,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
 !
 !     3. -- ON COMPACTE LES NUME_ORDRE ARCHIVES :
 !     -------------------------------------------
-    call jeecra(nomsdr//'.ORDR', 'LONUTI', nbarch, ' ')
+    call jeecra(nomsdr//'.ORDR', 'LONUTI', nbarch)
     call jeveuo(nomsdr//'.ORDR', 'E', jordr)
     irang=0
     do 80 i = 1, nbrang

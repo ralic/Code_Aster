@@ -121,8 +121,8 @@ subroutine ssriu1(nomu)
     call jeveuo(nu//'.DEEQ', 'E', iadeeq)
     call jeveuo(nu//'.DELG', 'E', iadelg)
     call jeveuo(nu//'.NUEQ', 'E', ianueq)
-    call jelira(nu//'.NUEQ', 'LONMAX', nddlt, kbid)
-    call jelira(nu//'.PRNO', 'NMAXOC', nlili, kbid)
+    call jelira(nu//'.NUEQ', 'LONMAX', nddlt)
+    call jelira(nu//'.PRNO', 'NMAXOC', nlili)
 !
     call jeveuo(nomu//'.DESM', 'E', iadesm)
     call jeveuo(nomu//'.LINO', 'E', ialino)
@@ -200,7 +200,7 @@ subroutine ssriu1(nomu)
 !
 !     -- DIMENSIONNEMENT DES OBJETS DE LA COLLECTION .LICA:
 !     -----------------------------------------------------
-    call jeecra(nomu//'.LICA', 'LONMAX', 2*nddlt, kbid)
+    call jeecra(nomu//'.LICA', 'LONMAX', 2*nddlt)
 !
 !
 !     -- MODIFICATION DE .NUEQ:
@@ -293,7 +293,7 @@ subroutine ssriu1(nomu)
     do 60,ili = 2,nlili
     call jeexin(jexnum(nu//'.PRNO', ili), iret)
     if (iret .eq. 0) goto 60
-    call jelira(jexnum(nu//'.PRNO', ili), 'LONMAX', n1, kbid)
+    call jelira(jexnum(nu//'.PRNO', ili), 'LONMAX', n1)
     if (n1 .eq. 0) goto 60
     call jeveuo(jexnum(nu//'.PRNO', ili), 'L', iaprno)
     nbno = n1/ (nec+2)

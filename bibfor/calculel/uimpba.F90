@@ -83,7 +83,7 @@ subroutine uimpba(clas, iunmes)
 !     -- 3 : .LCONK8 = LISTE DES CONCEPTS (K8) DE .LISTE_OBJ
 !     -----------------------------------------------------------
     call jecreo('&&UIMPBA.LCONK8', 'V N K8')
-    call jeecra('&&UIMPBA.LCONK8', 'NOMMAX', nbobj, kbid)
+    call jeecra('&&UIMPBA.LCONK8', 'NOMMAX', nbobj)
     do 2, i=1,nbobj
     obj=zk24(jlobj-1+i)
     k8=obj(1:8)
@@ -96,7 +96,7 @@ subroutine uimpba(clas, iunmes)
 !
 !     -- 4 : .TAILCON = TAILLE DES CONCEPTS
 !     -----------------------------------------------------------
-    call jelira('&&UIMPBA.LCONK8', 'NOMUTI', nbcon, kbid)
+    call jelira('&&UIMPBA.LCONK8', 'NOMUTI', nbcon)
     call wkvect('&&UIMPBA.TAILCON', 'V V R', nbcon, jtailc)
     call wkvect('&&UIMPBA.NBSVC', 'V V I', nbcon, jnbsvc)
     call wkvect('&&UIMPBA.NBOBJ', 'V V I', nbcon, jnbobj)

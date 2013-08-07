@@ -54,7 +54,6 @@ subroutine crchno(champ, prno, gran, noma, base,&
     integer :: nbval, lchamp
     character(len=1) :: classe
     character(len=3) :: type
-    character(len=8) :: cbid
     character(len=24) :: vale, refe, desc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -79,7 +78,7 @@ subroutine crchno(champ, prno, gran, noma, base,&
     nbval = 2
     desc(1:19) = champ
     call wkvect(desc, classe//' V I', nbval, lchamp)
-    call jeecra(desc, 'DOCU', nbval, 'CHNO')
+    call jeecra(desc, 'DOCU', cval='CHNO')
     call jenonu(jexnom('&CATA.GD.NOMGD', gran), zi(lchamp))
     zi(lchamp+1) = nbnoeu
 !
@@ -90,7 +89,7 @@ subroutine crchno(champ, prno, gran, noma, base,&
     vale(1:19) = champ
     type = typc
     call jecreo(vale, classe//' V '//type)
-    call jeecra(vale, 'LONMAX', lonval, cbid)
+    call jeecra(vale, 'LONMAX', lonval)
 !
     call jedema()
 end subroutine

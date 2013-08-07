@@ -54,7 +54,6 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
 !
 !
 !
-    character(len=8) :: k8bid
     character(len=19) :: amort, masse, rigid
     character(len=19) :: vites, accel, vite2
     character(len=19) :: cniner, cnhyst
@@ -138,7 +137,7 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
             call jeveuo(rigid//'.REFA', 'L', jrefa)
             nu = zk24(jrefa-1+2)
             call jeveuo(nu(1:14)//'.NUME.DEEQ', 'L', jdeeq)
-            call jelira(vite2(1:19)//'.VALE', 'LONMAX', neq, k8bid)
+            call jelira(vite2(1:19)//'.VALE', 'LONMAX', neq)
             call zerlag('R', zr(jprov), cbid, neq, zi(jdeeq))
             call nminer(rigid, vite2, cniner)
             call jeveuo(cniner(1:19)//'.VALE', 'E', jprov)

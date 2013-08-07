@@ -60,13 +60,12 @@ subroutine agcart(ngdmxn, chinz)
 !
     character(len=1) :: base
     character(len=24) :: descav
-    character(len=1) :: k1bid
     integer :: jdesca, jdesc, nec, iec, ngdmxa, nedit, ied, ideca, idec
-    integer :: ibid, ncmp, igd
+    integer ::  ncmp, igd
 ! ----------------------------------------------------------------------
     call jemarq()
     chin = chinz
-    call jelira(chin//'.DESC', 'CLAS', ibid, base)
+    call jelira(chin//'.DESC', 'CLAS', cval=base)
 !
 !
 ! --- AGRANDISSEMENT DE .DESC:
@@ -82,7 +81,7 @@ subroutine agcart(ngdmxn, chinz)
 !
     call jedetr(chin//'.DESC')
     call wkvect(chin//'.DESC', base//' V I', 3+ngdmxn*(2+nec), jdesc)
-    call jeecra(chin//'.DESC', 'DOCU', ibid, 'CART')
+    call jeecra(chin//'.DESC', 'DOCU', cval='CART')
 !
     zi(jdesc-1+1)=igd
     zi(jdesc-1+2)=ngdmxn
@@ -106,7 +105,7 @@ subroutine agcart(ngdmxn, chinz)
 !
 ! ---  AGRANDISSEMENT DE VALE:
 ! ------------------------------
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp)
     call juveca(chin//'.VALE', ngdmxn*ncmp)
 !
 !

@@ -61,7 +61,6 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     character(len=16) :: momail, mogrma
     character(len=16) :: motfac
     character(len=24) :: noeuma, mailma, grmama, lisnoe
-    character(len=1) :: k1bid
     integer :: iarg
 ! ----------------------------------------------------------------------
 !
@@ -115,12 +114,12 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                     iarg, ng, zk24( jjj1), ngr)
         do 10 igr = 1, ngr
             call jeveuo(jexnom(grmama, zk24(jjj1+igr-1)), 'L', jgro)
-            call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail, k1bid)
+            call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail)
             do 20 m = 1, nbmail
                 numail = zi(jgro-1+m)
                 call jenuno(jexnum(mailma, numail), nomail)
                 call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
-                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1, k1bid)
+                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                 idim1 = idim1 + n1
 20          continue
 10      continue
@@ -139,7 +138,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                     iarg, nbma, zk8( jjj2), nmai)
         do 30 ima = 1, nmai
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
-            call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2, k1bid)
+            call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             idim2 = idim2 + n2
 30      continue
     endif
@@ -162,13 +161,13 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
                     zk24(jjj1), ngr)
         do 40 igr = 1, ngr
             call jeveuo(jexnom(grmama, zk24(jjj1+igr-1)), 'L', jgro)
-            call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail, k1bid)
+            call jelira(jexnom(grmama, zk24(jjj1+igr-1)), 'LONUTI', nbmail)
             do 50 m = 1, nbmail
                 numail = zi(jgro-1+m)
                 call jenuno(jexnum(mailma, numail), nomail)
                 call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
                 call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
-                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1, k1bid)
+                call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n1)
                 do 60 ino = 1, n1
                     call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
                     indnoe = indnoe + 1
@@ -188,7 +187,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
             call jeveuo(jexnum(noma//'.CONNEX', ibid), 'L', jdes)
             call jenonu(jexnom(noma//'.NOMMAI', zk8(jjj2+ima-1)), ibid)
-            call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2, k1bid)
+            call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)
             do 80 ino = 1, n2
                 call jenuno(jexnum(noeuma, zi(jdes+ino-1)), nomnoe)
                 indnoe = indnoe + 1

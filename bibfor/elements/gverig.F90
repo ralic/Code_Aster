@@ -276,7 +276,7 @@ subroutine gverig(noma, nocc, chfond, taillr, config,&
             else
 ! LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
 !
-                call jelira(jexnom(grpno, zk24(jjj2+igr-1)), 'LONUTI', n1, k8bid)
+                call jelira(jexnom(grpno, zk24(jjj2+igr-1)), 'LONUTI', n1)
                 call jeveuo(jexnom(grpno, zk24(jjj2+igr-1)), 'L', iadr)
                 do 4 j = 1, n1
                     call jenuno(jexnum(nomno, zi(iadr+j-1)), noeud1)

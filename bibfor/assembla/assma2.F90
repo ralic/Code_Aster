@@ -112,7 +112,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
                 kbid, ierd)
     nec=nbec(nugd)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nogdsi), 'L', iancmp)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp, kbid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nogdsi), 'LONMAX', lgncmp)
     icmp=indik8(zk8(iancmp),'LAGR',1,lgncmp)
     if (icmp .gt. 0) then
         jec=(icmp-1)/30+1
@@ -133,7 +133,7 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     if (zi(jsssa-1+ima) .eq. 0) goto 90
 !
     call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
-    call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe, kbid)
+    call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
 !
     nbterm=0
 !

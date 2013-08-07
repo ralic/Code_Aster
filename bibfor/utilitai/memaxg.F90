@@ -98,7 +98,7 @@ subroutine memaxg(nborn, born, gbil, lonvec, result)
     collec = '&&MEMAXG.BORNES_Q'
     call jecrec(collec, 'V V R', 'NU', 'CONTIG', 'CONSTANT',&
                 2**lonvec)
-    call jeecra(collec, 'LONMAX', lonvec, ' ')
+    call jeecra(collec, 'LONMAX', lonvec)
     call wkvect('&&MEMAXG.GQIJ', 'V V R8', lonvec, igq)
     call wkvect('&&MEMAXG.TABL', 'V V R8', lonvec+2, ipa)
 !

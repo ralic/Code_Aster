@@ -118,7 +118,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
     if (lintf .ne. blanc) then
 ! ON RECUPERE LE NBRE DE NOEUDS PRESENTS DANS INTERF_DYNA
-        call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe, k8bid)
+        call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! ON RECUPERE LE LISTE DES NOEUDS PRESENTS DANS INTERF_DYNA
         call jeveuo(lintf//'.IDC_DEFO', 'L', lldef)
     else
@@ -149,7 +149,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
 ! IL FAUT CHOISIR NBNDYN QUI NE SOIENT PAS SUR L'INTERFACE ET POSSEDANT
 ! NCMPMX COMPOSANTES.
-    call jelira(jexnum(nu(1:19)//'.PRNO', 1), 'LONMAX', n1, k8bid)
+    call jelira(jexnum(nu(1:19)//'.PRNO', 1), 'LONMAX', n1)
     call jeveuo(jexnum(nu(1:19)//'.PRNO', 1), 'L', iaprno)
     nbno = n1/(nec+2)
     k=1
@@ -168,7 +168,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
     call getvtx(' ', 'SANS_GROUP_NO', 1, iarg, 1,&
                 gnex, igex)
     if (igex .ne. 0) then
-        call jelira(jexnom(noma//'.GROUPENO', gnex), 'LONUTI', nbno2, k8bid)
+        call jelira(jexnom(noma//'.GROUPENO', gnex), 'LONUTI', nbno2)
         call jeveuo(jexnom(noma//'.GROUPENO', gnex), 'L', ldgn0)
         call wkvect('&&COMP81.NEUEXC', 'V V I', nbno2, ldgn)
         do 557 j = 1, nbno2
@@ -353,8 +353,8 @@ subroutine comp81(nomres, basmod, raidf, noma)
                     nocc)
         call jecrec(nomres//'.LICH', 'G V K8', 'NO', 'CONTIG', 'CONSTANT',&
                     nocc)
-        call jeecra(nomres//'.LICA', 'LONMAX', 2*nbmtot, k8bid)
-        call jeecra(nomres//'.LICH', 'LONMAX', 2, k8bid)
+        call jeecra(nomres//'.LICA', 'LONMAX', 2*nbmtot)
+        call jeecra(nomres//'.LICH', 'LONMAX', 2)
 !
         do 670, iocc= 1,nocc
         call getvtx('CAS_CHARGE', 'NOM_CAS', iocc, iarg, 1,&

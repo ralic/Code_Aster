@@ -96,7 +96,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
     call jecrec(vesstr(1:19)//'.RELC', base//' V I', 'NO', 'CONTIG', 'CONSTANT',&
                 nboc)
-    call jeecra(vesstr(1:19)//'.RELC', 'LONMAX', nbsma, k8bid)
+    call jeecra(vesstr(1:19)//'.RELC', 'LONMAX', nbsma)
 !
     call wkvect('&&SS2MME.LMAI', 'V V K8', nbsma, ialmai)
 !

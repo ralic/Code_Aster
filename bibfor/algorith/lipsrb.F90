@@ -135,7 +135,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- NOMBRE DE NOEUDS DE L'INTERFACE 1
     int1=kbid//'.IDC_LINO'
     call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
-    call jelira(jexnum(int1, ibid), 'LONMAX', nbno1, kbid)
+    call jelira(jexnum(int1, ibid), 'LONMAX', nbno1)
     call jeveuo(lino1, 'L', lno1)
 !
 !-- INTERFACE AMONT DE LA SOUS-STRUCTURE 2
@@ -144,7 +144,7 @@ subroutine lipsrb(nomres, matprj, sst1, sst2, intf1,&
 !-- NOMBRE DE NOEUDS DE L'INTERFACE 2
     int2=kbid//'.IDC_LINO'
     call jenonu(jexnom(int2(1:13)//'NOMS', intf2), ibid)
-    call jelira(jexnum(int2, ibid), 'LONMAX', nbno2, kbid)
+    call jelira(jexnum(int2, ibid), 'LONMAX', nbno2)
 !-- NOEUDS DE LA SOUS STRUCTURE 2
     call mgutdm(nomres, sst2, ibid, 'NOM_MAILLAGE', ibid,&
                 mail2)

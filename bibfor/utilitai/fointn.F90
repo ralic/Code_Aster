@@ -43,7 +43,7 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: lprol, lvar, nbpt, jpro, nbpcum, i, ipt, lfon
-    character(len=1) :: k1bid, coli
+    character(len=1) ::  coli
     character(len=16) :: prolgd
     character(len=19) :: nomfon
     character(len=24) :: interp, chprol, chvale
@@ -56,7 +56,7 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi,&
         call jeveuo(chprol, 'L', lprol)
         call fopro1(zk24(lprol), inume, prolgd, interp)
         call jeveuo(jexnum(chvale, inume), 'L', lvar)
-        call jelira(jexnum(chvale, inume), 'LONMAX', nbpt, k1bid)
+        call jelira(jexnum(chvale, inume), 'LONMAX', nbpt)
     else
         jpro = zi(ipif+1)
         prolgd = zk24(jpro+6+ (2*inume))

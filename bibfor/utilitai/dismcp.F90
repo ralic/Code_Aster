@@ -48,7 +48,7 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=4) :: tych
-    integer :: ibid, iexi
+    integer ::  iexi
 !
 ! DEB-------------------------------------------------------------------
     repk = ' '
@@ -59,11 +59,11 @@ subroutine dismcp(questi, nomobz, repi, repkz, ierd)
 !
     call jeexin(nomob(1:19)//'.DESC', iexi)
     if (iexi .gt. 0) then
-        call jelira(nomob(1:19)//'.DESC', 'DOCU', ibid, tych)
+        call jelira(nomob(1:19)//'.DESC', 'DOCU', cval=tych)
     else
         call jeexin(nomob(1:19)//'.CELD', iexi)
         if (iexi .gt. 0) then
-            call jelira(nomob(1:19)//'.CELD', 'DOCU', ibid, tych)
+            call jelira(nomob(1:19)//'.CELD', 'DOCU', cval=tych)
         else
             call jeexin(nomob(1:19)//'.CESD', iexi)
             if (iexi .gt. 0) then

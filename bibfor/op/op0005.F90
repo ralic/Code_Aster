@@ -56,11 +56,10 @@ subroutine op0005()
     integer :: ind, ifm, i, k, nbrcme
     integer :: nbr, nbc, nbk, nbk2
     integer :: nbmati, jnorci, krc
-    character(len=8) :: k8b, matout, matin, schout
+    character(len=8) ::  matout, matin, schout
     character(len=16) :: nomrc, typmat, materi, k16bid
     character(len=19) :: noobrc
     character(len=24) :: valk(4)
-    character(len=1) :: k1bid
     integer :: iarg
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +83,7 @@ subroutine op0005()
 ! ------ ON VERIFIE QUE L'ON A QUE DES NOUVEAUX MATERIAUX
 !
         call jeveuo(matin//'.MATERIAU.NOMRC', 'L', jnorci)
-        call jelira(matin//'.MATERIAU.NOMRC', 'LONMAX', nbmati, k8b)
+        call jelira(matin//'.MATERIAU.NOMRC', 'LONMAX', nbmati)
         do 10 irc = 1, nbrcme
             nomrc = motcle(irc)
             ind = indk16 ( zk16(jnorci), nomrc, 1, nbmati )
@@ -153,9 +152,9 @@ subroutine op0005()
 !
         call rcstoc(matout, nomrc, nbobm, zr(jvalrm), zc(jvalcm),&
                     zk8( jvalkm), nbr, nbc, nbk)
-        call jeecra(noobrc//'.VALR', 'LONUTI', nbr, ' ')
-        call jeecra(noobrc//'.VALC', 'LONUTI', nbc, ' ')
-        call jeecra(noobrc//'.VALK', 'LONUTI', nbr+nbc+2*nbk, ' ')
+        call jeecra(noobrc//'.VALR', 'LONUTI', nbr)
+        call jeecra(noobrc//'.VALC', 'LONUTI', nbc)
+        call jeecra(noobrc//'.VALK', 'LONUTI', nbr+nbc+2*nbk)
     end do
 !
     call infmaj()
@@ -174,9 +173,9 @@ subroutine op0005()
             call jeveuo(noobrc//'.VALR', 'L', jvalrm)
             call jeveuo(noobrc//'.VALC', 'L', jvalcm)
             call jeveuo(noobrc//'.VALK', 'L', jvalkm)
-            call jelira(noobrc//'.VALR', 'LONUTI', nbr, k1bid)
-            call jelira(noobrc//'.VALC', 'LONUTI', nbc, k1bid)
-            call jelira(noobrc//'.VALK', 'LONUTI', nbk2, k1bid)
+            call jelira(noobrc//'.VALR', 'LONUTI', nbr)
+            call jelira(noobrc//'.VALC', 'LONUTI', nbc)
+            call jelira(noobrc//'.VALK', 'LONUTI', nbk2)
             nbk=(nbk2-nbr-nbc)/2
             write(ifm,'(1X,2A)') 'PARAMETRES DE LA RELATION : ',zk16(&
             jnomrc+k-1)

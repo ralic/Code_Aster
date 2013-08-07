@@ -54,7 +54,7 @@ subroutine mtmchc(matas, action)
     integer :: typmat, ielim, jelim, kdeb, kfin, kkeli, ilig, jcol
     integer :: jsmhc, jsmdi, jvalm, jvalm2, jccva, jccll, nelim
     integer :: jrefa, jnequ, ieq, k, deciel, neq, ier, jnulg
-    integer :: iret, nblocm, jremp, decjel, iremp, jccid, keta, imatd
+    integer ::  nblocm, jremp, decjel, iremp, jccid, keta, imatd
     logical :: nonsym
 !----------------------------------------------------------------------
     call jemarq()
@@ -106,11 +106,11 @@ subroutine mtmchc(matas, action)
 !     -- RECUPERATION DE .VALM
 !        CALCUL DE TYPMAT ET NONSYM :
 !     ------------------------------------
-    call jelira(jexnum(mat//'.VALM', 1), 'TYPE', iret, kbid)
+    call jelira(jexnum(mat//'.VALM', 1), 'TYPE', cval=kbid)
     typmat = 1
     if (kbid(1:1) .eq. 'C') typmat = 2
     nonsym=.false.
-    call jelira(mat//'.VALM', 'NMAXOC', nblocm, kbid)
+    call jelira(mat//'.VALM', 'NMAXOC', nblocm)
     ASSERT(nblocm.eq.1 .or. nblocm.eq.2)
     if (nblocm .eq. 2) nonsym=.true.
     call jeveuo(jexnum(mat//'.VALM', 1), 'E', jvalm)

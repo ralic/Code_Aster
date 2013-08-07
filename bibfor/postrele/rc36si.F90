@@ -85,9 +85,9 @@ subroutine rc36si(noma, nbma, listma)
     call wkvect('&&RC32SI.PASSAGE_1_2', 'V V I', ndim, jsp12)
     call wkvect('&&RC32SI.PASSAGE_2_3', 'V V I', ndim, jsp23)
     call wkvect('&&RC32SI.PASSAGE_1_3', 'V V I', ndim, jsp13)
-    call jeecra('&&RC32SI.PASSAGE_1_2', 'LONUTI', 0, ' ')
-    call jeecra('&&RC32SI.PASSAGE_2_3', 'LONUTI', 0, ' ')
-    call jeecra('&&RC32SI.PASSAGE_1_3', 'LONUTI', 0, ' ')
+    call jeecra('&&RC32SI.PASSAGE_1_2', 'LONUTI', 0)
+    call jeecra('&&RC32SI.PASSAGE_2_3', 'LONUTI', 0)
+    call jeecra('&&RC32SI.PASSAGE_1_3', 'LONUTI', 0)
 !
     nbgr = 0
     yapass = .false.
@@ -220,12 +220,12 @@ subroutine rc36si(noma, nbma, listma)
     nbth = -n1
     call jecroc(jexnum('&&RC3600.SITU_THERMIQUE', iocc))
     nbm = max(1,nbth)
-    call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONMAX', nbm, ' ')
+    call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONMAX', nbm)
 !
     if (nbth .eq. 0) then
-        call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONUTI', 0, ' ')
+        call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONUTI', 0)
     else
-        call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONUTI', nbth, ' ')
+        call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'LONUTI', nbth)
         call jeveuo(jexnum('&&RC3600.SITU_THERMIQUE', iocc), 'E', jreth)
         call getvis(motcl1, 'NUME_RESU_THER', iocc, iarg, nbth,&
                     zi(jreth), n1)
@@ -283,9 +283,9 @@ subroutine rc36si(noma, nbma, listma)
     nbth = 0
     call jecroc(jexnum('&&RC3600.SITU_THERMIQUE', nbsitu+iocc))
     nbm = max(1,nbth)
-    call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', nbsitu+iocc), 'LONMAX', nbm, ' ')
+    call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', nbsitu+iocc), 'LONMAX', nbm)
 !
-    call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', nbsitu+iocc), 'LONUTI', 0, ' ')
+    call jeecra(jexnum('&&RC3600.SITU_THERMIQUE', nbsitu+iocc), 'LONUTI', 0)
 !
     110 end do
 !
@@ -349,7 +349,7 @@ subroutine rc36si(noma, nbma, listma)
 !
 ! ------ ON STOCKE LE NUMERO DE L'OCCURRENCE
         call jecroc(jexnum('&&RC3600.LES_GROUPES', numgr))
-        call jeecra(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr, ' ')
+        call jeecra(jexnum('&&RC3600.LES_GROUPES', numgr), 'LONMAX', nbsigr)
         call jeveuo(jexnum('&&RC3600.LES_GROUPES', numgr), 'E', jnsg)
         ii = 0
         do 34, iocc = 1, nbsitu, 1
@@ -435,16 +435,16 @@ subroutine rc36si(noma, nbma, listma)
             zi(jsp13+nbp13-1) = iocc
         endif
 40      continue
-        call jeecra('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12, ' ')
-        call jeecra('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23, ' ')
-        call jeecra('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13, ' ')
+        call jeecra('&&RC32SI.PASSAGE_1_2', 'LONUTI', nbp12)
+        call jeecra('&&RC32SI.PASSAGE_2_3', 'LONUTI', nbp23)
+        call jeecra('&&RC32SI.PASSAGE_1_3', 'LONUTI', nbp13)
         zi(jspas ) = nbsg1
         zi(jspas+1) = nbsg2
         zi(jspas+2) = nbsg3
 !
         zi(jnumgr+nbgr-1) = -nbgr
         call jecroc(jexnum('&&RC3600.LES_GROUPES', nbgr))
-        call jeecra(jexnum('&&RC3600.LES_GROUPES', nbgr), 'LONMAX', ndim, ' ')
+        call jeecra(jexnum('&&RC3600.LES_GROUPES', nbgr), 'LONMAX', ndim)
         call jeveuo(jexnum('&&RC3600.LES_GROUPES', nbgr), 'E', jnsg)
 !
         ii = 0
@@ -496,7 +496,7 @@ subroutine rc36si(noma, nbma, listma)
             zi(jnsg+ii-1) = iocc
         endif
 52      continue
-        call jeecra(jexnum('&&RC3600.LES_GROUPES', nbgr), 'LONUTI', ii, ' ')
+        call jeecra(jexnum('&&RC3600.LES_GROUPES', nbgr), 'LONUTI', ii)
     endif
 !
     call jedetr('&&RC36SI.NUME_GROUP')

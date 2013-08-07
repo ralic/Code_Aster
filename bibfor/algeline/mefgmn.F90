@@ -46,7 +46,6 @@ subroutine mefgmn(noma, nbgma, ligrma)
 ! IN  : LIGRMA : LISTE DES NOMS DES GROUPES DE MAILLES.
 !-----------------------------------------------------------------------
 !
-    character(len=1) :: k1bid
     character(len=8) :: k8b, numgno
     character(len=24) :: grpma, grpno, nomgma
 ! DEB-------------------------------------------------------------------
@@ -79,7 +78,7 @@ subroutine mefgmn(noma, nbgma, ligrma)
         if (iret .eq. 0) then
             call u2mesk('F', 'ELEMENTS_62', 1, nomgma)
         endif
-        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma, k1bid)
+        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
         call gmgnre(noma, nbnoto, zi(ialino), zi(ialima), nbma,&
                     zi(ialino+ i*nbnoto), zi(ianbno-1+i), 'TOUS')

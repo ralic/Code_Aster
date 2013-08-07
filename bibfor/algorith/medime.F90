@@ -65,7 +65,7 @@ subroutine medime(base, cumul, modele, lischa, mediri)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    character(len=8) :: nomcha, k8bid
+    character(len=8) :: nomcha
     character(len=16) :: option
     character(len=19) :: ligrch
     integer :: iret, jchar, jinf, icha, ilires
@@ -99,7 +99,7 @@ subroutine medime(base, cumul, modele, lischa, mediri)
         nchar = 0
         goto 20
     else
-        call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar, k8bid)
+        call jelira(lischa(1:19)//'.LCHA', 'LONMAX', nchar)
         call jeveuo(lischa(1:19)//'.LCHA', 'L', jchar)
         call jeveuo(lischa(1:19)//'.INFC', 'L', jinf)
     endif
@@ -121,7 +121,7 @@ subroutine medime(base, cumul, modele, lischa, mediri)
     if (cumul .eq. 'ZERO') then
         nluti = 1
     else if (cumul.eq.'CUMU') then
-        call jelira(mediri//'.RELR', 'LONUTI', nluti, k8bid)
+        call jelira(mediri//'.RELR', 'LONUTI', nluti)
         nluti = nluti+1
         call codent(nluti+1, 'D0', lchout(1) (12:14))
     else

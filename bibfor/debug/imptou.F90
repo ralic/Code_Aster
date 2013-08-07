@@ -58,7 +58,7 @@ subroutine imptou(base, tous, mess)
     call jeexin(dejavu, iret)
     if (iret .eq. 0) then
         call jecreo(dejavu, 'G N K24')
-        call jeecra(dejavu, 'NOMMAX', 90000, kbid)
+        call jeecra(dejavu, 'NOMMAX', 90000)
     endif
 !
 !

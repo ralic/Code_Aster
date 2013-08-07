@@ -128,7 +128,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     call ornofd(mafour, noma, nbma, lisnom, ndorig,&
                 ndextr, 'V', vecori)
     call jedetr(mafour)
-    call jelira(lisnom, 'LONMAX', nbnc, k8b)
+    call jelira(lisnom, 'LONMAX', nbnc)
     call jeveuo(lisnom, 'L', idnono)
 !
 ! --- RECUPERATION DU RAYON DU TUNNEL :

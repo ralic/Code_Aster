@@ -81,11 +81,11 @@ subroutine pofaqu()
 !     --- CHARGEMENT QUELCONQUE ---
 !
     fvale(1) = nomten(1)//'           .VALE'
-    call jelira(fvale(1), 'LONMAX', nbpts, k8b)
+    call jelira(fvale(1), 'LONMAX', nbpts)
     nbptot = nbpts
     do 20 i = 2, nbf
         fvale(i) = nomten(i)//'           .VALE'
-        call jelira(fvale(i), 'LONMAX', nbpts, k8b)
+        call jelira(fvale(i), 'LONMAX', nbpts)
         if (nbpts .ne. nbptot) call u2mess('F', 'FATIGUE1_21')
 20  end do
     call wkvect('&&POFAQU.ORDO', 'V V R', nbptot/2*nbf, iordo)
@@ -105,7 +105,7 @@ subroutine pofaqu()
 40  end do
 !
     fvale(1) = nomp//'           .VALE'
-    call jelira(fvale(1), 'LONMAX', nbpts, k8b)
+    call jelira(fvale(1), 'LONMAX', nbpts)
     if (nbpts .ne. nbptot*2) call u2mess('F', 'FATIGUE1_22')
     call wkvect('&&POFAQU.DEFPLA', 'V V R', nbptot, idefp)
     call jeveuo(fvale(1), 'L', ifonc)
@@ -115,7 +115,7 @@ subroutine pofaqu()
 45  end do
 !
     fvale(1) = nomt//'           .VALE'
-    call jelira(fvale(1), 'LONMAX', nbpts, k8b)
+    call jelira(fvale(1), 'LONMAX', nbpts)
     if (nbpts .ne. nbptot*2) call u2mess('F', 'FATIGUE1_23')
     call wkvect('&&POFAQU.TEMP', 'V V R', nbptot, itemp)
     call jeveuo(fvale(1), 'L', ifonc)

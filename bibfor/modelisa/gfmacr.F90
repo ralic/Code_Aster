@@ -89,12 +89,12 @@ subroutine gfmacr(noma, nbmail, nbnoeu, nbnoma, nbgrfi)
 ! -   OBJET NOMMAI    = REPERTOIRE NOMS DE MAILLES  K8 SUR GLOBALE
 !
     call jecreo(nommai, 'G N K8')
-    call jeecra(nommai, 'NOMMAX', nbmail, ' ')
+    call jeecra(nommai, 'NOMMAX', nbmail)
 !
 ! -   OBJET NOMNOE    = REPERTOIRE NOMS DE NOEUDS K8 SUR GLOBALE
 !
     call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnoeu, ' ')
+    call jeecra(nomnoe, 'NOMMAX', nbnoeu)
 !       REMPLISSAGE DU REPERTOIRE AVEC LES NOMS DES NOEUDS
     do 10 i = 1, nbnoeu
         knoeu='N0000000'
@@ -106,13 +106,13 @@ subroutine gfmacr(noma, nbmail, nbnoeu, nbnoma, nbgrfi)
 !
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
-    call jeecra(connex, 'LONT', nbnoma, ' ')
+    call jeecra(connex, 'LONT', nbnoma)
 !
 !
 ! -   OBJET TYPMAI
 !
     call jecreo(typmai, 'G V I')
-    call jeecra(typmai, 'LONMAX', nbmail, ' ')
+    call jeecra(typmai, 'LONMAX', nbmail)
 !
 !
 ! -   OBJET COOR     .VALE
@@ -127,7 +127,7 @@ subroutine gfmacr(noma, nbmail, nbnoeu, nbnoma, nbgrfi)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
 !
     call jecreo(coodsc, 'G V I')
-    call jeecra(coodsc, 'LONMAX', 3, ' ')
+    call jeecra(coodsc, 'LONMAX', 3)
     call jeecra(coodsc, 'DOCU', 0, 'CHNO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad) = ntgeo
@@ -144,7 +144,7 @@ subroutine gfmacr(noma, nbmail, nbnoeu, nbnoma, nbgrfi)
 !
     gpptnm = noma//'.PTRNOMMAI      '
     call jecreo(gpptnm, 'G N K24')
-    call jeecra(gpptnm, 'NOMMAX', nbgrfi, ' ')
+    call jeecra(gpptnm, 'NOMMAX', nbgrfi)
     call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                 nbgrfi)
 !

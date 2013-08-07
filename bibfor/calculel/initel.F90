@@ -71,15 +71,15 @@ subroutine initel(ligrel)
     call dismoi('F', 'EXI_ELEM', ligrel, 'LIGREL', ibid,&
                 exiele, ierd)
     if (exiele(1:3) .eq. 'OUI') then
-        call jelira(ligrel//'.LIEL', 'CLAS', ibid, base)
+        call jelira(ligrel//'.LIEL', 'CLAS', cval=base)
     else
 !       -- UN LIGREL QUI N'A PAS D'ELEMENTS VIENT FORCEMENT
 !          D'UN MODELE QUI DOIT AVOIR DES SOUS-STRUCTURES STATIQUES
-        call jelira(ligrel//'.SSSA', 'CLAS', ibid, base)
+        call jelira(ligrel//'.SSSA', 'CLAS', cval=base)
         goto 20
     endif
 !
-    call jelira(ligrel//'.LIEL', 'NUTIOC', ngr, k1bid)
+    call jelira(ligrel//'.LIEL', 'NUTIOC', ngr)
     do 10 igr = 1, ngr
         call inigrl(ligrel, igr, nmaxob, adobj, noobj,&
                     nbobj)

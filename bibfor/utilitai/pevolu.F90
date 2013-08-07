@@ -151,7 +151,7 @@ subroutine pevolu(resu, modele, nbocc)
             call getvid(' ', 'LIST_ORDRE', 0, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, k8b)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
 !       -- INST --
@@ -167,7 +167,7 @@ subroutine pevolu(resu, modele, nbocc)
             call getvid(' ', 'LIST_INST', 0, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, k8b)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
 !       -- TOUT_ORDRE --
@@ -296,7 +296,7 @@ subroutine pevolu(resu, modele, nbocc)
                 chamtm='&&PEVOLU.CHS1'
                 call cnocns(cham2, 'V', chamtm)
                 call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
-                call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm, k8b)
+                call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
                 call jedetr('&&PEVOLU.CMP1')
                 call wkvect('&&PEVOLU.CMP1', 'V V K8', ncmpm, jlicm1)
                 call jedetr('&&PEVOLU.CMP2')

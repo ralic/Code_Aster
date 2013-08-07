@@ -150,7 +150,7 @@ subroutine xstan2(crimax, noma, modele)
         nheav = max(1,zi(jnbsp2-1+numa))
 !
 !       RECUPERATION DES MAILLES CONTENANT LE NOEUD
-        call jelira(jexnum(cnxinv, nuno), 'LONMAX', nbmano, k8bid)
+        call jelira(jexnum(cnxinv, nuno), 'LONMAX', nbmano)
         call jeveuo(jexnum(cnxinv, nuno), 'L', adrma)
 !
 !       BOUCLE SUR LES DDL HEAVISIDE

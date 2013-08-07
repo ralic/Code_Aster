@@ -49,7 +49,6 @@ subroutine te0148(option, nomte)
     real(kind=8) :: x0, y0, z0, x1, y1, z1, x2, y2, z2, a, b, c, lam1, lam2
     real(kind=8) :: force(12)
     integer :: ipt
-    character(len=1) :: k1bid
     integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
 !
@@ -96,7 +95,7 @@ subroutine te0148(option, nomte)
     e3=e3/s
     if (listma .eq. ' ' .or. ltrans .eq. ' ') goto 1000
     call jeveuo(listma, 'L', jlima)
-    call jelira(listma, 'LONMAX', nbma2, k1bid)
+    call jelira(listma, 'LONMAX', nbma2)
     nbma=nbma2/2
     call jeveuo(ltrans, 'L', jtran)
     x0=zr(jtran)

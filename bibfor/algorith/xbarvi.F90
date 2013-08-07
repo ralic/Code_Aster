@@ -72,7 +72,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     integer :: ar(12, 3), i, ia, nbar, nloc(2), nglo(2), nuno(2), neq, no
     character(len=24) :: grp(3)
     character(len=19) :: nliseq
-    character(len=8) :: typma, k8bid
+    character(len=8) :: typma
     integer :: zxain, in, jn, iac, ier, ncta, ncte
     integer :: jcntan, jcntes, jcnte2, jarcon, narcon, jnbpt
     logical :: lmulti, lconne
@@ -107,7 +107,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         neq = 0
     else
         call jeveuo(nliseq, 'L', jlis1)
-        call jelira(nliseq, 'LONMAX', neq, k8bid)
+        call jelira(nliseq, 'LONMAX', neq)
     endif
 !
 ! --- Y A T-IL DES ARETES CONNECTÉES ?
@@ -119,7 +119,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     else
         lconne = .true.
         call jeveuo(fiss(1:8)//'.CONNECTANT', 'L', jcntan)
-        call jelira(fiss(1:8)//'.CONNECTANT', 'LONMAX', ncta, k8bid)
+        call jelira(fiss(1:8)//'.CONNECTANT', 'LONMAX', ncta)
         call jeveuo(fiss(1:8)//'.CONNECTES ', 'L', jcntes)
     endif
 !
@@ -154,7 +154,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         call jeexin(grp(kk), iret)
         if (iret .eq. 0) goto 81
         call jeveuo(grp(kk), 'L', jgrp)
-        call jelira(grp(kk), 'LONMAX', nmaenr, k8bid)
+        call jelira(grp(kk), 'LONMAX', nmaenr)
 !
 ! --- BOUCLE SUR LES MAILLES DU GROUPE
 !
@@ -219,7 +219,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
         call jeexin(grp(kk), iret)
         if (iret .eq. 0) goto 80
         call jeveuo(grp(kk), 'L', jgrp)
-        call jelira(grp(kk), 'LONMAX', nmaenr, k8bid)
+        call jelira(grp(kk), 'LONMAX', nmaenr)
 !
 ! --- BOUCLE SUR LES MAILLES DU GROUPE
 !

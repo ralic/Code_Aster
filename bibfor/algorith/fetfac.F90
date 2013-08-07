@@ -65,7 +65,7 @@ subroutine fetfac(lmat, matas, idd, nprec, nbsd,&
 ! DECLARATION VARIABLES LOCALES
     integer :: ifm, niv, nbmocr, i, jadr, kadr, neq, naux, ifr, ifetf, iexist
     integer :: irefa, ibid
-    character(len=8) :: nomsd, k8bid
+    character(len=8) :: nomsd
     character(len=19) :: vemocr, veinpn, k19bid
     character(len=24) :: nomsdf, nomsdp, nomsda, nomsdr, k24num
     logical :: lbid
@@ -119,7 +119,7 @@ subroutine fetfac(lmat, matas, idd, nprec, nbsd,&
         zi(ifetf+idd-1)=nbmocr
 ! MATASS.FETP
         call jecroc(jexnom(nomsdp, nomsd))
-        call jeecra(jexnom(nomsdp, nomsd), 'LONMAX', nbmocr, k8bid)
+        call jeecra(jexnom(nomsdp, nomsd), 'LONMAX', nbmocr)
         call jeveuo(jexnom(nomsdp, nomsd), 'E', jadr)
 ! VEINPN: VECTEUR DES INDICES DE PIVOTS QUASI NULS
         call jeveuo(veinpn, 'L', kadr)
@@ -130,7 +130,7 @@ subroutine fetfac(lmat, matas, idd, nprec, nbsd,&
         naux=neq*nbmocr
         call jeveuo(vemocr, 'L', kadr)
         call jecroc(jexnom(nomsdr, nomsd))
-        call jeecra(jexnom(nomsdr, nomsd), 'LONMAX', naux, k8bid)
+        call jeecra(jexnom(nomsdr, nomsd), 'LONMAX', naux)
         call jeveuo(jexnom(nomsdr, nomsd), 'E', jadr)
         do 40 i = 1, naux
             zr(jadr+i-1)=zr(kadr+i-1)

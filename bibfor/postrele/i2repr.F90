@@ -66,7 +66,6 @@ subroutine i2repr(conec, type, maille, chemin, ptchm,&
 !
 !
 !
-    character(len=1) :: k1bid
 !
 !
 !
@@ -74,7 +73,7 @@ subroutine i2repr(conec, type, maille, chemin, ptchm,&
     integer :: iatyma, nsg
 !-----------------------------------------------------------------------
     call jemarq()
-    call jelira(conec(1:15), 'NMAXOC', nbm, k1bid)
+    call jelira(conec(1:15), 'NMAXOC', nbm)
 !
     nbs = ptchm(nbchm+1) - 1
     sgteff = nbs - nbchm
@@ -100,15 +99,15 @@ subroutine i2repr(conec, type, maille, chemin, ptchm,&
     ansg = 0
 !
     call jecreo('&INTFINI', 'V V L')
-    call jeecra('&INTFINI', 'LONMAX', nbs, ' ')
+    call jeecra('&INTFINI', 'LONMAX', nbs)
     call jeveuo('&INTFINI', 'E', afini)
 !
     call jecreo('&INTNSG', 'V V I')
-    call jeecra('&INTNSG', 'LONMAX', sgteff, ' ')
+    call jeecra('&INTNSG', 'LONMAX', sgteff)
     call jeveuo('&INTNSG', 'E', ansg)
 !
     call jecreo('&INTNSD', 'V V I')
-    call jeecra('&INTNSD', 'LONMAX', sgteff, ' ')
+    call jeecra('&INTNSD', 'LONMAX', sgteff)
     call jeveuo('&INTNSD', 'E', ansd)
 !
     do 10, i = 1, nbs, 1
@@ -148,7 +147,7 @@ subroutine i2repr(conec, type, maille, chemin, ptchm,&
 !
         if ((typm .ne. 'POI1') .and. (typm .ne. 'SEG2') .and. (typm .ne. 'SEG3')) then
 !
-            call jelira(jexnum(conec(1:15), m), 'LONMAX', nbn, k1bid)
+            call jelira(jexnum(conec(1:15), m), 'LONMAX', nbn)
             call i2nbrf(nbn, nbc)
 !
             do 100, c = 1, nbc, 1

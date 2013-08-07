@@ -67,7 +67,7 @@ subroutine cacoco(char, motfac, noma)
     integer :: izone, imae, nmaco
     real(kind=8) :: ep, exc
     logical :: ya
-    character(len=8) :: k8bid, carael, nommae
+    character(len=8) ::  carael, nommae
     character(len=24) :: defico
     character(len=24) :: contma, jeucoq
     integer :: jmaco, jjcoq
@@ -172,7 +172,7 @@ subroutine cacoco(char, motfac, noma)
 ! --- NOEUDS DE LA MAILLE
 !
                 call jeveuo(jexnum(noma//'.CONNEX', nummae), 'L', iacnex)
-                call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nbnma, k8bid)
+                call jelira(jexnum(noma//'.CONNEX', nummae), 'LONMAX', nbnma)
 !
 ! --- STOCKAGE
 !

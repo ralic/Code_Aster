@@ -150,14 +150,14 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
+    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu)
     call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields

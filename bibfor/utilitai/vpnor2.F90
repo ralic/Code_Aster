@@ -44,7 +44,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
 !     ------------------------------------------------------------------
     integer :: ibid, nbnosy, isy, im, iordr, iret, lvale, neq, ieq
     real(kind=8) :: rcoef
-    character(len=8) :: k8b, typmod
+    character(len=8) ::  typmod
     character(len=16) :: nomsym
     character(len=19) :: nomd2
     character(len=24) :: vale
@@ -56,7 +56,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
 !
     nomd2 = nomcon
 !
-    call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy, k8b)
+    call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
     if (nbnosy .eq. 0) goto 9999
 !
     do 10 isy = 1, nbnosy
@@ -73,7 +73,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
                     vale=vale(1:19)//'.CELV'
                 endif
 !
-                call jelira(vale, 'TYPE', ibid, typmod)
+                call jelira(vale, 'TYPE', cval=typmod)
                 if (nomsym(1:4) .eq. 'EFGE' .or. nomsym(1:4) .eq. 'SIGM' .or. nomsym(1:4)&
                     .eq. 'EPSI' .or. nomsym(1:4) .eq. 'SIEF' .or. nomsym(1:4) .eq. 'FORC'&
                     .or. nomsym( 1:4) .eq. 'REAC' .or. nomsym(1:4) .eq. 'DEGE') then
@@ -94,7 +94,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
                     goto 12
                 endif
                 call jeveuo(vale, 'E', lvale)
-                call jelira(vale, 'LONMAX', neq, k8b)
+                call jelira(vale, 'LONMAX', neq)
                 if (typmod(1:1) .eq. 'R') then
                     do 20 ieq = 0, neq-1
                         zr(lvale+ieq) = zr(lvale+ieq) * rcoef

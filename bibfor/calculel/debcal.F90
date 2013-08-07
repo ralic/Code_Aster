@@ -236,10 +236,10 @@ subroutine debcal(nomop, ligrel, nin, lchin, lpain,&
     typsca=scalai(igd)
     zk8(iachik-1+2*(i-1)+2)=typsca
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx, k8bi)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx)
     zi(iachii-1+11*(i-1)+3)=ncmpmx
 !
-    call jelira(objdes, 'DOCU', ibid, k8bi)
+    call jelira(objdes, 'DOCU', cval=k8bi)
     zk8(iachik-1+2*(i-1)+1)=k8bi
 !
     call jeveuo(objdes, 'L', desc)

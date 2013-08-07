@@ -83,7 +83,6 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
     real(kind=8) :: t1, t(3), x, y, z, xpi, ypi, zpi, rx, ry, rz, mx, my, mz
     real(kind=8) :: zero
-    character(len=1) :: k1bid
     integer :: iarg
 !
 !==================== CORPS DE LA ROUTINE =============================
@@ -106,10 +105,10 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     nres = -nres
     nmom = -nmom
 !
-    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', n, docul)
-    call jelira(sdeval//'.VALE', 'DOCU', n, docu)
-    call jelira(nabsc, 'NMAXOC', nboc, k1bid)
-    call jelira(sdeval//'.NOCP', 'LONMAX', nbcp, k1bid)
+    call jelira(sdlieu(1:19)//'.REFE', 'DOCU', cval=docul)
+    call jelira(sdeval//'.VALE', 'DOCU', cval=docu)
+    call jelira(nabsc, 'NMAXOC', nboc)
+    call jelira(sdeval//'.NOCP', 'LONMAX', nbcp)
     call jecrec(nsova, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 nboc)
 !
@@ -146,7 +145,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
     nbsgt = 0
     do 99, ioc = 1, nboc, 1
-    call jelira(jexnum(nabsc , ioc), 'LONMAX', fin, k1bid)
+    call jelira(jexnum(nabsc , ioc), 'LONMAX', fin)
     nbsgt = max(nbsgt,fin)
     99 end do
     call wkvect(ntab, 'V V R', l3*(nbsgt+1), atab)
@@ -156,9 +155,9 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     do 100, ioc = 1, nboc, 1
 !
     call jecroc(jexnum(nsova, ioc))
-    call jeecra(jexnum(nsova, ioc), 'LONMAX', lmoye, ' ')
+    call jeecra(jexnum(nsova, ioc), 'LONMAX', lmoye)
     call jeveuo(jexnum(nsova, ioc), 'E', amoye)
-    call jelira(jexnum(nabsc, ioc), 'LONMAX', nbpt, k1bid)
+    call jelira(jexnum(nabsc, ioc), 'LONMAX', nbpt)
     call jeveuo(jexnum(nabsc, ioc), 'L', aabsc)
 !
     nbsgt = nbpt - 1

@@ -41,7 +41,6 @@ subroutine cpclma(nomain, nomaou, typcol, base)
     integer :: nbgmai, igroup, jnuma1, jnuma2, nbmail, jmaill
     integer :: codret
 !
-    character(len=8) :: k8bido
     character(len=24) :: grmain, grmaou, ptnmou, nomgrp
 !
 !     RECOPIE DES COLLECTIONS .GROUPEMA ET .GROUPENO
@@ -65,9 +64,9 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 !
     call jeexin(grmain, codret)
     if (codret .eq. 0) goto 9999
-    call jelira(grmain, 'NOMUTI', nbgmai, k8bido)
+    call jelira(grmain, 'NOMUTI', nbgmai)
     call jecreo(ptnmou, base//' N K24')
-    call jeecra(ptnmou, 'NOMMAX', nbgmai, ' ')
+    call jeecra(ptnmou, 'NOMMAX', nbgmai)
     call jecrec(grmaou, base//' V I', 'NO '//ptnmou, 'DISPERSE', 'VARIABLE',&
                 nbgmai)
 !
@@ -75,9 +74,9 @@ subroutine cpclma(nomain, nomaou, typcol, base)
         call jenuno(jexnum(grmain, igroup), nomgrp)
         call jecroc(jexnom(grmaou, nomgrp))
         call jeveuo(jexnum(grmain, igroup), 'L', jnuma1)
-        call jelira(jexnum(grmain, igroup), 'LONUTI', nbmail, k8bido)
-        call jeecra(jexnom(grmaou, nomgrp), 'LONMAX', max(nbmail, 1), ' ')
-        call jeecra(jexnom(grmaou, nomgrp), 'LONUTI', nbmail, ' ')
+        call jelira(jexnum(grmain, igroup), 'LONUTI', nbmail)
+        call jeecra(jexnom(grmaou, nomgrp), 'LONMAX', max(nbmail,1))
+        call jeecra(jexnom(grmaou, nomgrp), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmaou, nomgrp), 'E', jnuma2)
         do 20 jmaill = 0, nbmail-1
             zi(jnuma2+jmaill) = zi(jnuma1+jmaill)

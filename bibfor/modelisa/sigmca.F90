@@ -90,7 +90,7 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
 !
 ! 1.2 NUMEROS DES MAILLES APPARTENANT AUX CABLES
 ! ---
-    call jelira(numaca, 'LONUTI', nbmaca, k1b)
+    call jelira(numaca, 'LONUTI', nbmaca)
     call jeveuo(numaca, 'L', jnumac)
     idecma = nbmaca - nbno + 1
 !

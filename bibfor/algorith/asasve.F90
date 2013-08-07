@@ -78,7 +78,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     integer :: n1, jvacha
     logical :: bidon
     character(len=4) :: tych
-    character(len=8) :: kbid, modele, newnom, vacha8
+    character(len=8) ::  modele, newnom, vacha8
     character(len=19) :: chamno, resuel, vecele
 !
 ! DEB ------------------------------------------------------------------
@@ -94,7 +94,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !     --------------------------------------------------------
     call jeexin(vecele//'.RELR', iret)
     if (iret .eq. 0) call u2mesk('F', 'ALGORITH_13', 1, vecele)
-    call jelira(vecele//'.RELR', 'LONUTI', nbvec, kbid)
+    call jelira(vecele//'.RELR', 'LONUTI', nbvec)
     call jeveuo(vecele//'.RELR', 'E', jvec)
 !
 !
@@ -103,7 +103,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     call jeexin(vacha8, iret)
     if (iret .gt. 0) then
         call jeveuo(vacha8, 'L', jvacha)
-        call jelira(vacha8, 'LONMAX', n1, kbid)
+        call jelira(vacha8, 'LONMAX', n1)
         do 10,i = 1,n1
         call detrsd('CHAMP_GD', zk24(jvacha-1+i) (1:19))
 10      continue

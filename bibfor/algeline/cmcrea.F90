@@ -68,7 +68,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     integer :: iret, i, ib
 !
     character(len=8) :: k8b, knum8, prefix, nomma
-    character(len=24) :: linoma, liconn, lityma, lingma, ligpma, gmatpr
+    character(len=24) :: linoma, liconn, lityma, lingma, ligpma
     character(len=24) :: valk, gno1, gno2
     character(len=24) :: dimin, dimout, nmain, nmaout, tmain, tmaout, conin
     character(len=24) :: conout
@@ -105,7 +105,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !    NOMBRE DE MAILLES, DE GROUP_MA
     call jeveuo(main//'.DIME', 'L', jadin)
     nbmain = zi(jadin-1 + 3)
-    call jelira(main//'.GROUPEMA', 'NOMUTI', nbgmin, k8b)
+    call jelira(main//'.GROUPEMA', 'NOMUTI', nbgmin)
 !
 !
 !    LISTE DES OBJETS CREES PAR CHAQUE OCCURENCE DES MOTS-CLES
@@ -166,14 +166,14 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !      NOMBRE DE MAILLES AJOUTEES
         call jeexin(zk24(jlnoma-1+i), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlnoma-1+i), 'LONMAX', nbma, k8b)
+            call jelira(zk24(jlnoma-1+i), 'LONMAX', nbma)
             nbmaaj = nbmaaj + nbma
         endif
 !
 !      NOMBRE DE GROUP_MA AJOUTES
         call jeexin(zk24(jlngma-1+i), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm, k8b)
+            call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm)
             nbgmaj = nbgmaj + nbgm
         endif
 !
@@ -201,7 +201,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     nmain = main //'.NOMMAI'
     nmaout = maout//'.NOMMAI'
     call jecreo(nmaout, 'G N K8')
-    call jeecra(nmaout, 'NOMMAX', nbmato, ' ')
+    call jeecra(nmaout, 'NOMMAX', nbmato)
     do 100 ma = 1, nbmain
         call jenuno(jexnum(nmain, ma), nomma)
         call jecroc(jexnom(nmaout, nomma))
@@ -223,8 +223,8 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                 nbmato)
     call jeecra(conout, 'LONT', nbnomx*nbmato, ' ')
     do 120 ma = 1, nbmain
-        call jelira(jexnum(conin , ma), 'LONMAX', nbno, k8b)
-        call jeecra(jexnum(conout, ma), 'LONMAX', nbno, k8b)
+        call jelira(jexnum(conin , ma), 'LONMAX', nbno)
+        call jeecra(jexnum(conout, ma), 'LONMAX', nbno)
         call jeveuo(jexnum(conin , ma), 'L', jadin)
         call jeveuo(jexnum(conout, ma), 'E', jadout)
         do 130 no = 0, nbno-1
@@ -237,15 +237,15 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     gmaout = maout//'.GROUPEMA'
     gmaptr = maout//'.PTRNOMMAI'
     call jecreo(gmaptr, 'G N K24')
-    call jeecra(gmaptr, 'NOMMAX', nbgmto, ' ')
+    call jeecra(gmaptr, 'NOMMAX', nbgmto)
     call jecrec(gmaout, 'G V I', 'NO '//gmaptr, 'DISPERSE', 'VARIABLE',&
                 nbgmto)
     do 140 gm = 1, nbgmin
         call jenuno(jexnum(gmain , gm), nomgma)
         call jecroc(jexnom(gmaout, nomgma))
-        call jelira(jexnum(gmain , gm), 'LONUTI', nbma, k8b)
-        call jeecra(jexnom(gmaout, nomgma), 'LONMAX', nbma, k8b)
-        call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma, k8b)
+        call jelira(jexnum(gmain , gm), 'LONUTI', nbma)
+        call jeecra(jexnom(gmaout, nomgma), 'LONMAX', nbma)
+        call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnum(gmain , gm), 'L', jadin)
         call jeveuo(jexnom(gmaout, nomgma), 'E', jadout)
         do 150 ma = 0, nbma - 1
@@ -278,7 +278,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
         nbma = 0
         call jeexin(zk24(jlnoma-1+i), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlnoma-1+i), 'LONMAX', nbma, k8b)
+            call jelira(zk24(jlnoma-1+i), 'LONMAX', nbma)
             call jeveuo(zk24(jlnoma-1+i), 'L', jnoma)
             call jeveuo(zk24(jltyma-1+i), 'L', jtyma)
             call jeveuo(zk24(jlconn-1+i), 'L', jconn)
@@ -300,7 +300,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
 !          INSERTION DANS LE .CONNEX
                 nbno = zi(jconn)
-                call jeecra(jexnum(conout, ma+numaco), 'LONMAX', nbno, k8b)
+                call jeecra(jexnum(conout, ma+numaco), 'LONMAX', nbno)
                 call jeveuo(jexnum(conout, ma+numaco), 'E', jadout)
                 do 310 no = 1, nbno
                     zi(jadout-1+no) = zi(jconn+no)
@@ -313,7 +313,7 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !   -   AJOUT DE NOUVEAUX GROUP_MA
         call jeexin(zk24(jlngma-1+i), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm, k8b)
+            call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm)
             call jeveuo(zk24(jlngma-1+i), 'L', jngma)
             call jeveuo(zk24(jlgpma-1+i), 'L', jgpma)
             do 400 gm = 1, nbgm
@@ -330,8 +330,8 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
                 endif
 !
                 nbma = zi(jgpma)
-                call jeecra(jexnom(gmaout, nomgma), 'LONMAX', nbma, k8b)
-                call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma, k8b)
+                call jeecra(jexnom(gmaout, nomgma), 'LONMAX', nbma)
+                call jeecra(jexnom(gmaout, nomgma), 'LONUTI', nbma)
                 call jeveuo(jexnom(gmaout, nomgma), 'E', jadout)
 !
                 do 410 ma = 1, nbma

@@ -37,7 +37,6 @@ subroutine tranma(geomi, d, bidim)
 #include "asterfort/jeveuo.h"
     integer :: n1, i, iadcoo
     logical :: bidim
-    character(len=8) :: k8bid
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: d(3)
@@ -45,7 +44,7 @@ subroutine tranma(geomi, d, bidim)
     call jemarq()
     coorjv=geomi(1:19)//'.VALE'
     call jeveuo(coorjv, 'E', iadcoo)
-    call jelira(coorjv, 'LONMAX', n1, k8bid)
+    call jelira(coorjv, 'LONMAX', n1)
     n1=n1/3
     iadcoo=iadcoo-1
     if (bidim) then

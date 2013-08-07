@@ -44,7 +44,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !C
 !     ------------------------------------------------------------------
 !
-    character(len=1) :: k1b, type, typi
+    character(len=1) ::  type, typi
     integer :: gd, num, gdi, numi
     character(len=8) :: k8b, nomma, nomgd
     character(len=16) :: nomcmd
@@ -68,7 +68,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     --- NOM DU PROFIL AUX NOEUDS ASSOCIE S'IL EXISTE
     nomnu = zk24(iarefe-1+2)
 !
-    call jelira(chamn//'.VALE', 'TYPE', ibid, type)
+    call jelira(chamn//'.VALE', 'TYPE', cval=type)
     if (type .eq. 'R') then
         itype = 1
     else if (type .eq. 'C') then
@@ -93,7 +93,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
         numi = zi(iadesc-1+2)
         if (gdi .ne. gd) call u2mess('F', 'PREPOST2_67')
         if (numi .ne. num) call u2mess('F', 'PREPOST2_68')
-        call jelira(chamn//'.VALE', 'TYPE', ibid, typi)
+        call jelira(chamn//'.VALE', 'TYPE', cval=typi)
         if (typi .ne. type) call u2mess('F', 'PREPOST2_69')
 10  end do
 !
@@ -102,7 +102,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
     call jeexin('&&IRMAD0.ENT_COD', iret)
     if (iret .ne. 0) call jedetr('&&IRMAD0.ENT_COD')
     call wkvect('&&IRMAD0.ENT_COD', 'V V I', nec, iaec)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k1b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
 !
 !     --- SI LE CHAMP EST A REPRESENTATION CONSTANTE: RIEN DE SPECIAL

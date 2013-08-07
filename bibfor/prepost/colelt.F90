@@ -160,16 +160,16 @@ subroutine colelt(nbnode, maxnod, nbtyma, nbmail, nbnoma,&
 !MH
 !      INDMAX = 1
 !MH
-    call jeecra('&&PRECOU.INDICE.GROUP_MA', 'LONUTI', indmax, k8bid)
+    call jeecra('&&PRECOU.INDICE.GROUP_MA', 'LONUTI', indmax)
 !
 ! --- CREATION DE LA COLLECTION DES GROUPES DE MAILLES :
 !     ------------------------------------------------
     call jecrec('&&PRECOU.LISTE.GROUP_MA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 indmax)
-    call jeecra('&&PRECOU.LISTE.GROUP_MA', 'LONT', nbmail, k8bid)
+    call jeecra('&&PRECOU.LISTE.GROUP_MA', 'LONT', nbmail)
 !
     do 40 i = 1, indmax
-        call jeecra(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'LONMAX', zi( jnbmag+i-1), k8bid)
+        call jeecra(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'LONMAX', zi( jnbmag+i-1))
         zi(jnbmag+i-1) = 0
 40  end do
 !

@@ -79,7 +79,6 @@ subroutine apverl(sdappa)
     integer :: jlistn, jlista
     real(kind=8) :: prosca, angle, oldang, val
     integer :: inoeu
-    character(len=8) :: k8bid
     logical :: apcald
 !
 ! ----------------------------------------------------------------------
@@ -98,7 +97,7 @@ subroutine apverl(sdappa)
     apvera = sdappa(1:19)//'.VERA'
     call jeveuo(apverk, 'E', jlistn)
     call jeveuo(apvera, 'E', jlista)
-    call jelira(apverk, 'LONUTI', inoeu, k8bid)
+    call jelira(apverk, 'LONUTI', inoeu)
     if (inoeu .ne. 0) goto 999
     angmax = 5.d0
 !
@@ -211,7 +210,7 @@ subroutine apverl(sdappa)
 27      continue
 10  end do
 !
-    call jeecra(apverk, 'LONUTI', inoeu, k8bid)
+    call jeecra(apverk, 'LONUTI', inoeu)
 !
 999  continue
 !

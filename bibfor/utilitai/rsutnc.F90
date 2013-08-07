@@ -45,7 +45,6 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
     character(len=16) :: noms2
     character(len=19) :: nomd2
     character(len=24) :: chextr
-    character(len=1) :: k1bid
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -58,7 +57,7 @@ subroutine rsutnc(nomsd, nomsy, nbvale, tabnom, tabord,&
     if (nbvale .lt. 0) goto 20
     if (noms2 .eq. ' ') goto 20
 !
-    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr, k1bid)
+    call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     call jeveuo(nomd2//'.ORDR', 'L', jordr)
     call jenonu(jexnom(nomd2//'.DESC', noms2), ibid)
     call jeveuo(jexnum(nomd2//'.TACH', ibid), 'L', jtach)

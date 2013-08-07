@@ -37,7 +37,6 @@ subroutine cal2m(chamno, phibar, modele, mate, nu,&
 !  OUT : I   : ND,NR,NV : LONGUEURS DES .DESC, .REFE, .VALE
 !------------------------------------------------------------------
     real(kind=8) :: r8bid
-    character(len=1) :: k1bid
     character(len=19) :: ve2
 !------------------------------------------------------------------
 !
@@ -56,8 +55,8 @@ subroutine cal2m(chamno, phibar, modele, mate, nu,&
                 nu, ' ', 'ZERO', 1)
     call jedetr(ve2)
 !
-    call jelira(vecas2(1:19)//'.DESC', 'LONMAX', nd, k1bid)
-    call jelira(vecas2(1:19)//'.REFE', 'LONMAX', nr, k1bid)
-    call jelira(vecas2(1:19)//'.VALE', 'LONMAX', nv, k1bid)
+    call jelira(vecas2(1:19)//'.DESC', 'LONMAX', nd)
+    call jelira(vecas2(1:19)//'.REFE', 'LONMAX', nr)
+    call jelira(vecas2(1:19)//'.VALE', 'LONMAX', nv)
 !
 end subroutine

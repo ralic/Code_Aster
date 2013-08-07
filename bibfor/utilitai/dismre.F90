@@ -45,7 +45,7 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, iret, gd, iadesc, jnoli, l
+    integer ::  iret, gd, iadesc, jnoli, l
     character(len=8) :: k8bid, nogd
     character(len=19) :: nomob
     character(len=24) :: questl, k24
@@ -70,12 +70,12 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
     call jenuno(jexnum('&CATA.GD.NOMGD', gd), nogd)
 !
     if (questi .eq. 'TYPE_CHAMP') then
-        call jelira(nomob//'.DESC', 'DOCU', ibid, k8bid)
+        call jelira(nomob//'.DESC', 'DOCU', cval=k8bid)
         ASSERT(k8bid(1:4) .eq. 'RESL')
         repk = 'RESL'
 !
     else if (questi .eq. 'TYPE_SUPERVIS') then
-        call jelira(nomob//'.DESC', 'DOCU', ibid, k8bid)
+        call jelira(nomob//'.DESC', 'DOCU', cval=k8bid)
         ASSERT(k8bid(1:4) .eq. 'RESL')
         repk = '????'
 !

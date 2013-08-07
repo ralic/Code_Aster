@@ -140,8 +140,8 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         vale(20:24)='.CELV'
     endif
 !
-    call jelira(vale, 'LONMAX', neq, k8b)
-    call jelira(vale, 'TYPE', ibid, typmod)
+    call jelira(vale, 'LONMAX', neq)
+    call jelira(vale, 'TYPE', cval=typmod)
 !
 !     --- CREATION DES OBJETS DE NOM NOMVEC ET NOMVAL ---
     if (typmod(1:1) .eq. 'R') then
@@ -167,8 +167,8 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         endif
 !
         call jeveuo(vale, 'L', lvale)
-        call jelira(vale, 'LONMAX', neq1, k8b)
-        call jelira(vale, 'TYPE', ibid, k8b)
+        call jelira(vale, 'LONMAX', neq1)
+        call jelira(vale, 'TYPE', cval=k8b)
         if (typmod(1:1) .ne. k8b(1:1)) then
             call u2mess('F', 'ALGELINE3_70')
         else if (neq .eq. neq1) then

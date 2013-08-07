@@ -32,7 +32,6 @@ subroutine dismrc(questi, nomobz, repi, repk, ierd)
 ! OUT : REPK   : REPONSE ( SI CHAINE DE CARACTERES )
 ! OUT : IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 ! ----------------------------------------------------------------------
-    character(len=1) :: kbid
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     nomob = nomobz
@@ -40,9 +39,9 @@ subroutine dismrc(questi, nomobz, repi, repk, ierd)
     ierd = 0
 !
     if (questi .eq. 'NB_CHAMP_MAX') then
-        call jelira(jexnum(nomob//'.TACH', 1), 'LONMAX', repi, kbid)
+        call jelira(jexnum(nomob//'.TACH', 1), 'LONMAX', repi)
     else if (questi.eq.'NB_CHAMP_UTI') then
-        call jelira(nomob//'.ORDR', 'LONUTI', repi, kbid)
+        call jelira(nomob//'.ORDR', 'LONUTI', repi)
     else
         ierd = 1
     endif

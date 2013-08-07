@@ -84,7 +84,7 @@ subroutine op0156()
     call getvid(' ', 'CHAM_NO', 0, iarg, 1,&
                 chamno, n1)
     call chpver('F', chamno, 'NOEU', '*', ier)
-    call jelira(chamno//'.VALE', 'TYPE', ibid, typres)
+    call jelira(chamno//'.VALE', 'TYPE', cval=typres)
     if (typmat .ne. typres) then
         valk(1)=typmat
         valk(2)=typres

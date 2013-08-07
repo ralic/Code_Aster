@@ -65,7 +65,7 @@ subroutine cglemu(resu, vecord, lmelas, lncas, melord)
     lmelas=.false.
 !
     call jeveuo(vecord, 'L', ivec)
-    call jelira(vecord, 'LONMAX', nbord, k8b)
+    call jelira(vecord, 'LONMAX', nbord)
 !
     call gettco(resu, typsd)
 !

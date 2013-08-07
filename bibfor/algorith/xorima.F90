@@ -80,7 +80,6 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
     integer :: jsens, nlayer, layer, i, j, nmaabs, nbnoma, inoma, jelno, nbelno
     integer :: elj, numelm, nmaass
     character(len=19) :: cnxinv
-    character(len=8) :: k8b
 !
 !-----------------------------------------------------------------------
     integer :: nuno
@@ -159,7 +158,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
 !
 !                 SEARCH FOR THE ELEMENTS CONNECTED TO THE SELECTED ONE
 !                 BY MEANS OF NODE J
-                    call jelira(jexnum(cnxinv, nuno), 'LONMAX', nbelno, k8b)
+                    call jelira(jexnum(cnxinv, nuno), 'LONMAX', nbelno)
                     call jeveuo(jexnum(cnxinv, nuno), 'L', jelno)
 !
 !                 LOOP ON EACH ELEMENT CONNECTED TO NODE J

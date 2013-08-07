@@ -80,7 +80,7 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
     call jecrec(vecel//'.RELC', 'V V I', 'NO', 'CONTIG', 'CONSTANT',&
                 1)
-    call jeecra(vecel//'.RELC', 'LONMAX', nbsma, kbid)
+    call jeecra(vecel//'.RELC', 'LONMAX', nbsma)
     call jecroc(jexnom(vecel//'.RELC', nomcas))
     call jeveuo(jexnom(vecel//'.RELC', nomcas), 'E', ialsch)
 !

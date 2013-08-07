@@ -107,7 +107,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
     call jecrec(maout//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 zi(jdim+2))
     ndim=nbnomx*zi(jdim+2)
-    call jeecra(maout//'.CONNEX', 'LONT', ndim, kbid)
+    call jeecra(maout//'.CONNEX', 'LONT', ndim)
     call jeveuo(main//'.TYPMAIL', 'L', jtypm1)
     call jeveuo(typma, 'E', jtypm2)
     call jeveuo('&CATA.TM.NBNO', 'L', inom)
@@ -135,7 +135,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
 !        '.CONNEX':
 !        ----------
         call jecroc(jexnum(connex, i))
-        call jeecra(jexnum(connex, i), 'LONMAX', num2, kbid)
+        call jeecra(jexnum(connex, i), 'LONMAX', num2)
         call jeveuo(jexnum(connex, i), 'E', jconn2)
         call jeveuo(jexnum(main//'.CONNEX', i), 'L', jconn1)
         do 40 j = 1, num2

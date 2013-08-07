@@ -73,7 +73,6 @@ subroutine op0091()
 #include "asterfort/wkvect.h"
 !
 !
-    character(len=1) :: k1bid
     character(len=4) :: k4bid, num4l
     character(len=8) :: nomres, modgen, resgen, sst1, sst2, intf1, intf2, kb
     character(len=8) :: rest1, mraid, mmass, vk(3)
@@ -113,9 +112,9 @@ subroutine op0091()
     call tbajpa(nomres, 3, nompar, typpar)
 !
 !-- RECUPERATION DES INFOS
-    call jelira(modgen//'      .MODG.LIDF', 'NMAXOC', nblia, k1bid)
+    call jelira(modgen//'      .MODG.LIDF', 'NMAXOC', nblia)
     call jeveuo(modgen//'      .MODG.LIPR', 'L', llipr)
-    call jelira(resgen//'           .ORDR', 'LONMAX', nbmod, kb)
+    call jelira(resgen//'           .ORDR', 'LONMAX', nbmod)
     call wkvect('&&OP0091.PULSA_PROPRES', 'V V R', nbmod, lomeg)
     do 30 i1 = 1, nbmod
         call rsadpa(resgen, 'L', 1, 'FREQ', i1,&
@@ -123,7 +122,7 @@ subroutine op0091()
         zr(lomeg+i1-1)=2*r8pi()*zr(jadr)
 30  end do
 !
-    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, kb)
+    call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
     call wkvect('&&OP0091.NOM_SST', 'V V K8', nbsst, lnosst)
     call wkvect('&&OP0091.NUME_SST', 'V V I', nbsst+1, lnusst)
     call wkvect('&&OP0091.MATRICE_MASS', 'V V I', nbsst, lmass)
@@ -293,12 +292,12 @@ subroutine op0091()
             endif
 50      continue
 !-- RECUPERATION DES MODES
-        call jelira('&&VEC_DDL_INTF_'//zk8(lintf), 'LONMAX', nbddl1, kb)
+        call jelira('&&VEC_DDL_INTF_'//zk8(lintf), 'LONMAX', nbddl1)
         call codent(i1, 'D0', k4bid)
         rest1='&&91'//k4bid
         call jeveuo(jexnum(rest1//'           .TACH', 1), 'L', tach1)
 !-- CONSTRUCTION DES OBJETS TEMPORAIRES
-        call jelira(zk24(tach1)(1:19)//'.VALE', 'LONMAX', nbeq1, kb)
+        call jelira(zk24(tach1)(1:19)//'.VALE', 'LONMAX', nbeq1)
         call wkvect('&&OP0091.MODE_SST1', 'V V R', nbeq1, lmod1)
         call wkvect('&&OP0091.MODE_SST1_EFF1', 'V V R', nbeq1, leff1)
         call wkvect('&&OP0091.MODE_SST1_EFF2', 'V V R', nbeq1, leff2)

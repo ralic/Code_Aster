@@ -54,7 +54,7 @@ subroutine cbconv(char)
     else if (nconv.eq.1) then
         carte = char//'.CHTH.CONVE'
         call jecreo(carte//'.VALE', 'G V K8')
-        call jeecra(carte//'.VALE', 'LONMAX', 1, ' ')
+        call jeecra(carte//'.VALE', 'LONMAX', 1)
         call jeveuo(carte//'.VALE', 'E', iad)
         call getvid('CONVECTION', 'VITESSE', 1, iarg, 1,&
                     vitess, nvites)

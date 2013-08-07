@@ -105,7 +105,6 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
 ! -----------------
     integer :: imail, inoma, jcoor, jcxma, noe, jdrvlc, jcncin, iadr, nbm
     integer :: jlimab
-    character(len=1) :: k1b
     character(len=24) :: conxma, coorno
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -136,7 +135,7 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe,&
     do 10 imail = 1, nbm
         numai0 = zi(jcncin+iadr-1+imail-1)
         numail = zi(jlimab+numai0-1)
-        call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx, k1b)
+        call jelira(jexnum(conxma, numail), 'LONMAX', nbcnx)
         call jeveuo(jexnum(conxma, numail), 'L', jcxma)
 !
 !........RECUPERATION DES NUMEROS ET DES COORDONNEES DES NOEUDS

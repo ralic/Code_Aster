@@ -56,7 +56,6 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
     real(kind=8) :: insfin
     real(kind=8) :: oldref
     integer :: nummax, nbrpas
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -65,7 +64,7 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 ! --- PROCHAIN INSTANT INSTAP
 !
     tpsdit = sddisc(1:19)//'.DITR'
-    call jelira(tpsdit, 'LONMAX', nummax, k8bid)
+    call jelira(tpsdit, 'LONMAX', ival=nummax)
     instam = diinst(sddisc,numins)
     if (numins .eq. nummax) then
         instap = instam+deltac

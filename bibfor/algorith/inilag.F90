@@ -63,7 +63,7 @@ subroutine inilag(fmli, icar)
 !
 !
     call jecroc(jexnum(fmli, iblo))
-    call jeecra(jexnum(fmli, iblo), 'LONMAX', nblig*2, ' ')
+    call jeecra(jexnum(fmli, iblo), 'LONMAX', nblig*2)
     call jeveuo(jexnum(fmli, iblo), 'E', ldmat)
 !
 !-- LE ICAR(4) INDIQUE LE NUMERO DE LA SOUS STRUCTURE MAITRE

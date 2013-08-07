@@ -96,7 +96,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
     character(len=4) :: knuma1
     character(len=3) :: knuma2
     character(len=3) :: knuma3
-    character(len=8) :: k8b, nopara, nommat
+    character(len=8) ::  nopara, nommat
     character(len=19) :: ch19, chma, listr
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
@@ -129,7 +129,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
         if (iret .eq. 0) then
             call u2mesk('F', 'MODELISA6_63', 1, nommat)
         endif
-        call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', zi(jnbcm+l-1), k8b)
+        call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', zi(jnbcm+l-1))
         call jeveut(nommat//'.MATERIAU.NOMRC', 'L', zi(jnomr+l-1))
         nbv = 0
         if (zk16(zi(jnomr+l-1)) .eq. 'ELAS_COQMU') nbv = 1
@@ -157,11 +157,11 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
             ch19 = chma(1:8)//'.'//knuma2//knuma1//knuma3
             call jedupc(' ', chma, 1, 'V', ch19,&
                         .false.)
-            call jelira(ch19//'.VALR', 'LONUTI', zi(kk), k8b)
+            call jelira(ch19//'.VALR', 'LONUTI', zi(kk))
             call jeveut(ch19//'.VALR', 'L', zi(kk+1))
-            call jelira(ch19//'.VALC', 'LONUTI', zi(kk+2), k8b)
+            call jelira(ch19//'.VALC', 'LONUTI', zi(kk+2))
             call jeveut(ch19//'.VALC', 'L', zi(kk+3))
-            call jelira(ch19//'.VALK', 'LONUTI', nbk, k8b)
+            call jelira(ch19//'.VALK', 'LONUTI', nbk)
             call jeveut(ch19//'.VALK', 'L', zi(kk+5))
             zi(kk+4) = ( nbk - zi(kk) - zi(kk+2) ) / 2
             nbco = nbco + zi(kk+4)
@@ -264,13 +264,13 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                     zi(ipif+8) = 1
                     if (zk24(zi(ipif+1))(1:1) .eq. 'C' .or. zk24(zi( ipif+1))(1:1) .eq. 'F') then
                         call jeveut(ch19//'.VALE', 'L', zi(ipif+2))
-                        call jelira(ch19//'.VALE', 'LONMAX', nbpts, k8b)
+                        call jelira(ch19//'.VALE', 'LONMAX', nbpts)
                         zi(ipif) = nbpts/2
                     else if (zk24(zi(ipif+1))(1:1) .eq. 'N') then
                         call jeveut(ch19//'.VALE', 'L', zi(ipif+2))
                         call jeveut(jexatr(ch19//'.VALE', 'LONCUM'), 'L', zi(ipif+3))
                         call jeveut(ch19//'.PARA', 'L', zi(ipif+4))
-                        call jelira(ch19//'.PARA', 'LONUTI', zi(ipif+ 5), k8b)
+                        call jelira(ch19//'.PARA', 'LONUTI', zi(ipif+ 5))
                     else if (zk24(zi(ipif+1))(1:1) .eq. 'I') then
                     else
                         call u2mesk('F', 'MODELISA6_64', 1, zk24(zi(ipif+ 1)))

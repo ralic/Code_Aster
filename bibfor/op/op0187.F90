@@ -117,7 +117,7 @@ subroutine op0187()
 !
 !     CREATION DU VECTEUR DE REMPLISSAGE DES GROUP_MA
     nivgrm = '&&OP0187.NIVGRM'
-    call jelira(maxfem//'.GROUPEMA', 'NUTIOC', nbgma2, k8b)
+    call jelira(maxfem//'.GROUPEMA', 'NUTIOC', nbgma2)
     if (nbgma2 .gt. 0) call wkvect(nivgrm, 'V V I', nbgma2, jnivgr)
 !
     call xpomac(malini, mailc, listno, nbnoc, nbmac,&

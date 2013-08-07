@@ -252,7 +252,7 @@ subroutine op0111()
         do 50 iocc = 1, nbocc
             call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc, iarg, 1,&
                         nomgno, ibid)
-            call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2, kbid)
+            call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2)
             call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
             do 60 jj = 1, nbno2
                 ino2 = zi(ialin2-1+jj)

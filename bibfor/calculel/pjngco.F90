@@ -46,7 +46,7 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
     character(len=8) :: noma3
     character(len=16) :: corr16
     character(len=24) :: lno1, lno2
-    character(len=4) :: num, kbid
+    character(len=4) :: num
     character(len=1) :: bas1
     integer :: nbocc, jngi1, jngi2, ioc, jnb12, lon1, lon2, nb1, nb2, idec1
     integer :: idec2, jlno1, jlno2, jxxk1, ibid
@@ -97,8 +97,8 @@ subroutine pjngco(corres, noma1, noma2, method, cnref,&
         call codent(ioc, 'D0', num)
         lno1='&&PJNGCO.'//num//'.LNO1'
         lno2='&&PJNGCO.'//num//'.LNO2'
-        call jelira(lno1, 'LONMAX', nb1, kbid)
-        call jelira(lno2, 'LONMAX', nb2, kbid)
+        call jelira(lno1, 'LONMAX', nb1)
+        call jelira(lno2, 'LONMAX', nb2)
         zi(jnb12-1+2*(ioc-1)+1)=nb1
         zi(jnb12-1+2*(ioc-1)+2)=nb2
         lon1=lon1+nb1

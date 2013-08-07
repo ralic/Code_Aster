@@ -83,7 +83,7 @@ subroutine cmtref(chmat, nomail)
     igd = zi(jdcm1-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NOMMATER')
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nccm1, k8b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nccm1)
     ASSERT(nccm1.ge.30)
 !
     call jeveuo(cartrf//'.DESC', 'L', jdtrf)
@@ -92,7 +92,7 @@ subroutine cmtref(chmat, nomail)
     igd = zi(jdtrf-1+1)
     call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
     ASSERT(nomgd.eq.'NEUT_R')
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nctrf, k8b)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nctrf)
 !
 !     3) ALLOCATION DE CARCM2 :
 !     ---------------------------------------------------------------
@@ -126,7 +126,7 @@ subroutine cmtref(chmat, nomail)
 !        -- LISTE DES MAILLES CONCERNEES PAR KCM1 :
     if (codcm1 .eq. 3) then
         call jeveuo(jexnum(carcm1//'.LIMA', nucm1), 'L', jlcm1)
-        call jelira(jexnum(carcm1//'.LIMA', nucm1), 'LONMAX', ncm1, k8b)
+        call jelira(jexnum(carcm1//'.LIMA', nucm1), 'LONMAX', ncm1)
     else
         jlcm1 = 1
         ncm1 = 0
@@ -161,7 +161,7 @@ subroutine cmtref(chmat, nomail)
 !           -- LISTE DES MAILLES CONCERNEES PAR KTRF :
     if (codtrf .eq. 3) then
         call jeveuo(jexnum(cartrf//'.LIMA', nutrf), 'L', jltrf)
-        call jelira(jexnum(cartrf//'.LIMA', nutrf), 'LONMAX', ntrf, k8b)
+        call jelira(jexnum(cartrf//'.LIMA', nutrf), 'LONMAX', ntrf)
     else
         jltrf = 1
         ntrf = 0

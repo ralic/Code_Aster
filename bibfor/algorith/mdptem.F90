@@ -70,7 +70,6 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     character(len=8) :: veripa, nomres, tran, li
     character(len=16) :: typres, nomcmd, method
     character(len=19) :: numarc
-    character(len=1) :: k1bid
     integer :: iarg
 !     ------------------------------------------------------------------
 !
@@ -110,12 +109,12 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
                         tinit, nt)
             if (nt .eq. 0) then
                 call jeveuo(tran//'           .DISC', 'L', jinst)
-                call jelira(tran//'           .DISC', 'LONUTI', nbinst, k1bid)
+                call jelira(tran//'           .DISC', 'LONUTI', nbinst)
                 tinit = zr(jinst+nbinst-1)
             endif
         else
             call jeveuo(tran//'           .ORDR', 'L', jordr)
-            call jelira(tran//'           .ORDR', 'LONUTI', nbordr, k1bid)
+            call jelira(tran//'           .ORDR', 'LONUTI', nbordr)
             do 100 i = 1, nbordr
                 if (zi(jordr+i-1) .eq. nume) goto 101
 100          continue
@@ -149,8 +148,8 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
         call jeveuo(li//'           .BINT', 'L', jbint)
         call jeveuo(li//'           .LPAS', 'L', jlpas)
         call jeveuo(li//'           .VALE', 'L', jvale)
-        call jelira(li//'           .VALE', 'LONUTI', nbinst, k1bid)
-        call jelira(li//'           .NBPA', 'LONUTI', nbgrpa, k1bid)
+        call jelira(li//'           .VALE', 'LONUTI', nbinst)
+        call jelira(li//'           .NBPA', 'LONUTI', nbgrpa)
 !
         if (nbgrpa .eq. 1) then
             dtu = zr (jlpas)
@@ -177,7 +176,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
             if (n1 .eq. 0) goto 99
         else
             call jeveuo(li//'           .VALE', 'L', jvalr)
-            call jelira(li//'           .VALE', 'LONUTI', nbinsr, k1bid)
+            call jelira(li//'           .VALE', 'LONUTI', nbinsr)
             if (numef .ge. nbinsr) goto 99
             tfin = zr(jvalr+numef)
         endif

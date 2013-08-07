@@ -105,7 +105,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     bidon = .true.
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (nchar .ne. 0) then
             call jeveuo(charge, 'L', jchar)
             call jeveuo(infcha, 'L', jinf)

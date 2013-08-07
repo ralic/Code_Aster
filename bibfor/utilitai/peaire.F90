@@ -83,7 +83,7 @@ subroutine peaire(resu, modele, nbocc)
                     call u2mesk('A', 'UTILITAI3_46', 1, zk24(jgb+igb-1))
                     goto 40
                 endif
-                call jelira(jexnom(grpma, zk24(jgb+igb-1)), 'LONMAX', nbb, k8b)
+                call jelira(jexnom(grpma, zk24(jgb+igb-1)), 'LONMAX', nbb)
                 if (nbb .eq. 0) then
                     call u2mesk('A', 'UTILITAI3_47', 1, zk24(jgb+igb-1))
                     goto 40

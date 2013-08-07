@@ -40,7 +40,7 @@ subroutine op0012()
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nu, matas, charge, kbid, syme, sym2, kmpic
+    character(len=8) :: nu, matas, charge, syme, sym2, kmpic
     character(len=16) :: typm, oper
     character(len=19) :: matel, solveu
     character(len=24) :: lchci, lmatel
@@ -85,7 +85,7 @@ subroutine op0012()
     call jeexin(matel//'.RECC', iexi)
     if (iexi .gt. 0) then
         call jeveuo(matel//'.RECC', 'L', jrecc)
-        call jelira(matel//'.RECC', 'LONMAX', nbchar, kbid)
+        call jelira(matel//'.RECC', 'LONMAX', nbchar)
         do 2, j=1,nbchar
         charge=zk8(jrecc-1+j)
         call jeexin(charge//'.ELIM      .AFCK', iexi)
@@ -103,7 +103,7 @@ subroutine op0012()
         call jeexin(matel//'.RECC', iexi)
         if (iexi .gt. 0) then
             call jeveuo(matel//'.RECC', 'L', jrecc)
-            call jelira(matel//'.RECC', 'LONMAX', nbchar, kbid)
+            call jelira(matel//'.RECC', 'LONMAX', nbchar)
             do 4, j=1,nbchar
             charge=zk8(jrecc-1+j)
             call jeexin(charge//'.ELIM      .AFCK', iexi)

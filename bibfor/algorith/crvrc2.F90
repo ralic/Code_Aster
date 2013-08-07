@@ -81,7 +81,7 @@ subroutine crvrc2()
 !
 !
 !
-    call jelira(resu1//'.ORDR', 'LONUTI', nbinst, kbid)
+    call jelira(resu1//'.ORDR', 'LONUTI', nbinst)
     call jeveuo(resu1//'.ORDR', 'L', jordr1)
     ASSERT(nbinst.gt.0)
 !

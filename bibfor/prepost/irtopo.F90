@@ -71,7 +71,6 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
     integer :: nbmamx, nbgmmx, imxno, imxgn, imxma, imxgm, idebu, jnunot
     integer :: iutil
 !
-    character(len=1) :: k1bid
     character(len=8) :: k8b, nomma
     character(len=24) :: texte
 !
@@ -209,7 +208,7 @@ subroutine irtopo(ioccur, formaf, ifichi, leresu, lresul,&
         if (nbma .ne. 0 .or. nbgrm .ne. 0) then
 !         - ON S'ALLOUE UN TABLEAU POUR LES NUMEROS DES MAILLES ET
 !           UN TABLEAU POUR LES NUMEROS DES NOEUDS DE CES MAILLES
-            call jelira(nomma//'.NOMMAI', 'NOMMAX', nbele, k1bid)
+            call jelira(nomma//'.NOMMAI', 'NOMMAX', nbele)
             call wkvect(nonuma, 'V V I', nbele, jnuma)
             call wkvect('&&IRTOPO.NUMNOS', 'V V I', nbnoe, jnunos)
 !         - ON RECUPERE A PARTIR DE ZI(JNUMA) LES NUMEROS DES

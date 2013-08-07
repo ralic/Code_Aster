@@ -85,7 +85,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
     call jenonu(jexnom('&CATA.GD.NOMGD', gd2), igd)
     if (igd .eq. 0) call u2mesk('F', 'CALCULEL2_21', 1, gd2)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iancmp)
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2, kbid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', nbcmp2)
     do 1, icmp=1,nbcmp
     nocmp=licmp(icmp)
     itrou=indik8(zk8(iancmp),nocmp,1,nbcmp2)
@@ -116,7 +116,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
 !
 !     OBJET: .DESC
 !     ------------
-    call jeecra(ch19//'.DESC', 'DOCU', ibid, 'CHNO')
+    call jeecra(ch19//'.DESC', 'DOCU', cval='CHNO')
     zi(iadesc-1+1)=igd
     zi(iadesc-1+2)=-nbcmp
     do 2, icmp=1,nbcmp

@@ -81,7 +81,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !
     integer :: i, ifm, niv, nbno, iret, jltno, jlnno, ndim, j, jnodto, node, ier
     integer :: ibid, jbl, jbeta, jlistp, jcoor, pos, pos1, jvp
-    character(len=8) :: k8b, kbid, lpain(2), lpaout(1)
+    character(len=8) ::  kbid, lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
     real(kind=8) :: t1(3), n1(3), p1(3), deltaa, newlsn, newlst, cbeta, sbeta
@@ -107,7 +107,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
     call jeveuo(nodtor, 'L', jnodto)
 !
 !     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
-    call jelira(nodtor, 'LONMAX', nbno, k8b)
+    call jelira(nodtor, 'LONMAX', nbno)
 !
     call jeveuo(cnsbet, 'L', jbeta)
     call jeveuo(listp, 'L', jlistp)

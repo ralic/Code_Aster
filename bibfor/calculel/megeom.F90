@@ -40,7 +40,6 @@ subroutine megeom(modelz, chgeoz)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: nomo
     character(len=24) :: chgeom
     integer :: jlgrf
 !-----------------------------------------------------------------------

@@ -82,7 +82,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     character(len=8) :: lpain(nbpin), lpaout(nbpout), ma, typema, gd
     character(len=16) :: opt
     character(len=19) :: cnseto, loncha
-    character(len=24) :: lchin(nbpin), lchout(nbpout), chgeom, kbid
+    character(len=24) :: lchin(nbpin), lchout(nbpout), chgeom
     character(len=24) :: blan24, cvoisx
 !
 !
@@ -154,7 +154,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
 !      ICONX1 : ADRESSE DE LA COLLECTION CONNECTIVITE
 !      ICONX2 : ADRESSE DU POINTEUR DE LONGUEUR DE LA CONNECTIVITE
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
     call wkvect('&&'//nompro//'.TYPEMA', 'V V K8', nbtm, iatyma)
 !
     do 1 ity = 1, nbtm
@@ -162,7 +162,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
         zk8(iatyma-1+ity) = typema
  1  end do
 !
-    call jelira('&CATA.GD.NOMGD', 'NOMMAX', nbgd, kbid)
+    call jelira('&CATA.GD.NOMGD', 'NOMMAX', nbgd)
     call wkvect('&&'//nompro//'.GD', 'V V K8', nbgd, iagd)
 !
     do 2 igd = 1, nbgd
@@ -173,7 +173,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     call wkvect('&&'//nompro//'.NBCMP', 'V V I', nbgd, iacmp)
 !
     do 3 igd = 1, nbgd
-        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp, kbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp)
         zi(iacmp-1+igd) = ncmp
  3  end do
 !

@@ -81,7 +81,7 @@ subroutine aniver(mater)
 !
 ! --- RECUPERATION DU NOMBRE DE RELATIONS DE COMPORTEMENT :
 !     ---------------------------------------------------
-    call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbcrme, k8bid)
+    call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbcrme)
 !
 ! --- RECUPERATION DU TABLEAU DES RELATIONS DE COMPORTEMENT :
 !     -----------------------------------------------------
@@ -113,7 +113,7 @@ subroutine aniver(mater)
 !
 ! ---     LONGUEUR DU TABLEAU DES COMPOSANTES :
 !         -----------------------------------
-                call jelira(noobrc//'.VALR', 'LONUTI', nbr, k8bid)
+                call jelira(noobrc//'.VALR', 'LONUTI', nbr)
 !
 ! ---     RECUPERATION DES INDICES DES COMPOSANTES RELATIVES
 ! ---     A L'ORTHOTROPIE ET A L'ISOTROPIE TRANSVERSE DANS

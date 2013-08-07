@@ -177,7 +177,7 @@ subroutine fonmai(resu, nomail, typfon, iocc, nbnoff)
     else
         noeord = resu//'.FOND.NOEU'
     endif
-    call jelira(mesnoe, 'LONMAX', nbnoff, k8b)
+    call jelira(mesnoe, 'LONMAX', nbnoff)
     call jeveuo(mesnoe, 'L', idnono)
 !
     call wkvect(noeord, 'G V K8', nbnoff, idlino)

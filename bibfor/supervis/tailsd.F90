@@ -52,8 +52,8 @@ subroutine tailsd(nom, nomsd, val, nbval)
         if (iret1 .eq. 0 .or. iret2 .eq. 0) then
             goto 999
         endif
-        call jelira(sd19 // '.DESC', 'NOMMAX', val(1), k8bid)
-        call jelira(sd19 // '.NOVA', 'NOMMAX', val(2), k8bid)
+        call jelira(sd19 // '.DESC', 'NOMMAX', val(1))
+        call jelira(sd19 // '.NOVA', 'NOMMAX', val(2))
         call rsorac(sd19, 'LONUTI', ibid, rbid, k8bid,&
                     cbid, rbid, ' ', val(3), 1,&
                     ibid)
@@ -69,8 +69,8 @@ subroutine tailsd(nom, nomsd, val, nbval)
         if (iret1 .eq. 0) then
             goto 999
         endif
-        call jelira(sd, 'NUTIOC', val(1), k8bid)
-        if (val(1) .eq. 0) call jelira(sd, 'NMAXOC', val(1), k8bid)
+        call jelira(sd, 'NUTIOC', val(1))
+        if (val(1) .eq. 0) call jelira(sd, 'NMAXOC', val(1))
     endif
 999  continue
 end subroutine

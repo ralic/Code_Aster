@@ -72,7 +72,7 @@ subroutine w175af(modele, chfer1)
     call jeveuo(chfer1//'.VALV', 'E', jvalv)
 !
     call jenonu(jexnom('&CATA.GD.NOMGD', 'FER1_R'), gd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 !
     ASSERT(ncmpmx.eq.8)
     zk8(jncmp-1+1)='TYPCOMB'

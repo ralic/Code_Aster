@@ -126,7 +126,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     integer :: ifiss, iad
     real(kind=8) :: lsn(nfiss), lst(nfiss), co(3)
     character(len=6) :: chn
-    character(len=8) :: valk(2), k8b
+    character(len=8) :: valk(2)
     character(len=19) :: ma2con
     logical :: lnoeud
     data          valk /'MAILLES','XPOAJM'/
@@ -145,7 +145,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
         call jecroc(jexnom(maxfem//'.NOMMAI', prefno(4)//chn))
         zi(jtypm2-1+nbmac + inmtot) = itypse
         ma2con = maxfem//'.CONNEX'
-        call jeecra(jexnum(ma2con, nbmac+inmtot), 'LONMAX', nnose, k8b)
+        call jeecra(jexnum(ma2con, nbmac+inmtot), 'LONMAX', nnose)
         call jeveuo(jexnum(ma2con, nbmac+inmtot), 'E', iacon2)
 !
 !       ON INCREMENTE LES GROUP_MA

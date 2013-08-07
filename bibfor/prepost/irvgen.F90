@@ -42,7 +42,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     logical :: lbase
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ib, ibid, ifi, im, imode
+    integer :: i, iad, ib, ifi, im, imode
     integer :: ir, istru, j, jdeeq, jdesc, jfreq, jnume
     integer :: jordr, jpara, jrefe, jvale, ltyba, nbcmpg, nbmode
 !
@@ -55,7 +55,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     call jeveuo(gene//'.DESC', 'L', jdesc)
     call jeveuo(gene//'.REFE', 'L', jrefe)
     call jeveuo(gene//'.VALE', 'L', jvale)
-    call jelira(gene//'.VALE', 'TYPE', ibid, typval)
+    call jelira(gene//'.VALE', 'TYPE', cval=typval)
 !
     mode = zk24(jrefe)(1:8)
 !
@@ -147,28 +147,28 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
             noeu = ' '
             cmp = ' '
             lbase = .false.
-            call jelira(gene//'.VALE', 'LONMAX', nbmode, k8b)
+            call jelira(gene//'.VALE', 'LONMAX', nbmode)
 !             NBMODE = ZI(JDESC+1)
         else if (typeba(1:1) .ne. ' ') then
 !          ELSEIF ( TYPREM .EQ. 'BASE_MODALE' ) THEN
             lbase = .true.
             basmod = mode
             call jeveuo(basmod//'.ORDR', 'L', jordr)
-            call jelira(gene//'.VALE', 'LONMAX', nbmode, k8b)
+            call jelira(gene//'.VALE', 'LONMAX', nbmode)
         else if (dynsta .eq. 'MODE_STA') then
 !          ELSEIF ( TYPREM(1:9) .EQ. 'MODE_STAT' ) THEN
             typmod = '  PROPRE'
             noeu = ' '
             cmp = ' '
             lbase = .false.
-            call jelira(gene//'.VALE', 'LONMAX', nbmode, k8b)
+            call jelira(gene//'.VALE', 'LONMAX', nbmode)
         else
             call u2mesk('A', 'PREPOST3_9', 1, typrem)
             typmod = '  PROPRE'
             noeu = ' '
             cmp = ' '
             lbase = .false.
-            call jelira(gene//'.VALE', 'LONMAX', nbmode, k8b)
+            call jelira(gene//'.VALE', 'LONMAX', nbmode)
         endif
         if (lhist) then
             if (typval(1:1) .eq. 'R') then

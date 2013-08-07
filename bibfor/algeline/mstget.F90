@@ -159,7 +159,7 @@ subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
             ii = -1
             do 18 ing = 1, nbgr
                 nomgr = zk24(idgn+ing-1)
-                call jelira(jexnom(magrno, nomgr), 'LONUTI', nb, kbid)
+                call jelira(jexnom(magrno, nomgr), 'LONUTI', nb)
                 call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
                 do 20 in = 0, nb-1
                     call jenuno(jexnum(manono, zi(ldgn+in)), nomnoe)

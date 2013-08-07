@@ -52,7 +52,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
     parameter   ( dmthmc = 8  )
     parameter   ( dmhydr = 5  )
     parameter   ( dmmeca = 18 )
-    character(len=16) :: pothmc(dmthmc), modeli, nomte, kbid
+    character(len=16) :: pothmc(dmthmc), modeli, nomte
     character(len=16) :: pohydr(dmhydr), pomeca(dmmeca)
     character(len=16) :: comcod
     character(len=16) :: thmc, ther, hydr, meca, mocles(2)
@@ -131,7 +131,7 @@ subroutine nmthmc(comp, modelz, moclef, k, comel,&
     call reliem(modele, noma, 'NU_MAILLE', moclef, k,&
                 2, mocles, typmcl, mesmai, nbma)
     if (nbma .eq. 0) then
-        call jelira(modele//'.MAILLE', 'LONUTI', nbma, kbid)
+        call jelira(modele//'.MAILLE', 'LONUTI', ival=nbma)
         tout=.true.
     else
         call jeveuo(mesmai, 'L', jmesm)

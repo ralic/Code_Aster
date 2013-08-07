@@ -240,8 +240,8 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
 !     -- .TBLP :
     ndim = 4 * nbpara
     call jecreo(nomta2//'.TBLP', base//' V K24')
-    call jeecra(nomta2//'.TBLP', 'LONMAX', ndim, ' ')
-    call jeecra(nomta2//'.TBLP', 'LONUTI', ndim, ' ')
+    call jeecra(nomta2//'.TBLP', 'LONMAX', ndim)
+    call jeecra(nomta2//'.TBLP', 'LONUTI', ndim)
     call jeveuo(nomta2//'.TBLP', 'E', ktblp)
     do 300 i = 1, nbpara
         zk24(ktblp+4*(i-1) ) = zk24(jtblp+4*(i-1) )
@@ -252,14 +252,14 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara,&
         zk24(ktblp+4*(i-1)+2) = nomjv
         type = zk24(jtblp+4*(i-1)+1)
         call jecreo(nomjv, base//' V '//type)
-        call jeecra(nomjv, 'LONMAX', nblign, ' ')
-        call jeecra(nomjv, 'LONUTI', nblign, ' ')
+        call jeecra(nomjv, 'LONMAX', nblign)
+        call jeecra(nomjv, 'LONUTI', nblign)
         call jeveuo(nomjv, 'E', kvale)
 !
         nomjv = nomta2(1:17)//'LG.'//knume
         zk24(ktblp+4*(i-1)+3) = nomjv
         call jecreo(nomjv, base//' V I')
-        call jeecra(nomjv, 'LONMAX', nblign, ' ')
+        call jeecra(nomjv, 'LONMAX', nblign)
         call jeveuo(nomjv, 'E', kvall)
 !
         nojv2 = zk24(jtblp+4*(i-1)+2)

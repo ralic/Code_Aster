@@ -38,7 +38,6 @@ subroutine xthpos(resulz, modele)
 !
 ! ----------------------------------------------------------------------
     integer :: jord, nbordr, ior, iord, iret
-    character(len=1) :: k1bid
     character(len=8) :: result
     character(len=19) :: ligrmo, chtn, chtpg, celtmp
     character(len=24) :: ordr
@@ -52,7 +51,7 @@ subroutine xthpos(resulz, modele)
 !
     ordr=result//'           .ORDR'
     call jeveuo(ordr, 'L', jord)
-    call jelira(ordr, 'LONUTI', nbordr, k1bid)
+    call jelira(ordr, 'LONUTI', nbordr)
 !
 !     ------------------------------------------------------------------
 !     - BOUCLE SUR LES NBORDR NUMEROS D'ORDRE

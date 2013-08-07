@@ -85,7 +85,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
     integer :: iadp, jcoppl, jcoppd, jcoppv, jcoppk, ip
     integer :: iadm, jcopml, jcopmd, jcopmv, jcopmk, im
     integer :: vali(5), tounul, k, nbpgm, n1, jrepp, jrepm
-    character(len=8) :: noma, nomail, kbid, nomma2, nomma1
+    character(len=8) :: noma, nomail, nomma2, nomma1
     character(len=16) :: relcop, relcom
     character(len=19) :: dcel, ces2, copm, copp, coto, lig19p, lig19m
     character(len=48) :: comp1, comp2
@@ -156,13 +156,13 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !     -----------------------------------------------------------------
     lig19p=ligrep
     call jeveuo(lig19p//'.REPE', 'L', jrepp)
-    call jelira(lig19p//'.REPE', 'LONMAX', n1, kbid)
+    call jelira(lig19p//'.REPE', 'LONMAX', n1)
     ASSERT(n1.eq.2*nbma)
 !
     call dismoi('F', 'NOM_LIGREL', varmoi, 'CHAM_ELEM', ibid,&
                 lig19m, iret)
     call jeveuo(lig19m//'.REPE', 'L', jrepm)
-    call jelira(lig19m//'.REPE', 'LONMAX', n1, kbid)
+    call jelira(lig19m//'.REPE', 'LONMAX', n1)
 !
 !
 !

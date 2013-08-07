@@ -367,7 +367,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call wkvect(lisddl, 'V V K8', nbno, jddl)
         call wkvect(lisequ, 'V V I', nbno, jequ)
         call jeveuo(liscmp, 'L', jlicmp)
-        call jelira(liscmp, 'LONMAX', nddl, k8bid)
+        call jelira(liscmp, 'LONMAX', ival=nddl)
 !
         do 10 iddl = 1, nddl
             nomcmp = zk8(jlicmp-1+iddl)

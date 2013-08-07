@@ -40,10 +40,9 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
 ! IN  : FORMR  : FORMAT D'IMPRESSION DU CHAMP VALE REEL
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, vali, i, jvale, long, lg1, lg2
+    integer ::  vali, i, jvale, long, lg1, lg2
     real(kind=8) :: valr
     character(len=3) :: type
-    character(len=8) :: k8b
     character(len=80) :: form1, form2
 !     ------------------------------------------------------------------
 !
@@ -58,8 +57,8 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
     write(ific,1000)
 !
     call jeveuo(chamel//'.CELV', 'L', jvale)
-    call jelira(chamel//'.CELV', 'LONMAX', long, k8b)
-    call jelira(chamel//'.CELV', 'TYPE', ibid, type)
+    call jelira(chamel//'.CELV', 'LONMAX', long)
+    call jelira(chamel//'.CELV', 'TYPE', cval=type)
 !
     write(ific,1010) chamel(1:8)
     write(ific,1020) preci

@@ -128,7 +128,7 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr,&
         call jeveuo(champs//'.CESC', 'L', zi(jtabc+ior-1))
         call jeveuo(champs//'.CESV', 'L', zi(jtabv+ior-1))
         call jeveuo(champs//'.CESL', 'L', zi(jtabl+ior-1))
-        call jelira(champs//'.CESV', 'TYPE', ibid, zk8(jtype+ior-1))
+        call jelira(champs//'.CESV', 'TYPE', cval=zk8(jtype+ior-1))
 !
         nomgd = zk8(jcesk-1+2)
         call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&

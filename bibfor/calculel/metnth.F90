@@ -63,7 +63,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
 !     ------------------
 !
 !
-    character(len=8) :: nomcha, lpain(7), lpaout(1), k8bid
+    character(len=8) :: nomcha, lpain(7), lpaout(1)
     character(len=8) :: vitess, decent
     character(len=16) :: option
     character(len=24) :: lchin(7), lchout(1), chgeom, chcara(18)
@@ -86,7 +86,7 @@ subroutine metnth(modele, lchar, cara, mate, time,&
 !
     call jeexin(lchar, iret)
     if (iret .ne. 0) then
-        call jelira(lchar, 'LONMAX', nchar, k8bid)
+        call jelira(lchar, 'LONMAX', nchar)
         call jeveuo(lchar, 'L', jchar)
     else
         nchar = 0

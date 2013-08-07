@@ -44,7 +44,7 @@ subroutine op0159()
 #include "asterfort/wkvect.h"
     character(len=19) :: vci19, secm19, csol19, mat19
     character(len=8) :: matr
-    character(len=3) :: type, kbid, typ1
+    character(len=3) :: type, typ1
     integer :: lmat, nimpo, idvalc, jrefa, neq1, jval2, jtrav
     integer :: ibid, ifm, niv, neq, jvals, nb, imd, ier
 !
@@ -105,7 +105,7 @@ subroutine op0159()
         idvalc=0
     else
         call jeveuo(vci19//'.VALE', 'L', idvalc)
-        call jelira(vci19//'.VALE', 'TYPE', ibid, type)
+        call jelira(vci19//'.VALE', 'TYPE', cval=type)
         if (((type.eq.'R').and.(zi(lmat+3).ne.1)) .or.&
             ((type.eq.'C') .and.(zi(lmat+3).ne.2))) then
             call u2mess('F', 'ALGELINE3_42')
@@ -126,8 +126,8 @@ subroutine op0159()
     endif
 !
     neq=zi(lmat+2)
-    call jelira(secm19//'.VALE', 'LONMAX', neq1, kbid)
-    call jelira(secm19//'.VALE', 'TYPE', ibid, typ1)
+    call jelira(secm19//'.VALE', 'LONMAX', neq1)
+    call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
     if ((neq1.ne.neq) .and. (imd.eq.0)) then
         call u2mess('F', 'FACTOR_67')
     endif

@@ -65,7 +65,7 @@ subroutine fonno8(resu, noma, tablev, vnor, vect)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
     call jeveuo(resu//'.LEVRESUP.MAIL', 'L', jmale)
-    call jelira(resu//'.LEVRESUP.MAIL', 'LONUTI', nblev, k8b)
+    call jelira(resu//'.LEVRESUP.MAIL', 'LONUTI', nblev)
 !
 !
 !     DETERMINATION D'UN VECTEUR ALLANT DU PREMIER NOEUD DU FOND

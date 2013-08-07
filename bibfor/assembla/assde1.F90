@@ -36,7 +36,6 @@ subroutine assde1(champ)
 !
     integer :: iret, idd, nbsd, ifetc, ilimpi
     character(len=5) :: refe, vale, desc
-    character(len=8) :: k8bid
     character(len=19) :: k19b
     character(len=24) :: k24b
     character(len=19) :: champ2
@@ -77,7 +76,7 @@ subroutine assde1(champ)
         desc='.DESC'
         refe='.REFE'
         vale='.VALE'
-        call jelira(k24b, 'LONMAX', nbsd, k8bid)
+        call jelira(k24b, 'LONMAX', nbsd)
         call jeveuo(k24b, 'L', ifetc)
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
 !========================================

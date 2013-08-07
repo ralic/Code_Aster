@@ -54,7 +54,7 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
     integer :: ztabf
     integer :: jtymai, iacnx1, ilcnx1
     integer :: nbnoe, nbnom, nummae, nummam, itymae, itymam, ityctc
-    character(len=8) :: k8bid, ntymae, ntymam, ntyctc, nommae, nommam
+    character(len=8) ::  ntymae, ntymam, ntyctc, nommae, nommam
     character(len=8) :: nomnoe, nomnom
     integer :: numnoe, numnom, inoe, inom
     integer :: nbel, nndel, jad, iel
@@ -71,7 +71,7 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
 !
 ! --- NOMBRE D'ELEMENTS DE CONTACT
 !
-    call jelira(ligrcf//'.NEMA', 'NUTIOC', nbel, k8bid)
+    call jelira(ligrcf//'.NEMA', 'NUTIOC', nbel)
     write(ifm,1000) nbel
 !
     do 20 iel = 1, nbel
@@ -80,7 +80,7 @@ subroutine mmimp2(ifm, noma, ligrcf, jtabf)
         call jeveuo(jexnum(ligrcf//'.NEMA', iel), 'L', jad)
 !
 !       -- NOMBRE DE NOEUDS TOTAL DE L'ELEMENT DE CONTACT
-        call jelira(jexnum(ligrcf//'.NEMA', iel), 'LONMAX', nndel, k8bid)
+        call jelira(jexnum(ligrcf//'.NEMA', iel), 'LONMAX', nndel)
 !
 !       -- TYPE DE L'ELEMENT DE CONTACT
         ityctc = zi(jad+nndel-1)

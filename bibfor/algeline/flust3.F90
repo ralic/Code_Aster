@@ -294,7 +294,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
                 k8b, ire)
     call dismoi('F', 'NOM_MAILLA', matria, 'MATR_ASSE', ibi,&
                 mailla, ire)
-    call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoe, k1bid)
+    call jelira(mailla//'.NOMNOE', 'NOMUTI', nbnoe)
     call jeveuo(mailla//'.COORDO    .VALE', 'L', jdco)
 !
 !
@@ -302,7 +302,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor,&
 ! ---   RACINE COMMUNE
 !
     if (nbgrma .eq. 0) then
-        call jelira(mailla//'.GROUPEMA', 'NOMUTI', nbgrmx, k1bid)
+        call jelira(mailla//'.GROUPEMA', 'NOMUTI', nbgrmx)
         call wkvect('&&FLUST3.TMP.NGX', 'V V K24', nbgrmx, inomcy)
         call mefrac(mailla, nbgrmx, nomrac, nbgrma, zk24(inomcy))
         nbcyl = nbgrma

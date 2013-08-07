@@ -43,7 +43,6 @@ subroutine cmdgma(mailla)
 !
     integer :: limit, long, ndetr, nugr, igma, n1, iret, ngrma, ianugr, ialigr
     integer :: i, jvg, jgg, nbma, ii, adetr, ngrman
-    character(len=1) :: k1b
     character(len=8) :: ma
     character(len=24) :: nomg
     integer :: iarg
@@ -52,7 +51,7 @@ subroutine cmdgma(mailla)
     call jemarq()
 !
     ma = mailla
-    call jelira(ma//'.GROUPEMA', 'NMAXOC', ngrma, k1b)
+    call jelira(ma//'.GROUPEMA', 'NMAXOC', ival=ngrma)
     call wkvect('&&CMDGMA.NUGRMA_A_DETR', 'V V I', ngrma, ianugr)
 !
     call getvis('DETR_GROUP_MA', 'NB_MAILLE', 1, iarg, 1,&
@@ -62,7 +61,7 @@ subroutine cmdgma(mailla)
         do 1,igma=1,ngrma
         call jeexin(jexnum(ma//'.GROUPEMA', igma), iret)
         if (iret .gt. 0) then
-            call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONUTI', long, k1b)
+            call jelira(jexnum(ma//'.GROUPEMA', igma), 'LONUTI', ival=long)
             if (long .le. limit) zi(ianugr-1+igma)=1
         endif
  1      continue
@@ -99,7 +98,7 @@ subroutine cmdgma(mailla)
 !
     if (ngrman .gt. 0) then
         call jecreo(ma//'.PTRNOMMAI', 'G N K24')
-        call jeecra(ma//'.PTRNOMMAI', 'NOMMAX', ngrman, ' ')
+        call jeecra(ma//'.PTRNOMMAI', 'NOMMAX', ival=ngrman)
         call jecrec(ma//'.GROUPEMA', 'G V I', 'NO '//ma//'.PTRNOMMAI', 'DISPERSE', 'VARIABLE',&
                     ngrman)
     endif
@@ -111,9 +110,9 @@ subroutine cmdgma(mailla)
         call jenuno(jexnum('&&CMDGMA.GROUPEMA', i), nomg)
         call jecroc(jexnom(ma//'.GROUPEMA', nomg))
         call jeveuo(jexnum('&&CMDGMA.GROUPEMA', i), 'L', jvg)
-        call jelira(jexnum('&&CMDGMA.GROUPEMA', i), 'LONUTI', nbma, k1b)
-        call jeecra(jexnom(ma//'.GROUPEMA', nomg), 'LONMAX', max(1, nbma), ' ')
-        call jeecra(jexnom(ma//'.GROUPEMA', nomg), 'LONUTI', nbma, ' ')
+        call jelira(jexnum('&&CMDGMA.GROUPEMA', i), 'LONUTI', ival=nbma)
+        call jeecra(jexnom(ma//'.GROUPEMA', nomg), 'LONMAX', ival=max(1, nbma))
+        call jeecra(jexnom(ma//'.GROUPEMA', nomg), 'LONUTI', ival=nbma)
         call jeveuo(jexnom(ma//'.GROUPEMA', nomg), 'E', jgg)
         do 4,ii=1,nbma
         zi(jgg-1+ii)=zi(jvg-1+ii)

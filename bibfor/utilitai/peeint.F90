@@ -148,7 +148,7 @@ subroutine peeint(resu, modele, nbocc)
             call getvid(' ', 'LIST_INST', 1, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, kbid)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
         if (nlo .ne. 0) then
@@ -156,7 +156,7 @@ subroutine peeint(resu, modele, nbocc)
             call getvid(' ', 'LIST_ORDRE', 1, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, kbid)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
         nn=nlo+nli+no+ni
@@ -241,7 +241,7 @@ subroutine peeint(resu, modele, nbocc)
                 chamtm='&&PEEINT.CHS1'
                 call cnocns(cham2, 'V', chamtm)
                 call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
-                call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm, k8b)
+                call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
                 call jedetr('&&PEEINT.CMP1')
                 call wkvect('&&PEEINT.CMP1', 'V V K8', ncmpm, jlicm1)
                 call jedetr('&&PEEINT.CMP2')

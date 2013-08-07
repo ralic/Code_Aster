@@ -162,7 +162,7 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
             call jeveuo(cnsimp//'.CNSK', 'L', jcn1k)
             call jeveuo(cnsimp//'.CNSD', 'L', jcn1d)
             call jeveuo(cnsimp//'.CNSC', 'L', jcn1c)
-            call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1, kbid)
+            call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1)
             ASSERT(nbcmp1.eq.zi(jcn1d-1+2))
             call jeveuo(cnsimp//'.CNSV', 'L', jcn1v)
             call jeveuo(cnsimp//'.CNSL', 'L', jcn1l)

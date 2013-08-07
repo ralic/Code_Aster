@@ -50,7 +50,6 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    character(len=8) :: kbid
 !
 !-----------------------------------------------------------------------
     integer :: iadgd, iancmp, iatype, ibid, icode, igdco, igdli
@@ -138,7 +137,7 @@ subroutine dismgd(questi, nomobz, repi, repkz, ierd)
             ierd=1
             goto 9999
         endif
-        call jelira(jexnom('&CATA.GD.NOMCMP', nomob), 'LONMAX', nmax, kbid)
+        call jelira(jexnom('&CATA.GD.NOMCMP', nomob), 'LONMAX', nmax)
         if (questi .eq. 'NB_CMP_MAX') then
             repi=nmax
         else if (questi.eq.'NU_CMP_LAGR') then

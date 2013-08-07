@@ -47,7 +47,6 @@ subroutine op5903(nbocci, compor)
     integer :: iarg, idbor, imi, imk, iocc, irett
     integer :: ibid, nbg, nbgmax, img, ig, ig1, jnfg, iaff
     integer :: nbvf, nbv, icp, nbkit, nbnvi(2), ncomel, numlc
-    character(len=1) :: k1bid
     character(len=8) :: materi, sdgf, k8bid, mator
     character(len=16) :: nomrel, algo1d, nomkit(2), lcomel(5), comcod
     character(len=16) :: comco2, texte(2), moclef
@@ -67,7 +66,7 @@ subroutine op5903(nbocci, compor)
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
     rnomgf = sdgf//'.NOMS_GROUPES'
     call jeveuo(vnbfig, 'L', jnfg)
-    call jelira(vnbfig, 'LONMAX', nbgmax, k1bid)
+    call jelira(vnbfig, 'LONMAX', nbgmax)
     call wkvect(compor//'.CPRK', 'G V K24', 6*nbgmax+1, imk)
     call wkvect('&&OP0059.NOMS_GROUPES', 'V V K24', nbgmax, img)
     call wkvect('&&OP0059.VERIF_AFFECT', 'V V I', nbgmax, iaff)

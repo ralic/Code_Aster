@@ -39,16 +39,15 @@ subroutine lctel2()
 #include "asterfort/wkvect.h"
     character(len=24) :: nomolo
     character(len=16) :: nomte
-    character(len=8) :: kbid
     integer :: nbte, nbop, nbgd, iatamx, nbmolo, imolo, jnblig, iamolo
     integer :: n, ioptte, iop, ite, joptte, joptt2
 !
     call jemarq()
 !
-    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte, kbid)
-    call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbop, kbid)
-    call jelira('&CATA.GD.NOMGD', 'NOMMAX', nbgd, kbid)
-    call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbmolo, kbid)
+    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
+    call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbop)
+    call jelira('&CATA.GD.NOMGD', 'NOMMAX', nbgd)
+    call jelira('&CATA.TE.NOMMOLOC', 'NOMMAX', nbmolo)
 !
 !
 !
@@ -81,7 +80,7 @@ subroutine lctel2()
 !     OBJET .OPTTE :
 !     -------------------
     call jeveuo('&CATA.TE.OPTT2', 'L', joptt2)
-    call jelira('&CATA.TE.OPTT2', 'LONMAX', n, kbid)
+    call jelira('&CATA.TE.OPTT2', 'LONMAX', n)
     call wkvect('&CATA.TE.OPTTE', 'G V I', nbte*nbop, joptte)
     do 2,ioptte=1,n/2
     iop=zi(joptt2-1+2*(ioptte-1)+1)

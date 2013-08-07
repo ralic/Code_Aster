@@ -51,7 +51,6 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     integer :: i, j, k, imatra, jscdi, jscbl, jschc, iblo, ldblo, n1bloc, n2bloc
     integer :: idvec2, idvec3, idbase
     complex(kind=8) :: pij
-    character(len=8) :: k8b
     character(len=16) :: typbas
     character(len=19) :: resu
     real(kind=8) :: zero
@@ -74,7 +73,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
     call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
-    call jeecra(resu//'.UALF', 'LONMAX', ntbloc, k8b)
+    call jeecra(resu//'.UALF', 'LONMAX', ntbloc)
 !
     call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
     zk24(ialime) = '                        '

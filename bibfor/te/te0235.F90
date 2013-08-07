@@ -47,19 +47,18 @@ subroutine te0235(option, nomte)
     real(kind=8) :: valres(nbres), r8b
     integer :: codres(nbres)
     character(len=8) :: nomres(nbres), nomail, fami, poum
-    character(len=24) :: mator
-    integer :: i, lmater, j, iret
+    integer :: i, lmater, j
     integer :: lorien, lmat
-    integer :: nno, nc, kpg, spt, nbgfmx
+    integer :: nno, nc, kpg, spt
     integer :: itype, lsect, lx, iadzi, iazk24, irota
-    integer :: inbfib, nbfib, jacf, icompo, isicom, npg, isdcom
+    integer :: inbfib, nbfib, jacf
     real(kind=8) :: omega(3), omegl(3), s
     real(kind=8) :: xl
     real(kind=8) :: zero, un, deux
     real(kind=8) :: e, g, xnu, rho
     real(kind=8) :: a, xiy, xiz, alfay, alfaz
     real(kind=8) :: pgl(3, 3), mlv(105), matp1(105)
-    real(kind=8) :: carsec(6), temp, rbid, casrho(6), casece(6)
+    real(kind=8) :: carsec(6), rbid, casrho(6), casece(6)
 !     ------------------------------------------------------------------
     data nomres/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
 !     ------------------------------------------------------------------

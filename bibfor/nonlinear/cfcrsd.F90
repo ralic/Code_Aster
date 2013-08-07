@@ -63,7 +63,6 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
     integer :: ztacf
     integer :: ndimg, ntpc, nnoco, neq
     integer :: nbliai, ii
-    character(len=8) :: k8bid
     character(len=19) :: mu, atmu, afmu, copo
     integer :: jmu, jatmu, jafmu, jcopo
     character(len=19) :: ddepl0, ddeplc, ddelt, depl0, deplc
@@ -292,7 +291,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
             enat = resoco(1:14)//'.ENAT'
             call jecrec(enat, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         nbenat)
-            call jeecra(enat, 'LONMAX', 30, k8bid)
+            call jeecra(enat, 'LONMAX', ival=30)
             do 30 ii = 1, nbenat
                 call jecroc(jexnum(enat, ii))
 30          continue
@@ -304,7 +303,7 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
             cm1a = resoco(1:14)//'.CM1A'
             call jecrec(cm1a, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         nbcm1a)
-            call jeecra(cm1a, 'LONMAX', neq, k8bid)
+            call jeecra(cm1a, 'LONMAX', ival=neq)
             do 40 ii = 1, nbcm1a
                 call jecroc(jexnum(cm1a, ii))
 40          continue
@@ -322,8 +321,8 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
                         nbfro1)
             call jecrec(fro2, 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                         nbfro2)
-            call jeecra(fro1, 'LONMAX', 30, k8bid)
-            call jeecra(fro2, 'LONMAX', 30, k8bid)
+            call jeecra(fro1, 'LONMAX', ival=30)
+            call jeecra(fro2, 'LONMAX', ival=30)
             do 41 ii = 1, nbfro1
                 call jecroc(jexnum(fro1, ii))
 41          continue

@@ -57,7 +57,7 @@ subroutine te0532(option, nomte)
     integer :: algocr, i, j, ifa, ipgf, isspg
     integer :: jindco, jdonco, jlst, ipoids, ivf, idfde, jgano, igeom
     integer :: idepl, jptint, jaint, jcface, jlonch, jgliss
-    integer :: ivff, iadzi, iazk24, ibid, ib, jout1, jout2
+    integer :: ivff, iadzi, iazk24, ibid, jout1, jout2
     integer :: jout3, jmemco, ndim, nfh, ddlc, ddls, ddlm
     integer :: npg, npgf, incoca, nfe, ninter, nnof
     integer :: indco, gliss, memco, nface, cface(5, 3)
@@ -66,18 +66,16 @@ subroutine te0532(option, nomte)
     integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, ncomph
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
     integer :: nbspg, nspfis, nvit, ncompv
-    integer :: icodre(3), nptf, ksp, spt
+    integer ::  nptf
     character(len=8) :: elref, typma, elrefc, job
     character(len=8) :: elc, fpg
-    character(len=8) :: fami, poum
-    character(len=9) :: phen
     real(kind=8) :: ffpc(27), rela, eps, rhon
-    real(kind=8) :: reac, ffp(27), ffc(8), lc, r3bid(3), jac
+    real(kind=8) :: reac, ffp(27), ffc(8), r3bid(3), jac
     real(kind=8) :: prec, nd(3), dn, saut(3), rr, rbid, r3bd(3)
     real(kind=8) :: coefcp, coeffp, coefcr, coeffr, r6bid(6)
     real(kind=8) :: p(3, 3), pp(3, 3), dsidep(6, 6), tau1(3), lamb(3)
     real(kind=8) :: tau2(3), alpha(3), dnor(3), dtang(3), am3(3), sigma(6)
-    real(kind=8) :: valres(3), cohes(3), mat3bd(3, 3), mat6bd(6, 6)
+    real(kind=8) ::  cohes(3), mat3bd(3, 3), mat6bd(6, 6)
     parameter    (prec=1.d-16)
     logical :: imprim, lbid
 !......................................................................

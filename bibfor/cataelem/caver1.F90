@@ -45,7 +45,7 @@ subroutine caver1()
     character(len=8) :: para, typmai
     character(len=16) :: nomopt, nomte
     character(len=24) :: valk(4)
-    character(len=8) :: kbid, gd1, gd2, tgd1(10), tgd2(10), typout, typou2
+    character(len=8) ::  gd1, gd2, tgd1(10), tgd2(10), typout, typou2
 !
 !
 !
@@ -58,8 +58,8 @@ subroutine caver1()
     integer :: nbvol, nucalc
 !-----------------------------------------------------------------------
     call jemarq()
-    call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt, kbid)
-    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte, kbid)
+    call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
+    call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
     call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
     call jeveuo('&CATA.TE.NBLIGCOL', 'L', ianblc)
     lgco = zi(ianblc-1+1)
@@ -242,8 +242,8 @@ subroutine caver1()
     do 90,k = 1,nbgd
     gd1 = tgd1(k)
     gd2 = tgd2(k)
-    call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', n1, kbid)
-    call jelira(jexnom('&CATA.GD.NOMCMP', gd2), 'LONMAX', n2, kbid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', gd1), 'LONMAX', n1)
+    call jelira(jexnom('&CATA.GD.NOMCMP', gd2), 'LONMAX', n2)
     if (n1 .ne. n2) then
         error = .true.
     else

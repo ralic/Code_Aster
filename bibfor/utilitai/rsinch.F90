@@ -79,7 +79,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     integer :: l1, l2
     character(len=1) :: stp, base2
     character(len=4) :: type, tysca
-    character(len=8) :: nomobj, k8bid, k8debu, k8maxi, k8ent
+    character(len=8) :: nomobj, k8debu, k8maxi, k8ent
     character(len=19) :: ch1, ch2
     character(len=8) :: prold2, prolg2
     character(len=19) :: noms2
@@ -124,8 +124,8 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         goto 9998
     endif
 !
-    call jelira(noms2//nomobj, 'TYPE', ibid, type)
-    call jelira(noms2//nomobj, 'LTYP', iloty, k8bid)
+    call jelira(noms2//nomobj, 'TYPE', cval=type)
+    call jelira(noms2//nomobj, 'LTYP', iloty)
     call codent(iloty, 'G', k8ent)
     tysca = type(1:1)//k8ent(1:3)
     if (tysca .ne. 'R8  ') then

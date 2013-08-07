@@ -101,7 +101,6 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     integer :: jcnsk2, jcnsd2, jcnsc2, jdirgr
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
     integer :: jresd1, jresc1, nbcmp
-    character(len=1) :: kbid
     character(len=3) :: tsca
     character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1)
     character(len=16) :: k16b, nomcmd
@@ -126,7 +125,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         nbnoc = 0
     else
         call jeveuo(mailc, 'L', jmac)
-        call jelira(mailc, 'LONMAX', nbmac, k8b)
+        call jelira(mailc, 'LONMAX', nbmac)
 !       RECHERCHE DE LA LISTE DE NOEUDS SOUS-JACENTE
         call dismoi('F', 'NB_NO_MAILLA', malini, 'MAILLAGE', nbno,&
                     k8b, iret)
@@ -162,15 +161,15 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !       CREATION DES .NOMMAI, .NOMNOE, .TYPMAIL, .COORDO  .CONNEX
 !       DU MAILLAGE 2
         call jecreo(maxfem//'.NOMMAI', 'G N K8')
-        call jeecra(maxfem//'.NOMMAI', 'NOMMAX', nbma2, k8b)
+        call jeecra(maxfem//'.NOMMAI', 'NOMMAX', nbma2)
 !
         call jecreo(maxfem//'.NOMNOE', 'G N K8')
-        call jeecra(maxfem//'.NOMNOE', 'NOMMAX', nbno2, k8b)
+        call jeecra(maxfem//'.NOMNOE', 'NOMMAX', nbno2)
 !
         coord2= maxfem//'.COORDO'
         call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), igeomr)
         call wkvect(coord2//'.DESC', 'G V I', 3, iadesc)
-        call jeecra(coord2//'.DESC', 'DOCU', ibid, 'CHNO')
+        call jeecra(coord2//'.DESC', 'DOCU', cval='CHNO')
         zi (iadesc-1+1)= igeomr
 !       -- TOUJOURS 3 COMPOSANTES X, Y ET Z
         zi (iadesc-1+2)= -3
@@ -184,7 +183,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !
         call jecrec(maxfem//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     nbma2)
-        call jeecra(maxfem//'.CONNEX', 'LONT', ncotot, k8b)
+        call jeecra(maxfem//'.CONNEX', 'LONT', ncotot)
 !
 !       .GROUPEMA
 !       NOMBRE DE GROUP_MA A CREER DANS MAXFEM : NBGMA2
@@ -194,8 +193,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call jeexin(malini//'.GROUPEMA', igma1)
         if (igma1 .ne. 0) then
             call jeveuo(logrma, 'L', jlogma)
-            call jelira(logrma, 'LONMAX', nbgma, kbid)
-            call jelira(malini//'.GROUPEMA', 'NUTIOC', nbgma1, kbid)
+            call jelira(logrma, 'LONMAX', nbgma)
+            call jelira(malini//'.GROUPEMA', 'NUTIOC', nbgma1)
             ASSERT(nbgma.eq.nbgma1)
             do 30 i = 1, nbgma
                 if (zi(jlogma-1+i) .ne. 0) nbgma2 = nbgma2 + 1
@@ -204,7 +203,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         if (nbgma2 .ne. 0) then
             gpptnm = maxfem//'.PTRNOMMAI'
             call jecreo(gpptnm, 'G N K24')
-            call jeecra(gpptnm, 'NOMMAX', nbgma2, ' ')
+            call jeecra(gpptnm, 'NOMMAX', nbgma2)
             call jecrec(maxfem//'.GROUPEMA', 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                         nbgma2)
 !         CREATION DU VECTEUR D'INDIRECTION DES GROUP_MA
@@ -218,8 +217,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                     n = zi(jlogma-1+i)
                     cptgr2 = cptgr2 + 1
                     zi(jdirgr-1+i)=cptgr2
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONMAX', n, kbid)
-                    call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONUTI', n, kbid)
+                    call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONMAX', n)
+                    call jeecra(jexnum(maxfem//'.GROUPEMA', cptgr2), 'LONUTI', n)
                     write(ifm,808) nogma,n
                 endif
 31              continue
@@ -244,7 +243,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !       ---------------------------------------------------------------
 !
 !       CHAMP A POST-TRAITER
-        call jelira(licham, 'LONMAX', nbcham, k8b)
+        call jelira(licham, 'LONMAX', nbcham)
         call jeveuo(licham, 'L', jlicha)
 !
         call dismoi('F', 'DIM_GEOM', malini, 'MAILLAGE', ndim,&

@@ -76,7 +76,6 @@ subroutine xmolig(liel1, trav)
 !
     integer :: jtab, ngr1, igr1, j1, n1, nbelt, itypel, iel, ima, jj
     integer :: jnbsp, nfiss, i
-    character(len=8) :: k8bid
     character(len=16) :: notype
 !
 ! ----------------------------------------------------------------------
@@ -419,11 +418,11 @@ subroutine xmolig(liel1, trav)
     call jeveuo('&&XTYELE.NBSP', 'L', jnbsp)
 !
 !     REMPLISSAGE DE LA 5EME COLONNE DU TABLEAU AVEC LE TYPE D'ELEMENT
-    call jelira(liel1, 'NMAXOC', ngr1, k8bid)
+    call jelira(liel1, 'NMAXOC', ngr1)
 !
     do 200 igr1 = 1, ngr1
         call jeveuo(jexnum(liel1, igr1), 'L', j1)
-        call jelira(jexnum(liel1, igr1), 'LONMAX', n1, k8bid)
+        call jelira(jexnum(liel1, igr1), 'LONMAX', n1)
         nbelt=n1-1
         itypel=zi(j1-1+n1)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)

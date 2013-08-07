@@ -130,7 +130,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
     call jeexin(charge, iret)
     if (iret .ne. 0) then
 ! LECTURE DU NBRE DE CHARGE NCHAR DANS L'OBJET JEVEUX CHARGE
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (nchar .ne. 0) then
             bidon = .false.
 ! LECTURE DES ADRESSES JEVEUX DES CHARGES ET DES INFOS AFFERENTES
@@ -157,14 +157,14 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 ! ET DE LONGUEUR UTILE NULLE
     if (bidon) then
         call wkvect(vecelz, 'V V K24', 1, jlve)
-        call jeecra(vecelz, 'LONUTI', 0, k8bid)
+        call jeecra(vecelz, 'LONUTI', 0)
 ! PAS DE CHARGE, ON S'EN VA
         goto 80
     else
 ! NCHAR CHARGES, ON PREPARE LES SDS DE STOCKAGE IDOINES
         lonlis = nbchmx*nchar
         call wkvect(vecelz, 'V V K24', lonlis, jlve)
-        call jeecra(vecelz, 'LONUTI', 0, k8bid)
+        call jeecra(vecelz, 'LONUTI', 0)
     endif
 !
 ! RECHERCHE DU CHAMP DE GEOMETRIE CHGEOM ASSOCIE AU MODELE(1:8) ET A LA
@@ -360,7 +360,7 @@ subroutine vechth(modelz, chargz, infocz, carelz, matez,&
 ! 6. FIN BOUCLE SUR LES CHARGES ========================================
 !====
 ! MODIFICATION DU NBRE DE TERMES UTILES DU VECTEUR ELEM RESULTAT
-    call jeecra(vecelz, 'LONUTI', ilve, k8bid)
+    call jeecra(vecelz, 'LONUTI', ilve)
 !
 ! SORTIE DE SECOURS EN CAS D'ABSENCE DE CHARGE
 80  continue

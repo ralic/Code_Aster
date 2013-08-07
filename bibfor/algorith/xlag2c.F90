@@ -53,7 +53,6 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 !
     integer :: ier, jliseq, neq, jlisla, i, nuno, ima, ino, ifiss
     integer :: jcnsl, jcnsv, jcesd, jcesv, jcesl, iad
-    character(len=8) :: k8bid
     character(len=19) :: noxfem, heavno
 !
 ! ----------------------------------------------------------------------
@@ -65,7 +64,7 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
     call jeexin(nliseq, ier)
     if (ier .eq. 0) goto 999
     call jeveuo(nliseq, 'L', jliseq)
-    call jelira(nliseq, 'LONMAX', neq, k8bid)
+    call jelira(nliseq, 'LONMAX', neq)
 !
 ! --- RECUPÉRATION DE NOXFEM
 !

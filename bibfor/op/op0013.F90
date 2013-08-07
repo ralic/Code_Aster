@@ -59,7 +59,7 @@ subroutine op0013()
 !
 !
     call jecreo(vecas//'.LI2VECEL', 'V V K8 ')
-    call jeecra(vecas//'.LI2VECEL', 'LONMAX', nbvec, ' ')
+    call jeecra(vecas//'.LI2VECEL', 'LONMAX', nbvec)
     call jeveuo(vecas//'.LI2VECEL', 'E', ilivec)
     call getvid(' ', 'VECT_ELEM', 0, iarg, nbvec,&
                 zk8(ilivec), nbvec)
@@ -69,7 +69,7 @@ subroutine op0013()
 !
 !
     call jecreo(vecas//'.LICOEF', 'V V R ')
-    call jeecra(vecas//'.LICOEF', 'LONMAX', nbvec, ' ')
+    call jeecra(vecas//'.LICOEF', 'LONMAX', nbvec)
     call jeveuo(vecas//'.LICOEF', 'E', ilicoe)
     do 5 i = 1, nbvec
         zr(ilicoe-1+i) = 1.0d0

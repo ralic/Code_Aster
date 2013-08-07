@@ -69,7 +69,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
 !
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         call jeveuo(charge, 'L', jchar)
     else
         nchar = 0
@@ -87,7 +87,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     else
         call jeveuo(vebtem, 'E', jdir)
     endif
-    call jeecra(vebtem, 'LONUTI', 0, k8bid)
+    call jeecra(vebtem, 'LONUTI', 0)
 !
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
 !
@@ -125,7 +125,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
                 ndir = ndir + 1
                 zk24(jdir+ndir-1) = lchout(1)
             endif
-            call jeecra(vebtem, 'LONUTI', ndir, k8bid)
+            call jeecra(vebtem, 'LONUTI', ndir)
 !
 10      continue
 !

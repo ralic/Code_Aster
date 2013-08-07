@@ -91,7 +91,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
     call dismoi('F', 'NOM_GD', depla, 'CHAM_NO', ibid,&
                 nomgd, iret)
     ASSERT(nomgd(1:6).eq.'DEPL_R')
-    call jelira(depla//'.VALE', 'TYPE', ibid, ktype)
+    call jelira(depla//'.VALE', 'TYPE', cval=ktype)
     ASSERT(ktype(1:1).eq.'R')
 !
 ! --- ON RECOPIE BESTIALEMENT LE CHAMP POUR CREER LE NOUVEAU
@@ -105,7 +105,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nbno,&
                 k8bid, iret)
 !
-    call jelira(geomi//'.VALE', 'LONMAX', ldim, k8bid)
+    call jelira(geomi//'.VALE', 'LONMAX', ldim)
     ASSERT(ldim/3.eq.nbno)
 !
 ! --- ACCES AUX CHAMPS
@@ -123,7 +123,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
     num = zi(iadesc-1+2)
     nec = nbec(igd)
     ASSERT(nec.le.10)
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx, k8bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', igd), 'L', iad)
     ASSERT(zk8(iad-1+1).eq.'DX')
     ASSERT(zk8(iad-1+2).eq.'DY')
@@ -148,7 +148,7 @@ subroutine vtgpld(cumul, geomiz, alpha, deplaz, base,&
 !
 ! --- ON RECUPERE CE QUI CONCERNE LES NOEUDS DU MAILLAGE
 !
-        call jelira(jexnum(nomnu(1:19)//'.PRNO', 1), 'LONMAX', ibid, k8bid)
+        call jelira(jexnum(nomnu(1:19)//'.PRNO', 1), 'LONMAX', ibid)
         ASSERT(ibid.ne.0)
         call jeveuo(jexnum(nomnu(1:19)//'.PRNO', 1), 'L', iaprno)
         do 11 ino = 1, nbno

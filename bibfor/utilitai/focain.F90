@@ -53,7 +53,6 @@ subroutine focain(method, nomfon, cste, sortie, base)
     character(len=16) :: nomres, typres
     character(len=19) :: nomfi, nomfs
     character(len=24) :: vale, prol
-    character(len=1) :: k1bid
 !     ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -70,7 +69,7 @@ subroutine focain(method, nomfon, cste, sortie, base)
         call u2mesk('F', 'MODELISA2_5', 1, nomfi)
     endif
     vale = nomfi//'.VALE'
-    call jelira(vale, 'LONUTI', nbval, k1bid)
+    call jelira(vale, 'LONUTI', nbval)
     call jeveuo(vale, 'L', lvar)
     nbpts = nbval/2
     lfon = lvar + nbpts

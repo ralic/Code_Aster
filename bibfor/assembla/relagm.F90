@@ -92,7 +92,7 @@ subroutine relagm(mo, ma, nm, nl, newn,&
     exilag=.false.
     if (zi(iasssa-1+ima) .eq. 1) then
         call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', iamail)
-        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm, kbid)
+        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nbnm)
 !
 !         -- ON REGARDE LES NUMEROS PHYSIQUES MAX ET MIN DE LA MAILLE:
         iprem =0

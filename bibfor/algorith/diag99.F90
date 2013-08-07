@@ -74,7 +74,7 @@ subroutine diag99(nomres)
     call getvid('DIAG_MASS', 'MODE_MECA', 1, iarg, 1,&
                 meca, n1)
 !
-    call jelira(meca//'           .ORDR', 'LONUTI', nbmode, k8b)
+    call jelira(meca//'           .ORDR', 'LONUTI', nbmode)
     call jeveuo(meca//'           .ORDR', 'L', jordm)
     call jeveuo(nomres//'           .REFD', 'L', llref)
     masse = zk24(llref+1)
@@ -96,7 +96,7 @@ subroutine diag99(nomres)
     call getvid('DIAG_MASS', 'MODE_STAT', 1, iarg, 1,&
                 stat, n1)
 !
-    call jelira(stat//'           .ORDR', 'LONUTI', nbstat, k8b)
+    call jelira(stat//'           .ORDR', 'LONUTI', nbstat)
     call jeveuo(stat//'           .ORDR', 'L', jords)
     call wkvect('&&DIAG99.MODE_STAT', 'V V R', nbstat*neq, idstat)
     call copmod(stat, 'DEPL', neq, nu, nbstat,&

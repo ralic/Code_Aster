@@ -73,7 +73,6 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     parameter    (nmaxob=30)
     integer :: adobj(nmaxob), nbobj, nbsp
 !
-    character(len=1) :: cbid, k1bid
     character(len=8) :: k8b, erdm
     character(len=16) :: valk(4)
     character(len=19) :: optele, nochou, chams0, chams1
@@ -86,7 +85,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
     call jeexin(mesmai, ier)
     if (ier .ne. 0) then
         call jeveuo(mesmai, 'L', jmai)
-        call jelira(mesmai, 'LONMAX', nbma, cbid)
+        call jelira(mesmai, 'LONMAX', nbma)
     else
         nbma = 0
     endif
@@ -143,7 +142,7 @@ subroutine ccchno(option, numord, resuin, resuou, lichou,&
             call dismoi('F', 'EXI_COQ3D', ligrel, 'LIGREL', ibid,&
                         erdm, ier)
             if (erdm .eq. 'OUI' .and. ligmod) then
-                call jelira(ligrel(1:19)//'.LIEL', 'NUTIOC', ngr, k1bid)
+                call jelira(ligrel(1:19)//'.LIEL', 'NUTIOC', ngr)
                 do 10 igr = 1, ngr
                     call inigrl(ligrel, igr, nmaxob, adobj, noobj,&
                                 nbobj)

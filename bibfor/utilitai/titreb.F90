@@ -503,7 +503,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !CC   CONCEPT INEXISTANT
                 goto 210
             endif
-            call jelira(para(iuti), 'TYPE', ival, cval)
+            call jelira(para(iuti), 'TYPE', cval=cval)
             call jeveuo(para(iuti), 'L', jad)
             if (cval(1:1) .eq. 'R') then
                 rbid = zr(jad)
@@ -516,7 +516,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                 igen = lxlgut(cgen)
                 ideb = igen+1
             else if (cval(1:1).eq.'K') then
-                call jelira(para(iuti), 'LTYP', ival, cval)
+                call jelira(para(iuti), 'LTYP', ival)
                 if (ival .eq. 80) then
                     cgen(ideb:) = zk80(jad-1+1)
                     igen = lxlgut(cgen)

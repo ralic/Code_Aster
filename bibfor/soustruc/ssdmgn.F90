@@ -125,7 +125,7 @@ subroutine ssdmgn(mag)
                 call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno, kbid)
                 nbgnot= nbgnot+nbgno
                 do  igno=1,nbgno
-                    call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3, kbid)
+                    call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
                     lont= lont+n3
                 end do
 21              continue
@@ -144,7 +144,7 @@ subroutine ssdmgn(mag)
             nomacr= zk8(ianmcr-1+isma)
             call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
                         mal, ied)
-            call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3, kbid)
+            call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3)
             nbgnot= nbgnot+1
             lont=lont+n3
         endif
@@ -205,17 +205,17 @@ subroutine ssdmgn(mag)
                 call jenuno(jexnum(mag//'.SUPMAIL', isma), nomail)
                 i1noe=zi(iadim2-1+4*(isma-1)+3)
                 call jeveuo(nomacr//'.LINO', 'L', ialino)
-                call jelira(nomacr//'.LINO', 'LONUTI', nbnoex, kbid)
+                call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
                 call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
                             mal, ied)
                 call jeexin(mal//'.GROUPENO', iret)
                 if (iret .eq. 0) then
                     nbgno=0
                 else
-                    call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno, kbid)
+                    call jelira(mal//'.GROUPENO', 'NUTIOC', nbgno)
                 endif
                 do igno=1,nbgno
-                    call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3, kbid)
+                    call jelira(jexnum(mal//'.GROUPENO', igno), 'LONMAX', n3)
                     call jeveuo(jexnum(mal//'.GROUPENO', igno), 'L', iagnl)
                     call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
                                 zi(iawk1), lont, nbno)
@@ -236,8 +236,8 @@ subroutine ssdmgn(mag)
 !               --3.1.2 RECOPIE DES NUMEROS DE NOEUDS:
 !               --------------------------------------
                         call jecroc(jexnom(mag//'.GROUPENO', nomgng))
-                        call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONMAX', nbno, kbid)
-                        call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno, kbid)
+                        call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONMAX', nbno)
+                        call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                         call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
                         do ii=1,nbno
                             inol=zi(iawk1-1+ii)
@@ -265,18 +265,18 @@ subroutine ssdmgn(mag)
             i1noe=zi(iadim2-1+4*(isma-1)+3)
             nomacr= zk8(ianmcr-1+isma)
             call jeveuo(nomacr//'.LINO', 'L', ialino)
-            call jelira(nomacr//'.LINO', 'LONUTI', nbnoex, kbid)
+            call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
                         mal, ied)
-            call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3, kbid)
+            call jelira(jexnom(mal//'.GROUPENO', nomgnl), 'LONUTI', n3)
             call jeveuo(jexnom(mal//'.GROUPENO', nomgnl), 'L', iagnl)
             call utlisi('INTER', zi(ialino), nbnoex, zi(iagnl), n3,&
                         zi(iawk1), lont, nbno)
 !
             if (nbno .gt. 0) then
                 call jecroc(jexnom(mag//'.GROUPENO', nomgng))
-                call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONMAX', nbno, kbid)
-                call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno, kbid)
+                call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONMAX', nbno)
+                call jeecra(jexnom(mag//'.GROUPENO', nomgng), 'LONUTI', nbno)
                 call jeveuo(jexnom(mag//'.GROUPENO', nomgng), 'E', iagno)
                 do ii=1,nbno
                     inol=zi(iawk1-1+ii)

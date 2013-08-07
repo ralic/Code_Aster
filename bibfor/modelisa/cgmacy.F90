@@ -62,7 +62,6 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=*) :: mofaz, nomaz, lismaz
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    character(len=1) :: k1bid
     character(len=8) :: noma, k8bid, nomail
     character(len=16) :: motfac, mocle(3)
     character(len=24) :: lismai
@@ -231,7 +230,7 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 ! ---     RECUPERATION DU NOMBRE DE CONNECTIVITES DE LA MAILLE :
 !         ----------------------------------------------------
         call jenonu(jexnom(noma//'.NOMMAI', nomail), ibid)
-        call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', nbno)
 !
 ! ---      COMPTE NOMBRE DES NOEUDS D'UN MAILLE DANS LE CYLINDRE :
 !          ------------------------------------------------------

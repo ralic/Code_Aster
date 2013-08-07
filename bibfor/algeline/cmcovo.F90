@@ -72,12 +72,12 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     integer :: jnorn, ima, n1, n2, n3, nnoaj, ic, i, ij, iq4, it3
     integer :: jnosto, jlisma, jnbnum, ino, jnorm
     integer :: jtypm, numa, nbno, lgno, inov, jnewm
-    integer :: iret, jnonew, jvale, kvale, ibid, lgnu, lgpref, nbgrmv
+    integer :: iret, jnonew, jvale, kvale, lgnu, lgpref, nbgrmv
     integer :: typhex, typpen, iatyma, nbnomx, ier, imav, lgnd, nbgrmn
     integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg, jrefe
     integer :: nbmai, jgg, nbmat, jno, ima2
     character(len=1) :: k1b
-    character(len=8) :: k8b, knume, cdim, typm, ma1, ma2
+    character(len=8) ::  knume, cdim, typm, ma1, ma2
     character(len=10) :: kangl
     character(len=24) :: normno, nonuma, grpmai, grpmav
     character(len=24) :: valk(4)
@@ -146,7 +146,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         else
             call u2mesk('F', 'ALGELINE_14', 1, typm)
         endif
-        call jelira(jexnum(connev, numa), 'LONMAX', nbno, k8b)
+        call jelira(jexnum(connev, numa), 'LONMAX', nbno)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         do 12 ino = 1, nbno
             zi(jnosto+zi(jopt+ino-1)-1) = 1
@@ -175,7 +175,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
     do 20 ima = 1, nbma
         numa = lima(ima)
-        call jelira(jexnum(connev, numa), 'LONMAX', nbno, k1b)
+        call jelira(jexnum(connev, numa), 'LONMAX', nbno)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
 !
 ! --- CALCUL DU PRODUIT VECTORIEL RELATIF A LA MAILLE NUMA
@@ -227,7 +227,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !     -------------------------
     do 32 ima = 1, nbma
         numa = lima(ima)
-        call jelira(jexnum(connev, numa), 'LONMAX', nbno, k1b)
+        call jelira(jexnum(connev, numa), 'LONMAX', nbno)
         call jeveuo(jexnum(connev, numa), 'L', jopt)
         do 34 ij = 1, nbno
             ino = zi(jopt+ij-1)
@@ -300,7 +300,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     zi(jdimo+5) = 3
 !
     call jecreo(nomnoe, 'G N K8')
-    call jeecra(nomnoe, 'NOMMAX', nbnot, ' ')
+    call jeecra(nomnoe, 'NOMMAX', nbnot)
 !
 ! --- ON ECRIT LES NOEUDS DE MAIN DANS MAOUT
 !
@@ -352,7 +352,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     call jeveuo(coovav, 'L', jvale)
     call wkvect(cooval, 'G V R8', 3*nbnot, kvale)
     call codent(3, 'G', cdim)
-    call jeecra(cooval, 'DOCU', ibid, cdim)
+    call jeecra(cooval, 'DOCU', cval=cdim)
 !
 ! --- ON RECOPIE DANS MAOUT LES COORDONNEES DES NOEUDS DE MAIN
 !
@@ -415,7 +415,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6' ), typpen)
 !
     call jecreo(nommai, 'G N K8')
-    call jeecra(nommai, 'NOMMAX', nbmat, ' ')
+    call jeecra(nommai, 'NOMMAX', nbmat)
 !
     call wkvect(typmai, 'G V I', nbmat, iatyma)
 !
@@ -425,7 +425,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmat)
-    call jeecra(connex, 'LONT', nbnomx*nbmat, ' ')
+    call jeecra(connex, 'LONT', ival=nbnomx*nbmat)
 !
 ! --- ON RECUPERE LES MAILLES DE MAIN DANS MAOUT
 !
@@ -444,9 +444,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
         zi(iatyma-1+ima) = zi(jtypm+ima-1)
 !
         call jeveuo(jexnum(connev, ima), 'L', jopt)
-        call jelira(jexnum(connev, ima), 'LONMAX', nbpt, k1b)
+        call jelira(jexnum(connev, ima), 'LONMAX', nbpt)
 !
-        call jeecra(jexnum(connex, ima), 'LONMAX', nbpt, k8b)
+        call jeecra(jexnum(connex, ima), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ima), 'E', jnpt)
 !
         do 92 ino = 1, nbpt
@@ -488,7 +488,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             nbpt = 8
             zi(iatyma-1+ima2) = typhex
 !
-            call jeecra(jexnum(connex, ima2), 'LONMAX', nbpt, k8b)
+            call jeecra(jexnum(connex, ima2), 'LONMAX', nbpt)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 102 ino = 1, 4
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
@@ -505,7 +505,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             nbpt = 6
             zi(iatyma-1+ima2) = typpen
 !
-            call jeecra(jexnum(connex, ima2), 'LONMAX', nbpt, k8b)
+            call jeecra(jexnum(connex, ima2), 'LONMAX', nbpt)
             call jeveuo(jexnum(connex, ima2), 'E', jnpt)
             do 106 ino = 1, 3
                 zi(jnpt-1+ino) = zi(jopt-1+ino)
@@ -526,12 +526,12 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
     if (iret .eq. 0) then
         nbgrmv = 0
     else
-        call jelira(grpmav, 'NOMUTI', nbgrmv, k1b)
+        call jelira(grpmav, 'NOMUTI', nbgrmv)
     endif
     nbgrmn = nbgrmv + 1
     if (nbgrmn .ne. 0) then
         call jecreo(grpnma, 'G N K24')
-        call jeecra(grpnma, 'NOMMAX', nbgrmn, ' ')
+        call jeecra(grpnma, 'NOMMAX', nbgrmn)
         call jecrec(grpmai, 'G V I', 'NO '//grpnma, 'DISPERSE', 'VARIABLE',&
                     nbgrmn)
         do 110 i = 1, nbgrmv
@@ -545,9 +545,9 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                             0, 0, 0.d0)
             endif
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbmai, k1b)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbmai), ' ')
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmai, ' ')
+            call jelira(jexnum(grpmav, i), 'LONUTI', nbmai)
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbmai))
+            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmai)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             do 112 j = 0, nbmai - 1
                 zi(jgg+j) = zi(jvg+j)
@@ -564,8 +564,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
             call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
                         0, 0, 0.d0)
         endif
-        call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma), ' ')
-        call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma, ' ')
+        call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma))
+        call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
         call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
         do 120 j = 1, nbma
             zi(jgg+j-1) = zi(jnewm+j-1)
@@ -576,15 +576,15 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
 !  -------------------------------------------------------------
     call jeexin(grpnov, iret)
     if (iret .ne. 0) then
-        call jelira(grpnov, 'NOMUTI', nbgrno, k1b)
+        call jelira(grpnov, 'NOMUTI', nbgrno)
         call jecreo(grpnno, 'G N K24')
-        call jeecra(grpnno, 'NOMMAX', nbgrno, ' ')
+        call jeecra(grpnno, 'NOMMAX', nbgrno)
         call jecrec(grpnoe, 'G V I', 'NO '//grpnno, 'DISPERSE', 'VARIABLE',&
                     nbgrno)
         do 240 i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
-            call jelira(jexnum(grpnov, i), 'LONUTI', nbno, k1b)
+            call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
             call jeexin(jexnom(grpnoe, nomg), iret)
             if (iret .eq. 0) then
                 call jecroc(jexnom(grpnoe, nomg))
@@ -593,8 +593,8 @@ subroutine cmcovo(main, maout, nbma, lima, prefno,&
                 call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
                             0, 0, 0.d0)
             endif
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno), ' ')
-            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno, ' ')
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(1, nbno))
+            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 230 j = 0, nbno - 1
                 zi(jgg+j) = zi(jvg+j)

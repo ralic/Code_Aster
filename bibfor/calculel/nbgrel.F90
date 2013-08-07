@@ -28,11 +28,10 @@ function nbgrel(ligrlz)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: nb1
-    character(len=1) :: k1bid
 !
     ligrel = ligrlz
 ! DEB-------------------------------------------------------------------
 !
-    call jelira(ligrel//'.LIEL', 'NUTIOC', nb1, k1bid)
+    call jelira(ligrel//'.LIEL', 'NUTIOC', nb1)
     nbgrel = nb1
 end function

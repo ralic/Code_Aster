@@ -126,7 +126,7 @@ subroutine mmaxgl(nborn, born, gbil, noeu, abcur,&
     collec = '&&MMAXGL.BORNES_Q'
     call jecrec(collec, 'V V R', 'NU', 'CONTIG', 'CONSTANT',&
                 2**lonvec)
-    call jeecra(collec, 'LONMAX', lonvec, ' ')
+    call jeecra(collec, 'LONMAX', lonvec)
     call wkvect('&&MMAXGL.GQIJ', 'V V R', lonvec, igq)
     call wkvect('&&MMAXGL.TABL', 'V V R', lonvec+4, ipa)
     call wkvect('&&MMAXGL.RMAX', 'V V R', lonvec+4, irmax)

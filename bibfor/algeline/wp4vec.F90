@@ -56,7 +56,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp,&
 !
 !     ------------------------------------------------------------------
     real(kind=8) :: am, om, nmabp, seuilp, seuilr, c1, auxrj, auxij, auxrk
-    real(kind=8) :: auxik, seuilc, rbid
+    real(kind=8) :: auxik, seuilc
     integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
     integer :: vali(5), ifm, niv, nbfr, ibid
     logical :: trouve, lconj

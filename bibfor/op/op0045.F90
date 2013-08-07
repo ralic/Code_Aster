@@ -342,7 +342,7 @@ subroutine op0045()
     endif
 !
 !     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
-    call jelira(raide//'.VALM', 'TYPE', ibid, ktyp)
+    call jelira(raide//'.VALM', 'TYPE', cval=ktyp)
     if (ktyp .eq. 'R') then
         lkr=.true.
     else if (ktyp.eq.'C') then

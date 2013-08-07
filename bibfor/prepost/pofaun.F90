@@ -104,7 +104,7 @@ subroutine pofaun()
     if (n1 .ne. 0) fateps = .true.
 !
     fvale = nomfon//'           .VALE'
-    call jelira(fvale, 'LONMAX', nbpts, k8b)
+    call jelira(fvale, 'LONMAX', nbpts)
     call jeveuo(fvale, 'L', ifonc)
     nbpts = nbpts/2
     call wkvect('&&POFAUN.FONC.POIN', 'V V R', nbpts, ivpoin)

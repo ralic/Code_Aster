@@ -60,7 +60,6 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
     integer :: lldeeq, nbnoe, inoe
     parameter (nbcpmx=300)
     integer :: idec(nbcpmx), ivddl(nbddl)
-    character(len=1) :: k1bid
     character(len=4) :: nliai
     character(len=8) :: basmod, nomint, intf, temp
     character(len=8) :: k8bid
@@ -133,7 +132,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl,&
     noeint=intf//'.IDC_LINO'
 !
     call jeveuo(jexnum(noeint, numint), 'L', llnoe)
-    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe, k1bid)
+    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe)
 !
 !---------------RECUPERATION DU DESCRIPTEUR DES DEFORMEES---------------
 !

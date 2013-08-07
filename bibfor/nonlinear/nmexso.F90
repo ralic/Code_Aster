@@ -132,11 +132,11 @@ subroutine nmexso(noma, result, sddyna, numedd)
         call jeveuo(noma//'.NOMACR', 'L', iamacr)
         call jenonu(jexnom(noma//'.SUPMAIL', maille), ima)
         nomacr = zk8(iamacr-1+ima)
-        call jelira(nomacr//'.LINO', 'LONMAX', nbno, k8bid)
+        call jelira(nomacr//'.LINO', 'LONMAX', ival=nbno)
         call jeveuo(nomacr//'.LINO', 'L', idno)
     else
         magrno = noma(1:8)//'.GROUPENO'
-        call jelira(jexnom(magrno, gnintf), 'LONUTI', nbno, k8bid)
+        call jelira(jexnom(magrno, gnintf), 'LONUTI', ival=nbno)
         call jeveuo(jexnom(magrno, gnintf), 'L', idno)
     endif
 !

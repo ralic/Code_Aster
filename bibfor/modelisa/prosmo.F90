@@ -76,7 +76,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     character(len=*) :: limat(nbmat)
     character(len=1) :: rouc
 ! -----  VARIABLES LOCALES
-    character(len=1) :: k1bid, base
+    character(len=1) ::  base
     character(len=14) :: numddl, numdd1, numddi
     character(len=19) :: matres, mat1, mati
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
@@ -194,7 +194,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     if (ibl1 .eq. 1) lgbl = lcumu
     call jecrec(kliste, 'V V I', 'NU', 'DISPERSE', 'CONSTANT',&
                 ibl1)
-    call jeecra(kliste, 'LONMAX', lgbl, k1bid)
+    call jeecra(kliste, 'LONMAX', lgbl)
     do 40 kbl = 1, ibl1
         call jeveuo(jexnum(kliste, kbl), 'E', jbl1)
         call jelibe(jexnum(kliste, kbl))
@@ -334,7 +334,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
     endif
     call jecrec(kvalm, base//' V '//rouc, 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
-    call jeecra(kvalm, 'LONMAX', itbloc, ' ')
+    call jeecra(kvalm, 'LONMAX', itbloc)
     do 110,kbloc = 1,nbloc
     call jecroc(jexnum(kvalm, kbloc))
     110 end do

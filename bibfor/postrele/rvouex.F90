@@ -113,7 +113,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
 !
         call jeexin(nchp19//'.DESC', ibid)
         if (ibid .gt. 0) then
-            call jelira(nchp19//'.DESC', 'DOCU', ibid, docu)
+            call jelira(nchp19//'.DESC', 'DOCU', cval=docu)
         else
 !
 !          -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
@@ -128,7 +128,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call celcel('PAS_DE_SP', nchp19, 'V', '&&RVOUEX.CHAMEL2')
                 nchp19= '&&RVOUEX.CHAMEL2'
             endif
-            call jelira(nchp19//'.CELD', 'DOCU', ibid, docu)
+            call jelira(nchp19//'.CELD', 'DOCU', cval=docu)
         endif
 !
         call dismoi('F', 'NOM_MAILLA', nchp19, 'CHAMP', ibid,&
@@ -136,7 +136,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
         nconec = nmaila//'.CONNEX'
         ncncin = '&&OP0051.CONNECINVERSE  '
 !
-        call jelira(nconec, 'NMAXOC', nbtma, k8b)
+        call jelira(nconec, 'NMAXOC', nbtma)
 !
         nbtrou = 0
         jmmail = 1
@@ -234,11 +234,11 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                 call jeexin(ncncin, n2)
                 if (n2 .eq. 0) call cncinv(nmaila, ibid, 0, 'V', ncncin)
 !
-                call jelira(lstnac, 'LONMAX', nbnac, k8b)
+                call jelira(lstnac, 'LONMAX', nbnac)
                 call jeveuo(lstnac, 'L', alsnac)
 !
                 call jecreo('&&RVOUEX.LISTE.ENTIER', 'V V I')
-                call jeecra('&&RVOUEX.LISTE.ENTIER', 'LONMAX', nbtma, ' ')
+                call jeecra('&&RVOUEX.LISTE.ENTIER', 'LONMAX', nbtma)
                 call jeveuo('&&RVOUEX.LISTE.ENTIER', 'E', aliste)
 !
                 libre = 1

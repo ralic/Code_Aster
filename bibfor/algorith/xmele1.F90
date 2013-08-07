@@ -43,7 +43,6 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 #include "asterfort/wkvect.h"
 #include "asterfort/xmelin.h"
 #include "asterfort/xxconi.h"
-    character(len=32) :: jexnum
     character(len=8) :: noma, modele
     character(len=*) :: param, option
     integer :: nfiss
@@ -177,7 +176,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
             nmaenr = 0
             if (iret .ne. 0) then
                 call jeveuo(grp, 'L', jgrp)
-                call jelira(grp, 'LONMAX', nmaenr, k8bid)
+                call jelira(grp, 'LONMAX', nmaenr)
             endif
 !
 ! --- BOUCLE SUR LES MAILLES DE CONTACT DE LA FISSURE
@@ -277,7 +276,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
             call jeexin(grp, iret)
             if (iret .ne. 0) then
                 call jeveuo(grp, 'L', jgrp)
-                call jelira(grp, 'LONMAX', nmaenr, k8bid)
+                call jelira(grp, 'LONMAX', nmaenr)
                 do 120 i = 1, nmaenr
                     ima = zi(jgrp-1+i)
 !

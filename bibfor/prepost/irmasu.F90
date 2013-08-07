@@ -76,7 +76,6 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     integer :: icodno, icodma, versio, codphd(*)
     integer :: itri7, iqua9, iseg4, ihex27, ipen18
     logical :: lmasu, lpout, lmod
-    character(len=8) :: kbid
 ! ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iagrma, iagrno, ica, icc, icf, icod
@@ -296,7 +295,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !     --- TRAITEMENT DES GROUPES DE NOEUDS
     do 752 ign = 1, nbgrn
         call jeveuo(jexnum(noma//'.GROUPENO', ign), 'L', iagrno)
-        call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn, kbid)
+        call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
         call wkvect('&&IRMASU.NOGR', 'V V I', nbn, jnogr)
         write (ifc,fmt='(8I10)') ign,0,0,0,0,0,0,nbn
         write (ifc,fmt='(A)') nogn(ign)
@@ -317,7 +316,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
 !       - RECUPERATION DU NOMBRE DE MAILLES DU GROUPE
 !         ET DU POINTEUR SURLE GROUPE DE MAILLES
         call jeveuo(jexnum(noma//'.GROUPEMA', igm), 'L', iagrma)
-        call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm, kbid)
+        call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
         call wkvect('&&IRMASU.MAGR', 'V V I', nbm, jmagr)
         nbm2=0
         do 756 jm = 1, nbm

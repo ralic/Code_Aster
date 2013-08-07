@@ -77,7 +77,7 @@ subroutine nueqch(erreur, chamno, noma, nbno, numno,&
     call dismoi('F', 'NB_CMP_MAX', nomgd, 'GRANDEUR', nbcmpx,&
                 k8bid, ier)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmp)
 !
     call dismoi('F', 'PROF_CHNO', chamno, 'CHAM_NO', ibid,&
                 pfchno, ier)

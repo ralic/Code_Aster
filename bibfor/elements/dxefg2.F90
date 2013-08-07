@@ -38,7 +38,7 @@ subroutine dxefg2(pgl, sigt)
 !     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX POINTS D'INTEGRATION
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, ipg, somire, i
+    integer ::  somire
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
     real(kind=8) :: tmoypg, tsuppg, tinfpg
     real(kind=8) :: t2ev(4), t2ve(4), t1ve(9)
@@ -48,8 +48,8 @@ subroutine dxefg2(pgl, sigt)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: igau, indith, iret1, iret, irett, iretm, jcara
-    integer :: jcou, jmate
+    integer :: igau, indith, iret1, iret, iretm, jcara
+    integer ::  jmate
     real(kind=8) :: coe1, coe2, epais, tref
 !-----------------------------------------------------------------------
     fami = 'RIGI'

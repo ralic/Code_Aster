@@ -48,7 +48,6 @@ subroutine te0163(option, nomte)
     real(kind=8) :: q3, dd
     real(kind=8) :: b1, b2, b3, u(3), s, d
     real(kind=8) :: poids(20)
-    character(len=1) :: k1bid
     integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -99,7 +98,7 @@ subroutine te0163(option, nomte)
     e3 = e3/s
     if (listma .eq. ' ' .or. ltrans .eq. ' ') goto 60
     call jeveuo(listma, 'L', jlima)
-    call jelira(listma, 'LONMAX', nbma2, k1bid)
+    call jelira(listma, 'LONMAX', nbma2)
     nbma = nbma2/2
 !C    2 BARRES EN POSITION QUELCONQUE
     do 50 ima = 1, nbma

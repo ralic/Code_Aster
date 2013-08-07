@@ -49,7 +49,7 @@ subroutine tbimfi(nparfi, table, newtab, iret)
     call jeexin(table//'.TITR', irt)
     if (irt .ne. 0) then
         call jeveuo(table//'.TITR', 'L', ltitr)
-        call jelira(table//'.TITR', 'LONMAX', lonma1, k8b)
+        call jelira(table//'.TITR', 'LONMAX', lonma1)
         lonmax = lonma1 + nparfi
         call wkvect(newtab//'.TITR', 'V V K80', lonmax, jtitr)
         do 10 ititr = 1, lonma1

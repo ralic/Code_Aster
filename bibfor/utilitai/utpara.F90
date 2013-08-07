@@ -39,7 +39,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    character(len=8) :: ch8, type, acces, kbid
+    character(len=8) :: ch8, type, acces
     character(len=5) :: suffix
     character(len=19) :: noms2
     integer :: nbpamx, nbpara
@@ -66,7 +66,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !     -- CREATION DE .NOVA ET .TAVA :
 !     --------------------------------------------
     call jecreo(noms2//'.NOVA', bas1//' N K16')
-    call jeecra(noms2//'.NOVA', 'NOMMAX', nbpara, ' ')
+    call jeecra(noms2//'.NOVA', 'NOMMAX', nbpara)
     do 2 i = 1, nbpara
         para=lipara(i)
         i1= index(para,'#')
@@ -77,7 +77,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
     call jecrec(noms2//'.TAVA', bas1//' V K8', 'NU', 'CONTIG', 'CONSTANT',&
                 nbpara)
-    call jeecra(noms2//'.TAVA', 'LONMAX', 4, ' ')
+    call jeecra(noms2//'.TAVA', 'LONMAX', 4)
 !
 !
 !     -- CALCUL DE NBR, NBC, NBI, NBK8, ... :
@@ -132,7 +132,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbr
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V R', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
         do 10 i = 1, n2
             zr(jpara+i-1) = rundef
 10      end do
@@ -165,7 +165,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbc
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V C', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
         do 20 i = 1, n2
             zc(jpara+i-1) = dcmplx(rundef,rundef)
 20      continue
@@ -199,7 +199,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbi
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V I', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
         do 30 i = 1, n2
             zi(jpara+i-1) = iundef
 30      continue
@@ -233,7 +233,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbk8
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K8', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
         ico=0
@@ -264,7 +264,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbk16
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K16', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
         ico=0
@@ -295,7 +295,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbk24
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K24', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
         ico=0
@@ -326,7 +326,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbk32
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K32', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
         ico=0
@@ -357,7 +357,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
         n1=nbk80
         n2=n1*nbordr
         call wkvect(noms2//suffix, bas1//' V K80', n2, jpara)
-        call jeecra(noms2//suffix, 'LONUTI', 0, kbid)
+        call jeecra(noms2//suffix, 'LONUTI', 0)
 !
         call codent(n1, 'G', ch8)
         ico=0

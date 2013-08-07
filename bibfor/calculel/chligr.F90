@@ -105,9 +105,9 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2,&
 !
     call jeexin(chel1//'.DESC', iret)
     if (iret .gt. 0) then
-        call jelira(chel1//'.DESC', 'DOCU', ibid, tych)
+        call jelira(chel1//'.DESC', 'DOCU', cval=tych)
     else
-        call jelira(chel1//'.CELD', 'DOCU', ibid, tych)
+        call jelira(chel1//'.CELD', 'DOCU', cval=tych)
     endif
     ASSERT(tych.eq.'CHML')
 !

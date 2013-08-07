@@ -86,7 +86,7 @@ subroutine posddl(type, resu, noeud, cmp, nunoe,&
     nec = nbec( gd )
     ASSERT(nec .le. 10)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     do 10 iec = 1, nec
         tabec(iec)= zi(jprno-1+(nunoe-1)*(nec+2)+2+iec )
 10  end do

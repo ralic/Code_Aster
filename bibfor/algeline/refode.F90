@@ -68,9 +68,9 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
     call jeexin(ch19//'.DESC', ibid)
     if (ibid .gt. 0) then
-        call jelira(ch19//'.DESC', 'DOCU', ibid, docu)
+        call jelira(ch19//'.DESC', 'DOCU', cval=docu)
     else
-        call jelira(ch19//'.CELD', 'DOCU', ibid, docu)
+        call jelira(ch19//'.CELD', 'DOCU', cval=docu)
     endif
 !
     if (docu .eq. 'CHNO') then
@@ -99,9 +99,9 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
 !
 !     --- CONSTRUCTION D'UN CHAMP RESULTAT SUR LE MODELE DE NOMCH(1)
 !
-    call jelira(ch19//desc, 'LONMAX', nbdesc, k8b)
-    call jelira(ch19//vale, 'LONMAX', nbvale, k8b)
-    call jelira(ch19//refe, 'LONMAX', nbrefe, k8b)
+    call jelira(ch19//desc, 'LONMAX', nbdesc)
+    call jelira(ch19//vale, 'LONMAX', nbvale)
+    call jelira(ch19//refe, 'LONMAX', nbrefe)
     call jeveuo(ch19//desc, 'L', jdesc)
     call jeveuo(ch19//refe, 'L', jrefe)
 !
@@ -117,7 +117,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
         call jeveuo(ch19//refe, 'E', krefe)
     endif
 !
-    call jeecra(ch19//desc, 'DOCU', ibid, docu)
+    call jeecra(ch19//desc, 'DOCU', cval=docu)
     do 10 i = 0, nbdesc-1
         zi(kdesc+i) = zi(jdesc+i)
 10  end do
@@ -134,7 +134,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
         call jelibe(ch19//'.REFE')
         call dismoi('F', 'NOM_MAILLA', nomch(1), 'CHAMP', ibid,&
                     noma, ie)
-        call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8b)
+        call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu)
 !
 !        --- BOUCLE SUR LES CHAMPS A RECOMBINER ---
 !

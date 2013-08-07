@@ -169,7 +169,7 @@ subroutine trgene(ific, nocc)
             call getvis('GENE', 'NUME_CMP_GENE', iocc, iarg, 1,&
                         ncmp, n1)
             call jeveuo(resu19//'.VALE', 'L', jlue)
-            call jelira(resu19//'.VALE', 'TYPE', ibid, k16b)
+            call jelira(resu19//'.VALE', 'TYPE', cval=k16b)
 !
             call jeveuo(resu19//'.REFE', 'L', jrefe)
             mode = zk24(jrefe)(1:8)
@@ -341,7 +341,7 @@ subroutine trgene(ific, nocc)
             call rsexch('F', resu19, nsym, numord, cham19,&
                         iret)
             call jeveuo(cham19//'.VALE_CALC', 'L', jlue)
-            call jelira(cham19//'.VALE_CALC', 'TYPE', ibid, k16b)
+            call jelira(cham19//'.VALE_CALC', 'TYPE', cval=k16b)
 !
             call jeveuo(cham19//'.REFE', 'L', jrefe)
             mode = zk24(jrefe)(1:8)
@@ -442,7 +442,7 @@ subroutine trgene(ific, nocc)
 !
             interp = 'NON'
             call jeveuo(resu19//'.DISC', 'L', jfreq)
-            call jelira(resu19//'.DISC', 'LONMAX', nbfreq, k16b)
+            call jelira(resu19//'.DISC', 'LONMAX', nbfreq)
 !
             call getvr8('GENE', 'FREQ', iocc, iarg, 1,&
                         freq, n1)
@@ -531,7 +531,7 @@ subroutine trgene(ific, nocc)
 !
             interp = 'NON'
             call jeveuo(resu19//'.DISC', 'L', jinst)
-            call jelira(resu19//'.DISC', 'LONMAX', nbinst, k16b)
+            call jelira(resu19//'.DISC', 'LONMAX', nbinst)
 !
             call getvr8('GENE', 'INST', iocc, iarg, 1,&
                         temps, n1)

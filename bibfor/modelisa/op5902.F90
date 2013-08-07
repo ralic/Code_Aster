@@ -37,7 +37,7 @@ subroutine op5902(nboccp, compor)
 #include "asterfort/u2mesr.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: compor, mono, chaine
-    character(len=16) :: kbid, loca, noms(6), nomvar(100)
+    character(len=16) ::  loca, noms(6), nomvar(100)
     real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt
     integer :: iocc, nloc, nboccp, ndl, nda, itbint, nums(3)
     integer :: i, nmono, imk, imi, ipk, ipi, ipr, iorie, irra
@@ -97,7 +97,7 @@ subroutine op5902(nboccp, compor)
             nbmono=nbmono+1
             zk8(ipl-1+nbmono)=mono
             zi(ipi-1+4+3*(iocc-1)+2)=nbmono
-            call jelira(mono//'.CPRK', 'LONMAX', lmk, kbid)
+            call jelira(mono//'.CPRK', 'LONMAX', lmk)
             ncprk=ncprk+lmk+2
         else
             zi(ipi-1+4+3*(iocc-1)+2)=imono
@@ -123,7 +123,7 @@ subroutine op5902(nboccp, compor)
     itbint=0
     do 15 imono = 1, nbmono
         mono=zk8(ipl-1+imono)
-        call jelira(mono//'.CPRK', 'LONMAX', lmk, kbid)
+        call jelira(mono//'.CPRK', 'LONMAX', lmk)
         call jeveuo(mono//'.CPRK', 'L', imk)
         call jeveuo(mono//'.CPRI', 'L', imi)
 !        RECOPIE DU VECTEUR K16 DU MONOCRISTAL DANS CELUI DU POLY

@@ -109,7 +109,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
         ASSERT(nec.le.10)
 !
         call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx, k8b)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
         call wkvect('&&PTEDDL.NUME_CMP', 'V V I', ncmpmx, jnucmp)
         do 30 i = 0, ncmpmx-1
             zi(jnucmp+i)=indik8(lnocmp,zk8(iad+i),1,nbcmp)
@@ -117,17 +117,17 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
 !
         call jeveuo(prno//'.NUEQ', 'L', jnueq)
 !
-        call jelira(prno//'.PRNO', 'NMAXOC', nlili, k8b)
+        call jelira(prno//'.PRNO', 'NMAXOC', nlili)
         do 70,i=1,nlili
         call jenuno(jexnum(prno//'.LILI', i), nolili)
-        call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ibid, k8b)
+        call jelira(jexnum(prno//'.PRNO', i), 'LONMAX', ibid)
         if (ibid .eq. 0) goto 70
         call jeveuo(jexnum(prno//'.PRNO', i), 'L', jprno)
         if (ibid .eq. 1 .and. zi(jprno) .eq. 0) goto 70
 !
 !          --RECHERCHE DU NOMBRE DE NOEUDS : NBNO
         if (nolili(1:8) .eq. '&MAILLA ') then
-            call jelira(nomma//'.NOMNOE', 'NOMMAX', nbno, k8b)
+            call jelira(nomma//'.NOMNOE', 'NOMMAX', nbno)
         else
             call jeveuo(nolili(1:19)//'.NBNO', 'L', jlili)
             nbno=zi(jlili-1+1)
@@ -169,7 +169,7 @@ subroutine pteddl(typesd, num, nbcmp, lnocmp, neq,&
         ASSERT(zi(jdesc).eq.2)
         if (matd) ASSERT(.false.)
         call jeveuo(nomnu//'.DEEQ', 'L', jdeeq)
-        call jelira(nomnu//'.DEEQ', 'LONMAX', nleq, k8b)
+        call jelira(nomnu//'.DEEQ', 'LONMAX', nleq)
         nleq=nleq/2
 !       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
         ASSERT(nleq.eq.neq)

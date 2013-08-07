@@ -202,7 +202,7 @@ subroutine op0109()
         call getvid(' ', 'LIST_AMOR', 1, iarg, 1,&
                     liar, nla)
         if (nla .ne. 0) then
-            call jelira(liar//'.VALE', 'LONUTI', nbamor, k8b)
+            call jelira(liar//'.VALE', 'LONUTI', nbamor)
             if (nbamor .gt. nbmode) then
                 vali(1) = nbamor
                 vali(2) = nbmode

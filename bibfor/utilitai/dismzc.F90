@@ -44,7 +44,6 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 ! ----------------------------------------------------------------------
 !
-    character(len=1) :: k1bid
     character(len=8) :: ma, typma
     character(len=19) :: nolig
     character(len=24) :: nema
@@ -70,7 +69,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 ! --- LE MODELE
 !
     call jeveuo(nolig//'.LGRF', 'L', ianoma)
-    call jelira(nolig//'.LIEL', 'NUTIOC', nutioc, k1bid)
+    call jelira(nolig//'.LIEL', 'NUTIOC', nutioc)
     nema = nolig//'.NEMA'
     call jeexin(nema, ier)
 !
@@ -93,7 +92,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 !
     do 10 iocc = 1, nutioc
 !
-        call jelira(jexnum(nolig//'.LIEL', iocc), 'LONMAX', nbma, k1bid)
+        call jelira(jexnum(nolig//'.LIEL', iocc), 'LONMAX', nbma)
         call jeveuo(jexnum(nolig//'.LIEL', iocc), 'L', jima)
         typma = zk8(iatypm-1+zi(jima+nbma-1))
         call jenonu(jexnom('&CATA.TM.NOMTM', typma), itypm)
@@ -109,7 +108,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
                 if (ier .eq. 0) call u2mess('F', 'UTILITAI_71')
                 ima = -numail
                 call jeveuo(jexnum(nema, ima), 'L', idnema)
-                call jelira(jexnum(nema, ima), 'LONMAX', nbnot, k1bid)
+                call jelira(jexnum(nema, ima), 'LONMAX', nbnot)
 ! --------- NEMA NOUS DONNE DIRECTEMENT LE NUMERO DU NOEUD
                 nbnot = nbnot-1
                 do 22 ino = 1, nbnot

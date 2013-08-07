@@ -131,7 +131,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     call wkvect(tabval, 'V V R', nbma*nbptmx, jval)
     call wkvect(tabvol, 'V V R', nbma*nbptmx, jvol)
 !
-    call jelira(chams//'.CESC', 'LONMAX', ncmpm, k8b)
+    call jelira(chams//'.CESC', 'LONMAX', ncmpm)
     nucmp=indik8(zk8(jcesc),nomcmp,1,ncmpm)
     ASSERT(nucmp.ge.0)
 !

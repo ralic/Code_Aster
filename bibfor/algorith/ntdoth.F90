@@ -316,7 +316,7 @@ subroutine ntdoth(modele, mate, carele, fomult, matcst,&
 !
         32     end do
 !
-        if (nchci .gt. 0) call jeecra(lchci, 'LONUTI', nchci, k8bid)
+        if (nchci .gt. 0) call jeecra(lchci, 'LONUTI', nchci)
 !
     endif
 ! FIN ------------------------------------------------------------------

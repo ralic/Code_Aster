@@ -49,7 +49,6 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 !
     character(len=5) :: vale
     character(len=4) :: docu, scal
-    character(len=1) :: k1bid
 !-----------------------------------------------------------------------
     integer :: i, iach, iach1, iach2, ibid, ier, jrefe
     integer :: lon1, lon2, long
@@ -63,9 +62,9 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 !
     call jeexin(ch//'.DESC', ibid)
     if (ibid .gt. 0) then
-        call jelira(ch//'.DESC', 'DOCU', ibid, docu)
+        call jelira(ch//'.DESC', 'DOCU', cval=docu)
     else
-        call jelira(ch//'.CELD', 'DOCU', ibid, docu)
+        call jelira(ch//'.CELD', 'DOCU', cval=docu)
     endif
 !
 !
@@ -74,8 +73,8 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
     else if (docu(1:4).eq.'CHNO') then
 !     -----------------------------------
         vale='.VALE'
-        call jelira(ch1//vale, 'LONMAX', lon1, k1bid)
-        call jelira(ch1//vale, 'TYPE', ibid, scal)
+        call jelira(ch1//vale, 'LONMAX', lon1)
+        call jelira(ch1//vale, 'TYPE', cval=scal)
         call vrrefe(ch1, ch2, ier)
         if (ier .eq. 0) then
 !
@@ -114,10 +113,10 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
         call vrrefe(ch1, ch2, ier)
         if (ier .eq. 0) then
             vale='.CELV'
-            call jelira(ch1//vale, 'TYPE', ibid, scal)
-            call jelira(ch1//vale, 'LONMAX', lon1, k1bid)
-            call jelira(ch2//vale, 'LONMAX', lon2, k1bid)
-            call jelira(ch//vale, 'LONMAX', long, k1bid)
+            call jelira(ch1//vale, 'TYPE', cval=scal)
+            call jelira(ch1//vale, 'LONMAX', lon1)
+            call jelira(ch2//vale, 'LONMAX', lon2)
+            call jelira(ch//vale, 'LONMAX', long)
             ASSERT((lon1.eq.lon2).and.(lon1.eq.long))
 !
             call jeveuo(ch//vale, 'E', iach)

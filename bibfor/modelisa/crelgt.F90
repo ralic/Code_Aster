@@ -58,7 +58,6 @@ subroutine crelgt(basez, ligrez)
     parameter (nbajel = 1000 )
     parameter (nbmail = 10000)
     character(len=1) :: base
-    character(len=8) :: k8bid
     character(len=19) :: ligret
 ! ====================== DEBUT DU CODE EXECUTABLE ======================
 !
@@ -91,7 +90,7 @@ subroutine crelgt(basez, ligrez)
 ! ---  CREATION DU VECTEUR DE LA LISTE DES MAILLES CUMULEES DU LIGRET :
 !      --------------------------------------------------------------
     call wkvect(ligret//'.LIMA', base//' V I', nbmail, idlima)
-    call jeecra(ligret//'.LIMA', 'LONUTI', 0, k8bid)
+    call jeecra(ligret//'.LIMA', 'LONUTI', 0)
 !
 ! ---  CREATION DU VECTEUR DES TYPES DES MAILLES CUMULEES DU LIGRET :
 !      ------------------------------------------------------------
@@ -124,7 +123,7 @@ subroutine crelgt(basez, ligrez)
 ! ---  CREATION DU VECTEUR DE LA LISTE DES NOEUDS CUMULES DU LIGRET :
 !      ------------------------------------------------------------
     call wkvect(ligret//'.LINO', base//' V I', nbmail, idlino)
-    call jeecra(ligret//'.LINO', 'LONUTI', 0, k8bid)
+    call jeecra(ligret//'.LINO', 'LONUTI', 0)
 !
 ! ---  CREATION DE L'ENTIER QUI EST LE NOMBRE D'AFFECTATIONS DE
 ! ---  MAILLES (VIA AJELLT) :

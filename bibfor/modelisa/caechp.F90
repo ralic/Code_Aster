@@ -236,7 +236,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                             zi(jlistt))
 !           STOCKAGE DANS LA CARTE
                 call jeveuo(jexnum(liel, igrel), 'E', jligr)
-                call jelira(jexnum(liel, igrel), 'LONMAX', nbm, k8b)
+                call jelira(jexnum(liel, igrel), 'LONMAX', nbm)
                 nbm = nbm - 1
                 if (fonree .eq. 'REEL') then
                     zr(jvalv) = cechpr

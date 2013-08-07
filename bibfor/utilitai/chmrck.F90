@@ -58,7 +58,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     call jemarq()
     kbid = ' '
     call jeveuo(chmat//'.CHAMP_MAT .VALE', 'L', jvale)
-    call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', l1, kbid)
+    call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', l1)
     call jeveuo(chmat//'.CHAMP_MAT .DESC', 'L', jdesc)
     nbzmax=zi(jdesc-1+2)
     nbzone=zi(jdesc-1+3)
@@ -76,7 +76,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
             if (kmat .eq. 'TREF=>') goto 50
             krc = kmat//'.MATERIAU.NOMRC'
             call jeveuo(krc, 'L', arc)
-            call jelira(krc, 'LONMAX', nbrc, kbid)
+            call jelira(krc, 'LONMAX', nbrc)
             call utfk16(zk16(arc), nbrc, nomrc, ipos)
             if (ipos .gt. 0) then
                 nbmtrc = nbmtrc + 1

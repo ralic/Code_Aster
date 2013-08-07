@@ -189,7 +189,7 @@ subroutine op0037()
     call infmaj()
     call infniv(ifm, niv)
 !
-    call jelira(modein//'           .ORDR', 'LONUTI', iret, k8b)
+    call jelira(modein//'           .ORDR', 'LONUTI', iret)
 ! SI LA BANDE DE FREQUENCE EST VIDE, ON NE FAIT RIEN
 !  => DIRECT A LA FIN APRES UN PETIT MESSAGE D'INFO
     if (iret .eq. 0) then
@@ -212,7 +212,7 @@ subroutine op0037()
         call rsexch(' ', modein, 'DEPL', zi(lnumor+im-1), k19b, iret)
         call jeexin(k19b//'.PAPA', iret)
         if (iret .ne. 0) then
-            call jelira(k19b//'.PAPA', 'LONUTI', ival, k8b)
+            call jelira(k19b//'.PAPA', 'LONUTI', ival)
             if (ival .ne. 0) then
                 call u2mess('F', 'ALGELINE2_34')
             endif
@@ -220,7 +220,7 @@ subroutine op0037()
 !
 !       ------ AU PASSAGE, ON FAIT UN TEST SUR LE TYPE DES MODES
 !              (REEL OU COMPLEXE)
-        call jelira(k19b//'.VALE', 'TYPE', ibid, typmod)
+        call jelira(k19b//'.VALE', 'TYPE', cval=typmod)
         if (typmod .eq. 'C') lcmplx = .true.
 !
 77  end do

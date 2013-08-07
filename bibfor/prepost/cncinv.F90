@@ -159,14 +159,14 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
 !
     call jecrec(nom, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nno)
-    call jeecra(nom, 'LONT', nare, ' ')
+    call jeecra(nom, 'LONT', nare)
 !
     do 60 i = 1, nno
 !
         n = zi(q1-1+i)
         if (n .eq. 0) n = 1
         call jecroc(jexnum(nom, i))
-        call jeecra(jexnum(nom, i), 'LONMAX', n, ' ')
+        call jeecra(jexnum(nom, i), 'LONMAX', n)
 !
 60  end do
 !

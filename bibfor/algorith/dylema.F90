@@ -65,7 +65,6 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: ibid
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=16) :: k16bid, nomcmd
@@ -131,7 +130,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
     nomat(1)=raide(1:19)//'.&INT'
     call jeveuo(nomat(1), 'L', lmat(1))
 ! ON TESTE SI LA MATRICE DE RAIDEUR EST COMPLEXE
-    call jelira(raide//'.VALM', 'TYPE', ibid, ktyp)
+    call jelira(raide//'.VALM', 'TYPE', cval=ktyp)
     if (ktyp .eq. 'C') then
         cpx=.true.
     endif
@@ -180,7 +179,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
         else
             call getvid('AMOR_MODAL', 'LIST_AMOR', 1, iarg, 1,&
                         listam, n)
-            call jelira(listam//'           .VALE', 'LONMAX', nbamor, k8bid)
+            call jelira(listam//'           .VALE', 'LONMAX', nbamor)
 !
 !
         endif
@@ -245,7 +244,7 @@ subroutine dylema(baseno, nbmat, nomat, raide, masse,&
             matir=zk24(zi(lmat(1)+1))(1:19)
             valer=matir//'.VALM'
             call jeveuo(jexnum(valer, ibloc), 'L', iatmar)
-            call jelira(jexnum(valer, ibloc), 'LONMAX', nterm, k8bid)
+            call jelira(jexnum(valer, ibloc), 'LONMAX', nterm)
 !
             matim=zk24(zi(lmat(2)+1))(1:19)
             valem=matim//'.VALM'

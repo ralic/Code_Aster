@@ -54,7 +54,6 @@ subroutine cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
     integer :: jnoco, jsuno
     integer :: jelino, jno
     integer :: isuco, i
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +86,7 @@ subroutine cfmeno(defico, nsuco, nnoco0, listno, poinsn,&
     do 180 i = nnoco + 1, nnoco0
         zi(jnoco+i-1) = 0
 180  end do
-    call jeecra(contno, 'LONUTI', nnoco, k8bid)
+    call jeecra(contno, 'LONUTI', ival=nnoco)
 !
     call jedema()
 end subroutine

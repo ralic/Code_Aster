@@ -33,7 +33,6 @@ subroutine aidtyp(impr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: kbid
     character(len=16) :: nophen, note, noop, nomodl
     character(len=80) :: ligne
     integer :: impr, nbtm, nbphen, iaopte, nbte, nbop, ianbop, ianbte, ianot2
@@ -48,11 +47,11 @@ subroutine aidtyp(impr)
     ligne(1:40)= '========================================'
     ligne(41:80)='========================================'
 !
-    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm, kbid)
-    call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen, kbid)
+    call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
+    call jelira('&CATA.PHENOMENE', 'NOMUTI', nbphen)
     call jeveuo('&CATA.TE.OPTTE', 'L', iaopte)
-    call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte, kbid)
-    call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop, kbid)
+    call jelira('&CATA.TE.NOMTE', 'NOMUTI', nbte)
+    call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
     call wkvect('&&AIDTYP.NBOP', 'V V I', nbop, ianbop)
     call wkvect('&&AIDTYP.NBTE', 'V V I', nbte, ianbte)
@@ -72,7 +71,7 @@ subroutine aidtyp(impr)
 !     ------------------------
     do 1,iphen=1,nbphen
     call jenuno(jexnum('&CATA.PHENOMENE', iphen), nophen)
-    call jelira('&CATA.'//nophen, 'NUTIOC', nbmodl, kbid)
+    call jelira('&CATA.'//nophen, 'NUTIOC', nbmodl)
     do 2,imodl=1,nbmodl
     call jeveuo(jexnum('&CATA.'//nophen , imodl), 'L', iamodl)
     call jenuno(jexnum('&CATA.'//nophen(1:13)//'.MODL', imodl), nomodl)

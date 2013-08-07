@@ -58,7 +58,6 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
     integer :: nbval, ival, lchpou, lchpin, ibid, ier, lchp, nbval1
     character(len=1) :: classe, type
     character(len=4) :: tych, docu
-    character(len=8) :: cbid
     character(len=19) :: ch19
     character(len=24) :: vale, refe, desc, celk, tamp
     logical :: lfeti
@@ -93,13 +92,13 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
 !     --------------------------- CELK --------------------------------
 !     --- RECUPERATION DES INFORMATIONS DE CHPIN ---
     tamp(1:19) = chpin
-    call jelira(tamp, 'LONMAX', nbval, cbid)
+    call jelira(tamp, 'LONMAX', nbval)
     call jeveuo(tamp, 'L', lchpin)
 !
 !     --- AFFECTATION DES INFORMATIONS A CHPOUT ---
     tamp(1:19) = chpout
     call jecreo(tamp, classe//' V K24')
-    call jeecra(tamp, 'LONMAX', nbval, '  ')
+    call jeecra(tamp, 'LONMAX', nbval)
     call jeveuo(tamp, 'E', lchpou)
     nbval1=nbval-1
     do 10 ival = 0, nbval1
@@ -113,16 +112,16 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
 !     --------------------------- DESC --------------------------------
 !     --- RECUPERATION DES INFORMATIONS DU DESCRIPTEUR CHPIN ---
     desc(1:19) = chpin
-    call jelira(desc, 'LONMAX', nbval, cbid)
+    call jelira(desc, 'LONMAX', nbval)
     call jeveuo(desc, 'L', lchpin)
 !
 !     --- AFFECTATION DES INFORMATIONS DE DESCRIPTEUR CHPOUT ---
     desc(1:19) = chpout
     call jecreo(desc, classe//' V I')
-    call jeecra(desc, 'LONMAX', nbval, '  ')
+    call jeecra(desc, 'LONMAX', nbval)
     nbval1=nbval-1
 !
-    call jeecra(desc, 'DOCU', nbval, docu)
+    call jeecra(desc, 'DOCU', cval=docu)
 !
     call jeveuo(desc, 'E', lchpou)
     do 20 ival = 0, nbval1
@@ -138,15 +137,15 @@ subroutine vtdef1(chpout, chpin, base, typc, lfeti)
 !     --- TYPE DES VALEURS, LONGUEUR D'UN VECTEUR ---
     vale(1:19) = chpin
     type = typc(1:1)
-    if (type .eq. ' ') call jelira(vale, 'TYPE', ival, type)
-    call jelira(vale, 'LONMAX', nbval, cbid)
+    if (type .eq. ' ') call jelira(vale, 'TYPE', cval=type)
+    call jelira(vale, 'LONMAX', nbval)
     if (lfeti) then
         call jeveuo(vale, 'L', lchpin)
         nbval1=nbval-1
     endif
     vale(1:19) = chpout
     call jecreo(vale, classe//' V '//type)
-    call jeecra(vale, 'LONMAX', nbval, cbid)
+    call jeecra(vale, 'LONMAX', nbval)
     call jeveuo(vale, 'E', lchp)
 !
 ! SI FETI INITIALISATION DU .VALE DIRECTEMENT SANS PASSER PAR

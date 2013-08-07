@@ -157,7 +157,7 @@ subroutine xaint2(noma, modele)
             call jeexin(grp(igrp), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(igrp), 'L', jg)
-                call jelira(grp(igrp), 'LONMAX', nmaenr, k8bid)
+                call jelira(grp(igrp), 'LONMAX', nmaenr)
 !           BOUCLE SUR LES MAILLES DU GROUPE
                 do 120 i = 1, nmaenr
                     ima = zi(jg-1+i)
@@ -171,7 +171,7 @@ subroutine xaint2(noma, modele)
             call jeexin(grp(igrp), iret)
             if (iret .ne. 0) then
                 call jeveuo(grp(igrp), 'L', jg)
-                call jelira(grp(igrp), 'LONMAX', nmaenr, k8bid)
+                call jelira(grp(igrp), 'LONMAX', nmaenr)
 !           BOUCLE SUR LES MAILLES DU GROUPE
                 do 220 i = 1, nmaenr
                     ima = zi(jg-1+i)
@@ -224,7 +224,7 @@ subroutine xaint2(noma, modele)
 !
 !     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
 !
-                            call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup, k8bid)
+                            call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup)
                             call jeveuo(jexnum(cnxinv, nuno(j)), 'L', jmasup)
                             heav = 0
                             do 250 k = 1, nmasup
@@ -239,7 +239,7 @@ subroutine xaint2(noma, modele)
 !      SI PAS DE FACETTE DANS CETTE MAILLE POUR CETTE FISSURE, ON SORT
                                 if (zi(jcesv(1)-1+iad) .eq. 0) goto 250
 !      RECUPÉRATION DU NUMÉRO DE NOEUD INO2 CORRESPONDANT À J DANS IMA2
-                                call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', nno2, k8bid)
+                                call jelira(jexnum(noma//'.CONNEX', ima2), 'LONMAX', nno2)
                                 do 260 ino2 = 1, nno2
                                     nngl=zi(jconx1-1+zi(jconx2+ima2-1)&
                                     +ino2-1)
@@ -279,7 +279,7 @@ subroutine xaint2(noma, modele)
 !
 !     RECUPÉRATION DE LA CONNECTIVITÉ DU NOEUD J
 !
-                            call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup, k8bid)
+                            call jelira(jexnum(cnxinv, nuno(j)), 'LONMAX', nmasup)
                             call jeveuo(jexnum(cnxinv, nuno(j)), 'L', jmasup)
 !
 !                 BOUCLE SUR LES ELEM CONEXES

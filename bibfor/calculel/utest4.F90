@@ -105,8 +105,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 12          continue
             call u2mesk('F', 'CALCULEL6_88', 1, noddl)
 10      continue
-        call jelira(cnsinr//'.CNSV', 'TYPE', ibid, type)
-        call jelira(cnsinr//'.CNSV', 'LONMAX', neq, type)
+        call jelira(cnsinr//'.CNSV', 'TYPE', cval=type)
+        call jelira(cnsinr//'.CNSV', 'LONMAX', neq)
         neq = neq / ncmp
         if (type(1:1) .ne. typrez) then
             write(ific,*) 'NOOK '
@@ -136,8 +136,8 @@ subroutine utest4(chamgd, typtes, typres, nbref, tbtxt,&
 22          continue
             call u2mesk('F', 'CALCULEL6_88', 1, noddl)
 20      continue
-        call jelira(cnsinr//'.CESV', 'TYPE', ibid, type)
-        call jelira(cnsinr//'.CESV', 'LONMAX', neq, type)
+        call jelira(cnsinr//'.CESV', 'TYPE', cval=type)
+        call jelira(cnsinr//'.CESV', 'LONMAX', neq)
         neq = neq / ncmp
         if (type(1:1) .ne. typrez) then
             write(ific,*) 'NOOK '

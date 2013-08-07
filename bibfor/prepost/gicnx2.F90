@@ -41,7 +41,7 @@ subroutine gicnx2()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/u2mess.h"
-    character(len=8) :: kbi, nomobj
+    character(len=8) ::  nomobj
 !
 !-----------------------------------------------------------------------
     integer :: i, iacnex, iacnx2, iadesc, ianoob, ima, imat
@@ -54,7 +54,7 @@ subroutine gicnx2()
     call jeveuo('&&GILIRE.NOMOBJ', 'L', ianoob)
 !
 !     -- RECUPERATION DU NOMBRE D'OBJETS LUS:
-    call jelira('&&GILIRE.DESCOBJ', 'LONMAX', nbobj4, kbi)
+    call jelira('&&GILIRE.DESCOBJ', 'LONMAX', nbobj4)
     call jeveuo('&&GILIRE.DESCOBJ', 'L', iadesc)
     nbobj = nbobj4/4
 !
@@ -72,7 +72,7 @@ subroutine gicnx2()
 !     -- CREATION DE L'OBJET .CONNEX2:
     call jecrec('&&GILIRE.CONNEX2', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmato)
-    call jeecra('&&GILIRE.CONNEX2', 'LONT', lont, ' ')
+    call jeecra('&&GILIRE.CONNEX2', 'LONT', lont)
     imat=0
     do 2 i = 1, nbobj
         if (zi(iadesc-1+4*(i-1)+1) .ne. 0) goto 2
@@ -84,7 +84,7 @@ subroutine gicnx2()
         do 3 ima = 1, nbel
             imat = imat +1
             call jecroc(jexnum('&&GILIRE.CONNEX2', imat))
-            call jeecra(jexnum('&&GILIRE.CONNEX2', imat), 'LONMAX', nbno, ' ')
+            call jeecra(jexnum('&&GILIRE.CONNEX2', imat), 'LONMAX', nbno)
             call jeveuo(jexnum('&&GILIRE.CONNEX2', imat), 'E', iacnx2)
             do 4 ino = 1, nbno
                 zi(iacnx2-1+ino)=zi(iacnex-1+nbno*(ima-1)+ino)

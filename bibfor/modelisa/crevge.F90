@@ -69,7 +69,6 @@ subroutine crevge(ligrel, bas1)
     integer :: iv, ibid, nbma, ier, dim, dimma, iatyma, m0, is, adcom0, nbsom0
     integer :: nbmr, admar, ir, numar, nvtot, iad, dimvlo, jnvge
 !
-    character(len=1) :: k1bid
 !
 !
 ! --------- CONSTRUCTION DE LA CONNECTIVITE INVERSE --------------------
@@ -161,7 +160,7 @@ subroutine crevge(ligrel, bas1)
             do 60 is = 1, nbsom0
                 no=jexnum(coninv,zi(adcom0-1+is))
 !  NBMR NOMBRE DE MAILLES RELIEES AU SOMMET
-                call jelira(no, 'LONMAX', nbmr, k1bid)
+                call jelira(no, 'LONMAX', nbmr)
                 call jeveuo(no, 'L', admar)
                 if (nbmr .gt. 1) then
                     do 50 ir = 1, nbmr
@@ -219,7 +218,7 @@ subroutine crevge(ligrel, bas1)
             do 110 is = 1, nbsom0
                 no=jexnum(coninv,zi(adcom0-1+is))
 !  NBMR NOMBRE DE MAILLES RELIEES AU SOMMET
-                call jelira(no, 'LONMAX', nbmr, k1bid)
+                call jelira(no, 'LONMAX', nbmr)
                 call jeveuo(no, 'L', admar)
                 if (nbmr .gt. 1) then
                     do 100 ir = 1, nbmr

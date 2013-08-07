@@ -66,13 +66,13 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
 !              (SI LE NOMBRE TROUVE EST > NDIM, ON REND NBTROU=-NBTROU)
 ! ----------------------------------------------------------------------
     character(len=4) :: tysd, type, tysca
-    character(len=8) :: nomobj, k8bid, k8debu, k8maxi, k8ent
+    character(len=8) :: nomobj, k8debu, k8maxi, k8ent
     character(len=16) :: acce2
     character(len=19) :: noms2
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacces, iaobj, iatava, ibid, idebu, ier1
+    integer :: i, iacces, iaobj, iatava, idebu, ier1
     integer :: ier2, iloty, imaxi, jordr, nbordr, nordr, numed
 !
 !-----------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
 !
 !     --- CONCEPT CHAMP-GD
 !     ----------------------------
-    call jelira(noms2//'.DESC', 'DOCU', ibid, tysd)
+    call jelira(noms2//'.DESC', 'DOCU', cval=tysd)
     if ((tysd.eq.'CHNO') .or. (tysd.eq.'CHML') .or. (tysd.eq.'CART')) then
         if ((acce2.eq.'LONUTI') .or. (ival.eq.0) .or. (rval .eq. 0.d0) .or.&
             (cval.eq. (0.d0,0.d0))) then
@@ -105,7 +105,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     if (acce2 .eq. 'LONUTI') then
         if (ndim .gt. 0) then
             nbtrou = 1
-            call jelira(noms2//'.ORDR', 'LONUTI', nutrou(1), k8bid)
+            call jelira(noms2//'.ORDR', 'LONUTI', nutrou(1))
         else
             nbtrou = -1
         endif
@@ -114,7 +114,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     else if (acce2.eq.'LONMAX') then
         if (ndim .gt. 0) then
             nbtrou = 1
-            call jelira(noms2//'.ORDR', 'LONMAX', nutrou(1), k8bid)
+            call jelira(noms2//'.ORDR', 'LONMAX', nutrou(1))
         else
             nbtrou = -1
         endif
@@ -123,7 +123,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     else if (acce2.eq.'DERNIER') then
         if (ndim .gt. 0) then
             nbtrou = 1
-            call jelira(noms2//'.ORDR', 'LONUTI', numed, k8bid)
+            call jelira(noms2//'.ORDR', 'LONUTI', numed)
             call jeveuo(noms2//'.ORDR', 'L', jordr)
             nutrou(1) = zi(jordr+numed-1)
         else
@@ -142,7 +142,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
         goto 20
 !
     else if (acce2.eq.'TOUT_ORDRE') then
-        call jelira(noms2//'.ORDR', 'LONUTI', nordr, k8bid)
+        call jelira(noms2//'.ORDR', 'LONUTI', nordr)
         if (nordr .le. ndim) then
             nbtrou = nordr
             call jeveuo(noms2//'.ORDR', 'L', jordr)
@@ -174,9 +174,9 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
 !
     call jeveuo(noms2//'.ORDR', 'L', jordr)
     call jeveuo(noms2//nomobj, 'L', iaobj)
-    call jelira(noms2//nomobj, 'TYPE', ibid, type)
-    call jelira(noms2//nomobj, 'LTYP', iloty, k8bid)
-    call jelira(noms2//'.ORDR', 'LONUTI', nbordr, k8bid)
+    call jelira(noms2//nomobj, 'TYPE', cval=type)
+    call jelira(noms2//nomobj, 'LTYP', iloty)
+    call jelira(noms2//'.ORDR', 'LONUTI', nbordr)
     call codent(iloty, 'G', k8ent)
     tysca = type(1:1)//k8ent(1:3)
 !

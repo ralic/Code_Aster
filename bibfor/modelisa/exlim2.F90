@@ -94,7 +94,7 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
     call jeexin(jexnom(k24b, nomsd), iret)
     if (iret .ne. 0) then
         call jeveuo(jexnom(k24b, nomsd), 'L', iflin)
-        call jelira(jexnom(k24b, nomsd), 'LONMAX', nbcha, k8bid)
+        call jelira(jexnom(k24b, nomsd), 'LONMAX', nbcha)
         call jeveuo(jexnom(k24b(1:23)//'I', nomsd), 'L', iflii)
         call jeveuo(jexnom(k24b(1:23)//'M', nomsd), 'L', iflim)
     else
@@ -110,10 +110,10 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
     call jeexin(jexnom(k24b, nomsd), iret)
     if (iret .ne. 0) then
         call jeveuo(jexnom(k24b, nomsd), 'L', ifcfl)
-        call jelira(jexnom(k24b, nomsd), 'LONMAX', nbchac, k8bid)
+        call jelira(jexnom(k24b, nomsd), 'LONMAX', nbchac)
         call jeveuo(jexnom(k24b(1:23)//'I', nomsd), 'L', ifcfi)
         call jeveuo(jexnom(k24b(1:23)//'M', nomsd), 'L', ifcfm)
-        call jelira(jexnom(k24b(1:23)//'N', nomsd), 'LONMAX', nboeut, k8bid)
+        call jelira(jexnom(k24b(1:23)//'N', nomsd), 'LONMAX', nboeut)
         call jeveuo(jexnom(k24b(1:23)//'N', nomsd), 'L', ifcfn)
         lfcfl1=.true.
     endif
@@ -146,12 +146,12 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 ! AU NBRE DE MAILLES TARDIVES DU LIGREL. LEUR NBRE TOTAL EST NBMAT1
         if (lfcfl1) then
             k24chn=ligrcf//'.NEMA'
-            call jelira(k24chn, 'NUTIOC', nbmata, k8bid)
+            call jelira(k24chn, 'NUTIOC', nbmata)
             nbcc2=0
             call wkvect('&&EXLIM2.NEMA', 'V V I', nbmata, inem2)
             call jerazo('&&EXLIM2.NEMA', nbmata, 1)
             do 40 l = 1, nbmata
-                call jelira(jexnum(k24chn, l), 'LONMAX', nbnema, k8bid)
+                call jelira(jexnum(k24chn, l), 'LONMAX', nbnema)
                 nbnema=nbnema-1
                 call jeveuo(jexnum(k24chn, l), 'L', madr)
 ! COMPTEUR POUR LES NOEUDS DE LA MAILLE TARDIVE APPARTENANT BIEN
@@ -200,7 +200,7 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 ! ET .FEL5
     if (nbcha .ne. 0) then
         call jeveuo(jexnom(sdfeti(1:19)//'.FETB', nomsd), 'L', ifetb)
-        call jelira(jexnom(sdfeti(1:19)//'.FETB', nomsd), 'LONMAX', lofetb, k8bid)
+        call jelira(jexnom(sdfeti(1:19)//'.FETB', nomsd), 'LONMAX', lofetb)
         lofetb=lofetb-1
         imult=2
 ! RECHERCHE DE LA MULTIPLICITE MAXIMALE (IMULT) DES NOEUDS D'INTERFACE
@@ -276,7 +276,7 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
             ligrch=ligrcf(1:19)
             k24chl=ligrch//'.LIEL'
             k24chn=ligrch//'.NEMA'
-            call jelira(k24chn, 'NUTIOC', nbmata, k8bid)
+            call jelira(k24chn, 'NUTIOC', nbmata)
             nbmat1=nbcc2
         else
             ligrch=zk24(iflin+k1)(1:19)
@@ -317,16 +317,16 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
             call jecrec(k24dul, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                         nbmat1)
             lont=2*nbmat1
-            call jeecra(k24dul, 'LONT', lont, ' ')
+            call jeecra(k24dul, 'LONT', lont)
 !
             k24dun=k24dul(1:19)//'.NEMA'
 ! ON PREPARE LA PROJECTION DU .NEMA
             if (.not.lcc) then
-                call jelira(k24chn, 'NUTIOC', nbmas, k8bid)
+                call jelira(k24chn, 'NUTIOC', nbmas)
                 call jecrec(k24dun, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                             nbmat1)
-                call jelira(k24chn, 'LONT', lont, k8bid)
-                call jeecra(k24dun, 'LONT', lont, ' ')
+                call jelira(k24chn, 'LONT', lont)
+                call jeecra(k24dun, 'LONT', lont)
                 call jeveuo(k24chl(1:19)//'.NBNO', 'L', inbno)
                 nbno=zi(inbno)
 ! POUR DIMENSIONNER LES .FEL4 ET .FEL5
@@ -401,9 +401,9 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 !-----------------------------------------------------------------------
             nbmat2=0
             nbnoet=0
-            call jelira(k24chl, 'NUTIOC', nbgrel, k8bid)
+            call jelira(k24chl, 'NUTIOC', nbgrel)
             do 30 i = 1, nbgrel
-                call jelira(jexnum(k24chl, i), 'LONMAX', nmgrel, k8bid)
+                call jelira(jexnum(k24chl, i), 'LONMAX', nmgrel)
                 call jeveuo(jexnum(k24chl, i), 'L', igrel)
 !
 !-----------------------------------------------------------------------
@@ -450,7 +450,7 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 ! ON LA DUPLIQUE DANS .LIEL EN CREEANT UN GREL LIMITE A CETTE MAILLE
                                 nbmat2=nbmat2+1
                                 call jecroc(jexnum(k24dul, nbmat2))
-                                call jeecra(jexnum(k24dul, nbmat2), 'LONMAX', 2, k8bid)
+                                call jeecra(jexnum(k24dul, nbmat2), 'LONMAX', 2)
                                 call jeveuo(jexnum(k24dul, nbmat2), 'E', ladr)
 ! ON RECOPIE LE NUMERO NEGATIF DE MAILLE ET SON TYPE
                                 if (lcc) then
@@ -496,10 +496,10 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
 !
 ! ON DUPLIQUE LES INFOS DU .NEMA (DESCRIPTION DES NOEUDS TARDIFS
 ! ASSOCIES A LA MAILLE TARDIVE
-                                    call jelira(jexnum(k24chn, numgr1), 'LONMAX', nbnema, k8bid)
+                                    call jelira(jexnum(k24chn, numgr1), 'LONMAX', nbnema)
                                     call jeveuo(jexnum(k24chn, numgr1), 'L', madr)
                                     call jecroc(jexnum(k24dun, nbmat2))
-                                    call jeecra(jexnum(k24dun, nbmat2), 'LONMAX', nbnema, k8bid)
+                                    call jeecra(jexnum(k24dun, nbmat2), 'LONMAX', nbnema)
                                     call jeveuo(jexnum(k24dun, nbmat2), 'E', nadr)
                                     nbnema=nbnema-1
 !-----------------------------------------------------------------------
@@ -703,7 +703,7 @@ subroutine exlim2(sdfeti, nomsd, lligrs, ligrsd, nbchat,&
                 if (iret .ne. 0) then
 ! SOUS-DOMAINE CONCERNE PAR DES LIGRELS TARDIFS DE CHARGE
                     call jeveuo(jexnom(k24b, nomsd2), 'L', iflin)
-                    call jelira(jexnom(k24b, nomsd2), 'LONMAX', nbcha2, k8bid)
+                    call jelira(jexnom(k24b, nomsd2), 'LONMAX', nbcha2)
                     do 140 k = 1, nbcha2
                         k1=k-1
                         k24cf1=zk24(iflin+k1)(1:19)//'.FEL1'

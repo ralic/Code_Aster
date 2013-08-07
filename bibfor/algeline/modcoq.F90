@@ -75,7 +75,6 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     real(kind=8) :: geom(9), torco(4, nbm), tcoef(10, nbm)
 !
     integer :: iddl(2)
-    character(len=1) :: k1bid
     character(len=3) :: kmod
     character(len=8) :: k8bid, nompar(3)
     character(len=14) :: numddl
@@ -142,7 +141,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     iok1 = 0
     iok2 = 0
     iok3 = 0
-    call jelira(rcvalr, 'LONUTI', nbpara, k1bid)
+    call jelira(rcvalr, 'LONUTI', nbpara)
     do 10 ipara = 1, nbpara
         if (zk8(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
@@ -174,7 +173,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     iok1 = 0
     iok2 = 0
     iok3 = 0
-    call jelira(rcvalr, 'LONUTI', nbpara, k1bid)
+    call jelira(rcvalr, 'LONUTI', nbpara)
     do 20 ipara = 1, nbpara
         if (zk8(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
@@ -232,11 +231,11 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
 !     GROUPE DE NOEUDS DE LA COQUE INTERNE
     grpno = '&&MEFGMN.00000001       '
-    call jelira(grpno, 'LONMAX', nbnoin, k1bid)
+    call jelira(grpno, 'LONMAX', nbnoin)
     call jeveuo(grpno, 'L', inunoi)
 !     GROUPE DE NOEUDS DE LA COQUE EXTERNE
     grpno = '&&MEFGMN.00000002       '
-    call jelira(grpno, 'LONMAX', nbnoex, k1bid)
+    call jelira(grpno, 'LONMAX', nbnoex)
     call jeveuo(grpno, 'L', inunoe)
 !
     coorno = noma//'.COORDO    .VALE'

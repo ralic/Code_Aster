@@ -77,7 +77,7 @@ subroutine rvechs(ssch19, nbcp, nbco, nbsp, ma,&
 !-----------------------------------------------------------------------
     call jemarq()
     call wkvect('&&RVECHS.TABLE.AUX', 'V V R', 4*nbco*nbsp*nbcp, aux)
-    call jelira(ssch19//'.VALE', 'DOCU', i, docu)
+    call jelira(ssch19//'.VALE', 'DOCU', cval=docu)
     if (docu .eq. 'CHNO') then
         apnco = 0
         apnsp = 0

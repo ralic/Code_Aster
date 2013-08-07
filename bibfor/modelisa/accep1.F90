@@ -48,26 +48,23 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     integer :: nbm, i
-    integer :: iret, irefe, ilime, inoli, j1, nma, ibid
-    integer :: ngrel, ipg, ni, noccu
-    integer :: n1, ivrai
-    integer :: ielma, igrma, iliel, jgma, jliel, nbelma, jnbno
-    integer :: nbgma, nbliel, jelma, inwmod, jdli, temoin, jlgrf
-    integer :: jprnm, iprnm, nbmail, nbprnm, j, imail, jmail
+    integer :: iret, irefe, ilime, inoli, ibid
+    integer :: ngrel, ipg
+    integer :: n1
+    integer ::  jlgrf
     integer :: ncham, icham, nn, nbelto, nbelgr, ntail, ialiel
     integer :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: rbid
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     character(len=7) :: incr, ielem, imode
     character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b
-    character(len=8) :: moint, mailla, partit
+    character(len=8) ::  partit
     character(len=16) :: option
     character(len=19) :: nomcha, chgeom, matas, chharm
     character(len=19) :: chamno
-    character(len=24) :: ligrmo, lchin(3), lchout(1), nom, grma
+    character(len=24) :: ligrmo, lchin(3), lchout(1)
     logical :: yang
     integer :: iarg
 !
@@ -192,7 +189,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                 ielem = 'BID'
                 call codent(ima, 'D0', ielem)
                 call jeveuo('&&329.M'//imode//'.EL'//ielem, 'L', ive)
-                call jelira('&&329.M'//imode//'.EL'//ielem, 'LONMAX', n1, k1bid)
+                call jelira('&&329.M'//imode//'.EL'//ielem, 'LONMAX', n1)
                 do 90 ipg = 1, n1
                     zr(itab+ii-1) = zr(ive+ipg-1)
                     ii = ii + 1

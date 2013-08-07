@@ -81,8 +81,6 @@ subroutine assgen(nomres, option, nugene)
     real(kind=8) :: zero, un
     real(kind=8) :: valr
 !
-    character(len=8) :: k8bid
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -142,12 +140,12 @@ subroutine assgen(nomres, option, nugene)
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
 !
     call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
-    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst, k1bid)
+    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst)
     nbsst=nbsst/2
 !------------------RECUPERATION DU NOMBRE DE LIAISON-------------
 !
     call jenonu(jexnom(prgene//'.LILI', lsst), ibid)
-    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nblia, k1bid)
+    call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nblia)
     if (nblia .eq. 1) then
         call u2mess('F', 'ALGORITH_32')
     endif
@@ -167,7 +165,7 @@ subroutine assgen(nomres, option, nugene)
         call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                     nbloc)
     endif
-    call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc, k8bid)
+    call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
 !
 !------------------CREATION DU NOM A CONCATENER-------------------------
 !   POUR RECUPERER LE NOM DES MATRICES PROJETEES
@@ -175,7 +173,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !------------------------RECUPERATION DU NOMBRE DE LIGRELS--------------
 !
-    call jelira(prgene//'.PRNO', 'NMAXOC', nbprno, k1bid)
+    call jelira(prgene//'.PRNO', 'NMAXOC', nbprno)
     if ((option.ne.rigopt) .and. (option.ne.ricopt)) nbprno=1
 !
 !--------------INITIALISATION DES NOMS OBJETS COURANTS------------------
@@ -213,7 +211,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !
     call jecreo(tmrep, 'V N K8')
-    call jeecra(tmrep, 'NOMMAX', nbprno, k8bid)
+    call jeecra(tmrep, 'NOMMAX', nbprno)
     call jecrec(tminbl, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbprno)
 !
@@ -225,7 +223,7 @@ subroutine assgen(nomres, option, nugene)
 !
     do 10 i = 1, nbprno
         call jenuno(jexnum(prgene//'.LILI', i), nomprn)
-        call jelira(jexnum(prgene//'.PRNO', i), 'LONMAX', ntprno, k1bid)
+        call jelira(jexnum(prgene//'.PRNO', i), 'LONMAX', ntprno)
         ntprno=ntprno/2
 !
 !  TEST SI ON EST SUR LE LIGREL DES SOUS-STRUCTURES
@@ -233,7 +231,7 @@ subroutine assgen(nomres, option, nugene)
         if (nomprn .eq. ksst) then
             call jecroc(jexnom(tmrep, nomprn))
             call jenonu(jexnom(tmrep, nomprn), ibid)
-            call jeecra(jexnum(tminbl, ibid), 'LONMAX', ntprno*2, ' ')
+            call jeecra(jexnum(tminbl, ibid), 'LONMAX', ntprno*2)
             call jeveuo(jexnum(tminbl, ibid), 'E', ltinbl)
 !
 !     BOUCLE SUR LES ELEMENTS DU LIGREL COURANTS
@@ -252,7 +250,7 @@ subroutine assgen(nomres, option, nugene)
         option.eq.rigopt.or.option.eq.ricopt)) then
             call jecroc(jexnom(tmrep, nomprn))
             call jenonu(jexnom(tmrep, nomprn), ibid)
-            call jeecra(jexnum(tminbl, ibid), 'LONMAX', ntprno*3, ' ')
+            call jeecra(jexnum(tminbl, ibid), 'LONMAX', ntprno*3)
             call jeveuo(jexnum(tminbl, ibid), 'E', ltinbl)
             call jeveuo(modgen//'      .MODG.LIPR', 'L', llprof)
             call jenonu(jexnom(prgene//'.LILI', nomprn), ibid)
@@ -373,7 +371,7 @@ subroutine assgen(nomres, option, nugene)
             call jeveuo(jexnum(tmnobl, iblel), 'L', ltnobl)
             nomblo=zk24(ltnomb+iblel-1)
             numblo=zi(ltnumb+iblel-1)
-            call jelira(jexnum(tmnobl, iblel), 'LONMAX', nbterm, k1bid)
+            call jelira(jexnum(tmnobl, iblel), 'LONMAX', nbterm)
             if (option .eq. 'RIGI_GENE_C') then
                 call asgnbc(iblo, zc(ldblo), nbterm, zi(ltnobl), zi( ltadbl),&
                             nomblo, numblo, xcon)

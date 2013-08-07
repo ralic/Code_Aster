@@ -96,7 +96,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
             call jeexin(zk8(jfiss-1+ifis2)//'.JONFISS', iret)
             if (iret .ne. 0) then
                 call jeveuo(zk8(jfiss-1+ifis2)//'.JONFISS', 'L', jjon3)
-                call jelira(zk8(jfiss-1+ifis2)//'.JONFISS', 'LONMAX', nfis3, kbid)
+                call jelira(zk8(jfiss-1+ifis2)//'.JONFISS', 'LONMAX', nfis3)
                 do 120 ifis3 = 1, nfis3
 ! --- SI IFISS EST CONTENU DANS LES FISSURES SUIVANTES : ON SORT
 ! --- ELLE SERA AJOUTÉ DANS LA BOUCLE 60
@@ -124,14 +124,14 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         if (iret .ne. 0) then
             call jeveuo(nomfis(ifiss)//'.JONFISS', 'L', jjonf)
             call jeveuo(nomfis(ifiss)//'.JONCOEF', 'L', jjonc)
-            call jelira(nomfis(ifiss)//'.JONFISS', 'LONMAX', nfis2, kbid)
+            call jelira(nomfis(ifiss)//'.JONFISS', 'LONMAX', nfis2)
 ! --- BOUCLE SUR LES FISSURES CONNECTES À IFISS
             do 70 ifis2 = 1, nfis2
 ! --- ON VERIFIE QUE LA FISSURE CONNECTEE NE CONTIENT PAS CELLE EN COURS
                 call jeexin(zk8(jjonf-1+ifis2)//'.JONFISS', iret)
                 if (iret .ne. 0) then
                     call jeveuo(zk8(jjonf-1+ifis2)//'.JONFISS', 'L', jjon3)
-                    call jelira(zk8(jjonf-1+ifis2)//'.JONFISS', 'LONMAX', nfis3, kbid)
+                    call jelira(zk8(jjonf-1+ifis2)//'.JONFISS', 'LONMAX', nfis3)
                     do 75 ifis3 = 1, nfis3
                         if (zk8(jjon3-1+ifis3) .eq. fiss) goto 70
 75                  continue

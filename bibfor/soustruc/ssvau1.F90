@@ -56,7 +56,6 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: kbid
     integer :: scdi, schc, iblo
     character(len=19) :: matas, stock, nu
 !
@@ -101,7 +100,7 @@ subroutine ssvau1(nomacr, iavein, iaveou)
     call jeveuo(zk24(jrefa-1+2)(1:14)//'.SLCS.SCHC', 'L', iaschc)
     call mtdsc2(zk24(zi(lmat+1)), 'SCDI', 'L', iascdi)
     call mtdsc2(zk24(zi(lmat+1)), 'SCBL', 'L', iascbl)
-    call jelira(matas//'.UALF', 'NMAXOC', nbbloc, kbid)
+    call jelira(matas//'.UALF', 'NMAXOC', nbbloc)
 !
     call rldlr8(zk24(zi(lmat+1)), zi(iaschc), zi(iascdi), zi(iascbl), nddli,&
                 nbbloc, zr(iaveou), 1)

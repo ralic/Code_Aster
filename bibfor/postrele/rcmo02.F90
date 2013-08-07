@@ -50,7 +50,7 @@ subroutine rcmo02(etat, numsit, vale)
 !
     integer :: i, j, numcha, jlcha, nbchar, jchar, iret
     character(len=1) :: etats
-    character(len=8) :: k8b, knumes, knumec
+    character(len=8) ::  knumes, knumec
 ! DEB ------------------------------------------------------------------
 !
     do 10 i = 1, 12
@@ -71,7 +71,7 @@ subroutine rcmo02(etat, numsit, vale)
     call jeexin(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), iret)
     if (iret .eq. 0) goto 9999
 !
-    call jelira(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'LONUTI', nbchar, k8b)
+    call jelira(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'LONUTI', nbchar)
     call jeveuo(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'L', jlcha)
 !
 !

@@ -90,7 +90,6 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
     character(len=8) :: k8bid, ma, nono, nocmp
     character(len=19) :: numeqa
     character(len=24) :: valk(2)
-    character(len=1) :: k1bid
 !
 !
 !
@@ -124,16 +123,16 @@ subroutine nudeeq(base, nu14, neq, gds, iddlag)
 !     - ADRESSE DE ".NUEQ":
     call jeveuo(numeqa//'.NUEQ', 'L', jnueq)
 !
-    call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx, k1bid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gds), 'LONMAX', ncmpmx)
     nec = nbec(gds)
     if (ncmpmx .eq. 0) call u2mess('F', 'ASSEMBLA_24')
     if (nec .eq. 0) call u2mess('F', 'ASSEMBLA_25')
     nblag = 0
 !
 !
-    call jelira(numeqa//'.PRNO', 'NMAXOC', nbligr, k1bid)
+    call jelira(numeqa//'.PRNO', 'NMAXOC', nbligr)
     do 30 i = 1, nbligr
-        call jelira(jexnum(numeqa//'.PRNO', i), 'LONMAX', l, k1bid)
+        call jelira(jexnum(numeqa//'.PRNO', i), 'LONMAX', l)
         if (l .gt. 0) then
             call jeveuo(jexnum(numeqa//'.PRNO', i), 'L', jprno)
 !---- NBNO : SI I=1 --> NOMBRE DE NOEUDS DU MAILLAGE

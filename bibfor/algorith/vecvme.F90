@@ -61,7 +61,7 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
 !
     character(len=1) :: typres
     character(len=8) :: lpain(13), lpaout(1)
-    character(len=8) :: k8bid, newnom
+    character(len=8) ::  newnom
     character(len=14) :: complu
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime
@@ -137,7 +137,7 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
     zk24(jlve) = lchout(1)
-    call jeecra(vechvp, 'LONUTI', 1, k8bid)
+    call jeecra(vechvp, 'LONUTI', 1)
 !
 ! ----- ASSEMBLAGE DU VECT_ELEM
 !
@@ -150,7 +150,7 @@ subroutine vecvme(optio2, modelz, carelz, mate, compor,&
         cnchtp = cnchvp
     else
         call jeveuo(cnchtp, 'L', jtp)
-        call jelira(zk24(jtp) (1:19)//'.VALE', 'LONMAX', lonch, k8bid)
+        call jelira(zk24(jtp) (1:19)//'.VALE', 'LONMAX', lonch)
         call jeveuo(zk24(jtp) (1:19)//'.VALE', 'E', jchtp)
         call jeveuo(cnchvp, 'L', jyp)
         call jeveuo(zk24(jyp) (1:19)//'.VALE', 'E', jchvp)

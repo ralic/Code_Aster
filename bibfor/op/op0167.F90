@@ -83,7 +83,6 @@ subroutine op0167()
 !
     parameter(nbmc=5)
     real(kind=8) :: epais
-    character(len=1) :: k1b
     character(len=4) :: cdim, repk
     character(len=8) :: k8b, nomain, nomaou, newmai, prefix, mo, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
@@ -735,8 +734,8 @@ subroutine op0167()
         do 140 i = 0, 3*nbnoev-1
             zr(kvale+i)=zr(jvale+i)
 140      continue
-        call jelira(coovav, 'DOCU', ibid, cdim)
-        call jeecra(cooval, 'DOCU', ibid, cdim)
+        call jelira(coovav, 'DOCU', cval=cdim)
+        call jeecra(cooval, 'DOCU', cval=cdim)
     else
         call jedupo(nomnov, 'G', nomnoe, .false.)
         call jedupo(coovav, 'G', cooval, .false.)
@@ -826,7 +825,7 @@ subroutine op0167()
         zi(iatyma-1+ibid)=zi(jtom)
 !
         call jenonu(jexnom(nommav, nomg), ibid)
-        call jelira(jexnum(connev, ibid), 'LONMAX', nbpt, k1b)
+        call jelira(jexnum(connev, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connev, ibid), 'L', jopt)
         nbptt=nbpt
         do 150 in = 1, nbnoaj
@@ -866,7 +865,7 @@ subroutine op0167()
         endif
         zi(iatyma-1+ibid)=zi(jtom)
 !
-        call jelira(jexnum(connev, inumol), 'LONMAX', nbpt, k1b)
+        call jelira(jexnum(connev, inumol), 'LONMAX', nbpt)
         call jeveuo(jexnum(connev, inumol), 'L', jopt)
         dimcon = dimcon+nbpt
         zi(jnnoma+decala+ima-1) = nbpt
@@ -895,7 +894,7 @@ subroutine op0167()
         endif
         zi(iatyma-1+ibid)=zi(jtom)
 !
-        call jelira(jexnum(connev, inumol), 'LONMAX', nbpt, k1b)
+        call jelira(jexnum(connev, inumol), 'LONMAX', nbpt)
         call jeveuo(jexnum(connev, inumol), 'L', jopt)
         dimcon = dimcon+nbpt
         zi(jnnoma+decala+ima-1) = nbpt
@@ -904,7 +903,7 @@ subroutine op0167()
 220  end do
 !
     dimcon = dimcon+nbmaj3
-    call jeecra(connex, 'LONT', dimcon, ' ')
+    call jeecra(connex, 'LONT', dimcon)
 !
     decala = 0
     do 500 ima = 1, nbmaiv
@@ -912,7 +911,7 @@ subroutine op0167()
         nbpt = zi(jnnomb+decala+ima-1)
         jopt = zi(jadrjv+decala+ima-1)
         ibid = zi(jnonum+decala+ima-1)
-        call jeecra(jexnum(connex, ibid), 'LONMAX', nbptt, k8b)
+        call jeecra(jexnum(connex, ibid), 'LONMAX', nbptt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do 510 ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
@@ -925,7 +924,7 @@ subroutine op0167()
         nbpt = zi(jnnoma+decala+ima-1)
         jopt = zi(jadrjv+decala+ima-1)
         ibid = zi(jnonum+decala+ima-1)
-        call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt, k8b)
+        call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do 530 ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
@@ -938,7 +937,7 @@ subroutine op0167()
         nbpt = zi(jnnoma+decala+ima-1)
         jopt = zi(jadrjv+decala+ima-1)
         ibid = zi(jnonum+decala+ima-1)
-        call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt, k8b)
+        call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         do 550 ino = 0, nbpt-1
             zi(jnpt+ino)=zi(jopt+ino)
@@ -964,7 +963,7 @@ subroutine op0167()
         endif
         zi(iatyma-1+ibid)=ntpoi
 !
-        call jeecra(jexnum(connex, ibid), 'LONMAX', 1, k8b)
+        call jeecra(jexnum(connex, ibid), 'LONMAX', 1)
         call jeveuo(jexnum(connex, ibid), 'E', jnpt)
         call jenonu(jexnom(nomnoe, newmai), zi(jnpt))
 230  end do
@@ -978,7 +977,7 @@ subroutine op0167()
     if (iret .eq. 0) then
         nbgrmv=0
     else
-        call jelira(grpmav, 'NOMUTI', nbgrmv, k1b)
+        call jelira(grpmav, 'NOMUTI', nbgrmv)
     endif
     nbgrmn=nbgrmv+nbgrma
     if (nbgrmn .ne. 0) then
@@ -997,10 +996,10 @@ subroutine op0167()
                             0, 0, 0.d0)
             endif
             call jeveuo(jexnum(grpmav, i), 'L', jvg)
-            call jelira(jexnum(grpmav, i), 'LONMAX', nbma, k1b)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma), ' ')
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbma, k1b)
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma, ' ')
+            call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbma,1))
+            call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
+            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
             call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
             do 240 j = 0, nbma-1
                 zi(jgg+j)=zi(jvg+j)
@@ -1022,8 +1021,8 @@ subroutine op0167()
             call palim3('CREA_GROUP_MA', i, nomain, crgrnu, crgrno,&
                         nbmaj2)
             call jeveuo(crgrno, 'L', jcrgno)
-            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2, 1), ' ')
-            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmaj2, ' ')
+            call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2,1))
+            call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbmaj2)
             call jeveuo(jexnom(grpmai, nomg), 'E', iagma)
             do 260 ima = 0, nbmaj2-1
                 call jenonu(jexnom(nommai, zk8(jcrgno+ima)), zi(iagma+ ima))
@@ -1037,7 +1036,7 @@ subroutine op0167()
     if (iret .eq. 0) then
         nbgrno=0
     else
-        call jelira(grpnov, 'NOMUTI', nbgrno, k1b)
+        call jelira(grpnov, 'NOMUTI', nbgrno)
         call jecreo(gpptnn, 'G N K24')
         call jeecra(gpptnn, 'NOMMAX', nbgrno, ' ')
         call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
@@ -1045,7 +1044,7 @@ subroutine op0167()
         do 290 i = 1, nbgrno
             call jenuno(jexnum(grpnov, i), nomg)
             call jeveuo(jexnum(grpnov, i), 'L', jvg)
-            call jelira(jexnum(grpnov, i), 'LONUTI', nbno, k1b)
+            call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
             call jeexin(jexnom(grpnoe, nomg), iret)
             if (iret .eq. 0) then
                 call jecroc(jexnom(grpnoe, nomg))
@@ -1054,8 +1053,8 @@ subroutine op0167()
                 call u2mesg('F', 'ALGELINE4_11', 1, valk, 0,&
                             0, 0, 0.d0)
             endif
-            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno, 1), ' ')
-            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno, ' ')
+            call jeecra(jexnom(grpnoe, nomg), 'LONMAX', max(nbno,1))
+            call jeecra(jexnom(grpnoe, nomg), 'LONUTI', nbno)
             call jeveuo(jexnom(grpnoe, nomg), 'E', jgg)
             do 280 j = 0, nbno-1
                 zi(jgg+j)=zi(jvg+j)
@@ -1086,7 +1085,7 @@ subroutine op0167()
                             nbgrma)
             else
                 grpmav='&&OP0167.GROUPEMA'
-                call jelira(grpmai, 'NOMUTI', nbgma, k8b)
+                call jelira(grpmai, 'NOMUTI', nbgma)
                 nbgrmt=nbgma+nbgrma
                 call cpclma(nomaou, '&&OP0167', 'GROUPEMA', 'V')
                 call jedetr(grpmai)
@@ -1106,10 +1105,10 @@ subroutine op0167()
                                     0, 0, 0.d0)
                     endif
                     call jeveuo(jexnum(grpmav, i), 'L', jvg)
-                    call jelira(jexnum(grpmav, i), 'LONMAX', nbma, k8b)
-                    call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1, nbma), ' ')
-                    call jelira(jexnum(grpmav, i), 'LONUTI', nbma, k8b)
-                    call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma, ' ')
+                    call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
+                    call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(1,nbma))
+                    call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
+                    call jeecra(jexnom(grpmai, nomg), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nomg), 'E', jgg)
                     do 310 j = 0, nbma-1
                         zi(jgg+j)=zi(jvg+j)
@@ -1136,8 +1135,8 @@ subroutine op0167()
                         call u2mesg('F', 'ALGELINE4_9', 1, valk, 0,&
                                     0, 0, 0.d0)
                     endif
-                    call jeecra(jexnom(grpmai, nogma), 'LONMAX', max( nbma, 1), k8b)
-                    call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma, k8b)
+                    call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma,1))
+                    call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma)
                     call jeveuo(jexnom(grpmai, nogma), 'E', iagma)
                     do 330,ima=0,nbma-1
                     call jenonu(jexnom(nommai, zk8(jmail+ima)), zi( iagma+ima))

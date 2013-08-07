@@ -137,7 +137,7 @@ subroutine ssdmdn(mag)
             call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
             nomacr= zk8(ianmcr-1+isma)
             call jeveuo(nomacr//'.LINO', 'L', ialino)
-            call jelira(nomacr//'.LINO', 'LONUTI', nbnoex, kbid)
+            call jelira(nomacr//'.LINO', 'LONUTI', nbnoex)
             call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
                         mal, ied)
             call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)

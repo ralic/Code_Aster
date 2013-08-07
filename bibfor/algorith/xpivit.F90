@@ -66,7 +66,6 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss, cncte,&
 !
 !
     integer :: zxain, pint, aret, ier, jcnte, ncte, narcon, iad
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +85,7 @@ subroutine xpivit(jcesd, jcesv, jcesl, ifiss, cncte,&
     call jeexin(cncte, ier)
     if (ier .ne. 0) then
         call jeveuo(cncte, 'L', jcnte)
-        call jelira(cncte, 'LONMAX', narcon, k8bid)
+        call jelira(cncte, 'LONMAX', narcon)
     else
         narcon = 0
     endif

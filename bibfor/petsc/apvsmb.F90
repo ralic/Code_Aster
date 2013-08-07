@@ -114,7 +114,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         call VecAssemblyEnd(b, ierr)
         ASSERT(ierr.eq.0)
     else
-        call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi, kbid)
+        call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
         neq=nsmdi
 !
         call VecCreate(mpicou, b, ierr)

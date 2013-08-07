@@ -186,13 +186,13 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call jeveuo(nodtor, 'L', jnodto)
 !
 !     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
-    call jelira(nodtor, 'LONMAX', nbno, k8b)
+    call jelira(nodtor, 'LONMAX', nbno)
 !
 !     RETRIEVE THE LIST OF THE ELEMENTS SUPPORTING THE NODES IN THE TORE
     call jeveuo(eletor, 'L', jeleto)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
-    call jelira(eletor, 'LONMAX', nbma, k8b)
+    call jelira(eletor, 'LONMAX', nbma)
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)

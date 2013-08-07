@@ -52,7 +52,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !        NUMFON  : NOMBRE DE FONDS DE FISSURE
 !
 !     ------------------------------------------------------------------
-    integer :: i, j, k, iret, ifm, niv, nfon, nbnol
+    integer :: i, j, k, iret, ifm, niv, nbnol
     integer :: jbasef, jfmult, jfonf, jbeta, jvit, jmemo
     integer :: jbaso, jfmulo, jfono, jbetao, jvito, jfong
     integer :: long, nptfg, nbptff, ivalue, nval
@@ -60,7 +60,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
     real(kind=8) :: a1(4), b1(4), m1(3), a2(4), b2(4), m2(3)
     real(kind=8) :: prosca, normab, coeffk, mem(5), memo(5)
     real(kind=8) :: vect1, vect2
-    character(len=8) :: k8b, k8bid
+    character(len=8) :: k8b
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -74,7 +74,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !     NPTFG : NBRE DE POINTS DU FOND SUR LA GRILLE
 !     (UTILE POUR REORIENTER LES FONDS SUR LE MAILLAGE REEL, cf DOC???)
     call jeveuo(fiss//'.FONDFISG', 'L', jfong)
-    call jelira(fiss//'.FONDFISG', 'LONMAX', long, k8bid)
+    call jelira(fiss//'.FONDFISG', 'LONMAX', long)
     nptfg=long/4
 !
 !     RECUPERATION DU FOND DE FISSURE

@@ -45,7 +45,6 @@ function nbcmp(gd)
 !
 !     EXCLUDE($FUNJEV)
 !
-    character(len=8) :: cbid
 !
 !-----------------------------------------------------------------------
     integer :: iddgd, igd1, igd2
@@ -56,12 +55,12 @@ function nbcmp(gd)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', iddgd)
     code = zi(iddgd)
     if ((code.eq.1) .or. (code.eq.2)) then
-        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcmp, cbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbcmp)
         goto 9999
     else if (code.eq.3) then
         igd1 = zi(iddgd+3)
         if (igd1 .gt. 0) then
-            call jelira(jexnum('&CATA.GD.NOMCMP', igd1), 'LONMAX', nbcmp, cbid)
+            call jelira(jexnum('&CATA.GD.NOMCMP', igd1), 'LONMAX', nbcmp)
             goto 9999
         else
             call jenuno(jexnum('&CATA.GD.DESCRIGD', gd), nomgd)
@@ -103,7 +102,7 @@ function nbcmp(gd)
             call u2mesg('F', 'CALCULEL6_20', 3, valk, 3,&
                         vali, 0, 0.d0)
         endif
-        call jelira(jexnum('&CATA.GD.NOMCMP', igd1), 'LONMAX', nbcmp, cbid)
+        call jelira(jexnum('&CATA.GD.NOMCMP', igd1), 'LONMAX', nbcmp)
         goto 9999
     else
         vali (1) = gd

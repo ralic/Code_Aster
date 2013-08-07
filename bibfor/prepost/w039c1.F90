@@ -86,7 +86,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx, kbid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
     write (ifm,*)' '
     write (ifr,*)' '
     write (ifm,'(A,A)')'IMPRESSION D''UN CHAMP DE CONCEPT : ',titre
@@ -150,7 +150,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !     -- ON TRANSFORME LA CARTE EN UN CHAM_ELEM_S DE NEUT_R :
 !     ------------------------------------------------------
-    call jelira(cart1//'.DESC', 'DOCU', ibid, kbid)
+    call jelira(cart1//'.DESC', 'DOCU', cval=kbid)
     ASSERT(kbid.eq.'CART')
     call dismoi('F', 'NOM_MAILLA', cart1, 'CARTE', ibid,&
                 ma, ierd)

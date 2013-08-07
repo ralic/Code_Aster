@@ -63,7 +63,7 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
     integer :: i, ier
 !
     real(kind=8) :: vim(9), vip(9), lamb(3)
-    real(kind=8) :: delta(6), sqrnor, sqrtan, r8prem, eps
+    real(kind=8) :: delta(6)
 !
     character(len=16) :: option
 !

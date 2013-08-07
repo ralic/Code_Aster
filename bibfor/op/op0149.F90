@@ -37,7 +37,7 @@ subroutine op0149()
 #include "asterfort/rsadpa.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nomres, basemo, modefl, typflu, k8bid
+    character(len=8) :: nomres, basemo, modefl, typflu
     character(len=8) :: kbid
     character(len=16) :: typres, nomcmd
     character(len=19) :: basefl
@@ -140,20 +140,20 @@ subroutine op0149()
 !-----2.2.ERREUR FATALE SI NUME_VITE_FLUI INVALIDE
 !
     vite = basefl//'.VITE'
-    call jelira(vite, 'LONUTI', nbvite, k8bid)
+    call jelira(vite, 'LONUTI', nbvite)
     ASSERT(numvit.gt.0 .and. numvit.le.nbvite)
 !
 !-----2.3.ERREUR FATALE SI TOUS LES MODES NON COUPLES SONT RETENUS
 !         (MOT-CLE <NUME_ORDRE> NON UTILISE) ET NOMBRE D'ARGUMENTS
 !         INVALIDE POUR LE MOT-CLE <AMOR_REDUIT>
 !
-    call jelira(basemo//'           .ORDR', 'LONUTI', nbmode, k8bid)
+    call jelira(basemo//'           .ORDR', 'LONUTI', nbmode)
     call jeveuo(basemo//'           .ORDR', 'L', jordr)
 !
 !
 !--------------------------------------------------------------------
     numo = basefl//'.NUMO'
-    call jelira(numo, 'LONUTI', nbmfl, k8bid)
+    call jelira(numo, 'LONUTI', nbmfl)
     call jeveuo(numo, 'L', inumo)
 !
     nbmod2 = nbmode - nbmfl

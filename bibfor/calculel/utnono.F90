@@ -56,7 +56,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
 !
     integer :: iret1, nbno, iad
     character(len=1) :: typm
-    character(len=8) :: k8b, knbno
+    character(len=8) ::  knbno
     character(len=16) :: typgrp, nom
 !
     call jemarq()
@@ -76,7 +76,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj,&
 !
     call jeexin(jexnom(nomma//typgrp, nomgrp), iret1)
     if (iret1 .gt. 0) then
-        call jelira(jexnom(nomma//typgrp, nomgrp), 'LONUTI', nbno, k8b)
+        call jelira(jexnom(nomma//typgrp, nomgrp), 'LONUTI', nbno)
     else
         nbno=0
     endif

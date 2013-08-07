@@ -70,7 +70,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 ! IN  : JDLM   : ADRESSE DES MAILLES
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=6) :: kioc
     character(len=8) :: k8b, nomu, fcx, nomsec
     character(len=16) :: k16b, sec, concep, cmd, varsec
@@ -123,7 +122,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
     mlgnma = noma//'.NOMMAI'
     mlggma = noma//'.GROUPEMA'
     ier = 0
-    call jelira(mlgnma, 'NOMMAX', nbmail, k1bid)
+    call jelira(mlgnma, 'NOMMAX', nbmail)
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !
@@ -144,10 +143,10 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 ! --- CREATION D UN OBJET TAMPON (SURDIMENSIONNE A NBO*NPOUTR)  :
     call jecrec(tmpgen, 'V V R', 'NO', 'CONTIG', 'CONSTANT',&
                 npoutr)
-    call jeecra(tmpgen, 'LONMAX', nbo, ' ')
+    call jeecra(tmpgen, 'LONMAX', nbo)
     call jecrec(tmpgef, 'V V K8', 'NO', 'CONTIG', 'CONSTANT',&
                 npoutr)
-    call jeecra(tmpgef, 'LONMAX', 1, ' ')
+    call jeecra(tmpgef, 'LONMAX', 1)
     call wkvect('&&ACEAPO.POUTRE', 'V V K24', lmax, jdls)
 !
 ! --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
@@ -283,7 +282,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
         if (ng .gt. 0) then
             do 40 i = 1, ng
                 call jeveuo(jexnom(mlggma, zk24(jdls+i-1)), 'L', jdgm)
-                call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr, k1bid)
+                call jelira(jexnom(mlggma, zk24(jdls+i-1)), 'LONUTI', nbmagr)
                 do 42 j = 1, nbmagr
                     nummai = zi(jdgm+j-1)
                     call jenuno(jexnum(mlgnma, nummai), nommai)
@@ -332,7 +331,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
         call u2mess('F', 'MODELISA_14')
     endif
 !
-    call jelira(tmpgen, 'NUTIOC', npoaff, k1bid)
+    call jelira(tmpgen, 'NUTIOC', npoaff)
 !
 ! --- VERIFICATION DES OBLIGATIONS ET AFFECTATION DES DEFAUTS
     do 60 i = 1, npoaff

@@ -49,7 +49,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, jvale, ibid, neq, i, iret1, iret2
+    integer :: vali, jvale, neq, i, iret1, iret2
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=1) :: typrez
@@ -81,7 +81,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
     endif
 !
 !
-    call jelira(cham19//sufv, 'TYPE', ibid, type)
+    call jelira(cham19//sufv, 'TYPE', cval=type)
     if (type(1:1) .ne. typrez) then
         write(ific,*) 'NOOK '
         valk(1) = cham19
@@ -91,7 +91,7 @@ subroutine utest1(chamgd, typtes, typres, nbref, tbtxt,&
         goto 9999
     endif
 !
-    call jelira(cham19//sufv, 'LONMAX', neq, type)
+    call jelira(cham19//sufv, 'LONMAX', neq)
     call jeveuo(cham19//sufv, 'L', jvale)
 !
 !

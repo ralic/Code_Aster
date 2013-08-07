@@ -134,13 +134,13 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
     call jeveuo(nodtor, 'L', jnodto)
 !
 !     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
-    call jelira(nodtor, 'LONMAX', nbno, k8b)
+    call jelira(nodtor, 'LONMAX', nbno)
 !
 !     RETRIEVE THE LIST OF THE ELEMENTS DEFINING THE TORE
     call jeveuo(eletor, 'L', jelcal)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS DEFINING THE TORE
-    call jelira(eletor, 'LONMAX', nbma, k8b)
+    call jelira(eletor, 'LONMAX', nbma)
 !
 !   RECUPERATION DE L'ADRESSE DES VALEURS DE LS ET DU GRADIENT DE LS
     call jeveuo(cnsln//'.CNSV', 'L', jlnno)
@@ -441,7 +441,7 @@ subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
 !           WRITE(*,*)'La reortho du noeud d"indice',I,' se fait a WI=0'
 !
 !    RECUPERATION DES MAILLES CONTENANT LE NOEUD NODE
-                call jelira(jexnum(cnxinv, node), 'LONMAX', nmanoi, k8b)
+                call jelira(jexnum(cnxinv, node), 'LONMAX', nmanoi)
                 call jeveuo(jexnum(cnxinv, node), 'L', jmanoi)
 !     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD NODE
                 dismin = r8maem()

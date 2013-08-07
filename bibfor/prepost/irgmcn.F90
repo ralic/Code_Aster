@@ -70,7 +70,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
 !     ------------------------------------------------------------------
 !
     integer :: i, ine
-    integer :: ior, ibid, k, ncmp, iret, nbord2, jncmp, ncmpu
+    integer :: ior, k, ncmp, iret, nbord2, jncmp, ncmpu
     integer :: jtabc, jtabv, jtabl, jtabd, jcnsk, jtype
     logical :: scal, vect, tens
     character(len=8) :: k8b, nocmp, tbcmp(3)
@@ -107,7 +107,7 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr,&
         call jeveuo(champs//'.CNSC', 'L', zi(jtabc+ior-1))
         call jeveuo(champs//'.CNSV', 'L', zi(jtabv+ior-1))
         call jeveuo(champs//'.CNSL', 'L', zi(jtabl+ior-1))
-        call jelira(champs//'.CNSV', 'TYPE', ibid, zk8(jtype+ior-1))
+        call jelira(champs//'.CNSV', 'TYPE', cval=zk8(jtype+ior-1))
 !
 !
 100  end do

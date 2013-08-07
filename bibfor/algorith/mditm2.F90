@@ -434,7 +434,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
             if (ivar .ne. 0) call u2mess('A', 'ALGORITH5_53')
             xnbr0 = mod(nbr0+1,10000)
             if (xnbr0 .eq. 0) then
-                call jelira(chain1, 'LONMAX', ilong, k8b)
+                call jelira(chain1, 'LONMAX', ilong)
                 call mditm3(chain1, chain2, chain3, chain4, chain5,&
                             chain6, chain7, chain8, chain9, ilong,&
                             nbm, nbnl)

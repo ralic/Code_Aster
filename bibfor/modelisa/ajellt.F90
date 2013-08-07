@@ -78,7 +78,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !-----------------------------------------------------------------------
     parameter (nbmail = 10000)
 !
-    character(len=8) :: noma, k8bid
+    character(len=8) :: noma
     character(len=16) :: pheno, modeli, typel
     character(len=19) :: ligret
     character(len=24) :: lima, lino, typmai
@@ -192,11 +192,11 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE DE MAILLES DEJA AFFECTEES :
 !       --------------------------------
-        call jelira(ligret//'.LIMA', 'LONUTI', lolima, k8bid)
+        call jelira(ligret//'.LIMA', 'LONUTI', lolima)
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.LIMA :
 !       -------------------------------
-        call jelira(ligret//'.LIMA', 'LONMAX', lolimx, k8bid)
+        call jelira(ligret//'.LIMA', 'LONMAX', lolimx)
 !
 ! ---   NOMBRE DE MAILLES DISPONIBLES :
 !       -----------------------------
@@ -223,7 +223,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.POMA :
 !       -------------------------------
-        call jelira(ligret//'.POMA', 'LONMAX', lopomx, k8bid)
+        call jelira(ligret//'.POMA', 'LONMAX', lopomx)
 !
 ! ---   REAJUSTEMENT EVENTUEL DU VECTEUR POMA :
 !       -------------------------------------
@@ -241,11 +241,11 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   NOMBRE DE NOEUDS DEJA AFFECTES :
 !       ------------------------------
-        call jelira(ligret//'.LINO', 'LONUTI', lolino, k8bid)
+        call jelira(ligret//'.LINO', 'LONUTI', lolino)
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.LINO :
 !       -------------------------------
-        call jelira(ligret//'.LINO', 'LONMAX', lolinx, k8bid)
+        call jelira(ligret//'.LINO', 'LONMAX', lolinx)
 !
 ! ---   NOMBRE DE NOEUDS DISPONIBLES :
 !       ----------------------------
@@ -270,7 +270,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
 ! ---   LONGUEUR DU VECTEUR LIGRET.PONO :
 !       -------------------------------
-        call jelira(ligret//'.PONO', 'LONMAX', loponx, k8bid)
+        call jelira(ligret//'.PONO', 'LONMAX', loponx)
 !
 ! ---   REAJUSTEMENT EVENTUEL DU VECTEUR PONO :
 !       -------------------------------------
@@ -298,7 +298,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !
         zi(idpono+matard) = zi(idpono+matard-1) + nbno
 !
-        call jeecra(ligret//'.LINO', 'LONUTI', zi(idpono+matard), k8bid)
+        call jeecra(ligret//'.LINO', 'LONUTI', zi(idpono+matard))
 !
 ! --- AFFECTATION DES MAILLES PHYSIQUES :
 !     =================================
@@ -336,7 +336,7 @@ subroutine ajellt(ligrez, nomaz, nbma, limaz, typelz,&
 !       ------------------------------------------------
         zi(idpoma+zi(idapma)) = zi(idpoma+zi(idapma)-1) + nbma
 !
-        call jeecra(ligret//'.LIMA', 'LONUTI', zi(idpoma+zi(idapma)), k8bid)
+        call jeecra(ligret//'.LIMA', 'LONUTI', zi(idpoma+zi(idapma)))
 !
     endif
 !

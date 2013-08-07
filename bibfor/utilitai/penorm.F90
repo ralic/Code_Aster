@@ -66,10 +66,10 @@ subroutine penorm(resu, modele)
 !     ------------------------------------------------------------------
 !
     integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nco
-    integer :: jno, jin, jcoef, jco
+    integer :: jno, jin, jcoef
     integer :: nbpar, nbpmax, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
     integer :: nn
-    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ncp, ifm, niv
+    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
     integer :: jlicmx, nb30, ncmpt, nbcoef
     parameter(nbpmax=13,nb30=30)
     real(kind=8) :: r8b, prec, inst, vnorm(1)
@@ -165,7 +165,7 @@ subroutine penorm(resu, modele)
             call getvid('NORME', 'LIST_ORDRE', 1, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jno)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, k8b)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
 !       -- INST --
@@ -181,7 +181,7 @@ subroutine penorm(resu, modele)
             call getvid('NORME', 'LIST_INST', 1, iarg, 1,&
                         lisins, iret)
             call jeveuo(lisins // '.VALE', 'L', jin)
-            call jelira(lisins // '.VALE', 'LONMAX', nbordr, k8b)
+            call jelira(lisins // '.VALE', 'LONMAX', nbordr)
         endif
 !
 !       -- TOUT_ORDRE --
@@ -362,11 +362,11 @@ subroutine penorm(resu, modele)
         if (tych(1:4) .eq. 'NOEU') then
             call cnocns(cham2, 'V', chamtm)
             call jeveuo(chamtm//'.CNSC', 'L', jlicmp)
-            call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm, k8b)
+            call jelira(chamtm//'.CNSC', 'LONMAX', ncmpm)
         else if (tych(1:2).eq.'EL') then
             call celces(cham2, 'V', chamtm)
             call jeveuo(chamtm//'.CESC', 'L', jlicmp)
-            call jelira(chamtm//'.CESC', 'LONMAX', ncmpm, k8b)
+            call jelira(chamtm//'.CESC', 'LONMAX', ncmpm)
         endif
         call jedetr('&&PENORM.CMP1')
         call wkvect('&&PENORM.CMP1', 'V V K8', ncmpm, jlicm1)

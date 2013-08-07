@@ -76,10 +76,10 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
 !
     call jeveuo(mailsk//'.CORRES', 'L', lcorr)
-    call jelira(mailsk//'.CORRES', 'LONUTI', nnodes, k8bid)
+    call jelira(mailsk//'.CORRES', 'LONUTI', nnodes)
     call jeveuo(jexnum(pfchn1//'.PRNO', 1), 'L', lprold)
     call jeveuo(pfchn1//'.NUEQ', 'L', lnuold)
-    call jelira(nomres//'           .ORDR', 'LONUTI', nbord, k8bid)
+    call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
     call jeveuo(nomres//'           .ORDR', 'L', lord)
 !
     call dismoi('F', 'NUM_GD', chamno, 'CHAM_NO', igd,&
@@ -117,11 +117,11 @@ subroutine regres(nomres, mailsk, result, pfchn2)
     call jeexin(jexnum(objet, 1), iret)
     if (iret .ne. 0) then
         call jeveuo(jexnum(objet, 1), 'E', lprnew)
-        call jelira(jexnum(objet, 1), 'LONMAX', nbval, k8bid)
+        call jelira(jexnum(objet, 1), 'LONMAX', nbval)
         do 15 i = 1, nbval
             zi(lprnew-1+i) = 0
 15      continue
-        call jeecra(jexnum(objet, 1), 'LONUTI', nnodes*ndi, ' ')
+        call jeecra(jexnum(objet, 1), 'LONUTI', nnodes*ndi)
     else
         valk(1) = objet
         call u2mesg('F', 'ALGORITH14_30', 1, valk, 0,&

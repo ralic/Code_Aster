@@ -39,7 +39,6 @@ subroutine reseci(carele, nummai, ai1, ai2)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/veri32.h"
-    character(len=1) :: kbid
     character(len=8) :: carele, k8bid1
     character(len=24) :: k24bi1
 !
@@ -77,7 +76,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
         endif
 !   ON REGARDE SI LA MAILLE EST DANS LE .LIMA
         call jeveuo(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'L', ialima)
-        call jelira(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'LONMAX', inbmai, k8bid1)
+        call jelira(jexnum(k24bi1(1:19)//'.LIMA', inulim), 'LONMAX', inbmai)
         do 103 imai1 = 1, inbmai
             numai1 = zi(ialima-1+imai1)
             if (nummai .eq. numai1) then
@@ -91,7 +90,7 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !**********************************************************************C
 !***        ON RECHERCHE LE NOMBRE DE CMP DE LA GRANDEUR **************C
 !**********************************************************************C
-    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', igdncm, kbid)
+    call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', igdncm)
 !**********************************************************************C
 !***        ON RECHERCHE LES NUMERO DE AI1 ET AI2 DANS LA GD***********C
 !**********************************************************************C

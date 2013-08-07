@@ -255,7 +255,7 @@ subroutine calyrc(chargz)
 ! ---        DU TABLEAU DES NORMALES ET LES NUMEROS DES NOEUDS :
 !            -------------------------------------------------
             call wkvect('&&CALYRC.INDIRE', 'V V I', nnomx, indire)
-            call jelira('&&NBNLMA.LN', 'LONUTI', lno, kb)
+            call jelira('&&NBNLMA.LN', 'LONUTI', lno)
 !
             do 20 i = 1, lno
                 zi(indire+zi(jnunoe+i-1)-1) = i
@@ -310,7 +310,7 @@ subroutine calyrc(chargz)
         call jeveuo(cores1//'.PJEF_NB', 'L', iconb1)
         call jeveuo(cores1//'.PJEF_NU', 'L', iconu1)
         call jeveuo(cores1//'.PJEF_CF', 'L', icocf1)
-        call jelira(cores1//'.PJEF_NB', 'LONMAX', nbno2, kb)
+        call jelira(cores1//'.PJEF_NB', 'LONMAX', nbno2)
 !
         if (nbma2 .gt. 0) then
 !        -- 2eme groupe maitre --

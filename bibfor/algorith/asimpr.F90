@@ -40,7 +40,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 !     ------------------------------------------------------------------
 !
     character(len=4) :: typdir
-    character(len=8) :: k8b, noeu, cmp, noref
+    character(len=8) ::  noeu, cmp, noref
     character(len=8) :: knum, kdir
     character(len=19) :: knoeu, didi, lnore, nbnor, ordr
     character(len=80) :: nomcas, chainq, chainl, chaina
@@ -132,7 +132,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
     write(ifm,1190)
     write(ifm,1200)
     do 10 iocc = 1, nboc
-        call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas, k8b)
+        call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
         do 20 icas = 1, ncas
             nucas = zi(jcas+icas-1)
@@ -146,10 +146,10 @@ subroutine asimpr(nbsup, tcosup, nomsup)
                     call codent(nucas, 'D0', knum(2:8))
                     kdir = 'D       '
                     call codent(nucas, 'D0', kdir(2:8))
-                    call jelira(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno, k8b)
+                    call jelira(jexnom('&&ASENAP.LINOEU', knum), 'LONMAX', nbno)
                     call jeveuo(jexnom('&&ASENAP.LINOEU', knum), 'L', jno)
                     lnod =3*nbno
-                    call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod, k8b)
+                    call jelira(jexnom('&&ASENAP.LIDIR', kdir), 'LONMAX', lnod)
                     call jeveuo(jexnom('&&ASENAP.LIDIR', kdir), 'L', jdir)
                     if (zi(jref+icas-1) .eq. 1) noref = zk8(jnref+icas- 1)
                     do 12 ino = 1, nbno
@@ -178,7 +178,7 @@ subroutine asimpr(nbsup, tcosup, nomsup)
 20      continue
 10  end do
     do 50 iocc = 1, nboc
-        call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas, k8b)
+        call jelira(jexnum('&&ASENAP.LISTCAS', iocc), 'LONMAX', ncas)
         call jeveuo(jexnum('&&ASENAP.LISTCAS', iocc), 'L', jcas)
         write(ifm,1220)
         if (zi(jtyp+iocc-1) .eq. 1) typdir = 'QUAD'

@@ -156,7 +156,7 @@ subroutine debca1(nomop, ligrel, nin)
     call jeveuo('&CATA.TE.NOELREFE', 'L', jnoelr)
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', jpnlfp)
     call jeveuo('&CATA.TE.NOLOCFPG', 'L', jnolfp)
-    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg, kbid)
+    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
 !
 !
 !     INITIALISATION DU COMMON CAII19 :
@@ -250,13 +250,13 @@ subroutine debca1(nomop, ligrel, nin)
 !     --------------------------------------------------------
     call jeexin('&&CALCUL.NOMOP', iret)
     if (iret .eq. 0) then
-        call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt, kbid)
+        call jelira('&CATA.OP.NOMOPT', 'NOMMAX', nbopt)
         call wkvect('&&CALCUL.NOMOP', 'V V K16', nbopt, ianoop)
         do 20,i=1,nbopt
         call jenuno(jexnum('&CATA.OP.NOMOPT', i), nomop2)
         zk16(ianoop-1+i)=nomop2
 20      continue
-        call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte, kbid)
+        call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)
         call wkvect('&&CALCUL.NOMTE', 'V V K16', nbte, ianote)
         do 30,i=1,nbte
         call jenuno(jexnum('&CATA.TE.NOMTE', i), nomte)

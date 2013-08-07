@@ -47,7 +47,7 @@ subroutine kndif2(long, lk1, l1, lk2, l2,&
 ! L3     OUT  I     : LONGUEUR DE LA LISTE LK3
 !----------------------------------------------------------------------
 !----------------------------------------------------------------------
-    character(len=24) :: pn2, kbid
+    character(len=24) :: pn2
     integer :: k1, k2, nbk3
 !
     ASSERT((long.eq.8).or.(long.eq.16).or.(long.eq.24))
@@ -69,7 +69,7 @@ subroutine kndif2(long, lk1, l1, lk2, l2,&
 !     -------------------------------------------------
     pn2='KNDIF2.PN2'
     call jecreo(pn2, 'V N K24')
-    call jeecra(pn2, 'NOMMAX', l2, kbid)
+    call jeecra(pn2, 'NOMMAX', l2)
     do 1, k2=1,l2
     call jecroc(jexnom(pn2, lk2(k2)))
     1 end do

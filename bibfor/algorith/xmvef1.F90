@@ -79,7 +79,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 ! IN  INADH  : POINT ADHERENT OU PAS
 ! I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, ii, ini, pli, xoula, iin, nddle
+    integer :: i, j, k, ii, pli, iin, nddle
     integer :: nne, nnes, nnem, nnm, nnms, ddles, ddlem, ddlms, ddlmm
     real(kind=8) :: vectt(3), tt(2), vv, t
 ! ----------------------------------------------------------------------

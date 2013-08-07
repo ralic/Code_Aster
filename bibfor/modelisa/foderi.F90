@@ -48,7 +48,6 @@ subroutine foderi(nomfon, temp, f, df)
 !     ------------------------------------------------------------------
     logical :: tesinf, tessup
     integer :: isave, kk, jpro, jvalf, jv, jp, nbvf
-    character(len=8) :: k8bid
     character(len=19) :: ch19
     character(len=24) :: chpro, chval
 !     ------------------------------------------------------------------
@@ -82,7 +81,7 @@ subroutine foderi(nomfon, temp, f, df)
     endif
 !
     call jeveut(chval, 'L', jvalf)
-    call jelira(chval, 'LONMAX', nbvf, k8bid)
+    call jelira(chval, 'LONMAX', nbvf)
     nbvf = nbvf/2
 !
     isvnxt = nextsv(isvnxt)

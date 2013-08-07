@@ -77,7 +77,7 @@ subroutine vtdefs(chpout, chpin, base, typc)
         call jeexin(ch19//'.FETC', iret)
         if (iret .ne. 0) lfeti=.true.
         if (lfeti) then
-            call jelira(ch19//'.FETC', 'LONMAX', nbsd, k8bid)
+            call jelira(ch19//'.FETC', 'LONMAX', nbsd)
             call jeveuo(ch19//'.FETC', 'L', ifetc)
             call wkvect(chpout(1:19)//'.FETC', 'V V K24', nbsd, kfetc)
             call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)

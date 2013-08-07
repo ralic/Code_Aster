@@ -55,7 +55,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
 !
 !
 !
-    character(len=8) :: nomcha, lpain(3), paout, k8bid
+    character(len=8) :: nomcha, lpain(3), paout
     character(len=8) :: lcmp(2), newnom
     character(len=16) :: option
     character(len=19) :: resuel, vecele, depmoi
@@ -80,7 +80,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     lonlis = 0
     call jeexin(charge, iret)
     if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar, k8bid)
+        call jelira(charge, 'LONMAX', nchar)
         if (nchar .ne. 0) then
             bidon = .false.
             call jeveuo(charge, 'L', jchar)

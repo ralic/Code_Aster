@@ -41,9 +41,9 @@ subroutine assma1(matas, ldist)
     character(len=*) :: matas
 !---------------------------------------------------------------
     logical :: lmnsy, exilag, ldist
-    integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, ibid, nz, n, imatd
+    integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
     integer :: ilig, jcol, kterm, nlong, jrefa, nvale, jvalm1, jvalm2, jconl
-    character(len=1) :: kbid, ktyp, base1
+    character(len=1) ::  ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
     real(kind=8) :: rmin, rmax, rcoef
@@ -65,15 +65,15 @@ subroutine assma1(matas, ldist)
     mat19=matas
     call jeveuo(mat19//'.REFA', 'L', jrefa)
     nonu=zk24(jrefa-1+2)(1:14)
-    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', n, kbid)
+    call jelira(nonu//'.SMOS.SMDI', 'LONMAX', n)
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
     nz=zi(jsmdi-1+n)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc, kbid)
+    call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     ASSERT(nz.le.nsmhc)
 !
     call jeveuo(nonu//'.NUME.DELG', 'L', jdelgg)
-    call jelira(nonu//'.NUME.DELG', 'LONMAX', ng, kbid)
+    call jelira(nonu//'.NUME.DELG', 'LONMAX', ng)
     call jeexin(nonu//'.NUML.DELG', imatd)
     if (imatd .ne. 0) then
         call jeveuo(nonu//'.NUML.DELG', 'L', jdelgl)
@@ -82,19 +82,19 @@ subroutine assma1(matas, ldist)
         ASSERT(ng.eq.n)
     endif
 !
-    call jelira(mat19//'.VALM', 'TYPE', ibid, ktyp)
-    call jelira(mat19//'.VALM', 'CLAS', ibid, base1)
+    call jelira(mat19//'.VALM', 'TYPE', cval=ktyp)
+    call jelira(mat19//'.VALM', 'CLAS', cval=base1)
     call jeveuo(jexnum(mat19//'.VALM', 1), 'E', jvalm1)
-    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong, kbid)
+    call jelira(jexnum(mat19//'.VALM', 1), 'LONMAX', nlong)
     ASSERT(nlong.eq.nz)
 !
     lmnsy=.false.
-    call jelira(mat19//'.VALM', 'NMAXOC', nvale, kbid)
+    call jelira(mat19//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 2) lmnsy=.true.
 !
     if (lmnsy) then
         call jeveuo(jexnum(mat19//'.VALM', 2), 'E', jvalm2)
-        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong, kbid)
+        call jelira(jexnum(mat19//'.VALM', 2), 'LONMAX', nlong)
         ASSERT(nlong.eq.nz)
     endif
 !

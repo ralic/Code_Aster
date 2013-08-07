@@ -42,11 +42,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 ! IN  TYPESD : TYPE DE LA STRUCTURE "RESULTAT" A CREER.
 ! IN  NBORDR : NOMBRE MAX DE NUM. D'ORDRE.
 ! ----------------------------------------------------------------------
-    integer :: i, k, ibid, iret, jordr
+    integer :: i, k, iret, jordr
     integer :: nbcham, nbnova
     integer :: ncmec1, ncmec2, ncmec3, ncmuti, ncmeca
     integer :: ncthe1, ncther, ncthet, ncvarc, ncacou
-    character(len=1) :: kbid, bas1
+    character(len=1) ::  bas1
     character(len=16) :: types2
     character(len=19) :: noms2
 !     ------------------------------------------------------------------
@@ -202,7 +202,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     --- CREATION DE .DESC  ET  .ORDR ---
     call jecreo(noms2//'.DESC', bas1//' N K16')
     call wkvect(noms2//'.ORDR', bas1//' V I', nbordr, jordr)
-    call jeecra(noms2//'.ORDR', 'LONUTI', 0, ' ')
+    call jeecra(noms2//'.ORDR', 'LONUTI', 0)
 !
     do 10 i = 1, ncmec1
         chmeca(i)=chmec1(i)
@@ -232,8 +232,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     if (types2 .eq. 'EVOL_ELAS') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVEL')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='EVEL')
         do 40 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 40      continue
@@ -244,8 +244,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'MULT_ELAS') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MUEL')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='MUEL')
         do 60 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 60      continue
@@ -255,8 +255,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'FOURIER_ELAS') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'FOEL')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='FOEL')
         do 80 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 80      continue
@@ -267,8 +267,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'FOURIER_THER') then
 !
         nbcham=ncther
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'FOTH')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='FOTH')
         do 90 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chther(i)))
 90      continue
@@ -279,8 +279,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'EVOL_NOLI') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVNO')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='EVNO')
         do 100 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 100      continue
@@ -291,8 +291,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'DYNA_TRANS') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'DYTR')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='DYTR')
         do 120 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 120      continue
@@ -302,8 +302,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'DYNA_HARMO') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'DYHA')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='DYHA')
         do 140 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 140      continue
@@ -313,8 +313,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'HARM_GENE') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'HAGE')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='HAGE')
         do 160 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 160      continue
@@ -324,8 +324,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'ACOU_HARMO') then
 !
         nbcham=ncacou
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'ACHA')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='ACHA')
         do 170 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chacou(i)))
 170      continue
@@ -336,8 +336,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'EVOL_CHAR') then
 !
         nbcham=6
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVCH')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='EVCH')
         call jecroc(jexnom(noms2//'.DESC', 'PRES'))
         call jecroc(jexnom(noms2//'.DESC', 'FVOL_3D'))
         call jecroc(jexnom(noms2//'.DESC', 'FVOL_2D'))
@@ -350,8 +350,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'EVOL_THER') then
 !
         nbcham=ncther
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVTH')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='EVTH')
         do 190 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chther(i)))
 190      continue
@@ -361,8 +361,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'EVOL_VARC') then
 !
         nbcham=ncvarc
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'EVVA')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='EVVA')
         do 210 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chvarc(i)))
 210      continue
@@ -374,24 +374,24 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
      &        types2.eq.'DYNAMIQUE' ) then
 !
         if (types2 .eq. 'MODE_MECA') then
-            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOME')
+            call jeecra(noms2//'.DESC', 'DOCU', cval='MOME')
         else if (types2.eq.'MODE_MECA_C') then
-            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOME')
+            call jeecra(noms2//'.DESC', 'DOCU', cval='MOME')
         else if (types2.eq.'MODE_GENE') then
-            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOGE')
+            call jeecra(noms2//'.DESC', 'DOCU', cval='MOGE')
         else if (types2.eq.'DYNAMIQUE') then
-            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'BAMO')
+            call jeecra(noms2//'.DESC', 'DOCU', cval='BAMO')
         else if (types2.eq.'MODE_ACOU') then
-            call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOAC')
+            call jeecra(noms2//'.DESC', 'DOCU', cval='MOAC')
         endif
 !
         if (types2 .eq. 'MODE_ACOU') then
             nbcham=1
-            call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+            call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
             call jecroc(jexnom(noms2//'.DESC', 'PRES'))
         else
             nbcham=ncmeca
-            call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
+            call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
             do 230 i = 1, nbcham
                 call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 230          continue
@@ -402,8 +402,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'MODE_FLAMB') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOFL')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='MOFL')
         do 250 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 250      continue
@@ -413,8 +413,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'MODE_STAB') then
 !
         nbcham=ncmeca
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'MOSB')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='MOSB')
         do 260 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 260      continue
@@ -424,8 +424,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'COMB_FOURIER') then
 !
         nbcham=ncmeca+ncthe1
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'COFO')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='COFO')
         do 270 i = 1, ncmeca
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
 270      continue
@@ -438,8 +438,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     else if (types2.eq.'THETA_GEOM') then
 !
         nbcham=ncthet
-        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham, ' ')
-        call jeecra(noms2//'.DESC', 'DOCU', ibid, 'THET')
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='THET')
         do 290 i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chthet(i)))
 290      continue
@@ -456,7 +456,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     -------------------------
     call jecrec(noms2//'.TACH', bas1//' V K24', 'NU', 'CONTIG', 'CONSTANT',&
                 nbcham)
-    call jeecra(noms2//'.TACH', 'LONMAX', nbordr, ' ')
+    call jeecra(noms2//'.TACH', 'LONMAX', nbordr)
 !
 !
 !     -- POUR QUE LES COLLECTIONS .TACH ET .TAVA SOIENT BIEN CREEES :
@@ -464,7 +464,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     do 330,k=1,nbcham
     call jecroc(jexnum(noms2//'.TACH', k))
     330 end do
-    call jelira(noms2//'.NOVA', 'NOMMAX', nbnova, kbid)
+    call jelira(noms2//'.NOVA', 'NOMMAX', nbnova)
     do 340,k=1,nbnova
     call jecroc(jexnum(noms2//'.TAVA', k))
     340 end do

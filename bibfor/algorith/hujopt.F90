@@ -57,7 +57,7 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
     real(kind=8) :: e, nu, al, demu, la, e1, e2, e3, nu12, nu13, nu23, g1, g2
     real(kind=8) :: g3
     real(kind=8) :: nu21, nu31, nu32, denom, i1f, hooknl(6, 6), pref, ne
-    real(kind=8) :: coef0, piso
+    real(kind=8) :: coef0
     real(kind=8) :: y0(6, 6), y1(6, 9), y2(9, 6), y3(9, 9)
     real(kind=8) :: y4(6, 6), y5(6, 6), det, maxi, mini
     real(kind=8) :: dsdeb(6, 6), bid16(6), bid66(6, 6)

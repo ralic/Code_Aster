@@ -147,7 +147,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         do 31 ,igrel=1,nbgrel
 !
         call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
-        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nb1, kbid)
+        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nb1)
         itype = zi(jliel-1+nb1)
 !
         if (itype .eq. tyelas) then

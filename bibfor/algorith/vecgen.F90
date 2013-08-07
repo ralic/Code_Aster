@@ -75,7 +75,6 @@ subroutine vecgen(nomres, numeg)
     integer :: gd, gd0, nblia, ibid, elim, neqet, neqred, lmapro, lsilia, lsst
     integer :: nbsst, i1, j1
     integer :: vali(3)
-    character(len=1) :: k1bid
     integer :: iarg
 !
 !-----------------------------------------------------------------------
@@ -112,7 +111,7 @@ subroutine vecgen(nomres, numeg)
 !     RECUPERATION DE LA BASE SI ELIMINATION
 !
     if (elim .ne. 0) then
-        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst, k1bid)
+        call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
         neqet=0
         call jeveuo(numeg//'      .NUME.NEQU', 'L', ibid)
         neqred=zi(ibid)
@@ -137,7 +136,7 @@ subroutine vecgen(nomres, numeg)
     if (elim .eq. 0) then
 !       VERIFIER QUE LA NUMEROTATION EST COHERENTE
         call jenonu(jexnom(profg//'.LILI', 'LIAISONS'), ibid)
-        call jelira(jexnum(profg//'.PRNO', ibid), 'LONMAX', nblia, k1bid)
+        call jelira(jexnum(profg//'.PRNO', ibid), 'LONMAX', nblia)
         if (nblia .eq. 1) then
             call u2mess('F', 'ALGORITH_32')
         endif
@@ -145,7 +144,7 @@ subroutine vecgen(nomres, numeg)
 !       VERIFIER QUE LE NOMBRE NBCHAR DE SOUS-STRUCTURES CHARGEES EST
 !       INFERIEUR AU NOMBRE TOTAL NBSST DE SOUS-STRUCTURES
         call jenonu(jexnom(profg//'.LILI', '&SOUSSTR'), ibid)
-        call jelira(jexnum(profg//'.ORIG', ibid), 'LONMAX', nbsst, k1bid)
+        call jelira(jexnum(profg//'.ORIG', ibid), 'LONMAX', nbsst)
         if (nbchar .gt. nbsst) then
             vali (1) = nbchar
             vali (2) = nbsst
@@ -185,7 +184,7 @@ subroutine vecgen(nomres, numeg)
     chaval = chasou//'.VALE'
 !
     call wkvect(resdsc, 'G V I', 3, lrdesc)
-    call jeecra(resdsc, 'DOCU', 0, 'CHNO')
+    call jeecra(resdsc, 'DOCU', cval='CHNO')
 !
     call wkvect(resref, 'G V K24', 2, lrref)
 !
@@ -202,7 +201,7 @@ subroutine vecgen(nomres, numeg)
     call jecroc(jexnom(chalis, 'SOUSSTR'))
     call jecroc(jexnom(chalis, 'VECTASS'))
     call jecroc(jexnom(chalis, 'NUMEDDL'))
-    call jeecra(jexnom(chalis, 'SOUSSTR'), 'LONMAX', nbchar, ' ')
+    call jeecra(jexnom(chalis, 'SOUSSTR'), 'LONMAX', nbchar)
 !
     call jeveuo(jexnom(chalis, 'SOUSSTR'), 'E', ldnsst)
     call jeveuo(jexnom(chalis, 'VECTASS'), 'E', ldnvec)
@@ -370,7 +369,7 @@ subroutine vecgen(nomres, numeg)
 !
 !     RECUPERATION DU .VALE ASSOCIE AU SECOND MEMBRE
         call jeveuo(nom2mb//'           .VALE', 'L', ladrve)
-        call jelira(nom2mb//'           .VALE', 'TYPE', ibid, typve)
+        call jelira(nom2mb//'           .VALE', 'TYPE', cval=typve)
 !
 !     NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE, POUR LA SOUS-STRUCTURE
         call dismoi('F', 'NB_EQUA', nomddl, 'NUME_DDL', neq,&
@@ -386,7 +385,7 @@ subroutine vecgen(nomres, numeg)
 !-----------------------------------------------------------------------
 !
         call jecroc(jexnom(chaval, nomsst))
-        call jeecra(jexnom(chaval, nomsst), 'LONMAX', nbmod, ' ')
+        call jeecra(jexnom(chaval, nomsst), 'LONMAX', nbmod)
 !
 !-----------------------------------------------------------------------
 !     2.3/ PROJECTION EFFECTIVE

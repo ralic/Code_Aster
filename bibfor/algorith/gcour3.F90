@@ -158,7 +158,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
         chamno(20:24) = '.DESC'
         call wkvect(chamno, 'V V I', 3, idesc)
 !
-        call jeecra(chamno, 'DOCU', 0, 'CHNO')
+        call jeecra(chamno, 'DOCU', cval='CHNO')
         call jenonu(jexnom('&CATA.GD.NOMGD', 'DEPL_R'), numa)
         zi(idesc+1-1) = numa
         zi(idesc+2-1) = -3

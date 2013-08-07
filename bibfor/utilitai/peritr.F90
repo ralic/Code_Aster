@@ -76,7 +76,6 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     character(len=24) :: chgeom, chcara(18), chharm, ligrel, lchin(7)
     character(len=24) :: mlggma, mlgnma, compor, nomma2
     character(len=24) :: lchout(2), contg, varipg, varimg, depla, ssoup
-    character(len=1) :: k1bid
     complex(kind=8) :: c16b
     integer :: iarg
 !
@@ -202,7 +201,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                             iret)
             else
                 call copisd('CHAMP_GD', 'V', varipg, varnul)
-                call jelira(varnul//'.CELV', 'LONUTI', long, k1bid)
+                call jelira(varnul//'.CELV', 'LONUTI', long)
                 call jerazo(varnul//'.CELV', long, 1)
             endif
             call rsexch('F', resul, 'DEPL', numord, depla,&
@@ -311,7 +310,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                         call u2mesk('A', 'UTILITAI3_46', 1, nomma2)
                         goto 50
                     endif
-                    call jelira(jexnom(mlggma, nomma2), 'LONUTI', nbma, k8b)
+                    call jelira(jexnom(mlggma, nomma2), 'LONUTI', nbma)
                     if (nbma .eq. 0) then
                         call u2mesk('A', 'UTILITAI3_47', 1, nomma2)
                         goto 50

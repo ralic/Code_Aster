@@ -73,11 +73,11 @@ subroutine i2imam(conec, type, lstmai, nbmlst, chemin,&
     av2 = 0
 !
     call jecreo('&INTVOISIN1', 'V V I')
-    call jeecra('&INTVOISIN1', 'LONMAX', nbmlst, ' ')
+    call jeecra('&INTVOISIN1', 'LONMAX', nbmlst)
     call jeveuo('&INTVOISIN1', 'E', av1)
 !
     call jecreo('&INTVOISIN2', 'V V I')
-    call jeecra('&INTVOISIN2', 'LONMAX', nbmlst, ' ')
+    call jeecra('&INTVOISIN2', 'LONMAX', nbmlst)
     call jeveuo('&INTVOISIN2', 'E', av2)
 !
     do 10, i = 1, nbmlst, 1

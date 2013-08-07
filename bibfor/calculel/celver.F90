@@ -52,7 +52,7 @@ subroutine celver(celz, typver, arret, iret)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=8) :: kbid, tsca, nomgd
+    character(len=8) ::  tsca, nomgd
     character(len=3) :: knan
     character(len=19) :: cel
     integer :: jceld, kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
@@ -115,7 +115,7 @@ subroutine celver(celz, typver, arret, iret)
         call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                     tsca, ibid)
         call jeveuo(cel//'.CELV', 'L', jcelv)
-        call jelira(cel//'.CELV', 'LONMAX', nb1, kbid)
+        call jelira(cel//'.CELV', 'LONMAX', nb1)
         lnan=.false.
         inan = isnnem()
         knan = '???'

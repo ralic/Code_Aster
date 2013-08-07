@@ -72,7 +72,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
     integer :: i, j, itresu(8)
     integer :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi, alpha, xnorm, depl(6)
-    character(len=1) :: k1bid, typ1
+    character(len=1) ::  typ1
     character(len=8) :: k8b, blanc, basemo, crit, interp, basem2, mailla, nomres
     character(len=8) :: nomin, nomcmp(6), mode, monmot(2), matgen, nomgd
     character(len=14) :: numddl
@@ -212,7 +212,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         mailla = zk24(llcha)(1:8)
         crefe(1) = zk24(llcha)
         crefe(2) = zk24(llcha+1)
-        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq, k8b)
+        if (tousno) call jelira(crefe(2)(1:19)//'.NUEQ', 'LONMAX', neq)
         basem2 = ' '
     endif
 !
@@ -257,7 +257,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call jeveuo(trange//'.FVIT', 'L', jnovit)
         call jeveuo(trange//'.FACC', 'L', jnoacc)
         call jeveuo(trange//'.IPSD', 'L', ipsdel)
-        call jelira(trange//'.FDEP', 'LONMAX', nbexci, k8b)
+        call jelira(trange//'.FDEP', 'LONMAX', nbexci)
         nbexci = nbexci/2
         if (tousno) then
             call vtcreb(chamn2, numddl, 'V', 'R', neq)
@@ -333,7 +333,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call u2mess('F', 'ALGORITH10_95')
     endif
     call jeveuo(trange//'.DISC', 'L', idinsg)
-    call jelira(trange//'.DISC', 'LONMAX', nbinsg, k8b)
+    call jelira(trange//'.DISC', 'LONMAX', nbinsg)
     call wkvect('&&TRAN75.VECTGENE', 'V V R', nbmode, idvecg)
     do 210 ich = 1, nbcham
         leffor=.true.
@@ -353,7 +353,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             nomcha(20:24)='.CELV'
         endif
 !
-        if (leffor) call jelira(nomcha, 'LONMAX', neq, k1bid)
+        if (leffor) call jelira(nomcha, 'LONMAX', neq)
         call wkvect('&&TRAN75.BASE', 'V V R', nbmode*neq, idbase)
         if (tousno) then
             call copmod(basemo, typcha, neq, prchno(1:14), nbmode,&
@@ -365,7 +365,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
 !              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
                 ASSERT(iexi.gt.0)
-                call jelira(nomcha(1:19)//'.VALE', 'TYPE', ibid, typ1)
+                call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
                 ASSERT(typ1.eq.'R')
 !
 !              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
@@ -435,7 +435,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             endif
             call jeveuo(chamno, 'E', lvale)
 !
-            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq, k8b)
+            if (leffor .or. .not.tousno) call jelira(chamno, 'LONMAX', neq)
             if (interp(1:3) .ne. 'NON') then
                 call extrac(interp, epsi, crit, nbinsg, zr(idinsg),&
                             zr(jinst+i), zr(idresu), nbmode, zr(idvecg), ibid)

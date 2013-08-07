@@ -122,7 +122,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
         do 20,ichs = 1,nbchs
         ces1 = lichs(ichs)
         call jeveuo(ces1//'.CESC', 'L', jce1c)
-        call jelira(ces1//'.CESC', 'LONMAX', n1, kbid)
+        call jelira(ces1//'.CESC', 'LONMAX', n1)
         do 10,k = 1,n1
         read (zk8(jce1c-1+k) (2:),'(I7)') icmp
         ncmpmx = max(ncmpmx,icmp)

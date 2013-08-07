@@ -57,7 +57,6 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
     character(len=24) :: noeint
     character(len=24) :: valk(2)
     integer :: numnoe(nbnoi)
-    character(len=1) :: k1bid
 !
 !-----------------------------------------------------------------------
 !
@@ -102,7 +101,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
     noeint=intf//'.IDC_LINO'
 !
-    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe, k1bid)
+    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe)
     call jeveuo(jexnum(noeint, numint), 'L', llint)
 !
 !----------------------TEST SUR NOMBRE DE NOEUDS ATTENDU----------------

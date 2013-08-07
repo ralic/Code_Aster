@@ -104,14 +104,14 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
         lscpnc = '&&RVPOST.NOM.CMP.NCSR.OC'
         call jeexin(nch19//'.DESC', ibid)
         if (ibid .gt. 0) then
-            call jelira(nch19//'.DESC', 'DOCU', n, docu)
+            call jelira(nch19//'.DESC', 'DOCU', cval=docu)
             call jeveuo(nch19//'.DESC', 'L', n1)
         else
-            call jelira(nch19//'.CELD', 'DOCU', n, docu)
+            call jelira(nch19//'.CELD', 'DOCU', cval=docu)
             call jeveuo(nch19//'.CELD', 'L', n1)
         endif
         call jeveuo(jexnum(xnomcp, iocc), 'L', jnomcp)
-        call jelira(jexnum(xnomcp, iocc), 'LONMAX', nbcac, k8b)
+        call jelira(jexnum(xnomcp, iocc), 'LONMAX', nbcac)
         call wkvect(lscpcd, 'V V K8', nbcac, jcmpcd)
         call wkvect('&&RVPOST.VAL.DIR', 'V V R', 3, jdir)
         do 10, i = 1, nbcac, 1
@@ -129,11 +129,11 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !
         if (iret .ne. 0) then
             ssch19 = '&&RVPOST.SOUS.CH.GD'
-            call jelira(lscpnc, 'LONMAX', nbcpn, k8b)
+            call jelira(lscpnc, 'LONMAX', nbcpn)
             call jeveuo(lscpnc, 'L', jcmpnc)
 !
             if (docu .eq. 'CHNO') then
-                call jelira(nlsnac, 'LONMAX', nbnac, k8b)
+                call jelira(nlsnac, 'LONMAX', nbnac)
                 call jeveuo(nlsnac, 'L', jlsnac)
                 call extchn(nch19, k8b, zi(jlsnac), zk8(jcmpnc), nbnac,&
                             nbcpn, 'NUMERO', ssch19, mcf, iocc)
@@ -141,13 +141,13 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
             else
                 call jeexin(nlsnac, ibid)
                 if (ibid .gt. 0) then
-                    call jelira(nlsnac, 'LONMAX', nbnac, k8b)
+                    call jelira(nlsnac, 'LONMAX', nbnac)
                     call jeveuo(nlsnac, 'L', jlsnac)
                 else
                     jlsnac = 1
                     nbnac = 0
                 endif
-                call jelira(nlsmac, 'LONMAX', nbmac, k8b)
+                call jelira(nlsmac, 'LONMAX', nbmac)
                 call jeveuo(nlsmac, 'L', jlsmac)
                 call extche(nch19, k8b, zi(jlsmac), zk8(jcmpnc), nbmac,&
                             nbcpn, 'NUMERO', ssch19, mcf, iocc,&
@@ -185,7 +185,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
 !
                 call rvlieu(mailla, typco, courbe, nlsnac, sdlieu)
                 call rvpste(dim, sdlieu, ssch19, sdeval, ca)
-                call jelira(sdlieu, 'LONMAX', nbsd, k8b)
+                call jelira(sdlieu, 'LONMAX', nbsd)
                 call jeveuo(sdlieu, 'L', jsdli)
                 call jeveuo(sdeval, 'L', jsdev)
                 call getvtx(mcf, 'RESULTANTE', iocc, iarg, 0,&
@@ -273,7 +273,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2,&
                     call jedetr(sdnewr//'.VEC1')
                     call jedetr(sdnewr//'.VEC2')
                 endif
-                call jelira(sdlieu, 'LONMAX', n, k8b)
+                call jelira(sdlieu, 'LONMAX', n)
                 call jeveuo(sdlieu, 'L', n1)
                 call jeveuo(sdeval, 'L', n2)
                 do 20, i = 1, n, 1

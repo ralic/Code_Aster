@@ -67,8 +67,8 @@ subroutine rc32cm()
 !
 !
     call jecroc(jexnom('&&RC3200.VALE_CHAR', knumec))
-    call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONMAX', 12, ' ')
-    call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONUTI', 12, ' ')
+    call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONMAX', 12)
+    call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONUTI', 12)
     call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'E', jchar)
 !
 ! ------ UN SEUL TENSEUR OU 2 ?

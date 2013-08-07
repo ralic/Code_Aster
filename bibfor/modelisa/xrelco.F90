@@ -32,7 +32,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 #include "asterfort/jexnum.h"
     integer :: nrel
     character(len=8) :: noma
-    character(len=19) :: nliseq, nlisrl, nlisco
+    character(len=19) :: nliseq
     character(len=19) :: lisrel
 !
 ! ----------------------------------------------------------------------
@@ -53,12 +53,12 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 !
 !
 !
-    integer :: nbddl, xxmmvd
+    integer :: nbddl
     parameter  (nbddl=12)
     character(len=8) :: ddlc(nbddl)
 !
     real(kind=8) :: rbid, betar, coefr(6)
-    integer :: ier, jlis1, ndime(8), neq, i, jlis2, ibid, iret
+    integer :: ier, jlis1, ndime(8), neq, i, jlis2, iret
     integer :: nuno(8), ndim, j
     character(len=8) :: noeud(8), k8bid, ddl(8)
     complex(kind=8) :: cbid
@@ -92,7 +92,7 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
         goto 100
     else
         call jeveuo(nliseq, 'L', jlis1)
-        call jelira(nliseq, 'LONMAX', neq, k8bid)
+        call jelira(nliseq, 'LONMAX', neq)
         call jeexin(nliseq(1:14)//'_LAGR', ier)
         if (ier .eq. 0) then
             lmulti = .false.

@@ -74,7 +74,6 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
     logical :: verif
-    character(len=1) :: k1bid
     character(len=8) :: k8bid, nomn, typmcl(2), typlag, valfof(nmocl)
     character(len=16) :: motcle(nmocl), motclf, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
@@ -161,7 +160,7 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
 !
     call jeveuo(ligrch//'.NBNO', 'E', jnbno)
     nomnoe = noma//'.NOMNOE'
-    call jelira(nomnoe, 'NOMMAX', nbnoeu, k1bid)
+    call jelira(nomnoe, 'NOMMAX', nbnoeu)
 !
     mesnoe = '&&CAFONO.MES_NOEUDS'
     motcls(1) = 'GROUP_NO'

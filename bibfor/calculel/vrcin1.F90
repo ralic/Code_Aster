@@ -110,7 +110,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbma,&
                 kbid, ibid)
     ligrmo=modele//'.MODELE'
-    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc, kbid)
+    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
     call jeveuo(chmat//'.CVRCVARC', 'L', jcvvar)
     call jeveuo(chmat//'.CVRCGD', 'L', jcvgd)
 !
@@ -199,7 +199,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !     2. CREATION DE CHMAT.LISTE_CH :
 !     -------------------------------
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
-    call jelira(chmat//'.LISTE_SD', 'LONMAX', n1, kbid)
+    call jelira(chmat//'.LISTE_SD', 'LONMAX', n1)
     nbchs=n1/7
     ASSERT(n1.eq.7*nbchs)
     call jedetr(chmat//'.LISTE_CH')
@@ -220,7 +220,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         ASSERT(iret.eq.0)
         call detrsd('CHAMP', dceli)
         call celces(celmod, 'V', cesmod)
-        call jelira(celmod//'.CELV', 'LONMAX', nval1, kbid)
+        call jelira(celmod//'.CELV', 'LONMAX', nval1)
         call detrsd('CHAMP', celmod)
     endif
 !
@@ -337,7 +337,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call u2mesk('F', 'CALCULEL4_26', 2, valk)
         endif
 !
-        call jelira(nomch//'.CELV', 'LONMAX', nval2, kbid)
+        call jelira(nomch//'.CELV', 'LONMAX', nval2)
         ASSERT(nval1.eq.nval2)
 !
 !            2.2.3.2 : SIMPLE RECOPIE

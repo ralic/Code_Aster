@@ -33,7 +33,6 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
     integer :: ival(2), ideb1, ifin1, i, j, imi, imj, ideb, isj, ifon, if1
     integer :: mxval, lnumi, lnumj, i1
 !
-    character(len=8) :: k8b
     character(len=24) :: chnumi, chnumj, chvale
 !
 !     ------------------------------------------------------------------
@@ -54,7 +53,7 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
     chvale = table//'.VALE'
     call jeveuo(chnumi, 'L', lnumi)
     call jeveuo(chnumj, 'L', lnumj)
-    call jelira(chnumi, 'LONMAX', mxval, k8b)
+    call jelira(chnumi, 'LONMAX', mxval)
 !
     j = 0
     do 30 imj = ideb1, ifin1

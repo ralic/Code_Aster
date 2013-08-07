@@ -35,7 +35,6 @@ subroutine nmimpe(modele, limped)
 !
 !
     character(len=19) :: nolig, ligrel
-    character(len=8) :: k8bid
     character(len=16) :: nomte
     character(len=24) :: repk
     integer :: nbgrel, igrel, ialiel, nel, itypel
@@ -48,11 +47,11 @@ subroutine nmimpe(modele, limped)
 !
     limped = .true.
 !
-    call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k8bid)
+    call jelira(nolig//'.LIEL', 'NUTIOC', ival=nbgrel)
     repk = 'NON'
     do igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k8bid)
+        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', ival=nel)
         itypel = zi(ialiel-1+nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
         if ((nomte(1:9).eq.'MEFA_FACE') .or. (nomte(1:6).eq.'MEFASE')) then

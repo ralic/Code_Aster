@@ -84,7 +84,6 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
 !
     integer :: iddl(6)
     real(kind=8) :: mcf0, mi, mk, ki
-    character(len=1) :: k1bid
     character(len=8) :: k8b
     character(len=14) :: numddl
     character(len=24) :: refei, matria, nomcha
@@ -256,7 +255,7 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
     call dismoi('F', 'NB_EQUA', matria, 'MATR_ASSE', neq,&
                 k8b, ire)
 !
-    call jelira(noma//'.NOMNOE', 'NOMUTI', nbnoe, k1bid)
+    call jelira(noma//'.NOMNOE', 'NOMUTI', nbnoe)
     call wkvect('&&MODEAU.TEMP.DPLA', 'V V R', 6*nbnoe*nbm, idpla)
     call extmod(base, numddl, nuor, nbm, zr(idpla),&
                 neq, nbnoe, iddl, 6)

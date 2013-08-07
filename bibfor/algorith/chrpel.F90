@@ -96,7 +96,6 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
     real(kind=8) :: x(27), y(27), z(27)
     real(kind=8) :: xpg(27), ypg(27), zpg(27)
     complex(kind=8) :: valetc(6), cbid
-    character(len=1) :: k1b
     character(len=3) :: tsca
     character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, param
     character(len=8) :: lpain(4), paout, licmp(3), kbid
@@ -153,7 +152,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type,&
                 zk8(inoeu), iret0)
     call jeexin(ma//'.GROUPENO', ierk)
     if (ierk .ne. 0) then
-        call jelira(ma//'.GROUPENO', 'NMAXOC', nbgno, k1b)
+        call jelira(ma//'.GROUPENO', 'NMAXOC', nbgno)
         call wkvect('&&CHRPEL.GROUP_NO', 'V V K24', nbgno, igno)
         call getvtx('AFFE', 'GROUP_NO', icham, iarg, 0,&
                     zk24(igno), iret1)

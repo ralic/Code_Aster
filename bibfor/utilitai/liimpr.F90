@@ -39,7 +39,7 @@ subroutine liimpr(noml, impr, fichie)
     logical :: lisree
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iret, iul, jbor, jnbp
+    integer :: i, iret, iul, jbor, jnbp
     integer :: jpas, jval, k, l, lg, ltitr
     integer :: nbint, nbtitr, nbval, nd, nl
 !-----------------------------------------------------------------------
@@ -62,7 +62,7 @@ subroutine liimpr(noml, impr, fichie)
     bint = nomlis//'.BINT'
     titr = nomlis//'.TITR'
     lisree = .true.
-    call jelira(vale, 'TYPE', ibid, ctyp)
+    call jelira(vale, 'TYPE', cval=ctyp)
     if (ctyp(1:1) .eq. 'I') lisree = .false.
 !
 !     --- IMPRESSION DU TITRE ---
@@ -70,14 +70,14 @@ subroutine liimpr(noml, impr, fichie)
     call jeexin(titr, iret)
     if (iret .ne. 0) then
         call jeveuo(titr, 'L', ltitr)
-        call jelira(titr, 'LONMAX', nbtitr, k8bid)
+        call jelira(titr, 'LONMAX', nbtitr)
         do 10 i = 1, nbtitr
             write(iul,*) zk80(ltitr+i-1)
 10      continue
     endif
 !
-    call jelira(vale, 'LONMAX', nbval, k8bid)
-    call jelira(nbpa, 'LONMAX', nbint, k8bid)
+    call jelira(vale, 'LONMAX', nbval)
+    call jelira(nbpa, 'LONMAX', nbint)
     call jeveuo(lpas, 'L', jpas)
     call jeveuo(nbpa, 'L', jnbp)
     call jeveuo(vale, 'L', jval)

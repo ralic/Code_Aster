@@ -105,16 +105,16 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb,&
     call rotlis(nomres, toto, zit, fplian, fpliao,&
                 numlis, ssta, intfa, moins1)
     call jecroc(jexnum(fmlia, iada(3)))
-    call jeecra(jexnum(fmlia, iada(3)), 'LONMAX', iadb(1)*iada(2), ' ')
+    call jeecra(jexnum(fmlia, iada(3)), 'LONMAX', iadb(1)*iada(2))
     call jeveuo(jexnum(fmlia, iada(3)), 'E', ldmat)
     call jeveuo(jexnum(toto, 1), 'L', ldmat2)
 !
 ! Recuperation des donnees composantes
     call jeveuo(jexnum(fpliao, numlis), 'L', llplia)
-    call jelira(jexnum(fpliao, numlis), 'LONMAX', nbnoea, k8bid)
+    call jelira(jexnum(fpliao, numlis), 'LONMAX', nbnoea)
     nbnoea=nbnoea/(1+nbec)
     call jeveuo(jexnum(fplibo, numlis), 'L', llplib)
-    call jelira(jexnum(fplibo, numlis), 'LONMAX', nbnoeb, k8bid)
+    call jelira(jexnum(fplibo, numlis), 'LONMAX', nbnoeb)
     nbnoeb=nbnoeb/(1+nbec)
 !
 !

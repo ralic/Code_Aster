@@ -134,7 +134,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !-----RECUPERATION DES NOMBRES DE DIAMETRES NODAUX----------------------
 !
     call jeveuo(modcyc//'.CYCL_DIAM', 'L', lldiam)
-    call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia, k8b)
+    call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
     nbdia = nbdia / 2
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
@@ -149,7 +149,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES GLOBAUX-------------------
 !
-    call jelira(profno//'.DEEQ', 'LONMAX', neq, k8b)
+    call jelira(profno//'.DEEQ', 'LONMAX', neq)
     neq = neq / 2
 !
 !-----RECUPERATION DES FREQUENCES---------------------------------------
@@ -352,7 +352,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                     zr(ltvere+j-1) = dble(zc(ltveco+j-1))
 30              continue
                 call jeveuo(jexnum(indirf, k), 'L', ltinds)
-                call jelira(jexnum(indirf, k), 'LONMAX', nddcou, k8b)
+                call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
                 nddcou = nddcou/2
                 do 40 j = 1, nddcou
                     ieqi = zi(ltinds+(j-1)*2)
@@ -433,7 +433,7 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf,&
                         zr(ltvere+j-1) = dimag(zc(ltveco+j-1))
 60                  continue
                     call jeveuo(jexnum(indirf, k), 'L', ltinds)
-                    call jelira(jexnum(indirf, k), 'LONMAX', nddcou, k8b)
+                    call jelira(jexnum(indirf, k), 'LONMAX', nddcou)
                     nddcou = nddcou / 2
                     do 70 j = 1, nddcou
                         ieqi = zi(ltinds+(j-1)*2)

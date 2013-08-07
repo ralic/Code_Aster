@@ -81,7 +81,7 @@ subroutine nmvcle(modelz, matz, carelz, lischz, instan,&
 !    DETERMINATION DU CHAMP DE VARC :
     charge = lischa // '.LCHA'
     call jeveuo(charge, 'L', jchar)
-    call jelira(charge, 'LONMAX', nchar, k8bid)
+    call jelira(charge, 'LONMAX', ival=nchar)
     call vrcins(modele, mate, carele, instan, tout,&
                 codret)
     call exisd('CHAMP', tout, iret)

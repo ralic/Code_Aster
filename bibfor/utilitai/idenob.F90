@@ -41,9 +41,9 @@ function idenob(obj1, obj2)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     character(len=24) :: ob1, ob2, k241, k242
-    character(len=1) :: typ1, typ2, kbid
+    character(len=1) :: typ1, typ2
     character(len=4) :: genr1, genr2, genr, xous1, xous2, xous, type
-    integer :: iret1, iret2, ltyp1, ltyp2, ltyp, l, l1, l2, k, iad1, iad2, ibid
+    integer :: iret1, iret2, ltyp1, ltyp2, ltyp, l, l1, l2, k, iad1, iad2
     integer :: iobj, nbobj
 !
 ! -DEB------------------------------------------------------------------
@@ -68,15 +68,15 @@ function idenob(obj1, obj2)
 !
 !     -- DETERMINATION DE TYPE: R/C/K8,...
 !     -------------------------------------
-    call jelira(ob1, 'TYPE', ibid, typ1)
-    call jelira(ob2, 'TYPE', ibid, typ2)
+    call jelira(ob1, 'TYPE', cval=typ1)
+    call jelira(ob2, 'TYPE', cval=typ2)
     if (typ1 .ne. typ2) then
         goto 210
     endif
 !
     if (typ1 .eq. 'K') then
-        call jelira(ob1, 'LTYP', ltyp1, kbid)
-        call jelira(ob2, 'LTYP', ltyp2, kbid)
+        call jelira(ob1, 'LTYP', ltyp1)
+        call jelira(ob2, 'LTYP', ltyp2)
         if (ltyp1 .ne. ltyp2) then
             goto 210
         else
@@ -103,16 +103,16 @@ function idenob(obj1, obj2)
 !
 !     -- DETERMINATION DE XOUS ET GENR
 !     -------------------------------------
-    call jelira(ob1, 'XOUS', ibid, xous1)
-    call jelira(ob2, 'XOUS', ibid, xous2)
+    call jelira(ob1, 'XOUS', cval=xous1)
+    call jelira(ob2, 'XOUS', cval=xous2)
     if (xous1 .ne. xous2) then
         goto 210
     else
         xous = xous1
     endif
 !
-    call jelira(ob1, 'GENR', ibid, genr1)
-    call jelira(ob2, 'GENR', ibid, genr2)
+    call jelira(ob1, 'GENR', cval=genr1)
+    call jelira(ob2, 'GENR', cval=genr2)
     if (genr1 .ne. genr2) then
         goto 210
     else
@@ -130,14 +130,14 @@ function idenob(obj1, obj2)
         ASSERT((genr.eq.'V').or.(genr.eq.'N'))
         if (genr .eq. 'V') then
 !
-            call jelira(ob1, 'LONMAX', l1, kbid)
-            call jelira(ob2, 'LONMAX', l2, kbid)
+            call jelira(ob1, 'LONMAX', l1)
+            call jelira(ob2, 'LONMAX', l2)
             if (l1 .ne. l2) then
                 goto 210
             endif
 !
-            call jelira(ob1, 'LONUTI', l1, kbid)
-            call jelira(ob2, 'LONUTI', l2, kbid)
+            call jelira(ob1, 'LONUTI', l1)
+            call jelira(ob2, 'LONUTI', l2)
             if (l1 .ne. l2) then
                 goto 210
             else
@@ -199,14 +199,14 @@ function idenob(obj1, obj2)
 !
         else if (genr.eq.'N') then
 !       ------------------------------
-            call jelira(ob1, 'NOMMAX', l1, kbid)
-            call jelira(ob2, 'NOMMAX', l2, kbid)
+            call jelira(ob1, 'NOMMAX', l1)
+            call jelira(ob2, 'NOMMAX', l2)
             if (l1 .ne. l2) then
                 goto 210
             endif
 !
-            call jelira(ob1, 'NOMUTI', l1, kbid)
-            call jelira(ob2, 'NOMUTI', l2, kbid)
+            call jelira(ob1, 'NOMUTI', l1)
+            call jelira(ob2, 'NOMUTI', l2)
             if (l1 .ne. l2) then
                 goto 210
             else
@@ -229,14 +229,14 @@ function idenob(obj1, obj2)
     else
         if (genr .eq. 'V') then
 !
-            call jelira(ob1, 'NMAXOC', l1, kbid)
-            call jelira(ob2, 'NMAXOC', l2, kbid)
+            call jelira(ob1, 'NMAXOC', l1)
+            call jelira(ob2, 'NMAXOC', l2)
             if (l1 .ne. l2) then
                 goto 210
             endif
 !
-            call jelira(ob1, 'NUTIOC', l1, kbid)
-            call jelira(ob2, 'NUTIOC', l2, kbid)
+            call jelira(ob1, 'NUTIOC', l1)
+            call jelira(ob2, 'NUTIOC', l2)
             if (l1 .ne. l2) then
                 goto 210
             endif
@@ -244,14 +244,14 @@ function idenob(obj1, obj2)
 !
             do 200,iobj = 1,nbobj
 !
-            call jelira(jexnum(ob1, iobj), 'LONMAX', l1, kbid)
-            call jelira(jexnum(ob2, iobj), 'LONMAX', l2, kbid)
+            call jelira(jexnum(ob1, iobj), 'LONMAX', l1)
+            call jelira(jexnum(ob2, iobj), 'LONMAX', l2)
             if (l1 .ne. l2) then
                 goto 210
             endif
 !
-            call jelira(jexnum(ob1, iobj), 'LONUTI', l1, kbid)
-            call jelira(jexnum(ob2, iobj), 'LONUTI', l2, kbid)
+            call jelira(jexnum(ob1, iobj), 'LONUTI', l1)
+            call jelira(jexnum(ob2, iobj), 'LONUTI', l2)
             if (l1 .ne. l2) then
                 goto 210
             else

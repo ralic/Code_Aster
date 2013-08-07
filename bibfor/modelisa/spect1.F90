@@ -64,7 +64,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     logical :: casint
-    character(len=8) :: nomu, nomzon, k8bid
+    character(len=8) :: nomu, nomzon
     character(len=19) :: spectr, base
     real(kind=8) :: vite, vmoyzi, vmoyto
     integer :: nuor(nbm), vali(2)
@@ -146,7 +146,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !
 ! --- 2.2.RECUPERATION DU NOMBRE DE NOEUDS DU MAILLAGE
 !
-    call jelira(profvn, 'LONUTI', nbp, k8bid)
+    call jelira(profvn, 'LONUTI', nbp)
     nbp = nbp / 2
 !
 !
@@ -283,7 +283,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 !
 ! --- 6.2.BOUCLE POUR CHAQUE VITESSE
 !
-    call jelira(nomu//'.NUMI', 'LONMAX', mxval, k8bid)
+    call jelira(nomu//'.NUMI', 'LONMAX', mxval)
     call jeveuo(nomu//'.NUMI', 'L', lnumi)
     call jeveuo(nomu//'.NUMJ', 'L', lnumj)
 !
@@ -393,7 +393,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                 if ((zi(lnumi-1+num) .eq. im2) .and. (zi(lnumj-1+num) .eq. im1)) ij = num
 161          continue
             call jeveuo(jexnum(chvale, ij), 'E', ivale)
-            call jelira(jexnum(chvale, ij), 'LONMAX', nbval, k8bid)
+            call jelira(jexnum(chvale, ij), 'LONMAX', nbval)
 !
             im2b = im2 - imodi + 1
             im1b = im1 - imodi + 1

@@ -50,7 +50,7 @@ subroutine peenc2(champ, rcoef)
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
     call celver(champ2, 'NBSPT_1', 'STOP', ibid)
 !
-    call jelira(champ2//'.CELD', 'DOCU', ibid, docu)
+    call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') then
         call u2mess('F', 'CALCULEL3_52')
     endif

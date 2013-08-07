@@ -154,13 +154,13 @@ subroutine calimc(chargz)
                     mailla, iret)
         lintf = zk24(iadrif+4)
 ! On recupere le nbre de noeuds presents dans interf_dyna
-        call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe, k8b)
+        call jelira(jexnum(lintf//'.IDC_LINO', 1), 'LONMAX', nbnoe)
 ! On recupere la liste des noeuds presents dans interf_dyna
         call jeveuo(lintf//'.IDC_DEFO', 'L', lldef)
 ! On recupere le nbre de modes statiques dans la base
         call dismoi('F', 'NB_MODES_STA', basemo, 'RESULTAT', nbmdef,&
                     k8b, ierd)
-        call jelira(macrel//'.LINO', 'LONMAX', nbntot, k8b)
+        call jelira(macrel//'.LINO', 'LONMAX', nbntot)
         nbmdyn = nbmode-nbmdef
         nec = nbmode/nbntot
         nbndyn = nbmdyn/nec

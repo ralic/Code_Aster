@@ -52,7 +52,6 @@ subroutine craglc(long, ligrch)
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: mod
     character(len=8) :: k8bid
-    character(len=1) :: k1bid
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
 !-----------------------------------------------------------------------
@@ -72,12 +71,12 @@ subroutine craglc(long, ligrch)
         call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     long)
         lonlig = 2*long
-        call jeecra(ligrch//'.LIEL', 'LONT', lonlig, ' ')
+        call jeecra(ligrch//'.LIEL', 'LONT', lonlig)
 !
         call jecrec(ligrch//'.NEMA', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     long)
         lonema = 4*long
-        call jeecra(ligrch//'.NEMA', 'LONT', lonema, ' ')
+        call jeecra(ligrch//'.NEMA', 'LONT', lonema)
 !
         call wkvect(ligrch//'.LGNS', 'G V I', 2*lonema, idlgns)
 !
@@ -96,7 +95,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- NOMBRE MAX D'ELEMENTS DE LA COLLECTION LIGRCH ---
 !
-    call jelira(ligrch//'.NEMA', 'NMAXOC', nbelma, k1bid)
+    call jelira(ligrch//'.NEMA', 'NMAXOC', nbelma)
 !
 ! --- NOMBRE DE MAILLES TARDIVES DU LIGREL DE CHARGE ---
 !
@@ -105,7 +104,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- NOMBRE D'ELEMENTS DEJA AFFECTES DE LA COLLECTION LIGRCH ---
 !
-    call jelira(ligrch//'.NEMA', 'NUTIOC', nbelut, k1bid)
+    call jelira(ligrch//'.NEMA', 'NUTIOC', nbelut)
 !
 ! --- NOMBRE D'ELEMENTS DISPONIBLES DE LA COLLECTION LIGRCH ---
 !
@@ -113,7 +112,7 @@ subroutine craglc(long, ligrch)
 !
 ! --- LONGUEUR TOTALE DE LA COLLECTION LIGRCH ---
 !
-    call jelira(ligrch//'.NEMA', 'LONT', lont, k1bid)
+    call jelira(ligrch//'.NEMA', 'LONT', lont)
 !
 ! --- NOUVEAU NOMBRE D'OBJETS DE LA COLLECTION LIGRCH ---
 !

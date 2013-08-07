@@ -99,7 +99,7 @@ subroutine cesgno(ces1, celfpg, base, ces2)
     nomgd = zk8(jces1k-1+2)
     call dismoi('F', 'NB_MA_MAILLA', ma, 'MAILLAGE', nbma,&
                 kbid, ibid)
-    call jelira(ces1//'.CESC', 'LONMAX', ncmp, kbid)
+    call jelira(ces1//'.CESC', 'LONMAX', ncmp)
     call dismoi('F', 'TYPE_SCA', nomgd, 'GRANDEUR', ibid,&
                 tsca, ibid)
     ASSERT(tsca.eq.'R'.or.tsca.eq.'C')

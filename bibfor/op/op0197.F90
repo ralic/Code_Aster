@@ -206,7 +206,7 @@ subroutine op0197()
                     r8bid, n1)
         nbins = -n1
         call jecroc(jexnum(collec, iresu))
-        call jeecra(jexnum(collec, iresu), 'LONMAX', nbins, ' ')
+        call jeecra(jexnum(collec, iresu), 'LONMAX', nbins)
         call jeveuo(jexnum(collec, iresu), 'E', iinst)
         call getvr8('RESU', 'LIST_INST_RUPT', iresu, iarg, nbins,&
                     zr( iinst), n1)
@@ -217,7 +217,7 @@ subroutine op0197()
         endif
         zi(irent+iresu-1) = nbins
         nrupt = nrupt + nbins
-        call jeecra(jexnum(collec, iresu), 'LONUTI', nbins, ' ')
+        call jeecra(jexnum(collec, iresu), 'LONUTI', nbins)
         if (nbins .le. 1) then
             call u2mess('F', 'UTILITAI3_29')
         endif
@@ -316,7 +316,7 @@ subroutine op0197()
     nomrc = 'WEIBULL         '
     do 115 iresu = 1, nbresu
 !
-        call jelira(zk8(ichmat-1+iresu)//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm, k8bid)
+        call jelira(zk8(ichmat-1+iresu)//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
         call wkvect('&&OP0197.L_NOM_MAT', 'V V K8', nbmtcm, anomm1)
         call chmrck(zk8(ichmat-1+iresu), nomrc, zk8(anomm1), nbmtrc)
         zk24(ikvak-1+iresu)(1:8) = zk8(anomm1)
@@ -327,7 +327,7 @@ subroutine op0197()
         call jedetr('&&OP0197.L_NOM_MAT')
         call jeveuo(zk24(ikvak-1+iresu), 'L', iweik)
         call jeveuo(zk24(ikval-1+iresu), 'L', iweir)
-        call jelira(zk24(ikvak-1+iresu), 'LONMAX', imc, k8bid)
+        call jelira(zk24(ikvak-1+iresu), 'LONMAX', imc)
 !
         do 117 i = 1, imc
             if (zk8(iweik + i-1) .eq. 'M       ') then
@@ -398,10 +398,10 @@ subroutine op0197()
 !       --- SURCHARGE DES PARAMETRES DE LA RC WEIBULL
 !        --- PAR SIGU(K) ET M(K)
 !
-        call jelira(zk8(ichmat-1+iresu)//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm, k8bid)
+        call jelira(zk8(ichmat-1+iresu)//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
         call wkvect('&&OP0197.L_NOM_MAT', 'V V K8', nbmtcm, anomm2)
         call chmrck(zk8(ichmat-1+iresu), nomrc, zk8(anomm2), nbmtrc)
-        call jelira(zk24(ikvak-1+iresu), 'LONMAX', imc, k8bid)
+        call jelira(zk24(ikvak-1+iresu), 'LONMAX', imc)
 !
 !       DUPLICATION DE LA SD CHAM_MATER POUR LA SURCHARGE
 !
@@ -473,7 +473,7 @@ subroutine op0197()
                     k8bid)
         call tbexve(zk16(itabw-1+iresu), 'INST', '&&OP0197.NOM_INSSIG', 'V', nbval,&
                     k8bid)
-        call jelira(jexnum(collec, iresu), 'LONUTI', nbins, k8bid)
+        call jelira(jexnum(collec, iresu), 'LONUTI', nbins)
         call jeveuo(jexnum(collec, iresu), 'L', iinst)
         call jeveuo('&&OP0197.NOM_VECSIG', 'L', isig)
         call jeveuo('&&OP0197.NOM_VECPRO', 'L', ipro)

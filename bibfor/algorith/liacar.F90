@@ -142,7 +142,7 @@ subroutine liacar(nomres, sst, intf, fplin, fplio,&
     call jeveuo(jexnum(fplin, ii), 'L', ldprli)
 !
     call jecroc(jexnum(fplio, ii))
-    call jeecra(jexnum(fplio, ii), 'LONMAX', nbnoe*(1+nbec), ' ')
+    call jeecra(jexnum(fplio, ii), 'LONMAX', nbnoe*(1+nbec))
     call jeveuo(jexnum(fplio, ii), 'E', ldprof)
 !
 ! INITIALISATION

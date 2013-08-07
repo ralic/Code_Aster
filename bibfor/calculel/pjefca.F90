@@ -94,7 +94,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !     ---------------------------------------------------------
     if (iocc .gt. 0) then
         call jeveuo(lima1, 'L', iagma1)
-        call jelira(lima1, 'LONMAX', nbma1, kbid)
+        call jelira(lima1, 'LONMAX', nbma1)
     else
         call dismoi('F', 'NB_MA_MAILLA', noma1, 'MAILLAGE', nb1,&
                     kbid, ie)

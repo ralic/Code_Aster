@@ -74,7 +74,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     call getvtx('CREA_GROUP_NO', 'TOUT_GROUP_MA', iocc, iarg, 1,&
                 koui, n1)
     if (n1 .eq. 1) then
-        call jelira(noma//'.GROUPEMA', 'NMAXOC', nbgma, k8b)
+        call jelira(noma//'.GROUPEMA', 'NMAXOC', nbgma)
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
         do 10 i = 1, nbgma
             call jenuno(jexnum(grpma, i), zk24(ialgma-1+i))
@@ -127,7 +127,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !
     do 30 i = 1, nbgma
         nomgma = zk24(ialgma-1+i)
-        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma, k8b)
+        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbma)
         call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
         call gmgnre(noma, nbnoto, zi(jtrav), zi(ialima), nbma,&
                     zi(ialino), zi(ianbno-1+i), selec)
@@ -139,8 +139,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
             call u2mesk('A', 'MODELISA7_9', 1, nomgno)
         else
             call jecroc(jexnom(grpno, nomgno))
-            call jeecra(jexnom(grpno, nomgno), 'LONMAX', max(n1, 1), k8b)
-            call jeecra(jexnom(grpno, nomgno), 'LONUTI', n1, k8b)
+            call jeecra(jexnom(grpno, nomgno), 'LONMAX', max(n1,1))
+            call jeecra(jexnom(grpno, nomgno), 'LONUTI', n1)
             call jeveuo(jexnom(grpno, nomgno), 'E', iad2)
             do 40 j = 1, n1
                 zi(iad2-1+j) = zi(ialino-1+j)

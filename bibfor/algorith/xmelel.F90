@@ -54,7 +54,7 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     character(len=16) :: typma, typel
     character(len=16) :: mode(3), attr(7), mail(2, 8)
     character(len=16) :: att, mod
-    integer :: nbno(2, 8), ityel, ityma, k, ibid, ier
+    integer :: nbno(2, 8), k, ibid, ier
 !
     data (mode(k),k=1,3) /'C_','D_','3D'/
     data (attr(k),k=1,7) /&

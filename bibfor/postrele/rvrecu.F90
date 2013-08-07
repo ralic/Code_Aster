@@ -34,12 +34,12 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 !     ------------------------------------------------------------------
 !
     character(len=1) :: type
-    character(len=8) :: k8b, form
+    character(len=8) ::  form
     character(len=19) :: nch19
     character(len=24) :: vecteu
 !
     real(kind=8) :: a, b
-    integer :: i, ibid, jval, kval, n1, neq
+    integer :: i, jval, kval, n1, neq
     integer :: iarg
 !
 !==================== CORPS DE LA ROUTINE =============================
@@ -47,9 +47,9 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     call jemarq()
     nch19 = champ
     vecteu = nomvec
-    call jelira(nch19//'.VALE', 'TYPE', ibid, type)
+    call jelira(nch19//'.VALE', 'TYPE', cval=type)
     if (type .ne. 'C') call u2mess('F', 'POSTRELE_11')
-    call jelira(nch19//'.VALE', 'LONMAX', neq, k8b)
+    call jelira(nch19//'.VALE', 'LONMAX', neq)
     call jeveuo(nch19//'.VALE', 'L', jval)
     call wkvect(vecteu, 'V V R', neq, kval)
 !

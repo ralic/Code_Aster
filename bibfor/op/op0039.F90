@@ -247,7 +247,7 @@ subroutine op0039()
                 if (lmod) then
                     nbmodl = 1
                     call wkvect(nomjv, 'V V K24', 10, jmodl)
-                    call jeecra(nomjv, 'LONUTI', nbmodl, ' ')
+                    call jeecra(nomjv, 'LONUTI', nbmodl)
                     call jeveuo(nomjv, 'E', jmodl)
                     zk24(jmodl) = modele//'.MODELE'
                 endif

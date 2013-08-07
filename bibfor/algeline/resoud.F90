@@ -103,7 +103,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 #include "jeveux.h"
 !
     integer :: ibid, ifm, niv
-    character(len=3) :: kmpic, type, typ1, kbid
+    character(len=3) :: kmpic, type, typ1
     character(len=19) :: matr19, mpre19, solv19, cine19
     character(len=19) :: secm19, csol19, crit19
     character(len=24) :: metres
@@ -180,8 +180,8 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
             call vtdefs(csol19, secm19, base, ' ')
         endif
         if (metres .ne. 'FETI') then
-            call jelira(secm19//'.VALE', 'LONMAX', neq1, kbid)
-            call jelira(secm19//'.VALE', 'TYPE', ibid, typ1)
+            call jelira(secm19//'.VALE', 'LONMAX', neq1)
+            call jelira(secm19//'.VALE', 'TYPE', cval=typ1)
             if ((neq1.ne.neq) .and. (imd.eq.0)) then
                 call u2mess('F', 'FACTOR_67')
             endif
@@ -202,7 +202,7 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
     endif
 !
     if ((cine19.ne.' ') .and. (metres.ne.'FETI')) then
-        call jelira(cine19//'.VALE', 'TYPE', ibid, typ1)
+        call jelira(cine19//'.VALE', 'TYPE', cval=typ1)
         ASSERT(typ1.eq.type)
     endif
 !

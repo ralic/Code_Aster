@@ -44,21 +44,18 @@ subroutine rvmoye(nomres, iocc)
 #include "asterfort/u2mess.h"
     integer :: iocc
     character(len=*) :: nomres
-    character(len=16) :: ncheff
 !
     integer :: nbpar
     character(len=16) :: nopara(200)
 !
-    integer :: ibid, n1, np, nc, iret, icmp, nbcmp, nbacce
-    integer :: jinst, jordr, i100, nbordr, iord, vali(20), nbc
-    integer :: adracc, adrres, adrval, ii, ik, ir, jaces, nbacc
+    integer :: ibid, n1, np, nc, iret, icmp, nbcmp
+    integer ::  jordr, i100, nbordr, iord, vali(20), nbc
+    integer ::  ii, ik, ir, jaces, nbacc
     integer :: iadr, iac
     real(kind=8) :: prec, som(64), valr(200)
     complex(kind=8) :: c16b
-    character(len=2) :: codacc
-    character(len=1) :: k1bid
     character(len=3) :: typpar
-    character(len=8) :: acces, crit, resu, nocmp(64), tych, k8b, ctype
+    character(len=8) ::  crit, resu, nocmp(64), tych, ctype
     character(len=16) :: nomcha, intitu
     character(len=19) :: knum, champ
     character(len=24) :: nomjv

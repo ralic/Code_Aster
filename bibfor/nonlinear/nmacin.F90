@@ -48,7 +48,6 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 !
 !
     integer :: jccid, neq, jcind, jdepla, i
-    character(len=19) :: kbid
     logical :: lcine
 !
 ! ----------------------------------------------------------------------
@@ -60,7 +59,7 @@ subroutine nmacin(fonact, matass, deppla, cncind)
     lcine = isfonc(fonact,'DIRI_CINE')
 !
     if (lcine) then
-        call jelira(cncind(1:19)//'.VALE', 'LONMAX', neq, kbid)
+        call jelira(cncind(1:19)//'.VALE', 'LONMAX', ival=neq)
         call nmpcin(matass)
         call jeveuo(matass(1:19)//'.CCID', 'L', jccid)
         call jeveuo(deppla(1:19)//'.VALE', 'L', jdepla)

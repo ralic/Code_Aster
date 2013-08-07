@@ -57,7 +57,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     real(kind=8) :: tpm(ncmp), tpb(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), dco, dce
     real(kind=8) :: tresca, valo(39), vale(39), stlin, stpar
     complex(kind=8) :: c16b
-    character(len=8) :: k8b, nomres, typara(39)
+    character(len=8) ::  nomres, typara(39)
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
     integer :: nparen, nparpm, nparsn, nparse, nparf1, nparf2, nparf3, nparrt
@@ -109,7 +109,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 !
     call jeveuo(cresu, 'L', jresu)
     call jeveuo(cinst, 'L', jinst)
-    call jelira(cinst, 'LONMAX', nbinst, k8b)
+    call jelira(cinst, 'LONMAX', nbinst)
 !
 ! --- CREATION DE LA TABLE
 !

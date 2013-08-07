@@ -62,7 +62,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     integer :: imamin, imamax, ima
     real(kind=8) :: vspmi3, vspma3, valr
     real(kind=8) :: vptmi2, vptma2, vmamin, vmamax
-    character(len=8) :: k8b, ma, noma
+    character(len=8) ::  ma, noma
     character(len=19) :: ces
     logical :: lmamin, lmamax, lptmin, lptmax, lspmin, lspmax
 !     ------------------------------------------------------------------
@@ -78,7 +78,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp,&
     call jeveuo(ces//'.CESC', 'L', jcesc)
     call jeveuo(ces//'.CESV', 'L', jcesv)
     call jeveuo(ces//'.CESL', 'L', jcesl)
-    call jelira(ces//'.CESC', 'LONMAX', ncmpc, k8b)
+    call jelira(ces//'.CESC', 'LONMAX', ncmpc)
     ma = zk8(jcesk-1+1)
     nbmac = zi(jcesd-1+1)
 !

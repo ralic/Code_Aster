@@ -103,11 +103,11 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
 !--------------LES NOMBRES DES NOEUDS DES INTERFACES
     inta=linta//'.IDC_LINO'
     call jenonu(jexnom(inta(1:13)//'NOMS', intfa), ibid)
-    call jelira(jexnum(inta, ibid), 'LONMAX', nbnoa, k8bid)
+    call jelira(jexnum(inta, ibid), 'LONMAX', nbnoa)
 !
     intb=lintb//'.IDC_LINO'
     call jenonu(jexnom(intb(1:13)//'NOMS', intfb), ibid)
-    call jelira(jexnum(intb, ibid), 'LONMAX', nbnob, k8bid)
+    call jelira(jexnum(intb, ibid), 'LONMAX', nbnob)
 !
 !--------------LES LISTES DES NUMEROS DES NOEUDS DES INTERFACES
     call jenonu(jexnom(linta //'.IDC_NOMS', intfa), ibid)
@@ -154,7 +154,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa,&
     call jeveuo(corres//'.PJEF_NB', 'L', iaconb)
     call jeveuo(corres//'.PJEF_NU', 'L', iaconu)
     call jeveuo(corres//'.PJEF_CF', 'L', iacocf)
-    call jelira(corres//'.PJEF_NB', 'LONMAX', nbnob2, k8bid)
+    call jelira(corres//'.PJEF_NB', 'LONMAX', nbnob2)
 !
 !      CALL UTIMSD(6,2,.TRUE.,.TRUE.,'&&PRJLIS.CORRES',1,' ')
 !

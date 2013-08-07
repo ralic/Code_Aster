@@ -314,7 +314,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !
             else
                 call wkvect('&&DLNEW0.XTRAC', 'V V R8', neq, lvale)
-                call jelira(zk8(lresu+iresu-1)//'           .ORDR', 'LONUTI', nbinst, k8bid)
+                call jelira(zk8(lresu+iresu-1)//'           .ORDR', 'LONUTI', nbinst)
 !
 !        --- INTERPOLATION LINEAIRE ---
                 do 211 i = 1, nbinst-1

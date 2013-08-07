@@ -55,7 +55,7 @@ subroutine op0054()
     integer :: icode, ific, n1, ibid, ier
     real(kind=8) :: r8b, dir(3), rinf, rsup
     logical :: ldirec
-    character(len=8) :: k8b, noma, modele, fond, resu, noeud, format, config
+    character(len=8) ::  noma, modele, fond, resu, noeud, format, config
     character(len=16) :: type, oper, fichie, valk(2)
     character(len=24) :: trav1, trav2, trav3, trav4, stok4
     character(len=24) :: obj1, nomno, coorn, obj2, taillr
@@ -156,7 +156,7 @@ subroutine op0054()
 !        --- OBJET CONTENANT LES NOEUDS DU FOND DE FISSURE ---
 !
         obj2 = fond//'.FOND.NOEU'
-        call jelira(obj2, 'LONMAX', nbno, k8b)
+        call jelira(obj2, 'LONMAX', nbno)
         call jeveuo(obj2, 'L', iadrno)
 !
         taillr = fond//'.FOND.TAILLE_R'

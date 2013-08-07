@@ -63,7 +63,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
     character(len=19) :: phi, sphi, phii, sphii, pg, is
     character(len=24) :: k24, cmpis, cmpjs, nofos
     character(len=8) :: nompar(7), fonc, cmpi, cmpj, nocmpi, nocmpj
-    character(len=8) :: kbid, isz
+    character(len=8) ::  isz
 !-----------------------------------------------------------------------
 !                         _       _    _   _
 !   CALCUL DE LA MATRICE | SXX SXY |  | PHI |
@@ -130,7 +130,7 @@ subroutine evali2(isz, pg, nma, phi, valpar,&
     call jeveuo(sphi, 'L', isphi)
 !
 ! NOMBRE DE MODES
-    call jelira(phi, 'LONMAX', nbm, kbid)
+    call jelira(phi, 'LONMAX', nbm)
 !
 ! BOUCLES SUR LES LIGNES DE LA TABLE INTER-SPECTRE ANALYTIQUE
     do 3 ili = 1, nbl

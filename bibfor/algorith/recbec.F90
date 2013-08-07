@@ -114,7 +114,7 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !------------------RECUPERATION DES NOMBRES DE DIAMETRES MODAUX---------
 !
     call jeveuo(modcyc//'.CYCL_DIAM', 'L', lldiam)
-    call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia, k8b)
+    call jelira(modcyc//'.CYCL_DIAM', 'LONMAX', nbdia)
     nbdia = nbdia / 2
 !
 !-----------------RECUPERATION DU NOMBRE DE DDL PHYSIQUES---------------

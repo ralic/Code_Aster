@@ -43,9 +43,9 @@ subroutine grpdbl(maz, typgz)
 ! ----------------------------------------------------------------------
 !
     integer :: igr, nbgr, ie, nbe, jgroup, nue, nbno, nbma
-    integer :: jlent, k, jdime, nbent, jgrou2, ibid
+    integer :: jlent, k, jdime, nbent, jgrou2
     integer :: imax, nelim, lnew, jnew, je, kk
-    character(len=4) :: kbid, clas
+    character(len=4) ::  clas
     character(len=8) :: ma, typgr
     character(len=9) :: ptrn
     character(len=24) :: nomgr, nvnogr, nvptno
@@ -78,15 +78,15 @@ subroutine grpdbl(maz, typgz)
 !
 !
     call wkvect('&&GRPDBL.LENT', 'V V I', nbent, jlent)
-    call jelira(ma//'.'//typgr, 'NOMUTI', nbgr, kbid)
+    call jelira(ma//'.'//typgr, 'NOMUTI', nbgr)
 !
     call jecreo(nvptno, 'V N K24')
-    call jeecra(nvptno, 'NOMMAX', nbgr, ' ')
+    call jeecra(nvptno, 'NOMMAX', nbgr)
     call jecrec(nvnogr, 'V V I', 'NO '//nvptno, 'DISPERSE', 'VARIABLE',&
                 nbgr)
 !
     do 21,igr = 1,nbgr
-    call jelira(jexnum(ma//'.'//typgr, igr), 'LONMAX', nbe, kbid)
+    call jelira(jexnum(ma//'.'//typgr, igr), 'LONMAX', nbe)
     call jeveuo(jexnum(ma//'.'//typgr, igr), 'L', jgroup)
     call jenuno(jexnum(ma//'.'//typgr, igr), nomgr)
     call jecroc(jexnom(nvnogr, nomgr))
@@ -132,8 +132,8 @@ subroutine grpdbl(maz, typgz)
 34      continue
     endif
 !
-    call jeecra(jexnom(nvnogr, nomgr), 'LONMAX', max(1, lnew), kbid)
-    call jeecra(jexnom(nvnogr, nomgr), 'LONUTI', lnew, kbid)
+    call jeecra(jexnom(nvnogr, nomgr), 'LONMAX', max(1,lnew))
+    call jeecra(jexnom(nvnogr, nomgr), 'LONUTI', lnew)
     call jeveuo(jexnom(nvnogr, nomgr), 'E', jgrou2)
 !
     if (imax .gt. 1) then
@@ -157,7 +157,7 @@ subroutine grpdbl(maz, typgz)
 !
     call jedetr('&&GRPDBL.LENT')
 !
-    call jelira(ma//'.'//typgr, 'CLAS', ibid, clas)
+    call jelira(ma//'.'//typgr, 'CLAS', cval=clas)
     call jedetr(ma//'.'//typgr)
     call jedetr(ma//'.'//ptrn)
     call cpclma('&&GRPDBL', ma, typgr, clas(1:1))

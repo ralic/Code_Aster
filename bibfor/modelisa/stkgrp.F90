@@ -163,8 +163,8 @@ subroutine stkgrp(ifl, icl, iv, rv, cv,&
     call jeexin(jexnom(grp, nomg), iret)
     if (iret .eq. 0) then
         call jecroc(jexnom(grp, nomg))
-        call jeecra(jexnom(grp, nomg), 'LONMAX', max(nbitem, 1), ' ')
-        call jeecra(jexnom(grp, nomg), 'LONUTI', nbitem, ' ')
+        call jeecra(jexnom(grp, nomg), 'LONMAX', max(nbitem,1))
+        call jeecra(jexnom(grp, nomg), 'LONUTI', nbitem)
     else
         call u2mesk('F', 'MODELISA7_11', 1, nomg)
     endif

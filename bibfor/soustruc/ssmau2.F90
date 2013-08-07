@@ -58,7 +58,6 @@ subroutine ssmau2(nomu, option)
 !
 !
     integer :: i, scdi, schc, iblo, ibid
-    character(len=8) :: kbid
     character(len=8) :: promes
     logical :: mostru
 !
@@ -102,13 +101,13 @@ subroutine ssmau2(nomu, option)
 !
 !     -- ALLOCATION DE TMP_IE (TEMPORAIRE LIKE PHI_IE )
 !     -------------------------------------------------------
-    call jelira(nomu//'.PHI_IE', 'LONMAX', lgblph, kbid)
-    call jelira(nomu//'.PHI_IE', 'NMAXOC', nblph, kbid)
+    call jelira(nomu//'.PHI_IE', 'LONMAX', lgblph)
+    call jelira(nomu//'.PHI_IE', 'NMAXOC', nblph)
     nlblph=lgblph/nddli
 !
     call jecrec(nomu//'.TMP_IE', 'V V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblph)
-    call jeecra(nomu//'.TMP_IE', 'LONMAX', lgblph, kbid)
+    call jeecra(nomu//'.TMP_IE', 'LONMAX', lgblph)
     do 10,j = 1,nblph
     call jecroc(jexnum(nomu//'.TMP_IE', j))
     call jeveuo(jexnum(nomu//'.TMP_IE', j), 'E', iatmi0)

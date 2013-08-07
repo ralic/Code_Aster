@@ -50,7 +50,7 @@ subroutine detgnm(ma)
     integer :: n1, iocc, maxval, nbval, jgmdet, iret, nbtgp, numgm, nbgmde
     integer :: nbgp, nbmagp, jgm, i, j, j1, j2, ngp, ig
     parameter(ngp=2)
-    character(len=8) :: k8b, kbid
+    character(len=8) :: k8b
     character(len=16) :: detr(2), group(2), ptrn(2)
     character(len=24) :: grp, gpptnm, nomgp
     integer :: iarg
@@ -67,7 +67,7 @@ subroutine detgnm(ma)
         if (n1 .ne. 0) then
             call jeexin(ma//group(ig), iret)
             if (iret .eq. 0) goto 100
-            call jelira(ma//group(ig), 'NUTIOC', nbtgp, kbid)
+            call jelira(ma//group(ig), 'NUTIOC', nbtgp)
             call wkvect('&&DETGNM.GROUP', 'V V I', nbtgp, jgm)
             do 5 i = 1, nbtgp
                 zi(jgm+i-1)=0
@@ -103,16 +103,16 @@ subroutine detgnm(ma)
                 goto 100
             endif
             call jecreo(gpptnm, 'V N K24')
-            call jeecra(gpptnm, 'NOMMAX', nbgp, ' ')
+            call jeecra(gpptnm, 'NOMMAX', nbgp)
             call jecrec(grp, 'V V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
                         nbgp)
             do 25 i = 1, nbtgp
                 if (zi(jgm+i-1) .eq. 0) then
                     call jenuno(jexnum(ma//group(ig), i), nomgp)
                     call jecroc(jexnom(grp, nomgp))
-                    call jelira(jexnom(ma//group(ig), nomgp), 'LONMAX', nbmagp, kbid)
-                    call jeecra(jexnom(grp, nomgp), 'LONMAX', max(1, nbmagp), kbid)
-                    call jeecra(jexnom(grp, nomgp), 'LONUTI', nbmagp, kbid)
+                    call jelira(jexnom(ma//group(ig), nomgp), 'LONMAX', nbmagp)
+                    call jeecra(jexnom(grp, nomgp), 'LONMAX', max(1,nbmagp))
+                    call jeecra(jexnom(grp, nomgp), 'LONUTI', nbmagp)
                     call jeveuo(jexnom(grp, nomgp), 'E', j2)
                     call jeveuo(jexnom(ma//group(ig), nomgp), 'L', j1)
                     do 30 j = 1, nbmagp

@@ -27,7 +27,7 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/lsqpol.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2, k8bid
+    character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2
     character :: dir
     integer :: nlit
     real(kind=8) :: sigb, siga(nlit), hh, om(nlit), rr(nlit), prec, e1, sigma
@@ -39,7 +39,7 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 !
 ! --- POSITIVE BENDING
     call jeveuo(nufsup//'           .VALE', 'L', jtab)
-    call jelira(nufsup//'           .VALE', 'LONMAX', lmax, k8bid)
+    call jelira(nufsup//'           .VALE', 'LONMAX', lmax)
 !
 !--- INTERPOLATION DE LA FONCTION ET CALCUL DES DERIVEES
     e1=0.d0
@@ -93,7 +93,7 @@ subroutine mocon2(dir, sigb, siga, hh, nlit,&
 !
 !--- NEGATIVE BENDING
     call jeveuo(nufinf//'           .VALE', 'L', jtab)
-    call jelira(nufinf//'           .VALE', 'LONMAX', lmax, k8bid)
+    call jelira(nufinf//'           .VALE', 'LONMAX', lmax)
 !
 !--- INTERPOLATION DE LA FONCTION ET CALCUL DES DERIVEES
     e1=0.d0

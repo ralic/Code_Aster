@@ -67,7 +67,6 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=6) :: chnumo
     character(len=8) :: typech, nomgd, saux08, noresu, sdcarm, carel2, valk2(2)
     character(len=16) :: nosy16
@@ -92,17 +91,17 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     lfirst=.true.
 !
     call jeveuo(nocham, 'L', jnocha)
-    call jelira(nocham, 'LONMAX', nbcham, k1bid)
+    call jelira(nocham, 'LONMAX', nbcham)
 !
     call jeveuo(liordr, 'L', jliord)
-    call jelira(liordr, 'LONMAX', nbordr, k1bid)
+    call jelira(liordr, 'LONMAX', nbordr)
 !
     nbrcmp = 0
     jnocmp = 0
     call jeexin(nomcmp, iret)
     if (iret .ne. 0) then
         call jeveuo(nomcmp, 'L', jnocmp)
-        call jelira(nomcmp, 'LONMAX', nbrcmp, k1bid)
+        call jelira(nomcmp, 'LONMAX', nbrcmp)
     endif
 !
     nbcmdu = 0
@@ -113,7 +112,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
         if (zk80(jnosym) .eq. ' ') then
             jnosym=0
         else
-            call jelira(novcmp, 'LONMAX', nbcmdu, k1bid)
+            call jelira(novcmp, 'LONMAX', nbcmdu)
         endif
     endif
 !

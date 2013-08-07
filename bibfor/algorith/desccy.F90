@@ -48,7 +48,6 @@ subroutine desccy(nomres)
 !
     character(len=8) :: intf, kbid, basmod, nomres
     character(len=24) :: noeint
-    character(len=1) :: k1bid
     integer :: iarg
 !
 !-----------------------------------------------------------------------
@@ -78,7 +77,7 @@ subroutine desccy(nomres)
 !----------RECUPERATION DU DESCRIPTEUR DES DEFORMEES STATIQUES----------
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldesc)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
     nbnot=nbnot/3
 !
 !--------RECUPERATION DES DEFINITIONS DES INTERFACES DROITE ET GAUCHE---
@@ -86,14 +85,14 @@ subroutine desccy(nomres)
     noeint=intf//'.IDC_LINO'
 !
     call jeveuo(jexnum(noeint, numd), 'L', ldnoed)
-    call jelira(jexnum(noeint, numd), 'LONMAX', nbd, k1bid)
+    call jelira(jexnum(noeint, numd), 'LONMAX', nbd)
 !
     call jeveuo(jexnum(noeint, numg), 'L', ldnoeg)
-    call jelira(jexnum(noeint, numg), 'LONMAX', nbg, k1bid)
+    call jelira(jexnum(noeint, numg), 'LONMAX', nbg)
 !
     if (numa .gt. 0) then
         call jeveuo(jexnum(noeint, numa), 'L', ldnoea)
-        call jelira(jexnum(noeint, numa), 'LONMAX', nba, k1bid)
+        call jelira(jexnum(noeint, numa), 'LONMAX', nba)
     endif
 !
     if (nbg .ne. nbd) then

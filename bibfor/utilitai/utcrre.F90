@@ -58,7 +58,7 @@ subroutine utcrre(result, nbval)
     else
 ! ----- SI LE RESULTAT N'EST PAS ASSEZ GRAND, ON L'AGRANDIT :
         resu19=result
-        call jelira(resu19//'.ORDR', 'LONMAX', nbav, k8bid)
+        call jelira(resu19//'.ORDR', 'LONMAX', nbav)
         if (nbval .gt. nbav) call rsagsd(result, nbval)
 ! ----- S'IL EXISTE, ON DETRUIT TOUT CE QUI SERAIT AU DELA DE NBVAL
         call rsrusd(result, nbval+1)

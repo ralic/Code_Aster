@@ -88,12 +88,12 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, l, m, ii, jj, ini, inj, pli, plj, xoula, iin, jjn, ddle
+    integer :: i, j, k, l, m, ii, jj, pli, plj, iin, jjn, ddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
     real(kind=8) :: c1(3), c2(3), c3(3), d1(3), d2(3), d3(3), h1(3), h2(3)
     real(kind=8) :: g(3, 3), d(3, 3), b(3, 3), c(3, 3), r(3, 3), mp, mb, mbt, mm
     real(kind=8) :: mmt
-    real(kind=8) :: f(3, 3), tt(3, 3), ddot
+    real(kind=8) :: f(3, 3), tt(3, 3)
 ! ----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS

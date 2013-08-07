@@ -67,7 +67,6 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     integer :: jtrav1, jtrav2, jtrav3, jtrav4, jvit1, jvit2, jzone
     integer :: jtr1, jtr2, jvrzo, lfsvr, jcste
     integer :: lprofv, lnoe, iret, modul, modul2
-    character(len=1) :: k1bid
     character(len=3) :: i3
     character(len=8) :: k8bid, nomsym, nomcmp(6), formar, numzo, nbpzon
     character(len=8) :: xl1, xl2, xl3
@@ -87,7 +86,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !-----------------------------------------------------------------------
     integer :: i, ibid, ifr, ik, im, imod, ind
     integer :: iv, j, jprofv, jtrav5, k, l1
-    integer :: l2, l3, n1, n2, nbno, npasv, nzone
+    integer :: l2, l3, n1, n2, npasv, nzone
 !
     real(kind=8) :: amor1, bmax, bmin, dif1, freq1, rbid, vred
 !
@@ -154,7 +153,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !
             call jeexin('&&FLUST1.TEMP.PROFV', iret)
             if (iret .ne. 0) then
-                call jelira('&&FLUST1.TEMP.PROFV', 'LONMAX', lprofv, k1bid)
+                call jelira('&&FLUST1.TEMP.PROFV', 'LONMAX', lprofv)
                 lnoe = (lprofv-1)/2
                 call jeveuo('&&FLUST1.TEMP.PROFV', 'L', jprofv)
                 vmoyto = zr(jprofv-1+lprofv)

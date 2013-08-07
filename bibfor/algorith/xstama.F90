@@ -153,7 +153,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !       ON MODIFIE L'ENRICHISSEMENT DES NOEUDS (MAJ STANO)
 !       SI ANCIEN STANO = 0 -> 2
 !       SI ANCIEN STANO = 1 -> 3
-        call jelira(lisnoe, 'LONMAX', nbnoe, k8b)
+        call jelira(lisnoe, 'LONMAX', nbnoe)
         call jeveuo(lisnoe, 'L', jdlino)
         do 410 ino = 1, nbnoe
             nabs=zi(jdlino-1+(ino-1)+1)

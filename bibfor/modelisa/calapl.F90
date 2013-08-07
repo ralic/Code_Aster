@@ -72,7 +72,7 @@ subroutine calapl(char, ligrmo, noma)
     typmc2(2) = 'MAILLE'
 !
     connex = noma//'.CONNEX'
-    call jelira(connex, 'NMAXOC', into, k8b)
+    call jelira(connex, 'NMAXOC', into)
 !
     do 10 iocc = 1, nbflp
 !

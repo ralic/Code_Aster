@@ -180,7 +180,7 @@ subroutine pecage(resu, modele, nbocc)
                     call u2mesk('F', 'UTILITAI3_46', 1, zk24(jgr+ig-1))
                     goto 20
                 endif
-                call jelira(jexnom(mlggma, zk24(jgr+ig-1)), 'LONUTI', nbma, k8b)
+                call jelira(jexnom(mlggma, zk24(jgr+ig-1)), 'LONUTI', nbma)
                 if (nbma .eq. 0) then
                     call u2mesk('A', 'UTILITAI3_47', 1, zk24(jgr+ig-1))
                     goto 20

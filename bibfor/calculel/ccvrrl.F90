@@ -80,7 +80,6 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     real(kind=8) :: maxtol, maxdif, tabres(1), pi, angle1, angle2
     real(kind=8) :: pgl(3, 3), vl(3), vg1(3), vg2(3), vg3(3), vg4(3)
 !
-    character(len=1) :: cbid
     character(len=8) :: nomail
     character(len=16) :: modeli
     character(len=19) :: cnxinv, carsd, ligrmo, carcc, vecsau
@@ -108,7 +107,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     call jeexin(mesmai, ier)
     if (ier .ne. 0) then
         call jeveuo(mesmai, 'L', jmai)
-        call jelira(mesmai, 'LONMAX', nbma, cbid)
+        call jelira(mesmai, 'LONMAX', nbma)
         llimai = .true.
     else
         jmai = 1
@@ -127,7 +126,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
         call jeveuo(carsd//'.CESL', 'L', jcesl)
         call jeveuo(carsd//'.CESV', 'L', jcesv)
         call jeveuo(carsd//'.CESC', 'L', jcesc)
-        call jelira(carsd//'.CESC', 'LONMAX', ncmax, cbid)
+        call jelira(carsd//'.CESC', 'LONMAX', ncmax)
         jalpha = indik8(zk8(jcesc),'ALPHA   ',1,ncmax)
         jbeta = indik8(zk8(jcesc),'BETA    ',1,ncmax)
         jgamma = indik8(zk8(jcesc),'GAMMA   ',1,ncmax)
@@ -149,7 +148,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
         call jeveuo(carcc//'.CESL', 'L', jceslc)
         call jeveuo(carcc//'.CESV', 'L', jcesvc)
         call jeveuo(carcc//'.CESC', 'L', jcescc)
-        call jelira(carcc//'.CESC', 'LONMAX', ncmax, cbid)
+        call jelira(carcc//'.CESC', 'LONMAX', ncmax)
         iepais = indik8(zk8(jcescc),'EP      ',1,ncmax)
         ialpha = indik8(zk8(jcescc),'ALPHA   ',1,ncmax)
         ibeta = indik8(zk8(jcescc),'BETA    ',1,ncmax)
@@ -170,7 +169,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
         zr(jvect+i-1) = 0.d0
 80  end do
 !
-    call jelira(cnxinv, 'NUTIOC', nbno, cbid)
+    call jelira(cnxinv, 'NUTIOC', nbno)
 !
     call jeveuo(jexnum(cnxinv, 1), 'L', jconi1)
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', jconi2)

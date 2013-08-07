@@ -55,17 +55,15 @@ subroutine orilgm(noma)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ibid, ifm, niv, nbf1, nbf2, nbf3, iret, nbpar, jjj, jgro, n1, n2
+    integer ::  ifm, niv, nbf1, nbf2, nbf3, iret, jjj, jgro, n1, n2
     integer :: n3, noeud, iocc, ngv, ier, ndim, igr, ng, nbmail, norit, norien
     integer :: ntrait, jjv, nbmavo, jmavo, nbmato, ima, nbmavi, jmavi, k, jgv
     integer :: ncf3, ngs, jgs, nbmasu, jmasu
-    real(kind=8) :: vect(3), r8b, prec, armin
-    complex(kind=8) :: cbid
+    real(kind=8) :: vect(3)
     logical :: reorie, orivec
     character(len=8) :: k8b
     character(len=16) :: mofa2d, mofa3d, mofb3d, mofc3d
-    character(len=19) :: nomt19
-    character(len=24) :: nomnoe, grmama, para, nnoeud, gmat
+    character(len=24) :: nomnoe, grmama, nnoeud, gmat
     character(len=24) :: valk(2)
     integer :: iarg
 !
@@ -141,7 +139,7 @@ subroutine orilgm(noma)
 101          continue
             do 102 igr = 1, ngs
                 gmat = zk24(jgs+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi, k8b)
+                call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
                 call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
                 do 103 ima = 1, nbmavi
                     zi(jjv+zi(jmavi+ima-1)-1)=1
@@ -170,7 +168,7 @@ subroutine orilgm(noma)
 !
         do 110 igr = 1, ng
             gmat = zk24(jjj+igr-1)
-            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
             call jeveuo(jexnom(grmama, gmat), 'L', jgro)
             write(ifm,1000) gmat, nbmail
             norien=0
@@ -212,7 +210,7 @@ subroutine orilgm(noma)
 201          continue
             do 202 igr = 1, ngv
                 gmat = zk24(jgv+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi, k8b)
+                call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
                 call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
                 do 203 ima = 1, nbmavi
                     zi(jjv+zi(jmavi+ima-1)-1)=1
@@ -242,7 +240,7 @@ subroutine orilgm(noma)
 !
         do 210 igr = 1, ng
             gmat = zk24(jjj+igr-1)
-            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
             call jeveuo(jexnom(grmama, gmat), 'L', jgro)
             write(ifm,1000) gmat, nbmail
             norien=0
@@ -298,7 +296,7 @@ subroutine orilgm(noma)
         if (orivec) then
             do 310 igr = 1, ng
                 gmat = zk24(jjj+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
                 write(ifm,1000) gmat, nbmail
                 norien=0
@@ -310,7 +308,7 @@ subroutine orilgm(noma)
         else
             do 320 igr = 1, ng
                 gmat = zk24(jjj+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
                 write(ifm,1000) gmat, nbmail
                 norien=0
@@ -364,7 +362,7 @@ subroutine orilgm(noma)
         if (orivec) then
             do 410 igr = 1, ng
                 gmat = zk24(jjj+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
                 write(ifm,1000) gmat, nbmail
                 norien=0
@@ -376,7 +374,7 @@ subroutine orilgm(noma)
         else
             do 420 igr = 1, ng
                 gmat = zk24(jjj+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail, k8b)
+                call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, gmat), 'L', jgro)
                 write(ifm,1000) gmat, nbmail
                 norien=0

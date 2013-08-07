@@ -62,7 +62,6 @@ subroutine ddlact(nomres, numddl)
     character(len=8) :: k8bid
     character(len=19) :: numddl
     character(len=24) :: desdef, deeq, temmat, noeint, actint, temdec
-    character(len=1) :: k1bid
     real(kind=8) :: actifs
 !
 !-----------------------------------------------------------------------
@@ -93,12 +92,12 @@ subroutine ddlact(nomres, numddl)
 !
     desdef=nomres//'.IDC_DEFO'
     call jeveuo(desdef, 'L', lldes)
-    call jelira(desdef, 'LONMAX', nbnot, k1bid)
+    call jelira(desdef, 'LONMAX', nbnot)
     nbnot=nbnot/(2+nbec)
 !
 !---------------RECUPERATION DU NOMBRE D'INTERFACE----------------------
 !
-    call jelira(noeint, 'NMAXOC', nbint, k1bid)
+    call jelira(noeint, 'NMAXOC', nbint)
 !
 !---------------RECUPERATION DES TYPES D'INTERFACE ---------------------
 !
@@ -108,7 +107,7 @@ subroutine ddlact(nomres, numddl)
 !
     nomax=0
     do 10 i = 1, nbint
-        call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         nomax=max(nomax,nbno)
 10  end do
 !
@@ -133,7 +132,7 @@ subroutine ddlact(nomres, numddl)
 !-----------------------BOUCLE SUR LES INTERFACES-----------------------
 !
     do 20 i = 1, nbint
-        call jelira(jexnum(noeint, i), 'LONMAX', nbno, k1bid)
+        call jelira(jexnum(noeint, i), 'LONMAX', nbno)
         call jeveuo(jexnum(noeint, i), 'L', llnoe)
         call jeveuo(jexnum(actint, i), 'E', ldact)
 !

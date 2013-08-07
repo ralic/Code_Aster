@@ -65,7 +65,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
 !----------------------------------------------------------------------
     logical :: complt
     character(len=1) :: base
-    integer :: iret, jsmdi, jsmhc, jsmde, nequ, ncoef, nblc, ibid
+    integer :: iret, jsmdi, jsmhc, jsmde, nequ, ncoef, nblc
     integer :: jvalm, idv, i, nzmax, jicpd, jicplx, niremp
     integer :: jicpcx, jsmdi1, jsmhc1, ier, k, jsmdif, jsmhcf, jvalf, jvect
     integer :: jrefa, jrefaf
@@ -112,7 +112,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
     nblc = zi(jsmde-1+3)
     if (nblc .ne. 1) call u2mess('F', 'ALGELINE3_22')
 !
-    call jelira(jexnum(matas//'.VALM', 1), 'TYPE', ibid, tysca)
+    call jelira(jexnum(matas//'.VALM', 1), 'TYPE',cval=tysca)
     if (tysca .eq. 'C') call u2mess('F', 'ALGELINE3_23')
 !
 !
@@ -199,7 +199,7 @@ subroutine pcldlt(matf, mat, niremp, bas)
     call jedetr(matfac//'.VALM')
     call jecrec(matfac//'.VALM', base//' V '//tysca, 'NU', 'DISPERSE', 'CONSTANT',&
                 1)
-    call jeecra(matfac//'.VALM', 'LONMAX', nzmax, ' ')
+    call jeecra(matfac//'.VALM', 'LONMAX', nzmax)
     call jecroc(jexnum(matfac//'.VALM', 1))
 !
 !

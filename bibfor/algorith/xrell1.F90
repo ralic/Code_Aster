@@ -55,7 +55,7 @@ subroutine xrell1(tabnoz, ndim, nar, pickno, nbpino,&
 !
 !
     integer :: i, j, in, dimeq, ia, ext, libre, k, eq(100), tabno(nar, 3), ie
-    integer :: liseqt(nar, 2), nreleq, jlis1, picked
+    integer :: liseqt(nar, 2), nreleq, jlis1
 !
 ! ----------------------------------------------------------------------
 !

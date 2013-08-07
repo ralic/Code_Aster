@@ -88,7 +88,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-    call jelira(lisno, 'LONMAX', nbnoe, k8b)
+    call jelira(lisno, 'LONMAX', nbnoe)
     call jeveuo(lisno, 'L', jdlino)
 !
     call jeveuo(stano, 'E', jstano)
@@ -135,7 +135,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 201          continue
         endif
         ino=zi(jdlino-1+i)
-        call jelira(jexnum(cnxinv, ino), 'LONMAX', nmasup, k8b)
+        call jelira(jexnum(cnxinv, ino), 'LONMAX', nmasup)
         call jeveuo(jexnum(cnxinv, ino), 'L', jmasup)
 !
 !       ON VERIFIE SI LE NOEUD N'EST PAS ORPHELIN

@@ -116,7 +116,7 @@ subroutine ssdege(nomu)
                 nbc)
     call getvis('DEFINITION', 'NMAX_CHAR', 1, iarg, 1,&
                 nch, n1)
-    call jeecra(nomu//'.LICH', 'LONMAX', nch, kbid)
+    call jeecra(nomu//'.LICH', 'LONMAX', nch)
 !
 !
 !     -- CREATION DE L'OBJET .VARM:
@@ -173,7 +173,7 @@ subroutine ssdege(nomu)
     do 21 , ii= 1,nvalap
     zi(ialino-1+ii)= zi(iaexte-1+ii)
     21 end do
-    call jeecra(nomu//'.LINO', 'LONUTI', nvalap, kbid)
+    call jeecra(nomu//'.LINO', 'LONUTI', nvalap)
 !
 !
 !     -- MISE A JOUR DE .DESM :

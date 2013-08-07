@@ -83,7 +83,7 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
     call celver(champ2, 'NBVARI_CST', 'STOP', ibid)
     call celver(champ2, 'NBSPT_1', 'STOP', ibid)
-    call jelira(champ2//'.CELD', 'DOCU', ibid, docu)
+    call jelira(champ2//'.CELD', 'DOCU', cval=docu)
     if (docu .ne. 'CHML') call u2mess('F', 'CALCULEL5_44')
     call jeveuo(champ2//'.CELK', 'L', iacelk)
     ligrel = zk24(iacelk-1+1)(1:19)

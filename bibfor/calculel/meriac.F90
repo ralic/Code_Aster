@@ -59,7 +59,6 @@ subroutine meriac(modelz, nchar, lchar, mate, matelz)
     character(len=8) :: modele
     character(len=19) :: matel
 !
-    character(len=8) :: k8bid
 !
 !
 !-----------------------------------------------------------------------
@@ -75,7 +74,7 @@ subroutine meriac(modelz, nchar, lchar, mate, matelz)
 !
 !     -- ON RECOPIE LES .RELR DE &MERIAC1 DANS MATEL.
 !
-    call jelira('&MERIAC1           .RELR', 'LONUTI', long1, k8bid)
+    call jelira('&MERIAC1           .RELR', 'LONUTI', long1)
     call jeveuo('&MERIAC1           .RELR', 'L', jlire1)
 !
     call jedetr(matel//'.RERR')

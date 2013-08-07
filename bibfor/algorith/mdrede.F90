@@ -62,7 +62,6 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 !
     integer :: i, nunoe, nuddl, icomp
-    character(len=1) :: k1bid
     character(len=8) :: noeu, comp, fonc, sst, noecho(3)
     character(len=14) :: nume
     character(len=16) :: typnum
@@ -167,7 +166,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
             call jeveuo(fonc//'           .VALE', 'L', lval)
             parred(i,1) = zr(lval)
             if (fonred(i,4) .eq. 'TRANSIS ') then
-                call jelira(fonc//'           .VALE', 'LONUTI', nbpt, k1bid)
+                call jelira(fonc//'           .VALE', 'LONUTI', nbpt)
                 lfon = lval + ( nbpt / 2 )
                 if (abs(zr(lval)) .lt. 1.d-08) then
                     valk = fonc

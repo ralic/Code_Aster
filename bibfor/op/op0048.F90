@@ -239,7 +239,7 @@ subroutine op0048()
 !
 !
     call jeveuo(result//'           .ORDR', 'L', jord)
-    call jelira(result//'           .ORDR', 'LONUTI', nbord, k8b)
+    call jelira(result//'           .ORDR', 'LONUTI', nbord)
     do 61 iordr = 1, nbord
         call rsadpa(result, 'E', 1, 'MODELE', zi(jord+iordr-1),&
                     0, ladpa, k8b)

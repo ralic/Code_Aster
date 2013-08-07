@@ -146,7 +146,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     integer :: jvien, jvite, jrefs
     integer :: n1, na, nbexci, nbexcl, nbgrel, nbgrpa, nbmat, nbordr
     integer :: nbptpa, nbv, nd, nel, nmodam, npatot, nv
-    character(len=1) :: k1bid
     character(len=3) :: repk
     character(len=4) :: typ1(nbtyar), typmat
     character(len=8) :: k8b, matres, modsta
@@ -218,11 +217,11 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
     limped = .true.
 !
-    call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel, k1bid)
+    call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
     repk = 'NON'
     do 103 igrel = 1, nbgrel
         call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel, k1bid)
+        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
         itypel = zi(ialiel-1+nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
         if ((nomte(1:9).eq.'MEFA_FACE') .or. (nomte(1:6).eq.'MEFASE')) then

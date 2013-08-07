@@ -115,9 +115,9 @@ subroutine rvpar0(nomtab, mcf, nbpost)
         call juveca(nomstr, iaux)
         call jeveuo(nomstr, 'E', admemo)
     endif
-    call jelira(nomstr, 'LONUTI', iaux, k8b)
+    call jelira(nomstr, 'LONUTI', iaux)
     iaux = iaux + 2
-    call jeecra(nomstr, 'LONUTI', iaux, k8b)
+    call jeecra(nomstr, 'LONUTI', iaux)
 !
     nbtabl = nbtabl + 1
     zk8(admemo+2*nbtabl-2) = nomtab

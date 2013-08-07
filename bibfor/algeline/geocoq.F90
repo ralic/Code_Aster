@@ -75,7 +75,6 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     real(kind=8) :: rext, rint, rmoy, tole, x2, x3, z0, long
     real(kind=8) :: z0ext, z0int, z1, z1ext, z1int, zno
 !
-    character(len=1) :: k1bid
     character(len=8) :: nomcmp, k8bid
     character(len=24) :: grpma, coorno, carte, cadesc, cavale
     character(len=24) :: coquei, coquex
@@ -114,7 +113,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 ! --- 2.1.BORNE INF ET BORNE SUP ASSOCIEES A LA COQUE INTERNE
 !
     grpno='&&MEFGMN.00000001       '
-    call jelira(grpno, 'LONMAX', nbnoin, k1bid)
+    call jelira(grpno, 'LONMAX', nbnoin)
     if (nbnoin .lt. 4) call u2mess('F', 'ALGELINE_49')
     call jeveuo(grpno, 'L', inunoi)
     nunoi = zi(inunoi)
@@ -132,7 +131,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 ! --- 2.2.BORNE INF ET BORNE SUP ASSOCIEES A LA COQUE EXTERNE
 !
     grpno='&&MEFGMN.00000002       '
-    call jelira(grpno, 'LONMAX', nbnoex, k1bid)
+    call jelira(grpno, 'LONMAX', nbnoex)
     if (nbnoex .lt. 4) call u2mess('F', 'ALGELINE_51')
     call jeveuo(grpno, 'L', inunoe)
     nunoe = zi(inunoe)
@@ -202,7 +201,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !
 ! --- 3.3. RANG DE LA COMPOSANTE <EP> DANS LA GRANDEUR
     kjexn = jexnom('&CATA.GD.NOMCMP','CACOQU')
-    call jelira(kjexn, 'LONMAX', nbcmp, k1bid)
+    call jelira(kjexn, 'LONMAX', nbcmp)
     call jeveuo(kjexn, 'L', inomcp)
     nomcmp = 'EP'
     irang = indik8( zk8(inomcp) , nomcmp , 1 , nbcmp )

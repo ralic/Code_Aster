@@ -40,7 +40,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     real(kind=8) :: valer(5)
     complex(kind=8) :: c16b
     character(len=4) :: lieu(2)
-    character(len=8) :: k8b, valek(3), typar0(npar0), typar1(npar1), typtab
+    character(len=8) ::  valek(3), typar0(npar0), typar1(npar1), typtab
     character(len=16) :: nopar0(npar0), nopar1(npar1), nopar2(npar2)
     character(len=24) :: k24a, k24s
     integer :: iarg
@@ -64,7 +64,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     call getvtx(' ', 'TYPE_RESU', 1, iarg, 1,&
                 typtab, n1)
 !
-    call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr, k8b)
+    call jelira('&&RC3200.SITU_NUME_GROUP', 'LONMAX', nbgr)
     call jeveuo('&&RC3200.SITU_NUME_GROUP', 'L', jnumgr)
 !
     call jeveuo('&&RC3200.SITU_NUMERO', 'L', jnsitu)
@@ -122,7 +122,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
     do 200 ig = 1, nbgr
         numgr = abs(zi(jnumgr+ig-1))
         valei(1) = numgr
-        call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONMAX', nbsigr, k8b)
+        call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONMAX', nbsigr)
         call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
 !
         do 202 im = 1, 2

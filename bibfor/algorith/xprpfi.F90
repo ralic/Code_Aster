@@ -76,7 +76,6 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
 !     GENERAL PURPOSE
     integer :: ifm, niv, i
-    character(len=1) :: k1bid
 !
 !     UPWIND INTEGRATION
     integer :: jtri, jpoi, elcut, ntri, itri, ia, ib, ic, nptint, pa, pb, pc
@@ -139,7 +138,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
     call jeveuo(trifis, 'L', jtri)
 !
 !     RETRIEVE THE NUMBER OF ELEMENTS CUT BY THE LSN=0
-    call jelira(trifis, 'LONMAX', elcut, k1bid)
+    call jelira(trifis, 'LONMAX', elcut)
     elcut = elcut/7
 !
 !     ******************************************************************
@@ -439,7 +438,7 @@ subroutine xprpfi(p, lsnp, lcmin, poifis, trifis,&
 !
 !             RETREIVE THE END POINTS OF EACH PART OF THE CRACK FRONT
             call jeveuo(fiss//'.FONDMULT', 'L', jfmult)
-            call jelira(fiss//'.FONDMULT', 'LONMAX', numpon, k1bid)
+            call jelira(fiss//'.FONDMULT', 'LONMAX', numpon)
 !
 !             LOOP ON THE END POINTS OF THE FRONT TO CHECK THE "KINK
 !             CONDITION"

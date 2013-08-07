@@ -64,9 +64,9 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 !
     character(len=24) :: xheav, xctip, xhect, xmafon, xfonfi, xbasfo, xfonmu
     character(len=24) :: xtailr
-    character(len=24) :: xfonfg, xfonpv
+    character(len=24) :: xfonfg
 !
-    integer :: jma1, jma2, jma3, jma4, jfo, jfomu, jba, jta, jfv, jfonv
+    integer :: jma1, jma2, jma3, jma4, jfo, jfomu, jba, jta
     integer :: i, k
 !
 ! ----------------------------------------------------------------------

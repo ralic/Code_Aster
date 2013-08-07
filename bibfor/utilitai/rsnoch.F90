@@ -54,7 +54,6 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     character(len=19) :: nomd2, chnote
     character(len=24) :: valk(2)
     character(len=8) :: repk
-    character(len=1) :: k1bid
     integer :: normax, iretou, nordr, irang, jordr, iret, ibid, jtach
 ! ----------------------------------------------------------------------
 !
@@ -66,12 +65,12 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !
 !     -- CALCUL ET VALIDATION DU NUMERO DE RANGEMENT :IRANG
 !     -----------------------------------------------------
-    call jelira(nomd2//'.ORDR', 'LONMAX', normax, k1bid)
+    call jelira(nomd2//'.ORDR', 'LONMAX', normax)
     call rsutrg(nomd2, iordr, iretou, nordr)
     if (iretou .eq. 0) then
         irang = nordr + 1
         if (irang .gt. normax) call u2mess('F', 'UTILITAI4_42')
-        call jeecra(nomd2//'.ORDR', 'LONUTI', irang, ' ')
+        call jeecra(nomd2//'.ORDR', 'LONUTI', irang)
         call jeveuo(nomd2//'.ORDR', 'E', jordr)
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
 !          AU DERNIER IORDR DEJA STOCKE (IORDR CROISSANTS) :

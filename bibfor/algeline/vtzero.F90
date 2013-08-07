@@ -36,7 +36,6 @@ subroutine vtzero(chamna)
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: nbsd, ilimpi, ifetc, idd, neq, ival, i, neq1, iret
-    character(len=8) :: k8bid
     character(len=24) :: kval, chamn
     logical :: iddok, lfeti
 !
@@ -52,7 +51,7 @@ subroutine vtzero(chamna)
         lfeti=.false.
     endif
     if (lfeti) then
-        call jelira(chamn(1:19)//'.FETC', 'LONMAX', nbsd, k8bid)
+        call jelira(chamn(1:19)//'.FETC', 'LONMAX', nbsd)
         call jeveuo('&FETI.LISTE.SD.MPI', 'L', ilimpi)
         call jeveuo(chamn(1:19)//'.FETC', 'L', ifetc)
     else
@@ -74,7 +73,7 @@ subroutine vtzero(chamna)
                 kval=zk24(ifetc+idd-1)(1:19)//'.VALE'
             endif
             call jeveuo(kval, 'E', ival)
-            call jelira(kval, 'LONMAX', neq, k8bid)
+            call jelira(kval, 'LONMAX', neq)
             neq1=neq-1
             do 10 i = 0, neq1
                 zr(ival+i)=0.d0

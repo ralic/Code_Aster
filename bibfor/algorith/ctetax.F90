@@ -68,7 +68,6 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !-----------------------------------------------------------------------
     parameter   (nbcpmx=300)
     parameter   (nta=10)
-    character(len=1) :: k1bid
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, typddl(6), nomnoe, tyd, intf, kbid
     real(kind=8) :: xa(10), xta(10), tet0(10, 10), teta(nbtet, nbtet)
@@ -106,7 +105,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !-------------------REQUETTE DESCRIPTEUR DES DEFORMEES STATIQUES--------
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldesc)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
 !**************************************************************
     nbnot = nbnot/(2+nbec)
 !      NBNOT=NBNOT/3
@@ -117,7 +116,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
     call jeveuo(jexnum(intf//'.IDC_LINO', numa), 'L', llnoa)
 !
-    call jelira(jexnum(intf//'.IDC_LINO', numa), 'LONMAX', nbnoa, k1bid)
+    call jelira(jexnum(intf//'.IDC_LINO', numa), 'LONMAX', nbnoa)
 !
 !-------------RECUPERATION NOMBRE DE DDL INTERFACE AXE------------------
 !

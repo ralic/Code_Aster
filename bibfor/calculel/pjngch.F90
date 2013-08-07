@@ -48,7 +48,7 @@ subroutine pjngch(cham1z, cham2z, corres, base)
     integer :: ibid, nx, jxxk1, jngi1, jngi2, ieq, nbocc, nbeq, ioc, jvale
     integer :: nb1, nb2, idec1, idec2, jlno1, jlno2
     character(len=1) :: type
-    character(len=8) :: kbid, noma1, noma2, cnref, noma3, k8
+    character(len=8) ::  noma1, noma2, cnref, noma3, k8
     character(len=16) :: corr16, method
     character(len=19) :: nuage1, nuage2, cham1, cham2
     character(len=24) :: lno1, lno2
@@ -90,8 +90,8 @@ subroutine pjngch(cham1z, cham2z, corres, base)
 !
 !     -- CREATION DE CHAM2 VIERGE :
     call copisd('CHAMP_GD', 'G', cnref, cham2)
-    call jelira(cham2//'.VALE', 'LONMAX', nbeq, kbid)
-    call jelira(cham2//'.VALE', 'TYPE', ibid, type)
+    call jelira(cham2//'.VALE', 'LONMAX', nbeq)
+    call jelira(cham2//'.VALE', 'TYPE', cval=type)
     ASSERT(type.eq.'R')
     call jeveuo(cham2//'.VALE', 'E', jvale)
     if (type .eq. 'R') then

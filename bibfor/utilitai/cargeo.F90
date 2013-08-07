@@ -75,7 +75,7 @@ subroutine cargeo(mailla)
     coordo = ma//'.COORDO    .VALE'
     typmai = ma//'.TYPMAIL        '
 !
-    call jelira(nodime, 'CLAS', ibid, bas1)
+    call jelira(nodime, 'CLAS', cval=bas1)
     ASSERT(bas1.eq.'G' .or. bas1.eq.'V')
 !
     call jeveuo(nodime, 'L', jdime)

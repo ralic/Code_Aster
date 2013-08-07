@@ -50,7 +50,7 @@ subroutine ssdmrm(mag)
 !
 ! ----------------------------------------------------------------------
 ! INSPI SSDMRM  SSDMRG
-    character(len=8) :: kbid, crit, nomacr, mal, nosma
+    character(len=8) ::  crit, nomacr, mal, nosma
     real(kind=8) :: prec, di, dj
     character(len=16) :: option
     character(len=24) :: valk(2), nognoi, nognoj
@@ -120,9 +120,9 @@ subroutine ssdmrm(mag)
     call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibi,&
                 mal, ier)
     call jeveuo(nomacr//'.LINO', 'L', ialini)
-    call jelira(nomacr//'.LINO', 'LONUTI', nbexti, kbid)
+    call jelira(nomacr//'.LINO', 'LONUTI', nbexti)
     call jeveuo(jexnom(mal//'.GROUPENO', nognoi), 'L', iagno)
-    call jelira(jexnom(mal//'.GROUPENO', nognoi), 'LONUTI', nbngno, kbid)
+    call jelira(jexnom(mal//'.GROUPENO', nognoi), 'LONUTI', nbngno)
     call utlisi('INTER', zi(iagno), nbngno, zi(ialini), nbexti,&
                 ibid, 0, n3)
     nbnori=-n3
@@ -143,9 +143,9 @@ subroutine ssdmrm(mag)
     call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibi,&
                 mal, ier)
     call jeveuo(nomacr//'.LINO', 'L', ialinj)
-    call jelira(nomacr//'.LINO', 'LONUTI', nbextj, kbid)
+    call jelira(nomacr//'.LINO', 'LONUTI', nbextj)
     call jeveuo(jexnom(mal//'.GROUPENO', nognoj), 'L', iagno)
-    call jelira(jexnom(mal//'.GROUPENO', nognoj), 'LONUTI', nbngno, kbid)
+    call jelira(jexnom(mal//'.GROUPENO', nognoj), 'LONUTI', nbngno)
     call utlisi('INTER', zi(iagno), nbngno, zi(ialinj), nbextj,&
                 ibid, 0, n3)
     nbnorj=-n3

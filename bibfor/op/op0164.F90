@@ -260,7 +260,7 @@ subroutine op0164()
         call jecrec(resu//'.VALM', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
                     2)
     endif
-    call jeecra(resu//'.VALM', 'LONMAX', nterm, k8b)
+    call jeecra(resu//'.VALM', 'LONMAX', nterm)
 !
     call wkvect(resu//'.LIME', 'G V K24', 1, ialime)
     zk24(ialime) = '                        '

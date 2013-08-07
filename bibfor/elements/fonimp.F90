@@ -38,7 +38,6 @@ subroutine fonimp(resu)
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) :: k8b
     character(len=24) :: fonoeu, fondfi
     integer :: jnoe, jfon
     integer :: lnoff, i
@@ -48,7 +47,7 @@ subroutine fonimp(resu)
 !
 !
     fonoeu = resu//'.FOND.NOEU'
-    call jelira(fonoeu, 'LONMAX', lnoff, k8b)
+    call jelira(fonoeu, 'LONMAX', lnoff)
     call jeveuo(fonoeu, 'L', jnoe)
 !
     fondfi = resu//'.FONDFISS'

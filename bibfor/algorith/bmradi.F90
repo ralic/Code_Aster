@@ -65,7 +65,6 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
     integer :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
     parameter (nbcpmx=300)
-    character(len=1) :: k1bid
     character(len=8) :: basmod, nomint, intf
     character(len=8) :: k8bid
     character(len=19) :: numddl
@@ -139,14 +138,14 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
 !
     noeint=intf//'.IDC_LINO'
 !
-    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe, k1bid)
+    call jelira(jexnum(noeint, numint), 'LONMAX', nbnoe)
     call jeveuo(jexnum(noeint, numint), 'L', llnoe)
 !
 !
 !-------------RECUPERATION DU DESCRIPTEUR DES DEFORMEES-----------------
 !
     call jeveuo(intf//'.IDC_DEFO', 'L', lldes)
-    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot, k1bid)
+    call jelira(intf//'.IDC_DEFO', 'LONMAX', nbnot)
     nbnot = nbnot/(2+nbec)
 !
 !----------------RECUPERATION ADRESSE DEEQ------------------------------

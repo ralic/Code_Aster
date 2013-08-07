@@ -63,7 +63,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
 !     ------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    character(len=8) :: nomm, kbid
+    character(len=8) :: nomm
     character(len=10) :: format
     character(len=24) :: nomgr
     character(len=50) :: fmt
@@ -155,7 +155,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
 !     -------------------------------
     do 752 ign = 1, nbgrn
         call jenuno(jexnum(noma//'.GROUPENO', ign), nomgr)
-        call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn, kbid)
+        call jelira(jexnum(noma//'.GROUPENO', ign), 'LONUTI', nbn)
         write(ifc,*) 'GROUP_NO'
         write(ifc,*) nomgr
         if (nbn .gt. 0) then
@@ -171,7 +171,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma,&
 !     --------------------------------
     do 754 igm = 1, nbgrm
         call jenuno(jexnum(noma//'.GROUPEMA', igm), nomgr)
-        call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm, kbid)
+        call jelira(jexnum(noma//'.GROUPEMA', igm), 'LONUTI', nbm)
         write(ifc,*) 'GROUP_MA'
         write(ifc,*) nomgr
         if (nbm .gt. 0) then

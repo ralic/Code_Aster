@@ -71,10 +71,10 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
 !
 !        --- ON ECLATE LES GROUP_MA ---
         do 20 i = 1, nbgr
-            call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb, k8b)
+            call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
             call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
             do 22 in = 0, nb-1
-                call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm, k8b)
+                call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
                 do 24 nn = 1, nm
                     inoe = zi(ldnm+nn-1)
@@ -85,10 +85,10 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
         noemaf = max(noemaf,noema2)
         call wkvect('&&ACEVMR.PARNO2', 'V V I', noema2, idno2)
         do 41 i = 1, nbgr
-            call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb, k8b)
+            call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
             call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
             do 43 in = 0, nb-1
-                call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm, k8b)
+                call jelira(jexnum(manoma, zi(ldgm+in)), 'LONMAX', nm)
                 call jeveuo(jexnum(manoma, zi(ldgm+in)), 'L', ldnm)
                 do 45 nn = 1, nm
                     inoe = zi(ldnm+nn-1)

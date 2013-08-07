@@ -107,7 +107,7 @@ subroutine renuno(nu, renum)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: nm, nl, nbnom, nbntt
-    character(len=8) :: ma, mo, kbid
+    character(len=8) :: ma, mo
 !
 !
 !     -- CALCUL DE .EXI1 :
@@ -168,7 +168,7 @@ subroutine renuno(nu, renum)
 !
     do 20,i = 1,nbnom
     if (zi(iaoldn-1+i) .eq. 0) then
-        call jeecra(nu//'.OLDN', 'LONUTI', i-1, kbid)
+        call jeecra(nu//'.OLDN', 'LONUTI', i-1)
         goto 30
     endif
     20 end do

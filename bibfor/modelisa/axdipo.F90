@@ -72,7 +72,6 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     real(kind=8) :: sinb, sinb2, sing, sing2, tol
     real(kind=8) :: vdl(3), vdg(3)
 !-----------------------------------------------------------------------
-    character(len=1) :: k1bid
     character(len=8) :: k8bid, nomcmp(3)
     character(len=16) :: nomele(nbtel)
     character(len=19) :: carte, ligrmo
@@ -92,7 +91,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     tol = 1.0d+08 * r8prem()
 !
 !     RECUPERATION DU NOMBRE DE MAILLES
-    call jelira(noma//'.NOMMAI', 'NOMUTI', nbmail, k1bid)
+    call jelira(noma//'.NOMMAI', 'NOMUTI', nbmail)
 !
 !     RECUPERATION DE LA MODELISATION DES MAILLES
 !     VERIFICATION : PAS DE MAILLES TARDIVES
@@ -103,7 +102,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     modnem = ligrmo//'.NEMA'
     nbmtrd = 0
     call jeexin(modnem, ixnw)
-    if (ixnw .ne. 0) call jelira(modnem, 'NMAXOC', nbmtrd, k1bid)
+    if (ixnw .ne. 0) call jelira(modnem, 'NMAXOC', nbmtrd)
     if (nbmtrd .ne. 0) call u2mess('F', 'MODELISA2_23')
 !
 !     RECUPERATION DE LA CARTE D'ORIENTATION DES ELEMENTS
@@ -121,7 +120,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !    DETERMINATION DES RANGS DES COMPOSANTES DE LA GRANDEUR <CAORIE>
 !        <ALPHA>  <BETA>  <GAMMA>
     kexnom = jexnom('&CATA.GD.NOMCMP','CAORIE')
-    call jelira(kexnom, 'LONMAX', ncmpor, k1bid)
+    call jelira(kexnom, 'LONMAX', ncmpor)
     call jeveuo(kexnom, 'L', icaori)
     ialpha = 0
     ibeta = 0
