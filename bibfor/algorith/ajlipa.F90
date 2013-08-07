@@ -1,10 +1,11 @@
 subroutine ajlipa(modelz, base)
-    implicit   none
+    implicit none
+#include "aster_types.h"
 #include "jeveux.h"
-!
 #include "asterc/getvid.h"
 #include "asterc/getvis.h"
 #include "asterc/getvtx.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -17,13 +18,13 @@ subroutine ajlipa(modelz, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/sdpart.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: modelz
     character(len=1) :: base
 ! ======================================================================
@@ -67,6 +68,7 @@ subroutine ajlipa(modelz, base)
 !
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
+    mpi_int :: mrank, msize
     data k24b /' '/
 !
 !-----------------------------------------------------------------------
@@ -107,7 +109,9 @@ subroutine ajlipa(modelz, base)
 !     ----------------------------------------------------
     nbproc = 1
     rang = 0
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     if (nbproc .le. 1) goto 99
 !
 !     -- SI LE MODELE N'A PAS DE MAILLES, IL N'Y A RIEN A FAIRE :

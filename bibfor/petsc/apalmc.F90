@@ -18,18 +18,18 @@ subroutine apalmc(kptsc)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
 !----------------------------------------------------------------
@@ -63,6 +63,7 @@ subroutine apalmc(kptsc)
 !     Variables PETSc
     PetscInt :: bs, low, high, neq, ierr
     Vec :: tmp
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
@@ -84,7 +85,9 @@ subroutine apalmc(kptsc)
     bs = abs(tbloc)
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
 !     low DONNE LA PREMIERE LIGNE STOCKEE LOCALEMENT
 !     high DONNE LA PREMIERE LIGNE STOCKEE PAR LE PROCESSUS DE (RANG+1)

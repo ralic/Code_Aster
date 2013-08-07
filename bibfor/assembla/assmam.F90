@@ -6,10 +6,11 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !
     implicit none
 !
+#include "aster_types.h"
 #include "jeveux.h"
-!
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/assma1.h"
 #include "asterfort/assma2.h"
@@ -39,7 +40,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
@@ -53,6 +53,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerobj.h"
+!
     character(len=*) :: base, matas, tlimat(*), nu
     integer :: nbmat, itysca
     real(kind=8) :: licoef(*)
@@ -136,6 +137,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
     integer :: zzngel, zznelg, zzliel
+    mpi_int :: mrank, msize
 !
     zzngel(ili)=zi(jadli+3*(ili-1))
     zznelg(ili,igrel)=zi(zi(jadli+3*(ili-1)+2)+igrel)-&
@@ -345,7 +347,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !        POUR CHAQUE PROC
     if ((partit.ne.' ') .and. (.not.lfeti)) then
         ldist=.true.
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         call jeveuo(partit//'.PRTI', 'L', jprti)
         if (zi(jprti) .ne. nbproc) then
             vali(1)=zi(jprti)

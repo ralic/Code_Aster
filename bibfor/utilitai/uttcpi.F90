@@ -17,15 +17,16 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/stati1.h"
+!
     character(len=*) :: nommes, typimp
     integer :: ifm
 ! ----------------------------------------------------------------------
@@ -58,6 +59,7 @@ subroutine uttcpi(nommes, ifm, typimp)
     parameter (indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)
+    mpi_int :: mrank, msize
     common /mestp1/ mtpniv,mtpsta
     common /mestp2/ snolon
     common /mestp3/ valmes,valmei
@@ -170,7 +172,9 @@ subroutine uttcpi(nommes, ifm, typimp)
 !        SI MTPSTA = 1
 !     ------------------------------------------------------
     if (mtpsta .eq. 1) then
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         ASSERT(nbproc.le.npromx)
         if (nbproc .gt. 1) then
             do 11,k=1,nbproc

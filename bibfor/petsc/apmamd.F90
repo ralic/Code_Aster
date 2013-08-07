@@ -18,8 +18,10 @@ subroutine apmamd(kptsc)
 !
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
+#include "aster_types.h"
 #include "asterf.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -28,7 +30,6 @@ subroutine apmamd(kptsc)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
 !----------------------------------------------------------------
@@ -68,6 +69,7 @@ subroutine apmamd(kptsc)
 !     Variables PETSc
     PetscInt :: low, high, neql, neqg, ierr
     Mat :: a
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -85,7 +87,9 @@ subroutine apmamd(kptsc)
     call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
     call jeveuo(nonu//'.NUML.NLGP', 'L', jnugll)
     call jeveuo(nonu//'.NUML.PDDL', 'L', jprddl)
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     nloc = zi(jnequl)
     nglo = zi(jnequ)
     neql = nloc

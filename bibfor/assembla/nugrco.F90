@@ -1,13 +1,14 @@
 subroutine nugrco(nu, base)
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm2.h"
 #include "asterfort/mpippv.h"
 #include "asterfort/wkvect.h"
@@ -58,11 +59,14 @@ subroutine nugrco(nu, base)
 !
     character(len=4) :: chnbjo
     character(len=24) :: nojoin, nogrco
+    mpi_int :: mrank, msize
     parameter    (nogrco='&&NUGRCO.GRAPH_COMM')
 !
     call jemarq()
 !
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
     call jeveuo(nu//'.NUML.NUGL', 'L', jnugl)
     call jeveuo(nu//'.NUML.NULG', 'L', jnulg)

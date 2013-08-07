@@ -18,18 +18,18 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
     logical :: lmd
@@ -57,6 +57,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     PetscInt :: low, high, bs, i, neq, ierr
     PetscScalar :: xx(1)
     PetscOffset :: xidx
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
@@ -72,7 +73,9 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     bs = abs(tbloc)
 !
     if (lmd) then
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
         call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
         call jeveuo(nonu//'.NUML.NULG', 'L', jnugl)

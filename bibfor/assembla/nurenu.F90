@@ -1,6 +1,8 @@
 subroutine nurenu(nu, base)
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -8,7 +10,6 @@ subroutine nurenu(nu, base)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm2.h"
 #include "asterfort/mpippv.h"
 #include "asterfort/wkvect.h"
@@ -57,11 +58,14 @@ subroutine nurenu(nu, base)
 !
     character(len=4) :: chnbjo
     character(len=24) :: kbid, nonbdd, nojoin
+    mpi_int :: mrank, msize
     parameter    (nonbdd='&&NUPODD.NBDDL')
 !
     call jemarq()
 !
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
     call jeveuo(nu//'.NUML.PDDL', 'L', jpddl)
     call jeveuo(nu//'.NUML.NEQU', 'L', jnequl)

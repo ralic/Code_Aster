@@ -18,11 +18,12 @@ subroutine apalmd(kptsc)
 !
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
@@ -30,7 +31,6 @@ subroutine apalmd(kptsc)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpippv.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
@@ -73,12 +73,15 @@ subroutine apalmd(kptsc)
 !     Variables PETSc
     PetscInt :: bs, low, high, neql, neqg, ierr
     Vec :: tmp
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
 !
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)

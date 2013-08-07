@@ -16,8 +16,9 @@ subroutine adalig(ligrz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -32,8 +33,8 @@ subroutine adalig(ligrz)
 #include "asterfort/jevtbl.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/wkvect.h"
+!
     character(len=24) :: ligr
     character(len=*) :: ligrz
 !
@@ -63,10 +64,13 @@ subroutine adalig(ligrz)
     integer :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
     integer :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
     integer :: ktype, jgteut, k, nbelgv, lont, ibid
+    mpi_int :: mrank, msize
 !
     call jemarq()
 !
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     ligr = ligrz
     liel=ligr(1:19)//'.LIEL'
     call jeexin(liel, iret)

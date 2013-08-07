@@ -28,18 +28,22 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! person_in_charge: thomas.de-soza at edf.fr
 ! CORPS DU PROGRAMME
     implicit none
+#include "aster_types.h"
+#include "asterfort/asmpi_info.h"
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterfort/mpicm0.h"
     integer :: nbsd, sdloc (nbsd), nbsdp0
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: nbproc, rang, i
     integer :: nbsdpp, sdrest, npdeb, nsddeb, nsdfin
     integer :: iproc, iproc1, decal
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
 ! --- EN SEQUENTIEL ON GAGNE DU TEMPS
     if (nbproc .eq. 1) then

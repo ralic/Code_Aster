@@ -1,12 +1,14 @@
 subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
                   epsmat, mixpre, kmd)
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getvid.h"
 #include "asterc/getvis.h"
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -15,7 +17,6 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm2.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/wkvect.h"
@@ -66,6 +67,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     integer :: eximo1, eximo2, eximo3, eximc, eximod, jprti, jprtk
     integer :: iarg, jpart, iexi
     logical :: ldgrel
+    mpi_int :: mrank, msize
 !------------------------------------------------------------------
     call jemarq()
 !
@@ -74,7 +76,9 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
     rang=0
     nbproc=1
     if (niv .ge. 2) then
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
     endif
 !
 ! --- POUR MONITORING: RECHERCHE DU NBRE DE MAILLES PAR PROC

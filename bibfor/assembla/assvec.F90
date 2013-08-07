@@ -18,9 +18,10 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+#include "aster_types.h"
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/corddl.h"
@@ -47,7 +48,6 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/mpicm2.h"
 #include "asterfort/nbec.h"
@@ -64,6 +64,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: vec, tlivec(*), vecpro, base, nu
     character(len=4) :: motcle
     integer :: nbvec, type
@@ -128,6 +129,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     real(kind=8) :: temps(6), rbid
     complex(kind=8) :: cbid
     integer :: vali(4)
+    mpi_int :: mrank, msize
 !
 ! --- DEBUT ------------------------------------------------------------
     call jemarq()
@@ -277,7 +279,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !        POUR CHAQUE PROC
     if ((partit.ne.' ') .and. (.not.lfeti)) then
         ldist=.true.
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         call jeveuo(partit//'.PRTI', 'L', jprti)
         if (zi(jprti) .ne. nbproc) then
             vali(1)=zi(jprti)

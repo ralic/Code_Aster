@@ -18,13 +18,14 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
+#include "aster_types.h"
 #include "asterf.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/mrconl.h"
     integer :: kptsc
@@ -54,6 +55,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
     PetscOffset :: xidx
     VecScatter :: ctx
     Vec :: xgth
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -63,7 +65,9 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
     if (lmd) then
 !
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
 !
         call jeveuo(nonu//'.NUML.NLGP', 'L', jnuglp)
         call jeveuo(nonu//'.NUML.NULG', 'L', jnugl)

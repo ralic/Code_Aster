@@ -18,10 +18,11 @@ subroutine appcrs(kptsc, lmd)
 !
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
-#include "asterf.h"
 #include "aster_types.h"
+#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/crsmsp.h"
 #include "asterfort/jedema.h"
@@ -30,7 +31,6 @@ subroutine appcrs(kptsc, lmd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/u2mess.h"
     integer :: kptsc
     logical :: lmd
@@ -65,6 +65,7 @@ subroutine appcrs(kptsc, lmd)
     Mat :: a
     KSP :: ksp, kspp
     PC :: pc, pcp
+    mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
@@ -88,7 +89,9 @@ subroutine appcrs(kptsc, lmd)
     fillp = fillin
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
 !     -- CAS PARTICULIER (LDLT_INC/SOR)
 !     -- CES PC NE SONT PAS PARALLELISES

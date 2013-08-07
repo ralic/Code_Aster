@@ -1,6 +1,8 @@
 subroutine nupodd(nu, base, rang, nbproc)
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -10,7 +12,6 @@ subroutine nupodd(nu, base, rang, nbproc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/nugrco.h"
 #include "asterfort/nurenu.h"
 #include "asterfort/wkvect.h"
@@ -65,6 +66,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 !----------------------------------------------------------------------
     integer :: zzprno, nunoel, l, igrel, j
     integer :: zzngel, zznelg, zzliel, zznsup, zznema
+    mpi_int :: mrank, msize
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -144,7 +146,9 @@ subroutine nupodd(nu, base, rang, nbproc)
                 partit, ier)
     ldist=.false.
     ldgrel=.false.
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     if (partit .ne. ' ') then
         ASSERT(nbproc.gt.1)
         ldist=.true.

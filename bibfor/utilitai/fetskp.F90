@@ -33,8 +33,8 @@ subroutine fetskp()
 !
 !
 ! DECLARATION VARIABLES LOCALES
+#include "aster_types.h"
 #include "jeveux.h"
-!
 #include "asterc/aplext.h"
 #include "asterc/fetsco.h"
 #include "asterc/getfac.h"
@@ -42,6 +42,7 @@ subroutine fetskp()
 #include "asterc/getvis.h"
 #include "asterc/getvtx.h"
 #include "asterc/gtoptk.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/creaco.h"
 #include "asterfort/creagm.h"
 #include "asterfort/dismoi.h"
@@ -55,7 +56,6 @@ subroutine fetskp()
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm2.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
@@ -65,6 +65,7 @@ subroutine fetskp()
 #include "asterfort/uttcpu.h"
 #include "asterfort/verico.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbmama, idco, temp, sdb, nbmato, mail, renum2, nbma, nomsdm, masd
     integer :: nbmasd, idmasd, id, isd, renum1, err, co, renum, nbre, nbmabo
     integer :: mail2, velo, edlo, poids, numsdm, nmap, i, j, ima, nbbord, lrep
@@ -78,6 +79,7 @@ subroutine fetskp()
     character(len=256) :: jnom(4)
     character(len=128) :: rep
     integer :: iarg
+    mpi_int :: mrank, msize
 !
 ! CORPS DU PROGRAMME
     call jemarq()
@@ -86,7 +88,9 @@ subroutine fetskp()
 ! ------- ON RECUPERE LE NBRE DE PROCS ET LE RANG
     nbproc=1
     rang=0
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
 !
 ! ********************************************************************
 !                       CREATION DU GRAPHE

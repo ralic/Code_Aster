@@ -17,8 +17,9 @@ subroutine nugllo(nu, base, solveu)
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -32,10 +33,10 @@ subroutine nugllo(nu, base, solveu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/nupodd.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/wkvect.h"
+!
     character(len=14) :: nu
     character(len=2) :: base
     character(len=19) :: solveu
@@ -67,6 +68,7 @@ subroutine nugllo(nu, base, solveu)
     integer :: zzprno, izzpr2, zzprn2, nunoel, l
     integer :: zzngel, zznelg, zzliel, zznsup, zznema, jprtk
     logical :: ldgrel, ldist
+    mpi_int :: mrank, msize
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 !     REPERTORIEES DANS LE CHAMP LILI DE NUME_DDL ET A LEURS ADRESSES
@@ -167,7 +169,9 @@ subroutine nugllo(nu, base, solveu)
                 partit, ier)
     ldist=.false.
     ldgrel=.false.
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     if (partit .ne. ' ') then
         ASSERT(nbproc.gt.1)
         ldist=.true.

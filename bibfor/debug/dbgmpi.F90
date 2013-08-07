@@ -37,10 +37,11 @@ subroutine dbgmpi(ico)
 !
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
+#include "aster_types.h"
 #include "asterf.h"
 #include "asterc/loisem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/mpicm0.h"
     integer :: ico
 #ifdef _USE_MPI
 #include "mpif.h"
@@ -49,6 +50,7 @@ subroutine dbgmpi(ico)
     integer :: rang, nbproc, icoin, icout
     integer(kind=4) :: iermpi, lr8, lint, lc8
     logical :: first
+    mpi_int :: mrank, msize
     save         first,lr8,lint,lc8
     data         first /.true./
 !
@@ -68,7 +70,9 @@ subroutine dbgmpi(ico)
     endif
 !
 !     --  FILTRE POUR EVITER DU TRAVAIL SUPPLEMENTAIRE SI NBPROC=1
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     if (nbproc .eq. 1) goto 999
 !
     icoin=ico

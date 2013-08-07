@@ -20,9 +20,10 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! ======================================================================
 !
 !
+#include "aster_types.h"
 #include "jeveux.h"
-!
 #include "asterc/r8maem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/corddl.h"
 #include "asterfort/crelil.h"
@@ -44,7 +45,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
@@ -53,6 +53,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: vec, tlivec(*), vecpro, base
     character(len=*) :: nu
     character(len=4) :: motcle
@@ -116,6 +117,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
     integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe
     integer :: nugd, numa
+    mpi_int :: mrank, msize
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -179,7 +181,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
         ldist=.true.
         call jeveuo(partit//'.PRTK', 'L', jprtk)
         ldgrel=zk24(jprtk-1+1).eq.'GROUP_ELEM'
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         if (.not.ldgrel) then
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
         endif

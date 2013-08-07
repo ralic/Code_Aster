@@ -17,11 +17,12 @@ subroutine jjldyn(imode, lmin, ltot)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "aster_types.h"
 #include "jeveux_private.h"
 #include "asterc/hpdeallc.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/jermxd.h"
 #include "asterfort/jxecro.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/random.h"
 #include "asterfort/u2mesr.h"
 #include "asterfort/utgtme.h"
@@ -97,6 +98,7 @@ subroutine jjldyn(imode, lmin, ltot)
     integer :: iaddi(2), lgs, nbioav(2)
     integer :: rang, nbproc, iret, iret2
     real(kind=8) :: graine, valp(5), vx(2), v0
+    mpi_int :: mrank, msize
 !
     data nomk /'COUR_JV ','RLQ_MEM ','VMSIZE  ','MEM_TOTA','LIMIT_JV'/
 !
@@ -116,7 +118,9 @@ subroutine jjldyn(imode, lmin, ltot)
     endif
     do ic = ncla2, ncla1, - 1
         if (nreuti(ic) .eq. 0) goto 200
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         if (rang .ne. 0) then
             graine = (rang+1)*datei*1.5d0
             do i = 2, nreuti(ic)

@@ -23,13 +23,14 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 ! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
+#include "aster_types.h"
 #include "jeveux.h"
-!
 #include "asterc/getres.h"
 #include "asterc/getvli.h"
 #include "asterc/indik8.h"
 #include "asterfort/alchlo.h"
 #include "asterfort/alrslt.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/caldbg.h"
 #include "asterfort/caundf.h"
@@ -55,7 +56,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/jexnum.h"
 #include "asterfort/kndoub.h"
 #include "asterfort/montee.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/mpicm1.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
@@ -72,6 +72,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/vrcdec.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zechlo.h"
+!
     integer :: nin, nou
     character(len=*) :: base, optio
     character(len=*) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrlz, mpic
@@ -144,6 +145,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     character(len=10) :: k10b
     character(len=16) :: k16bid, cmde
     character(len=20) :: k20b1, k20b2, k20b3, k20b4
+    mpi_int :: mrank, msize
 !
 !
 !     -- FONCTIONS FORMULES :
@@ -305,7 +307,9 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
     call jeexin(partit//'.PRTK', iret)
     if ((iret.ne.0) .and. (.not.lfeti)) then
         ldist=.true.
-        call mpicm0(rang, nbproc)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
         call jeveuo(partit//'.PRTI', 'L', jprti)
         if (zi(jprti) .ne. nbproc) then
             vali(1)=zi(jprti)

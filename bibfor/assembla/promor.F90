@@ -1,7 +1,8 @@
 subroutine promor(nuz, base)
     implicit none
+#include "aster_types.h"
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infbav.h"
@@ -19,13 +20,13 @@ subroutine promor(nuz, base)
 #include "asterfort/juveca.h"
 #include "asterfort/moinip.h"
 #include "asterfort/moinsr.h"
-#include "asterfort/mpicm0.h"
 #include "asterfort/nbec.h"
 #include "asterfort/teattr.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/voiuti.h"
 #include "asterfort/wkvect.h"
+!
     character(len=*) :: nuz
     character(len=1) :: base
 !     ------------------------------------------------------------------
@@ -76,6 +77,7 @@ subroutine promor(nuz, base)
     parameter(nvoima=100,nscoma=4)
     integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
     integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2), nbproc
+    mpi_int :: mrank, msize
 !
 !-----------------------------------------------------------------------
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -170,7 +172,9 @@ subroutine promor(nuz, base)
                 nomlig, ier)
     call dismoi('F', 'PARTITION', nomlig, 'LIGREL', ibid,&
                 partit, ier)
-    call mpicm0(rang, nbproc)
+    call asmpi_info(rank=mrank, size=msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
     ldist=.false.
     ldgrel=.false.
     if (partit .ne. ' ') then
