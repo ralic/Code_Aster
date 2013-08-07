@@ -15,42 +15,21 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# zzzz346b.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+# zzzz346a.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NOM='ZZZZ346B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ZZZZ346A',NIV_PUB_WEB='INTERNET'))
 
 PRE_GIBI();
 
-import math;
-
 MAILLAGE=LIRE_MAILLAGE();
 
-#data:
-#position du point de bifurcation (0,cte)
-cte=0.55
-#pente de la 2eme branche de la level-set: y-a*x-cte
-a=2.
+cte=0.6
 
-#definition des bornes des secteurs angulaires
-B1=math.atan2(2.+cte,-1.)
-B2=B1-math.pi
-
-#definition de la level-set
-#la distance a la level-set depend de la position angulaire theta
 def LN(x,y):
-  global B1,B2
-  theta=math.atan2(y-cte,x)
-  if theta>=-math.pi and theta<B2: 
+  if y-cte+x<0 :
     return -x
-  if theta>=B2 and theta<=0:
-    d1=-x
-    d2=(y-a*x-cte)/math.sqrt(1+a**2)    
-    if abs(d1)>abs(d2):  return d2
-    else : return d1
-  if theta>0 and theta<B1: 
-    return (y-a*x-cte)/math.sqrt(1+a**2) 
-  if theta>=B1 and theta<=math.pi:
-    return (x**2+(y-cte)**2)**0.5  
+  else :
+    return y-2*x-cte
 
 LSN=FORMULE(NOM_PARA=('X','Y'),VALE='LN(X,Y)');
 
@@ -116,7 +95,7 @@ TEST_RESU(RESU=(_F(CRITERE='ABSOLU',
                    #POINT=1,
                    NOM_CMP='DX',
                    PRECISION=1.E-12,
-                   VALE_CALC=-1.8920867294262E-15,
+                   VALE_CALC=-1.89E-15,
                    VALE_REFE=0.0,
                    GROUP_NO='NO_M',
                    RESULTAT=UTOT1,

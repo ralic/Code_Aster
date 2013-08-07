@@ -46,7 +46,6 @@ MODE_LOCAL__
 
     E4NEUTR = NEUT_R    ELEM__         (X[4])
     E6NEUTR = NEUT_R    ELEM__         (X[6])
-    E8NEUTR = NEUT_R    ELEM__         (X[8])
     E10NEUTR = NEUT_R   ELEM__         (X[10])
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
 

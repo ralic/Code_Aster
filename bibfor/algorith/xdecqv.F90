@@ -16,7 +16,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 #include "asterfort/xxmmvd.h"
     integer :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 6)
     integer :: nsemax
-    real(kind=8) :: lsn(*), ainter(*), heav(*)
+    real(kind=8) :: lsn(*), ainter(*), heav(*),lsnbc
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,6 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: x(3), xlsn, lsnk
-    real(kind=8) :: r8prem
     integer :: in, inh, i, j, ar(12, 3), nbar, ise, ndim, ibid
     integer :: a1, a2, a, b, c, iadzi, iazk24, ndime, jdim
     integer :: k, e, e2, nnop
@@ -84,7 +83,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
         do 20 j = 1, 6
             cnse(in,j)=0
 20      continue
-10  end do
+10  continue
 !
     typma=elrese(ndime)
 !
@@ -259,19 +258,19 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 cnse(1,1)=102
                 cnse(1,2)=103
                 cnse(1,3)=cnset(nnose*(it-1)+a)
-                cnse(1,4)=207
-                cnse(1,5)=205
-                cnse(1,6)=203
+                cnse(1,4)=205
+                cnse(1,5)=204
+                cnse(1,6)=202
                 cnse(2,1)=102
                 cnse(2,2)=103
                 cnse(2,3)=cnset(nnose*(it-1)+c)
-                cnse(2,4)=207
-                cnse(2,5)=204
+                cnse(2,4)=205
+                cnse(2,5)=203
                 cnse(2,6)=206
                 cnse(3,1)=102
                 cnse(3,2)=cnset(nnose*(it-1)+b)
                 cnse(3,3)=cnset(nnose*(it-1)+c)
-                cnse(3,4)=202
+                cnse(3,4)=201
                 cnse(3,5)=cnset(nnose*(it-1)+e)
                 cnse(3,6)=206
 !
@@ -341,7 +340,13 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 ! --------------------------------------------------------------------
 !
     ASSERT(nse.le.nsemax)
-    do 300 ise = 1, nse
+    if(ninter.eq.3.and.npts.eq.1.and.ndime.eq.2) then 
+      lsnbc=lsn(cnset(nnose*(it-1)+b))+lsn(cnset(nnose*(it-1)+c))
+      heav(1)=-sign(1.d0,lsnbc)
+      heav(2)=sign(1.d0,lsnbc)
+      heav(3)=sign(1.d0,lsnbc)
+    else 
+      do 300 ise = 1, nse
         heav(ise)=1.d0
         do 310 in = 1, ndime+1
             inh=cnse(ise,in)
@@ -349,7 +354,8 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
                 if (lsn(inh) .lt. 0.d0) heav(ise)=-1.d0
             endif
 310      continue
-300  end do
+300   continue
+    endif
 !
 !     REMARQUE IMPORTANTE :
 !     SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE

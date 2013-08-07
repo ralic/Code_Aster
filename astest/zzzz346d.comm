@@ -15,9 +15,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# zzzz346b.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+# zzzz346a.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NOM='ZZZZ346B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ZZZZ346D',NIV_PUB_WEB='INTERNET'))
 
 PRE_GIBI();
 
@@ -27,7 +27,7 @@ MAILLAGE=LIRE_MAILLAGE();
 
 #data:
 #position du point de bifurcation (0,cte)
-cte=0.55
+cte=0.6
 #pente de la 2eme branche de la level-set: y-a*x-cte
 a=2.
 
@@ -116,7 +116,7 @@ TEST_RESU(RESU=(_F(CRITERE='ABSOLU',
                    #POINT=1,
                    NOM_CMP='DX',
                    PRECISION=1.E-12,
-                   VALE_CALC=-1.8920867294262E-15,
+                   VALE_CALC=-1.89E-15,
                    VALE_REFE=0.0,
                    GROUP_NO='NO_M',
                    RESULTAT=UTOT1,
