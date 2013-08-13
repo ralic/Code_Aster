@@ -17,6 +17,7 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
+!
 ! aslint: disable=W1306
     implicit none
 !

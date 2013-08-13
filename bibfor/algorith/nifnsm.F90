@@ -92,7 +92,6 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
-!
     axi = typmod(1).eq.'AXIS'
     nddl = nno1*ndim + nno2 + nno3
     ndu = ndim
@@ -108,9 +107,11 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
             deplm(ia+ndim*(na-1)) = ddl(vu(ia,na))
         end do
     end do
+!
     do ra = 1, nno2
         gonfm(ra) = ddl(vg(ra))
     end do
+!
     do sa = 1, nno3
         presm(sa) = ddl(vp(sa))
     end do
@@ -153,7 +154,6 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         do kl = 1, 6
             taudv(kl) = tau(kl) - tauhy*kr(kl)
         end do
-!
 !
 ! - CALCUL DES FONCTIONS A,B,... QUI LIENT G ET J
         call nirela(1, jm, gm, gm, am, ap, bm, boa, aa, bb, daa, dbb, dboa, d2boa)

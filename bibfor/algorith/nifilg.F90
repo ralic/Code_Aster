@@ -25,6 +25,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
+#include "asterfort/nirela.h"
 #include "asterfort/dsde2d.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
@@ -118,6 +119,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     real(kind=8) :: ftr(3, 3), t1, t2
     real(kind=8) :: idev(6, 6), kr(6)
     real(kind=8) :: tampon(10), id(3, 3), rbid
+    real(kind=8) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa
 !
     parameter    (grand = .true.)
     data         vij  / 1, 4, 5,&
@@ -204,12 +206,15 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         pd = ddot(nno3,vff3(1,g),1,presd,1)
         pp = pm+pd
 !
+! - CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
+        call nirela(2, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa)
+!
 ! - CALCUL DES DEFORMATIONS ENRICHIES
-        corm = (exp(gm)/jm)**(1.d0/3.d0)
+        corm = (am/jm)**(1.d0/3.d0)
         call dcopy(9, fm, 1, ftm, 1)
         call dscal(9, corm, ftm, 1)
 !
-        corp = (exp(gp)/jp)**(1.d0/3.d0)
+        corp = (ap/jp)**(1.d0/3.d0)
         call dcopy(9, fp, 1, ftp, 1)
         call dscal(9, corp, ftp, 1)
 !
@@ -254,7 +259,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                     kk = vu(ia,na)
                     t1 = 0.d0
                     do ja = 1, ndu
-                        t2 = taudv(vij(ia,ja)) + pp*id(ia,ja)
+                        t2 = taudv(vij(ia,ja)) + pp*bb*id(ia,ja)
                         t1 = t1 + t2*dff1(na,lij(ia,ja))
                     end do
                     vect(kk) = vect(kk) + w*t1
@@ -262,7 +267,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
             end do
 !
 ! - VECTEUR FINT:G
-            t2 = tauhy - pp
+            t2 = tauhy*aa - pp*dboa
             do ra = 1, nno2
                 kk = vg(ra)
                 t1 = vff2(ra,g)*t2
@@ -270,7 +275,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
             end do
 !
 ! - VECTEUR FINT:P
-            t2 = log(jp) - gp
+            t2 = bp - boa
             do sa = 1, nno3
                 kk = vp(sa)
                 t1 = vff3(sa,g)*t2
@@ -304,7 +309,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                 devdi(ia) = devd(ia,1)+devd(ia,2)+devd(ia,3)
                 iddev(ia) = ddev(1,ia)+ddev(2,ia)+ddev(3,ia)
                 taudv(ia) = taup(ia) - tauhy*kr(ia)
-                tauldc(ia) = taup(ia) + (pp-tauhy)*kr(ia)
+                tauldc(ia) = taup(ia) + (pp*bb-tauhy)*kr(ia)
                 do ja = 1, 3
                     iddid = iddid+kr(ia)*d(ia,ja)
                 end do
@@ -356,7 +361,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                             t2 = (devdi(viaja)+2.d0*taudv(viaja))
                             t1 = t1 + dff1(na,lij(ia,ja))*t2
                         end do
-                        t1 = t1/3.d0
+                        t1 = t1*aa/3.d0
 !
                         do rb = 1, nno2
                             if (vg(rb) .lt. vuiana) then
@@ -369,7 +374,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                         do sb = 1, nno3
                             if (vp(sb) .lt. vuiana) then
                                 kk = os + vp(sb)
-                                t1 = dff1(na,lij(ia,ia))*vff3(sb,g)
+                                t1 = dff1(na,lij(ia,ia))*bb*vff3(sb,g)
                                 matr(kk) = matr(kk) + w*t1
                             endif
                         end do
@@ -392,13 +397,13 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                                     t2 = (iddev(vibjb)+2.d0*taudv( vibjb))
                                     t1 = t1 + t2*dff1(nb,lij(ib,jb))
                                 end do
-                                matr(kk) = matr(kk) + w*t1*vff2(ra,g)/ 3.d0
+                                matr(kk) = matr(kk) + w*t1*aa*vff2(ra,g)/ 3.d0
                             endif
                         end do
                     end do
 !
 ! - TERME K:GG      KGG(NNO2,NNO2)
-                    t2 = iddid/9.d0+2.d0*tauhy/3.d0
+                    t2 = (iddid/9.d0+2.d0*tauhy/3.d0)*aa**2 - pp*d2boa + tauhy*daa
                     do rb = 1, nno2
                         if (vg(rb) .le. vgra) then
                             kk = os + vg(rb)
@@ -411,7 +416,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                     do sb = 1, nno3
                         if (vp(sb) .lt. vgra) then
                             kk = os + vp(sb)
-                            t1 = - vff2(ra,g)*vff3(sb,g)
+                            t1 = - vff2(ra,g)*dboa*vff3(sb,g)
                             matr(kk) = matr(kk) + w*t1
                         endif
                     end do
@@ -427,7 +432,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                         do ib = 1, ndu
                             if (vu(ib,nb) .lt. vpsa) then
                                 kk = os + vu(ib,nb)
-                                t1 = vff3(sa,g)*dff1(nb,lij(ib,ib))
+                                t1 = vff3(sa,g)*bb*dff1(nb,lij(ib,ib))
                                 matr(kk) = matr(kk) + w*t1
                             endif
                         end do
@@ -437,7 +442,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                     do rb = 1, nno2
                         if (vg(rb) .lt. vpsa) then
                             kk = os + vg(rb)
-                            t1 = - vff3(sa,g)*vff2(rb,g)
+                            t1 = - vff3(sa,g)*dboa*vff2(rb,g)
                             matr(kk) = matr(kk) + w*t1
                         endif
                     end do
@@ -488,7 +493,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                             t2 = (devdi(viaja)+2.d0*taudv(viaja))
                             t1 = t1 + dff1(na,lij(ia,ja))*t2
                         end do
-                        t1 = t1/3.d0
+                        t1 = t1*aa/3.d0
 !
                         do rb = 1, nno2
                             kk = os + vg(rb)
@@ -498,7 +503,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! - TERME K:UP      KUP(NDIM,NNO1,NNO3)
                         do sb = 1, nno3
                             kk = os + vp(sb)
-                            t1 = dff1(na,lij(ia,ia))*vff3(sb,g)
+                            t1 = dff1(na,lij(ia,ia))*bb*vff3(sb,g)
                             matr(kk) = matr(kk) + w*t1
                         end do
                     end do
@@ -518,12 +523,12 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                                 t2 = (iddev(vibjb)+2.d0*taudv(vibjb))
                                 t1 = t1 + t2*dff1(nb,lij(ib,jb))
                             end do
-                            matr(kk) = matr(kk) + w*t1*vff2(ra,g)/3.d0
+                            matr(kk) = matr(kk) + w*t1*aa*vff2(ra,g)/3.d0
                         end do
                     end do
 !
 ! - TERME K:GG      KGG(NNO2,NNO2)
-                    t2 = iddid/9.d0+2.d0*tauhy/3.d0
+                    t2 = (iddid/9.d0+2.d0*tauhy/3.d0)*aa**2 - pp*d2boa + tauhy*daa
                     do rb = 1, nno2
                         kk = os + vg(rb)
                         t1 = vff2(ra,g)*t2*vff2(rb,g)
@@ -533,7 +538,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! - TERME K:GP      KGP(NNO2,NNO3)
                     do sb = 1, nno3
                         kk = os + vp(sb)
-                        t1 = - vff2(ra,g)*vff3(sb,g)
+                        t1 = - vff2(ra,g)*dboa*vff3(sb,g)
                         matr(kk) = matr(kk) + w*t1
                     end do
                 end do
@@ -546,7 +551,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                     do nb = 1, nno1
                         do ib = 1, ndu
                             kk = os + vu(ib,nb)
-                            t1 = vff3(sa,g)*dff1(nb,lij(ib,ib))
+                            t1 = vff3(sa,g)*bb*dff1(nb,lij(ib,ib))
                             matr(kk) = matr(kk) + w*t1
                         end do
                     end do
@@ -554,7 +559,7 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 ! - TERME K:PG      KPG(NNO3,NNO2)
                     do rb = 1, nno2
                         kk = os + vg(rb)
-                        t1 = - vff3(sa,g)*vff2(rb,g)
+                        t1 = - vff3(sa,g)*dboa*vff2(rb,g)
                         matr(kk) = matr(kk) + w*t1
                     end do
 !

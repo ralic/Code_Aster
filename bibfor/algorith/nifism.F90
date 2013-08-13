@@ -166,9 +166,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
         c=0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ',&
-                    0.d0, 1, 'C_GONF', c, k2ret,&
-                    0)
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', 0.d0, 1, 'C_GONF', c, k2ret, 0)
         nonloc = k2ret.eq.0 .and. c.ne.0.d0
 !
 ! - CALCUL DES DEFORMATIONS
