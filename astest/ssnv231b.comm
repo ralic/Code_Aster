@@ -1,0 +1,272 @@
+# person_in_charge: sebastien.fayolle at edf.fr
+# TITRE SPHERE CREUSE SOUS PRESSION EN GRANDE DEFORMATION (TETRA10)
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+import math
+
+DEBUT(PAR_LOT='OUI',CODE=_F(NOM='SSNV231B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+
+#Nombre de calculs : INCO_GD, INCO_LOG, INCO_LUP
+nb_calcul=3
+MO=[None]*nb_calcul
+RESU=[None]*nb_calcul
+model=['3D_INCO_GD', '3D_INCO_LOG', '3D_INCO_LUP']
+defor=['SIMO_MIEHE', 'GDEF_LOG', 'GDEF_LOG']
+
+SIH_N_RMIN=[-1.0637344952E+09, -1.0497581618E+09, -1.0497581618E+09]
+SIH_A_RMIN=[-1.0549116239E+09, -1.0552447755E+09, -1.0552447755E+09]
+P_N_RMIN=[1.2568745771E-01, 1.2003085536E-01, 1.2003085536E-01]
+P_A_RMIN=[1.0271480980E-01, 1.0283960537E-01, 1.0283960537E-01]
+
+SIH_N_RMAX=[2.8179756538E+08, 2.8180603295E+08, 2.8180603295E+08]
+SIH_A_RMAX=[2.8282438206E+08, 2.8282456466E+08, 2.8282456466E+08]
+P_N_RMAX=[5.9087127105E-05, 5.9792639087E-05, 5.9792639093E-05]
+P_A_RMAX=[6.3610302176E-05, 6.3609549443E-05, 6.3609549443E-05]
+
+#Propriétés matériaux
+E=2.E11
+NU=0.3
+SIGY=1.5E8
+
+#Calculs des modules
+K=E/(3*(1-2*NU))
+MU=E/(2*(1+NU))
+
+#Géométrie de la sphére
+RA_INI=0.2
+RB_INI=1.0
+
+#Calculs des solutions de références en RB_FIN
+RB_FIN=exp(SIGY/3.*(1./(2.*MU)+2./(3.*K)))*RB_INI
+DB = RB_FIN-RB_INI
+
+#Formules utilisées pour le calcul de la solution analytique
+SOMME=FORMULE(NOM_PARA=('SIXX','SIYY','SIZZ'),VALE='SIXX+SIYY+SIZZ');
+RAYON=FORMULE(NOM_PARA=('COOR_X','COOR_Y','COOR_Z'),VALE='(COOR_X*COOR_X+COOR_Y*COOR_Y+COOR_Z*COOR_Z)**(0.5)');
+SOL_ANA=FORMULE(NOM_PARA=('RAYON'),VALE='(3.*(K*(1-(1-4.*SIGY/K*log(RAYON/RB_FIN))**0.5))+2.*SIGY)/exp(2.*SIGY/(3.*K)+1-(1-4.*SIGY/K*(log(RAYON/RB_FIN)))**0.5)');
+INTEG=FORMULE(NOM_PARA=('RAYON'),VALE='(3.*RAYON**2.)/(exp(2.*SIGY/(3.*K)+1-(1.-4.*SIGY/K*(log(RAYON/RB_FIN)))**0.5))');
+
+MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA = _F(NOM='VOLUME',TOUT='OUI',TYPE_MAILLE='3D'),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
+                          NU=NU,),
+                  ECRO_LINE=_F(D_SIGM_EPSI=0.,
+                               SY=SIGY,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+LREEL=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A=1.,
+                                   NOMBRE=10.,),);
+
+LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LREEL),);
+
+for i in range(0,len(model)):
+
+    MO[i]=AFFE_MODELE(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION=model[i],),);
+
+    CHAR=AFFE_CHAR_MECA(MODELE=MO[i],
+                        PRES_REP=_F(GROUP_MA='S_INT',
+                                    PRES=1,),);
+
+    CL=AFFE_CHAR_CINE(MODELE=MO[i],
+                      MECA_IMPO=(_F(GROUP_MA='SYM_Z',
+                                    DZ=0,),
+                                 _F(GROUP_MA='SYM_Y',
+                                    DY=0,),
+                                 _F(GROUP_MA='SYM_X',
+                                    DX=0,),),);
+
+    RESU[i]=STAT_NON_LINE(MODELE=MO[i],
+                          CHAM_MATER=CHMAT,
+                          EXCIT=(_F(CHARGE=CHAR,
+                                    TYPE_CHARGE='FIXE_PILO'),
+                                  _F(CHARGE=CL,),),
+                          PILOTAGE=_F(TYPE='DDL_IMPO',
+                                      GROUP_NO='CTRL',
+                                      NOM_CMP='DX',
+                                      COEF_MULT=1./DB,),
+                          COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                       DEFORMATION=defor[i],),
+                          NEWTON=_F(MATRICE='TANGENTE',
+                                    REAC_ITER=1,),
+                          INCREMENT=_F(LIST_INST=LINST,),
+                          CONVERGENCE=_F(ITER_GLOB_MAXI=20,
+                                         EPSI_REFE=SIGY/E,
+                                         SIGM_REFE=SIGY,
+                                         RESI_REFE_RELA=1.E-4,),);
+
+    DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESU[i],
+                    NOM_CHAM='DEPL',
+                    INST=1,);
+
+    MA=MODI_MAILLAGE(reuse=MA,
+                     MAILLAGE=MA,
+                     DEFORME=_F(OPTION='TRAN',
+                                DEPL=DEPL),);
+
+    RESU[i]=CALC_CHAMP(reuse=RESU[i],
+                       RESULTAT=RESU[i],
+                       CRITERES=('SIEQ_ELGA','SIEQ_NOEU'),
+                       CONTRAINTE=('SIEF_NOEU'),);
+
+#Calcul de la solution analytique
+    SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                   OPERATION='EXTR',
+                   RESULTAT=RESU[i],
+                   NOM_CHAM='SIEF_ELGA',
+                   INST=1,);
+
+    P_N=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                   OPERATION='EXTR',
+                   RESULTAT=RESU[i],
+                   NOM_CHAM='VARI_ELGA',
+                   INST=1,);
+
+    TRESU=CREA_TABLE(RESU=_F(CHAM_GD=SIG,
+                             TOUT_CMP='OUI',
+                             TOUT='OUI',),);
+
+    TRESUP=CREA_TABLE(RESU=_F(CHAM_GD=P_N,
+                              NOM_CMP='V1',
+                              TOUT='OUI',),);
+
+    TRESU=CALC_TABLE(reuse=TRESU,
+                     TABLE=TRESU,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=RAYON,
+                                NOM_PARA='RAYON',),
+                             _F(OPERATION='OPER',
+                                FORMULE=SOMME,
+                                NOM_PARA='SIH_N',),
+                             _F(OPERATION='OPER',
+                                FORMULE=SOL_ANA,
+                                NOM_PARA='SIH_A',),
+                             _F(OPERATION='COMB',
+                                TABLE=TRESUP,
+                                NOM_PARA=('MAILLE','POINT',),),
+                             _F(OPERATION='RENOMME',
+                                NOM_PARA=('V1','P_N'),),
+                             _F(OPERATION='TRI',
+                                NOM_PARA='RAYON',
+                                ORDRE='CROISSANT',),),);
+
+#Pour calculer la solution analytique pour la déformation plastique cumulée
+#il faut se mettre en PAR_LOT='NON' et décommenter les lignes qui suivent
+    #tresu=TRESU.EXTR_TABLE()
+    #tcol=tresu['RAYON'].values()
+    #tval=tcol['RAYON']
+    #tval.append(RB_FIN)
+
+    #FAINTEG=CALC_FONC_INTERP(FONCTION=INTEG,
+                             #NOM_PARA='DX',
+                             #VALE_PARA=tval,
+                             #PROL_DROITE='EXCLU',
+                             #PROL_GAUCHE='EXCLU',);
+
+    #FINTEG=CALC_FONCTION(INTEGRE=_F(FONCTION=FAINTEG,),);
+
+    #rayon, finteg = FINTEG.Valeurs()
+
+    #P_A=[None]*(len(rayon)-1)
+    #for j in range(0,len(rayon)-1):
+      #P_A[j]=((RB_INI**3-(finteg[-1]-finteg[j]))**(1./3.))
+      #Tau_rr=K*(1.-(1.-4.*SIGY/K*log(rayon[j]/(1.+DB)))**0.5)
+      #ln_j=Tau_rr/K+2.*SIGY/(3.*K)
+      #P_A[j]=2.*log(rayon[j]/P_A[j])-SIGY/3./MU-2./3.*ln_j
+
+    #tval.pop(-1)
+    #TRESUPA=CREA_TABLE(LISTE=(_F(LISTE_R=tval,
+                                 #PARA='RAYON',),
+                              #_F(LISTE_R=P_A,
+                                 #PARA='P_A',),),);
+
+    #TRESU=CALC_TABLE(reuse=TRESU,
+                     #TABLE=TRESU,
+                     #ACTION=_F(OPERATION='COMB',
+                               #TABLE=TRESUPA,
+                               #NOM_PARA='RAYON',),);
+
+    #IMPR_TABLE(TABLE=TRESU,
+               #FORMAT_R='E12.10',
+               #NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),);
+
+    #DETRUIRE(CONCEPT=_F(NOM=(TRESUPA,FINTEG,FAINTEG),),
+             #INFO=1,);
+#Fin des instructions pour calculer la solution analytique
+
+    TEST_TABLE(TABLE=TRESU,
+               NOM_PARA='SIH_N',
+               FILTRE=_F(NOM_PARA='RAYON',
+                         CRIT_COMP='MINI',),
+               REFERENCE='ANALYTIQUE',
+               VALE_REFE=SIH_A_RMIN[i],
+               PRECISION=0.009,
+               VALE_CALC=SIH_N_RMIN[i],);
+
+    TEST_TABLE(TABLE=TRESU,
+               NOM_PARA='SIH_N',
+               FILTRE=_F(NOM_PARA='RAYON',
+                         CRIT_COMP='MAXI',),
+               REFERENCE='ANALYTIQUE',
+               VALE_REFE=SIH_A_RMAX[i],
+               PRECISION=0.004,
+               VALE_CALC=SIH_N_RMAX[i],);
+
+    TEST_TABLE(TABLE=TRESU,
+               NOM_PARA='P_N',
+               FILTRE=_F(NOM_PARA='RAYON',
+                         CRIT_COMP='MINI',),
+               REFERENCE='ANALYTIQUE',
+               VALE_REFE=P_A_RMIN[i],
+               PRECISION=0.23,
+               VALE_CALC=P_N_RMIN[i],);
+
+    TEST_TABLE(TABLE=TRESU,
+               NOM_PARA='P_N',
+               FILTRE=_F(NOM_PARA='RAYON',
+                         CRIT_COMP='MAXI',),
+               REFERENCE='ANALYTIQUE',
+               VALE_REFE=P_A_RMAX[i],
+               PRECISION=0.075,
+               VALE_CALC=P_N_RMAX[i],);
+
+    DEPLM=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                     OPERATION='COMB',
+                     COMB=_F(CHAM_GD=DEPL,
+                             COEF_R=-1.0,),);
+
+    MA=MODI_MAILLAGE(reuse=MA,
+                     MAILLAGE=MA,
+                     DEFORME=_F(OPTION='TRAN',
+                                DEPL=DEPLM),);
+
+    DETRUIRE(CONCEPT=_F(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),),
+             INFO=1,);
+
+FIN();
