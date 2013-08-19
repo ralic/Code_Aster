@@ -1,6 +1,4 @@
-subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
-                  nno3, nno4, vu, vg, vp,&
-                  vpi)
+subroutine niinit(nomte, typmod, ndim, nno1, nno2, nno3, nno4, vu, vg, vp, vpi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,37 +117,37 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
     if (ndim .eq. 3) then
         if (iefm .eq. 1) then
 !       3D-P2.P1.P1
-            do 10 n = 1, nno2
+            do n = 1, nno2
                 vu(1,n) = 1 + (n-1)*5
                 vu(2,n) = 2 + (n-1)*5
                 vu(3,n) = 3 + (n-1)*5
-                vp(n) = 4 + (n-1)*5
-                vg(n) = 5 + (n-1)*5
-10          continue
+                vp(  n) = 4 + (n-1)*5
+                vg(  n) = 5 + (n-1)*5
+            end do
             os = 5*nno2
-            do 20 n = 1, nno1-nno2
+            do n = 1, nno1-nno2
                 vu(1,n+nno2) = 1 + (n-1)*3 + os
                 vu(2,n+nno2) = 2 + (n-1)*3 + os
                 vu(3,n+nno2) = 3 + (n-1)*3 + os
-20          continue
-            goto 1000
+            end do
+            goto 100
         else if (iefm .eq. 2) then
 !       3D-P2.P1.P2
-            do 30 n = 1, nno2
+            do n = 1, nno2
                 vu(1,n) = 1 + (n-1)*5
                 vu(2,n) = 2 + (n-1)*5
                 vu(3,n) = 3 + (n-1)*5
-                vp(n) = 4 + (n-1)*5
-                vg(n) = 5 + (n-1)*5
-30          continue
+                vp(  n) = 4 + (n-1)*5
+                vg(  n) = 5 + (n-1)*5
+            end do
             os = 5*nno2
-            do 40 n = 1, nno1-nno2
+            do n = 1, nno1-nno2
                 vu(1,n+nno2) = 1 + (n-1)*4 + os
                 vu(2,n+nno2) = 2 + (n-1)*4 + os
                 vu(3,n+nno2) = 3 + (n-1)*4 + os
-                vp( n+nno2) = 4 + (n-1)*4 + os
-40          continue
-            goto 1000
+                vp(  n+nno2) = 4 + (n-1)*4 + os
+            end do
+            goto 100
 !       ELSEIF (IEFM .EQ. 4) THEN
 !       3D-P2.P1.CR
 !         DO 50 N = 1,NNO2
@@ -168,7 +166,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 !         DO 90 N = 1,NNO3
 !           VP(N) = OS + N
 !  90     CONTINUE
-!         GOTO 1000
+!         GOTO 100
 !        ELSEIF (IEFM .EQ. 5 .OR. IEFM .EQ. 6) THEN
 !       3D-P2.P2.P2 ET 3D-P1.P1.P1
 !          DO 100 N = 1,NNO1
@@ -178,77 +176,77 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 !            VP(N)   = 4 + (N-1)*5
 !            VG(N)   = 5 + (N-1)*5
 ! 100      CONTINUE
-!          GOTO 1000
+!          GOTO 100
         else if (iefm .eq. 7) then
 !       3D-P1+.P1
-            do 190 n = 1, nno1
+            do n = 1, nno1
                 vu(1,n) = 1 + (n-1)*4
                 vu(2,n) = 2 + (n-1)*4
                 vu(3,n) = 3 + (n-1)*4
-                vp(n) = 4 + (n-1)*4
-190          continue
-            goto 1000
+                vp(  n) = 4 + (n-1)*4
+            end do
+            goto 100
         else if (iefm .eq. 8) then
 !       3D-P2.P1
-            do 200 n = 1, nno3
+            do n = 1, nno3
                 vu(1,n) = 1 + (n-1)*4
                 vu(2,n) = 2 + (n-1)*4
                 vu(3,n) = 3 + (n-1)*4
-                vp(n) = 4 + (n-1)*4
-200          continue
+                vp(  n) = 4 + (n-1)*4
+            end do
             os = 4*nno3
-            do 210 n = 1, nno1-nno3
+            do n = 1, nno1-nno3
                 vu(1,n+nno3) = 1 + (n-1)*3 + os
                 vu(2,n+nno3) = 2 + (n-1)*3 + os
                 vu(3,n+nno3) = 3 + (n-1)*3 + os
-210          continue
-            goto 1000
+            end do
+            goto 100
         else if (iefm .eq. 9) then
 !       3D-P1 OSGS.P1
-            do 250 n = 1, nno1
-                vu(1,n) = 1 + (n-1)*7
-                vu(2,n) = 2 + (n-1)*7
-                vu(3,n) = 3 + (n-1)*7
-                vp(n) = 4 + (n-1)*7
+            do n = 1, nno1
+                vu( 1,n) = 1 + (n-1)*7
+                vu( 2,n) = 2 + (n-1)*7
+                vu( 3,n) = 3 + (n-1)*7
+                vp(   n) = 4 + (n-1)*7
                 vpi(1,n) = 5 + (n-1)*7
                 vpi(2,n) = 6 + (n-1)*7
                 vpi(3,n) = 7 + (n-1)*7
-250          continue
-            goto 1000
+            end do
+            goto 100
         endif
     else if (ndim .eq. 2) then
         if (iefm .eq. 1) then
 !       2D-P2.P1.P1
-            do 110 n = 1, nno2
+            do n = 1, nno2
                 vu(1,n) = 1 + (n-1)*4
                 vu(2,n) = 2 + (n-1)*4
                 vu(3,n) = 0
                 vp(n) = 3 + (n-1)*4
                 vg(n) = 4 + (n-1)*4
-110          continue
+            end do
             os = 4*nno2
-            do 120 n = 1, nno1-nno2
+            do n = 1, nno1-nno2
                 vu(1,n+nno2) = 1 + (n-1)*2 + os
                 vu(2,n+nno2) = 2 + (n-1)*2 + os
-120          continue
-            goto 1000
+            end do
+            goto 100
         else if (iefm .eq. 2) then
 !       2D-P2.P1.P2
-            do 130 n = 1, nno2
+            do n = 1, nno2
                 vu(1,n) = 1 + (n-1)*4
                 vu(2,n) = 2 + (n-1)*4
                 vu(3,n) = 0
                 vp(n) = 3 + (n-1)*4
                 vg(n) = 4 + (n-1)*4
-130          continue
+            end do
             os = 4*nno2
-            do 140 n = 1, nno1-nno2
+            do n = 1, nno1-nno2
                 vu(1,n+nno2) = 1 + (n-1)*3 + os
                 vu(2,n+nno2) = 2 + (n-1)*3 + os
                 vu(3,n) = 0
                 vp(n+nno2) = 3 + (n-1)*3 + os
-140          continue
-            goto 1000
+            end do
+            goto 100
 !       ELSEIF (IEFM .EQ. 3) THEN
 !       2D-P2.P0.P0
 !         DO 150 N = 1,NNO1
@@ -258,7 +256,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 !         OS = 2*NNO1
 !         VP(1) = OS+1
 !         VG(1) = OS+2
-!         GOTO 1000
+!         GOTO 100
 !       ELSEIF (IEFM .EQ. 4) THEN
 !       2D-P2.P1.CR
 !         DO 160 N = 1,NNO2
@@ -272,7 +270,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 !           VU(2,N+NNO2) = 2 + (N-1)*3 + OS
 !           VP(N)        = 3 + (N-1)*3 + OS
 !  170    CONTINUE
-!         GOTO 1000
+!         GOTO 100
 !        ELSEIF (IEFM .EQ. 5 .OR. IEFM .EQ. 6) THEN
 !       2D-P2.P2.P2 ET 2D-P1.P1.P1
 !          DO 180 N = 1,NNO1
@@ -282,34 +280,34 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
 !            VP(N)   = 3 + (N-1)*4
 !            VG(N)   = 4 + (N-1)*4
 ! 180      CONTINUE
-!          GOTO 1000
+!          GOTO 100
         else if (iefm .eq. 7) then
 !       2D-P1+.P1
-            do 220 n = 1, nno1
+            do n = 1, nno1
                 vu(1,n) = 1 + (n-1)*3
                 vu(2,n) = 2 + (n-1)*3
                 vu(3,n) = 0
                 vp(n) = 3 + (n-1)*3
-220          continue
-            goto 1000
+            end do
+            goto 100
         else if (iefm .eq. 8) then
 !       2D-P2.P1
-            do 230 n = 1, nno3
+            do n = 1, nno3
                 vu(1,n) = 1 + (n-1)*3
                 vu(2,n) = 2 + (n-1)*3
                 vu(3,n) = 0
                 vp(n) = 3 + (n-1)*3
-230          continue
+            end do
             os = 3*nno3
-            do 240 n = 1, nno1-nno3
+            do n = 1, nno1-nno3
                 vu(1,n+nno3) = 1 + (n-1)*2 + os
                 vu(2,n+nno3) = 2 + (n-1)*2 + os
                 vu(3,n+nno3) = 0
-240          continue
-            goto 1000
+            end do
+            goto 100
         else if (iefm .eq. 9) then
 !       2D-P1 OSGS.P1
-            do 260 n = 1, nno1
+            do n = 1, nno1
                 vu(1,n) = 1 + (n-1)*5
                 vu(2,n) = 2 + (n-1)*5
                 vu(3,n) = 0
@@ -317,18 +315,18 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
                 vpi(1,n) = 4 + (n-1)*5
                 vpi(2,n) = 5 + (n-1)*5
                 vpi(3,n) = 0
-260          continue
-            goto 1000
+            end do
+            goto 100
         endif
     endif
 !
     call u2mesk('F', 'DVP_4', 1, nomte)
-1000  continue
+100 continue
 !
     if (typmod(1) .eq. 'AXIS') then
-        do 60 n = 1, nno1
+        do n = 1, nno1
             vu(3,n) = vu(1,n)
-60      continue
+        end do
     endif
 !
 end subroutine

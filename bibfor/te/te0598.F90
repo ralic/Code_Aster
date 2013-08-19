@@ -53,10 +53,8 @@ subroutine te0598(option, nomte)
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.2)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
@@ -70,9 +68,7 @@ subroutine te0598(option, nomte)
     endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, 0,&
-                nno2, 0, vu, vg, vp,&
-                vpi)
+    call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
@@ -88,9 +84,8 @@ subroutine te0598(option, nomte)
             call u2mesk('F', 'MODELISA10_17', 1, valk)
         endif
 !
-        call nurfpd(ndim, nno1, nno2, npg, iw,&
-                    zr(ivf1), zr(ivf2), idf1, vu, vp,&
-                    typmod, zr(igeom), sigref, epsref, zr(ivectu))
+        call nurfpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1,&
+                    vu, vp, typmod, zr(igeom), sigref, epsref, zr(ivectu))
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 !
         if (.not.lteatt(' ','INCO','C2LG')) then
@@ -98,9 +93,8 @@ subroutine te0598(option, nomte)
             call u2mesk('F', 'MODELISA10_17', 1, valk)
         endif
 !
-        call nurfgd(ndim, nno1, nno2, npg, iw,&
-                    zr(ivf1), zr(ivf2), idf1, vu, vp,&
-                    typmod, zr(igeom), sigref, epsref, zr(ivectu))
+        call nurfgd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1,&
+                    vu, vp, typmod, zr(igeom), sigref, epsref, zr(ivectu))
     else
         call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
     endif

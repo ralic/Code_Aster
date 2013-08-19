@@ -48,15 +48,12 @@ subroutine te0591(option, nomte)
     character(len=24) :: valk
 ! ----------------------------------------------------------------------
 !
-! - FONCTIONS DE FORME
+! - FONCTIONS DE FORMES ET POINTS DE GAUSS
     call elref2(nomte, 10, lielrf, ntrou)
     ASSERT(ntrou.ge.3)
-    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos,&
-                npg, iw, ivf3, idf3, jgn)
-    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos,&
-                npg, iw, ivf2, idf2, jgn)
-    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos,&
-                npg, iw, ivf1, idf1, jgn)
+    call elref4(lielrf(3), 'RIGI', ndim, nno3, nnos, npg, iw, ivf3, idf3, jgn)
+    call elref4(lielrf(2), 'RIGI', ndim, nno2, nnos, npg, iw, ivf2, idf2, jgn)
+    call elref4(lielrf(1), 'RIGI', ndim, nno1, nnos, npg, iw, ivf1, idf1, jgn)
 !
 ! - TYPE DE MODELISATION
     if (ndim .eq. 2 .and. lteatt(' ','AXIS','OUI')) then
@@ -70,9 +67,7 @@ subroutine te0591(option, nomte)
     endif
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, nno2,&
-                nno3, 0, vu, vg, vp,&
-                vpi)
+    call niinit(nomte, typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCONTMR', 'L', icontm)
@@ -88,10 +83,8 @@ subroutine te0591(option, nomte)
             call u2mesk('F', 'MODELISA10_17', 1, valk)
         endif
 !
-        call nifnpd(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    vu, vg, vp, typmod, zr(igeom),&
-                    zr(icontm), zr(iddlm), zr(ivectu))
+        call nifnpd(ndim, nno1, nno2, nno3, npg, iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                    vu, vg, vp, typmod, zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 !
         if (.not.lteatt(' ','INCO','C3LG')) then
@@ -100,10 +93,8 @@ subroutine te0591(option, nomte)
         endif
 !
         call jevech('PMATERC', 'L', imate)
-        call nifnlg(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    idf2, vu, vg, vp, typmod,&
-                    zi(imate), zr(igeom), zr( icontm), zr(iddlm), zr(ivectu))
+        call nifnlg(ndim, nno1, nno2, nno3, npg, iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, idf2,&
+                    vu, vg, vp, typmod, zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
     else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
 !
         if (.not.lteatt(' ','INCO','C3SM')) then
@@ -112,10 +103,8 @@ subroutine te0591(option, nomte)
         endif
 !
         call jevech('PMATERC', 'L', imate)
-        call nifnsm(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    idf2, vu, vg, vp, typmod,&
-                    zi(imate), zr(igeom), zr( icontm), zr(iddlm), zr(ivectu))
+        call nifnsm(ndim, nno1, nno2, nno3, npg,iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1, idf2,&
+                    vu, vg, vp, typmod, zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
     else
         call u2mesk('F', 'ELEMENTS3_16', 1, zk16(icompo+2))
     endif

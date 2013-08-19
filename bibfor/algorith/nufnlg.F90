@@ -1,7 +1,5 @@
-subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  typmod, mate, compor, geomi, sig,&
-                  ddl, vect)
+subroutine nufnlg(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
+                  vu, vp, typmod, mate, compor, geomi, sig, ddl, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +17,6 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
-!
 ! aslint: disable=W1306
     implicit none
 !
@@ -82,16 +79,15 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
 !
     parameter    (grand = .true.)
     data         vij  / 1, 4, 5,&
-     &                    4, 2, 6,&
-     &                    5, 6, 3 /
+     &                  4, 2, 6,&
+     &                  5, 6, 3 /
     data         kr   / 1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
     data         id   / 1.d0, 0.d0, 0.d0,&
-     &                    0.d0, 1.d0, 0.d0,&
-     &                    0.d0, 0.d0, 1.d0/
+     &                  0.d0, 1.d0, 0.d0,&
+     &                  0.d0, 0.d0, 1.d0/
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
-!
     axi = typmod(1).eq.'AXIS'
     nddl = nno1*ndim + nno2
     ndu = ndim
@@ -102,72 +98,64 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw,&
     call r8inir(6, 0.d0, tau, 1)
 !
 ! - REACTUALISATION DE LA GEOMETRIE ET EXTRACTION DES CHAMPS
-    do 10 na = 1, nno1
-        do 20 ia = 1, ndim
+    do na = 1, nno1
+        do ia = 1, ndim
             geomm(ia+ndim*(na-1)) = geomi(ia,na) + ddl(vu(ia,na))
             deplm(ia+ndim*(na-1)) = ddl(vu(ia,na))
-20      continue
-10  end do
+        end do
+    end do
 !
-    do 40 sa = 1, nno2
+    do sa = 1, nno2
         presm(sa) = ddl(vp(sa))
-40  end do
+    end do
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
-    do 1000 g = 1, npg
+    do g = 1, npg
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplm, fm, epsm)
-        call dfdmip(ndim, nno1, axi, geomm, g,&
-                    iw, vff1(1, g), idff1, r, wm,&
-                    dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
-                    lij)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1,g), r, dff1, deplm, fm, epsm)
+        call dfdmip(ndim, nno1, axi, geomm, g, iw, vff1(1,g), idff1, r, wm, dff1)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
 !
-!
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) - fm(2,1)*(fm( 1,2)*fm(3,3)-fm(1,3)*fm(3,2&
-             &)) + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1, 3)*fm(2,2))
+        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2))&
+           - fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2))&
+           + fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
 !
 ! - CALCUL DE LA PRESSION
         pm = ddot(nno2,vff2(1,g),1,presm,1)
 !
 ! - CONTRAINTE DE KIRCHHOFF
-        call dcopy(2*ndim, sig(1, g), 1, tau, 1)
+        call dcopy(2*ndim, sig(1,g), 1, tau, 1)
         call dscal(2*ndim, jm, tau, 1)
         tauhy = (tau(1)+tau(2)+tau(3))/3.d0
-        do 200 kl = 1, 6
+        do kl = 1, 6
             taudv(kl) = tau(kl) - tauhy*kr(kl)
-200      continue
+        end do
 !
 ! - CALCUL DE ALPHA
-        call tanbul(option, ndim, g, mate, compor,&
-                    .false., .false., alpha, dsbdep, trepst)
+        call tanbul(option, ndim, g, mate, compor, .false., .false., alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U
-        do 300 na = 1, nno1
-            do 310 ia = 1, ndu
+        do na = 1, nno1
+            do ia = 1, ndu
                 kk = vu(ia,na)
                 t1 = 0.d0
-                do 320 ja = 1, ndu
+                do ja = 1, ndu
                     t2 = taudv(vij(ia,ja)) + pm*id(ia,ja)
                     t1 = t1 + t2*dff1(na,lij(ia,ja))
-320              continue
+                end do
                 vect(kk) = vect(kk) + w*t1
-310          continue
-300      continue
+            end do
+        end do
 !
 ! - VECTEUR FINT:P
         t2 = log(jm) - pm*alpha
-        do 370 sa = 1, nno2
+        do sa = 1, nno2
             kk = vp(sa)
             t1 = vff2(sa,g)*t2
             vect(kk) = vect(kk) + w*t1
-370      continue
-!
-1000  end do
+        end do
+    end do
 end subroutine

@@ -1,6 +1,4 @@
-subroutine nirela(irela, jp, gm, gp, am,&
-                  ap, bp, boa, aa, bb,&
-                  daa, dbb, dboa, d2boa)
+subroutine nirela(irela, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

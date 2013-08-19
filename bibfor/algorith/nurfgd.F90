@@ -1,6 +1,5 @@
-subroutine nurfgd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  typmod, geomi, sigref, epsref, vect)
+subroutine nurfgd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
+                  vu, vp, typmod, geomi, sigref, epsref, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,14 +56,14 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw,&
 !
     logical :: axi
     integer :: nddl, ndu, g
-    integer :: kl, sa, ra, na, ia, ja, kk
+    integer :: kl, sa, na, ia, ja, kk
     integer :: ndimsi, vij(3, 3), lij(3, 3)
     real(kind=8) :: r, w, tau(6)
     real(kind=8) :: t1, dff1(nno1, 4)
 !
     data         vij  / 1, 4, 5,&
-     &                    4, 2, 6,&
-     &                    5, 6, 3 /
+     &                  4, 2, 6,&
+     &                  5, 6, 3 /
 !-----------------------------------------------------------------------
 !
 ! - INITIALISATION
@@ -77,36 +76,32 @@ subroutine nurfgd(ndim, nno1, nno2, npg, iw,&
 !
     call r8inir(nddl, 0.d0, vect, 1)
 !
-    do 1000 g = 1, npg
+    do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
-                    lij)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
 !
 ! - VECTEUR FINT:U
-        do 10 kl = 1, ndimsi
+        do kl = 1, ndimsi
             call r8inir(6, 0.d0, tau, 1)
             tau(kl) = sigref
-            do 300 na = 1, nno1
-                do 310 ia = 1, ndu
+            do na = 1, nno1
+                do ia = 1, ndu
                     kk = vu(ia,na)
                     t1 = 0.d0
-                    do 320 ja = 1, ndu
+                    do ja = 1, ndu
                         t1 = t1 + tau(vij(ia,ja))*dff1(na,lij(ia,ja))
-320                  continue
+                    end do
                     vect(kk) = vect(kk) + abs(w*t1)/ndimsi
-310              continue
-300          continue
-10      continue
+                end do
+            end do
+        end do
 !
 ! - VECTEUR FINT:P
-        do 370 sa = 1, nno2
+        do sa = 1, nno2
             kk = vp(sa)
             t1 = vff2(sa,g)*epsref
             vect(kk) = vect(kk) + abs(w*t1)
-370      continue
-!
-1000  end do
+        end do
+    end do
 end subroutine

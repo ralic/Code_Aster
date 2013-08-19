@@ -1,6 +1,5 @@
-subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
-                  vff1, vff2, idff1, vu, vp,&
-                  typmod, geomi, sigref, epsref, vect)
+subroutine nurfpd(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
+                  vu, vp, typmod, geomi, sigref, epsref, vect)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,65 +78,59 @@ subroutine nurfpd(ndim, nno1, nno2, npg, iw,&
 !
     call r8inir(nddl, 0.d0, vect, 1)
 !
-    do 1000 g = 1, npg
+    do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
 !
 ! - CALCUL DE LA MATRICE B EPS_ij=B_ijkl U_kl
+! - DEF (XX,YY,ZZ,2/RAC(2)XY,2/RAC(2)XZ,2/RAC(2)YZ)
         if (ndim .eq. 2) then
-            do 35 na = 1, nno1
-                do 45 ia = 1, ndim
+            do na = 1, nno1
+                do ia = 1, ndim
                     def(1,na,ia)= f(ia,1)*dff1(na,1)
                     def(2,na,ia)= f(ia,2)*dff1(na,2)
                     def(3,na,ia)= 0.d0
-                    def(4,na,ia)=(f(ia,1)*dff1(na,2)+f(ia,2)*dff1(na,&
-                    1))/rac2
-45              continue
-35          continue
+                    def(4,na,ia)=(f(ia,1)*dff1(na,2)+f(ia,2)*dff1(na,1))/rac2
+                end do
+            end do
+!
+! - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
+            if (axi) then
+                do na = 1, nno1
+                    def(3,na,1) = f(3,3)*vff1(na,g)/r
+                end do
+            endif
         else
-            do 36 na = 1, nno1
-                do 46 ia = 1, ndim
+            do na = 1, nno1
+                do ia = 1, ndim
                     def(1,na,ia)= f(ia,1)*dff1(na,1)
                     def(2,na,ia)= f(ia,2)*dff1(na,2)
                     def(3,na,ia)= f(ia,3)*dff1(na,3)
-                    def(4,na,ia)=(f(ia,1)*dff1(na,2)+f(ia,2)*dff1(na,&
-                    1))/rac2
-                    def(5,na,ia)=(f(ia,1)*dff1(na,3)+f(ia,3)*dff1(na,&
-                    1))/rac2
-                    def(6,na,ia)=(f(ia,2)*dff1(na,3)+f(ia,3)*dff1(na,&
-                    2))/rac2
-46              continue
-36          continue
-        endif
-!
-! - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
-        if (axi) then
-            do 47 na = 1, nno1
-                def(3,na,1) = f(3,3)*vff1(na,g)/r
-47          continue
+                    def(4,na,ia)=(f(ia,1)*dff1(na,2)+f(ia,2)*dff1(na,1))/rac2
+                    def(5,na,ia)=(f(ia,1)*dff1(na,3)+f(ia,3)*dff1(na,1))/rac2
+                    def(6,na,ia)=(f(ia,2)*dff1(na,3)+f(ia,3)*dff1(na,2))/rac2
+                end do
+            end do
         endif
 !
 ! - VECTEUR FINT:U
-        do 10 kl = 1, ndimsi
+        do kl = 1, ndimsi
             call r8inir(6, 0.d0, sigma, 1)
             sigma(kl) = sigref
-            do 300 na = 1, nno1
-                do 310 ia = 1, ndim
+            do na = 1, nno1
+                do ia = 1, ndim
                     kk = vu(ia,na)
                     t1 = ddot(2*ndim, sigma,1, def(1,na,ia),1)
                     vect(kk) = vect(kk) + abs(w*t1)/ndimsi
-310              continue
-300          continue
-10      continue
+                end do
+            end do
+        end do
 !
 ! - VECTEUR FINT:P
-        do 370 sa = 1, nno2
+        do sa = 1, nno2
             kk = vp(sa)
             t1 = vff2(sa,g)*epsref
             vect(kk) = vect(kk) + abs(w*t1)
-370      continue
-!
-1000  end do
+        end do
+    end do
 end subroutine
