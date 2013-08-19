@@ -23,7 +23,7 @@ interface
         integer :: iocc
         integer :: iarg
         integer :: mxval
-        integer :: isval(*)
+        integer :: isval(mxval)
         integer :: nbval
     end subroutine getltx
 end interface

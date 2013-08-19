@@ -661,6 +661,8 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
+#define CALL_FIINTF(a, b, c, d, e, f, g) CALLSPSPPSP(FIINTF,fiintf, a, b, c, d, e, f, g)
+
 void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
                               _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
                               _IN DOUBLE *val,
@@ -711,6 +713,16 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         return ;
 }
 
+void DEFSPSPPSP(FIINTFC,fiintfc,_IN char *nomfon,_IN STRING_SIZE lfon,
+                                _IN INTEGER *nbpu,_IN char *param,_IN STRING_SIZE lpara,
+                                _IN DOUBLE *val,
+                               _OUT INTEGER *iret,
+                                _IN char *coderr, _INOUT STRING_SIZE lcod,
+                               _OUT DOUBLE *resuc)
+{
+    return DEFSPSPPSP(FIINTF,fiintf, nomfon, lfon, nbpu, param, lpara, val, iret,
+                                     coderr, lcod, resuc);
+}
 
 /* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,

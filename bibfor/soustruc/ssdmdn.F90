@@ -58,7 +58,7 @@ subroutine ssdmdn(mag)
     integer :: i, i1, iaconx, iadim2, iadime, ialino, iancnf
     integer :: ianmcr, ianon2, iasupm, ibid, ied, ino, ino1
     integer :: inol, iocc, isma, kk, lmail, lnoeu, longt
-    integer :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex
+    integer :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex, lpr(1)
     integer :: nbnol, nbsma, nnnoe, nocc
 !-----------------------------------------------------------------------
     call jemarq()
@@ -82,9 +82,10 @@ subroutine ssdmdn(mag)
 !
 !       -- CAS : TOUT: 'OUI'
 !       --------------------
-        lpref=0
+        lpr=0
         call getltx('DEFI_NOEUD', 'PREFIXE', iocc, 8, 1,&
-                    lpref, n2)
+                    lpr, n2)
+        lpref = lpr(1)
         call getvis('DEFI_NOEUD', 'INDEX', iocc, iarg, 4,&
                     indi, n3)
         lmail=indi(2)-indi(1)+1

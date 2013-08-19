@@ -15,14 +15,14 @@ function jxhcod(chain, lrep)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1304
+! aslint: disable=W1304,C1002
     implicit none
 #include "asterc/strmov.h"
     integer :: jxhcod, lrep
-    integer :: i1
     character(len=*) :: chain
-! ----------------------------------------------------------------------
+    integer :: i1, j(4)
     integer(kind=4) :: i(8)
+    equivalence (i(1), j(1))
 !
 !   ATTENTION, IL FAUT IMPERATIVEMENT UTILISER UN TABLEAU I AYANT
 !   POUR LONGUEUR TOTALE 32 OCTETS (ICI 4*8) POUR S'ALIGNER SUR LA
@@ -31,7 +31,7 @@ function jxhcod(chain, lrep)
 !-----------------------------------------------------------------------
     integer :: k
 !-----------------------------------------------------------------------
-    call strmov(chain, 1, 32, i(1), 1)
+    call strmov(chain, 1, 32, j, 1)
     do 1 k = 2, 8
         i(1) = ieor( i(1) , i(k) )
  1  end do

@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine hpdeallc(addr, ierr, abrt)
-        real(kind=8) :: addr
+    subroutine hpdeallc(addr, ierr)
+        integer :: addr
         integer :: ierr
-        real(kind=8) :: abrt
     end subroutine hpdeallc
 end interface

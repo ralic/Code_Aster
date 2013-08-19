@@ -58,7 +58,7 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     real(kind=8) :: rval(2)
     character(len=8) :: k8tab(2)
     integer :: lon1, idep, incr, iret
-    integer :: k, jad, ierr, ibid, nbfree, ltot
+    integer :: k, jad, ierr, nbfree, ltot
 !
     ASSERT(limpr.eq.'OUI' .or. limpr.eq.'NON')
     ASSERT(ldyn.eq.'OUI' .or. ldyn.eq.'NON')
@@ -68,7 +68,6 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     if (ldyn .eq. 'OUI') call jjldyn(0, -1, ltot)
 !
     nbfree=0
-    ibid=0
     idep=0
     incr=int(prec*1024*1024/loisem()/2)
 !
@@ -85,7 +84,7 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 !       -- TENTATIVE D'ALLOCATION :
     call hpalloc(jad, idep+lon1, ierr, 0)
     if (ierr .eq. 0) then
-        call hpdeallc(jad, nbfree, ibid)
+        call hpdeallc(jad, nbfree)
         goto 30
     else
         ASSERT(ierr.eq.-2)
@@ -109,7 +108,7 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
     if (.true.) then
         call hpalloc(jad, idep-2*incr, ierr, 0)
         ASSERT(ierr.eq.0)
-        call hpdeallc(jad, nbfree, ibid)
+        call hpdeallc(jad, nbfree)
         call hpalloc(jad, idep+2*incr, ierr, 0)
         ASSERT(ierr.ne.0)
     endif

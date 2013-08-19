@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine closdr(unit, ierr)
-        integer :: unit
+    subroutine closdr(dfname, ierr)
+        character(len=128) :: dfname
         integer :: ierr
     end subroutine closdr
 end interface

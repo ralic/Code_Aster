@@ -26,7 +26,7 @@ interface
         character(len=144) :: nomvar
         integer(kind=4) :: idim
         integer(kind=4) :: taille
-        real(kind=8) :: paramr(6)
+        real(kind=8) :: paramr(idim)
         integer(kind=4) :: info
     end subroutine cpldb
 end interface

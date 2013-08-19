@@ -26,7 +26,7 @@ interface
         character(len=144) :: nomvar
         integer(kind=4) :: idim
         integer(kind=4) :: taille
-        integer(kind=4) :: parami
+        integer(kind=4) :: parami(idim)
         integer(kind=4) :: info
     end subroutine cplen
 end interface

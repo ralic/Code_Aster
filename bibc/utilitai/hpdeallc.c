@@ -16,7 +16,7 @@
 /* ================================================================== */
 #include "aster.h"
 
-void DEFPPP(HPDEALLC, hpdeallc, void **addr, INTEGER *nbapp, INTEGER *abrt)
+void DEFPP(HPDEALLC, hpdeallc, void **addr, INTEGER *nbapp)
 {
    void free(void *);
    free(*addr);

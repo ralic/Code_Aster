@@ -47,7 +47,7 @@ subroutine jjldyn(imode, lmin, ltot)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadmi, iadmoc, iadyn, iadyoc, ibacol
-    integer :: ibiadd, ibiadm, ibid, iblono, ic, idm
+    integer :: ibiadd, ibiadm, iblono, ic, idm
     integer :: isd, isdc, isf, ixdeso, ixiadd, ixiadm
     integer :: ixlono, j, jcara, jdate, jdocu, jgenr, jhcod
     integer :: jiacce, jiadd, jiadm, jindir, jj, jlong, jlono
@@ -194,7 +194,7 @@ subroutine jjldyn(imode, lmin, ltot)
                                 lgs = iszon(jiszon+iadmoc-4) - iadmoc + 4
                                 mcdyn = mcdyn - lgs
                                 mldyn = mldyn + lgs
-                                call hpdeallc(iadyoc, nbfree, ibid)
+                                call hpdeallc(iadyoc, nbfree)
                                 ltot = ltot + lgs
 !       WRITE(6,*) ' OC ',NOM32,' OBJET ',K,' LG =',LSV,LGS,LTOT
                                 iszon(jiszon + ibiadm - 1 +2*k-1) = 0
@@ -246,7 +246,7 @@ subroutine jjldyn(imode, lmin, ltot)
                         lgs = iszon(jiszon+iadmi-4) - iadmi + 4
                         mcdyn = mcdyn - lgs
                         mldyn = mldyn + lgs
-                        call hpdeallc(iadyn, nbfree, ibid)
+                        call hpdeallc(iadyn, nbfree)
                         ltot = ltot + lgs
 !            write(6,*) ' OS ',NOM32,' lg =',LSV,LGS,LTOT
                         iadm(jiadm(ic)+2*j-1) = 0

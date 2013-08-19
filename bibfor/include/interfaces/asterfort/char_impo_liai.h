@@ -17,7 +17,7 @@
 !
 interface
     subroutine char_impo_liai(nomg, type_liai, cmp_nb, cmp_name, cmp_index,  &
-                              vale_real,vale_cplx, vale_fonc)
+                              vale_real, vale_cplx, vale_fonc)
         character(len=8), intent(in) :: nomg
         character(len=16), intent(in) :: type_liai
         character(len=8), intent(out) :: cmp_name(6)

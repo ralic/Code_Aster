@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine getltx(motfac, motcle, iocc, iarg, mxval,&
-                      isval, nbval)
-        character(*) :: motfac
-        character(*) :: motcle
-        integer :: iocc
-        integer :: iarg
-        integer :: mxval
-        integer :: isval(mxval)
-        integer :: nbval
-    end subroutine getltx
+    subroutine fiintfc(nomfon, nbpu, param, val, iret,&
+                       coderr, resu)
+        character(*) :: nomfon
+        integer :: nbpu
+        character(*) :: param(*)
+        real(kind=8) :: val(*)
+        integer :: iret
+        character(*) :: coderr
+        real(kind=8) :: resu(2)
+    end subroutine fiintfc
 end interface

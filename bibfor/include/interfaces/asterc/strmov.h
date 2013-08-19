@@ -20,7 +20,7 @@ interface
         character(*) :: src
         integer :: isb
         integer :: num
-        character(*) :: dest
+        integer :: dest(*)
         integer :: idb
     end subroutine strmov
 end interface

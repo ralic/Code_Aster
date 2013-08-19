@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine readdr(unit, buff, nbytes, irec, ierr)
-        real(kind=8) :: unit
-        integer(kind=1) :: buff(*)
+    subroutine readdr(dfname, buff, nbytes, irec, ierr)
+        character(len=128) :: dfname
+        integer :: buff(*)
         integer :: nbytes
         integer :: irec
         integer :: ierr

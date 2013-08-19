@@ -67,7 +67,7 @@ subroutine ssdmgn(mag)
     integer :: i1, i1noe, iadim2, iadime, iagnl, iagno, ialino
     integer :: ianmcr, iawk1, ibid, ied, igno, ii, inol
     integer :: iocc, iret, isma, kk, lgnl, lmail, longt
-    integer :: lont, lpref, n, n1, n2, n3, nbgno
+    integer :: lont, lpref, n, n1, n2, n3, nbgno, lpr(1)
     integer :: nbgno2, nbgnot, nbid, nbno, nbnoex, nbsma, nocc
     integer :: nusma
 !-----------------------------------------------------------------------
@@ -185,9 +185,10 @@ subroutine ssdmgn(mag)
         call getvtx('DEFI_GROUP_NO', 'SUPER_MAILLE', iocc, iarg, 1,&
                     nosma, n2)
         if (n2 .eq. 1) call jenonu(jexnom(mag//'.SUPMAIL', nosma), nusma)
-        lpref=0
+        lpr=0
         call getltx('DEFI_GROUP_NO', 'PREFIXE', iocc, 8, 1,&
-                    lpref, nbid)
+                    lpr, nbid)
+        lpref = lpr(1)
         call getvis('DEFI_GROUP_NO', 'INDEX', iocc, iarg, 4,&
                     indi, n3)
         lmail=indi(2)-indi(1)+1

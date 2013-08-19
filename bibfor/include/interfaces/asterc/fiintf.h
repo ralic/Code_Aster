@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine fiintf(nomf, nbpu, nompu, valpu, iret,&
-                      msgerr, resu)
-        character(*) :: nomf
+    subroutine fiintf(nomfon, nbpu, param, val, iret,&
+                      coderr, resu)
+        character(*) :: nomfon
         integer :: nbpu
-        character(*) :: nompu
-        real(kind=8) :: valpu(*)
+        character(*) :: param(*)
+        real(kind=8) :: val(*)
         integer :: iret
-        character(*) :: msgerr
-        real(kind=8) :: resu(*)
+        character(*) :: coderr
+        real(kind=8) :: resu
     end subroutine fiintf
 end interface

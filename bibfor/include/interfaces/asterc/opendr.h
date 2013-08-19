@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine opendr(unit, indx, lgti, indic, ierr)
-        integer :: lgti
-        integer :: unit
+    subroutine opendr(dfname, indx, lgti, indic, ierr)
+        character(len=128) :: dfname
         integer :: indx(lgti)
+        integer :: lgti
         integer :: indic
         integer :: ierr
     end subroutine opendr

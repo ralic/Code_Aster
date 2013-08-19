@@ -36,7 +36,7 @@ subroutine op0017()
 #include "asterfort/ulopen.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
-    integer :: nivo, n3, n1, ifi, n2, nbocc, ialico, ncon, ipos, long, n4
+    integer :: nivo, n3, n1, ifi, n2, nbocc, ialico, ncon, ipos, long(1), n4
     integer :: i, iocc
     logical :: lattr, lcont
     character(len=1) :: base
@@ -107,7 +107,7 @@ subroutine op0017()
                     long, n3)
         call getvis(' ', 'POSITION', 0, iarg, 1,&
                     ipos, n4)
-        call utimsd(ifi, nivo, lattr, lcont, chaine(1:long),&
+        call utimsd(ifi, nivo, lattr, lcont, chaine(1:long(1)),&
                     ipos, base)
     endif
 !

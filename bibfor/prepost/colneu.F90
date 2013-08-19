@@ -53,7 +53,7 @@ subroutine colneu(nbnode, typema)
 !
 !     ANCIENS INCLUDE (CALCIUM.H)
 !     ===========================
-    integer(kind=4) :: lenvar, cpiter, taille, ibid4, nbnod4, un
+    integer(kind=4) :: lenvar, cpiter, taille, ibid4, nbnod4, un, nbnod4t(1)
     integer :: nbnmax, iadr
     parameter (lenvar = 144)
     parameter (cpiter= 41)
@@ -92,7 +92,8 @@ subroutine colneu(nbnode, typema)
     tr4 = 0.d0
     i4 = 0
     call cplen(icompo, cpiter, tr4, tr4, i4,&
-               nomvar, un, taille, nbnod4, ibid4)
+               nomvar, un, taille, nbnod4t, ibid4)
+    nbnod4 = nbnod4t(1)
     nbnode = nbnod4
     if (nbnode .gt. nbnmax) then
         vali(1) = nbnode
@@ -121,8 +122,8 @@ subroutine colneu(nbnode, typema)
         valk(3) = nomvar
         call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
     endif
-    call cpldb(icompo, cpiter, 0.d0, 0.d0, 0,&
-               nomvar, 3*nbnod4, taille, zr(jcoor), ibid4)
+    call cpldb(icompo, cpiter, 0.d0, 0.d0, int(0,4),&
+               nomvar, int(3*nbnod4,4), taille, zr(jcoor), ibid4)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'IBID'

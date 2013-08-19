@@ -43,12 +43,12 @@ subroutine op0114()
     character(len=16) :: nomcmd, concep
 !     ------------------------------------------------------------------
 !     COUPLAGE =>
-    integer(kind=4) :: lenvar, cpiter, numpa4, taille, eyacs, ibid4
+    integer(kind=4) :: lenvar, cpiter, numpa4, taille, eyacs(1), ibid4
     integer :: icompo, ibid, numpas, iadr
     parameter (lenvar = 144)
     parameter (cpiter= 41)
     real(kind=4) :: ti4, tf4
-    real(kind=8) :: dt, ryacs, ti, tf
+    real(kind=8) :: dt, ryacs(1), ti, tf
     character(len=16) :: option, valk(3)
     character(len=24) :: ayacs
     character(len=lenvar) :: nomvar
@@ -110,41 +110,41 @@ subroutine op0114()
         nomvar = 'NBPDTM'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
                    nomvar, int(1,4), taille, eyacs, ibid4)
-        zr(jbor) = eyacs
-        zr(jval) = eyacs
+        zr(jbor) = eyacs(1)
+        zr(jval) = eyacs(1)
 !  RECEPTION NOMBRE DE SOUS-ITERATIONS
         nomvar = 'NBSSIT'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
                    nomvar, int(1,4), taille, eyacs, ibid4)
-        zr(jbor+1) = eyacs
-        zr(jval+1) = eyacs
+        zr(jbor+1) = eyacs(1)
+        zr(jval+1) = eyacs(1)
 !  RECEPTION EPSILON
         nomvar = 'EPSILO'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
                    nomvar, int(1,4), taille, ryacs, ibid4)
-        zr(jbor+2) = ryacs
-        zr(jval+2) = ryacs
+        zr(jbor+2) = ryacs(1)
+        zr(jval+2) = ryacs(1)
         nomvar = 'ISYNCP'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
                    nomvar, int(1,4), taille, eyacs, ibid4)
-        zr(jbor+3) = eyacs
-        zr(jval+3) = eyacs
+        zr(jbor+3) = eyacs(1)
+        zr(jval+3) = eyacs(1)
         nomvar = 'NTCHRO'
         call cplen(icompo, cpiter, ti4, tf4, numpa4,&
                    nomvar, int(1,4), taille, eyacs, ibid4)
-        zr(jbor+4) = eyacs
-        zr(jval+4) = eyacs
+        zr(jbor+4) = eyacs(1)
+        zr(jval+4) = eyacs(1)
         nomvar = 'TTINIT'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
                    nomvar, int(1,4), taille, ryacs, ibid4)
-        zr(jbor+5) = ryacs
-        zr(jval+5) = ryacs
+        zr(jbor+5) = ryacs(1)
+        zr(jval+5) = ryacs(1)
 !  RECEPTION PAS DE TEMPS DE REFERENCE
         nomvar = 'PDTREF'
         call cpldb(icompo, cpiter, ti, tf, numpa4,&
                    nomvar, int(1,4), taille, ryacs, ibid4)
-        zr(jbor+6) = ryacs
-        zr(jval+6) = ryacs
+        zr(jbor+6) = ryacs(1)
+        zr(jval+6) = ryacs(1)
     else
         call getvr8(' ', 'INST', 0, iarg, 1,&
                     tf, ibid)
@@ -156,24 +156,24 @@ subroutine op0114()
         ti = tf
         if (option(1:3) .eq. 'FIN') then
             nomvar = 'END'
-            ryacs = 0.d0
+            ryacs(1) = 0.d0
         else
             if (option(1:4) .eq. 'CONV') then
                 nomvar = 'ICVAST'
                 call cplen(icompo, cpiter, ti4, tf4, numpa4,&
                            nomvar, int(1,4), taille, eyacs, ibid4)
-                ryacs = eyacs
+                ryacs(1) = eyacs(1)
             else
                 nomvar = 'DTAST'
                 call cpedb(icompo, cpiter, ti, numpa4, nomvar,&
-                           1, dt, ibid4)
+                           int(1,4), [dt], ibid4)
                 nomvar = 'DTCALC'
                 call cpldb(icompo, cpiter, ti, tf, numpa4,&
                            nomvar, int(1,4), taille, ryacs, ibid4)
             endif
         endif
-        zr(jbor) = ryacs
-        zr(jval) = ryacs
+        zr(jbor) = ryacs(1)
+        zr(jval) = ryacs(1)
         zr(jpas) = 0.1d0
         zi(jnbp) = 1
 !

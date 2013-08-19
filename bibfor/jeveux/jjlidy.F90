@@ -45,7 +45,7 @@ subroutine jjlidy(iadyn, iadmi)
     integer :: lundef, idebug
     common /undfje/  lundef,idebug
 ! ----------------------------------------------------------------------
-    integer :: iet, ibid, lgs, lgsv, k
+    integer :: iet, lgs, lgsv, k
 ! DEB ------------------------------------------------------------------
     if (iadyn .ne. 0) then
         iet = iszon(jiszon+iadmi-1)
@@ -61,7 +61,7 @@ subroutine jjlidy(iadyn, iadmi)
         endif
         mcdyn = mcdyn - lgs
         mldyn = mldyn + lgs
-        call hpdeallc(iadyn, nbfree, ibid)
+        call hpdeallc(iadyn, nbfree)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

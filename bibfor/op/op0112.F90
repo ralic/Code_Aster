@@ -188,7 +188,7 @@ subroutine op0112()
     nomvar = 'FORAST'
     ti = tf
     call cpldb(icompo, cpiter, ti, tf, numpa4,&
-               nomvar, 3*nbno4, taille, zr(jforc2), ibid4)
+               nomvar, int(3*nbno4,4), taille, zr(jforc2), ibid4)
 !
 !     ! ====================================== !
 !     ! LISTE DES NOEUDS DU MAILLAGE 1 COUPLES !

@@ -24,7 +24,7 @@ interface
         integer(kind=4) :: numpas
         character(len=144) :: nomvar
         integer(kind=4) :: idim
-        real(kind=8) :: paramr(20)
+        real(kind=8) :: paramr(idim)
         integer(kind=4) :: info
     end subroutine cpedb
 end interface

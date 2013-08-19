@@ -41,7 +41,7 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------
-    integer :: ibiadd, ibiadm, ibid, iblono, ixdeso, ixiadd
+    integer :: ibiadd, ibiadm, iblono, ixdeso, ixiadd
     integer :: ixiadm, ixlono, jcara, jdate, jhcod, jiacce, jiadd
     integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, lonoi
     integer :: lsv, n, nbacce
@@ -105,7 +105,7 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
                 lgs = iszon(jiszon+iadmi-4) - iadmi + 4
                 mcdyn = mcdyn - lgs
                 mldyn = mldyn + lgs
-                call hpdeallc(iadyn, nbfree, ibid)
+                call hpdeallc(iadyn, nbfree)
                 ltot = ltot + il
                 iadm(jiadm(ic)+2*id-1) = 0
                 iadm(jiadm(ic)+2*id ) = 0
@@ -153,7 +153,7 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
                     lgs = iszon(jiszon+iadmi-4) - iadmi + 4
                     mcdyn = mcdyn - lgs
                     mldyn = mldyn + lgs
-                    call hpdeallc(iadyn, nbfree, ibid)
+                    call hpdeallc(iadyn, nbfree)
                     ltot = ltot + il
                     iszon(jiszon + ibiadm - 1 +2*ioc-1) = 0
                     iszon(jiszon + ibiadm - 1 +2*ioc ) = 0
