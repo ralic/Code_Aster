@@ -63,23 +63,23 @@ subroutine mamagi(nomte, xr, yr)
 !
         coefa(1)= 0.25d0
         coefb(1)=-0.25d0
-        coefc(1)= 0.25d0
-        coefd(1)=-0.25d0
+        coefc(1)=-0.25d0
+        coefd(1)= 0.25d0
 !
         coefa(2)= 0.25d0
-        coefb(2)=-0.25d0
+        coefb(2)= 0.25d0
         coefc(2)=-0.25d0
-        coefd(2)= 0.25d0
+        coefd(2)=-0.25d0
 !
         coefa(3)= 0.25d0
         coefb(3)= 0.25d0
-        coefc(3)=-0.25d0
-        coefd(3)=-0.25d0
+        coefc(3)= 0.25d0
+        coefd(3)= 0.25d0
 !
         coefa(4)= 0.25d0
-        coefb(4)= 0.25d0
+        coefb(4)=-0.25d0
         coefc(4)= 0.25d0
-        coefd(4)= 0.25d0
+        coefd(4)=-0.25d0
 !
         elseif ( nomte(1:8) .eq. 'MEC3TR7H' .or. nomte(1:8) .eq.&
     'MEGRC3T7' ) then
@@ -87,19 +87,19 @@ subroutine mamagi(nomte, xr, yr)
         nso =3
         npgsn=7
 !
-        coefa(1)= 0.d0
-        coefb(1)= 0.d0
-        coefc(1)= 1.d0
+        coefa(1)= 1.d0
+        coefb(1)=-1.d0
+        coefc(1)=-1.d0
         coefd(1)= 0.d0
 !
-        coefa(2)= 1.d0
-        coefb(2)=-1.d0
-        coefc(2)=-1.d0
+        coefa(2)= 0.d0
+        coefb(2)= 1.d0
+        coefc(2)= 0.d0
         coefd(2)= 0.d0
 !
         coefa(3)= 0.d0
-        coefb(3)= 1.d0
-        coefc(3)= 0.d0
+        coefb(3)= 0.d0
+        coefc(3)= 1.d0
         coefd(3)= 0.d0
 !
     endif
@@ -122,19 +122,19 @@ subroutine mamagi(nomte, xr, yr)
                     intef))* (coefa(ifon)+coefb(ifon)*xi1+coefc(ifon)*&
                     xi2 +coefd(ifon)*xi1*xi2)
                     bt(jf,ig)=bij
-380              end do
-370          end do
-360      end do
-350  end do
+380              continue
+370          continue
+360      continue
+350  continue
 !
     do 385 i = 1, npge*nso
         do 390 j = 1, npge*nso
             btb(i,j)=0.d0
             do 400 k = 1, npge*npgsn
                 btb(i,j)=btb(i,j)+bt(i,k)*bt(j,k)
-400          end do
-390      end do
-385  end do
+400          continue
+390      continue
+385  continue
 !
 !     MATRICE DE PASSAGE = (BT*B*B)-1*BT
 !
@@ -145,7 +145,7 @@ subroutine mamagi(nomte, xr, yr)
         l = npge*npgsn*(i-1)
         do 420 kp = 1, npge*npgsn
             yr(l+kp) = bt(i,kp)
-420      end do
-410  end do
+420     continue
+410  continue
 !
 end subroutine

@@ -81,7 +81,7 @@ TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
                      GROUP_NO='A',
                      PRECISION=0.029999999999999999,
                      CHAM_GD=VECASS,
-                     VALE_CALC=-0.111925531,
+                     VALE_CALC=-0.11192453310181,
                      VALE_REFE=-0.1139,
                      REFERENCE='NON_DEFINI',),
           )

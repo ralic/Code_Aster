@@ -1198,6 +1198,34 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
             ypg(8) = zero
             xpg(9) = zero
             ypg(9) = zero
+        else if (fapg.eq.'FPG9COQ') then
+            hpg(7) = 25.d0/81.0d0
+            hpg(1) = 25.d0/81.0d0
+            hpg(3) = 25.d0/81.0d0
+            hpg(5) = 25.d0/81.0d0
+            hpg(8) = 40.d0/81.0d0
+            hpg(2) = 40.d0/81.0d0
+            hpg(4) = 40.d0/81.0d0
+            hpg(6) = 40.d0/81.0d0
+            hpg(9) = 64.d0/81.0d0
+            xpg(1) = -0.774596669241483d0
+            ypg(1) = -0.774596669241483d0
+            xpg(3) =  0.774596669241483d0
+            ypg(3) = -0.774596669241483d0
+            xpg(5) =  0.774596669241483d0
+            ypg(5) =  0.774596669241483d0
+            xpg(7) = -0.774596669241483d0
+            ypg(7) =  0.774596669241483d0
+            xpg(2) = zero
+            ypg(2) = -0.774596669241483d0
+            xpg(4) =  0.774596669241483d0
+            ypg(4) = zero
+            xpg(6) = zero
+            ypg(6) =  0.774596669241483d0
+            xpg(8) = -0.774596669241483d0
+            ypg(8) = zero
+            xpg(9) = zero
+            ypg(9) = zero
         else if (fapg.eq.'FPG16') then
             h(1) = 0.652145154862546d0
             h(2) = h(1)
@@ -1386,5 +1414,5 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
         if (ndim .ge. 1) coopg(ndim* (i-1)+1) = xpg(i)
         if (ndim .ge. 2) coopg(ndim* (i-1)+2) = ypg(i)
         if (ndim .eq. 3) coopg(ndim* (i-1)+3) = zpg(i)
-180  end do
+180  continue
 end subroutine

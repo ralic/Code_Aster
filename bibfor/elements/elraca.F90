@@ -787,20 +787,22 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
         nnos = 4
         vol = 4.d0
 !
-        nbfpg = 6
+        nbfpg = 7
         nbpg(1) = nno
         nbpg(2) = nnos
         nbpg(3) = 1
         nbpg(4) = 4
         nbpg(5) = 9
-        nbpg(6) = 8
+        nbpg(6) = 9
+        nbpg(7) = 8
 !
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG4'
         fapg(5) = 'FPG9'
-        fapg(6) = 'FPG4NOS'
+        fapg(6) = 'FPG9COQ'
+        fapg(7) = 'FPG4NOS'
 !
         xin(1) = -1.d0
         yin(1) = -1.d0
@@ -833,18 +835,20 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
         nnos = 4
         vol = 4.d0
 !
-        nbfpg = 5
+        nbfpg = 6
         nbpg(1) = nno
         nbpg(2) = nnos
         nbpg(3) = 1
         nbpg(4) = 4
         nbpg(5) = 9
+        nbpg(6) = 9
 !
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG4'
-        fapg(5) = 'FPG9'
+        fapg(5) = 'FPG9'        
+        fapg(6) = 'FPG9COQ'
 !
         xin(1) = -1.d0
         yin(1) = -1.d0
@@ -1004,5 +1008,5 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
         if (ndim .ge. 1) x(ndim*i+1) = xin(i+1)
         if (ndim .ge. 2) x(ndim*i+2) = yin(i+1)
         if (ndim .eq. 3) x(ndim*i+3) = zin(i+1)
-200  end do
+200  continue
 end subroutine

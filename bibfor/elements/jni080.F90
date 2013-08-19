@@ -292,7 +292,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 ! ======================================================================
     character(len=16) :: elrefl
     character(len=24) :: desi, desr
-    integer :: nno, iret, ndim, nbpg, npgcou, npgsn, npgsr, nso
+    integer :: nno, iret, ndim, nbpg, npgcou, npgsn, npgsr, nso, ino
     integer :: lzi, lzr, i1, i2, i3, i4, i5, k, l, ll, m, nbn1, nbn2, kompt
     integer :: jmas, ldesi, ldesr, ljmas
     real(kind=8) :: a, b, aa
@@ -382,67 +382,48 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            zr(lzr-1+ 12 + ll + 1) = ff(4)
-            zr(lzr-1+ 44 + ll + 1) = dff(1,4)
-            zr(lzr-1+ 76 + ll + 1) = dff(2,4)
-            zr(lzr-1+ 12 + ll + 2) = ff(1)
-            zr(lzr-1+ 44 + ll + 2) = dff(1,1)
-            zr(lzr-1+ 76 + ll + 2) = dff(2,1)
-            zr(lzr-1+ 12 + ll + 3) = ff(2)
-            zr(lzr-1+ 44 + ll + 3) = dff(1,2)
-            zr(lzr-1+ 76 + ll + 3) = dff(2,2)
-            zr(lzr-1+ 12 + ll + 4) = ff(3)
-            zr(lzr-1+ 44 + ll + 4) = dff(1,3)
-            zr(lzr-1+ 76 + ll + 4) = dff(2,3)
-            zr(lzr-1+ 12 + ll + 5) = ff(8)
-            zr(lzr-1+ 44 + ll + 5) = dff(1,8)
-            zr(lzr-1+ 76 + ll + 5) = dff(2,8)
-            zr(lzr-1+ 12 + ll + 6) = ff(5)
-            zr(lzr-1+ 44 + ll + 6) = dff(1,5)
-            zr(lzr-1+ 76 + ll + 6) = dff(2,5)
-            zr(lzr-1+ 12 + ll + 7) = ff(6)
-            zr(lzr-1+ 44 + ll + 7) = dff(1,6)
-            zr(lzr-1+ 76 + ll + 7) = dff(2,6)
-            zr(lzr-1+ 12 + ll + 8) = ff(7)
-            zr(lzr-1+ 44 + ll + 8) = dff(1,7)
-            zr(lzr-1+ 76 + ll + 8) = dff(2,7)
+            do 21 ino = 1, 8
+                zr(lzr-1+12+ll+ino) = ff(ino)
+                zr(lzr-1+44+ll+ino) = dff(1,ino)
+                zr(lzr-1+76+ll+ino) = dff(2,ino)
+21          continue
 20      continue
 !
 !     DEFINITION DES 9=3*3 PTS DE GAUSS NORMAL
 !     POSITION DES POINTS DE GAUSS DANS LE PLAN
 !     ET VALEUR DES POIDS ASSOCIES
-        call elraga('QU8', 'FPG9    ', ndim, nbpg, xpg,&
+        call elraga('QU8', 'FPG9COQ ', ndim, nbpg, xpg,&
                     poipg)
 !
         zr(lzr-1+109) = xpg(1)
-        zr(lzr-1+110) = xpg(9)
-        zr(lzr-1+111) = xpg(3)
-        zr(lzr-1+112) = xpg(11)
-        zr(lzr-1+113) = xpg(5)
-        zr(lzr-1+114) = xpg(13)
-        zr(lzr-1+115) = xpg(7)
+        zr(lzr-1+110) = xpg(3)
+        zr(lzr-1+111) = xpg(5)
+        zr(lzr-1+112) = xpg(7)
+        zr(lzr-1+113) = xpg(9)
+        zr(lzr-1+114) = xpg(11)
+        zr(lzr-1+115) = xpg(13)
         zr(lzr-1+116) = xpg(15)
         zr(lzr-1+117) = xpg(17)
-!
+
         zr(lzr-1+118) = xpg(2)
-        zr(lzr-1+119) = xpg(10)
-        zr(lzr-1+120) = xpg(4)
-        zr(lzr-1+121) = xpg(12)
-        zr(lzr-1+122) = xpg(6)
-        zr(lzr-1+123) = xpg(14)
-        zr(lzr-1+124) = xpg(8)
+        zr(lzr-1+119) = xpg(4)
+        zr(lzr-1+120) = xpg(6)
+        zr(lzr-1+121) = xpg(8)
+        zr(lzr-1+122) = xpg(10)
+        zr(lzr-1+123) = xpg(12)
+        zr(lzr-1+124) = xpg(14)
         zr(lzr-1+125) = xpg(16)
         zr(lzr-1+126) = xpg(18)
 !
 !     VALEUR DES POIDS ASSOCIES
 !
         zr(lzr-1+127) = poipg(1)
-        zr(lzr-1+128) = poipg(5)
-        zr(lzr-1+129) = poipg(2)
-        zr(lzr-1+130) = poipg(6)
-        zr(lzr-1+131) = poipg(3)
-        zr(lzr-1+132) = poipg(7)
-        zr(lzr-1+133) = poipg(4)
+        zr(lzr-1+128) = poipg(2)
+        zr(lzr-1+129) = poipg(3)
+        zr(lzr-1+130) = poipg(4)
+        zr(lzr-1+131) = poipg(5)
+        zr(lzr-1+132) = poipg(6)
+        zr(lzr-1+133) = poipg(7)
         zr(lzr-1+134) = poipg(8)
         zr(lzr-1+135) = poipg(9)
 !
@@ -458,30 +439,11 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            zr(lzr-1+ 135 + ll + 1) = ff(4)
-            zr(lzr-1+ 207 + ll + 1) = dff(1,4)
-            zr(lzr-1+ 279 + ll + 1) = dff(2,4)
-            zr(lzr-1+ 135 + ll + 2) = ff(1)
-            zr(lzr-1+ 207 + ll + 2) = dff(1,1)
-            zr(lzr-1+ 279 + ll + 2) = dff(2,1)
-            zr(lzr-1+ 135 + ll + 3) = ff(2)
-            zr(lzr-1+ 207 + ll + 3) = dff(1,2)
-            zr(lzr-1+ 279 + ll + 3) = dff(2,2)
-            zr(lzr-1+ 135 + ll + 4) = ff(3)
-            zr(lzr-1+ 207 + ll + 4) = dff(1,3)
-            zr(lzr-1+ 279 + ll + 4) = dff(2,3)
-            zr(lzr-1+ 135 + ll + 5) = ff(8)
-            zr(lzr-1+ 207 + ll + 5) = dff(1,8)
-            zr(lzr-1+ 279 + ll + 5) = dff(2,8)
-            zr(lzr-1+ 135 + ll + 6) = ff(5)
-            zr(lzr-1+ 207 + ll + 6) = dff(1,5)
-            zr(lzr-1+ 279 + ll + 6) = dff(2,5)
-            zr(lzr-1+ 135 + ll + 7) = ff(6)
-            zr(lzr-1+ 207 + ll + 7) = dff(1,6)
-            zr(lzr-1+ 279 + ll + 7) = dff(2,6)
-            zr(lzr-1+ 135 + ll + 8) = ff(7)
-            zr(lzr-1+ 207 + ll + 8) = dff(1,7)
-            zr(lzr-1+ 279 + ll + 8) = dff(2,7)
+            do 22 ino = 1,8
+                zr(lzr-1+135+ll+ino) = ff(ino)
+                zr(lzr-1+207+ll+ino) = dff(1,ino)
+                zr(lzr-1+279+ll+ino) = dff(2,ino)
+22          continue
 40      continue
 !
 !     FONCTIONS DE LAGRANGE - POUR LES TERMES
@@ -500,33 +462,11 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU9', x, 18, dff, nno,&
                         ndim)
             ll = 9* (l-1)
-            zr(lzr-1+ 351 + ll + 1) = ff(4)
-            zr(lzr-1+ 387 + ll + 1) = dff(1,4)
-            zr(lzr-1+ 423 + ll + 1) = dff(2,4)
-            zr(lzr-1+ 351 + ll + 2) = ff(1)
-            zr(lzr-1+ 387 + ll + 2) = dff(1,1)
-            zr(lzr-1+ 423 + ll + 2) = dff(2,1)
-            zr(lzr-1+ 351 + ll + 3) = ff(2)
-            zr(lzr-1+ 387 + ll + 3) = dff(1,2)
-            zr(lzr-1+ 423 + ll + 3) = dff(2,2)
-            zr(lzr-1+ 351 + ll + 4) = ff(3)
-            zr(lzr-1+ 387 + ll + 4) = dff(1,3)
-            zr(lzr-1+ 423 + ll + 4) = dff(2,3)
-            zr(lzr-1+ 351 + ll + 5) = ff(8)
-            zr(lzr-1+ 387 + ll + 5) = dff(1,8)
-            zr(lzr-1+ 423 + ll + 5) = dff(2,8)
-            zr(lzr-1+ 351 + ll + 6) = ff(5)
-            zr(lzr-1+ 387 + ll + 6) = dff(1,5)
-            zr(lzr-1+ 423 + ll + 6) = dff(2,5)
-            zr(lzr-1+ 351 + ll + 7) = ff(6)
-            zr(lzr-1+ 387 + ll + 7) = dff(1,6)
-            zr(lzr-1+ 423 + ll + 7) = dff(2,6)
-            zr(lzr-1+ 351 + ll + 8) = ff(7)
-            zr(lzr-1+ 387 + ll + 8) = dff(1,7)
-            zr(lzr-1+ 423 + ll + 8) = dff(2,7)
-            zr(lzr-1+ 351 + ll + 9) = ff(9)
-            zr(lzr-1+ 387 + ll + 9) = dff(1,9)
-            zr(lzr-1+ 423 + ll + 9) = dff(2,9)
+            do 23 ino = 1,9
+                zr(lzr-1+ 351 + ll + ino) = ff(ino)
+                zr(lzr-1+ 387 + ll + ino) = dff(1,ino)
+                zr(lzr-1+ 423 + ll + ino) = dff(2,ino)
+23          continue
 60      continue
 !
 !    VALEURS AUX 9 PTS DE GAUSS NORMAL
@@ -542,33 +482,11 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU9', x, 18, dff, nno,&
                         ndim)
             ll = 9* (l-1)
-            zr(lzr-1+ 459 + ll + 1) = ff(4)
-            zr(lzr-1+ 540 + ll + 1) = dff(1,4)
-            zr(lzr-1+ 621 + ll + 1) = dff(2,4)
-            zr(lzr-1+ 459 + ll + 2) = ff(1)
-            zr(lzr-1+ 540 + ll + 2) = dff(1,1)
-            zr(lzr-1+ 621 + ll + 2) = dff(2,1)
-            zr(lzr-1+ 459 + ll + 3) = ff(2)
-            zr(lzr-1+ 540 + ll + 3) = dff(1,2)
-            zr(lzr-1+ 621 + ll + 3) = dff(2,2)
-            zr(lzr-1+ 459 + ll + 4) = ff(3)
-            zr(lzr-1+ 540 + ll + 4) = dff(1,3)
-            zr(lzr-1+ 621 + ll + 4) = dff(2,3)
-            zr(lzr-1+ 459 + ll + 5) = ff(8)
-            zr(lzr-1+ 540 + ll + 5) = dff(1,8)
-            zr(lzr-1+ 621 + ll + 5) = dff(2,8)
-            zr(lzr-1+ 459 + ll + 6) = ff(5)
-            zr(lzr-1+ 540 + ll + 6) = dff(1,5)
-            zr(lzr-1+ 621 + ll + 6) = dff(2,5)
-            zr(lzr-1+ 459 + ll + 7) = ff(6)
-            zr(lzr-1+ 540 + ll + 7) = dff(1,6)
-            zr(lzr-1+ 621 + ll + 7) = dff(2,6)
-            zr(lzr-1+ 459 + ll + 8) = ff(7)
-            zr(lzr-1+ 540 + ll + 8) = dff(1,7)
-            zr(lzr-1+ 621 + ll + 8) = dff(2,7)
-            zr(lzr-1+ 459 + ll + 9) = ff(9)
-            zr(lzr-1+ 540 + ll + 9) = dff(1,9)
-            zr(lzr-1+ 621 + ll + 9) = dff(2,9)
+            do 24 ino = 1,9
+                zr(lzr-1+ 459 + ll + ino) = ff(ino)
+                zr(lzr-1+ 540 + ll + ino) = dff(1,ino)
+                zr(lzr-1+ 621 + ll + ino) = dff(2,ino)
+24          continue
 80      continue
 !
 !    FONCTIONS ASSOCIEES AUX 4 PTS DE GAUSS REDUITS
@@ -608,23 +526,23 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     ON DONNE LA POSITION DES NOEUDS
 !
         zr(lzr-1+811) = -1.d0
-        zr(lzr-1+812) = -1.d0
+        zr(lzr-1+812) = 1.d0
         zr(lzr-1+813) = 1.d0
-        zr(lzr-1+814) = 1.d0
-        zr(lzr-1+815) = -1.d0
-        zr(lzr-1+816) = 0.d0
-        zr(lzr-1+817) = 1.d0
-        zr(lzr-1+818) = 0.d0
+        zr(lzr-1+814) = -1.d0
+        zr(lzr-1+815) = 0.d0
+        zr(lzr-1+816) = 1.d0
+        zr(lzr-1+817) = 0.d0
+        zr(lzr-1+818) = -1.d0
         zr(lzr-1+819) = 0.d0
-!
-        zr(lzr-1+820) = 1.d0
+
+        zr(lzr-1+820) = -1.d0
         zr(lzr-1+821) = -1.d0
-        zr(lzr-1+822) = -1.d0
+        zr(lzr-1+822) = 1.d0
         zr(lzr-1+823) = 1.d0
-        zr(lzr-1+824) = 0.d0
-        zr(lzr-1+825) = -1.d0
-        zr(lzr-1+826) = 0.d0
-        zr(lzr-1+827) = 1.d0
+        zr(lzr-1+824) = -1.d0
+        zr(lzr-1+825) = 0.d0
+        zr(lzr-1+826) = 1.d0
+        zr(lzr-1+827) = 0.d0
         zr(lzr-1+828) = 0.d0
 !
 !     VALEURS DES FONCTIONS DE SERENDIP
@@ -638,22 +556,10 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            zr(lzr-1+ 828 + ll + 1) = dff(1,4)
-            zr(lzr-1+ 900 + ll + 1) = dff(2,4)
-            zr(lzr-1+ 828 + ll + 2) = dff(1,1)
-            zr(lzr-1+ 900 + ll + 2) = dff(2,1)
-            zr(lzr-1+ 828 + ll + 3) = dff(1,2)
-            zr(lzr-1+ 900 + ll + 3) = dff(2,2)
-            zr(lzr-1+ 828 + ll + 4) = dff(1,3)
-            zr(lzr-1+ 900 + ll + 4) = dff(2,3)
-            zr(lzr-1+ 828 + ll + 5) = dff(1,8)
-            zr(lzr-1+ 900 + ll + 5) = dff(2,8)
-            zr(lzr-1+ 828 + ll + 6) = dff(1,5)
-            zr(lzr-1+ 900 + ll + 6) = dff(2,5)
-            zr(lzr-1+ 828 + ll + 7) = dff(1,6)
-            zr(lzr-1+ 900 + ll + 7) = dff(2,6)
-            zr(lzr-1+ 828 + ll + 8) = dff(1,7)
-            zr(lzr-1+ 900 + ll + 8) = dff(2,7)
+            do 25 ino = 1,8
+                zr(lzr-1+ 828 + ll + ino) = dff(1,ino)
+                zr(lzr-1+ 900 + ll + ino) = dff(2,ino)
+25          continue
 120      continue
 !
 !     DEFINITION DES 8 FONCTIONS D'INTERPOLATION QUI PERMETTENT
@@ -746,24 +652,24 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             xi2 = zr(lzr-1+i2)
             ll = 8* (l-1)
 !
-            ff(1)= xi2*(2.d0*xi2-1.d0)
-            ff(2)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0)
-            ff(3)= xi1*(2.d0*xi1-1.d0)
-            ff(4)= 4.d0*xi2*(1.d0-xi1-xi2)
-            ff(5)= 4.d0*xi1*(1.d0-xi1-xi2)
-            ff(6)= 4.d0*xi1*xi2
-            dff(1,1)= 0.d0
-            dff(1,2)=-4.d0*(1.d0-xi1-xi2)+1.d0
-            dff(1,3)= 4.d0*xi1-1.d0
-            dff(1,4)=-4.d0*xi2
-            dff(1,5)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1
-            dff(1,6)= 4.d0*xi2
-            dff(2,1)= 4.d0*xi2-1.d0
-            dff(2,2)=-4.d0*(1.d0-xi1-xi2)+1.d0
-            dff(2,3)= 0.d0
-            dff(2,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
-            dff(2,5)=-4.d0*xi1
-            dff(2,6)= 4.d0*xi1
+            ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0)
+            ff(2)= xi1*(2.d0*xi1-1.d0)
+            ff(3)= xi2*(2.d0*xi2-1.d0)
+            ff(4)= 4.d0*xi1*(1.d0-xi1-xi2)
+            ff(5)= 4.d0*xi1*xi2
+            ff(6)= 4.d0*xi2*(1.d0-xi1-xi2)
+            dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
+            dff(1,2)= 4.d0*xi1-1.d0
+            dff(1,3)= 0.d0
+            dff(1,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1
+            dff(1,5)= 4.d0*xi2
+            dff(1,6)=-4.d0*xi2
+            dff(2,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
+            dff(2,2)= 0.d0
+            dff(2,3)= 4.d0*xi2-1.d0
+            dff(2,4)=-4.d0*xi1
+            dff(2,5)= 4.d0*xi1
+            dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
 !
             do 180 l1 = 1, 6
                 i3 = 12 + ll + l1
@@ -815,24 +721,24 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             xi2 = zr(lzr-1+i2)
             ll = 8* (l-1)
 !
-            ff(1)= xi2*(2.d0*xi2-1.d0)
-            ff(2)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0)
-            ff(3)= xi1*(2.d0*xi1-1.d0)
-            ff(4)= 4.d0*xi2*(1.d0-xi1-xi2)
-            ff(5)= 4.d0*xi1*(1.d0-xi1-xi2)
-            ff(6)= 4.d0*xi1*xi2
-            dff(1,1)= 0.d0
-            dff(1,2)=-4.d0*(1.d0-xi1-xi2)+1.d0
-            dff(1,3)= 4.d0*xi1-1.d0
-            dff(1,4)=-4.d0*xi2
-            dff(1,5)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1
-            dff(1,6)= 4.d0*xi2
-            dff(2,1)= 4.d0*xi2-1.d0
-            dff(2,2)=-4.d0*(1.d0-xi1-xi2)+1.d0
-            dff(2,3)= 0.d0
-            dff(2,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
-            dff(2,5)=-4.d0*xi1
-            dff(2,6)= 4.d0*xi1
+            ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0)
+            ff(2)= xi1*(2.d0*xi1-1.d0)
+            ff(3)= xi2*(2.d0*xi2-1.d0)
+            ff(4)= 4.d0*xi1*(1.d0-xi1-xi2)
+            ff(5)= 4.d0*xi1*xi2
+            ff(6)= 4.d0*xi2*(1.d0-xi1-xi2)
+            dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
+            dff(1,2)= 4.d0*xi1-1.d0
+            dff(1,3)= 0.d0
+            dff(1,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1
+            dff(1,5)= 4.d0*xi2
+            dff(1,6)=-4.d0*xi2
+            dff(2,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
+            dff(2,2)= 0.d0
+            dff(2,3)= 4.d0*xi2-1.d0
+            dff(2,4)=-4.d0*xi1
+            dff(2,5)= 4.d0*xi1
+            dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
 !
             do 200 l1 = 1, 6
                 i3 = 135 + ll + l1
@@ -856,35 +762,35 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             xi2 = zr(lzr-1+i2)
             ll = 9* (l-1)
 !
-            ff(1)= xi2*(2.d0*xi2-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(2)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*&
+            ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*&
             xi2*(1.d0-xi1-xi2)
-            ff(3)= xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(4)= 4.d0*xi2*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
+            ff(2)= xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(3)= xi2*(2.d0*xi2-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(4)= 4.d0*xi1*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
             xi2)
-            ff(5)= 4.d0*xi1*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
+            ff(5)= 4.d0*xi1*xi2-12.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(6)= 4.d0*xi2*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
             xi2)
-            ff(6)= 4.d0*xi1*xi2-12.d0*xi1*xi2*(1.d0-xi1-xi2)
             ff(7)= 27.d0*xi1*xi2*(1.d0-xi1-xi2)
-            dff(1,1)=3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
-            dff(1,2)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi2*(1.d0-xi1-&
+            dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi2*(1.d0-xi1-&
             xi2)-3.d0*xi1*xi2
-            dff(1,3)= 4.d0*xi1-1.d0+3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*&
+            dff(1,2)= 4.d0*xi1-1.d0+3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*&
             xi2
-            dff(1,4)=-4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(1,5)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1 -12.d0*xi2*(1.d0-&
+            dff(1,3)=3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(1,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1 -12.d0*xi2*(1.d0-&
             xi1-xi2)+12.d0*xi1*xi2
-            dff(1,6)= 4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,5)= 4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,6)=-4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
             dff(1,7)= 27.d0*xi2*(1.d0-xi1-xi2)-27.d0*xi1*xi2
-            dff(2,1)= 4.d0*xi2-1.d0+3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*&
-            xi2
-            dff(2,2)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi1*(1.d0-xi1-&
+            dff(2,1)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi1*(1.d0-xi1-&
             xi2)-3.d0*xi1*xi2
-            dff(2,3)= 3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
-            dff(2,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-&
+            dff(2,2)= 3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(2,3)= 4.d0*xi2-1.d0+3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*&
+            xi2
+            dff(2,4)=-4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,5)= 4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-&
             xi1-xi2)+12.d0*xi1*xi2
-            dff(2,5)=-4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(2,6)= 4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
             dff(2,7)= 27.d0*xi1*(1.d0-xi1-xi2)-27.d0*xi1*xi2
 !
             do 220 l1 = 1, 7
@@ -906,35 +812,35 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             xi2 = zr(lzr-1+i2)
             ll = 9* (l-1)
 !
-            ff(1)= xi2*(2.d0*xi2-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(2)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*&
+            ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*&
             xi2*(1.d0-xi1-xi2)
-            ff(3)= xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(4)= 4.d0*xi2*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
+            ff(2)= xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(3)= xi2*(2.d0*xi2-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(4)= 4.d0*xi1*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
             xi2)
-            ff(5)= 4.d0*xi1*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
+            ff(5)= 4.d0*xi1*xi2-12.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(6)= 4.d0*xi2*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
             xi2)
-            ff(6)= 4.d0*xi1*xi2-12.d0*xi1*xi2*(1.d0-xi1-xi2)
             ff(7)= 27.d0*xi1*xi2*(1.d0-xi1-xi2)
-            dff(1,1)=3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
-            dff(1,2)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi2*(1.d0-xi1-&
+            dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi2*(1.d0-xi1-&
             xi2)-3.d0*xi1*xi2
-            dff(1,3)= 4.d0*xi1-1.d0+3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*&
+            dff(1,2)= 4.d0*xi1-1.d0+3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*&
             xi2
-            dff(1,4)=-4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(1,5)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1 -12.d0*xi2*(1.d0-&
+            dff(1,3)=3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(1,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1 -12.d0*xi2*(1.d0-&
             xi1-xi2)+12.d0*xi1*xi2
-            dff(1,6)= 4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,5)= 4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,6)=-4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
             dff(1,7)= 27.d0*xi2*(1.d0-xi1-xi2)-27.d0*xi1*xi2
-            dff(2,1)= 4.d0*xi2-1.d0+3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*&
-            xi2
-            dff(2,2)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi1*(1.d0-xi1-&
+            dff(2,1)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi1*(1.d0-xi1-&
             xi2)-3.d0*xi1*xi2
-            dff(2,3)= 3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
-            dff(2,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-&
+            dff(2,2)= 3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(2,3)= 4.d0*xi2-1.d0+3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*&
+            xi2
+            dff(2,4)=-4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,5)= 4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-&
             xi1-xi2)+12.d0*xi1*xi2
-            dff(2,5)=-4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(2,6)= 4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
             dff(2,7)= 27.d0*xi1*(1.d0-xi1-xi2)-27.d0*xi1*xi2
 !
             do 240 l1 = 1, 7
@@ -983,18 +889,18 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     POSITION DES 7 NOEUDS
 !
         zr(lzr-1+811) = 0.000000000000000d0
-        zr(lzr-1+812) = 0.000000000000000d0
-        zr(lzr-1+813) = 1.000000000000000d0
-        zr(lzr-1+814) = 0.000000000000000d0
+        zr(lzr-1+812) = 1.000000000000000d0
+        zr(lzr-1+813) = 0.000000000000000d0
+        zr(lzr-1+814) = 0.500000000000000d0
         zr(lzr-1+815) = 0.500000000000000d0
-        zr(lzr-1+816) = 0.500000000000000d0
+        zr(lzr-1+816) = 0.000000000000000d0
         zr(lzr-1+817) = 0.333333333333333d0
 !
-        zr(lzr-1+820) = 1.000000000000000d0
+        zr(lzr-1+820) = 0.000000000000000d0
         zr(lzr-1+821) = 0.000000000000000d0
-        zr(lzr-1+822) = 0.000000000000000d0
-        zr(lzr-1+823) = 0.500000000000000d0
-        zr(lzr-1+824) = 0.000000000000000d0
+        zr(lzr-1+822) = 1.000000000000000d0
+        zr(lzr-1+823) = 0.000000000000000d0
+        zr(lzr-1+824) = 0.500000000000000d0
         zr(lzr-1+825) = 0.500000000000000d0
         zr(lzr-1+826) = 0.333333333333333d0
 !
@@ -1005,18 +911,18 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             xi2 = zr(lzr-1+i2)
             ll = 8* (l-1)
 !
-            dff(1,1)= 0.d0
-            dff(1,2)=-4.d0*(1.d0-xi1-xi2)+1.d0
-            dff(1,3)= 4.d0*xi1-1.d0
-            dff(1,4)=-4.d0*xi2
-            dff(1,5)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1
-            dff(1,6)= 4.d0*xi2
-            dff(2,1)= 4.d0*xi2-1.d0
-            dff(2,2)=-4.d0*(1.d0-xi1-xi2)+1.d0
-            dff(2,3)= 0.d0
-            dff(2,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
-            dff(2,5)=-4.d0*xi1
-            dff(2,6)= 4.d0*xi1
+            dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
+            dff(1,2)= 4.d0*xi1-1.d0
+            dff(1,3)= 0.d0
+            dff(1,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1
+            dff(1,5)= 4.d0*xi2
+            dff(1,6)=-4.d0*xi2
+            dff(2,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
+            dff(2,2)= 0.d0
+            dff(2,3)= 4.d0*xi2-1.d0
+            dff(2,4)=-4.d0*xi1
+            dff(2,5)= 4.d0*xi1
+            dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
 !
             do 280 l1 = 1, 6
                 i3 = 828 + ll + l1

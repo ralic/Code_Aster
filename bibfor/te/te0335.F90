@@ -73,8 +73,13 @@ subroutine te0335(option, nomte)
 !
     call jemarq()
 !
-    call elref4(' ', 'RIGI', ndim1, nno, nnos,&
+    if ((nomte.eq.'MEC3QU9H') .or. (nomte.eq.'MEC3TR7H')) then
+        call elref4(' ', 'MASS', ndim1, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
+    else
+        call elref4(' ', 'RIGI', ndim1, nno, nnos,&
+                npg, ipoids, ivf, idfde, jgano)
+    endif
 !
     if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELGA')&
         .or. (option.eq.'EPMQ_ELNO')) then

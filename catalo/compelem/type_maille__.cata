@@ -159,6 +159,7 @@ MAILLE__ QUAD4      4       DIM__  2   CODE__  'QU4'
          FAMILLE__ FPG4        4
          FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG9        9
+         FAMILLE__ FPG9COQ     9
          FAMILLE__ XFEM72      72
          FAMILLE__ SIMP        9
 
@@ -174,6 +175,7 @@ MAILLE__ QUAD8      8       DIM__  2   CODE__  'QU8'
          FAMILLE__ FPG4        4
          FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG9        9
+         FAMILLE__ FPG9COQ     9
          FAMILLE__ XFEM144     144
 
 MAILLE__ QUAD88     16      DIM__  2   CODE__  'Q88'
@@ -188,6 +190,7 @@ MAILLE__ QUAD9      9       DIM__  2   CODE__  'QU9'
          FAMILLE__ FPG4        4
          FAMILLE__ FPG5        5
          FAMILLE__ FPG9        9
+         FAMILLE__ FPG9COQ     9
    ELREFE__ MEC3QU9H
          FAMILLE__ FPG1        9
 

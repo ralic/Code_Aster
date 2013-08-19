@@ -195,8 +195,10 @@ VT=STAT_NON_LINE( reuse=VT,
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
-                MATRICE = 'ELASTIQUE',
-                REAC_ITER = 1),
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 10),
+                     RECH_LINEAIRE=_F(
+                ITER_LINE_MAXI = 3),
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-06,
                 ITER_GLOB_MAXI = 50)
@@ -229,7 +231,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC= 1.49660306E+03,
                    VALE_REFE=1453.0,
                    REFERENCE='NON_DEFINI',
-                   PRECISION=0.031, TOLE_MACHINE=(0.031, 1.E-4),
+                   PRECISION=0.032, TOLE_MACHINE=(0.031, 1.E-4),
                    MAILLE='MA1',),
                 _F(INST=2.0,
                    POINT=1,

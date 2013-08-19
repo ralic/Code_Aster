@@ -1383,7 +1383,7 @@ IMPR_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,),);
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  POINT=2,
+                  POINT=3,
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='MYY',
@@ -1392,7 +1392,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  POINT=4,
+                  POINT=2,
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='MXY',
@@ -1401,7 +1401,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  POINT=3,
+                  POINT=4,
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='QX',
@@ -1410,7 +1410,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  POINT=4,
+                  POINT=2,
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='QY',
