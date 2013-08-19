@@ -114,23 +114,23 @@ subroutine jjldyn(imode, lmin, ltot)
         ncla2 = index ( classe , 'V' )
         ncla1 = ncla2
     endif
-    do 200 ic = ncla2, ncla1, - 1
+    do ic = ncla2, ncla1, - 1
         if (nreuti(ic) .eq. 0) goto 200
         call mpicm0(rang, nbproc)
         if (rang .ne. 0) then
             graine = (rang+1)*datei*1.5d0
-            do 202 i = 2, nreuti(ic)
+            do i = 2, nreuti(ic)
                 call random(graine)
                 k = int(graine*i)+1
                 j = indir(jindir(ic)+i)
                 indir(jindir(ic)+i) = indir(jindir(ic)+k)
                 indir(jindir(ic)+k) = j
-202          continue
+            end do
         endif
 !
         nbioav(1) = nbacce(2*ic-1)
         nbioav(2) = nbacce(2*ic )
-        do 205 jj = 1, nreuti(ic)
+        do jj = 1, nreuti(ic)
             j = indir(jindir(ic)+jj)
             iadmi = iadm(jiadm(ic)+2*j-1)
             if (iadmi .eq. 0) goto 205
@@ -153,7 +153,7 @@ subroutine jjldyn(imode, lmin, ltot)
                 if (ixiadm .gt. 0) then
                     ibiadm = iadm ( jiadm(ic) + 2*ixiadm-1 )
                     ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
-                    do 210 k = 1, nmax
+                    do k = 1, nmax
                         iadmoc = iszon(jiszon + ibiadm - 1 +2*k-1)
                         iadyoc = iszon(jiszon + ibiadm - 1 +2*k )
                         if (iadyoc .ne. 0) then
@@ -211,7 +211,8 @@ subroutine jjldyn(imode, lmin, ltot)
                                 endif
                             endif
                         endif
-210                  continue
+210                     continue
+                    end do
                 endif
                 goto 205
 !          ELSE IF ( NOM32(25:32) .EQ. ' ' ) THEN
@@ -263,13 +264,15 @@ subroutine jjldyn(imode, lmin, ltot)
                     endif
                 endif
             endif
-205      continue
+205         continue
+        end do
 !
         lgio(1)=lgio(1)+1024*longbl(ic)*lois*(nbacce(2*ic-1)-nbioav(1)&
         )
         lgio(2)=lgio(2)+1024*longbl(ic)*lois*(nbacce(2*ic )-nbioav(2))
-200  end do
-300  continue
+200     continue
+    end do
+300 continue
     mxltot=mxltot+(ltot*lois)/(1024*1024)
 !
     if (lmin .ne. -2) then

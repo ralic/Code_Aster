@@ -74,33 +74,31 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 !
 10  continue
     lon1=incr
-    do 30,k=1,40
+    do k=1,40
 !
 !        -- ON VERIFIE LA CAPACITE DES ENTIERS :
-    lon1=lon1*2
-    ASSERT(lon1.gt.0)
-    ASSERT(idep+lon1.gt.0)
+        lon1=lon1*2
+        ASSERT(lon1.gt.0)
+        ASSERT(idep+lon1.gt.0)
 !
 !       -- TENTATIVE D'ALLOCATION :
-    call hpalloc(jad, idep+lon1, ierr, 0)
-    if (ierr .eq. 0) then
-        call hpdeallc(jad, nbfree)
-        goto 30
-    else
-        ASSERT(ierr.eq.-2)
-        idep=idep+lon1/2
-        goto 20
-    endif
+        call hpalloc(jad, idep+lon1, ierr, 0)
+        if (ierr .eq. 0) then
+            call hpdeallc(jad, nbfree)
+            goto 30
+        else
+            ASSERT(ierr.eq.-2)
+            idep=idep+lon1/2
+        endif
 !
-20  continue
-    if (k .gt. 1) then
-        goto 10
-    else
-        tmax=dble(idep)
-        goto 40
-    endif
-    30 end do
-!
+        if (k .gt. 1) then
+            goto 10
+        else
+            tmax=dble(idep)
+            goto 40
+        endif
+30  continue
+    end do
 !
 40  continue
 !

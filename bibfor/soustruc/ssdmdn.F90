@@ -75,91 +75,91 @@ subroutine ssdmdn(mag)
 !     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
 !     -----------------------------------------
     call getfac('DEFI_NOEUD', nocc)
-    do 1, iocc=1,nocc
-    call getvtx('DEFI_NOEUD', 'TOUT', iocc, iarg, 1,&
+    do iocc=1,nocc
+        call getvtx('DEFI_NOEUD', 'TOUT', iocc, iarg, 1,&
                 kbid, n1)
-    if (n1 .eq. 1) then
+        if (n1 .eq. 1) then
 !
-!       -- CAS : TOUT: 'OUI'
-!       --------------------
-        lpr=0
-        call getltx('DEFI_NOEUD', 'PREFIXE', iocc, 8, 1,&
-                    lpr, n2)
-        lpref = lpr(1)
-        call getvis('DEFI_NOEUD', 'INDEX', iocc, iarg, 4,&
-                    indi, n3)
-        lmail=indi(2)-indi(1)+1
-        lnoeu=indi(4)-indi(3)+1
-        lmail=max(lmail,0)
-        lnoeu=max(lnoeu,0)
-        longt= lpref+lmail+lnoeu
-        if (longt .gt. 8) call u2mess('F', 'SOUSTRUC_57')
-        if (lpref .gt. 0) call getvtx('DEFI_NOEUD', 'PREFIXE', iocc, iarg, 1,&
-                                      pref, n2)
+!           -- CAS : TOUT: 'OUI'
+!           --------------------
+            lpr=0
+            call getltx('DEFI_NOEUD', 'PREFIXE', iocc, 8, 1,&
+                        lpr, n2)
+            lpref = lpr(1)
+            call getvis('DEFI_NOEUD', 'INDEX', iocc, iarg, 4,&
+                        indi, n3)
+            lmail=indi(2)-indi(1)+1
+            lnoeu=indi(4)-indi(3)+1
+            lmail=max(lmail,0)
+            lnoeu=max(lnoeu,0)
+            longt= lpref+lmail+lnoeu
+            if (longt .gt. 8) call u2mess('F', 'SOUSTRUC_57')
+            if (lpref .gt. 0) call getvtx('DEFI_NOEUD', 'PREFIXE', iocc, iarg, 1,&
+                                          pref, n2)
 !
-        do 2 , isma=1,nbsma
-        call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
-        call jenuno(jexnum(mag//'.SUPMAIL', isma), nosma)
-        nomacr= zk8(ianmcr-1+isma)
-        call jeveuo(nomacr//'.CONX', 'L', iaconx)
-        call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
-                    mal, ied)
-        nbnoe=zi(iadim2-1+4*(isma-1)+1)
-        nbnol=zi(iadim2-1+4*(isma-1)+2)
-        nbnoet=nbnoe+nbnol
-        do 3 , i=1,nbnoet
-        ino= zi(iasupm-1+i)
-        if (ino .gt. nnnoe) goto 3
-        ino1= zi(iaconx-1+3*(i-1)+2)
-        call jenuno(jexnum(mal//'.NOMNOE', ino1), nomnol)
-        i1=1
-        if (lpref .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lpref) = pref(1:lpref)
-        i1= i1+lpref
-        if (lmail .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lmail) = nosma( indi(1):indi(2))
-        i1= i1+lmail
-        if (lnoeu .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lnoeu) = nomnol( indi(3):indi(4))
- 3      continue
- 2      continue
-    else
+            do isma=1,nbsma
+                call jeveuo(jexnum(mag//'.SUPMAIL', isma), 'L', iasupm)
+                call jenuno(jexnum(mag//'.SUPMAIL', isma), nosma)
+                nomacr= zk8(ianmcr-1+isma)
+                call jeveuo(nomacr//'.CONX', 'L', iaconx)
+                call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
+                            mal, ied)
+                nbnoe=zi(iadim2-1+4*(isma-1)+1)
+                nbnol=zi(iadim2-1+4*(isma-1)+2)
+                nbnoet=nbnoe+nbnol
+                do i=1,nbnoet
+                    ino= zi(iasupm-1+i)
+                    if (ino .gt. nnnoe) goto 3
+                    ino1= zi(iaconx-1+3*(i-1)+2)
+                    call jenuno(jexnum(mal//'.NOMNOE', ino1), nomnol)
+                    i1=1
+                    if (lpref .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lpref) = pref(1:lpref)
+                    i1= i1+lpref
+                    if (lmail .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lmail) = nosma( indi(1):indi(2))
+                    i1= i1+lmail
+                    if (lnoeu .gt. 0) zk8(ianon2-1+ino)(i1:i1-1+lnoeu) = nomnol( indi(3):indi(4))
+ 3                  continue
+                end do
+            end do
+        else
 !
 !
 !       -- CAS : MAILLE, NOEUD_FIN, NOEUD_INIT :
 !       ---------------------------------------
-        call getvtx('DEFI_NOEUD', 'SUPER_MAILLE', iocc, iarg, 1,&
-                    nosma, n1)
-        call getvtx('DEFI_NOEUD', 'NOEUD_FIN', iocc, iarg, 1,&
-                    nomnog, n2)
-        call getvtx('DEFI_NOEUD', 'NOEUD_INIT', iocc, iarg, 1,&
-                    nomnol, n3)
-        if ((n1*n2*n3) .eq. 0) call u2mess('F', 'SOUSTRUC_58')
+            call getvtx('DEFI_NOEUD', 'SUPER_MAILLE', iocc, iarg, 1,&
+                        nosma, n1)
+            call getvtx('DEFI_NOEUD', 'NOEUD_FIN', iocc, iarg, 1,&
+                        nomnog, n2)
+            call getvtx('DEFI_NOEUD', 'NOEUD_INIT', iocc, iarg, 1,&
+                        nomnol, n3)
+            if ((n1*n2*n3) .eq. 0) call u2mess('F', 'SOUSTRUC_58')
 !
-        call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
-        nomacr= zk8(ianmcr-1+isma)
-        call jeveuo(nomacr//'.LINO', 'L', ialino)
-        call jelira(nomacr//'.LINO', 'LONUTI', nbnoex, kbid)
-        call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
-                    mal, ied)
-        call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)
-        kk= indiis(zi(ialino),inol,1,nbnoex)
-        if (kk .eq. 0) then
-            valk(1) = nomnol
-            valk(2) = nosma
-            call u2mesk('A', 'SOUSTRUC_59', 2, valk)
-            goto 1
+            call jenonu(jexnom(mag//'.SUPMAIL', nosma), isma)
+            nomacr= zk8(ianmcr-1+isma)
+            call jeveuo(nomacr//'.LINO', 'L', ialino)
+            call jelira(nomacr//'.LINO', 'LONUTI', nbnoex, kbid)
+            call dismoi('F', 'NOM_MAILLA', nomacr, 'MACR_ELEM_STAT', ibid,&
+                        mal, ied)
+            call jenonu(jexnom(mal//'.NOMNOE', nomnol), inol)
+            kk= indiis(zi(ialino),inol,1,nbnoex)
+            if (kk .eq. 0) then
+                valk(1) = nomnol
+                valk(2) = nosma
+                call u2mesk('A', 'SOUSTRUC_59', 2, valk)
+                goto 1
+            endif
+!
+            ino=zi(iadim2-1+4*(isma-1)+3)+kk
+            if (zi(iancnf-1+ino) .eq. ino) then
+                zk8(ianon2-1+ino)= nomnog
+            else
+                valk(1) = nomnol
+                valk(2) = nosma
+                call u2mesk('A', 'SOUSTRUC_60', 2, valk)
+            endif
         endif
-!
-        ino=zi(iadim2-1+4*(isma-1)+3)+kk
-        if (zi(iancnf-1+ino) .eq. ino) then
-            zk8(ianon2-1+ino)= nomnog
-        else
-            valk(1) = nomnol
-            valk(2) = nosma
-            call u2mesk('A', 'SOUSTRUC_60', 2, valk)
-        endif
-    endif
-    1 end do
-!
-!
+1       continue
+    end do
 !
     call jedema()
 end subroutine

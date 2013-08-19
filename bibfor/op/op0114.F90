@@ -16,7 +16,7 @@ subroutine op0114()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
-! aslint: disable=W1304
+! aslint: disable=W1304,W1305
     implicit   none
 !  ----- OPERATEUR RECU_PARA_YACS             --------------------------
 !  RECUPERATION DE VALEURS D'INITIALISATION POUR COUPLAGE IFS VIA YACS
@@ -150,7 +150,7 @@ subroutine op0114()
                     tf, ibid)
         call getvis(' ', 'NUME_ORDRE_YACS', 0, iarg, 1,&
                     numpas, ibid)
-        numpa4 = numpas
+        numpa4 = int(numpas, 4)
         call getvr8(' ', 'PAS', 0, iarg, 1,&
                     dt, ibid)
         ti = tf

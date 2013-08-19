@@ -83,7 +83,7 @@ subroutine op0017()
     endif
 !
     call getfac('CONCEPT', nbocc)
-    do 3 iocc = 1, nbocc
+    do iocc = 1, nbocc
         call getvid('CONCEPT', 'NOM', iocc, iarg, 0,&
                     kbid, ncon)
         ncon= -ncon
@@ -91,14 +91,14 @@ subroutine op0017()
             call wkvect('&&OP0017.LISTE_CO', 'V V K8', ncon, ialico)
             call getvid('CONCEPT', 'NOM', iocc, iarg, ncon,&
                         zk8(ialico), n1)
-            do 1, i=1,ncon
+            do i = 1, ncon
             leresu = zk8(ialico-1+i)
             call utimsd(ifi, nivo, lattr, lcont, leresu,&
                         1, base)
- 1          continue
+            end do
             call jedetr('&&OP0017.LISTE_CO')
         endif
- 3  end do
+    end do
 !
     call getvtx(' ', 'CHAINE', 0, iarg, 1,&
                 chaine, n2)

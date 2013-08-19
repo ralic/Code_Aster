@@ -15,7 +15,7 @@ function jxhcod(chain, lrep)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1304,C1002
+! aslint: disable=W1304,C1002,W0405
     implicit none
 #include "asterc/strmov.h"
     integer :: jxhcod, lrep
@@ -32,9 +32,9 @@ function jxhcod(chain, lrep)
     integer :: k
 !-----------------------------------------------------------------------
     call strmov(chain, 1, 32, j, 1)
-    do 1 k = 2, 8
+    do k = 2, 8
         i(1) = ieor( i(1) , i(k) )
- 1  end do
+    end do
     i1=i(1)
     jxhcod = 1 + mod(i1,lrep)
 end function

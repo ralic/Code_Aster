@@ -98,7 +98,7 @@ subroutine op0112()
                 dt, ibid)
     call getvis(' ', 'NUME_ORDRE_YACS', 0, iarg, 1,&
                 numpas, ibid)
-    numpa4 = numpas
+    numpa4 = int(numpas, 4)
     call getvid(' ', 'CHAR_MECA', 1, iarg, 1,&
                 charg, ibid)
     call getvid(' ', 'MATR_PROJECTION', 1, iarg, 1,&
@@ -163,14 +163,14 @@ subroutine op0112()
 !     ! ======================================= !
 !     ! RECUPERATIONS DES DONNEES DU MAILLAGE 1 !
 !     ! ======================================= !
-    do 10 icmp = 1, 3
+    do icmp = 1, 3
         ddlfor(icmp) = 0
-10  end do
-    do 20 icmp = 1, 3
+    end do
+    do icmp = 1, 3
         if (nomcmp(icmp) .eq. 'FX') ddlfor(1) = 1
         if (nomcmp(icmp) .eq. 'FY') ddlfor(2) = 1
         if (nomcmp(icmp) .eq. 'FZ') ddlfor(3) = 1
-20  end do
+    end do
 !
 !     ! ================================================= !
 !     ! RECUPERATIONS DES NOMBRES DE NOEUDS DES MAILLAGES !
@@ -179,7 +179,7 @@ subroutine op0112()
                 kbid, ibid)
     call dismoi('F', 'NB_NO_MAILLA', ma2, 'MAILLAGE', nbno2,&
                 kbid, ibid)
-    nbno4 = nbno2
+    nbno4 = int(nbno2, 4)
 !
 !     ! ===================================== !
 !     ! RECUPERATION DES FORCES DU MAILLAGE 2 !
@@ -194,29 +194,29 @@ subroutine op0112()
 !     ! LISTE DES NOEUDS DU MAILLAGE 1 COUPLES !
 !     ! ====================================== !
     call wkvect('&&OP0112.FLAGN1', 'V V I', nbno1, jflan1)
-    do 30 ino1 = 1, nbno1
+    do ino1 = 1, nbno1
         zi(jflan1-1+ino1) = 0
-        do 40 icmp = 1, nbcmpg
+        do icmp = 1, nbcmpg
             zr(jchnsv-1+nbcmpg*(ino1-1)+icmp) = 0.d0
-40      continue
-30  end do
+        end do
+    end do
     grpma = ma1//'.GROUPEMA'
-    do 50 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !        CALL GETVID('VIS_A_VIS','GROUP_MA_1',IOCC,IARG,1,NOMGMA,IBID)
         call getvtx('VIS_A_VIS', 'GROUP_MA_1', iocc, iarg, 1,&
                     nomgma, ibid)
         call jelira(jexnom(grpma, nomgma), 'LONMAX', nbmag1, kbid)
         call jeveuo(jexnom(grpma, nomgma), 'L', jalim1)
-        do 60 ii = 1, nbmag1
+        do ii = 1, nbmag1
             ima = zi(jalim1-1+ii)
             call jelira(jexnum(ma1//'.CONNEX', ima), 'LONMAX', nbnog1, kbid)
             call jeveuo(jexnum(ma1//'.CONNEX', ima), 'L', jcxma1)
-            do 70 jj = 1, nbnog1
+            do jj = 1, nbnog1
                 ino1 = zi(jcxma1-1+jj)
                 zi(jflan1-1+ino1) = 1
-70          continue
-60      continue
-50  end do
+            end do
+        end do
+    end do
 !
 !     ! =============================================== !
 !     ! PROJECTIONS DES FORCES ENTRE LES DEUX MAILLAGES !
@@ -224,28 +224,28 @@ subroutine op0112()
     idecal = 0
     ilengt = 0
     grpno = ma2//'.GROUPENO'
-    do 80 iocc = 1, nbocc
+    do iocc = 1, nbocc
 !        CALL GETVID('VIS_A_VIS','GROUP_NO_2',IOCC,IARG,1,NOMGNO,IBID)
         call getvtx('VIS_A_VIS', 'GROUP_NO_2', iocc, iarg, 1,&
                     nomgno, ibid)
         call jelira(jexnom(grpno, nomgno), 'LONMAX', nbno2, kbid)
         call jeveuo(jexnom(grpno, nomgno), 'L', ialin2)
-        do 90 jj = 1, nbno2
+        do jj = 1, nbno2
             ino2 = zi(ialin2-1+jj)
-            do 100 ii = 1, zi(jaconb-1+ilengt+jj)
+            do ii = 1, zi(jaconb-1+ilengt+jj)
                 ino1 = zi(jaconu-1+idecal+ii)
-                do 110 icmp = 1, 3
+                do icmp = 1, 3
                     if (ddlfor(icmp) .eq. 1) then
                         icmpg = nbcmpg*(ino1-1)+icmp
                         zr(jchnsv-1+icmpg) = zr(jchnsv-1+icmpg) + zr(jforc2-1+3*(ino2-1)+icmp) * &
                                              &zr(jacocf-1+ idecal+ii)
                     endif
-110              continue
-100          continue
+                end do
+            end do
             idecal = idecal + zi(jaconb-1+ilengt+jj)
-90      continue
+        end do
         ilengt = ilengt + nbno2
-80  end do
+    end do
 !
 !
 !     ! ===================================== !
@@ -260,24 +260,24 @@ subroutine op0112()
     call jeveuo(carte//'.NCMP', 'E', jncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
     call jeveuo(jexnum(liel, 1), 'L', jligr)
-    do 120 icmp = 1, nbcmpg
-        zk8(jncmp-1+icmp) = ncmpgd(icmp)
-120  end do
+    do icmp = 1, nbcmpg
+        zk8(jncmp-1+icmp) = ncmpgd(icmp)(1:8)
+    end do
     idecal = 0
-    do 130 ino1 = 1, nbno1
+    do ino1 = 1, nbno1
         if (zi(jflan1-1+ino1) .eq. 1) then
             idecal = idecal + 1
-            do 140 icmp = 1, 3
+            do icmp = 1, 3
                 zr(jvalv-1+icmp) = zr(jchnsv-1+nbcmpg*(ino1-1)+icmp)
-140          continue
-            do 150 icmp = 4, nbcmpg
+            end do
+            do icmp = 4, nbcmpg
                 zr(jvalv-1+icmp) = 0.d0
-150          continue
+            end do
             ii = zi(jligr-1+idecal)
             call nocart(carte, -3, ' ', 'NUM', 1,&
                         ' ', ii, liel, nbcmpg)
         endif
-130  end do
+    end do
 !
 !     ! ======================== !
 !     ! LIBERATION DE LA MEMOIRE !

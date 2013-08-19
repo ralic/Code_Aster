@@ -16,7 +16,7 @@ subroutine colneu(nbnode, typema)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.greffet at edf.fr
-! aslint: disable=W1304
+! aslint: disable=W1304,W1305
     implicit none
 !
 !      COLNEU --   LECTURE DES NUMEROS DE NOEUDS ET DE LEURS
@@ -119,7 +119,7 @@ subroutine colneu(nbnode, typema)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'NOMVAR'
-        valk(3) = nomvar
+        valk(3) = nomvar(1:8)
         call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
     endif
     call cpldb(icompo, cpiter, 0.d0, 0.d0, int(0,4),&
@@ -137,7 +137,7 @@ subroutine colneu(nbnode, typema)
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'NOMVAR'
-        valk(3) = nomvar
+        valk(3) = nomvar(1:8)
         call u2mesk('I+', 'COUPLAGEIFS_11', 3, valk)
     endif
     call cplen(icompo, cpiter, tr4, tr4, i4,&
@@ -149,9 +149,9 @@ subroutine colneu(nbnode, typema)
         call u2mesg('I+', 'COUPLAGEIFS_10', 2, valk, 1,&
                     ibid, 0, 0.d0)
     endif
-    do 20 inode = 1, nbnode
+    do inode = 1, nbnode
         zi(jgroma-1+inode) = int4(inode)
-20  end do
+    end do
     if (niv .eq. 2) then
         valk(1) = 'COLNEU'
         valk(2) = 'NBNODE'
@@ -160,14 +160,14 @@ subroutine colneu(nbnode, typema)
     endif
 !
     ndmax = nbnode
-    do 10 inode = 1, nbnode
+    do inode = 1, nbnode
         zi(jinfo+inode-1) = inode
-10  end do
+    end do
 !     LISTE DES NOEUDS A DETRUIRE (0: A DETRUIRE, 1: A CONSERVER)
     call wkvect('&&PRECOU.DETR.NOEUDS', 'V V I', ndmax+1, jdetr)
-    do 12 inode = 0, ndmax
+    do inode = 0, ndmax
         zi(jdetr+inode) = 0
-12  end do
-!.============================ FIN DE LA ROUTINE ======================
+    end do
+!
     call jedema()
 end subroutine

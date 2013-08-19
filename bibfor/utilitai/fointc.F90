@@ -52,15 +52,15 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     real(kind=8) :: linlin, linlog, loglog, loglin, x, x1, y1, x2, y2
     real(kind=8) :: epsi, tole, valr, resu(2)
     character(len=1) :: coli, k1bid
-    character(len=16) :: interp, prolgd
+    character(len=24) :: interp, prolgd
     character(len=19) :: nomfon
     character(len=24) :: chprol, chvale
 !     ------------------------------------------------------------------
     integer :: mxsave
     parameter   (mxsave=4)
     integer :: isvnxt, nextsv(mxsave), isvind, isave
-    character(len=2) :: svprgd(mxsave)
-    character(len=16) :: svinte(mxsave)
+    character(len=24) :: svprgd(mxsave)
+    character(len=24) :: svinte(mxsave)
     character(len=19) :: svnomf(mxsave)
     save         svnomf,svprgd,svinte
     save         isvnxt,isvind
@@ -99,11 +99,11 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
                      'A', resu)
         if (ier .gt. 0) then
             ier = 110
-            goto 9999
+            goto 999
         endif
         resure=resu(1)
         resuim=resu(2)
-        goto 9999
+        goto 999
 !
     endif
 !
@@ -111,12 +111,12 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
 !
     valr = valpu(1)
 !
-    do 10 i = 1, mxsave
+    do i = 1, mxsave
         if (nomfon .eq. svnomf(i)) then
             isave = i
             goto 11
         endif
-10  end do
+    end do
 !
 ! --- MEMORISATION DES INFORMATIONS NOUVELLES
 !
@@ -138,7 +138,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
     i = isvind
     call folocx(zr(lvale), nbvale, valr, prolgd, i,&
                 epsi, coli, ier)
-    if (ier .ne. 0) goto 9999
+    if (ier .ne. 0) goto 999
 !
     if (coli .eq. 'C') then
         i1 = 1 + 2 * ( i - 1 )
@@ -159,7 +159,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
             else
                 ier = 200
                 call u2mess('A', 'UTILITAI2_16')
-                goto 9999
+                goto 999
             endif
         else if (interp.eq.'LIN LIN ') then
             i1 = 1 + 2 * ( i - 1 )
@@ -184,7 +184,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
         else
             ier = 230
             call u2mesk('A', 'UTILITAI2_17', 1, interp)
-            goto 9999
+            goto 999
         endif
 !
     else if (coli.eq.'E') then
@@ -198,7 +198,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu,&
         call u2mesk('A', 'PREPOST3_6', 1, coli)
     endif
 !
-9999  continue
+999 continue
 !
     if (ier .ne. 0 .and. codmes .ne. ' ') then
         call u2mesk(codmes, 'FONCT0_9', 1, nomf)
