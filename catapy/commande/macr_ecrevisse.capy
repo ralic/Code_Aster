@@ -276,7 +276,9 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
            ARRET            =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          ),
 
-         ENERGIE         =FACT(statut='f',max=1),
+         ENERGIE         =FACT(statut='f',max=1,
+           CALCUL          =SIMP(statut='o',typ='TXM',into=("OUI"),defaut="OUI",),
+         ),
 
          # donnees specifiques a ther_lineaire
 

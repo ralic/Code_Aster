@@ -116,7 +116,9 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                                  ang="Time adaptation for unstationary HM models"),
          ),
 #-------------------------------------------------------------------
-         ENERGIE         =FACT(statut='f',max=1),
+         ENERGIE         =FACT(statut='f',max=1,
+           CALCUL          =SIMP(statut='o',typ='TXM',into=("OUI"),defaut="OUI",),
+         ),
 #-------------------------------------------------------------------
          AFFICHAGE       =C_AFFICHAGE(),
 #-------------------------------------------------------------------
