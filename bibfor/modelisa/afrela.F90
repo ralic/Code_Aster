@@ -1,6 +1,6 @@
 subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
                   repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
-                  type_coef, type_vale, type_lagr, epsi, lisrez)
+                  type_coef, vale_type, type_lagr, epsi, lisrez)
 !
     implicit none
 !
@@ -33,6 +33,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!  Person in charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: nbterm
     real(kind=8), intent(in) :: coef_real(nbterm)
@@ -45,7 +46,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
     complex(kind=8), intent(in) :: vale_cplx
     character(len=*), intent(in) :: vale_func
     character(len=4), intent(in) :: type_coef
-    character(len=4), intent(in) :: type_vale
+    character(len=4), intent(in) :: vale_type
     character(len=2), intent(in) :: type_lagr
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: lisrez
@@ -60,9 +61,9 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !       iterm = 1,nbterm
 !       coef = coef_real if type_coef = 'REEL'
 !       coef = coef_cplx if type_coef = 'COMP'
-!       vale = vale_real if type_vale = 'REEL'
-!       vale = vale_cplx if type_vale = 'COMP'
-!       vale = vale_func if type_vale = 'FONC'
+!       vale = vale_real if vale_type = 'REEL'
+!       vale = vale_cplx if vale_type = 'COMP'
+!       vale = vale_func if vale_type = 'FONC'
 !
 ! Saving in lisrel object (created if not exist)
 !
@@ -78,7 +79,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !                   if 3 - Local (2D) coordinate system
 ! In  repe_defi : defintion of local coordinate system
 ! In  nbterm    : number of terms in linear relation
-! In  type_vale : affected value type (real, complex or function)
+! In  vale_type : affected value type (real, complex or function)
 ! In  vale_real : affected value if real
 ! In  vale_func : affected value if function
 ! In  vale_cplx : affected value if complex
@@ -150,11 +151,11 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
                 endif
             endif
         enddo
-        if (type_vale .eq. 'REEL') then
+        if (vale_type .eq. 'REEL') then
             write (ifm,*) '_RELA = ',vale_real
-        else if (type_vale.eq.'COMP') then
+        else if (vale_type.eq.'COMP') then
             write (ifm,*) '_RELA = ',vale_cplx
-        else if (type_vale.eq.'FONC') then
+        else if (vale_type.eq.'FONC') then
             write (ifm,*) '_RELA = ',vale_func
         else
             ASSERT(.false.)
@@ -181,11 +182,11 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !
 ! - Normalization of values
 !
-    if (type_vale .eq. 'REEL') then
+    if (vale_type .eq. 'REEL') then
         vale_real_norm = vale_real_norm/norm_coef
-    else if (type_vale.eq.'COMP') then
+    else if (vale_type.eq.'COMP') then
         vale_cplx_norm = vale_cplx_norm/norm_coef
-    else if (type_vale.eq.'FONC') then
+    else if (vale_type.eq.'FONC') then
 ! ----- Alarm if normalization ratio too much different from 1 ...
         if ((norm_coef.gt.1.d3) .or. (norm_coef.lt.1.d-3)) call u2mess('A', 'CHARGES2_99')
 ! ----- ... but cannot normalize function value !
@@ -195,7 +196,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 ! - No <LIST_RELA> object -> creation
 !
     call jeexin(lisrel//'.RLCO', iret)
-    if (iret .eq. 0) call crelrl(type_coef, type_vale, 'V', lisrel)
+    if (iret .eq. 0) call crelrl(type_coef, vale_type, 'V', lisrel)
 !
 ! - How many linear relations ?
 !
@@ -386,11 +387,11 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !
 ! - Value affectation
 !
-    if (type_vale .eq. 'REEL') then
+    if (vale_type .eq. 'REEL') then
         zr(idbeta+nbrela-1) = vale_real_norm
-    else if (type_vale.eq.'COMP') then
+    else if (vale_type.eq.'COMP') then
         zc(idbeta+nbrela-1) = vale_cplx_norm
-    else if (type_vale.eq.'FONC') then
+    else if (vale_type.eq.'FONC') then
         zk24(idbeta+nbrela-1) = vale_func
     else
         ASSERT(.false.)

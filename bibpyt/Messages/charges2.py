@@ -153,6 +153,9 @@ cas d'un modèle à %(i2)d dimensions.
  Utiliser DDL_IMPO ou LIAISON_DDL.
 """),
 
+82: _(u"""
+ Il faut au moins deux noeuds pour utiliser LIAISON_UNIF.
+"""),
 
 97 : _(u"""
  Tous les coefficients de la relation linéaire sont strictement nuls.

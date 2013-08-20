@@ -31,6 +31,7 @@ subroutine charac(fonree)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!  Person in charge: mickael.abbas at edf.fr
 !
 !      OPERATEURS :  AFFE_CHAR_ACOU  ET  AFFE_CHAR_ACOU_F
 !
@@ -71,7 +72,7 @@ subroutine charac(fonree)
 !
 ! --- LIAISON_UNIF ---
 !
-    call cagrou(fonree, char)
+    call cagrou(char, noma, fonree)
 !
 !
 ! --- MISE A JOUR DU LIGREL DE CHARGE :

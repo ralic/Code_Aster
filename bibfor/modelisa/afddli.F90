@@ -37,7 +37,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
     character(len=8), intent(in) :: model
     integer, intent(in) :: gran_cmp_nb
     character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
-    integer, intent(in) :: node_nume 
+    integer, intent(in) :: node_nume
     character(len=8), intent(in) :: node_name
     integer, intent(in) :: prnm(*)
     integer, intent(in) :: repe_type
@@ -95,8 +95,8 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
 ! In  list_rela      : JEVEUX object liste_rela for aflrch.F90 subroutine
 ! In  l_xfem         : .true. if xfem
 ! In  connex_inv     : inverse connectivity (blank if not xfem)
-! In  jnoxfl         : pointer on list of XFEM nodes 
-! In  jnoxfv         : pointer on list of XFEM nodes 
+! In  jnoxfl         : pointer on list of XFEM nodes
+! In  jnoxfv         : pointer on list of XFEM nodes
 ! In  ch_xfem_stat   : status of nodes field (blank if not xfem)
 ! In  ch_xfem_lnno   : normal level-set field (blank if not xfem)
 ! In  ch_xfem_ltno   : tangent level-set field (blank if not xfem)

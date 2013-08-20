@@ -275,9 +275,6 @@ Les abscisses curvilignes de la table fournie ne correspondent pas à celles du 
 70 : _(u""" Attention, vous voulez calculer les pertes par relaxation de l'acier, mais 
       le coefficient RELAX_1000 est nul. Les pertes associées sont donc nulles. 
  """),
-82: _(u"""
- pour LIAISON_UNIF, entrer plus d'un seul noeud
-"""),
 
 83: _(u"""
  on doit utiliser le mot clé CHAM_NO pour donner le CHAM_NO dont les composantes seront les seconds membres de la relation linéaire.

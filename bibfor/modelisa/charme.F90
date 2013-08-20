@@ -16,6 +16,7 @@ subroutine charme(fonree)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!  Person in charge: mickael.abbas at edf.fr
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -314,7 +315,7 @@ subroutine charme(fonree)
         call caliag(fonree, char)
 !
 ! --- LIAISON_UNIF ---
-        call cagrou(fonree, char)
+        call cagrou(char, noma, fonree)
 !
 ! --- LIAISON_SOLIDE ---
         call caliso(char, noma, ligrmo, fonree)

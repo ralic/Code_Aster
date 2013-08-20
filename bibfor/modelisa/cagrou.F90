@@ -1,19 +1,23 @@
-subroutine cagrou(fonrez, chargz)
+subroutine cagrou(load, mesh, vale_type)
+!
     implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getvtx.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_read_mesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/malino.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: fonrez, chargz
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,108 +34,139 @@ subroutine cagrou(fonrez, chargz)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!  Person in charge: mickael.abbas at edf.fr
 !
-!     TRAITER LE MOT CLE LIAISON_UNIF DE AFFE_CHAR_XXX
-!     ET ENRICHIR LA CHARGE (CHARGE) AVEC LES RELATIONS LINEAIRES
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    character(len=4), intent(in)  :: vale_type
 !
-! IN       : FONREZ : 'REEL' OU 'FONC' OU 'COMP'
-! IN/JXVAR : CHARGZ : NOM D'UNE SD CHARGE
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    complex(kind=8) :: betac, coemuc(2)
-    character(len=2) :: typlag
-    character(len=4) :: fonree
-    character(len=4) :: typcoe
-    character(len=8) :: betaf, ddl(2), nono(2), charge
+! Loads affectation
+!
+! Keyword = 'LIAISON_UNIF'
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In mesh      : name of mesh
+! In load      : name of load
+! In vale_type : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_term
+    parameter (nb_term=2)
+    real(kind=8) :: coef_real_unit(nb_term)
+    complex(kind=8) :: coef_cplx_unit(nb_term)
+    character(len=8) :: dof_name(nb_term)
+    character(len=8) :: node_name(nb_term)
+    integer :: node_nume(nb_term)
+    integer :: repe_type(nb_term)
+    real(kind=8) :: repe_defi(3,nb_term)
+!
+    character(len=2) :: lagr_type
+    character(len=4) :: coef_type
     character(len=8) :: k8bid
-    character(len=16) :: motfac
-    character(len=19) :: lisrel
-    character(len=24) :: lisnoe
-    real(kind=8) :: coemur(2), direct(6)
-    integer :: idim(2)
-    integer :: iarg
-!-----------------------------------------------------------------------
-    integer :: iddl, ino, iocc, jddl, jlist, lonlim, lonlis
-    integer :: n1, n2, nliai
-    real(kind=8) :: beta
-!-----------------------------------------------------------------------
-    data direct/0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0/
-! ----------------------------------------------------------------------
+    character(len=16) :: keywordfact
+    character(len=19) :: list_rela
+    integer :: iarg, ibid
+    integer :: nliai
+    real(kind=8) :: vale_real_zero
+    character(len=8) :: vale_func_zero
+    complex(kind=8) :: vale_cplx_zero
+    integer :: iocc, i_no, i_dof
+    character(len=24) :: list_node, list_elem
+    integer :: jlino
+    integer :: nb_node, nb_elem
+    character(len=24) :: list_dof
+    integer :: jlidof
+    integer :: nb_dof
+!
+    data repe_type /0, 0/
+    data repe_defi /0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0/
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    fonree = fonrez
-    charge = chargz
+    keywordfact = 'LIAISON_UNIF'
+    call getfac(keywordfact, nliai)
+    if (nliai .eq. 0) goto 999
 !
-    motfac = 'LIAISON_UNIF'
-    typlag = '12'
+! - Initializations
 !
-    typcoe = 'REEL'
-    if (fonree .eq. 'COMP') then
-        typcoe = 'COMP'
+    vale_func_zero = '&FOZERO'
+    vale_cplx_zero = (0.d0,0.d0)
+    vale_real_zero = 0.d0
+    coef_cplx_unit(1) = (1.0d0,0.0d0)
+    coef_cplx_unit(2) = (-1.0d0,0.0d0)
+    coef_real_unit(1) = 1.d0
+    coef_real_unit(2) = -1.d0
+    list_rela = '&&CAGROU.RLLISTE'
+    list_dof  = '&&CAGROU.LIST_DOF'
+!
+! - Initializations of types
+!
+    lagr_type = '12'
+    if (vale_type.eq.'COMP') then
+        ASSERT(.false.)
+    elseif (vale_type.eq.'REEL') then
+        coef_type = 'REEL'
+    elseif (vale_type.eq.'FONC') then
+        coef_type = 'REEL'
+    else
+        ASSERT(.false.)
     endif
 !
-    lisrel = '&&CAGROU.RLLISTE'
-    lisnoe = '&&CAGROU.NOEUD'
-    call getfac(motfac, nliai)
-    if (nliai .eq. 0) goto 40
+    do iocc = 1, nliai
 !
-    betaf = '&FOZERO'
-    betac = (0.0d0,0.0d0)
-    beta = 0.0d0
-    coemuc(1) = (1.0d0,0.0d0)
-    coemuc(2) = (-1.0d0,0.0d0)
-    coemur(1) = 1.0d0
-    coemur(2) = -1.0d0
-    idim(1) = 0
-    idim(2) = 0
-    lonlim = 0
+! ----- Read mesh affectation
 !
-    do 30 iocc = 1, nliai
+        list_node = '&&CAGROU.LIST_NODE'
+        list_elem = '&&CAGROU.LIST_ELEM'
+        call char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node,&
+                            list_elem, nb_elem)
+        if (nb_node .lt. 2) call u2mess('F', 'CHARGES2_82')
+        call jeveuo(list_node, 'L', jlino)
 !
-!     -- ACUISITION DE LA LISTE DES NOEUDS A LIER :
-!        (CETTE LISTE EST NON REDONDANTE)
-!     ---------------------------------------------
-        call malino(motfac, charge, iocc, lisnoe, lonlis)
-        lonlim = max(lonlim,lonlis)
-        if (lonlis .le. 1) then
-            call u2mess('F', 'MODELISA2_82')
-        endif
+! ----- Get dof
 !
-        call jeveuo(lisnoe, 'L', jlist)
+        call getvtx(keywordfact, 'DDL', iocc, iarg, 0,&
+                    k8bid, nb_dof)
+        ASSERT(nb_dof .ne. 0)
+        nb_dof= - nb_dof
+        call wkvect(list_dof, 'V V K8', nb_dof, jlidof)
+        call getvtx(keywordfact, 'DDL', iocc, iarg, nb_dof,&
+                    zk8(jlidof), ibid)
 !
-        call getvtx(motfac, 'DDL', iocc, iarg, 0,&
-                    k8bid, n1)
-        if (n1 .ne. 0) then
-            n1 = -n1
-        endif
+! ----- First node
 !
-        call wkvect('&&CAGROU.DDL', 'V V K8', n1, jddl)
+        node_nume(1) = zi(jlino-1+1)
+        call jenuno(jexnum(mesh//'.NOMNOE', node_nume(1)), node_name(1))
 !
-        call getvtx(motfac, 'DDL', iocc, iarg, n1,&
-                    zk8(jddl), n2)
+! ----- Loop on dof
 !
-        nono(1) = zk8(jlist)
+        do i_dof = 1, nb_dof
+            dof_name(1) = zk8(jlidof-1+i_dof)
+            dof_name(2) = zk8(jlidof-1+i_dof)
+            do i_no = 2, nb_node
+                node_nume(2) = zi(jlino-1+i_no)
+                call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
+                call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type,&
+                            repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero, &
+                            coef_type, vale_type, lagr_type, 0.d0, list_rela)
+            enddo
+        enddo
 !
-        do 20 iddl = 1, n1
-            ddl(1) = zk8(jddl+iddl-1)
-            ddl(2) = zk8(jddl+iddl-1)
-            do 10 ino = 2, lonlis
-                nono(2) = zk8(jlist+ino-1)
-                call afrela(coemur, coemuc, ddl, nono, idim,&
-                            direct, 2, beta, betac, betaf,&
-                            typcoe, fonree, typlag, 0.d0, lisrel)
-10          continue
-20      continue
-        call jedetr(lisnoe)
-        call jedetr('&&CAGROU.DDL')
-30  end do
+        call jedetr(list_elem)
+        call jedetr(list_node)
+        call jedetr(list_dof)
+    end do
 !
-!     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
-!     ---------------------------------------------
-    if (lonlim .gt. 1) then
-        call aflrch(lisrel, charge)
-    endif
+! - Final linear relation affectation
 !
-40  continue
+    call aflrch(list_rela, load)
+!
+999 continue
     call jedema()
 end subroutine

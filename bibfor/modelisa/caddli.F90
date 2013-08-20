@@ -148,7 +148,7 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     endif
 !
 ! - Information about <GRANDEUR>
-! 
+!
     if (keywordfact.eq. 'DDL_IMPO') then
         nomg = 'DEPL_R'
     else if (keywordfact.eq. 'TEMP_IMPO') then
@@ -171,9 +171,9 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields
-! 
+!
     call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
-                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
+                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
@@ -207,7 +207,7 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 !
 ! --------- Counting components
 !
-            n_keyword = 6   
+            n_keyword = 6
             call wkvect('&&CADDLI.ICOMPT', 'V V I', n_keyword, jcompt)
 !
 ! --------- Data preparation for LIAISON
@@ -251,7 +251,7 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 !
 ! ----- Other cases
 !
-        if (l_ocmp) then 
+        if (l_ocmp) then
 !
 ! --------- Counting components
 !

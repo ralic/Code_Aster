@@ -133,7 +133,7 @@ subroutine charth(fonree)
 !
 ! --- LIAISON_UNIF ---
 !
-    call cagrou(fonree, char)
+    call cagrou(char, noma, fonree)
 !
 ! --- LIAISON_CHAMNO ---
 !
