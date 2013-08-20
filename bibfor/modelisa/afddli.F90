@@ -1,11 +1,21 @@
-subroutine afddli(valr, valk, valc, prnm, nddla,&
-                  fonree, nomn, ino, ddlimp, valimr,&
-                  valimf, valimc, motcle, direct, dimens,&
-                  mod, lisrel, nomcmp, nbcmp, icompt,&
-                  lxfem, jnoxfl, jnoxfv, ch1, ch2,&
-                  ch3, cnxinv)
-! aslint: disable=W1504
+subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
+                  prnm, repe_type, repe_defi, coef_type, cmp_nb, &
+                  cmp_name, cmp_acti, vale_type, vale_real, vale_func, &
+                  vale_cplx, cmp_count, list_rela, lxfem, jnoxfl, &
+                  jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterc/indik8.h"
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/xddlim.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,142 +32,133 @@ subroutine afddli(valr, valk, valc, prnm, nddla,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterc/indik8.h"
-#include "asterfort/afrela.h"
-#include "asterfort/assert.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/xddlim.h"
-    integer :: prnm(*), nddla, ino, ddlimp(nddla), dimens
-    integer :: nbcmp, icompt(nddla)
-    real(kind=8) :: valr(*), valimr(nddla), direct(3)
-    complex(kind=8) :: valc(*), valimc(nddla)
-    character(len=4) :: fonree
-    character(len=8) :: valk(*), nomn, valimf(nddla), nomcmp(*), mod
-    character(len=16) :: motcle(nddla)
-    character(len=19) :: cnxinv, lisrel
-    logical :: lxfem
-    integer :: jnoxfl, jnoxfv
-    character(len=19) :: ch1, ch2, ch3
+! aslint: disable=W1504
 !
-!  BUT : * EFFECTUER LE BLOCAGE DES DDLS DONNES PAR MOTCLE(*)
-!          SUR LE NOEUD NOMN DANS LA LISTE DE RELATIONS LISREL.
+    character(len=8), intent(in) :: model
+    integer, intent(in) :: gran_cmp_nb
+    character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
+    integer, intent(in) :: node_nume 
+    character(len=8), intent(in) :: node_name
+    integer, intent(in) :: prnm(*)
+    integer, intent(in) :: repe_type
+    real(kind=8), intent(in) :: repe_defi(3)
+    character(len=4), intent(in) :: coef_type
+    integer, intent(in) :: cmp_nb
+    character(len=16), intent(in) :: cmp_name(cmp_nb)
+    integer, intent(in) :: cmp_acti(cmp_nb)
+    character(len=4), intent(in) :: vale_type
+    real(kind=8), intent(in) :: vale_real(cmp_nb)
+    character(len=8), intent(in) :: vale_func(cmp_nb)
+    complex(kind=8), intent(in) ::  vale_cplx(cmp_nb)
+    integer, intent(inout) :: cmp_count(cmp_nb)
+    character(len=19), intent(in) :: list_rela
+    logical, intent(in) :: lxfem
+    integer, intent(in) :: jnoxfl
+    integer, intent(in) :: jnoxfv
+    character(len=19), intent(in) :: connex_inv
+    character(len=19), intent(in) :: ch_xfem_stat
+    character(len=19), intent(in) :: ch_xfem_lnno
+    character(len=19), intent(in) :: ch_xfem_ltno
 !
-!          DANS LE CAS DE RELATIONS REDONDANTES LA REGLE DE LA SURCHAGE
-!          EST APPLIQUEE ET C'EST LE DERNIER BLOCAGE SUR LE NOEUD
-!          QUI EST APPLIQUE .
+! --------------------------------------------------------------------------------------------------
 !
-! ARGUMENTS D'ENTREE:
+! Loadings - Kinematic
 !
-!   PRNM   : DESCRIPTEUR GRANDEUR SUR LE NOEUD INO
-!   NDDLA  : NOMBRE DE DDLS DANS DDL_IMPO/FACE_IMPO
-!   FONREE : AFFE_CHAR_XXXX OU AFFE_CHAR_XXXX_F
-!   NOMN   : NOM DU NOEUD INO OU EST EFFECTUE LE BLOCAGE
-!   INO    : NUMERO DU NOEUD OU EST EFFECTUE LE BLOCAGE
-!   DDLIMP : INDICATEUR DE PRESENCE OU ABSENCE DE BLOCAGE SUR CHAQUE DDL
-!   VALIMR : VALEURS DE BLOCAGE SUR CHAQUE DDL (FONREE = 'REEL')
-!   VALIMF : VALEURS DE BLOCAGE SUR CHAQUE DDL (FONREE = 'FONC')
-!   VALIMC : VALEURS DE BLOCAGE SUR CHAQUE DDL (FONREE = 'COMP')
-!   MOTCLE : TABLEAU DES NOMS DES DDLS DANS DDL_IMPO/FACE_IMPO
-!   DIRECT : DIRECTION DE LA COMPOSANTE QUE L'ON VEUT CONTRAINDRE
-!            N'EST UTILISEE QUE SI DIMENS DIFFERENT DE 0
-!   DIMENS :  SI = 0 ON IMPOSE UN DDL SELON UNE DIRECTION DU REPERE
-!             GLOBAL
-!             SI =2 OU 3 C'EST LA DIMENSION DE LA GEOMETRIE DU
-!             PROBLEME ET LA DIRECTION DE LA COMPOSANTE A CONTRAINDRE
-!             EST DONNEE PAR DIRECT(3)
-!  MOD     :  NOM DE L'OBJET MODELE ASSOCIE AU LIGREL DE CHARGE
+! Apply simple kinematic relation
 !
-! ARGUMENTS D'ENTREE MODIFIES:
+! --------------------------------------------------------------------------------------------------
 !
-!      VALR  : VALEURS DE BLOCAGE DES DDLS (FONREE = 'REEL')
-!      VALK  : VALEURS DE BLOCAGE DES DDLS (FONREE = 'FONC')
-!      VALC  : VALEURS DE BLOCAGE DES DDLS (FONREE = 'COMP')
-!     LISREL : LISTE DE RELATIONS AFFECTEE PAR LA ROUTINE
-!     ICOMPT(*) : "COMPTEUR" DES DDLS AFFECTES REELLEMENT
+! For i=1,cmp_nb
+!    coef * component_i = vale_i on node (numnoe,nomnoe) with coef = 1 (real or cplx)
 !
+! Overload rule: last kinematic relation on the node kept
 !
+! In  model          : Name of model
+! In  gran_cmp_nb    : number of component of <GRANDEUR> (as DEPL_R, TEMP_R, etc)
+! In  gran_cmp_name  : names of component of <GRANDEUR> (as DEPL_R, TEMP_R, etc)
+! In  node_nume      : number (in mesh) of the node
+! In  node_name      : name of the node
+! In  prnm(*)        : <GRANDEUR> on node
+! In  repe_type      : If 0 -> global reference system
+!                      If 2/3 -> local reference system give by repe_defi
+! In  repe_defi      : local reference system
+! In  coef_type      : type of coefficient (real or complex)
+! In  lagr_type      : type of lagrange multpilers (position of Lagrange and physical dof)
+! In  cmp_nb         : number of components
+! In  cmp_name       : name of components
+! In  cmp_acti       : 1 if component affected, 0 else
+! In  vale_type      : affected value type
+! In  vale_real      : affected value if real
+! In  vale_func      : affected value if function
+! In  vale_cplx      : affected value if complex
+! In  cmp_count      : how many times components have been affected
+! In  list_rela      : JEVEUX object liste_rela for aflrch.F90 subroutine
+! In  l_xfem         : .true. if xfem
+! In  connex_inv     : inverse connectivity (blank if not xfem)
+! In  jnoxfl         : pointer on list of XFEM nodes 
+! In  jnoxfv         : pointer on list of XFEM nodes 
+! In  ch_xfem_stat   : status of nodes field (blank if not xfem)
+! In  ch_xfem_lnno   : normal level-set field (blank if not xfem)
+! In  ch_xfem_ltno   : tangent level-set field (blank if not xfem)
 !
-    integer :: j, ibid, icmp, iityp
-    character(len=16) :: oper
-    character(len=8) :: k8b
-    character(len=4) :: fonre1, fonre2, typcoe
-    character(len=2) :: typlag
-    real(kind=8) :: coef, rbid(3)
-    complex(kind=8) :: cun
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
+    integer :: ibid, i_cmp, cmp_index
+    character(len=2) :: lagr_type
+    real(kind=8) :: coef_real_unit, rbid(3)
+    complex(kind=8) :: coef_cplx_unit
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call getres(k8b, k8b, oper)
-    iityp = 0
-    if (oper .eq. 'AFFE_CHAR_MECA_C') iityp = 1
-    typlag = '12'
-    typcoe = 'REEL'
-    if (fonree .eq. 'COMP') typcoe = 'COMP'
-    if (iityp .eq. 1) typcoe = 'COMP'
 !
-! --- AFFECTATION DU BLOCAGE A LA LISTE DE RELATIONS LISREL :
-!     -----------------------------------------------------
-    do 30 j = 1, nddla
+! - Initializations
 !
-!       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
-        icmp = indik8(nomcmp,motcle(j)(1:8),1,nbcmp)
-        ASSERT(icmp.gt.0)
-        if (.not.exisdg(prnm,icmp)) goto 30
+    coef_real_unit = 1.d0
+    coef_cplx_unit = dcmplx(1.d0,0.d0)
+    lagr_type = '12'
+!
+! - Loop on components
+!
+    do i_cmp = 1, cmp_nb
+!
+! ----- Is component exists on this node ?
+!
+        cmp_index = indik8(gran_cmp_name, cmp_name(i_cmp)(1:8), 1, gran_cmp_nb)
+        ASSERT(cmp_index.gt.0)
+        if (.not.exisdg(prnm,cmp_index)) goto 25
+!
+! ----- Apply on component, XFEM case
 !
         if (lxfem) then
-            if (zl(jnoxfl-1+2*ino) .and. motcle(j)(1:1) .eq. 'D') then
-                call xddlim(mod, motcle(j)(1:8), nomn, ino, valimr(j),&
-                            valimc(j), valimf(j), fonree, icompt(j), lisrel,&
-                            ibid, rbid, jnoxfv, ch1, ch2,&
-                            ch3, cnxinv)
-                goto 30
+            ASSERT(coef_type.eq.'REEL')
+            if (zl(jnoxfl-1+2*node_nume) .and. cmp_name(i_cmp)(1:1) .eq. 'D') then
+                call xddlim(model, cmp_name(i_cmp)(1:8), node_name, node_nume, &
+                            vale_real(i_cmp), vale_cplx(i_cmp), vale_func(i_cmp), &
+                            vale_type, cmp_count(i_cmp), list_rela,&
+                            ibid, rbid, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                            ch_xfem_ltno, connex_inv)
+                goto 25
             endif
         endif
 !
-!       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
-        icmp = indik8(nomcmp,motcle(j)(1:8),1,nbcmp)
-        ASSERT(icmp.gt.0)
-        if (.not.exisdg(prnm,icmp)) goto 30
+! ----- Count
 !
-        icompt(j) = icompt(j) + 1
+        cmp_count(i_cmp) = cmp_count(i_cmp) + 1
 !
-        if (ddlimp(j) .ne. 0) then
+! ----- Apply on active component
 !
-! ---   CAS D'UN BLOCAGE D'UNE GRANDEUR COMPLEXE :
-!       ----------------------------------------
-            if (iityp .eq. 1) then
-                fonre1 = 'REEL'
-                fonre2 = 'COMP'
-                coef = 1.0d0
-                cun = dcmplx(1.0d0,0.0d0)
-                call afrela(coef, cun, motcle(j) (1:8), nomn, dimens,&
-                            direct, 1, valimr(j), valimc(j), valimf(j),&
-                            fonre1, fonre2, typlag, 0.d0, lisrel)
-!
-! ---   CAS D'UN BLOCAGE D'UNE GRANDEUR REELLE :
-!       --------------------------------------
-            else
-                coef = 1.0d0
-                cun = dcmplx(1.0d0,0.0d0)
-                call afrela(coef, cun, motcle(j) (1:8), nomn, dimens,&
-                            direct, 1, valimr(j), valimc(j), valimf(j),&
-                            typcoe, fonree, typlag, 0.d0, lisrel)
-            endif
-!
-            if (fonree .eq. 'REEL') then
-                valr(nddla* (ino-1)+j) = valimr(j)
-            else if (fonree.eq.'COMP') then
-                valc(nddla* (ino-1)+j) = valimc(j)
-            else
-                valk(nddla* (ino-1)+j) = valimf(j)
-            endif
+        ASSERT(cmp_acti(i_cmp).le.1)
+        ASSERT(cmp_acti(i_cmp).ge.0)
+        if (cmp_acti(i_cmp).eq.1) then
+            call afrela(coef_real_unit, coef_cplx_unit, cmp_name(i_cmp)(1:8), node_name,  &
+                        repe_type, repe_defi, 1, &
+                        vale_real(i_cmp), vale_cplx(i_cmp), vale_func(i_cmp), &
+                        coef_type, vale_type, lagr_type, 0.d0, list_rela)
         endif
-30  end do
+!
+25      continue
+    end do
 !
     call jedema()
 end subroutine

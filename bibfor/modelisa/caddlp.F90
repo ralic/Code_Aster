@@ -55,8 +55,8 @@ subroutine caddlp(fonree, char)
 !
     integer :: nddla
     parameter    ( nddla = 6)
-    integer :: ddlimp(nddla), nddli, n1, n2, ioc, i, j, k, ibid
-    integer :: ier, nbec, jnoma, nbnoeu, jprnm, jval, ifm, niv
+    integer :: ddlimp(nddla), nddli,  ioc,  j, k, ibid
+    integer :: ier, nbec, jnoma, nbnoeu, jprnm, ifm, niv
     integer :: jdirec, jdimen, nbno, ialino, ino, nbma, ialima
     integer :: inom, nbcmp, jcompt, nn1(3)
     real(kind=8) :: valimr(nddla), pgl(3, 3), dloc(3), dglo(3), zero
@@ -64,6 +64,7 @@ subroutine caddlp(fonree, char)
     complex(kind=8) :: valimc(nddla)
 !
     character(len=1) :: k1bid
+    character(len=4) :: coef_type
     character(len=8) :: mod, noma, k8bid, nomg
     character(len=8) :: nomn, valimf(nddla), ddl(nddla)
     character(len=16) :: motfac, motcle(nddla), motcl1(2), tymoc1(2), motcl2(2)
@@ -78,11 +79,12 @@ subroutine caddlp(fonree, char)
 !
     motfac = 'DDL_POUTRE      '
     call getfac(motfac, nddli)
-    if (nddli .eq. 0) goto 9999
+    if (nddli .eq. 0) goto 999
     call getres(k8bid, k8bid, nomcmd)
 !
     call infniv(ifm, niv)
 !
+    coef_type = 'REEL'
     if (nomcmd(11:14) .eq. 'MECA') then
         nomg='DEPL_R'
     else if (nomcmd(11:14).eq.'THER') then
@@ -113,14 +115,9 @@ subroutine caddlp(fonree, char)
     call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
                 mod, ier)
     ligrmo = mod(1:8)//'.MODELE'
-!
-    call dismoi('F', 'NB_NO_MAILLA', ligrmo, 'LIGREL', n1,&
+    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    call jelira(ligrmo//'.PRNM', 'LONMAX', n2, k1bid)
-    nbec = n2/n1
-    if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA2_46')
-    endif
+    ASSERT(nbec.le.10)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE ---
 !
@@ -133,8 +130,8 @@ subroutine caddlp(fonree, char)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
     ncncin = '&&CADDLP.CONNECINVERSE  '
-    call jeexin(ncncin, n1)
-    if (n1 .eq. 0) call cncinv(noma, ibid, 0, 'V', ncncin)
+    call jeexin(ncncin, ier)
+    if (ier .eq. 0) call cncinv(noma, ibid, 0, 'V', ncncin)
 !
 ! ---------------------------------------------------
 ! 2   ALLOCATION DE TABLEAUX DE TRAVAIL
@@ -147,20 +144,15 @@ subroutine caddlp(fonree, char)
 !        -  VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR ASSOCIE AUX
 !                         DDLS IMPOSES PAR NOEUD
 !
-    if (fonree .eq. 'REEL') then
-        call wkvect('&&CADDLP.VALDDL', 'V V R', nddla*nbnoeu, jval)
-    else
-        call u2mesk('F', 'MODELISA2_47', 1, fonree)
-    endif
     call wkvect('&&CADDLP.DIRECT', 'V V R', 3*nbnoeu, jdirec)
     call wkvect('&&CADDLP.DIMENSION', 'V V I', nbnoeu, jdimen)
 ! --------------------------------------------------------------
 ! 3   BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR DDL IMPOSE
 ! --------------------------------------------------------------
 !
-    if (niv .ge. 2) write(ifm,1020)
+!    if (niv .ge. 2) write(ifm,1020)
 !
-    do 100 ioc = 1, nddli
+    do ioc = 1, nddli
 !
 ! ------ RECUPERATION DE LA LISTE DES NOEUDS :
         call reliem(' ', noma, 'NU_NOEUD', motfac, ioc,&
@@ -175,7 +167,7 @@ subroutine caddlp(fonree, char)
         endif
 !
         call wkvect('&&CADDLP.ICOMPT', 'V V I', nddla, jcompt)
-        do 110 k = 1, nbno
+        do k = 1, nbno
             ino = zi(ialino-1+k)
             call jenuno(jexnum(nomnoe, ino), nomn)
 !
@@ -187,7 +179,7 @@ subroutine caddlp(fonree, char)
 ! --------- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
 !           ----------------------------------------------
             if (fonree .eq. 'REEL') then
-                do 120 j = 1, 3
+                do j = 1, 3
                     ddlimp(j) = 0
                     ddl(j) = ' '
                     dloc(j) = zero
@@ -195,18 +187,18 @@ subroutine caddlp(fonree, char)
                     call getvr8(motfac, motcle(j), ioc, iarg, 1,&
                                 dloc(j), nn1(j))
                     if (nn1(j) .ge. 1) rln1(j) = 1.0d0
-120              continue
+                enddo
                 call utpvlg(1, 3, pgl, dloc, dglo)
                 call utpvlg(1, 3, pgl, rln1, rgn1)
-                do 122 j = 1, 3
+                do j = 1, 3
                     if (rgn1(j) .ne. zero) then
-                        ddl(j) = motcle(j)
+                        ddl(j) = motcle(j)(1:8)
                         valimr(j) = dglo(j)
                         ddlimp(j) = 1
                     endif
-122              continue
+                enddo
 !
-                do 130 j = 1, 3
+                do j = 1, 3
                     ddlimp(j+3) = 0
                     ddl(j+3) = ' '
                     dloc(j) = zero
@@ -214,56 +206,39 @@ subroutine caddlp(fonree, char)
                     call getvr8(motfac, motcle(j+3), ioc, iarg, 1,&
                                 dloc(j), nn1(j))
                     if (nn1(j) .ge. 1) rln1(j) = 1.0d0
-130              continue
+                enddo
                 call utpvlg(1, 3, pgl, dloc, dglo)
                 call utpvlg(1, 3, pgl, rln1, rgn1)
-                do 132 j = 1, 3
+                do j = 1, 3
                     if (rgn1(j) .ne. zero) then
-                        ddl(j+3) = motcle(j+3)
+                        ddl(j+3) = motcle(j+3)(1:8)
                         valimr(j+3) = dglo(j)
                         ddlimp(j+3) = 1
                     endif
-132              continue
+                enddo
             endif
-            if (niv .ge. 2) then
-                i = 0
-                do 77 j = 1, nddla
-                    if (ddlimp(j) .eq. 0) goto 77
-                    if (i .eq. 0) then
-                        write(ifm,1000) nomn, ddl(j), valimr(j)
-                    else
-                        write(ifm,1010) ddl(j), valimr(j)
-                    endif
-                    i = i + 1
-77              continue
-            endif
-!
-            call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+( ino-1)*nbec+1), nddla,&
-                        fonree, nomn, ino, ddlimp, valimr,&
-                        valimf, valimc, motcle, zr(jdirec+3*(ino-1)), zi(jdimen+ ino-1),&
-                        mod, lisrel, zk8(inom), nbcmp, zi(jcompt),&
-                        .false., ibid, ibid, k19bid, k19bid,&
-                        k19bid, k19bid)
-110      continue
-        do 111,k=1,nddla
-        if (zi(jcompt-1+k) .eq. 0) call u2mesk('F', 'MODELISA2_45', 1, motcle(k))
-111      continue
+                call afddli(mod, nbcmp, zk8(inom), ino, nomn, &
+                            zi(jprnm-1+( ino-1)*nbec+1), zi(jdimen+ ino-1), zr(jdirec+3*(ino-1)),  &
+                            coef_type, nddla, motcle ,  ddlimp, fonree, valimr, valimf, valimc,  &
+                            zi(jcompt), lisrel,  .false., ibid, ibid, &
+                            k19bid, k19bid, k19bid, k19bid)
+        enddo
+        do k=1,nddla
+            if (zi(jcompt-1+k) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, motcle(k))
+        enddo
         call jedetr('&&CADDLP.ICOMPT')
-100  end do
+  end do
 !
     call aflrch(lisrel, char)
-    call jedetr('&&CADDLP.VALDDL')
     call jedetr('&&CADDLP.DIRECT')
     call jedetr('&&CADDLP.DIMENSION')
-    call jedetr('&&CADDLP.NUNOTMP')
-    call jeexin(ncncin, n1)
-    if (n1 .ne. 0) call jedetr(ncncin)
+    call jedetr(ncncin)
 !
-9999  continue
+999 continue
 !
-    1020 format( '"DDL_POUTRE" DANS LE REPERE GLOBAL : ' )
-    1000 format( /,'NOEUD = ',a8,', ',a8,' = ',1p,e12.5 )
-    1010 format(                  18x,a8,' = ',1p,e12.5 )
+!    1020 format( '"DDL_POUTRE" DANS LE REPERE GLOBAL : ' )
+!    1000 format( /,'NOEUD = ',a8,', ',a8,' = ',1p,e12.5 )
+!    1010 format(                  18x,a8,' = ',1p,e12.5 )
 !
     call jedema()
 !

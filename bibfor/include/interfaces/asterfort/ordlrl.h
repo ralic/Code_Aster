@@ -17,8 +17,8 @@
 !
 interface
     subroutine ordlrl(charge, lisrel, nomgd)
-        character(len=8) :: charge
-        character(len=19) :: lisrel
-        character(len=8) :: nomgd
+        character(len=19), intent(in) :: lisrel
+        character(len=8), intent(in) :: charge
+        character(len=8), intent(in) :: nomgd
     end subroutine ordlrl
 end interface

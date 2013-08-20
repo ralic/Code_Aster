@@ -1,6 +1,7 @@
 subroutine ordre1(numcle, nomnoe, ddl, coef, coefc,&
                   nbterm)
     implicit none
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,10 +19,12 @@ subroutine ordre1(numcle, nomnoe, ddl, coef, coefc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    integer :: numcle(nbterm)
-    real(kind=8) :: coef(nbterm)
-    complex(kind=8) :: coefc(nbterm)
-    character(len=8) :: nomnoe(nbterm), ddl(nbterm)
+    integer, intent(in) :: nbterm
+    integer, intent(inout) :: numcle(nbterm)
+    real(kind=8), intent(inout) :: coef(nbterm)
+    complex(kind=8), intent(inout) :: coefc(nbterm)
+    character(len=8), intent(inout) :: nomnoe(nbterm)
+    character(len=8), intent(inout) :: ddl(nbterm)
 !
 ! ------------------------------------------------------------------
 !     REARRANGEMENT DES TABLEAUX D'UNE RELATION LINEAIRE PAR ORDRE
@@ -46,29 +49,27 @@ subroutine ordre1(numcle, nomnoe, ddl, coef, coefc,&
 !                 -        -      -   RELATION
 ! ------------------------------------------------------------------
 !
-! --------- VARIABLES LOCALES --------------------------------------
-!
     complex(kind=8) :: coec
     character(len=8) :: nono, nodl
-    integer :: i, j, k, nbterm
+    integer :: i, j, k
     real(kind=8) :: coe
 !
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES -------------------
 !
-    do 10 j = 2, nbterm
+    do j = 2, nbterm
         k = numcle(j)
         nono = nomnoe(j)
         nodl = ddl(j)
         coe = coef(j)
         coec = coefc(j)
-        do 20 i = j-1, 1, -1
+        do i = j-1, 1, -1
             if (numcle(i) .le. k) goto 30
             numcle(i+1) = numcle(i)
             nomnoe(i+1) = nomnoe(i)
             ddl(i+1) = ddl(i)
             coef(i+1) = coef(i)
             coefc(i+1) = coefc(i)
-20      continue
+        enddo
         i = 0
 30      continue
         numcle(i+1) = k
@@ -76,5 +77,5 @@ subroutine ordre1(numcle, nomnoe, ddl, coef, coefc,&
         ddl(i+1) = nodl
         coef(i+1) = coe
         coefc(i+1) = coec
-10  end do
+    end do
 end subroutine

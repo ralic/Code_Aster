@@ -1,27 +1,12 @@
 subroutine ordlrl(charge, lisrel, nomgd)
+!
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
 #include "jeveux.h"
-!
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jecreo.h"
@@ -38,8 +23,29 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    character(len=19) :: lisrel
-    character(len=8) :: charge, nomgd
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=19), intent(in) :: lisrel
+    character(len=8), intent(in) :: charge
+    character(len=8), intent(in) :: nomgd
+!
 ! -----------------------------------------------------------------
 !     MISE A JOUR DE L'OBJET DE TYPE  LISTE_RELA ET DE NOM
 !     LISREL  :
@@ -63,11 +69,10 @@ subroutine ordlrl(charge, lisrel, nomgd)
     parameter(nmocl=300)
     complex(kind=8) :: coproc, rapcoc
     character(len=4) :: typcoe
-    character(len=8) :: nomnoe, kbid
+    character(len=8) :: nomnoe, k8bid
     character(len=8) :: noma, mod, cmp, nomcmp(nmocl)
     character(len=16) :: kidrel
     character(len=19) :: ligrmo
-    integer :: vali(2)
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
     integer :: i, ibid, icmp, icomp, idcoma, iddl, iddl1, iddl2, ideca1, ideca2
@@ -85,6 +90,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
     eps1=1.d2*r8prem()
     eps2=1.d0/r8gaem()
 !
+! - Mesh and model
 !
     call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
                 mod, ier)
@@ -93,28 +99,17 @@ subroutine ordlrl(charge, lisrel, nomgd)
     noma=zk8(jnoma)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, kbid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, k8bid)
     nddla=nbcmp-1
-    if (nddla .gt. nmocl) then
-        vali(1)=nmocl
-        vali(2)=nddla
-        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                    vali, 0, 0.d0)
-    endif
+    ASSERT(nddla.le.nmocl)
 !
-    do 10 i = 1, nbcmp
+    do i = 1, nbcmp
         nomcmp(i)=zk8(inom-1+i)
-10  end do
+    end do
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
-                kbid, ierd)
-!
-! --- ACCES A L'OBJET .PRNM ---
-!
-    if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
-    else
-        call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    endif
+                k8bid, ierd)
+    ASSERT(nbec.le.10)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! --- ACCES AUX COMPOSANTES DE LA LISTE_RELA
 !
@@ -124,7 +119,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
     call jeveuo(lisrel//'.RLNT', 'E', jrlnt)
     call jeveuo(lisrel//'.RLPO', 'E', jrlpo)
     call jeveuo(lisrel//'.RLSU', 'E', jrlsu)
-    call jeveuo(lisrel//'.RLTC', 'E', jrltc)
+    call jeveuo(lisrel//'.RLTC', 'L', jrltc)
 !
 ! --- TYPE DE VALEUR DES COEFFICIENTS DES RELATIONS ---
 !
@@ -138,10 +133,9 @@ subroutine ordlrl(charge, lisrel, nomgd)
 ! --- NOMBRE DE TERMES  MAX IMPLIQUES DANS UNE RELATION
 !
     nbtema=0
-    do 20 irela = 1, nbrela
-! ---          NOMBRE DE TERMES DE LA RELATION       ---
+    do irela = 1, nbrela
         if (nbtema .lt. zi(jrlnt+irela-1)) nbtema=zi(jrlnt+irela-1)
-20  end do
+    end do
 !
 ! --- CREATION D'UN VECTEUR DE TRAVAIL DESTINE A CONTENIR
 ! --- L'INDICE DU PLUS GRAND COEFFICIENT EN VALEUR ABSOLUE
@@ -173,9 +167,9 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 !     1. ON ORDONNE LES TERMES DE CHAQUE RELATION POUR POUVOIR
-!        LES COMPRARER PLUS FACILEMENT ET DETECTER LES DOUBLONS
+!        LES COMPARER PLUS FACILEMENT ET DETECTER LES DOUBLONS
 !     ----------------------------------------------------------
-    do 100 irela = 1, nbrela
+    do irela = 1, nbrela
         ipntrl=zi(jrlpo+irela-1)
         nbterm=zi(jrlnt+irela-1)
         idecal=ipntrl-nbterm
@@ -184,16 +178,18 @@ subroutine ordlrl(charge, lisrel, nomgd)
         iddl=jrldd+idecal
 !
         if (typcoe .eq. 'COMP') then
-            do 30 ino = 1, nbterm
+            do ino = 1, nbterm
                 zc(jrlcoc+ino-1)=zc(jrlcof+ino-1)
-30          continue
-        else
-            do 40 ino = 1, nbterm
+            enddo
+        elseif (typcoe .eq. 'REEL') then
+            do ino = 1, nbterm
                 zr(jrlcor+ino-1)=zr(jrlcof+ino-1)
-40          continue
+            enddo
+        else
+            ASSERT(.false.)
         endif
 !
-        do 50 ino = 1, nbterm
+        do ino = 1, nbterm
             nomnoe=zk8(idnoeu+ino-1)
             call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
             zi(inorel+ino-1)=in
@@ -202,76 +198,78 @@ subroutine ordlrl(charge, lisrel, nomgd)
             if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
                 valk(1)=cmp
                 valk(2)=nomnoe
-                call u2mesg('F', 'MODELISA8_30', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call u2mesk('F', 'CHARGES2_31', 2, valk)
             endif
-50      continue
+        enddo
 !
+! ----- Rearrangement of linear relation tables in ascending order of nodes and dof for given node
 !
-!       -- REARRANGEMENT DES TABLEAUX DE LA RELATION SELON
-!       L'ORDRE CROISSANT DES NOEUDS ET L'ORDRE
-!       CROISSANT DES DDLS POUR UN NOEUD DONNE
         call ordrel(zi(inorel), zk8(idnoeu), zk8(iddl), zr(jrlcor), zc(jrlcoc),&
                     zi(inocc), nbterm, zk8(inom), nddla)
 !
 !       -- REAFFECTATION DU TABLEAU DES COEFFICIENTS
         if (typcoe .eq. 'COMP') then
-            do 60 ino = 1, nbterm
+            do ino = 1, nbterm
                 zc(jrlcof+ino-1)=zc(jrlcoc+ino-1)
-60          continue
-        else
-            do 70 ino = 1, nbterm
+            enddo
+        elseif (typcoe .eq. 'REEL') then
+            do ino = 1, nbterm
                 zr(jrlcof+ino-1)=zr(jrlcor+ino-1)
-70          continue
+            enddo
+        else
+            ASSERT(.false.)
         endif
 !
         coemax=0.0d0
         if (typcoe .eq. 'COMP') then
-            do 80 ino = 1, nbterm
+            do ino = 1, nbterm
                 if (abs(zc(jrlcoc+ino-1)) .gt. coemax) then
                     coemax=abs(zc(jrlcoc+ino-1))
                     indmax=ino
                 endif
-80          continue
-        else
-            do 90 ino = 1, nbterm
+            enddo
+        elseif (typcoe .eq. 'REEL') then
+            do ino = 1, nbterm
                 if (abs(zr(jrlcor+ino-1)) .gt. coemax) then
                     coemax=abs(zr(jrlcor+ino-1))
                     indmax=ino
                 endif
-90          continue
+            enddo
+        else
+            ASSERT(.false.)
         endif
         zi(idcoma+irela-1)=indmax
-100  end do
+    end do
 !
 !
 !
 !     2. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
 !     ----------------------------------------------------------------
     call jecreo('&&ORDLRL.KIDREL', 'V N K16')
-    call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela, kbid)
-    do 171 irela1 = nbrela, 1, -1
+    call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela, k8bid)
+    do irela1 = nbrela, 1, -1
         nbter1=zi(jrlnt+irela1-1)
-        if (nbter1 .gt. 1) goto 171
-        ipntr1=zi(jrlpo+irela1-1)
-        ideca1=ipntr1-nbter1
-        idnoe1=jrlno+ideca1
-        iddl1=jrldd+ideca1
-        kidrel=zk8(idnoe1)//zk8(iddl1)
-        call jenonu(jexnom('&&ORDLRL.KIDREL', kidrel), nidrel)
-        if (nidrel .eq. 0) then
-            call jecroc(jexnom('&&ORDLRL.KIDREL', kidrel))
-        else
-            zi(jrlsu+irela1-1)=1
+        if (nbter1 .le. 1) then
+            ipntr1=zi(jrlpo+irela1-1)
+            ideca1=ipntr1-nbter1
+            idnoe1=jrlno+ideca1
+            iddl1=jrldd+ideca1
+            kidrel=zk8(idnoe1)//zk8(iddl1)
+            call jenonu(jexnom('&&ORDLRL.KIDREL', kidrel), nidrel)
+            if (nidrel .eq. 0) then
+                call jecroc(jexnom('&&ORDLRL.KIDREL', kidrel))
+            else
+                zi(jrlsu+irela1-1)=1
+            endif
         endif
-171  end do
+    end do
     call jedetr('&&ORDLRL.KIDREL')
 !
 !
 !
 !     3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
 !     ----------------------------------------------------------------
-    do 170 irela1 = nbrela, 2, -1
+    do irela1 = nbrela, 2, -1
         nbter1=zi(jrlnt+irela1-1)
         if (nbter1 .eq. 1) goto 170
         ipntr1=zi(jrlpo+irela1-1)
@@ -284,19 +282,21 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
         if (typcoe .eq. 'COMP') then
             if (abs(zc(jrlco1+indmax-1)) .lt. eps2) then
-                call u2mess('F', 'MODELISA5_92')
+                call u2mess('F', 'CHARGES2_32')
+            endif
+        elseif (typcoe .eq. 'REEL') then
+            if (abs(zr(jrlco1+indmax-1)) .lt. eps2) then
+                call u2mess('F', 'CHARGES2_32')
             endif
         else
-            if (abs(zr(jrlco1+indmax-1)) .lt. eps2) then
-                call u2mess('F', 'MODELISA5_92')
-            endif
+            ASSERT(.false.)
         endif
 !
 !
 !       --  CAS DES COEF. COMPLEXES
 !       -----------------------------------
         if (typcoe .eq. 'COMP') then
-            do 130 irela2 = 1, irela1-1
+            do irela2 = 1, irela1-1
                 nbter2=zi(jrlnt+irela2-1)
                 ipntr2=zi(jrlpo+irela2-1)
                 ideca2=ipntr2-nbter2
@@ -307,7 +307,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
                 if (nbter1 .eq. nbter2) then
                     icomp=0
-                    do 110 ino = 1, nbter1
+                    do ino = 1, nbter1
                         if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
                             if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
                                 rapcoc=coproc*zc(jrlco1+ino-1)
@@ -324,17 +324,18 @@ subroutine ordlrl(charge, lisrel, nomgd)
                             icomp=1
                             goto 120
                         endif
-110                  continue
-120                  continue
+110                     continue
+                    enddo
+120                 continue
                     if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
                 endif
-130          continue
+            enddo
 !
 !
 !       --  CAS DES COEF. REEL
 !       -----------------------------------
-        else
-            do 160 irela2 = 1, irela1-1
+        elseif (typcoe .eq. 'REEL') then
+            do irela2 = 1, irela1-1
                 nbter2=zi(jrlnt+irela2-1)
                 ipntr2=zi(jrlpo+irela2-1)
                 ideca2=ipntr2-nbter2
@@ -345,7 +346,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
                 if (nbter1 .eq. nbter2) then
                     icomp=0
-                    do 140 ino = 1, nbter1
+                    do ino = 1, nbter1
                         if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
                             if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
                                 rapcoe=copror*zr(jrlco1+ino-1)
@@ -362,13 +363,17 @@ subroutine ordlrl(charge, lisrel, nomgd)
                             icomp=1
                             goto 150
                         endif
-140                  continue
-150                  continue
+140                     continue
+                    enddo
+150                 continue
                     if (icomp .eq. 0) zi(jrlsu+irela2-1)=1
                 endif
-160          continue
+            enddo
+        else
+            ASSERT(.false.)
         endif
-170  end do
+170     continue
+    end do
 !
 !
 ! ---  MENAGE  ---

@@ -1,5 +1,20 @@
 subroutine craglc(long, ligrch)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterfort/agligr.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,20 +31,10 @@ subroutine craglc(long, ligrch)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "jeveux.h"
 !
-#include "asterfort/agligr.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedupo.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/wkvect.h"
-    character(len=19) :: ligrch
+    integer, intent(in) :: long
+    character(len=19), intent(in) :: ligrch
+!
 ! ---------------------------------------------------------------------
 !     CREATION OU EXTENSION DU LIGREL DE CHARGE LIGRCH
 !     D'UN NOMBRE DE TERMES EGAL A LONG
@@ -51,14 +56,12 @@ subroutine craglc(long, ligrch)
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idlgns, idnbno, ier, iret, lonema, long
+    integer :: ibid, idlgns, idnbno, ier, iret, lonema
     integer :: longma, longut, lonlig, lont, nbeldi, nbelma, nbelut
     integer :: nbmata, nbnomx
 !-----------------------------------------------------------------------
     call jemarq()
-    if (long .le. 0) then
-        call u2mess('F', 'MODELISA4_37')
-    endif
+    ASSERT(long.gt.0)
 !
 ! --- ON CREE LIGREL DE CHARGE S'IL N'EXISTE PAS ---
 !

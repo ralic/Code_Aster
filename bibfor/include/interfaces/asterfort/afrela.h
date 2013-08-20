@@ -16,23 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine afrela(coefr, coefc, ddl, noeud, ndim,&
-                      direct, nbterm, betar, betac, betaf,&
-                      typcoe, typval, typlag, epsi, lisrez)
-        integer :: nbterm
-        real(kind=8) :: coefr(nbterm)
-        complex(kind=8) :: coefc(nbterm)
-        character(len=8) :: ddl(nbterm)
-        character(len=8) :: noeud(nbterm)
-        integer :: ndim(nbterm)
-        real(kind=8) :: direct(3, nbterm)
-        real(kind=8) :: betar
-        complex(kind=8) :: betac
-        character(*) :: betaf
-        character(len=4) :: typcoe
-        character(len=4) :: typval
-        character(len=2) :: typlag
-        real(kind=8) :: epsi
-        character(*) :: lisrez
+    subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
+                      repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
+                      type_coef, type_vale, type_lagr, epsi, lisrez)
+        integer, intent(in) :: nbterm
+        real(kind=8), intent(in) :: coef_real(nbterm)
+        complex(kind=8), intent(in) :: coef_cplx(nbterm)
+        character(len=8), intent(in) :: ddl_name(nbterm)
+        character(len=8), intent(in) :: node_name(nbterm)
+        integer, intent(in) :: repe_type(nbterm)
+        real(kind=8), intent(in) :: repe_defi(3, nbterm)
+        real(kind=8), intent(in) :: vale_real
+        complex(kind=8), intent(in) :: vale_cplx
+        character(len=*), intent(in) :: vale_func
+        character(len=4), intent(in) :: type_coef
+        character(len=4), intent(in) :: type_vale
+        character(len=2), intent(in) :: type_lagr
+        real(kind=8), intent(in) :: epsi
+        character(len=*), intent(in) :: lisrez
     end subroutine afrela
 end interface

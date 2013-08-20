@@ -180,10 +180,6 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
  La normale de la maille %(k1)s est nulle
 """),
 
-37 : _(u"""
- on essaie de créer ou d'agrandir le LIGREL de charge avec un nombre de termes négatif ou nul
-"""),
-
 
 
 

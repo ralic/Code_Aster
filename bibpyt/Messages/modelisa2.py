@@ -190,18 +190,6 @@ Risque & Conseil:
  deux mailles POI1 interdit
 """),
 
-45: _(u"""
- aucun noeud ne connaît le DDL:  %(k1)s
-"""),
-
-46: _(u"""
- le descripteur_grandeur associé au modèle ne tient pas sur dix entiers codés
-"""),
-
-47: _(u"""
- FONREE non traite  %(k1)s
-"""),
-
 48: _(u"""
  récupération des caractéristiques élémentaires du câble no %(k1)s  : détection d un élément différent du type <MECA_barre>
 """),

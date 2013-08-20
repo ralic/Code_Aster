@@ -1,6 +1,11 @@
 subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
                   nbocno, nbterm, nomcmp, nddla)
+!
     implicit none
+!
+#include "asterc/indik8.h"
+#include "asterfort/ordre1.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,18 +23,22 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-#include "asterc/indik8.h"
-#include "asterfort/ordre1.h"
-    integer :: numnoe(nbterm), nbocno(nbterm)
-    real(kind=8) :: coef(nbterm)
-    complex(kind=8) :: coefc(nbterm)
-    character(len=8) :: nomnoe(nbterm), ddl(nbterm), nomcmp(nddla)
+    integer, intent(in) :: nbterm
+    integer, intent(in) :: nddla
+    character(len=8), intent(in)  :: nomcmp(nddla)
+    integer, intent(inout) :: numnoe(nbterm)
+    integer, intent(inout) :: nbocno(nbterm)
+    real(kind=8), intent(inout) :: coef(nbterm)
+    complex(kind=8), intent(inout) :: coefc(nbterm)
+    character(len=8), intent(inout) :: nomnoe(nbterm)
+    character(len=8), intent(inout) :: ddl(nbterm)
 !
-! ------------------------------------------------------------------
-!     REARRANGEMENT DES TABLEAUX D'UNE RELATION LINEAIRE PAR ORDRE
-!     DE NOEUD CROISSANT ET DE NUMERO DE DDL CROISSANT POUR UN
-!     NOEUD DONNE
-! ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Rearrangement of nodes, dof and relation coefficient tables in ascending order of nodes and dof 
+! for a given node
+!
+! --------------------------------------------------------------------------------------------------
 !  NUMNOE(NBTERM) - VAR    - I    - : NUMEROS DES NOEUDS DE LA
 !                 -        -      -   RELATION EN ENTREE
 !                 -        -      -   CONTIENT PAR LA SUITE  LES
@@ -61,69 +70,73 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
 !                 -        -      -   POSSIBLES EN UN NOEUD
 ! -----------------------------------------------------------------
 !
-! --- REARRANGEMENT DES TABLEAUX DES NOEUDS, DES DDLS ET DES ---
-! --- COEFFICIENTS DE LA RELATION SELON L'ORDRE CROISSANT    ---
-! --- DES NOEUDS                                             ---
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: i, ind, j, k, nbterm, nddla
-!-----------------------------------------------------------------------
+    integer :: i, ind, j, k
+!
+! --------------------------------------------------------------------------------------------------
+!
+    do i = 1, nbterm
+        nbocno(i) = 1
+    end do
+!
+! - Sort by nodes number
+!
     call ordre1(numnoe, nomnoe, ddl, coef, coefc,&
                 nbterm)
 !
-! --- DETERMINATION DU TABLEAU NBOCNO DONNANT LE NOMBRE ---
-! --- D'OCCURENCES DES NOEUDS DANS LA LISTE_RELA
+! - Determination of table NBOCNO giving the number of instances of nodes in the list LISTE_RELA
 !
-    do 10 i = 1, nbterm
-        nbocno(i) = 1
-10  end do
-    do 20 i = 1, nbterm - 1
-        do 30 j = i+1, nbterm
+    do i = 1, nbterm - 1
+        do j = i+1, nbterm
             if (numnoe(i) .eq. numnoe(j)) then
                 nbocno(i) = nbocno(i) + 1
             endif
-30      continue
-20  end do
+        end do
+    end do
 !
-! --- REARRANGEMENT DES TABLEAUX DES NOEUDS, DES DDLS ET DES ---
-! --- COEFFICIENTS DE LA RELATION SELON L'ORDRE CROISSANT    ---
-! --- DES DDLS POUR UN NOEUD DONNE                           ---
+! - Rearrangement of nodes, dof and relation coefficient tables in ascending order of dof for a 
+! - given node
 !
     k = 0
 !
-! --- CAS DU PREMIER NOEUD ---
+! - First node
 !
     if (nbocno(1) .gt. 1) then
-        do 40 j = 1, nbocno(1)
+        do j = 1, nbocno(1)
             k = k+1
-! --- ICI NUMNOE CONTIENT LES NUMEROS DES DDLS POUR UN NOEUD DONNE
             numnoe(k) = indik8(nomcmp,ddl(k),1,nddla)
-40      continue
+        enddo
+!
+! ----- Sort by dof number
+!
         call ordre1(numnoe, nomnoe, ddl, coef, coefc,&
                     nbocno(1))
     else
         k = k+1
     endif
 !
-! --- CAS DES AUTRES NOEUDS  ---
+! - Other nodes
 !
-    do 50 i = 2, nbterm
+    do i = 2, nbterm
 !
-! --- ON UTILISE LE FAIT QUE SI DES NOEUDS SONT EGAUX, ILS  ---
-! --- SONT CONSECUTIFS                                      ---
+! ----- Using  the fact that if nodes are equal, they are consequential
 !
         if (nomnoe(i) .eq. nomnoe(i-1)) goto 50
         if (nbocno(i) .gt. 1) then
-            do 60 j = 1, nbocno(i)
+            do j = 1, nbocno(i)
                 k = k + 1
-! --- ICI NUMNOE CONTIENT LES NUMEROS DES DDLS POUR UN NOEUD DONNE
                 numnoe(k) = indik8(nomcmp,ddl(k),1,nddla)
-60          continue
+            enddo
             ind = k - nbocno(i) + 1
+!
+! --------- Sort by dof number
+!
             call ordre1(numnoe(ind), nomnoe(ind), ddl(ind), coef(ind), coefc(ind),&
                         nbocno(i))
         else
             k = k+1
         endif
-50  end do
+50      continue
+    end do
 end subroutine

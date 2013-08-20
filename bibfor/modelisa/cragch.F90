@@ -1,5 +1,23 @@
 subroutine cragch(long, typcoe, typval, ligrch)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterfort/agcart.h"
+#include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jeagco.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/u2mesk.h"
+#include "asterfort/u2mess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,23 +34,12 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "jeveux.h"
-#include "asterfort/agcart.h"
-#include "asterfort/alcart.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jeagco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedupo.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/u2mesk.h"
-#include "asterfort/u2mess.h"
-    character(len=4) :: typcoe, typval
-    character(len=19) :: ligrch
+!
+    integer, intent(in) :: long
+    character(len=4), intent(in) :: typcoe
+    character(len=4), intent(in) :: typval
+    character(len=19), intent(in) :: ligrch
+!
 ! ---------------------------------------------------------------------
 !     CREATION OU EXTENSION DES CARTES .CMULT ET .CIMPO
 !     DU LIGREL DE CHARGE LIGRCH D'UN NOMBRE DE TERMES
@@ -58,26 +65,25 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: noma, mod, base
     character(len=19) :: ca1, ca2
-    integer :: iret, long, longut, ibid, ier, jnoma, jdesc, ngdmx, nedit, ndisp
+    integer :: iret, longut, ibid, ier, jnoma, jdesc, ngdmx, nedit, ndisp
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
     call jemarq()
-    if (long .le. 0) then
-        call u2mess('F', 'MODELISA4_37')
-    endif
+    ASSERT(long.gt.0)
 !
 ! --- CARTES DE LA CHARGE ---
 !
     if (ligrch(12:13) .eq. 'TH') then
         ca1= ligrch(1:8)//'.CHTH.CMULT'
         ca2= ligrch(1:8)//'.CHTH.CIMPO'
-!     OLIVIER
     else if (ligrch(12:13).eq.'ME') then
         ca1= ligrch(1:8)//'.CHME.CMULT'
         ca2= ligrch(1:8)//'.CHME.CIMPO'
-    else
+    else if (ligrch(12:13).eq.'AC') then
         ca1= ligrch(1:8)//'.CHAC.CMULT'
         ca2= ligrch(1:8)//'.CHAC.CIMPO'
+    else
+        ASSERT(.false.)
     endif
 !
 ! --- ON CREE LES CARTES .CMULT ET .CIMPO SI ELLES N'EXISTENT PAS ---
@@ -100,7 +106,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
         else if (typcoe.eq.'COMP') then
             call alcart('G', ca1, noma, 'DDLM_C')
         else
-            call u2mesk('F', 'MODELISA2_37', 1, typcoe)
+            ASSERT(.false.)
         endif
 !
         if (typval .eq. 'REEL') then
@@ -110,7 +116,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
         else if (typval.eq.'COMP') then
             call alcart('G', ca2, noma, 'DDLI_C')
         else
-            call u2mesk('F', 'MODELISA2_37', 1, typval)
+            ASSERT(.false.)
         endif
     endif
 !

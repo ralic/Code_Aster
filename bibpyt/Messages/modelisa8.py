@@ -125,18 +125,6 @@ cata_msg = {
  nombre de composantes supérieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d
 """),
 
-30 : _(u"""
- Erreur utilisateur:
-    On cherche à imposer une condition aux limites sur le ddl %(k1)s
-    du noeud %(k2)s.
-    Mais ce noeud ne porte pas ce ddl.
-
-    Conseils :
-     - vérifier le modèle et les conditions aux limites :
-        - le noeud incriminé fait-il partie du modèle ?
-        - le noeud porte-t-il le ddl que l'on cherche à contraindre ?
-"""),
-
 34 : _(u"""
  erreur dans les données le paramètre  %(k1)s n existe pas dans la table  %(k2)s
 """),

@@ -17,9 +17,9 @@
 !
 interface
     subroutine cragch(long, typcoe, typval, ligrch)
-        integer :: long
-        character(len=4) :: typcoe
-        character(len=4) :: typval
-        character(len=19) :: ligrch
+        integer, intent(in) :: long
+        character(len=4), intent(in) :: typcoe
+        character(len=4), intent(in) :: typval
+        character(len=19), intent(in) :: ligrch
     end subroutine cragch
 end interface

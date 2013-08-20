@@ -316,10 +316,6 @@ cata_msg = {
  problème pour déterminer le rang de la composante <a1> de la grandeur <cagnba>
 """),
 
-92 : _(u"""
- problème sur une relation : les coefficients sont trop petits
-"""),
-
 94 : _(u"""
  impossibilité, la maille  %(k1)s  doit être une maille de peau, i.e. de type "QUAD" ou "tria" en 3d ou de type "SEG" en 2d, et elle est de type :  %(k2)s
 """),

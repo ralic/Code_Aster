@@ -76,7 +76,6 @@ subroutine aflrch(lisrez, chargz)
     character(len=19) :: ca1, ca2
     character(len=19) :: ligrmo, ligrch
     integer :: ntypel(nmocl)
-    integer :: vali(2)
     character(len=1) :: k1bid
     real(kind=8) :: beta
     integer :: i, ibid, icmp, iddl, idecal, ier, ierd, ifm, igrel
@@ -90,7 +89,7 @@ subroutine aflrch(lisrez, chargz)
     call jemarq()
     lisrel=lisrez
     call jeexin(lisrel//'.RLCO', iexi)
-    if (iexi .eq. 0) goto 9999
+    if (iexi .eq. 0) goto 999
 !
     charge=chargz
     call infniv(ifm, niv)
@@ -127,7 +126,7 @@ subroutine aflrch(lisrez, chargz)
 !
 !     -- TRAITEMENT DU MOT CLE METHODE='ELIMINATION':
     call elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
-    if (nbdual .eq. 0) goto 9998
+    if (nbdual .eq. 0) goto 998
 !
 !
     if (ligrch(12:13) .eq. 'TH') then
@@ -139,6 +138,8 @@ subroutine aflrch(lisrez, chargz)
     else if (ligrch(12:13).eq.'AC') then
         ca1=charge//'.CHAC.CMULT'
         ca2=charge//'.CHAC.CIMPO'
+    else
+        ASSERT(.false.)
     endif
 !
     call jeveuo(lisrel//'.RLTC', 'L', jrltc)
@@ -177,31 +178,24 @@ subroutine aflrch(lisrez, chargz)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', nbcmp, k1bid)
     nddla=nbcmp-1
-    if (nddla .gt. nmocl) then
-        vali(1)=nmocl
-        vali(2)=nddla
-        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                    vali, 0, 0.d0)
-    endif
+    ASSERT(nddla.le.nmocl)
     ASSERT(nbcmp.le.nmocl)
-    do 10 i = 1, nbcmp
+    do i = 1, nbcmp
         nomcmp(i)=zk8(inom-1+i)
         call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i)(1:7)), ntypel(i))
-10  end do
+    end do
     call dismoi('F', 'NB_EC', nomgd, 'GRANDEUR', nbec,&
                 kbid, ierd)
 !
 !
-    if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
-    else
-        call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    endif
+    ASSERT(nbec.le.10)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! --- LES CARTES CA1 ET CA2 DOIVENT OBLIGATOIREMENT AVOIR ETE
 ! --- CREEES AU PREALABLE
     call jeexin(ca1//'.DESC', iret)
-    if (iret .eq. 0) call u2mesk('F', 'MODELISA_95', 1, ca1)
+    ASSERT(iret.gt.0)
+
     call jeveuo(ca1//'.NCMP', 'E', jncmp1)
     call jeveuo(ca1//'.VALV', 'E', jvalv1)
     call jeveuo(ca1//'.VALE', 'E', jvale1)
@@ -229,7 +223,7 @@ subroutine aflrch(lisrez, chargz)
 !
 !
 !
-    do 60 irela = 1, nbrela
+    do irela = 1, nbrela
         indsur=zi(jrlsu+irela-1)
         if (indsur .ne. 0) goto 60
 !
@@ -241,6 +235,8 @@ subroutine aflrch(lisrez, chargz)
             betac=zc(jrlbe+irela-1)
         else if (typval.eq.'FONC') then
             betaf=zk24(jrlbe+irela-1)(1:19)
+        else
+            ASSERT(.false.)
         endif
         idecal=ipntrl-nbterm
         jrlcof=jrlco+idecal
@@ -250,7 +246,7 @@ subroutine aflrch(lisrez, chargz)
         numel=0
         inema0=inema
         zi(jnbno)=zi(jnbno)+2
-        do 40 ino = 1, nbterm
+        do ino = 1, nbterm
             nomnoe=zk8(idnoeu+ino-1)
             call jenonu(jexnom(noma//'.NOMNOE', nomnoe), in)
 !
@@ -260,16 +256,14 @@ subroutine aflrch(lisrez, chargz)
             if (.not.exisdg(zi(jprnm-1+(in-1)*nbec+1),icmp)) then
                 valk(1)=cmp
                 valk(2)=nomnoe
-                call u2mesg('F', 'MODELISA8_30', 2, valk, 0,&
-                            0, 0, 0.d0)
+                call u2mesk('F', 'CHARGES2_31', 2, valk)
             else
-                do 20 kddl = 1, nbcmp
+                do kddl = 1, nbcmp
                     if (cmp .eq. nomcmp(kddl)) then
                         numel=ntypel(kddl)
                         goto 30
-!
                     endif
-20              continue
+                enddo
             endif
 30          continue
 !
@@ -279,20 +273,18 @@ subroutine aflrch(lisrez, chargz)
                             '        ', 3, 1, inema, zi(jnbno),&
                             zk8(jrlla+irela-1))
             else
-                call u2mesk('F', 'AFFECHARMECA_1', 1, nomnoe)
+                call u2mesk('F', 'CHARGES2_33', 1, nomnoe)
             endif
-40      continue
+        enddo
 !
 !
 !
 !       --  STOCKAGE DANS LES CARTES CA1 ET CA2
         nbnema=inema-inema0
-        if (nbnema .ne. nbterm) then
-            call u2mess('F', 'AFFECHARMECA_2')
-        endif
+        ASSERT(nbnema.eq.nbterm)
         zk8(jncmp1)='A1'
         zk8(jncmp2)='C'
-        do 50 j = 1, nbnema
+        do j = 1, nbnema
             if (typcoe .eq. 'COMP') then
                 zc(jvalv1)=zc(jrlcof-1+j)
             else
@@ -306,53 +298,60 @@ subroutine aflrch(lisrez, chargz)
                     zr(jvalv2)=0.d0
                 else if (typval.eq.'COMP') then
                     zc(jvalv2)=(0.0d0,0.0d0)
-                else
+                else if (typval.eq.'FONC') then
                     zk24(jvalv2)='&FOZERO'
+                else
+                    ASSERT(.false.)
                 endif
             else
                 if (typval .eq. 'REEL') then
                     zr(jvalv2)=beta
                 else if (typval.eq.'COMP') then
                     zc(jvalv2)=betac
-                else
+                else if (typval.eq.'FONC') then
                     zk24(jvalv2)=betaf
+                else
+                    ASSERT(.false.)
                 endif
             endif
             call nocart(ca2, -3, ' ', 'NUM', 1,&
                         ' ', nunewm, ligrch, 1)
-50      continue
-60  end do
+        enddo
+60      continue
+    end do
 !
 !
 !
 !     -- IMPRESSION DES RELATIONS REDONDANTES ET DONC SUPPRIMEES :
 !     ------------------------------------------------------------
-9998  continue
+998 continue
     if ((nbsurc.gt.0) .and. (niv.ge.2)) then
-        write (ifm,*)'LES RELATIONS SUIVANTES SONT '//&
-     &    'REDONDANTES ET DONC SUPPRIMEES EN APPLIQUANT '//&
-     &    'LE PRINCIPE DE SURCHARGE.'
-!
-        do 70 irela = 1, nbrela
+
+        call u2mess('I','CHARGES2_34')
+
+        do irela = 1, nbrela
             indsur=zi(jrlsu+irela-1)
-            if (indsur .ne. 1) goto 70
-            ipntrl=zi(jrlpo+irela-1)
-            nbterm=zi(jrlnt+irela-1)
-            if (typval .eq. 'REEL') then
-                beta=zr(jrlbe+irela-1)
-            else if (typval.eq.'COMP') then
-                betac=zc(jrlbe+irela-1)
-            else if (typval.eq.'FONC') then
-                betaf=zk24(jrlbe+irela-1)(1:19)
+            if (indsur .eq. 1) then
+                ipntrl=zi(jrlpo+irela-1)
+                nbterm=zi(jrlnt+irela-1)
+                if (typval .eq. 'REEL') then
+                    beta=zr(jrlbe+irela-1)
+                else if (typval.eq.'COMP') then
+                    betac=zc(jrlbe+irela-1)
+                else if (typval.eq.'FONC') then
+                    betaf=zk24(jrlbe+irela-1)(1:19)
+                else
+                    ASSERT(.false.)
+                endif
+                idecal=ipntrl-nbterm
+                jrlcof=jrlco+idecal
+                idnoeu=jrlno+idecal
+                iddl=jrldd+idecal
+                call impre2(lisrel//'.RLCO', lisrel//'.RLDD', lisrel// '.RLNO', lisrel//'.RLBE',&
+                            zi(jrlsu+irela-1),zi(jrlpo+ irela-1),zi(jrlnt+irela-1), typcoe,typval,&
+                            irela)
             endif
-            idecal=ipntrl-nbterm
-            jrlcof=jrlco+idecal
-            idnoeu=jrlno+idecal
-            iddl=jrldd+idecal
-            call impre2(lisrel//'.RLCO', lisrel//'.RLDD', lisrel// '.RLNO', lisrel//'.RLBE',&
-                        zi(jrlsu+irela-1), zi(jrlpo+ irela-1), zi(jrlnt+irela-1), typcoe, typval,&
-                        irela)
-70      continue
+        enddo
     endif
 !
     call jedetr(lisrel//'.RLCO')
@@ -367,6 +366,6 @@ subroutine aflrch(lisrez, chargz)
     call jedetr(lisrel//'.RLTV')
     call jedetr(lisrel//'.RLLA')
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

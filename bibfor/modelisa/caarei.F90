@@ -79,19 +79,17 @@ subroutine caarei(char, noma, ligrmo, fonree)
     character(len=8) :: valimf(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: i
-    integer :: nbnoeu, jval, jdirec, nbno
-    integer :: idim, in, jtang, jnono, narei
-    integer :: ibid,  ier, ndim, jcompt
-    integer :: ino, jprnm, nbec
-    integer :: nbma, nbcmp, inom
+    integer :: jtang, jcompt, jdirec, jprnm
+    integer :: i, in, ibid, ier
+    integer :: ino, inom, idim
+    integer :: nbnoeu, narei, nbma, nbcmp, nbec, ndim, nbno
     real(kind=8) :: coef(3), direct(3)
     complex(kind=8) :: coefc(3)
     integer :: i_keyword, n_keyword
     character(len=24) :: list_node, list_elem
     integer :: jlino, jlima
-    character(len=2) :: typlag
-    character(len=4) :: typcoe
+    character(len=2) :: lagr_type
+    character(len=4) :: coef_type
     character(len=8) :: nomo, nomg
     character(len=8) :: nomnoe, ddl(3), k8bid
     character(len=16) :: keywordfact, keyword
@@ -120,14 +118,14 @@ subroutine caarei(char, noma, ligrmo, fonree)
 ! - Initialization
 !
     lisrel = '&&CAAREI.RLLISTE'
-    typlag = '12'
+    lagr_type = '12'
     coefc(1) = (1.0d0,0.0d0)
     coefc(2) = (1.0d0,0.0d0)
     coefc(3) = (1.0d0,0.0d0)
     coef(1) = 1.0d0
     ddl(1) = 'DEPL'
 !
-    typcoe = 'REEL'
+    coef_type = 'REEL'
     if (fonree .eq. 'COMP') ASSERT(.false.)
     if (fonree .eq. 'FONC') ASSERT(.false.)
     nomo = ligrmo(1:8)
@@ -151,6 +149,11 @@ subroutine caarei(char, noma, ligrmo, fonree)
                 k8bid, ier)
     if (ndim .ne. 3) call u2mesi('F', 'CHARGES2_7', 1, ndim)
 !
+! - Local coordinate system (dummy)
+!
+    call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
+    call wkvect('&&CAAREI.DIRECT', 'V V R', 3*nbnoeu, jdirec)    
+!
 ! - Xfem fields
 ! 
      call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
@@ -164,8 +167,8 @@ subroutine caarei(char, noma, ligrmo, fonree)
 !
 ! ----- Read mesh affectation
 !
-        list_node = '&&CAFACI.LIST_NODE'
-        list_elem = '&&CAFACI.LIST_ELEM'
+        list_node = '&&CAAREI.LIST_NODE'
+        list_elem = '&&CAAREI.LIST_ELEM'
         call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
                             list_elem, nbma)
         call jeveuo(list_node,'L',jlino)
@@ -213,7 +216,7 @@ subroutine caarei(char, noma, ligrmo, fonree)
 !
                 call afrela(coef, coefc, ddl, nomnoe, ndim,&
                             direct, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
-                            typcoe, fonree, typlag, 0.d0, lisrel)
+                            coef_type, fonree, lagr_type, 0.d0, lisrel)
 
 115             continue
             enddo
@@ -223,29 +226,21 @@ subroutine caarei(char, noma, ligrmo, fonree)
 !
         if (l_ocmp) then
 !
-! -------- Overload preparation
+! --------- Counting components
 !
-            call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
-            call wkvect('&&CAFACI.NOMS_NOEUDS', 'V V K8', nbnoeu, jnono)
-            if (fonree .eq. 'REEL') then
-                call wkvect('&&CAFACI.VALDDL', 'V V R', n_keyword*nbnoeu, jval)
-            else
-                call wkvect('&&CAFACI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
-            endif
-            call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
-            call wkvect('&&CAFACI.ICOMPT', 'V V I', n_keyword, jcompt)
+            call wkvect('&&CAAREI.ICOMPT', 'V V I', n_keyword, jcompt)
 !
 ! --------- Linear relation
 !
             do ino = 1, nbno
                 in = zi(jlino-1+ino)
                 call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
-                call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+ (in- 1)*nbec+1), n_keyword,&
-                            fonree, nomnoe, in, ddlimp, valimr,&
-                            valimf, valimc, keywordlist, zr(jdirec+3* (in-1)), 0,&
-                            nomo, lisrel, zk8( inom), nbcmp, zi(jcompt),&
-                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                call afddli(nomo, nbcmp, zk8( inom), in, nomnoe, &
+                            zi(jprnm-1+ (in- 1)*nbec+1), 0, zr(jdirec+3* (in-1)), coef_type,  &
+                            n_keyword, keywordlist, ddlimp, fonree, valimr, valimf, valimc,  &
+                            zi(jcompt), lisrel, lxfem, jnoxfl, jnoxfv,  &
+                            ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)  
+!
             enddo
 !
 ! --------- Components doesn't exist on all nodes
@@ -257,10 +252,7 @@ subroutine caarei(char, noma, ligrmo, fonree)
                 endif
             enddo
 !
-            call jedetr('&&CAFACI.ICOMPT')
-            call jedetr('&&CAFACI.NOMS_NOEUDS')
-            call jedetr('&&CAFACI.VALDDL')
-            call jedetr('&&CAFACI.DIRECT')
+            call jedetr('&&CAAREI.ICOMPT')
 !
         endif
 !
@@ -274,6 +266,7 @@ subroutine caarei(char, noma, ligrmo, fonree)
     call aflrch(lisrel, char)
 !
     call jedetr('&&CATANG.TANGENT')
+    call jedetr('&&CAAREI.DIRECT')
     call jedetr(keywordexcl)
     if (lxfem) then
         call jedetr(connex_inv)

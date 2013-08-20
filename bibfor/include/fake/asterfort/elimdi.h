@@ -17,10 +17,10 @@
 !
 interface
     subroutine elimdi(charge, lisrel, nomgd, nbdual, nbsurc)
-        character(len=8) :: charge
-        character(len=19) :: lisrel
-        character(len=8) :: nomgd
-        integer :: nbdual
-        integer :: nbsurc
+        character(len=19), intent(in) :: lisrel
+        character(len=8), intent(in) :: charge
+        character(len=8), intent(in) :: nomgd
+        integer, intent(out) :: nbdual
+        integer, intent(out) :: nbsurc
     end subroutine elimdi
 end interface

@@ -65,6 +65,36 @@ Suggestion :
  Pensez à réorienter les mailles de bord avec l'opérateur MODI_MAILLAGE.
 """),
 
+31 : _(u"""
+ Erreur utilisateur:
+    On cherche à imposer une condition aux limites sur le ddl %(k1)s du noeud %(k2)s.
+    Mais ce noeud ne porte pas ce ddl.
+
+    Conseils :
+     - vérifiez le modèle et les conditions aux limites :
+        - le noeud incriminé fait-il partie du modèle ?
+        - le noeud porte-t-il le ddl que l'on cherche à contraindre ?
+"""),
+
+32 : _(u"""
+ Il y a un problème sur une relation linéaire car les coefficients sont trop petits.
+ Ce problème survient dans le cas de liaisons linéaires automatiques. Vérifiez les éventuelles
+ alarmes émises précédemment dans des mots clefs comme LIAISON_MAILLE par exemple.
+"""),
+
+33: _(u"""
+ Le noeud <%(k1)s> ne fait pas partie du modèle.
+"""),
+
+34: _(u"""
+ Les relations suivantes sont redondantes et donc supprimées en appliquant le principe de 
+surcharge.
+"""),
+
+35: _(u"""
+ Liste des noeuds en vis-à-vis de l'occurrence %(i1)d de LIAISON_GROUP :"""),
+
+36: _(u"""    <%(k1)s> en  vis-à-vis de <%(k2)s>"""),
 
 45: _(u"""
  Aucun noeud affecté ne connaît le DDL de nom <%(k1)s>
@@ -73,6 +103,28 @@ Suggestion :
 63: _(u"""
  Vous ne pouvez pas bloquer le déplacement tangent sur des faces d'éléments 3D.
  Utiliser DDL_IMPO ou LIAISON_DDL.
+"""),
+
+
+97 : _(u"""
+ Tous les coefficients de la relation linéaire sont strictement nuls.
+ Cette erreur peut survenir si le maillage est incorrect (par exemple des noeuds confondus) ou si
+vous affectez des coefficients nuls.
+"""),
+
+
+99 : _(u"""
+Problème :
+  Une relation linéaire entre ddls a un second membre de type "fonction".
+  On ne peut pas la normaliser (afin que son plus grand coefficient soit 1.) car on ne
+  sait pas "diviser" une fonction par un réel.
+
+  Le plus grand coefficient de la relation est très différent de 1.  (<1.d-3 ou > 1.d3).
+  Cette équation (non normalisée) peut conduire à des difficultés numériques lors de
+  la résolution des systèmes linéaires.
+
+Conseil :
+  Utilisez le solveur MUMPS afin de contrôler la qualité de la résolutions des systèmes linéaires.
 """),
 
 }

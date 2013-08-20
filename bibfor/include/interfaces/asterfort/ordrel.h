@@ -18,14 +18,14 @@
 interface
     subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc,&
                       nbocno, nbterm, nomcmp, nddla)
-        integer :: nddla
-        integer :: nbterm
-        integer :: numnoe(nbterm)
-        character(len=8) :: nomnoe(nbterm)
-        character(len=8) :: ddl(nbterm)
-        real(kind=8) :: coef(nbterm)
-        complex(kind=8) :: coefc(nbterm)
-        integer :: nbocno(nbterm)
-        character(len=8) :: nomcmp(nddla)
+        integer, intent(in) :: nbterm
+        integer, intent(in) :: nddla
+        character(len=8), intent(in)  :: nomcmp(nddla)
+        integer, intent(inout) :: numnoe(nbterm)
+        integer, intent(inout) :: nbocno(nbterm)
+        real(kind=8), intent(inout) :: coef(nbterm)
+        complex(kind=8), intent(inout) :: coefc(nbterm)
+        character(len=8), intent(inout) :: nomnoe(nbterm)
+        character(len=8), intent(inout) :: ddl(nbterm)
     end subroutine ordrel
 end interface

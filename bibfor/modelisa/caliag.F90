@@ -25,6 +25,7 @@ subroutine caliag(fonrez, chargz)
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/assert.h"
 #include "asterfort/caexno.h"
 #include "asterfort/calemn.h"
 #include "asterfort/calinn.h"
@@ -77,8 +78,8 @@ subroutine caliag(fonrez, chargz)
     character(len=4) :: fonree, typcoe
     character(len=7) :: typcha
     character(len=8) :: nomno1, nomno2, charge, nomg, noma, mod, k8bid, nomdep
-    character(len=8) :: kbeta, cmp, nomcmp(nmocl)
-    character(len=16) :: motfac, mcgrex, mcex, valk(2)
+    character(len=8) :: kbeta, cmp, nomcmp(nmocl), valk(2)
+    character(len=16) :: motfac, mcgrex, mcex
     character(len=19) :: prefix, ligrmo, lisrel
     character(len=24) :: coni, conr, nomdd1, nomdd2, coef1, coef2, lisin1
     character(len=24) :: lisin2
@@ -89,7 +90,7 @@ subroutine caliag(fonrez, chargz)
     call jemarq()
     motfac = 'LIAISON_GROUP'
     call getfac(motfac, nliag)
-    if (nliag .eq. 0) goto 170
+    if (nliag .eq. 0) goto 999
 !
     fonree = fonrez
     charge = chargz
@@ -108,13 +109,7 @@ subroutine caliag(fonrez, chargz)
 !
     call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
                 mod, ier)
-!
-! ---  LIGREL DU MODELE ---
-!
     ligrmo = mod(1:8)//'.MODELE'
-!
-! --- MAILLAGE ASSOCIE AU MODELE ---
-!
     call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
     noma = zk8(jnoma)
 !
@@ -140,7 +135,7 @@ subroutine caliag(fonrez, chargz)
     call jecrec(coef2, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                 nliag)
 !
-    do 30 iocc = 1, nliag
+    do iocc = 1, nliag
 !
 ! --- LECTURE DES MOTS CLES GROUP_MA_1 OU 2 OU MAILLE_1 OU 2 OU ---
 ! --- GROUP_NO_1 OU 2 OU NOEUD_1 OU 2)                          ---
@@ -193,10 +188,10 @@ subroutine caliag(fonrez, chargz)
         call jeecra(jexnum(nomdd1, iocc), 'LONUTI', nddl1, ' ')
         call getvtx(motfac, 'DDL_1', iocc, iarg, nddl1,&
                     zk8(iddl1), nddl1)
-        do 10 k = 1, nddl1
+        do k = 1, nddl1
             call lxcaps(zk8(iddl1-1+k))
             call lxcadr(zk8(iddl1-1+k))
-10      continue
+        enddo
 !
         call jecroc(jexnum(coef1, iocc))
         call jeecra(jexnum(coef1, iocc), 'LONMAX', nddl1, ' ')
@@ -208,11 +203,7 @@ subroutine caliag(fonrez, chargz)
 ! --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
 !
         if ((nddl1.eq.1) .and. (zk8(iddl1).eq.'DNOR')) then
-            if (.not.dnor) then
-                call u2mess('F', 'MODELISA2_94')
-            else
-            endif
-        else
+            if (.not.dnor) call u2mess('F', 'MODELISA2_94')
         endif
 !
 ! --- LECTURE DES DDLS IMPOSES SUR LA LISTE 2 ---
@@ -230,8 +221,7 @@ subroutine caliag(fonrez, chargz)
         if (nddl2 .ne. nmult2) then
             vali (1) = nddl2
             vali (2) = nmult2
-            call u2mesg('F', 'MODELISA8_44', 0, ' ', 2,&
-                        vali, 0, 0.d0)
+            call u2mesi('F', 'MODELISA8_44',2,vali)
         endif
 !
         call jecroc(jexnum(nomdd2, iocc))
@@ -240,10 +230,10 @@ subroutine caliag(fonrez, chargz)
         call jeecra(jexnum(nomdd2, iocc), 'LONUTI', nddl2, ' ')
         call getvtx(motfac, 'DDL_2', iocc, iarg, nddl2,&
                     zk8(iddl2), nddl2)
-        do 20 k = 1, nddl2
+        do k = 1, nddl2
             call lxcaps(zk8(iddl2-1+k))
             call lxcadr(zk8(iddl2-1+k))
-20      continue
+        enddo
 !
         call jecroc(jexnum(coef2, iocc))
         call jeecra(jexnum(coef2, iocc), 'LONMAX', nddl2, ' ')
@@ -251,13 +241,9 @@ subroutine caliag(fonrez, chargz)
         call getvr8(motfac, 'COEF_MULT_2', iocc, iarg, nddl2,&
                     zr(imult2), nddl2)
         if ((nddl2.eq.1) .and. (zk8(iddl2).eq.'DNOR')) then
-            if (.not.dnor) then
-                call u2mess('F', 'MODELISA2_94')
-            else
-            endif
-        else
+            if (.not.dnor) call u2mess('F', 'MODELISA2_94')
         endif
-30  end do
+    end do
 !
 ! --- TYPE DE LA CHARGE ---
 !
@@ -274,9 +260,7 @@ subroutine caliag(fonrez, chargz)
 !
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
-    if (nbec .gt. 10) then
-        call u2mesk('F', 'MODELISA2_87', 1, nomg)
-    endif
+    ASSERT(nbec.le.10)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
@@ -287,9 +271,9 @@ subroutine caliag(fonrez, chargz)
         call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
                     vali, 0, 0.d0)
     endif
-    do 40 i = 1, nddla
+    do i = 1, nddla
         nomcmp(i) = zk8(inom-1+i)
-40  end do
+    end do
 !
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
@@ -298,7 +282,7 @@ subroutine caliag(fonrez, chargz)
 !
     icmpz = indik8(nomcmp,'DZ',1,nddla)
 !
-    do 160 iocc = 1, nliag
+    do iocc = 1, nliag
         if (fonree .eq. 'REEL') then
             call getvr8(motfac, 'COEF_IMPO', iocc, iarg, 1,&
                         beta, nb)
@@ -358,35 +342,33 @@ subroutine caliag(fonrez, chargz)
 !
 ! ---  AFFECTATION DE CE VECTEUR ---
 !
-        do 90 j = 1, nbno
+        do j = 1, nbno
             ino1 = zi(idconi+2* (j-1)+1)
             ino2 = zi(idconi+2* (j-1)+2)
 !
             iexcm1 = 0
             iexcm2 = 0
-            do 50 iec = 1, nbec
+            do iec = 1, nbec
                 if (zi(jprnm-1+ (ino1-1)*nbec+iec) .ne. 0) then
                     iexcm1 = 1
                     goto 60
                 endif
-50          continue
+            enddo
 60          continue
 !
-            do 70 iec = 1, nbec
+            do iec = 1, nbec
                 if (zi(jprnm-1+ (ino2-1)*nbec+iec) .ne. 0) then
                     iexcm2 = 1
                     goto 80
                 endif
-70          continue
+            enddo
 80          continue
             idg1 = jprnm - 1 + (ino1-1)*nbec + 1
             idg2 = jprnm - 1 + (ino2-1)*nbec + 1
 !
             if (iexcm1 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
-                valk(1) = nomno1
-                valk(2) = motfac
-                call u2mesk('F', 'AFFECHARMECA_3', 2, valk)
+                call u2mesk('F', 'CHARGES2_33', 1, nomno1)
             endif
             zi(idnbn-1+2* (j-1)+1) = 3
             if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg1),icmpz))) then
@@ -395,19 +377,17 @@ subroutine caliag(fonrez, chargz)
 !
             if (iexcm2 .eq. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
-                valk(1) = nomno2
-                valk(2) = motfac
-                call u2mesk('F', 'AFFECHARMECA_3', 2, valk)
+                call u2mesk('F', 'CHARGES2_33', 1, nomno2)
             endif
             zi(idnbn-1+2* (j-1)+2) = 3
             if ((icmpz.eq.0) .or. (.not.exisdg(zi(idg2),icmpz))) then
                 zi(idnbn-1+2* (j-1)+2) = 2
             endif
-90      continue
+        enddo
 !
 ! ---  AFFECTATION DES RELATIONS ---
 !
-        do 140 j = 1, nbno
+        do j = 1, nbno
             k = 0
 !
 ! --- PREMIER NOEUD DE LA RELATION ---
@@ -423,16 +403,16 @@ subroutine caliag(fonrez, chargz)
                 zk8(idnomn+k-1) = nomno1
                 zk8(idnomd+k-1) = nomdep
                 zi(idimen+k-1) = idim
-                do 100 i = 1, idim
+                do i = 1, idim
                     zr(idirec+3* (k-1)+i-1) = zr(idconr-1+(2*idim+1)* (j-1)+i)
-100              continue
+                enddo
             else
-                do 110 i = 1, nddl1
+                do i = 1, nddl1
                     k = k + 1
                     zk8(idnomn+k-1) = nomno1
                     zk8(idnomd+k-1) = zk8(iddl1+i-1)
                     zr(idcoef+k-1) = zr(idco1+i-1)
-110              continue
+                enddo
             endif
 !
 ! --- DEUXIEME NOEUD DE LA RELATION ---
@@ -448,16 +428,16 @@ subroutine caliag(fonrez, chargz)
                 zk8(idnomn+k-1) = nomno2
                 zk8(idnomd+k-1) = nomdep
                 zi(idimen+k-1) = idim
-                do 120 i = 1, idim
+                do i = 1, idim
                     zr(idirec+3* (k-1)+i-1) = zr( idconr-1+ (2*idim+1)* (j-1)+idim+i )
-120              continue
+                enddo
             else
-                do 130 i = 1, nddl2
+                do i = 1, nddl2
                     k = k + 1
                     zk8(idnomn+k-1) = nomno2
                     zk8(idnomd+k-1) = zk8(iddl2+i-1)
                     zr(idcoef+k-1) = zr(idco2+i-1)
-130              continue
+                enddo
             endif
 !
 ! --- NOMBRE DE TERMES DE LA RELATION ---
@@ -474,22 +454,22 @@ subroutine caliag(fonrez, chargz)
 ! --- (I.E. LES COUPLES DE NOEUDS EN VIS A VIS POUR LE MOT-CLE ---
 ! --- LIAISON-GROUP COURANT)                                   ---
 !
-140      continue
+        enddo
 !
 ! --- IMPRESSION DES COUPLES DE NOEUDS EN VIS-A-VIS ---
 !
         call infniv(ifm, niv)
         if (niv .eq. 2) then
-            write (ifm,'(1X)')
-            write (ifm,'(1X,A,I5,A)') 'LISTE DES NOEUDS EN VIS-A-VIS A '//&
-     &      'L''OCCURENCE: ',iocc,' DE LIAISON_GROUP :'
-            do 150 j = 1, nbno
+            call u2mesi('I','CHARGES2_35',1,iocc)
+            do j = 1, nbno
                 ino1 = zi(idconi+2* (j-1)+1)
                 call jenuno(jexnum(noma//'.NOMNOE', ino1), nomno1)
                 ino2 = zi(idconi+2* (j-1)+2)
                 call jenuno(jexnum(noma//'.NOMNOE', ino2), nomno2)
-                write (ifm,1000) nomno1,nomno2
-150          continue
+                valk(1) = nomno1
+                valk(2) = nomno2
+                call u2mesk('I','CHARGES2_36',2,valk)
+            enddo
         endif
 !
 ! --- DESTRUCTION DES TABLEAUX DE TRAVAIL  ---
@@ -507,14 +487,12 @@ subroutine caliag(fonrez, chargz)
 ! --- FIN DE LA BOUCLE SUR LES OCCURENCES DU MOT-CLE  ---
 ! --- LIAISON-GROUP                                   ---
 !
-160  end do
+    end do
 !
 ! --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE  ---
 !
     call aflrch(lisrel, charge)
 !
-!
-170  continue
+999 continue
     call jedema()
-    1000 format (3x,a8,1x,'<--->',1x,a8)
 end subroutine

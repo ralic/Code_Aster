@@ -84,15 +84,16 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     character(len=16) :: keywordlist(n_max_keyword)
 !
     integer :: i, ino, icmp, ier, numnoe, i_keyword
-    integer :: jdirec, jdimen, jval, jprnm, jnom, jcompt
+    integer :: jdirec, jprnm, jnom, jcompt
     integer :: n_keyword, nbcmp, nbec, nbnoeu, nddli
 !
     character(len=8) :: nomo, k8bid, nomg
     character(len=19) :: lisrel
     character(len=24) :: nomnoe
-    complex(kind=8):: coef_cplx
-    real(kind=8):: coef_real
-    character(len=2) :: type_lagr
+    character(len=4) :: coef_type
+!    complex(kind=8):: coef_cplx_unit
+!    real(kind=8):: coef_real_unit
+!    character(len=2) :: lagr_type
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
@@ -124,15 +125,27 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 ! - Initializations
 !
     lisrel = '&&CADDLI.RLLISTE'
-    type_lagr = '12'
-    coef_cplx = (1.d0,0.d0)
-    coef_real = 1.d0
+!    lagr_type = '12'
+!    coef_cplx_unit = (1.d0,0.d0)
+!    coef_real_unit = 1.d0
     nomo  = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CADDLI.KEYWORDEXCL'
     call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+!
+! - Type of linear coefficient
+!
+    if (keywordfact.eq. 'DDL_IMPO') then
+        coef_type = 'REEL'
+    else if (keywordfact.eq. 'TEMP_IMPO') then
+        coef_type = 'REEL'
+    else if (keywordfact.eq. 'PRES_IMPO') then
+        coef_type = 'COMP'
+    else
+        ASSERT(.false.)
+    endif
 !
 ! - Information about <GRANDEUR>
 ! 
@@ -152,7 +165,10 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     ASSERT(nbec.le.10)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
+! - Local coordinate system (dummy)
+!
     call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
+    call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields
 ! 
@@ -185,28 +201,23 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
                            val_r_liai, val_f_liai, val_c_liai, val_t_liai)
         l_liai = val_nb_liai.gt.0
 !
-! ----- Loop on nodes: LIAISON case
+! ----- LIAISON case
 !
         if (l_liai) then
 !
-! -------- Overload preparation
+! --------- Counting components
 !
-            n_keyword = 6
+            n_keyword = 6   
             call wkvect('&&CADDLI.ICOMPT', 'V V I', n_keyword, jcompt)
-            if (fonree .eq. 'REEL') then
-                call wkvect('&&CADDLI.VALDDL', 'V V R', n_keyword*nbnoeu, jval)
-            else if (fonree.eq.'COMP') then
-                call wkvect('&&CADDLI.VALDDL', 'V V C', n_keyword*nbnoeu, jval)
-            else if (fonree.eq.'FONC') then
-                call wkvect('&&CADDLI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
-            else
-                ASSERT(.false.)
-            endif
-            call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
-            call wkvect('&&CADDLI.DIMENSION', 'V V I', nbnoeu, jdimen)
+!
+! --------- Data preparation for LIAISON
+!
             ASSERT(val_nb_liai.eq.1)
             call char_impo_liai(nomg, val_t_liai, liai_cmp_nb, liai_cmp_name, liai_cmp_index, &
                                 liai_vale_real, liai_vale_cplx, liai_vale_fonc)
+!
+! --------- Loop on nodes
+!
             do ino = 1, nbno
                 numnoe = zi(jlino+ino-1)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
@@ -221,20 +232,14 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
                         keywordlist(n_keyword) = liai_cmp_name(icmp)
                     endif
                 enddo
-                call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+(numnoe-1)*nbec+1),n_keyword,&
-                            fonree, nomnoe, numnoe, ddlimp, valimr,&
-                            valimf, valimc, keywordlist, zr(jdirec+3*(numnoe-1)), 0,&
-                            nomo, lisrel, zk8(jnom), nbcmp, zi(jcompt),&
-                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                call afddli(nomo, nbcmp, zk8(jnom), numnoe, nomnoe, &
+                            zi(jprnm-1+ (numnoe-1)*nbec+1), 0, zr(jdirec+3*(numnoe-1)), coef_type, &
+                            n_keyword, keywordlist,  ddlimp, fonree, valimr, valimf, valimc, &
+                            zi(jcompt), lisrel, lxfem, jnoxfl, jnoxfv,  &
+                            ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
             enddo
 !
-        call jedetr('&&CADDLI.ICOMPT')
-        call jedetr('&&CADDLI.VALDDL')
-        call jedetr('&&CADDLI.DIRECT')
-        call jedetr('&&CADDLI.DIMENSION')
-        call jedetr('&&CADDLI.NUNOTMP')
-
+            call jedetr('&&CADDLI.ICOMPT')
         endif
 !
 ! ----- Read affected components and their values
@@ -244,33 +249,24 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
                             valimf, valimc)
         l_ocmp = n_keyword.gt.0
 !
-! ----- Loop on nodes: other cases
+! ----- Other cases
 !
         if (l_ocmp) then 
 !
-! -------- Overload preparation
+! --------- Counting components
 !
             call wkvect('&&CADDLI.ICOMPT', 'V V I', n_keyword, jcompt)
-            if (fonree .eq. 'REEL') then
-                call wkvect('&&CADDLI.VALDDL', 'V V R', n_keyword*nbnoeu, jval)
-            else if (fonree.eq.'COMP') then
-                call wkvect('&&CADDLI.VALDDL', 'V V C', n_keyword*nbnoeu, jval)
-            else if (fonree.eq.'FONC') then
-                call wkvect('&&CADDLI.VALDDL', 'V V K8', n_keyword*nbnoeu, jval)
-            else
-                ASSERT(.false.)
-            endif
-            call wkvect('&&CADDLI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
-            call wkvect('&&CADDLI.DIMENSION', 'V V I', nbnoeu, jdimen)
+!
+! --------- Loop on nodes
+!
             do ino = 1, nbno
                 numnoe = zi(jlino+ino-1)
                 call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
-                call afddli(zr(jval), zk8(jval), zc(jval), zi(jprnm-1+(numnoe-1)*nbec+1),n_keyword,&
-                            fonree, nomnoe, numnoe, ddlimp, valimr,&
-                            valimf, valimc, keywordlist, zr(jdirec+3*(numnoe-1)), 0,&
-                            nomo, lisrel, zk8(jnom), nbcmp, zi(jcompt),&
-                            lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                call afddli(nomo, nbcmp, zk8(jnom), numnoe, nomnoe, &
+                            zi(jprnm-1+ (numnoe-1)*nbec+1), 0, zr(jdirec+3*(numnoe-1)), coef_type, &
+                            n_keyword, keywordlist,  ddlimp, fonree, valimr, valimf, valimc, &
+                            zi(jcompt), lisrel, lxfem, jnoxfl, jnoxfv,  &
+                            ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
             enddo
             do i_keyword=1,n_keyword
                 if (zi(jcompt-1+i_keyword) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1,&
@@ -281,10 +277,6 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 60      continue
 !
         call jedetr('&&CADDLI.ICOMPT')
-        call jedetr('&&CADDLI.VALDDL')
-        call jedetr('&&CADDLI.DIRECT')
-        call jedetr('&&CADDLI.DIMENSION')
-        call jedetr('&&CADDLI.NUNOTMP')
 !
         call jedetr(list_node)
         call jedetr(list_elem)
@@ -295,6 +287,7 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 !
     call aflrch(lisrel, char)
 !
+    call jedetr('&&CADDLI.DIRECT')
     call jedetr(keywordexcl)
     if (lxfem) then
         call jedetr(connex_inv)
