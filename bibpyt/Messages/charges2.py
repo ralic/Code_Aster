@@ -22,7 +22,7 @@ cata_msg = {
 6: _(u"""
 Erreur d'utilisation :
  Le modèle contient un mélange d'éléments 2D (vivant dans le plan Oxy) et 3D.
- Le code n'a pas prévu ce cas de figure ici.
+ Le code n'a pas prévu ce cas de figure dans l'application du chargement demandé.
 
 Risques et conseils :
  Il faut peut être émettre une demande d'évolution pour pouvoir traiter ce problème.
@@ -31,6 +31,10 @@ Risques et conseils :
 7 : _(u"""
 Le modèle est de dimension %(i1)d . ARETE_IMPO s'applique sur des arêtes d'éléments 3D,
 donc un modèle de dimension 3. Pour les arêtes d'éléments 2D utiliser FACE_IMPO.
+"""),
+
+17: _(u"""
+ Pour le chargement courant, la liste des noeuds donnée est réduite à un seul terme et l'on ne fait aucun traitement.
 """),
 
 23: _(u"""
@@ -124,8 +128,24 @@ Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
 Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
 """),
 
+42: _(u"""
+ Pour définir le mot-clef %(k1)s, on doit utiliser %(i1)d valeurs car nous sommes dans le
+cas d'un modèle à %(i2)d dimensions.
+"""),
+
 45: _(u"""
  Aucun noeud affecté ne connaît le DDL de nom <%(k1)s>
+"""),
+
+46 : _(u"""
+ Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP), 
+ on a un problème dans le cas 3d où les noeuds sont alignés car deux noeuds sont confondus.
+"""),
+
+47 : _(u"""
+ Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP), 
+ on a un problème dans le cas 3d où les noeuds forment un triangle. 
+ Le système résultant n'est pas inversible. Le triangle est trop distordu, revoyez votre maillage.
 """),
 
 63: _(u"""

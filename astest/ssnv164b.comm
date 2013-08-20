@@ -68,7 +68,7 @@ CMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                          _F(GROUP_MA=('CAB1','CAB2','CAB3','CAB4','CAB5'),
                             MATER=MCABLE,),),);
 
-CLIM =AFFE_CHAR_MECA(MODELE=MO,
+CLIM =AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                     DDL_IMPO=(
                             _F(GROUP_NO='PP',
                                DX=0.0,DY=0.0,),
@@ -139,23 +139,23 @@ CAB_BP5=DEFI_CABLE_BP(MODELE=MO,
                       RECUL_ANCRAGE=0.001,
                       );
 
-CMCAB1=AFFE_CHAR_MECA(MODELE=MO,
+CMCAB1=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP1,
                                    SIGM_BPEL='NON',
                                    RELA_CINE='OUI',),)
-CMCAB2=AFFE_CHAR_MECA(MODELE=MO,
+CMCAB2=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP2,
                                    SIGM_BPEL='NON',
                                    RELA_CINE='OUI',),)
-CMCAB3=AFFE_CHAR_MECA(MODELE=MO,
+CMCAB3=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP3,
                                     SIGM_BPEL='NON',
                                     RELA_CINE='OUI',),)
-CMCAB4=AFFE_CHAR_MECA(MODELE=MO,
+CMCAB4=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP4,
                                    SIGM_BPEL='NON',
                                    RELA_CINE='OUI',),)
-CMCAB5=AFFE_CHAR_MECA(MODELE=MO,
+CMCAB5=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP5,
                                    SIGM_BPEL='NON',
                                    RELA_CINE='OUI',),);

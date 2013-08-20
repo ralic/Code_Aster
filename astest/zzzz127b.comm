@@ -24,7 +24,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                    AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
                           MODELISATION = '3D'))
 
-CH0=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+CH0=AFFE_CHAR_MECA(  INFO=2, MODELE=MO,DDL_IMPO=(
              _F(  NOEUD = ('A',),        DZ = 0.),
              _F(  NOEUD = ('A','A2',),     DX = 0., DY = 0.),
              _F(  NOEUD = ('D','D2',),     DX = 0.)),
@@ -43,7 +43,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 # 1-1 AVEC LIAISON_DDL :
 # --------------------
 
-CH11=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_DDL=(
+CH11=AFFE_CHAR_MECA(INFO=2, MODELE=MO,LIAISON_DDL=(
         _F( NOEUD = ('E','D','C',),
          DDL = ('DX','DY','DY',), COEF_MULT = (1.,-0.5,-0.5,), COEF_IMPO = 0.),
         _F( NOEUD = ('E','D','C',),
@@ -98,7 +98,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # 2-1 AVEC LIAISON_DDL :
 # --------------------
 
-CH21=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_DDL=(
+CH21=AFFE_CHAR_MECA(INFO=2,  MODELE=MO,LIAISON_DDL=(
         _F( NOEUD = ('E','D','C',),
          DDL = ('DY','DY','DY',), COEF_MULT = (1.,0.5,0.5,), COEF_IMPO = 0.),
         _F( NOEUD = ('B','C','F',),
@@ -116,7 +116,7 @@ MEST21=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # 2-2 AVEC LIAISON_MAIL :
 # --------------------
 
-CH22=AFFE_CHAR_MECA(  MODELE=MO,
+CH22=AFFE_CHAR_MECA( INFO=2, MODELE=MO,
       LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   MAILLE_ESCL = 'S1',
          TRAN = ( 5., 10., 0.,), CENTRE = (10., 0., 0.,), ANGL_NAUT = (180.,0.,0.,),
          DDL_MAIT = 'DNOR', DDL_ESCL = 'DNOR') )
@@ -169,7 +169,7 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                    AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'THERMIQUE',
                           MODELISATION = '3D'))
 
-CH0=AFFE_CHAR_THER(  MODELE=MO,TEMP_IMPO=(
+CH0=AFFE_CHAR_THER(INFO=2,  MODELE=MO,TEMP_IMPO=(
              _F(  NOEUD = ('A','A2',),     TEMP = 0.),
              _F(  NOEUD = ('D','D2',),     TEMP = 4.))
                     )
@@ -183,7 +183,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 
 # --------------------
 
-CH11=AFFE_CHAR_THER(  MODELE=MO,LIAISON_DDL=(
+CH11=AFFE_CHAR_THER( INFO=2, MODELE=MO,LIAISON_DDL=(
     _F( NOEUD = ('E','D','C',),
      DDL = ('TEMP','TEMP','TEMP',), COEF_MULT = (1.,-0.5,-0.5,), COEF_IMPO = 0.),
     _F( NOEUD = ('E2','D2','C2',),
@@ -199,7 +199,7 @@ MEST11=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 
 CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
             LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   NOEUD_ESCL = ('E','E2',),
-               TRAN = ( -5., 0.,), CENTRE = (10., 0.,), ANGL_NAUT = 90.) )
+               TRAN = ( -5., 0., 0.), CENTRE = (10., 0., 0.), ANGL_NAUT = (90., 0., 0.)) )
 
 MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH12)) )

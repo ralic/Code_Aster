@@ -1,4 +1,4 @@
-subroutine caprec(charge, mailla)
+subroutine caprec(charge, mailla, fonree)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -74,12 +74,10 @@ subroutine caprec(charge, mailla)
 ! ARGUMENTS
 ! ---------
     character(len=8) :: charge, mailla
+    character(len=4) :: fonree
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: nmocl
-    integer :: vali(2)
-    parameter (nmocl=300)
     integer :: ias, ias1, iasm, iasm1, ibid, icmp, icode, icode1, icodok, iocc
     integer :: irann, iret, jdesc, jdesc1, jdnbre, jncmp1, jptma, jptma1, jsief
     integer :: jvale, jvale1, jvalv1, nbec, nbmama, nbocc, nbrela, nsief, numail
@@ -89,27 +87,30 @@ subroutine caprec(charge, mailla)
     character(len=3) :: k3b
     character(len=8) :: cablpr, k8b, k8vide, modele, npara
     character(len=19) :: ligrmo, lirela, sigcab, sigcha, lisnom, lisan1, lisan2
-    character(len=24) :: grnoma, lisnoe, ligrno, noeuma, nomanc, noman1, noman2
+    character(len=24) :: grnoma, ligrno, noeuma, nomanc, noman1, noman2
     character(len=24) :: k24vid
-    integer :: nddla
-    integer :: idimax, jlist, ino, jgro, in, indnoe, lonlis
+    integer :: idimax, ino, jgro, in, indnoe
     integer :: jind, in1, indlis, jprnm, nanc, jadd
     real(kind=8) :: dmin, armin
     complex(kind=8) :: c16b
     character(len=1) :: k1bid
     character(len=8) :: nomnoe, nomg
-    character(len=8) :: cmp, nomcmp(nmocl)
+    character(len=8) :: cmp
     character(len=8) :: cmp4, cmp5, cmp6, k8bid
-    character(len=9) :: nomte
-    integer :: ntypel(nmocl)
     integer :: icmp4, icmp5, icmp6, idrxyz, i, idrz, ndimmo
-    integer :: ilisno, ier, inom, nbcmp, ierd
+    integer :: ier, inom, ierd
     integer :: nbnom, nban1, nban2, jlsnom, jlsan1, jlsan2, inomc
     integer :: numcab, numca0, n1
     character(len=8) :: effnor
     character(len=19) :: lrltmp, lisrel
     character(len=24) :: table
     integer :: iarg
+    character(len=8) :: cmp_name
+    integer :: nb_cmp
+    integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
+    integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
+    character(len=24) :: list_node
+    integer           :: nb_node, jlino
 !
     data effnor/'N       '/
     data lrltmp/'&&CAPREC.LIRELA    '/
@@ -155,37 +156,42 @@ subroutine caprec(charge, mailla)
 ! --- DIMENSION ASSOCIEE AU MODELE
         call dismoi('F', 'DIM_GEOM', modele, 'MODELE', ndimmo,&
                     k8b, ier)
-        if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'MODELISA2_6')
+        if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
-! --- RECUPERATION DES NOMS DES DDLS ET DES NUMEROS
-! --- D'ELEMENTS DE LAGRANGE ASSOCIES
+! - Information about <GRANDEUR>
+! 
+    nomg = 'DEPL_R'
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k1bid)
 !
-        nomg = 'DEPL_R'
-        nomte = 'D_DEPL_R_'
+! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
-        call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-        call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
-        nddla = nbcmp - 1
-        if (nddla .gt. nmocl) then
-            vali (1) = nmocl
-            vali (2) = nddla
-            call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                        vali, 0, 0.d0)
-        endif
-        do 10 i = 1, nddla
-            nomcmp(i) = zk8(inom-1+i)
-            call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7) ), ntypel(i))
-10      continue
-        call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                    k8bid, ierd)
+    cmp_name  = 'DX'
+    cmp_index_dx = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dx.gt.0)
+    cmp_name  = 'DY'
+    cmp_index_dy = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dy.gt.0)
+    cmp_name  = 'DZ'
+    cmp_index_dz = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dz.gt.0)
+    cmp_name  = 'DRX'
+    cmp_index_drx = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_drx.gt.0)
+    cmp_name  = 'DRY'
+    cmp_index_dry = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dry.gt.0)
+    cmp_name  = 'DRZ'
+    cmp_index_drz = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_drz.gt.0)
 !
 ! --- ACCES A L'OBJET .PRNM
 !
-        if (nbec .gt. 10) then
-            call u2mess('F', 'MODELISA_94')
-        else
-            call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-        endif
+        call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
+                    k8bid, ierd)
+
+    ASSERT(nbec.le.10)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 !
 !....... DETERMINATION DU RANG DE LA COMPOSANTE <N>
@@ -375,7 +381,7 @@ subroutine caprec(charge, mailla)
 !                IF (NOMANC.NE.'        ') THEN
                                 if (nomanc .ne. k24vid) then
 !
-                                    lisnoe = '&&CAPREC.LISTNOE'
+                                    list_node = '&&CAPREC.LISTNOE'
                                     typlag = '12'
                                     ligrno = cablpr//'           '//'.LTNT'
                                     call jeexin(ligrno, iret)
@@ -385,7 +391,7 @@ subroutine caprec(charge, mailla)
 !
                                     call jeveuo(jexnom(grnoma, nomanc), 'L', jgro)
                                     call jelira(jexnom(grnoma, nomanc), 'LONUTI', idimax, k1b)
-                                    call wkvect(lisnoe, 'V V K8', idimax, jlist)
+                                    call wkvect(list_node, 'V V I', idimax, jlino)
 !
                                     indnoe = 0
                                     do 60 ino = 1, idimax
@@ -393,7 +399,7 @@ subroutine caprec(charge, mailla)
                                         indnoe = indnoe + 1
                                         call jenuno(jexnum(noeuma, in), nomnoe)
 !
-                                        zk8(jlist+indnoe-1) = nomnoe
+                                        zi(jlino+indnoe-1) = in
 60                                  continue
 !
 ! ---  ELIMINATION DES REDONDANCES EVENTUELLES DES NOEUDS DE LA LISTE
@@ -401,7 +407,7 @@ subroutine caprec(charge, mailla)
 !
                                     do 80 ino = 1, idimax
                                         do 70 in1 = ino + 1, idimax
-                                            if (zk8(jlist+in1-1) .eq. zk8( jlist+ino-1)) then
+                                            if (zi(jlino+in1-1) .eq. zi(jlino+ino-1)) then
                                                 zi(jind+in1-1) = 1
                                             endif
 70                                      continue
@@ -411,18 +417,18 @@ subroutine caprec(charge, mailla)
                                     do 90 ino = 1, idimax
                                         if (zi(jind+ino-1) .eq. 0) then
                                             indlis = indlis + 1
-                                            zk8(jlist+indlis-1) = zk8( jlist+ino-1)
+                                            zi(jlino+indlis-1) = zi(jlino+ino-1)
                                         endif
 90                                  continue
 !
-                                    lonlis = indlis
+                                    nb_node = indlis
 !
-                                    call jeveuo(lisnoe, 'L', ilisno)
+                                    call jeveuo(list_node, 'L', jlino)
 !
 ! ---  CAS OU LA LISTE DES NOEUDS A LIER EST UN SINGLETON
 !
-                                    if (lonlis .eq. 1) then
-                                        call u2mess('I', 'MODELISA3_17')
+                                    if (nb_node .eq. 1) then
+                                        call u2mess('I', 'CHARGES2_17')
                                         goto 140
                                     endif
 !
@@ -433,13 +439,11 @@ subroutine caprec(charge, mailla)
 ! ---  ON REGARDE S'IL Y A UN NOEUD DE LA LISTE PORTANT LE DDL DRZ
 !
                                         cmp = 'DRZ'
-                                        icmp = indik8(nomcmp,cmp,1, nddla)
+                                        icmp = indik8(zk8(inom),cmp,1, nb_cmp)
                                         idrz = 0
-                                        do 100 i = 1, lonlis
+                                        do 100 i = 1, nb_node
 ! ---  NUMERO DU NOEUD COURANT DE LA LISTE
-                                            call jenonu(jexnom(&
-                                                        mailla// '.NOMNOE', zk8(ilisno+i-1)),&
-                                                        in)
+                                            in = zi(jlino+i-1)
 !
                                             if (exisdg(zi( jprnm-1+ (in-1)* nbec+1), icmp)) then
                                                 idrz = 1
@@ -451,16 +455,12 @@ subroutine caprec(charge, mailla)
 !
 ! ---  CAS OU L'ON A UN NOEUD DE LA LISTE PORTANT LE DDL DRZ
 !
-                                        if (idrz .eq. 1) then
-                                            call drz12d(lisnoe, lonlis, charge, typlag, lisrel)
-!
-! ---  CAS OU AUCUN NOEUD DE LA LISTE NE PORTE LE DDL DRZ
-!
+                                        if (idrz .eq. 1) then 
+                                            call drz12d(mailla, ligrmo, fonree, nb_node, list_node,&
+                                                         cmp_index_drz, typlag, lisrel)
                                         else if (idrz.eq.0) then
-                                            call drz02d(lisnoe, lonlis, charge, typlag, lisrel,&
-                                                        dmin)
-!
-! ---  FIN DU CAS 2D SANS DDL DE ROTATION
+                                            call drz02d(mailla, fonree, dmin, nb_node, list_node,&
+                                                        typlag, lisrel)
                                         endif
 !
 ! ---  CAS OU LA DIMENSION DU MODELE EST EGALE A 3
@@ -473,15 +473,13 @@ subroutine caprec(charge, mailla)
                                         cmp4 = 'DRX'
                                         cmp5 = 'DRY'
                                         cmp6 = 'DRZ'
-                                        icmp4 = indik8(nomcmp,cmp4,1, nddla)
-                                        icmp5 = indik8(nomcmp,cmp5,1, nddla)
-                                        icmp6 = indik8(nomcmp,cmp6,1, nddla)
+                                        icmp4 = indik8(zk8(inom),cmp4,1, nb_cmp)
+                                        icmp5 = indik8(zk8(inom),cmp5,1, nb_cmp)
+                                        icmp6 = indik8(zk8(inom),cmp6,1, nb_cmp)
                                         idrxyz = 0
-                                        do 120 i = 1, lonlis
+                                        do 120 i = 1, nb_node
 ! ---  NUMERO DU NOEUD COURANT DE LA LISTE
-                                            call jenonu(jexnom(&
-                                                        mailla// '.NOMNOE', zk8(ilisno+i-1)),&
-                                                        in)
+                                            in = zi(jlino+i-1)
 !
                                             if ((&
                                                 exisdg(zi( jprnm-1+ (in-1) *nbec+1), icmp4)&
@@ -505,12 +503,15 @@ subroutine caprec(charge, mailla)
 ! ---  CAS OU L'ON A UN NOEUD DE LA LISTE PORTANT LES 3 DDLS
 ! ---  DE ROTATION
                                         if (idrxyz .eq. 1) then
-                                            call drz13d(lisnoe, lonlis, charge, typlag, lisrel)
+                                            call drz13d(mailla, ligrmo, fonree, nb_node,  &
+                                                        list_node, cmp_index_dx, cmp_index_dy, &
+                                                        cmp_index_dz, cmp_index_drx, cmp_index_dry,&
+                                                        cmp_index_drz, typlag, lisrel)
 !
 ! ---  CAS MASSIF (PAS DE COMPOSANTES DE ROTATION)
                                         else if (idrxyz.eq.0) then
-                                            call drz03d(lisnoe, lonlis, charge, typlag, lisrel,&
-                                                        dmin)
+                                            call drz03d(mailla, fonree, dmin, nb_node, list_node, &
+                                                        typlag, lisrel)
 !
 ! ---  FIN DU CAS 3D MASSIF (IDRXYZ=0)
                                         endif
@@ -518,7 +519,7 @@ subroutine caprec(charge, mailla)
                                     endif
 140                                  continue
 ! ---  DESTRUCTION DE LA LISTE DES NOEUDS A LIER
-                                    call jedetr(lisnoe)
+                                    call jedetr(list_node)
                                     call jedetr('&&CAPREC.INDICE')
 !
 ! ---  AFFECTATION DE LA LISTE_RELA A LA CHARGE :

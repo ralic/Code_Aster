@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calyrg(iocc, ndim, noma, lnuno2, geom2,&
-                      mrota, lrota)
-        integer :: iocc
-        integer :: ndim
-        character(len=8) :: noma
-        character(*) :: lnuno2
-        character(*) :: geom2
-        real(kind=8) :: mrota(3, 3)
-        logical :: lrota
-    end subroutine calyrg
+    subroutine char_soli_mat2(am, matr_inve_1, matr_2, matr_4, matr_3,&
+                              matr_5)
+        real(kind=8), intent(in) :: am(3)
+        real(kind=8), intent(in) :: matr_inve_1(3, 3)
+        real(kind=8), intent(in) :: matr_2(3, 12)
+        real(kind=8), intent(in) :: matr_4(3, 12)
+        real(kind=8), intent(inout) :: matr_3(3, 3)
+        real(kind=8), intent(inout) :: matr_5(3, 12)
+    end subroutine char_soli_mat2
 end interface

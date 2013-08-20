@@ -1,12 +1,10 @@
 subroutine matinv(stop, ndim, mat, inv, det)
-! aslint: disable=W1306
+!
     implicit none
+!
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/u2mess.h"
-    integer :: ndim
-    real(kind=8) :: mat(ndim, ndim), inv(ndim, ndim), det
-    character(len=1) :: stop
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,11 +22,17 @@ subroutine matinv(stop, ndim, mat, inv, det)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1306
+!
+    character(len=1), intent(in) :: stop
+    integer, intent(in) :: ndim
+    real(kind=8), intent(in) :: mat(ndim, ndim)
+    real(kind=8), intent(out) :: inv(ndim, ndim)
+    real(kind=8), intent(out) :: det
 !
 ! ----------------------------------------------------------------------
 !
 ! MATRICE - CALCUL DE SON INVERSE (DIM = 1 , 2 OU 3)
-! ***                     ***
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,7 +86,7 @@ subroutine matinv(stop, ndim, mat, inv, det)
 !
         det = mat(1,1)*m(1,1) + mat(1,2)*m(2,1) + mat(1,3)*m(3,1)
     else
-        call u2mess('F', 'ALGORITH5_20')
+        ASSERT(.false.)
     endif
 !
     if (abs(det) .le. 1.d0/r8gaem()) then
@@ -99,13 +103,11 @@ subroutine matinv(stop, ndim, mat, inv, det)
 ! --- CALCUL DE L'INVERSE
 !
     unsdet = 1.d0/det
-    do 10 jdim = 1, ndim
-        do 20 idim = 1, ndim
-!
+    do jdim = 1, ndim
+        do idim = 1, ndim
             inv(idim,jdim) = unsdet * m(idim,jdim)
+        enddo
+    enddo
 !
-20      continue
-10  end do
-!
-999  continue
+999 continue
 end subroutine

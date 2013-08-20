@@ -1,8 +1,13 @@
 subroutine pmppr(amat, na1, na2, ka, bmat,&
                  nb1, nb2, kb, cmat, nc1,&
                  nc2)
+!
+    implicit none
+!
+#include "asterfort/assert.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 -   12  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,14 +22,25 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!***********************************************************************
-!    P. RICHARD     DATE 12/03/91
-!-----------------------------------------------------------------------
-!  BUT:  PRODUIT DE DEUX MATRICES STOCKEE PLEINE AVEC PRISE EN COMPTE
-! DE TRANSPOSITION PAR L'INTERMEDIAIRE D'INDICATEUR K
-    implicit none
 !
-!-----------------------------------------------------------------------
+    integer, intent(in) :: ka
+    integer, intent(in) :: kb
+    integer, intent(in) :: na1
+    integer, intent(in) :: na2
+    integer, intent(in) :: nb1
+    integer, intent(in) :: nb2
+    integer, intent(in) :: nc1
+    integer, intent(in) :: nc2
+    real(kind=8), intent(in) :: amat(na1, na2)
+    real(kind=8), intent(in) :: bmat(nb1, nb2)
+    real(kind=8), intent(out) :: cmat(nc1, nc2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! PRODUIT DE DEUX MATRICES STOCKEE PLEINE AVEC PRISE EN COMPTE
+! DE TRANSPOSITION PAR L'INTERMEDIAIRE D'INDICATEUR K
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! AMAT     /I/: PREMIERE MATRICE
 ! NA1      /I/: NOMBRE DE LIGNE DE LA PREMIERE MATRICE
@@ -38,100 +54,62 @@ subroutine pmppr(amat, na1, na2, ka, bmat,&
 ! NC1      /I/: NOMBRE DE LIGNE DE LA MATRICE RESULTAT
 ! NC2      /I/: NOMBRE DE COLONNE DE LA MATRICE RESULTAT
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-#include "asterfort/u2mesg.h"
-    real(kind=8) :: amat(na1, na2), bmat(nb1, nb2), cmat(nc1, nc2)
+    integer :: i, j, k
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!   CAS SANS TRANSPOSITION
-!
-!-----------------------------------------------------------------------
-    integer :: i, j, k, ka, kb, na1, na2
-    integer :: nb1, nb2, nc1, nc2
-!-----------------------------------------------------------------------
     if (ka .eq. 1 .and. kb .eq. 1) then
-        if (na2 .ne. nb1) then
-            call u2mesg('F', 'ALGORITH13_91', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        if (nc1 .ne. na1 .or. nc2 .ne. nb2) then
-            call u2mesg('F', 'ALGORITH13_92', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        do 10 i = 1, na1
-            do 20 j = 1, nb2
+        if (na2 .ne. nb1) ASSERT(.false.)
+        if (nc1 .ne. na1 .or. nc2 .ne. nb2) ASSERT(.false.)
+        do i = 1, na1
+            do j = 1, nb2
                 cmat(i,j)=0.d0
-                do 30 k = 1, nb1
+                do k = 1, nb1
                     cmat(i,j)=cmat(i,j)+amat(i,k)*bmat(k,j)
-30              continue
-20          continue
-10      continue
-!
+                enddo
+            enddo
+        enddo
     endif
 !
     if (ka .eq. -1 .and. kb .eq. 1) then
-        if (na1 .ne. nb1) then
-            call u2mesg('F', 'ALGORITH13_91', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        if (nc1 .ne. na2 .or. nc2 .ne. nb2) then
-            call u2mesg('F', 'ALGORITH13_92', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        do 40 i = 1, na2
-            do 50 j = 1, nb2
+        if (na1 .ne. nb1) ASSERT(.false.)
+        if (nc1 .ne. na2 .or. nc2 .ne. nb2) ASSERT(.false.)
+        do i = 1, na2
+            do j = 1, nb2
                 cmat(i,j)=0.d0
-                do 60 k = 1, nb1
+                do k = 1, nb1
                     cmat(i,j)=cmat(i,j)+amat(k,i)*bmat(k,j)
-60              continue
-50          continue
-40      continue
-!
+                enddo
+            enddo
+        enddo
     endif
-!
 !
     if (ka .eq. 1 .and. kb .eq. -1) then
-        if (na2 .ne. nb2) then
-            call u2mesg('F', 'ALGORITH13_91', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        if (nc1 .ne. na1 .or. nc2 .ne. nb1) then
-            call u2mesg('F', 'ALGORITH13_92', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        do 70 i = 1, na1
-            do 80 j = 1, nb1
+        if (na2 .ne. nb2) ASSERT(.false.)
+        if (nc1 .ne. na1 .or. nc2 .ne. nb1) ASSERT(.false.)
+        do i = 1, na1
+            do j = 1, nb1
                 cmat(i,j)=0.d0
-                do 90 k = 1, na2
+                do k = 1, na2
                     cmat(i,j)=cmat(i,j)+amat(i,k)*bmat(j,k)
-90              continue
-80          continue
-70      continue
-!
+                enddo
+            enddo
+        enddo
     endif
 !
-!
     if (ka .eq. -1 .and. kb .eq. -1) then
-        if (na1 .ne. nb2) then
-            call u2mesg('F', 'ALGORITH13_91', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        if (nc1 .ne. na2 .or. nc2 .ne. nb1) then
-            call u2mesg('F', 'ALGORITH13_92', 0, ' ', 0,&
-                        0, 0, 0.d0)
-        endif
-        do 100 i = 1, na2
-            do 110 j = 1, nb1
+        if (na1 .ne. nb2) ASSERT(.false.)
+        if (nc1 .ne. na2 .or. nc2 .ne. nb1) ASSERT(.false.)
+        do i = 1, na2
+            do j = 1, nb1
                 cmat(i,j)=0.d0
-                do 120 k = 1, nb2
+                do  k = 1, nb2
                     cmat(i,j)=cmat(i,j)+amat(k,i)*bmat(j,k)
-120              continue
-110          continue
-100      continue
-!
+                enddo
+            enddo
+        enddo
     endif
 !
 end subroutine

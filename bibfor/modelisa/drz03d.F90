@@ -1,6 +1,27 @@
-subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
-                  dmin)
+subroutine drz03d(noma, type_vale, dist_mini, nb_node, list_node, &
+                  type_lagr, lisrel)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterfort/afrela.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/char_soli_mat1.h"
+#include "asterfort/char_soli_mat2.h"
+#include "asterfort/char_soli_mat3.h"
+#include "asterfort/drz03d_tria.h"
+#include "asterfort/provec.h"
+#include "asterfort/u2mesg.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,318 +37,158 @@ subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-#include "jeveux.h"
+! =====================================================================
 !
-#include "asterc/getres.h"
-#include "asterfort/afrela.h"
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/matinv.h"
-#include "asterfort/pmat.h"
-#include "asterfort/pmppr.h"
-#include "asterfort/provec.h"
-#include "asterfort/u2mesg.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/wkvect.h"
-    character(len=8) :: charge
-    character(len=19) :: lisrel
-    character(len=24) :: lisnoe
-    character(len=*) :: chargz, lisnoz, typlaz, lisrez
-    real(kind=8) :: dmin
-! -------------------------------------------------------
-!     BLOCAGE DES DEPLACEMENTS RELATIFS D'UNE LISTE DE NOEUDS
-!     SPECIFIEE PAR L'UTILISATEUR DANS LE CAS OU L'ON EST
-!     EN 3D ET AUCUN  NOEUD NE PORTE LE DDL DRZ
-! -------------------------------------------------------
-!  LISNOE - IN    - K24 - : NOM DE LA LISTE DES
-!         -       -     -   NOEUDS A LIER
-! ------------------------------------------------
-!  LONLIS - IN    - I   - : LONGUEUR DE LA LISTE DES
-!         -       -     -   NOEUDS A LIER
-! ------------------------------------------------
-!  CHARGE - IN    - K8   - : NOM DE LA SD CHARGE
-!         - JXIN  -      -
-! ------------------------------------------------
-! TYPLAG  - IN    - K2  - : TYPE DES MULTIPLICATEURS DE LAGRANGE
-!                           ASSOCIES A LA RELATION :
-!                       SI = '12'  LE PREMIER LAGRANGE EST AVANT
-!                                  LE NOEUD PHYSIQUE
-!                                  LE SECOND LAGRANGE EST APRES
-!                       SI = '22'  LE PREMIER LAGRANGE EST APRES
-!                                  LE NOEUD PHYSIQUE
-!                                  LE SECOND LAGRANGE EST APRES
-! ------------------------------------------------
-!  LISREL - IN    - K19  - : NOM DE LA SD
-!         - JXVAR -      -   LISTE DE RELATIONS
-! -------------------------------------------------------
-!  DMIN   - IN    - R8 - : LONGUEUR EN DESSOUS DE LAQUELLE ON CONSIDERE
-!                          QUE 2 POINTS SONT CONFONDUS
-! -------------------------------------------------------
+    character(len=8), intent(in)  :: noma
+    character(len=4), intent(in) :: type_vale
+    real(kind=8), intent(in) :: dist_mini
+    integer, intent(in) :: nb_node
+    character(len=24), intent(in) :: list_node
+    character(len=2), intent(in) :: type_lagr
+    character(len=19), intent(in) :: lisrel
 !
+! --------------------------------------------------------------------------------------------------
 !
-! --------- VARIABLES LOCALES ---------------------------
-!-----------------------------------------------------------------------
-    integer :: i, ibid, ier, ierd, ilisno, inoa, inom
-    integer :: itrian, j, jcoor, jliscc, jliscr, jlisdi, jlisdl
-    integer :: jlisdm, jlisno, jnoma, lonlis, nbcmp, nbec, nbterm
-    integer :: nddla, nmocl
-    real(kind=8) :: beta, un, zero
-!-----------------------------------------------------------------------
-    parameter (nmocl=300)
-    complex(kind=8) :: betac
-    character(len=2) :: typlag
-    character(len=4) :: typval, typcoe
-    character(len=8) :: betaf, resu
-    character(len=8) :: mod, nomg, k8bid
-    character(len=8) :: noma, nomcmp(nmocl)
-    character(len=8) :: noeua, noeub, noeuc
-    character(len=9) :: nomte
-    character(len=16) :: type, oper
-    character(len=19) :: ligrmo
-    integer :: ntypel(nmocl), j2, k, k2, inob
-    integer :: inoc, inoem
-    integer :: vali(2), i2, inoi, ino2, ialign, j1
-    real(kind=8) :: m1(3, 3), minv1(3, 3), m2(3, 12), m3(3, 3), r8bid
-    real(kind=8) :: m4(3, 12), m5(3, 12), x1, y1, z1
-    real(kind=8) :: b(3), c(3), m(3), n(3), bn(3), cn(3)
-    real(kind=8) :: ml1(3, 9), ml3(3, 3), ml5(3, 9), xi, yi, zij
-    real(kind=8) :: n1(3), n2(3), abm(3), coek, coek1, lab, sabc, lac
-    character(len=1) :: k1bid
-! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
+! Loads - Affectation
+!
+! Apply transformation - 3D without any rotation DRX, DRY and DRZ dof
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  noma          : mesh
+! In  type_vale     : type of affected value
+! In  dist_mini     : minimum distance to detect nodes in same place
+! In  nb_node       : number of nodes applying transformation
+! In  list_node     : list of nodes applying transformation
+! In  tran          : vector defining translation
+! In  type_lagr     : choosing lagrange multipliers position
+! In  lisrel        : list of relations
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: jcoor, jliscc, jliscr, jlisdi, jlisdl
+    integer :: jlisdm, jlisno, jlino
+    integer :: nb_maxi, nb_term
+    real(kind=8) :: un, zero
+    character(len=8) :: nomnoe_a, nomnoe_b, nomnoe_c, nomnoe_m
+    integer :: numnoe_a, numnoe_b, numnoe_c, numnoe_m
+    integer :: i_no, i, j
+    real(kind=8) :: matr_inve_1(3, 3), matr_2(3, 12), matr_3(3, 3), matr_4(3, 12)
+    real(kind=8) :: matr_5(3, 12),  matr_6(3, 9), matr_7(3, 9)
+    real(kind=8) :: ab(3), ac(3), am(3)
+    real(kind=8) :: norm_ab(3), tang_ab_2(3)
+    real(kind=8) :: abm(3), coek, lab, labm
+    real(kind=8) :: vale_real
+    complex(kind=8) :: vale_cplx
+    character(len=8) :: vale_fonc
+    character(len=4) :: type_coef
+    logical :: l_trian, l_same
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    call getres(resu, type, oper)
-    lisrel = lisrez
-    charge = chargz
-    typlag = typlaz
-    lisnoe = lisnoz
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    betaf = '&FOZERO'
-    beta = 0.0d0
-    betac = (0.0d0,0.0d0)
-    un = 1.0d0
-    zero = 0.0d0
-    ASSERT(dmin .gt. 0.d0)
+    vale_fonc = '&FOZERO'
+    vale_real = 0.d0
+    vale_cplx = (0.d0,0.d0)
+    type_coef = 'REEL'
+    ASSERT(type_vale.ne.'COMP')
+    ASSERT(dist_mini .gt. 0.d0)
+    un = 1.d0
+    zero = 0.d0
+    l_same  = .false.
+    l_trian = .false.
+    numnoe_a = 0
+    numnoe_b = 0
+    numnoe_c = 0
 !
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
-    ligrmo = mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
-    typcoe = 'REEL'
+    do i = 1, 3
+        do j = 1, 3
+            matr_inve_1(i,j) = zero
+            matr_3(i,j) = zero
+        enddo
+        do j = 1, 9
+            matr_6(i,j) = zero
+            matr_7(i,j) = zero
+        enddo
+        do j = 1, 12
+            matr_2(i,j) = zero
+            matr_4(i,j) = zero
+            matr_5(i,j) = zero
+        enddo
+    end do
 !
-! --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
-    if (oper(15:16) .eq. '_F') then
-        typval = 'FONC'
-    else if (oper(15:16).eq.'_C') then
-        typval = 'COMP'
-    else if (oper(15:16).eq.'  ') then
-        typval = 'REEL'
-    else
-        ASSERT(.false.)
-    endif
+! - Matrix [matr_4] - Constant
 !
-! --- RECUPERATION DES NOMS DES DDLS ET DES NUMEROS
-! --- D'ELEMENTS DE LAGRANGE ASSOCIES
+    matr_4(1,1) = -un
+    matr_4(2,2) = -un
+    matr_4(3,3) = -un
+    matr_4(1,10) = un
+    matr_4(2,11) = un
+    matr_4(3,12) = un
 !
-    nomg = 'DEPL_R'
-    nomte = 'D_DEPL_R_'
-!
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
-    nddla = nbcmp - 1
-    if (nddla .gt. nmocl) then
-        vali (1) = nmocl
-        vali (2) = nddla
-        call u2mesg('F', 'MODELISA8_29', 0, ' ', 2,&
-                    vali, 0, 0.d0)
-    endif
-    do 10 i = 1, nddla
-        nomcmp(i) = zk8(inom-1+i)
-        call jenonu(jexnom('&CATA.TE.NOMTE', nomte//nomcmp(i) (1:7)), ntypel(i))
-10  end do
-    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                k8bid, ierd)
-!
-    if (nbec .gt. 10) then
-        call u2mess('F', 'MODELISA_94')
-    endif
-!
-! --- CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION
-! --- DE LISREL
-!
-! ---  MAJORANT DU NOMBRE DE TERMES DANS UNE RELATION
-    nbterm = 12
-! ---  VECTEUR DU NOM DES NOEUDS
-    call wkvect('&&DRZ03D.LISNO', 'V V K8', nbterm, jlisno)
-! ---  VECTEUR DU NOM DES DDLS
-    call wkvect('&&DRZ03D.LISDDL', 'V V K8', nbterm, jlisdl)
-! ---  VECTEUR DES COEFFICIENTS REELS
-    call wkvect('&&DRZ03D.COER', 'V V R', nbterm, jliscr)
-! ---  VECTEUR DES COEFFICIENTS COMPLEXES
-    call wkvect('&&DRZ03D.COEC', 'V V C', nbterm, jliscc)
-! ---  VECTEUR DES DIRECTIONS DES DDLS A CONTRAINDRE
-    call wkvect('&&DRZ03D.DIRECT', 'V V R', 3*nbterm, jlisdi)
-! ---  VECTEUR DES DIMENSIONS DE CES DIRECTIONS
-    call wkvect('&&DRZ03D.DIME', 'V V I', nbterm, jlisdm)
-!
-! --- RECUPERATION DU TABLEAU DES COORDONNEES
+! - Nodes coordinates
 !
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
 !
-! --- ACQUISITION DE LA LISTE DES NOEUDS A LIER
-! --- (CETTE LISTE EST NON REDONDANTE)
-    call jeveuo(lisnoe, 'L', ilisno)
+! - List of nodes to apply linear relation
 !
+    call jeveuo(list_node, 'L', jlino)
 !
-! --- INITIALISATIONS
-    do 30 i = 1, 3
-        do 20 j = 1, 12
-            m2(i,j) = zero
-            m4(i,j) = zero
-            m5(i,j) = zero
-20      continue
-30  end do
+! - Working vectors
 !
-    do 50 i = 1, 3
-        do 40 j = 1, 3
-            m1(i,j) = zero
-            minv1(i,j) = zero
-            m3(i,j) = zero
-40      continue
-50  end do
+    nb_maxi = 12
+    call wkvect('&&DRZ03D.LISNO', 'V V K8', nb_maxi, jlisno)
+    call wkvect('&&DRZ03D.LISDDL', 'V V K8', nb_maxi, jlisdl)
+    call wkvect('&&DRZ03D.COER', 'V V R', nb_maxi, jliscr)
+    call wkvect('&&DRZ03D.COEC', 'V V C', nb_maxi, jliscc)
+    call wkvect('&&DRZ03D.DIRECT', 'V V R', 3*nb_maxi, jlisdi)
+    call wkvect('&&DRZ03D.DIME', 'V V I', nb_maxi, jlisdm)
 !
+! - Reference node A: first node
 !
+    numnoe_a = zi(jlino+1-1)
 !
-! ---  RECHERCHE DE NOEUDS A, B, C FORMANT UN TRIANGLE
-! ---  DE SURFACE NON-NULLE.
-! ---  ON PREND POUR A LE PREMIER NOEUD
-! ---           POUR B LE PREMIER NOEUD DISTINCT DE A
-! ---           POUR C LE PREMIER NOEUD DISTINCT DE A ET B
-! ---                  ET NON COLINEAIRE A AB.
+! - Find a triangle (three nodes) with non-zero surface
 !
-    noeua = zk8(ilisno+1-1)
-    call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+1-1)), inoa)
-    itrian = 0
-    do 70 j = 2, lonlis
+    call drz03d_tria(dist_mini, nb_node, zi(jlino), zr(jcoor), numnoe_a, &
+                     numnoe_b, numnoe_c, ab, ac, l_trian)
 !
-        call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+j-1)), inob)
+! - Name of nodes
 !
-        b(1) = zr(jcoor-1+3* (inob-1)+1) - zr(jcoor-1+3* (inoa-1)+1)
-        b(2) = zr(jcoor-1+3* (inob-1)+2) - zr(jcoor-1+3* (inoa-1)+2)
-        b(3) = zr(jcoor-1+3* (inob-1)+3) - zr(jcoor-1+3* (inoa-1)+3)
-!       -- LAB : LONGUEUR AB
-        lab=sqrt(b(1)*b(1)+b(2)*b(2)+b(3)*b(3))
+    if (numnoe_a.ne.0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_a), nomnoe_a)
+    if (numnoe_b.ne.0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_b), nomnoe_b)
+    if (numnoe_c.ne.0) call jenuno(jexnum(noma//'.NOMNOE', numnoe_c), nomnoe_c)
 !
-        j2 = j
-        if (lab .le. dmin) goto 70
+! - Zero_surface triangle - Degenerate case: are all nodes have the same coordinates ?
 !
-        noeub = zk8(ilisno+j2-1)
-        do 60 k = j2 + 1, lonlis
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+k-1)), inoc)
-!
-            c(1) = zr(jcoor-1+3* (inoc-1)+1) - zr(jcoor-1+3* (inoa-1)+ 1)
-            c(2) = zr(jcoor-1+3* (inoc-1)+2) - zr(jcoor-1+3* (inoa-1)+ 2)
-            c(3) = zr(jcoor-1+3* (inoc-1)+3) - zr(jcoor-1+3* (inoa-1)+ 3)
-            lac=sqrt(c(1)*c(1)+c(2)*c(2)+c(3)*c(3))
-            if (lac .le. dmin) goto 60
-!
-!         -- CALCUL DE SABC : 2*SURFACE ABC
-            call provec(b, c, n)
-            sabc=sqrt(n(1)*n(1)+n(2)*n(2)+n(3)*n(3))
-!
-            if (sabc/max(lab,lac) .le. dmin) then
-                goto 60
-            else
-                k2 = k
-                noeuc = zk8(ilisno+k2-1)
-                itrian = 1
+    if (.not.l_trian) then
+        l_same = .true.
+        do i_no = 2, nb_node
+            numnoe_m = zi(jlino+i_no-1)
+            am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
+            am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
+            am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
+            if ((abs(am(1)).gt.dist_mini) .or. &
+                (abs(am(2)).gt.dist_mini) .or. &
+                (abs(am(3)).gt.dist_mini)) then
+                l_same = .false.
                 goto 80
             endif
-60      continue
-70  end do
+        enddo
+    endif
+!
 80  continue
 !
+    if (l_trian) then
 !
+        ASSERT(.not.l_same)
 !
-! ---  1) CAS OU L'ON A PU TOUVER 3 NOEUDS FORMANT UN TRIANGLE
-! ---     DE SURFACE NON NULLE
-!--------------------------------------------------------------
-    if (itrian .eq. 1) then
+! ----- Three nodes build non-zero-triangle
 !
-! ---   CALCUL DE BN = B X N
-        call provec(b, n, bn)
-!
-! ---   CALCUL DE CN = C X N
-        call provec(c, n, cn)
-!
-! ---     DEFINITION DE M1
-!
-        m1(1,1) = bn(1)
-        m1(1,2) = bn(2)
-        m1(1,3) = bn(3)
-        m1(2,1) = cn(1)
-        m1(2,2) = cn(2)
-        m1(2,3) = cn(3)
-        m1(3,1) = n(1)
-        m1(3,2) = n(2)
-        m1(3,3) = n(3)
-!
-! ---     DEFINITION DE M2
-!
-        m2(1,1) = -n(1)
-        m2(1,2) = -n(2)
-        m2(1,3) = -n(3)
-        m2(1,4) = n(1)
-        m2(1,5) = n(2)
-        m2(1,6) = n(3)
-        m2(2,1) = -n(1)
-        m2(2,2) = -n(2)
-        m2(2,3) = -n(3)
-        m2(2,7) = n(1)
-        m2(2,8) = n(2)
-        m2(2,9) = n(3)
-        m2(3,1) = -c(1)
-        m2(3,2) = -c(2)
-        m2(3,3) = -c(3)
-        m2(3,4) = c(1)
-        m2(3,5) = c(2)
-        m2(3,6) = c(3)
-!
-! ---     DEFINITION DE M4
-!
-        m4(1,1) = -un
-        m4(2,2) = -un
-        m4(3,3) = -un
-        m4(1,10) = un
-        m4(2,11) = un
-        m4(3,12) = un
-!
-! ---     INVERSION DE M1
-!
-        call matinv('S', 3, m1, minv1, r8bid)
-!
-! ---     PREMIERE RELATION POUR LES NOEUDS B ET C :
-! ---     (UB-UA).B = 0
-!
-        nbterm = 6
-!
-        zk8(jlisno+1-1) = noeub
-        zk8(jlisno+2-1) = noeua
-        zk8(jlisno+3-1) = noeub
-        zk8(jlisno+4-1) = noeua
-        zk8(jlisno+5-1) = noeub
-        zk8(jlisno+6-1) = noeua
-!
+        nb_term = 6
         zk8(jlisdl+1-1) = 'DX'
         zk8(jlisdl+2-1) = 'DX'
         zk8(jlisdl+3-1) = 'DY'
@@ -335,55 +196,54 @@ subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
         zk8(jlisdl+5-1) = 'DZ'
         zk8(jlisdl+6-1) = 'DZ'
 !
-        zr(jliscr+1-1) = b(1)
-        zr(jliscr+2-1) = -b(1)
-        zr(jliscr+3-1) = b(2)
-        zr(jliscr+4-1) = -b(2)
-        zr(jliscr+5-1) = b(3)
-        zr(jliscr+6-1) = -b(3)
+! ----- First relation (nodes A and B): (DU(B)-DU(A)).AB = 0
 !
+        zk8(jlisno+1-1) = nomnoe_b
+        zk8(jlisno+2-1) = nomnoe_a
+        zk8(jlisno+3-1) = nomnoe_b
+        zk8(jlisno+4-1) = nomnoe_a
+        zk8(jlisno+5-1) = nomnoe_b
+        zk8(jlisno+6-1) = nomnoe_a
+        zr(jliscr+1-1) = ab(1)
+        zr(jliscr+2-1) = -ab(1)
+        zr(jliscr+3-1) = ab(2)
+        zr(jliscr+4-1) = -ab(2)
+        zr(jliscr+5-1) = ab(3)
+        zr(jliscr+6-1) = -ab(3)
         call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nbterm, beta, betac, betaf,&
-                    typcoe, typval, typlag, 0.d0, lisrel)
+                    zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                    type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
-! ---     DEUXIEME RELATION POUR LES NOEUDS B ET C :
-! ---     (UC-UA).C = 0
+! ----- Second relation (nodes A and C): (DU(C)-DU(A)).AC = 0
 !
-        nbterm = 6
-!
-        zk8(jlisno+1-1) = noeuc
-        zk8(jlisno+2-1) = noeua
-        zk8(jlisno+3-1) = noeuc
-        zk8(jlisno+4-1) = noeua
-        zk8(jlisno+5-1) = noeuc
-        zk8(jlisno+6-1) = noeua
-!
-        zr(jliscr+1-1) = c(1)
-        zr(jliscr+2-1) = -c(1)
-        zr(jliscr+3-1) = c(2)
-        zr(jliscr+4-1) = -c(2)
-        zr(jliscr+5-1) = c(3)
-        zr(jliscr+6-1) = -c(3)
-!
+        zk8(jlisno+1-1) = nomnoe_c
+        zk8(jlisno+2-1) = nomnoe_a
+        zk8(jlisno+3-1) = nomnoe_c
+        zk8(jlisno+4-1) = nomnoe_a
+        zk8(jlisno+5-1) = nomnoe_c
+        zk8(jlisno+6-1) = nomnoe_a
+        zr(jliscr+1-1) = ac(1)
+        zr(jliscr+2-1) = -ac(1)
+        zr(jliscr+3-1) = ac(2)
+        zr(jliscr+4-1) = -ac(2)
+        zr(jliscr+5-1) = ac(3)
+        zr(jliscr+6-1) = -ac(3)
         call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nbterm, beta, betac, betaf,&
-                    typcoe, typval, typlag, 0.d0, lisrel)
+                    zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                    type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
-! ---     TROISIEME RELATION POUR LES NOEUDS B ET C :
-! ---     (UB-UA).C + (UC-UA).B = 0
+! ----- Third relation (nodes C and C): (DU(B)-DU(A)).AC + (DU(C)-DU(A)).AB = 0
 !
-        nbterm = 9
-!
-        zk8(jlisno+1-1) = noeua
-        zk8(jlisno+2-1) = noeub
-        zk8(jlisno+3-1) = noeuc
-        zk8(jlisno+4-1) = noeua
-        zk8(jlisno+5-1) = noeub
-        zk8(jlisno+6-1) = noeuc
-        zk8(jlisno+7-1) = noeua
-        zk8(jlisno+8-1) = noeub
-        zk8(jlisno+9-1) = noeuc
-!
+        nb_term = 9
+        zk8(jlisno+1-1) = nomnoe_a
+        zk8(jlisno+2-1) = nomnoe_b
+        zk8(jlisno+3-1) = nomnoe_c
+        zk8(jlisno+4-1) = nomnoe_a
+        zk8(jlisno+5-1) = nomnoe_b
+        zk8(jlisno+6-1) = nomnoe_c
+        zk8(jlisno+7-1) = nomnoe_a
+        zk8(jlisno+8-1) = nomnoe_b
+        zk8(jlisno+9-1) = nomnoe_c
         zk8(jlisdl+1-1) = 'DX'
         zk8(jlisdl+2-1) = 'DX'
         zk8(jlisdl+3-1) = 'DX'
@@ -393,406 +253,289 @@ subroutine drz03d(lisnoz, lonlis, chargz, typlaz, lisrez,&
         zk8(jlisdl+7-1) = 'DZ'
         zk8(jlisdl+8-1) = 'DZ'
         zk8(jlisdl+9-1) = 'DZ'
-!
-        zr(jliscr+1-1) = -b(1) - c(1)
-        zr(jliscr+2-1) = c(1)
-        zr(jliscr+3-1) = b(1)
-        zr(jliscr+4-1) = -b(2) - c(2)
-        zr(jliscr+5-1) = c(2)
-        zr(jliscr+6-1) = b(2)
-        zr(jliscr+7-1) = -b(3) - c(3)
-        zr(jliscr+8-1) = c(3)
-        zr(jliscr+9-1) = b(3)
-!
+        zr(jliscr+1-1) = -ab(1) - ac(1)
+        zr(jliscr+2-1) = ac(1)
+        zr(jliscr+3-1) = ab(1)
+        zr(jliscr+4-1) = -ab(2) - ac(2)
+        zr(jliscr+5-1) = ac(2)
+        zr(jliscr+6-1) = ab(2)
+        zr(jliscr+7-1) = -ab(3) - ac(3)
+        zr(jliscr+8-1) = ac(3)
+        zr(jliscr+9-1) = ab(3)
         call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                    zr(jlisdi), nbterm, beta, betac, betaf,&
-                    typcoe, typval, typlag, 0.d0, lisrel)
+                    zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                    type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
-        do 150 j = 2, lonlis
+! ----- Computation of matrix for solid movement in 3D - First part
 !
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+j-1)), inoem)
+        call char_soli_mat1(ab, ac, matr_inve_1, matr_2)
 !
-            if (inoem .eq. inob .or. inoem .eq. inoc) goto 150
-            m(1) = zr(jcoor-1+3* (inoem-1)+1) - zr(jcoor-1+3* (inoa-1) +1)
-            m(2) = zr(jcoor-1+3* (inoem-1)+2) - zr(jcoor-1+3* (inoa-1) +2)
-            m(3) = zr(jcoor-1+3* (inoem-1)+3) - zr(jcoor-1+3* (inoa-1) +3)
+        do i_no = 2, nb_node
+            numnoe_m = zi(jlino+i_no-1)
+            call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+            if ((numnoe_m .ne. numnoe_b) .and. (numnoe_m .ne. numnoe_c)) then
 !
-! ---        DEFINITION DE M3
+                am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
+                am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
+                am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
 !
-            m3(1,2) = -m(3)
-            m3(1,3) = m(2)
-            m3(2,1) = m(3)
-            m3(2,3) = -m(1)
-            m3(3,1) = -m(2)
-            m3(3,2) = m(1)
+! ------------- Computation of matrix for solid movement in 3D - Second part
 !
-! ---        CALCUL DE M1 <-- M3.MINV1
+                call char_soli_mat2(am, matr_inve_1, matr_2, matr_4, matr_3, &
+                                    matr_5)
 !
-            call pmat(3, m3, minv1, m1)
+! ------------- Relation : [M5].DU(AM,BM,CM) = 0
 !
-! ---        CALCUL DE M5 <-- M3.MINV1.M2
+                nb_term = 12
+                do i = 1, 3
+                    zk8(jlisno+i-1) = nomnoe_a
+                    zk8(jlisno+3+i-1) = nomnoe_b
+                    zk8(jlisno+6+i-1) = nomnoe_c
+                    zk8(jlisno+9+i-1) = nomnoe_m
+                enddo
+                do i = 1, 4
+                    zk8(jlisdl+3*(i-1)+1-1) = 'DX'
+                    zk8(jlisdl+3*(i-1)+2-1) = 'DY'
+                    zk8(jlisdl+3*(i-1)+3-1) = 'DZ'
+                enddo
 !
-            call pmppr(m1, 3, 3, 1, m2,&
-                       3, 12, 1, m5, 3,&
-                       12)
+! ------------- Apply linear relation
 !
-! ---        CALCUL DE M5 <-- M4 + M3.MINV1.M2
-!
-            do 100 j1 = 1, 3
-                do 90 j2 = 1, 12
-                    m5(j1,j2) = m5(j1,j2) + m4(j1,j2)
-90              continue
-100          continue
-!
-! ---     ECRITURE DES 3 RELATIONS CORRESPONDANTES A M5.UABCM = 0
-!
-            nbterm = 12
-!
-            do 110 k = 1, 3
-                zk8(jlisno+k-1) = noeua
-                zk8(jlisno+3+k-1) = noeub
-                zk8(jlisno+6+k-1) = noeuc
-                zk8(jlisno+9+k-1) = zk8(ilisno+j-1)
-110          continue
-!
-            do 120 k = 1, 4
-                zk8(jlisdl+3* (k-1)+1-1) = 'DX'
-                zk8(jlisdl+3* (k-1)+2-1) = 'DY'
-                zk8(jlisdl+3* (k-1)+3-1) = 'DZ'
-120          continue
-!
-            do 140 j1 = 1, 3
-                do 130 j2 = 1, 12
-                    zr(jliscr+j2-1) = m5(j1,j2)
-130              continue
-!
-                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
-                            zr(jlisdi), nbterm, beta, betac, betaf,&
-                            typcoe, typval, typlag, 0.d0, lisrel)
-140          continue
-! ---     FIN DE LA BOUCLE SUR LES NOEUDS DE LA LISTE
-150      continue
-!
-!
-!
-! ---   2)  CAS OU L'ON N'A PAS PU TROUVER 3 NOEUDS DE LA
-! ---        LISTE FORMANT UN TRIANGLE
-!--------------------------------------------------------------
-!
-    else if (itrian.eq.0) then
-!
-        x1 = zr(jcoor-1+3* (inoa-1)+1)
-        y1 = zr(jcoor-1+3* (inoa-1)+2)
-        z1 = zr(jcoor-1+3* (inoa-1)+3)
-!
-        ialign = 0
-!
-        do 160 i = 2, lonlis
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1)), inoi)
-            xi = zr(jcoor-1+3* (inoi-1)+1)
-            yi = zr(jcoor-1+3* (inoi-1)+2)
-            zij = zr(jcoor-1+3* (inoi-1)+3)
-            if ((abs(xi-x1).gt.dmin) .or. (abs(yi-y1).gt.dmin) .or. (abs(zij-z1).gt.dmin)) then
-                ialign = 1
-                goto 200
+                do i = 1, 3
+                    do j = 1, 12
+                        zr(jliscr+j-1) = matr_5(i,j)
+                    enddo
+                    call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
+                                zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                             type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                enddo
             endif
-160      continue
+        enddo
+    else
 !
+! ----- Three nodes are building zero triangle
 !
+        if (l_same) then
 !
-! ---   3) CAS OU TOUS LES NOEUDS DE LA LISTE ONT LES MEMES COORDONNEES
-!-----------------------------------------------------------------------
+! --------- Zero triangle/degenerate case: all nodes have same coordinates
 !
-! ---     PREMIERE RELATION
-! ---     DX(M) -DX(A) = 0
+            nb_term = 2
+            zk8(jlisno+1-1) = nomnoe_a
+            zr(jliscr+1-1) = un
 !
-        nbterm = 2
-        zk8(jlisno+1-1) = zk8(ilisno+1-1)
-        zk8(jlisdl+1-1) = 'DX'
-        zr(jliscr+1-1) = un
+! --------- Relation: DX(M) - DX(A) = 0
 !
-        do 170 i = 2, lonlis
-            zk8(jlisno+2-1) = zk8(ilisno+i-1)
-            zk8(jlisdl+2-1) = 'DX'
-            zr(jliscr+2-1) = -un
+            zk8(jlisdl+1-1) = 'DX'
+            do i_no = 2, nb_node
+                numnoe_m = zi(jlino+i_no-1)
+                call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+                zk8(jlisno+2-1) = nomnoe_m
+                zk8(jlisdl+2-1) = 'DX'
+                zr(jliscr+2-1) = -un
+                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
+                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                            type_coef, type_vale, type_lagr, 0.d0, lisrel)
+            enddo
 !
-            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                        zr(jlisdi), nbterm, beta, betac, betaf,&
-                        typcoe, typval, typlag, 0.d0, lisrel)
-170      continue
+! --------- Relation: DY(M) - DY(A) = 0
 !
-! ---     DEUXIEME RELATION
-! ---     DY(M) -DY(A) = 0
+            zk8(jlisdl+1-1) = 'DY'
+            do i_no = 2, nb_node
+                numnoe_m = zi(jlino+i_no-1)
+                call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+                zk8(jlisno+2-1) = nomnoe_m
+                zk8(jlisdl+2-1) = 'DY'
+                zr(jliscr+2-1) = -un
+                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
+                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                            type_coef, type_vale, type_lagr, 0.d0, lisrel)
+            enddo
 !
-        zk8(jlisdl+1-1) = 'DY'
+! --------- Relation: DZ(M) - DZ(A) = 0
 !
-        do 180 i = 2, lonlis
-            zk8(jlisno+2-1) = zk8(ilisno+i-1)
-            zk8(jlisdl+2-1) = 'DY'
+            zk8(jlisdl+1-1) = 'DZ'
+            do i_no = 2, nb_node
+                numnoe_m = zi(jlino+i_no-1)
+                call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+                zk8(jlisno+2-1) = nomnoe_m
+                zk8(jlisdl+2-1) = 'DZ'
+                zr(jliscr+2-1) = -un
+                call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
+                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                            type_coef, type_vale, type_lagr, 0.d0, lisrel)
+            enddo
+        else
 !
-            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                        zr(jlisdi), nbterm, beta, betac, betaf,&
-                        typcoe, typval, typlag, 0.d0, lisrel)
-180      continue
+! --------- Zero triangle/degenerate case: other degenerate cases
 !
-! ---     TROISIEME RELATION
-! ---     DZ(M) -DZ(A) = 0
+            if (nb_node .eq. 2) then
 !
-        zk8(jlisdl+1-1) = 'DZ'
+! ------------- Zero triangle/degenerate case: only two nodes in model
 !
-        do 190 i = 2, lonlis
-            zk8(jlisno+2-1) = zk8(ilisno+i-1)
-            zk8(jlisdl+2-1) = 'DZ'
+                nb_term = 6
 !
-            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                        zr(jlisdi), nbterm, beta, betac, betaf,&
-                        typcoe, typval, typlag, 0.d0, lisrel)
-190      continue
+! ------------- One relation: (DU(B)-DU(A)).AB = 0
 !
-200      continue
-!
-!
-!
-! ---   4) CAS OU TOUS LES NOEUDS SONT ALIGNES
-!--------------------------------------------------------------
-        if (ialign .eq. 1) then
-!
-! ---           CAS OU L'ON N'A QUE 2 POINTS, LA SEULE RELATION EST :
-! ---           (UB-UA).B = 0
-!
-            if (lonlis .eq. 2) then
-!
-                nbterm = 6
-!
-                zk8(jlisno+1-1) = noeub
-                zk8(jlisno+2-1) = noeua
-                zk8(jlisno+3-1) = noeub
-                zk8(jlisno+4-1) = noeua
-                zk8(jlisno+5-1) = noeub
-                zk8(jlisno+6-1) = noeua
-!
+                zk8(jlisno+1-1) = nomnoe_b
+                zk8(jlisno+2-1) = nomnoe_a
+                zk8(jlisno+3-1) = nomnoe_b
+                zk8(jlisno+4-1) = nomnoe_a
+                zk8(jlisno+5-1) = nomnoe_b
+                zk8(jlisno+6-1) = nomnoe_a
                 zk8(jlisdl+1-1) = 'DX'
                 zk8(jlisdl+2-1) = 'DX'
                 zk8(jlisdl+3-1) = 'DY'
                 zk8(jlisdl+4-1) = 'DY'
                 zk8(jlisdl+5-1) = 'DZ'
                 zk8(jlisdl+6-1) = 'DZ'
-!
-                zr(jliscr+1-1) = b(1)
-                zr(jliscr+2-1) = -b(1)
-                zr(jliscr+3-1) = b(2)
-                zr(jliscr+4-1) = -b(2)
-                zr(jliscr+5-1) = b(3)
-                zr(jliscr+6-1) = -b(3)
-!
+                zr(jliscr+1-1) = ab(1)
+                zr(jliscr+2-1) = -ab(1)
+                zr(jliscr+3-1) = ab(2)
+                zr(jliscr+4-1) = -ab(2)
+                zr(jliscr+5-1) = ab(3)
+                zr(jliscr+6-1) = -ab(3)
                 call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
-                            zr(jlisdi), nbterm, beta, betac, betaf,&
-                            typcoe, typval, typlag, 0.d0, lisrel)
-            else if (lonlis.gt.2) then
+                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                            type_coef, type_vale, type_lagr, 0.d0, lisrel)
+            else
 !
-! ---               INITIALISATIONS
+! ------------- Zero triangle/degenerate case: three nodes are aligned
 !
-                do 220 i = 1, 3
-                    do 210 j = 1, 9
-                        ml1(i,j) = zero
-                        ml5(i,j) = zero
-210                  continue
-220              continue
+                do i_no = 2, nb_node
+                    numnoe_b = zi(jlino+i_no-1)
+                    call jenuno(jexnum(noma//'.NOMNOE', numnoe_b ), nomnoe_b)
+                    ab(1) = zr( jcoor-1+3*(numnoe_b-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
+                    ab(2) = zr( jcoor-1+3*(numnoe_b-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
+                    ab(3) = zr( jcoor-1+3*(numnoe_b-1)+3) - zr(jcoor-1+3*(numnoe_a-1)+3)
+                    lab = sqrt(ab(1)*ab(1)+ab(2)*ab(2)+ab(3)*ab(3))
+                    if (lab .gt. dist_mini) goto 260
+                enddo
 !
-                do 240 i = 1, 3
-                    do 230 j = 1, 3
-                        ml3(i,j) = zero
-230                  continue
-240              continue
+260             continue
 !
-                do 250 i = 2, lonlis
-                    call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1) ), inob)
-                    b(1) = zr( jcoor-1+3* (inob-1)+1) - zr(jcoor-1+3* ( inoa-1)+1)
-                    b(2) = zr( jcoor-1+3* (inob-1)+2) - zr(jcoor-1+3* ( inoa-1)+2)
-                    b(3) = zr( jcoor-1+3* (inob-1)+3) - zr(jcoor-1+3* ( inoa-1)+3)
-                    if (sqrt(b(1)*b(1)+b(2)*b(2)+b(3)*b(3)) .gt. dmin) then
-                        i2 = i
-                        ino2 = inob
-                        noeub = zk8(ilisno+i2-1)
-                        goto 260
-                    endif
-250              continue
+! ------------- Try to define normal to AB
 !
-260              continue
-!
-! ---              DEFINITION DU VECTEUR N1
-! ---              ON ESSAIE D'ABORD N1 = I X B
-!
-                n1(1) = zero
-                n1(2) = -b(3)
-                n1(3) = b(2)
-!
-                if (sqrt(b(3)*b(3)+b(2)*b(2)) .le. dmin) then
-!
-! ---                ON FAIT UN AUTRE ESSAI AVEC N1 = J X B
-!
-                    n1(1) = b(3)
-                    n1(2) = zero
-                    n1(3) = -b(1)
-!
-                    if (sqrt(b(3)*b(3)+b(1)*b(1)) .le. dmin) then
-                        call u2mess('F', 'MODELISA4_41')
-                    endif
+                norm_ab(1) = zero
+                norm_ab(2) = -ab(3)
+                norm_ab(3) = ab(2)
+                lab = sqrt(ab(2)*ab(2)+ab(3)*ab(3))
+                if (lab .le. dist_mini) then
+                    norm_ab(1) = ab(3)
+                    norm_ab(2) = zero
+                    norm_ab(3) = -ab(1)
+                    lab = sqrt(ab(1)*ab(1)+ab(3)*ab(3))
+                    if (lab .le. dist_mini) call u2mess('F', 'CHARGES2_46')
                 endif
 !
-! ---              DEFINITION DU VECTEUR N2 = B X N1
+! ------------- Defining second tangent to AB
 !
-                n2(1) = b(2)*n1(3) - b(3)*n1(2)
-                n2(2) = b(3)*n1(1) - b(1)*n1(3)
-                n2(3) = b(1)*n1(2) - b(2)*n1(1)
+                tang_ab_2(1) = ab(2)*norm_ab(3) - ab(3)*norm_ab(2)
+                tang_ab_2(2) = ab(3)*norm_ab(1) - ab(1)*norm_ab(3)
+                tang_ab_2(3) = ab(1)*norm_ab(2) - ab(2)*norm_ab(1)
 !
-! ---              DEFINITION DE ML1
+! ------------- Are nodes are really aligned ?
 !
-                ml1(1,2) = n2(2)*n1(1) - n1(2)*n2(1)
-                ml1(1,3) = n2(3)*n1(1) - n1(3)*n2(1)
-                ml1(2,1) = n2(1)*n1(2) - n1(1)*n2(2)
-                ml1(2,3) = n2(3)*n1(2) - n1(3)*n2(2)
-                ml1(3,1) = n2(1)*n1(3) - n1(1)*n2(3)
-                ml1(3,2) = n2(2)*n1(3) - n1(2)*n2(3)
-                ml1(1,5) = -ml1(1,2)
-                ml1(1,6) = -ml1(1,3)
-                ml1(2,4) = -ml1(2,1)
-                ml1(2,6) = -ml1(2,3)
-                ml1(3,4) = -ml1(3,1)
-                ml1(3,5) = -ml1(3,2)
+                do i_no = 2, nb_node
+                    numnoe_m = zi(jlino+i_no-1)
+                    am(1) = zr(jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1) +1)
+                    am(2) = zr(jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1) +2)
+                    am(3) = zr(jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1) +3)
+                    abm(1) = ab(2)*am(3) - ab(3)*am(2)
+                    abm(2) = ab(3)*am(1) - ab(1)*am(3)
+                    abm(3) = ab(1)*am(2) - ab(2)*am(1)
+                    labm = sqrt(abm(1)*abm(1)+abm(2)*abm(2)+abm(3)*abm(3))
+                    if (labm .gt. dist_mini) ASSERT(.false.)
+                enddo
 !
-! ---              ON VERIFIE QUE LES NOEUDS DE LA LISTE SONT
-! ---              EFFECTIVEMENT ALIGNES
+! ------------- First relation (nodes A and B): (DU(B)-DU(A)).AB = 0
 !
-                do 270 i = 2, lonlis
-                    call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1) ), inoem)
-!
-                    m(1) = zr( jcoor-1+3* (inoem-1)+1) - zr(jcoor-1+3* (inoa-1)+1)
-                    m(2) = zr( jcoor-1+3* (inoem-1)+2) - zr(jcoor-1+3* (inoa-1)+2)
-                    m(3) = zr( jcoor-1+3* (inoem-1)+3) - zr(jcoor-1+3* (inoa-1)+3)
-!
-!
-! ---                 DEFINITION DU VECTEUR ABM = AB X AM
-!
-                    abm(1) = b(2)*m(3) - b(3)*m(2)
-                    abm(2) = b(3)*m(1) - b(1)*m(3)
-                    abm(3) = b(1)*m(2) - b(2)*m(1)
-!
-                    if (sqrt(abm(1)*abm(1)+abm(2)*abm(2)+abm(3)*abm(3) ) .gt. dmin) then
-                        call u2mess('F', 'MODELISA4_42')
-                    endif
-270              continue
-!
-! ---           PREMIERE RELATION  : (UB-UA).B = 0
-!
-                nbterm = 6
-!
-                zk8(jlisno+1-1) = noeub
-                zk8(jlisno+2-1) = noeua
-                zk8(jlisno+3-1) = noeub
-                zk8(jlisno+4-1) = noeua
-                zk8(jlisno+5-1) = noeub
-                zk8(jlisno+6-1) = noeua
-!
+                nb_term = 6
                 zk8(jlisdl+1-1) = 'DX'
                 zk8(jlisdl+2-1) = 'DX'
                 zk8(jlisdl+3-1) = 'DY'
                 zk8(jlisdl+4-1) = 'DY'
                 zk8(jlisdl+5-1) = 'DZ'
                 zk8(jlisdl+6-1) = 'DZ'
-!
-                zr(jliscr+1-1) = b(1)
-                zr(jliscr+2-1) = -b(1)
-                zr(jliscr+3-1) = b(2)
-                zr(jliscr+4-1) = -b(2)
-                zr(jliscr+5-1) = b(3)
-                zr(jliscr+6-1) = -b(3)
-!
+                zk8(jlisno+1-1) = nomnoe_b
+                zk8(jlisno+2-1) = nomnoe_a
+                zk8(jlisno+3-1) = nomnoe_b
+                zk8(jlisno+4-1) = nomnoe_a
+                zk8(jlisno+5-1) = nomnoe_b
+                zk8(jlisno+6-1) = nomnoe_a
+                zr(jliscr+1-1) = ab(1)
+                zr(jliscr+2-1) = -ab(1)
+                zr(jliscr+3-1) = ab(2)
+                zr(jliscr+4-1) = -ab(2)
+                zr(jliscr+5-1) = ab(3)
+                zr(jliscr+6-1) = -ab(3)
                 call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8( jlisno), zi(jlisdm),&
-                            zr(jlisdi), nbterm, beta, betac, betaf,&
-                            typcoe, typval, typlag, 0.d0, lisrel)
+                            zr(jlisdi), nb_term, vale_real, vale_cplx, vale_fonc,&
+                            type_coef, type_vale, type_lagr, 0.d0, lisrel)
 !
-! ---              CALCUL DU COEFFICIENT K
+! ------------- Matrix matr_6
 !
-                coek = ( n1(1)*n1(1)+n1(2)*n1(2)+n1(3)*n1(3))* (b(1)*b( 1)+b(2)*b(2)+b(3)*b(3) )
-                coek1 = 1.0d0/coek
+                matr_6(1,2) = tang_ab_2(2)*norm_ab(1) - norm_ab(2)*tang_ab_2(1)
+                matr_6(1,3) = tang_ab_2(3)*norm_ab(1) - norm_ab(3)*tang_ab_2(1)
+                matr_6(2,1) = tang_ab_2(1)*norm_ab(2) - norm_ab(1)*tang_ab_2(2)
+                matr_6(2,3) = tang_ab_2(3)*norm_ab(2) - norm_ab(3)*tang_ab_2(2)
+                matr_6(3,1) = tang_ab_2(1)*norm_ab(3) - norm_ab(1)*tang_ab_2(3)
+                matr_6(3,2) = tang_ab_2(2)*norm_ab(3) - norm_ab(2)*tang_ab_2(3)
+                matr_6(1,5) = -matr_6(1,2)
+                matr_6(1,6) = -matr_6(1,3)
+                matr_6(2,4) = -matr_6(2,1)
+                matr_6(2,6) = -matr_6(2,3)
+                matr_6(3,4) = -matr_6(3,1)
+                matr_6(3,5) = -matr_6(3,2)
 !
-                do 330 i = 2, lonlis
-                    call jenonu(jexnom(noma//'.NOMNOE', zk8(ilisno+i-1) ), inoem)
-                    if (inoem .eq. ino2) goto 330
+! ------------- Coefficient
 !
-                    m(1) = zr( jcoor-1+3* (inoem-1)+1) - zr(jcoor-1+3* (inoa-1)+1)
-                    m(2) = zr( jcoor-1+3* (inoem-1)+2) - zr(jcoor-1+3* (inoa-1)+2)
-                    m(3) = zr( jcoor-1+3* (inoem-1)+3) - zr(jcoor-1+3* (inoa-1)+3)
+                coek = ( norm_ab(1)*norm_ab(1)  + &
+                         norm_ab(2)*norm_ab(2)  + &
+                         norm_ab(3)*norm_ab(3)) * &
+                       (ab(1)*ab( 1)+ab(2)*ab(2)+ab(3)*ab(3))
+                coek = 1.d0/coek
 !
-! ---                 DEFINITION DE ML3
+                do i_no = 2, nb_node
+                    numnoe_m = zi(jlino+i_no-1)
+                    call jenuno(jexnum(noma//'.NOMNOE', numnoe_m), nomnoe_m)
+                    if (numnoe_m .ne. numnoe_b) then
 !
-                    ml3(1,2) = -m(3)
-                    ml3(1,3) = m(2)
-                    ml3(2,1) = m(3)
-                    ml3(2,3) = -m(1)
-                    ml3(3,1) = -m(2)
-                    ml3(3,2) = m(1)
+                        am(1) = zr( jcoor-1+3*(numnoe_m-1)+1) - zr(jcoor-1+3*(numnoe_a-1)+1)
+                        am(2) = zr( jcoor-1+3*(numnoe_m-1)+2) - zr(jcoor-1+3*(numnoe_a-1)+2)
+                        am(3) = zr( jcoor-1+3*(numnoe_m-1)+3) - zr(jcoor-1+3*(numnoe_a-1)+3)
 !
-! ---                 CALCUL DE ML5 <-- ML3.ML1
+! --------------------- Matrix matr_8
 !
-                    call pmppr(ml3, 3, 3, 1, ml1,&
-                               3, 9, 1, ml5, 3,&
-                               9)
+                        call char_soli_mat3(am, coek, matr_6, matr_7)
 !
-                    do 290 j1 = 1, 3
-                        do 280 j2 = 1, 9
-                            ml5(j1,j2) = coek1*ml5(j1,j2)
-280                      continue
-290                  continue
+! --------------------- Relation : [M8].DU(AM,BM) = 0
 !
-! ---                 RAJOUT DE ML4
+                        nb_term = 9
+                        do i = 1, 3
+                            zk8(jlisno+i-1) = nomnoe_a
+                            zk8(jlisno+3+i-1) = nomnoe_b
+                            zk8(jlisno+6+i-1) = nomnoe_m
+                            zk8(jlisdl+3*(i-1)+1-1) = 'DX'
+                            zk8(jlisdl+3*(i-1)+2-1) = 'DY'
+                            zk8(jlisdl+3*(i-1)+3-1) = 'DZ'
+                        enddo
 !
-                    ml5(1,1) = ml5(1,1) - un
-                    ml5(2,2) = ml5(2,2) - un
-                    ml5(3,3) = ml5(3,3) - un
-                    ml5(1,7) = ml5(1,7) + un
-                    ml5(2,8) = ml5(2,8) + un
-                    ml5(3,9) = ml5(3,9) + un
+! --------------------- Apply linear relation
 !
-!
-! ---     ECRITURE DES 3 RELATIONS CORRESPONDANTES A LA RELATION
-! ---     MATRICIELLE : (ML4+1/K*ML3*ML1)*UABM = 0
-!
-                    nbterm = 9
-!
-                    do 300 k = 1, 3
-!
-                        zk8(jlisno+k-1) = noeua
-                        zk8(jlisno+3+k-1) = noeub
-                        zk8(jlisno+6+k-1) = zk8(ilisno+i-1)
-!
-                        zk8(jlisdl+3* (k-1)+1-1) = 'DX'
-                        zk8(jlisdl+3* (k-1)+2-1) = 'DY'
-                        zk8(jlisdl+3* (k-1)+3-1) = 'DZ'
-300                  continue
-!
-                    do 320 j1 = 1, 3
-                        do 310 j2 = 1, 9
-                            zr(jliscr+j2-1) = ml5(j1,j2)
-310                      continue
-!
-                        call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), zi(jlisdm),&
-                                    zr(jlisdi), nbterm, beta, betac, betaf,&
-                                    typcoe, typval, typlag, 0.d0, lisrel)
-320                  continue
-330              continue
-! ---       FIN DU CAS LONLIS GT 2
+                        do i = 1, 3
+                            do j = 1, 9
+                                zr(jliscr+j-1) = matr_7(i,j)
+                            enddo
+                            call afrela(zr(jliscr), zc(jliscc), zk8(jlisdl), zk8(jlisno), &
+                                    zi(jlisdm),zr(jlisdi), nb_term, vale_real, vale_cplx, &
+                                    vale_fonc,type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        enddo
+                    endif
+                enddo
             endif
-! ---     FIN DU CAS OU LES NOEUDS SONT ALIGNES
         endif
-! ---   FIN DU CAS OU L'ON NE PEUT PAS TROUVER 3 NOEUDS FORMANT
-! ---   UN TRIANGLE
     endif
 !
-!
-!
-! --- DESTRUCTION DES OBJETS DE TRAVAIL
     call jedetr('&&DRZ03D.LISNO')
     call jedetr('&&DRZ03D.LISDDL')
     call jedetr('&&DRZ03D.COER')

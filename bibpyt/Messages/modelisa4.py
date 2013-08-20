@@ -192,36 +192,6 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
  problème rencontré lors de l interpolation d une des fonctions
 """),
 
-41 : _(u"""
- problèmes dans le cas 3d ou les noeuds sont alignes, la distance séparant 2 noeuds non identiques de la liste est trop petite
-"""),
-
-42 : _(u"""
-  -> Mélange de mailles quadratiques avec des QUAD8. Aster supprime la liaison
-     sur le noeud milieu des QUAD8
-  -> Risque & Conseil :
-     Le problème de contact avec des mailles quadratiques est mal traité dans Aster, vous risquez d'obtenir des
-     pressions de contact oscillantes entre noeuds milieux et noeuds sommets. Essayez, dans la mesure du possible,
-     d'utiliser des éléments linéaires.
-"""),
-
-43 : _(u"""
- incohérence car aucun noeud n'a de ddl DRZ et la routine traite le cas 2d ou il y a au moins un ddl DRZ
-"""),
-
-44 : _(u"""
- incohérence car aucun noeud n'a de ddl de rotation DRX et dry et DRZ et la routine traite le cas 3d ou il y a au moins un noeud ayant ces 3 ddls
-"""),
-
-
-
-
-
-
-
-
-
-
 
 
 

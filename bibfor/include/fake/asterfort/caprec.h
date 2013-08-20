@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caprec(charge, mailla)
+    subroutine caprec(charge, mailla, fonree)
         character(len=8) :: charge
         character(len=8) :: mailla
+        character(len=4) :: fonree
     end subroutine caprec
 end interface

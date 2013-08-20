@@ -1,4 +1,4 @@
-subroutine calicp(chargz)
+subroutine calicp(chargz,fonree)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,9 @@ subroutine calicp(chargz)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getvtx.h"
+#include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/assert.h"
 #include "asterfort/cocali.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz12d.h"
@@ -30,10 +32,12 @@ subroutine calicp(chargz)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/pacoap.h"
 #include "asterfort/pamano.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+    character(len=4) :: fonree
     character(len=8) :: charge
     character(len=*) :: chargz
 ! -------------------------------------------------------
@@ -70,20 +74,35 @@ subroutine calicp(chargz)
     integer :: iret1, iret2, jind1, jind2, jnoma, lonfi1, lonfi2
     integer :: lonli1, lonli2, lonli3, lonli4, lonli5, lonli6, lonli7
     integer :: lonli8, narl, ndimmo, nliai, nrl
+
     real(kind=8) :: zero
+    character(len=8) :: cmp_name, nomg
+    integer :: jnom, nb_cmp
+    integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
+    integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
+
+    integer :: numnoe
+    character(len=24) :: lisnoe2
+    integer :: idlino2
+
 !-----------------------------------------------------------------------
     call jemarq()
     lisnoe = '&&CALICP.LISTNOE'
+    lisnoe2 = '&&CALICP.LISTNO2'
     listyp = '&&CALICP.LISTYP'
     charge = chargz
     typlag = '12'
     zero = 0.0d0
 !
-    do 10 i = 1, 3
+    motfac = 'LIAISON_COQUE'
+    call getfac(motfac, nliai)
+    if (nliai .eq. 0) goto 999
+!
+    do i = 1, 3
         centre(i) = zero
         theta(i) = zero
         t(i) = zero
-10  end do
+    end do
 !
 ! --- NOM DE LA LISTE DE RELATIONS :
 !     ----------------------------
@@ -103,11 +122,7 @@ subroutine calicp(chargz)
     lisfi2 = '&&CALICP.LISFI2'
     lisou1 = '&&CALICP.LISOU1'
     lisou2 = '&&CALICP.LISOU2'
-!
-    motfac = 'LIAISON_COQUE'
-!
-    call getfac(motfac, nliai)
-    if (nliai .eq. 0) goto 99999
+
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE :
 !     ----------------------------------
@@ -129,10 +144,38 @@ subroutine calicp(chargz)
                 k8bid, ier)
     if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'MODELISA2_6')
 !
+! - Information about <GRANDEUR>
+!
+    nomg = 'DEPL_R'
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k8bid)
+!
+! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
+!
+    cmp_name  = 'DX'
+    cmp_index_dx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dx.gt.0)
+    cmp_name  = 'DY'
+    cmp_index_dy = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dy.gt.0)
+    cmp_name  = 'DZ'
+    cmp_index_dz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dz.gt.0)
+    cmp_name  = 'DRX'
+    cmp_index_drx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_drx.gt.0)
+    cmp_name  = 'DRY'
+    cmp_index_dry = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dry.gt.0)
+    cmp_name  = 'DRZ'
+    cmp_index_drz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_drz.gt.0)
+!
 ! --- CREATION D'UN VECTEUR DE 2 TERMES K8 QUI SERONT LES NOMS DES
 ! --- NOEUDS A RELIER :
 !     ---------------
     call wkvect(lisnoe, 'V V K8', 2, idlino)
+    call wkvect(lisnoe2, 'V V I', 2, idlino2)
 !
 ! --- CREATION D'UN VECTEUR DE 2 TERMES K8 QUI SERONT LES NOMS DES
 ! --- TYPES LICITES D'ELEMENTS A LA JONCTION DES COQUES, CE SONT
@@ -144,7 +187,7 @@ subroutine calicp(chargz)
 !
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_COQUE :
 !     ------------------------------------------------------
-    do 20 iocc = 1, nliai
+    do iocc = 1, nliai
 !
         call jedetr(lisin1)
         call jedetr(lisin2)
@@ -295,21 +338,21 @@ subroutine calicp(chargz)
 !
         call wkvect('&&CALICP.INDIC1', 'V V I', lonfi1, jind1)
 !
-        do 30 ino = 1, lonfi1
-            do 40 in1 = ino+1, lonfi1
+        do ino = 1, lonfi1
+            do in1 = ino+1, lonfi1
                 if (zk8(idlfi1+in1-1) .eq. zk8(idlfi1+ino-1)) then
                     zi(jind1+in1-1) = 1
                 endif
-40          continue
-30      continue
+            enddo
+        enddo
 !
         indlis = 0
-        do 50 ino = 1, lonfi1
+        do ino = 1, lonfi1
             if (zi(jind1+ino-1) .eq. 0) then
                 indlis = indlis + 1
                 zk8(idlfi1+indlis-1) = zk8(idlfi1+ino-1)
             endif
-50      continue
+        enddo
 !
         lonfi1 = indlis
 !
@@ -318,21 +361,21 @@ subroutine calicp(chargz)
 !      -----------------------------------------------
         call wkvect('&&CALICP.INDIC2', 'V V I', lonfi2, jind2)
 !
-        do 60 ino = 1, lonfi2
-            do 70 in1 = ino+1, lonfi2
+        do ino = 1, lonfi2
+            do in1 = ino+1, lonfi2
                 if (zk8(idlfi2+in1-1) .eq. zk8(idlfi2+ino-1)) then
                     zi(jind2+in1-1) = 1
                 endif
-70          continue
-60      continue
+            enddo
+        enddo
 !
         indlis = 0
-        do 80 ino = 1, lonfi2
+        do ino = 1, lonfi2
             if (zi(jind2+ino-1) .eq. 0) then
                 indlis = indlis + 1
                 zk8(idlfi2+indlis-1) = zk8(idlfi2+ino-1)
             endif
-80      continue
+        enddo
 !
         lonfi2 = indlis
 !
@@ -353,17 +396,23 @@ subroutine calicp(chargz)
         call jeveuo(lisou1, 'L', idlou1)
         call jeveuo(lisou2, 'L', idlou2)
 !
-        do 90 icoupl = 1, lonfi1
+        do icoupl = 1, lonfi1
             zk8(idlino+1-1) = zk8(idlou1+icoupl-1)
             zk8(idlino+2-1) = zk8(idlou2+icoupl-1)
+            call jenonu(jexnom(noma//'.NOMNOE', zk8(idlou1+icoupl-1)), numnoe)
+            zi(idlino2+1-1) = numnoe
+            call jenonu(jexnom(noma//'.NOMNOE', zk8(idlou2+icoupl-1)), numnoe)
+            zi(idlino2+2-1) = numnoe
             if (ndimmo .eq. 2) then
-                call drz12d(lisnoe, 2, charge, typlag, lisrel)
+                call drz12d(noma, ligrmo, fonree, 2 ,lisnoe2, &
+                            cmp_index_drz, typlag, lisrel)
             else if (ndimmo.eq.3) then
-                call drz13d(lisnoe, 2, charge, typlag, lisrel)
+                call drz13d(noma, ligrmo, fonree, 2,  lisnoe2, &
+                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,cmp_index_dry, &
+                            cmp_index_drz, typlag, lisrel)
             endif
-90      continue
-!
-20  end do
+        enddo
+    end do
 !
 ! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 !     ----------------------------------------
@@ -372,6 +421,7 @@ subroutine calicp(chargz)
 !
 ! --- MENAGE
 !
+    call jedetr('&&CALICP.LISTNO2')
     call jedetr('&&CALICP.LISTNOE')
     call jedetr('&&CALICP.LISTYP')
     call jedetr('&&CALICP.RLLISTE')
@@ -390,6 +440,6 @@ subroutine calicp(chargz)
     call jedetr('&&CALICP.INDIC1')
     call jedetr('&&CALICP.INDIC2')
 !
-99999  continue
+999 continue
     call jedema()
 end subroutine

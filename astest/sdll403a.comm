@@ -39,7 +39,7 @@ STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
                               MODELISATION='3D',),),);
 # CONDITIONS AUX LIMITES
 
-CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR,
+CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR,INFO=2,
                         PESANTEUR=_F(GRAVITE=-9.81,
                                      DIRECTION=(0.0,0.0,1.0,),),
                         ROTATION= _F(VITESSE=10.0,
@@ -106,7 +106,7 @@ SIGMA=CREA_CHAMP( OPERATION='EXTR',
                   RESULTAT=RESU, NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA' )
 
-CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,
+CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,INFO=2,
                         PESANTEUR=_F(GRAVITE=-9.81,
                                      DIRECTION=(0.0,0.0,1.0,),),
                         ROTATION= _F(VITESSE=10.0,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODE_2,
-                   VALE_CALC=1.787110000,
+                   VALE_CALC=1.78712,
                    VALE_REFE=1.75,
                    CRITERE='RELATIF',
                    PRECISION=0.023,),

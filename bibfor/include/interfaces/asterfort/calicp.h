@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine calicp(chargz)
+    subroutine calicp(chargz,fonree)
         character(*) :: chargz
+        character(len=4) :: fonree
     end subroutine calicp
 end interface

@@ -11,6 +11,7 @@ subroutine calirc(chargz)
 #include "asterfort/calir3.h"
 #include "asterfort/calir4.h"
 #include "asterfort/calir5.h"
+#include "asterfort/char_read_tran.h"
 #include "asterfort/calirg.h"
 #include "asterfort/canort.h"
 #include "asterfort/detrsd.h"
@@ -86,6 +87,13 @@ subroutine calirc(chargz)
     character(len=1) :: kb
     real(kind=8) :: rbid
     integer :: iarg
+    logical :: l_tran
+    real(kind=8) :: tran(3)
+    logical :: l_cent
+    real(kind=8) :: cent(3)  
+    logical :: l_angl_naut
+    real(kind=8) :: angl_naut(3)  
+    character(len=24) :: list_node
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -101,7 +109,6 @@ subroutine calirc(chargz)
     else
         ASSERT(.false.)
     endif
-!
 !
     fonree='REEL'
     typcoe='REEL'
@@ -297,9 +304,20 @@ subroutine calirc(chargz)
 !
 !       1.4 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 !       ------------------------------------------
+
+!
+! ----- Read transformation
+!
+        call char_read_tran(motfac, iocc , ndim, l_tran, tran, &
+                            l_cent, cent, l_angl_naut, angl_naut)
+!
+! ----- Apply trasnformation
+!
         geom2='&&CALIRC.GEOM_TRANSF'
-        call calirg('LIAISON_MAIL', iocc, ndim, noma, '&&CALIRC.LINONU2',&
-                    geom2, mrota, lrota)
+        list_node = '&&CALIRC.LINONU2'
+        call calirg(noma, nbno2, list_node, tran,  cent,  &
+                    l_angl_naut, angl_naut, geom2, lrota, mrota)
+
 !       -- LROTA = .TRUE. : ON A UTILISE LE MOT CLE ANGL_NAUT
         if (typrac .eq. 'COQUE_MASSIF') ASSERT(.not.lrota)
         if (typrac .eq. 'MASSIF_COQUE') ASSERT(.not.lrota)

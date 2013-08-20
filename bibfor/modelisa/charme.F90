@@ -219,7 +219,7 @@ subroutine charme(fonree)
         call cbprca(char)
         call cbpesa(char, noma, ndim, ligrmo)
         call cbrota(char, noma, ndim, ligrmo)
-        call caprec(char, noma)
+        call caprec(char, noma, fonree)
 !
 ! --- FORCE_ELEC ----
 !
@@ -317,10 +317,10 @@ subroutine charme(fonree)
         call cagrou(fonree, char)
 !
 ! --- LIAISON_SOLIDE ---
-        call caliso(char)
+        call caliso(char, noma, ligrmo, fonree)
 !
 ! --- LIAISON_COQUE ---
-        call calicp(char)
+        call calicp(char, fonree)
 !
     endif
 !

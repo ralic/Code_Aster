@@ -79,10 +79,6 @@ On arrête tout.
 Le déterminant de la matrice à inverser est nul.
 """),
 
-20 : _(u"""
-L'inversion est possible uniquement en dimension inférieure ou égale à 3.
-"""),
-
 21 : _(u"""
 La prise en compte de LAME FLUIDE n'est pas disponible pour les schémas
 d'intégration de Runge-Kutta. 

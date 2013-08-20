@@ -78,21 +78,7 @@ cata_msg={
  Il n'y a aucun groupe de noeuds ni aucun noeud défini après le mot facteur  %(k1)s
 """),
 
-14: _(u"""
- le mot clé "TRAN" sous le mot clé facteur  %(k1)s  n'admet que  %(k2)s  valeurs
-"""),
 
-15: _(u"""
- le mot clé "ANGL_NAUT" sous le mot clé facteur  %(k1)s  n'admet que  %(k2)s  valeurs
-"""),
-
-16: _(u"""
- le mot clé "centre" sous le mot clé facteur  %(k1)s  n'admet que  %(k2)s  valeurs
-"""),
-
-17: _(u"""
- attention, la liste des noeuds est réduite a un seul terme et l'on ne fait aucun traitement
-"""),
 
 18: _(u"""
  la table "CARA_GEOM" n'existe pas dans le maillage

@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine drzrot(lisnoz, nbno, chargz, typlaz, lisrez,&
-                      iocc, ndimmo)
-        character(*) :: lisnoz
-        integer :: nbno
-        character(*) :: chargz
-        character(*) :: typlaz
-        character(*) :: lisrez
-        integer :: iocc
-        integer :: ndimmo
+    subroutine drzrot(noma, ligrmo, nbno, list_node, type_lagr,&
+                      tran, lisrel)
+        character(len=8), intent(in)  :: noma
+        character(len=19), intent(in) :: ligrmo
+        integer, intent(in) :: nbno
+        character(len=24), intent(in) :: list_node
+        character(len=2), intent(in) :: type_lagr
+        character(len=19), intent(in) :: lisrel
+        real(kind=8), intent(in) :: tran(3)
     end subroutine drzrot
 end interface

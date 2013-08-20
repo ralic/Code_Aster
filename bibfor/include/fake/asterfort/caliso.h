@@ -16,7 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caliso(chargz)
-        character(*) :: chargz
+    subroutine caliso(char, noma, ligrmo, fonree)
+        character(len=8), intent(in)  :: char
+        character(len=8), intent(in)  :: noma
+        character(len=19), intent(in) :: ligrmo
+        character(len=4), intent(in)  :: fonree
     end subroutine caliso
 end interface

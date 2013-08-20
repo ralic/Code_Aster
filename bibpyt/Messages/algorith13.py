@@ -242,21 +242,6 @@ cata_msg = {
  pour l'intervalle  %(i1)d
 """),
 
-
-
-
-
-
-
-
-91 : _(u"""
- problème de dimension de la matrice à multiplier
-"""),
-
-92 : _(u"""
- problème de dimension de la matrice résultat
-"""),
-
 99 : _(u"""
  matrice d'amortissement non créée dans le macro-élément :  %(k1)s
 """),

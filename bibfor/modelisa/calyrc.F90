@@ -9,7 +9,9 @@ subroutine calyrc(chargz)
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
-#include "asterfort/calyrg.h"
+#include "asterfort/char_read_tran.h"
+
+#include "asterfort/calirg.h"
 #include "asterfort/canort.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -83,6 +85,13 @@ subroutine calyrc(chargz)
     character(len=24) :: geom3
     character(len=24) :: valk(2)
     integer :: iarg
+    logical :: l_tran
+    real(kind=8) :: tran(3)
+    logical :: l_cent
+    real(kind=8) :: cent(3)  
+    logical :: l_angl_naut
+    real(kind=8) :: angl_naut(3)  
+    character(len=24) :: list_node
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -262,9 +271,14 @@ subroutine calyrc(chargz)
 !
 !       1.3 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 !       ------------------------------------------
+        call char_read_tran(motfac, iocc , ndim, l_tran, tran, &
+                            l_cent, cent, l_angl_naut, angl_naut)
+
         geom3 = '&&CALYRC.GEOM_TRANSF'
-        call calyrg(iocc, ndim, noma, '&&CALYRC.LINONU', geom3,&
-                    mrota, lrota)
+        list_node = '&&CALYRC.LINONU'
+        call calirg(noma, nbno3, list_node, tran,  cent, &
+                    l_angl_naut, angl_naut, geom3, lrota, mrota)
+
 !
 !       2. CALCUL DE CORRES :
 !       -------------------

@@ -82,6 +82,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 ! ----- Nothing else components
     elseif (keywordfact.eq.'DDL_POUTRE') then
         n_keyexcl = n_keyexcl + 4
+    elseif (keywordfact.eq.'LIAISON_SOLIDE') then
+        n_keyexcl = n_keyexcl + 3
     else
         ASSERT(.false.)
     endif
@@ -135,6 +137,13 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
         zk16(j_kexcl-1+n_keyexcl) = 'MAILLE_REPE'
         n_keyexcl = n_keyexcl + 1
         zk16(j_kexcl-1+n_keyexcl) = 'GROUP_MA_REPE'
+    elseif (keywordfact.eq.'LIAISON_SOLIDE') then
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'TRAN'
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'DIST_MIN'
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'NUME_LAGR'
     else
         ASSERT(.false.)
     endif

@@ -19,16 +19,16 @@ interface
     subroutine pmppr(amat, na1, na2, ka, bmat,&
                      nb1, nb2, kb, cmat, nc1,&
                      nc2)
-        integer :: nc2
-        integer :: nc1
-        integer :: nb2
-        integer :: nb1
-        integer :: na2
-        integer :: na1
-        real(kind=8) :: amat(na1, na2)
-        integer :: ka
-        real(kind=8) :: bmat(nb1, nb2)
-        integer :: kb
-        real(kind=8) :: cmat(nc1, nc2)
+        integer, intent(in) :: ka
+        integer, intent(in) :: kb
+        integer, intent(in) :: na1
+        integer, intent(in) :: na2
+        integer, intent(in) :: nb1
+        integer, intent(in) :: nb2
+        integer, intent(in) :: nc1
+        integer, intent(in) :: nc2
+        real(kind=8), intent(in) :: amat(na1, na2)
+        real(kind=8), intent(in) :: bmat(nb1, nb2)
+        real(kind=8), intent(out) :: cmat(nc1, nc2)
     end subroutine pmppr
 end interface

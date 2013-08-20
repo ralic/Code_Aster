@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine drz02d(lisnoz, lonlis, chargz, typlaz, lisrez,&
-                      dmin)
-        character(*) :: lisnoz
-        integer :: lonlis
-        character(*) :: chargz
-        character(*) :: typlaz
-        character(*) :: lisrez
-        real(kind=8) :: dmin
+    subroutine drz02d(noma, type_vale, dist_mini, nb_node, list_node,&
+                      type_lagr, lisrel)
+        character(len=8), intent(in)  :: noma
+        character(len=4), intent(in) :: type_vale
+        real(kind=8), intent(in) :: dist_mini
+        integer, intent(in) :: nb_node
+        character(len=24), intent(in) :: list_node
+        character(len=2), intent(in) :: type_lagr
+        character(len=19), intent(in) :: lisrel
     end subroutine drz02d
 end interface

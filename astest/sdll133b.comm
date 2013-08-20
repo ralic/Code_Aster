@@ -164,7 +164,7 @@ LIAIS0=AFFE_CHAR_MECA(MODELE=MODELD,
                                        COEF_MAIT2=(1.),
                                        ),
                                        ),
-                     INFO=1);
+                     INFO=2);
 
 # Projection du deplacement statique sur le maillage duplique
 EVOLNOLI=PROJ_CHAMP(METHODE='COLLOCATION',
@@ -245,7 +245,7 @@ LIAISD=AFFE_CHAR_MECA(MODELE=MODELD,
                                        COEF_MAIT2=(cos(n*22.5*pi/180)),
                                        ),
                                        ),
-                     INFO=1);
+                     INFO=2);
 
 #************************************
 # PROCEDURE D'ASSEMBLAGE DES MATRICES

@@ -1,5 +1,6 @@
-subroutine calirg(motfac, iocc, ndim, noma, lnuno2,&
-                  geom2, mrota, lrota)
+subroutine calirg(noma, nbno, list_node, tran,  cent, &
+                  l_angl_naut, angl_naut, geom2, l_rota, matr_rota)
+!
     implicit none
 !
 #include "jeveux.h"
@@ -15,13 +16,7 @@ subroutine calirg(motfac, iocc, ndim, noma, lnuno2,&
 #include "asterfort/parotr.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, ndim
-    real(kind=8) :: mrota(3, 3)
-    logical :: lrota
-    character(len=8) :: noma
-    character(len=*) :: lnuno2, geom2, motfac
 !
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,123 +34,93 @@ subroutine calirg(motfac, iocc, ndim, noma, lnuno2,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     BUT : TRAITEMENT DES MOTS CLES LIAISON_MAIL (OU LIAISON_SOLIDE) :
-!             TRAN/CENTRE/ANGL_NAUT
+    character(len=8), intent(in) :: noma
+    integer, intent(in) :: nbno
+    character(len=24), intent(in) :: list_node
+    logical, intent(in) :: l_angl_naut
+    real(kind=8), intent(in) :: angl_naut(3)
+    real(kind=8), intent(in) :: cent(3)
+    real(kind=8), intent(in) :: tran(3)
+    character(len=*) :: geom2
+    logical, intent(out) :: l_rota
+    real(kind=8), intent(out) :: matr_rota(3, 3)
 !
-!     IN : MOTFAC : NOM DU MOT CLE FACTEUR
-!     IN : IOCC (I) : NUMERO D'OCCURENCE DU MOT CLE FACTEUR
-!     IN : NDIM (I) : DIMENSION DE L'ESPACE (2 OU 3)
-!     IN : NOMA (K8): NOM DU MAILLAGE
-!     IN/JXIN  : LNUNO2 (K*) : NOM D'UN OBJET QUI CONTIENT LA
-!                LISTE DES NUMEROS DES NOEUDS A TRANSFORMER
-!     IN/JXOUT : GEOM2 (K24) : NOM D'UN OBJET QUI CONTIENDRA LES
-!            COORDONNEES DES NOEUDS TRANSFORMES PAR
-!            LA TRANSFORMATION GEOMETRIQUE DONNEE PAR L'UTILISATEUR
-!        ATTENTION : CET OBJET EST DIMENSIONNE POUR TOUS LES NOEUDS
-!                    DU MAILLAGE.(COMME MAILLA.COORDO.VALE)
-!     OUT : MROTA (R(3,3)) : MATRICE DE ROTATION DE LA TRANSFORMATION
-!     OUT : LROTA (L) : .TRUE.  : IL EXISTE UNE ROTATION
-!                       .FALSE. : IL N'EXISTE PAS DE ROTATION
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! AFFE_CHAR_MECA
+!
+! Apply transformation for translation/rotation
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: ntran, nangl, ncentr, nangmx, iageom, jnuno2
-    integer :: igeom2, nbno2, ino2, nuno2, nnomx, ier, k, kk
-    real(kind=8) :: tran(3), angl(3), centr(3), coor2(3), zero, un
-    character(len=24) :: valk(2)
-    character(len=1) :: kb
-    integer :: iarg
+! In  noma         : mesh
+! In  ndim         : space dimension
+! In  l_tran       : .true. if TRAN defined (translation)
+! In  tran         : vector defining translation
+! In  l_cent       : .true. if center defined (rotation)
+! In  cent         : vector defining center
+! In  l_angl_naut  : .true. if angl defined (rotation)
+! In  angl_naut    : angle defining rotation
+! In  nbno         : number of nodes to transform
+! In  list_node    : list of nodes to transform
+! In  geom2        : new coordinates of mesh after transformation
+!                    WARNING: defined on ALL mesh nodes (>= nbno)
+! Out lrota        : .true. if rotation
+! Out matr_rota    : rotation matrix
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: iageom, jlino
+    integer :: igeom2, nnomx, ier, numnoe
+    integer :: i, j, ino, idim
+    real(kind=8) :: coor2(3), zero, un
+    character(len=8) :: k8bid
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-! --- INITIALISATIONS :
-!     ---------------
-    zero = 0.0d0
-    un = 1.0d0
-    lrota = .false.
+! - Initializations
 !
-    do 10 k = 1, 3
+    zero = 0.00
+    un = 1.d0
+    l_rota = .false.
 !
-        tran(k) = zero
-        angl(k) = zero
-        centr(k) = zero
-!
-        do 20 kk = 1, 3
-            if (k .eq. kk) then
-                mrota(k,k) = un
+    do i = 1, 3
+        do j = 1, 3
+            if (i .eq. j) then
+                matr_rota(i,i) = un
             else
-                mrota(k,kk) = zero
-                mrota(kk,k) = zero
+                matr_rota(i,j) = zero
+                matr_rota(j,i) = zero
             endif
-20      continue
-10  end do
-!
-!
-! --- LECTURE DE L'ISOMETRIE DE TRANSFORMATION SI ELLE EXISTE :
-!     -------------------------------------------------------
-    call getvr8(motfac, 'TRAN', iocc, iarg, ndim,&
-                tran, ntran)
-    if (ntran .lt. 0) then
-        call codent(ndim, 'G', kb)
-        valk(1) = motfac
-        valk(2) = kb
-        call u2mesk('F', 'MODELISA3_14', 2, valk)
-    endif
-!
-    if (ndim .eq. 3) then
-        nangmx = 3
-    else
-        nangmx = 1
-    endif
-    call getvr8(motfac, 'ANGL_NAUT', iocc, iarg, nangmx,&
-                angl, nangl)
-    if (nangl .lt. 0) then
-        call codent(nangmx, 'G', kb)
-        valk(1) = motfac
-        valk(2) = kb
-        call u2mesk('F', 'MODELISA3_15', 2, valk)
-    endif
-    do 30 k = 1, 3
-        angl(k) = angl(k)*r8dgrd()
-30  end do
-!
-    call getvr8(motfac, 'CENTRE', iocc, iarg, ndim,&
-                centr, ncentr)
-    if (ncentr .lt. 0) then
-        call codent(ndim, 'G', kb)
-        valk(1) = motfac
-        valk(2) = kb
-        call u2mesk('F', 'MODELISA3_16', 2, valk)
-    endif
-!
-!
-! --- DETERMINATION DE LA MATRICE DE ROTATION DE LA TRANSFORMATION :
-!     ------------------------------------------------------------
-    if (nangl .ge. 1) then
-        call matrot(angl, mrota)
-        lrota = .true.
-    endif
-!
-!
-! --- DETERMINATION DES COORDONNEES TRANSFORMEES :
-!     ------------------------------------------
+        end do
+    end do
     call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nnomx,&
-                kb, ier)
+                k8bid, ier)
+!
+! - Rotation matrix
+!        
+    if (l_angl_naut) then
+        call matrot(angl_naut, matr_rota)
+        l_rota = .true.
+    endif
+!
+! - Translation
+!
     call wkvect(geom2, 'V V R', 3*nnomx, igeom2)
     call jeveuo(noma//'.COORDO    .VALE', 'L', iageom)
+    call jeveuo(list_node, 'L', jlino)
 !
-    call jeveuo(lnuno2, 'L', jnuno2)
-    call jelira(lnuno2, 'LONUTI', nbno2, kb)
-!
-    do 40 ino2 = 1, nbno2
-        nuno2 = zi(jnuno2+ino2-1)
-        call parotr(noma, iageom, nuno2, 0, centr,&
-                    mrota, tran, coor2)
-        do 50 k = 1, 3
-            zr(igeom2+3*(nuno2-1)+k-1) = coor2(k)
-50      continue
-40  end do
+    do ino = 1, nbno
+        numnoe = zi(jlino+ino-1)
+        call parotr(noma, iageom, numnoe, 0, cent,&
+                    matr_rota, tran, coor2)
+        do idim = 1, 3
+            zr(igeom2+3*(numnoe-1)+idim-1) = coor2(idim)
+        enddo
+    end do
 !
     call jedema()
 end subroutine
