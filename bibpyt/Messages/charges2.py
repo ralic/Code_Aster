@@ -96,6 +96,34 @@ surcharge.
 
 36: _(u"""    <%(k1)s> en  vis-à-vis de <%(k2)s>"""),
 
+37 : _(u"""
+ Le noeud de nom <%(k1)s> n'est connecté à aucune maille. Il est donc impossible de définir
+le repère local pour appliquer DDL_POUTRE.
+ Revoyez la définition de votre repère local.
+"""),
+
+38 : _(u"""
+ Le noeud de nom <%(k1)s> est connecté à plus d'une maille. Il est donc impossible de définir
+le repère local pour appliquer DDL_POUTRE.
+ Revoyez la définition de votre repère local.
+"""),
+
+39 : _(u"""
+ Le repère local que vous avez défini ne contient pas de maille attachée au noeud <%(k1)s>. 
+Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
+ Revoyez la définition de votre repère local.
+"""),
+
+40 : _(u"""
+ La maille <%(k1)s>, attaché au noeud <%(k2)s> n'est pas de type "SEG".
+Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
+"""),
+
+41 : _(u"""
+ La maille <%(k1)s>, attaché au noeud <%(k2)s> est de longueur nulle.
+Il est donc impossible de définir le repère local pour appliquer DDL_POUTRE.
+"""),
+
 45: _(u"""
  Aucun noeud affecté ne connaît le DDL de nom <%(k1)s>
 """),

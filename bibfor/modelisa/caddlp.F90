@@ -1,13 +1,15 @@
-subroutine caddlp(fonree, char)
-    implicit none
-#include "jeveux.h"
+subroutine caddlp(char, noma, ligrmo, fonree)
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/getvr8.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_beam_lcs.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -26,9 +28,7 @@ subroutine caddlp(fonree, char)
 #include "asterfort/u2mess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
-    character(len=4) :: fonree
-    character(len=8) :: char
-! ---------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,11 @@ subroutine caddlp(fonree, char)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=8), intent(in)  :: char
+    character(len=8), intent(in)  :: noma
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: fonree
+!
 !     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 !          ET REMPLIR LIGRCH, POUR LE MOT-CLE 'DDL_POUTRE'
 !
@@ -53,192 +58,145 @@ subroutine caddlp(fonree, char)
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 ! ---------------------------------------------------------------------
 !
-    integer :: nddla
-    parameter    ( nddla = 6)
-    integer :: ddlimp(nddla), nddli,  ioc,  j, k, ibid
-    integer :: ier, nbec, jnoma, nbnoeu, jprnm, ifm, niv
-    integer :: jdirec, jdimen, nbno, ialino, ino, nbma, ialima
-    integer :: inom, nbcmp, jcompt, nn1(3)
-    real(kind=8) :: valimr(nddla), pgl(3, 3), dloc(3), dglo(3), zero
-    real(kind=8) :: rln1(3), rgn1(3)
-    complex(kind=8) :: valimc(nddla)
+    integer :: n_max_keyword
+    parameter (n_max_keyword=300)
+    integer :: ddlimp(n_max_keyword)
+    real(kind=8) :: valimr(n_max_keyword)
+    complex(kind=8) :: valimc(n_max_keyword)
+    character(len=8) :: valimf(n_max_keyword)
+    character(len=16) :: keywordlist(n_max_keyword)
+
 !
-    character(len=1) :: k1bid
+    integer :: cmp_nb_glo
+    parameter (cmp_nb_glo=6)
+    integer :: cmp_acti_glo(cmp_nb_glo)
+    real(kind=8) :: cmp_valr_glo(cmp_nb_glo)
+    complex(kind=8) :: cmp_valc_glo(cmp_nb_glo)
+    character(len=8) :: cmp_valf_glo(cmp_nb_glo)
+    character(len=16) :: cmp_name_glo(cmp_nb_glo)
+!
+    integer :: nddli,  ioc,  ibid, ino
+    integer :: ier, nbec, nbnoeu, n_keyword
+    integer :: jdirec, jdimen, numnoe
+    integer :: jnom, nbcmp, jcompt, jprnm
+    real(kind=8) :: zero
+    character(len=24) :: keywordexcl
     character(len=4) :: coef_type
-    character(len=8) :: mod, noma, k8bid, nomg
-    character(len=8) :: nomn, valimf(nddla), ddl(nddla)
-    character(len=16) :: motfac, motcle(nddla), motcl1(2), tymoc1(2), motcl2(2)
-    character(len=16) :: tymoc2(2), nomcmd
-    character(len=19) :: ligrmo, lisrel, k19bid
-    character(len=24) :: nomnoe, ncncin
-    integer :: iarg
-! ----------------------------------------------------------------------
-    data motcle / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
-! ----------------------------------------------------------------------
+    integer :: n_keyexcl
+    integer :: i_keyword
+    character(len=24) :: list_node, list_elem
+    integer :: jlino
+    integer :: nbno, nbma
+    character(len=8) :: nomo, k8bid, nomg, nomnoe
+    character(len=16) :: keywordfact, keyword
+    character(len=19) :: lisrel, k19bid
+    character(len=19) :: ncncin
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-!
-    motfac = 'DDL_POUTRE      '
-    call getfac(motfac, nddli)
+    keywordfact = 'DDL_POUTRE'
+    call getfac(keywordfact, nddli)
     if (nddli .eq. 0) goto 999
-    call getres(k8bid, k8bid, nomcmd)
 !
-    call infniv(ifm, niv)
-!
-    coef_type = 'REEL'
-    if (nomcmd(11:14) .eq. 'MECA') then
-        nomg='DEPL_R'
-    else if (nomcmd(11:14).eq.'THER') then
-        nomg='TEMP_R'
-    else if (nomcmd(11:14).eq.'ACOU') then
-        nomg='PRES_C'
-    else
-        ASSERT(.false.)
-    endif
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k1bid)
+! - Initializations
 !
     lisrel = '&&CADDLP.RLLISTE'
-    motcl1(1) = 'NOEUD'
-    tymoc1(1) = 'NOEUD'
-    motcl1(2) = 'GROUP_NO'
-    tymoc1(2) = 'GROUP_NO'
-!
-    motcl2(1) = 'MAILLE'
-    tymoc2(1) = 'MAILLE'
-    motcl2(2) = 'GROUP_MA'
-    tymoc2(2) = 'GROUP_MA'
-!
     zero = 0.d0
 !
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
+! - Reverse connectivity
 !
-    call dismoi('F', 'NOM_MODELE', char(1:8), 'CHARGE', ibid,&
-                mod, ier)
-    ligrmo = mod(1:8)//'.MODELE'
+    ncncin = '&&CADDLP.CONINV'
+    call jeexin(ncncin, ier)
+    if (ier .eq. 0) call cncinv(noma, ibid, 0, 'V', ncncin)
+!
+    coef_type = 'REEL'
+    ASSERT(fonree .eq. 'REEL')
+    nomo = ligrmo(1:8)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+!
+! - Create list of excluded keywords for using in char_read_keyw
+!
+    keywordexcl = '&&CADDLP.KEYWORDEXCL'
+    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+!
+! - Information about <GRANDEUR>
+! 
+    nomg = 'DEPL_R'
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)
 !
-! --- MAILLAGE ASSOCIE AU MODELE ---
+! - Local coordinate system 
 !
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
-!
-    nomnoe = noma//'.NOMNOE'
-    call jelira(nomnoe, 'NOMMAX', nbnoeu, k1bid)
-!
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-!
-    ncncin = '&&CADDLP.CONNECINVERSE  '
-    call jeexin(ncncin, ier)
-    if (ier .eq. 0) call cncinv(noma, ibid, 0, 'V', ncncin)
-!
-! ---------------------------------------------------
-! 2   ALLOCATION DE TABLEAUX DE TRAVAIL
-! ---------------------------------------------------
-!   OBJETS INTERMEDIAIRES PERMETTANT D'APPLIQUER LA REGLE DE SURCHARGE
-!
-!        -  VECTEUR (K8) CONTENANT LES NOMS DES NOEUDS
-!        -  TABLEAU DES VALEURS DES DDLS DES NOEUDS BLOQUES
-!                         DIM NBNOEU * NBCOMP
-!        -  VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR ASSOCIE AUX
-!                         DDLS IMPOSES PAR NOEUD
-!
+    call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
     call wkvect('&&CADDLP.DIRECT', 'V V R', 3*nbnoeu, jdirec)
     call wkvect('&&CADDLP.DIMENSION', 'V V I', nbnoeu, jdimen)
-! --------------------------------------------------------------
-! 3   BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR DDL IMPOSE
-! --------------------------------------------------------------
-!
-!    if (niv .ge. 2) write(ifm,1020)
 !
     do ioc = 1, nddli
 !
-! ------ RECUPERATION DE LA LISTE DES NOEUDS :
-        call reliem(' ', noma, 'NU_NOEUD', motfac, ioc,&
-                    2, motcl1, tymoc1, '&&CADDLP.NOEUD', nbno)
-        call jeveuo('&&CADDLP.NOEUD', 'L', ialino)
-        call reliem(mod, noma, 'NU_MAILLE', motfac, ioc,&
-                    2, motcl2, tymoc2, '&&CADDLP.MAILLE', nbma)
-        if (nbma .ne. 0) then
-            call jeveuo('&&CADDLP.MAILLE', 'L', ialima)
-        else
-            ialima = 1
-        endif
+! ----- Read mesh affectation
 !
-        call wkvect('&&CADDLP.ICOMPT', 'V V I', nddla, jcompt)
-        do k = 1, nbno
-            ino = zi(ialino-1+k)
-            call jenuno(jexnum(nomnoe, ino), nomn)
+        list_node = '&&CADDLP.LIST_NODE'
+        list_elem = '&&CADDLP.LIST_ELEM'
+        call char_read_mesh(noma, keywordfact, ioc ,list_node, nbno,&
+                            list_elem, nbma)
+        call jeveuo(list_node,'L',jlino)
 !
-! --------- MATRICE DE PASSAGE AU REPERE GLOBAL ---
+! ----- Counting components
 !
-            call matloc(noma, ncncin, motfac, ioc, ino,&
-                        nbma, zi(ialima), pgl)
+        call wkvect('&&CADDLP.ICOMPT', 'V V I', 6, jcompt)
 !
-! --------- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
-!           ----------------------------------------------
-            if (fonree .eq. 'REEL') then
-                do j = 1, 3
-                    ddlimp(j) = 0
-                    ddl(j) = ' '
-                    dloc(j) = zero
-                    rln1(j) = zero
-                    call getvr8(motfac, motcle(j), ioc, iarg, 1,&
-                                dloc(j), nn1(j))
-                    if (nn1(j) .ge. 1) rln1(j) = 1.0d0
-                enddo
-                call utpvlg(1, 3, pgl, dloc, dglo)
-                call utpvlg(1, 3, pgl, rln1, rgn1)
-                do j = 1, 3
-                    if (rgn1(j) .ne. zero) then
-                        ddl(j) = motcle(j)(1:8)
-                        valimr(j) = dglo(j)
-                        ddlimp(j) = 1
-                    endif
-                enddo
+! ----- Loop on nodes
 !
-                do j = 1, 3
-                    ddlimp(j+3) = 0
-                    ddl(j+3) = ' '
-                    dloc(j) = zero
-                    rln1(j) = zero
-                    call getvr8(motfac, motcle(j+3), ioc, iarg, 1,&
-                                dloc(j), nn1(j))
-                    if (nn1(j) .ge. 1) rln1(j) = 1.0d0
-                enddo
-                call utpvlg(1, 3, pgl, dloc, dglo)
-                call utpvlg(1, 3, pgl, rln1, rgn1)
-                do j = 1, 3
-                    if (rgn1(j) .ne. zero) then
-                        ddl(j+3) = motcle(j+3)(1:8)
-                        valimr(j+3) = dglo(j)
-                        ddlimp(j+3) = 1
-                    endif
-                enddo
-            endif
-                call afddli(mod, nbcmp, zk8(inom), ino, nomn, &
-                            zi(jprnm-1+( ino-1)*nbec+1), zi(jdimen+ ino-1), zr(jdirec+3*(ino-1)),  &
-                            coef_type, nddla, motcle ,  ddlimp, fonree, valimr, valimf, valimc,  &
-                            zi(jcompt), lisrel,  .false., ibid, ibid, &
-                            k19bid, k19bid, k19bid, k19bid)
+        do ino = 1, nbno
+            numnoe = zi(jlino-1+ino)
+            call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
+!
+! --------- Read affected components and their values
+!
+            call char_read_keyw(keywordfact, ioc , fonree, n_keyexcl, keywordexcl,  &
+                                n_max_keyword, n_keyword ,keywordlist, ddlimp, valimr, &
+                                valimf, valimc)
+            ASSERT(n_keyword.le.cmp_nb_glo)
+!
+! --------- Change components with local coordinate system
+!
+            call char_beam_lcs(noma, nomo, ncncin, keywordfact, ioc, numnoe,&
+                               nomnoe, keywordlist, valimr, cmp_name_glo, &
+                               cmp_acti_glo, cmp_valr_glo)
+!
+! --------- Final linear relation
+!
+            call afddli(nomo, nbcmp, zk8(jnom), numnoe, nomnoe, &
+                        zi(jprnm-1+(numnoe-1)*nbec+1), zi(jdimen+numnoe-1),  &
+                        zr(jdirec+3*(numnoe-1)), coef_type,  cmp_nb_glo, cmp_name_glo,  &
+                        cmp_acti_glo,fonree, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,  &
+                        zi(jcompt), lisrel, .false., ibid, ibid, &
+                        k19bid, k19bid, k19bid, k19bid)
         enddo
-        do k=1,nddla
-            if (zi(jcompt-1+k) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, motcle(k))
+        do i_keyword = 1,6
+            keyword = cmp_name_glo(i_keyword)
+            if (cmp_acti_glo(i_keyword).eq.1) then
+                if (zi(jcompt-1+i_keyword) .eq. 0) call u2mesk('F', 'CHARGES2_45', 1, keyword)
+            endif
         enddo
         call jedetr('&&CADDLP.ICOMPT')
-  end do
+        call jedetr(list_node)
+        call jedetr(list_elem)
+    enddo
+!
+! - Final linear relation affectation
 !
     call aflrch(lisrel, char)
+!
     call jedetr('&&CADDLP.DIRECT')
     call jedetr('&&CADDLP.DIMENSION')
     call jedetr(ncncin)
 !
 999 continue
-!
-!    1020 format( '"DDL_POUTRE" DANS LE REPERE GLOBAL : ' )
-!    1000 format( /,'NOEUD = ',a8,', ',a8,' = ',1p,e12.5 )
-!    1010 format(                  18x,a8,' = ',1p,e12.5 )
 !
     call jedema()
 !

@@ -1,10 +1,12 @@
-subroutine matloc(noma, ncncin, motfac, ioc, ino,&
-                  nbma, listma, pgl)
-    implicit none
-#include "jeveux.h"
+subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
+                  node_name, nb_repe_elem, list_repe_elem, matr_glob_loca)
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterc/getvr8.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8prem.h"
 #include "asterfort/angvx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -14,12 +16,7 @@ subroutine matloc(noma, ncncin, motfac, ioc, ino,&
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/u2mess.h"
-    integer :: ioc, ino, nbma, listma(*)
-    real(kind=8) :: pgl(3, 3)
-    character(len=8) :: noma
-    character(len=16) :: motfac
-    character(len=24) :: ncncin
-! ---------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,88 +34,126 @@ subroutine matloc(noma, ncncin, motfac, ioc, ino,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! IN  : MOTFAC : MOT CLE FACTEUR
-! IN  : IOC    : NOMERO D'OCCURRENCE
-! IN  : INO    : NOMERO DU NOEUD TRAITE
-! OUT : PGL    : MATRICE DE PASSAGE GLOBAL VERS LOCAL
-! ---------------------------------------------------------------------
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: connex_inv
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=8), intent(in) :: node_name
+    integer, intent(in) :: node_nume
+    integer, intent(in) :: nb_repe_elem
+    integer, intent(in) :: list_repe_elem(*)
+    real(kind=8), intent(out) :: matr_glob_loca(3, 3)
 !
-    integer :: n2, n3, i, j, nbm, adrm, iatyma, numa, adrvlc, ino1, ino2, acoord
-    real(kind=8) :: vx(3), vy(3), vz(3), vecty(3), vxn, vyn, vyp, dgrd, angl(3)
+! --------------------------------------------------------------------------------------------------
+!
+! AFFE_CHAR_MECA / DDL_POUTRE
+!
+! Computation of matrix of transition from global to local coordinate system at node
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh           : meshing
+! In  connex_inv     : inverse connectivity of mesh (nodes -> elements)
+! In  keywordfact    : factor keyword to read
+! In  iocc           : factor keyword index in AFFE_CHAR_MECA
+! In  node_nume      : number of node if mesh
+! In  node_name      : name of node
+! In  nb_repe_elem   : number of elements of local coordinate system
+! In  list_elem      : list of elements of local coordinate sysem
+! Out matr_glob_loca : matrix of transition from global to local coordinate system
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nocc, i, j, jadrm, jtypma, jadrvlc, jcoord
+    integer :: nb_conn_elem, elem_nume
+    integer :: node_nume_1, node_nume_2
+    real(kind=8) :: vx(3), vy(3), vz(3), vecty(3), vxn, vyn, vyp, dgrd, angl_naut(3)
     real(kind=8) :: alpha, beta, gamma
-    character(len=8) :: k8b, typm
-    character(len=24) :: connex, typmai, coordo
+    character(len=8) :: k8bid, type_elem, elem_name, valk(2)
+    character(len=24) :: connex
     integer :: iarg
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     dgrd = r8dgrd()
 !
-    call jelira(jexnum(ncncin, ino), 'LONMAX', nbm, k8b)
-    call jeveuo(jexnum(ncncin, ino), 'L', adrm)
+! - Elements connected to node
 !
-    connex = noma//'.CONNEX         '
-    typmai = noma//'.TYPMAIL        '
-    coordo = noma//'.COORDO    .VALE'
-    call jeveuo(typmai, 'L', iatyma)
-    call jeveuo(coordo, 'L', acoord)
+    call jelira(jexnum(connex_inv, node_nume), 'LONMAX', nb_conn_elem, k8bid)
+    call jeveuo(jexnum(connex_inv, node_nume), 'L', jadrm)
 !
-! --- SI 1 MAILLE SUR LE NOEUD, OK
+! - Access to mesh
 !
-    if (nbm .eq. 1) then
-        numa = zi(adrm)
+    connex = mesh//'.CONNEX'
+    call jeveuo(mesh//'.TYPMAIL', 'L', jtypma)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoord)
 !
-! --- SI PLUSIEURS MAILLES SUR LE NOEUD, RECHERCHE DE LA MAILLE
+! - Get element connected to node
 !
+    if (nb_conn_elem .eq. 1) then
+        elem_nume = zi(jadrm)
+        call jenuno(jexnum(mesh//'.NOMNOE', elem_nume), elem_name)
     else
-        if (nbma .eq. 0) then
-            call u2mess('F', 'MODELISA5_32')
-        endif
-        if (nbma .ne. 1) then
-            call u2mess('F', 'MODELISA5_33')
-        endif
-        do 20 i = 1, nbma
-            numa = listma(i)
-            do 22 j = 1, nbm
-                if (zi(adrm+j-1) .eq. numa) goto 24
-22          continue
-20      continue
-        call u2mess('F', 'MODELISA5_34')
+        if (nb_repe_elem .eq. 0) call u2mesk('F', 'CHARGES2_37', 1, node_name)
+        if (nb_repe_elem .ne. 1) call u2mesk('F', 'CHARGES2_38', 1, node_name)
+        do i = 1, nb_repe_elem
+            elem_nume = list_repe_elem(i)
+            do j = 1, nb_conn_elem
+                if (zi(jadrm+j-1) .eq. elem_nume) goto 24
+            enddo
+        enddo
+        call u2mesk('F', 'CHARGES2_39', 1, node_name)
 24      continue
-    endif
+    endif  
 !
-    call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma+numa-1)), typm)
-    if (typm(1:3) .ne. 'SEG') then
-        call u2mess('F', 'MODELISA5_35')
-    endif
-    call jeveuo(jexnum(connex, numa), 'L', adrvlc)
-    if (ino .eq. zi(adrvlc)) then
-        ino1 = zi(adrvlc+1)
-        ino2 = zi(adrvlc)
+! - Check element type
+!
+    call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+elem_nume-1)), type_elem)
+    call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+    valk(2) = node_name
+    valk(1) = elem_name
+    if (type_elem(1:3) .ne. 'SEG') call u2mesk('F', 'CHARGES2_40',2,valk)
+!
+! - Get nodes of element connected
+!
+    call jeveuo(jexnum(connex, elem_nume), 'L', jadrvlc)
+    if (node_nume .eq. zi(jadrvlc)) then
+        node_nume_1 = zi(jadrvlc+1)
+        node_nume_2 = zi(jadrvlc)
     else
-        ino1 = zi(adrvlc)
-        ino2 = zi(adrvlc+1)
+        node_nume_1 = zi(jadrvlc)
+        node_nume_2 = zi(jadrvlc+1)
     endif
 !
-! --- SI VECT_Y
+! - Construct colinear vector to element
 !
-    call getvr8(motfac, 'VECT_Y', ioc, iarg, 3,&
-                vecty, n2)
-    if (n2 .ne. 0) then
-!        -- VECTEUR COLINEAIRE A LA MAILLE
-        vx(1) = zr(acoord+3*(ino2-1) ) - zr(acoord+3*(ino1-1) )
-        vx(2) = zr(acoord+3*(ino2-1)+1) - zr(acoord+3*(ino1-1)+1)
-        vx(3) = zr(acoord+3*(ino2-1)+2) - zr(acoord+3*(ino1-1)+2)
-        vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
-        vx(1) = vx(1) / vxn
-        vx(2) = vx(2) / vxn
-        vx(3) = vx(3) / vxn
-!        -- VECTEUR VECT_Y FOURNI
+    vx(1) = zr(jcoord+3*(node_nume_2-1) ) - zr(jcoord+3*(node_nume_1-1) )
+    vx(2) = zr(jcoord+3*(node_nume_2-1)+1) - zr(jcoord+3*(node_nume_1-1)+1)
+    vx(3) = zr(jcoord+3*(node_nume_2-1)+2) - zr(jcoord+3*(node_nume_1-1)+2)
+    vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
+    valk(2) = node_name
+    valk(1) = elem_name
+    if (vxn.le.r8prem()) call u2mesk('F', 'CHARGES2_41',2,valk)
+    vx(1) = vx(1) / vxn
+    vx(2) = vx(2) / vxn
+    vx(3) = vx(3) / vxn
+!
+! - Is VECT_Y ?
+!
+    call getvr8(keywordfact, 'VECT_Y', iocc, iarg, 3,&
+                vecty, nocc)
+    if (nocc .ne. 0) then
+!
+! ----- VECT_Y
+!
         vy(1) = vecty(1)
         vy(2) = vecty(2)
         vy(3) = vecty(3)
-!        -- PROJECTION / NORMALISATION
+!
+! ----- Projection
+!
         vyp = vx(1)*vy(1) + vx(2)*vy(2) + vx(3)*vy(3)
         vy(1) = vy(1) - vyp*vx(1)
         vy(2) = vy(2) - vyp*vx(2)
@@ -127,40 +162,44 @@ subroutine matloc(noma, ncncin, motfac, ioc, ino,&
         vy(1) = vy(1) / vyn
         vy(2) = vy(2) / vyn
         vy(3) = vy(3) / vyn
-!        -- VECTEUR TANGENT
+!
+! ----- Tangent vector
+!
         vz(1) = vx(2)*vy(3) - vy(2)*vx(3)
         vz(2) = vx(3)*vy(1) - vy(3)*vx(1)
         vz(3) = vx(1)*vy(2) - vy(1)*vx(2)
-        do 30 i = 1, 3
-            pgl(1,i) = vx(i)
-            pgl(2,i) = vy(i)
-            pgl(3,i) = vz(i)
-30      continue
-        goto 9999
+!
+! ----- Transformation matrix
+!
+        do i = 1, 3
+            matr_glob_loca(1,i) = vx(i)
+            matr_glob_loca(2,i) = vy(i)
+            matr_glob_loca(3,i) = vz(i)
+        enddo
+        goto 999
     endif
 !
 ! --- SI ANGL_VRIL
 !
-    call getvr8(motfac, 'ANGL_VRIL', ioc, iarg, 1,&
-                gamma, n3)
-    if (n3 .ne. 0) then
-!        -- VECTEUR COLINEAIRE A LA MAILLE
-        vx(1) = zr(acoord+3*(ino2-1) ) - zr(acoord+3*(ino1-1) )
-        vx(2) = zr(acoord+3*(ino2-1)+1) - zr(acoord+3*(ino1-1)+1)
-        vx(3) = zr(acoord+3*(ino2-1)+2) - zr(acoord+3*(ino1-1)+2)
-        vxn = sqrt( vx(1)**2 + vx(2)**2 + vx(3)**2 )
-        vx(1) = vx(1) / vxn
-        vx(2) = vx(2) / vxn
-        vx(3) = vx(3) / vxn
+    call getvr8(keywordfact, 'ANGL_VRIL', iocc, iarg, 1,&
+                gamma, nocc)
+    if (nocc .ne. 0) then
+!
+! ----- Get nautic angles
+!
         call angvx(vx, alpha, beta)
-        angl(1) = alpha
-        angl(2) = beta
-        angl(3) = gamma * dgrd
-        call matrot(angl, pgl)
-        goto 9999
+        angl_naut(1) = alpha
+        angl_naut(2) = beta
+        angl_naut(3) = gamma * dgrd
+!
+! ----- Transformation matrix
+!
+        call matrot(angl_naut, matr_glob_loca)
+        goto 999
     endif
 !
-9999  continue
+999 continue
+!
     call jedema()
 !
 end subroutine

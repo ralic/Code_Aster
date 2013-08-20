@@ -80,6 +80,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 ! ----- Nothing else components
     elseif (keywordfact.eq.'PRES_IMPO') then
 ! ----- Nothing else components
+    elseif (keywordfact.eq.'DDL_POUTRE') then
+        n_keyexcl = n_keyexcl + 4
     else
         ASSERT(.false.)
     endif
@@ -124,6 +126,15 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
 ! ----- Nothing else components
     elseif (keywordfact.eq.'PRES_IMPO') then
 ! ----- Nothing else components
+    elseif (keywordfact.eq.'DDL_POUTRE') then
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'ANGL_VRIL'
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'VECT_Y'
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'MAILLE_REPE'
+        n_keyexcl = n_keyexcl + 1
+        zk16(j_kexcl-1+n_keyexcl) = 'GROUP_MA_REPE'
     else
         ASSERT(.false.)
     endif

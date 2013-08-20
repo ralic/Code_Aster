@@ -76,22 +76,6 @@ cata_msg = {
    Les champs que l'on cherche à combiner doivent tous s'appuyer sur le même maillage.
 """),
 
-32 : _(u"""
- il faut fournir des mailles
-"""),
-
-33 : _(u"""
- on attend 1 et 1 seule maille
-"""),
-
-34 : _(u"""
- on n'a pas trouve la maille
-"""),
-
-35 : _(u"""
- que des mailles de type "SEG"
-"""),
-
 36 : _(u"""
  un GROUP_MA n'a pas de nom, suppression de ce groupe.
 """),

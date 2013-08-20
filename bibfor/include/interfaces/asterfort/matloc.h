@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine matloc(noma, ncncin, motfac, ioc, ino,&
-                      nbma, listma, pgl)
+    subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
+                      node_name, nb_repe_elem, list_repe_elem, matr_glob_loca)
         character(len=8) :: noma
         character(len=24) :: ncncin
         character(len=16) :: motfac

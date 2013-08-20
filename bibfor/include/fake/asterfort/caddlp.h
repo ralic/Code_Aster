@@ -16,8 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caddlp(fonree, char)
-        character(len=4) :: fonree
-        character(len=8) :: char
+    subroutine caddlp(char, noma, ligrmo, fonree)
+        character(len=8), intent(in)  :: char
+        character(len=8), intent(in)  :: noma
+        character(len=19), intent(in) :: ligrmo
+        character(len=4), intent(in)  :: fonree
     end subroutine caddlp
 end interface

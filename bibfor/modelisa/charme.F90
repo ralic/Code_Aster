@@ -235,7 +235,7 @@ subroutine charme(fonree)
 !
 ! --- DDL_POUTRE ---
 !
-        call caddlp(fonree, char)
+        call caddlp(char, noma, ligrmo, fonree)
 !
     endif
 !
