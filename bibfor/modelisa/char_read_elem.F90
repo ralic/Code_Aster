@@ -1,5 +1,5 @@
-subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
-                          list_elem, nb_elem )
+subroutine char_read_elem(mesh, keywordfact, iocc, suffix, list_elem, &
+                          nb_elem )
 !
     implicit none
 !
@@ -33,36 +33,36 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact
     integer, intent(in)  :: iocc
-    integer, intent(out) :: nb_node
-    character(len=24), intent(in) :: list_node
+    character(len=8), intent(in) :: suffix
     integer, intent(out) :: nb_elem
     character(len=24), intent(in) :: list_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! AFFE_CHAR_MECA
+! Loads affectation
 !
-! Read mesh affectation
+! Read mesh affectation - Elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh         : name of mesh
 ! In  keywordfact  : factor keyword to read
 ! In  iocc         : factor keyword index in AFFE_CHAR_MECA
-! In  list_node    : list of nodes read
-! Out nb_node      : number of nodes read
+! In  suffix       : suffix for read
 ! In  list_elem    : list of elements read
 ! Out nb_elem      : number of elements read
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: typmcl(5), moclm(5)
+    character(len=24) :: moclm(5)
+    character(len=16) :: typmcl(5)
     character(len=24) :: list_lect, list_excl
+    character(len=24) :: keyword
     integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: num_lect, num_excl
-    integer :: jlect, jexcl, jnode
-    integer :: i_lect, i_excl, i_node
+    integer :: jlect, jexcl, jelem
+    integer :: i_lect, i_excl, i_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,96 +72,56 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
 !
     list_lect = '&&LIST_LECT'
     list_excl = '&&LIST_EXCL'
-    nb_node = 0
     nb_elem = 0
     nb_lect = 0
     nb_excl = 0
 !
-! - Read nodes
-! 
-    nb_mocl = 0  
-    if (getexm(keywordfact,'TOUT') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'TOUT'
-        typmcl(nb_mocl) = 'TOUT'
-    endif
-    if (getexm(keywordfact,'GROUP_MA') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'GROUP_MA'
-        typmcl(nb_mocl) = 'GROUP_MA'
-    endif
-    if (getexm(keywordfact,'MAILLE') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'MAILLE'
-        typmcl(nb_mocl) = 'MAILLE'
-    endif
-    if (getexm(keywordfact,'GROUP_NO') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'GROUP_NO'
-        typmcl(nb_mocl) = 'GROUP_NO'
-    endif
-    if (getexm(keywordfact,'NOEUD') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'NOEUD'
-        typmcl(nb_mocl) = 'NOEUD'
-    endif
-    if (nb_mocl.ne.0) then
-        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
-                    nb_mocl, moclm, typmcl, list_lect, nb_lect)
-    endif
-!
 ! - Read elements
 !
-    nb_mocl = 0  
+    nb_mocl = 0
     if (getexm(keywordfact,'TOUT') .eq. 1) then
         nb_mocl = nb_mocl + 1
         moclm(nb_mocl)  = 'TOUT'
         typmcl(nb_mocl) = 'TOUT'
     endif
-    if (getexm(keywordfact,'GROUP_MA') .eq. 1) then
+    keyword = 'GROUP_MA'//suffix
+    if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'GROUP_MA'
+        moclm(nb_mocl)  = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
     endif
-    if (getexm(keywordfact,'MAILLE') .eq. 1) then
+    keyword = 'MAILLE'//suffix
+    if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'MAILLE'
+        moclm(nb_mocl)  = keyword
         typmcl(nb_mocl) = 'MAILLE'
     endif
     if (nb_mocl.ne.0) then
         call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc ,&
-                    nb_mocl, moclm, typmcl, list_elem, nb_elem)
+                    nb_mocl, moclm, typmcl, list_lect, nb_lect)
     endif
 !
-! - Read nodes exludes
-! 
-    nb_mocl = 0  
-    if (getexm(keywordfact,'SANS_GROUP_MA') .eq. 1) then
+! - Read elements excludes
+!
+    nb_mocl = 0
+    keyword = 'SANS_GROUP_MA'//suffix
+    if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'SANS_GROUP_MA'
+        moclm(nb_mocl)  = keyword
         typmcl(nb_mocl) = 'GROUP_MA'
     endif
-    if (getexm(keywordfact,'SANS_MAILLE') .eq. 1) then
+    keyword = 'SANS_MAILLE'//suffix
+    if (getexm(keywordfact,keyword) .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'SANS_MAILLE'
+        moclm(nb_mocl)  = keyword
         typmcl(nb_mocl) = 'MAILLE'
     endif
-    if (getexm(keywordfact,'SANS_GROUP_NO') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'SANS_GROUP_NO'
-        typmcl(nb_mocl) = 'GROUP_NO'
-    endif
-    if (getexm(keywordfact,'SANS_NOEUD') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl)  = 'SANS_NOEUD'
-        typmcl(nb_mocl) = 'NOEUD'
-    endif
     if (nb_mocl.ne.0) then
-        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
+        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc ,&
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
     endif
 !
-! - Exclusion of nodes in initial list
+! - Exclusion of elements in initial list
 !
     nb_elim = 0
     if (nb_lect.ne.0) call jeveuo(list_lect,'E',jlect)
@@ -178,21 +138,21 @@ subroutine char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node, &
             end do
         end do
     endif
-    nb_node = nb_lect - nb_elim
+    nb_elem = nb_lect - nb_elim
 !
-! - Final list of nodes
+! - Final list of elements
 !
-    i_node = 0
-    if ((nb_node.ne.0).and.(nb_lect.ne.0)) then
-        call wkvect(list_node,'V V I',nb_node,jnode)
+    i_elem = 0
+    if ((nb_elem.ne.0).and.(nb_lect.ne.0)) then
+        call wkvect(list_elem,'V V I',nb_elem,jelem)
         do i_lect = 1, nb_lect
             num_lect = zi(jlect-1+i_lect)
             if (num_lect.ne.0) then
-                i_node= i_node + 1
-                zi(jnode-1+i_node) = num_lect
+                i_elem= i_elem + 1
+                zi(jelem-1+i_elem) = num_lect
             endif
         end do
-        ASSERT(i_node.eq.nb_node)
+        ASSERT(i_elem.eq.nb_elem)
     endif
 !
     call jedetr(list_lect)

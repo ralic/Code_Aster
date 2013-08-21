@@ -1,4 +1,4 @@
-subroutine caliso(char, noma, ligrmo, fonree)
+subroutine caliso(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
@@ -29,7 +29,10 @@ subroutine caliso(char, noma, ligrmo, fonree)
 #include "asterfort/tbliva.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"
-
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_node.h"
+#include "asterfort/char_read_tran.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,29 +51,36 @@ subroutine caliso(char, noma, ligrmo, fonree)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    character(len=8), intent(in)  :: char
-    character(len=8), intent(in)  :: noma
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: fonree
-
+    character(len=4), intent(in)  :: vale_type
 !
-! -------------------------------------------------------
-!     TRAITEMENT DU MOT CLE LIAISON_SOLIDE DE AFFE_CHAR_MECA
-! -------------------------------------------------------
-!  CHARGE        - IN    - K8   - : NOM DE LA SD CHARGE
-!                - JXVAR -      -   LA  CHARGE EST ENRICHIE
-!                                   DES RELATIONS LINEAIRES NECESSAIRES
-! -------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Keyword = 'LIAISON_SOLIDE'
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  mesh        : name of mesh
+! In  load        : name of load
+! In  ligrmo      : list of elements nume_node model
+! In  vale_type   : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: iocc, ibid, ier
     integer :: jnom, jprnm, n1
     integer :: i_no
     integer :: nb_cmp, nbec, ndim, nliai
-    character(len=24) :: list_node, list_elem
+    character(len=24) :: list_node
     integer :: jlino, numnoe
-    integer :: nb_node, nb_elem
+    integer :: nb_node
     character(len=2) :: type_lagr
-    character(len=8) :: nomg, k8bid, poslag, nomo
+    character(len=8) :: nomg, k8bid, poslag, model
     real(kind=8) :: dmin, armin
     character(len=8) :: cmp_name
     character(len=19) :: lisrel, nomtab
@@ -88,6 +98,8 @@ subroutine caliso(char, noma, ligrmo, fonree)
     real(kind=8) :: cent(3)
     logical :: l_angl_naut
     real(kind=8) :: angl_naut(3)
+    integer :: n_suffix
+    character(len=8) :: list_suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,16 +115,16 @@ subroutine caliso(char, noma, ligrmo, fonree)
     l_rota_2d = .false.
     l_rota_3d = .false.
 !
-    if (fonree .eq. 'COMP') ASSERT(.false.)
-    nomo = ligrmo(1:8)
+    if (vale_type .eq. 'COMP') ASSERT(.false.)
+    model = ligrmo(1:8)
 !
-    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
+    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8bid, ier)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
 ! - RECUPERATION DE L'ARETE MIN : ARMIN
 !
-    call ltnotb(noma, 'CARA_GEOM', nomtab)
+    call ltnotb(mesh, 'CARA_GEOM', nomtab)
     call tbliva(nomtab, 1, 'APPLAT_Z', ibid, 0.d0,&
                 c16bid, k8bid, 'ABSO', r8gaem(), 'AR_MIN',&
                 k8bid, ibid, armin, c16bid, k8bid,&
@@ -122,7 +134,9 @@ subroutine caliso(char, noma, ligrmo, fonree)
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CALISO.KEYWORDEXCL'
-    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+    n_suffix    = 0
+    list_suffix = ' '
+    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 !
@@ -155,7 +169,7 @@ subroutine caliso(char, noma, ligrmo, fonree)
     ASSERT(cmp_index_dry.gt.0)
     ASSERT(cmp_index_drz.gt.0)
 !
-! - Loop
+! - Loop on factor keyword
 !
     do iocc = 1, nliai
 !
@@ -184,10 +198,8 @@ subroutine caliso(char, noma, ligrmo, fonree)
 ! ----- Read mesh affectation
 !
         list_node = '&&CALISO.LIST_NODE'
-        list_elem = '&&CALISO.LIST_ELEM'
-        call char_read_mesh(noma, keywordfact, iocc ,list_node, nb_node,&
-                            list_elem, nb_elem)
-        call jeveuo(list_node,'L',jlino)
+        call char_read_node(mesh, keywordfact, iocc, list_suffix, list_node, nb_node)
+        call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Only one node: nothing to do
 !
@@ -206,7 +218,7 @@ subroutine caliso(char, noma, ligrmo, fonree)
 ! ----- Apply translation
 !
         if (l_tran) then
-            call drzrot(noma, ligrmo, nb_node, list_node, type_lagr,&
+            call drzrot(mesh, ligrmo, nb_node, list_node, type_lagr,&
                         tran, lisrel)
             goto 998
         endif
@@ -230,10 +242,10 @@ subroutine caliso(char, noma, ligrmo, fonree)
 ! --------- Compute linear relations
 !
             if (l_rota_2d) then
-                call drz12d(noma, ligrmo, fonree, nb_node, list_node,&
+                call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
                             cmp_index_drz, type_lagr, lisrel)
             else
-                call drz02d(noma, fonree, dmin, nb_node, list_node,&
+                call drz02d(mesh, vale_type, dmin, nb_node, list_node,&
                             type_lagr, lisrel)
             endif
 !
@@ -258,24 +270,23 @@ subroutine caliso(char, noma, ligrmo, fonree)
 ! --------- Compute linear relations
 !
             if (l_rota_3d) then
-                call drz13d(noma, ligrmo, fonree, nb_node, list_node, &
+                call drz13d(mesh, ligrmo, vale_type, nb_node, list_node, &
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
                             cmp_index_drz, type_lagr, lisrel)
             else
-                call drz03d(noma, fonree, dmin, nb_node, list_node, &
+                call drz03d(mesh, vale_type, dmin, nb_node, list_node, &
                             type_lagr, lisrel)
             endif
         endif
 998     continue
 !
         call jedetr(list_node)
-        call jedetr(list_elem)
 !
     end do
 !
 ! - Final linear relation affectation
 !
-    call aflrch(lisrel, char)
+    call aflrch(lisrel, load)
 !
     call jedetr(keywordexcl)
 !

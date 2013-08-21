@@ -1,4 +1,4 @@
-subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
+subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
                   repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
                   type_coef, vale_type, type_lagr, epsi, lisrez)
 !
@@ -38,7 +38,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
     integer, intent(in) :: nbterm
     real(kind=8), intent(in) :: coef_real(nbterm)
     complex(kind=8), intent(in) :: coef_cplx(nbterm)
-    character(len=8), intent(in) :: ddl_name(nbterm)
+    character(len=8), intent(in) :: dof_name(nbterm)
     character(len=8), intent(in) :: node_name(nbterm)
     integer, intent(in) :: repe_type(nbterm)
     real(kind=8), intent(in) :: repe_defi(3, nbterm)
@@ -55,7 +55,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !
 ! New linear relation 
 !
-!       coef(iterm) . ddl_name(iterm) = vale
+!       coef(iterm) . dof_name(iterm) = vale
 !
 ! With:  
 !       iterm = 1,nbterm
@@ -71,7 +71,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !
 ! In  coef_real : real coefficient
 ! In  coef_cplx : complex coefficient
-! In  ddl_name  : name of dof in linear relation
+! In  dof_name  : name of dof in linear relation
 ! In  node_name : name of nodes in linear relation
 ! In  repe_type : type of coordiante system to apply linear relation
 !                   if 0 - Global coordinate system
@@ -95,7 +95,7 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
     complex(kind=8) :: vale_cplx_norm
     integer :: imult
     character(len=8) :: k8bid
-    character(len=8) :: ddl_name_tran(3), ddl_name_rota(3)
+    character(len=8) :: dof_name_tran(3), dof_name_rota(3)
     character(len=19) :: lisrel
     integer :: idbeta, idcoef, iddl, idim, idlagr, idnbre
     integer :: idnoeu, idpoin, idsurc, idterm, ifm, ipoint, iret
@@ -112,12 +112,12 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 ! - Initializations
 !
     lisrel = lisrez
-    ddl_name_tran(1) = 'DX'
-    ddl_name_tran(2) = 'DY'
-    ddl_name_tran(3) = 'DZ'
-    ddl_name_rota(1) = 'DRX'
-    ddl_name_rota(2) = 'DRY'
-    ddl_name_rota(3) = 'DRZ'
+    dof_name_tran(1) = 'DX'
+    dof_name_tran(2) = 'DY'
+    dof_name_tran(3) = 'DZ'
+    dof_name_rota(1) = 'DRX'
+    dof_name_rota(2) = 'DRY'
+    dof_name_rota(3) = 'DRZ'
     l_rota = .false.
     vale_real_norm = vale_real
     vale_cplx_norm = vale_cplx
@@ -131,20 +131,20 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
         do iterm = 1,nbterm
             if (repe_type(iterm) .eq. 0) then
                 if (type_coef .eq. 'REEL') then
-                    write (ifm,101) coef_real(iterm),node_name(iterm),ddl_name(iterm)
+                    write (ifm,101) coef_real(iterm),node_name(iterm),dof_name(iterm)
                 else if (type_coef.eq.'COMP') then
                     write (ifm,103) dble(coef_cplx(iterm)),dimag(coef_cplx(iterm)),&
-                                     node_name(iterm), ddl_name(iterm)
+                                     node_name(iterm), dof_name(iterm)
                 else
                     ASSERT(.false.)
                 endif
             else
                 if (type_coef .eq. 'REEL') then
-                    write (ifm,102) coef_real(iterm),node_name(iterm),ddl_name(iterm),&
+                    write (ifm,102) coef_real(iterm),node_name(iterm),dof_name(iterm),&
                                     (repe_defi(idirect,iterm),idirect=1,repe_type(iterm))
                 else if (type_coef.eq.'COMP') then
                     write (ifm,104) dble(coef_cplx(iterm)),dimag(coef_cplx(iterm)),&
-                                     node_name(iterm), ddl_name(iterm), &
+                                     node_name(iterm), dof_name(iterm), &
                                      (repe_defi(idirect,iterm),idirect=1,repe_type(iterm))
                 else
                     ASSERT(.false.)
@@ -307,15 +307,15 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !
                     k = k + 1
                     zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef
-                    zk8(iddl+ipoint+k-1) = ddl_name(iterm)
+                    zk8(iddl+ipoint+k-1) = dof_name(iterm)
                     zk8(idnoeu+ipoint+k-1) = node_name(iterm)
                 else
 !
 ! ----------------- Local coordinate system: rotation or translation ?
 !
-                    if (ddl_name(iterm) .eq. 'DEPL') then
+                    if (dof_name(iterm) .eq. 'DEPL') then
                         l_rota = .false.
-                    else if (ddl_name(iterm).eq.'ROTA') then
+                    else if (dof_name(iterm).eq.'ROTA') then
                         l_rota = .true.
                     else
                         ASSERT(.false.)
@@ -331,9 +331,9 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
                         zc(idcoef+ipoint+k-1) = coef_cplx(iterm)/norm_coef*repe_defi(idim,iterm)
                         zk8(idnoeu+ipoint+k-1) = node_name(iterm)
                         if (.not.l_rota) then
-                            zk8(iddl+ipoint+k-1) = ddl_name_tran(idim)
+                            zk8(iddl+ipoint+k-1) = dof_name_tran(idim)
                         else
-                            zk8(iddl+ipoint+k-1) = ddl_name_rota(idim)
+                            zk8(iddl+ipoint+k-1) = dof_name_rota(idim)
                         endif
                     enddo
                 endif
@@ -349,15 +349,15 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
 !
                     k = k + 1
                     zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef
-                    zk8(iddl+ipoint+k-1) = ddl_name(iterm)
+                    zk8(iddl+ipoint+k-1) = dof_name(iterm)
                     zk8(idnoeu+ipoint+k-1) = node_name(iterm)
                 else
 !
 ! ----------------- Local coordinate system: rotation or translation ?
 !
-                    if (ddl_name(iterm) .eq. 'DEPL') then
+                    if (dof_name(iterm) .eq. 'DEPL') then
                         l_rota = .false.
-                    else if (ddl_name(iterm).eq.'ROTA') then
+                    else if (dof_name(iterm).eq.'ROTA') then
                         l_rota = .true.
                     else
                         ASSERT(.false.)
@@ -373,9 +373,9 @@ subroutine afrela(coef_real, coef_cplx, ddl_name, node_name, repe_type,&
                         zr(idcoef+ipoint+k-1) = coef_real(iterm)/norm_coef*repe_defi(idim,iterm)
                         zk8(idnoeu+ipoint+k-1) = node_name(iterm)
                         if (.not.l_rota) then
-                            zk8(iddl+ipoint+k-1) = ddl_name_tran(idim)
+                            zk8(iddl+ipoint+k-1) = dof_name_tran(idim)
                         else
-                            zk8(iddl+ipoint+k-1) = ddl_name_rota(idim)
+                            zk8(iddl+ipoint+k-1) = dof_name_rota(idim)
                         endif
                     enddo
                 endif

@@ -98,7 +98,7 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
         l_excl = .false.
         keyword = keywordread(i_keyword)
         do i_keyexcl = 1, n_keyexcl
-            if (keyword.eq.zk16(j_kexcl-1+i_keyexcl))  then
+            if (keyword.eq.zk24(j_kexcl-1+i_keyexcl))  then
                 l_excl = .true.
             endif
         enddo

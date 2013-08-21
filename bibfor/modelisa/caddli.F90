@@ -18,7 +18,7 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 #include "asterfort/char_impo_liai.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
-#include "asterfort/char_read_mesh.h"
+#include "asterfort/char_read_node.h"
 #include "asterfort/char_xfem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
@@ -91,16 +91,13 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     character(len=19) :: lisrel
     character(len=24) :: nomnoe
     character(len=4) :: coef_type
-!    complex(kind=8):: coef_cplx_unit
-!    real(kind=8):: coef_real_unit
-!    character(len=2) :: lagr_type
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
     logical :: lxfem
-    character(len=24) :: list_node, list_elem
+    character(len=24) :: list_node
     integer :: jlino
-    integer :: nbno, nbma
+    integer :: nbno
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     logical :: l_liai, l_ocmp
@@ -115,6 +112,8 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
     real(kind=8) :: liai_vale_real
     character(len=8) :: liai_vale_fonc
     complex(kind=8):: liai_vale_cplx
+    integer :: n_suffix
+    character(len=8) :: list_suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -125,15 +124,14 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 ! - Initializations
 !
     lisrel = '&&CADDLI.RLLISTE'
-!    lagr_type = '12'
-!    coef_cplx_unit = (1.d0,0.d0)
-!    coef_real_unit = 1.d0
     nomo  = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CADDLI.KEYWORDEXCL'
-    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+    n_suffix    = 0
+    list_suffix = ' '
+    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
 ! - Type of linear coefficient
 !
@@ -186,9 +184,8 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLI.LIST_NODE'
-        list_elem = '&&CADDLI.LIST_ELEM'
-        call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
-                            list_elem, nbma)
+        call char_read_node(noma, keywordfact, i, list_suffix, list_node, &
+                            nbno )
 !
 ! ----- No nodes (empty groups)
 !
@@ -279,7 +276,6 @@ subroutine caddli(keywordfact, char, noma, ligrmo, fonree)
         call jedetr('&&CADDLI.ICOMPT')
 !
         call jedetr(list_node)
-        call jedetr(list_elem)
 !
     end do
 !

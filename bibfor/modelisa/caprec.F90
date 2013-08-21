@@ -77,10 +77,10 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-! In mesh      : name of mesh
-! In load      : name of load
-! In  ligrmo        : list of elements in model
-! In vale_type : affected value type (real, complex or function)
+! In  mesh      : name of mesh
+! In  load      : name of load
+! In  ligrmo    : list of elements in model
+! In  vale_type : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !

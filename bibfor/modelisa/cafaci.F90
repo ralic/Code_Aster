@@ -1,4 +1,4 @@
-subroutine cafaci(char, noma, ligrmo, fonree)
+subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
@@ -26,12 +26,9 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 #include "asterfort/char_excl_keyw.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
-#include "asterfort/char_read_mesh.h"
+#include "asterfort/char_read_node.h"
+#include "asterfort/char_read_elem.h"
 #include "asterfort/char_xfem.h"
-!
-    character(len=4), intent(in)  :: fonree
-    character(len=8), intent(in)  :: char, noma
-    character(len=19), intent(in) :: ligrmo
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,40 +47,54 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     BUT: CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
-!          ET REMPLIR LIGRCH POUR FACE_IMPO
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: vale_type
 !
-! ARGUMENTS D'ENTREE:
-!      FONREE  : TYPE DE LA VALEUR IMPOSEE :
-!                REEL OU FONC OU COMP
-!      CHAR  : NOM UTILISATEUR DU RESULTAT DE CHARGE
+! --------------------------------------------------------------------------------------------------
 !
+! Loads affectation
+!
+! Keyword = 'FACE_IMPO'
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  mesh      : name of mesh
+! In  load      : name of load
+! In  ligrmo    : list of elements nume_node model
+! In  vale_type : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: n_max_keyword
     parameter (n_max_keyword=300)
-    integer :: ddlimp(n_max_keyword)
-    real(kind=8) :: valimr(n_max_keyword)
-    complex(kind=8) :: valimc(n_max_keyword)
-    character(len=8) :: valimf(n_max_keyword)
+    integer :: nbterm(n_max_keyword)
+    real(kind=8) :: vale_real(n_max_keyword)
+    complex(kind=8) :: vale_cplx(n_max_keyword)
+    character(len=8) :: vale_func(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
     integer :: i
     integer :: nbnoeu,  jdirec, nbno
-    integer :: idim, in, jnorm, jtang, nfaci
+    integer :: idim, nume_node, jnorm, jtang, nfaci
     integer :: ibid,  ier, ndim, jcompt
     integer :: ino, jprnm, nbec
     integer :: nbma, nbcmp, inom
-    real(kind=8) :: coef, direct(3)
-    complex(kind=8) :: coefc
+    real(kind=8) :: repe_defi(3)
+    integer :: repe_type
+    real(kind=8) :: coef_real_unit
+    complex(kind=8) :: coef_cplx_unit
     integer :: i_keyword, n_keyword
     character(len=24) :: list_node, list_elem
     integer :: jlino, jlima
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
-    character(len=8) :: nomo, nomg
-    character(len=8) :: nomnoe, ddl, k8bid
+    character(len=8) :: model, nomg
+    character(len=8) :: name_node, dof_name, k8bid
     character(len=16) :: keywordfact, keyword
-    character(len=19) :: lisrel
+    character(len=19) :: list_rela
     character(len=19) :: connex_inv
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
     integer :: jnoxfl, jnoxfv
@@ -96,6 +107,8 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     character(len=16) :: val_t_dnor, val_t_dtan
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
+    integer :: n_suffix
+    character(len=8) :: list_suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,20 +119,30 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
 ! - Initializations
 !
-    lisrel = '&&CAFACI.RLLISTE'
+    list_rela = '&&CAFACI.RLLISTE'
     lagr_type = '12'
-    coefc = (1.0d0,0.0d0)
-    coef  = 1.0d0
-    ddl   = 'DEPL'
+    coef_cplx_unit = (1.d0,0.d0)
+    coef_real_unit = 1.d0
+    dof_name  = 'DEPL'
+!
+! - Model informations
+!
+    model = ligrmo(1:8)
+    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
+                k8bid, ier)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+!
+! - Type of coefficients
 !
     coef_type = 'REEL'
-    if (fonree .eq. 'COMP') ASSERT(.false.)
-    nomo = ligrmo(1:8)
+    if (vale_type .eq. 'COMP') ASSERT(.false.)
 !
-! - Create list of excluded keywords for using in char_read_keyw
+! - Create list of excluded keywords for using nume_node char_read_keyw
 !
     keywordexcl = '&&CAFACI.KEYWORDEXCL'
-    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+    n_suffix    = 0
+    list_suffix = ' '
+    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 ! 
@@ -129,24 +152,22 @@ subroutine cafaci(char, noma, ligrmo, fonree)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-!
-    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
-                k8bid, ier)
 !
 ! - Local coordinate system (dummy)
 !
-    call jelira(noma//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
+    call jelira(mesh//'.NOMNOE', 'NOMMAX', nbnoeu, k8bid)
     call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields
 ! 
-    call char_xfem(noma, nomo, lxfem, connex_inv, ch_xfem_stat, &
-                    ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
+    call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat, &
+                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
     endif
+!
+! - Loop on factor keyword
 !
     do i = 1, nfaci
 !
@@ -154,23 +175,23 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
         list_node = '&&CAFACI.LIST_NODE'
         list_elem = '&&CAFACI.LIST_ELEM'
-        call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
-                            list_elem, nbma)
+        call char_read_node(mesh, keywordfact, i, list_suffix, list_node, nbno)
+        call char_read_elem(mesh, keywordfact, i, list_suffix, list_elem, nbma)
         call jeveuo(list_node,'L',jlino)
         call jeveuo(list_elem,'L',jlima)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
-                            n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
-                            valimf, valimc)
+        call char_read_keyw(keywordfact, i , vale_type, n_keyexcl, keywordexcl,  &
+                            n_max_keyword, n_keyword  ,keywordlist, nbterm, vale_real, &
+                            vale_func, vale_cplx)
 !
 ! ----- Detection of DNOR, DTAN and others
 !
-        call char_read_val(keywordfact, i, 'DNOR', fonree, val_nb_dnor, &
+        call char_read_val(keywordfact, i, 'DNOR', vale_type, val_nb_dnor, &
                            val_r_dnor, val_f_dnor, val_c_dnor, val_t_dnor)
         l_dnor = val_nb_dnor.gt.0
-        call char_read_val(keywordfact, i, 'DTAN', fonree, val_nb_dtan, &
+        call char_read_val(keywordfact, i, 'DTAN', vale_type, val_nb_dtan, &
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
@@ -178,8 +199,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 ! ----- Some verifications
 !  
         if (ndim .eq. 3 .and. l_dtan) call u2mess('F', 'CHARGES2_63')
-
-        if (fonree .eq. 'FONC') then
+        if (vale_type .eq. 'FONC') then
             if (l_dnor .or. l_dtan) then
                 if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
             endif
@@ -188,12 +208,12 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 ! ----- Normals and/or tangents
 !
         if (l_dnor) then
-            call canort(noma, nbma, zi(jlima), ndim,&
+            call canort(mesh, nbma, zi(jlima), ndim,&
                         nbno, zi(jlino), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
         endif
         if (l_dtan) then
-            call canort(noma, nbma, zi(jlima), ndim,&
+            call canort(mesh, nbma, zi(jlima), ndim,&
                         nbno, zi(jlino), 2)
             call jeveuo('&&CANORT.TANGENT', 'L', jtang)
         endif
@@ -202,25 +222,26 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
         if (l_dnor) then
             do ino = 1, nbno
-                in = zi(jlino+ino-1)
-                call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
+                nume_node = zi(jlino+ino-1)
+                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
-                    direct(idim) = zr(jnorm-1+ndim*(ino-1)+idim)
+                    repe_defi(idim) = zr(jnorm-1+ndim*(ino-1)+idim)
                 end do
 !
                 if (lxfem) then
-                    if (zl(jnoxfl-1+2*in)) then
-                        call xddlim(nomo, ddl, nomnoe, in, val_r_dnor,&
-                                    val_c_dnor, val_f_dnor, fonree, ibid, lisrel,&
-                                    ndim, direct, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                    if (zl(jnoxfl-1+2*nume_node)) then
+                        call xddlim(model, dof_name, name_node, nume_node, val_r_dnor,&
+                                    val_c_dnor, val_f_dnor, vale_type, ibid, list_rela,&
+                                    ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv)
                         goto 105
                     endif
                 endif
 !
-                call afrela(coef, coefc, ddl, nomnoe, ndim,&
-                            direct, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
-                            coef_type, fonree, lagr_type, 0.d0, lisrel)
+                repe_type = ndim
+                call afrela(coef_real_unit, coef_cplx_unit, dof_name, name_node, repe_type,&
+                            repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
+                            coef_type, vale_type, lagr_type, 0.d0, list_rela)
 !
 105             continue
             enddo
@@ -230,25 +251,26 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
         if (l_dtan) then
             do ino = 1, nbno
-                in = zi(jlino+ino-1)
-                call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
+                nume_node = zi(jlino+ino-1)
+                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
-                    direct(idim) = zr(jtang-1+ndim* (ino-1)+idim)
+                    repe_defi(idim) = zr(jtang-1+ndim* (ino-1)+idim)
                 end do
 !
                 if (lxfem) then
-                    if (zl(jnoxfl-1+2*in)) then
-                        call xddlim(nomo, ddl, nomnoe, in, val_r_dtan,&
-                                    val_c_dtan, val_f_dtan, fonree, ibid, lisrel,&
-                                    ndim, direct, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                    if (zl(jnoxfl-1+2*nume_node)) then
+                        call xddlim(model, dof_name, name_node, nume_node, val_r_dtan,&
+                                    val_c_dtan, val_f_dtan, vale_type, ibid, list_rela,&
+                                    ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv)
                         goto 115
                     endif
                 endif
 !
-                call afrela(coef, coefc, ddl, nomnoe, ndim,&
-                            direct, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
-                            coef_type, fonree, lagr_type, 0.d0, lisrel)
+                repe_type = ndim
+                call afrela(coef_real_unit, coef_cplx_unit, dof_name, name_node, ndim,&
+                            repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
+                            coef_type, vale_type, lagr_type, 0.d0, list_rela)
 
 115             continue
             enddo
@@ -265,12 +287,13 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 ! --------- Linear relation
 !
             do ino = 1, nbno
-                in = zi(jlino-1+ino)
-                call jenuno(jexnum(noma//'.NOMNOE', in), nomnoe)
-                call afddli(nomo, nbcmp, zk8(inom), in, nomnoe, &
-                            zi(jprnm-1+ (in- 1)*nbec+1), 0, zr(jdirec+3* (in-1)), coef_type,  &
-                            n_keyword, keywordlist,  ddlimp, fonree, valimr, valimf, valimc,  &
-                            zi(jcompt),lisrel, lxfem, jnoxfl, jnoxfv,  &
+                nume_node = zi(jlino-1+ino)
+                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                call afddli(model, nbcmp, zk8(inom), nume_node, name_node, &
+                            zi(jprnm-1+ (nume_node- 1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),  &
+                            coef_type, n_keyword, keywordlist, &
+                            nbterm, vale_type, vale_real, vale_func, vale_cplx,  &
+                            zi(jcompt), list_rela, lxfem, jnoxfl, jnoxfv,  &
                             ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
             enddo
 !
@@ -294,7 +317,7 @@ subroutine cafaci(char, noma, ligrmo, fonree)
 !
 ! - Final linear relation affectation
 !
-    call aflrch(lisrel, char)
+    call aflrch(list_rela, load)
 !
     call jedetr('&&CANORT.NORMALE')
     call jedetr('&&CANORT.TANGENT')

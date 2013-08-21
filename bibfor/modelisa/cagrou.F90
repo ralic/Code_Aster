@@ -8,7 +8,7 @@ subroutine cagrou(load, mesh, vale_type)
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
-#include "asterfort/char_read_mesh.h"
+#include "asterfort/char_read_node.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -67,7 +67,7 @@ subroutine cagrou(load, mesh, vale_type)
 !
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
-    character(len=8) :: k8bid
+    character(len=8) :: k8bid, list_suffix
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
     integer :: iarg, ibid
@@ -76,9 +76,9 @@ subroutine cagrou(load, mesh, vale_type)
     character(len=8) :: vale_func_zero
     complex(kind=8) :: vale_cplx_zero
     integer :: iocc, i_no, i_dof
-    character(len=24) :: list_node, list_elem
+    character(len=24) :: list_node
     integer :: jlino
-    integer :: nb_node, nb_elem
+    integer :: nb_node
     character(len=24) :: list_dof
     integer :: jlidof
     integer :: nb_dof
@@ -104,6 +104,7 @@ subroutine cagrou(load, mesh, vale_type)
     coef_real_unit(2) = -1.d0
     list_rela = '&&CAGROU.RLLISTE'
     list_dof  = '&&CAGROU.LIST_DOF'
+    list_suffix = ' '
 !
 ! - Initializations of types
 !
@@ -123,9 +124,7 @@ subroutine cagrou(load, mesh, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CAGROU.LIST_NODE'
-        list_elem = '&&CAGROU.LIST_ELEM'
-        call char_read_mesh(mesh, keywordfact, iocc ,list_node, nb_node,&
-                            list_elem, nb_elem)
+        call char_read_node(mesh, keywordfact, iocc, list_suffix, list_node, nb_node)
         if (nb_node .lt. 2) call u2mess('F', 'CHARGES2_82')
         call jeveuo(list_node, 'L', jlino)
 !
@@ -158,7 +157,6 @@ subroutine cagrou(load, mesh, vale_type)
             enddo
         enddo
 !
-        call jedetr(list_elem)
         call jedetr(list_node)
         call jedetr(list_dof)
     end do

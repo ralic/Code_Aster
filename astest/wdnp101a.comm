@@ -1008,21 +1008,21 @@ TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,
 # en supposant que ce calcul est suffisamment precis.
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.E-2,
-           VALE_CALC=1.8598315050547,
+           VALE_CALC=1.8626374211342,
            VALE_REFE=1.8628625511053,
            NOM_PARA='RMS',
            TABLE=TAB_INF1,);
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.3E-1,
-           VALE_CALC=1.2426980403032,
+           VALE_CALC=1.245975123158,
            VALE_REFE=1.107501776192,
            NOM_PARA='RMS',
            TABLE=TAB_INF2,);
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.9E-1,
-           VALE_CALC=2.1964253531735,
+           VALE_CALC=2.2008550827986,
            VALE_REFE=2.4097094098975,
            NOM_PARA='RMS',
            TABLE=TAB_INF3,);
@@ -1032,7 +1032,7 @@ SPOSCI = CALC_FONCTION(INFO=2,
 
 MAXSP = INFO_FONCTION(MAX=_F(FONCTION = SPOSCI,),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.87950033,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.88064412,
                         VALE_REFE=8.798585602334655e-01,
                         VALE_PARA=(0.02, 2.5),
                         REFERENCE='AUTRE_ASTER',
@@ -1146,7 +1146,7 @@ TAB_SIXY=CREA_TABLE(FONCTION=_F(FONCTION=ABSDSIXY),);
 
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
-           VALE_CALC=0.17251851770670,
+           VALE_CALC=0.17242139897370,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1155,7 +1155,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_DEPX, TYPE_TEST='MAX',
            
 TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            VALE_ABS='OUI',
-           VALE_CALC=0.032904093181460,
+           VALE_CALC=0.033061576536486,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1164,7 +1164,7 @@ TEST_TABLE(NOM_PARA='DX', TABLE=TAB_VITX, TYPE_TEST='MAX',
            
 TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            VALE_ABS='OUI',
-           VALE_CALC=0.93443948962189,
+           VALE_CALC=0.93443834781234,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
@@ -1173,7 +1173,7 @@ TEST_TABLE(NOM_PARA='PRE1', TABLE=TAB_PRE1, TYPE_TEST='MAX',
            
 TEST_TABLE(NOM_PARA='SIXY', TABLE=TAB_SIXY, TYPE_TEST='MAX',
            VALE_ABS='OUI',
-           VALE_CALC=0.21428938763795,
+           VALE_CALC=0.21464159096980,
            # Reference: Mod. HM adimensionnee et raffinee
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',

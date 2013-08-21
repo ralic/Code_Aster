@@ -1,4 +1,4 @@
-subroutine caliob(char, noma, ligrmo, fonree)
+subroutine caliob(load, mesh, ligrmo, vale_type)
 !
     implicit none
 !
@@ -30,11 +30,10 @@ subroutine caliob(char, noma, ligrmo, fonree)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/char_excl_keyw.h"
+#include "asterfort/char_read_node.h"
+#include "asterfort/char_read_keyw.h"
 !
-    character(len=4), intent(in)  :: fonree
-    character(len=8), intent(in)  :: char, noma
-    character(len=19), intent(in) :: ligrmo
-! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,11 +51,24 @@ subroutine caliob(char, noma, ligrmo, fonree)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
-!          ET REMPLIR LIGRCH, POUR LE MOT-CLE 'LIAISON_OBLIQUE'
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: vale_type
 !
-! IN  : FONREE : 'REEL' OU 'FONC'
-! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Keyword = 'LIAISON_OBLIQUE'
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  mesh        : name of mesh
+! In  load        : name of load
+! In  ligrmo      : list of elements nume_node model
+! In  vale_type   : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,19 +80,19 @@ subroutine caliob(char, noma, ligrmo, fonree)
     character(len=8) :: valimf(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    character(len=24) :: list_node, list_elem
+    character(len=24) :: list_node
     integer :: jlino
     integer :: ier, ino
-    integer :: nbno, nbma, ndim, nbec
-    integer :: nliai, numnoe
+    integer :: nbno, ndim, nbec
+    integer :: nliai, nume_node
     integer :: i_angle, i_keyword, i, i_direct
     real(kind=8) :: coefr, val_r, direct(3)
     character(len=8) :: ddl, coeff, val_f
     complex(kind=8) :: coefc, val_c
     character(len=2) :: typlag
     character(len=4) :: typcoe
-    character(len=8) :: k8bid, nomo, nomg
-    character(len=8) :: nomnoe
+    character(len=8) :: k8bid, model, nomg
+    character(len=8) :: name_node
     character(len=16) :: keywordfact, keyword
     integer :: n_keyword
     character(len=19) :: lisrel
@@ -91,6 +103,8 @@ subroutine caliob(char, noma, ligrmo, fonree)
     integer :: iarg
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
+    integer :: n_suffix
+    character(len=8) :: list_suffix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,37 +124,40 @@ subroutine caliob(char, noma, ligrmo, fonree)
     rdgd = r8dgrd()
 !
     typcoe = 'REEL'
-    if (fonree .eq. 'COMP') ASSERT(.false.)
-    nomo = ligrmo(1:8)
+    if (vale_type .eq. 'COMP') ASSERT(.false.)
+    model = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CALIOB.KEYWORDEXCL'
-    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+    n_suffix    = 0
+    list_suffix = ' '
+    call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
-! 
+!
     nomg = 'DEPL_R'
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)
 !
-    call dismoi('F', 'DIM_GEOM', nomo, 'MODELE', ndim,&
+    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8bid, ier)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
+!
+! - Loop on factor keyword
 !
     do i = 1, nliai
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CALIOB.LIST_NODE'
-        list_elem = '&&CALIOB.LIST_ELEM'
-        call char_read_mesh(noma, keywordfact, i ,list_node, nbno,&
-                            list_elem, nbma)
-        call jeveuo(list_node,'L',jlino)
+        call char_read_node(mesh, keywordfact, i, list_suffix, list_node, nbno)
+        call jeveuo(list_node, 'L', jlino)
+        write(6,*) 'NBNO: ',nbno
 !
 ! ----- Local orientation
-!        
+!
         angl_naut(1) = zero
         angl_naut(2) = zero
         angl_naut(3) = zero
@@ -153,7 +170,7 @@ subroutine caliob(char, noma, ligrmo, fonree)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, i , fonree, n_keyexcl, keywordexcl,  &
+        call char_read_keyw(keywordfact, i , vale_type, n_keyexcl, keywordexcl,  &
                             n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
                             valimf, valimc)
 !
@@ -195,21 +212,20 @@ subroutine caliob(char, noma, ligrmo, fonree)
 ! --------- Affect in direction
 !
             do ino = 1, nbno
-                numnoe = zi(jlino+ino-1)
-                call jenuno(jexnum(noma//'.NOMNOE', numnoe), nomnoe)
-                call afrela(coefr, coefc, ddl, nomnoe, ndim,&
+                nume_node = zi(jlino+ino-1)
+                call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
+                call afrela(coefr, coefc, ddl, name_node, ndim,&
                             direct, 1, val_r, val_c, val_f,&
-                            typcoe, fonree, typlag, 0.d0, lisrel)
+                            typcoe, vale_type, typlag, 0.d0, lisrel)
             enddo
         enddo
 !
         call jedetr(list_node)
-        call jedetr(list_elem)
     enddo
 !
 ! - Final linear relation affectation
 !
-    call aflrch(lisrel, char)
+    call aflrch(lisrel, load)
 !
     call jedetc('V', '&&CALIOB.RLLISTE', 1)
     call jedetr(keywordexcl)
