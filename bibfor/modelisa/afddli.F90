@@ -105,6 +105,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
 !
     integer :: ibid, i_cmp, cmp_index
     character(len=2) :: lagr_type
+    character(len=24) :: valkm(2)
     real(kind=8) :: coef_real_unit, rbid(3)
     complex(kind=8) :: coef_cplx_unit
 !
@@ -126,7 +127,12 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
 !
         cmp_index = indik8(gran_cmp_name, cmp_name(i_cmp)(1:8), 1, gran_cmp_nb)
         ASSERT(cmp_index.gt.0)
-        if (.not.exisdg(prnm,cmp_index)) goto 25
+        if (.not.exisdg(prnm,cmp_index)) then
+            valkm(1)=cmp_name(i_cmp)
+            valkm(2)=node_name
+            call u2mesk('A','CALCULEL3_18',2,valkm)
+            goto 25
+        endif
 !
 ! ----- Apply on component, XFEM case
 !
