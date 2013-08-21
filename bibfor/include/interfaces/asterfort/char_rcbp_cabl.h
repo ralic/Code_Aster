@@ -16,10 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine caprec(load, mesh, ligrmo, vale_type)
-        character(len=8), intent(in)  :: load
-        character(len=8), intent(in)  :: mesh
-        character(len=19), intent(in) :: ligrmo
-        character(len=4), intent(in)  :: vale_type
-    end subroutine caprec
+    subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
+                              nb_anc1, nb_anc2)
+        character(len=8), intent(in) :: cabl_prec
+        character(len=24), intent(in) :: list_cabl
+        character(len=24), intent(in) :: list_anc1
+        character(len=24), intent(in) :: list_anc2
+        integer, intent(out) :: nb_cabl
+        integer, intent(out) :: nb_anc1
+        integer, intent(out) :: nb_anc2
+    end subroutine char_rcbp_cabl
 end interface

@@ -220,7 +220,10 @@ subroutine charme(fonree)
         call cbprca(char)
         call cbpesa(char, noma, ndim, ligrmo)
         call cbrota(char, noma, ndim, ligrmo)
-        call caprec(char, noma, fonree)
+!
+! --- RELA_CINE_BP ----
+!
+        call caprec(char, noma, ligrmo, fonree)
 !
 ! --- FORCE_ELEC ----
 !

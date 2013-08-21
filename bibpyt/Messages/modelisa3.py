@@ -111,13 +111,6 @@ cata_msg={
   Mais il n'y a aucune maille à transformer.
 """),
 
-35: _(u"""
- problème pour déterminer le rang de la composante <n> de la grandeur <SIEF_R>
-"""),
-
-36: _(u"""
- le concept %(k1)s n'est pas un concept de type cabl_precont.
-"""),
 
 37: _(u"""
  erreur a l appel de la routine etenca pour extension de la carte  %(k1)s

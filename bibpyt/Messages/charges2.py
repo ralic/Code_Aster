@@ -137,6 +137,7 @@ cas d'un modèle à %(i2)d dimensions.
  Aucun noeud affecté ne connaît le DDL de nom <%(k1)s>
 """),
 
+
 46 : _(u"""
  Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP), 
  on a un problème dans le cas 3d où les noeuds sont alignés car deux noeuds sont confondus.
@@ -148,13 +149,21 @@ cas d'un modèle à %(i2)d dimensions.
  Le système résultant n'est pas inversible. Le triangle est trop distordu, revoyez votre maillage.
 """),
 
+48: _(u"""
+ Le concept CABLE_BP de nom %(k1)s ne contient pas de relations linéaires. L'option RELA_CINE est donc inutilisable.
+"""),
+
+49: _(u"""
+ Le concept CABLE_BP de nom %(k1)s ne contient pas de contraintes. L'option SIGM_BPEL est donc inutilisable.
+"""),
+
 63: _(u"""
  Vous ne pouvez pas bloquer le déplacement tangent sur des faces d'éléments 3D.
  Utiliser DDL_IMPO ou LIAISON_DDL.
 """),
 
 82: _(u"""
- Il faut au moins deux noeuds pour utiliser LIAISON_UNIF.
+ Il faut au moins deux noeuds pour LIAISON_UNIF.
 """),
 
 97 : _(u"""
@@ -162,7 +171,6 @@ cas d'un modèle à %(i2)d dimensions.
  Cette erreur peut survenir si le maillage est incorrect (par exemple des noeuds confondus) ou si
 vous affectez des coefficients nuls.
 """),
-
 
 99 : _(u"""
 Problème :

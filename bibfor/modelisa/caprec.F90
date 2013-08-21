@@ -1,36 +1,8 @@
-subroutine caprec(charge, mailla, fonree)
+subroutine caprec(load, mesh, ligrmo, vale_type)
+!
     implicit none
-! ----------------------------------------------------------------------
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! ----------------------------------------------------------------------
-!  DESCRIPTION : OPERATEUR AFFE_CHAR_MECA
-!  -----------   TRAITEMENT DU MOT-CLE FACTEUR RELA_CINE_BP
-!                APPELANT : CHARME
-!
-!  IN     : CHARGE : CHARACTER*8  SCALAIRE
-!                    NOM DU CONCEPT CHAR_MECA
-!  IN     : MAILLA : CHARACTER*8 , SCALAIRE
-!                    NOM DU CONCEPT MAILLAGE
-!
-!-------------------   DECLARATION DES VARIABLES   ---------------------
 !
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getvid.h"
 #include "asterc/getvr8.h"
@@ -39,6 +11,9 @@ subroutine caprec(charge, mailla, fonree)
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_rcbp_cabl.h"
+#include "asterfort/char_rcbp_lino.h"
+#include "asterfort/char_rcbp_sigm.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz02d.h"
@@ -71,493 +46,320 @@ subroutine caprec(charge, mailla, fonree)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 !
-! ARGUMENTS
-! ---------
-    character(len=8) :: charge, mailla
-    character(len=4) :: fonree
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! VARIABLES LOCALES
-! -----------------
-    integer :: ias, ias1, iasm, iasm1, ibid, icmp, icode, icode1, icodok, iocc
-    integer :: irann, iret, jdesc, jdesc1, jdnbre, jncmp1, jptma, jptma1, jsief
-    integer :: jvale, jvale1, jvalv1, nbec, nbmama, nbocc, nbrela, nsief, numail
-    logical :: lcart1, lrela, lsigm, lpara
-    character(len=1) :: k1b
-    character(len=2) :: typlag
-    character(len=3) :: k3b
-    character(len=8) :: cablpr, k8b, k8vide, modele, npara
-    character(len=19) :: ligrmo, lirela, sigcab, sigcha, lisnom, lisan1, lisan2
-    character(len=24) :: grnoma, ligrno, noeuma, nomanc, noman1, noman2
-    character(len=24) :: k24vid
-    integer :: idimax, ino, jgro, in, indnoe
-    integer :: jind, in1, indlis, jprnm, nanc, jadd
-    real(kind=8) :: dmin, armin
-    complex(kind=8) :: c16b
-    character(len=1) :: k1bid
-    character(len=8) :: nomnoe, nomg
-    character(len=8) :: cmp
-    character(len=8) :: cmp4, cmp5, cmp6, k8bid
-    integer :: icmp4, icmp5, icmp6, idrxyz, i, idrz, ndimmo
-    integer :: ier, inom, ierd
-    integer :: nbnom, nban1, nban2, jlsnom, jlsan1, jlsan2, inomc
-    integer :: numcab, numca0, n1
-    character(len=8) :: effnor
-    character(len=19) :: lrltmp, lisrel
-    character(len=24) :: table
-    integer :: iarg
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: vale_type
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Keyword = 'RELA_CINE_BP'
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In mesh      : name of mesh
+! In load      : name of load
+! In  ligrmo        : list of elements in model
+! In vale_type : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: keywordfact
+    integer :: nliai, ndimmo
+    real(kind=8) :: dist_mini, armin
+    complex(kind=8) :: c16bid
+    character(len=8) :: k8bid, model, answer
+    integer :: n1, iocc, iarg, iret, ibid
+    integer :: nbrela, jdnbre
+    character(len=19) :: list_rela, list_rela_tmp, list_rela_old
+    character(len=2) :: lagr_type
     character(len=8) :: cmp_name
-    integer :: nb_cmp
+    character(len=24) :: tabl_geom
+    integer :: cmp_index_n 
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
+    character(len=8) :: nomg_depl, nomg_sief
+    integer :: nb_cmp_depl, nb_cmp_sief
+    integer :: j_cmp_depl, j_cmp_sief
+    integer :: nbec_depl, nbec_sief
+    logical :: l_sigm_bpel, l_rela_cine
+    character(len=24) :: list_cabl, list_anc1, list_anc2
+    integer :: nb_cabl, nb_anc1, nb_anc2
+    integer :: jlicabl, jlianc1, jlianc2
     character(len=24) :: list_node
-    integer           :: nb_node, jlino
+    integer  :: nb_node, jlino
+    character(len=8)  :: cabl_prec
+    character(len=19) :: cabl_sigm
+    logical :: l_first, l_rota_2d, l_rota_3d
+    integer :: i_cabl, i_ancr, i_no, nume_node
+    integer :: nb_elem
+    integer :: jprnm
+    character(len=24) :: name_ancr, name_anc1, name_anc2
+    integer :: nume_cabl, nume_cabl0
 !
-    data effnor/'N       '/
-    data lrltmp/'&&CAPREC.LIRELA    '/
-!
-!-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    k8vide = ' '
-    k24vid = ' '
+    keywordfact = 'RELA_CINE_BP'
+    call getfac(keywordfact, nliai)
+    if (nliai .eq. 0) goto 999
 !
-!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-!     DECOMPTE DES OCCURRENCES DU MOT-CLE FACTEUR 'RELA_CINE_BP'
-!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+! - Initializations
 !
-    call getfac('RELA_CINE_BP', nbocc)
+    list_node = '&&CAPREC.LIST_NODE'
+    list_rela = '&&CAPREC.RLLISTE'
+    list_cabl = '&&CAPREC.LIST_CABL'
+    list_anc1 = '&&CAPREC.LIST_ANC1'
+    list_anc2 = '&&CAPREC.LIST_ANC2'
+    list_rela = '&&CAPREC.LIRELA'
+    list_rela_tmp = '&&CAPREC.LIRELA_TMP'
+    cabl_sigm = load//'.CHME.SIGIN'
+    model = ligrmo(1:8)
+    l_first = .true.
 !
-!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-!     TRAITEMENT SI AU MOINS UNE OCCURRENCE
-!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndimmo,&
+                k8bid, iret)
+    call dismoi('F','NB_MA_MAILLA',mesh,'MAILLAGE',nb_elem, &
+     &          k8bid, iret)
+    if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
-    if (nbocc .gt. 0) then
+! - Initializations of types
 !
-! ---  RECUPERATION DES INFORMATIONS UTILES - INITIALISATIONS
-        call dismoi('F', 'NOM_MODELE', charge, 'CHARGE', ibid,&
-                    modele, iret)
-        ligrmo = modele//'.MODELE    '
+    lagr_type = '12'
+    ASSERT(vale_type.eq.'REEL')
 !
-        call dismoi('F', 'NB_MA_MAILLA', mailla, 'MAILLAGE', nbmama,&
-                    k8b, iret)
+! - RECUPERATION DE L'ARETE MIN : ARMIN
 !
-!     RECUPERATION DE L'ARETE MIN : ARMIN
-        call ltnotb(mailla, 'CARA_GEOM', table)
-        call tbliva(table, 1, 'APPLAT_Z', ibid, 0.d0,&
-                    c16b, k1bid, 'ABSO', r8gaem(), 'AR_MIN',&
-                    k1bid, ibid, armin, c16b, k1bid,&
-                    ier)
-        ASSERT(armin.gt.0.d0)
+    call ltnotb(mesh, 'CARA_GEOM', tabl_geom)
+    call tbliva(tabl_geom, 1, 'APPLAT_Z', ibid, 0.d0,&
+                c16bid, k8bid, 'ABSO', r8gaem(), 'AR_MIN',&
+                k8bid, ibid, armin, c16bid, k8bid,&
+                iret)
+    ASSERT(armin.gt.0.d0)
 !
-!
-! --- NOM DE LA LISTE DE RELATIONS
-        lisrel = '&&CAPREC.RLLISTE'
-!
-! --- DIMENSION ASSOCIEE AU MODELE
-        call dismoi('F', 'DIM_GEOM', modele, 'MODELE', ndimmo,&
-                    k8b, ier)
-        if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'CHARGES2_6')
-!
-! - Information about <GRANDEUR>
+! - Information about DEPL_R  <GRANDEUR> 
 ! 
-    nomg = 'DEPL_R'
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k1bid)
+    nomg_depl = 'DEPL_R'
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'L', j_cmp_depl)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'LONMAX', nb_cmp_depl, k8bid)
+    call dismoi('F', 'NB_EC', nomg_depl, 'GRANDEUR', nbec_depl,&
+                k8bid, iret)
+    ASSERT(nbec_depl.le.10)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
     cmp_name  = 'DX'
-    cmp_index_dx = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    cmp_index_dx = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dx.gt.0)
     cmp_name  = 'DY'
-    cmp_index_dy = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    cmp_index_dy = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dy.gt.0)
     cmp_name  = 'DZ'
-    cmp_index_dz = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    cmp_index_dz = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dz.gt.0)
     cmp_name  = 'DRX'
-    cmp_index_drx = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    cmp_index_drx = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_drx.gt.0)
     cmp_name  = 'DRY'
-    cmp_index_dry = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    cmp_index_dry = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_dry.gt.0)
     cmp_name  = 'DRZ'
-    cmp_index_drz = indik8(zk8(inom), cmp_name, 1, nb_cmp)
+    cmp_index_drz = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_drz.gt.0)
 !
-! --- ACCES A L'OBJET .PRNM
+! - Information about SIEF_R  <GRANDEUR> 
+! 
+    nomg_sief = 'SIEF_R'
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'L', j_cmp_sief)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'LONMAX', nb_cmp_sief, k8bid)
+    call dismoi('F', 'NB_EC', nomg_sief, 'GRANDEUR', nbec_sief,&
+                k8bid, iret)
+    ASSERT(nbec_sief.le.10)
 !
-        call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
-                    k8bid, ierd)
-
-    ASSERT(nbec.le.10)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+! - Index in SIEF_R <GRANDEUR> for N
 !
+    cmp_name  = 'N'
+    cmp_index_n = indik8(zk8(j_cmp_sief), cmp_name, 1, nb_cmp_sief)
+    ASSERT(cmp_index_n.gt.0)
 !
-!....... DETERMINATION DU RANG DE LA COMPOSANTE <N>
-!....... DE LA GRANDEUR <SIEF_R>
+    do iocc = 1, nliai
 !
-        call jelira(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'LONMAX', nsief, k1b)
-        call jeveuo(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'L', jsief)
-        irann = 0
-        do 20 icmp = 1, nsief
-            if (zk8(jsief+icmp-1) .eq. effnor) then
-                irann = icmp
-                goto 30
+! ----- Minimum distance
+!
+        call getvr8(keywordfact, 'DIST_MIN', iocc, iarg, 0,&
+                    dist_mini, n1)
+        if (n1 .eq. 0) dist_mini = armin*1.d-3
+!
+! ----- Options
+!
+        call getvtx(keywordfact, 'SIGM_BPEL', iocc, iarg, 1,&
+                    answer, ibid)
+        l_sigm_bpel = (answer.eq.'OUI')
+        call getvtx(keywordfact, 'RELA_CINE', iocc, iarg, 1,&
+                    answer, ibid)
+        l_rela_cine = (answer.eq.'OUI')
+!
+        if (l_sigm_bpel .or. l_rela_cine) then
+!
+            call getvid(keywordfact, 'CABLE_BP', iocc, iarg, 1,&
+                        cabl_prec, ibid)
+!
+! --------- Get and combine stresses
+!
+            if (l_sigm_bpel) then
+                call char_rcbp_sigm(ligrmo, cabl_prec, cabl_sigm, l_first, nb_cmp_sief, &
+                                    nb_elem, nbec_sief, cmp_index_n)
             endif
-20      continue
-30      continue
-        if (irann .eq. 0) call u2mess('F', 'MODELISA3_35')
 !
-        ASSERT(irann.le.30)
-        icodok = 2**irann
+! --------- Linear relations
 !
-        lcart1 = .true.
-        sigcha = charge//'.CHME.SIGIN'
-        call dismoi('F', 'NB_EC', 'SIEF_R', 'GRANDEUR', nbec,&
-                    k8b, iret)
+            if (l_rela_cine) then
+                list_rela_old = cabl_prec//'.LIRELA'
+                call jeexin(list_rela_old//'.RLNR', iret)
+                if (iret.eq.0) call u2mesk('F','CHARGES2_48', 1, cabl_prec)
 !
-!        BOUCLE SUR LE NOMBRE D'OCCURRENCES DE RELA_CINE_BP
-! ---
-        do 160 iocc = 1, nbocc
-            call getvr8('RELA_CINE_BP', 'DIST_MIN', iocc, iarg, 0,&
-                        dmin, n1)
-            if (n1 .eq. 0) dmin=armin*1.d-3
+! ------------- Get old linear relations
 !
-! ---  LECTURE DES ARGUMENTS DES MOT-CLES 'SIGM_BPEL' ET
-! ---  'RELA_CINE' POUR DEFINITION DES DONNEES A RECUPERER
+                call jeveuo(list_rela_old//'.RLNR', 'L', jdnbre)
+                nbrela = zi(jdnbre)
+                call jelibe(list_rela_old//'.RLNR')
+                if (nbrela .gt. 0) then
+                    call copisd(' ', 'V', list_rela_old, list_rela_tmp)
+                    call aflrch(list_rela_tmp, load)
+                endif
 !
-            call getvtx('RELA_CINE_BP', 'SIGM_BPEL', iocc, iarg, 1,&
-                        k3b, ibid)
-            lsigm = (k3b.eq.'OUI')
-            call getvtx('RELA_CINE_BP', 'RELA_CINE', iocc, iarg, 1,&
-                        k3b, ibid)
-            lrela = (k3b.eq.'OUI')
+! ------------  Get information about cables
 !
-! ---  RECUPERATION DES DONNEES LE CAS ECHEANT
-            if (lsigm .or. lrela) then
+                call char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
+                                    nb_anc1, nb_anc2)
+                call jeveuo(list_cabl, 'L', jlicabl)
+                call jeveuo(list_anc1, 'L', jlianc1)
+                call jeveuo(list_anc2, 'L', jlianc2)
 !
-! ---  RECUPERATION DU NOM DU CONCEPT DE TYPE CABL_PRECONT
+! ------------- Set linear relations for cables
 !
-                call getvid('RELA_CINE_BP', 'CABLE_BP', iocc, iarg, 1,&
-                            cablpr, ibid)
+                nume_cabl0 = 0
+                name_ancr  = ' '
+                do i_cabl = 1, nb_cabl
+                    nume_cabl = zi(jlicabl-1+i_cabl)
+                    name_anc1 = zk24(jlianc1-1+i_cabl)
+                    name_anc2 = zk24(jlianc2-1+i_cabl)
+                    if (nume_cabl .ne. nume_cabl0) then
+                        nume_cabl0 = nume_cabl
+                        do i_ancr = 1, 2
+                            name_ancr = ' '
+                            if (i_ancr .eq. 1) name_ancr = name_anc1
+                            if (i_ancr .eq. 2) name_ancr = name_anc2
+                            if (name_ancr .ne. ' ') then
 !
-! ---  RECUPERATION D'UNE CARTE DE CONTRAINTES INITIALES LE CAS ECHEANT
+! ------------------------------Get list of nodes for ancrage
 !
-                if (lsigm) then
-                    call dismoi('F', 'NB_EC', 'SIEF_R', 'GRANDEUR', nbec,&
-                                k8b, iret)
-                    sigcab = cablpr//'.CHME.SIGIN'
-                    call jeexin(sigcab//'.DESC', iret)
-                    if (iret .eq. 0) call u2mesk('F', 'MODELISA3_36', 1, cablpr)
+                                call char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
+                                call jeveuo(list_node, 'L', jlino)
+                                if (nb_node .eq. 1) then
+                                    call u2mess('I', 'CHARGES2_17')
+                                    goto 140
+                                endif
 !
-! ---  RECOPIAGE DE LA PREMIERE CARTE
+! ----------------------------- Set LIAISON_SOLIDE for ndim =2
 !
-                    if (lcart1) then
+                                if (ndimmo .eq. 2) then
 !
-                        call copisd('CHAMP_GD', 'G', sigcab, sigcha)
-                        lcart1 = .false.
-                        call etenca(sigcha, ligrmo, iret)
-                        if (iret .ne. 0) call u2mesk('F', 'MODELISA3_37', 1, sigcha)
-                        call jeveuo(sigcha//'.DESC', 'L', jdesc1)
-                        call jeveuo(sigcha//'.VALE', 'L', jvale1)
-                        call jeveuo(sigcha//'.PTMA', 'L', jptma1)
-                        call jecreo(sigcha//'.NCMP', 'V V K8')
-                        call jeecra(sigcha//'.NCMP', 'LONMAX', nsief, ' ')
-                        call jeveuo(sigcha//'.NCMP', 'E', jncmp1)
-                        do 40 icmp = 1, nsief
-!                  ZK8(JNCMP1+ICMP-1) = '        '
-                            zk8(jncmp1+icmp-1) = k8vide
-40                      continue
-                        zk8(jncmp1) = effnor
-                        call jecreo(sigcha//'.VALV', 'V V R')
-                        call jeecra(sigcha//'.VALV', 'LONMAX', nsief, ' ')
-                        call jeveuo(sigcha//'.VALV', 'E', jvalv1)
+! --------------------------------- Is any node has rotation dof ?
 !
-! ---  RECUPERATION DES DONNEES APPORTEES PAR LES CARTES SUIVANTES
+                                    l_rota_2d = .false.
+                                    do i_no = 1, nb_node
+                                        nume_node = zi(jlino+i_no-1)
+                                        if (exisdg(zi(jprnm-i_no+(nume_node-1)*nbec_depl+1), &
+                                                   cmp_index_drz)) then
+                                            l_rota_2d = .true.
+                                            goto 110
+                                        endif
+                                    enddo
+110                                 continue
 !
-                    else
+! --------------------------------- Compute linear relations
 !
-                        call etenca(sigcab, ligrmo, iret)
-                        if (iret .ne. 0) call u2mesk('F', 'MODELISA3_37', 1, sigcab)
-                        call jeveuo(sigcab//'.DESC', 'L', jdesc)
-                        call jeveuo(sigcab//'.VALE', 'L', jvale)
-                        call jeveuo(sigcab//'.PTMA', 'L', jptma)
-                        iasm1 = zi(jdesc1+1)
-                        iasm = zi(jdesc +1)
-                        do 50 numail = 1, nbmama
-                            ias1 = zi(jptma1+numail-1)
-                            ias = zi(jptma +numail-1)
-                            icode1 = zi(jdesc1+3+2*iasm1+nbec* (ias1- 1))
-                            icode = zi(jdesc +3+2*iasm +nbec* (ias -1) )
-                            if (icode .eq. icodok) then
-                                zr(jvalv1) = zr(jvale+nsief* (ias-1))
-                                if (icode1 .eq. icodok) zr(jvalv1) = zr( jvalv1) + zr(jvale1+nsie&
-                                                                     &f* (ias1-1))
-                                call nocart(sigcha, 3, k1b, 'NUM', 1,&
-                                            k1b, numail, ' ', 1)
-! ---  NOCART PEUT AGRANDIR LA CARTE IL FAUT DONC ACTUALISER LES ADR.
-                                call jeveuo(sigcha//'.DESC', 'L', jdesc1)
-                                call jeveuo(sigcha//'.VALE', 'L', jvale1)
+                                    if (l_rota_2d) then 
+                                        call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                                                    cmp_index_drz, lagr_type, list_rela)
+                                    else
+                                        call drz02d(mesh, vale_type, dist_mini, nb_node, list_node,&
+                                                    lagr_type, list_rela)
+                                    endif
+!
+! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
+!
+                                else if (ndimmo.eq.3) then
+!
+! --------------------------------- Is any node has rotation dof ?
+!
+                                    l_rota_3d = .false.
+                                    do i_no = 1, nb_node
+                                        nume_node = zi(jlino+i_no-1)
+                                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
+                                                   cmp_index_drx).and.&
+                                            exisdg(zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
+                                                   cmp_index_dry).and.&
+                                            exisdg(zi(jprnm-1+(nume_node-1)*nbec_depl+1),&
+                                                   cmp_index_drz)) then
+                                            l_rota_3d = .true.
+                                            goto 120
+                                        endif
+                                    enddo
+120                                 continue
+!
+! --------------------------------- Compute linear relations
+!
+                                    if (l_rota_3d) then
+                                        call drz13d(mesh, ligrmo, vale_type, nb_node,  &
+                                                    list_node, cmp_index_dx, cmp_index_dy, &
+                                                    cmp_index_dz, cmp_index_drx, cmp_index_dry,&
+                                                    cmp_index_drz, lagr_type, list_rela)
+                                    else
+                                        call drz03d(mesh, vale_type, dist_mini, nb_node, list_node,&
+                                                    lagr_type, list_rela)
+                                    endif
+                                else
+                                    ASSERT(.false.)
+                                endif
+                                call jedetr(list_node)
+                                call aflrch(list_rela, load)                            
                             endif
-50                      continue
-                        call jelibe(sigcab//'.DESC')
-                        call jelibe(sigcab//'.VALE')
-                        call jelibe(sigcab//'.PTMA')
-                        call jedetc('V', sigcab, 1)
-!
+140                         continue
+                        enddo
                     endif
-!
-                endif
-!
-! ---  RECUPERATION D'UNE LISTE DE RELATIONS CINEMATIQUES
-! ---  LE CAS ECHEANT
-!
-                if (lrela) then
-                    call dismoi('F', 'NB_EC', 'DEPL_R', 'GRANDEUR', nbec,&
-                                k8b, iret)
-                    lirela = cablpr//'.LIRELA    '
-                    call jeexin(lirela//'.RLNR', iret)
-                    if (iret .eq. 0) call u2mesk('F', 'MODELISA3_36', 1, cablpr)
-                    call jeveuo(lirela//'.RLNR', 'L', jdnbre)
-                    nbrela = zi(jdnbre)
-                    call jelibe(lirela//'.RLNR')
-                    if (nbrela .gt. 0) then
-                        call copisd(' ', 'V', lirela, lrltmp)
-                        call aflrch(lrltmp, charge)
-                    endif
-!
-!
-! ---  ACQUISITION DE LA LISTE DES NOEUDS A LIER PAR UN EQUIVALENT
-! ---  A LIAISON_SOLIDE (CETTE LISTE EST NON REDONDANTE)
-!
-                    call jeveuo(cablpr//'           .LTNS', 'L', jadd)
-                    table = zk24(jadd)
-!
-                    lisnom = '&&CAPREC.NUME_CABLE'
-                    lisan1 = '&&CAPREC.NOM_ANCRA1'
-                    lisan2 = '&&CAPREC.NOM_ANCRA2'
-!
-                    call tbexip(table, 'NUME_CABLE', lpara, npara)
-                    call tbexip(table, 'NOM_ANCRAGE1', lpara, npara)
-!
-                    call tbexve(table, 'NUME_CABLE', lisnom, 'V', nbnom,&
-                                k8b)
-                    call jeveuo(lisnom, 'L', jlsnom)
-!
-                    call tbexve(table, 'NOM_ANCRAGE1', lisan1, 'V', nban1,&
-                                k8b)
-                    call jeveuo(lisan1, 'L', jlsan1)
-!
-                    call tbexve(table, 'NOM_ANCRAGE2', lisan2, 'V', nban2,&
-                                k8b)
-                    call jeveuo(lisan2, 'L', jlsan2)
-!
-                    numca0 = 0
-!
-!         NOMANC = ''
-                    nomanc = k24vid
-!
-                    do 145 inomc = 1, nbnom
-                        numcab = zi(jlsnom-1+inomc)
-                        noman1 = zk24(jlsan1-1+inomc)
-                        noman2 = zk24(jlsan2-1+inomc)
-!
-                        if (numcab .ne. numca0) then
-                            numca0 = numcab
-!
-                            do 150 nanc = 1, 2
-!               NOMANC = '        '
-                                nomanc = k24vid
-!
-                                if (nanc .eq. 1) then
-                                    nomanc = noman1
-                                endif
-!
-                                if (nanc .eq. 2) then
-                                    nomanc = noman2
-                                endif
-!
-!                IF (NOMANC.NE.'        ') THEN
-                                if (nomanc .ne. k24vid) then
-!
-                                    list_node = '&&CAPREC.LISTNOE'
-                                    typlag = '12'
-                                    ligrno = cablpr//'           '//'.LTNT'
-                                    call jeexin(ligrno, iret)
-!
-                                    grnoma = mailla//'.GROUPENO'
-                                    noeuma = mailla//'.NOMNOE'
-!
-                                    call jeveuo(jexnom(grnoma, nomanc), 'L', jgro)
-                                    call jelira(jexnom(grnoma, nomanc), 'LONUTI', idimax, k1b)
-                                    call wkvect(list_node, 'V V I', idimax, jlino)
-!
-                                    indnoe = 0
-                                    do 60 ino = 1, idimax
-                                        in = zi(jgro+ino-1)
-                                        indnoe = indnoe + 1
-                                        call jenuno(jexnum(noeuma, in), nomnoe)
-!
-                                        zi(jlino+indnoe-1) = in
-60                                  continue
-!
-! ---  ELIMINATION DES REDONDANCES EVENTUELLES DES NOEUDS DE LA LISTE
-                                    call wkvect('&&CAPREC.INDICE', 'V V I', idimax, jind)
-!
-                                    do 80 ino = 1, idimax
-                                        do 70 in1 = ino + 1, idimax
-                                            if (zi(jlino+in1-1) .eq. zi(jlino+ino-1)) then
-                                                zi(jind+in1-1) = 1
-                                            endif
-70                                      continue
-80                                  continue
-!
-                                    indlis = 0
-                                    do 90 ino = 1, idimax
-                                        if (zi(jind+ino-1) .eq. 0) then
-                                            indlis = indlis + 1
-                                            zi(jlino+indlis-1) = zi(jlino+ino-1)
-                                        endif
-90                                  continue
-!
-                                    nb_node = indlis
-!
-                                    call jeveuo(list_node, 'L', jlino)
-!
-! ---  CAS OU LA LISTE DES NOEUDS A LIER EST UN SINGLETON
-!
-                                    if (nb_node .eq. 1) then
-                                        call u2mess('I', 'CHARGES2_17')
-                                        goto 140
-                                    endif
-!
-! ---  CAS OU LA DIMENSION DU MODELE EST EGALE A 2
-!
-                                    if (ndimmo .eq. 2) then
-!
-! ---  ON REGARDE S'IL Y A UN NOEUD DE LA LISTE PORTANT LE DDL DRZ
-!
-                                        cmp = 'DRZ'
-                                        icmp = indik8(zk8(inom),cmp,1, nb_cmp)
-                                        idrz = 0
-                                        do 100 i = 1, nb_node
-! ---  NUMERO DU NOEUD COURANT DE LA LISTE
-                                            in = zi(jlino+i-1)
-!
-                                            if (exisdg(zi( jprnm-1+ (in-1)* nbec+1), icmp)) then
-                                                idrz = 1
-                                                goto 110
-                                            endif
-100                                      continue
-!
-110                                      continue
-!
-! ---  CAS OU L'ON A UN NOEUD DE LA LISTE PORTANT LE DDL DRZ
-!
-                                        if (idrz .eq. 1) then 
-                                            call drz12d(mailla, ligrmo, fonree, nb_node, list_node,&
-                                                         cmp_index_drz, typlag, lisrel)
-                                        else if (idrz.eq.0) then
-                                            call drz02d(mailla, fonree, dmin, nb_node, list_node,&
-                                                        typlag, lisrel)
-                                        endif
-!
-! ---  CAS OU LA DIMENSION DU MODELE EST EGALE A 3
-!
-                                    else if (ndimmo.eq.3) then
-!
-! ---  ON REGARDE S'IL Y A UN NOEUD DE LA LISTE PORTANT LES 3 DDLS
-! ---  DE ROTATION
-!
-                                        cmp4 = 'DRX'
-                                        cmp5 = 'DRY'
-                                        cmp6 = 'DRZ'
-                                        icmp4 = indik8(zk8(inom),cmp4,1, nb_cmp)
-                                        icmp5 = indik8(zk8(inom),cmp5,1, nb_cmp)
-                                        icmp6 = indik8(zk8(inom),cmp6,1, nb_cmp)
-                                        idrxyz = 0
-                                        do 120 i = 1, nb_node
-! ---  NUMERO DU NOEUD COURANT DE LA LISTE
-                                            in = zi(jlino+i-1)
-!
-                                            if ((&
-                                                exisdg(zi( jprnm-1+ (in-1) *nbec+1), icmp4)&
-                                                )&
-                                                .and.&
-                                                (&
-                                                exisdg(zi( jprnm-1+ (in-1)* nbec+ 1), icmp5&
-                                                )&
-                                                )&
-                                                .and.&
-                                                (&
-                                                exisdg(zi( jprnm-1+ (in- 1)*nbec+1), icmp6)&
-                                                )) then
-                                                idrxyz = 1
-                                                goto 130
-                                            endif
-120                                      continue
-!
-130                                      continue
-!
-! ---  CAS OU L'ON A UN NOEUD DE LA LISTE PORTANT LES 3 DDLS
-! ---  DE ROTATION
-                                        if (idrxyz .eq. 1) then
-                                            call drz13d(mailla, ligrmo, fonree, nb_node,  &
-                                                        list_node, cmp_index_dx, cmp_index_dy, &
-                                                        cmp_index_dz, cmp_index_drx, cmp_index_dry,&
-                                                        cmp_index_drz, typlag, lisrel)
-!
-! ---  CAS MASSIF (PAS DE COMPOSANTES DE ROTATION)
-                                        else if (idrxyz.eq.0) then
-                                            call drz03d(mailla, fonree, dmin, nb_node, list_node, &
-                                                        typlag, lisrel)
-!
-! ---  FIN DU CAS 3D MASSIF (IDRXYZ=0)
-                                        endif
-! ---  FIN DU CAS 3D
-                                    endif
-140                                  continue
-! ---  DESTRUCTION DE LA LISTE DES NOEUDS A LIER
-                                    call jedetr(list_node)
-                                    call jedetr('&&CAPREC.INDICE')
-!
-! ---  AFFECTATION DE LA LISTE_RELA A LA CHARGE :
-                                    call aflrch(lisrel, charge)
-!
-! ---  FIN IF NOMANC = NOM_ANCRAGE1 OU NOM_ANCRAGE2
-                                endif
-!
-! ---  FIN BCL SUR NUMERO ANCRAGE (NANC = 1 OU 2)
-150                          continue
-!
-!
-! ---  FIN BCL SUR NUM_CABLE DANS LA TABLE
-                        endif
-145                  continue
-!
-                    call jedetr(lisnom)
-                    call jedetr(lisan1)
-                    call jedetr(lisan2)
-!
-! ---  FIN IF : LRELA
-                endif
-!
-! ---  FIN IF : LSIGM .OR. LRELA
+                enddo
+                call jedetr(list_cabl)
+                call jedetr(list_anc1)
+                call jedetr(list_anc2)
             endif
+        endif
+    enddo
 !
-! ---  FIN BOUCLE SUR LE NOMBRE D'OCCURENCES DE RELA_CINE_BP
-160      continue
+    call jedetc('V',cabl_sigm,1)
 !
-!
-! ---  DESTRUCTION DES OBJETS DE TRAVAIL ATTACHES A LA CARTE
-! ---  DES CONTRAINTES INITIALES
-!
-        if (.not.lcart1) call jedetc('V', sigcha, 1)
-!
-    endif
-!
+999 continue
     call jedema()
-!
-! ---  FIN DE CAPREC.
 end subroutine
