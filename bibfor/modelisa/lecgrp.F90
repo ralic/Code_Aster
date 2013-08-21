@@ -45,6 +45,7 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
     real(kind=8) :: rv
+    integer nbm
     character(len=8) :: mcl(nbm)
     integer :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
@@ -54,7 +55,7 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
     character(len=*) :: cv
 !-----------------------------------------------------------------------
     integer :: i, icl, ier, ifl, ifm, ifn, ilec
-    integer :: inom, irtet, irteti, iv, nbg, nbm
+    integer :: inom, irtet, irteti, iv, nbg
     integer :: nbtav, numtcl
 !-----------------------------------------------------------------------
     irteti = 0
@@ -135,7 +136,7 @@ subroutine lecgrp(ifl, icl, iv, rv, cv,&
     if ((nbtav-nbt(numtcl)) .eq. 0) then
         valk(1) = cnl
         valk(2) = nom
-        call u2mesk('A', 'MODELISA4_80', 2, valk)
+        call u2mesk('F', 'MODELISA4_80', 2, valk)
 !         -- ON VA CREER UN GROUPE VIDE DE LONGUEUR 1 :
         dim(numtcl) = dim(numtcl) + 1
         nbt(numtcl) = nbt(numtcl) + 1

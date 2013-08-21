@@ -54,22 +54,6 @@ N4
 FINSF
 
 
-%------------------------------------------------
-%  POUR TESTER LA LECTURE DES GROUPES VIDES :
-GROUP_MA
-GMVID1
-FINSF
-
-GROUP_MA NOM=GMVID2
-FINSF
-
-GROUP_NO
-GNVID1
-FINSF
-
-GROUP_NO NOM=GNVID2
-FINSF
-%------------------------------------------------
 
 GROUP_MA
 GM1

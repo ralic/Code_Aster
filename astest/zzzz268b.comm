@@ -17,9 +17,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'ZZZZ268B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      # MODELISA4_80 : presence de GROUP_MA ou GROUP_NO vides.
-      IGNORE_ALARM=('MODELISA4_80',))
+DEBUT(CODE=_F(  NOM = 'ZZZZ268B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 MA = LIRE_MAILLAGE()
@@ -82,14 +80,9 @@ TRAC=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='HAUT',
                                     DZ=.001,),);
 
-# Pour tester la possibilite de creer des charges "vides" :
-# Les 2 charges suivantes sont "vides" car les groupes sont vides
-CHVID1=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_MA=('GMVID1','GMVID2') , DZ=.001,),);
-CHVID2=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO=('GNVID1','GNVID2') , DZ=.001,),);
-
 
 CMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                          1.0,1.0,
+                                          1.0,1.0,
                           ),PROL_DROITE='LINEAIRE',);
 
 
@@ -101,8 +94,6 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=TRAC,
                             FONC_MULT=CMULT,
                             TYPE_CHARGE='FIXE_CSTE',),
-                          _F(CHARGE=CHVID1,),
-                          _F(CHARGE=CHVID2,),
                           _F(CHARGE=CLIM,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 TOUT='OUI',),
