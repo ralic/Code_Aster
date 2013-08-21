@@ -160,8 +160,8 @@ subroutine uttcpi(nommes, ifm, typimp)
 !
 !     -- EN SEQUENTIEL, ON IMPRIME LES 3 NOMBRES MESURES
 !     ------------------------------------------------------
+    xtota=xuser+xsyst
     if (lmesur) then
-        xtota=xuser+xsyst
         write(ifm,1003) numes,nommel,xtota,xsyst,xelap
     endif
 !
