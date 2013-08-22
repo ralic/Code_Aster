@@ -21,7 +21,6 @@ AFFE_CHAR_MECA_C=OPER(nom="AFFE_CHAR_MECA_C",op=   7,sd_prod=char_meca,
             UIinfo={"groupes":("Chargements","Mécanique",)},
          regles=(AU_MOINS_UN('DDL_IMPO','FORCE_POUTRE','LIAISON_DDL', ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
-         VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          METHODE         =SIMP(statut='c',typ='TXM',fr="Stratégie de résolution pour les déplacements imposés",
                                into=('DUALISATION',),defaut='DUALISATION',),
                                # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
