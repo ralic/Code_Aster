@@ -67,9 +67,6 @@ subroutine asmpi_check(nbpro4, iret)
     call asmpi_info(mpicou, rank=rank)
     np1 = nbpro4 - 1
 !
-    call uttrst(tres)
-    timout = tres * 0.2d0
-!
 !     SUR LES PROCESSEURS AUTRES QUE #0
 !
     if (rank .ne. 0) then
@@ -85,6 +82,13 @@ subroutine asmpi_check(nbpro4, iret)
 !     SUR LE PROCESSEUR #0
 !
     else
+        call uttrst(tres)
+        timout = tres * 0.2d0
+        if (timout < 0) then
+            timout = 120.
+            call u2mesr('A', 'APPELMPI_94', 1, timout)
+        endif
+!
 !       DEMANDE LE STATUT A CHAQUE PROCESSEUR
         do 10 i = 1, np1
             isterm(i) = .false.

@@ -67,7 +67,16 @@ cata_msg={
 
 92 : _(u"""  On signale au processeur #0 qu'une exception a été levée."""),
 
-
+94 : _(u"""
+    Il n'y a plus de temps pour continuer.
+    Le calcul sera interrompu à la fin de la prochaine itération, du prochain
+    pas de temps ou de la prochaine commande, ou bien brutalement par le système.
+    
+    On accorde un délai de %(r1).0f secondes pour la prochaine communication.
+    
+    Conseil :
+        Augmentez la limite en temps du calcul.
+"""),
 
 95 : _(u"""
     Tous les processeurs sont synchronisés.
