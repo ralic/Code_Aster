@@ -23,6 +23,9 @@ subroutine op0032()
 !
 !
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+#include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
 #include "asterc/getvc8.h"
 #include "asterc/getvid.h"
@@ -32,7 +35,6 @@ subroutine op0032()
 #include "asterfort/apm012.h"
 #include "asterfort/apm345.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/cresol.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/freqom.h"
@@ -43,7 +45,6 @@ subroutine op0032()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mpicm1.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/omega2.h"
@@ -61,12 +62,14 @@ subroutine op0032()
 #include "asterfort/vpfopr.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
+    mpi_int :: mpicow, mpicou, mrang, mnbproc
+    integer :: rang, nbproc
     integer :: islvk, islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
     integer :: pivot2, mxddl, nbrss, ierd, ii, ifapm, k, nbmod, nblagr, nbcine
-    integer :: neqact, neq, niterc, npivot(2), mpicou, l, lmasse, lraide, lddl
+    integer :: neqact, neq, niterc, npivot(2), l, lmasse, lraide, lddl
     integer :: ldynam, nk, nbrow, lprod, iret, nbfreq, krefa, idet(2), jstu
-    integer :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco, rang, nbproc
-    integer :: nbtet2, nbev0, nbev1, nbev2, miterc, iarg, ibid, mpicow, k1, k2
+    integer :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco
+    integer :: nbtet2, nbev0, nbev1, nbev2, miterc, iarg, ibid, k1, k2
     integer :: jkpar, l1, l2, l3, l11, l21, frecou, izero
     real(kind=8) :: omgmin, omgmax, omin, omax, fcorig, omecor, precsh, rayonc
     real(kind=8) :: dimc1, rzero, calpar(2), calpac(3), calpaf(2), rbid, det(2)
@@ -102,10 +105,12 @@ subroutine op0032()
 !     ------------------------------------------------------------------
 !     --- RECUPERATION ET TEST DE VALIDITE DES PARAMETRES
 !     ------------------------------------------------------------------
-    mpicow=comcou(0)
-    mpicou=comcou(1)
+    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET', mpicou)
     if (mpicow .ne. mpicou) ASSERT(.false.)
-    call mpiexe('MPI_RANG_SIZE', mpicow, ibid, rang, nbproc)
+    call asmpi_info(mpicow, mrang, mnbproc)
+    rang = to_aster_int(mrang)
+    nbproc = to_aster_int(mnbproc)
 !
 !     INFO // DS MACRO_MODE_MECA
     typeco=-999
@@ -521,11 +526,11 @@ subroutine op0032()
 !         --- ON REMET LE COMM_WORLD MPICOW AU SEIN DE VPFOPR.
 !         --- ON DETRUIT LE MPICOU QU'APRES LA DESTRUCTION DE L'OCCU
 !         --- RENCE MUMPS ASSOCIEE.
-            call mpiexe('MPI_COMM_SPLIT', mpicow, mpicou, frecou, 0)
+            call asmpi_split_comm(mpicow, to_mpi_int(frecou), to_mpi_int(0), 'mumps', mpicou)
             if (mpicow .eq. mpicou) ASSERT(.false.)
             call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                         rbid, cbid)
-            call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
+            call asmpi_comm('SET', mpicou)
             if (typeco .eq. 1) then
 !         --- CALCUL // TYPE 1
                 kopt1='STURML1P'
@@ -750,10 +755,10 @@ subroutine op0032()
 !     --- UNE OCCURENCE MUMPS (APRES CELLE DE LADITE OCCURENCE)
 !     ------------------------------------------------------------------
     if (lcomod .or. lcoinf) then
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
-        call mpiexe('MPI_COMM_FREE', mpicou, ibid, ibid, ibid)
+        call asmpi_comm('FREE', mpicou)
     endif
 !
 !   --- PRINT THE RESULTS TO THE MSG FILE AND SAVE  THE EVALUATED ---

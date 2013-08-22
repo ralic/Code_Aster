@@ -29,10 +29,11 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"
 #include "asterfort/amumpu.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -46,6 +47,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
+    mpi_int :: mpicou, mpimum
     integer :: nicntl, ncntl
     parameter (nicntl=40,ncntl=15)
     type (smumps_struc) , pointer :: smpsk
@@ -54,7 +56,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     type (zmumps_struc) , pointer :: zmpsk
     integer :: ifm, niv, icntl(nicntl), i, jrefa, isymm, jslvk, isymv, isym
     integer :: jslvi, n1, n3, n5, nprec, ibid
-    integer(kind=4) :: i4, mpicou, mpimum
+    mumps_int :: i4
     real(kind=8) :: rvers, cntl(ncntl), rr4max, tmax
     logical :: lbid
     character(len=1) ::  kbuff
@@ -65,7 +67,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     character(len=24) :: kvers
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
     call infniv(ifm, niv)
 !
 !       ------------------------------------------------

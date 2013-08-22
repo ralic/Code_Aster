@@ -24,10 +24,11 @@ subroutine mpialr()
 !       LA LISTE DES ALARMES QUI ONT ETE EMISES PAR PROCESSEUR.
 !-----------------------------------------------------------------------
 #include "asterf.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterc/gtalrm.h"
-#include "asterfort/comcou.h"
 #include "asterfort/gtstat.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #ifdef _USE_MPI
@@ -35,16 +36,14 @@ subroutine mpialr()
 #include "mpif.h"
 #include "aster_constant.h"
 !
-    integer(kind=4) :: rank, nbpro4, iermpi, ival, mpst(MPI_STATUS_SIZE), mpicou
+    mpi_int :: rank, nbpro4, iermpi, ival, mpst(MPI_STATUS_SIZE), mpicou
     integer :: i, np1, vali(2)
     logical :: vu
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
-    call MPI_COMM_RANK(mpicou, rank, iermpi)
-    call mpierr(iermpi)
-    call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-    call mpierr(iermpi)
+    call asmpi_comm('GET', mpicou)
+    call asmpi_info(mpicou, rank=rank)
+    call asmpi_info(mpicou, size=nbpro4)
     np1 = nbpro4 - 1
 !
     if (.not. gtstat(ST_OK)) then
@@ -64,7 +63,6 @@ subroutine mpialr()
         ival = i
         call MPI_SEND(ival, 1, MPI_INTEGER4, 0, ST_TAG_ALR,&
                       mpicou, iermpi)
-        call mpierr(iermpi)
 !
 !     SUR LE PROCESSEUR #0
 !
@@ -74,7 +72,6 @@ subroutine mpialr()
         do 10 i = 1, np1
             call MPI_RECV(ival, 1, MPI_INTEGER4, i, ST_TAG_ALR,&
                           mpicou, mpst, iermpi)
-            call mpierr(iermpi)
             if (ival .ne. 0) then
                 vu = .true.
                 vali(1) = i

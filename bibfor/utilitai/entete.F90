@@ -22,20 +22,19 @@ subroutine entete()
 !     ECRITURE DE L'ENTETE
 ! ----------------------------------------------------------------------
 #include "asterf.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterc/lihdfv.h"
 #include "asterc/limedv.h"
 #include "asterc/liscov.h"
 #include "asterc/mlnbpr.h"
 #include "asterc/prhead.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
+    mpi_int :: rank, size
     integer :: vali(3)
 !
-#ifdef _USE_MPI
-#include "mpif.h"
-    integer :: rang, nbproc, mpicow, ibid
-#endif
 #ifdef _USE_OPENMP
     integer :: nbth
 #endif
@@ -44,11 +43,9 @@ subroutine entete()
     call prhead(1)
 ! --- CONFIGURATION MPI
 #ifdef _USE_MPI
-    call mpiexe('MPI_COMM_WORLD', mpicow, ibid, ibid, ibid)
-    call mpiexe('MPI_ERRHANDLER_SET', mpicow, ibid, ibid, ibid)
-    call mpiexe('MPI_RANG_SIZE', mpicow, ibid, rang, nbproc)
-    vali(1) = rang
-    vali(2) = nbproc
+    call asmpi_info(rank=rank, size=size)
+    vali(1) = to_aster_int(rank)
+    vali(2) = to_aster_int(size)
     call u2mesi('I', 'SUPERVIS2_11', 2, vali)
 #else
     call u2mess('I', 'SUPERVIS2_12')

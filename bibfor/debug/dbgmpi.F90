@@ -41,7 +41,6 @@ subroutine dbgmpi(ico)
 #include "asterc/loisem.h"
 #include "asterfort/assert.h"
 #include "asterfort/mpicm0.h"
-#include "asterfort/mpierr.h"
     integer :: ico
 #ifdef _USE_MPI
 #include "mpif.h"
@@ -58,7 +57,6 @@ subroutine dbgmpi(ico)
     if (first) then
 !       -- POUR LA GESTION DES ERREURS :
         call MPI_ERRHANDLER_SET(MPI_COMM_WORLD, MPI_ERRORS_RETURN, iermpi)
-        call mpierr(iermpi)
         if (loisem() .eq. 8) then
             lint=MPI_INTEGER8
         else
@@ -78,14 +76,12 @@ subroutine dbgmpi(ico)
 !     -- POUR CAPTER LES ALL_REDUCE / MPI_SUM :
     call MPI_ALLREDUCE(icoin, icout, 1, lint, MPI_SUM,&
                        MPI_COMM_WORLD, iermpi)
-    call mpierr(iermpi)
     icout=icout/nbproc
     ASSERT(icout.eq.icoin)
 !
 !     -- POUR CAPTER LES ALL_REDUCE / MPI_MAX :
     call MPI_ALLREDUCE(icoin, icout, 1, lint, MPI_MAX,&
                        MPI_COMM_WORLD, iermpi)
-    call mpierr(iermpi)
     ASSERT(icout.eq.icoin)
 !
 999  continue

@@ -2,16 +2,18 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                   resuk, nbpari, nbparr, nbpark, mxresf,&
                   vectr, nconv, neq, typres)
     implicit none
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+#include "asterc/asmpi_split_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/comatr.h"
-#include "asterfort/comcou.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/maxint.h"
 #include "asterfort/mpicm1.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/somint.h"
 #include "asterfort/vecink.h"
 #include "asterfort/vecint.h"
@@ -40,8 +42,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ----------------------------------------------------------------
-!     COMMUNICATION DES VECTEURS PROPRES ET SD ASSOCIEES POUR MACRO
-!     MODE_MECA //
+!     COMMUNICATION DES VECTEURS PROPRES ET SD ASSOCIEES POUR MACRO_MODE_MECA //
 !     IN  LCOMOD      :  LOG  : MACRO_MODE_MECA// OR NOT
 !     IN  ICOM1/ICOM2 :  IN   : PARAMETRES // ASSOCIES A LCOMOD=.TRUE.
 !     IN/OUT RESUI/RESUR/RESUK: VECTEURS I/R/K : VECTEURS ASSOCIES A LA
@@ -57,10 +58,11 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 #include "jeveux.h"
 !
 !     --- VARIABLES LOCALES
-    integer :: nconvl, nconvg, nconvm, rangl, rangll, mpicow, mpicou, mpico0
-    integer :: ibid, l1, l2, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
+    mpi_int :: rangl, rangll, mpicow, mpicou, mpico0, l1, l2
+    blas_int :: i4
+    integer :: nconvl, nconvg, nconvm
+    integer :: ibid, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
     integer :: niv, ietfin, ietdeb, ietrat, ietmax
-    integer(kind=4) :: i4
     real(kind=8) :: retfin, rbid
     complex(kind=8) :: cbid
     character(len=1) :: k1bid
@@ -79,12 +81,12 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
     k24bus='&&OP0045.BUFFMPI.SAVE'
     klcom='&&OP0045.LCOMOD1'
     if (lcomod) then
-        mpicow=comcou(0)
-        mpicou=comcou(1)
+        call asmpi_comm('GET_WORLD', mpicow)
+        call asmpi_comm('GET', mpicou)
 !       --- ON EST CENSE FONCTIONNER JUSQUE LA EN COM LOCAL
 !       --- (POUR SOLVEUR LINEAIRE DU SOLVEUR MODAL)
         if (mpicow .eq. mpicou) ASSERT(.false.)
-        call mpiexe('MPI_RANG_SIZE', mpicou, ibid, rangl, ibid)
+        call asmpi_info(comm=mpicou, rank=rangl)
 !       ----------------------------------------------------------------
 !       --- STEP 0: COMM AU SEIN DU COM_WORLD
 !       ----------------------------------------------------------------
@@ -94,7 +96,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- RANGL=0: MPICO0
 !       --- DANS CE NEW COM MPICO0, LE RANG EST NOTE RANGLL. IL DOIT
 !       --- ETRE IDENTIQUE A ICOM1-1.
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
 !        IF (LCPU) THEN
@@ -106,9 +108,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         else
             l1=2
         endif
-        call mpiexe('MPI_COMM_SPLIT', mpicow, mpico0, l1, icom1)
-        if (mpicow .eq. mpico0) ASSERT(.false.)
-        call mpiexe('MPI_RANG_SIZE', mpico0, ibid, rangll, l2)
+        call asmpi_split_comm(mpicow, l1, to_mpi_int(icom1), 'procs0', mpico0)
+        ASSERT(mpicow .ne. mpico0)
+        call asmpi_info(mpico0, rangll, l2)
         if ((l2.ne.icom2) .and. (rangl.eq.0)) ASSERT(.false.)
         if ((rangll.ne.(icom1-1)) .and. (rangl.eq.0)) ASSERT(.false.)
 !
@@ -139,14 +141,14 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- COMM DES &&OP0045.RESU_I ET K
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
-        call mpiexe('AFFE_COMM_REFE', mpico0, ibid, 1, ibid)
+        call asmpi_comm('SET', mpico0)
         if (rangl .eq. 0) then
 !         --- 2 BUFFERS: K24BUF POUR LE BCAST, LE K24BUS POUR SAUVE
 !         --- GARDER LES VECTEURS PROPRES EN ATTENDANT LEUR COMM AUX
 !         --- AUTRES PROCESSUS DE MPICO0.
             call wkvect(k24buf, 'V V R', nconvm*neq, jlbuff)
             call wkvect(k24bus, 'V V R', nconvm*neq, jlbufs)
-            i4=nconvl*neq
+            i4 = to_blas_int(nconvl*neq)
             call dcopy(i4, vectr, 1, zr(jlbufs), 1)
             do 115 i = 1, icom2
                 idecal=0
@@ -155,7 +157,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 114              continue
                 if (idecal .lt. 0) ASSERT(.false.)
                 i8=neq*zi(jlcom+i-1)
-                i4=i8
+                i4 = to_blas_int(i8)
                 if (i .eq. icom1) call dcopy(i4, zr(jlbufs), 1, zr(jlbuff), 1)
                 call mpicm1('BCASTP', 'R', i8, i-1, ibid,&
                             zr(jlbuff), cbid)
@@ -176,7 +178,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- STEP 2: BARRIERE SUR LE COM_WORLD AU CAS OU
 !       ----------------------------------------------------------------
 !       -- ON AFFECTE LE COMCOW POUR QUE TOUS LES PROCS S'ATTENDENT
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
 !        IF (LCPU) THEN
@@ -191,7 +193,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       ----------------------------------------------------------------
 !       --- ON AFFECTE LE COMCOU POUR COMMUNIQUER AU SEIN
 !       --- D'UNE SOUS-BANDE.
-        call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicou)
 !
 !       --- POUR GAGNER DU TEMPS, ON ENVOIE VP PAR VP
 !       --- ON COMMUNIQUE LES VECTEURS PROPRES EN SOUS-PAQUETS DE REELS
@@ -211,7 +213,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- STEP 4: BARRIERE SUR LE COM_WORLD AU CAS OU
 !       ----------------------------------------------------------------
 !       --- ON AFFECTE LE COMCOW POUR QUE TOUS LES PROCS S'ATTENDENT
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
 !        IF (LCPU) THEN
@@ -221,7 +223,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !        ENDIF
 !
 !       --- ON REMET LE COM LOCAL AU CAS OU
-        call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicou)
 !
 !       ----------------------------------------------------------------
 !       --- STEP 5: INIT DIVERSES.
@@ -241,7 +243,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- STEP 6: MENAGE.
 !       ----------------------------------------------------------------
         call jedetr(klcom)
-        call mpiexe('MPI_COMM_FREE', mpico0, ibid, ibid, ibid)
+        call asmpi_comm('FREE', mpico0)
     endif
 !
     call jedema()

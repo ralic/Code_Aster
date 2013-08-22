@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
 interface
-    function comcou(iarg)
-        integer :: iarg
-        integer(kind=4) :: comcou
-    end function comcou
+    subroutine asmpi_info_wrap(comm, rank, nbproc)
+        mpi_int, intent(in) :: comm
+        mpi_int, intent(out) :: rank
+        mpi_int, intent(out) :: nbproc
+    end subroutine asmpi_info_wrap
 end interface

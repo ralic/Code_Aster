@@ -29,8 +29,10 @@ cata_msg={
 """),
 
 5: _(u"""
- Erreur MPI: %(k1)s
+ Erreur lors de l'appel à une fonction MPI.
+ Les détails de l'erreur devraient être affichés ci-dessus.
 """),
+
 6: _(u"""
  Problème lié a la distribution parallèle de calculs au sein d'une macro-commande.
  Le paramètre %(k1)s=%(i1)d est incohérent.

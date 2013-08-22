@@ -35,14 +35,13 @@ subroutine debut()
 #include "asterfort/ibdbgs.h"
 #include "asterfort/ibfhdf.h"
 #include "asterfort/ibtcpu.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/ulopen.h"
     character(len=8) :: k8b, repons
     character(len=16) :: nomcmd, k16b, cmpdef, cmput, cmpout
     character(len=80) :: fichdf
-    integer :: ier, lout, n, ncode, ibid
+    integer :: ier, lout, n, ncode
     integer :: iarg
 !
     fichdf=' '
@@ -99,9 +98,5 @@ subroutine debut()
 !
 ! --- LECTURE DU MOT CLE FACTEUR  CATALOGUE ---
     if (fichdf .eq. '  ') call ibcata(ier)
-!
-! --- CREATION DE L'OBJET DE STOCKAGE DES COMMUNICATEURS MPI
-!
-    call mpiexe('SET_COMM_REFE', ibid, ibid, ibid, ibid)
 !
 end subroutine

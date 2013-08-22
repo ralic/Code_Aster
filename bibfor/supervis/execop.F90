@@ -20,12 +20,13 @@ subroutine execop()
 !     EXECUTION DE LA COMMANDE
 !     ------------------------------------------------------------------
 !     COMMON POUR LE NIVEAU D'"INFO"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/etausr.h"
 #include "asterc/gcecdu.h"
 #include "asterc/uttrst.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/comcou.h"
 #include "asterfort/detmat.h"
 #include "asterfort/ex0000.h"
 #include "asterfort/ex0100.h"
@@ -48,10 +49,11 @@ subroutine execop()
 #include "asterfort/utgtme.h"
 #include "asterfort/utptme.h"
 #include "asterfort/uttcpg.h"
+    mpi_int :: mpicow, mpicou
     integer :: nivuti, nivpgm, unite
     common /inf001/ nivuti,nivpgm,unite
 !
-    integer :: nuoper, nuop2, ibid, imaav, imaap, mpicow, mpicou
+    integer :: nuoper, nuop2, ibid, imaav, imaap
     real(kind=8) :: tpres, pcent, rval(12)
     character(len=6) :: nommar
     character(len=8) :: k8bid, k8tab(7)
@@ -110,12 +112,12 @@ subroutine execop()
         endif
     endif
 !
-! --- COMMUNICATEUR MPI_COMM_WORLD ET COM MUNICATEUR COURANT
+! --- COMMUNICATEUR MPI_COMM_WORLD ET COMMUNICATEUR COURANT
 ! --- ON VERIFIE QU'ILS SONT IDENTIQUES (SINON ERREUR PROGRAMMEUR)
 ! --- AVANT ET APRES L'APPEL A L'OPERATEUR
-    mpicow=comcou(0)
-    mpicou=comcou(1)
-    if (mpicow .ne. mpicou) ASSERT(.false.)
+    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET', mpicou)
+    ASSERT(mpicow == mpicou)
 !
     if (nuoper .lt. 0) then
         nuop2 = abs(nuoper)
@@ -129,9 +131,9 @@ subroutine execop()
                     nuoper, 0, 0.d0)
     endif
 !
-    mpicow=comcou(0)
-    mpicou=comcou(1)
-    if (mpicow .ne. mpicou) ASSERT(.false.)
+    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET', mpicou)
+    ASSERT(mpicow == mpicou)
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !

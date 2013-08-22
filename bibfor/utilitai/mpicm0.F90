@@ -29,28 +29,25 @@ subroutine mpicm0(rang, nbproc)
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
-#include "asterfort/comcou.h"
-#include "asterfort/mpierr.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
     integer :: rang, nbproc
 !
 #ifdef _USE_MPI
 #include "mpif.h"
 ! DECLARATION VARIABLES LOCALES
-    integer(kind=4) :: rang4, nbpro4, iermpi, mpicou
+    mpi_int :: rang4, nbpro4, iermpi, mpicou
 !
 ! ---------------------------------------------------------------------
 !
 !     -- INITIALISATIONS :
 !     --------------------
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 !
-    call MPI_COMM_RANK(mpicou, rang4, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, rang4, nbpro4)
     rang=rang4
-!
-    call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-    call mpierr(iermpi)
     nbproc=nbpro4
 !
 #else

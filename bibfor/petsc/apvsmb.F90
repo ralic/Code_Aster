@@ -19,10 +19,11 @@ subroutine apvsmb(kptsc, lmd, rsolu)
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -45,7 +46,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !     VARIABLES LOCALES
     integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl, jnugl, jnuglp
     integer :: jprddl, nloc, nglo, ndprop, jcoll, jindic, jvaleu, numglo
-    integer(kind=4) :: mpicou
+    mpi_int :: mpicou
 !
     character(len=4) :: kbid
     character(len=14) :: nonu
@@ -59,7 +60,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)

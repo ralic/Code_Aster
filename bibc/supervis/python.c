@@ -1,5 +1,3 @@
-/* ------------------------------------------------------------------ */
-/* person_in_charge: j-pierre.lefebvre at edf.fr */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +14,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,      */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+/* person_in_charge: mathieu.courtois@edf.fr */
 /* Minimal main program -- everything is loaded from the library */
 
 /* NOTE: 
@@ -26,15 +25,9 @@
  * 
  *  source: http://docs.python.org/c-api/intro.html
  */
+#include "Python.h"
 #include "aster.h"
-
-#ifdef _USE_MPI
-#   include <stdio.h>
-#   include <stdlib.h>
-#   include "mpi.h"
-#endif
-
-#include "aster_error.h"
+#include "aster_mpi.h"
 
 extern DL_EXPORT(int) Py_Main();
 extern void initaster();
@@ -52,27 +45,15 @@ _MAIN_(argc, argv)
     char **argv;
 {
     int ierr;
-#ifdef _USE_MPI
-    int rc;
-    rc = MPI_Init(&argc,&argv);
-    if (rc != MPI_SUCCESS) {
-         fprintf(stderr, "MPI Initialization failed: error code %d\n",rc);
-         abort();
-    }
-    /* terminate is defined in aster_error */
-    ierr = atexit(terminate);
-    if (ierr != 0) {
-        fprintf(stderr, "cannot set exit function\n");
-        exit(EXIT_FAILURE);
-    }
-#endif
-    PyImport_AppendInittab("aster_core",initaster_core);
-    PyImport_AppendInittab("aster",initaster);
+    aster_mpi_init(argc, argv);
+
+    PyImport_AppendInittab("aster_core", initaster_core);
+    PyImport_AppendInittab("aster", initaster);
 
     /* Module définissant des opérations sur les objets fonction_sdaster */
-    PyImport_AppendInittab("aster_fonctions",initaster_fonctions);
+    PyImport_AppendInittab("aster_fonctions", initaster_fonctions);
 #ifndef _DISABLE_MED
-    PyImport_AppendInittab("med_aster",initmed_fonctions);
+    PyImport_AppendInittab("med_aster", initmed_fonctions);
 #endif
     ierr= Py_Main(argc, argv);
     return ierr;

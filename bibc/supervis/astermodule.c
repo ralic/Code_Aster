@@ -26,7 +26,7 @@
 #include "aster.h"
 #include "aster_module.h"
 #include "aster_core.h"
-#include "aster_error.h"
+#include "aster_mpi.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
 #include "aster_exceptions.h"

@@ -46,15 +46,16 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mpichk.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -71,11 +72,11 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
     real(kind=8) :: vr2(1000)
     complex(kind=8) :: vc2(1000)
     integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest
-    integer(kind=4) :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8
+    mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8
 ! ---------------------------------------------------------------------
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
 !
@@ -93,8 +94,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
     lc8 = MPI_DOUBLE_COMPLEX
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-    call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, size=nbpro4)
     if (nbpro4 .eq. 1) goto 9999
 !
 !     -- VERIFICATION RENDEZ-VOUS
@@ -108,7 +108,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
     if (optmpi .eq. 'BARRIER') then
 !     ---------------------------------
         call MPI_BARRIER(mpicou, iermpi)
-        call mpierr(iermpi)
         goto 9999
     endif
 !
@@ -190,7 +189,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
 !
     else if (optmpi.eq.'BCASTP') then
 !     ---------------------------------
@@ -236,7 +234,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
 !
     else if (optmpi.eq.'REDUCE') then
 !     ---------------------------------
@@ -268,7 +265,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
 !
 !
     else if (optmpi(1:4).eq.'MPI_') then
@@ -300,7 +296,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
 !
     else
         ASSERT(.false.)

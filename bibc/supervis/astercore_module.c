@@ -31,6 +31,7 @@
 #include "aster_core.h"
 #include "aster_module.h"
 #include "aster_exceptions.h"
+#include "aster_mpi.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
 
@@ -599,11 +600,8 @@ PyObject *args;
      * Get MPI informations (idem mpicm0.F)
      */
     PyObject *res;
-    int rank=0, size=1;
-#ifdef _USE_MPI
-    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
-    MPI_Comm_size( MPI_COMM_WORLD, &size );
-#endif
+    int rank, size;
+    aster_get_mpi_info(aster_get_comm_world(), &rank, &size);
     res = Py_BuildValue("ii", rank, size);
     return res;
 }

@@ -42,6 +42,10 @@ subroutine op0045()
 !
 ! VARIABLES LOCALES
 #include "jeveux.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+#include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
 #include "asterc/getvid.h"
 #include "asterc/getvis.h"
@@ -53,7 +57,6 @@ subroutine op0045()
 #include "asterc/r8vide.h"
 #include "asterfort/ajlagr.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/cresol.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -68,7 +71,6 @@ subroutine op0045()
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mpicm1.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
@@ -117,6 +119,7 @@ subroutine op0045()
 #include "asterfort/wpfopr.h"
 #include "asterfort/wpsorc.h"
 #include "asterfort/wpsorn.h"
+    mpi_int :: mpicou, mpicow, mrang, mnbproc
     integer :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter    ( nbpari=8 , nbparr=16 , nbpark=3, nbpara=27 )
     parameter    ( mxddl=1 )
@@ -128,9 +131,9 @@ subroutine op0045()
     integer :: lmet, nbvec2, icoef, npiv2(2)
     integer :: npivot, nbvect, priram(8), maxitr, neqact, mfreq, idet(2), nborto, nfreq, nitv
     integer :: nparr, nbcine, neq, nitqrm, izero, nbrss, nitbat, niv, mxresf, nblagr, nperm
-    integer :: nitjac, n1, nstoc, nconv, iexin, lworkr, laur, mpicou, qrn, qrlwor, iqrn, lqrn
+    integer :: nitjac, n1, nstoc, nconv, iexin, lworkr, laur, qrn, qrlwor, iqrn, lqrn
     integer :: qrar, qrai, qrba, qrvl, kqrn, qrn2, ilscal, irscal, lauc, laul, icscal, ivscal
-    integer :: iiscal, ibscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg, mpicow, rang
+    integer :: iiscal, ibscal, jrefa, islvi, nprec, islvk, krefa, nnvalp, iarg, rang
     integer :: nbproc, typeco, vali(5), nbvecg, nfreqg, rangl, icom1, icom2, l, l1, l2, l3, indf
 !     &             ,IETFIN,IETDEB,IETRAT,IETMAX
     real(kind=8) :: prorto, fmin, fmax, alpha, tolsor, det(2), rzero, omemin, omemax, omeshi, undf
@@ -213,11 +216,14 @@ subroutine op0045()
 !     ------------------------------------------------------------------
     icom1=-999
     icom2=-999
-    mpicow=comcou(0)
-    mpicou=comcou(1)
+    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET', mpicou)
 !     --- ON EST CENSE FONCTIONNER EN COMM_WORLD
     if (mpicow .ne. mpicou) ASSERT(.false.)
-    call mpiexe('MPI_RANG_SIZE', mpicow, ibid, rang, nbproc)
+    call asmpi_info(mpicow, mrang, mnbproc)
+    rang = to_aster_int(mrang)
+    nbproc = to_aster_int(mnbproc)
+    
     call getvis('PARALLELISME_MACRO', 'TYPE_COM', 1, iarg, 1,&
                 typeco, l1)
     call getvis('PARALLELISME_MACRO', 'IPARA1_COM', 1, iarg, 1,&
@@ -250,14 +256,15 @@ subroutine op0045()
 !       --- DECOMPOSE LE COM GLOBAL MPICOW EN COM LOCAL MPICOU
 !       --- PLUS AFFECTATION DE CE NOUVEAU COM AFIN DE NE PAS PERTURBER
 !       --- LA FACTO DE LA DEMI-BANDE
-        call mpiexe('MPI_COMM_SPLIT', mpicow, mpicou, icom1, 0)
+        call asmpi_split_comm(mpicow, to_mpi_int(icom1), to_mpi_int(0), 'ipara1', mpicou)
         if (mpicow .eq. mpicou) ASSERT(.false.)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
-        call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicou)
 !       --- RANG DANS LE SOUS-COMM MPICOU LIE A CHAQUE OCCURENCE
 !       --- MUMPS: RANGL
-        call mpiexe('MPI_RANG_SIZE', mpicou, ibid, rangl, ibid)
+        call asmpi_info(comm=mpicou, rank=mrang)
+        rangl = to_aster_int(mrang)
     else
         rangl=-9999
         mpicou=-9999
@@ -564,7 +571,7 @@ subroutine op0045()
     call wkvect('&&OP0045.DDL.BLOQ.CINE', 'V V I', neq, lprod)
     call vpddl(raide, masse, neq, nblagr, nbcine,&
                neqact, zi(lddl), zi(lprod), ierd)
-    if (ierd .ne. 0) goto 9999
+    if (ierd .ne. 0) goto 888
 !
 !       -- TRAITEMENTS PARTICULIERS PROPRES A QZ
     if (lqz) then
@@ -861,7 +868,7 @@ subroutine op0045()
     nfreqg=-9999
     if (lcomod) then
 !       --- ON REMET LE COM WORLD POUR COMMUNIQUER NBVECT/NBFREQ
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
 !       --- EST-ON LE PROCESSUS MAITRE DU COM LOCAL: RANGL=0 ?
@@ -882,7 +889,7 @@ subroutine op0045()
 !         --- ON REMET LE COM LOCAL POUR LES FACTO ET SOLVES A SUIVRE
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
-        call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicou)
     endif
 !     ------------------------------------------------------------------
 !
@@ -1500,7 +1507,7 @@ subroutine op0045()
 !     --- LES DE VPCNTL.
 !     ------------------------------------------------------------------
     if (lcomod) then
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
         call mpicm1('MPI_MIN', 'R', 1, ibid, ibid,&
@@ -1513,7 +1520,7 @@ subroutine op0045()
                     vpmax, cbid)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
-        call mpiexe('AFFE_COMM_REFE', mpicou, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicou)
     endif
     call vpcntl(ctyp, modes, optiov, omemin, omemax,&
                 seuil, nconv, zi(lresui), lmat, omecor,&
@@ -1531,7 +1538,7 @@ subroutine op0045()
 !
 !     ------------------------------------------------------------------
 !
-9999  continue
+888  continue
 !     --- DESTRUCTION DE LA MATRICE DYNAMIQUE RESTANTE (VRAI MATPSC DIS
 !     SOSSIEE DE MATOPA OU MATPSC POINTANT SUR MATOPA D'OU LA RECONSTRUC
 !     TION DE NOM CI-DESSOUS
@@ -1548,10 +1555,10 @@ subroutine op0045()
 !     --- UNE OCCURENCE MUMPS (APRES CELLE DE LADITE OCCURENCE)
 !     ------------------------------------------------------------------
     if (lcomod) then
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('SET', mpicow)
         call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                     rbid, cbid)
-        call mpiexe('MPI_COMM_FREE', mpicou, ibid, ibid, ibid)
+        call asmpi_comm('FREE', mpicou)
     endif
 !      IF (LCPU) THEN
 !        CALL SYSTEM_CLOCK(IETFIN)

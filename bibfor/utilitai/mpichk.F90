@@ -20,10 +20,11 @@ subroutine mpichk(nbpro4, iret)
     implicit none
 !     ARGUMENT IN
 #include "asterf.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterc/uttrst.h"
-#include "asterfort/comcou.h"
 #include "asterfort/gtstat.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/mpisst.h"
 #include "asterfort/mpistp.h"
 #include "asterfort/ststat.h"
@@ -31,7 +32,7 @@ subroutine mpichk(nbpro4, iret)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mesr.h"
 #include "asterfort/u2mess.h"
-    integer(kind=4) :: nbpro4
+    mpi_int :: nbpro4
 !     ARGUMENT OUT
     integer :: iret
 !-----------------------------------------------------------------------
@@ -53,17 +54,16 @@ subroutine mpichk(nbpro4, iret)
 #include "aster_constant.h"
 !
     logical :: isterm(nbpro4), lcont
-    logical(kind=4) :: term
+    mpi_bool :: term
     integer :: i, nbterm, np1, resp0
-    integer(kind=4) :: rank, iermpi, istat, mpicou
-    integer(kind=4) :: diag(nbpro4), request(nbpro4), mpst(MPI_STATUS_SIZE)
+    mpi_int :: rank, iermpi, istat, mpicou
+    mpi_int :: diag(nbpro4), request(nbpro4), mpst(MPI_STATUS_SIZE)
     real(kind=8) :: valr(1), tres, timout, t0, tf
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
     iret = 0
-    call MPI_COMM_RANK(mpicou, rank, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, rank=rank)
     np1 = nbpro4 - 1
 !
     call uttrst(tres)
@@ -89,7 +89,6 @@ subroutine mpichk(nbpro4, iret)
             isterm(i) = .false.
             call MPI_IRECV(diag(i), 1, MPI_INTEGER4, i, ST_TAG_CHK,&
                            mpicou, request(i), iermpi)
-            call mpierr(iermpi)
 10      continue
 !
         nbterm = 0
@@ -100,7 +99,6 @@ subroutine mpichk(nbpro4, iret)
         do 101 i = 1, np1
             if (.not. isterm(i)) then
                 call MPI_TEST(request(i), term, mpst, iermpi)
-                call mpierr(iermpi)
                 if (term) then
                     nbterm = nbterm + 1
                     isterm(i) = .true.
@@ -145,7 +143,6 @@ subroutine mpichk(nbpro4, iret)
                 endif
                 call MPI_SEND(istat, 1, MPI_INTEGER4, i, ST_TAG_CNT,&
                               mpicou, iermpi)
-                call mpierr(iermpi)
             endif
 103      continue
 !

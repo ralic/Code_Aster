@@ -19,9 +19,10 @@ subroutine appcrs(kptsc, lmd)
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/crsmsp.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -48,7 +49,7 @@ subroutine appcrs(kptsc, lmd)
     integer :: rang, nbproc
     integer :: jslvk, jslvr, jslvi, jnequ, jnequl, jprddl, jcoll, nloc
     integer :: niremp, nsmdi
-    integer(kind=4) :: mpicou
+    mpi_int :: mpicou
 !
     character(len=24) :: precon
     character(len=19) :: nomat, nosolv
@@ -67,7 +68,7 @@ subroutine appcrs(kptsc, lmd)
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)

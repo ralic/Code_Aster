@@ -15,12 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
 interface
-    subroutine mpiexe(optmpi, mpico8, mpicou, intcou, intkey)
-        character(*) :: optmpi
-        integer :: mpico8
-        integer :: mpicou
-        integer :: intcou
-        integer :: intkey
-    end subroutine mpiexe
+    subroutine asmpi_info(comm, rank, size)
+        mpi_int, intent(in), optional :: comm
+        mpi_int, intent(out), optional :: rank
+        mpi_int, intent(out), optional :: size
+    end subroutine asmpi_info
 end interface

@@ -15,8 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
 interface
-    subroutine mpierr(iermpi)
-        integer(kind=4) :: iermpi
-    end subroutine mpierr
+    subroutine asmpi_comm(action, mpicom)
+        character(len=*), intent(in) :: action
+        mpi_int :: mpicom
+    end subroutine asmpi_comm
 end interface

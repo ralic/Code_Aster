@@ -99,15 +99,16 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
     implicit none
 !
 ! PARAMETRES D'APPEL
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/freqom.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mpicm1.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mesr.h"
@@ -125,12 +126,13 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !
 !
 ! VARIABLES LOCALES
+    mpi_int :: mpicou, mpicow, rang, rangl, nbproc
     character(len=1) :: typep, k1bid
     character(len=8) :: k8bid
     character(len=16) :: ch16, valk(3)
     character(len=24) :: k24c, k24par
-    integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande, mpicou, mpicow, rang, nbproc
-    integer :: jk24c, jkpar, nbrow, frecou, rangl
+    integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
+    integer :: jk24c, jkpar, nbrow, frecou
     real(kind=8) :: valr(2), omgmin, omgmax, omgshi, rbid, prec, omgdec
     complex(kind=8) :: cbid
     logical :: caldet, ldyna
@@ -349,15 +351,15 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !     --- COMMUNICATION DES PIVOTS POUR LE BON CALCUL DE STURM
         if ((option.eq.'STURML1P') .or. (option.eq.'STURMLNP') .or. (option.eq.'STURML10')&
             .or. (option.eq.'STURML11')) then
-            mpicow=comcou(0)
-            mpicou=comcou(1)
-            if (mpicou .eq. mpicow) ASSERT(.false.)
+            call asmpi_comm('GET_WORLD', mpicow)
+            call asmpi_comm('GET', mpicou)
+            ASSERT(mpicou .ne. mpicow)
 !         --- ON REMPLACE LE COMM LOCAL PAR LE COMM WORLD
-            call mpiexe('MPI_RANG_SIZE', mpicou, ibid, rangl, ibid)
-            call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+            call asmpi_info(mpicou, rangl)
+            call asmpi_comm('SET', mpicow)
             call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
                         rbid, cbid)
-            call mpiexe('MPI_RANG_SIZE', mpicow, ibid, rang, nbproc)
+            call asmpi_info(mpicow, rang, nbproc)
 !         --- BUFFER DE COM K24C
 !         --- K24C(FREQUENCE_COURANTE)=NBFMIN OU MAX
             k24par='&&OP0032.COULEUR'
@@ -368,19 +370,19 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
             call wkvect(k24c, 'V V I', nbrow+1, jk24c)
             call vecint(nbrow+1, 0, zi(jk24c))
             if (option .eq. 'STURML1P') then
-                if (frecou .ne. 1) ASSERT(.false.)
+                ASSERT(frecou .eq. 1)
                 if (rangl .eq. 0) zi(jk24c+1)=nbfmax
 !
             else if (option.eq.'STURMLNP') then
-                if (frecou .le. 1) ASSERT(.false.)
+                ASSERT(frecou .gt. 1)
                 if (rangl .eq. 0) zi(jk24c+frecou)=nbfmax
 !
             else if (option.eq.'STURML10') then
-                if (frecou .ne. 0) ASSERT(.false.)
+                ASSERT(frecou .eq. 0)
                 if (rangl .eq. 0) zi(jk24c)=nbfmin
 !
             else if (option.eq.'STURML11') then
-                if (frecou .ne. 1) ASSERT(.false.)
+                ASSERT(frecou .eq. 1)
                 if (rangl .eq. 0) zi(jk24c+1)=nbfmax
             endif
 !

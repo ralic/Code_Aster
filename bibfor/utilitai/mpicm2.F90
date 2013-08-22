@@ -34,11 +34,13 @@ subroutine mpicm2(optmpi, nomjev)
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
 !
 #include "asterc/loisem.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -48,7 +50,6 @@ subroutine mpicm2(optmpi, nomjev)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mpichk.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -65,7 +66,7 @@ subroutine mpicm2(optmpi, nomjev)
     integer :: ibid
     integer :: jtrav, k
     integer :: iobj, nbobj, nlong, iret
-    integer(kind=4) :: iermpi, lint, lint4, lr8, lc8, nbpro4, n4, mpicou
+    mpi_int :: iermpi, lint, lint4, lr8, lc8, nbpro4, n4, mpicou
     character(len=1) :: typsca, xous
     character(len=8) :: kbid
     character(len=24) :: notrav
@@ -73,7 +74,7 @@ subroutine mpicm2(optmpi, nomjev)
 ! ---------------------------------------------------------------------
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
 !
@@ -91,8 +92,7 @@ subroutine mpicm2(optmpi, nomjev)
     notrav='&&MPICM2.TRAV'
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-    call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, size=nbpro4)
     if (nbpro4 .eq. 1) goto 9999
 !
 !     -- VERIFICATION RENDEZ-VOUS
@@ -125,7 +125,6 @@ subroutine mpicm2(optmpi, nomjev)
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
 !
     else if (optmpi.eq.'REDUCE') then
 !     ---------------------------------
@@ -164,7 +163,6 @@ subroutine mpicm2(optmpi, nomjev)
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
         call jedetr(notrav)
 !
     else if (optmpi.eq.'MPI_SUM') then
@@ -223,7 +221,6 @@ subroutine mpicm2(optmpi, nomjev)
 !
         if (xous .eq. 'X') call jelibe(jexnum(nomjev, iobj))
 10      continue
-        call mpierr(iermpi)
 !
     else
         ASSERT(.false.)

@@ -30,7 +30,6 @@ subroutine fin999()
 #include "asterc/dllcls.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/mpialr.h"
-#include "asterfort/mpiexe.h"
     integer :: ichk, ibid
 #ifdef _HAVE_PETSC
     integer :: iret
@@ -55,9 +54,5 @@ subroutine fin999()
 ! --- TEST ERREUR E SANS ERREUR F
 !
     call chkmsg(1, ichk)
-!
-! --- DESTRUCTION DE L'OBJET DE STOCKAGE DES COMMUNICATEURS MPI
-!
-    call mpiexe('DEL_COMM_REFE', ibid, ibid, ibid, ibid)
 !
 end subroutine

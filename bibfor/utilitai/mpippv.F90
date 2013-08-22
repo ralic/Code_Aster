@@ -40,13 +40,14 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/loisem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/uttcpu.h"
     character(len=*) :: optmpi, typsca
     integer :: nbv, vi(*)
@@ -59,12 +60,12 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
     integer :: iret
-    integer(kind=4) :: iermpi, lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
-    integer(kind=4) :: mpicou
+    mpi_int :: iermpi, lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
+    mpi_int :: mpicou
 ! ---------------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
 !
@@ -79,8 +80,7 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
     lr8 = MPI_DOUBLE_PRECISION
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-    call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, size=nbpro4)
     if (nbpro4 .eq. 1) goto 9999
 !
 !     -- SCALAIRE :
@@ -104,7 +104,6 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
     else if (optmpi.eq.'MPI_RECV') then
 !     ---------------------------------
         if (typsc1 .eq. 'R ') then
@@ -119,7 +118,6 @@ subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
         else
             ASSERT(.false.)
         endif
-        call mpierr(iermpi)
     else
         ASSERT(.false.)
     endif

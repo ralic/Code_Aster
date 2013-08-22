@@ -20,7 +20,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     implicit none
 ! person_in_charge: thomas.de-soza at edf.fr
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/matfpe.h"
 #include "asterfort/apalmc.h"
 #include "asterfort/apalmd.h"
@@ -32,7 +34,6 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/apsolu.h"
 #include "asterfort/apvsmb.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infniv.h"
@@ -77,7 +78,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !     VARIABLES LOCALES
     integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ
     integer :: lmat, idvalc, jslvi, jslvk, jslvr
-    integer(kind=4) :: mpicou
+    mpi_int :: mpicou
 !
     character(len=24) :: precon
     character(len=19) :: nomat, nosolv
@@ -105,7 +106,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 !
 !     -- ON DESACTIVE LA LEVEE D'EXCEPTION FPE DANS LES MKL
     call matfpe(-1)

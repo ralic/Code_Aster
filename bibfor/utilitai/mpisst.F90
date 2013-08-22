@@ -20,10 +20,12 @@ subroutine mpisst(istat, resp0)
     implicit none
 !     ARGUMENTS          IN     OUT
 #include "asterf.h"
+#include "aster_types.h"
+#include "aster_constant.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/uttrst.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/mpistp.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
@@ -36,17 +38,15 @@ subroutine mpisst(istat, resp0)
 #ifdef _USE_MPI
 !
 #include "mpif.h"
-#include "aster_constant.h"
 !
-    logical(kind=4) :: term
-    integer(kind=4) :: rank, iermpi
-    integer(kind=4) :: ist4, irp0, mpst(MPI_STATUS_SIZE), req, mpicou
+    mpi_bool :: term
+    mpi_int :: rank, iermpi
+    mpi_int :: ist4, irp0, mpst(MPI_STATUS_SIZE), req, mpicou
     real(kind=8) :: tres, timout, t0, tf
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 !
-    call MPI_COMM_RANK(mpicou, rank, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, rank=rank)
     ASSERT(rank .ne. 0)
     ASSERT(istat.eq.ST_OK .or. istat.eq.ST_ER)
 !
@@ -57,12 +57,10 @@ subroutine mpisst(istat, resp0)
     ist4 = istat
     call MPI_ISEND(ist4, 1, MPI_INTEGER4, 0, ST_TAG_CHK,&
                    mpicou, req, iermpi)
-    call mpierr(iermpi)
     t0 = MPI_WTIME()
 300  continue
 !     WHILE NOT TERM
     call MPI_TEST(req, term, mpst, iermpi)
-    call mpierr(iermpi)
 !       TIMOUT
     tf = MPI_WTIME()
     if ((tf - t0) .gt. timout) then
@@ -78,12 +76,10 @@ subroutine mpisst(istat, resp0)
     irp0 = ST_ER
     call MPI_IRECV(irp0, 1, MPI_INTEGER4, 0, ST_TAG_CNT,&
                    mpicou, req, iermpi)
-    call mpierr(iermpi)
     t0 = MPI_WTIME()
 200  continue
 !     WHILE NOT TERM
     call MPI_TEST(req, term, mpst, iermpi)
-    call mpierr(iermpi)
 !       TIMOUT
     tf = MPI_WTIME()
     if ((tf - t0) .gt. timout * 1.2) then

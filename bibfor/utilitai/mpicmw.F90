@@ -18,11 +18,12 @@ subroutine mpicmw(iexc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
-#include "asterfort/comcou.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_split_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/gtstat.h"
 #include "asterfort/mpichk.h"
-#include "asterfort/mpierr.h"
-#include "asterfort/mpiexe.h"
 #include "asterfort/mpisst.h"
 #include "asterfort/ststat.h"
 #include "asterfort/u2mess.h"
@@ -37,24 +38,22 @@ subroutine mpicmw(iexc)
 #include "mpif.h"
 #include "aster_constant.h"
 !
-    integer(kind=4) :: iermpi, rank, nbpro4, mpicou, mpicow
+    mpi_int :: iermpi, rank, nbpro4, mpicou, mpicow
     integer :: iret, ibid
 !
 ! --- COMMUNICATEUR MPI COM_WORLD (MPICOW) ET COM COURANT (MPICOU)
 ! --- SI ILS SONT DIFFERENTS, ON NETTOIE ET ON MET LE COM WORLD POUR
 ! --- QUE LE PLANTON CONCERNE TOUS LES PROCESSUS MPI.
-    mpicow=comcou(0)
-    mpicou=comcou(1)
+    call asmpi_comm('GET_WORLD', mpicow)
+    call asmpi_comm('GET', mpicou)
     if (mpicou .ne. mpicow) then
-        call mpiexe('MPI_COMM_FREE', mpicou, ibid, ibid, ibid)
-        call mpiexe('AFFE_COMM_REFE', mpicow, ibid, 1, ibid)
+        call asmpi_comm('FREE', mpicou)
+        call asmpi_comm('SET', mpicow)
         mpicou=mpicow
     endif
 !
-    call MPI_COMM_RANK(mpicou, rank, iermpi)
-    call mpierr(iermpi)
-    call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-    call mpierr(iermpi)
+    call asmpi_info(mpicou, rank=rank)
+    call asmpi_info(mpicou, size=nbpro4)
 !
 !     SI PAS 'ST_OK', IL NE FAUT PAS COMMUNIQUER ENCORE UNE FOIS
     if (nbpro4 .le. 1 .or. .not. gtstat(ST_OK)) then

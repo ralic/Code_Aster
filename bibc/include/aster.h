@@ -44,7 +44,7 @@ typedef int Py_ssize_t;
 
 /* pour preciser quel fichier affiche les  messages et les valeurs */
 #define INTERRUPTION(code) { ICI; fprintf(stderr,"INTERRUPTION - code retour %d\n",code); abort(); }
-#define ICI fflush(stdout);fprintf( stderr, "%s  %d : " , __FILE__ , __LINE__  ) ; fflush(stderr);
+#define ICI fflush(stdout);fprintf( stderr, "%s, #%d: " , __FILE__ , __LINE__  ) ; fflush(stderr);
 
 /* Utiliser -DUSE_ASSERT pour activer les ASSERT */
 #ifdef USE_ASSERT

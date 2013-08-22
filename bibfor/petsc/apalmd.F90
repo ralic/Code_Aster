@@ -19,11 +19,12 @@ subroutine apalmd(kptsc)
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/comcou.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -52,7 +53,7 @@ subroutine apalmd(kptsc)
     integer :: i, k, ilig, jcol, nbo, nbd, nzdeb, nzfin, jcolg, iligl, jaux
     integer :: prolig, iligg, iaux, numpro, jjoint, jvaleu, numloc
     integer :: lgenvo, numglo, ibid, comple
-    integer(kind=4) :: mpicou
+    mpi_int :: mpicou
 !
     real(kind=8) :: rbid
 !
@@ -75,7 +76,7 @@ subroutine apalmd(kptsc)
 !----------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 !
     call mpicm0(rang, nbproc)
 !

@@ -1,3 +1,4 @@
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -14,20 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! person_in_charge: mathieu.courtois@edf.fr
-!
-#ifndef ASTERF_H
-#define ASTERF_H
-
-#include "asterf_config.h"
-
-! The fortran preprocessor is compiler dependent
-#if  STRINGIFY_USE_QUOTES == 1
-#   define TO_STRING(name)  "name"
-#elif STRINGIFY_USE_OPERATOR == 1
-#   define TO_STRING(name)  #name
-#else
-#   define TO_STRING(name)  "?"
-#endif
-
-#endif
+#include "aster_types.h"
+interface
+    subroutine asmpi_split_comm(parent, color, key, name, newcomm)
+        mpi_int, intent(in) :: parent
+        mpi_int, intent(in) :: color
+        mpi_int, intent(in) :: key
+        character(len=*), intent(in) :: name
+        mpi_int, intent(out) :: newcomm
+    end subroutine asmpi_split_comm
+end interface

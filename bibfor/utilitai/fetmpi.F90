@@ -19,11 +19,13 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 !
     implicit none
 #include "asterf.h"
+#include "aster_types.h"
 #include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterc/getvis.h"
 #include "asterc/loisem.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,7 +33,6 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpierr.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/uttcpr.h"
@@ -80,16 +81,15 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
     integer :: iaux1, idd, nbsd1, ilist, iexist, ired, i, iach
     integer :: iaux2, iaux3, iaux4, decal, ibid, iproc2
     integer :: ilist1, iproc, nbpro1, iproc1, nbsdp0, iach1, iach2
-    integer :: imon, nbopt, opt
-    integer(kind=4) :: nbpro4, rang4, nbsd4, iermpi, nbsd41, lr8, lint, iarg
-    integer(kind=4) :: mpicou
+    integer :: imon, nbopt, opt, iarg
+    mpi_int :: mpicou, nbpro4, rang4, nbsd4, iermpi, nbsd41, lr8, lint
     character(len=8) :: k8bid
     character(len=24) :: nom1, nomlog, nomlo1, nommon
     real(kind=8) :: temps(6)
 !
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
 ! INITS.
     if (loisem() .eq. 8) then
         lint=MPI_INTEGER8
@@ -113,8 +113,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
     endif
 ! RANG DU PROCESSEUR POUR LIMITER LES AFFICHAGES
     if (niv .ge. 2) then
-        call MPI_COMM_RANK(mpicou, rang4, iermpi)
-        call mpierr(iermpi)
+        call asmpi_info(mpicou, rank=rang4)
         rang=rang4
         if (rang .ne. 0) niv=0
     endif
@@ -143,11 +142,9 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
         ASSERT(iexist.eq.0)
         call wkvect(nomlo1, 'V V I', nbsd, ilist1)
 !
-        call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-        call mpierr(iermpi)
+        call asmpi_info(mpicou, size=nbpro4)
         nbproc=nbpro4
-        call MPI_COMM_RANK(mpicou, rang4, iermpi)
-        call mpierr(iermpi)
+        call asmpi_info(mpicou, rank=rang4)
         rang=rang4
         if (nbproc .gt. 1) then
 ! ON EST EN PARALLELE, L'UTILISATEUR A PEUT-ETRE EMIS UN SOUHAIT QUANT
@@ -240,8 +237,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
             call uttcpu('CPU.FETMPI.2', 'DEBUT', ' ')
         endif
 ! DETERMINATION DU RANG D'UN PROCESSUS (RANG)
-        call MPI_COMM_RANK(mpicou, rang4, iermpi)
-        call mpierr(iermpi)
+        call asmpi_info(mpicou, rank=rang4)
         rang=rang4
 ! MONITORING
         if (niv .ge. 2) then
@@ -259,8 +255,7 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
             call uttcpu('CPU.FETMPI.3', 'DEBUT', ' ')
         endif
 ! DETERMINATION DU NOMBRE DE PROCESSEURS (NBPROC)
-        call MPI_COMM_SIZE(mpicou, nbpro4, iermpi)
-        call mpierr(iermpi)
+        call asmpi_info(mpicou, size=nbpro4)
         nbproc=nbpro4
 ! MONITORING
         if (niv .ge. 2) then
@@ -316,7 +311,6 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
             call MPI_ALLREDUCE(zr(ired), zr(iach), nbsd4, lr8, MPI_SUM,&
                                mpicou, iermpi)
         endif
-        call mpierr(iermpi)
         call jedetr(nom1)
 !
 ! MONITORING
@@ -360,7 +354,6 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
         endif
         call MPI_GATHERV(zr(ired), nbsd4, lr8, zr(iach), zi4(iach1),&
                          zi4(iach2), lr8, 0, mpicou, iermpi)
-        call mpierr(iermpi)
 !
         if (nbsd .ne. 0) call jedetr(nom1)
 ! MONITORING
@@ -386,7 +379,6 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
         call jeveuo(ach24, 'E', iach)
         call MPI_BCAST(zr(iach), nbsd4, lr8, 0, mpicou,&
                        iermpi)
-        call mpierr(iermpi)
 !
 ! MONITORING
         if (niv .ge. 2) then
@@ -407,7 +399,6 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 ! LES AUTRES PROCS
         call MPI_BCAST(argr1, 1, lr8, 0, mpicou,&
                        iermpi)
-        call mpierr(iermpi)
 !
 ! MONITORING
         if (niv .ge. 2) then

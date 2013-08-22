@@ -57,8 +57,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "aster_types.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
-#include "asterfort/comcou.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -97,7 +98,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     integer :: ierr, tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
 !      INTEGER*4     getpid
-    integer(kind=4) :: pid, mpicou
+    integer(kind=4) :: pid
+    mpi_int :: mpicou
     logical :: lpara, lpeak, lpb1
     character(len=2) :: fstring
     character(len=8) :: k8tab(3)
@@ -109,7 +111,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
-    mpicou=comcou(1)
+    call asmpi_comm('GET', mpicou)
     call infniv(ifm, niv)
 !
 !       ------------------------------------------------
