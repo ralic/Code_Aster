@@ -22,10 +22,10 @@
 #include "asterf_config.h"
 
 ! The fortran preprocessor is compiler dependent
-#ifdef STRINGIFY_USE_OPERATOR
-#   define TO_STRING(name)  #name
-#elif  STRINGIFY_USE_QUOTES
+#if  STRINGIFY_USE_QUOTES == 1
 #   define TO_STRING(name)  "name"
+#elif STRINGIFY_USE_OPERATOR == 1
+#   define TO_STRING(name)  #name
 #else
 #   define TO_STRING(name)  "?"
 #endif
