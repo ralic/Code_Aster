@@ -21,6 +21,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
@@ -48,7 +49,6 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/mpicm2.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
@@ -134,8 +134,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 ! --- DEBUT ------------------------------------------------------------
     call jemarq()
 !
-    call mpicm1('BARRIER', ' ', ibid, ibid, ibid,&
-                rbid, cbid)
+    call asmpi_barrier()
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.3', 'DEBUT', ' ')
@@ -1064,8 +1063,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     call jedetr('&&ASSVEC.NUMLOC')
 !
 !
-    call mpicm1('BARRIER', ' ', ibid, ibid, ibid,&
-                rbid, cbid)
+    call asmpi_barrier()
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.3', 'FIN', ' ')

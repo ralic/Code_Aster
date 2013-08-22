@@ -24,7 +24,6 @@ subroutine op0032()
 !
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
 #include "asterc/getvc8.h"
@@ -34,6 +33,8 @@ subroutine op0032()
 #include "asterc/getvtx.h"
 #include "asterfort/apm012.h"
 #include "asterfort/apm345.h"
+#include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cresol.h"
 #include "asterfort/detrsd.h"
@@ -44,7 +45,6 @@ subroutine op0032()
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/omega2.h"
@@ -177,7 +177,8 @@ subroutine op0032()
     amor=' '
     lamor=0
     if ((typmod.eq.'GENERAL') .or. (typmod.eq.'MODE_COMPLEXE')) then
-        call getvid(' ', matrc, 1, iarg, 1, amor, lamor)
+        call getvid(' ', matrc, 1, iarg, 1,&
+                    amor, lamor)
     endif
     if (lamor .eq. 0) then
         lc=.false.
@@ -528,8 +529,7 @@ subroutine op0032()
 !         --- RENCE MUMPS ASSOCIEE.
             call asmpi_split_comm(mpicow, to_mpi_int(frecou), to_mpi_int(0), 'mumps', mpicou)
             if (mpicow .eq. mpicou) ASSERT(.false.)
-            call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                        rbid, cbid)
+            call asmpi_barrier()
             call asmpi_comm('SET', mpicou)
             if (typeco .eq. 1) then
 !         --- CALCUL // TYPE 1
@@ -756,8 +756,7 @@ subroutine op0032()
 !     ------------------------------------------------------------------
     if (lcomod .or. lcoinf) then
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call asmpi_comm('FREE', mpicou)
     endif
 !

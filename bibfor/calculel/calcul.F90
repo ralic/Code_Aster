@@ -30,6 +30,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterc/indik8.h"
 #include "asterfort/alchlo.h"
 #include "asterfort/alrslt.h"
+#include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/caldbg.h"
@@ -56,7 +57,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 #include "asterfort/jexnum.h"
 #include "asterfort/kndoub.h"
 #include "asterfort/montee.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/nucalc.h"
@@ -159,8 +159,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !     -- POUR QUE LES MESURES DE TEMPS EN // SOIENT COMPREHENSIBLES
 !        PAR LES UTILISATEURS, IL FAUT FORCER UNE SYNCHRO AVANT LES
 !        MESURES :
-    call mpicm1('BARRIER', ' ', ibid, ibid, ibid,&
-                rbid, cbid)
+    call asmpi_barrier()
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
     call uttcpu('CPU.CALC.2', 'DEBUT', ' ')
 !
@@ -601,8 +600,7 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !     9- MESURE DU TEMPS CONSOMME :
 !     ----------------------------------
-    call mpicm1('BARRIER', ' ', ibid, ibid, ibid,&
-                rbid, cbid)
+    call asmpi_barrier()
     call uttcpu('CPU.CALC.2', 'FIN', ' ')
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
 !

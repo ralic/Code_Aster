@@ -41,10 +41,9 @@ subroutine op0045()
     implicit none
 !
 ! VARIABLES LOCALES
-#include "jeveux.h"
 #include "aster_types.h"
+#include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterc/getres.h"
 #include "asterc/getvid.h"
@@ -56,6 +55,8 @@ subroutine op0045()
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/ajlagr.h"
+#include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cresol.h"
 #include "asterfort/detrsd.h"
@@ -70,7 +71,6 @@ subroutine op0045()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
@@ -223,7 +223,7 @@ subroutine op0045()
     call asmpi_info(mpicow, mrang, mnbproc)
     rang = to_aster_int(mrang)
     nbproc = to_aster_int(mnbproc)
-    
+!
     call getvis('PARALLELISME_MACRO', 'TYPE_COM', 1, iarg, 1,&
                 typeco, l1)
     call getvis('PARALLELISME_MACRO', 'IPARA1_COM', 1, iarg, 1,&
@@ -258,8 +258,7 @@ subroutine op0045()
 !       --- LA FACTO DE LA DEMI-BANDE
         call asmpi_split_comm(mpicow, to_mpi_int(icom1), to_mpi_int(0), 'ipara1', mpicou)
         if (mpicow .eq. mpicou) ASSERT(.false.)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call asmpi_comm('SET', mpicou)
 !       --- RANG DANS LE SOUS-COMM MPICOU LIE A CHAQUE OCCURENCE
 !       --- MUMPS: RANGL
@@ -869,8 +868,7 @@ subroutine op0045()
     if (lcomod) then
 !       --- ON REMET LE COM WORLD POUR COMMUNIQUER NBVECT/NBFREQ
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
 !       --- EST-ON LE PROCESSUS MAITRE DU COM LOCAL: RANGL=0 ?
 !       --- SI OUI, ON ENVOI LES BONNES VALEURS DE NBVECT/NFREQ
 !       --- SUR LE COM GLOBAL MPICOW, SINON ON RENVOI ZERO POUR NE PAS
@@ -887,8 +885,7 @@ subroutine op0045()
         call mpicm1('MPI_SUM', 'I', 1, ibid, nfreqg,&
                     rbid, cbid)
 !         --- ON REMET LE COM LOCAL POUR LES FACTO ET SOLVES A SUIVRE
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call asmpi_comm('SET', mpicou)
     endif
 !     ------------------------------------------------------------------
@@ -1508,8 +1505,7 @@ subroutine op0045()
 !     ------------------------------------------------------------------
     if (lcomod) then
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call mpicm1('MPI_MIN', 'R', 1, ibid, ibid,&
                     omemin, cbid)
         call mpicm1('MPI_MIN', 'R', 1, ibid, ibid,&
@@ -1518,8 +1514,7 @@ subroutine op0045()
                     omemax, cbid)
         call mpicm1('MPI_MAX', 'R', 1, ibid, ibid,&
                     vpmax, cbid)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call asmpi_comm('SET', mpicou)
     endif
     call vpcntl(ctyp, modes, optiov, omemin, omemax,&
@@ -1556,8 +1551,7 @@ subroutine op0045()
 !     ------------------------------------------------------------------
     if (lcomod) then
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call asmpi_comm('FREE', mpicou)
     endif
 !      IF (LCPU) THEN

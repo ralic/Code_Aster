@@ -10,6 +10,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
+#include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/assma1.h"
@@ -40,7 +41,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
@@ -152,8 +152,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     dbg=.false.
     call jedbg2(idbgav, 0)
     call infniv(ifm, niv)
-    call mpicm1('BARRIER', ' ', ibid, ibid, ibid,&
-                rbid, cbid)
+    call asmpi_barrier()
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.1', 'DEBUT', ' ')
     call uttcpu('CPU.ASSE.2', 'DEBUT', ' ')
@@ -898,8 +897,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     if (dbg .and. (.not.lfeti)) call cheksd(matdev, 'SD_MATR_ASSE', iret)
 !
 !     CALL UTIMSD(6,-1,.FALSE.,.TRUE.,MATAS,1,' ')
-    call mpicm1('BARRIER', ' ', ibid, ibid, ibid,&
-                rbid, cbid)
+    call asmpi_barrier()
     call uttcpu('CPU.CALC.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.1', 'FIN', ' ')
     call uttcpu('CPU.ASSE.2', 'FIN', ' ')

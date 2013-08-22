@@ -35,10 +35,6 @@
 #include "aster_fort.h"
 #include "aster_utils.h"
 
-#ifdef _USE_MPI
-#include "mpi.h"
-#endif
-
 /*
  * Global variables registered by E_SUPERV.py (main python script)
  */
@@ -596,12 +592,10 @@ static PyObject* aster_mpi_info(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-    /*
-     * Get MPI informations (idem mpicm0.F)
-     */
+    /* Get MPI informations on the current communicator */
     PyObject *res;
     int rank, size;
-    aster_get_mpi_info(aster_get_comm_world(), &rank, &size);
+    aster_get_mpi_info(aster_get_current_comm(), &rank, &size);
     res = Py_BuildValue("ii", rank, size);
     return res;
 }
@@ -610,9 +604,7 @@ static PyObject* aster_mpi_warn(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-    /*
-     * call MPICMW
-     */
+    /* call MPICMW */
     try {
         CALL_MPICMW();
     }
@@ -628,30 +620,8 @@ static PyObject* aster_mpi_barrier(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-    /*
-     * Set a MPI barrier
-     */
-#ifdef _USE_MPI
-    int size=1;
-    INTEGER nbproc, iret, n0=0, ibid=0, nk=1;
-    DOUBLE rbid=0.;
-    char *valk;
-    MPI_Comm_size( MPI_COMM_WORLD, &size );
-    nbproc = (INTEGER)size;
-    try {
-        CALL_MPICHK( &nbproc, &iret );
-        if ( iret != 0 ) {
-            /* an exception should has been raised through MPISTP/U2MESG */
-            raiseExceptionString(PyExc_AssertionError, "MPICHK: Unexpected returned code.\n");
-        }
-    }
-    exceptAll {
-        printf("  Communication 'MPI_Barrier' cancelled.\n");
-        raiseException();
-    }
-    endTry();
-    MPI_Barrier( MPI_COMM_WORLD );
-#endif
+    /* Set a MPI barrier */
+    aster_set_mpi_barrier(aster_get_current_comm());
     Py_INCREF( Py_None );
     return Py_None;
 }

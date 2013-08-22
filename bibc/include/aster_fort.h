@@ -19,6 +19,7 @@
 #define ASTER_FORT_H
 
 #include "aster.h"
+#include "aster_mpi.h"
 
 /* *********************************************************************
  *
@@ -149,6 +150,9 @@ extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRI
 #endif
 
 /* routines interface MPI */
+#define CALL_ASMPI_BARRIER(a) CALLP(ASMPI_BARRIER,asmpi_barrier,a)
+extern void DEFP(ASMPI_BARRIER,asmpi_barrier,MPI_Fint *);
+
 #define CALL_MPICHK(a,b) CALLPP(MPICHK,mpichk,a,b)
 extern void DEFPP(MPICHK,mpichk,INTEGER *, INTEGER *);
 

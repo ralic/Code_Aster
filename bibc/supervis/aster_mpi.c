@@ -16,6 +16,22 @@
 /* ================================================================== */
 /* person_in_charge: mathieu.courtois at edf.fr */
 
+/* This module defines functions:
+ * - to manage the MPI communicators
+ * - to properly interrupt a MPI execution.
+ * 
+ * The communicators are managed in C, Fortran calls these functions.
+ * But all the communications are initiated from the Fortran subroutines.
+ * Example: Fortran calls asmpi_comm() here,
+ * but aster_set_mpi_barrier() calls asmpi_barrier() from asmpi_barrier.F90
+ * 
+ * Communicators are store in fortran as Code_Aster mpi_int (== MPI_Fint).
+ * They are converted to MPI_Comm with MPI_Comm_f2c((MPI_Fint)fortran_comm)
+ * 
+ * Naming convention:
+ *      aster_mpi_xxx : C functions and global variable
+ *      asmpi_xxx : Fortran functions
+ */
 #define USE_ASSERT
 
 #include "aster.h"
@@ -149,6 +165,16 @@ void aster_free_comm(aster_comm_t *node) {
     return;
 }
 
+void aster_set_mpi_barrier(aster_comm_t *node) {
+    /* Set a MPI barrier */
+#ifdef _USE_MPI
+    MPI_Fint comm;
+    comm = MPI_Comm_c2f(node->id);
+    CALL_ASMPI_BARRIER(&comm);
+#endif
+    return;
+}
+
 /* Access functions */
 aster_comm_t* _search_id(aster_comm_t *node, MPI_Comm *id) {
     /* Search for 'id' in 'node' and its childs
@@ -181,13 +207,7 @@ aster_comm_t* get_node_by_id(MPI_Comm *id) {
 
 /*
  *  Fortran interfaces - wrappers of the C functions
- * 
- * Communicators are store in fortrand as Code_Aster mpi_int (== MPI_Fint).
- * They are converted to MPI_Comm with MPI_Comm_f2c((MPI_Fint)fortran_comm)
- * 
- * Naming convention:
- *      aster_mpi_xxx : C functions and global variable
- *      asmpi_xxx : Fortran functions
+ *
  */
 void DEFSP(ASMPI_COMM, asmpi_comm,_IN char *action, STRING_SIZE lact,
                                 _INOUT MPI_Fint *comm) {

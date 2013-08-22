@@ -102,13 +102,13 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 #include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/freqom.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mesr.h"
@@ -357,8 +357,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !         --- ON REMPLACE LE COMM LOCAL PAR LE COMM WORLD
             call asmpi_info(mpicou, rangl)
             call asmpi_comm('SET', mpicow)
-            call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                        rbid, cbid)
+            call asmpi_barrier()
             call asmpi_info(mpicow, rang, nbproc)
 !         --- BUFFER DE COM K24C
 !         --- K24C(FREQUENCE_COURANTE)=NBFMIN OU MAX

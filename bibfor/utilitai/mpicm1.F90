@@ -4,7 +4,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !  FONCTION REALISEE : SUR-COUCHE MPI
 !
 !  FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
-!  (OU BIEN FAIRE UNE SIMPLE "BARRIERE" POUR SYNCHRONISER LES PROCS)
 !
 ! ARGUMENTS D'APPELS
 ! IN OPTMPI :
@@ -12,13 +11,12 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !      /'MPI_MIN'  == 'ALLREDUCE + MIN' (SEULEMENT 'R'/'I')
 !      /'MPI_SUM'  == 'ALLREDUCE + SUM'
 !
-!      /'BARRIER'  == 'BARRIER'
 !      /'REDUCE'   == 'REDUCE + SUM' : TOUS -> 0
 !      /'BCAST'    == 'BCAST'            : PROC DE RANG=BCRANK -> TOUS
 !      /'BCASTP'   == 'BCAST'PAR PAQUETS : PROC DE RANG=BCRANK -> TOUS
 !
-! IN   TYPSCA : /'I' /'R' /'C'  (SI OPTMPI /= 'BARRIER')
-! IN   NBV    : LONGUEUR DU VECTEUR V*  (SI OPTMPI /= 'BARRIER')
+! IN   TYPSCA : /'I' /'R' /'C'
+! IN   NBV    : LONGUEUR DU VECTEUR V*
 ! IN   BCRANK : RANG DU PROCESSUS MPI D'OU EMANE LE BCAST
 !                                        (SI OPTMPI='BCAST'/'BCASTP')
 ! IN   VI(*)  : VECTEUR D'ENTIERS A ECHANGER    (SI TYPSCA='I')
@@ -102,12 +100,6 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
     call mpichk(nbpro4, iret)
     if (iret .ne. 0) then
         call u2mesk('I', 'APPELMPI_83', 1, optmpi)
-        goto 9999
-    endif
-!
-    if (optmpi .eq. 'BARRIER') then
-!     ---------------------------------
-        call MPI_BARRIER(mpicou, iermpi)
         goto 9999
     endif
 !

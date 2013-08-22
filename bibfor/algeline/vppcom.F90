@@ -3,9 +3,11 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                   vectr, nconv, neq, typres)
     implicit none
 #include "aster_types.h"
+#include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
 #include "asterc/asmpi_split_comm.h"
+#include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/comatr.h"
 #include "asterfort/infniv.h"
@@ -13,7 +15,6 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/maxint.h"
-#include "asterfort/mpicm1.h"
 #include "asterfort/somint.h"
 #include "asterfort/vecink.h"
 #include "asterfort/vecint.h"
@@ -55,7 +56,6 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !     IN NEQ          :  IN   : TAILLE DU PROBLEME
 !     IN TYPRES       :  IN   : TYPE DE RESULTATS (DYNAMIQUE OU FLAMB)
 !     ----------------------------------------------------------------
-#include "jeveux.h"
 !
 !     --- VARIABLES LOCALES
     mpi_int :: rangl, rangll, mpicow, mpicou, mpico0, l1, l2
@@ -97,12 +97,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- DANS CE NEW COM MPICO0, LE RANG EST NOTE RANGLL. IL DOIT
 !       --- ETRE IDENTIQUE A ICOM1-1.
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
-!        IF (LCPU) THEN
-!          CALL MPICM1('BARRIER',K1BID,IBID,IBID,IBID,RBID,CBID)
-!          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-!        ENDIF
+        call asmpi_barrier()
         if (rangl .eq. 0) then
             l1=1
         else
@@ -139,8 +134,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- LES VECTEURS PROPRES
 !       --- PUIS COMM DES &&OP0045.RESU_R
 !       --- COMM DES &&OP0045.RESU_I ET K
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
         call asmpi_comm('SET', mpico0)
         if (rangl .eq. 0) then
 !         --- 2 BUFFERS: K24BUF POUR LE BCAST, LE K24BUS POUR SAUVE
@@ -179,8 +173,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       ----------------------------------------------------------------
 !       -- ON AFFECTE LE COMCOW POUR QUE TOUS LES PROCS S'ATTENDENT
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
 !        IF (LCPU) THEN
 !          CALL SYSTEM_CLOCK(IETFIN)
 !          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
@@ -214,8 +207,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       ----------------------------------------------------------------
 !       --- ON AFFECTE LE COMCOW POUR QUE TOUS LES PROCS S'ATTENDENT
         call asmpi_comm('SET', mpicow)
-        call mpicm1('BARRIER', k1bid, ibid, ibid, ibid,&
-                    rbid, cbid)
+        call asmpi_barrier()
 !        IF (LCPU) THEN
 !          CALL SYSTEM_CLOCK(IETFIN)
 !          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
