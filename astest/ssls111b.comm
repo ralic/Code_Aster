@@ -255,37 +255,27 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=18.25,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=18.253392646791,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=88.349999999999994,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=88.349245392827,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=100.09999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=100.13557637355,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=113.5,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=113.54997985419,
                    CRITERE='RELATIF',
                    ),
                 ),
           )
-
-# Sensibilite des resultats le long des aretes
-
-# IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L12',))
-# IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L14',))
-
 FIN();

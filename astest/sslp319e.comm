@@ -177,10 +177,10 @@ for i in range(1,NPS-1) :
 W=1000;
 sigma=1E6
 
-KIL_calc = [ 3.7940271283694E+07,  4.1939581591243E+07, 4.630956543046E+07 ]
-KIIL_calc = [-2164.5420169867, -1536.1472029192, -1144.1947386063 ] 
-KIR_calc = [ 3.7877442071324E+07,  4.1570656732814E+07, 4.6728543982413E+07 ]
-KIIR_calc =[2369.3436135991, 1512.5361847643,1094.2459684317 ] 
+KIL_calc  = [ 3.7940271283694E+07,  4.1939582488841E+07, 4.6309570654813E+07 ]
+KIIL_calc = [-2164.5420169867,      -1536.1472016011,   -1144.1947282099     ] 
+KIR_calc  = [ 3.7877442071324E+07,  4.1570657208391E+07, 4.6728542572778E+07 ]
+KIIR_calc = [ 2369.3436136001,      1512.5361834085,     1094.2459558119     ] 
 for i in range(1,NPS-1) :
    
    a=a0+da_fiss*(i-1)
@@ -209,7 +209,6 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              TOLE_MACHINE=6.E-05,
               VALE_CALC=KIIL_calc[i-1] )
 
    TEST_TABLE(TABLE=SIFR[i],
@@ -227,7 +226,6 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              TOLE_MACHINE=6.E-05,
               VALE_CALC=KIIR_calc[i-1]  )
 
 

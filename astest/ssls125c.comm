@@ -112,25 +112,6 @@ MOD_1=MODE_ITER_SIMULT( MATR_RIGI=MATASS_1,
                                        ),
                         )
 
-
-TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
-                   NUME_MODE=1,
-                   RESULTAT=MOD_1,
-                   VALE_CALC=-647176,
-                   TOLE_MACHINE=1.E-3,),
-                _F(PARA='CHAR_CRIT',
-                   NUME_MODE=2,
-                   RESULTAT=MOD_1,
-                   VALE_CALC=-287912,
-                   TOLE_MACHINE=1.E-3,),
-                _F(PARA='CHAR_CRIT',
-                   NUME_MODE=3,
-                   RESULTAT=MOD_1,
-                   VALE_CALC=-71996,
-                   TOLE_MACHINE=1.E-3,),
-                ),
-          )
-
 TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
                    NUME_MODE=1,
                    REFERENCE='ANALYTIQUE',

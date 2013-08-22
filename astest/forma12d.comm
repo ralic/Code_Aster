@@ -145,12 +145,10 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          MARQUEUR=0,),))
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.4478489999999998E-4,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=0.91000000000000003,
                          FONCTION=DEPMOCO,
                          ),
                       _F(VALE_CALC=1.8118029999999999E-4,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=0.91000000000000003,
                          FONCTION=DEPMOSA,
                          ),

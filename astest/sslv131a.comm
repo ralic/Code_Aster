@@ -82,8 +82,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=MEST_PG,
                   NOM_CHAM='SIEF_ELGA',
-                  VALE_CALC=2.6674507050037E5,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=2.6661176461806E5,),
           )
 
 CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA'),ENERGIE=('ENEL_ELGA','ENEL_ELNO'))

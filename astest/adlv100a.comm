@@ -71,40 +71,33 @@ MODES=MODE_ITER_INV( MATR_RIGI=MATASK,  MATR_MASS=MATASM,
                             )
 
 
-MASSES=POST_ELEM(
-                             MODELE=COLONNE,
-                         CHAM_MATER=CHAMPMAT,
-                          MASS_INER=_F(
-                                      TOUT = 'OUI')
+MASSES=POST_ELEM( MODELE=COLONNE,
+                  CHAM_MATER=CHAMPMAT,
+                  MASS_INER=_F(TOUT = 'OUI')
                      )
 
 TEST_TABLE(
            VALE_CALC=0.61272499999999996,
-
            NOM_PARA='MASSE',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=0.054868109999999998,
-           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='CDG_X',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=2.55302083E-4,
-
            NOM_PARA='IX_G',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=3.1984386000000003E-4,
-           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='IY_G',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=3.1984386000000003E-4,
-           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='IZ_G',
            TABLE=MASSES,)
 
@@ -112,10 +105,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODES,
                   VALE_CALC=13.827697948,
-                  VALE_REFE=13.82,
-                  REFERENCE='NON_DEFINI',
+                  VALE_REFE=13.8285,
+                  REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.0E-3,),
           )
 
 FIN()

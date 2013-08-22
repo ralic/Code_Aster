@@ -58,7 +58,6 @@ VECTAS1=RESOUDRE( reuse=VECTAS1,  MATR=MATAS1, CHAM_NO=VECTAS1 )
 
 TEST_RESU(CHAM_NO=_F(NOEUD='NO1',
                      VALE_CALC_C=(1.8869534967818999+4.4379693694298998j),
-                     TOLE_MACHINE=1.E-3,
                      NOM_CMP='PRES',
                      CHAM_GD=VECTAS1,),
           )
@@ -84,7 +83,6 @@ VECTAS1b=RESOUDRE( reuse=VECTAS1b,  MATR=MATAS1b, CHAM_NO=VECTAS1b, INFO=1,
 
 TEST_RESU(CHAM_NO=_F(NOEUD='NO1',
                      VALE_CALC_C=(1.8869534967818999+4.4379693694298998j),
-                     TOLE_MACHINE=1.E-3,
                      NOM_CMP='PRES',
                      CHAM_GD=VECTAS1b,),
           )

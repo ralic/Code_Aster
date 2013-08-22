@@ -479,9 +479,6 @@ CALC_CHAMP(reuse=MSLIN,
 
 IMPR_RESU(RESU=_F(RESULTAT=MSLIN,NOM_CHAM=('SIEF_ELGA','SIEQ_ELGA')))
 
-
-#ENGENDRE_TEST (  CO = MSLIN )
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MSLIN,
@@ -728,8 +725,6 @@ CALC_CHAMP(reuse=MSLI2,DEFORMATION='EPSI_NOEU',CRITERES=('SIEQ_NOEU','EPEQ_NOEU'
                       PRECISION=1.000000000E-03,
                         CRITERE='ABSOLU',
                            INST=11.5   )
-
-#ENGENDRE_TEST (  CO = MSLI2, )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -1070,9 +1065,6 @@ CHAMEL7=CALC_CHAM_ELEM(        MODELE=MO,
                              GROUP_MA='GMA8',
                              OPTION='COOR_ELGA' )
 
-#ENGENDRE_TEST (  CO = (CHAMNO1, CHAMNO2 ), )
-#ENGENDRE_TEST (  CO = (CHAMEL1,CHAMEL2,CHAMEL3,CHAMEL4,CHAMEL5,CHAMEL6,CHAMEL7 ), )
-
 TEST_RESU(CHAM_NO=_F(
                      TYPE_TEST='SOMM_ABS',
                      CHAM_GD=CHAMNO1,
@@ -1162,8 +1154,6 @@ TABLE2=POST_ELEM(       RESULTAT=MSLI2,
                           ENER_POT=(_F( TOUT = 'OUI',),
                                     _F(GROUP_MA = 'GMA8',),
                                     _F(MAILLE = ('M44', 'M99',)) ))
-
-#ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
 
 TEST_TABLE(
                    VALE_CALC=   4.9864193751426E+05,
@@ -1378,8 +1368,6 @@ TABLE3=POST_RELEVE_T( ACTION=(   _F(  NOEUD = ( 'N109', 'N110', 'N111',
                                     OPERATION = 'MOYENNE',
                                     MOYE_NOEUD = 'NON')) )
 
-#ENGENDRE_TEST (  CO=TABLE3 )
-
 TEST_TABLE(
                    VALE_CALC=   29.289100519835,
            NOM_PARA='DX',
@@ -1452,7 +1440,6 @@ TABLE4=CALC_TABLE(TABLE=TABL4A,
                   ACTION=_F(OPERATION='COMB',TABLE=TABL4B),)
 
 IMPR_TABLE(TABLE=TABLE4)
-#ENGENDRE_TEST (  CO=TABLE4 )
 
 TEST_TABLE(
                    VALE_CALC=   29.289100519391,
@@ -1523,8 +1510,7 @@ T_M1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO',NUME_ORDRE = 2,
                             DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(
-                   VALE_CALC=   -3.9335317344287,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -3.9335317344287,
            NOM_PARA='TR_DIR_1',
            TABLE=T_M1,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1532,8 +1518,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   -2.9847166907625,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -2.9847166907625,
            NOM_PARA='TR_DIR_1',
            TABLE=T_M1,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1541,8 +1526,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   -5.6636119446539,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -5.6636119446539,
            NOM_PARA='TR_DIR_2',
            TABLE=T_M1,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1550,17 +1534,12 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   -3.6014208784401,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -3.6014208784401,
            NOM_PARA='TR_DIR_2',
            TABLE=T_M1,
            FILTRE=_F(NOM_PARA='QUANTITE',
                      VALE_K='MAXIMUM',),
            )
-
-#IMPR_TABLE(TABLE=T_E1);
-
-#IMPR_TABLE(TABLE=T_M1);
 
 # -> TRAC_NOR
 
@@ -1577,8 +1556,7 @@ T_M2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO',NUME_ORDRE = 2,
                             DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(
-                   VALE_CALC=   2.9698101335534,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   2.9698101335534,
            NOM_PARA='TR_NOR_1',
            TABLE=T_M2,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1586,8 +1564,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   4.4238477550511,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   4.4238477550511,
            NOM_PARA='TR_NOR_1',
            TABLE=T_M2,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1595,8 +1572,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   -8.5708674248638,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -8.5708674248638,
            NOM_PARA='TR_NOR_2',
            TABLE=T_M2,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1604,19 +1580,12 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   -5.1770300678268,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -5.1770300678268,
            NOM_PARA='TR_NOR_2',
            TABLE=T_M2,
            FILTRE=_F(NOM_PARA='QUANTITE',
                      VALE_K='MAXIMUM',),
            )
-
-#IMPR_TABLE(TABLE=T_E2);
-
-#IMPR_TABLE(TABLE=T_M2);
-
-
 
 # -> TOUT_CMP
 
@@ -1631,8 +1600,7 @@ T_M3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
                             DISTANCE_MAX=0.001,),),)
 
 TEST_TABLE(
-                   VALE_CALC=   -25.715055330366,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -25.715055330366,
            NOM_PARA='DX',
            TABLE=T_M3,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1640,8 +1608,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   -20.88727834339,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   -20.88727834339,
            NOM_PARA='DX',
            TABLE=T_M3,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1649,8 +1616,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   33.381706683719,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   33.381706683719,
            NOM_PARA='DY',
            TABLE=T_M3,
            FILTRE=_F(NOM_PARA='QUANTITE',
@@ -1658,17 +1624,12 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-                   VALE_CALC=   59.662096612705,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=   59.662096612705,
            NOM_PARA='DY',
            TABLE=T_M3,
            FILTRE=_F(NOM_PARA='QUANTITE',
                      VALE_K='MAXIMUM',),
            )
-
-#IMPR_TABLE(TABLE=T_E3);
-
-#IMPR_TABLE(TABLE=T_M3);
 
 FIN( )
 #

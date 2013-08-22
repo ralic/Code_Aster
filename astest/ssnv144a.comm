@@ -210,7 +210,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1157',
                   NOM_CMP='DX',
                   VALE_CALC=6.5128486471321E-4,
-                  TOLE_MACHINE=6.4900000000000005E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -222,7 +221,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1157',
                   NOM_CMP='DY',
                   VALE_CALC=1.0815647473719E-3,
-                  TOLE_MACHINE=9.4399999999999998E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -267,7 +265,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1157',
                   NOM_CMP='DRZ',
                   VALE_CALC=5.8465777475232E-4,
-                  TOLE_MACHINE=6.5099999999999999E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -284,7 +281,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1104',
                   NOM_CMP='DX',
                   VALE_CALC=1.2884465139419E-4,
-                  TOLE_MACHINE=1.88E-06,
                   CRITERE='RELATIF',
                   ),
           )
@@ -296,7 +292,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1104',
                   NOM_CMP='DY',
                   VALE_CALC=1.0942661081554E-3,
-                  TOLE_MACHINE=3.1499999999999999E-06,
                   CRITERE='RELATIF',
                   ),
           )
@@ -342,7 +337,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1104',
                   NOM_CMP='DRZ',
                   VALE_CALC=6.8174063698091E-4,
-                  TOLE_MACHINE=5.8100000000000003E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -358,7 +352,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1109',
                   NOM_CMP='DX',
                   VALE_CALC=4.0184624841384E-4,
-                  TOLE_MACHINE=1.61E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -370,7 +363,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1109',
                   NOM_CMP='DY',
                   VALE_CALC=1.0842967853686E-3,
-                  TOLE_MACHINE=2.92E-06,
                   CRITERE='RELATIF',
                   ),
           )
@@ -382,7 +374,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1109',
                   NOM_CMP='DZ',
                   VALE_CALC=6.3460688147309E-06,
-                  TOLE_MACHINE=8.6999999999999998E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -394,7 +385,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1109',
                   NOM_CMP='DRX',
                   VALE_CALC=-8.0697657849211E-06,
-                  TOLE_MACHINE=7.7799999999999995E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -406,7 +396,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1109',
                   NOM_CMP='DRY',
                   VALE_CALC=-4.8518675390296E-05,
-                  TOLE_MACHINE=5.4499999999999996E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -418,7 +407,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1109',
                   NOM_CMP='DRZ',
                   VALE_CALC=-9.4264584405526E-05,
-                  TOLE_MACHINE=6.6300000000000005E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -434,7 +422,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1099',
                   NOM_CMP='DX',
                   VALE_CALC=4.0184624841399E-4,
-                  TOLE_MACHINE=1.61E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -447,7 +434,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1099',
                   NOM_CMP='DY',
                   VALE_CALC=1.0842967853685E-3,
-                  TOLE_MACHINE=2.92E-06,
                   CRITERE='RELATIF',
                   ),
           )
@@ -459,7 +445,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1099',
                   NOM_CMP='DZ',
                   VALE_CALC=-6.3460688156113E-06,
-                  TOLE_MACHINE=8.6900000000000004E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -471,7 +456,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1099',
                   NOM_CMP='DRX',
                   VALE_CALC=8.0697657848423E-06,
-                  TOLE_MACHINE=7.7799999999999995E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -483,7 +467,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1099',
                   NOM_CMP='DRY',
                   VALE_CALC=4.8518675390613E-05,
-                  TOLE_MACHINE=5.3499999999999996E-07,
                   CRITERE='RELATIF',
                   ),
           )
@@ -495,7 +478,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOEUD='N1099',
                   NOM_CMP='DRZ',
                   VALE_CALC=-9.4264584407556E-05,
-                  TOLE_MACHINE=6.6300000000000005E-08,
                   CRITERE='RELATIF',
                   ),
           )
@@ -595,7 +577,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1157',
@@ -609,7 +591,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1157',
@@ -656,7 +638,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1157',
@@ -675,19 +657,21 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 ###########
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1104',
                   NOM_CMP='DX',
-                  VALE_CALC=1.2883E-4,
-                  TOLE_MACHINE=2.7999999999999998E-4,
+                  VALE_REFE=1.2883E-4,
+                  VALE_CALC=1.2880903824562E-4,
+                  PRECISION=2.8E-4,
                   CRITERE='RELATIF',
                   ),
           )
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1104',
@@ -735,7 +719,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1104',
@@ -753,7 +737,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 ###########
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -767,7 +751,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -781,19 +765,21 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
                   NOM_CMP='DZ',
-                  VALE_CALC=6.3466000000000004E-06,
-                  TOLE_MACHINE=2.2000000000000001E-4,
+                  VALE_REFE=6.3466E-06,
+                  VALE_CALC=6.3473884471008E-06,
+                  PRECISION=2.2E-4,
                   CRITERE='RELATIF',
                   ),
           )
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -807,7 +793,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -821,7 +807,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -838,7 +824,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -853,7 +839,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -867,19 +853,21 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
                   NOM_CMP='DZ',
-                  VALE_CALC=-6.3466000000000004E-06,
-                  TOLE_MACHINE=2.2000000000000001E-4,
+                  VALE_REFE=-6.3466E-06,
+                  VALE_CALC=-6.3473884481386E-06,
+                  PRECISION=2.2E-4,
                   CRITERE='RELATIF',
                   ),
           )
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -893,7 +881,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -907,7 +895,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1P,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -981,7 +969,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1157',
@@ -995,7 +983,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1157',
@@ -1042,7 +1030,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1157',
@@ -1061,7 +1049,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 ###########
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1104',
@@ -1075,7 +1063,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1104',
@@ -1128,7 +1116,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   NOEUD='N1104',
                   NOM_CMP='DRZ',
                   VALE_CALC=6.8160303115198E-4,
-                  TOLE_MACHINE=2.1000000000000001E-4,
                   CRITERE='RELATIF',
                   ),
           )
@@ -1139,7 +1126,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 ###########
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -1153,7 +1140,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -1167,7 +1154,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -1181,7 +1168,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -1195,7 +1182,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -1209,7 +1196,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1109',
@@ -1227,7 +1214,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 #
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -1242,7 +1229,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 #
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -1256,7 +1243,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -1270,7 +1257,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -1284,7 +1271,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -1298,7 +1285,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=COQUE1E,
                   NOM_CHAM='DEPL',
                   NOEUD='N1099',
@@ -1310,8 +1297,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   ),
           )
 
-#
-#
-#
 FIN( )
-#

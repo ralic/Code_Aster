@@ -494,7 +494,6 @@ for j in range(22):
                           NOM_CMP = NPAR[j],
                           MAILLE = 'M60',
                           POINT = PO[j],
-                          TOLE_MACHINE = 1.0E-10,
                           CRITERE = CTEST[j],
                           VALE_CALC= RESU1[j], ),
                 )
@@ -519,7 +518,6 @@ for j in range(22):
                           NOM_CMP = NPAR[j],
                           MAILLE = 'M60',
                           POINT = PO[j],
-                          TOLE_MACHINE = 1.0E-10,
                           CRITERE = CTEST[j],
                           VALE_CALC = RESU1[j] ),
 
@@ -546,7 +544,6 @@ for j in range(22):
    TEST_RESU(CHAM_NO=( _F( CHAM_GD = FANNL1,
                         NOM_CMP = NPAR[j],
                         NOEUD = 'N214',
-                        TOLE_MACHINE = 1.0E-10,
                         CRITERE = CTEST[j],
                         VALE_CALC = RESU2[j] ),
                         ), ) 
@@ -569,7 +566,6 @@ for j in range(22):
    TEST_RESU(CHAM_NO=( _F( CHAM_GD = FANNL2,
                         NOM_CMP = NPAR[j],
                         NOEUD = 'N214',
-                        TOLE_MACHINE = 1.0E-10,
                         CRITERE = CTEST[j],
                         VALE_CALC = RESU2[j] ),
                         ), )
@@ -578,7 +574,7 @@ for j in range(22):
 FNLAX = [None]*2
 PROJ = ['UN_AXE','DEUX_AXES']
 NPARA = ['VNM1X','VNM1Y','VNM1Z','ENDO1']
-RESUA = [0.38537838350012,0.83966474984014,0.38268343236509, 9.2799099716954E-05 ] 
+RESUA  = [0.38537838350012,0.83966474984014,0.38268343236509, 9.2799099716954E-05 ] 
 for i in range(2):
           
    FNLAX[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -597,7 +593,6 @@ for i in range(2):
       TEST_RESU(CHAM_NO=( _F( CHAM_GD = FNLAX[i],
                         NOM_CMP = NPARA[j],
                         NOEUD = 'N214',
-                        TOLE_MACHINE = 1.0E-4,
                         VALE_CALC = RESUA[j], ),
                 )
           )
@@ -621,7 +616,6 @@ for j in range(4):
    TEST_RESU(CHAM_NO=( _F( CHAM_GD = FNLAFOR,
                      NOM_CMP = NPARA[j],
                      NOEUD = 'N214',
-                     TOLE_MACHINE = 1.0E-4,
                      VALE_CALC = RESUA[j], ),
              )
        )

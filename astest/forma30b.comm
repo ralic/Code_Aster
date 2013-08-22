@@ -359,8 +359,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   RESULTAT=TEMPE2,
                   NOM_CHAM='TEMP',
                   NOM_CMP='TEMP',
-                  VALE_CALC=100,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=99.999283381384,
                   ),
           )
 

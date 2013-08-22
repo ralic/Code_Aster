@@ -144,13 +144,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='SIXX',
            TABLE=CONT,)
 
-TEST_TABLE(
-           VALE_CALC=1.7538862310515E6,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='SIXX',
-           TABLE=CONT,
-           )
-
 CONT2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='CONT2',
                              RESULTAT=RESUSTA,

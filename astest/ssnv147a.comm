@@ -165,15 +165,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=11,
                    RESULTAT=REPONSE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=9.2499999999999999E-05,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=9.2499999999999999E-05,),
                 _F(NUME_ORDRE=11,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    VALE_CALC=0.5,
-                   TOLE_MACHINE=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=11,
                    POINT=1,
@@ -181,14 +179,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=11,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.96428571428599996,
-                   TOLE_MACHINE=1.E-3,
                    MAILLE='M1',),
                 ),
           )
 
 TEST_TABLE(
            VALE_CALC=11.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='INST',
            TABLE=PILO,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -223,7 +219,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 FIN()
-#
-#
-#
-#
+

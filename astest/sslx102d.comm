@@ -78,8 +78,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.01925,
-                  TOLE_MACHINE=1.E-3,),
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=0.02,
+                  VALE_CALC=0.019240189799404,
+                  PRECISION=4.E-2,),
           )
 
 # FLEXION HORS PLAN
@@ -111,8 +113,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-0.015599999999999999,
-                  TOLE_MACHINE=1.E-3,),
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=-0.015657,
+                  VALE_CALC=-0.015601395376443,
+                  PRECISION=4.E-3,),
           )
 
 FIN()

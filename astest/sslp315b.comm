@@ -152,7 +152,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=20.616845352176,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='COOR_Y',
            TABLE=TAB,
            )

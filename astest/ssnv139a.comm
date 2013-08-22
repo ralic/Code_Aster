@@ -48,15 +48,10 @@ MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, VERIF='MAILLE',
 #
 
 CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,
-#
-
-                          DDL_IMPO=_F( GROUP_NO = 'G_41',  DX = 0., DY = 0., DZ = 0.,
-                                            DRX = 0., DRY = 0., DRZ = 0.),
-#
-                  FORCE_NODALE=_F(  GROUP_NO = 'G_10',  FZ = -1.E0)
-#
+                        DDL_IMPO=_F( GROUP_NO = 'G_41',  DX = 0., DY = 0., DZ = 0.,
+                                     DRX = 0., DRY = 0., DRZ = 0.),
+                        FORCE_NODALE=_F(  GROUP_NO = 'G_10',  FZ = -1.E0)
                   )
-
 #
 
 CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
@@ -67,43 +62,31 @@ CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
 
 #
 
-D_FONC=DEFI_FONCTION(
-                            NOM_PARA='INST',
-                                VALE=( 0.,   0.,
-                                       500., 500.,
-                                     )
-                         )
-
+D_FONC=DEFI_FONCTION(    NOM_PARA='INST',
+                         VALE=( 0.,   0.,
+                               500., 500., ) )
 #
 #
 
 L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
-#
                             _F(  JUSQU_A = 250., NOMBRE = 10),
                             _F(  JUSQU_A = 500., NOMBRE = 4))
-# POUR DEPUIS 5.4.8. INTERVALLE : ( JUSQU_A : 500. NOMBRE  : 15 )
-#
                          )
 
 #
 
 NONLIN=STAT_NON_LINE(
-                            MODELE=MODELE_1,
-                        CHAM_MATER=CH_MAT_1,
-                         CARA_ELEM=CARAC_1,
-                             EXCIT=_F(
-                CHARGE = CHARGE_1,
-                FONC_MULT = D_FONC),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS',
-                DEFORMATION = 'GROT_GDEP'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 100,
-                RESI_GLOB_RELA = 1.E-6)
+                MODELE=MODELE_1,
+                CHAM_MATER=CH_MAT_1,
+                CARA_ELEM=CARAC_1,
+                EXCIT=_F( CHARGE = CHARGE_1,
+                          FONC_MULT = D_FONC),
+                COMP_ELAS=_F( RELATION = 'ELAS',
+                              DEFORMATION = 'GROT_GDEP'),
+                INCREMENT=_F(  LIST_INST = L_INST),
+                NEWTON=_F(  REAC_ITER = 1),
+                CONVERGENCE=_F(   ITER_GLOB_MAXI = 100,
+                                  RESI_GLOB_RELA = 1.E-6)
               )
 
 #
@@ -123,10 +106,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=-39.025971681,
-                  VALE_REFE=-38.069000000000003,
-                  REFERENCE='NON_DEFINI',
+                  VALE_REFE=-38.069,
+                  REFERENCE='SOURCE_EXTERNE',
                   CRITERE='RELATIF',
-                  PRECISION=0.025999999999999999,),
+                  PRECISION=0.026,),
           )
 
 #
@@ -140,8 +123,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-72.186491696,
-                  VALE_REFE=-72.409000000000006,
-                  REFERENCE='NON_DEFINI',
+                  VALE_REFE=-72.409,
+                  REFERENCE='SOURCE_EXTERNE',
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
@@ -156,14 +139,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   GROUP_NO='G_10',
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=-39.025971681,
-                  VALE_REFE=-39.020000000000003,
+                  VALE_REFE=-39.02,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3,
+                  PRECISION=5.0E-3,
                   ),
           )
 
@@ -174,14 +157,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   GROUP_NO='G_10',
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-72.186491696,
-                  VALE_REFE=-72.180000000000007,
+                  VALE_REFE=-72.18,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3,
+                  PRECISION=5.0E-3,
                   ),
           )
 
@@ -204,10 +187,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=14,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=-54.326141807,
-                  VALE_REFE=-52.002000000000002,
-                  REFERENCE='NON_DEFINI',
+                  VALE_REFE=-52.002,
+                  REFERENCE='SOURCE_EXTERNE',
                   CRITERE='RELATIF',
-                  PRECISION=0.070000000000000007,),
+                  PRECISION=0.07,),
           )
 
 #
@@ -223,7 +206,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=14,
                   NOM_CMP='DZ',
                   VALE_CALC=-81.033097263,
                   VALE_REFE=-80.733999999999995,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   CRITERE='RELATIF',
                   PRECISION=0.035999999999999997,),
           )
@@ -237,14 +220,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=14,
 
 TEST_RESU(RESU=_F(NUME_ORDRE=14,
                   GROUP_NO='G_10',
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=-54.326141807,
                   VALE_REFE=-54.32,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3,
+                  PRECISION=5.0E-3,
                   ),
           )
 
@@ -256,14 +239,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=14,
 
 TEST_RESU(RESU=_F(NUME_ORDRE=14,
                   GROUP_NO='G_10',
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-81.033097263,
-                  VALE_REFE=-81.030000000000001,
+                  VALE_REFE=-81.03,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3,
+                  PRECISION=5.0E-3,
                   ),
           )
 

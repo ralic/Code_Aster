@@ -106,8 +106,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DAMG',
-                  VALE_CALC=0.048250000000000001,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=0.048249320532956,
                   ),
           )
 
@@ -116,8 +115,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DAMG',
-                  VALE_CALC=0.23794000000000001,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=0.23793704656012,
                   ),
           )
 

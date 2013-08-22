@@ -77,26 +77,22 @@ TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='SIXX',
                       TYPE_TEST='MAX',
                       CHAM_GD=DEPLVER,
-                      VALE_CALC=5.988000E6,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=5.9882893584172E6,),
                    _F(
                       NOM_CMP='SIXX',
                       TYPE_TEST='MIN',
                       CHAM_GD=DEPLVER,
-                      VALE_CALC=-2.42600E5,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=-2.426971690738E5,),
                    _F(
                       NOM_CMP='SIYY',
                       TYPE_TEST='MAX',
                       CHAM_GD=DEPLVER,
-                      VALE_CALC=9.66600E5,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=9.6669723414385E5,),
                    _F(
                       NOM_CMP='SIYY',
                       TYPE_TEST='MIN',
                       CHAM_GD=DEPLVER,
-                      VALE_CALC=-2.072000E6,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=-2.0725694963476E6,),
                    ),
           )
 

@@ -157,7 +157,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-29.061308654,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=29.100000000000001,
+                   PRECISION=29.1,
                    MAILLE='M4',),
                 ),
           )

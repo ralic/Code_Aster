@@ -335,27 +335,21 @@ EFF1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
 # REFERENCE : BICOUCHE
 # ______________________________________________________________________
 #
-#
-#
-
-
 TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='DX',
                       GROUP_NO='A4',
                       CHAM_GD=DEP1,
-                      VALE_CALC=-1.939E-06,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=-1.9395952885058E-06,),
                    _F(
                       NOM_CMP='DY',
                       GROUP_NO='A4',
                       CHAM_GD=DEP1,
-                      VALE_CALC=-1.1489999999999999E-06,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=-1.1501151135298E-06,),
                    _F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DZ',
                       GROUP_NO='A4',
-                      PRECISION=6.0000000000000001E-3,
+                      PRECISION=6.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC=-2.22144037E-04,
                       VALE_REFE=-2.2091E-4,),
@@ -363,7 +357,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DRX',
                       GROUP_NO='A4',
-                      PRECISION=6.0000000000000001E-3,
+                      PRECISION=6.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC=-6.12403192E-05,
                       VALE_REFE=-6.0930200000000002E-05,),
@@ -371,7 +365,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DRY',
                       GROUP_NO='A4',
-                      PRECISION=4.0000000000000001E-3,
+                      PRECISION=4.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC= 1.30156576E-04,
                       VALE_REFE=1.2972790000000001E-4,),
@@ -379,13 +373,12 @@ TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='DX',
                       GROUP_NO='A3',
                       CHAM_GD=DEP1,
-                      VALE_CALC=-2.4385E-06,
-                      TOLE_MACHINE=1.E-3,),
+                      VALE_CALC=-2.4402197776075E-06,),
                    _F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DY',
                       GROUP_NO='A3',
-                      PRECISION=5.0000000000000001E-3,
+                      PRECISION=5.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC=-2.34787443E-07,
                       VALE_REFE=-2.3382000000000001E-07,),
@@ -393,7 +386,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DZ',
                       GROUP_NO='A3',
-                      PRECISION=4.0000000000000001E-3,
+                      PRECISION=4.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC=-1.59188597E-03,
                       VALE_REFE=-1.5864E-3,),
@@ -401,7 +394,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DRX',
                       GROUP_NO='A3',
-                      PRECISION=3.0000000000000001E-3,
+                      PRECISION=3.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC=-1.26733226E-04,
                       VALE_REFE=-1.2638999999999999E-4,),
@@ -409,7 +402,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='DRY',
                       GROUP_NO='A3',
-                      PRECISION=4.0000000000000001E-3,
+                      PRECISION=4.0E-3,
                       CHAM_GD=DEP1,
                       VALE_CALC= 1.41687124E-04,
                       VALE_REFE=1.4127000000000001E-4,),
@@ -420,7 +413,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='NXX',
                       GROUP_NO='A1',
-                      PRECISION=3.0000000000000001E-3,
+                      PRECISION=3.0E-3,
                       CHAM_GD=EFF1,
                       VALE_CALC= 9.88616092E+03,
                       VALE_REFE=9859.0274822079991,),
@@ -428,7 +421,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='NYY',
                       GROUP_NO='A1',
-                      PRECISION=5.0000000000000001E-3,
+                      PRECISION=5.0E-3,
                       CHAM_GD=EFF1,
                       VALE_CALC= 6.38925912E+03,
                       VALE_REFE=6360.5527905597,),
@@ -444,7 +437,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='MXX',
                       GROUP_NO='A1',
-                      PRECISION=5.0000000000000001E-3,
+                      PRECISION=5.0E-3,
                       CHAM_GD=EFF1,
                       VALE_CALC= 2.12357492E+04,
                       VALE_REFE=2.1163952251174E4,),
@@ -452,7 +445,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='MYY',
                       GROUP_NO='A1',
-                      PRECISION=5.0000000000000001E-3,
+                      PRECISION=5.0E-3,
                       CHAM_GD=EFF1,
                       VALE_CALC= 1.50083740E+04,
                       VALE_REFE=1.4941006565207999E4,),
@@ -468,7 +461,7 @@ TEST_RESU(CHAM_NO=(_F(
                       REFERENCE='NON_DEFINI',
                       NOM_CMP='QX',
                       GROUP_NO='A1',
-                      PRECISION=6.0000000000000001E-3,
+                      PRECISION=6.0E-3,
                       CHAM_GD=EFF1,
                       VALE_CALC=-2.55152849E+03,
                       VALE_REFE=-2565.3852320310998,),
@@ -484,49 +477,36 @@ TEST_RESU(CHAM_NO=(_F(
           )
 
 #
-#
-
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODE1,
-                   VALE_CALC=1.512356,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=1.5123562115742,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=MODE1,
-                   VALE_CALC=6.3733979999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=6.3733984899599,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
                    PARA='FREQ',
                    RESULTAT=MODE1,
-                   VALE_CALC=12.501099999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=12.501147423636,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    RESULTAT=MODE1,
-                   VALE_CALC=25.46726,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=25.467268292844,
                    CRITERE='RELATIF',
                    ),
                 ),
           )
-
 # ______________________________________________________________________
 # VALIDATION : 2 PLAQUES EXCENTREES
 # ______________________________________________________________________
 #
-#
-#
-#
-
-
 TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
                       NOM_CMP='DX',
                       GROUP_NO='A4',
@@ -658,11 +638,7 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
                       VALE_REFE=1792.8625494416999,),
                    ),
           )
-
 #
-#
-
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='AUTRE_ASTER',
@@ -698,11 +674,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-#
-#
-#
+FIN()
 
-
-FIN();
-#
-#

@@ -316,14 +316,12 @@ ERREEN0=FORMULE(VALE='eren0*1.',NOM_PARA='BIDON')
 ERREFL4=FORMULE(VALE='erfl4*1.',NOM_PARA='BIDON')
 ERREEN4=FORMULE(VALE='eren4*1.',NOM_PARA='BIDON')
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.10692929599999999,
-                         TOLE_MACHINE=1.E-4,
                          CRITERE='RELATIF',
                          VALE_PARA=0.0,
                          NOM_PARA='BIDON',
                          FONCTION=ERREFL0,
                          ),
                       _F(VALE_CALC=0.125637002,
-                         TOLE_MACHINE=1.E-4,
                          CRITERE='RELATIF',
                          VALE_PARA=0.0,
                          NOM_PARA='BIDON',

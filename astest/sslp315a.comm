@@ -144,15 +144,15 @@ TAB = POST_RELEVE_T(ACTION=_F(INTITULE='Table pour coordonnees du fond',
 
                                             
 TEST_TABLE(
-           VALE_CALC=42.139699999999998,
+           VALE_CALC=42.139730377284,
+           TOLE_MACHINE=2.E-5,          # TODO TOLE_MACHINE
            NOM_PARA='COOR_X',
-           TOLE_MACHINE=1.5E-5,
            TABLE=TAB,
            )
 
 TEST_TABLE(
-           VALE_CALC=20.603760000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=20.603760177887,
+           TOLE_MACHINE=1.E-5,          # TODO TOLE_MACHINE
            NOM_PARA='COOR_Y',
            TABLE=TAB,
            )

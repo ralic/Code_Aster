@@ -332,7 +332,6 @@ Vlff=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 TEST_TABLE(
            VALE_CALC=2.10962E-3,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='V1',
            TABLE=Vlff,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -341,7 +340,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=1.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='V2',
            TABLE=Vlff,
            FILTRE=_F(NOM_PARA='NOEUD',

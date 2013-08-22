@@ -184,7 +184,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DZ',
                   VALE_CALC=-9.27993188E-05,
                   VALE_REFE=-9.2592592592592615E-05,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.0E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -193,7 +193,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2A,
                   NOM_CHAM='EFGE_NOEU',
                   NOM_CMP='QX',
-                  VALE_CALC=-500.000000001,
+                  VALE_CALC=-500.0,
                   VALE_REFE=-500.0,),
           )
 
@@ -203,44 +203,35 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU2A,
                   NOM_CHAM='EFGE_NOEU',
                   NOM_CMP='MXX',
-                  VALE_CALC= 5.00000000E+03,
+                  VALE_CALC=5000.0,
                   VALE_REFE=5000.0,),
           )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=13.67,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=13.67391967678,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=64.859999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=64.865203309641,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=3,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=84.469999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=84.467238307507,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    RESULTAT=MODE2,
-                   VALE_CALC=101.16,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=101.15652753051,
                    CRITERE='RELATIF',
                    ),
                 ),
           )
-
-# Sensibilite des resultats le long des aretes
-
-# IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L12',))
-# IMPR_RESU(RESU=_F(RESULTAT=RESU2A,GROUP_MA='L14',))
 
 FIN();

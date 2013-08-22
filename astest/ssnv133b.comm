@@ -21,14 +21,6 @@ DEBUT(CODE=_F(NOM='SSNV133B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE( )
 
-# CTRAC = DEFI_FONCTION ( NOM_PARA: 'EPSI' PROL_DROITE :'LINEAIRE'
-
-#                                         PROL_GAUCHE:'LINEAIRE'
-
-#                      VALE:(0.200D-2      400.
-
-#                            0.450D-2      500.) );
-
 MAT=DEFI_MATERIAU(
           ELAS=_F( E = 200.E+3, NU = .3),
             PRAGER=_F( C = 20.E+3),
@@ -70,18 +62,13 @@ L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
                       _F( JUSQU_A = 4.,    NOMBRE = 2))
          )
 
-U=STAT_NON_LINE(
-                            MODELE=MOMECA,
-                        CHAM_MATER=CM,
-                             EXCIT=_F(
-                CHARGE = CHMECA,
-                FONC_MULT = FDEPL),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ECMI_LINE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6)
+U=STAT_NON_LINE( MODELE=MOMECA,
+                 CHAM_MATER=CM,
+                 EXCIT=_F(   CHARGE = CHMECA,
+                             FONC_MULT = FDEPL),
+                 COMP_INCR=_F(  RELATION = 'VMIS_ECMI_LINE'),
+                 INCREMENT=_F(  LIST_INST = L_INST),
+                 CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6)
               )
 
 U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
@@ -92,32 +79,40 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='N1',
                    NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=400.0,
                    VALE_CALC=400.0,
-                   TOLE_MACHINE=1.E-3,
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=4,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='N1',
                    NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=500.0,
                    VALE_CALC=500.0,
-                   TOLE_MACHINE=1.E-3,
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=6,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='N1',
                    NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=-380.0,
                    VALE_CALC=-380.0,
-                   TOLE_MACHINE=1.E-3,
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=8,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='N1',
                    NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=-464.0,
                    VALE_CALC=-464.0,
-                   TOLE_MACHINE=1.E-3,
+                   PRECISION=1.E-3,
                    MAILLE='M1',),
                 ),
           )

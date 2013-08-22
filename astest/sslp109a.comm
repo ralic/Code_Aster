@@ -101,8 +101,7 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='CHAR_STAB',
                   RESULTAT=EVOL,
-                  VALE_CALC=0.14644699999999999,
-                  TOLE_MACHINE=5.0000000000000004E-06,
+                  VALE_CALC=0.14644660940673,
                   ),
           )
 

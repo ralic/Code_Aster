@@ -216,7 +216,7 @@ for i in range(1,NPAS+1) :
                PRECISION=(5*(10**(-3)))*K1REF[i-1],
                VALE_CALC=VALE_CALC[(i-1)*2+1],
                VALE_REFE=0,
-               TOLE_MACHINE=1.5E-06,
+               TOLE_MACHINE=1.5E-06, #TODO TOLE_MACHINE
                NOM_PARA='K2',
                TYPE_TEST='MAX',
                TABLE=SIF[i],)

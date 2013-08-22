@@ -26,11 +26,10 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 
 MO=AFFE_MODELE(
                MAILLAGE=MA,
-                  VERIF='MAILLE',
-               AFFE=_F(
-               TOUT = 'OUI',
-               PHENOMENE = 'MECANIQUE',
-               MODELISATION = 'DKT')
+               VERIF='MAILLE',
+               AFFE=_F( TOUT = 'OUI',
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = 'DKT')
              )
 
 CARAC=AFFE_CARA_ELEM(   MODELE=MO,
@@ -55,34 +54,32 @@ COU_T120=DEFI_FONCTION(
              )
 
 COU_TRAC=DEFI_NAPPE(
-
               NOM_PARA='TEMP',
-                  PARA=(20.,120.,),
+              PARA=(20.,120.,),
               FONCTION=(COU_T20,COU_T120,),
               PROL_GAUCHE='CONSTANT',
-               PROL_DROITE='CONSTANT'
+              PROL_DROITE='CONSTANT'
              )
 
 ACIER_T=DEFI_MATERIAU(
-                   ELAS=_F(
+             ELAS=_F(
                E = 200000.,
                NU = 0.3,
                ALPHA = 1.E-4),
-              TRACTION=_F(  SIGM = COU_TRAC)
+               TRACTION=_F(  SIGM = COU_TRAC)
              )
 
 
 L_INST=DEFI_LIST_REEL(
               DEBUT=0.0,INTERVALLE=(
-
                _F(  JUSQU_A = 1.00, NOMBRE = 1),
                _F(  JUSQU_A = 2.00, NOMBRE = 20))
              )
 
 F_CHAR=DEFI_FONCTION(
-                NOM_PARA='INST',
+              NOM_PARA='INST',
               PROL_DROITE='CONSTANT',
-                    VALE=(
+              VALE=(
                0.,   0.,
                1.,   0.,
                2.,   293.3,
@@ -90,10 +87,10 @@ F_CHAR=DEFI_FONCTION(
              )
 
 F_TEMP=DEFI_FONCTION(
-                NOM_PARA='INST',
-                NOM_RESU='TEMP',
+              NOM_PARA='INST',
+              NOM_RESU='TEMP',
               PROL_DROITE='CONSTANT',
-                    VALE=(
+              VALE=(
                0.,    20.,
                1.,   120.,
                2.,   120.,
@@ -102,26 +99,22 @@ F_TEMP=DEFI_FONCTION(
 
 CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                MAILLAGE=MA,AFFE=(
-                   _F(
-               TOUT = 'OUI',
-               NOM_CMP = 'TEMP_INF',
-               VALE_F = F_TEMP),
-                   _F(
-               TOUT = 'OUI',
-               NOM_CMP = 'TEMP_MIL',
-               VALE_F = F_TEMP),
-                   _F(
-               TOUT = 'OUI',
-               NOM_CMP = 'TEMP_SUP',
-               VALE_F = F_TEMP))
+                   _F(  TOUT = 'OUI',
+                        NOM_CMP = 'TEMP_INF',
+                        VALE_F = F_TEMP),
+                   _F(  TOUT = 'OUI',
+                        NOM_CMP = 'TEMP_MIL',
+                        VALE_F = F_TEMP),
+                   _F(  TOUT = 'OUI',
+                        NOM_CMP = 'TEMP_SUP',
+                        VALE_F = F_TEMP))
              )
 
 TEMP=CREA_RESU(
                OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                NOM_CHAM='TEMP',
-                 AFFE=_F(
-               LIST_INST = L_INST,
-               CHAM_GD = CHP_TEMP)
+               NOM_CHAM='TEMP',
+                AFFE=_F( LIST_INST = L_INST,
+                         CHAM_GD = CHP_TEMP)
              )
 
 TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
@@ -146,39 +139,33 @@ CHR_LIAI=AFFE_CHAR_MECA(
              )
 
 CHR_TRAC=AFFE_CHAR_MECA(
-                     MODELE=MO,
+                  MODELE=MO,
                   FACE_IMPO=_F( MAILLE = 'MA2',  DX = 1.)
              )
 
 VT=STAT_NON_LINE(
-                            MODELE=MO,
-                         CARA_ELEM=CARAC,
-                        CHAM_MATER=CHP_MATT,EXCIT=(
-                             _F(
-                CHARGE = CHR_LIAI), ),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_TRAC',
-                DEFORMATION = 'PETIT_REAC'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 1),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-1,
-                ITER_GLOB_MAXI = 50),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3)
+                MODELE=MO,
+                CARA_ELEM=CARAC,
+                CHAM_MATER=CHP_MATT,
+                EXCIT=(    _F(  CHARGE = CHR_LIAI), ),
+                COMP_INCR=_F(   RELATION = 'VMIS_ISOT_TRAC',
+                                DEFORMATION = 'PETIT_REAC'),
+                INCREMENT=_F( LIST_INST = L_INST,
+                              NUME_INST_FIN = 1),
+                NEWTON=_F(    MATRICE = 'TANGENTE',
+                              REAC_ITER = 1),
+                CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-1,
+                                 ITER_GLOB_MAXI = 50),
+                RECH_LINEAIRE=_F(  ITER_LINE_MAXI = 3)
               )
 
 VT=STAT_NON_LINE( reuse=VT,
-                         ETAT_INIT=_F(
-                EVOL_NOLI = VT,
-                NUME_ORDRE = 1),
-                            MODELE=MO,
-                        CHAM_MATER=CHP_MATT,
-                         CARA_ELEM=CARAC,EXCIT=(
+                ETAT_INIT=_F( EVOL_NOLI = VT,
+                              NUME_ORDRE = 1),
+                MODELE=MO,
+                CHAM_MATER=CHP_MATT,
+                CARA_ELEM=CARAC,
+                EXCIT=(
                              _F(
                 CHARGE = CHR_LIAI), _F(
                 CHARGE = CHR_TRAC,
@@ -207,7 +194,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    NOM_CMP='DX',
                    VALE_CALC=303.401010101,
                    VALE_REFE=303.0,
-                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),),
+                   PRECISION=1.E-2,),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=VT,
@@ -216,7 +203,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    NOM_CMP='DY',
                    VALE_CALC=-108.816222701,
                    VALE_REFE=-110.0,
-                   PRECISION=0.014999999999999999, TOLE_MACHINE=(0.014999999999999999, 1.E-4),),
+                   PRECISION=0.014999999999999999, ),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -224,9 +211,10 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
-                   VALE_CALC=0.799097384,
+                   VALE_CALC=0.79896883472702,
                    VALE_REFE=0.79919300000000004,
-                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),
+                   TOLE_MACHINE=2.E-4,           # TODO TOLE_MACHINE
+                   PRECISION=1.E-2,
                    MAILLE='MA1',),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
@@ -235,9 +223,9 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
-                   VALE_CALC= 1.49744528E+03,
+                   VALE_CALC=1497.4452180652,
                    VALE_REFE=1497.4400000000001,
-                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),
+                   PRECISION=1.E-2,
                    MAILLE='MA1',),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
@@ -246,9 +234,10 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXY',
-                   VALE_CALC=0.610753608,
+                   VALE_CALC=0.61070224053901,
                    VALE_REFE=0.61080869999999998,
-                   PRECISION=1.E-2, TOLE_MACHINE=(1.E-2, 1.E-4),
+                   TOLE_MACHINE=2.E-4,           # TODO TOLE_MACHINE
+                   PRECISION=1.E-2,
                    MAILLE='MA1',),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
@@ -257,9 +246,9 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
-                   VALE_CALC=0.246037901,
+                   VALE_CALC=0.24603790196414,
                    VALE_REFE=0.2475,
-                   PRECISION=0.014999999999999999, TOLE_MACHINE=(0.014999999999999999, 1.E-4),
+                   PRECISION=0.014999999999999999,
                    MAILLE='MA1',),
                 ),
           )

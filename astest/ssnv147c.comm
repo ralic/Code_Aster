@@ -162,29 +162,23 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=41,
                    RESULTAT=REPONSE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=9.2499999999999999E-05,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=9.2499999999999999E-05,),
                 _F(NUME_ORDRE=41,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    VALE_CALC=0.5,
-                   TOLE_MACHINE=1.E-3,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=41,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
-                   VALE_CALC=0.90000000000000002,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.9,
                    MAILLE='M1',),
                 ),
           )
 
 FIN()
-#
-#
-#
-#
+

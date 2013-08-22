@@ -531,11 +531,6 @@ TEST_RESU(RESU=_F(INST=1000,
 #                NUME_ORDRE=1,
 #                );
 #
-#TEST_TABLE(TABLE=TAB1,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='MASSE',
-#           VALE= 7.96466E+05   )
-#
 # CALCUL DE MASS_INER SUR LE MODELE APRES L'EXCAVATION
 #
 TAB2=POST_ELEM(
@@ -545,7 +540,6 @@ TAB2=POST_ELEM(
 
 TEST_TABLE(
            VALE_CALC=7.97738E5,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MASSE',
            TABLE=TAB2,
            )

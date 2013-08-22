@@ -123,9 +123,9 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   NUME_MODE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RES_NORM,
-                  VALE_CALC=8.69429895E+05,
-                  VALE_REFE=8.4935093960000004E5,
-                  TOLE_MACHINE=1.E-5,
+                  VALE_CALC=8.694299662626E+05,
+                  VALE_REFE=8.493509396E5,
+                  TOLE_MACHINE=1.E-5,           # TODO TOLE_MACHINE
                   PRECISION=0.025,),)
 
 TEST_RESU(CHAM_NO=_F(NOEUD='N4',

@@ -212,7 +212,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.002,
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-163.886054826,
                         VALE_REFE=-163.886,
-                        TOLE_MACHINE=1.E-5,
                         VALE_PARA=1.5,
                         REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
@@ -247,8 +246,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.002,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=163.181774631,
-                        VALE_REFE=163.18199999999999,
-                        TOLE_MACHINE=1.E-5,
+                        VALE_REFE=163.182,
                         VALE_PARA=2.5,
                         REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
@@ -256,7 +254,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=163.181774631,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=163.280596719,
-                        VALE_REFE=163.18199999999999,
+                        VALE_REFE=163.182,
                         VALE_PARA=2.5,
                         REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',
@@ -264,7 +262,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=163.280596719,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=163.280596719,
-                        VALE_REFE=163.18199999999999,
+                        VALE_REFE=163.182,
                         VALE_PARA=2.5,
                         REFERENCE='SOURCE_EXTERNE',
                         NOM_PARA='INST',

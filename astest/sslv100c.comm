@@ -100,8 +100,7 @@ T_PMPB=POST_RCCM(  OPTION='PM_PB',
 
 #--------------------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=80.083600000000004,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=80.085482614971,
            NOM_PARA='PM',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -112,8 +111,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=54.635800000000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=54.644156923185,
            NOM_PARA='PB',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -124,8 +122,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=134.71899999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=134.72963953816,
            NOM_PARA='PMB',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -136,8 +133,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=25.447900000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=25.441325691791,
            NOM_PARA='PMB',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -149,8 +145,7 @@ TEST_TABLE(
 
 #--------------------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=80.083600000000004,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=80.085482614969,
            NOM_PARA='PM',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -161,8 +156,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=54.635800000000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=54.644156923176,
            NOM_PARA='PB',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -173,8 +167,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=134.71899999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=134.72963953814,
            NOM_PARA='PMB',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -185,8 +178,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=25.447900000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=25.441325691798,
            NOM_PARA='PMB',
            TABLE=T_PMPB,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -215,7 +207,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DY',
                    VALE_CALC=-4.0366413893E-22,
                    VALE_REFE=0.0,
-                   TOLE_MACHINE=1.E-10,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-10,),
                 _F(NUME_ORDRE=1,

@@ -47,43 +47,32 @@ MAT=DEFI_MATERIAU(   ELAS=_F(  E = 12.E6,  NU = 0.,  ALPHA = 0.)
 #
 
 CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA1,
-                          AFFE=_F(  TOUT = 'OUI',  MATER = MAT)
+                        AFFE=_F(  TOUT = 'OUI',  MATER = MAT)
                         )
 
 #
 #
 
 CHA1=AFFE_CHAR_MECA(   MODELE=MO1,
-
 #
 # COND. LIM. :  ENCASTREMENT
 #
-                          DDL_IMPO=_F(
-                            NOEUD = 'NO01',  DX = 0., DY = 0., DZ = 0.,
-                                          DRX = 0., DRY = 0., DRZ = 0.)
+                       DDL_IMPO=_F( NOEUD = 'NO01',  DX = 0., DY = 0., DZ = 0.,
+                                    DRX = 0., DRY = 0., DRZ = 0.)
                         )
 
 
-CHA2=AFFE_CHAR_MECA(         MODELE=MO1,
-#
-                            FORCE_NODALE=_F(
-                                          NOEUD = 'NO11',
-                                          MY = -100.)
+CHA2=AFFE_CHAR_MECA(   MODELE=MO1,
+                       FORCE_NODALE=_F( NOEUD = 'NO11',
+                                        MY = -100.)
                         )
-
 #
 
-CARA1=AFFE_CARA_ELEM(
-                                  MODELE=MO1,
-                                 POUTRE=_F(
-
-       GROUP_MA = 'TOUT',
-
-                                          SECTION = 'GENERALE',
-CARA = ( 'A',   'IY',                       'IZ',
-                        'AY',    'AZ',    'JX', ),
-VALE = (  0.1,   .08333333333333333333E-03, .08333333333333333333E-01,
-                         1.2,    1.2,      3.12334E-04, ))
+CARA1=AFFE_CARA_ELEM(  MODELE=MO1,
+                       POUTRE=_F( GROUP_MA = 'TOUT',
+                                  SECTION = 'GENERALE',
+                                  CARA = ( 'A', 'IY', 'IZ', 'AY', 'AZ', 'JX', ),
+        VALE = (  0.1, .08333333333E-03, .083333333333E-01,1.2, 1.2,  3.12334E-04, ))
                              )
 
 # CF SSNV138D
@@ -100,13 +89,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 #
 
-D_FONC=DEFI_FONCTION(
-                            NOM_PARA='INST',
-                                VALE=(
-                                       0., 0.,
-                                       100., 100.,
-                                     )
-                         )
+D_FONC=DEFI_FONCTION( NOM_PARA='INST',
+                      VALE=(0., 0.,
+                            100., 100.,))
 
 #
 #
@@ -120,23 +105,22 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
 NONLI=STAT_NON_LINE(  MODELE=MO1,
                       CHAM_MATER=CHMAT1,
                       CARA_ELEM=CARA1,
-                   EXCIT=(_F(CHARGE=CHA1,),
-                          _F(CHARGE=CHA2,
-                             FONC_MULT=D_FONC,),),
-                   COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
-                                DEFORMATION='GROT_GDEP',),
-                   INCREMENT=_F(LIST_INST=DEFLIST),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
-                                  ITER_GLOB_MAXI=20,),
-                   SOLVEUR=_F(SYME='NON',),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,
-                                ),);
+                      EXCIT=(_F(CHARGE=CHA1,),
+                             _F(CHARGE=CHA2,
+                                FONC_MULT=D_FONC,),),
+                      COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
+                                   DEFORMATION='GROT_GDEP',),
+                      INCREMENT=_F(LIST_INST=DEFLIST),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
+                                     ITER_GLOB_MAXI=20,),
+                      SOLVEUR=_F(SYME='NON',),
+                      ARCHIVAGE=_F(LIST_INST=L_INST,  ),);
 
 NONLI=CALC_CHAMP(reuse =NONLI,
-                CONTRAINTE=('SIEF_ELNO'),
-               RESULTAT=NONLI,);
+                 CONTRAINTE=('SIEF_ELNO'),
+                 RESULTAT=NONLI,);
 
 
 TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
@@ -340,7 +324,7 @@ TEST_RESU(RESU=_F(INST=3.0,
                   VALE_CALC=6.658248695,
                   VALE_REFE=6.6333083220014855,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.0E-3,),
           )
 
 TEST_RESU(RESU=_F(INST=6.0,
@@ -352,7 +336,7 @@ TEST_RESU(RESU=_F(INST=6.0,
                   VALE_CALC=0.067437709,
                   VALE_REFE=0.066382855582723388,
                   CRITERE='RELATIF',
-                  PRECISION=0.02, TOLE_MACHINE=(0.02, 1.E-4),),
+                  PRECISION=0.02, ),
           )
 
 #

@@ -178,23 +178,9 @@ TEST_RESU(RESU=_F(GROUP_NO='PA4',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   VALE_CALC=-0.795088723,
-                  VALE_REFE=-0.81000000000000005,
+                  VALE_REFE=-0.81,
                   CRITERE='RELATIF',
-                  PRECISION=0.040000000000000001,),
-          )
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=_F(GROUP_NO='PA4',
-                  INST=1.0,
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE_CALC=-0.79508872286332999,
-                  CRITERE='RELATIF',
-                  ),
+                  PRECISION=0.04,),
           )
 
 #
@@ -218,18 +204,6 @@ TEST_TABLE(CRITERE='RELATIF',
            PRECISION=0.050000000000000003,
            VALE_CALC= 2.83290758E+04,
            VALE_REFE=2.706425E4,
-           NOM_PARA='DZ',
-           TABLE=FORC_ENC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=2.8329075846476E4,
            NOM_PARA='DZ',
            TABLE=FORC_ENC,
            FILTRE=_F(NOM_PARA='INST',

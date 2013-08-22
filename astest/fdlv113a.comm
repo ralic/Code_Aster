@@ -277,13 +277,12 @@ mdzc1r7=CALC_FONCTION(EXTRACTION=_F(FONCTION=dzc1r7,
                                      PARTIE='MODULE',),);
                                      
             
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.4331E-4,
-                         TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.433097E-4,
                          VALE_PARA=1.0,
                          FONCTION=mdxa1r7,
                          ),
-                      _F(VALE_CALC=0.016791,
-                         TOLE_MACHINE=1.E-3,
+                      _F(VALE_CALC=0.01679103,
+                         TOLE_MACHINE=1.E-5,          # TODO TOLE_MACHINE
                          VALE_PARA=21.0,
                          FONCTION=mdzc1r7,
                          ),
@@ -291,7 +290,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.4331E-4,
                          VALE_REFE=2.6476000000000001E-4,
                          VALE_PARA=1.0,
                          REFERENCE='SOURCE_EXTERNE',
-                         PRECISION=0.089999999999999997,
+                         PRECISION=0.09,
                          FONCTION=mdxa1r7,),
                       ),
               )

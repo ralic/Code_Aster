@@ -160,21 +160,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=41,
                    RESULTAT=REPONSE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.08163518E-4,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=1.08163518E-4,),
                 _F(NUME_ORDRE=41,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    VALE_CALC=2.94149327,
-                   TOLE_MACHINE=1.E-3,
                    MAILLE='M1',),
                 ),
           )
 
 FIN()
-#
-#
-#
-#
+

@@ -49,8 +49,8 @@ TRCMNDA=DEFI_TRC(HIST_EXP=(
     TPLM = -3.497E+03)
    )
 
-ACIER=DEFI_MATERIAU(         THER=_F(  RHO_CP = 2000000.0, LAMBDA = 9999.9),
-                           META_ACIER=_F(  TRC = TRCMNDA,    AR3 = 830.0,
+ACIER=DEFI_MATERIAU(   THER=_F(  RHO_CP = 2000000.0, LAMBDA = 9999.9),
+                       META_ACIER=_F(  TRC = TRCMNDA,    AR3 = 830.0,
                                        ALPHA = -0.0300,    MS0 = 200.0,
                                        AC1 = 724.0,     AC3 = 846.0,
                                        TAUX_1 = 0.34,     TAUX_3 = 0.34)
@@ -80,11 +80,10 @@ LR8=DEFI_LIST_REEL(   DEBUT=0.,
                        )
 
 PHASINIT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R',
-                  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI',
-                NOM_CMP = ('V1', 'V2', 'V3', 'V4', 'V5',),
-
-                VALE = ( 0.0, 0.0, 0.0, 0.0, 20., ))
+                    MAILLAGE=MA,
+                    AFFE=_F(  TOUT = 'OUI',
+                    NOM_CMP = ('V1', 'V2', 'V3', 'V4', 'V5',),
+                    VALE = ( 0.0, 0.0, 0.0, 0.0, 20., ))
                         )
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
@@ -115,21 +114,13 @@ MO=AFFE_MODELE(
                 MODELISATION = '3D')
               )
 
-FBM1=DEFI_CONSTANTE(
-                         VALE=1930.
-                       )
+FBM1=DEFI_CONSTANTE(  VALE=1930. )
 
-AUS1=DEFI_CONSTANTE(
-                         VALE=1930.
-                       )
+AUS1=DEFI_CONSTANTE(  VALE=1930. )
 
-FBM2=DEFI_CONSTANTE(
-                         VALE=0.
-                       )
+FBM2=DEFI_CONSTANTE(  VALE=0.    )
 
-AUS2=DEFI_CONSTANTE(
-                         VALE=0.
-                       )
+AUS2=DEFI_CONSTANTE(  VALE=0.    )
 
 ALP1=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='CONSTANT',
@@ -141,21 +132,13 @@ ALP2=DEFI_FONCTION(      NOM_PARA='TEMP',
                            PROL_GAUCHE='CONSTANT',
                                  VALE=( 0., 23.5E-6,  900., 23.5E-6, ))
 
-VISCO1=DEFI_CONSTANTE(
-                           VALE=600.
-                       )
+VISCO1=DEFI_CONSTANTE(   VALE=600.  )
 
-VISCO2=DEFI_CONSTANTE(
-                           VALE=3.5
-                       )
+VISCO2=DEFI_CONSTANTE(   VALE=3.5   )
 
-VISCO3=DEFI_CONSTANTE(
-                           VALE=0.
-                       )
+VISCO3=DEFI_CONSTANTE(   VALE=0.    )
 
-VISCO4=DEFI_CONSTANTE(
-                           VALE=20.
-                       )
+VISCO4=DEFI_CONSTANTE(   VALE=20.   )
 
 FMEL=DEFI_FONCTION(      NOM_PARA='META',
                           PROL_DROITE='CONSTANT',
@@ -172,47 +155,44 @@ ACIER2=DEFI_MATERIAU(
                       F_ALPHA = ALP1,
                       C_ALPHA = ALP2,
                       TEMP_DEF_ALPHA=700.0,
-               PHASE_REFE = 'CHAUD',
-               EPSF_EPSC_TREF = 2.52E-3,
-               F1_S_VP = FBM2,
-               F2_S_VP = FBM2,
-               F3_S_VP = FBM2,
-               F4_S_VP = FBM2,
-               C_S_VP = AUS2,
-
-               S_VP_MELANGE = FMEL),
+                      PHASE_REFE = 'CHAUD',
+                      EPSF_EPSC_TREF = 2.52E-3,
+                      F1_S_VP = FBM2,
+                      F2_S_VP = FBM2,
+                      F3_S_VP = FBM2,
+                      F4_S_VP = FBM2,
+                      C_S_VP = AUS2,
+                      S_VP_MELANGE = FMEL),
              META_ECRO_LINE=_F(
-                        F1_D_SIGM_EPSI = FBM1,
-                        F2_D_SIGM_EPSI = FBM1,
-                        F3_D_SIGM_EPSI = FBM1,
- F4_D_SIGM_EPSI = FBM1,
+                      F1_D_SIGM_EPSI = FBM1,
+                      F2_D_SIGM_EPSI = FBM1,
+                      F3_D_SIGM_EPSI = FBM1,
+                      F4_D_SIGM_EPSI = FBM1,
                         C_D_SIGM_EPSI = AUS1),
            META_VISC_FO=_F( F1_ETA = VISCO1,
-                  F2_ETA = VISCO1,
-  F3_ETA = VISCO1,
-  F4_ETA = VISCO1,
-  C_ETA = VISCO1,
+                            F2_ETA = VISCO1,
+                            F3_ETA = VISCO1,
+                            F4_ETA = VISCO1,
+                            C_ETA = VISCO1,
                             F1_N = VISCO2,
-     F2_N = VISCO2,
-     F3_N = VISCO2,
-     F4_N = VISCO2,
-     C_N = VISCO2,
+                            F2_N = VISCO2,
+                            F3_N = VISCO2,
+                            F4_N = VISCO2,
+                            C_N = VISCO2,
                             F1_C = VISCO3,
-     F2_C = VISCO3,
-     F3_C = VISCO3,
-     F4_C = VISCO3,
-     C_C = VISCO3,
+                            F2_C = VISCO3,
+                            F3_C = VISCO3,
+                            F4_C = VISCO3,
+                            C_C = VISCO3,
                             F1_M = VISCO4,
-     F2_M = VISCO4,
-     F3_M = VISCO4,
-     F4_M = VISCO4,
-     C_M = VISCO4)
+                            F2_M = VISCO4,
+                            F3_M = VISCO4,
+                            F4_M = VISCO4,
+                            C_M = VISCO4)
            )
 
 CM=AFFE_MATERIAU(
-
-               MAILLAGE=MA,
-
+                MAILLAGE=MA,
                 AFFE=_F(
                 TOUT = 'OUI',
                 MATER = ACIER2,),
@@ -229,12 +209,10 @@ CM=AFFE_MATERIAU(
               )
 
 SIGMA_F=DEFI_FONCTION(
-
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
+              NOM_PARA='INST',
+              PROL_DROITE='EXCLU',
               PROL_GAUCHE='EXCLU',
-
-                VALE=(
+              VALE=(
                 0.0,    0.0,
                 10.,    151.2,
                 60.,    151.2,
@@ -242,12 +220,10 @@ SIGMA_F=DEFI_FONCTION(
               )
 
 TAU_F=DEFI_FONCTION(
-
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
+              NOM_PARA='INST',
+              PROL_DROITE='EXCLU',
               PROL_GAUCHE='EXCLU',
-
-                VALE=(
+              VALE=(
                 0.0,    0.0,
                 10.,    93.1,
                 60.,    93.1,
@@ -255,18 +231,14 @@ TAU_F=DEFI_FONCTION(
               )
 
 TRACTION=AFFE_CHAR_MECA(
-
-                      MODELE=MO,
-
-                FORCE_FACE=_F(
-                MAILLE = 'GAUCHE',
-                FX = -1.)
+                MODELE=MO,
+                FORCE_FACE=_F(   MAILLE = 'GAUCHE',
+                                 FX = -1.)
               )
 
 CISAIL=AFFE_CHAR_MECA(
-
-                      MODELE=MO,FORCE_FACE=(
-
+                  MODELE=MO,
+                  FORCE_FACE=(
                 _F( MAILLE = 'GAUCHE',          FY = -1.),
                 _F( MAILLE = 'DROITE',          FY = 1.),
                 _F( MAILLE = 'HAUT',    FX = 1.),
@@ -324,120 +296,123 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='SIXX',
-                   VALE_CALC=151.19999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=151.19999999994,
                    MAILLE='CUBE',),
                 _F(INST=10.0,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='SIXY',
-                   VALE_CALC=93.099999999999994,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=93.099999999943,
                    MAILLE='CUBE',),
                 _F(INST=10.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPXX',
-                   VALE_CALC=0.024332900000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.024337346759412,
+                   VALE_REFE=0.0243329,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=10.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPYY',
-                   VALE_CALC=-0.0120114,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.012013596456629,
+                   VALE_REFE=-0.0120114,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=10.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPXY',
-                   VALE_CALC=0.022378599999999998,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.022382756702470,
+                   VALE_REFE=0.0223786,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=30.0,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='SIXX',
-                   VALE_CALC=151.19999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=151.19999999987,
                    MAILLE='CUBE',),
                 _F(INST=30.0,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='SIXY',
-                   VALE_CALC=93.099999999999994,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=93.099999999877,
                    MAILLE='CUBE',),
                 _F(INST=30.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPXX',
-                   VALE_CALC=0.052102700000000002,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.052117812118069,
+                   VALE_REFE=0.052102700000000002,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=30.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPYY',
-                   VALE_CALC=-0.025896260000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.025903829135958,
+                   VALE_REFE=-0.02589626,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=30.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPXY',
-                   VALE_CALC=0.048027100000000003,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.048041103179563,
+                   VALE_REFE=0.048027100000000003,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=60.0,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='SIXX',
-                   VALE_CALC=151.19999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=151.19999958113,
                    MAILLE='CUBE',),
                 _F(INST=60.0,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='SIXY',
-                   VALE_CALC=93.099999999999994,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=93.099999613129,
                    MAILLE='CUBE',),
                 _F(INST=60.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPXX',
-                   VALE_CALC=0.059557100000000002,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.059575871260075,
+                   VALE_REFE=0.059557100000000002,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=60.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPYY',
-                   VALE_CALC=-0.029623500000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.029632858706961,
+                   VALE_REFE=-0.0296235,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 _F(INST=60.0,
                    RESULTAT=U,
                    NOM_CHAM='EPSI_ELNO',
                    NOEUD='NO2',
                    NOM_CMP='EPXY',
-                   VALE_CALC=0.054912099999999998,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.054929449470443,
+                   VALE_REFE=0.0549121,
+                   REFERENCE='SOURCE_EXTERNE',
                    MAILLE='CUBE',),
                 ),
           )

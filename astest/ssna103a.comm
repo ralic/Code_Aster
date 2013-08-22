@@ -194,75 +194,71 @@ U1=STAT_NON_LINE(
                         )
 
 U2=STAT_NON_LINE(
-             MODELE=MO,    CHAM_MATER=CM100,EXCIT=(
-              _F(  CHARGE = CHARG100),),
-              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
-              INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
-              NEWTON=_F( REAC_ITER = 1),
-            CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
-                          ITER_GLOB_MAXI = 100)
+                 MODELE=MO,
+                 CHAM_MATER=CM100,
+                 EXCIT=( _F(  CHARGE = CHARG100),),
+                 COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+                 INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
+                 NEWTON=_F( REAC_ITER = 1),
+                 CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
+                                  ITER_GLOB_MAXI = 100)
                         )
 
 U3=STAT_NON_LINE(
-             MODELE=MO,    CHAM_MATER=CM150,EXCIT=(
-              _F(  CHARGE = CHARG150),),
-              NEWTON=_F( REAC_ITER = 1),
-              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
-              INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
-            CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
-                          ITER_GLOB_MAXI = 100)
+                 MODELE=MO,
+                 CHAM_MATER=CM150,
+                 EXCIT=( _F(  CHARGE = CHARG150),),
+                 NEWTON=_F( REAC_ITER = 1),
+                 COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+                 INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
+                 CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
+                                  ITER_GLOB_MAXI = 100)
                         )
 
-T1=RECA_WEIBULL(
+T1=RECA_WEIBULL(   LIST_PARA=('SIGM_REFE','M',),
+                   RESU=( _F(   EVOL_NOLI = U1,
+                                CHAM_MATER = CM50,
+                                TEMPE = -50.,
+                                LIST_INST_RUPT = ( 10., 20., 30.,
+                                                   40., 50., 60., 70., 80., 90., 100.,
+                                                  110.,  120.,  130., 140.,  150.,),
+                                MODELE = MO,
+                                TOUT = 'OUI',
+                                COEF_MULT = 12.5664),
 
-                   LIST_PARA=('SIGM_REFE','M',),RESU=(
-
-                        _F(   EVOL_NOLI = U1,
-                               CHAM_MATER = CM50,
-                                    TEMPE = -50.,
-
-                           LIST_INST_RUPT = ( 10., 20., 30.,
-                                 40., 50., 60., 70., 80., 90., 100.,
-                                 110.,  120.,  130., 140.,  150.,),
-
-                               MODELE = MO,
-                               TOUT = 'OUI',
-                            COEF_MULT = 12.5664),
-
-                          _F(  EVOL_NOLI = U2,
+                          _F(   EVOL_NOLI = U2,
                                 CHAM_MATER = CM100,
-                                     TEMPE = -100.,
+                                TEMPE = -100.,
 
-                            LIST_INST_RUPT = ( 10.,  20., 30.,
-                                 40., 50., 60., 70., 80., 90., 100.,
-                                 110.,  120.,  130., 140.,  150.,),
+                                LIST_INST_RUPT = ( 10.,  20., 30.,
+                                                   40., 50., 60., 70., 80., 90., 100.,
+                                                   110.,  120.,  130., 140.,  150.,),
 
-                               MODELE = MO,
-                               TOUT = 'OUI',
-                            COEF_MULT = 12.5664),
-                        _F(  EVOL_NOLI = U3,
-                               CHAM_MATER = CM150,
-                                    TEMPE = -150.,
+                                MODELE = MO,
+                                TOUT = 'OUI',
+                                COEF_MULT = 12.5664),
+                         _F(    EVOL_NOLI = U3,
+                                CHAM_MATER = CM150,
+                                TEMPE = -150.,
 
-                             LIST_INST_RUPT = (  10., 20., 30.,
-                                 40., 50., 60., 70., 80., 90., 100.,
-                                 110.,  120.,  130., 140.,  150.,),
+                                LIST_INST_RUPT = (  10., 20., 30.,
+                                                    40., 50., 60., 70., 80., 90., 100.,
+                                                    110.,  120.,  130., 140.,  150.,),
 
-                               MODELE = MO,
-                               TOUT = 'OUI',
-                            COEF_MULT = 12.5664)),
+                                MODELE = MO,
+                                TOUT = 'OUI',
+                                COEF_MULT = 12.5664)),
 
-                                METHODE='MAXI_VRAI',
-                                CORR_PLAST='NON',
-                                   OPTION='SIGM_ELMOY',
-                                ITER_GLOB_MAXI=25,
-                                INCO_GLOB_RELA=1.E-3
+                   METHODE='MAXI_VRAI',
+                   CORR_PLAST='NON',
+                   OPTION='SIGM_ELMOY',
+                   ITER_GLOB_MAXI=25,
+                   INCO_GLOB_RELA=1.E-3
                    )
 
 #
 TEST_TABLE(
-           VALE_CALC=1877.49,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1877.4284589862,
            NOM_PARA='SIGMA_WEIBULL',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='PROBA_THE',
@@ -270,8 +266,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2708.5599999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2708.4596249288,
            NOM_PARA='SIGMA_WEIBULL',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='PROBA_THE',
@@ -280,8 +275,7 @@ TEST_TABLE(
 
 #
 TEST_TABLE(
-           VALE_CALC=2535.96,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2535.8686073951,
            NOM_PARA='SIGMA_U',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='TEMP',
@@ -289,8 +283,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2428.5100000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2428.4296392403,
            NOM_PARA='SIGMA_U',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='TEMP',
@@ -298,8 +291,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2372.4699999999998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2372.3882989708,
            NOM_PARA='SIGMA_U',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='TEMP',
@@ -307,8 +299,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=26.726700000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=26.727693606851,
            NOM_PARA='M',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='TEMP',
@@ -316,8 +307,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=26.726700000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=26.727693606851,
            NOM_PARA='M',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='TEMP',
@@ -325,8 +315,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=26.726700000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=26.727693606851,
            NOM_PARA='M',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='TEMP',

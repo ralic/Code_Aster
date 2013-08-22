@@ -68,7 +68,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODES,
                   VALE_CALC=8.9150500000000008,
-                  TOLE_MACHINE=1.E-3,
                   ),
           )
 

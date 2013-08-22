@@ -241,48 +241,6 @@ RIGI=CALC_MATR_AJOU(MODELE_FLUIDE=FLUIDE2,
                     POTENTIEL=PHIBAR,
                     SOLVEUR=_F(METHODE='GCPC',),);
 
-ENGENDRE_TEST(FORMAT='OBJET',
-              CO=(MASS,RIGI,AMOR,),);
-
-# validation du resultat de ENGENDRE_TEST :
-TEST_RESU(OBJET=(
-_F(NOM='MASS          .SOLV.SLVR',VALE_CALC= 7.9900000100000E+02,TOLE_MACHINE=1.E-10),
-_F(NOM='MASS          .SOLV.SLVI',VALE_CALC_I=         -59986       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS          .SLCS.SCHC',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS          .SLCS.SCIB',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS          .SLCS.SCBL',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS          .SLCS.SCDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS          .SLCS.SCDE',VALE_CALC_I=              4       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS               .CONL',VALE_CALC= 1.0000000000000E+00,TOLE_MACHINE=1.E-10),
-_F(NOM='MASS          .SMOS.SMDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='MASS          .SMOS.SMDE',VALE_CALC_I=              3       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SOLV.SLVR',VALE_CALC= 7.9900000100000E+02,TOLE_MACHINE=1.E-10),
-_F(NOM='RIGI          .SOLV.SLVI',VALE_CALC_I=         -59986       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SLCS.SCHC',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SLCS.SCIB',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SLCS.SCBL',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SLCS.SCDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SLCS.SCDE',VALE_CALC_I=              4       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI               .CONL',VALE_CALC= 1.0000000000000E+00,TOLE_MACHINE=1.E-10),
-_F(NOM='RIGI          .SMOS.SMDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='RIGI          .SMOS.SMDE',VALE_CALC_I=              3       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SOLV.SLVR',VALE_CALC= 7.9900000100000E+02,TOLE_MACHINE=1.E-10),
-_F(NOM='AMOR          .SOLV.SLVI',VALE_CALC_I=         -59986       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SLCS.SCHC',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SLCS.SCIB',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SLCS.SCBL',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SLCS.SCDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SLCS.SCDE',VALE_CALC_I=              4       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR               .CONL',VALE_CALC= 1.0000000000000E+00,TOLE_MACHINE=1.E-10),
-_F(NOM='AMOR          .SMOS.SMDI',VALE_CALC_I=              1       ,TOLE_MACHINE=0.,),
-_F(NOM='AMOR          .SMOS.SMDE',VALE_CALC_I=              3       ,TOLE_MACHINE=0.,),
-
-# Je suis oblige de commentariser ces TEST_RESU qui sont tres aléatoires !
-#    _F(NOM='MASS               .VALM',VALE_CALC= 1.6601440307688E+09,TOLE_MACHINE=1.E-10),
-#    _F(NOM='RIGI               .VALM',VALE_CALC= 2.1445845663548E+00,TOLE_MACHINE=1.E-10),
-#    _F(NOM='AMOR               .VALM',VALE_CALC=-3.9664442541358E+08,TOLE_MACHINE=1.E-10),
-))
-
 #TESTS DES VALEURS DES MATRICES D'AMORTISSEMENT ET DE MASSE AJOUTES
 #NE COMPRENNENT QU'UN ELEMENT
 
@@ -345,15 +303,9 @@ ENGENDRE_TEST(FORMAT='OBJET',
               CO=(MASSCRIT,AMORCRIT,),);
 
 TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
-                    VALE_REFE=1.666800000E9,
-                    REFERENCE='NON_DEFINI',
-                    NOM='MASSCRIT           .VALM',
-                    PRECISION=1.E-2,),
+                    NOM='MASSCRIT           .VALM',),
                  _F(VALE_CALC=-4.20443084E+08,
-                    VALE_REFE=-4.24042000E8,
-                    REFERENCE='NON_DEFINI',
-                    NOM='AMORCRIT           .VALM',
-                    PRECISION=1.E-2,),
+                    NOM='AMORCRIT           .VALM',),
                  ),
           )
 

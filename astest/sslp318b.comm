@@ -215,7 +215,8 @@ for i in range(1,NPS-1) :
               CRITERE='ABSOLU',
               VALE_REFE=0.,
               VALE_CALC= KII_calc[i-1],
-              TOLE_MACHINE=5.E-5    )
+              TOLE_MACHINE=3.E-05,              # TODO TOLE_MACHINE
+              )
 
 
 #----------------------------------------------

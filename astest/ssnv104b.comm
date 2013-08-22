@@ -98,31 +98,24 @@ RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
 
 #
 
-L_INST=DEFI_LIST_REEL(
-                             DEBUT=0.0,
-                              INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 10)
+L_INST=DEFI_LIST_REEL( DEBUT=0.0,
+                       INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 10)
                            )
 #
 
-RESU2=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                             EXCIT=_F(
-                CHARGE = CHAR,
-                FONC_MULT = RAMPE),
-                CONTACT = CHA2,
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 10),
-                       CONVERGENCE=_F(
-                ARRET = 'OUI',
-                ITER_GLOB_MAXI = 10),
-                INFO=1
+RESU2=STAT_NON_LINE( SOLVEUR=_F(SYME='OUI',),
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     EXCIT=_F( CHARGE = CHAR,
+                               FONC_MULT = RAMPE),
+                     CONTACT = CHA2,
+                     COMP_ELAS=_F( RELATION = 'ELAS'),
+                     NEWTON=_F(  MATRICE = 'ELASTIQUE'),
+                     INCREMENT=_F(  LIST_INST = L_INST,
+                                    NUME_INST_FIN = 10),
+                     CONVERGENCE=_F( ARRET = 'OUI',
+                                     ITER_GLOB_MAXI = 10),
+                     INFO=1
               )
 
 RESU2=CALC_CHAMP(reuse=RESU2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU2)
@@ -149,24 +142,12 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
                        CRITERE='RELATIF',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='SIYY',
-                       PRECISION=0.070000000000000007,
+                       PRECISION=0.07,
                        MAILLE='M31',
                        CHAM_GD=SIELNO2,
                        VALE_CALC=-2.97128902E+03,
-                       VALE_REFE=-2798.3000000000002,),
+                       VALE_REFE=-2798.3,),
           )
-
-# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
-# PRECEDENTS
-
-
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
-                       CRITERE='RELATIF',
-                       NOM_CMP='SIYY',
-                       MAILLE='M31',
-                       CHAM_GD=SIELNO2,
-                       VALE_CALC=-2971.27,
-                       TOLE_MACHINE=1.E-3,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='ANALYTIQUE',
@@ -174,9 +155,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N291',
                    NOM_CMP='DX',
-                   VALE_CALC=-1.8021244811E-19,
+                   VALE_CALC=0.0,
                    VALE_REFE=0.0,
-                   TOLE_MACHINE=1.E-10,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-10,),
                 _F(NUME_ORDRE=10,
@@ -184,8 +164,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N287',
                    NOM_CMP='DX',
-                   VALE_CALC=-0.11128300000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.11133878409648,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -193,8 +172,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N287',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.16184200000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.16181012655421,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -202,8 +180,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N285',
                    NOM_CMP='DX',
-                   VALE_CALC=-0.16854,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.16863549191895,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -211,32 +188,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N285',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.62858700000000001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.62858418846837,
                    CRITERE='RELATIF',
                    ),
                 ),
           )
 
-RESU3=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                             EXCIT=_F(
-                CHARGE = CHAR,
-                FONC_MULT = RAMPE),
-                CONTACT = CHA3,
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 10),
-                       CONVERGENCE=_F(
-                ARRET = 'OUI',
-                ITER_GLOB_MAXI = 10),
-               INFO=1
+RESU3=STAT_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
+                      MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F( CHARGE = CHAR,
+                                FONC_MULT = RAMPE),
+                      CONTACT = CHA3,
+                      COMP_ELAS=_F( RELATION = 'ELAS'),
+                      NEWTON=_F( MATRICE = 'ELASTIQUE'),
+                      INCREMENT=_F( LIST_INST = L_INST,
+                                    NUME_INST_FIN = 10),
+                      CONVERGENCE=_F( ARRET = 'OUI',
+                                      ITER_GLOB_MAXI = 10),
+                      INFO=1
               )
 
 RESU3=CALC_CHAMP(reuse=RESU3,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU3)
@@ -259,24 +229,12 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
                        CRITERE='RELATIF',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='SIYY',
-                       PRECISION=0.070000000000000007,
+                       PRECISION=0.07,
                        MAILLE='M31',
                        CHAM_GD=SIELNO3,
                        VALE_CALC=-2.97265240E+03,
-                       VALE_REFE=-2798.3000000000002,),
+                       VALE_REFE=-2798.3,),
           )
-
-# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
-# PRECEDENTS
-
-
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
-                       CRITERE='RELATIF',
-                       NOM_CMP='SIYY',
-                       MAILLE='M31',
-                       CHAM_GD=SIELNO3,
-                       VALE_CALC=-2973.0,
-                       TOLE_MACHINE=1.E-3,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='ANALYTIQUE',
@@ -284,9 +242,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N291',
                    NOM_CMP='DX',
-                   VALE_CALC= 2.8155963666E-19,
+                   VALE_CALC=0.0,
                    VALE_REFE=0.0,
-                   TOLE_MACHINE=1.E-10,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-10,),
                 _F(NUME_ORDRE=10,
@@ -295,7 +252,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOEUD='N287',
                    NOM_CMP='DX',
                    VALE_CALC=-0.10810386252479,
-                   TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -303,8 +259,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N287',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.16437466032268999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.16437466032269,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -312,8 +267,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N285',
                    NOM_CMP='DX',
-                   VALE_CALC=-0.16091237439822001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.16091237439822,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -321,32 +275,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N285',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.63098600000000005,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.63140921878335,
                    CRITERE='RELATIF',
                    ),
                 ),
           )
 
-RESU4=STAT_NON_LINE(
-SOLVEUR=_F(SYME='OUI',),
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                             EXCIT=_F(
-                CHARGE = CHAR,
-                FONC_MULT = RAMPE),
-                CONTACT = CHA4,
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 10),
-                       CONVERGENCE=_F(
-                ARRET = 'OUI',
-                ITER_GLOB_MAXI = 10),
-                INFO=1
+RESU4=STAT_NON_LINE( SOLVEUR=_F(SYME='OUI',),
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     EXCIT=_F(  CHARGE = CHAR,
+                                FONC_MULT = RAMPE),
+                     CONTACT = CHA4,
+                     COMP_ELAS=_F( RELATION = 'ELAS'),
+                     NEWTON=_F( MATRICE = 'ELASTIQUE'),
+                     INCREMENT=_F(  LIST_INST = L_INST,
+                                    NUME_INST_FIN = 10),
+                     CONVERGENCE=_F( ARRET = 'OUI',
+                                     ITER_GLOB_MAXI = 10),
+                     INFO=1
               )
 
 RESU4=CALC_CHAMP(reuse=RESU4,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU4)
@@ -369,24 +316,12 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
                        CRITERE='RELATIF',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='SIYY',
-                       PRECISION=0.070000000000000007,
+                       PRECISION=0.07,
                        MAILLE='M31',
                        CHAM_GD=SIELNO4,
                        VALE_CALC=-2.97265240E+03,
                        VALE_REFE=-2798.3000000000002,),
           )
-
-# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
-# PRECEDENTS
-
-
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N291',
-                       CRITERE='RELATIF',
-                       NOM_CMP='SIYY',
-                       MAILLE='M31',
-                       CHAM_GD=SIELNO4,
-                       VALE_CALC=-2973.0,
-                       TOLE_MACHINE=1.E-3,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='ANALYTIQUE',
@@ -394,9 +329,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N291',
                    NOM_CMP='DX',
-                   VALE_CALC=-9.3295184725E-21,
+                   VALE_CALC=0.0,
                    VALE_REFE=0.0,
-                   TOLE_MACHINE=1.E-10,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-10,),
                 _F(NUME_ORDRE=10,
@@ -405,7 +339,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOEUD='N287',
                    NOM_CMP='DX',
                    VALE_CALC=-0.10810386252479,
-                   TOLE_MACHINE=1.E-3,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -413,8 +346,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N287',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.16437466032268999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.16437466032269,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -422,8 +354,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N285',
                    NOM_CMP='DX',
-                   VALE_CALC=-0.16091237439822001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.16091237439822,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=10,
@@ -431,14 +362,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOEUD='N285',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.63098600000000005,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-0.63140921878335,
                    CRITERE='RELATIF',
                    ),
                 ),
           )
-
-# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
 
 
 FIN()

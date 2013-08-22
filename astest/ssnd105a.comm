@@ -196,7 +196,6 @@ TEST_RESU(RESU=_F(INST=8.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
                   VALE_CALC=0.0370925,
-                  TOLE_MACHINE=1.E-3,
                   MAILLE='MA1',),
           )
 

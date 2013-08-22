@@ -123,15 +123,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODES,
                   VALE_CALC=157.945391198,
-                  VALE_REFE=157.93980999999999,
-                  ),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  PARA='FREQ',
-                  RESULTAT=MODES,
-                  VALE_CALC=157.94539,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_REFE=157.93981,
                   ),
           )
 

@@ -74,8 +74,11 @@ MODE_SOB=MODE_ITER_SIMULT(MATR_RIGI=K_ASSE,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODE_SOB,
-                  VALE_CALC=0.0,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-1.3737736757768E-04,
+                  VALE_REFE=0.,
+                  TOLE_MACHINE=1.E-05,              # TODO TOLE_MACHINE
+                  PRECISION=1.E-03,
+                  REFERENCE='NON_DEFINI',
                   CRITERE='ABSOLU',
                   ),
           )
@@ -102,8 +105,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MODE_QZ,
                   VALE_CALC=-1.9359975896016E-03,
                   VALE_REFE=0.0,
+                  TOLE_MACHINE=2.E-03,              # TODO TOLE_MACHINE
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=3.E-3,
                   PRECISION=3.E-3,
                   ),
           )
@@ -163,8 +166,7 @@ IMPR_RESU(RESU=_F(RESULTAT=MODE_LAA,
 TEST_RESU(RESU=_F(NUME_ORDRE=11,
                   PARA='FREQ',
                   RESULTAT=MODE_LAA,
-                  VALE_CALC=2470.8409999999999,
-                  TOLE_MACHINE=1.0000000000000001E-05,
+                  VALE_CALC=2470.841,
                   ),
           )
 

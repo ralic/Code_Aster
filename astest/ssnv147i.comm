@@ -438,16 +438,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=21,
                    RESULTAT=REPONSE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=2.7201199999999999E-3,
-                   TOLE_MACHINE=1.E-4,
+                   VALE_CALC=2.720124057848E-3,
                    ),
                 _F(NUME_ORDRE=21,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=586.39499999999998,
-                   TOLE_MACHINE=1.E-4,
+                   VALE_CALC=586.39585003266,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=21,
                    POINT=1,
@@ -459,10 +457,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=21,
                 ),
           )
 
-IMPR_RESU(RESU=_F(RESULTAT=REPONSE))
-
 FIN()
-#
-#
-#
-#
+

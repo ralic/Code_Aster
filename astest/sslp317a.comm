@@ -126,32 +126,36 @@ for num_calc in range(nb_raff+1) :
       REF2 = -2.70156E-01
       REF3 = -2.69258E-01
       REF4 = -3.20156E-01
+      CAL1 = -0.27015621187164
+      CAL2 = -0.27015621187164
+      CAL3 = -0.26925824035673
+      CAL4 = -0.32015621187164
 
       TEST_TABLE(REFERENCE='ANALYTIQUE',
-                 VALE_CALC=REF1,
-                 TOLE_MACHINE=1.e-3,
                  VALE_REFE=REF1,
+                 VALE_CALC=CAL1,
+                 PRECISION=1.e-3,
                  NOM_PARA='X1',
                  TABLE=DEP1[num_calc],)
 
       TEST_TABLE(REFERENCE='ANALYTIQUE',
-                 VALE_CALC=REF2,
-                 TOLE_MACHINE=1.e-3,
                  VALE_REFE=REF2,
+                 VALE_CALC=CAL2,
+                 PRECISION=1.e-3,
                  NOM_PARA='X1',
                  TABLE=DEP2[num_calc])
 
       TEST_TABLE(REFERENCE='ANALYTIQUE',
-                 VALE_CALC=REF3,
-                 TOLE_MACHINE=1.e-3,
                  VALE_REFE=REF3,
+                 VALE_CALC=CAL3,
+                 PRECISION=1.e-3,
                  NOM_PARA='X1',
                  TABLE=DEP3[num_calc])
 
       TEST_TABLE(REFERENCE='ANALYTIQUE',
-                 VALE_CALC=REF4,
-                 TOLE_MACHINE=1.e-3,
                  VALE_REFE=REF4,
+                 VALE_CALC=CAL4,
+                 PRECISION=1.e-3,
                  NOM_PARA='X1',
                  TABLE=DEP4[num_calc])
 
@@ -168,18 +172,21 @@ for num_calc in range(nb_raff+1) :
 # definition group de noeuds pour bloquer l'inclusion centrale
 MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         MAILLAGE=MA[nb_raff],
-                        CREA_GROUP_NO=_F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,0.),PRECISION=1/50.,RAYON=1/50.),
+                        CREA_GROUP_NO=_F(NOM='NC',OPTION='ENV_SPHERE',
+                        POINT=(0.,0.),PRECISION=1/50.,RAYON=1/50.),
                         INFO=2 )
        
 # definition group de noeuds pour bloquer l'entaille
 MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         MAILLAGE=MA[nb_raff],
-                        CREA_GROUP_NO=_F(NOM='NE1',OPTION='ENV_SPHERE',POINT=(0.,-0.3),PRECISION=1/200.,RAYON=1/200.),
+                        CREA_GROUP_NO=_F(NOM='NE1',OPTION='ENV_SPHERE',
+                        POINT=(0.,-0.3),PRECISION=1/200.,RAYON=1/200.),
                         INFO=2 )
 
 MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         MAILLAGE=MA[nb_raff],
-                        CREA_GROUP_NO=_F(NOM='NE2',OPTION='ENV_SPHERE',POINT=(0.1,-0.3),PRECISION=1/200.,RAYON=1/200.),
+                        CREA_GROUP_NO=_F(NOM='NE2',OPTION='ENV_SPHERE',
+                        POINT=(0.1,-0.3),PRECISION=1/200.,RAYON=1/200.),
                         INFO=2 )
 
                               
@@ -234,9 +241,5 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT    = RESU)
-
-
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),);
-
 
 FIN();

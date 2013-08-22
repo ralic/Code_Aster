@@ -437,22 +437,17 @@ TEST_RESU(RESU=(_F(GROUP_NO='E',
                    RESULTAT=REPONSE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=2.7230000000000002E-3,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=2.7243338030952E-3,
                    ),
                 _F(INST=11.08375,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=585.79999999999995,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=585.88463896235,
                    MAILLE='M1',),
                 ),
           )
 
 FIN()
-#
-#
-#
-#
+

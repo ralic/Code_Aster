@@ -399,7 +399,6 @@ for K in range(len(alphaREF)):
    NormeL2_U=7.72403392144e-06
    TEST_TABLE(CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE',
-              TOLE_MACHINE=1.E-3*NormeL2_U,
               PRECISION=1.E-3*NormeL2_U,
               VALE_CALC=NormeL2_U_nr[K],
               VALE_REFE=NormeL2_U_nr[K],

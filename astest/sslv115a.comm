@@ -178,18 +178,16 @@ FORC2_DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-10,
-           VALE_CALC=132.00000000000,
+           VALE_CALC=132.0,
            VALE_REFE=132.0,
-           TOLE_MACHINE=1.E-10,
            NOM_PARA='DZ',
            TABLE=FORC_DZ,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-10,
-           VALE_CALC=132.00000000000,
+           VALE_CALC=132.0,
            VALE_REFE=132.0,
-           TOLE_MACHINE=1.E-10,
            NOM_PARA='DX',
            TABLE=FORC2_DX,)
 
@@ -234,7 +232,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_CALC=-5.55555556E-06,
                   VALE_REFE=-5.5555555555999996E-06,
                   CRITERE='RELATIF',
-                  PRECISION=1.0000000000000001E-05,
+                  PRECISION=1.0E-05,
                   MAILLE='toto1',),
           )
 

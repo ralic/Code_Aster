@@ -87,15 +87,17 @@ ECHL=POST_ELEM(CHAR_LIMITE=_F(),NUME_ORDRE=1,
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
 
-TEST_TABLE(VALE_CALC=12.685,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(VALE_REFE=12.6857,
+           VALE_CALC=12.686379152897,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
            NOM_PARA='CHAR_LIMI_SUP',
            TABLE=ECHL,)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=8.721515356,
-           VALE_REFE=8.5545000000000009,
-           REFERENCE='NON_DEFINI',
+           VALE_CALC=8.7215153560866,
+           VALE_REFE=8.55450,
+           REFERENCE='ANALYTIQUE',
            NOM_PARA='CHAR_LIMI_ESTIM',
            TABLE=ECHL,)
 

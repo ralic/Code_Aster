@@ -142,22 +142,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=STNL,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
-                  VALE_CALC=-2.92883092E+03,
+                  VALE_CALC=-2928.8309164566,
                   VALE_REFE=-2798.3286697476105,
                   CRITERE='RELATIF',
-                  PRECISION=0.050000000000000003,),
+                  PRECISION=0.05,),
           )
 
-TEST_RESU(RESU=_F(GROUP_NO='C1',
-                  INST=1.0,
-                  RESULTAT=STNL,
-                  NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIYY',
-                  VALE_CALC=-2928.7409272436998,
-                  TOLE_MACHINE=1.E-3,
-                  CRITERE='RELATIF',
-                  ),
-          )
 
 # -- Impressions des resultats
 

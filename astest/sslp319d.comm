@@ -257,7 +257,6 @@ for i in range(1,NPS-1) :
               PRECISION=0.13,
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
-              TOLE_MACHINE=6E-06,
               VALE_CALC=VALE_CALC[(i-1)*4]  )
 
    TEST_TABLE(TABLE=SIFL[i],
@@ -266,8 +265,8 @@ for i in range(1,NPS-1) :
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
+              TOLE_MACHINE=1.E-05,                    # TODO TOLE_MACHINE
               VALE_REFE=0.,
-              TOLE_MACHINE=6E-06,
               VALE_CALC=VALE_CALC[(i-1)*4+1]    )
 
    TEST_TABLE(TABLE=SIFR[i],
@@ -276,7 +275,6 @@ for i in range(1,NPS-1) :
               PRECISION=0.13,
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
-              TOLE_MACHINE=6E-06,
               VALE_CALC=VALE_CALC[(i-1)*4+2]  )
 
    TEST_TABLE(TABLE=SIFR[i],
@@ -286,7 +284,6 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              TOLE_MACHINE=6E-06,
               VALE_CALC=VALE_CALC[(i-1)*4+3]  )
 
 FIN();

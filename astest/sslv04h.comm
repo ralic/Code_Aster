@@ -311,8 +311,7 @@ IMPR_TABLE( TABLE=T1,
             NOM_PARA=('LIEU','PM','PB','PMB'),  )
 
 TEST_TABLE(
-           VALE_CALC=79.991799999999998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=80.006934257838,
            NOM_PARA='PM',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -321,8 +320,8 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           PRECISION=1.1999999999999999E-3,
-           VALE_CALC=54.411801847,
+           PRECISION=1.2E-3,
+           VALE_CALC=54.411801846526,
            VALE_REFE=54.411799999999999,
            NOM_PARA='PB',
            TABLE=T1,
@@ -331,8 +330,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(
-           VALE_CALC=134.51900000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=134.41769121339,
            NOM_PARA='PMB',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -340,8 +338,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=32.768700000000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=32.768717525993,
            NOM_PARA='PMB',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',

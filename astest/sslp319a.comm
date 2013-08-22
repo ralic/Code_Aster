@@ -215,7 +215,6 @@ for i in range(1,NPS-1) :
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
-              TOLE_MACHINE=1.E-5,
               VALE_REFE=0.,
               VALE_CALC=KIIL_calc[i-1]  )
 
@@ -232,7 +231,6 @@ for i in range(1,NPS-1) :
               NOM_PARA='K2',
               PRECISION=TOL_K2,
               TYPE_TEST='MAX',
-              TOLE_MACHINE=1.E-5,
               CRITERE='ABSOLU',
               VALE_REFE=0.,
               VALE_CALC=KIIR_calc[i-1]  )

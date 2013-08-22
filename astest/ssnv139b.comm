@@ -48,40 +48,28 @@ MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, VERIF='MAILLE',
 #
 
 CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,
-#
                  DDL_IMPO=_F( GROUP_NO = 'G_41',  DX = 0., DY = 0., DZ = 0.,
                                             DRX = 0., DRY = 0., DRZ = 0.),
-#
                   FORCE_NODALE=_F(  GROUP_NO = 'G_10',  FZ = -1.E0)
-#
                   )
 
 #
 
 CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
-                               COQUE=_F(
-       GROUP_MA = 'TOUT',
-
-                                      EPAIS = 0.5)
-                            )
-
+                               COQUE=_F( GROUP_MA = 'TOUT',
+                                         EPAIS = 0.5)  )
 #
 
 D_FONC=DEFI_FONCTION(    NOM_PARA='INST',
                                 VALE=( 0.,   0.,
-                                       500., 500.,
-                                     )
-                         )
+                                       500., 500.,  )  )
 
 #
 #
 
 L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
-#
                             _F(  JUSQU_A = 250., NOMBRE = 10),
                             _F(  JUSQU_A = 500., NOMBRE = 3))
-#  POUR DEPUIS 5.4.8.     INTERVALLE : ( JUSQU_A : 500. NOMBRE  : 10 )
-#
                          )
 
 #
@@ -130,10 +118,10 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-37.441202821,
-                  VALE_REFE=-38.069000000000003,
+                  VALE_CALC=-37.44163990925,
+                  VALE_REFE=-38.069,
                   CRITERE='RELATIF',
-                  PRECISION=0.017000000000000001, TOLE_MACHINE=(0.017000000000000001, 9.9999999999999995E-07),),
+                  PRECISION=0.017, ),
           )
 
 #
@@ -147,10 +135,10 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-70.449599968,
-                  VALE_REFE=-72.409000000000006,
+                  VALE_CALC=-70.449919144321,
+                  VALE_REFE=-72.409,
                   CRITERE='RELATIF',
-                  PRECISION=0.029999999999999999, TOLE_MACHINE=(0.029999999999999999, 9.9999999999999995E-07),),
+                  PRECISION=0.03, ),
           )
 
 #
@@ -164,14 +152,14 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
 
 TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   INST=250.0,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-37.441202821,
-                  VALE_REFE=-37.439999999999998,
+                  VALE_CALC=-37.44163990925,
+                  VALE_REFE=-37.44,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  PRECISION=5.0E-3, 
                   ),
           )
 
@@ -182,14 +170,14 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
 
 TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   INST=250.0,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-70.449599968,
-                  VALE_REFE=-70.450000000000003,
+                  VALE_CALC=-70.449919144321,
+                  VALE_REFE=-70.45,
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  PRECISION=5.0E-3, 
                   ),
           )
 
@@ -211,10 +199,11 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-52.270509040,
-                  VALE_REFE=-52.002000000000002,
+                  VALE_CALC=-52.270544413013,
+                  VALE_REFE=-52.002,
+                  TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
                   CRITERE='RELATIF',
-                  PRECISION=6.0000000000000001E-3, TOLE_MACHINE=(6.0000000000000001E-3, 9.9999999999999995E-07),),
+                  PRECISION=6.0E-3,),
           )
 
 #
@@ -229,10 +218,11 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-79.175447025,
-                  VALE_REFE=-80.733999999999995,
+                  VALE_CALC=-79.175465160282,
+                  VALE_REFE=-80.74,
+                  TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
                   CRITERE='RELATIF',
-                  PRECISION=0.02, TOLE_MACHINE=(0.02, 9.9999999999999995E-07),),
+                  PRECISION=0.02, ),
           )
 
 #
@@ -245,14 +235,15 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
 
 TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   INST=500.0,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-52.270509040,
-                  VALE_REFE=-52.270000000000003,
+                  VALE_CALC=-52.270544413013,
+                  VALE_REFE=-52.27,
+                  TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  PRECISION=5.0E-3, 
                   ),
           )
 
@@ -264,14 +255,15 @@ TEST_RESU(RESU=_F(GROUP_NO='G_10',
 
 TEST_RESU(RESU=_F(GROUP_NO='G_10',
                   INST=500.0,
-                  REFERENCE='NON_DEFINI',
+                  REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=NONLIN,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-79.175447025,
-                  VALE_REFE=-79.170000000000002,
+                  VALE_CALC=-79.175465160282,
+                  VALE_REFE=-79.17,
+                  TOLE_MACHINE=1.E-5,              # TODO TOLE_MACHINE
                   CRITERE='RELATIF',
-                  PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 9.9999999999999995E-07),
+                  PRECISION=5.0E-3, 
                   ),
           )
 

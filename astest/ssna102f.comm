@@ -238,24 +238,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=-0.841373247,
-                  VALE_REFE=-0.81000000000000005,
+                  VALE_REFE=-0.81,
                   CRITERE='RELATIF',
-                  PRECISION=0.040000000000000001,),
-          )
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='PA4',
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.84136999999999995,
-                  TOLE_MACHINE=1.E-3,
-                  CRITERE='RELATIF',
-                  ),
+                  PRECISION=0.04,),
           )
 
 #
@@ -281,22 +266,11 @@ REACENC=POST_RELEVE_T(
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC= 1.75014680E+04,
+           PRECISION=0.03,
+           VALE_CALC=1.75014680E+04,
            VALE_REFE=1.7229580000000002E4,
            NOM_PARA='DY',
            TABLE=REACENC,)
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=1.7501E4,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='DY',
-           TABLE=REACENC,
-           )
 
 FIN()
 #

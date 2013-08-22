@@ -126,7 +126,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DY',
                   VALE_CALC=0.019411424,
                   VALE_REFE=0.02,
-                  PRECISION=0.029999999999999999,),
+                  PRECISION=0.03,),
           )
 
 # FLEXION HORS PLAN
@@ -167,7 +167,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='DZ',
                   VALE_CALC=-0.015702847,
                   VALE_REFE=-0.015657000000000001,
-                  PRECISION=5.0000000000000001E-3,),
+                  PRECISION=5.0E-3,),
           )
 
 FIN();

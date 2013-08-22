@@ -89,7 +89,6 @@ NB_MODES=INFO_MODE(MATR_RIGI=K_ASSE,
 # TEST_TABLE UNIQUEMENT POUR FAIRE CAS TEST
 TEST_TABLE(
            VALE_CALC_I=86,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='NB_MODE',
            TABLE=NB_MODES,
            )
@@ -119,8 +118,7 @@ MODES=CALC_MODAL(MODELE=STRUC,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODES,
-                  VALE_CALC=1.13856,
-                  TOLE_MACHINE=1.0000000000000001E-05,
+                  VALE_CALC=1.1385562506602,
                   ),
           )
 

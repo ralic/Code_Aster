@@ -159,18 +159,9 @@ DEPREF=-7.8967073390778E-01
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.17999999999999999,
+           PRECISION=0.18,
            VALE_CALC=-0.929643824,
            VALE_REFE=-0.78967073390777998,
-           NOM_PARA='DY',
-           TABLE=TABDEP,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=-0.93003999999999998,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=TABDEP,
            FILTRE=_F(NOM_PARA='INST',

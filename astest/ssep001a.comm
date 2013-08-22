@@ -164,8 +164,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 #          RESU=(
 #                _F(RESULTAT=RESU1,),),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.5022000000000002,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.502060,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=ETA_PILO,

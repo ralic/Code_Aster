@@ -119,8 +119,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=9.1796100000000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=9.1796092528461,
            NOM_PARA='IX_G',
            TABLE=MASS_INE,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -128,8 +127,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=9.1796100000000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=9.1796092528461,
            NOM_PARA='IY_G',
            TABLE=MASS_INE,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -137,8 +135,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=18.359200000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=18.359218505692,
            NOM_PARA='IZ_G',
            TABLE=MASS_INE,
            FILTRE=_F(NOM_PARA='LIEU',

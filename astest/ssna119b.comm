@@ -248,34 +248,27 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=7.5000000000000002E-4,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=7.5E-4,
                   ),
           )
 
 # TEST SIEF          
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='NON_DEFINI',
                   POINT=1,
                   RESULTAT=EVOL,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=-3.537996896,
-                  VALE_REFE=-3.5379999999999998,
-                  PRECISION=1.E-2,
                   MAILLE='M160',),
           )
 
 # TEST FORC_NODA          
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='P_HAUT',
-                  REFERENCE='NON_DEFINI',
                   RESULTAT=EVOL,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC= 3.43540717E+03,
-                  VALE_REFE=3435,
-                  PRECISION=1.E-2,),
+                  VALE_CALC= 3.43540717E+03,),
           )
 
 ################## IMPRESSION DANS LE FICHIER (visualisation avec xmgrace)########

@@ -110,13 +110,13 @@ NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
 
 
 TEST_RESU(RESU=_F(GROUP_NO='P2',
-                  INST=0.59999999999999998,
+                  INST=0.6,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=NONLI,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRY',
                   VALE_CALC=-0.600004240,
-                  VALE_REFE=-0.59999999999999998,
+                  VALE_REFE=-0.6,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),
           )
