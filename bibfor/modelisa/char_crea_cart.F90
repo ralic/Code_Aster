@@ -78,7 +78,9 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 ! - Number of <CARTE> objects - TODO: using lisdef utility
 !
     if (load_type.eq.'EFFE_FOND') then
-        nb_carte = 2    
+        nb_carte = 2   
+    elseif (load_type.eq.'ONDE_PLANE') then
+        nb_carte = 2
     else
         ASSERT(.false.)
     endif
@@ -89,11 +91,14 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
     if (load_type.eq.'EFFE_FOND') then
         carte(1) = obje_pref(1:13)//'.EFOND'
         carte(2) = obje_pref(1:13)//'.PREFF'
+    elseif (load_type.eq.'ONDE_PLANE') then
+        carte(1) = obje_pref(1:13)//'.ONDPL'
+        carte(2) = obje_pref(1:13)//'.ONDPR'
     else
         ASSERT(.false.)
     endif
 !
-! - Type of the <CARTE> - TODO: using lisdef utility
+! - Name of the <GRANDEUR> - TODO: using lisdef utility
 !
     if (load_type.eq.'EFFE_FOND') then
         if (vale_type.eq.'REEL') then
@@ -105,19 +110,33 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         else
             ASSERT(.false.)
         endif
+    elseif (load_type.eq.'ONDE_PLANE') then
+        if (vale_type.eq.'FONC') then
+            gran_name(1) = 'NEUT_K8'
+            gran_name(2) = 'NEUT_R'
+        else
+            ASSERT(.false.)
+        endif
     else
         ASSERT(.false.)
     endif
 !
-! - Name of the <GRANDEUR> - TODO: using lisdef utility
+! - Type of the <CARTE> - TODO: using lisdef utility
 !
     if (load_type.eq.'EFFE_FOND') then
         if (vale_type.eq.'REEL') then
-            cart_type(1) = 'REEL'
-            cart_type(2) = 'REEL'
+            cart_type(1) = 'R'
+            cart_type(2) = 'R'
         elseif (vale_type.eq.'FONC') then
-            cart_type(1) = 'REEL'
-            cart_type(2) = 'FONC'
+            cart_type(1) = 'R'
+            cart_type(2) = 'K8'
+        else
+            ASSERT(.false.)
+        endif
+    elseif (load_type.eq.'ONDE_PLANE') then
+        if (vale_type.eq.'FONC') then
+            cart_type(1) = 'K8'
+            cart_type(2) = 'R'
         else
             ASSERT(.false.)
         endif
@@ -132,6 +151,14 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         nb_cmp(2) = 1
         name_cmp(1,1) = 'X1'
         name_cmp(2,1) = 'PRES'
+    elseif (load_type.eq.'ONDE_PLANE') then
+        nb_cmp(1) = 1
+        nb_cmp(2) = 4
+        name_cmp(1,1) = 'Z1'
+        name_cmp(2,1) = 'X1'
+        name_cmp(2,2) = 'X2'
+        name_cmp(2,3) = 'X3'
+        name_cmp(2,4) = 'X4'
     else
         ASSERT(.false.)
     endif

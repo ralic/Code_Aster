@@ -159,7 +159,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- ONDE_PLANE
 !
-        call cbondp(load, mesh)
+        call cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
 ! ----- FLUX_THM_REP
 !

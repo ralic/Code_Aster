@@ -28,6 +28,7 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,  &
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: nb_elem
@@ -77,7 +78,8 @@ subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,  &
     if (load_type .eq. 'FLUX_REP' .or. load_type .eq. 'PRES_REP' .or.&
         load_type .eq. 'ECHANGE' .or. load_type .eq. 'FORCE_FACE' .or. &
         load_type .eq. 'IMPE_FACE' .or. load_type .eq. 'VITE_FACE' .or. &
-        load_type .eq. 'FORCE_CONTOUR'.or. load_type .eq. 'EFFE_FOND') then
+        load_type .eq. 'FORCE_CONTOUR'.or. load_type .eq. 'EFFE_FOND' .or. &
+        load_type .eq. 'ONDE_PLAN') then
         topo_2d = 'LINE'
         topo_3d = 'SURF'
     elseif (load_type.eq.'SOURCE' .or.load_type.eq.'FORCE_INTERNE') then

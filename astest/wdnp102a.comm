@@ -187,7 +187,7 @@ BLOQ_PRE=AFFE_CHAR_CINE(MODELE=MODELE,
                     MECA_IMPO=_F(GROUP_MA=('HA10'),PRE1=0.0));
 
 ONDE=AFFE_CHAR_MECA_F(MODELE=MODELE,INFO=2,
-                      ONDE_PLANE=_F(DIRECTION = (0., 1.),
+                      ONDE_PLANE=_F(DIRECTION = (0., 1., 0. ),
                             TYPE_ONDE = Onde,
                             FONC_SIGNAL = vite,
                             #GROUP_MA= 'BAS',

@@ -1,4 +1,15 @@
 subroutine te0499(option, nomte)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/pronor.h"
+#include "asterfort/rcvalb.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,27 +26,19 @@ subroutine te0499(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
+! aslint: disable=W0104
 !
-#include "asterfort/elref4.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jevech.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/vff2dn.h"
-    character(len=16) :: option, nomte
-! ......................................................................
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-!     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
-!          CORRESPONDANT A UN CHARGEMENT PAR ONDE PLANE
-!          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 2D
+! --------------------------------------------------------------------------------------------------
 !
-!          OPTION : 'ONDE_PLAN'
+! Elementary computation
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+! Elements: 2D
+! Option: ONDE_PLAN
+!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: nomres(3), fami, poum
     integer :: icodre(3), kpg, spt
@@ -48,12 +51,14 @@ subroutine te0499(option, nomte)
     real(kind=8) :: trace, norm, jac
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
-!
-!-----------------------------------------------------------------------
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos
     real(kind=8) :: coedir, r8b, typer, valfon
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(option.eq.'ONDE_PLAN')
+
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfde, jgano)
 !
@@ -64,14 +69,15 @@ subroutine te0499(option, nomte)
     call jevech('PTEMPSR', 'L', jinst)
     call jevech('PVECTUR', 'E', ivectu)
 !
-    if (zk24(ionde)(1:7) .eq. '&FOZERO') goto 140
+    if (zk8(ionde)(1:7) .eq. '&FOZERO') goto 99
 !
 !     --- INITIALISATION DE SIGMA
 !
-    do 20 i = 1, 2
-        do 20 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             sigma(i,j) =0.d0
-20      continue
+        enddo
+    enddo
 !
     mater = zi(imate)
     nomres(1) = 'E'
@@ -86,7 +92,7 @@ subroutine te0499(option, nomte)
                 3, nomres, valres, icodre, 1)
 !
     e = valres(1)
-    if (e .lt. 1.d-1) goto 140
+    if (e .lt. 1.d-1) goto 99
     nu = valres(2)
     rho = valres(3)
     lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
@@ -122,12 +128,12 @@ subroutine te0499(option, nomte)
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 130 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
 !
 !        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
 !KH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
-        call fointe('F ', zk24(ionde), 1, 'INST', zr(jinst),&
+        call fointe('F ', zk8(ionde), 1, 'INST', zr(jinst),&
                     valfon, ier)
 !
         valfon = -valfon/cele
@@ -152,24 +158,26 @@ subroutine te0499(option, nomte)
         endif
 !
 !        CALCUL DES DEFORMATIONS
-        do 70 indic1 = 1, 2
-            do 70 indic2 = 1, 2
+        do indic1 = 1, 2
+            do indic2 = 1, 2
                 epsi(indic1,indic2) = .5d0* ( grad(indic1,indic2)+ grad(indic2,indic1))
-70          continue
+            enddo
+        enddo
 !
 !        CALCUL DES CONTRAINTES
         trace = 0.d0
-        do 90 indic1 = 1, 2
+        do indic1 = 1, 2
             trace = trace + epsi(indic1,indic1)
-90      continue
-        do 100 indic1 = 1, 2
-            do 100 indic2 = 1, 2
+        enddo
+        do indic1 = 1, 2
+            do indic2 = 1, 2
                 if (indic1 .eq. indic2) then
                     sigma(indic1,indic2) = lambda*trace + 2.d0*mu* epsi( indic1,indic2)
                 else
                     sigma(indic1,indic2) = 2.d0*mu*epsi(indic1,indic2)
                 endif
-100          continue
+            enddo
+        enddo
 !
         call vff2dn(ndim, nno, kp, ipoids, idfde,&
                     zr(igeom), nx, ny, poids)
@@ -229,12 +237,14 @@ subroutine te0499(option, nomte)
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !
-        do 130 i = 1, nno
+        do i = 1, nno
             ii = 2*i-1
             zr(ivectu+ii-1) = zr(ivectu+ii-1) + (taux+coedir*taondx)* zr(ivf+k+i-1)*poids
             zr(ivectu+ii+1-1) = zr(ivectu+ii+1-1) + (tauy+coedir* taondy)*zr(ivf+k+i-1)*poids
-130      continue
+        enddo
+
+    enddo
 !
-140  continue
+99  continue
 !
 end subroutine

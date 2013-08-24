@@ -35,7 +35,7 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    CONDPLA  = NEUT_K24 ELEM__         (Z1)
+    CONDPLA  = NEUT_K8  ELEM__         (Z1)
     CONDPLR  = NEUT_R   ELEM__         (X[4]     )
 
 VECTEUR__
@@ -67,8 +67,6 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     IMPE_ABSO           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-  % IMPE_ABSO           556   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PVITPLU
-  %                           OUT__  MVECTUR  PVECTUR
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ONDE_PLAN           498   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CONDPLA  PONDPLA CONDPLR  PONDPLR  CTEMPSR  PTEMPSR

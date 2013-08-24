@@ -1,4 +1,15 @@
 subroutine te0498(option, nomte)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/pronor.h"
+#include "asterfort/rcvalb.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,27 +26,19 @@ subroutine te0498(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit   none
-#include "jeveux.h"
+! aslint: disable=W0104
 !
-#include "asterfort/elref4.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jevech.h"
-#include "asterfort/pronor.h"
-#include "asterfort/rcvalb.h"
-    character(len=16) :: option, nomte
-! ......................................................................
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-!     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
-!          CORRESPONDANT A UN CHARGEMENT PAR ONDE PLANE
-!          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 3D
+! --------------------------------------------------------------------------------------------------
 !
-!          OPTION : 'IMPE_ABSO'
+! Elementary computation
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+! Elements: 3D
+! Option: ONDE_PLAN
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ipoids, ivf, idfdx, idfdy, igeom, i, j
     integer :: ndim, nno, ipg, npg1, ino, jno
@@ -54,8 +57,10 @@ subroutine te0498(option, nomte)
     integer :: icodre(3), kpg, spt
     character(len=2) :: type
     character(len=8) :: nomres(3), fami, poum
-!     ------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(option.eq.'ONDE_PLAN')
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg1, ipoids, ivf, idfdx, jgano)
     idfdy = idfdx + 1
@@ -67,14 +72,15 @@ subroutine te0498(option, nomte)
     call jevech('PTEMPSR', 'L', jinst)
     call jevech('PVECTUR', 'E', ires)
 !
-    if (zk24(ionde)(1:7) .eq. '&FOZERO') goto 140
+    if (zk8(ionde)(1:7) .eq. '&FOZERO') goto 99
 !
 !     --- INITIALISATION DE SIGMA
 !
-    do 21 i = 1, 3
-        do 21 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             sigma(i,j) = 0.d0
-21      continue
+        enddo
+    enddo
 !
     mater=zi(imate)
     nomres(1)='E'
@@ -144,25 +150,26 @@ subroutine te0498(option, nomte)
 !
 !     --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ ---
 !
-    do 30 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 30 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2)*zr(j+3) - zr(i+3)*zr(j+2)
             sy(ino,jno) = zr(i+3)*zr(j+1) - zr(i+1)*zr(j+3)
             sz(ino,jno) = zr(i+1)*zr(j+2) - zr(i+2)*zr(j+1)
-30      continue
+        enddo
+    enddo
 !
 !     --- BOUCLE SUR LES POINTS DE GAUSS ---
 !
-    do 100 ipg = 1, npg1
+    do ipg = 1, npg1
 !
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
 !
 !        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
 !KH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
-        call fointe('FM', zk24(ionde), 1, 'INST', zr(jinst),&
+        call fointe('FM', zk8(ionde), 1, 'INST', zr(jinst),&
                     valfon, ier)
         valfon = -valfon/cele
 !         VALFON = +VALFON/CELE
@@ -214,25 +221,27 @@ subroutine te0498(option, nomte)
         endif
 !
 !        CALCUL DES DEFORMATIONS
-        do 201 indic1 = 1, 3
-            do 201 indic2 = 1, 3
+        do indic1 = 1, 3
+            do indic2 = 1, 3
                 epsi(indic1,indic2) = .5d0*( grad(indic1,indic2) + grad(indic2,indic1) )
-201          continue
+            enddo
+        enddo
 !
 !        CALCUL DES CONTRAINTES
         trace = 0.d0
-        do 203 indic1 = 1, 3
+        do indic1 = 1, 3
             trace = trace + epsi(indic1,indic1)
-203      continue
+        enddo
 !
-        do 204 indic1 = 1, 3
-            do 204 indic2 = 1, 3
+        do indic1 = 1, 3
+            do indic2 = 1, 3
                 if (indic1 .eq. indic2) then
                     sigma(indic1,indic2) = lambda*trace +2.d0*mu*epsi( indic1,indic2)
                 else
                     sigma(indic1,indic2) = 2.d0*mu*epsi(indic1,indic2)
                 endif
-204          continue
+            enddo
+        enddo
 !
         nx = 0.0d0
         ny = 0.0d0
@@ -240,14 +249,15 @@ subroutine te0498(option, nomte)
 !
 !        --- CALCUL DE LA NORMALE AU POINT DE GAUSS IPG ---
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
-102          continue
+            enddo
+        enddo
 !
 !        --- LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE ---
 !
@@ -314,7 +324,7 @@ subroutine te0498(option, nomte)
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !
-        do 100 i = 1, nno
+        do i = 1, nno
             ii = 3*i-2
             zr(ires+ii-1) = zr(ires+ii-1) + (taux+coedir*taondx)*zr( ivf+ldec+i-1)*jac*zr(ipoids+&
                             &ipg-1)
@@ -322,8 +332,10 @@ subroutine te0498(option, nomte)
                               &ids+ipg-1)
             zr(ires+ii+2-1) = zr(ires+ii+2-1) + (tauz+coedir*taondz)* zr(ivf+ldec+i-1)*jac*zr(ipo&
                               &ids+ipg-1)
-100      continue
+        enddo
 !
-140  continue
+    enddo
+!
+ 99 continue
 !
 end subroutine

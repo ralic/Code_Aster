@@ -92,7 +92,7 @@ LIAISON=AFFE_CHAR_MECA(
 
 ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
 
-                ONDE_PLANE=_F( DIRECTION = (0., 1.,), TYPE_ONDE = 'S',
+                ONDE_PLANE=_F( DIRECTION = (0., 1., 0.), TYPE_ONDE = 'S',
                  FONC_SIGNAL = FONCT,GROUP_MA='ABSO'
                  ),
                          )

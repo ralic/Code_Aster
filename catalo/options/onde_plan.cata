@@ -17,12 +17,13 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
 ONDE_PLAN
+        << SECOND MEMBRE POUR ONDE_PLAN >>
 OPTION__
    IN__
-        PGEOMER  GEOM_R
+        PGEOMER  GEOM_R   << INITIAL GEOMETRY >>
+        PTEMPSR  INST_R   << TIME >>
         PMATERC  ADRSJEVE 'CHMA!.MATE_CODE' <<  PMATERC : CHAMP DE MATERIAU  >>
-        PTEMPSR  INST_R
-        PONDPLA  NEUT_K24
-        PONDPLR  NEUT_R
+        PONDPLA  NEUT_K8  << WAVE FUNCTION >>
+        PONDPLR  NEUT_R   << WAVE TYPE AND DIRECTION >>
    OUT__
 PVECTUR VDEP_R RESL__

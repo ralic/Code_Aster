@@ -132,13 +132,7 @@ cata_msg={
  on ne donne le mot facteur "CONVECTION" qu'une fois au maximum
 """),
 
-61: _(u"""
- le type s est interdit en 3d
-"""),
 
-62: _(u"""
- les types SV ou SH sont interdits en 2d
-"""),
 
 63: _(u"""
  donner un vecteur non nul

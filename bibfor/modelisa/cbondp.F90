@@ -1,4 +1,22 @@
-subroutine cbondp(char, noma)
+subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
+!
+    implicit   none
+!
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/getvr8.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_crea_cart.h"
+#include "asterfort/char_read_elem.h"
+#include "asterfort/char_read_val.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/vetyma.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,147 +33,159 @@ subroutine cbondp(char, noma)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-!     BUT: TRAITE LE MOT_CLE : ONDE_PLANE
+! person_in_charge: mickael.abbas at edf.fr
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DE LA CHARGE
-!      NOMA   : NOM DU MAILLAGE
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    integer, intent(in)  :: ndim
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: vale_type
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of load ONDE_PLANE
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-#include "jeveux.h"
+! In  mesh      : name of mesh
+! In  load      : name of load
+! In  ndim      : space dimension
+! In  ligrmo    : list of elements in model
+! In  vale_type : affected value type (real, complex or function)
 !
-#include "asterc/getfac.h"
-#include "asterc/getvid.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterfort/alcart.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
-    real(kind=8) :: dir(4)
-    character(len=24) :: signal, mesmai
-    character(len=8) :: char, noma, typmcl(2), modele, k8b
-    character(len=2) :: type
-    integer :: nondp, jma, nbma, iarg
-    character(len=16) :: motcle(2)
-    character(len=19) :: carte, ligrmo
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: i, jncmp, jvalv, nbid, ndir, nsi, nty
+    complex(kind=8) :: c16dummy
+    real(kind=8) :: r8dummy
+    character(len=8) :: k8dummy
+    character(len=16) :: k16dummy
+    real(kind=8) :: wave_dire(3), wave_type_r
+    character(len=8) :: signal
+    character(len=16) :: wave_type
+    integer :: iarg, jvalv
+    integer :: iocc, ndir, val_nb, nondp, ibid, codret
+    character(len=16) :: keywordfact
+    character(len=19) :: carte(2)
+    integer :: nb_carte, nb_cmp
+    character(len=8) :: suffix
+    character(len=24) :: list_elem
+    integer :: j_elem
+    integer :: nb_elem
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    call getvid(' ', 'MODELE', 0, iarg, 1,&
-                modele, jma)
-    ligrmo = modele//'.MODELE'
+    keywordfact = 'ONDE_PLANE'
+    call getfac(keywordfact, nondp)
+    if (nondp .eq. 0) goto 99
 !
-! --- INFORMATIONS SUR L'ONDE PLANE
+! - Initializations
 !
-    call getfac('ONDE_PLANE', nondp)
+    ASSERT(vale_type.eq.'FONC')
 !
-    if (nondp .eq. 0) goto 9999
-    call getvr8('ONDE_PLANE', 'DIRECTION', 1, iarg, 0,&
-                dir, ndir)
-    ndir = - ndir
-    call getvr8('ONDE_PLANE', 'DIRECTION', 1, iarg, ndir,&
-                dir, nbid)
-    if (ndir .eq. 2) dir(3) = 0.d0
-    call getvtx('ONDE_PLANE', 'TYPE_ONDE', 1, iarg, 1,&
-                type, nty)
-    call getvid('ONDE_PLANE', 'FONC_SIGNAL', 1, iarg, 1,&
-                signal, nsi)
+! - Creation and initialization to zero of <CARTE>
 !
-! --- MAILLES CONSERNEES PAR L'ONDE PLANE
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo, &
+                        vale_type, nb_carte, carte)
+    ASSERT(nb_carte.eq.2)
 !
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
+! - Loop on factor keyword
 !
-    mesmai ='&&ONDPLA.MESMAI'
+    do iocc = 1, nondp
 !
-    call reliem(ligrmo, noma, 'NU_MAILLE', 'ONDE_PLANE', 1,&
-                2, motcle, typmcl, mesmai, nbma)
+! ----- Read mesh affectation
 !
-    if (nbma .eq. 0) goto 100
+        list_elem = '&&CBONDP.LIST_ELEM'
+        suffix = ' '
+        call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem, &
+                            nb_elem)
+        call jeveuo(list_elem,'L',j_elem)
+        if (nb_elem.eq.0) goto 100
 !
-    call jeveuo(mesmai, 'L', jma)
+! ----- Get wave function
 !
-! --- STOCKAGE DANS LA CARTE NEUT_K24
+        call char_read_val(keywordfact, iocc, 'FONC_SIGNAL', 'FONC', val_nb, &
+                           r8dummy, signal, c16dummy, k16dummy)
+        ASSERT(val_nb.eq.1)
 !
-    carte=char//'.CHME.ONDPL'
-    call alcart('G', carte, noma, 'NEUT_K24')
+! ----- Affectation of values in <CARTE> - Wave function
 !
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
-    call jeveuo(carte//'.VALV', 'E', jvalv)
+        call jeveuo(carte(1)//'.VALV', 'E', jvalv)
+        nb_cmp = 1
+        zk8(jvalv-1+1) = signal
+        call nocart(carte(1), 3, k8dummy, 'NUM', nb_elem,&
+                    k8dummy, zi(j_elem), ' ', nb_cmp)
 !
-! --- STOCKAGE DES VALEURS NULLES SUR TOUT LE MAILLAGE
+! ----- Get direction
 !
-    zk8(jncmp) = 'Z1'
-    zk24(jvalv) = '&FOZERO'
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, 1)
+        wave_dire(1) = 0.d0
+        wave_dire(2) = 0.d0
+        wave_dire(3) = 0.d0
+        call getvr8(keywordfact, 'DIRECTION', iocc, iarg, 0,   &
+                    wave_dire, ndir)
+        ndir = - ndir
+        ASSERT(ndir.eq.3)
+        call getvr8(keywordfact, 'DIRECTION', iocc, iarg, ndir,&
+                    wave_dire, ibid)
 !
-    zk24(jvalv) = signal
-    call nocart(carte, 3, k8b, 'NUM', nbma,&
-                k8b, zi(jma), ' ', 1)
+! ----- Get wave type
 !
-! --- STOCKAGE DANS LA CARTE NEUT_R
-!
-    carte=char//'.CHME.ONDPR'
-    call alcart('G', carte, noma, 'NEUT_R')
-!
-    call jeveuo(carte//'.NCMP', 'E', jncmp)
-    call jeveuo(carte//'.VALV', 'E', jvalv)
-!
-! --- STOCKAGE DES VALEURS NULLES SUR TOUT LE MAILLAGE
-!
-    zk8(jncmp) = 'X1'
-    zk8(jncmp+1) = 'X2'
-    zk8(jncmp+2) = 'X3'
-    zk8(jncmp+3) = 'X4'
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, 4)
-!
-! --- REMPLISSAGE DE LA CARTE NEUT_R CORRESPONDANTE
-!
-    if (ndir .eq. 3) then
-        if (type .eq. 'P ') then
-            dir(4) = 0.d0
-        else if (type.eq.'SV') then
-            dir(4) = 1.d0
-        else if (type.eq.'SH') then
-            dir(4) = 2.d0
-        else if (type.eq.'S ') then
-            call u2mess('F', 'MODELISA3_61')
+        call char_read_val(keywordfact, iocc, 'TYPE_ONDE', 'TEXT', val_nb, &
+                           r8dummy, k8dummy, c16dummy, wave_type)
+        ASSERT(val_nb.eq.1)
+        if (ndim .eq. 3) then
+            if (wave_type .eq. 'P ') then
+                wave_type_r = 0.d0
+            else if (wave_type.eq.'SV') then
+                wave_type_r = 1.d0
+            else if (wave_type.eq.'SH') then
+                wave_type_r = 2.d0
+            else if (wave_type.eq.'S ') then
+                call u2mess('F', 'CHARGES2_61')
+            else
+                ASSERT(.false.)
+            endif
+        elseif (ndim .eq. 2) then
+            if (wave_type .eq. 'P ') then
+                wave_type_r = 0.d0
+            else if (wave_type.eq.'S ') then
+                wave_type_r = 1.d0
+            else if (wave_type.eq.'SV'.or.wave_type.eq.'SH') then
+                call u2mess('A', 'CHARGES2_62')
+                wave_type_r = 1.d0
+            else
+                ASSERT(.false.)
+            endif
+        else
+            ASSERT(.false.)
         endif
-    else
-        if (type .eq. 'P ') then
-            dir(4) = 0.d0
-        else if (type.eq.'S ') then
-            dir(4) = 1.d0
-        else if (type.eq.'SV'.or.type.eq.'SH') then
-            call u2mess('F', 'MODELISA3_62')
-        endif
-    endif
 !
-    do 10 i = 1, 4
-        zr(jvalv+i-1) = dir(i)
-10  continue
+! ----- Affectation of values in <CARTE> - Wave type and direction
 !
-    call nocart(carte, 3, k8b, 'NUM', nbma,&
-                k8b, zi(jma), ' ', 4)
+        call jeveuo(carte(2)//'.VALV', 'E', jvalv)
+        nb_cmp = 4
+        zr(jvalv-1+1) = wave_dire(1)
+        zr(jvalv-1+2) = wave_dire(2)
+        zr(jvalv-1+3) = wave_dire(3)
+        zr(jvalv-1+4) = wave_type_r
+        call nocart(carte(2), 3, k8dummy, 'NUM', nb_elem,&
+                    k8dummy, zi(j_elem), ' ', nb_cmp)
+
+100     continue
 !
-100  continue
+! ----- Check elements
 !
-    call jedetr(mesmai)
+        call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem, &
+                    codret)
 !
-9999  continue
+        call jedetr(list_elem)
+
+    enddo
+!
+99  continue
     call jedema()
 end subroutine

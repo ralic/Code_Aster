@@ -169,6 +169,14 @@ cas d'un modèle à %(i2)d dimensions.
  Le concept CABLE_BP de nom %(k1)s ne contient pas de contraintes. L'option SIGM_BPEL est donc inutilisable.
 """),
 
+61: _(u"""
+ Le type d'onde S est interdit en 3D pour le chargement ONDE_PLANE, précisez SV ou SH.
+"""),
+
+62: _(u"""
+ Les types d'onde SV et SH sont interdits en 2D pour le chargement ONDE_PLANE, on a pris le type S.
+"""),
+
 63: _(u"""
  Vous ne pouvez pas bloquer le déplacement tangent sur des faces d'éléments 3D.
  Utiliser DDL_IMPO ou LIAISON_DDL.
