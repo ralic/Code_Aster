@@ -199,7 +199,8 @@ cata_msg={
 """),
 
 43: _(u"""
- FAISCEAU_AXIAL : les mots-clés <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clé facteur. sinon, ils doivent apparaître ensemble dans au moins une des occurrences. le mot-clé <ANGL_VRIL> doit également être présent si l on définit une enceinte rectangulaire
+ FAISCEAU_AXIAL : les mots-clés <CARA_PAROI> et <VALE_PAROI> sont obligatoires si il n y a qu'une seule occurrence pour le mot-clé facteur. 
+Sinon, ils doivent apparaître ensemble dans au moins une des occurrences. le mot-clé <ANGL_VRIL> doit également être présent si l'on définit une enceinte rectangulaire
 """),
 
 44: _(u"""
@@ -215,7 +216,7 @@ cata_msg={
 """),
 
 47: _(u"""
- récupération du matériau béton : les caractéristiques matérielles n ont pas été affectées a la maille no %(k1)s  appartenant au groupe de mailles                                 associe a la structure béton
+ récupération du matériau béton : les caractéristiques matérielles n ont pas été affectées a la maille no %(k1)s  appartenant au groupe de mailles associée a la structure béton
 """),
 
 48: _(u"""
@@ -357,44 +358,6 @@ Erreur utilisateur :
 
 85: _(u"""
   %(k1)s  un nombre est attendu
-"""),
-
-86: _(u"""
- la maille de nom :  %(k1)s  n'est pas de type SEGMENT
- elle ne sera pas affectée par  %(k2)s
-"""),
-
-87: _(u"""
- la maille de nom :  %(k1)s  n'est pas de type TRIA ou QUAD
- elle ne sera pas affectée par  %(k2)s
-"""),
-
-88: _(u"""
-  -> Erreur dans les mailles du mot-clé facteur %(k1)s :
-     aucune maille n'est du bon type. Elles sont toutes ignorées.
-"""),
-
-89: _(u"""
- la maille de numéro :  %(k1)s  n'est pas de type SEGMENT
- elle ne sera pas affectée par  %(k2)s
-"""),
-
-90: _(u"""
- la maille de numéro :  %(k1)s  n'est pas de type TRIA ou QUAD
- elle ne sera pas affectée par  %(k2)s
-"""),
-
-91: _(u"""
- erreur dans les noms de maille du GROUP_MA:  %(k1)s  du mot-clé facteur  %(k2)s
- aucune maille n'est du bon type
-"""),
-
-92: _(u"""
- la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectée par  %(k2)s
-"""),
-
-93: _(u"""
- la maille de numéro :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectée par  %(k2)s
 """),
 
 97: _(u"""

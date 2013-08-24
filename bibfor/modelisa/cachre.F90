@@ -9,6 +9,8 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -53,17 +55,16 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 !      PARAM  : NOM DU TROISIEME "CHAMP" DE LA CARTE (F3D3D F2D3D ...)
 !      MOTCL  : MOT-CLE FACTEUR
 ! ----------------------------------------------------------------------
-    integer :: ibid, i, n, nchre, nrep, ncmp, jvalv, jncmp, iocc, nfx, nfy, nfz
-    integer :: nmx, nmy, nmz, nplan, nbtou, ier, nbma, jma
+    integer :: i, n, nchre, nrep, ncmp, jvalv, jncmp, iocc, nfx, nfy, nfz
+    integer :: nmx, nmy, nmz, nplan
     real(kind=8) :: fx, fy, fz, mx, my, mz, vpre
     complex(kind=8) :: cfx, cfy, cfz, cmx, cmy, cmz, cvpre
-    character(len=8) :: k8b, kfx, kfy, kfz, kmx, kmy, kmz, typch, plan
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motclf, motcle(2)
+    character(len=8) :: kfx, kfy, kfz, kmx, kmy, kmz, typch, plan
+    character(len=16) :: motclf
     character(len=19) :: carte
-    character(len=24) :: mesmai
-    integer :: xtout
     integer :: iarg
+    character(len=19) :: cartes(1)
+    integer :: ncmps(1)
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -80,7 +81,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     else if (fonree.eq.'COMP') then
         call alcart('G', carte, noma, 'FORC_C')
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree(1:4))
+        ASSERT(.false.)
     endif
 !
     call jeveuo(carte//'.NCMP', 'E', jncmp)
@@ -98,34 +99,28 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     zk8(jncmp-1+7) = 'REP'
     zk8(jncmp-1+8) = 'PLAN'
     if (fonree(1:4) .eq. 'REEL') then
-        do 10 i = 1, 8
+        do i = 1, 8
             zr(jvalv-1+i) = 0.d0
-10      continue
+        enddo
     else if (fonree(1:4).eq.'COMP') then
-        do 12 i = 1, 8
+        do i = 1, 8
             zc(jvalv-1+i) = dcmplx( 0.d0 , 0.d0 )
-12      continue
+        enddo
     else if (fonree.eq.'FONC') then
-        do 14 i = 1, 6
+        do i = 1, 6
             zk8(jvalv-1+i) = '&FOZERO'
-14      continue
+        enddo
         zk8(jvalv-1+7) = 'GLOBAL'
         zk8(jvalv-1+8) = '&FOZERO'
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
+        ASSERT(.false.)
     endif
     call nocart(carte, 1, ' ', 'NOM', 0,&
                 ' ', 0, ligrmo, 8)
 !
-    mesmai = '&&CACHRE.MES_MAILLES'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-!
 ! --- STOCKAGE DANS LA CARTE ---
 !
-    do 20 iocc = 1, nchre
+    do iocc = 1, nchre
         nrep = 0
         ncmp = 0
         if (motclf .eq. 'FORCE_POUTRE') then
@@ -449,30 +444,13 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
             endif
         endif
 !
-        xtout=getexm( motclf, 'TOUT')
-        nbtou=0
-        if (xtout .eq. 1) then
-            call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                        k8b, nbtou)
-        endif
+        cartes(1) = carte
+        ncmps(1) = ncmp
+        call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+                            cartes, ncmps)
 !
-        if (nbtou .ne. 0) then
-!
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
-        else
-            call reliem(ligrmo, noma, 'NO_MAILLE', motclf, iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 20
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        motclf, ndim, ier)
-            call nocart(carte, 3, k8b, 'NOM', nbma,&
-                        zk8(jma), ibid, ' ', ncmp)
-            call jedetr(mesmai)
-        endif
-!
-20  end do
+20      continue
+    end do
 !
     call tecart(carte)
     call jedema()

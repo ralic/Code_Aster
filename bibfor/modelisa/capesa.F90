@@ -1,4 +1,4 @@
-subroutine capesa(char, noma, ipesa, ndim, ligrmo)
+subroutine capesa(char, noma, ipesa, ndim)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ subroutine capesa(char, noma, ipesa, ndim, ligrmo)
 #include "asterc/getvtx.h"
 #include "asterc/r8miem.h"
 #include "asterfort/alcart.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
@@ -43,18 +44,18 @@ subroutine capesa(char, noma, ipesa, ndim, ligrmo)
     character(len=8) :: char, noma, licmp(4)
     character(len=19) :: carte
     integer :: iocc, ipesa, nbmail, nbgpma
-    integer :: ibid, ier, jma, jncmp, jvalv
+    integer :: jncmp, jvalv
     integer :: nbma, ncmp, ndim, npesa
     character(len=8) :: k8b
-    character(len=24) :: mesmai
-    character(len=*) :: ligrmo
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motcle(2)
+    character(len=16) :: motclf
     integer :: iarg
+    character(len=19) :: cartes(1)
+    integer :: ncmps(1)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    do 10 iocc = 1, ipesa
+    motclf = 'PESANTEUR'
+    do iocc = 1, ipesa
         call getvr8('PESANTEUR', 'GRAVITE', iocc, iarg, 1,&
                     pesa(1), npesa)
         call getvr8('PESANTEUR', 'DIRECTION', iocc, iarg, 3,&
@@ -117,12 +118,6 @@ subroutine capesa(char, noma, ipesa, ndim, ligrmo)
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ' ', ncmp)
 !
-            mesmai = '&&CAPESA.MES_MAILLES'
-            motcle(1) = 'GROUP_MA'
-            motcle(2) = 'MAILLE'
-            typmcl(1) = 'GROUP_MA'
-            typmcl(2) = 'MAILLE'
-!
 !
 ! --- STOCKAGE DANS LA CARTE
 !
@@ -130,16 +125,10 @@ subroutine capesa(char, noma, ipesa, ndim, ligrmo)
             zr(jvalv+1) = pesa(2)
             zr(jvalv+2) = pesa(3)
             zr(jvalv+3) = pesa(4)
-!
-            call reliem(ligrmo, noma, 'NO_MAILLE', 'PESANTEUR', iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        'PESANTEUR', ndim, ier)
-            call nocart(carte, 3, k8b, 'NOM', nbma,&
-                        zk8(jma), ibid, ' ', ncmp)
-            call jedetr(mesmai)
+            cartes(1) = carte
+            ncmps(1) = ncmp
+            call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+                                cartes, ncmps)
         endif
-10  end do
+    end do
 end subroutine

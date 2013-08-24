@@ -182,6 +182,26 @@ cas d'un modèle à %(i2)d dimensions.
  Il faut au moins deux noeuds pour LIAISON_UNIF.
 """),
 
+86: _(u"""
+ La maille de nom %(k1)s n'est pas de type linéique (segments).
+ Elle ne sera pas affectée par %(k2)s .
+"""),
+
+87: _(u"""
+ La maille de nom %(k1)s n'est pas de type surfacique (triangles ou quadrangles).
+ Elle ne sera pas affectée par %(k2)s .
+"""),
+
+88: _(u"""
+ La maille de nom %(k1)s n'est pas de type volumique.
+ Elle ne sera pas affectée par %(k2)s .
+"""),
+
+89: _(u"""
+  -> Erreur dans les mailles du mot-clé facteur %(k1)s.
+     Aucune maille n'est du bon type. Elles sont toutes ignorées.
+"""),
+
 97 : _(u"""
  Tous les coefficients de la relation linéaire sont strictement nuls.
  Cette erreur peut survenir si le maillage est incorrect (par exemple des noeuds confondus) ou si

@@ -6,6 +6,8 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/getvem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -54,15 +56,15 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
 !
 !-----------------------------------------------------------------------
     integer :: ibid, nflux, jvalv1, jvalv2, jncmp1, jncmp2, iocc, n, n1, n2, n3
-    integer :: n4, n5, n6, n7, n8, n11, n12, ngr, nbtou, nbma, jma, ncmp, ncmp1
-    integer :: ncmp2, iret, ier
+    integer :: n4, n5, n6, n7, n8, n11, n12, ngr, ncmp, ncmp1, ncmps(2)
+    integer :: ncmp2, iret
     real(kind=8) :: r8b, aire, xlong
     complex(kind=8) :: c16b
     logical :: icre1, icre2
-    character(len=8) :: k8b, nomtab, typmcl(2)
-    character(len=16) :: motclf, motcle(2)
-    character(len=19) :: cart1, cart2
-    character(len=24) :: para, mesmai, mongrm
+    character(len=8) :: k8b, nomtab
+    character(len=16) :: motclf
+    character(len=19) :: cart1, cart2, cartes(2)
+    character(len=24) :: para, mongrm
     character(len=24) :: valk(2)
     integer :: iarg
 ! ----------------------------------------------------------------------
@@ -81,45 +83,42 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     motclf = 'FLUX_REP'
     call getfac(motclf, nflux)
 !
-    do 1, iocc = 1, nflux
-    n5 = 0
-    if (fonree .eq. 'REEL') then
-        call getvr8(motclf, 'FLUN', iocc, iarg, 0,&
-                    r8b, n11)
-        call getvr8(motclf, 'FLUN_INF', iocc, iarg, 0,&
-                    r8b, n2)
-        call getvr8(motclf, 'FLUN_SUP', iocc, iarg, 0,&
-                    r8b, n3)
-        call getvid(motclf, 'CARA_TORSION', iocc, iarg, 0,&
-                    k8b, n12)
-        n1 = n11 + n12
-    else if (fonree.eq.'FONC') then
-        call getvid(motclf, 'FLUN', iocc, iarg, 0,&
-                    k8b, n1)
-        call getvid(motclf, 'FLUN_INF', iocc, iarg, 0,&
-                    k8b, n2)
-        call getvid(motclf, 'FLUN_SUP', iocc, iarg, 0,&
-                    k8b, n3)
-        call getvid(motclf, 'FLUX_X', iocc, iarg, 0,&
-                    k8b, n6)
-        call getvid(motclf, 'FLUX_Y', iocc, iarg, 0,&
-                    k8b, n7)
-        call getvid(motclf, 'FLUX_Z', iocc, iarg, 0,&
-                    k8b, n8)
-        n5 = n6+n7+n8
-    else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
-    endif
-    n4 = n1+n2+n3
-    if ((n5.ne.0) .and. (n4.ne.0)) then
+    do iocc = 1, nflux
+        n5 = 0
         if (fonree .eq. 'REEL') then
+            call getvr8(motclf, 'FLUN', iocc, iarg, 0,&
+                        r8b, n11)
+            call getvr8(motclf, 'FLUN_INF', iocc, iarg, 0,&
+                        r8b, n2)
+            call getvr8(motclf, 'FLUN_SUP', iocc, iarg, 0,&
+                        r8b, n3)
+            call getvid(motclf, 'CARA_TORSION', iocc, iarg, 0,&
+                        k8b, n12)
+            n1 = n11 + n12
         else if (fonree.eq.'FONC') then
-            call u2mess('F', 'MODELISA2_64')
+            call getvid(motclf, 'FLUN', iocc, iarg, 0,&
+                        k8b, n1)
+            call getvid(motclf, 'FLUN_INF', iocc, iarg, 0,&
+                        k8b, n2)
+            call getvid(motclf, 'FLUN_SUP', iocc, iarg, 0,&
+                        k8b, n3)
+            call getvid(motclf, 'FLUX_X', iocc, iarg, 0,&
+                        k8b, n6)
+            call getvid(motclf, 'FLUX_Y', iocc, iarg, 0,&
+                        k8b, n7)
+            call getvid(motclf, 'FLUX_Z', iocc, iarg, 0,&
+                        k8b, n8)
+            n5 = n6+n7+n8
+        else
+            ASSERT(.false.)
         endif
-    endif
-    if (n4 .ne. 0) icre1 = .true.
-    if (n5 .ne. 0) icre2 = .true.
-    1 end do
+        n4 = n1+n2+n3
+        if ((n5.ne.0) .and. (n4.ne.0)) then
+            if (fonree.eq.'FONC') call u2mess('F', 'MODELISA2_64')
+        endif
+        if (n4 .ne. 0) icre1 = .true.
+        if (n5 .ne. 0) icre2 = .true.
+    end do
 !
 !     ALLOCATION EVENTUELLE DES CARTES CART1 ET CART2 :
 !
@@ -132,7 +131,7 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
         if (icre1) call alcart('G', cart1, noma, 'FLUN_F')
         if (icre2) call alcart('G', cart2, noma, 'FLUX_F')
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
+        ASSERT(.false.)
     endif
 !
     if (icre1) then
@@ -182,15 +181,9 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                     ' ', 0, ligrmo, ncmp)
     endif
 !
-    mesmai = '&&CAFLUX.MES_MAILLES'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-!
 !     STOCKAGE DANS LES CARTES
 !
-    do 120 iocc = 1, nflux
+    do iocc = 1, nflux
         ncmp1 = 0
         ncmp2 = 0
 !
@@ -316,37 +309,15 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
             endif
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
-!
-        if (nbtou .ne. 0) then
-            if (ncmp1 .gt. 0) then
-                call nocart(cart1, 1, ' ', 'NOM', 0,&
-                            ' ', 0, ligrmo, ncmp1)
-            endif
-            if (ncmp2 .gt. 0) then
-                call nocart(cart2, 1, ' ', 'NOM', 0,&
-                            ' ', 0, ligrmo, ncmp2)
-            endif
-!
-        else
-            call reliem(ligrmo, noma, 'NO_MAILLE', motclf, iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 120
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        motclf, ndim, ier)
-            if (ncmp1 .gt. 0) then
-                call nocart(cart1, 3, ' ', 'NOM', nbma,&
-                            zk8(jma), 0, ligrmo, ncmp1)
-            endif
-            if (ncmp2 .gt. 0) then
-                call nocart(cart2, 3, ' ', 'NOM', nbma,&
-                            zk8(jma), 0, ligrmo, ncmp2)
-            endif
-            call jedetr(mesmai)
-        endif
-120  end do
+
+        cartes(1) = cart1
+        cartes(2) = cart2
+        ncmps(1) = ncmp1
+        ncmps(2) = ncmp2
+        call char_affe_neum(noma, ndim, motclf, iocc, 2, &
+                            cartes, ncmps)
+
+    end do
 !
     if (icre1) call tecart(cart1)
     if (icre2) call tecart(cart2)

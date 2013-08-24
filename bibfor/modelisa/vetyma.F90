@@ -1,5 +1,17 @@
-subroutine vetyma(noma, listma, nbma, listgr, nbgr,&
-                  option, ndim, codret)
+subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,  &
+                  codret)
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/u2mesk.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,181 +28,110 @@ subroutine vetyma(noma, listma, nbma, listgr, nbgr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-! BUT : VERIFICATION DU TYPE DES MAILLES AFFECTEES SUIVANT LE CHARGEMENT
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_elem
+    character(len=24), intent(in) :: list_elem
+    character(len=16), intent(in) :: load_type
+    integer, intent(in) :: ndim
+    integer, intent(out) :: codret
 !
-! ARGUMENTS D'ENTREE:
-!      NOMA   : NOM DU MAILLAGE
-!      LISTMA : LISTE DES MAILLES
-!      NBMA   : NOMBRE DE MAILLES
-!      LISTGR : LISTE DES GROUPES DE MAILLES
-!      NBGR   : NOMBRE DE GROUPES DE MAILLES
-!      OPTION : MOT-CLE FACTEUR DANS AFFE_CHAR_MECA OU AFFE_CHAR_THER
-!      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
+! --------------------------------------------------------------------------------------------------
 !
-! ARGUMENT DE SORTIE:
-!      CODRET : CODE RETOUR : 0 SI OK, >0 SINON
+! Loads affectation
 !
-! MOT-CLES FACTEUR VERIFIES :   FLUX_REP  ECHANGE     SOURCE
-!                               PRES_REP  FORCE_FACE  FORCE_CONTOUR
-!                               VITE_FACE IMPE_FACE   FORCE_INTERNE
+! Check element type
 !
-! ROUTINES APPELEES:
+! --------------------------------------------------------------------------------------------------
 !
-#include "jeveux.h"
 !
-#include "asterfort/codent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/u2mesk.h"
-    integer :: codret
-    character(len=8) :: listmz
-    character(len=*) :: noma, listma(1), listgr(1), option
-    character(len=8) :: type, kima, noma8
-    character(len=24) :: grpma, optioz, listgz
+! In  mesh      : name of mesh
+! In  ndim      : space dimension
+! In  load_type : type of load
+! In  list_elem : list of elements read
+! In  nb_elem   : number of elements read
+! Out codret    : 0 if OK
+!
+! --------------------------------------------------------------------------------------------------
+!
     character(len=24) :: valk(2)
-    character(len=1) :: k1bid
-! ----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: i, iadgma, iadtyp, iatyma, ibid, ima, j
-    integer :: nbgr, nbma, ndim, nerr
-!-----------------------------------------------------------------------
+    character(len=8) :: topo_2d, topo_3d, name_elem, type_elem, topo_elem
+    integer :: iatyma, iadtyp, nerr
+    integer :: jelem, ielem, nume_elem
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    optioz = option
-    noma8=noma
-    call jeveuo(noma8//'.TYPMAIL', 'L', iatyma)
-    grpma = noma8//'.GROUPEMA'
-    nerr=0
 !
-    if (option .eq. 'FLUX_REP' .or. option .eq. 'PRES_REP' .or. option .eq. 'ECHANGE' .or.&
-        option .eq. 'FORCE_FACE' .or. option .eq. 'IMPE_FACE' .or. option .eq. 'VITE_FACE'&
-        .or. option .eq. 'FORCE_CONTOUR') then
+    if (nb_elem.eq.0) goto 99
 !
-!  MOT-CLE MAILLE
-        if (nbma .gt. 0) then
-            do 1 i = 1, nbma
-                call jenonu(jexnom(noma8//'.NOMMAI', listma(i)), ibid)
-                iadtyp=iatyma-1+ibid
-                call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
-                listmz = listma(i)
-                if (ndim .eq. 2 .and. type(1:3) .ne. 'SEG') then
-                    nerr=nerr+1
-                    valk(1) = listmz
-                    valk(2) = optioz
-                    call u2mesk('A', 'MODELISA7_86', 2, valk)
-                    elseif(ndim.eq.3.and.type(1:4).ne.'QUAD' .and.type(1:&
-                4).ne.'TRIA') then
-                    nerr=nerr+1
-                    valk(1) = listmz
-                    valk(2) = optioz
-                    call u2mesk('A', 'MODELISA7_87', 2, valk)
-                endif
- 1          continue
-            if (nbma .eq. nerr) then
-                call u2mesk('A', 'MODELISA7_88', 1, optioz)
-            endif
-        endif
+! - Access to mesh
 !
-!  MOT-CLE GROUP_MA
-        if (nbgr .gt. 0) then
-            do 2 i = 1, nbgr
-                call jeveuo(jexnom(grpma, listgr(i)), 'L', iadgma)
-                call jelira(jexnom(grpma, listgr(i)), 'LONUTI', nbma, k1bid)
-                do 3 j = 1, nbma
-                    ima=zi(iadgma-1+j)
-                    call codent(ima, 'G', kima)
-                    iadtyp=iatyma-1+ima
-                    call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
-                    if (ndim .eq. 2 .and. type(1:3) .ne. 'SEG') then
-                        nerr=nerr+1
-                        valk(1) = kima
-                        valk(2) = optioz
-                        call u2mesk('A', 'MODELISA7_89', 2, valk)
-                        elseif(ndim.eq.3.and.type(1:4).ne.'QUAD' .and.type&
-                    (1:4).ne.'TRIA' .and.type(1:3).ne.'SEG') then
-                        nerr=nerr+1
-                        valk(1) = kima
-                        valk(2) = optioz
-                        call u2mesk('A', 'MODELISA7_90', 2, valk)
-                    endif
- 3              continue
-                if (nbma .eq. nerr) then
-                    listgz = listgr(i)
-                    valk(1) = listgz
-                    valk(2) = optioz
-                    call u2mesk('A', 'MODELISA7_91', 2, valk)
-                endif
- 2          continue
-        endif
+    call jeveuo(mesh//'.TYPMAIL', 'L', iatyma)
+    nerr   = 0
+    codret = 0
+    call jeveuo(list_elem, 'L', jelem)
 !
+! - Type of elements
 !
-    else if (option.eq.'SOURCE' .or.option.eq.'FORCE_INTERNE') then
-!  MOT-CLE MAILLE
-        if (nbma .gt. 0) then
-            do 10 i = 1, nbma
-                call jenonu(jexnom(noma8//'.NOMMAI', listma(i)), ibid)
-                iadtyp=iatyma-1+ibid
-                call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
-                listmz = listma(i)
-                if (ndim .eq. 2 .and. type(1:4) .ne. 'QUAD' .and. type(1:4) .ne. 'TRIA') then
-                    nerr=nerr+1
-                    valk(1) = listmz
-                    valk(2) = optioz
-                    call u2mesk('A', 'MODELISA7_87', 2, valk)
-                    elseif(ndim.eq.3.and.type(1:4).ne.'HEXA' .and.type(1:&
-                4).ne.'PENT' .and.type(1:4).ne.'PYRA' .and.type(1:4)&
-                .ne.'TETR') then
-                    nerr=nerr+1
-                    valk(1) = listmz
-                    valk(2) = optioz
-                    call u2mesk('A', 'MODELISA7_92', 2, valk)
-                endif
-10          continue
-            if (nbma .eq. nerr) then
-                call u2mesk('A', 'MODELISA7_88', 1, optioz)
-            endif
-        endif
-!  MOT-CLE GROUP_MA
-        if (nbgr .gt. 0) then
-            do 20 i = 1, nbgr
-                call jeveuo(jexnom(grpma, listgr(i)), 'L', iadgma)
-                call jelira(jexnom(grpma, listgr(i)), 'LONUTI', nbma, k1bid)
-                do 30 j = 1, nbma
-                    ima=zi(iadgma-1+j)
-                    call codent(ima, 'G', kima)
-                    iadtyp=iatyma-1+ima
-                    call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
-                    if (ndim .eq. 2 .and. type(1:4) .ne. 'QUAD' .and. type(1: 4) .ne.&
-                        'TRIA') then
-                        nerr=nerr+1
-                        valk(1) = kima
-                        valk(2) = optioz
-                        call u2mesk('A', 'MODELISA7_90', 2, valk)
-                        elseif(ndim.eq.3.and.type(1:4).ne.'HEXA' .and.type&
-                    (1:4).ne.'PENT' .and.type(1:4).ne.'PYRA' .and.type&
-                    (1:4).ne.'TETR') then
-                        nerr=nerr+1
-                        valk(1) = kima
-                        valk(2) = optioz
-                        call u2mesk('A', 'MODELISA7_93', 2, valk)
-                    endif
-30              continue
-                if (nbma .eq. nerr) then
-                    listgz = listgr(i)
-                    valk(1) = listgz
-                    valk(2) = optioz
-                    call u2mesk('A', 'MODELISA7_91', 2, valk)
-                endif
-20          continue
-        endif
+    if (load_type .eq. 'FLUX_REP' .or. load_type .eq. 'PRES_REP' .or.&
+        load_type .eq. 'ECHANGE' .or. load_type .eq. 'FORCE_FACE' .or. &
+        load_type .eq. 'IMPE_FACE' .or. load_type .eq. 'VITE_FACE' .or. &
+        load_type .eq. 'FORCE_CONTOUR'.or. load_type .eq. 'EFFE_FOND') then
+        topo_2d = 'LINE'
+        topo_3d = 'SURF'
+    elseif (load_type.eq.'SOURCE' .or.load_type.eq.'FORCE_INTERNE') then
+        topo_2d = 'SURF'
+        topo_3d = 'VOLU'
+    else
+        goto 99
     endif
+
+    if (ndim.eq.2) then
+        topo_elem = topo_2d  
+    elseif (ndim.eq.3) then
+        topo_elem = topo_3d
+    else
+        ASSERT(.false.)
+    endif
+!
+    do ielem = 1, nb_elem
+        nume_elem = zi(jelem-1+ielem)
+        call jenuno(jexnum(mesh//'.NOMMAI', nume_elem), name_elem)
+        iadtyp = iatyma-1+nume_elem
+        call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type_elem)
+        if (topo_elem.eq.'LINE') then
+            if (type_elem(1:3) .ne. 'SEG') then
+                nerr = nerr+1
+                valk(1) = name_elem
+                valk(2) = load_type
+                call u2mesk('A', 'CHARGES2_86', 2, valk)
+            endif
+        elseif (topo_elem.eq.'SURF') then
+            if ((type_elem(1:4) .ne. 'QUAD') .and. (type_elem(1:4) .ne. 'TRIA')) then
+                nerr = nerr+1
+                valk(1) = name_elem
+                valk(2) = load_type
+                call u2mesk('A', 'CHARGES2_87', 2, valk)
+            endif
+        elseif (topo_elem.eq.'VOLU') then
+            if ((type_elem(1:4) .ne. 'HEXA') .and. (type_elem(1:4) .ne. 'PENT') .and. &
+                (type_elem(1:4) .ne. 'PYRA') .and. (type_elem(1:4) .ne. 'TETR')) then
+                nerr = nerr+1
+                valk(1) = name_elem
+                valk(2) = load_type
+                call u2mesk('A', 'CHARGES2_88', 2, valk)
+            endif
+        else
+            ASSERT(.false.)
+        endif
+    enddo
+!
+    if (nb_elem .eq. nerr) then
+        call u2mesk('A', 'CHARGES2_89', 1, load_type)
+    endif
+!
     codret = nerr
+99  continue
     call jedema()
 end subroutine

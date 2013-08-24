@@ -6,6 +6,8 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -48,13 +50,12 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
 !      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
-    integer :: necha, ncmp, jvalv1, jvalv2, jncmp1, jncmp2, n, ncmp1, ncmp2
-    integer :: iocc, nbtou, ier, nbma, jma
+    integer :: necha, ncmp, jvalv1, jvalv2, jncmp1, jncmp2, n, ncmp1, ncmp2, ncmps(2)
+    integer :: iocc
     real(kind=8) :: r8b
-    character(len=8) :: k8b, typmcl(2)
-    character(len=16) :: motclf, motcle(2)
-    character(len=19) :: carte1, carte2
-    character(len=24) :: mesmai
+    character(len=8) :: k8b
+    character(len=16) :: motclf
+    character(len=19) :: carte1, carte2, cartes(2)
     integer :: iarg
 !     ------------------------------------------------------------------
     call jemarq()
@@ -72,7 +73,7 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
         call alcart('G', carte1, noma, 'COEH_F')
         call alcart('G', carte2, noma, 'TEMP_F')
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(carte1//'.NCMP', 'E', jncmp1)
@@ -109,15 +110,9 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
     call nocart(carte2, 1, ' ', 'NOM', 0,&
                 ' ', 0, ligrmo, ncmp)
 !
-    mesmai = '&&CAECHA.MES_MAILLES'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-!
 ! --- STOCKAGE DANS LA CARTE
 !
-    do 120 iocc = 1, necha
+    do iocc = 1, necha
         ncmp1 = 0
         ncmp2 = 0
         if (fonree .eq. 'REEL') then
@@ -208,29 +203,14 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
             endif
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
-        if (nbtou .ne. 0) then
-            call nocart(carte1, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp1)
-            call nocart(carte2, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp2)
+        cartes(1) = carte1
+        cartes(2) = carte2
+        ncmps(1) = ncmp1
+        ncmps(2) = ncmp2
+        call char_affe_neum(noma, ndim, motclf, iocc, 2, &
+                            cartes, ncmps)
 !
-        else
-            call reliem(ligrmo, noma, 'NO_MAILLE', motclf, iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 120
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        motclf, ndim, ier)
-            call nocart(carte1, 3, ' ', 'NOM', nbma,&
-                        zk8(jma), 0, ligrmo, ncmp1)
-            call nocart(carte2, 3, ' ', 'NOM', nbma,&
-                        zk8(jma), 0, ligrmo, ncmp2)
-            call jedetr(mesmai)
-        endif
-!
-120  end do
+    end do
     call tecart(carte1)
     call tecart(carte2)
 !

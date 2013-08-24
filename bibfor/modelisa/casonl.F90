@@ -23,6 +23,7 @@ subroutine casonl(char, ligrmo, noma, ndim)
 #include "asterc/getvid.h"
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -45,16 +46,13 @@ subroutine casonl(char, ligrmo, noma, ndim)
 !      NOMA   : NOM DU MAILLAGE
 !      NDIM   : DIMENSION DU PROBLEME (2D/3D) POUR FILTRER LES MAILLES
 !-----------------------------------------------------------------------
-    integer :: ibid, nsour, jvalv, jncmp, n1, ier, ncmp, iocc, nbtou, nbma, jma
-    character(len=8) :: k8b, typmcl(2)
-    character(len=16) :: motclf, motcle(2)
+    integer ::  nsour, jvalv, jncmp, n1, ncmp, iocc
+    character(len=16) :: motclf
     character(len=19) :: carte
-    character(len=24) :: mesmai
     integer :: iarg
-! ----------------------------------------------------------------------
-    data mesmai /'&&CASONL.MES_MAILLES'/
-    data motcle /'GROUP_MA','MAILLE'/
-    data typmcl /'GROUP_MA','MAILLE'/
+    character(len=19) :: cartes(1)
+    integer :: ncmps(1)
+
 ! ----------------------------------------------------------------------
     call jemarq()
 !
@@ -78,29 +76,15 @@ subroutine casonl(char, ligrmo, noma, ndim)
 !
 ! --- STOCKAGE DES FONCTIONS SOURCES DANS LA CARTE
 !
-    do 10 iocc = 1, nsour
+    do iocc = 1, nsour
         call getvid(motclf, 'SOUR', iocc, iarg, 1,&
                     zk8(jvalv), n1)
 !
-        call getvtx(motclf, 'TOUT', iocc, iarg, 1,&
-                    k8b, nbtou)
-        if (nbtou .ne. 0) then
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
-!
-        else
-            call reliem(ligrmo, noma, 'NO_MAILLE', motclf, iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
-!
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        motclf, ndim, ier)
-            call nocart(carte, 3, k8b, 'NOM', nbma,&
-                        zk8(jma), ibid, ' ', ncmp)
-            call jedetr(mesmai)
-        endif
-10  end do
+        cartes(1) = carte
+        ncmps(1) = ncmp
+        call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+                            cartes, ncmps)
+    end do
 !
     call jedema()
 end subroutine

@@ -1,4 +1,4 @@
-subroutine carota(char, noma, irota, ndim, ligrmo)
+subroutine carota(char, noma, irota, ndim)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ subroutine carota(char, noma, irota, ndim, ligrmo)
 #include "asterc/r8miem.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
@@ -45,17 +46,17 @@ subroutine carota(char, noma, irota, ndim, ligrmo)
     character(len=8) :: char, noma, licmp(7), k8b, k8tout
     character(len=19) :: carte
     integer :: iocc, irota, nbmail, nbgpma
-    integer :: ibid, ier, jma, jncmp, jvalv
+    integer ::  jncmp, jvalv
     integer :: nbma, ncmp, ndim, nrota, n1, n2, nbtout
-    character(len=24) :: mesmai
-    character(len=*) :: ligrmo
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motcle(2)
+    character(len=16) ::  motclf
     integer :: iarg
+    character(len=19) :: cartes(1)
+    integer :: ncmps(1)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    do 10 iocc = 1, irota
+    motclf = 'ROTATION'
+    do iocc = 1, irota
 !
         call getvr8('ROTATION', 'VITESSE', iocc, iarg, 1,&
                     rota(1), n1)
@@ -139,12 +140,6 @@ subroutine carota(char, noma, irota, ndim, ligrmo)
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ' ', ncmp)
 !
-            mesmai = '&&CAROTA.MES_MAILLES'
-            motcle(1) = 'GROUP_MA'
-            motcle(2) = 'MAILLE'
-            typmcl(1) = 'GROUP_MA'
-            typmcl(2) = 'MAILLE'
-!
 !
 ! --- STOCKAGE DANS LA CARTE
 !
@@ -157,17 +152,13 @@ subroutine carota(char, noma, irota, ndim, ligrmo)
             zr(jvalv+6) = rota(7)
 !
 !
-            call reliem(ligrmo, noma, 'NO_MAILLE', 'ROTATION', iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        'ROTATION', ndim, ier)
-            call nocart(carte, 3, k8b, 'NOM', nbma,&
-                        zk8(jma), ibid, ' ', ncmp)
-            call jedetr(mesmai)
+            cartes(1) = carte
+            ncmps(1) = ncmp
+            call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+                                cartes, ncmps)
+
         else if ((nbma.ne.0).and.(k8tout.eq.'OUI')) then
             call u2mess('F', 'MODELISA3_40')
         endif
-10  end do
+    end do
 end subroutine

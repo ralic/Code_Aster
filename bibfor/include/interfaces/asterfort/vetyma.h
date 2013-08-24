@@ -16,15 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vetyma(noma, listma, nbma, listgr, nbgr,&
-                      option, ndim, codret)
-        character(*) :: noma
-        character(*) :: listma(1)
-        integer :: nbma
-        character(*) :: listgr(1)
-        integer :: nbgr
-        character(*) :: option
-        integer :: ndim
-        integer :: codret
+    subroutine vetyma(mesh, ndim, load_type, list_elem, nb_elem,  &
+                      codret)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: nb_elem
+        character(len=24), intent(in) :: list_elem
+        character(len=16), intent(in) :: load_type
+        integer, intent(in) :: ndim
+        integer, intent(out) :: codret
     end subroutine vetyma
 end interface

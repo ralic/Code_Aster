@@ -20,6 +20,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 #include "asterfort/peair1.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
+#include "asterfort/vetyma.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,8 +185,8 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 !
 ! ----- Check elements
 !
-        call vetyma(mesh, zi(j_elem_sect), nb_elem_sect, k8dummy, 0,&
-                    keywordfact, ndim, codret)
+        call vetyma(mesh, ndim, keywordfact, list_elem_sect, nb_elem_sect, &
+                    codret)
 !
         call jedetr(list_elem_hole)
         call jedetr(list_elem_sect)
@@ -193,6 +194,6 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
     end do
 !
 99  continue
-    
+
     call jedema()
 end subroutine

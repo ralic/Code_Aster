@@ -7,6 +7,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/char_affe_neum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -50,7 +51,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
 !      FONREE : FONC OU REEL
 !-----------------------------------------------------------------------
-    integer :: ibid, npres, ncmp, jvalv, jncmp, iocc, np, nc, ier, nbtou, nbma
+    integer :: ibid, npres, ncmp, jvalv, jncmp, iocc, np, nc, nbtou, nbma
     integer :: jma, nfiss, nfismx
     parameter    (nfismx=100)
     character(len=8) :: k8b, typmcl(2), fiss(nfismx)
@@ -58,6 +59,8 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     character(len=19) :: carte
     character(len=24) :: mesmai, lismai
     integer :: iarg
+        character(len=19) :: cartes(1)
+    integer :: ncmps(1)
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -121,13 +124,8 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
                     k8b, nbtou)
         call getvid(motclf, 'FISSURE', iocc, iarg, 0,&
                     k8b, nfiss)
-!
-        if (nbtou .ne. 0) then
-!
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
-!
-        else if (nfiss .ne. 0) then
+
+        if (nfiss .ne. 0) then
 !
 !           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
             if (nc .ne. 0) call u2mess('F', 'XFEM_14')
@@ -148,17 +146,10 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
         else
 !
-            call reliem(ligrmo, noma, 'NO_MAILLE', motclf, iocc,&
-                        2, motcle, typmcl, mesmai, nbma)
-            if (nbma .ne. 0) then
-                call jeveuo(mesmai, 'L', jma)
-                call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                            motclf, ndim, ier)
-                call nocart(carte, 3, k8b, 'NOM', nbma,&
-                            zk8(jma), ibid, ' ', ncmp)
-!
-                call jedetr(mesmai)
-            endif
+            cartes(1) = carte
+            ncmps(1) = ncmp
+            call char_affe_neum(noma, ndim, motclf, iocc, 1, &
+                                cartes, ncmps)
         endif
 !
     end do
