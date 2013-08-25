@@ -10,6 +10,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_rcbp_cabl.h"
 #include "asterfort/char_rcbp_lino.h"
@@ -86,15 +87,13 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
     character(len=16) :: keywordfact
     integer :: nliai, ndimmo
-    real(kind=8) :: dist_mini, armin
-    complex(kind=8) :: c16bid
+    real(kind=8) :: dist_mini, dist
     character(len=8) :: k8bid, model, answer
     integer :: n1, iocc, iarg, iret, ibid
     integer :: nbrela, jdnbre
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=2) :: lagr_type
     character(len=8) :: cmp_name
-    character(len=24) :: tabl_geom
     integer :: cmp_index_n 
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
@@ -148,14 +147,9 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     lagr_type = '12'
     ASSERT(vale_type.eq.'REEL')
 !
-! - RECUPERATION DE L'ARETE MIN : ARMIN
+! - Minimum distance
 !
-    call ltnotb(mesh, 'CARA_GEOM', tabl_geom)
-    call tbliva(tabl_geom, 1, 'APPLAT_Z', ibid, 0.d0,&
-                c16bid, k8bid, 'ABSO', r8gaem(), 'AR_MIN',&
-                k8bid, ibid, armin, c16bid, k8bid,&
-                iret)
-    ASSERT(armin.gt.0.d0)
+    dist = armin(mesh)
 !
 ! - Information about DEPL_R  <GRANDEUR> 
 ! 
@@ -209,7 +203,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
         call getvr8(keywordfact, 'DIST_MIN', iocc, iarg, 0,&
                     dist_mini, n1)
-        if (n1 .eq. 0) dist_mini = armin*1.d-3
+        if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Options
 !

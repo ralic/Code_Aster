@@ -9,6 +9,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz02d.h"
@@ -72,7 +73,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iocc, ibid, ier
+    integer :: iocc, ier
     integer :: jnom, jprnm, n1
     integer :: i_no
     integer :: nb_cmp, nbec, ndim, nliai
@@ -81,12 +82,11 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     integer :: nb_node
     character(len=2) :: type_lagr
     character(len=8) :: nomg, k8bid, poslag, model
-    real(kind=8) :: dmin, armin
+    real(kind=8) :: dist_mini, dist
     character(len=8) :: cmp_name
-    character(len=19) :: list_rela, nomtab
+    character(len=19) :: list_rela
     character(len=16) :: keywordfact
     integer :: iarg
-    complex(kind=8) :: c16bid
     character(len=24) :: keywordexcl
     integer :: n_keyexcl
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
@@ -127,14 +127,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
-! - RECUPERATION DE L'ARETE MIN : ARMIN
+! - Minimum distance
 !
-    call ltnotb(mesh, 'CARA_GEOM', nomtab)
-    call tbliva(nomtab, 1, 'APPLAT_Z', ibid, 0.d0,&
-                c16bid, k8bid, 'ABSO', r8gaem(), 'AR_MIN',&
-                k8bid, ibid, armin, c16bid, k8bid,&
-                ier)
-    ASSERT(armin.gt.0.d0)
+    dist = armin(mesh)
+    ASSERT(dist.gt.0.d0)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
@@ -196,8 +192,8 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! ----- Minimum distance
 !
         call getvr8(keywordfact, 'DIST_MIN', iocc, iarg, 0,&
-                    dmin, n1)
-        if (n1 .eq. 0) dmin = armin*1.d-3
+                    dist_mini, n1)
+        if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Read mesh affectation
 !
@@ -249,7 +245,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                 call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
                             cmp_index_drz, type_lagr, list_rela)
             else
-                call drz02d(mesh, vale_type, dmin, nb_node, list_node,&
+                call drz02d(mesh, vale_type, dist_mini, nb_node, list_node,&
                             type_lagr, list_rela)
             endif
 !
@@ -278,7 +274,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
                             cmp_index_drz, type_lagr, list_rela)
             else
-                call drz03d(mesh, vale_type, dmin, nb_node, list_node, &
+                call drz03d(mesh, vale_type, dist_mini, nb_node, list_node, &
                             type_lagr, list_rela)
             endif
         endif
