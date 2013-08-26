@@ -45,6 +45,17 @@ Le modèle est de dimension %(i1)d . ARETE_IMPO s'applique sur des arêtes d'él
 donc un modèle de dimension 3. Pour les arêtes d'éléments 2D utiliser FACE_IMPO.
 """),
 
+8 : _(u"""
+Pour un chargement de type LIAISON_COQUE, il faut avoir autant de noeuds dans les deux listes.
+"""),
+
+9 : _(u"""
+Échec de l'appariement des deux listes de noeuds pour le chargement de type LIAISON_COQUE.
+
+ Conseils :
+   - Si la distance entre les deux surfaces à apparier est grande devant leurs dimensions, précisez l'isométrie qui permet de les superposer par l'intermédiaire des mots-clés CENTRE, ANGL_NAUT et TRAN.
+"""),
+
 17: _(u"""
  Pour le chargement courant, la liste des noeuds donnée est réduite à un seul terme et l'on ne fait aucun traitement.
 """),
@@ -167,6 +178,20 @@ cas d'un modèle à %(i2)d dimensions.
 
 49: _(u"""
  Le concept CABLE_BP de nom %(k1)s ne contient pas de contraintes. L'option SIGM_BPEL est donc inutilisable.
+"""),
+
+50: _(u"""
+ On ne trouve pas de noeud assez près du noeud %(k1)s . 
+"""),
+
+51 : _(u"""
+ Il y a un conflit dans les vis-à-vis des noeuds. 
+ Le noeud  %(k1)s est à la fois le vis-à-vis du noeud %(k2)s et du noeud %(k3)s.
+"""),
+
+52 : _(u"""
+ Il y a un conflit dans les vis-à-vis des noeuds. 
+ Le noeud  %(k1)s n'est l'image d'aucun noeud par la correspondance inverse.
 """),
 
 61: _(u"""

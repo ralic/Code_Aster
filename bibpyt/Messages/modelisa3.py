@@ -27,26 +27,6 @@ cata_msg={
  il faut définir la valeur du second membre de la relation linéaire après le mot clé COEF_IMPO derrière le mot facteur LIAISON_CHAMNO .
 """),
 
-3: _(u"""
- la première liste de noeuds dont on doit faire le vis a vis n'existe pas.
-"""),
-
-4: _(u"""
- la seconde liste de noeuds dont on doit faire le vis a vis n'existe pas.
-"""),
-
-5: _(u"""
- la première liste de noeuds dont on doit faire le vis a vis est vide.
-"""),
-
-6: _(u"""
- la seconde liste de noeuds dont on doit faire le vis a vis est vide.
-"""),
-
-7: _(u"""
- impossibilité de faire le vis a vis des 2 listes de noeuds, elles n'ont pas le même nombre de noeuds après élimination des doublons.
-"""),
-
 8: _(u"""
  Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
   Vous avez demandé de transformer des mailles quadratiques en mailles linéaires.

@@ -334,7 +334,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_COQUE
 !
-        call calicp(load, vale_type)
+        call calicp(load, mesh, ligrmo, vale_type)
 ! --------------------------------------------------------------------------------------------------
     elseif (vale_type .eq. 'COMP') then
 !
@@ -380,7 +380,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- LIAISON_COQUE
 !
-        call calicp(load, vale_type)
+        call calicp(load, mesh, ligrmo, vale_type)
 ! --------------------------------------------------------------------------------------------------
     else
         ASSERT(.false.)

@@ -46,7 +46,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! AFFE_CHAR_MECA / DDL_POUTRE
+! Loads affectation - DDL_POUTRE
 !
 ! Computation of matrix of transition from global to local coordinate system at node
 !
@@ -94,7 +94,7 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 !
     if (nb_conn_elem .eq. 1) then
         elem_nume = zi(jadrm)
-        call jenuno(jexnum(mesh//'.NOMNOE', elem_nume), elem_name)
+        call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
     else
         if (nb_repe_elem .eq. 0) call u2mesk('F', 'CHARGES2_37', 1, node_name)
         if (nb_repe_elem .ne. 1) call u2mesk('F', 'CHARGES2_38', 1, node_name)

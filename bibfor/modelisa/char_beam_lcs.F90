@@ -43,7 +43,7 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! AFFE_CHAR_MECA / DDL_POUTRE
+! Loads affectation
 !
 ! Change components with local coordinate system for beams at node
 !

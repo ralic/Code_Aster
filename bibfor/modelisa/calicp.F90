@@ -1,5 +1,28 @@
-subroutine calicp(chargz,fonree)
+subroutine calicp(load, mesh, ligrmo, vale_type)
+!
     implicit none
+!
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/indik8.h"
+#include "asterc/getvtx.h"
+#include "asterfort/aflrch.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_pair_node.h"
+#include "asterfort/char_read_node.h"
+#include "asterfort/char_read_tran.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/drz12d.h"
+#include "asterfort/drz13d.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/u2mess.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,430 +39,187 @@ subroutine calicp(chargz,fonree)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getvtx.h"
-#include "asterc/indik8.h"
-#include "asterfort/aflrch.h"
-#include "asterfort/assert.h"
-#include "asterfort/cocali.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/drz12d.h"
-#include "asterfort/drz13d.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/pacoap.h"
-#include "asterfort/pamano.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/wkvect.h"
-    character(len=4) :: fonree
-    character(len=8) :: charge
-    character(len=*) :: chargz
-! -------------------------------------------------------
-!     TRAITEMENT DU MOT CLE LIAISON_COQUE DE AFFE_CHAR_MECA .
-!     L'UTILISATION DE CE MOT CLE PERMET D'AFFECTER DES RELATIONS
-!     LINEAIRES ENTRE DDLS TRADUISANT UN MOUVEMENT DE CORPS SOLIDE
-!     ENTRE DES COUPLES DE NOEUDS DE 2 LISTES DE NOEUDS APPARTENANT
-!     AU PLAN MOYEN DE 2 COQUES PERPENDICULAIRES
-! -------------------------------------------------------
-!  CHARGE        - IN    - K8   - : NOM DE LA SD CHARGE
-!                - JXVAR -      -   LA  CHARGE EST ENRICHIE
-!                                   DES RELATIONS LINEAIRES NECESSAIRES
-! -------------------------------------------------------
+! Person in charge: mickael.abbas at edf.fr
+!
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: vale_type
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Keyword = 'LIAISON_COQUE'
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-! --------- VARIABLES LOCALES ---------------------------
-    real(kind=8) :: centre(3), theta(3), t(3)
-    character(len=1) :: k1bid
-    character(len=2) :: typlag
-    character(len=8) :: mod, k8bid, poslag
-    character(len=8) :: noma
-    character(len=16) :: motfac
-    character(len=19) :: ligrmo
-    character(len=19) :: lisrel
-    character(len=24) :: lisnoe, listyp
-    character(len=24) :: lisin1, lisin2, lisin3, lisin4, lisin5, lisin6
-    character(len=24) :: lisin7, lisin8, lisfi1, lisfi2, lisou1, lisou2
-    integer :: iarg
-! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
+! In  mesh        : name of mesh
+! In  load        : name of load
+! In  ligrmo      : list of elements nume_node model
+! In  vale_type   : affected value type (real, complex or function)
 !
-!-----------------------------------------------------------------------
-    integer :: i, ibid, icoupl, idlfi1, idlfi2, idlino, idlity
-    integer :: idlou1, idlou2, ier, in1, indlis, ino, iocc
-    integer :: iret1, iret2, jind1, jind2, jnoma, lonfi1, lonfi2
-    integer :: lonli1, lonli2, lonli3, lonli4, lonli5, lonli6, lonli7
-    integer :: lonli8, narl, ndimmo, nliai, nrl
-
-    real(kind=8) :: zero
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8) :: k8dummy, poslag, model
+    character(len=2) :: type_lagr
+    character(len=16) :: keywordfact
+    character(len=19) :: list_rela
+    integer :: iarg, iocc, i_error, icoupl, ier
+    integer :: ndim, nliai, n1, nbec
     character(len=8) :: cmp_name, nomg
-    integer :: jnom, nb_cmp
+    integer :: jnom, jprnm, nb_cmp
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
-
-    integer :: numnoe
-    character(len=24) :: lisnoe2
-    integer :: idlino2
-
-!-----------------------------------------------------------------------
-    call jemarq()
-    lisnoe = '&&CALICP.LISTNOE'
-    lisnoe2 = '&&CALICP.LISTNO2'
-    listyp = '&&CALICP.LISTYP'
-    charge = chargz
-    typlag = '12'
-    zero = 0.0d0
+    real(kind=8) :: tran(3), cent(3), angl_naut(3)
+    logical :: l_tran, l_cent, l_angl_naut
+    character(len=8) :: suffix
+    character(len=24) :: list_node_o1, list_node_o2, list_node_i1, list_node_i2
+    integer :: nb_node, nb_node_1, nb_node_2
+    integer :: j_node_o1, j_node_o2
+    integer :: nume_node_1, nume_node_2
+    character(len=24) :: list_pair
+    integer :: j_list_pair
 !
-    motfac = 'LIAISON_COQUE'
-    call getfac(motfac, nliai)
+! --------------------------------------------------------------------------------------------------
+!
+    call jemarq()
+    keywordfact = 'LIAISON_COQUE'
+    call getfac(keywordfact, nliai)
     if (nliai .eq. 0) goto 999
 !
-    do i = 1, 3
-        centre(i) = zero
-        theta(i) = zero
-        t(i) = zero
-    end do
+! - Initializations
 !
-! --- NOM DE LA LISTE DE RELATIONS :
-!     ----------------------------
-    lisrel = '&&CALICP.RLLISTE'
+    list_rela    = '&&CALISO.RLLISTE'
+    list_node_i1 = '&&CALICP.LIST_NODE_I1'
+    list_node_i2 = '&&CALICP.LIST_NODE_I2'
+    list_node_o1 = '&&CALICP.LIST_NODE_O1'
+    list_node_o2 = '&&CALICP.LIST_NODE_O2'
+    list_pair    = '&&CALICP.LIST_PAIR'
+    type_lagr    = '12'
+    call wkvect(list_pair, 'V V I', 2, j_list_pair)
 !
-! --- NOM DES LISTES DE TRAVAIL :
-!     -------------------------
-    lisin1 = '&&CALICP.LISMA1'
-    lisin2 = '&&CALICP.LISGMA1'
-    lisin3 = '&&CALICP.LISNO1'
-    lisin4 = '&&CALICP.LISGNO1'
-    lisin5 = '&&CALICP.LISMA2'
-    lisin6 = '&&CALICP.LISGMA2'
-    lisin7 = '&&CALICP.LISNO2'
-    lisin8 = '&&CALICP.LISGNO2'
-    lisfi1 = '&&CALICP.LISFI1'
-    lisfi2 = '&&CALICP.LISFI2'
-    lisou1 = '&&CALICP.LISOU1'
-    lisou2 = '&&CALICP.LISOU2'
-
+! - Type
 !
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE :
-!     ----------------------------------
-    call dismoi('F', 'NOM_MODELE', charge(1:8), 'CHARGE', ibid,&
-                mod, ier)
+    if (vale_type .eq. 'COMP') ASSERT(.false.)
 !
-! ---  LIGREL DU MODELE :
-!      ----------------
-    ligrmo = mod(1:8)//'.MODELE'
+! - Access to model
 !
-! --- MAILLAGE ASSOCIE AU MODELE :
-!     --------------------------
-    call jeveuo(ligrmo//'.LGRF', 'L', jnoma)
-    noma = zk8(jnoma)
-!
-! --- DIMENSION ASSOCIEE AU MODELE :
-!     ----------------------------
-    call dismoi('F', 'DIM_GEOM', mod, 'MODELE', ndimmo,&
-                k8bid, ier)
-    if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) call u2mess('F', 'MODELISA2_6')
+    model = ligrmo(1:8)
+    call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
+                k8dummy, ier)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
 ! - Information about <GRANDEUR>
 !
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k8bid)
+    call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k8dummy)
+    call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
+                k8dummy, ier)
+    ASSERT(nbec.le.10)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
     cmp_name  = 'DX'
     cmp_index_dx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_dx.gt.0)
     cmp_name  = 'DY'
     cmp_index_dy = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_dy.gt.0)
     cmp_name  = 'DZ'
     cmp_index_dz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_dz.gt.0)
     cmp_name  = 'DRX'
     cmp_index_drx = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_drx.gt.0)
     cmp_name  = 'DRY'
     cmp_index_dry = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
-    ASSERT(cmp_index_dry.gt.0)
     cmp_name  = 'DRZ'
     cmp_index_drz = indik8(zk8(jnom), cmp_name, 1, nb_cmp)
+    ASSERT(cmp_index_dx.gt.0)
+    ASSERT(cmp_index_dy.gt.0)
+    ASSERT(cmp_index_dz.gt.0)
+    ASSERT(cmp_index_drx.gt.0)
+    ASSERT(cmp_index_dry.gt.0)
     ASSERT(cmp_index_drz.gt.0)
 !
-! --- CREATION D'UN VECTEUR DE 2 TERMES K8 QUI SERONT LES NOMS DES
-! --- NOEUDS A RELIER :
-!     ---------------
-    call wkvect(lisnoe, 'V V K8', 2, idlino)
-    call wkvect(lisnoe2, 'V V I', 2, idlino2)
+! - Loop on factor keyword
 !
-! --- CREATION D'UN VECTEUR DE 2 TERMES K8 QUI SERONT LES NOMS DES
-! --- TYPES LICITES D'ELEMENTS A LA JONCTION DES COQUES, CE SONT
-! --- DES SEG2 OU DES SEG3 :
-!     --------------------
-    call wkvect(listyp, 'V V K8', 2, idlity)
-    zk8(idlity+1-1) = 'SEG2'
-    zk8(idlity+2-1) = 'SEG3'
-!
-! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_COQUE :
-!     ------------------------------------------------------
     do iocc = 1, nliai
 !
-        call jedetr(lisin1)
-        call jedetr(lisin2)
-        call jedetr(lisin3)
-        call jedetr(lisin4)
-        call jedetr(lisin5)
-        call jedetr(lisin6)
-        call jedetr(lisin7)
-        call jedetr(lisin8)
-        call jedetr(lisfi1)
-        call jedetr(lisfi2)
-        call jedetr(lisou1)
-        call jedetr(lisou2)
+! ----- Definition of position for lagrange multipliers
 !
-! ---  ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
-! ---  APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
-! ---  ASSEMBLEE :
-! ---  SI OUI TYPLAG = '22'
-! ---  SI NON TYPLAG = '12'
-!      --------------------
-        call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 0,&
-                    k8bid, narl)
-        if (narl .ne. 0) then
-            call getvtx(motfac, 'NUME_LAGR', iocc, iarg, 1,&
-                        poslag, nrl)
-            if (poslag(1:5) .eq. 'APRES') then
-                typlag = '22'
-            else
-                typlag = '12'
-            endif
+        call getvtx(keywordfact, 'NUME_LAGR', iocc, iarg, 0,&
+                    k8dummy, n1)
+        if (n1 .eq. 0) then
+            type_lagr = '12'
         else
-            typlag = '12'
+            call getvtx(keywordfact, 'NUME_LAGR', iocc, iarg, 1,&
+                        poslag, n1)
+            if (poslag .eq. 'APRES') then
+                type_lagr = '22'
+            else
+                type_lagr = '12'
+            endif
         endif
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE MAILLE_1 (CETTE LISTE EST NON REDONDANTE) :
-!      ----------------------------------------------------
-        call pamano(motfac, 'MAILLE_1', noma, listyp, iocc,&
-                    lisin1, lonli1)
+! ----- Read nodes - First list
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE GROUP_MA_1 (CETTE LISTE EST NON REDONDANTE) :
-!      -----------------------------------------------------
-        call pamano(motfac, 'GROUP_MA_1', noma, listyp, iocc,&
-                    lisin2, lonli2)
+        suffix = '_1'
+        call char_read_node(mesh, keywordfact, iocc, suffix, list_node_i1, nb_node_1)
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE NOEUD_1 (CETTE LISTE EST NON REDONDANTE) :
-!      ---------------------------------------------------
-        call pamano(motfac, 'NOEUD_1', noma, listyp, iocc,&
-                    lisin3, lonli3)
+! ----- Read nodes - Second list
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE GROUP_NO_1 (CETTE LISTE EST NON REDONDANTE) :
-!      ------------------------------------------------------
-        call pamano(motfac, 'GROUP_NO_1', noma, listyp, iocc,&
-                    lisin4, lonli4)
+        suffix = '_2'
+        call char_read_node(mesh, keywordfact, iocc, suffix, list_node_i2, nb_node_2)
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE MAILLE_2 (CETTE LISTE EST NON REDONDANTE) :
-!      ----------------------------------------------------
-        call pamano(motfac, 'MAILLE_2', noma, listyp, iocc,&
-                    lisin5, lonli5)
+        if (nb_node_1 .ne. nb_node_2) call u2mess('F', 'CHARGES2_8')
+        nb_node = nb_node_1
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE GROUP_MA_2 (CETTE LISTE EST NON REDONDANTE) :
-!      -----------------------------------------------------
-        call pamano(motfac, 'GROUP_MA_2', noma, listyp, iocc,&
-                    lisin6, lonli6)
+! ----- Create output lists
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE NOEUD_2 (CETTE LISTE EST NON REDONDANTE) :
-!      ---------------------------------------------------
-        call pamano(motfac, 'NOEUD_2', noma, listyp, iocc,&
-                    lisin7, lonli7)
+        call wkvect(list_node_o1, 'V V I', nb_node, j_node_o1)
+        call wkvect(list_node_o2, 'V V I', nb_node, j_node_o2)
 !
-! ---  ACQUISITION DE LA LISTE DES NOEUDS SPECIFIEE APRES
-! ---  LE MOT CLE GROUP_NO_2 (CETTE LISTE EST NON REDONDANTE) :
-!      ------------------------------------------------------
-        call pamano(motfac, 'GROUP_NO_2', noma, listyp, iocc,&
-                    lisin8, lonli8)
+! ----- Read transformation
 !
-! ---  CONCATENATION DES LISTES DESTINEES A CONSTITUER LA PREMIERE
-! ---  LISTE DE NOEUDS A METTRE EN VIS A VIS DANS LE CAS
-! ---  OU ELLES EXISTENT :
-!      -----------------
-        if (lonli1 .ne. 0) then
-            call cocali(lisfi1, lisin1, 'K8')
-        endif
-        if (lonli2 .ne. 0) then
-            call cocali(lisfi1, lisin2, 'K8')
-        endif
-        if (lonli3 .ne. 0) then
-            call cocali(lisfi1, lisin3, 'K8')
-        endif
-        if (lonli4 .ne. 0) then
-            call cocali(lisfi1, lisin4, 'K8')
-        endif
+        call char_read_tran(keywordfact, iocc , ndim, l_tran, tran, &
+                            l_cent, cent, l_angl_naut, angl_naut)
 !
-! ---  CONCATENATION DES LISTES DESTINEES A CONSTITUER LA SECONDE
-! ---  LISTE DE NOEUDS A METTRE EN VIS A VIS DANS LE CAS
-! ---  OU ELLES EXISTENT :
-!      -----------------
-        if (lonli5 .ne. 0) then
-            call cocali(lisfi2, lisin5, 'K8')
-        endif
-        if (lonli6 .ne. 0) then
-            call cocali(lisfi2, lisin6, 'K8')
-        endif
-        if (lonli7 .ne. 0) then
-            call cocali(lisfi2, lisin7, 'K8')
-        endif
-        if (lonli8 .ne. 0) then
-            call cocali(lisfi2, lisin8, 'K8')
-        endif
+! ----- Pairing the two lists with transformation
 !
-! --- VERIFICATION DE LA CONSTITUTION DES LISTES DE NOEUDS A METTRE
-! --- EN VIS A VIS :
-!     ------------
-        call jeexin(lisfi1, iret1)
-        if (iret1 .eq. 0) then
-            call u2mess('F', 'MODELISA3_3')
-        endif
-        call jeexin(lisfi2, iret2)
-        if (iret2 .eq. 0) then
-            call u2mess('F', 'MODELISA3_4')
-        endif
-        call jelira(lisfi1, 'LONMAX', lonfi1, k1bid)
-        call jelira(lisfi2, 'LONMAX', lonfi2, k1bid)
-        if (lonfi1 .eq. 0) then
-            call u2mess('F', 'MODELISA3_5')
-        endif
-        if (lonfi2 .eq. 0) then
-            call u2mess('F', 'MODELISA3_6')
-        endif
+        call char_pair_node(mesh, cent, angl_naut, tran, nb_node, &
+                            list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
+        if (i_error.ne.0) call u2mess('F', 'CHARGES2_9')
 !
-! ---  ELIMINATION DES DOUBLONS DE LISFI1 ET LISFI2 :
-!      ============================================
-        call jeveuo(lisfi1, 'E', idlfi1)
-        call jeveuo(lisfi2, 'E', idlfi2)
+! ----- Compute linear relations
 !
-! ---  CREATION ET AFFECTATION D'UN TABLEAU D'INDICES DISANT POUR UN
-! ---  NOEUD S'IL EST DEJA APPARU DANS LA LISTE OU NON :
-!      -----------------------------------------------
-!
-        call jedetr('&&CALICP.INDIC1')
-        call jedetr('&&CALICP.INDIC2')
-!
-        call wkvect('&&CALICP.INDIC1', 'V V I', lonfi1, jind1)
-!
-        do ino = 1, lonfi1
-            do in1 = ino+1, lonfi1
-                if (zk8(idlfi1+in1-1) .eq. zk8(idlfi1+ino-1)) then
-                    zi(jind1+in1-1) = 1
-                endif
-            enddo
-        enddo
-!
-        indlis = 0
-        do ino = 1, lonfi1
-            if (zi(jind1+ino-1) .eq. 0) then
-                indlis = indlis + 1
-                zk8(idlfi1+indlis-1) = zk8(idlfi1+ino-1)
+        do icoupl = 1, nb_node
+            nume_node_1 = zi(j_node_o1-1+icoupl)
+            nume_node_2 = zi(j_node_o2-1+icoupl)
+            zi(j_list_pair-1+1) = nume_node_1
+            zi(j_list_pair-1+2) = nume_node_2
+            if (ndim .eq. 2) then
+                call drz12d(mesh, ligrmo, vale_type, 2, list_pair, &
+                            cmp_index_drz, type_lagr, list_rela)
+            else if (ndim .eq. 3) then
+                call drz13d(mesh, ligrmo, vale_type, 2, list_pair, &
+                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
+                            cmp_index_drz, type_lagr, list_rela)
             endif
         enddo
-!
-        lonfi1 = indlis
-!
-! ---  CREATION ET AFFECTATION D'UN TABLEAU D'INDICES DISANT POUR UN
-! ---  NOEUD S'IL EST DEJA APPARU DANS LA LISTE OU NON :
-!      -----------------------------------------------
-        call wkvect('&&CALICP.INDIC2', 'V V I', lonfi2, jind2)
-!
-        do ino = 1, lonfi2
-            do in1 = ino+1, lonfi2
-                if (zk8(idlfi2+in1-1) .eq. zk8(idlfi2+ino-1)) then
-                    zi(jind2+in1-1) = 1
-                endif
-            enddo
-        enddo
-!
-        indlis = 0
-        do ino = 1, lonfi2
-            if (zi(jind2+ino-1) .eq. 0) then
-                indlis = indlis + 1
-                zk8(idlfi2+indlis-1) = zk8(idlfi2+ino-1)
-            endif
-        enddo
-!
-        lonfi2 = indlis
-!
-        if (lonfi1 .ne. lonfi2) then
-            call u2mess('F', 'MODELISA3_7')
-        endif
-!
-! ---  MISE EN VIS-A-VIS DES NOEUDS DES 2 LISTES DE NOEUDS LISFI1 ET
-! ---  LISFI2. LES LISTES REARRANGEES SONT LISOU1 ET LISOU2 :
-!      ----------------------------------------------------
-        call pacoap(lisfi1, lisfi2, lonfi1, centre, theta,&
-                    t, noma, lisou1, lisou2)
-!
-! ---  CREATION DES RELATIONS LINEAIRES TRADUISANT UN MOUVEMENT
-! ---  DE CORPS SOLIDE PAR COUPLE DE NOEUDS DES NOEUDS DES LISTES
-! ---  LISOU1 ET LISOU2 :
-!      ----------------
-        call jeveuo(lisou1, 'L', idlou1)
-        call jeveuo(lisou2, 'L', idlou2)
-!
-        do icoupl = 1, lonfi1
-            zk8(idlino+1-1) = zk8(idlou1+icoupl-1)
-            zk8(idlino+2-1) = zk8(idlou2+icoupl-1)
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(idlou1+icoupl-1)), numnoe)
-            zi(idlino2+1-1) = numnoe
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(idlou2+icoupl-1)), numnoe)
-            zi(idlino2+2-1) = numnoe
-            if (ndimmo .eq. 2) then
-                call drz12d(noma, ligrmo, fonree, 2 ,lisnoe2, &
-                            cmp_index_drz, typlag, lisrel)
-            else if (ndimmo.eq.3) then
-                call drz13d(noma, ligrmo, fonree, 2,  lisnoe2, &
-                            cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,cmp_index_dry, &
-                            cmp_index_drz, typlag, lisrel)
-            endif
-        enddo
+        call jedetr(list_node_i1)
+        call jedetr(list_node_i2)
+        call jedetr(list_node_o1)
+        call jedetr(list_node_o2)
     end do
 !
-! --- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
-!     ----------------------------------------
-    call aflrch(lisrel, charge)
+! - Final linear relation affectation
 !
+    call aflrch(list_rela, load)
 !
-! --- MENAGE
-!
-    call jedetr('&&CALICP.LISTNO2')
-    call jedetr('&&CALICP.LISTNOE')
-    call jedetr('&&CALICP.LISTYP')
-    call jedetr('&&CALICP.RLLISTE')
-    call jedetr('&&CALICP.LISMA1')
-    call jedetr('&&CALICP.LISGMA1')
-    call jedetr('&&CALICP.LISNO1')
-    call jedetr('&&CALICP.LISGNO1')
-    call jedetr('&&CALICP.LISMA2')
-    call jedetr('&&CALICP.LISGMA2')
-    call jedetr('&&CALICP.LISNO2')
-    call jedetr('&&CALICP.LISGNO2')
-    call jedetr('&&CALICP.LISFI1')
-    call jedetr('&&CALICP.LISFI2')
-    call jedetr('&&CALICP.LISOU1')
-    call jedetr('&&CALICP.LISOU2')
-    call jedetr('&&CALICP.INDIC1')
-    call jedetr('&&CALICP.INDIC2')
+    call jedetr(list_pair)
 !
 999 continue
+    
     call jedema()
 end subroutine

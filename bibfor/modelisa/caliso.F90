@@ -49,7 +49,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: jacques.pellet at edf.fr, mickael.abbas at edf.fr
 !
     character(len=8), intent(in)  :: load
     character(len=8), intent(in)  :: mesh
@@ -83,7 +83,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     character(len=8) :: nomg, k8bid, poslag, model
     real(kind=8) :: dmin, armin
     character(len=8) :: cmp_name
-    character(len=19) :: lisrel, nomtab
+    character(len=19) :: list_rela, nomtab
     character(len=16) :: keywordfact
     integer :: iarg
     complex(kind=8) :: c16bid
@@ -110,16 +110,21 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! - Initializations
 !
-    lisrel    = '&&CALISO.RLLISTE'
+    list_rela = '&&CALISO.RLLISTE'
     type_lagr = '12'
     l_rota_2d = .false.
     l_rota_3d = .false.
 !
-    if (vale_type .eq. 'COMP') ASSERT(.false.)
-    model = ligrmo(1:8)
+! - Type
 !
+    if (vale_type .eq. 'COMP') ASSERT(.false.)
+!
+! - Access to model
+!
+    model = ligrmo(1:8)
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndim,&
                 k8bid, ier)
+    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     if (.not.(ndim.eq.2.or.ndim.eq.3)) call u2mess('F', 'CHARGES2_6')
 !
 ! - RECUPERATION DE L'ARETE MIN : ARMIN
@@ -146,7 +151,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     call dismoi('F', 'NB_EC', nomg, 'GRANDEUR', nbec,&
                 k8bid, ier)
     ASSERT(nbec.le.10)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
@@ -219,7 +223,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
         if (l_tran) then
             call drzrot(mesh, ligrmo, nb_node, list_node, type_lagr,&
-                        tran, lisrel)
+                        tran, list_rela)
             goto 998
         endif
 !
@@ -243,10 +247,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
             if (l_rota_2d) then
                 call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
-                            cmp_index_drz, type_lagr, lisrel)
+                            cmp_index_drz, type_lagr, list_rela)
             else
                 call drz02d(mesh, vale_type, dmin, nb_node, list_node,&
-                            type_lagr, lisrel)
+                            type_lagr, list_rela)
             endif
 !
 ! ----- Model: 3D
@@ -272,10 +276,10 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
             if (l_rota_3d) then
                 call drz13d(mesh, ligrmo, vale_type, nb_node, list_node, &
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx, cmp_index_dry,&
-                            cmp_index_drz, type_lagr, lisrel)
+                            cmp_index_drz, type_lagr, list_rela)
             else
                 call drz03d(mesh, vale_type, dmin, nb_node, list_node, &
-                            type_lagr, lisrel)
+                            type_lagr, list_rela)
             endif
         endif
 998     continue
@@ -286,7 +290,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! - Final linear relation affectation
 !
-    call aflrch(lisrel, load)
+    call aflrch(list_rela, load)
 !
     call jedetr(keywordexcl)
 !

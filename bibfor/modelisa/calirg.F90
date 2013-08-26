@@ -1,5 +1,5 @@
-subroutine calirg(noma, nbno, list_node, tran,  cent, &
-                  l_angl_naut, angl_naut, geom2, l_rota, matr_rota)
+subroutine calirg(mesh, nbno, list_node, tran, cent, &
+                  l_angl_naut, angl_naut, geom_defo, l_rota, matr_rota)
 !
     implicit none
 !
@@ -34,14 +34,14 @@ subroutine calirg(noma, nbno, list_node, tran,  cent, &
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in) :: noma
+    character(len=8), intent(in) :: mesh
     integer, intent(in) :: nbno
     character(len=24), intent(in) :: list_node
     logical, intent(in) :: l_angl_naut
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: cent(3)
     real(kind=8), intent(in) :: tran(3)
-    character(len=*) :: geom2
+    character(len=*) :: geom_defo
     logical, intent(out) :: l_rota
     real(kind=8), intent(out) :: matr_rota(3, 3)
 !
@@ -64,15 +64,15 @@ subroutine calirg(noma, nbno, list_node, tran,  cent, &
 ! In  angl_naut    : angle defining rotation
 ! In  nbno         : number of nodes to transform
 ! In  list_node    : list of nodes to transform
-! In  geom2        : new coordinates of mesh after transformation
+! In  geom_defo    : new coordinates of mesh after transformation
 !                    WARNING: defined on ALL mesh nodes (>= nbno)
 ! Out lrota        : .true. if rotation
 ! Out matr_rota    : rotation matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iageom, jlino
-    integer :: igeom2, nnomx, ier, numnoe
+    integer :: jgeom_init, jgeom_defo
+    integer :: nnomx, ier, nume_node, jlino
     integer :: i, j, ino, idim
     real(kind=8) :: coor2(3), zero, un
     character(len=8) :: k8bid
@@ -97,7 +97,7 @@ subroutine calirg(noma, nbno, list_node, tran,  cent, &
             endif
         end do
     end do
-    call dismoi('F', 'NB_NO_MAILLA', noma, 'MAILLAGE', nnomx,&
+    call dismoi('F', 'NB_NO_MAILLA', mesh, 'MAILLAGE', nnomx,&
                 k8bid, ier)
 !
 ! - Rotation matrix
@@ -109,16 +109,16 @@ subroutine calirg(noma, nbno, list_node, tran,  cent, &
 !
 ! - Translation
 !
-    call wkvect(geom2, 'V V R', 3*nnomx, igeom2)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', iageom)
+    call wkvect(geom_defo, 'V V R', 3*nnomx, jgeom_defo)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', jgeom_init)
     call jeveuo(list_node, 'L', jlino)
 !
     do ino = 1, nbno
-        numnoe = zi(jlino+ino-1)
-        call parotr(noma, iageom, numnoe, 0, cent,&
+        nume_node = zi(jlino+ino-1)
+        call parotr(mesh, jgeom_init, nume_node, 0, cent,&
                     matr_rota, tran, coor2)
         do idim = 1, 3
-            zr(igeom2+3*(numnoe-1)+idim-1) = coor2(idim)
+            zr(jgeom_defo+3*(nume_node-1)+idim-1) = coor2(idim)
         enddo
     end do
 !
