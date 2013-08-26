@@ -218,7 +218,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
 #calcul des energies
         bloc_ener       =BLOC(condition="TYPE_CALCUL == 'TRAN' and BASE_CALCUL == 'PHYS'",
          ENERGIE         =FACT(statut='f',max=1,
-           CALCUL          =SIMP(statut='o',typ='TXM',into=("OUI"),defaut="OUI",),
+           CALCUL          =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),
          ),
         ),
 

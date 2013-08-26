@@ -174,7 +174,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
          OBSERVATION     =C_OBSERVATION(),
 #-------------------------------------------------------------------
          ENERGIE         =FACT(statut='f',max=1,
-           CALCUL          =SIMP(statut='o',typ='TXM',into=("OUI"),defaut="OUI",),
+           CALCUL          =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),
          ),
 #-------------------------------------------------------------------
          SUIVI_DDL       =C_SUIVI_DDL(),

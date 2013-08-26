@@ -128,7 +128,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",
          PAS_AZIMUT      =SIMP(statut='f',typ='I',defaut=1),
 
          ENERGIE         =FACT(statut='f',max=1,
-           CALCUL          =SIMP(statut='o',typ='TXM',into=("OUI"),defaut="OUI",),
+           CALCUL          =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),
          ),
 
          IMPRESSION      =FACT(statut='f',
