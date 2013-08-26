@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
-                      rmima, raxe)
+    subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
+                      rmima, jraxe)
         integer :: nbordr
         integer :: nbvec
-        real(kind=8) :: vecpg(2*nbvec*nbordr)
+        integer :: jvecpg
         character(len=16) :: proaxe
         integer :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
-        real(kind=8) :: raxe(nbvec*nbordr)
+        integer :: jraxe
     end subroutine projax
 end interface

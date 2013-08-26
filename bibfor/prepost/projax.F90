@@ -1,5 +1,5 @@
-subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
-                  rmima, raxe)
+subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
+                  rmima, jraxe)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,9 +27,8 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
 #include "asterfort/raxini.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvec, nbordr, iflag(nbvec)
-    real(kind=8) :: vecpg(2*nbvec*nbordr), rmima(4*nbvec)
-    real(kind=8) :: raxe(nbvec*nbordr)
+    integer :: nbvec, nbordr, iflag(nbvec),jvecpg, jraxe
+    real(kind=8) ::  rmima(4*nbvec)
     character(len=16) :: proaxe
 ! ----------------------------------------------------------------------
 ! BUT: PROJETER SUR UN OU DEUX AXES LES POINTS REPRESANTANT LE
@@ -119,8 +118,8 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
 !
         do 20 iordr = 1, nbordr
             n1 = n1 + 1
-            ui = vecpg(2*n1-1)
-            vi = vecpg(2*n1)
+            ui = zr(jvecpg+2*n1-1)
+            vi = zr(jvecpg+2*n1)
 !
             dists(1) = sqrt((umin - ui)**2 + (vmax - vi)**2)
             dists(2) = sqrt((umax - ui)**2 + (vmax - vi)**2)
@@ -245,8 +244,8 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
             do 40 iordr = 1, nbordr
                 n1 = n1 + 1
 !
-                ui = vecpg(2*n1 - 1)
-                vi = vecpg(2*n1)
+                ui = zr(jvecpg + 2*n1 - 1)
+                vi = zr(jvecpg + 2*n1)
 !
 ! 4.1 PROJECTION SUR L'AXE INITIAL
 !
@@ -265,9 +264,9 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
 ! 4.3 CALCUL DU MODULE ET ATTRIBUTION DU SIGNE
 !
                 if (rpaxi .lt. 0.0d0) then
-                    raxe(n1) = -sqrt(rpaxi**2 + rpaxs**2)
+                    zr(jraxe+n1) = -sqrt(rpaxi**2 + rpaxs**2)
                 else
-                    raxe(n1) = sqrt(rpaxi**2 + rpaxs**2)
+                    zr(jraxe+n1) = sqrt(rpaxi**2 + rpaxs**2)
                 endif
 40          continue
 !
@@ -278,15 +277,15 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
             do 50 iordr = 1, nbordr
                 n1 = n1 + 1
 !
-                ui = vecpg(2*n1 - 1)
-                vi = vecpg(2*n1)
+                ui = zr(jvecpg+2*n1 - 1)
+                vi = zr(jvecpg+2*n1)
                 up = ui
                 vp = vi
                 val = sqrt((up-u0)**2 + (vp-v0)**2)
                 if (vp .lt. v0) then
                     val = -val
                 endif
-                raxe(n1) = val
+                zr(jraxe+n1) = val
 50          continue
 !
 ! LES POINTS SONT ALIGNES HORIZONTALEMENT (PAS DE PROJECTION)
@@ -296,15 +295,15 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
             do 60 iordr = 1, nbordr
                 n1 = n1 + 1
 !
-                ui = vecpg(2*n1 - 1)
-                vi = vecpg(2*n1)
+                ui = zr(jvecpg+2*n1 - 1)
+                vi = zr(jvecpg+2*n1)
                 up = ui
                 vp = vi
                 val = sqrt((up-u0)**2 + (vp-v0)**2)
                 if (up .lt. u0) then
                     val = -val
                 endif
-                raxe(n1) = val
+                zr(jraxe+n1) = val
 60          continue
 !
 ! LES POINTS SONT DANS UN CADRE DONT LES COTES SONT INFERIEURS A EPSILO
@@ -315,15 +314,15 @@ subroutine projax(vecpg, nbvec, nbordr, proaxe, iflag,&
             do 70 iordr = 1, nbordr
                 n1 = n1 + 1
 !
-                ui = vecpg(2*n1 - 1)
-                vi = vecpg(2*n1)
+                ui = zr(jvecpg+2*n1 - 1)
+                vi = zr(jvecpg+2*n1)
                 up = ui
                 vp = vi
                 val = sqrt((up-u0)**2 + (vp-v0)**2)
                 if (up .lt. u0) then
                     val = -val
                 endif
-                raxe(n1) = val
+                zr(jraxe+n1) = val
 70          continue
 !
         endif

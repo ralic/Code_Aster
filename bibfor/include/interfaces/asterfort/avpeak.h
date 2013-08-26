@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
-                      npoin, valpoi, valord)
+    subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
+                      npoin, jvalpo, jvalor)
         integer :: nbordr
         integer :: nbvec
-        real(kind=8) :: valaxe(nbvec*nbordr)
+        integer :: jvalax
         real(kind=8) :: pseuil
         integer :: iflag(nbvec)
         integer :: npoin(nbvec)
-        real(kind=8) :: valpoi(nbvec*nbordr)
-        integer :: valord(nbvec*nbordr)
+        integer :: jvalpo
+        integer :: jvalor
     end subroutine avpeak
 end interface

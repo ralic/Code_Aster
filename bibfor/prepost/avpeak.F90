@@ -1,5 +1,5 @@
-subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
-                  npoin, valpoi, valord)
+subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
+                  npoin, jvalpo, jvalor)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, npoin(nbvec), valord(nbvec*nbordr)
-    integer :: iflag(nbvec)
-    real(kind=8) :: valaxe(nbvec*nbordr), pseuil, valpoi(nbvec*nbordr)
+    integer :: nbvec, nbordr, npoin(nbvec), jvalor
+    integer :: iflag(nbvec), jvalax, jvalpo
+    real(kind=8) :: pseuil
 ! ----------------------------------------------------------------------
 ! BUT: EXTRAIRE LES PICS D'UNE FONCTION.
 ! ----------------------------------------------------------------------
@@ -76,17 +76,17 @@ subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
 ! ----- LE PREMIER POINT EST UN PIC -----
 !
         npoin(ivect) = 1
-        valpoi((ivect-1)*nbordr + 1) = valaxe((ivect-1)*nbordr + 1)
-        valord((ivect-1)*nbordr + 1) = 1
-        vmax = valpoi((ivect-1)*nbordr + 1)
-        vmin = valpoi((ivect-1)*nbordr + 1)
+        zr(jvalpo+(ivect-1)*nbordr + 1) = zr(jvalax+(ivect-1)*nbordr + 1)
+        zi(jvalor+ (ivect-1)*nbordr + 1) = 1
+        vmax = zr(jvalpo + (ivect-1)*nbordr + 1)
+        vmin = zr(jvalpo + (ivect-1)*nbordr + 1)
         pass = 0
         sortie = 2
 !
 ! ----- RECHERCHE DES PICS INTERMEDIAIRES -----
 !
         do 20 iordr = 2, nbordr
-            valeur = valaxe((ivect-1)*nbordr + iordr)
+            valeur = zr(jvalax + (ivect-1)*nbordr + iordr)
             if (vmax .lt. valeur) then
                 vmax = valeur
                 ordmax = iordr
@@ -107,16 +107,16 @@ subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
             endif
             if ((sortie .eq. 1) .and. ((vmax-valeur)-pseuil .gt. epsilo)) then
                 npoin(ivect) = npoin(ivect) + 1
-                valpoi((ivect-1)*nbordr + npoin(ivect)) = vmax
-                valord((ivect-1)*nbordr + npoin(ivect)) = ordmax
+                zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmax
+                zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmax
                 vmin = valeur
                 ordmin = iordr
                 sortie = 0
             endif
             if ((sortie .eq. 0) .and. ((valeur-vmin)-pseuil .gt. epsilo)) then
                 npoin(ivect) = npoin(ivect) + 1
-                valpoi((ivect-1)*nbordr + npoin(ivect)) = vmin
-                valord((ivect-1)*nbordr + npoin(ivect)) = ordmin
+                zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmin
+                zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmin
                 vmax = valeur
                 ordmax = iordr
                 sortie = 1
@@ -125,15 +125,16 @@ subroutine avpeak(valaxe, nbvec, nbordr, pseuil, iflag,&
 !
         if (sortie .eq. 0) then
             npoin(ivect) = npoin(ivect) + 1
-            valpoi((ivect-1)*nbordr + npoin(ivect)) = vmin
-            valord((ivect-1)*nbordr + npoin(ivect)) = ordmin
+            zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmin
+            zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmin
         endif
         if (sortie .eq. 1) then
             npoin(ivect) = npoin(ivect) + 1
-            valpoi((ivect-1)*nbordr + npoin(ivect)) = vmax
-            valord((ivect-1)*nbordr + npoin(ivect)) = ordmax
+            zr(jvalpo + (ivect-1)*nbordr + npoin(ivect)) = vmax
+            zi(jvalor + (ivect-1)*nbordr + npoin(ivect)) = ordmax
         endif
 10  end do
 !
+
     call jedema()
 end subroutine

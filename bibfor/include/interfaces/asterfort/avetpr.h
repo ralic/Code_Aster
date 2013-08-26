@@ -17,7 +17,7 @@
 !
 interface
     subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
-                      tspaq, i, vetpr, vsitn)
+                      tspaq, i, jvetpr, jvsitn)
         integer :: tdisp
         integer :: nbordr
         real(kind=8) :: vwork(tdisp)
@@ -25,7 +25,7 @@ interface
         integer :: sommw
         integer :: tspaq
         integer :: i
-        real(kind=8) :: vetpr(nbordr)
-        real(kind=8) :: vsitn(nbordr)
+        integer :: jvetpr 
+        integer :: jvsitn 
     end subroutine avetpr
 end interface

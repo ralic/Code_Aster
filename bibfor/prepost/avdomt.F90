@@ -1,4 +1,4 @@
-subroutine avdomt(nbvec, nbordr, ncycl, domel, domtot)
+subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,9 @@ subroutine avdomt(nbvec, nbordr, ncycl, domel, domtot)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, ncycl(nbvec)
-    real(kind=8) :: domel(nbvec*nbordr), domtot(nbvec)
+    integer :: nbvec, nbordr, ncycl(nbvec), jdomel
+    real(kind=8) ::  domtot(nbvec)
+!   real(kind=8) ::domel(nbvec*nbordr),
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LE DOMMAGE TOTAL (CUMUL) POUR TOUS LES VECTEURS NORMAUX.
 ! ----------------------------------------------------------------------
@@ -30,7 +31,7 @@ subroutine avdomt(nbvec, nbordr, ncycl, domel, domtot)
 !  NBORDR   IN   I  : NOMBRE DE NUMEROS D'ORDRE.
 !  NCYCL    IN   I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-!  DOMEL    IN   R  : VECTEUR CONTENANT LES VALEURS DES DOMMAGES
+!  JDOMEL    IN   I  : ADDRESSE VECTEUR CONTENANT LES VALEURS DES DOMMAGES
 !                     ELEMENTAIRES, POUR TOUS LES SOUS CYCLES
 !                     DE CHAQUE VECTEUR NORMAL.
 !  DOMTOT   OUT  R  : VECTEUR CONTENANT LES DOMMAGES TOTAUX (CUMUL)
@@ -52,7 +53,7 @@ subroutine avdomt(nbvec, nbordr, ncycl, domel, domtot)
     do 10 ivect = 1, nbvec
         do 20 icycl = 1, ncycl(ivect)
             adrs = (ivect-1)*nbordr + icycl
-            domtot(ivect) = domtot(ivect) + domel(adrs)
+            domtot(ivect) = domtot(ivect) + zr(jdomel+adrs)
 20      continue
 10  end do
 !

@@ -1,5 +1,5 @@
 subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw,&
-                  tspaq, i, vsipr, vepsn)
+                  tspaq, i, jvsipr, jvepsn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,9 @@ subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
-    real(kind=8) :: vwork(tdisp), vsipr(nbordr), vepsn(nbordr)
+    real(kind=8) :: vwork(tdisp)
+    integer ::jvsipr, jvepsn
+! , vsipr(nbordr), vepsn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE PRINCIPALE ET DEFORMATION NOMRMALE ASSOCIE
 ! ----------------------------------------------------------------------
@@ -45,7 +47,7 @@ subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw,&
 !  TSPAQ  : IN   I  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 !                     OU DE NOEUDS COURANT.
 !  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
-!  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
+!  JSIPR : OUT  I  : ADDRESS VECTEUR CONTENANTA
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
     integer :: iordr, adrs, nvp, nperm, nitjac, j, iordre, itype
@@ -91,7 +93,7 @@ subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw,&
                     br, vecpro, valpro, jacaux, nitjac,&
                     itype, iordre)
 !
-        vsipr(iordr) = valpro(1)
+        zr(jvsipr+iordr) = valpro(1)
         nm1x = vecpro (1,1)
         nm1y = vecpro (2,1)
         nm1z = vecpro (3,1)
@@ -103,7 +105,7 @@ subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw,&
 !
 ! CALCNORM = vect_F.vect_n
 !
-        vepsn(iordr) = abs(exm*nm1x + eym*nm1y + ezm*nm1z)
+        zr(jvepsn+iordr) = abs(exm*nm1x + eym*nm1y + ezm*nm1z)
 !
 10  end do
 !

@@ -1,6 +1,6 @@
 subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
-                  gdeq, grdvie, forvie, post, domel,&
-                  nrupt)
+                  jgdeq, grdvie, forvie, post, jdomel,&
+                  jnrupt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,9 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
     integer :: nbvec, nbordr, ncycl(nbvec)
-    real(kind=8) :: gdeq(nbvec*nbordr)
-    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
+!    real(kind=8) :: gdeq(nbvec*nbordr)
+!    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
+    integer :: jgdeq, jnrupt, jdomel
     logical :: post
     character(len=8) :: nommat, grdvie
     character(len=16) :: nomcri, forvie
@@ -48,13 +49,13 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !  NOMCRI   IN   K  : NOM DU CRITERE.
 !  NCYCL    IN   I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-!  GDEQ     IN   R  : VECTEUR CONTENANT LES VALEURS DE LA GRANDEUR
+!  JGDEQ     IN   I  : ADDRESSE VECTEUR CONTENANT LES VALEURS DE LA GRANDEUR
 !                     EQUIVALENTE (SIGEQ OU EPSEQ), POUR TOUS LES SOUS
 !                     CYCLES DE CHAQUE VECTEUR NORMAL.
-!  DOMEL    OUT  R  : VECTEUR CONTENANT LES VALEURS DES DOMMAGES
+!  JDOMEL    OUT  I  : ADDRESSE VECTEUR CONTENANT LES VALEURS DES DOMMAGES
 !                     ELEMENTAIRES, POUR TOUS LES SOUS CYCLES
 !                     DE CHAQUE VECTEUR NORMAL.
-!  NRUPT    OUT  R  : VECTEUR CONTENANT LES NOMBRES DE CYCLES
+!  JNRUPT    OUT  I  : ADDRESSE VECTEUR CONTENANT LES NOMBRES DE CYCLES
 !                     ELEMENTAIRES, POUR TOUS LES SOUS CYCLES
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
@@ -72,7 +73,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !
 ! INITITIALISATION
     do 100 i = 1, nbvec*nbordr
-        domel(i) = 0
+        zr(jdomel+i) = 0
 100  end do
 !
     if (.not. post) then
@@ -90,19 +91,19 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
             do 20 icycl = 1, ncycl(ivect)
                 adrs = (ivect-1)*nbordr + icycl
 !
-                call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', gdeq(adrs),&
-                            1, 'MANSON_C', nrupt(adrs), icodre, 1)
+                call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
+                            1, 'MANSON_C', zr(jnrupt+adrs), icodre, 1)
 !
-                call limend(nommat, gdeq(adrs), 'MANSON_C', kbid, limit)
+                call limend(nommat, zr(jgdeq+adrs), 'MANSON_C', kbid, limit)
                 if (limit) then
-                    nrupt(adrs)=r8maem()
+                    zr(jnrupt+adrs)=r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', gdeq(adrs),&
-                                1, 'MANSON_C', nrupt(adrs), icodre, 1)
+                    call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', &
+                      zr(jgdeq+adrs), 1, 'MANSON_C', zr(jnrupt+adrs), icodre, 1)
                 endif
 !
-                domel(adrs) = 1.0d0/nrupt(adrs)
-                nrupt(adrs) = nint(nrupt(adrs))
+                zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
+                zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
 20          continue
 10      continue
@@ -118,16 +119,16 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
             do 40 icycl = 1, ncycl(ivect)
                 adrs = (ivect-1)*nbordr + icycl
 !
-                call limend(nommat, gdeq(adrs), 'WOHLER', kbid, limit)
+                call limend(nommat, zr(jgdeq+adrs), 'WOHLER', kbid, limit)
                 if (limit) then
-                    nrupt(adrs)=r8maem()
+                    zr(jnrupt+adrs)=r8maem()
                 else
-                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', gdeq(adrs),&
-                                1, 'WOHLER  ', nrupt(adrs), icodre, 1)
+                    call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', &
+                     zr(jgdeq+adrs), 1, 'WOHLER  ', zr(jnrupt+adrs), icodre, 1)
                 endif
 !
-                domel(adrs) = 1.0d0/nrupt(adrs)
-                nrupt(adrs) = nint(nrupt(adrs))
+                zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
+                zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
 40          continue
 30      continue
@@ -138,33 +139,34 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
             do 60 icycl = 1, ncycl(ivect)
                 adrs = (ivect-1)*nbordr + icycl
 !
-                call limend(nommat, gdeq(adrs), grdvie, forvie, limit)
+                call limend(nommat, zr(jgdeq+adrs), grdvie, forvie, limit)
 !
                 if (limit) then
-                    nrupt(adrs)=r8maem()
+                    zr(jnrupt+adrs)=r8maem()
                 else
 !
                     if (grdvie(1:6) .eq. 'WOHLER') then
                         nomgrd = 'SIGM    '
                         grdvie(7:8) = '  '
 !
-                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, gdeq(adrs),&
-                                    1, grdvie, nrupt(adrs), icodre, 1)
+                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, &
+                          zr(jgdeq+adrs),1, grdvie, zr(jnrupt+adrs), icodre, 1)
                     endif
 !
                     if (grdvie(1:8) .eq. 'MANSON_C') then
                         nomgrd = 'EPSI    '
-                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, gdeq(adrs),&
-                                    1, grdvie, nrupt(adrs), icodre, 1)
+                        call rcvale(nommat, 'FATIGUE', 1, nomgrd, &
+                        zr(jgdeq+adrs), 1, grdvie, zr(jnrupt+adrs), icodre, 1)
 !
                     endif
 !
                     if (grdvie(1:8) .eq. 'FORM_VIE') then
-                        call renrfa(forvie, gdeq(adrs), nrupt(adrs), icodre)
+                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs),&
+                                   icodre)
                     endif
 !
-                    domel(adrs) = 1.0d0/nrupt(adrs)
-                    nrupt(adrs) = nint(nrupt(adrs))
+                    zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
+                    zr(jnrupt+adrs) = nint(zr(jnrupt+adrs))
 !
                 endif
 !

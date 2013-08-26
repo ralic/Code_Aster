@@ -16,20 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
-                      opic, fatsoc, ncycl, vmin, vmax,&
-                      omin, omax)
+    subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
+                      jopic, fatsoc, ncycl, jvmin, jvmax,&
+                      jomin, jomax)
         integer :: nbordr
         integer :: nbvec
-        integer :: itrv(2*(nbordr+2))
+        integer :: jitrv
         integer :: npic(nbvec)
-        real(kind=8) :: pic(nbvec*(nbordr+2))
-        integer :: opic(nbvec*(nbordr+2))
+        integer  :: jpic
+        integer :: jopic
         real(kind=8) :: fatsoc
         integer :: ncycl(nbvec)
-        real(kind=8) :: vmin(nbvec*(nbordr+2))
-        real(kind=8) :: vmax(nbvec*(nbordr+2))
-        integer :: omin(nbvec*(nbordr+2))
-        integer :: omax(nbvec*(nbordr+2))
+        integer :: jvmin
+        integer :: jvmax
+        integer :: jomin
+        integer :: jomax
     end subroutine avrain
 end interface

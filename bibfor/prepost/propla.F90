@@ -1,16 +1,16 @@
 subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
                   kwork, sommw, vwork, tdisp, tspaq,&
                   i, nomcri, nomfor, fordef, fatsoc,&
-                  vectra)
+                  jvectr)
     implicit      none
 #include "jeveux.h"
 #include "asterfort/anacri.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, kwork
-    integer :: sommw, tdisp, tspaq, i
+    integer :: sommw, tdisp, tspaq, i, jvectr
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
-    real(kind=8) :: vwork(tdisp), fatsoc, vectra(2*nbvec*nbordr)
+    real(kind=8) :: vwork(tdisp), fatsoc
     logical :: fordef
     character(len=16) :: nomcri, nomfor
 ! ======================================================================
@@ -180,8 +180,8 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
             cvcis = vx*cisx + vy*cisy + vz*cisz
 !
             n = n + 1
-            vectra(n*2 - 1) = fatsoc*cucis
-            vectra(n*2) = fatsoc*cvcis
+            zr(jvectr+n*2 - 1) = fatsoc*cucis
+            zr(jvectr+n*2) = fatsoc*cvcis
 !
 20      continue
 10  end do

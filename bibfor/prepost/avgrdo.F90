@@ -1,8 +1,8 @@
 subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
                   kwork, sommw, tspaq, i, nommat,&
                   nomcri, nomfor, grdvie, forvie, vala,&
-                  coefpa, ncycl, vmin, vmax, omin,&
-                  omax, post, cudomx, vnormx, nbplan)
+                  coefpa, ncycl, jvmin, jvmax, jomin,&
+                  jomax, post, cudomx, vnormx, nbplan)
 !
 ! aslint: disable=W1306,W1504
     implicit      none
@@ -17,9 +17,10 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
     real(kind=8) :: vwork(tdisp)
     character(len=16) :: nomcri, forvie, nomfor
     character(len=8) :: nommat, grdvie
-    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
+!    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
+    integer ::jomin, jomax, jvmin, jvmax
     real(kind=8) :: vala, coefpa
-    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
+!    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     integer :: vnormx(2), ncycl(nbvec), nbplan
     logical :: post
     real(kind=8) :: cudomx
@@ -72,16 +73,14 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !  COEFPA   IN   R  : COEFFICIENT DE PASSAGE CISAILLEMENT - UNIAXIAL.
 !  NCYCL    IN   I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-!  VMIN     IN   R  : VALEURS MIN DES CYCLES ELEMENTAIRES POUR TOUS LES
-!                     VECTEURS NORMAUX.
-!  VMAX     IN   R  : VALEURS MAX DES CYCLES ELEMENTAIRES POUR TOUS LES
-!                     VECTEURS NORMAUX.
-!  OMIN     IN   I  : NUMEROS D'ORDRE ASSOCIES AUX VALEURS MIN DES
-!                     CYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                     NORMAUX.
-!  OMAX     IN   I  : NUMEROS D'ORDRE ASSOCIES AUX VALEURS MAX DES
-!                     CYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                     NORMAUX.
+! JVMIN      IN  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES 
+!                     POUR TOUS LES VECTEURS NORMAUX.
+! JVMAX      IN  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES 
+!                     POUR TOUS LES VECTEURS NORMAUX.
+! JOMIN      IN  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX VALEURS 
+!                     MIN DESCYCLES ELEMENTAIRES POUR TOUS LES VECTEURS 
+!                     NORMAUX.                     
+! JOMAX      IN  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX VALEURS
 !  VNORMX   OUT  I  : NUMERO DU PREMIER VECTEUR NORMAL ASSOCIE AU
 !                     MAX DES CUMULS DE DOMMAGE.
 !  VNORMX2   OUT  I : NUMERO DU DEUXIEME VECTEUR NORMAL ASSOCIE AU
@@ -107,8 +106,10 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !  DOMTOT VECTEUR CONTENANT LES DOMMAGES TOTAUX (CUMUL)
 !         DE CHAQUE VECTEUR NORMAL
 !
-    real(kind=8) :: gdreq(nbvec*nbordr)
-    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr), domtot(nbvec)
+!    real(kind=8) :: gdreq(nbvec*nbordr)
+     integer ::jgdreq, jnrupt,jdomel
+     real(kind=8) ::domtot(nbvec)
+!    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr), domtot(nbvec)
 !  ------------------------------------------------------------------
 !  ---------------------
 ! C ------------------------------------------------------------------
@@ -118,10 +119,15 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 ! 1.3 CALCUL DE LA GRANDEUR EQUIVALENTE AU SENS DU CRITERE CHOISI :
 !     MATAKE_MODI_AV, FATEMI ET SOCIE (ELASTIQUE OU PLASTIQUE), DANG VAN
+
+    call wkvect('&&AVGRDO_GDREQ', 'V V R', nbvec*nbordr, jgdreq)
+    call wkvect('&&AVGRDO_NRUPT', 'V V R', nbvec*nbordr, jnrupt)
+    call wkvect('&&AVGRDO_DOMEL', 'V V R', nbvec*nbordr, jdomel)
+
     call avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                 kwork, sommw, tspaq, i, vala,&
-                coefpa, ncycl, vmin, vmax, omin,&
-                omax, nomcri, nomfor, gdreq)
+                coefpa, ncycl, jvmin, jvmax, jomin,&
+                jomax, nomcri, nomfor, jgdreq)
 !
 !          CALL AVCRIT(NBVEC, NBORDR, VALA, COEFPA, NCYCL,
 !      &               VMIN, VMAX, OMIN, OMAX,NOMCRI,NOMFOR,
@@ -130,15 +136,19 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
 ! 2. CALCUL DU DOMMAGE ELEMENTAIRE DE WOHLER
 !
     call avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
-                gdreq, grdvie, forvie, post, domel,&
-                nrupt)
+                jgdreq, grdvie, forvie, post, jdomel,&
+                jnrupt)
 !
 ! 3. CALCUL DU DOMMAGE TOTAL (CUMUL)
 !
-    call avdomt(nbvec, nbordr, ncycl, domel, domtot)
+    call avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
 !
 ! 4. CALCUL DU CUMUL DE DOMMAGE MAXIMAL ET VECTEUR NORMAL ASSOCIE
 !
     call avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
+
+    call jedetr('&&AVGRDO_GDREQ')
+    call jedetr('&&AVGRDO_NRUPT')
+    call jedetr('&&AVGRDO_DOMEL')
 !
 end subroutine

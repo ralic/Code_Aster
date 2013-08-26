@@ -1,5 +1,5 @@
 subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
-                  kwork, sommw, tspaq, i, vsign)
+                  kwork, sommw, tspaq, i, jvsign)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,9 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 #include "asterfort/jemarq.h"
     integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
-    real(kind=8) :: vwork(tdisp), vsign(nbvec*nbordr)
+    real(kind=8) :: vwork(tdisp) 
+!    real(kind=8) ::vsign(nbvec*nbordr)
+    integer ::jvsign
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE NORMALE POUR TOUS LES VECTEURS NORMAUX
 !      A TOUS LES NUMEROS D'ORDRE.
@@ -50,7 +52,7 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 !                     OU DE NOEUDS COURANT.
 !  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
 !  NOMCRI : IN  K16 : NOM DU CRITERE D'ENDOMMAGEMENT PAR FATIGUE.
-!  VSIGN  : OUT  R  : VECTEUR CONTENANT LES VALEURS DE LA CONTRAINTE
+!  JVSIGN  : OUT  I  : ADDRESS VECTEUR CONTENANT LES VALEURS DE LA CONTRAINTE
 !                     NORMALE, POUR TOUS LES NUMEROS D'ORDRE
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
@@ -92,7 +94,7 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
 !
 ! CALCUL DE NORM = vect_F.vect_n
             norm = fx*nx + fy*ny + fz*nz
-            vsign(n) = norm
+            zr(jvsign+n) = norm
             n = n + 1
 20      continue
 10  end do

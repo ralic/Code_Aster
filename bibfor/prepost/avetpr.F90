@@ -1,5 +1,5 @@
 subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
-                  tspaq, i, vetpr, vsitn)
+                  tspaq, i, jvetpr, jvsitn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,9 @@ subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
-    real(kind=8) :: vwork(tdisp), vetpr(nbordr), vsitn(nbordr)
+    real(kind=8) :: vwork(tdisp)
+    integer ::jvetpr, jvsitn
+!  , vetpr(nbordr), vsitn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE PRINCIPALE ET DEFORMATION NOMRMALE ASSOCIE
 ! ----------------------------------------------------------------------
@@ -91,7 +93,7 @@ subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
                     br, vecpro, valpro, jacaux, nitjac,&
                     itype, iordre)
 !
-        vetpr(iordr) = valpro(1)
+        zr(jvetpr+iordr) = valpro(1)
         nm1x = vecpro (1,1)
         nm1y = vecpro (2,1)
         nm1z = vecpro (3,1)
@@ -103,7 +105,7 @@ subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
 !
 ! CALCNORM = vect_F.vect_n
 !
-        vsitn(iordr) = abs(exm*nm1x + eym*nm1y + ezm*nm1z)
+        zr(jvsitn+iordr) = abs(exm*nm1x + eym*nm1y + ezm*nm1z)
 !
 10  end do
 !

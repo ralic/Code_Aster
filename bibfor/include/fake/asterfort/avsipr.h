@@ -17,7 +17,7 @@
 !
 interface
     subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw,&
-                      tspaq, i, vsipr, vepsn)
+                      tspaq, i, jvsipr, jvepsn)
         integer :: tdisp
         integer :: nbordr
         real(kind=8) :: vwork(tdisp)
@@ -25,7 +25,7 @@ interface
         integer :: sommw
         integer :: tspaq
         integer :: i
-        real(kind=8) :: vsipr(nbordr)
-        real(kind=8) :: vepsn(nbordr)
+        integer :: jvsipr
+        integer :: jvepsn
     end subroutine avsipr
 end interface

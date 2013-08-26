@@ -84,16 +84,17 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
     integer :: ncycl(nbvec), nbvec1, nval, ibid, dir
-    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
+!    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
+    integer ::jomin, jomax, jvmin, jvmax
     integer :: vnormx(2), ideb, ifin, n, k, dim, j, kp, nbp
     integer :: iarg, nbplan, vnorm(2)
-    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
+!    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     real(kind=8) :: pseuil, gammam, phim, dphi2, epsilo, gamma
     real(kind=8) :: vecn2(3*nbvec), vecu2(3*nbvec), vecv2(3*nbvec)
     real(kind=8) :: vecn1(3*nbvec), vecu1(3*nbvec), vecv1(3*nbvec)
     real(kind=8) :: dgam2, pi, phi0, cudom1, cudom2
     real(kind=8) :: prec
-    character(len=8) :: method
+    character(len=8) :: method 
 !     --------------------------
     epsilo = 1.0d-7
     pi = r8pi()
@@ -107,19 +108,27 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
     call getvr8(' ', 'DELTA_OSCI', 1, iarg, 1,&
                 pseuil, nval)
 !
+! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
+
+!
+    call wkvect('&&AVPLCR.VECT_OMIN', 'V V R', nbvec*(nbordr+2), jomin)
+    call wkvect('&&AVPLCR.VECT_OMAX', 'V V R', nbvec*(nbordr+2), jomax)
+    call wkvect('&&AVPLCR.VECT_VMIN', 'V V R', nbvec*(nbordr+2), jvmin)
+    call wkvect('&&AVPLCR.VECT_VMAX', 'V V R', nbvec*(nbordr+2), jvmax)
+
     call avcipr(nbvec1, vectn, vectu, vectv, nbordr,&
                 kwork, somnow, vwork, tdisp, tspaq,&
                 i, nomcri, nomfor, fordef, fatsoc,&
-                proaxe, pseuil, method, ncycl, vmin,&
-                vmax, omin, omax)
+                proaxe, pseuil, method, ncycl, jvmin,&
+                jvmax, jomin, jomax)
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
 !
     call avgrdo(nbvec1, nbordr, vectn, vwork, tdisp,&
                 kwork, somnow, tspaq, i, nommat,&
                 nomcri, nomfor, grdvie, forvie, vala,&
-                coefpa, ncycl, vmin, vmax, omin,&
-                omax, post, cudomx, vnorm, nbplan)
+                coefpa, ncycl, jvmin, jvmax, jomin,&
+                jomax, post, cudomx, vnorm, nbplan)
 !
 !
 ! 9. PREMIER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
@@ -187,8 +196,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
 !
 !
         else
@@ -211,8 +220,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
 !
         endif
 !
@@ -221,8 +230,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         call avgrdo(nbvec1, nbordr, vecn2, vwork, tdisp,&
                     kwork, somnow, tspaq, i, nommat,&
                     nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, vmin, vmax, omin,&
-                    omax, post, cudomx, vnormx, ibid)
+                    coefpa, ncycl, jvmin, jvmax, jomin,&
+                    jomax, post, cudomx, vnormx, ibid)
 !
 !
 !
@@ -277,8 +286,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
 !
         else
             dgam2 = 1.0d0*(pi/180.0d0)
@@ -300,8 +309,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
         endif
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
@@ -309,8 +318,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         call avgrdo(nbvec1, nbordr, vecn1, vwork, tdisp,&
                     kwork, somnow, tspaq, i, nommat,&
                     nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, vmin, vmax, omin,&
-                    omax, post, cudomx, vnormx, ibid)
+                    coefpa, ncycl, jvmin, jvmax, jomin,&
+                    jomax, post, cudomx, vnormx, ibid)
 !
 !
 ! 11. 3E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
@@ -364,8 +373,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
 !
         else
             dgam2 = 0.5d0*(pi/180.0d0)
@@ -387,8 +396,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn2, vecu2, vecv2, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
         endif
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
@@ -396,8 +405,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         call avgrdo(nbvec1, nbordr, vecn2, vwork, tdisp,&
                     kwork, somnow, tspaq, i, nommat,&
                     nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, vmin, vmax, omin,&
-                    omax, post, cudomx, vnormx, ibid)
+                    coefpa, ncycl, jvmin, jvmax, jomin,&
+                    jomax, post, cudomx, vnormx, ibid)
 !
 ! 12. 4E RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 !     CORRESPONDANT AU MAX DES CUMULS DE DOMMAGE.
@@ -450,8 +459,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
 !
         else
             dgam2 = 0.25d0*(pi/180.0d0)
@@ -473,8 +482,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
             call avcipr(nbvec1, vecn1, vecu1, vecv1, nbordr,&
                         kwork, somnow, vwork, tdisp, tspaq,&
                         i, nomcri, nomfor, fordef, fatsoc,&
-                        proaxe, pseuil, method, ncycl, vmin,&
-                        vmax, omin, omax)
+                        proaxe, pseuil, method, ncycl, jvmin,&
+                        jvmax, jomin, jomax)
         endif
 !
 ! REMPACER PAR SUBROUTINE AVGRDO
@@ -482,8 +491,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         call avgrdo(nbvec1, nbordr, vecn1, vwork, tdisp,&
                     kwork, somnow, tspaq, i, nommat,&
                     nomcri, nomfor, grdvie, forvie, vala,&
-                    coefpa, ncycl, vmin, vmax, omin,&
-                    omax, post, cudomx, vnormx, nbp)
+                    coefpa, ncycl, jvmin, jvmax, jomin,&
+                    jomax, post, cudomx, vnormx, nbp)
 !  VECTEUR NORMAL ASSOCIE AUX PLAN CRITIQUE  TROUVE
 !
         nxm(kp) = vecn1((vnormx(kp)-1)*3+1)
@@ -524,5 +533,12 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
         nzm(1) = nzm(2)
         cudomx = cudom2
     endif
+
+    call jedetr('&&AVPLCR.VECT_OMIN')
+    call jedetr('&&AVPLCR.VECT_OMAX')
+    call jedetr('&&AVPLCR.VECT_VMIN')
+    call jedetr('&&AVPLCR.VECT_VMAX')
+
 !
+
 end subroutine

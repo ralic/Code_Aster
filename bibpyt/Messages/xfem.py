@@ -507,4 +507,16 @@ cata_msg={
      Veuillez utiliser un maillage linéaire.
 """),
 
+
+77: _(u"""
+  -> Il y a éventuellement des créations de mailles 
+     supplémentaires de type POI1 lorsque des affectations sont faites sur des nœuds ou des groupes de
+     noeuds. Ces mailles ne sont pas accessibles à l’utilisateur. Ceci a crée une maille tardive.
+
+  -> Risque & Conseil:
+     Veuillez voir le document [U4.41.01], section 4:  Il est fortement conseillé
+     d’utiliser CREA_MAILLAGE [U4.23.02] pour créer des mailles POI1 utilisables dans le fichier de
+     commande (pour STAT_NON_LINE par exemple).
+
+"""),
 }

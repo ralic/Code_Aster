@@ -19,7 +19,7 @@ interface
     subroutine propla(nbvec, vectn, vectu, vectv, nbordr,&
                       kwork, sommw, vwork, tdisp, tspaq,&
                       i, nomcri, nomfor, fordef, fatsoc,&
-                      vectra)
+                      jvectr)
         integer :: tdisp
         integer :: nbordr
         integer :: nbvec
@@ -35,6 +35,6 @@ interface
         character(len=16) :: nomfor
         logical :: fordef
         real(kind=8) :: fatsoc
-        real(kind=8) :: vectra(2*nbvec*nbordr)
+        integer :: jvectr
     end subroutine propla
 end interface

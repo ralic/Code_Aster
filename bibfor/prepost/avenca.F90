@@ -1,4 +1,4 @@
-subroutine avenca(rvecpg, nbvec, nbordr, lsig0, iflag,&
+subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
                   rmima)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,15 +23,15 @@ subroutine avenca(rvecpg, nbvec, nbordr, lsig0, iflag,&
 #include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, iflag(nbvec)
-    real(kind=8) :: rvecpg(2*nbvec*nbordr), rmima(4*nbvec)
+    integer :: nbvec, nbordr, iflag(nbvec), jrvecp
+    real(kind=8) ::  rmima(4*nbvec)
     logical :: lsig0
 ! ----------------------------------------------------------------------
 ! BUT: ENCADRER LES POINTS REPRESANTANT LE CISAILLEMENT TAU
 !      DANS LE PLAN DE CISAILLEMENT (PLAN u, v).
 ! ----------------------------------------------------------------------
 ! ARGUMENTS:
-! RVECPG    IN   R  : VECTEUR DE TRAVAIL CONTENANT LES
+! JRVECPG    IN   I  : VECTEUR DE TRAVAIL CONTENANT LES
 !                     COMPOSANTES u ET v DU VECTEUR TAU (CISAILLEMENT),
 !                     POUR TOUS LES VECTEURS NORMAUX (n) ET TOUS LES
 !                     NUMEROS D'ORDRE.
@@ -99,8 +99,8 @@ subroutine avenca(rvecpg, nbvec, nbordr, lsig0, iflag,&
 !
         do 40 iordr = 1, nbordr
             n1 = n1 + 1
-            cui = rvecpg(2*n1 -1)
-            cvi = rvecpg(2*n1)
+            cui = zr(jrvecp+2*n1 -1)
+            cvi = zr(jrvecp+2*n1)
 !
             if (cui .lt. cumin) then
                 cumin = cui

@@ -1,5 +1,5 @@
 subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
-                  tspaq, i, vphydr)
+                  tspaq, i, jvphyd)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,9 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
-    real(kind=8) :: vwork(tdisp), vphydr(nbordr)
+    real(kind=8) :: vwork(tdisp)
+!   vphydr(nbordr)
+    integer ::jvphyd
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA PRESSION HYDROSTATIQUE MAXIMALE.
 ! ----------------------------------------------------------------------
@@ -65,8 +67,7 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
 ! CALCUL DE LA PRESSION HYDROSTATIQUE = 1/3 Tr[SIG] A TOUS
 ! LES INSTANTS
 !
-        vphydr(iordr) = (sixx + siyy + sizz)/3.0d0
-!
+        zr(jvphyd+iordr) = (sixx + siyy + sizz)/3.0d0
 10  end do
 !
     call jedema()

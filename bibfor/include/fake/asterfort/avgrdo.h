@@ -19,8 +19,8 @@ interface
     subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
                       kwork, sommw, tspaq, i, nommat,&
                       nomcri, nomfor, grdvie, forvie, vala,&
-                      coefpa, ncycl, vmin, vmax, omin,&
-                      omax, post, cudomx, vnormx, nbplan)
+                      coefpa, ncycl, jvmin, jvmax, jomin,&
+                      jomax, post, cudomx, vnormx, nbplan)
         integer :: tdisp
         integer :: nbordr
         integer :: nbvec
@@ -38,10 +38,10 @@ interface
         real(kind=8) :: vala
         real(kind=8) :: coefpa
         integer :: ncycl(nbvec)
-        real(kind=8) :: vmin(nbvec*(nbordr+2))
-        real(kind=8) :: vmax(nbvec*(nbordr+2))
-        integer :: omin(nbvec*(nbordr+2))
-        integer :: omax(nbvec*(nbordr+2))
+        integer :: jvmin
+        integer :: jvmax
+        integer :: jomin
+        integer :: jomax
         logical :: post
         real(kind=8) :: cudomx
         integer :: vnormx(2)

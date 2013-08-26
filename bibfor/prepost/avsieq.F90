@@ -1,5 +1,5 @@
 subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
-                  tspaq, i, vsieq)
+                  tspaq, i, jvsieq)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,9 @@ subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
 #include "asterfort/fgequi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i
-    real(kind=8) :: vwork(tdisp), vsieq(nbordr)
+    integer :: nbordr, tdisp, kwork, sommw, tspaq, i, jvsieq
+    real(kind=8) :: vwork(tdisp)
+!, vsieq(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE EQUIVALENTE
 ! ----------------------------------------------------------------------
@@ -46,7 +47,7 @@ subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
 !  TSPAQ  : IN   I  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 !                     OU DE NOEUDS COURANT.
 !  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
-!  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
+!  VSIEQ : OUT  I  : ADDRESS VECTEUR CONTENANT  A
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
     integer :: iordr, adrs, j, decal
@@ -66,7 +67,7 @@ subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
 35      continue
 !
         call fgequi(sig, 'SIGM', 3, equi)
-        vsieq(iordr) = equi(1)
+        zr(jvsieq+iordr) = equi(1)
 !
 10  end do
 !

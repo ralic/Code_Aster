@@ -17,18 +17,18 @@
 !
 interface
     subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
-                      gdeq, grdvie, forvie, post, domel,&
-                      nrupt)
+                      jgdeq, grdvie, forvie, post, jdomel,&
+                      jnrupt)
         integer :: nbordr
         integer :: nbvec
         character(len=8) :: nommat
         character(len=16) :: nomcri
         integer :: ncycl(nbvec)
-        real(kind=8) :: gdeq(nbvec*nbordr)
+        integer :: jgdeq
         character(len=8) :: grdvie
         character(len=16) :: forvie
         logical :: post
-        real(kind=8) :: domel(nbvec*nbordr)
-        real(kind=8) :: nrupt(nbvec*nbordr)
+        integer :: jdomel
+        integer :: jnrupt
     end subroutine avdowh
 end interface

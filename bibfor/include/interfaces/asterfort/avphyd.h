@@ -17,7 +17,7 @@
 !
 interface
     subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw,&
-                      tspaq, i, vphydr)
+                      tspaq, i, jvphydr)
         integer :: tdisp
         integer :: nbordr
         real(kind=8) :: vwork(tdisp)
@@ -25,6 +25,6 @@ interface
         integer :: sommw
         integer :: tspaq
         integer :: i
-        real(kind=8) :: vphydr(nbordr)
+        integer :: jvphydr
     end subroutine avphyd
 end interface

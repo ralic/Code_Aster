@@ -1,6 +1,6 @@
-subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
-                  opic, fatsoc, ncycl, vmin, vmax,&
-                  omin, omax)
+subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
+                  jopic, fatsoc, ncycl, jvmin, jvmax,&
+                  jomin, jomax)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,12 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, itrv(2*(nbordr+2)), npic(nbvec)
-    integer :: opic(nbvec*(nbordr+2)), ncycl(nbvec)
-    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
-    real(kind=8) :: pic(nbvec*(nbordr+2)), fatsoc
-    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
+    integer :: nbvec, nbordr, jitrv, npic(nbvec)
+    integer :: jopic, ncycl(nbvec), jpic
+!    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
+    real(kind=8) ::  fatsoc
+!    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
+    integer ::jomin, jomax, jvmin, jvmax
 ! ----------------------------------------------------------------------
 ! BUT: COMPTAGE DE CYCLE PAR LA METHODE RAINFLOW (POSTDAM)
 ! ----------------------------------------------------------------------
@@ -47,16 +48,14 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
 !                     DES DEFORMATIONS.
 ! NCYCL     OUT  I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-! VMIN      OUT  R  : VALEURS MIN DES CYCLES ELEMENTAIRES POUR TOUS LES
-!                     VECTEURS NORMAUX.
-! VMAX      OUT  R  : VALEURS MAX DES CYCLES ELEMENTAIRES POUR TOUS LES
-!                     VECTEURS NORMAUX.
-! OMIN      OUT  I  : NUMEROS D'ORDRE ASSOCIES AUX VALEURS MIN DES
-!                     CYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                     NORMAUX.
-! OMAX      OUT  I  : NUMEROS D'ORDRE ASSOCIES AUX VALEURS MAX DES
-!                     CYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                     NORMAUX.
+! JVMIN      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES 
+!                     POUR TOUS LES VECTEURS NORMAUX.
+! JVMAX      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES 
+!                     POUR TOUS LES VECTEURS NORMAUX.
+! JOMIN      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX 
+!                     VALEURS  MIN DESCYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
+!                      NORMAUX.                     
+! JOMAX      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX VALEURS
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
@@ -71,6 +70,7 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
 !
     call jemarq()
 !
+
     do 10 ivect = 1, nbvec
 !
 ! LE TEST SI (NPIC(IVECT) .EQ. 0) EST EQUIVALENT
@@ -85,7 +85,7 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
         npicb = npic(ivect)
 !
         do 20 i = 1, npicb
-            itrv(i) = i
+            zi(jitrv + i) = i
 20      continue
 !
         ncycl(ivect) = 0
@@ -101,26 +101,38 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
             goto 100
         endif
 !
-        e1 = abs ( pic(adrs + itrv(i+1)) - pic(adrs + itrv(i)) )
-        e2 = abs ( pic(adrs + itrv(i+2)) - pic(adrs + itrv(i+1)) )
-        e3 = abs ( pic(adrs + itrv(i+3)) - pic(adrs + itrv(i+2)) )
+        e1 = abs ( zr(jpic + adrs + zi(jitrv + i+1)) - &
+                   zr(jpic + adrs + zi(jitrv + i)) )
+        e2 = abs ( zr(jpic + adrs + zi(jitrv + i+2)) - &
+                   zr(jpic + adrs + zi(jitrv + i+1)) )
+        e3 = abs ( zr(jpic + adrs + zi(jitrv + i+3)) - &
+                   zr(jpic + adrs + zi(jitrv + i+2)) )
 !
         if ((e1.ge. e2) .and. (e3 .ge. e2)) then
             ncycl(ivect) = ncycl(ivect) + 1
-            if (pic(adrs+itrv(i+1)) .ge. pic(adrs+itrv(i+2))) then
-                vmax(adrs+ncycl(ivect)) = pic(adrs + itrv(i+1))/ fatsoc
-                vmin(adrs+ncycl(ivect)) = pic(adrs + itrv(i+2))/ fatsoc
-                omax(adrs+ncycl(ivect)) = opic(adrs + itrv(i+1))
-                omin(adrs+ncycl(ivect)) = opic(adrs + itrv(i+2))
+            if (zr(jpic+ adrs+ zi(jitrv + i+1)) .ge. & 
+                zr(jpic + adrs+ zi(jitrv + i+2))) then
+                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + &
+                                                 zi(jitrv + i+1))/ fatsoc
+                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs + &
+                                                 zi(jitrv + i+2))/ fatsoc
+                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs + &
+                                                 zi(jitrv + i+1))
+                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs + &
+                                                 zi(jitrv + i+2))
             else
-                vmax(adrs+ncycl(ivect)) = pic(adrs + itrv(i+2))/ fatsoc
-                vmin(adrs+ncycl(ivect)) = pic(adrs + itrv(i+1))/ fatsoc
-                omax(adrs+ncycl(ivect)) = opic(adrs + itrv(i+2))
-                omin(adrs+ncycl(ivect)) = opic(adrs + itrv(i+1))
+                zr(jvmax+adrs+ncycl(ivect)) = zr(jpic + adrs + &
+                                                 zi(jitrv + i+2))/ fatsoc
+                zr(jvmin+adrs+ncycl(ivect)) = zr(jpic + adrs + &
+                                                 zi(jitrv + i+1))/ fatsoc
+                zi(jomax+adrs+ncycl(ivect)) = zi(jopic + adrs + &
+                                                 zi(jitrv + i+2))
+                zi(jomin+adrs+ncycl(ivect)) = zi(jopic + adrs + &
+                                                 zi(jitrv + i+1))
             endif
 !
             do 30 k = i+2, j+2, -1
-                itrv(k) = itrv(k-2)
+                zi(jitrv+ k) = zi(jitrv + k-2)
 30          continue
 !
             j=j+2
@@ -138,35 +150,35 @@ subroutine avrain(nbvec, nbordr, itrv, npic, pic,&
         if (.not. lresi) then
             npicr = npicb - 2*ncycl(ivect)
             do 110 i = 1, npicr
-                itrv(i) = itrv(2*ncycl(ivect)+i)
+                zi(jitrv + i) = zi(jitrv + 2*ncycl(ivect)+i)
 110          continue
-            r1 = pic(adrs + itrv(1))
-            r2 = pic(adrs + itrv(2))
-            rad= pic(adrs + itrv(npicr-1))
-            rd = pic(adrs + itrv(npicr))
+            r1 = zr(jpic + adrs + zi(jitrv + 1))
+            r2 = zr(jpic + adrs + zi(jitrv + 2))
+            rad= zr(jpic + adrs + zi(jitrv + npicr-1))
+            rd = zr(jpic + adrs + zi(jitrv + npicr))
             x = (rd-rad)*(r2-r1)
             y = (rd-rad)*(r1-rd)
             if ((x .gt. 0.d0) .and. (y .lt. 0.d0)) then
                 do 120 i = 1, npicr
-                    itrv(i+npicr) = itrv(i)
+                    zi(jitrv+i+npicr) = zi(jitrv + i)
 120              continue
                 npicb = 2*npicr
             else if ((x .gt. 0.d0) .and. (y .ge. 0.d0)) then
 ! -- ON ELIMINE  R1 ET RN
                 do 130 i = npicr, 2, -1
-                    itrv(i+npicr-2) = itrv(i)
+                    zi(jitrv + i+npicr-2) = zi(jitrv + i)
 130              continue
                 npicb = 2*npicr - 2
             else if ((x .lt. 0.d0) .and. (y .lt. 0.d0)) then
 ! -- ON ELIMINE R1
                 do 140 i = npicr, 2, -1
-                    itrv(i+npicr-1) = itrv(i)
+                    zi(jitrv + i+npicr-1) = zi(jitrv + i)
 140              continue
                 npicb = 2*npicr - 1
             else if ((x .lt. 0.d0) .and. (y .ge. 0.d0)) then
 ! -- ON ELIMINE RN
                 do 150 i = npicr, 1, -1
-                    itrv(i+npicr-1) = itrv(i)
+                    zi(jitrv + i+npicr-1) = zi(jitrv + i)
 150              continue
                 npicb = 2*npicr - 1
             endif

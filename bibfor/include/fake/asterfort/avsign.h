@@ -17,7 +17,7 @@
 !
 interface
     subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
-                      kwork, sommw, tspaq, i, vsign)
+                      kwork, sommw, tspaq, i, jvsign)
         integer :: tdisp
         integer :: nbordr
         integer :: nbvec
@@ -27,6 +27,6 @@ interface
         integer :: sommw
         integer :: tspaq
         integer :: i
-        real(kind=8) :: vsign(nbvec*nbordr)
+        integer :: jvsign
     end subroutine avsign
 end interface

@@ -430,6 +430,9 @@ subroutine xmolig(liel1, trav)
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), notype)
         do 210 iel = 1, nbelt
             ima=zi(j1-1+iel)
+! SI LE MAILLE TARDIVE QUAND AFFE_MODELE AVEC GROUP_NO
+            if (ima .lt. 0) call u2mess('F', 'XFEM_77')
+
             jj=jtab-1+5*(ima-1)
             nfiss = zi(jnbsp-1+ima)
             if (zi(jj+4) .eq. 0) then

@@ -17,7 +17,7 @@
 !
 interface
     subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw,&
-                      tspaq, i, veteq)
+                      tspaq, i, jveteq)
         integer :: tdisp
         integer :: nbordr
         real(kind=8) :: vwork(tdisp)
@@ -25,6 +25,6 @@ interface
         integer :: sommw
         integer :: tspaq
         integer :: i
-        real(kind=8) :: veteq(nbordr)
+        integer :: jveteq
     end subroutine aveteq
 end interface

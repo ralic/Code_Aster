@@ -1,5 +1,5 @@
 subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw,&
-                  tspaq, i, veteq)
+                  tspaq, i, jveteq)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,9 @@ subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw,&
 #include "asterfort/fgequi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i
-    real(kind=8) :: vwork(tdisp), veteq(nbordr)
+    integer :: nbordr, tdisp, kwork, sommw, tspaq, i, jveteq
+    real(kind=8) :: vwork(tdisp)
+!, veteq(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE EQUIVALENTE
 ! ----------------------------------------------------------------------
@@ -66,7 +67,7 @@ subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw,&
 35      continue
 !
         call fgequi(eps, 'EPSI', 3, equi)
-        veteq(iordr) = equi(1)
+        zr(jveteq+iordr) = equi(1)
 !
 10  end do
 !

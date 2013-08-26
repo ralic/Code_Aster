@@ -1,8 +1,8 @@
 subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
                   kwork, sommw, vwork, tdisp, tspaq,&
                   ipgn, nomcri, nomfor, fordef, fatsoc,&
-                  proaxe, pseuil, method, ncycl, vmin,&
-                  vmax, omin, omax)
+                  proaxe, pseuil, method, ncycl, jvmin,&
+                  jvmax, jomin, jomax)
 ! aslint: disable=W1306,W1504
     implicit none
 #include "jeveux.h"
@@ -22,8 +22,9 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     character(len=16) :: nomcri, nomfor, proaxe
     character(len=8) :: method
     integer :: ncycl(nbvec)
-    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
-    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
+    integer ::jomin, jomax, jvmin, jvmax
+!    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
+!    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     logical :: fordef
 !
 ! ======================================================================
@@ -87,16 +88,16 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !                     RAINFLOW.
 ! NCYCL     OUT  I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 !                     VECTEURS NORMAUX.
-! VMIN      OUT  R  : VALEURS MIN DES CYCLES ELEMENTAIRES POUR TOUS LES
-!                     VECTEURS NORMAUX.
-! VMAX      OUT  R  : VALEURS MAX DES CYCLES ELEMENTAIRES POUR TOUS LES
-!                     VECTEURS NORMAUX.
-! OMIN      OUT  I  : NUMEROS D'ORDRE ASSOCIES AUX VALEURS MIN DES
-!                     CYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                     NORMAUX.
-! OMAX      OUT  I  : NUMEROS D'ORDRE ASSOCIES AUX VALEURS MAX DES
-!                     CYCLES ELEMENTAIRES POUR TOUS LES VECTEURS
-!                     NORMAUX.
+! JVMIN      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MIN DES CYCLES ELEMENTAIRES 
+!                     POUR TOUS LES VECTEURS NORMAUX.
+! JVMAX      OUT  I  : ADDRESEE JEUVEUX DES VALEURS MAX DES CYCLES ELEMENTAIRES 
+!                     POUR TOUS LES VECTEURS NORMAUX.
+! JOMIN      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX 
+!                      VALEURS MIN DESCYCLES ELEMENTAIRES POUR TOUS LES 
+!                      VECTEURS  NORMAUX.                     
+! JOMAX      OUT  I  : ADDRESEE JEUVEUX DES NUMEROS D'ORDRE ASSOCIES AUX 
+!                      VALEURS MAX DES CYCLES ELEMENTAIRES POUR TOUS LES 
+!                      VECTEURS NORMAUX                     
 ! REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
@@ -145,23 +146,45 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 ! RTRV   VECTEUR DE TRAVAIL REEL (POUR LES POINTS)
 ! ITRV   VECTEUR DE TRAVAIL ENTIER (POUR LES NUME_ORDRE)
 !
-    real(kind=8) :: vectra(2*nbvec*nbordr), rmima(4*nbvec)
-    integer :: iflag(nbvec), itrv(2*(nbordr+2))
+!    real(kind=8) :: vectra(2*nbvec*nbordr), rmima(4*nbvec)
+!    integer :: iflag(nbvec), itrv(2*(nbordr+2))
+!    logical :: lsig0
+!    real(kind=8) :: raxe(nbvec*nbordr), valpoi(nbvec*nbordr)
+!    integer :: npoin(nbvec), valord(nbvec*nbordr)
+!    integer :: npic(nbvec), ordpic(nbvec*(nbordr+2))
+!    real(kind=8) :: pic(nbvec*(nbordr+2)), rtrv(nbordr+2)
+
+    real(kind=8) :: rmima(4*nbvec)
+    integer :: iflag(nbvec)
     logical :: lsig0
-    real(kind=8) :: raxe(nbvec*nbordr), valpoi(nbvec*nbordr)
-    integer :: npoin(nbvec), valord(nbvec*nbordr)
-    integer :: npic(nbvec), ordpic(nbvec*(nbordr+2))
-    real(kind=8) :: pic(nbvec*(nbordr+2)), rtrv(nbordr+2)
+    integer :: npoin(nbvec)
+    integer :: npic(nbvec)
+
+    integer :: jvectr, jitrv, jraxe,jvalpo, jvalor, jordpi, jpic, jrtrv
+
 !      REAL*8        CUDOMX, NXM, NYM, NZM
 !     ------------------------------------------------------------------
 !
 !  PROJECTION DE L'HISTORIQUE DU CISAILLEMENT DANS UN PLAN
     call jemarq()
 !
+! Real
+    call wkvect('&&AVCIPR_VECTRA', 'V V R', 2*nbvec*nbordr, jvectr)
+    call wkvect('&&AVCIPR_RAXE', 'V V R', nbvec*nbordr, jraxe)
+    call wkvect('&&AVCIPR_VALPOI', 'V V R', nbvec*nbordr, jvalpo) 
+    call wkvect('&&AVCIPR_PIC', 'V V R', nbvec*(nbordr+2), jpic) 
+    call wkvect('&&AVCIPR_RTRV', 'V V R', (nbordr+2), jrtrv) 
+
+! Integer
+    call wkvect('&&AVCIPR_ITVR', 'V V R', 2*(nbordr+2), jitrv)
+    call wkvect('&&AVCIPR_VALORD', 'V V R', nbvec*nbordr, jvalor) 
+    call wkvect('&&AVCIPR_ORPIC', 'V V R', nbvec*(nbordr+2), jordpi)
+
+
     call propla(nbvec, vectn, vectu, vectv, nbordr,&
                 kwork, sommw, vwork, tdisp, tspaq,&
                 ipgn, nomcri, nomfor, fordef, fatsoc,&
-                vectra)
+                jvectr)
 !
 ! CALCUL DU DOMMAGE MAX ET DU VECTEUR NORMAL ASSOCIE POUR
 ! LE NOEUD/POINT GAUSS COURANT DE LA MAILLE COURANTE.
@@ -174,7 +197,7 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
     lsig0 = .false.
 !
-    call avenca(vectra, nbvec, nbordr, lsig0, iflag,&
+    call avenca(jvectr, nbvec, nbordr, lsig0, iflag,&
                 rmima)
 !
 !       IF (LSIG0) THEN
@@ -187,31 +210,40 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
 !
 ! 3. PROJECTION DE L'HISTORIQUE DE CHARGEMENT SUR UN OU DEUX AXES
 !
-    call projax(vectra, nbvec, nbordr, proaxe, iflag,&
-                rmima, raxe)
+    call projax(jvectr, nbvec, nbordr, proaxe, iflag,&
+                rmima, jraxe)
 !
 ! 4. COMPTAGE RAINFLOW (NORME AFNOR + POSTDAM)
 !
 ! 4.1 PREMIER FILTRAGE DES PICS DE LA FONCTION
 !
-    call avpeak(raxe, nbvec, nbordr, pseuil, iflag,&
-                npoin, valpoi, valord)
+    call avpeak(jraxe, nbvec, nbordr, pseuil, iflag,&
+                npoin, jvalpo, jvalor)
 !
 ! 4.2 REARANGEMENT ET EXTRACTION DES PICS
 !
 !
-    call avpic2(method, nbvec, nbordr, rtrv, itrv,&
-                npoin, valpoi, valord, npic, pic,&
-                ordpic)
+    call avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
+                npoin, jvalpo, jvalor, npic,jpic,&
+                jordpi)
 !
 ! 4.3 COMPTAGE RAINFLOW
 !
 !
-    call avrain(nbvec, nbordr, itrv, npic, pic,&
-                ordpic, fatsoc, ncycl, vmin, vmax,&
-                omin, omax)
+    call avrain(nbvec, nbordr, jitrv, npic, jpic,&
+                jordpi, fatsoc, ncycl, jvmin, jvmax,&
+                jomin, jomax)
 !
-!
+!   
+    call jedetr('&&AVCIPR_VECTRA')
+    call jedetr('&&AVCIPR_ITVR')
+    call jedetr('&&AVCIPR_RAXE')
+    call jedetr('&&AVCIPR_VALPOI')
+    call jedetr('&&AVCIPR_VALORD')
+    call jedetr('&&AVCIPR_ORPIC')
+    call jedetr('&&AVCIPR_PIC')
+    call jedetr('&&AVCIPR_RTRV')
+
     call jedema()
 !
 end subroutine

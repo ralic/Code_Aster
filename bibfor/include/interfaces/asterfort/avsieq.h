@@ -17,7 +17,7 @@
 !
 interface
     subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
-                      tspaq, i, vsieq)
+                      tspaq, i, jvsieq)
         integer :: tdisp
         integer :: nbordr
         real(kind=8) :: vwork(tdisp)
@@ -25,6 +25,6 @@ interface
         integer :: sommw
         integer :: tspaq
         integer :: i
-        real(kind=8) :: vsieq(nbordr)
+        integer :: jvsieq
     end subroutine avsieq
 end interface

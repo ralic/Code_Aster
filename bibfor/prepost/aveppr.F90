@@ -1,5 +1,5 @@
 subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
-                  tspaq, i, veppr, vsipn)
+                  tspaq, i, jveppr, jvsipn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,9 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     integer :: nbordr, tdisp, kwork, sommw, tspaq, i
-    real(kind=8) :: vwork(tdisp), veppr(nbordr), vsipn(nbordr)
+    real(kind=8) :: vwork(tdisp)
+    integer ::jveppr, jvsipn
+!, veppr(nbordr), vsipn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA DEF PLAS PRINCIPALE ET CONT NOMRMALE ASSOCIE
 ! ----------------------------------------------------------------------
@@ -46,7 +48,7 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
 !  TSPAQ  : IN   I  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 !                     OU DE NOEUDS COURANT.
 !  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
-!  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
+! JEPPR : OUT  R  : VECTEUR CONTENANT LA  A
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
     integer :: iordr, adrs, nvp, nperm, nitjac, j, iordre, itype
@@ -95,7 +97,7 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
                     br, vecpro, valpro, jacaux, nitjac,&
                     itype, iordre)
 !
-        veppr(iordr) = valpro(1)
+        zr(jveppr+iordr) = valpro(1)
 !
         nm1x = vecpro (1,1)
         nm1y = vecpro (2,1)
@@ -108,7 +110,7 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
 !
 ! CALCNORM = vect_F.vect_n
 !
-        vsipn(iordr) = abs(sxm*nm1x + sym*nm1y + szm*nm1z)
+        zr(jvsipn+iordr) = abs(sxm*nm1x + sym*nm1y + szm*nm1z)
 !
 10  end do
 !

@@ -16,19 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine avpic2(method, nbvec, nbordr, rtrv, itrv,&
-                      npoin, valpoi, valord, npic, pic,&
-                      ordpic)
+    subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
+                      npoin, jvalpo, jvalor, npic, jpic,&
+                      jordpi)
         integer :: nbordr
         integer :: nbvec
         character(len=8) :: method
-        real(kind=8) :: rtrv(nbordr+2)
-        integer :: itrv(2*(nbordr+2))
+        integer :: jrtrv
+        integer :: jitrv
         integer :: npoin(nbvec)
-        real(kind=8) :: valpoi(nbvec*nbordr)
-        integer :: valord(nbvec*nbordr)
+        integer :: jvalpoi
+        integer :: jvalord
         integer :: npic(nbvec)
-        real(kind=8) :: pic(nbvec*(nbordr+2))
-        integer :: ordpic(nbvec*(nbordr+2))
+        integer :: jpic
+        integer :: jordpi
     end subroutine avpic2
 end interface

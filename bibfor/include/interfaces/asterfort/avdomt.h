@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine avdomt(nbvec, nbordr, ncycl, domel, domtot)
+    subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
         integer :: nbordr
         integer :: nbvec
         integer :: ncycl(nbvec)
-        real(kind=8) :: domel(nbvec*nbordr)
+        integer :: jdomel
         real(kind=8) :: domtot(nbvec)
     end subroutine avdomt
 end interface
