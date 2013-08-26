@@ -58,7 +58,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mcconl.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/nudlg2.h"
@@ -87,7 +87,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, ibid, jdelg, k, ifm, niv
     integer :: jdlg2, jj
     integer(kind=4) :: n4
-    character(len=1) ::  rouc
+    character(len=1) :: rouc
     character(len=4) :: etam
     character(len=8) :: kbid
     character(len=14) :: nonu
@@ -226,11 +226,11 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !         --- SUR LA DIAGONALE
                 if (ldist) then
                     if (ltypr) then
-                        call mpicm1('REDUCE', 'R', nnbsol, ibid, ibid,&
-                                    rsolu, cbid)
+                        call asmpi_comm_vect('REDUCE', 'R', nnbsol, ibid, ibid,&
+                                             rsolu, cbid)
                     else
-                        call mpicm1('REDUCE', 'R', 2*nnbsol, ibid, ibid,&
-                                    csolu, cbid)
+                        call asmpi_comm_vect('REDUCE', 'R', 2*nnbsol, ibid, ibid,&
+                                             csolu, cbid)
                     endif
                 endif
 !
@@ -400,11 +400,11 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
 !       -- BROADCAST DE SOLU A TOUS LES PROC
         if (ltypr) then
-            call mpicm1('BCASTP', 'R', nnbsol, 0, ibid,&
-                        rsolu, cbid)
+            call asmpi_comm_vect('BCASTP', 'R', nnbsol, 0, ibid,&
+                                 rsolu, cbid)
         else
-            call mpicm1('BCASTP', 'R', 2*nnbsol, 0, ibid,&
-                        csolu, cbid)
+            call asmpi_comm_vect('BCASTP', 'R', 2*nnbsol, 0, ibid,&
+                                 csolu, cbid)
         endif
 !
 !       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :

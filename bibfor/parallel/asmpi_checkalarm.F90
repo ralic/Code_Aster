@@ -1,4 +1,4 @@
-subroutine mpialr()
+subroutine asmpi_checkalarm()
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ subroutine mpialr()
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 #include "asterc/gtalrm.h"
+#include "asterfort/assert.h"
 #include "asterfort/gtstat.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
@@ -36,12 +37,14 @@ subroutine mpialr()
 #include "mpif.h"
 #include "aster_constant.h"
 !
-    mpi_int :: rank, nbpro4, iermpi, ival, mpst(MPI_STATUS_SIZE), mpicou
+    mpi_int :: rank, nbpro4, iermpi, ival, mpst(MPI_STATUS_SIZE), mpicou, mpicow
     integer :: i, np1, vali(2)
     logical :: vu
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL
+    call asmpi_comm('GET_WORLD', mpicow)
     call asmpi_comm('GET', mpicou)
+    ASSERT(mpicow == mpicou)
     call asmpi_info(mpicou, rank=rank)
     call asmpi_info(mpicou, size=nbpro4)
     np1 = nbpro4 - 1

@@ -29,7 +29,7 @@ subroutine fin999()
 #include "asterc/chkmsg.h"
 #include "asterc/dllcls.h"
 #include "asterfort/apetsc.h"
-#include "asterfort/mpialr.h"
+#include "asterfort/asmpi_checkalarm.h"
     integer :: ichk, ibid
 #ifdef _HAVE_PETSC
     integer :: iret
@@ -40,7 +40,8 @@ subroutine fin999()
 ! --- FERMETURE DE PETSC
 !
 #ifdef _HAVE_PETSC
-    call apetsc('FIN', ' ', ' ', r8b, ' ',0, 0, iret)
+    call apetsc('FIN', ' ', ' ', r8b, ' ',&
+                0, 0, iret)
 #endif
 !
 ! --- LIBERATION DE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
@@ -49,7 +50,7 @@ subroutine fin999()
 !
 ! --- VERIFICATION DES ALARMES EN PARALLELE
 !
-    call mpialr()
+    call asmpi_checkalarm()
 !
 ! --- TEST ERREUR E SANS ERREUR F
 !

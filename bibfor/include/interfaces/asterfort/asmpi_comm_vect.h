@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,8 +15,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mpichk(nbpro4, iret)
-        integer(kind=4) :: nbpro4
-        integer :: iret
-    end subroutine mpichk
+    subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
+                               vr, vc)
+        character(*) :: optmpi
+        character(*) :: typsca
+        integer :: nbv
+        integer :: bcrank
+        integer :: vi(*)
+        real(kind=8) :: vr(*)
+        complex(kind=8) :: vc(*)
+    end subroutine asmpi_comm_vect
 end interface

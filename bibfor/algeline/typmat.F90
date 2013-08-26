@@ -19,7 +19,7 @@ function typmat(nbmat, tlimat)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/redetr.h"
     character(len=*) :: tlimat(*)
     integer :: nbmat
@@ -60,8 +60,8 @@ function typmat(nbmat, tlimat)
         call jeexin(matel//'.RELR', iexi)
         iexi=min(1,abs(iexi))
         iexiav=iexi
-        call mpicm1('MPI_MAX', 'I', 1, ibid, iexi,&
-                    rbid, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, iexi,&
+                             rbid, cbid)
         iexi=min(1,abs(iexi))
         ASSERT(iexi.eq.iexiav)
         if (iexi .eq. 0) goto 10
@@ -80,8 +80,8 @@ function typmat(nbmat, tlimat)
             endif
         endif
 !
-        call mpicm1('MPI_MAX', 'I', 1, ibid, itymat,&
-                    rbid, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, itymat,&
+                             rbid, cbid)
         if (itymat .eq. 1) goto 11
 !
 10  end do

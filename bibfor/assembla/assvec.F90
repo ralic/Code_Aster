@@ -49,7 +49,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
@@ -1017,7 +1017,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
 !
 !     -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
-    if (ldist) call mpicm2('MPI_SUM', kvale)
+    if (ldist) call asmpi_comm_jev('MPI_SUM', kvale)
 !
 !
 !

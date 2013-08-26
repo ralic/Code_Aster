@@ -631,10 +631,10 @@ subroutine op0032()
 !     --- SI TYPECO=1/2 ON COMMUNIQUE TOUS LES RESULTATS DES CALCULS.
 !     ------------------------------------------------------------------
         if (lcomod .or. lcoinf) then
-            call mpicm1('MPI_SUM', 'I', nbmod-1, ibid, zi(jstu),&
-                        rbid, cbid)
-            call mpicm1('MPI_SUM', 'R', nbmod, ibid, ibid,&
-                        zr(jlmoe), cbid)
+            call asmpi_comm_vect('MPI_SUM', 'I', nbmod-1, ibid, zi(jstu),&
+                                 rbid, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'R', nbmod, ibid, ibid,&
+                                 zr(jlmoe), cbid)
             call jedetr(k24par)
         endif
 !

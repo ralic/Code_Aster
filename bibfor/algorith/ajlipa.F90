@@ -18,7 +18,7 @@ subroutine ajlipa(modelz, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/sdpart.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
@@ -256,8 +256,8 @@ subroutine ajlipa(modelz, base)
 20              continue
             endif
 30      continue
-        call mpicm1('MPI_MAX', 'I', nbma, ibid, zi(jnumsd),&
-                    rbid, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'I', nbma, ibid, zi(jnumsd),&
+                             rbid, cbid)
         call jedetr('&&AJLIPA.PARTITION.SD')
 !
 !

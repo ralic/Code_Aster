@@ -56,7 +56,7 @@ subroutine fetskp()
 #include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/ulnume.h"
@@ -420,7 +420,7 @@ subroutine fetskp()
             call ulopen(-iulm2, ' ', ' ', ' ', ' ')
         endif
         k24b='&&FETSKP.NUMSDM'
-        call mpicm2('BCAST', k24b)
+        call asmpi_comm_jev('BCAST', k24b)
         do 36 ima = 1, nbmato
             iaux=zi(renum2-1+ima)
             iaux2=zi(numsdm-1+iaux)
@@ -442,7 +442,7 @@ subroutine fetskp()
 !        ELSE
 ! FIN APPEL EXTERNE DE SCOTCH
         k24b='&&FETSKP.NMAP'
-        call mpicm2('BCAST', k24b)
+        call asmpi_comm_jev('BCAST', k24b)
         do 135 ima = 1, nbmato
             zi(numsdm-1+zi(renum2-1+ima))=zi4(nmap-1+ima)
             zi(nbmasd+zi(numsdm-1+zi(renum2-1+ima)))= zi(nbmasd+zi(&

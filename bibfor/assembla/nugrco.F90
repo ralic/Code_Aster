@@ -9,8 +9,8 @@ subroutine nugrco(nu, base)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm2.h"
-#include "asterfort/mpippv.h"
+#include "asterfort/asmpi_comm_jev.h"
+#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
@@ -92,7 +92,7 @@ subroutine nugrco(nu, base)
             zi(jgraco+rang+iproc*nbproc)=1
         endif
 20  end do
-    call mpicm2('MPI_SUM', nogrco)
+    call asmpi_comm_jev('MPI_SUM', nogrco)
 !
 !---- RECHERCHE DES COUPLAGES DANS LE GRAPH
     nbedge=0
@@ -179,8 +179,8 @@ subroutine nugrco(nu, base)
 !
     if (rang .gt. numpro) then
         nbddlj=zi(jpospr+2*numpro+1)
-        call mpippv('MPI_SEND', 'I', 1, nbddlj, ibid4,&
-                    rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_SEND', 'I', 1, nbddlj, ibid4,&
+                              rbid, numpro, iaux)
 !
         jjoint=zi(jpospr+2*numpro)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
@@ -190,12 +190,12 @@ subroutine nugrco(nu, base)
         zi(jjoin2+iddl)=iddlg
 120      continue
 !
-        call mpippv('MPI_SEND', 'I', nbddlj, zi(jjoin2), ibid4,&
-                    rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_SEND', 'I', nbddlj, zi(jjoin2), ibid4,&
+                              rbid, numpro, iaux)
         call jedetr('&&NUGRCO.TMP')
     else if (rang.lt.numpro) then
-        call mpippv('MPI_RECV', 'I', 1, nbddlj, ibid4,&
-                    rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_RECV', 'I', 1, nbddlj, ibid4,&
+                              rbid, numpro, iaux)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
 !
         num=iaux+1
@@ -203,8 +203,8 @@ subroutine nugrco(nu, base)
         nojoin=nu//'.NUML.'//chnbjo
         call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
 !
-        call mpippv('MPI_RECV', 'I', nbddlj, zi(jjoin2), ibid4,&
-                    rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_RECV', 'I', nbddlj, zi(jjoin2), ibid4,&
+                              rbid, numpro, iaux)
         do 130, iddl=0,nbddlj-1
         iddll=zi(jnugl+zi(jjoin2+iddl)-1)
         ASSERT(iddll.ne.0)

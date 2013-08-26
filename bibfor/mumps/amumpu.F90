@@ -66,7 +66,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jjldyn.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
@@ -524,7 +524,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
                         end select
                     endif
 ! ---   BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
-                    call mpicm2('BCAST', kpiv)
+                    call asmpi_comm_jev('BCAST', kpiv)
                 endif
             endif
 ! ---  AFFICHAGE DE CONTROLE

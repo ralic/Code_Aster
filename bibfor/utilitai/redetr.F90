@@ -12,7 +12,7 @@ subroutine redetr(matelz)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerosd.h"
     character(len=*) :: matelz
@@ -59,8 +59,8 @@ subroutine redetr(matelz)
     call jeexin(matele//'.RELR', iexi)
     iexi=min(1,abs(iexi))
     iexiav=iexi
-    call mpicm1('MPI_MAX', 'I', 1, ibid, iexi,&
-                rbid, c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, iexi,&
+                         rbid, c8bid)
     iexi=min(1,abs(iexi))
     ASSERT(iexi.eq.iexiav)
     if (iexi .eq. 0) goto 60
@@ -71,8 +71,8 @@ subroutine redetr(matelz)
 !     -- LE MATR_ELEM DOIT CONTENIR LE MEME NOMBRE DE RESUELEM
 !        SUR TOUS LES PROCESSEURS :
     nb1av=nb1
-    call mpicm1('MPI_MAX', 'I', 1, ibid, nb1,&
-                rbid, c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, nb1,&
+                         rbid, c8bid)
     ASSERT(nb1.eq.nb1av)
 !
 !     -- SI LE MATR_ELEM NE CONTIENT QU'1 RESUELEM OU AUCUN,
@@ -114,8 +114,8 @@ subroutine redetr(matelz)
 !          ON PEUT LE DETRUIRE:
     izero=1
     if (zerosd('RESUELEM',resuel)) izero=0
-    call mpicm1('MPI_MAX', 'I', 1, ibid, izero,&
-                rbid, c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, izero,&
+                         rbid, c8bid)
     if (izero .eq. 0) then
         zi(jadet-1+k)=3
     else

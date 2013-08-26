@@ -1,4 +1,4 @@
-subroutine mpicmw(iexc)
+subroutine asmpi_warn(iexc)
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -23,11 +23,11 @@ subroutine mpicmw(iexc)
 #include "asterc/asmpi_split_comm.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/gtstat.h"
-#include "asterfort/mpichk.h"
-#include "asterfort/mpisst.h"
+#include "asterfort/asmpi_check.h"
+#include "asterfort/asmpi_status.h"
 #include "asterfort/ststat.h"
 #include "asterfort/u2mess.h"
-    integer :: iexc
+    integer, intent(in) :: iexc
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI COMM WARN
 !       UN PROCESSEUR A RENCONTRE UNE ERREUR, IL EMET SON MESSAGE
@@ -57,7 +57,7 @@ subroutine mpicmw(iexc)
 !
 !     SI PAS 'ST_OK', IL NE FAUT PAS COMMUNIQUER ENCORE UNE FOIS
     if (nbpro4 .le. 1 .or. .not. gtstat(ST_OK)) then
-        goto 9999
+        goto 999
     endif
 !
 !     SUR LES PROCESSEURS AUTRES QUE #0
@@ -69,7 +69,7 @@ subroutine mpicmw(iexc)
             call u2mess('I', 'APPELMPI_92')
             call ststat(ST_EXCEPT)
         endif
-        call mpisst(ST_ER, iret)
+        call asmpi_status(ST_ER, iret)
 !
 !     SUR LE PROCESSEUR #0
     else
@@ -77,10 +77,13 @@ subroutine mpicmw(iexc)
         if (iexc .eq. 1) then
             call ststat(ST_EXCEPT)
         endif
-        call mpichk(nbpro4, iret)
+        call asmpi_check(nbpro4, iret)
     endif
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR
 !
-9999  continue
+999 continue
+#else
+    integer :: idummy
+    idummy = iexc
 #endif
 end subroutine

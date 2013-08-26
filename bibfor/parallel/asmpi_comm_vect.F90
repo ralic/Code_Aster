@@ -1,5 +1,5 @@
-subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
-                  vr, vc)
+subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
+                           vr, vc)
 !----------------------------------------------------------------------
 !  FONCTION REALISEE : SUR-COUCHE MPI
 !
@@ -53,7 +53,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/mpichk.h"
+#include "asterfort/asmpi_check.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -97,7 +97,7 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !
 !     -- VERIFICATION RENDEZ-VOUS
     iret=1
-    call mpichk(nbpro4, iret)
+    call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
         call u2mesk('I', 'APPELMPI_83', 1, optmpi)
         goto 9999
@@ -113,10 +113,10 @@ subroutine mpicm1(optmpi, typsca, nbv, bcrank, vi,&
 !     ---------------------------
     if (optmpi .eq. 'MPI_MAX') then
         lopmpi=MPI_MAX
-        if (typsc1 .eq. 'C') ASSERT(.false.)
+        ASSERT(typsc1 .ne. 'C')
     else if (optmpi.eq.'MPI_MIN') then
         lopmpi=MPI_MIN
-        if (typsc1 .eq. 'C') ASSERT(.false.)
+        ASSERT(typsc1 .ne. 'C')
     else
         lopmpi=MPI_SUM
     endif

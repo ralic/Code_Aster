@@ -26,7 +26,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/mrconl.h"
     integer :: kptsc
     logical :: lmd
@@ -99,8 +99,8 @@ subroutine apsolu(kptsc, lmd, rsolu)
             endif
         enddo
 !
-        call mpicm1('MPI_SUM', 'R', nglo, ibid, ibid,&
-                    rsolu, cbid)
+        call asmpi_comm_vect('MPI_SUM', 'R', nglo, ibid, ibid,&
+                             rsolu, cbid)
 !
         call VecRestoreArray(x, xx, xidx, ierr)
         ASSERT(ierr.eq.0)

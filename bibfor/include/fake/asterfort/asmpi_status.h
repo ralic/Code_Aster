@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,15 +15,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
-                      vr, nudest, numess)
-        character(*) :: optmpi
-        character(*) :: typsca
-        integer :: nbv
-        integer :: vi(*)
-        integer(kind=4) :: vi4(*)
-        real(kind=8) :: vr(*)
-        integer :: nudest
-        integer :: numess
-    end subroutine mpippv
+    subroutine asmpi_status(istat, resp0)
+        integer :: istat
+        integer :: resp0
+    end subroutine asmpi_status
 end interface

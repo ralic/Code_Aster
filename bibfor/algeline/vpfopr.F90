@@ -385,8 +385,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                 if (rangl .eq. 0) zi(jk24c+1)=nbfmax
             endif
 !
-            call mpicm1('MPI_SUM', 'I', nbrow+1, ibid, zi(jk24c),&
-                        rbid, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'I', nbrow+1, ibid, zi(jk24c),&
+                                 rbid, cbid)
 !
             if (option .eq. 'STURMLNP') then
                 nbfmin=zi(jk24c+frecou-1)

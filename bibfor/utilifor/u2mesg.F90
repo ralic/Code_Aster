@@ -32,7 +32,7 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jevema.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/mpicmw.h"
+#include "asterfort/asmpi_warn.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/trabck.h"
     character(len=*) :: typ, idmess, valk(*)
@@ -135,7 +135,7 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
 !
 !     --- REMONTEE D'ERREUR SI DISPO
     if (ltrb) then
-        call trabck('Traceback printed by Intel compiler', int(-1,4))
+        call trabck('Traceback printed by Intel compiler', int(-1, 4))
     endif
 ! --- EN CAS DE MESSAGE AVEC SUITE, PAS D'ARRET, PAS D'EXCEPTION
     if (.not. suite) then
@@ -143,7 +143,7 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
 !     -- ABORT SUR ERREUR <F> "ORDINAIRE"
         if (labort) then
 !           AVERTIR LE PROC #0 QU'ON A RENCONTRE UN PROBLEME !
-            call mpicmw(0)
+            call asmpi_warn(0)
 !
             call jefini('ERREUR')
 !
@@ -195,7 +195,7 @@ subroutine u2mesg(typ, idmess, nk, valk, ni,&
             endif
 !
 !           AVERTIR LE PROC #0 QU'ON A RENCONTRE UN PROBLEME !
-            call mpicmw(1)
+            call asmpi_warn(1)
 !
 !           ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
             if (lerror) recurs = 0

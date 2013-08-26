@@ -17,7 +17,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/wkvect.h"
     integer :: istop, nprec
@@ -189,7 +189,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
 110      continue
 ! -----
         zi(monit(9)+rang)=compt
-        call mpicm2('REDUCE', kmonit(9))
+        call asmpi_comm_jev('REDUCE', kmonit(9))
 ! ----- CORRECTION SI MODAL
         if (eximo2 .eq. 1) then
             iaux=0

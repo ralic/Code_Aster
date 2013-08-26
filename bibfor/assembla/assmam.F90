@@ -849,8 +849,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             endif
 !
 !         -- IL FAUT COMMUNIQUER ELLAGR ENTRE LES PROCS :
-            if (ldist) call mpicm1('MPI_MAX', 'I', 1, ibid, ellagr,&
-                                   rbid, cbid)
+            if (ldist) call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, ellagr,&
+                                            rbid, cbid)
 !
 !
 !         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :

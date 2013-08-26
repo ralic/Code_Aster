@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,8 +15,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mpisst(istat, resp0)
-        integer :: istat
-        integer :: resp0
-    end subroutine mpisst
+    subroutine asmpi_warn(iexc)
+        integer, intent(in) :: iexc
+    end subroutine asmpi_warn
 end interface

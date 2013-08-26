@@ -1,4 +1,4 @@
-subroutine mpichk(nbpro4, iret)
+subroutine asmpi_check(nbpro4, iret)
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ subroutine mpichk(nbpro4, iret)
 #include "asterfort/asmpi_info.h"
 #include "asterc/uttrst.h"
 #include "asterfort/gtstat.h"
-#include "asterfort/mpisst.h"
+#include "asterfort/asmpi_status.h"
 #include "asterfort/mpistp.h"
 #include "asterfort/ststat.h"
 #include "asterfort/u2mesi.h"
@@ -73,7 +73,7 @@ subroutine mpichk(nbpro4, iret)
 !
     if (rank .ne. 0) then
 !       CHAQUE PROCESSEUR ENVOIE ST_OK AU PROC #0
-        call mpisst(ST_OK, resp0)
+        call asmpi_status(ST_OK, resp0)
         if (resp0 .ne. ST_OK) then
             iret = 1
             call u2mess('I', 'APPELMPI_80')

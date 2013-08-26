@@ -880,10 +880,10 @@ subroutine op0045()
             nbvecg=0
             nfreqg=0
         endif
-        call mpicm1('MPI_SUM', 'I', 1, ibid, nbvecg,&
-                    rbid, cbid)
-        call mpicm1('MPI_SUM', 'I', 1, ibid, nfreqg,&
-                    rbid, cbid)
+        call asmpi_comm_vect('MPI_SUM', 'I', 1, ibid, nbvecg,&
+                             rbid, cbid)
+        call asmpi_comm_vect('MPI_SUM', 'I', 1, ibid, nfreqg,&
+                             rbid, cbid)
 !         --- ON REMET LE COM LOCAL POUR LES FACTO ET SOLVES A SUIVRE
         call asmpi_barrier()
         call asmpi_comm('SET', mpicou)
@@ -1506,14 +1506,14 @@ subroutine op0045()
     if (lcomod) then
         call asmpi_comm('SET', mpicow)
         call asmpi_barrier()
-        call mpicm1('MPI_MIN', 'R', 1, ibid, ibid,&
-                    omemin, cbid)
-        call mpicm1('MPI_MIN', 'R', 1, ibid, ibid,&
-                    vpinf, cbid)
-        call mpicm1('MPI_MAX', 'R', 1, ibid, ibid,&
-                    omemax, cbid)
-        call mpicm1('MPI_MAX', 'R', 1, ibid, ibid,&
-                    vpmax, cbid)
+        call asmpi_comm_vect('MPI_MIN', 'R', 1, ibid, ibid,&
+                             omemin, cbid)
+        call asmpi_comm_vect('MPI_MIN', 'R', 1, ibid, ibid,&
+                             vpinf, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'R', 1, ibid, ibid,&
+                             omemax, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'R', 1, ibid, ibid,&
+                             vpmax, cbid)
         call asmpi_barrier()
         call asmpi_comm('SET', mpicou)
     endif

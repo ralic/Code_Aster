@@ -1,5 +1,5 @@
-subroutine mpippv(optmpi, typsca, nbv, vi, vi4,&
-                  vr, nudest, numess)
+subroutine asmpi_comm_point(optmpi, typsca, nbv, vi, vi4,&
+                            vr, nudest, numess)
 !----------------------------------------------------------------------
 !  FONCTION REALISEE : SUR-COUCHE MPI
 !

@@ -9,7 +9,7 @@ subroutine sdmpic(typesd, nomsd)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
     character(len=*) :: nomsd, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -60,7 +60,7 @@ subroutine sdmpic(typesd, nomsd)
         call dismoi('F', 'MPI_COMPLET', k19, 'CHAM_ELEM', ibid,&
                     kmpic, ibid)
         if (kmpic .eq. 'OUI') goto 9999
-        call mpicm2('MPI_SUM', k19//'.CELV')
+        call asmpi_comm_jev('MPI_SUM', k19//'.CELV')
         call jeveuo(k19//'.CELK', 'E', jcelk)
         zk24(jcelk-1+7)='MPI_COMPLET'
 !
@@ -71,7 +71,7 @@ subroutine sdmpic(typesd, nomsd)
         call dismoi('F', 'MPI_COMPLET', k19, 'RESUELEM', ibid,&
                     kmpic, ibid)
         if (kmpic .eq. 'OUI') goto 9999
-        call mpicm2('MPI_SUM', k19//'.RESL')
+        call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
         call jeveuo(k19//'.NOLI', 'E', jnoli)
         zk24(jnoli-1+3)='MPI_COMPLET'
 !
@@ -82,10 +82,10 @@ subroutine sdmpic(typesd, nomsd)
         call dismoi('F', 'MPI_COMPLET', k19, 'MATR_ASSE', ibid,&
                     kmpic, ibid)
         if (kmpic .eq. 'OUI') goto 9999
-        call mpicm2('MPI_SUM', k19//'.VALM')
+        call asmpi_comm_jev('MPI_SUM', k19//'.VALM')
 !
         call jeexin(k19//'.CCVA', iexi)
-        if (iexi .gt. 0) call mpicm2('MPI_SUM', k19//'.CCVA')
+        if (iexi .gt. 0) call asmpi_comm_jev('MPI_SUM', k19//'.CCVA')
 !
         call jeveuo(k19//'.REFA', 'E', jrefa)
         zk24(jrefa-1+11)='MPI_COMPLET'

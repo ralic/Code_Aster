@@ -14,7 +14,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/scalai.h"
@@ -266,11 +266,11 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                 kmpic, ibid)
     if (kmpic .eq. 'NON') then
         if (scal(1:1) .eq. 'I') then
-            call mpicm1('MPI_SUM', 'I', longt, ibid, vi,&
-                        rbid, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'I', longt, ibid, vi,&
+                                 rbid, cbid)
         else if (scal(1:1).eq.'R') then
-            call mpicm1('MPI_SUM', 'R', longt, ibid, ibid,&
-                        vr, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'R', longt, ibid, ibid,&
+                                 vr, cbid)
         else if (scal(1:1).eq.'C') then
             ASSERT(.false.)
         endif

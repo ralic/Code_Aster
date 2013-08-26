@@ -42,7 +42,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
     integer :: option, rang, nbproc, kxmps, ietdeb, ietrat
@@ -217,8 +217,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         if ((.not.lcmde) .and. (niv.ge.2)) then
             zi(monit(2)+rang)=info(9)
             zi(monit(12)+rang)=info(16)
-            call mpicm2('REDUCE', kmonit(1))
-            call mpicm2('REDUCE', kmonit(2))
+            call asmpi_comm_jev('REDUCE', kmonit(1))
+            call asmpi_comm_jev('REDUCE', kmonit(2))
         endif
         if (ldebug) then
             call system_clock(ietfin)
@@ -269,9 +269,9 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         endif
         if ((niv.ge.2) .and. (.not.lcmde)) then
 ! -- COMMUNICATION DES DONNEES DU MONITORING
-            call mpicm2('REDUCE', kmonit(10))
-            call mpicm2('REDUCE', kmonit(11))
-            call mpicm2('REDUCE', kmonit(12))
+            call asmpi_comm_jev('REDUCE', kmonit(10))
+            call asmpi_comm_jev('REDUCE', kmonit(11))
+            call asmpi_comm_jev('REDUCE', kmonit(12))
 ! -- AFFICHAGE
             if (rang .eq. 0) then
                 write(ifm,*)

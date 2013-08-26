@@ -54,7 +54,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm2.h"
+#include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
@@ -847,7 +847,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     endif
 !
 ! --- COMMUNICATION DU VECTEUR KSIZEMU A TOUS LES PROCS
-    call mpicm2('MPI_SUM', ksizemu)
+    call asmpi_comm_jev('MPI_SUM', ksizemu)
 !
 ! --- NETTOYAGE VECTEURS TEMPORAIRES LOCAUX
     if (((rang.eq.0).and.(.not.ldist)) .or. (ldist)) then

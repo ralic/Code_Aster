@@ -153,11 +153,11 @@ extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRI
 #define CALL_ASMPI_BARRIER(a) CALLP(ASMPI_BARRIER,asmpi_barrier,a)
 extern void DEFP(ASMPI_BARRIER,asmpi_barrier,MPI_Fint *);
 
-#define CALL_MPICHK(a,b) CALLPP(MPICHK,mpichk,a,b)
-extern void DEFPP(MPICHK,mpichk,INTEGER *, INTEGER *);
+#define CALL_ASMPI_CHECK(a,b) CALLPP(ASMPI_CHECK,asmpi_check,a,b)
+extern void DEFPP(ASMPI_CHECK,asmpi_check,INTEGER *, INTEGER *);
 
-#define CALL_MPICMW() CALL0(MPICMW,mpicmw)
-extern void DEF0(MPICMW,mpicmw);
+#define CALL_ASMPI_WARN() CALL0(ASMPI_WARN,asmpi_warn)
+extern void DEF0(ASMPI_WARN,asmpi_warn);
 
 #define CALL_MPISTP(a) CALLP(MPISTP,mpistp,a)
 extern void DEFP(MPISTP,mpistp,INTEGER *);

@@ -9,7 +9,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/mrmmvr.h"
 #include "asterfort/mtdsc2.h"
 #include "asterfort/mtmchc.h"
@@ -102,8 +102,8 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
                     neq, neql, vect, xsol, nbvect,&
                     zr(jvtemp), prepo2)
 !       ON DOIT COMMUNIQUER POUR OBTENIR LE PRODUIT MAT-VEC 'COMPLET'
-        call mpicm1('MPI_SUM', 'R', nbvect*neq, ibid, ibid,&
-                    xsol, cbid)
+        call asmpi_comm_vect('MPI_SUM', 'R', nbvect*neq, ibid, ibid,&
+                             xsol, cbid)
 !
         if (cumul .eq. 'CUMU') then
             call daxpy(neq4, 1.d0, zr(jtemp), 1, xsol,&

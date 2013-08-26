@@ -1,4 +1,4 @@
-subroutine mpisst(istat, resp0)
+subroutine asmpi_status(istat, resp0)
 ! person_in_charge: mathieu.courtois at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG

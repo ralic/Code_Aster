@@ -85,9 +85,12 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! --- SYNCHRONISATION DES PROCESSUS PARALLELES
 !
-    call mpicm1('MPI_MAX','I',1,ibid,itcpui,r8bid,c8bid)
-    call mpicm1('MPI_MAX','I',1,ibid,itcpup,r8bid,c8bid)
-    call mpicm1('MPI_MAX','I',1,ibid,isusr1,r8bid,c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, itcpui,&
+                         r8bid, c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, itcpup,&
+                         r8bid, c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, isusr1,&
+                         r8bid, c8bid)
 !
 ! --- SAUVEGARDE DES EVENEMENTS
 !

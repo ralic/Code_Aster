@@ -54,7 +54,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/vecinc.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vecint.h"
@@ -321,14 +321,14 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! --- ON COMMUNIQUE TOUTE LA MATRICE
     iaux1=idim1*idim2
     if (typev .eq. 'R') then
-        call mpicm1('MPI_SUM', 'R', iaux1, ibid, ibid,&
-                    vectr(1, 1), cbid)
+        call asmpi_comm_vect('MPI_SUM', 'R', iaux1, ibid, ibid,&
+                             vectr(1, 1), cbid)
     else if (typev.eq.'I') then
-        call mpicm1('MPI_SUM', 'I', iaux1, ibid, vecti(1, 1),&
-                    rbid, cbid)
+        call asmpi_comm_vect('MPI_SUM', 'I', iaux1, ibid, vecti(1, 1),&
+                             rbid, cbid)
     else if (typev.eq.'C') then
-        call mpicm1('MPI_SUM', 'C', iaux1, ibid, ibid,&
-                    rbid, vectc(1, 1))
+        call asmpi_comm_vect('MPI_SUM', 'C', iaux1, ibid, ibid,&
+                             rbid, vectc(1, 1))
     endif
 !
 ! --- VERIF FINALIZATION.

@@ -1,4 +1,4 @@
-subroutine mpicm2(optmpi, nomjev)
+subroutine asmpi_comm_jev(optmpi, nomjev)
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE : SUR-COUCHE MPI
 !
@@ -49,7 +49,7 @@ subroutine mpicm2(optmpi, nomjev)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpichk.h"
+#include "asterfort/asmpi_check.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
@@ -97,7 +97,7 @@ subroutine mpicm2(optmpi, nomjev)
 !
 !     -- VERIFICATION RENDEZ-VOUS
     iret=1
-    call mpichk(nbpro4, iret)
+    call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
         call u2mesk('I', 'APPELMPI_83', 1, optmpi)
         goto 9999

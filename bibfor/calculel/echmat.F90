@@ -27,7 +27,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mpicm1.h"
+#include "asterfort/asmpi_comm_vect.h"
     character(len=*) :: matz
     real(kind=8) :: rmin, rmax
     logical :: ldist
@@ -112,10 +112,10 @@ subroutine echmat(matz, ldist, rmin, rmax)
     10 end do
 !
 !     -- SI EXECUTION PARALLELE, IL FAUT COMMUNIQUER :
-    if (ldist) call mpicm1('MPI_MAX', 'R', 1, ibid, ibid,&
-                           rmax, cbid)
-    if (ldist) call mpicm1('MPI_MIN', 'R', 1, ibid, ibid,&
-                           rmin, cbid)
+    if (ldist) call asmpi_comm_vect('MPI_MAX', 'R', 1, ibid, ibid,&
+                                    rmax, cbid)
+    if (ldist) call asmpi_comm_vect('MPI_MIN', 'R', 1, ibid, ibid,&
+                                    rmin, cbid)
 !
     call jedema()
 end subroutine
