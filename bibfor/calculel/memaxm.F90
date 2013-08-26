@@ -5,6 +5,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -15,7 +16,6 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_vect.h"
     character(len=*) :: typmx
     character(len=*) :: champ, nocmp, lcmp(*)
     integer :: nbcmp, nbmail, numail(*)
@@ -228,11 +228,9 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
                 kmpic, ibid)
     if (kmpic .eq. 'NON') then
         if (lmax) then
-            call asmpi_comm_vect('MPI_MAX', 'R', longt, ibid, ibid,&
-                                 vr, cbid)
+            call asmpi_comm_vect('MPI_MAX', 'R', nbval=longt, vr=vr)
         else
-            call asmpi_comm_vect('MPI_MIN', 'R', longt, ibid, ibid,&
-                                 vr, cbid)
+            call asmpi_comm_vect('MPI_MIN', 'R', nbval=longt, vr=vr)
         endif
     endif
 !

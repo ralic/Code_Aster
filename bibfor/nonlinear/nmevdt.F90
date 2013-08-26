@@ -18,9 +18,10 @@ subroutine nmevdt(sdtime, sderro, timer)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
+    implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -85,12 +86,9 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
 ! --- SYNCHRONISATION DES PROCESSUS PARALLELES
 !
-    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, itcpui,&
-                         r8bid, c8bid)
-    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, itcpup,&
-                         r8bid, c8bid)
-    call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, isusr1,&
-                         r8bid, c8bid)
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=itcpui)
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=itcpup)
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=isusr1)
 !
 ! --- SAUVEGARDE DES EVENEMENTS
 !

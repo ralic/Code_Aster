@@ -19,12 +19,12 @@ subroutine uttcpi(nommes, ifm, typimp)
     implicit none
 #include "aster_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/stati1.h"
 !
     character(len=*) :: nommes, typimp
@@ -185,12 +185,9 @@ subroutine uttcpi(nommes, ifm, typimp)
             xtotap(rang+1)=xtota
             xsystp(rang+1)=xsyst
             xelapp(rang+1)=xelap
-            call asmpi_comm_vect('MPI_MAX', 'R', nbproc, ibid, ibid,&
-                                 xtotap, cbid)
-            call asmpi_comm_vect('MPI_MAX', 'R', nbproc, ibid, ibid,&
-                                 xsystp, cbid)
-            call asmpi_comm_vect('MPI_MAX', 'R', nbproc, ibid, ibid,&
-                                 xelapp, cbid)
+            call asmpi_comm_vect('MPI_MAX', 'R', nbval=nbproc, vr=xtotap)
+            call asmpi_comm_vect('MPI_MAX', 'R', nbval=nbproc, vr=xsystp)
+            call asmpi_comm_vect('MPI_MAX', 'R', nbval=nbproc, vr=xelapp)
             call stati1(nbproc, xtotap, moyenn(1), ectype(1))
             call stati1(nbproc, xsystp, moyenn(2), ectype(2))
             call stati1(nbproc, xelapp, moyenn(3), ectype(3))

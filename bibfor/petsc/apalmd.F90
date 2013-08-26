@@ -23,6 +23,7 @@ subroutine apalmd(kptsc)
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
+#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -31,7 +32,6 @@ subroutine apalmd(kptsc)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/wkvect.h"
     integer :: kptsc
 !----------------------------------------------------------------
@@ -192,8 +192,8 @@ subroutine apalmd(kptsc)
                 call wkvect('&&CPYSOL.TMP1', 'V V S', lgenvo, jvaleu)
 !
                 if (numpro .gt. rang) then
-                    call asmpi_comm_point('MPI_RECV', 'I4', lgenvo, ibid, zi4(jvaleu),&
-                                          rbid, numpro, iaux)
+                    call asmpi_comm_point('MPI_RECV', 'I4', numpro, iaux, nbval=lgenvo,&
+                                          vi4=zi4(jvaleu))
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
                         numglo=zi(jnugll+numloc-1)
@@ -201,8 +201,8 @@ subroutine apalmd(kptsc)
                 zi4(jvaleu+jaux-1)
                     enddo
 !
-                    call asmpi_comm_point('MPI_RECV', 'I4', lgenvo, ibid, zi4(jvaleu),&
-                                          rbid, numpro, iaux)
+                    call asmpi_comm_point('MPI_RECV', 'I4', numpro, iaux, nbval=lgenvo,&
+                                          vi4=zi4(jvaleu))
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
                         numglo=zi(jnugll+numloc-1)
@@ -215,16 +215,16 @@ subroutine apalmd(kptsc)
                         numglo=zi(jnugll+numloc-1)
                         zi4(jvaleu+jaux-1)=zi4(jidxoc+numloc-1)
                     enddo
-                    call asmpi_comm_point('MPI_SEND', 'I4', lgenvo, ibid, zi4(jvaleu),&
-                                          rbid, numpro, iaux)
+                    call asmpi_comm_point('MPI_SEND', 'I4', numpro, iaux, nbval=lgenvo,&
+                                          vi4=zi4(jvaleu))
 !
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
                         numglo=zi(jnugll+numloc-1)
                         zi4(jvaleu+jaux-1)=zi4(jidxdc+numloc-1)
                     enddo
-                    call asmpi_comm_point('MPI_SEND', 'I4', lgenvo, ibid, zi4(jvaleu),&
-                                          rbid, numpro, iaux)
+                    call asmpi_comm_point('MPI_SEND', 'I4', numpro, iaux, nbval=lgenvo,&
+                                          vi4=zi4(jvaleu))
                 else
                     ASSERT(.false.)
                 endif

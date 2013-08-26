@@ -16,10 +16,10 @@ function typmat(nbmat, tlimat)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/redetr.h"
     character(len=*) :: tlimat(*)
     integer :: nbmat
@@ -60,8 +60,7 @@ function typmat(nbmat, tlimat)
         call jeexin(matel//'.RELR', iexi)
         iexi=min(1,abs(iexi))
         iexiav=iexi
-        call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, iexi,&
-                             rbid, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=iexi)
         iexi=min(1,abs(iexi))
         ASSERT(iexi.eq.iexiav)
         if (iexi .eq. 0) goto 10
@@ -80,8 +79,7 @@ function typmat(nbmat, tlimat)
             endif
         endif
 !
-        call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, itymat,&
-                             rbid, cbid)
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
         if (itymat .eq. 1) goto 11
 !
 10  end do

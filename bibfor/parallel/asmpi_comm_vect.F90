@@ -1,28 +1,5 @@
-subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
-                           vr, vc)
-!----------------------------------------------------------------------
-!  FONCTION REALISEE : SUR-COUCHE MPI
-!
-!  FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
-!
-! ARGUMENTS D'APPELS
-! IN OPTMPI :
-!      /'MPI_MAX'  == 'ALLREDUCE + MAX' (SEULEMENT 'R'/'I')
-!      /'MPI_MIN'  == 'ALLREDUCE + MIN' (SEULEMENT 'R'/'I')
-!      /'MPI_SUM'  == 'ALLREDUCE + SUM'
-!
-!      /'REDUCE'   == 'REDUCE + SUM' : TOUS -> 0
-!      /'BCAST'    == 'BCAST'            : PROC DE RANG=BCRANK -> TOUS
-!      /'BCASTP'   == 'BCAST'PAR PAQUETS : PROC DE RANG=BCRANK -> TOUS
-!
-! IN   TYPSCA : /'I' /'R' /'C'
-! IN   NBV    : LONGUEUR DU VECTEUR V*
-! IN   BCRANK : RANG DU PROCESSUS MPI D'OU EMANE LE BCAST
-!                                        (SI OPTMPI='BCAST'/'BCASTP')
-! IN   VI(*)  : VECTEUR D'ENTIERS A ECHANGER    (SI TYPSCA='I')
-! IN   VR(*)  : VECTEUR DE REELS A ECHANGER     (SI TYPSCA='R')
-! IN   VC(*)  : VECTEUR DE COMPLEXES A ECHANGER (SI TYPSCA='C')
-!----------------------------------------------------------------------
+subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
+                           vr, vc, sci, scr, scc)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -40,7 +17,34 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!----------------------------------------------------------------------
+!  FONCTION REALISEE : SUR-COUCHE MPI
 !
+!  FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
+!
+! Arguments d'appels
+! in optmpi :
+!       /'MPI_MAX'  == 'ALLREDUCE + MAX' (seulement 'R'/'I')
+!       /'MPI_MIN'  == 'ALLREDUCE + MIN' (seulement 'R'/'I')
+!       /'MPI_SUM'  == 'ALLREDUCE + SUM'
+!       
+!       /'REDUCE'   == 'REDUCE + SUM' : tous -> 0
+!       /'BCAST'    == 'BCAST'             : proc de rang=bcrank -> tous
+!       /'BCASTP'   == 'BCAST' par paquets : proc de rang=bcrank -> tous
+!       
+! in    typsca : /'I' /'R' /'C'
+! in    nbval  : longueur du vecteur v* (optionnel, 1 si absent)
+! in    bcrank : rang du processus mpi d'ou emane le bcast
+!                                         (si optmpi='bcast'/'bcastp')
+!-si nbval > 1:
+! inout vi(*)  : vecteur d'entiers a echanger    (si typsca='I')
+! inout vr(*)  : vecteur de reels a echanger     (si typsca='R')
+! inout vc(*)  : vecteur de complexes a echanger (si typsca='C')
+!-si nbval == 1:
+! inout sci    : entier a echanger    (si typsca='I')
+! inout scr    : reel a echanger      (si typsca='R')
+! inout scc    : complexe a echanger  (si typsca='C')
+!----------------------------------------------------------------------
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
@@ -57,10 +61,16 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
 #include "asterfort/u2mesk.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: optmpi, typsca
-    integer :: vi(*), nbv, bcrank
-    real(kind=8) :: vr(*)
-    complex(kind=8) :: vc(*)
+    character(len=*), intent(in) :: optmpi
+    character(len=*), intent(in) :: typsca
+    integer, intent(in), optional :: nbval
+    integer, intent(in), optional :: bcrank
+    integer, intent(inout), optional :: vi(*)
+    real(kind=8), intent(inout), optional :: vr(*)
+    complex(kind=8), intent(inout), optional :: vc(*)
+    integer, intent(inout), optional :: sci
+    real(kind=8), intent(inout), optional :: scr
+    complex(kind=8), intent(inout), optional :: scc
 !
 #ifdef _USE_MPI
 #include "mpif.h"
@@ -69,8 +79,9 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
     integer :: vi2(1000)
     real(kind=8) :: vr2(1000)
     complex(kind=8) :: vc2(1000)
-    integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest
+    integer :: k, jtrav, iret, sizbmpi, nbcast, imain, irest, nbv
     mpi_int :: iermpi, lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8
+    logical :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
@@ -106,7 +117,17 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
 !     -- SCALAIRE :
 !     -------------
     typsc1=typsca
-    ASSERT(typsc1.eq.'R'.or.typsc1.eq.'I'.or.typsc1.eq.'C')
+    scal = present(sci) .or. present(scr) .or. present(scc)
+    if (.not. scal) then
+        ASSERT(present(nbval))
+        nbv = nbval
+    else
+        nbv = 1
+    endif
+    ASSERT(typsc1.eq.'I' .or. typsc1.eq.'R' .or. typsc1.eq.'C')
+    ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
+    ASSERT(typsc1.ne.'R' .or. present(vr) .or. present(scr))
+    ASSERT(typsc1.ne.'C' .or. present(vc) .or. present(scc))
     nbv4=nbv
 !
 !     -- CHOIX OPERATION MPI  :
@@ -128,7 +149,17 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
     if (optmpi .ne. 'BCAST') then
         ASSERT(nbv.gt.0)
 !
-        if (nbv .le. 1000) then
+        if (scal) then
+            if (typsc1 .eq. 'R') then
+                vr2(1) = scr
+            else if (typsc1.eq.'I') then
+                vi2(1) = sci
+            else if (typsc1.eq.'C') then
+                vc2(1) = scc
+            else
+                ASSERT(.false.)
+            endif
+        else if (nbv .le. 1000) then
             if (typsc1 .eq. 'R') then
                 do 1 k = 1, nbv
                     vr2(k)=vr(k)
@@ -169,6 +200,8 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
 !
     if (optmpi .eq. 'BCAST') then
 !     ---------------------------------
+        ASSERT(present(bcrank))
+        ASSERT(nbv > 1)
         if (typsc1 .eq. 'R') then
             call MPI_BCAST(vr, nbv4, lr8, bcrank, mpicou,&
                            iermpi)
@@ -187,6 +220,8 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
 !       --- ON COMMUNIQUE EN SOUS-PAQUETS DE TAILLE =< sizbmpi
 !       --- POUR EVITER LES PBS DE CONTENTIONS MEMOIRE ET LES LIMITES
 !       --- DE REPRESENTATIONS DES ENTIERS DS LA BIBLI MPI.
+        ASSERT(present(bcrank))
+        ASSERT(nbv > 1)
         nbcast=nbv/sizbmpi
         imain=nbcast*sizbmpi
         irest=nbv-imain
@@ -230,7 +265,10 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
     else if (optmpi.eq.'REDUCE') then
 !     ---------------------------------
         if (typsc1 .eq. 'R') then
-            if (nbv .le. 1000) then
+            if (scal) then
+                call MPI_REDUCE(vr2, scr, nbv4, lr8, lopmpi,&
+                                0, mpicou, iermpi)
+            else if (nbv .le. 1000) then
                 call MPI_REDUCE(vr2, vr, nbv4, lr8, lopmpi,&
                                 0, mpicou, iermpi)
             else
@@ -239,7 +277,10 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
             endif
 !
         else if (typsc1.eq.'I') then
-            if (nbv .le. 1000) then
+            if (scal) then
+                call MPI_REDUCE(vi2, sci, nbv4, lint, lopmpi,&
+                                0, mpicou, iermpi)
+            else if (nbv .le. 1000) then
                 call MPI_REDUCE(vi2, vi, nbv4, lint, lopmpi,&
                                 0, mpicou, iermpi)
             else
@@ -247,7 +288,10 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
                                 0, mpicou, iermpi)
             endif
         else if (typsc1.eq.'C') then
-            if (nbv .le. 1000) then
+            if (scal) then
+                call MPI_REDUCE(vc2, scc, nbv4, lc8, lopmpi,&
+                                0, mpicou, iermpi)
+            else if (nbv .le. 1000) then
                 call MPI_REDUCE(vc2, vc, nbv4, lc8, lopmpi,&
                                 0, mpicou, iermpi)
             else
@@ -262,7 +306,10 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
     else if (optmpi(1:4).eq.'MPI_') then
 !     ---------------------------------
         if (typsc1 .eq. 'R') then
-            if (nbv .le. 1000) then
+            if (scal) then
+                call MPI_ALLREDUCE(vr2, scr, nbv4, lr8, lopmpi,&
+                                   mpicou, iermpi)
+            else if (nbv .le. 1000) then
                 call MPI_ALLREDUCE(vr2, vr, nbv4, lr8, lopmpi,&
                                    mpicou, iermpi)
             else
@@ -270,7 +317,10 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
                                    mpicou, iermpi)
             endif
         else if (typsc1.eq.'I') then
-            if (nbv .le. 1000) then
+            if (scal) then
+                call MPI_ALLREDUCE(vi2, sci, nbv4, lint, lopmpi,&
+                                   mpicou, iermpi)
+            else if (nbv .le. 1000) then
                 call MPI_ALLREDUCE(vi2, vi, nbv4, lint, lopmpi,&
                                    mpicou, iermpi)
             else
@@ -278,7 +328,10 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbv, bcrank, vi,&
                                    mpicou, iermpi)
             endif
         else if (typsc1.eq.'C') then
-            if (nbv .le. 1000) then
+            if (scal) then
+                call MPI_ALLREDUCE(vc2, scc, nbv4, lc8, lopmpi,&
+                                   mpicou, iermpi)
+            else if (nbv .le. 1000) then
                 call MPI_ALLREDUCE(vc2, vc, nbv4, lc8, lopmpi,&
                                    mpicou, iermpi)
             else

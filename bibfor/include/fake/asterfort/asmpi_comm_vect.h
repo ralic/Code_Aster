@@ -14,3 +14,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+interface
+    subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
+                               vr, vc, sci, scr, scc)
+        character(len=*), intent(in) :: optmpi
+        character(len=*), intent(in) :: typsca
+        integer, intent(in), optional :: nbval
+        integer, intent(in), optional :: bcrank
+        integer, intent(inout), optional :: vi(*)
+        real(kind=8), intent(inout), optional :: vr(*)
+        complex(kind=8), intent(inout), optional :: vc(*)
+        integer, intent(inout), optional :: sci
+        real(kind=8), intent(inout), optional :: scr
+        complex(kind=8), intent(inout), optional :: scc
+    end subroutine asmpi_comm_vect
+end interface

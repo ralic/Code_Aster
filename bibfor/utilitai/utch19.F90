@@ -1,16 +1,16 @@
 subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
                   nusp, ivari, nocmp, typres, valr,&
                   valc, vali, ier)
-    implicit   none
+    implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/utchdl.h"
     integer :: nupo, ivari, ier, nusp, vali
@@ -100,15 +100,12 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
 !        LA VALEUR EXTRAITE :
     if (kmpic .eq. 'NON') then
         if (typrez .eq. 'R') then
-            call asmpi_comm_vect('MPI_SUM', 'R', 1, ibid, ibid,&
-                                 valr, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
         else if (typrez.eq.'C') then
             r1=dble(valc)
             r2=dimag(valc)
-            call asmpi_comm_vect('MPI_SUM', 'R', 1, ibid, ibid,&
-                                 r1, cbid)
-            call asmpi_comm_vect('MPI_SUM', 'R', 1, ibid, ibid,&
-                                 r2, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'R', scr=r1)
+            call asmpi_comm_vect('MPI_SUM', 'R', scr=r2)
             valc=dcmplx(r1,r2)
         endif
     endif

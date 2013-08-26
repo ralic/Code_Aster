@@ -34,6 +34,7 @@ subroutine op0032()
 #include "asterfort/apm012.h"
 #include "asterfort/apm345.h"
 #include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cresol.h"
@@ -631,10 +632,8 @@ subroutine op0032()
 !     --- SI TYPECO=1/2 ON COMMUNIQUE TOUS LES RESULTATS DES CALCULS.
 !     ------------------------------------------------------------------
         if (lcomod .or. lcoinf) then
-            call asmpi_comm_vect('MPI_SUM', 'I', nbmod-1, ibid, zi(jstu),&
-                                 rbid, cbid)
-            call asmpi_comm_vect('MPI_SUM', 'R', nbmod, ibid, ibid,&
-                                 zr(jlmoe), cbid)
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbmod-1, vi=zi(jstu))
+            call asmpi_comm_vect('MPI_SUM', 'R', nbval=nbmod, vr=zr(jlmoe))
             call jedetr(k24par)
         endif
 !

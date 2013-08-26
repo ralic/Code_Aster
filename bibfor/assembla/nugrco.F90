@@ -2,6 +2,8 @@ subroutine nugrco(nu, base)
     implicit none
 #include "aster_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_jev.h"
+#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -9,8 +11,6 @@ subroutine nugrco(nu, base)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_jev.h"
-#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
@@ -179,8 +179,7 @@ subroutine nugrco(nu, base)
 !
     if (rang .gt. numpro) then
         nbddlj=zi(jpospr+2*numpro+1)
-        call asmpi_comm_point('MPI_SEND', 'I', 1, nbddlj, ibid4,&
-                              rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, sci=nbddlj)
 !
         jjoint=zi(jpospr+2*numpro)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
@@ -190,12 +189,11 @@ subroutine nugrco(nu, base)
         zi(jjoin2+iddl)=iddlg
 120      continue
 !
-        call asmpi_comm_point('MPI_SEND', 'I', nbddlj, zi(jjoin2), ibid4,&
-                              rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
+                              vi=zi(jjoin2))
         call jedetr('&&NUGRCO.TMP')
     else if (rang.lt.numpro) then
-        call asmpi_comm_point('MPI_RECV', 'I', 1, nbddlj, ibid4,&
-                              rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, sci=nbddlj)
         call wkvect('&&NUGRCO.TMP', 'V V I', nbddlj, jjoin2)
 !
         num=iaux+1
@@ -203,8 +201,8 @@ subroutine nugrco(nu, base)
         nojoin=nu//'.NUML.'//chnbjo
         call wkvect(nojoin, base(1:1)//' V I', nbddlj, jjoint)
 !
-        call asmpi_comm_point('MPI_RECV', 'I', nbddlj, zi(jjoin2), ibid4,&
-                              rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
+                              vi=zi(jjoin2))
         do 130, iddl=0,nbddlj-1
         iddll=zi(jnugl+zi(jjoin2+iddl)-1)
         ASSERT(iddll.ne.0)

@@ -23,6 +23,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 #include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/corddl.h"
@@ -45,7 +46,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
@@ -414,8 +414,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     call jedetr('&&ASSMIV.NUMLOC')
 !
 !        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
-    if (ldist) call asmpi_comm_vect('MPI_MIN', 'R', nequa, ibid, ibid,&
-                                    zr(jvale), cbid)
+    if (ldist) then
+        call asmpi_comm_vect('MPI_MIN', 'R', nbval=nequa, vr=zr(jvale))
+    endif
 !
 !
     call jedema()

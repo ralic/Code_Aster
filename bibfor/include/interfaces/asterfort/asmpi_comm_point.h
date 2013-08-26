@@ -15,15 +15,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine asmpi_comm_point(optmpi, typsca, nbv, vi, vi4,&
-                                vr, nudest, numess)
-        character(*) :: optmpi
-        character(*) :: typsca
-        integer :: nbv
-        integer :: vi(*)
-        integer(kind=4) :: vi4(*)
-        real(kind=8) :: vr(*)
-        integer :: nudest
-        integer :: numess
+    subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
+                                vi, vi4, vr, sci, sci4, &
+                                scr)
+        character(len=*), intent(in) :: optmpi
+        character(len=*), intent(in) :: typsca
+        integer, intent(in) :: nudest
+        integer, intent(in) :: numess
+        integer, intent(in), optional :: nbval
+        integer, intent(inout), optional :: vi(*)
+        integer(kind=4), intent(inout), optional :: vi4(*)
+        real(kind=8), intent(inout), optional :: vr(*)
+        integer, intent(inout), optional :: sci
+        integer(kind=4), intent(inout), optional :: sci4
+        real(kind=8), intent(inout), optional :: scr
     end subroutine asmpi_comm_point
 end interface

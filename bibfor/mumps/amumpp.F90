@@ -49,6 +49,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/infniv.h"
@@ -58,7 +59,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mcconl.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/nudlg2.h"
@@ -226,11 +226,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !         --- SUR LA DIAGONALE
                 if (ldist) then
                     if (ltypr) then
-                        call asmpi_comm_vect('REDUCE', 'R', nnbsol, ibid, ibid,&
-                                             rsolu, cbid)
+                        call asmpi_comm_vect('REDUCE', 'R', nbval=nnbsol, vr=rsolu)
                     else
-                        call asmpi_comm_vect('REDUCE', 'R', 2*nnbsol, ibid, ibid,&
-                                             csolu, cbid)
+                        call asmpi_comm_vect('REDUCE', 'C', nbval=nnbsol, vc=csolu)
                     endif
                 endif
 !
@@ -400,11 +398,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !
 !       -- BROADCAST DE SOLU A TOUS LES PROC
         if (ltypr) then
-            call asmpi_comm_vect('BCASTP', 'R', nnbsol, 0, ibid,&
-                                 rsolu, cbid)
+            call asmpi_comm_vect('BCASTP', 'R', nbval=nnbsol, bcrank=0, vr=rsolu)
         else
-            call asmpi_comm_vect('BCASTP', 'R', 2*nnbsol, 0, ibid,&
-                                 csolu, cbid)
+            call asmpi_comm_vect('BCASTP', 'C', nbval=nnbsol, bcrank=0, vc=csolu)
         endif
 !
 !       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :

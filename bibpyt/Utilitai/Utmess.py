@@ -758,6 +758,8 @@ def __fake__():
     UTMESS('I', 'CATAMESS_70')    # pour u2mesg.f via UTPRIN
     # message.info/error/warn
     UTMESS('I', 'SUPERVIS2_1')    # émis dans ops
+    # bibc/supervis/aster_mpi.c
+    UTMESS('I', 'APPELMPI_5')
     # utilisé ici
     UTMESS('I', 'CATAMESS_6')
     UTMESS('I', 'CATAMESS_41')

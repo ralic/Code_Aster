@@ -2,6 +2,8 @@ subroutine nurenu(nu, base)
     implicit none
 #include "aster_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_jev.h"
+#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -10,8 +12,6 @@ subroutine nurenu(nu, base)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/asmpi_comm_jev.h"
-#include "asterfort/asmpi_comm_point.h"
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
@@ -120,12 +120,12 @@ subroutine nurenu(nu, base)
         numddl=zi(jjoint+iddl)
         zi(jnewnu+iddl)=zi(jnulg+numddl-1)
 50      continue
-        call asmpi_comm_point('MPI_SEND', 'I', nbddlj, zi(jnewnu), ibid4,&
-                              rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=nbddlj,&
+                              vi=zi(jnewnu))
     else if (rang.gt.numpro) then
 !     !!! VERIFIER QU'ON EST OK SUR LES NUM GLOBAUX
-        call asmpi_comm_point('MPI_RECV', 'I', nbddlj, zi(jnewnu), ibid4,&
-                              rbid, numpro, iaux)
+        call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=nbddlj,&
+                              vi=zi(jnewnu))
         do 60, iddl=0,nbddlj-1
         numddl=zi(jjoint+iddl)
         zi(jnulg+numddl-1)=zi(jnewnu+iddl)

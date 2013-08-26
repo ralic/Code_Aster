@@ -7,6 +7,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
 #include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/comatr.h"
@@ -119,8 +120,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- NCONVM=MAX(NCONVL) (POUR DIMENSIONNER BUFFER DE COM)
         nconvl=nconv
         if (rangl .eq. 0) zi(jlcom+icom1-1)=nconvl
-        call asmpi_comm_vect('MPI_SUM', 'I', icom2, ibid, zi(jlcom),&
-                             rbid, cbid)
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=icom2, vi=zi(jlcom))
         nconvg=somint(icom2,zi(jlcom))
         if (nconvg .le. 0) ASSERT(.false.)
         nconv=nconvg
@@ -153,8 +153,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
                 i8=neq*zi(jlcom+i-1)
                 i4 = to_blas_int(i8)
                 if (i .eq. icom1) call dcopy(i4, zr(jlbufs), 1, zr(jlbuff), 1)
-                call asmpi_comm_vect('BCASTP', 'R', i8, i-1, ibid,&
-                                     zr(jlbuff), cbid)
+                call asmpi_comm_vect('BCASTP', 'R', nbval=i8, bcrank=i-1, vr=zr(jlbuff))
                 call dcopy(i4, zr(jlbuff), 1, vectr(1+idecal*neq), 1)
 115          continue
             call jedetr(k24bus)
@@ -193,14 +192,11 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !       --- DE TAILLE =< SIZBMPI POUR EVITER LES PBS DE CONTENTIONS
 !       --- MEMOIRE ET LES LIMITES DES ENTIERS COURTS MPI.
         do 116 i = 1, nconvg
-            call asmpi_comm_vect('BCASTP', 'R', neq, 0, ibid,&
-                                 vectr(1+(i-1)*neq), cbid)
+            call asmpi_comm_vect('BCASTP', 'R', nbval=neq, bcrank=0, vr=vectr(1+(i-1)*neq))
 116      continue
 !       --- ON COMMUNIQUE LES PETITS OBJETS SUIVANTS
-        call asmpi_comm_vect('BCAST', 'R', nbparr*mxresf, 0, ibid,&
-                             resur, cbid)
-        call asmpi_comm_vect('BCAST', 'I', nbpari*mxresf, 0, resui,&
-                             rbid, cbid)
+        call asmpi_comm_vect('BCAST', 'R', nbval=nbparr*mxresf, bcrank=0, vr=resur)
+        call asmpi_comm_vect('BCAST', 'I', nbval=nbpari*mxresf, bcrank=0, vi=resui)
 !
 !       ----------------------------------------------------------------
 !       --- STEP 4: BARRIERE SUR LE COM_WORLD AU CAS OU

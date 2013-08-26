@@ -103,6 +103,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/freqom.h"
@@ -385,8 +386,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                 if (rangl .eq. 0) zi(jk24c+1)=nbfmax
             endif
 !
-            call asmpi_comm_vect('MPI_SUM', 'I', nbrow+1, ibid, zi(jk24c),&
-                                 rbid, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbrow+1, vi=zi(jk24c))
 !
             if (option .eq. 'STURMLNP') then
                 nbfmin=zi(jk24c+frecou-1)

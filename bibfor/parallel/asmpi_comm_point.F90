@@ -1,24 +1,6 @@
-subroutine asmpi_comm_point(optmpi, typsca, nbv, vi, vi4,&
-                            vr, nudest, numess)
-!----------------------------------------------------------------------
-!  FONCTION REALISEE : SUR-COUCHE MPI
-!
-!  COMMUNICATION MPI POINT A POINT D'UN VECTEUR FORTRAN
-!                --- -       -          -
-!
-! ARGUMENTS D'APPELS
-! IN OPTMPI :
-!      /'MPI_SEND' == ENVOYER UN MESSAGE MPI
-!      /'MPI_RECV' == RECEVOIR UN MESSAGE MPI
-!
-! IN TYPSCA : /'I' /'I4' /'R'
-! IN NBV    : LONGUEUR DU VECTEUR VI, VR
-! IN VI(*)  : VECTEUR D'ENTIERS A ECHANGER (SI TYPSCA='I')
-! IN VI4(*) : VECTEUR D'ENTIERS A ECHANGER (SI TYPSCA='I4')
-! IN VR(*)  : VECTEUR DE REELS A ECHANGER  (SI TYPSCA='R')
-! IN NUDEST : NUMERO DU PROCESSEUR D'ORIGINE OU DESTINATAIRE
-! IN NUMESS : NUMERO MPI DU MESSAGE
-!----------------------------------------------------------------------
+subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
+                            vi, vi4, vr, sci, sci4, &
+                            scr)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
@@ -37,6 +19,29 @@ subroutine asmpi_comm_point(optmpi, typsca, nbv, vi, vi4,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+!----------------------------------------------------------------------
+!  FONCTION REALISEE : SUR-COUCHE MPI
+!
+!  COMMUNICATION MPI POINT A POINT D'UN VECTEUR FORTRAN
+!
+! Arguments d'appels
+! in optmpi :
+!      /'MPI_SEND' == envoyer un message mpi
+!      /'MPI_RECV' == recevoir un message mpi
+!
+! in typsca : /'I' /'I4' /'R'
+! in nudest : numero du processeur d'origine ou destinataire
+! in numess : numero mpi du message
+! in nbval  : longueur du vecteur vi, vr (optionnel, 1 par défaut)
+!-si nbval > 1:
+! inout vi(*)  : vecteur d'entiers a echanger (si typsca='I')
+! inout vi4(*) : vecteur d'entiers a echanger (si typsca='I4')
+! inout vr(*)  : vecteur de reels a echanger  (si typsca='R')
+!-si nbval == 1:
+! inout sci    : entier a echanger    (si typsca='I')
+! inout sci4   : entier 4 a echanger  (si typsca='I4')
+! inout scr    : réel a echanger      (si typsca='R')
+!----------------------------------------------------------------------
     implicit none
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
@@ -49,19 +54,26 @@ subroutine asmpi_comm_point(optmpi, typsca, nbv, vi, vi4,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/uttcpu.h"
-    character(len=*) :: optmpi, typsca
-    integer :: nbv, vi(*)
-    integer(kind=4) :: vi4(*)
-    real(kind=8) :: vr(*)
-    integer :: nudest, numess
+    character(len=*), intent(in) :: optmpi
+    character(len=*), intent(in) :: typsca
+    integer, intent(in) :: nudest
+    integer, intent(in) :: numess
+    integer, intent(in), optional :: nbval
+    integer, intent(inout), optional :: vi(*)
+    integer(kind=4), intent(inout), optional :: vi4(*)
+    real(kind=8), intent(inout), optional :: vr(*)
+    integer, intent(inout), optional :: sci
+    integer(kind=4), intent(inout), optional :: sci4
+    real(kind=8), intent(inout), optional :: scr
 !
 #ifdef _USE_MPI
 #include "mpif.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
-    integer :: iret
+    integer :: iret, nbv
     mpi_int :: iermpi, lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
+    logical :: scal
 ! ---------------------------------------------------------------------
     call jemarq()
 !---- COMMUNICATEUR MPI DE TRAVAIL
@@ -86,37 +98,78 @@ subroutine asmpi_comm_point(optmpi, typsca, nbv, vi, vi4,&
 !     -- SCALAIRE :
 !     -------------
     typsc1=typsca
+    scal = present(sci) .or. present(sci4) .or. present(scr)
+    if (.not. scal) then
+        ASSERT(present(nbval))
+        nbv = nbval
+    else
+        nbv = 1
+    endif
+    ASSERT(typsc1.eq.'I' .or. typsc1.eq.'I4' .or. typsc1.eq.'R')
+    ASSERT(typsc1.ne.'I' .or. present(vi) .or. present(sci))
+    ASSERT(typsc1.ne.'I4' .or. present(vi4) .or. present(sci4))
+    ASSERT(typsc1.ne.'R' .or. present(vr) .or. present(scr))
     nbv4=nbv
     nudes4=nudest
     numes4=numess
 !
     if (optmpi .eq. 'MPI_SEND') then
 !     ---------------------------------
-        if (typsc1 .eq. 'R') then
-            call MPI_SEND(vr, nbv4, lr8, nudes4, numes4,&
-                          mpicou, iermpi)
-        else if (typsc1.eq.'I') then
-            call MPI_SEND(vi, nbv4, lint, nudes4, numes4,&
-                          mpicou, iermpi)
-        else if (typsc1.eq.'I4') then
-            call MPI_SEND(vi4, nbv4, lint4, nudes4, numes4,&
-                          mpicou, iermpi)
+        if (scal) then
+            if (typsc1 .eq. 'R') then
+                call MPI_SEND(scr, nbv4, lr8, nudes4, numes4,&
+                              mpicou, iermpi)
+            else if (typsc1.eq.'I') then
+                call MPI_SEND(sci, nbv4, lint, nudes4, numes4,&
+                              mpicou, iermpi)
+            else if (typsc1.eq.'I4') then
+                call MPI_SEND(sci4, nbv4, lint4, nudes4, numes4,&
+                              mpicou, iermpi)
+            else
+                ASSERT(.false.)
+            endif
         else
-            ASSERT(.false.)
+            if (typsc1 .eq. 'R') then
+                call MPI_SEND(vr, nbv4, lr8, nudes4, numes4,&
+                              mpicou, iermpi)
+            else if (typsc1.eq.'I') then
+                call MPI_SEND(vi, nbv4, lint, nudes4, numes4,&
+                              mpicou, iermpi)
+            else if (typsc1.eq.'I4') then
+                call MPI_SEND(vi4, nbv4, lint4, nudes4, numes4,&
+                              mpicou, iermpi)
+            else
+                ASSERT(.false.)
+            endif
         endif
     else if (optmpi.eq.'MPI_RECV') then
 !     ---------------------------------
-        if (typsc1 .eq. 'R ') then
-            call MPI_RECV(vr, nbv4, lr8, nudes4, numes4,&
-                          mpicou, MPI_STATUS_IGNORE, iermpi)
-        else if (typsc1.eq.'I ') then
-            call MPI_RECV(vi, nbv4, lint, nudes4, numes4,&
-                          mpicou, MPI_STATUS_IGNORE, iermpi)
-        else if (typsc1.eq.'I4') then
-            call MPI_RECV(vi4, nbv4, lint4, nudes4, numes4,&
-                          mpicou, MPI_STATUS_IGNORE, iermpi)
+        if (scal) then
+            if (typsc1 .eq. 'R ') then
+                call MPI_RECV(scr, nbv4, lr8, nudes4, numes4,&
+                              mpicou, MPI_STATUS_IGNORE, iermpi)
+            else if (typsc1.eq.'I ') then
+                call MPI_RECV(sci, nbv4, lint, nudes4, numes4,&
+                              mpicou, MPI_STATUS_IGNORE, iermpi)
+            else if (typsc1.eq.'I4') then
+                call MPI_RECV(sci4, nbv4, lint4, nudes4, numes4,&
+                              mpicou, MPI_STATUS_IGNORE, iermpi)
+            else
+                ASSERT(.false.)
+            endif
         else
-            ASSERT(.false.)
+            if (typsc1 .eq. 'R ') then
+                call MPI_RECV(vr, nbv4, lr8, nudes4, numes4,&
+                              mpicou, MPI_STATUS_IGNORE, iermpi)
+            else if (typsc1.eq.'I ') then
+                call MPI_RECV(vi, nbv4, lint, nudes4, numes4,&
+                              mpicou, MPI_STATUS_IGNORE, iermpi)
+            else if (typsc1.eq.'I4') then
+                call MPI_RECV(vi4, nbv4, lint4, nudes4, numes4,&
+                              mpicou, MPI_STATUS_IGNORE, iermpi)
+            else
+                ASSERT(.false.)
+            endif
         endif
     else
         ASSERT(.false.)

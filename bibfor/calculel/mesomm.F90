@@ -2,7 +2,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                   nbmail, numail)
     implicit none
 #include "jeveux.h"
-!
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/celver.h"
 #include "asterfort/digdel.h"
@@ -14,12 +14,12 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/scalai.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
+!
     character(len=*) :: champ
     integer :: long, vi(*), nbmail, numail(*)
     real(kind=8) :: vr(*)
@@ -266,11 +266,9 @@ subroutine mesomm(champ, long, vi, vr, vc,&
                 kmpic, ibid)
     if (kmpic .eq. 'NON') then
         if (scal(1:1) .eq. 'I') then
-            call asmpi_comm_vect('MPI_SUM', 'I', longt, ibid, vi,&
-                                 rbid, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=longt, vi=vi)
         else if (scal(1:1).eq.'R') then
-            call asmpi_comm_vect('MPI_SUM', 'R', longt, ibid, ibid,&
-                                 vr, cbid)
+            call asmpi_comm_vect('MPI_SUM', 'R', nbval=longt, vr=vr)
         else if (scal(1:1).eq.'C') then
             ASSERT(.false.)
         endif
