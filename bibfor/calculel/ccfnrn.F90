@@ -84,7 +84,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
     character(len=24) :: strx
     character(len=24) :: bidon, chacce, k24b, modele, kstr
-    logical :: exitim, fnoevo, lbid, lstr, lstr2
+    logical :: exitim, lbid, lstr, lstr2, fnoevo
     parameter(nompro='CCFNRN')
     data chvarc/'&&CCFNRN.CHVARC'/
     data infcha/'&&INFCHA.INFCHA'/

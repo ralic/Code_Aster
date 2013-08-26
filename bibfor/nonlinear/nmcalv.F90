@@ -92,9 +92,9 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
     character(len=19) :: complu, vitplu, strmoi
     character(len=24) :: vrcmoi, vrcplu, varc
     character(len=19) :: depl, sigm, strx
-    logical :: fnoevo
     integer :: neq, iret, ibid
     real(kind=8) :: partps(2), inst(3)
+    logical :: fnoevo
     character(len=24) :: charge, infoch
     character(len=8) :: noma, k8bid
     character(len=16) :: optio2

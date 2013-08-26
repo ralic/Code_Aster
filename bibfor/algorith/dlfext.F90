@@ -139,16 +139,16 @@ subroutine dlfext(nveca, nchar, temps, neq, liad,&
 !
 ! -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
         iret = 0
-        do 2221 , ieq = 1,lonch
-        if (abs(zr(if2+ieq-1)) .gt. r8prem()) iret = 1
-2221      continue
+        do ieq = 1,lonch
+            if (abs(zr(if2+ieq-1)) .gt. r8prem()) iret = 1
+        enddo
         if ((iret.eq.1) .and. (method.ne.'NEWMARK')) then
             call u2mess('F', 'ALGORITH3_20')
         endif
 !
-        do 2222 , ieq = 1,lonch
-        f(ieq) = f(ieq) + zr(if2+ieq-1)
-2222      continue
+        do ieq = 1,lonch
+            f(ieq) = f(ieq) + zr(if2+ieq-1)
+        enddo
 !
     else
         call r8inir(neq, 0.d0, f, 1)

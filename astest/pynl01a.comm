@@ -19,7 +19,8 @@
 
 
 DEBUT(CODE=_F(NOM='PYNL01A',NIV_PUB_WEB='INTERNET'),
-IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),)
+IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),
+DEBUG=_F(SDVERI='OUI'))
 
 # IGNORE_ALARME: ARRET='NON' AUTORISE POUR TEST INTEGRATION LOI DE COMPORTEMENT
 
@@ -143,7 +144,7 @@ DV=RESOUDRE(MATR=MATAS,
 #=========================================================
 
 
-CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM',
+CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM',
                     'FORC_NODA_ELEM'),
             MODELE=MO,
             CHAM_MATER=CHMAT,
@@ -157,11 +158,13 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM',
             COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
             INFO=2,);
 
+IMPR_TABLE(TABLE=CONT)
+
 MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='MATR_ELEM'),)
+                           VALE_K='MATR_TANG_ELEM'),)
 
 SIGM=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CONT,
@@ -180,21 +183,21 @@ F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='VECT_ELEM'),)
+                           VALE_K='FORC_INTE_ELEM'),)
 
 
 CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='CODE_RETOUR'),)
+                           VALE_K='CODE_RETOUR_INTE'),)
 
 
 FORC=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='FORC_NODA'),)
+                           VALE_K='FORC_NODA_ELEM'),)
 
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,
@@ -380,7 +383,7 @@ LIST2=DEFI_LIST_REEL(DEBUT=0.0,
 
 
 CONT=CALCUL(reuse=CONT,
-            OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM',
+            OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM',
                     'FORC_NODA_ELEM'),
             MODELE=MO,
             CHAM_MATER=CHMAT,
@@ -481,7 +484,7 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
 
 
 CONT2=CALCUL(
-            OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+            OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
             MODELE=MO,
             CHAM_MATER=CHMAT2,
             INCREMENT=_F(LIST_INST=LIST2,

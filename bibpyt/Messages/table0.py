@@ -72,11 +72,6 @@ Il ne satisfait pas l'expression régulière :
     %(k2)s
 """),
 
-16:_(u"""
-L'objet %(k1)s à l'instant %(r1)f existe déjà dans la table fournie.
-On l'écrase pour le remplacer par le nouveau.
-"""),
-
 20 : _(u"""Erreur lors de la construction des n-uplets
 """),
 

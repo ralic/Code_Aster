@@ -184,74 +184,72 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 !====
 !
     ninstc=0
-    do 2 , itps = 1 , nbval
-    call jerecu('V')
+    do itps = 1 , nbval
+        call jerecu('V')
 !
 !       SI LE PAS DE TEMPS A DEJA ETE CALCULE, ON SAUTE L'ITERATION
-    call rsexch(' ', result, 'DEPL', itps, chdepl,&
-                iret)
-    if (iret .eq. 0) goto 2
+        call rsexch(' ', result, 'DEPL', itps, chdepl,&
+                    iret)
+        if (iret .eq. 0) goto 2
 !
 ! 2.1. ==> L'INSTANT
-    itps0 = itps
-    time = zr(jval-1+itps)
+        itps0 = itps
+        time = zr(jval-1+itps)
 !
 !       -- SI ON A DEPASSE INSTF, ON SORT :
-    if (time .gt. instf) goto 3
+        if (time .gt. instf) goto 999
 !
-    ninstc=ninstc+1
-    partps(1) = time
+        ninstc=ninstc+1
+        partps(1) = time
 !
 !
 ! 2.2.1. ==> Y-A-T'IL ASSEMBLAGE DES MATRICES ?
 !
-    if (.not.matcst .or. ninstc .eq. 1) then
-        assmat = .true.
-    else
-        assmat = .false.
-    endif
+        if (.not.matcst .or. ninstc .eq. 1) then
+            assmat = .true.
+        else
+            assmat = .false.
+        endif
 ! 2.2.2. ==> RESOLUTION
 !
-    call mereso(result, modele, mate, carele, fomult,&
-                lischa, itps0, partps, numedd, vecass,&
-                assmat, solveu, matass, maprec, base,&
-                compor)
+        call mereso(result, modele, mate, carele, fomult,&
+                    lischa, itps0, partps, numedd, vecass,&
+                    assmat, solveu, matass, maprec, base,&
+                    compor)
 !
 !       -- IMPRESSION EVENTUELLE DES MESURES DE TEMPS:
-    call uttcpg('IMPR', 'INCR')
+        call uttcpg('IMPR', 'INCR')
 !
 !       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !
-    if (etausr() .eq. 1) then
-        call sigusr()
-    endif
+        if (etausr() .eq. 1) call sigusr()
+        
 !
 ! 2.3. ==> CONTROLE DU TEMPS CPU
 !
-    call uttcpr('CPU.OP0046.1', 4, tps1)
-    call uttcpr('CPU.OP0046.2', 4, tps2)
-    call uttcpr('CPU.OP0046.3', 4, tps3)
-    if (.not.matcst .or. ninstc .eq. 1) then
-        tcpu = tps1(4) + tps2(4) + tps3(4)
-    else
-        tcpu = tps3(4)
-    endif
-    if (nbval .gt. 1 .and. itps .lt. nbval .and. tcpu .gt. .95d0* tps3(1)) then
-        vali = itps
-        valr (1) = time
-        valr (2) = tcpu
-        valr (3) = tcpu
-        call utexcm(28, 'ALGORITH16_88', 0, ' ', 1,&
-                    vali, 3, valr)
-        call u2mess('F', 'ALGORITH11_83')
-        goto 9999
-    endif
+        call uttcpr('CPU.OP0046.1', 4, tps1)
+        call uttcpr('CPU.OP0046.2', 4, tps2)
+        call uttcpr('CPU.OP0046.3', 4, tps3)
+        if (.not.matcst .or. ninstc .eq. 1) then
+            tcpu = tps1(4) + tps2(4) + tps3(4)
+        else
+            tcpu = tps3(4)
+        endif
+        if (nbval .gt. 1 .and. itps .lt. nbval .and. tcpu .gt. .95d0* tps3(1)) then
+            vali = itps
+            valr (1) = time
+            valr (2) = tcpu
+            valr (3) = tcpu
+            call utexcm(28, 'ALGORITH16_88', 0, ' ', 1,&
+                        vali, 3, valr)
+            call u2mess('F', 'ALGORITH11_83')
+            goto 999
+        endif
 !
-    2 end do
- 3  continue
+2       continue
+    end do
 !
-!        -- MENAGE DES OBJETS PROVISOIRES:
-9999  continue
+999 continue
     call detrsd('CHAMP_GD', vecass)
 !
     if (lfeti) then

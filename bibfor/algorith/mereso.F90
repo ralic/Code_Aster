@@ -73,7 +73,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
     character(len=*) :: mate
     character(len=8) :: result
 !
-    real(kind=8) :: partps(*), rbid
+    real(kind=8) :: partps(3), rbid
 !
 ! 0.2. ==> COMMUNS
 !
@@ -149,7 +149,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
 ! 5.3. ==> STOCKAGE DE LA SOLUTION, DEPL, DANS LA STRUCTURE DE RESULTAT
 !          EN TANT QUE CHAMP DE DEPLACEMENT A L'INSTANT COURANT
 !
-    write (ifm,1000) 'DEPL', partps(1), itps
+    write (ifm,100) 'DEPL', partps(1), itps
 !
     call rsexch(' ', result, 'DEPL', itps, chdepl,&
                 iret)
@@ -199,7 +199,7 @@ subroutine mereso(result, modele, mate, carele, fomult,&
     endif
     call uttcpu('CPU.OP0046.3', 'FIN', ' ')
 !
-    1000 format(1p,3x,'CHAMP STOCKE : ',a16,' INSTANT : ',1pe12.5,&
+100 format(1p,3x,'CHAMP STOCKE : ',a16,' INSTANT : ',1pe12.5,&
      &         '  NUMERO D''ORDRE : ',i5)
 !
 end subroutine

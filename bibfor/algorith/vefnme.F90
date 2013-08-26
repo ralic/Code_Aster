@@ -65,10 +65,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 ! IN  MATCOD : NOM DU MATERIAU CODE
 ! IN  COMPOR : NOM DE LA CARTE DE COMPORTEMENT
 ! IN  NH     : NUMERO D'HARMONIQUE DE FOURIER
-! IN  FNOEVO : VRAI SI FORCES NODALES EVOLUTIVES I E INSTANT PLUS ET
-!              MOINS NECESSAIRES 5 STAT NON LINE TRAITANT DES PROBLEMES
-!              PARABOLIQUES : APPLICATION A THM
-! IN  PARTPS : INSTANT PRECEDENT, ACTUEL ET THETA
+! IN  PARTPS : INSTANT PRECEDENT ET ACTUEL
 ! IN  CARCRI : CARTE DES CRITERES ET DE THETA
 ! IN  CHVARC : NOM DU CHAMP DE VARIABLE DE COMMANDE
 ! IN  LIGREZ : (SOUS-)LIGREL DE MODELE POUR CALCUL REDUIT
@@ -264,8 +261,7 @@ subroutine vefnme(modele, sigma, caraz, depmoi, depdel,&
 !
     lpaout(1) = 'PVECTUR'
     call gcnco2(newnom)
-    lchout(1) = '&&VEFNME.???????'
-    lchout(1)(10:16) = newnom(2:8)
+    lchout(1) = vecele(1:8)//newnom
     call corich('E', lchout(1), -1, ibid)
 !
 ! --- PREPARATION DU VECT_ELEM RESULTAT

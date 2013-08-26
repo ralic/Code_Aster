@@ -47,7 +47,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     character(len=19) :: lischa, solveu, vecass, matass, maprec
     character(len=24) :: cnchci, modele, carele, fomult, numedd, compor
     character(len=*) :: mate
-    real(kind=8) :: partps(*)
+    real(kind=8) :: partps(3)
 !
 ! ----------------------------------------------------------------------
 !     MECANIQUE STATIQUE - ACTUALISATION DES CHARGEMENTS MECANIQUES

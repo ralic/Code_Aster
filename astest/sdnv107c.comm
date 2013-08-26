@@ -752,7 +752,7 @@ EXCIMO=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='PC3',
                                       FX=1.E8,),);
                   
-CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
                      MODELE=MODELE,
                      CHAM_MATER=CHAMAT,
                      EXCIT=(_F(CHARGE=CHARGE, ),
@@ -781,7 +781,7 @@ MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='MATR_ELEM'),);
+                           VALE_K='MATR_TANG_ELEM'),);
                  
                    
 MATM=CALC_MATR_ELEM(OPTION='MASS_MECA',

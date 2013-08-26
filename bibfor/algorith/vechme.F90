@@ -1,4 +1,4 @@
-subroutine vechme(stop, modelz, chargz, infchz, inst,&
+subroutine vechme(stop, modelz, chargz, infchz, inst  ,&
                   carele, mate, vrcplu, ligrez, vecelz)
 !
 ! ======================================================================
@@ -58,7 +58,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! IN  MODELE : NOM DU MODELE
 ! IN  CHARGE : LISTE DES CHARGES
 ! IN  INFCHA : INFORMATIONS SUR LES CHARGEMENTS
-! IN  INST   : TABLEAU DONNANT T+, DELTAT ET THETA (POUR LE THM)
+! IN  PARTPS : INSTANT PRECEDENT ET ACTUEL
 ! IN  CARELE : CARACTERISTIQUES DES POUTRES ET COQUES
 ! IN  MATE   : MATERIAU CODE
 ! IN  TEMPLU : CHAMP DE TEMPERATURE A L'INSTANT T+

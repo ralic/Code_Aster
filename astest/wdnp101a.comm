@@ -818,7 +818,7 @@ VARIP=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
 # COMPORTEMENT: Champs solution en sortie
 # FORC_INT_ELEM: Forces internes
 # MATR_TANG_ELEM: matrices elementaires
-CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
             MODELE=MOD[9],
             CHAM_MATER=AFFMAT1,
             EXCIT=(_F(CHARGE=BO_CONH0),
@@ -855,7 +855,7 @@ MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                 TABLE=CONT,
                 NOM_PARA='NOM_SD',
                 FILTRE=_F(NOM_PARA='NOM_OBJET',
-                          VALE_K='MATR_ELEM'),);
+                          VALE_K='MATR_TANG_ELEM'),);
 
 # Calcul des masses elementaires
 MATM=CALC_MATR_ELEM(OPTION='MASS_MECA',
