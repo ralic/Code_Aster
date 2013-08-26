@@ -4,9 +4,16 @@ subroutine extrac(interp, prec, crit, nbinst, ti,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: nbinst, neq, ier
-    real(kind=8) :: prec, ti(*), y(*), xtract(*)
-    character(len=*) :: interp, crit
+    character(*), intent(in) :: interp
+    real(kind=8), intent(in) :: prec
+    character(*), intent(in) :: crit
+    integer, intent(in) :: nbinst
+    real(kind=8), intent(in) :: ti(*)
+    real(kind=8), intent(in) :: temps
+    integer, intent(in) :: neq
+    real(kind=8), intent(in) :: y(nbinst*neq)
+    real(kind=8), intent(out) :: xtract(neq)
+    integer, intent(out) :: ier
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,16 +40,16 @@ subroutine extrac(interp, prec, crit, nbinst, ti,&
 ! IN  : NBINST  : DIMENSION DE LA LISTE DES INSTANTS
 ! IN  : TI      : LISTE DES INSTANTS
 ! IN  : TEMPS   : TEMPS A INTERPOLER
-! IN  : Y       : TABLEAU DE VECTEURS A DES INSTANTS DONNES
+! IN  : Y       : TABLEAU DE VECTEURS A DES INSTANTS DONNES, DE DIMENSION NEQ
 ! IN  : NEQ     : DIMENSION DES VECTEURS
-! OUT : XTRACT  : VECTEUR INTERPOLE AU TEMPS TEMPS
+! OUT : XTRACT  : VECTEUR INTERPOLE AU TEMPS TEMPS, DE DIMENSION NEQ
 ! OUT : IER     : CODE RETOUR, = 0 : IL Y A EU EXTRACTION
 !-----------------------------------------------------------------------
     real(kind=8) :: prec2
 !
 !-----------------------------------------------------------------------
     integer :: i
-    real(kind=8) :: alpha, temps
+    real(kind=8) :: alpha
 !-----------------------------------------------------------------------
     ier = 0
 !

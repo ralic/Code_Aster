@@ -82,7 +82,7 @@ subroutine rfrgen(trange)
     integer :: lvar, mxmode, n1, n2, n3, nbexci, nbinsg
     integer :: nbmode, nbordr, nbpari, nbpark, nbparr, nbpas, neq
     integer :: nfonct, ngn, numcmp
-    real(kind=8) :: alpha, epsi, rep,rep1(1)
+    real(kind=8) :: alpha, epsi, rep, rep1(1)
     complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     call jemarq()
@@ -219,10 +219,11 @@ subroutine rfrgen(trange)
                 call jeveuo(resu//'.DISC', 'L', idinsg)
                 call jelira(resu//'.DISC', 'LONMAX', nbinsg, k8b)
                 do 40 iordr = 0, nbordr-1
+                    ASSERT(nbmode == 1)
                     call extrac(intres, epsi, crit, nbinsg, zr(idinsg),&
-                                zr(jinst+iordr), zr(itresu), nbmode, rep, ierd)
+                                zr(jinst+iordr), zr(itresu), nbmode, rep1, ierd)
                     zr(lvar+iordr) = zr(jinst+iordr)
-                    zr(lfon+iordr) = rep
+                    zr(lfon+iordr) = rep1(1)
 40              continue
             else
                 do 42 iordr = 0, nbordr-1

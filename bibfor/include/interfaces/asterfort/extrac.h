@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +17,15 @@
 interface
     subroutine extrac(interp, prec, crit, nbinst, ti,&
                       temps, y, neq, xtract, ier)
-        character(*) :: interp
-        real(kind=8) :: prec
-        character(*) :: crit
-        integer :: nbinst
-        real(kind=8) :: ti(*)
-        real(kind=8) :: temps
-        real(kind=8) :: y(*)
-        integer :: neq
-        real(kind=8) :: xtract(*)
-        integer :: ier
+        character(*), intent(in) :: interp
+        real(kind=8), intent(in) :: prec
+        character(*), intent(in) :: crit
+        integer, intent(in) :: nbinst
+        real(kind=8), intent(in) :: ti(*)
+        real(kind=8), intent(in) :: temps
+        integer, intent(in) :: neq
+        real(kind=8), intent(in) :: y(nbinst*neq)
+        real(kind=8), intent(out) :: xtract(neq)
+        integer, intent(out) :: ier
     end subroutine extrac
 end interface
