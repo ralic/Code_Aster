@@ -18,13 +18,14 @@
 interface
     subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
                       node_name, nb_repe_elem, list_repe_elem, matr_glob_loca)
-        character(len=8) :: noma
-        character(len=24) :: ncncin
-        character(len=16) :: motfac
-        integer :: ioc
-        integer :: ino
-        integer :: nbma
-        integer :: listma(*)
-        real(kind=8) :: pgl(3, 3)
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: connex_inv
+        character(len=16), intent(in) :: keywordfact
+        integer, intent(in) :: iocc
+        character(len=8), intent(in) :: node_name
+        integer, intent(in) :: node_nume
+        integer, intent(in) :: nb_repe_elem
+        integer, intent(in) :: list_repe_elem(*)
+        real(kind=8), intent(out) :: matr_glob_loca(3, 3)
     end subroutine matloc
 end interface
