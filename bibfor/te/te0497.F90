@@ -36,6 +36,7 @@ subroutine te0497(option, nomte)
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
     implicit none
+! aslint: disable=W0104
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 !

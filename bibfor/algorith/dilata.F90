@@ -1,5 +1,5 @@
 subroutine dilata(imate, phi, alphfi, t, aniso,&
-                  angmas, tbiot, ndim, phenom)
+                  angmas, tbiot, phenom)
 
     implicit none
 ! ======================================================================
@@ -25,7 +25,7 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
 ! ======================================================================
 #include "asterc/r8pi.h"
 #include "asterfort/rcvala.h"
-    integer :: nelas2, ndim
+    integer :: nelas2
     integer :: nelas1,nelas3
     parameter  ( nelas1=1 )
     parameter  ( nelas2=2 )

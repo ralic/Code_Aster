@@ -87,7 +87,7 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
 ! =====================================================================
     if (yamec .eq. 1) then
         call dilata(imate, phi, alphfi, t, aniso,&
-                    angmas, tbiot, ndim, phenom)
+                    angmas, tbiot, phenom)
         call unsmfi(imate, phi, cs, t, tbiot,&
                     aniso, ndim, phenom)
     else

@@ -22,7 +22,7 @@ subroutine tlambc(angmas, lambct, tlamct, aniso, ndim)
 ! --- CAS ISOTROPE OU ISOTROPE TRANSVERSE ------------------------------
 ! ======================================================================
 #include "asterc/r8pi.h"
-    integer :: aniso, i, j, ndim
+    integer :: aniso, ndim
     real(kind=8) :: angmas(3), lambct(4)
     real(kind=8) :: tlamct(ndim, ndim),tlamcti(3,3)
     real(kind=8) :: passag(3,3),work(3,3),tk2(3,3)

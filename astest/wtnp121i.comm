@@ -308,18 +308,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 ),
         )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='NH4',
-                NOM_CMP='PRE1',
-                VALE_CALC=-8263.2659999999996,
-                TOLE_MACHINE=1.E-4,
-                CRITERE='RELATIF',
-                ),
-        )
-
-
 FIN();
 
 

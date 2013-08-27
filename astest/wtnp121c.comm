@@ -331,17 +331,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 PRECISION=0.089999999999999997,),
         )
 
-# NON REGRESSION
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='N304',
-                NOM_CMP='PRE1',
-                VALE_CALC=-1338.2345390047999,
-                TOLE_MACHINE=1.E-4,
-                CRITERE='RELATIF',
-                ),
-        )
-
 
 FIN();

@@ -25,7 +25,7 @@ subroutine tebiot(angmas, biot, tbiot, aniso, ndim)
 #include "asterc/r8pi.h"
 #include "asterfort/matini.h"
 #include "asterfort/matrot.h"
-    integer :: i, aniso, ndim, j, k, l
+    integer ::  aniso, ndim
     real(kind=8) :: angmas(3), biot(4)
     real(kind=8) :: tbiot(6)
     real(kind=8) :: bt(3, 3),work(3,3)

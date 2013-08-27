@@ -45,7 +45,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                                 N = NOMBRE DE PALIERS
 !                OUT RETCOM
 ! ======================================================================
-! aslint: disable=W1501,W1504    
+! aslint: disable=W1504    
     implicit      none
 #include "asterfort/calela.h"
 #include "asterfort/dpvplc.h"

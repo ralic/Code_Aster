@@ -24,7 +24,7 @@ subroutine tpermh(angmas, permin, tperm, aniso, ndim)
 ! ======================================================================
 #include "asterc/r8dgrd.h"
 #include "asterc/r8pi.h"
-    integer :: aniso, i, j, ndim
+    integer :: aniso, ndim
     real(kind=8) :: angmas(3), permin(4)
     real(kind=8) :: tperm(ndim, ndim),perml(3, 3)
     real(kind=8) :: passag(3,3),work(3,3),tk2(3,3)

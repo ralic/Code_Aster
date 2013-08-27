@@ -309,16 +309,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 PRECISION=0.029999999999999999,),
         )
 
-# NOEUD CENTRE
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                RESULTAT=cal1,
-                NOM_CHAM='DEPL',
-                NOEUD='NT70',
-                NOM_CMP='PRE1',
-                VALE_CALC=-313.81815,
-                TOLE_MACHINE=1.E-4,
-                CRITERE='RELATIF',
-                ),
-        )
 
 FIN();

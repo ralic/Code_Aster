@@ -89,7 +89,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, aniso, raniso
+    integer :: i, aniso
     real(kind=8) :: satm, epsvm, phim, rho11m, rho12m, pvpm, rho110, dpvp
     real(kind=8) :: dpvpt, dpvpl, tbiot(6), cs, alpliq, cliq
     real(kind=8) :: cp11, cp12, sat, dsatp1, mamolv, em
@@ -119,7 +119,6 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
     logical :: net, bishop
 !
     rac2 = sqrt(2.d0)
-    raniso = 0.d0
 !
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
@@ -223,7 +222,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
                 rbid35, rbid54, rbid55, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
                 rbid56, rbid57, rbid58, rinstp, retcom,&
-                angmas, raniso, ndim)
+                angmas, aniso, ndim)
     if ((option.eq.'RAPH_MECA') .or. (option.eq.'FORC_NODA') .or.&
         (option(1:9).eq.'FULL_MECA')) then
 ! =====================================================================
@@ -261,7 +260,7 @@ subroutine hmliva(yachai, option, meca, ther, hydr,&
 ! =====================================================================
     if (yamec .eq. 1) then
         call dilata(imate, phi, alphfi, t, aniso,&
-                    angmas, tbiot, ndim, phenom)
+                    angmas, tbiot, phenom)
         call unsmfi(imate, phi, cs, t, tbiot,&
                     aniso, ndim, phenom)
     endif

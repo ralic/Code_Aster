@@ -110,7 +110,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
                 aniso, ndim, phenom)
 !
     call dilata(imate, phi0, alphfi, t, aniso,&
-                angmas, tbiot, ndim, phenom)
+                angmas, tbiot, phenom)
 !
     call calela(imate, angmas, mdal, dalal, t,&
                 aniso, rbid, ndim, phenom)

@@ -87,7 +87,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !     FONCTION INTRINSEQUE : SQRT
 !   -------------------------------------------------------------------
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPEL

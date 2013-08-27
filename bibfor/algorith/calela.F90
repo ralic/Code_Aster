@@ -38,9 +38,9 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     real(kind=8) :: zero, un
     real(kind=8) :: young, nu, g
     real(kind=8) :: young1, young3, nu12, nu21, nu13, nu31, nu23, nu32
-    real(kind=8) :: young2, alpha1, alpha3, g13, g12, alpha2
+    real(kind=8) :: young2, alpha1, alpha3, g13, g12
     real(kind=8) :: d(6, 6), al(6), t, dorth(6, 6), c1, delta, repere(7)
-    real(kind=8) :: mdal(6), dalal, angmas(3), work(6, 6), angl(3), bid(3)
+    real(kind=8) :: mdal(6), dalal, angmas(3), work(6, 6), bid(3)
     real(kind=8) :: tetaro, phirot, passag(6, 6),pass(3, 3),tal(3,3),talg(3,3)
     character(len=8) :: ncra2(dim2), ncra3(dim3)
     character(len=8) :: ncra1(dim1)

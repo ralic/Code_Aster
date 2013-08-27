@@ -21,7 +21,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 ! ======================================================================
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA

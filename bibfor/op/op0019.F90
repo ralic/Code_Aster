@@ -1,6 +1,4 @@
 subroutine op0019()
-! aslint: disable=W1501
-    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +21,8 @@ subroutine op0019()
 !                O P E R A T E U R    AFFE_CARA_ELEM
 !
 ! ----------------------------------------------------------------------
-! aslint: disable=W1501
+    implicit none
+! aslint: disable=W1502
 !     NBEPO  13 : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
 !     NBEDI   8 : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
 !     NBECO  29 : NOMBRE D'ELEMENTS DE TYPE "COQUE"
@@ -209,22 +208,22 @@ subroutine op0019()
      &               'HH_DPTR6S       ','HH_AXIS_TR6S    ',&
      &                     'HH_HEXA20S      ','HH_PENTA15S     ',&
      &                     'HH_TETRA10S     '/
-    data nomel5 /        'THH2M_DPQ8S     ','THH2M_AXIS_QU8S   ',&
-     &                     'THH2M_DPTR6S    ','THH2M_AXIS_TR6S   ',&
-     &                     'THH2M_HEXA20S   ','THH2M_PENTA15S    ',&
-     &                     'THH2M_TETRA10S  ',&
-     &                     'HH2M_DPQ8S      ','HH2M_AXIS_QU8S    ',&
-     &                     'HH2M_DPTR6S     ','HH2M_AXIS_TR6S    ',&
-     &                     'HH2M_HEXA20S    ','HH2M_PENTA15S     ',&
-     &                     'HH2M_TETRA10S   ',&
-     &                     'THH2_DPQ8S      ','THH2_AXIS_QU8S    ',&
-     &                     'THH2_DPTR6S     ','THH2_AXIS_TR6S    ',&
-     &                     'THH2_HEXA20S    ','THH2_PENTA15S     ',&
-     &                     'THH2_TETRA10S   ',&
-     &                     'HH2_DPQ8S       ','HH2_AXIS_QU8S     ',&
-     &                     'HH2_DPTR6S      ','HH2_AXIS_TR6S     ',&
-     &                     'HH2_HEXA20S     ','HH2_PENTA15S      ',&
-     &                     'HH2_TETRA10S    '/
+    data nomel5 /    'THH2M_DPQ8S     ','THH2M_AXIS_QU8S ',&
+     &               'THH2M_DPTR6S    ','THH2M_AXIS_TR6S ',&
+     &               'THH2M_HEXA20S   ','THH2M_PENTA15S  ',&
+     &               'THH2M_TETRA10S  ',&
+     &               'HH2M_DPQ8S      ','HH2M_AXIS_QU8S  ',&
+     &               'HH2M_DPTR6S     ','HH2M_AXIS_TR6S  ',&
+     &               'HH2M_HEXA20S    ','HH2M_PENTA15S   ',&
+     &               'HH2M_TETRA10S   ',&
+     &               'THH2_DPQ8S      ','THH2_AXIS_QU8S  ',&
+     &               'THH2_DPTR6S     ','THH2_AXIS_TR6S  ',&
+     &               'THH2_HEXA20S    ','THH2_PENTA15S   ',&
+     &               'THH2_TETRA10S   ',&
+     &               'HH2_DPQ8S       ','HH2_AXIS_QU8S   ',&
+     &               'HH2_DPTR6S      ','HH2_AXIS_TR6S   ',&
+     &               'HH2_HEXA20S     ','HH2_PENTA15S    ',&
+     &               'HH2_TETRA10S    '/
 !
     data nbmcle /  2,2,4,4,2,2,2,2,2,1,2,0,4,2,1/
 ! --- ------------------------------------------------------------------
