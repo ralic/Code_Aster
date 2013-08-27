@@ -4,7 +4,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
                   fordef, fatsoc, proaxe, nommat, vala,&
                   coefpa, post, cudomx, nxm, nym,&
                   nzm)
-! aslint: disable=W1306,W1501,W1504
+! aslint: disable=W1306,W1504
     implicit      none
 #include "jeveux.h"
 #include "asterc/getvr8.h"

@@ -1,5 +1,4 @@
 subroutine xmolig(liel1, trav)
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"
