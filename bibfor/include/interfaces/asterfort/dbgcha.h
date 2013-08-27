@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine dbgcha(valinc, instap, iterat)
         character(len=19) :: valinc(*)
         real(kind=8) :: instap
         integer :: iterat
     end subroutine dbgcha
-end interface
+end interface 

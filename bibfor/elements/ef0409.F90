@@ -1,4 +1,5 @@
 subroutine ef0409(nomte)
+! aslint: disable=W0104
 !     ----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,21 +45,18 @@ subroutine ef0409(nomte)
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
+    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
     call jevech('PEFFORR', 'E', ichn)
 !
     call jevech('PGEOMER', 'L', igeom)
-    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo,&
-                iret)
-    call tecach('OON', 'PCONTRR', 'L', 7, jtab,&
-                iret)
+    call tecach('NNN', 'PCOMPOR', 'L', 1, icompo, iret)
+    call tecach('OON', 'PCONTRR', 'L', 7, jtab, iret)
     call r8inir(32, 0.d0, effint, 1)
 !
-    do 10,ipg=1,npg
-    icontm=jtab(1)+8*(ipg-1)
-    call dcopy(8, zr(icontm), 1, effint(8*(ipg-1)+1), 1)
-    10 end do
+    do ipg = 1, npg
+        icontm = jtab(1)+8*(ipg-1)
+        call dcopy(8, zr(icontm), 1, effint(8*(ipg-1)+1), 1)
+    end do
 !
     call ppgan2(jgano, 1, 8, effint, zr(ichn))
 !

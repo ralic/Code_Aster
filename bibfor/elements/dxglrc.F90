@@ -1,6 +1,4 @@
-subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
-                  dul, btsig, ktan, pgl, crit,&
-                  codret)
+subroutine dxglrc(nomte, opt, compor, xyzl, ul, dul, btsig, ktan, pgl, crit, codret)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -78,6 +76,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/crgdm.h"
+#include "asterfort/dhrc_recup_mate.h"
 #include "asterfort/dkqbf.h"
 #include "asterfort/dktbf.h"
 #include "asterfort/dsqbfb.h"
@@ -95,6 +94,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
 #include "asterfort/lcgldm.h"
+#include "asterfort/dhrc_lc.h"
 #include "asterfort/maglrc.h"
 #include "asterfort/nmcoup.h"
 #include "asterfort/pmrvec.h"
@@ -179,6 +179,11 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth
     real(kind=8) :: khith
     real(kind=8) :: alpha, beta
+! VARIABLES POUR DHRC
+    real(kind=8) :: a0(6, 6), b0(6, 2), c0(2, 2, 2)
+    real(kind=8) :: aa_t(6, 6, 2), ab_(6, 2, 2), ac_(2, 2, 2), aa_c(6, 6, 2)
+    real(kind=8) :: ga_t(6, 6, 2), gb_(6, 2, 2), gc_(2, 2, 2), ga_c(6, 6, 2)
+    real(kind=8) :: cstseu(2)
 ! ATTENTION LA TAILLE DE ECP DEPEND DU NOMBRE DE VARIABLE INTERNE
 ! LORS DE L AJOUT DE VARIABLE INTERNE IL FAUT INCREMENTER ECR ET ECRP
     real(kind=8) :: epst(6), ep, surfgp, sig(8), dsig(8), ecr(24), ecrp(24)
@@ -190,9 +195,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     character(len=16) :: opt, nomte, compor(*)
     character(len=24) :: valk
 !
-    call elref5(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, icoopg, ivf, idfdx,&
-                idfd2, jgano)
+    call elref5(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano)
     codret = 0
 !
     nbsig = 6
@@ -208,18 +211,12 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     matric = ((opt.eq.'FULL_MECA') .or. (opt(1:9).eq.'RIGI_MECA'))
     lrgm = opt.eq.'RIGI_MECA     '
 !
-    if (nomte(1:8) .ne. 'MEDKTG3 ' .and. nomte(1:8) .ne. 'MEDKQG4 ' .and. nomte(1:8) .ne.&
-        'MEQ4GG4 ' .and. nomte(1:8) .ne. 'MET3GG3 ') then
-        call u2mesk('F', 'ELEMENTS_14', 1, nomte(1:8))
-    endif
-!
     call jevech('PMATERC', 'L', imate)
 !
     leul = .false.
 !
     if (.not. lrgm) then
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PCONTMR', 'L', 7, jtab, iret)
         icontm=jtab(1)
         ASSERT(npg.eq.jtab(3))
         call jevech('PVARIMR', 'L', ivarim)
@@ -419,9 +416,8 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
         endif
 !
         if (compor(1)(1:4) .eq. 'ELAS') then
-            call dxmate('RIGI', dff, dmm, dmff, dcc,&
-                        dci, dmc, dfc, nno, pgl,&
-                        multic, coupmf, t2ev, t2ve, t1ve)
+            call dxmate('RIGI', dff, dmm, dmff, dcc, dci, dmc, dfc, nno, pgl, multic, coupmf,&
+                       t2ev, t2ve, t1ve)
             call r8inir(36, 0.d0, dsidep, 1)
 ! -- MEMBRANE
             dsidep(1,1) = dmm(1)
@@ -527,12 +523,36 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
 !
 !     ENDOMMAGEMENT SEULEMENT
 !
-            call r8inir(36, 0.d0, dsidep, 1)
-            call lcgldm(epsm, deps, ecr, opt, sig,&
-                        ecrp, dsidep, lambda, deuxmu, lamf,&
-                        deumuf, gt, gc, gf, seuil,&
-                        alphaf, alfmc, crit, codret)
-        else if (compor(1)(1:7).eq. 'KIT_DDI') then
+        call r8inir(36, 0.d0, dsidep, 1)
+        call lcgldm(epsm, deps, ecr, opt, sig,&
+                    ecrp, dsidep, lambda, deuxmu, lamf,&
+                    deumuf, gt, gc, gf, seuil,&
+                    alphaf, alfmc, crit, codret)
+!
+    else if (compor(1)(1:4).eq. 'DHRC') then
+!
+!     LECTURE PARAMETRES MATERIAU
+!
+        if (.not. lrgm) then
+            do i = 1,nbvar
+                ecr(i) = zr(ivarim-1 + icpv + i)
+            end do
+        endif
+!
+        call dhrc_recup_mate(zi(imate), compor(1), ep, a0, b0, c0,&
+                   aa_t, ga_t, ab_, gb_, ac_,&
+                   gc_, aa_c, ga_c, cstseu)
+!
+!     ENDOMMAGEMENT COUPLÉ PLASTICITÉ
+!
+        call r8inir(36, 0.d0, dsidep, 1)
+        call dhrc_lc(epsm, deps, ecr, pgl, opt,&
+                    sig, ecrp, a0, b0, c0,&
+                    aa_t, ga_t, ab_, gb_, ac_,&
+                    gc_, aa_c, ga_c, cstseu, crit,&
+                    codret, dsidep)
+!
+    else if (compor(1)(1:7).eq. 'KIT_DDI') then
 !     ENDOMMAGEMENT PLUS PLASTICITE
 !
             if (.not. lrgm) then
@@ -615,7 +635,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
                     btsig(4,ino) = btsig(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
                 end do
 !
-! PRISE EN COMPTE DI CISAILLEMENT
+! PRISE EN COMPTE DU CISAILLEMENT
 !
                 if (q4gg) then
                     do k = 1, 2

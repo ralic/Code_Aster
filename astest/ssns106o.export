@@ -1,9 +1,9 @@
-P time_limit 140
+P time_limit 300
 P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist C
 
-F comm ssns106h.comm D 1
+F comm ssns106o.comm D 1
 F mail ssns106a.mail D 20

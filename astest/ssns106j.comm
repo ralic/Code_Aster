@@ -1,7 +1,7 @@
 # person_in_charge: sebastien.fayolle at edf.fr
-# TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
-#
+# TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,9 +14,7 @@
 #
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-#
-# ======================================================================
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #  DETAILS : MODELISATION : MULTI-COUCHES
 #                          (DKT- ENDO_ISOT_BETON+2*GRILLE ACIER)
@@ -89,22 +87,6 @@ MA=CREA_MAILLAGE(MAILLAGE=MAIL,
                                    GROUP_MA='DALLE',
                                    PREF_MAILLE='G',),),);
 
-# -- MAILLAGE MULTI-FIBRES (LABORD_1D) --
-
-POUT=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
-
-MASEC=LIRE_MAILLAGE(UNITE=21,
-                    FORMAT='MED',);
-
-GF=DEFI_GEOM_FIBRE(INFO=2,
-                   SECTION=_F(GROUP_FIBRE='SECF',
-                              TOUT_SECT='OUI',
-                              MAILLAGE_SECT=MASEC,
-                              COOR_AXE_POUTRE=(0.,0.,),),
-                   FIBRE=_F(GROUP_FIBRE='SACI',
-                            VALE=(0.,0.04,0.0008,0.,-0.04,0.0008,),
-                            COOR_AXE_POUTRE=(0.,0.,),),);
-
 # -- MODELE ENDO_ISOT --
 
 MO=AFFE_MODELE(MAILLAGE=MA,
@@ -133,12 +115,6 @@ MO_G=AFFE_MODELE(MAILLAGE=MA,
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKTG',),);
 
-# -- MODELE LABORD_1D --
-
-MO_L=AFFE_MODELE(MAILLAGE=POUT,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='POU_D_EM',),);
 
 # -- MATERIAUX --
 # BETON ENDO_ISOT
@@ -149,20 +125,7 @@ BETON_E=DEFI_MATERIAU(ELAS=_F(E=EB,
                       BETON_ECRO_LINE=_F(D_SIGM_EPSI=(-0.2 * EB),
                                          SYT=3.4E6,),);
 
-# BETON LABORD_1D
-
-BETON_L=DEFI_MATERIAU(ELAS=_F(E=3.2308000000E10,
-                              NU=0.0,
-                              RHO=2400.0,),
-                      LABORD_1D=_F(Y01=341.,
-                                   Y02=7075.,
-                                   A1=0.01038,
-                                   A2=.5999E-5,
-                                   B1=1.2,
-                                   B2=2.,
-                                   BETA1=.0867E+7,
-                                   BETA2=-.35E+8,
-                                   SIGF=3.5E+6,),);
+# ACIER
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.2,
@@ -173,25 +136,301 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                                  SY=5.70000000E8,),
                     INFO=1,);
 
+# BETON ARME GLRC_DM
+
 MAT_G=DEFI_MATERIAU(ELAS=_F(E=EGM,
                             NU=0.18,),
-                    GLRC_DM=_F(GAMMA_T=0.05,
-                               GAMMA_F=0.21,
+                    GLRC_DM=_F(GAMMA_T=0.06,
+                               GAMMA_C=0.8,
+                               GAMMA_F=0.45,
                                NYT=3.7E5,
-                               MYF=6.7E3,
+                               MYF=9.E3,
                                EF=EGF,
                                NUF=0.17,),);
+
+
+# BETON ARME DHRC
+
+MAT_D=DEFI_MATERIAU(ELAS=_F(E=1.,
+                            NU=0.23,),
+                    DHRC_SEUILS=_F(
+                               SYD=1.7E6,
+                               SCRIT=.5E5,
+                               K0MICR=1.476E-11,
+                               A011=3.685E+09,
+                               A012=6.985E+08,
+                               A013=0.000E+00,
+                               A014=4.944E+03,
+                               A015=6.651E+02,
+                               A016=0.000E+00,
+                               A022=3.684E+09,
+                               A023=0.000E+00,
+                               A024=6.161E+02,
+                               A025=4.318E+03,
+                               A026=0.000E+00,
+                               A033=1.409E+09,
+                               A034=0.000E+00,
+                               A035=0.000E+00,
+                               A036=8.309E+02,
+                               A044=3.154E+06,
+                               A045=5.835E+05,
+                               A046=0.000E+00,
+                               A055=3.028E+06,
+                               A056=0.000E+00,
+                               A066=1.177E+06,
+                               ),
+                    DHRC=_F(
+                               AAC111=2.086E+00,
+                               AAC121=2.085E+00,
+                               AAC131=1.000E+00,
+                               AAC141=2.063E+00,
+                               AAC151=1.764E+00,
+                               AAC161=1.000E+00,
+                               AAC221=2.086E+00,
+                               AAC231=1.000E+00,
+                               AAC241=1.764E+00,
+                               AAC251=2.096E+00,
+                               AAC261=1.000E+00,
+                               AAC331=1.118E+00,
+                               AAC341=1.000E+00,
+                               AAC351=1.000E+00,
+                               AAC361=1.122E+00,
+                               AAC441=2.088E+00,
+                               AAC451=2.092E+00,
+                               AAC461=1.000E+00,
+                               AAC551=2.096E+00,
+                               AAC561=1.000E+00,
+                               AAC661=1.120E+00,
+                               AAC112=2.085E+00,
+                               AAC122=2.085E+00,
+                               AAC132=1.000E+00,
+                               AAC142=2.058E+00,
+                               AAC152=1.764E+00,
+                               AAC162=1.000E+00,
+                               AAC222=2.086E+00,
+                               AAC232=1.000E+00,
+                               AAC242=1.764E+00,
+                               AAC252=2.085E+00,
+                               AAC262=1.000E+00,
+                               AAC332=1.118E+00,
+                               AAC342=1.000E+00,
+                               AAC352=1.000E+00,
+                               AAC362=1.122E+00,
+                               AAC442=2.088E+00,
+                               AAC452=2.092E+00,
+                               AAC462=1.000E+00,
+                               AAC552=2.096E+00,
+                               AAC562=1.000E+00,
+                               AAC662=1.120E+00,
+                               AAT111=1.952E+00,
+                               AAT121=1.704E+00,
+                               AAT131=1.000E+00,
+                               AAT141=2.017E+00,
+                               AAT151=1.233E+00,
+                               AAT161=1.000E+00,
+                               AAT221=1.945E+00,
+                               AAT231=1.000E+00,
+                               AAT241=1.224E+00,
+                               AAT251=2.025E+00,
+                               AAT261=1.000E+00,
+                               AAT331=1.118E+00,
+                               AAT341=1.000E+00,
+                               AAT351=1.000E+00,
+                               AAT361=1.122E+00,
+                               AAT441=2.004E+00,
+                               AAT451=1.882E+00,
+                               AAT461=1.000E+00,
+                               AAT551=2.025E+00,
+                               AAT561=1.000E+00,
+                               AAT661=1.120E+00,
+                               AAT112=1.952E+00,
+                               AAT122=1.705E+00,
+                               AAT132=1.000E+00,
+                               AAT142=2.015E+00,
+                               AAT152=1.233E+00,
+                               AAT162=1.000E+00,
+                               AAT222=1.945E+00,
+                               AAT232=1.000E+00,
+                               AAT242=1.224E+00,
+                               AAT252=2.026E+00,
+                               AAT262=1.000E+00,
+                               AAT332=1.118E+00,
+                               AAT342=1.000E+00,
+                               AAT352=1.000E+00,
+                               AAT362=1.122E+00,
+                               AAT442=2.004E+00,
+                               AAT452=1.882E+00,
+                               AAT462=1.000E+00,
+                               AAT552=2.025E+00,
+                               AAT562=1.000E+00,
+                               AAT662=1.120E+00,
+                               GAC111=8.998E-01,
+                               GAC121=8.914E-01,
+                               GAC131=1.000E+00,
+                               GAC141=1.017E+01,
+                               GAC151=3.416E+00,
+                               GAC161=1.000E+00,
+                               GAC221=8.998E-01,
+                               GAC231=1.000E+00,
+                               GAC241=3.416E+00,
+                               GAC251=1.034E+01,
+                               GAC261=1.000E+00,
+                               GAC331=3.928E-01,
+                               GAC341=1.000E+00,
+                               GAC351=1.000E+00,
+                               GAC361=2.248E+01,
+                               GAC441=9.035E-01,
+                               GAC451=8.912E-01,
+                               GAC461=1.000E+00,
+                               GAC551=8.969E-01,
+                               GAC561=1.000E+00,
+                               GAC661=3.944E-01,
+                               GAC112=8.998E-01,
+                               GAC122=8.914E-01,
+                               GAC132=1.000E+00,
+                               GAC142=-8.195E+00,
+                               GAC152=-1.416E+00,
+                               GAC162=1.000E+00,
+                               GAC222=8.998E-01,
+                               GAC232=1.000E+00,
+                               GAC242=-1.416E+00,
+                               GAC252=-8.325E+00,
+                               GAC262=1.000E+00,
+                               GAC332=3.928E-01,
+                               GAC342=1.000E+00,
+                               GAC352=1.000E+00,
+                               GAC362=-2.048E+01,
+                               GAC442=9.035E-01,
+                               GAC452=8.912E-01,
+                               GAC462=1.000E+00,
+                               GAC552=8.970E-01,
+                               GAC562=1.000E+00,
+                               GAC662=3.943E-01,
+                               GAT111=1.007E-01,
+                               GAT121=2.211E-01,
+                               GAT131=1.000E+00,
+                               GAT141=8.651E+01,
+                               GAT151=1.590E+01,
+                               GAT161=1.000E+00,
+                               GAT221=9.489E-02,
+                               GAT231=1.000E+00,
+                               GAT241=1.549E+01,
+                               GAT251=8.919E+01,
+                               GAT261=1.000E+00,
+                               GAT331=3.928E-01,
+                               GAT341=1.000E+00,
+                               GAT351=1.000E+00,
+                               GAT361=2.248E+01,
+                               GAT441=1.112E-01,
+                               GAT451=1.883E-01,
+                               GAT461=1.000E+00,
+                               GAT551=2.908E-02,
+                               GAT561=1.000E+00,
+                               GAT661=3.944E-01,
+                               GAT112=1.005E-01,
+                               GAT122=2.210E-01,
+                               GAT132=1.000E+00,
+                               GAT142=-8.454E+01,
+                               GAT152=-1.390E+01,
+                               GAT162=1.000E+00,
+                               GAT222=9.489E-02,
+                               GAT232=1.000E+00,
+                               GAT242=-1.350E+01,
+                               GAT252=-8.718E+01,
+                               GAT262=1.000E+00,
+                               GAT332=3.928E-01,
+                               GAT342=1.000E+00,
+                               GAT352=1.000E+00,
+                               GAT362=-2.048E+01,
+                               GAT442=1.111E-01,
+                               GAT452=1.882E-01,
+                               GAT462=1.000E+00,
+                               GAT552=2.917E-02,
+                               GAT562=1.000E+00,
+                               GAT662=3.943E-01,
+                               AB111=1.219E+00,
+                               AB121=6.351E-01,
+                               AB211=6.895E-01,
+                               AB221=1.238E+00,
+                               AB311=1.000E+00,
+                               AB321=1.000E+00,
+                               AB411=1.191E+00,
+                               AB421=6.522E-01,
+                               AB511=6.234E-01,
+                               AB521=1.260E+00,
+                               AB611=1.000E+00,
+                               AB621=1.000E+00,
+                               AB112=1.227E+00,
+                               AB122=6.315E-01,
+                               AB212=6.950E-01,
+                               AB222=1.219E+00,
+                               AB312=1.000E+00,
+                               AB322=1.000E+00,
+                               AB412=1.199E+00,
+                               AB422=6.473E-01,
+                               AB512=6.287E-01,
+                               AB522=1.241E+00,
+                               AB612=1.000E+00,
+                               AB622=1.000E+00,
+                               GB111=-1.071E+02,
+                               GB121=-1.689E+01,
+                               GB211=-2.012E+01,
+                               GB221=-1.035E+02,
+                               GB311=0.000E+00,
+                               GB321=0.000E+00,
+                               GB411=3.474E+00,
+                               GB421=4.224E-01,
+                               GB511=6.100E-01,
+                               GB521=2.594E+00,
+                               GB611=0.000E+00,
+                               GB621=0.000E+00,
+                               GB112=-1.070E+02,
+                               GB122=-1.684E+01,
+                               GB212=-2.007E+01,
+                               GB222=-1.034E+02,
+                               GB312=0.000E+00,
+                               GB322=0.000E+00,
+                               GB412=-3.470E+00,
+                               GB422=-4.208E-01,
+                               GB512=-6.087E-01,
+                               GB522=-2.592E+00,
+                               GB612=0.000E+00,
+                               GB622=0.000E+00,
+                               C0111=5.756E+07,
+                               C0211=0.000E+00,
+                               C0121=0.000E+00,
+                               C0221=5.717E+07,
+                               C0112=5.753E+07,
+                               C0212=0.000E+00,
+                               C0122=0.000E+00,
+                               C0222=5.712E+07,
+                               AC111=1.865E+00,
+                               AC211=1.000E+00,
+                               AC121=1.000E+00,
+                               AC221=1.779E+00,
+                               AC112=1.872E+00,
+                               AC212=1.000E+00,
+                               AC122=1.000E+00,
+                               AC222=1.785E+00,
+                               GC111=2.310E-01,
+                               GC211=1.000E+00,
+                               GC121=1.000E+00,
+                               GC221=2.605E-01,
+                               GC112=2.327E-01,
+                               GC212=1.000E+00,
+                               GC122=1.000E+00,
+                               GC222=2.577E-01,
+                              ),
+                   );
 
 MATOR=DEFI_MATERIAU(ELAS=_F(E=2.e11,
                             NU=0.0,
                             RHO=7800.0,),);
 
-# -- AFFECTATION DU MATERIAU POUR ENDO_ISOT & GLRC --
+# -- AFFECTATION DU MATERIAU POUR ENDO_ISOT --
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='DALLE_G',
-                             MATER=MAT_G,),
-                          _F(GROUP_MA='DALLE',
+                    AFFE=(_F(GROUP_MA='DALLE',
                              MATER=BETON_E,),
                           _F(GROUP_MA='ACIER1L',
                              MATER=ACIER,),
@@ -201,25 +440,24 @@ MATER=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=ACIER,),
                           _F(GROUP_MA='ACIER2T',
                              MATER=ACIER,),),);
+
+# -- AFFECTATION DU MATERIAU POUR GLRC_DM --
+
+MATER_G=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=(_F(GROUP_MA='DALLE_G',
+                             MATER=MAT_G,),
+                           ),
+                     );
+                     
+# -- AFFECTATION DU MATERIAU POUR DHRC --
+
+MATER_D=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA='DALLE_G',
+                             MATER=MAT_D,),
+                           ),
+                     );
+
 COEF_DRZ = 1e-10;
-
-
-# -- AFFECTATION DU COMPORTEMENT ET DU MATERIAU POUR LABORD_1D --
-
-COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,
-                  MATER_SECT=MATOR,
-                  MULTIFIBRE=(_F(GROUP_FIBRE='SECF',
-                                 MATER=BETON_L,
-                                 RELATION='LABORD_1D',),
-                              _F(GROUP_FIBRE='SACI',
-                                 MATER=ACIER,
-                                 RELATION='VMIS_CINE_LINE',),),);
-
-CHMAT=AFFE_MATERIAU(MAILLAGE=POUT,
-                    AFFE=_F(GROUP_MA='POUTRE',
-                            MATER=(ACIER,MATOR,BETON_L,),),
-                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',
-                                   COMPOR=COMPF,),);
 
 # -- AFFECTATION DES CARACTERISTIQUES POUR ENDO_ISOT --
 
@@ -252,30 +490,13 @@ CAEL=AFFE_CARA_ELEM(MODELE=MO,
                                EXCENTREMENT=(EP * 0.4),
                                COEF_RIGI_DRZ=COEF_DRZ,),),);
 
-# -- AFFECTATION DES CARACTERISTIQUES POUR GLRC_DM --
+# -- AFFECTATION DES CARACTERISTIQUES POUR GLRC_DM & DHRC --
 
 CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
                       COQUE=_F(GROUP_MA='DALLE_G',
                                EPAIS=EP,
                                ANGL_REP=(0.0,0.0,),
                                INER_ROTA='OUI',),);
-
-# -- AFFECTATION DES CARACTERISTIQUES POUR LABORD_1D --
-
-CAEL_L=AFFE_CARA_ELEM(MODELE=MO_L,
-                      INFO=1,
-                      POUTRE=_F(GROUP_MA='POUTRE',
-                                SECTION='RECTANGLE',
-
-                                CARA=('HY','HZ',),
-                                VALE=(1.0,0.1,),),
-                      ORIENTATION=_F(GROUP_MA='POUTRE',
-                                     CARA='ANGL_VRIL',
-                                     VALE=0.0,),
-                      GEOM_FIBRE=GF,
-                      MULTIFIBRE=_F(GROUP_MA='POUTRE',
-                                    GROUP_FIBRE=('SECF','SACI',),PREC_AIRE=1.61E-02,
-                                PREC_INERTIE=6.3E-02,),);
 
 # -- CONDITIONS LIMITES POUR ENDO_ISOT --
 
@@ -291,7 +512,7 @@ COND_0=AFFE_CHAR_MECA(MODELE=MO,
                                    DX=0.0,
                                    DRY=0.0,),),);
 
-# -- CONDITIONS LIMITES POUR GLRC_DM --
+# -- CONDITIONS LIMITES POUR GLRC_DM & DHRC --
 
 COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
                        DDL_IMPO=(_F(GROUP_NO='A1',
@@ -305,17 +526,6 @@ COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
                                     DX=0.0,
                                     DRY=0.0,),),);
 
-# -- CONDITIONS LIMITES POUR LABORD_1D --
-
-COND_0L=AFFE_CHAR_MECA(MODELE=MO_L,
-                       DDL_IMPO=_F(GROUP_NO='A',
-                                   DX=0.,
-                                   DY=0.,
-                                   DZ=0.,
-                                   DRX=0.,
-                                   DRY=0.,
-                                   DRZ=0.,),);
-
 # -- CHARGEMENT IMPOSE POUR ENDO_ISOT --
 
 COND_1=AFFE_CHAR_MECA(MODELE=MO,
@@ -324,7 +534,7 @@ COND_1=AFFE_CHAR_MECA(MODELE=MO,
                                 _F(GROUP_MA='A2A4',
                                    DX=DEP0,),),);
 
-# -- CHARGEMENT IMPOSE POUR GLRC_DM --
+# -- CHARGEMENT IMPOSE POUR GLRC_DM & DHRC --
 
 COND_1G=AFFE_CHAR_MECA(MODELE=MO_G,
                        DDL_IMPO=(_F(GROUP_MA='A2A4',
@@ -332,13 +542,6 @@ COND_1G=AFFE_CHAR_MECA(MODELE=MO_G,
                                  _F(GROUP_MA='A2A4',
                                     DX=DEP0,),),);
 
-# -- CHARGEMENT IMPOSE POUR LABORD_1D --
-
-COND_1L=AFFE_CHAR_MECA(MODELE=MO_L,
-                       DDL_IMPO=(_F(GROUP_NO='B',
-                                    DRY=DR0,),
-                                 _F(GROUP_NO='B',
-                                    DX=DEP0,),),);
 
 # -- FONCTION MULTIPLICATRICE POUR LE CHARGEMENT --
 
@@ -400,7 +603,7 @@ RESU_R1=CALC_CHAMP(reuse =RESU_R1,RESULTAT=RESU_R1,PRECISION=1.E-3,
              FORCE=('FORC_NODA',),);
 
 RESU_G1=STAT_NON_LINE(MODELE=MO_G,
-                      CHAM_MATER=MATER,
+                      CHAM_MATER=MATER_G,
                       CARA_ELEM=CAEL_G,
                       EXCIT=(_F(CHARGE=COND_0,
                                 FONC_MULT=chf1,),
@@ -418,53 +621,27 @@ RESU_G1=CALC_CHAMP(reuse =RESU_G1,
                   RESULTAT=RESU_G1,
                    VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),);
 
-
-RESU_L1=STAT_NON_LINE(MODELE=MO_L,
-                      CHAM_MATER=CHMAT,
-                      CARA_ELEM=CAEL_L,
-                      EXCIT=(_F(CHARGE=COND_0L,
+RESU_D1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER_D,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1L,
+                             _F(CHARGE=COND_1,
                                 FONC_MULT=chf1,),),
-                      COMP_INCR=_F(RELATION='MULTIFIBRE',),
-                      INCREMENT=_F(LIST_INST=DEFLIST1,),
-                      NEWTON=_F(MATRICE='TANGENTE',
-                                REAC_ITER=1,),
+                      COMP_INCR=_F(RELATION='DHRC',
+                                   RESI_INTE_RELA=1e-12,),
+                      INCREMENT=_F(LIST_INST=DEFLIST1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),);
 
-
-RESU_L1=CALC_CHAMP(reuse =RESU_L1,
-                  RESULTAT=RESU_L1,
+RESU_D1=CALC_CHAMP(reuse =RESU_D1,
                   FORCE=('FORC_NODA'),
-                   DEFORMATION=('DEGE_ELNO'),);
+                  RESULTAT=RESU_D1,
+                   VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),);
+
 
 # ---------------------POST-TRAITEMENT--------------------------
-
-EPS=POST_RELEVE_T(ACTION=(
-                         _F(OPERATION='EXTRACTION',
-                            INTITULE='TABEPS',
-                            RESULTAT=RESU_L1,
-                            NOM_CHAM='DEGE_ELNO',
-                            NOEUD='N2',
-                            TOUT_CMP='OUI',),
-                         ),);
-
-EPS=CALC_TABLE(reuse =EPS,
-               TABLE=EPS,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE      = 0,
-                         ),),);
-
-EPS=CALC_TABLE(reuse =EPS,
-               TABLE=EPS,
-               ACTION=(
-                       _F(OPERATION='EXTR',
-                          NOM_PARA=('INST','KY',),),
-                       _F(OPERATION='RENOMME',
-                          NOM_PARA=('KY','DRY',),),),);
 
 TFXA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A4FX',
@@ -472,66 +649,28 @@ TFXA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A4',
                                  NOM_CMP='DX',),
-                              ),);
+                                ),
 
-TFXA4_R1=CALC_TABLE(reuse =TFXA4_R1,
-                    TABLE=TFXA4_R1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-
-TFXA4_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A4FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A4',
-                                 NOM_CMP='DX',),),
                                  );
 
-TFXA4_G1=CALC_TABLE(reuse =TFXA4_G1,
-                    TABLE=TFXA4_G1,
-                    ACTION=(_F(
+TFXA4_R1=CALC_TABLE(reuse =TFXA4_R1,
+               TABLE=TFXA4_R1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-
 TFXA2_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A2FX',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A2',
-                                 NOM_CMP='DX',),
-                               ),
-                                 );
+                                 NOM_CMP='DX',),),);
 
 TFXA2_R1=CALC_TABLE(reuse =TFXA2_R1,
-                    TABLE=TFXA2_R1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TFXA2_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A2FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A2',
-                                 NOM_CMP='DX',),
-                                ),
-
-                                 );
-
-TFXA2_G1=CALC_TABLE(reuse =TFXA2_G1,
-                    TABLE=TFXA2_G1,
-                    ACTION=(_F(
+               TABLE=TFXA2_R1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
@@ -543,13 +682,103 @@ TFXA6_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A6',
-                                 NOM_CMP='DX',),
-                              ),
-                                 );
+                                 NOM_CMP='DX',),),);
+
+TFXA6_R1=CALC_TABLE(reuse =TFXA6_R1,
+               TABLE=TFXA6_R1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TFXA2_R1=CALC_TABLE(reuse =TFXA2_R1,
+                    TABLE=TFXA2_R1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DX',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DX','FXA2',),),),);
+
+TFXA4_R1=CALC_TABLE(reuse =TFXA4_R1,
+                    TABLE=TFXA4_R1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DX',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DX','FXA4',),),),);
 
 TFXA6_R1=CALC_TABLE(reuse =TFXA6_R1,
                     TABLE=TFXA6_R1,
-                    ACTION=(_F(
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DX',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DX','FXA6',),),),);
+
+
+SUM_FX = FORMULE(VALE='FXA2+FXA4+FXA6',
+                 NOM_PARA=('FXA2','FXA4','FXA6',),);
+
+TFX_R1=CALC_TABLE(TABLE=TFXA2_R1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TFXA4_R1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='COMB',
+                             TABLE=TFXA6_R1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='OPER',
+                             FORMULE=SUM_FX,
+                             NOM_PARA='FX',),
+                          _F(OPERATION='EXTR',
+                             NOM_PARA=('INST','FX',),),),);
+
+DETRUIRE(CONCEPT=_F(NOM=(TFXA2_R1,TFXA4_R1,TFXA6_R1,),),);
+
+TDY_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                               INTITULE='A4DY',
+                               RESULTAT=RESU_R1,
+                               NOM_CHAM='DEPL',
+                               GROUP_NO='A4',
+                               NOM_CMP='DY',),),);
+
+
+TDY_R1=CALC_TABLE(reuse =TDY_R1,
+               TABLE=TDY_R1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+##################################################################
+
+TFXA4_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A4FX',
+                                 RESULTAT=RESU_G1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A4',
+                                 NOM_CMP='DX',),),);
+
+TFXA4_G1=CALC_TABLE(reuse =TFXA4_G1,
+               TABLE=TFXA4_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TFXA2_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A2FX',
+                                 RESULTAT=RESU_G1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A2',
+                                 NOM_CMP='DX',),),);
+
+
+TFXA2_G1=CALC_TABLE(reuse =TFXA2_G1,
+               TABLE=TFXA2_G1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
@@ -561,214 +790,79 @@ TFXA6_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU_G1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A6',
-                                 NOM_CMP='DX',),
-                                ),
-                                );
+                                 NOM_CMP='DX',),),);
+
 
 TFXA6_G1=CALC_TABLE(reuse =TFXA6_G1,
-                    TABLE=TFXA6_G1,
-                    ACTION=(_F(
+               TABLE=TFXA6_G1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-
-TFX_L1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                               INTITULE='FXL',
-                               RESULTAT=RESU_L1,
-                               NOM_CHAM='FORC_NODA',
-                               NOEUD='N2',
-                               NOM_CMP='DX',),
-                              ),
-                               );
-
-TFX_L1=CALC_TABLE(reuse =TFX_L1,
-                    TABLE=TFX_L1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TD_1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                             INTITULE='A4D',
-                             RESULTAT=RESU_G1,
-                             NOM_CHAM='VARI_ELNO',
-                             GROUP_NO='A4',
-                             NOM_CMP=('V1','V2',),),
-                            ),
-
-                             );
-
-TD_1=CALC_TABLE(reuse =TD_1,
-                    TABLE=TD_1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TFX_L1=CALC_TABLE(reuse =TFX_L1,
-                  TABLE=TFX_L1,
-                  ACTION=(
-                  _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','DX',),),
-
-                          _F(OPERATION='RENOMME',
-                             NOM_PARA=('DX','FXL',),),),);
-
-TD_1=CALC_TABLE(reuse =TD_1,
-                TABLE=TD_1,
-                ACTION=(
-
-                _F(OPERATION='EXTR',
-                           NOM_PARA=('INST','V1','V2',),),
-
-                        _F(OPERATION='RENOMME',
-                           NOM_PARA=('V1','D1',),),
-                        _F(OPERATION='RENOMME',
-                           NOM_PARA=('V2','D2',),),),);
-
-TFXA2_R1=CALC_TABLE(reuse =TFXA2_R1,
-                    TABLE=TFXA2_R1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA2',),),),);
 
 TFXA2_G1=CALC_TABLE(reuse =TFXA2_G1,
                     TABLE=TFXA2_G1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
+                    ACTION=(_F(OPERATION='EXTR',
                                NOM_PARA=('INST','DX',),),
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('DX','FXA2',),),),);
 
-TFXA4_R1=CALC_TABLE(reuse =TFXA4_R1,
-                    TABLE=TFXA4_R1,
-                    ACTION=(
-
-                            _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA4',),),),);
-
 TFXA4_G1=CALC_TABLE(reuse =TFXA4_G1,
                     TABLE=TFXA4_G1,
-                    ACTION=(
-
-                            _F(OPERATION='EXTR',
+                    ACTION=(_F(OPERATION='EXTR',
                                NOM_PARA=('INST','DX',),),
-
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('DX','FXA4',),),),);
-
-TFXA6_R1=CALC_TABLE(reuse =TFXA6_R1,
-                    TABLE=TFXA6_R1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA6',),),),);
 
 TFXA6_G1=CALC_TABLE(reuse =TFXA6_G1,
                     TABLE=TFXA6_G1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
+                    ACTION=(_F(OPERATION='EXTR',
                                NOM_PARA=('INST','DX',),),
-
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('DX','FXA6',),),),);
 
-SUM_FX = FORMULE(VALE='FXA2+FXA4+FXA6',
-                 NOM_PARA=('FXA2','FXA4','FXA6',),);
-
-DREL_FXG = FORMULE(VALE='(FXG-FX)/FX',
-                   NOM_PARA=('FX','FXG',),);
-
-DREL_FXL = FORMULE(VALE='(FXG-FXL)/FXL',
-                   NOM_PARA=('FXL','FXG',),);
-
-D_REL_DY = FORMULE(VALE='(DYG-DY)/DY',
-                   NOM_PARA=('DY','DYG',),);
-
-TFX_R1=CALC_TABLE(TABLE=TFXA2_R1,
-                  ACTION=(
-
-                  _F(OPERATION='COMB',
-                             TABLE=TFXA4_R1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='COMB',
-                             TABLE=TFXA6_R1,
-                             NOM_PARA='INST',),
-
-                          _F(OPERATION='OPER',
-                             FORMULE=SUM_FX,
-                             NOM_PARA='FX',),
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','FX',),),),);
-
 TFX_G1=CALC_TABLE(TABLE=TFXA2_G1,
-                  ACTION=(
-                          _F(OPERATION='COMB',
+                  ACTION=(_F(OPERATION='COMB',
                              TABLE=TFXA4_G1,
                              NOM_PARA='INST',),
                           _F(OPERATION='COMB',
                              TABLE=TFXA6_G1,
                              NOM_PARA='INST',),
-
                           _F(OPERATION='OPER',
                              FORMULE=SUM_FX,
                              NOM_PARA='FXG',),
                           _F(OPERATION='EXTR',
                              NOM_PARA=('INST','FXG',),),),);
 
-D_FX_1=CALC_TABLE(TABLE=TFX_R1,
-                  ACTION=(
+DETRUIRE(CONCEPT=_F(NOM=(TFXA2_G1,TFXA4_G1,TFXA6_G1,),),);
 
-                  _F(OPERATION='COMB',
-                             TABLE=TFX_G1,
-                             NOM_PARA='INST',),
 
-                          _F(OPERATION='COMB',
-                             TABLE=TFX_L1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='OPER',
-                             FORMULE=DREL_FXG,
-                             NOM_PARA='FXG_FX',),
-                          _F(OPERATION='OPER',
-                             FORMULE=DREL_FXL,
-                             NOM_PARA='FXG_FXL',),),);
+TD_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                              INTITULE='A4FX',
+                              RESULTAT=RESU_G1,
+                              NOM_CHAM='VARI_NOEU',
+                              GROUP_NO='A4',
+                              NOM_CMP=('V1','V2',),),),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TFXA2_R1,TFXA2_G1,TFXA4_R1,TFXA4_G1,TFXA6_R1,TFXA6_G1,TFX_R1,TFX_G1,TFX_L1,),),);
-
-TDY_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                               INTITULE='A4DY',
-                               RESULTAT=RESU_R1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='A4',
-                               NOM_CMP='DY',),),
-                               );
-
-TDY_R1=CALC_TABLE(reuse =TDY_R1,
-                    TABLE=TDY_R1,
-                    ACTION=(_F(
+TD_G1=CALC_TABLE(reuse =TD_G1,
+               TABLE=TD_G1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
+
+TD_G1=CALC_TABLE(reuse =TD_G1,
+                 TABLE=TD_G1,
+                 ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','V1','V2',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V1','D1',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V2','D2',),),),);
 
 TDY_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4DY',
@@ -776,13 +870,13 @@ TDY_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                NOM_CHAM='DEPL',
                                GROUP_NO='A4',
                                NOM_CMP='DY',),
-                              ),
+                             ),
 
                                );
 
 TDY_G1=CALC_TABLE(reuse =TDY_G1,
-                    TABLE=TDY_G1,
-                    ACTION=(_F(
+               TABLE=TDY_G1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
@@ -791,21 +885,178 @@ TDY_G1=CALC_TABLE(reuse =TDY_G1,
 
 TDY_G1=CALC_TABLE(reuse =TDY_G1,
                   TABLE=TDY_G1,
-                  ACTION=(
-
-                  _F(OPERATION='EXTR',
+                  ACTION=(_F(OPERATION='EXTR',
                              NOM_PARA=('INST','DY',),),
-
                           _F(OPERATION='RENOMME',
                              NOM_PARA=('DY','DYG',),),),);
 
-D_DY_1=CALC_TABLE(TABLE=TDY_R1,
-                  ACTION=(
+##################################################################
 
-                  _F(OPERATION='COMB',
+TFXA4_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A4FX',
+                                 RESULTAT=RESU_D1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A4',
+                                 NOM_CMP='DX',),),);
+
+TFXA4_D1=CALC_TABLE(reuse =TFXA4_D1,
+               TABLE=TFXA4_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TFXA2_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A2FX',
+                                 RESULTAT=RESU_D1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A2',
+                                 NOM_CMP='DX',),),);
+
+
+TFXA2_D1=CALC_TABLE(reuse =TFXA2_D1,
+               TABLE=TFXA2_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TFXA6_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A6FX',
+                                 RESULTAT=RESU_D1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A6',
+                                 NOM_CMP='DX',),),);
+
+
+TFXA6_D1=CALC_TABLE(reuse =TFXA6_D1,
+               TABLE=TFXA6_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TFXA2_D1=CALC_TABLE(reuse =TFXA2_D1,
+                    TABLE=TFXA2_D1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DX',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DX','FXA2',),),),);
+
+TFXA4_D1=CALC_TABLE(reuse =TFXA4_D1,
+                    TABLE=TFXA4_D1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DX',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DX','FXA4',),),),);
+
+TFXA6_D1=CALC_TABLE(reuse =TFXA6_D1,
+                    TABLE=TFXA6_D1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DX',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DX','FXA6',),),),);
+
+TFX_D1=CALC_TABLE(TABLE=TFXA2_D1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TFXA4_D1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='COMB',
+                             TABLE=TFXA6_D1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='OPER',
+                             FORMULE=SUM_FX,
+                             NOM_PARA='FXD',),
+                          _F(OPERATION='EXTR',
+                             NOM_PARA=('INST','FXD',),),),);
+
+DETRUIRE(CONCEPT=_F(NOM=(TFXA2_D1,TFXA4_D1,TFXA6_D1,),),);
+
+
+TD_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                              INTITULE='A4FX',
+                              RESULTAT=RESU_D1,
+                              NOM_CHAM='VARI_NOEU',
+                              GROUP_NO='A4',
+                              NOM_CMP=('V1','V2','V3','V4','V5','V6',),),),);
+
+TD_D1=CALC_TABLE(reuse =TD_D1,
+               TABLE=TD_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+TD_D1=CALC_TABLE(reuse =TD_D1,
+                 TABLE=TD_D1,
+                 ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','V1','V2','V3','V4','V5','V6',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V1','D1',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V2','D2',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V3','EX1',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V4','EY1',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V5','EX2',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('V6','EY2',),),),);
+
+TDY_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                               INTITULE='A4DY',
+                               RESULTAT=RESU_D1,
+                               NOM_CHAM='DEPL',
+                               GROUP_NO='A4',
+                               NOM_CMP='DY',),
+                             ),
+
+                               );
+
+TDY_D1=CALC_TABLE(reuse =TDY_D1,
+               TABLE=TDY_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TDY_D1=CALC_TABLE(reuse =TDY_D1,
+                  TABLE=TDY_D1,
+                  ACTION=(_F(OPERATION='EXTR',
+                             NOM_PARA=('INST','DY',),),
+                          _F(OPERATION='RENOMME',
+                             NOM_PARA=('DY','DYD',),),),);
+
+##################################################################
+
+DREL_FX  = FORMULE(VALE='(FXG-FX)/FX',
+                   NOM_PARA=('FX','FXG',),);
+
+D_REL_DY = FORMULE(VALE='(DYG-DY)/DY',
+                   NOM_PARA=('DY','DYG',),);
+
+D_FX_1=CALC_TABLE(TABLE=TFX_R1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TFX_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='OPER',
+                             FORMULE=DREL_FX,
+                             NOM_PARA='FXG_FX',),),);
+
+D_DY_1=CALC_TABLE(TABLE=TDY_R1,
+                  ACTION=(_F(OPERATION='COMB',
                              TABLE=TDY_G1,
                              NOM_PARA='INST',),
-
                           _F(OPERATION='EXTR',
                              NOM_PARA=('INST','DY','DYG',),),),);
 
@@ -822,7 +1073,51 @@ D_DY_1=CALC_TABLE(reuse =D_DY_1,
                             FORMULE=D_REL_DY,
                             NOM_PARA='DYG_DY',),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TDY_R1,TDY_G1,),),);
+IMPR_TABLE(TABLE=D_FX_1,);
+
+IMPR_TABLE(TABLE=D_DY_1,);
+
+#################################################################
+
+DREL_FXG = FORMULE(VALE='(FXG-FXD)/FXD',
+                   NOM_PARA=('FXD','FXG',),);
+
+DREL_DYG = FORMULE(VALE='(DYG-DYD)/DYD',
+                   NOM_PARA=('DYD','DYG',),);
+
+D_FX_1G=CALC_TABLE(TABLE=TFX_D1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TFX_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='OPER',
+                             FORMULE=DREL_FXG,
+                             NOM_PARA='FXG_FXD',),),);
+
+D_DY_1G=CALC_TABLE(TABLE=TDY_D1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TDY_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='EXTR',
+                             NOM_PARA=('INST','DYD','DYG',),),),);
+
+D_DY_1G=CALC_TABLE(reuse =D_DY_1G,
+                  TABLE=D_DY_1G,
+                  ACTION=_F(OPERATION='FILTRE',
+                            NOM_PARA='DY',
+                            CRIT_COMP='NE',
+                            VALE=0.0,),);
+
+D_DY_1G=CALC_TABLE(reuse =D_DY_1G,
+                  TABLE=D_DY_1G,
+                  ACTION=_F(OPERATION='OPER',
+                            FORMULE=DREL_DYG,
+                            NOM_PARA='DYG_DYD',),);
+
+IMPR_TABLE(TABLE=D_FX_1G,);
+
+IMPR_TABLE(TABLE=D_DY_1G,);
+
+#################################################################
 
 TMYA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A4MY',
@@ -830,31 +1125,11 @@ TMYA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A4',
                                  NOM_CMP='DRY',),
-                                ),
-
-                                 );
+                               ),);
 
 TMYA4_R1=CALC_TABLE(reuse =TMYA4_R1,
-                    TABLE=TMYA4_R1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TMYA4_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A4MY',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A4',
-                                 NOM_CMP='DRY',),
-                                 ),
-                            );
-
-TMYA4_G1=CALC_TABLE(reuse =TMYA4_G1,
-                    TABLE=TMYA4_G1,
-                    ACTION=(_F(
+               TABLE=TMYA4_R1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
@@ -866,31 +1141,11 @@ TMYA2_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A2',
-                                 NOM_CMP='DRY',),
-                               ),
-                                 );
+                                 NOM_CMP='DRY',),),);
 
 TMYA2_R1=CALC_TABLE(reuse =TMYA2_R1,
-                    TABLE=TMYA2_R1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TMYA2_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A2MY',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A2',
-                                 NOM_CMP='DRY',),
-                               ),
-                                 );
-
-TMYA2_G1=CALC_TABLE(reuse =TMYA2_G1,
-                    TABLE=TMYA2_G1,
-                    ACTION=(_F(
+               TABLE=TMYA2_R1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
@@ -902,223 +1157,66 @@ TMYA6_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A6',
-                                 NOM_CMP='DRY',),
-                                ),
-                                 );
+                                 NOM_CMP='DRY',),),);
 
 TMYA6_R1=CALC_TABLE(reuse =TMYA6_R1,
-                    TABLE=TMYA6_R1,
-                    ACTION=(_F(
+               TABLE=TMYA6_R1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-
-TMYA6_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                 INTITULE='A6MY',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A6',
-                                 NOM_CMP='DRY',),
-                              ),
-                                 );
-
-TMYA6_G1=CALC_TABLE(reuse =TMYA6_G1,
-                    TABLE=TMYA6_G1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TMY_L1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                               INTITULE='MYL',
-                               RESULTAT=RESU_L1,
-                               NOM_CHAM='FORC_NODA',
-                               NOEUD='N2',
-                               NOM_CMP='DRY',),
-                              ),
-
-                               );
-TMY_L1=CALC_TABLE(reuse =TMY_L1,
-                    TABLE=TMY_L1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TMY_L1=CALC_TABLE(reuse =TMY_L1,
-                  TABLE=TMY_L1,
-                  ACTION=(
-
-                  _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','DRY',),),
-                          _F(OPERATION='RENOMME',
-                             NOM_PARA=('DRY','MYL',),),),);
-
+                         
 TMYA2_R1=CALC_TABLE(reuse =TMYA2_R1,
                     TABLE=TMYA2_R1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DRY',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DRY','MYA2',),),),);
-
-TMYA2_G1=CALC_TABLE(reuse =TMYA2_G1,
-                    TABLE=TMYA2_G1,
-                    ACTION=(
-
-
-                    _F(OPERATION='EXTR',
+                    ACTION=(_F(OPERATION='EXTR',
                                NOM_PARA=('INST','DRY',),),
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('DRY','MYA2',),),),);
 
 TMYA4_R1=CALC_TABLE(reuse =TMYA4_R1,
                     TABLE=TMYA4_R1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
+                    ACTION=(_F(OPERATION='EXTR',
                                NOM_PARA=('INST','DRY',),),
-
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DRY','MYA4',),),),);
-
-TMYA4_G1=CALC_TABLE(reuse =TMYA4_G1,
-                    TABLE=TMYA4_G1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DRY',),),
-
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('DRY','MYA4',),),),);
 
 TMYA6_R1=CALC_TABLE(reuse =TMYA6_R1,
                     TABLE=TMYA6_R1,
-                    ACTION=(
-
-
-                    _F(OPERATION='EXTR',
+                    ACTION=(_F(OPERATION='EXTR',
                                NOM_PARA=('INST','DRY',),),
-
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DRY','MYA6',),),),);
-
-TMYA6_G1=CALC_TABLE(reuse =TMYA6_G1,
-                    TABLE=TMYA6_G1,
-                    ACTION=(
-
-                    _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DRY',),),
-
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('DRY','MYA6',),),),);
 
 SUM_MY = FORMULE(VALE='MYA2+MYA4+MYA6',
                  NOM_PARA=('MYA2','MYA4','MYA6',),);
 
-DREL_MYG = FORMULE(VALE='(MYG-MY)/MY',
-                   NOM_PARA=('MY','MYG',),);
-
-DREL_MYL = FORMULE(VALE='(MYG-MYL)/MYL',
-                   NOM_PARA=('MYL','MYG',),);
-
-D_REL_RX = FORMULE(VALE='(RXG-RX)/RX',
-                   NOM_PARA=('RX','RXG',),);
-
 TMY_R1=CALC_TABLE(TABLE=TMYA2_R1,
-                  ACTION=(
-
-                  _F(OPERATION='COMB',
+                  ACTION=(_F(OPERATION='COMB',
                              TABLE=TMYA4_R1,
                              NOM_PARA='INST',),
                           _F(OPERATION='COMB',
                              TABLE=TMYA6_R1,
                              NOM_PARA='INST',),
-
                           _F(OPERATION='OPER',
                              FORMULE=SUM_MY,
                              NOM_PARA='MY',),
                           _F(OPERATION='EXTR',
                              NOM_PARA=('INST','MY',),),),);
 
-TMY_G1=CALC_TABLE(TABLE=TMYA2_G1,
-                  ACTION=(
-
-                  _F(OPERATION='COMB',
-                             TABLE=TMYA4_G1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='COMB',
-                             TABLE=TMYA6_G1,
-                             NOM_PARA='INST',),
-
-                          _F(OPERATION='OPER',
-                             FORMULE=SUM_MY,
-                             NOM_PARA='MYG',),
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','MYG',),),),);
-
-D_MY_1=CALC_TABLE(TABLE=TMY_R1,
-
-                  ACTION=(
-
-                  _F(OPERATION='COMB',
-                             TABLE=TMY_G1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='COMB',
-                             TABLE=TMY_L1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='FILTRE',
-                             NOM_PARA='MY',
-                             CRIT_COMP='NE',
-                             VALE=0.0,),
-
-                          _F(OPERATION='OPER',
-                             FORMULE=DREL_MYG,
-                             NOM_PARA='MYG_MY',),
-                          _F(OPERATION='OPER',
-                             FORMULE=DREL_MYL,
-                             NOM_PARA='MYG_MYL',),),);
-
-DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R1,TMYA2_G1,TMYA4_R1,TMYA4_G1,TMYA6_R1,TMYA6_G1,TMY_R1,TMY_G1,TMY_L1,),),);
-
+DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R1,TMYA4_R1,TMYA6_R1,),),);
+                             
 TRX_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
                                RESULTAT=RESU_R1,
                                NOM_CHAM='DEPL',
                                GROUP_NO='A4',
-                               NOM_CMP='DRX',),
-                             ),
-
-                               );
+                               NOM_CMP='DRX',),),);
 
 TRX_R1=CALC_TABLE(reuse =TRX_R1,
-                    TABLE=TRX_R1,
-                    ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TRX_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                               INTITULE='A4RX',
-                               RESULTAT=RESU_G1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='A4',
-                               NOM_CMP='DRX',),
-                              ),
-                               );
-
-TRX_G1=CALC_TABLE(reuse =TRX_G1,
-                    TABLE=TRX_G1,
-                    ACTION=(_F(
+               TABLE=TRX_R1,
+               ACTION=(_F(
                           OPERATION = 'FILTRE',
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
@@ -1130,46 +1228,321 @@ TRX_R1=CALC_TABLE(reuse =TRX_R1,
                   ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('DRX','RX',),),);
 
+IMPR_TABLE(TABLE=TMY_R1,);
+
+IMPR_TABLE(TABLE=TRX_R1,);
+
+#########################################################"
+
+TMYA4_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A4MY',
+                                 RESULTAT=RESU_D1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A4',
+                                 NOM_CMP='DRY',),
+                                ),);
+
+TMYA4_D1=CALC_TABLE(reuse =TMYA4_D1,
+               TABLE=TMYA4_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA2_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A2MY',
+                                 RESULTAT=RESU_D1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A2',
+                                 NOM_CMP='DRY',),),);
+
+TMYA2_D1=CALC_TABLE(reuse =TMYA2_D1,
+               TABLE=TMYA2_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA6_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A6MY',
+                                 RESULTAT=RESU_D1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A6',
+                                 NOM_CMP='DRY',),),);
+
+
+TMYA6_D1=CALC_TABLE(reuse =TMYA6_D1,
+               TABLE=TMYA6_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA2_D1=CALC_TABLE(reuse =TMYA2_D1,
+                    TABLE=TMYA2_D1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DRY',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DRY','MYA2',),),),);
+
+TMYA4_D1=CALC_TABLE(reuse =TMYA4_D1,
+                    TABLE=TMYA4_D1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DRY',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DRY','MYA4',),),),);
+
+TMYA6_D1=CALC_TABLE(reuse =TMYA6_D1,
+                    TABLE=TMYA6_D1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DRY',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DRY','MYA6',),),),);
+
+TMY_D1=CALC_TABLE(TABLE=TMYA2_D1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TMYA4_D1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='COMB',
+                             TABLE=TMYA6_D1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='OPER',
+                             FORMULE=SUM_MY,
+                             NOM_PARA='MYD',),
+                          _F(OPERATION='EXTR',
+                             NOM_PARA=('INST','MYD',),),),);
+
+DETRUIRE(CONCEPT=_F(NOM=(TMYA2_D1,TMYA4_D1,TMYA6_D1,),),);
+
+TRX_D1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                               INTITULE='A4RX',
+                               RESULTAT=RESU_D1,
+                               NOM_CHAM='DEPL',
+                               GROUP_NO='A4',
+                               NOM_CMP='DRX',),
+                              ),);
+
+TRX_D1=CALC_TABLE(reuse =TRX_D1,
+               TABLE=TRX_D1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TRX_D1=CALC_TABLE(reuse =TRX_D1,
+                  TABLE=TRX_D1,
+                  ACTION=(_F(OPERATION='EXTR',
+                             NOM_PARA=('INST','DRX',),),
+                          _F(OPERATION='RENOMME',
+                             NOM_PARA=('DRX','RXD',),),),);
+
+IMPR_TABLE(TABLE=TMY_D1,);
+
+IMPR_TABLE(TABLE=TRX_D1,);
+
+IMPR_TABLE(TABLE=TD_D1,);
+
+###############################################################
+TMYA4_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A4MY',
+                                 RESULTAT=RESU_G1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A4',
+                                 NOM_CMP='DRY',),
+                                ),);
+
+TMYA4_G1=CALC_TABLE(reuse =TMYA4_G1,
+               TABLE=TMYA4_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA2_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A2MY',
+                                 RESULTAT=RESU_G1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A2',
+                                 NOM_CMP='DRY',),),);
+
+TMYA2_G1=CALC_TABLE(reuse =TMYA2_G1,
+               TABLE=TMYA2_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA6_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                 INTITULE='A6MY',
+                                 RESULTAT=RESU_G1,
+                                 NOM_CHAM='FORC_NODA',
+                                 GROUP_NO='A6',
+                                 NOM_CMP='DRY',),),);
+
+
+TMYA6_G1=CALC_TABLE(reuse =TMYA6_G1,
+               TABLE=TMYA6_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA2_G1=CALC_TABLE(reuse =TMYA2_G1,
+                    TABLE=TMYA2_G1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DRY',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DRY','MYA2',),),),);
+
+TMYA4_G1=CALC_TABLE(reuse =TMYA4_G1,
+                    TABLE=TMYA4_G1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DRY',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DRY','MYA4',),),),);
+
+TMYA6_G1=CALC_TABLE(reuse =TMYA6_G1,
+                    TABLE=TMYA6_G1,
+                    ACTION=(_F(OPERATION='EXTR',
+                               NOM_PARA=('INST','DRY',),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('DRY','MYA6',),),),);
+
+TMY_G1=CALC_TABLE(TABLE=TMYA2_G1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TMYA4_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='COMB',
+                             TABLE=TMYA6_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='OPER',
+                             FORMULE=SUM_MY,
+                             NOM_PARA='MYG',),
+                          _F(OPERATION='EXTR',
+                             NOM_PARA=('INST','MYG',),),),);
+
+DETRUIRE(CONCEPT=_F(NOM=(TMYA2_G1,TMYA4_G1,TMYA6_G1,),),);
+
+TRX_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                               INTITULE='A4RX',
+                               RESULTAT=RESU_G1,
+                               NOM_CHAM='DEPL',
+                               GROUP_NO='A4',
+                               NOM_CMP='DRX',),
+                              ),);
+
+TRX_G1=CALC_TABLE(reuse =TRX_G1,
+               TABLE=TRX_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
 TRX_G1=CALC_TABLE(reuse =TRX_G1,
                   TABLE=TRX_G1,
-                  ACTION=(
-
-
-                  _F(OPERATION='EXTR',
+                  ACTION=(_F(OPERATION='EXTR',
                              NOM_PARA=('INST','DRX',),),
-
                           _F(OPERATION='RENOMME',
                              NOM_PARA=('DRX','RXG',),),),);
 
-D_RX_1=CALC_TABLE(TABLE=TRX_R1,
-                  ACTION=(
+IMPR_TABLE(TABLE=TMY_G1,);
 
-                  _F(OPERATION='COMB',
+IMPR_TABLE(TABLE=TRX_G1,);
+
+IMPR_TABLE(TABLE=TD_G1,);
+###################################################################"
+
+DREL_MYG = FORMULE(VALE='(MYG-MYD)/MYD',
+                  NOM_PARA=('MYD','MYG',),);
+
+DREL_RXG = FORMULE(VALE='(RXG-RXD)/RXD',
+                  NOM_PARA=('RXD','RXG',),);
+
+D_MY_1G=CALC_TABLE(TABLE=TMY_D1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TMY_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='FILTRE',
+                             NOM_PARA='MY',
+                             CRIT_COMP='NE',
+                             VALE=0.0,),
+                          _F(OPERATION='OPER',
+                             FORMULE=DREL_MYG,
+                             NOM_PARA='MYG_MYD',),
+                         ),
+                  );
+
+D_RX_1G=CALC_TABLE(TABLE=TRX_D1,
+                  ACTION=(_F(OPERATION='COMB',
                              TABLE=TRX_G1,
                              NOM_PARA='INST',),
-
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','RX','RXG',),),
+                          _F(OPERATION='FILTRE',
+                             NOM_PARA='RX',
+                             CRIT_COMP='NE',
+                             VALE=0.0,),
                           _F(OPERATION='OPER',
-                             FORMULE=D_REL_RX,
-                             NOM_PARA='RXG_RX',),),);
+                             FORMULE=DREL_RXG,
+                             NOM_PARA='RXG_RXD',),
+                         ),
+                  );
 
-DETRUIRE(CONCEPT=_F(NOM=(TRX_R1,TRX_G1,),),);
+DREL_MY = FORMULE(VALE='(MYG-MY)/MY',
+                  NOM_PARA=('MY','MYG',),);
 
-IMPR_TABLE(TABLE=D_FX_1,);
+DREL_RX = FORMULE(VALE='(RXG-RX)/RX',
+                  NOM_PARA=('RX','RXG',),);
 
-IMPR_TABLE(TABLE=D_DY_1,);
+D_MY_1=CALC_TABLE(TABLE=TMY_R1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TMY_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='FILTRE',
+                             NOM_PARA='MY',
+                             CRIT_COMP='NE',
+                             VALE=0.0,),
+                          _F(OPERATION='OPER',
+                             FORMULE=DREL_MY,
+                             NOM_PARA='MYG_MY',),
+                         ),
+                  );
+
+D_RX_1=CALC_TABLE(TABLE=TRX_R1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=TRX_G1,
+                             NOM_PARA='INST',),
+                          _F(OPERATION='FILTRE',
+                             NOM_PARA='RX',
+                             CRIT_COMP='NE',
+                             VALE=0.0,),
+                          _F(OPERATION='OPER',
+                             FORMULE=DREL_RX,
+                             NOM_PARA='RXG_RX',),
+                         ),
+                  );
 
 IMPR_TABLE(TABLE=D_MY_1,);
-
 IMPR_TABLE(TABLE=D_RX_1,);
-
-IMPR_TABLE(TABLE=TD_1,);
 
 #----- TRACTION - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.94246426500163005,
+           VALE_CALC=1.0150852873324,
 
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
@@ -1178,16 +1551,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=2.3240027670275998,
-
-           NOM_PARA='FXG_FXL',
-           TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.25,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.9842162436399,
+           VALE_CALC=2.5001622125911,
 
            NOM_PARA='DYG_DY',
            TABLE=D_DY_1,
@@ -1198,18 +1562,9 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.3106226190426,
+           VALE_CALC=1.4922915016156,
 
            NOM_PARA='FXG_FX',
-           TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.2295024586065,
-
-           NOM_PARA='FXG_FXL',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
@@ -1218,7 +1573,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.3106228335957,
+           VALE_CALC=1.4922917330351,
 
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
@@ -1226,39 +1581,21 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=1.5,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-340.62189341878002,
-
-           NOM_PARA='FXG_FXL',
-           TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.5,),
-           )
-
-#----- COMPRESSION - PHASE CHARGEMENT-----
+#----- COMPRESSION - PHASE CHARGEMENT(TOUJOURS ELASTIQUE) -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.052263162867123,
+           VALE_CALC=-0.11341859370178,
 
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.34608261027988002,
-
-           NOM_PARA='FXG_FXL',
-           TABLE=D_FX_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,),
+                     VALE=2.5,),
            )
 
 #----- COMPRESSION - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.052263160868108997,
+           VALE_CALC=-0.12749942337937,
 
            NOM_PARA='FXG_FX',
            TABLE=D_FX_1,
@@ -1266,11 +1603,253 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=3.5,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.62483972906707996,
+#----- TRACTION - PHASE ELASTIQUE -----
 
-           NOM_PARA='FXG_FXL',
-           TABLE=D_FX_1,
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=2.7563414594138E-03,
+
+           NOM_PARA='FXG_FXD',
+           TABLE=D_FX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.05,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.050642589552913,
+
+           NOM_PARA='DYG_DYD',
+           TABLE=D_DY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.05,),
+           )
+
+#----- TRACTION - PHASE ENDOMMAGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.068260977873661,
+
+           NOM_PARA='FXG_FXD',
+           TABLE=D_FX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.45474513975158,
+
+           NOM_PARA='DYG_DYD',
+           TABLE=D_DY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
+
+#----- TRACTION - PHASE GLISSEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.30775262280036,
+
+           NOM_PARA='FXG_FXD',
+           TABLE=D_FX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.72153684933718,
+
+           NOM_PARA='DYG_DYD',
+           TABLE=D_DY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8,),
+           )
+
+#----- TRACTION - PHASE DECHARGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.57485873070132,
+
+           NOM_PARA='FXG_FXD',
+           TABLE=D_FX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.74772923742187,
+
+           NOM_PARA='DYG_DYD',
+           TABLE=D_DY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+#----- COMPRESSION - PHASE CHARGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.058388543320320,
+
+           NOM_PARA='FXG_FXD',
+           TABLE=D_FX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.48069595613936,
+
+           NOM_PARA='DYG_DYD',
+           TABLE=D_DY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.5,),
+           )
+
+#----- COMPRESSION - PHASE DECHARGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.20446769609005,
+
+           NOM_PARA='FXG_FXD',
+           TABLE=D_FX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.62787031688177,
+
+           NOM_PARA='DYG_DYD',
+           TABLE=D_DY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           )
+##----- FLEXION POSITIVE - PHASE ELASTIQUE -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.059159303456099,
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.05,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.11779859999167,
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.05,),
+           )
+
+##----- FLEXION POSITIVE - PHASE ENDOMMAGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.032606970870056,
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.20892630903024,
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.25,),
+           )
+
+##----- FLEXION POSITIVE - PHASE GLISSEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.033441635724487,
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.17095043576290,
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8,),
+           )
+
+##----- FLEXION POSITIVE - PHASE DECHARGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.080333044293762,
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.14014624099040,
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.5,),
+           )
+
+##----- FLEXION NEGATIVE - PHASE ELASTIQUE -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.14526957562821,
+
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.05,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.29746658808420,
+
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.05,),
+           )
+
+##----- FLEXION NEGATIVE - PHASE ENDOMMAGEMENT/GLISSEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.055303323268696,
+
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.16628119128077,
+
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           )
+
+##----- FLEXION NEGATIVE - PHASE DECHARGEMENT -----
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.089687000192258,
+
+           NOM_PARA='MYG_MYD',
+           TABLE=D_MY_1G,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.5,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=-0.14107875895967,
+
+           NOM_PARA='RXG_RXD',
+           TABLE=D_RX_1G,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            )
@@ -1278,7 +1857,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION POSITIVE - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.76026956839059001,
+           VALE_CALC=1.8255803933022,
 
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
@@ -1287,10 +1866,10 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.95772075218180996,
+           VALE_CALC=10.485237075586,
 
-           NOM_PARA='MYG_MYL',
-           TABLE=D_MY_1,
+           NOM_PARA='RXG_RX',
+           TABLE=D_RX_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.25,),
            )
@@ -1298,18 +1877,9 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION POSITIVE - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.15919163546574,
+           VALE_CALC=1.2675389030197,
 
            NOM_PARA='MYG_MY',
-           TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.24743792641935,
-
-           NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
@@ -1318,18 +1888,9 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION POSITIVE - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.15919159148680001,
+           VALE_CALC=1.267538816986,
 
            NOM_PARA='MYG_MY',
-           TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.5,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.49845949659844002,
-
-           NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.5,),
@@ -1338,7 +1899,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION NEGATIVE - PHASE ELASTIQUE -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.69762003079192003,
+           VALE_CALC=-0.42527345089352,
 
            NOM_PARA='MYG_MY',
            TABLE=D_MY_1,
@@ -1346,30 +1907,13 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=2.25,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.7191430375822,
-
-           NOM_PARA='MYG_MYL',
-           TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.25,),
-           )
 
 #----- FLEXION NEGATIVE - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.68569162862390998,
+           VALE_CALC=-0.39900876814297,
 
            NOM_PARA='MYG_MY',
-           TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.0,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.55335975175538998,
-
-           NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.0,),
@@ -1378,18 +1922,9 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- FLEXION NEGATIVE - PHASE DECHARGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.68569162821046004,
+           VALE_CALC=-0.39900876735240,
 
            NOM_PARA='MYG_MY',
-           TABLE=D_MY_1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=3.5,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.4273221047372,
-
-           NOM_PARA='MYG_MYL',
            TABLE=D_MY_1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),

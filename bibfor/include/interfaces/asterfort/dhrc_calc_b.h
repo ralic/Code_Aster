@@ -16,9 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dbgcha(valinc, instap, iterat)
-        character(len=19) :: valinc(*)
-        real(kind=8) :: instap
-        integer :: iterat
-    end subroutine dbgcha
+    subroutine dhrc_calc_b(b0, ab, gb,&
+                      vint, b, bp1, bp2, bs1,&
+                      bs2)
+        real(kind=8) :: b0(6, 2)
+        real(kind=8) :: ab(6, 2, 2)
+        real(kind=8) :: gb(6, 2, 2)
+        real(kind=8) :: vint(7)
+        real(kind=8) :: b(6, 2, 2)
+        real(kind=8) :: bp1(6, 2)
+        real(kind=8) :: bp2(6, 2)
+        real(kind=8) :: bs1(6, 2)
+        real(kind=8) :: bs2(6, 2)
+    end subroutine dhrc_calc_b
 end interface 

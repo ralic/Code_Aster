@@ -72,7 +72,7 @@ subroutine te0409(option, nomte)
     integer :: multic, jtab(7), codret, ideplm, ideplp
     integer :: icompo, i, i1, i2, j, k, ivectu, ipg, npg
     integer :: icontm, jcret, iretc
-    integer :: imate, nno, igeom, imatuu, jener, jfreq, iacce
+    integer :: nno, igeom, imatuu, jener, jfreq, iacce
     integer :: nddl, nvec, ndim, iret, n1, ni, n2, icarcr
     integer :: jcara
 !
@@ -90,30 +90,13 @@ subroutine te0409(option, nomte)
 !     --->   DUL : INCREMENT DE DEPLACEMENT   (REPERE LOCAL)
     real(kind=8) :: uml(6, 4), dul(6, 4)
 !
-    integer :: icodre(33)
-    character(len=10) :: phenom
     character(len=16) :: comp3, compor
     logical :: reactu
 !
 ! ---   RECUPERATION DES ADRESSES DANS ZR DES POIDS DES PG
 !       DES FONCTIONS DE FORME DES VALEURS DES DERIVEES DES FONCTIONS
 !       DE FORME ET DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS
-    call elref4(' ', 'RIGI', ndim, nno, nnos,&
-                npg, ipoids, ivf, idfdx, jgano)
-!
-    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option(1:9) .eq.&
-        'RIGI_MECA') then
-!
-! ---   RECUPERATION DU MATERIAU
-        call jevech('PMATERC', 'L', imate)
-!
-        if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
-            'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA     ') then
-!
-            call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
-        endif
-    endif
-!
+    call elref4(' ', 'RIGI', ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano)
 !
     call jevech('PGEOMER', 'L', igeom)
 !
@@ -125,35 +108,29 @@ subroutine te0409(option, nomte)
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-!
     if (option .eq. 'EPOT_ELEM') then
         if (nomte .eq. 'MEDKTG3') then
-            call dktrig(nomte, xyzl, option, pgl, matloc,&
-                        ener, multic)
+            call dktrig(nomte, xyzl, option, pgl, matloc, ener, multic)
         else if (nomte.eq.'MEDKQG4') then
-            call dkqrig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call dkqrig(nomte, xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MET3GG3') then
-            call t3grig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call t3grig(nomte, xyzl, option, pgl, matloc, ener)
         else if (nomte.eq.'MEQ4GG4') then
-            call q4grig(nomte, xyzl, option, pgl, matloc,&
-                        ener)
+            call q4grig(nomte, xyzl, option, pgl, matloc, ener)
         endif
 !
         call jevech('PENERDR', 'E', jener)
 !
-        do 10 i = 1, 3
+        do i = 1, 3
             zr(jener-1+i) = ener(i)
-10      continue
+        end do
 !
-        else if (option.eq.'MASS_MECA' .or. option.eq.'MASS_MECA_DIAG'&
-    .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA' .or.&
-    option.eq.'ECIN_ELEM') then
+    else if (option.eq.'MASS_MECA'       .or. option.eq.'MASS_MECA_DIAG'&
+        .or. option.eq.'MASS_MECA_EXPLI' .or. option.eq.'M_GAMMA'&
+        .or. option.eq.'ECIN_ELEM') then
 !
         if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
-            call dktmas(xyzl, option, pgl, matloc, ener,&
-                        multic)
+            call dktmas(xyzl, option, pgl, matloc, ener, multic)
         else if (nomte.eq.'MEDKQG4'.or. nomte.eq.'MEQ4GG4') then
             call dkqmas(xyzl, option, pgl, matloc, ener)
         endif
@@ -165,9 +142,9 @@ subroutine te0409(option, nomte)
             call jevech('PENERCR', 'E', jener)
             call jevech('POMEGA2', 'L', jfreq)
 !
-            do 20 i = 1, 3
+            do i = 1, 3
                 zr(jener-1+i) = zr(jfreq)*ener(i)
-20          continue
+            end do
 !
         else if (option.eq.'M_GAMMA') then
             call jevech('PACCELR', 'L', iacce)
@@ -180,35 +157,32 @@ subroutine te0409(option, nomte)
             call vecma(matv, nvec, matp, nddl)
             call pmavec('ZERO', nddl, matp, zr(iacce), zr(ivectu))
 !
-            else if (option.eq.'MASS_MECA_DIAG'.or.&
-     &           option.eq.'MASS_MECA_EXPLI') then
+        else if (option.eq.'MASS_MECA_DIAG' .or. option.eq.'MASS_MECA_EXPLI') then
             call jevech('PMATUUR', 'E', imatuu)
 !
             nddl = 6*nno
             ndim = nddl* (nddl+1)/2
 !
-            do 30 i = 1, ndim
+            do i = 1, ndim
                 zr(imatuu-1+i) = matloc(i)
-30          continue
+            end do
 !
             if (option .eq. 'MASS_MECA_EXPLI') then
 !     CORRECTION DES TERMES CORRESPONDANT AU DDL 6
 !     NON PREVU PAR LA THEORIE DKT. ON RAJOUTE
 !     UN TERME DIAGONAL NON ZERO EGAL A CELUI DU DDL 5.
 !     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
-                do 35 j = 1, nno
+                do j = 1, nno
                     n1 = 6*(j-1) + 5
                     n2 = 6*(j-1) + 4
                     ni = 6*j
                     ndim = (ni + 1)*ni/2
                     n1 = (n1 + 1)*n1/2
                     n2 = (n2 + 1)*n2/2
-                    zr(imatuu-1+ndim)=(zr(imatuu-1+n1)+zr(imatuu-1+n2)&
-                    )*0.5d0
-35              continue
+                    zr(imatuu-1+ndim)=(zr(imatuu-1+n1)+zr(imatuu-1+n2))*0.5d0
+                end do
             endif
         endif
-!
     else if (option.eq.'MASS_INER') then
         call jevech('PMASSINE', 'E', imatuu)
         call dxroep(rho, epais)
@@ -217,12 +191,11 @@ subroutine te0409(option, nomte)
             call u2mess('F', 'ELEMENTS5_45')
         endif
 !
-        call dxiner(nno, zr(igeom), rho, epais, zr(imatuu),&
-                    zr(imatuu+1), zr(imatuu+4))
+        call dxiner(nno, zr(igeom), rho, epais, zr(imatuu), zr(imatuu+1), zr(imatuu+4))
 !
 !     -- OPTIONS NON-LINEAIRES
-        else if (option.eq.'FULL_MECA' .or. option.eq.'RAPH_MECA' .or.&
-    option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
+    else if (option.eq.'FULL_MECA'      .or. option.eq.'RAPH_MECA' .or.&
+             option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
 !
         lrgm = option.eq.'RIGI_MECA       '
 !
@@ -233,19 +206,19 @@ subroutine te0409(option, nomte)
             comp3 = zk16(icompo+3)
 !
             if (comp3 .eq. 'COMP_ELAS') then
-                call u2mess('F', 'ELEMENTS2_90')
+                call u2mess('F', 'ELEMENTS3_92')
             endif
 !
             if (zk16(icompo+2)(6:10) .eq. '_REAC' .or. zk16(icompo+2) .eq. 'GROT_GDEP') then
                 if (zk16(icompo+2)(6:10) .eq. '_REAC') call u2mess('A', 'ELEMENTS2_72')
 !
-                do 40 i = 1, nno
+                do i = 1, nno
                     i1 = 3* (i-1)
                     i2 = 6* (i-1)
-                    zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr(ideplp+i2)
+                    zr(igeom+i1)   = zr(igeom+i1)   + zr(ideplm+i2)   + zr(ideplp+i2)
                     zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
                     zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
-40              continue
+                end do
 !
                 if (nno .eq. 3) then
                     call dxtpgl(zr(igeom), pgl)
@@ -261,39 +234,21 @@ subroutine te0409(option, nomte)
             call jevech('PCARCRI', 'L', icarcr)
         else
             comp3 = 'COMP_INCR       '
-            compor = 'GLRC_DM         '
+            compor= 'GLRC_DM         '
             if (nomte .eq. 'MEQ4GG4' .or. nomte .eq. 'MET3GG3') then
                 compor = 'ELAS            '
             endif
             icarcr=1
         endif
-        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
-            if (comp3(1:9) .eq. 'COMP_INCR') then
-                if (lrgm) then
-                    call dxglrc(nomte, option, compor, xyzl, uml,&
-                                dul, vecloc, matloc, pgl, zr(icarcr),&
-                                codret)
-                else
-                    call dxglrc(nomte, option, zk16(icompo), xyzl, uml,&
-                                dul, vecloc, matloc, pgl, zr(icarcr),&
-                                codret)
-                endif
-            else if (comp3 (1:9).eq.'COMP_ELAS') then
-                call u2mess('F', 'ELEMENTS3_92')
-            endif
-        else if (nomte.eq.'MEDKQG4'.or.nomte.eq.'MEQ4GG4') then
-            if (comp3(1:9) .eq. 'COMP_INCR') then
-                if (lrgm) then
-                    call dxglrc(nomte, option, compor, xyzl, uml,&
-                                dul, vecloc, matloc, pgl, zr(icarcr),&
-                                codret)
-                else
-                    call dxglrc(nomte, option, zk16(icompo), xyzl, uml,&
-                                dul, vecloc, matloc, pgl, zr(icarcr),&
-                                codret)
-                endif
-            else if (comp3 (1:9).eq.'COMP_ELAS') then
-                call u2mess('F', 'ELEMENTS3_92')
+!
+        if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3'&
+       .or. nomte .eq. 'MEDKQG4' .or. nomte .eq. 'MEQ4GG4') then
+            if (lrgm) then
+                call dxglrc(nomte, option, compor, xyzl, uml, dul, vecloc, matloc, pgl,&
+                            zr(icarcr), codret)
+            else
+                call dxglrc(nomte, option, zk16(icompo), xyzl, uml, dul, vecloc, matloc, pgl,&
+                            zr(icarcr), codret)
             endif
         else
             call u2mesk('F', 'ELEMENTS2_74', 1, nomte)
@@ -307,15 +262,12 @@ subroutine te0409(option, nomte)
         else if (option.eq.'RAPH_MECA') then
             call jevech('PVECTUR', 'E', ivectu)
             call utpvlg(nno, 6, pgl, vecloc, zr(ivectu))
-            else if (option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA'&
-        ) then
+        else if (option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA') then
             call jevech('PMATUUR', 'E', imatuu)
             call utpslg(nno, 6, pgl, matloc, zr(imatuu))
         endif
-!
     else if (option.eq.'FORC_NODA') then
-        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo,&
-                    iretc)
+        call tecach('ONN', 'PCOMPOR', 'L', 1, icompo, iretc)
 !
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES
 !
@@ -324,28 +276,26 @@ subroutine te0409(option, nomte)
 !
         call jevech('PCACOQU', 'L', jcara)
         alpha = zr(jcara+1) * r8dgrd()
-        beta = zr(jcara+2) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
-                    c, s)
+        beta  = zr(jcara+2) * r8dgrd()
+        call coqrep(pgl, alpha, beta, t2ev, t2ve, c, s)
 !
 ! --- VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL
-        call tecach('OON', 'PCONTMR', 'L', 7, jtab,&
-                    iret)
+        call tecach('OON', 'PCONTMR', 'L', 7, jtab, iret)
 !
-        do 778,ipg=1,npg
-        icontm=jtab(1)+8*(ipg-1)
-        call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
-778      continue
+        do ipg=1, npg
+            icontm=jtab(1)+8*(ipg-1)
+            call dcopy(8, zr(icontm), 1, effort(8*(ipg-1)+1), 1)
+        end do
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
 !
         if (zk16(icompo)(1:7) .eq. 'GLRC_DM') then
-            do 779,ipg=1,npg
-            icontm=jtab(1)+8*(ipg-1)
-            call dcopy(8, zr(icontm), 1, effgt(8*(ipg-1)+1), 1)
-779          continue
+            do ipg=1, npg
+                icontm=jtab(1)+8*(ipg-1)
+                call dcopy(8, zr(icontm), 1, effgt(8*(ipg-1)+1), 1)
+            end do
         else
             call dxefro(npg, t2ev, effort, effgt)
         endif
@@ -359,13 +309,13 @@ subroutine te0409(option, nomte)
         if (reactu) then
             call jevech('PDEPLMR', 'L', ideplm)
             call jevech('PDEPLPR', 'L', ideplp)
-            do 440 i = 1, nno
+            do i = 1, nno
                 i1 = 3* (i-1)
                 i2 = 6* (i-1)
                 zr(igeom+i1) = zr(igeom+i1) + zr(ideplm+i2) + zr( ideplp+i2)
                 zr(igeom+i1+1) = zr(igeom+i1+1) + zr(ideplm+i2+1) + zr(ideplp+i2+1)
                 zr(igeom+i1+2) = zr(igeom+i1+2) + zr(ideplm+i2+2) + zr(ideplp+i2+2)
-440          continue
+            end do
             if (nno .eq. 3) then
                 call dxtpgl(zr(igeom), pgl)
             else if (nno.eq.4) then
@@ -382,15 +332,13 @@ subroutine te0409(option, nomte)
         call jevech('PVECTUR', 'E', ivectu)
 !
         k = 0
-!
-        do 90 i = 1, nno
-            do 80 j = 1, 6
+        do i = 1, nno
+            do j = 1, 6
                 k = k + 1
                 zr(ivectu+k-1) = bsigma(k)
-80          continue
-90      continue
+            end do
+        end do
     else
-!       OPTION DE CALCUL INVALIDE
         ASSERT(.false.)
     endif
 !
