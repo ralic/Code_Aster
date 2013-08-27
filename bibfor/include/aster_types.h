@@ -28,4 +28,17 @@
 #define med_int         integer(kind=med_int_kind)
 #define to_med_int(a)   int(a, MED_INT_SIZE)
 !
+#define mpi_int_kind    MPI_INT_SIZE
+#define mpi_int         integer(kind=mpi_int_kind)
+#define mpi_bool        logical(kind=mpi_int_kind)
+#define to_mpi_int(a)   int(a, MPI_INT_SIZE)
+!
+#define mumps_int_kind  MUMPS_INT_SIZE
+#define mumps_int       integer(kind=mumps_int_kind)
+#define to_mumps_int(a) int(a, MUMPS_INT_SIZE)
+!
+#define blas_int_kind   BLAS_INT_SIZE
+#define blas_int        integer(kind=blas_int_kind)
+#define to_blas_int(a)  int(a, BLAS_INT_SIZE)
+!
 #endif

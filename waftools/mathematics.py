@@ -31,7 +31,6 @@ def configure(self):
     self.check_libm_after_files()
 
 ###############################################################################
-
 @Configure.conf
 def check_opts_math_lib(self):
     from Options import options as opts
@@ -42,6 +41,14 @@ def check_opts_math_lib(self):
 
     for lib in Utils.to_list(opts.maths_libs):
         check_lib(lib)
+
+@Configure.conf
+def check_sizeof_blas_int(self):
+    """Check size of blas integers"""
+    self.set_define_from_env('BLAS_INT_SIZE',
+                             'Setting size of blas/lapack integers',
+                             'unexpected value for blas int: %(size)s',
+                             into=(4, 8), default=4)
 
 @Configure.conf
 def check_libm_after_files(self):

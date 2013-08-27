@@ -70,3 +70,27 @@ def check_openmp(self):
         self.env.append_value('FCLINKFLAGS_OPENMP', ['-fopenmp'])
     if self.env.FCFLAGS_OPENMP:
         self.define('_USE_OPENMP', 1)
+
+@Configure.conf
+def check_sizeof_mpi_int(self):
+    """Check size of MPI_Fint"""
+    define = 'MPI_INT_SIZE'
+    err_msg = 'unexpected value for sizeof(MPI_Fint): %(size)s'
+    if self.env.HAVE_MPI:
+        fragment = '\n'.join([
+            '#include <stdio.h>',
+            '#include "mpi.h"',
+            'int main(void){',
+            '    MPI_Fint var;',
+            '    printf("%d", (int)sizeof(var));',
+            '    return 0;',
+            '}',
+            ''])
+        self.code_checker(define, self.check_cc, fragment,
+                          'Checking size of MPI_Fint integers',
+                          err_msg,
+                          into=(4, 8))
+    else:
+        self.set_define_from_env(define,
+                                 'Setting size of MPI_Fint integers',
+                                 err_msg, into=(4, 8), default=4)

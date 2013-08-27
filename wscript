@@ -29,24 +29,28 @@ def options(self):
         return ori_get_usage() + os.linesep.join((
         '',
         'Environment variables:',
-        '  INCLUDES  : space separated list of directories extending the include'
+        '  INCLUDES       : space separated list of directories extending the include'
         ' path',
-        '  CC        : C compiler',
-        '  FC        : Fortran compiler',
-        '  CXX       : C++ compiler',
-        '  INCLUDES  : extra include paths',
-        '  DEFINES   : extra preprocessor defines',
-        '  LINKFLAGS : extra C linker options',
-        '  FCLINKFLAGS : extra Fortran linker options',
-        '  LIBPATH   : extra paths where to find libraries',
-        '  LIB       : extra libraries to link with',
-        '  STLIB     : extra static libraries to link with',
-        '  OPTLIB_FLAGS : extra linker flags inserted after static libs '
+        '  CC             : C compiler',
+        '  FC             : Fortran compiler',
+        '  CXX            : C++ compiler',
+        '  INCLUDES       : extra include paths',
+        '  DEFINES        : extra preprocessor defines',
+        '  LINKFLAGS      : extra C linker options',
+        '  FCLINKFLAGS    : extra Fortran linker options',
+        '  LIBPATH        : extra paths where to find libraries',
+        '  LIB            : extra libraries to link with',
+        '  STLIB          : extra static libraries to link with',
+        '  OPTLIB_FLAGS   : extra linker flags inserted after static libs '
         '(for example when -Wl,start-group options are necessary)',
-        '  CFLAGS    : extra C compilation options',
-        '  FCFLAGS   : extra Fortran compilation options',
-        '  PREFIX    : default installation prefix to be used, '
+        '  CFLAGS         : extra C compilation options',
+        '  FCFLAGS        : extra Fortran compilation options',
+        '  PREFIX         : default installation prefix to be used, '
         'if no --prefix option is given.',
+        '  BLAS_INT_SIZE  : kind of integers to use in the fortran blas/lapack '
+        'calls (4 or 8, default is 4)',
+        '  MUMPS_INT_SIZE : kind of integers to use in the fortran mumps calls '
+        ' (4 or 8, default is 4)',
         '',))
     self.parser.get_usage = _usage
 

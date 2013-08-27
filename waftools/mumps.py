@@ -44,6 +44,10 @@ def check_mumps(self):
         opts.mumps_libs += ' mpiseq'
     if opts.mumps_libs:
         self.check_mumps_libs()
+    self.set_define_from_env('MUMPS_INT_SIZE',
+                             'Setting size of Mumps integers',
+                             'unexpected value for mumps int: %(size)s',
+                             into=(4, 8), default=4)
 
 @Configure.conf
 def check_mumps_libs(self):

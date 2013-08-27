@@ -105,6 +105,8 @@ def check_fortran_types(self):
     self.check_sizeof_real8()
     self.check_sizeof_complex()
     self.check_sizeof_string_size()
+    self.check_sizeof_blas_int()
+    self.check_sizeof_mpi_int()
 
 @Configure.conf
 def check_fortran_preprocessor(self):
@@ -150,7 +152,7 @@ def check_fortran_preprocessor(self):
 def code_checker(self, define, check, fragment, start_msg, error_msg,
                  into=None, mandatory=True, setbool=False):
     """Check the size of a type compiling 'fragment' code with 'check',
-    add 'define' macros. Raise ValueError if the return"""
+    add 'define' macro."""
     self.start_msg(start_msg)
     try:
         size = check(fragment=fragment,
@@ -174,6 +176,38 @@ def code_checker(self, define, check, fragment, start_msg, error_msg,
         if setbool:
             self.undefine(define)
     else:
+        self.end_msg(size)
+
+@Configure.conf
+def set_define_from_env(self, define, start_msg, error_msg,
+                        into=None, default=None):
+    """Set 'define' macro from the environment."""
+    self.start_msg(start_msg)
+    self.add_os_flags(define)
+    try:
+        try:
+            size = self.env[define][0]
+            size = size.strip() # raise AttributeError if size is None
+            if size.isdigit():
+                size = int(size)
+            if into and size not in into:
+                raise ValueError
+        except (IndexError, AttributeError):
+            if default is None:
+                size = 'not defined, no default value'
+                raise Errors.ConfigurationError(error_msg % locals())
+            else:
+                size = default
+        except ValueError:
+            raise Errors.ConfigurationError(error_msg % locals())
+    except AttributeError:
+        self.end_msg('no', 'YELLOW')
+        if setbool:
+            self.undefine(define)
+    else:
+        self.define(define, size, quote=False)
+        # for easy access to the value in other wscripts
+        self.env[define] = size
         self.end_msg(size)
 
 @Configure.conf

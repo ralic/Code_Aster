@@ -5,7 +5,7 @@ import os.path as osp
 import tempfile
 from subprocess import Popen, PIPE
 
-from waflib import TaskGen, Logs
+from waflib import TaskGen, Logs, Errors
 
 def options(self):
     """To get the names of the testcases"""
@@ -33,6 +33,9 @@ def runtest(self):
     dtmp = tempfile.mkdtemp(prefix='runtest_')
     Logs.info("destination of output files: %s" % dtmp)
     versdir = osp.join(self.env['PREFIX'], 'share', 'aster')
+    status = 0
+    if not opts.testname:
+        raise Errors.WafError('no testcase name provided, use the -n option')
     for test in opts.testname:
         cmd = ['as_run', '--vers=%s' % versdir, '--test', test]
         if self.variant == 'debug':
@@ -57,7 +60,10 @@ def runtest(self):
             func = Logs.info
         else:
             func = Logs.error
+            status += 1
         func('`- exit %s' % retcode)
+    if status != 0:
+        raise Errors.WafError('testcase failed')
 
 
 def _has_asrun():
