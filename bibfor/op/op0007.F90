@@ -1,6 +1,17 @@
 subroutine op0007()
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/charme.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,47 +26,51 @@ subroutine op0007()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-!                           OPERATEUR :     AFFE_CHAR_MECA
+! person_in_charge: mickael.abbas at edf.fr
 !
-!      MOTS-CLES ACTUELLEMENT TRAITES:
+
 !
-!        VOIR ROUTINE CHARME
+! ----------------------------------------------------------------------
 !
+! COMMAND:  AFFE_CHAR_MECA_*
 !
+! ----------------------------------------------------------------------
 !
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/charme.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=4) :: type
-    character(len=8) :: char
-    character(len=16) :: concep, oper
-!
-!-----------------------------------------------------------------------
+    character(len=4) :: vale_type
+    character(len=8) :: load
+    character(len=16) :: command, k16dummy
     integer :: iatype
-!-----------------------------------------------------------------------
-    call jemarq()
 !
+! --------------------------------------------------------------------------------------------------
+!
+    call jemarq()
     call infmaj()
 !
-    call getres(char, concep, oper)
-    call wkvect(char//'.TYPE', 'G V K8', 1, iatype)
-    if (oper .eq. 'AFFE_CHAR_MECA') then
-        type = 'REEL'
+! - Which command ?
+!
+    call getres(load, k16dummy, command)
+    if (command .eq. 'AFFE_CHAR_MECA') then
+        vale_type = 'REEL'
+    else if (command .eq. 'AFFE_CHAR_MECA_F') then
+        vale_type = 'FONC'
+    else if (command .eq. 'AFFE_CHAR_MECA_C') then
+        vale_type = 'COMP'
+    endif
+!
+! - Load type
+!
+    call wkvect(load//'.TYPE', 'G V K8', 1, iatype)
+    if (vale_type.eq.'REEL') then
         zk8(iatype) = 'MECA_RE'
-    else if (oper .eq. 'AFFE_CHAR_MECA_F') then
-        type = 'FONC'
+    else if (vale_type.eq.'FONC') then
         zk8(iatype) = 'MECA_FO'
-    else if (oper .eq. 'AFFE_CHAR_MECA_C') then
-        type = 'COMP'
+    else if (vale_type.eq.'COMP') then
         zk8(iatype) = 'MECA_RI'
     endif
 !
-    call charme(type)
+! - Loads treatment
+!
+    call charme(load, vale_type)
 !
     call jedema()
 end subroutine

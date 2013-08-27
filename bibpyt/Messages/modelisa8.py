@@ -137,11 +137,6 @@ cata_msg = {
  erreur dans les données plusieurs valeurs pour le GROUP_MA  %(k1)s
 """),
 
-40 : _(u"""
- la maille de nom :  %(k1)s n'est pas de type  %(k2)s  ou  %(k3)s
- elle ne sera pas affectée par  %(k4)s
-"""),
-
 43 : _(u"""
 
  le nombre de ddl_1 figurant dans  la liaison n'est pas égal au nombre de COEF_MULT_1 :

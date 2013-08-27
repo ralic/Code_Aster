@@ -1,6 +1,14 @@
 subroutine te0019(option, nomte)
+!
     implicit none
-!.......................................................................
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmpr3d_vect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,73 +25,98 @@ subroutine te0019(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
+! person_in_charge: mickael.abbas at edf.fr
 !
-!     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
-!          CORRESPONDANT A UN CHARGEMENT EN PRESSION
-!          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 3D
-!          (LA PRESSION EST DONNEE SOUS FORME D'UNE FONCTION)
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-!          OPTION : 'CHAR_MECA_PRES_F '
+! --------------------------------------------------------------------------------------------------
 !
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!          ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
+! Elementary computation
 !
-#include "jeveux.h"
+! Elements: 3D
+! Option: CHAR_MECA_PRES_F
+!         CHAR_MECA_EFON_F
 !
-#include "asterfort/elref4.h"
-#include "asterfort/fointe.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nmpr3d.h"
-    character(len=8) :: nompar(4)
-    character(len=16) :: nomte, option
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: mxpara
+    parameter     (mxpara=4)
+!
+    character(len=8) :: nompar(mxpara)
+    real(kind=8) :: valpar(mxpara)
     integer :: ier, ndim, nno, npg, nnos, jgano, kpg, kdec, n
-    integer :: ipoids, ivf, idf, igeom, ipres, itemps, ires
-    real(kind=8) :: valpar(4), x, y, z
-!                                   9*27*27
-    real(kind=8) :: pr, p(27), matr(6561)
+    integer :: ipoids, ivf, idf
+    integer :: j_geom, j_pres, j_time, j_vect, j_effe
+    real(kind=8) :: x, y, z
+    real(kind=8) :: pres, pres_point(27), coef_mult
 !
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(option.eq.'CHAR_MECA_PRES_F'.or.option.eq.'CHAR_MECA_EFON_F')
+!
+! - Finite element parameters
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idf, jgano)
 !
-!    AUTRES VARIABLES DE L'OPTION
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PPRESSF', 'L', ipres)
-    call jevech('PTEMPSR', 'L', itemps)
-    call jevech('PVECTUR', 'E', ires)
+! - IN fields
 !
-!    CALCUL DE LA PRESSION AUX PTS DE GAUSS (FONCTION DE T ET/OU X,Y,Z)
-    valpar(4) = zr(itemps)
+    call jevech('PGEOMER', 'L', j_geom)
+    call jevech('PTEMPSR', 'L', j_time)
+!
+! - OUT fields
+!
+    call jevech('PVECTUR', 'E', j_vect)
+!
+! - For pressure, no node affected -> 0
+!
+    if (option.eq.'CHAR_MECA_PRES_F') then
+        call jevecd('PPRESSF', j_pres, 0.d0)
+    elseif (option.eq.'CHAR_MECA_EFON_F') then
+        call jevecd('PPREFFF', j_pres, 0.d0)
+    endif
+!
+! - Multiplicative ratio for pressure (EFFE_FOND)
+!
+    coef_mult = 1.d0
+    if (option.eq.'CHAR_MECA_EFON_F') then
+        call jevech('PEFOND', 'L', j_effe)
+        coef_mult = zr(j_effe-1+1)    
+    endif
+!
+! - Parameters of function
+!
+    valpar(4) = zr(j_time)
     nompar(4) = 'INST'
     nompar(1) = 'X'
     nompar(2) = 'Y'
     nompar(3) = 'Z'
 !
-    do 100 kpg = 0, npg-1
-        kdec = kpg*nno
+! - Evaluation of pressure (function) at Gauss points (from nodes)
 !
-!      COORDONNEES DU POINT DE GAUSS
+    do kpg = 0, npg-1
+        kdec = kpg*nno
         x = 0.d0
         y = 0.d0
         z = 0.d0
-        do 105 n = 0, nno-1
-            x = x + zr(igeom+3*n ) * zr(ivf+kdec+n)
-            y = y + zr(igeom+3*n+1) * zr(ivf+kdec+n)
-            z = z + zr(igeom+3*n+2) * zr(ivf+kdec+n)
-105      continue
-!
-!      VALEUR DE LA PRESSION
+        do n = 0, nno-1
+            x = x + zr(j_geom+3*n ) * zr(ivf+kdec+n)
+            y = y + zr(j_geom+3*n+1) * zr(ivf+kdec+n)
+            z = z + zr(j_geom+3*n+2) * zr(ivf+kdec+n)
+        end do
         valpar(1) = x
         valpar(2) = y
         valpar(3) = z
-        call fointe('FM', zk8(ipres), 4, nompar, valpar,&
-                    pr, ier)
-        p(kpg+1) = pr
-100  end do
+        call fointe('FM', zk8(j_pres), mxpara, nompar, valpar,&
+                    pres, ier)
+        pres_point(kpg+1) = coef_mult * pres
+    end do
 !
-!    CALCUL EFFECTIF DU SECOND MEMBRE
-    call nmpr3d(1, nno, npg, zr(ipoids), zr(ivf),&
-                zr(idf), zr(igeom), p, zr(ires), matr)
+! - Second member
+!
+    call nmpr3d_vect(nno, npg, zr(ipoids), zr(ivf), zr(idf), &
+                     zr(j_geom), pres_point, zr(j_vect))
 !
 end subroutine

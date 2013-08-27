@@ -1,5 +1,16 @@
 subroutine te0424(option, nomte)
 !
+    implicit      none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elref4.h"
+#include "asterfort/jevecd.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmpr3d_vect.h"
+#include "asterfort/nmpr3d_matr.h"
+#include "blas/dcopy.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,58 +27,43 @@ subroutine te0424(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "jeveux.h"
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-#include "asterfort/assert.h"
-#include "asterfort/elref4.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nmpr3d.h"
-#include "blas/dcopy.h"
-    character(len=16) :: nomte, option
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Elementary computation
 !
-! ROUTINE CALCUL ELEMENTAIRE
+! Elements: 3D
+! Option: RIGI_MECA_PRSU_R 
+!         CHAR_MECA_PRSU_R
+!         RIGI_MECA_EFSU_R 
+!         CHAR_MECA_EFSU_R
 !
-! CALCUL DES OPTIONS ELEMENTAIRES EN MECANIQUE CORRESPONDANT A UN
-! CHARGEMENT EN PRESSION SUIVEUSE SUR DES FACES D'ELEMENTS
-! ISOPARAMETRIQUES 3D
-!
-! LA PRESSION EST UNE CONSTANTE RELLE
-!
-! ----------------------------------------------------------------------
-!
-!
-! IN  OPTION : OPTION DE CALCUL
-!               CHAR_MECA_PRSU_R
-!               RIGI_MECA_PRSU_R
-! IN  NOMTE  : NOM DU TYPE ELEMENT
-!
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: mxnoeu, mxnpg, mxvect, mxmatr
-    parameter     (mxnoeu=9,mxnpg=27,mxvect=3*9,mxmatr=3*9*3*9)
+    parameter     (mxnoeu=9, mxnpg=27, mxvect=3*9, mxmatr=3*9*3*9)
 !
     integer :: ndim, nno, npg, nnos, nddl
     integer :: iddl, ino, ipg
     integer :: jpoids, jvf, jdf, jgano
-    integer :: jvect, jmatr
-    integer :: jgeom, jdepm, jdepp, jpres
     integer :: kdec, i, j, k
+    integer :: j_depm, j_depp, j_geom, j_pres, j_vect, j_matr, j_effe
+    real(kind=8) :: pres, pres_point(mxnpg)
+    real(kind=8) :: vect(mxvect), matr(mxmatr), coef_mult
 !
-    real(kind=8) :: pr, p(mxnpg)
-    real(kind=8) :: vect(mxvect), matr(mxmatr)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    if ((option.ne.'CHAR_MECA_PRSU_R').and.(option.ne.'RIGI_MECA_PRSU_R').and.&
+        (option.ne.'CHAR_MECA_EFSU_R').and.(option.ne.'RIGI_MECA_EFSU_R')) then
+        ASSERT(.false.)
+    endif
 !
-!
-!
-! --- CARACTERISTIQUES ELEMENT
+! - Finite element parameters
 !
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, jpoids, jvf, jdf, jgano)
@@ -75,58 +71,67 @@ subroutine te0424(option, nomte)
     ASSERT(nno .le.mxnoeu)
     ASSERT(npg .le.mxnpg)
 !
-! --- ACCES CHAMPS
+! - IN fields
 !
-    call jevech('PGEOMER', 'L', jgeom)
-    call jevech('PDEPLMR', 'L', jdepm)
-    call jevech('PDEPLPR', 'L', jdepp)
-    call jevech('PPRESSR', 'L', jpres)
+    call jevech('PGEOMER', 'L', j_geom)
+    call jevech('PDEPLMR', 'L', j_depm)
+    call jevech('PDEPLPR', 'L', j_depp)
 !
-! --- REACTUALISATION DE LA GEOMETRIE PAR LE DEPLACEMENT
+! - New geometry
 !
-    do 10 iddl = 1, nddl
-        zr(jgeom+iddl-1) = zr(jgeom+iddl-1) + zr(jdepm+iddl-1) + zr(jdepp+iddl-1)
-10  end do
+    do iddl = 1, nddl
+        zr(j_geom+iddl-1) = zr(j_geom+iddl-1) + zr(j_depm+iddl-1) + zr(j_depp+iddl-1)
+    end do
 !
-! --- CALCUL DE LA PRESSION AUX POINTS DE GAUSS (A PARTIR DES NOEUDS)
+! - For pressure, no node affected -> 0
 !
-    do 100 ipg = 1, npg
+    if (option.eq.'CHAR_MECA_PRSU_R' .or. option.eq.'RIGI_MECA_PRSU_R') then
+        call jevecd('PPRESSR', j_pres, 0.d0)
+    elseif (option.eq.'CHAR_MECA_EFSU_R' .or. option.eq.'RIGI_MECA_EFSU_R') then
+        call jevecd('PPREFFR', j_pres, 0.d0)
+    endif
+!
+! - Multiplicative ratio for pressure (EFFE_FOND)
+!
+    coef_mult = 1.d0
+    if (option.eq.'CHAR_MECA_EFSU_R'.or.option.eq.'RIGI_MECA_EFSU_R') then
+        call jevech('PEFOND', 'L', j_effe)
+        coef_mult = zr(j_effe-1+1)    
+    endif
+!
+! - Evaluation of pressure at Gauss points (from nodes)
+!
+    do ipg = 1, npg
         kdec = (ipg-1) * nno
-        pr = 0.d0
-        do 105 ino = 1, nno
-            pr = pr + zr(jpres+ino-1) * zr(jvf+kdec+ino-1)
-105      continue
-        p(ipg) = pr
-100  end do
+        pres = 0.d0
+        do ino = 1, nno
+            pres = pres + zr(j_pres+ino-1) * zr(jvf+kdec+ino-1)
+        end do
+        pres_point(ipg) = coef_mult * pres
+    end do
 !
-! --- CALCUL EFFECTIF DE LA RIGIDITE
+! - Second member
 !
-    if (option .eq. 'CHAR_MECA_PRSU_R') then
-        call nmpr3d(1, nno, npg, zr(jpoids), zr(jvf),&
-                    zr(jdf), zr(jgeom), p, vect, matr)
+    if (option(1:9) .eq. 'CHAR_MECA') then
+        call nmpr3d_vect(nno, npg, zr(jpoids), zr(jvf), zr(jdf),&
+                         zr(j_geom), pres_point, vect)
+        call jevech('PVECTUR', 'E', j_vect)
+        call dcopy(nddl, vect, 1, zr(j_vect), 1)
 !
-! --- RECOPIE DU VECTEUR ELEMENTAIRE
+! - Tangent matrix
 !
-        call jevech('PVECTUR', 'E', jvect)
-        call dcopy(nddl, vect, 1, zr(jvect), 1)
-!
-    else if (option.eq.'RIGI_MECA_PRSU_R') then
-        call nmpr3d(2, nno, npg, zr(jpoids), zr(jvf),&
-                    zr(jdf), zr(jgeom), p, vect, matr)
-!
-! --- RECOPIE DE LA MATRICE ELEMENTAIRE (NON-SYMETRIQUE)
-! --- LES MATRICES NON SYMETRIQUES SONT ENTREES EN LIGNE
-!
-        call jevech('PMATUNS', 'E', jmatr)
+    else if (option(1:9).eq.'RIGI_MECA') then
+        call nmpr3d_matr(nno, npg, zr(jpoids), zr(jvf), zr(jdf),&
+                         zr(j_geom), pres_point, matr)
+        call jevech('PMATUNS', 'E', j_matr)
         k = 0
-        do 110 i = 1, nddl
-            do 120 j = 1, nddl
+        do i = 1, nddl
+            do j = 1, nddl
                 k = k + 1
-                zr(jmatr-1+k) = matr((j-1)*nddl+i)
-120          continue
-110      continue
+                zr(j_matr-1+k) = matr((j-1)*nddl+i)
+            end do
+        end do
         ASSERT(k.eq.nddl*nddl)
-!
     else
         ASSERT(.false.)
     endif

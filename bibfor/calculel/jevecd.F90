@@ -47,7 +47,7 @@ subroutine jevecd(nompar, jad, valdef)
         lonel=itab(2)*max(1,itab(6))*max(1,itab(7))
         do 1, k = 1,lonel
         if (zl(itab(8)-1+k)) then
-            call u2mess('E', 'CALCULEL2_68')
+            call u2mess('E', 'ELEMENT_68')
             call contex(option, nompar)
         endif
         zr(jad-1+k)=valdef

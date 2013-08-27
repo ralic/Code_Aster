@@ -81,7 +81,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
     long = 0.d0
     nbel = 0
-    do 10 ima = 1, nbma
+    do  ima = 1, nbma
         numa = lisma(ima)
         call jenuno(jexnum(noma//'.NOMMAI', numa), nomail)
 !
@@ -94,7 +94,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             call jenuno(jexnum(mlgnma, numa), nomail)
             valk(1) = nomail
             valk(2) = typel
-            call u2mesk('F', 'UTILITAI3_40', 2, valk)
+            call u2mesk('F', 'UTILITY_1', 2, valk)
         endif
         nbel = nbel + 1
         call jeveuo(jexnum(mlgcnx, numa), 'L', jdno)
@@ -125,32 +125,32 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             xxl = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2)
             long = long + sqrt( xxl )
         endif
-10  end do
+    end do
     ASSERT(nbma.eq.nbel)
 !
 !     VERIFICATION QUE LE CONTOUR EST FERME
 !
     nbext1=0
     nbext2=0
-    do 30 ima = 1, nbel
+    do  ima = 1, nbel
         iext1=0
         iext2=0
         ni1 = zi(jn1-1+3*ima-2)
         ni2 = zi(jn1-1+3*ima-1)
         zi(jm1-1+ima)=ima
-        do 40 jma = 1, nbel
+        do  jma = 1, nbel
             if (jma .ne. ima) then
                 nj1 = zi(jn1-1+3*jma-2)
                 nj2 = zi(jn1-1+3*jma-1)
                 if ((ni1.eq.nj2) .or. (ni1.eq.nj1)) iext1=1
                 if ((ni2.eq.nj1) .or. (ni2.eq.nj2)) iext2=1
             endif
-40      continue
+        enddo
         if (iext1 .eq. 0) nbext1=nbext1+1
         if (iext2 .eq. 0) nbext2=nbext2+1
-30  end do
+    end do
     if ((nbext1.ne.0) .and. (nbext2.ne.0)) then
-        call u2mess('F', 'UTILITAI3_42')
+        call u2mess('F', 'UTILITY_2')
     endif
 !
 !     VERIFICATION QUE LE CONTOUR EST CONTINU ET REORIENTATION
@@ -163,7 +163,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 41  continue
     ni1 = zi(jn2-1+3*nbe-2)
     ni2 = zi(jn2-1+3*nbe-1)
-    do 42 jma = 1, nbel
+    do jma = 1, nbel
         if ((zi(jm1-1+jma).ne.0)) then
             nj1 = zi(jn1-1+3*jma-2)
             nj2 = zi(jn1-1+3*jma-1)
@@ -182,8 +182,8 @@ subroutine peair1(modele, nbma, lisma, aire, long)
                 goto 43
             endif
         endif
-42  end do
-    call u2mess('F', 'UTILITAI3_42')
+    end do
+    call u2mess('F', 'UTILITY_2')
 43  continue
     zi(jm1-1+jma)=0
     if (nbe .ge. nbma) then
@@ -201,12 +201,12 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
     mlgcoo = noma//'.COORDO    .VALE'
     call jeveuo(mlgcoo, 'L', jdco)
-    do 50 ima = 1, nbma
+    do  ima = 1, nbma
         nj1 = zi(jn2-1+3*ima-2)
         orig(1) = orig(1)+zr(jdco-1+3*nj1-2)
         orig(2) = orig(2)+zr(jdco-1+3*nj1-1)
         orig(3) = orig(3)+zr(jdco-1+3*nj1)
-50  end do
+    end do
     orig(1)=orig(1)/nbma
     orig(2)=orig(2)/nbma
     orig(3)=orig(3)/nbma
@@ -229,7 +229,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     call provec(vgn1, vgn2, xn)
     call normev(xn, xnorm)
     aire=0.d0
-    do 60 ima = 1, nbma
+    do  ima = 1, nbma
         nj1 = zi(jn2-1+3*ima-2)
         nj2 = zi(jn2-1+3*ima-1)
         nj3 = zi(jn2-1+3*ima)
@@ -266,7 +266,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
             aire2=ddot(3,pv,1,xn,1)
             aire=aire+aire2/2.d0
         endif
-60  end do
+    end do
     call jedetr('&&PEAIR1.NOEUD1')
     call jedetr('&&PEAIR1.NOEUD2')
     call jedetr('&&PEAIR1.MAILLES')

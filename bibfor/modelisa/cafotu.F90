@@ -7,6 +7,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -72,7 +73,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
         else if (fonree.eq.'FONC') then
             call alcart('G', carte, noma, 'PRES_F')
         else
-            call u2mesk('F', 'MODELISA2_37', 1, fonree)
+            ASSERT(.false.)
         endif
     endif
 !
@@ -105,7 +106,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 !
 ! --- STOCKAGE DANS LA CARTE
 !
-    do 10 iocc = 1, npres
+    do iocc = 1, npres
 !
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'PRES', iocc, iarg, 1,&
@@ -119,7 +120,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                     k8b, nbtou)
 !
         if (nbtou .ne. 0) then
-            do 12 ima = 1, nmatot
+            do ima = 1, nmatot
                 iadtyp = iatyma-1+ima
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
                 if ((type(1:4).ne.'SEG3') .and. (type(1:4).ne.'SEG4')) then
@@ -129,33 +130,34 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                     call u2mesg('A', 'MODELISA9_81', 2, valk, 0,&
                                 0, 0, 0.d0)
                 endif
-12          continue
+            enddo
             call nocart(carte, 1, ' ', 'NOM', 0,&
                         ' ', 0, ligrmo, ncmp)
 !
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
-            call jeveuo(mesmai, 'L', jma)
-            do 14 i = 1, nbma
-                ima = zi(jma-1+i)
-                iadtyp = iatyma-1+ima
-                call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
-                if ((type(1:4).ne.'SEG3') .and. (type(1:4).ne.'SEG4')) then
-                    call jenuno(jexnum(noma//'.NOMMAI', ima), maille)
-                    valk(1) = maille
-                    valk(2) = motclf
-                    call u2mesg('A', 'MODELISA9_81', 2, valk, 0,&
+            if (nbma .ne. 0) then
+                call jeveuo(mesmai, 'L', jma)
+                do i = 1, nbma
+                    ima = zi(jma-1+i)
+                    iadtyp = iatyma-1+ima
+                    call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
+                    if ((type(1:4).ne.'SEG3') .and. (type(1:4).ne.'SEG4')) then
+                        call jenuno(jexnum(noma//'.NOMMAI', ima), maille)
+                        valk(1) = maille
+                        valk(2) = motclf
+                        call u2mesg('A', 'MODELISA9_81', 2, valk, 0,&
                                 0, 0, 0.d0)
-                endif
-14          continue
+                    endif
+                enddo
             call nocart(carte, 3, k8b, 'NUM', nbma,&
                         k8b, zi(jma), ' ', ncmp)
             call jedetr(mesmai)
+            endif
         endif
 !
-10  end do
+    end do
 !
     call jedetr(char//'.PRES.GROUP')
     call jedetr(char//'.PRES.LISTE')

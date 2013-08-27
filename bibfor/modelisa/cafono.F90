@@ -8,6 +8,9 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
 #include "asterc/r8dgrd.h"
 #include "asterfort/affono.h"
 #include "asterfort/alcart.h"
+#include "asterfort/alcar1.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_crea_ligf.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -77,6 +80,7 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
     integer :: iarg
+    integer :: nb_node, nb_list_elem, nb_list_node
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -88,8 +92,26 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
     typlag(1:2) = '12'
     igrel = 0
     inema = 0
+    motcls(1) = 'GROUP_NO'
+    motcls(2) = 'NOEUD'
+    typmcl(1) = 'GROUP_NO'
+    typmcl(2) = 'NOEUD'
 !
     verif = .true.
+!
+! - Get list of nodes
+!
+    call alcar1(noma, motclf, 2, motcls, typmcl,&
+                nb_node)
+    nb_node = max(nb_node,1)
+! - Late element: POI1 - One node by element, nb_list_elem/nb_list_node too long
+    nb_list_elem = 2*nb_node
+    nb_list_node = 2*nb_node
+!
+! - Create <LIGREL> on nodes (for "late" elements on nodes)
+!
+    call char_crea_ligf(noma, ligrch, nb_node, nb_list_elem, nb_list_node)
+
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_2DDL' ), n2dl)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'FORCE_NOD_3DDL' ), n3dl)
@@ -268,7 +290,7 @@ subroutine cafono(char, ligrcz, noma,ligrmz, fonree)
         else if (fonree.eq.'FONC') then
             call alcart('G', carte, noma, 'FORC_F')
         else
-            call u2mesk('F', 'MODELISA2_37', 1, fonree)
+            ASSERT(.false.)
         endif
     endif
 !

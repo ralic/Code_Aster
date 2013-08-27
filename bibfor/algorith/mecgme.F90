@@ -76,7 +76,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=15)
+    parameter    (nbout=1, nbin=16)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -97,16 +97,16 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     integer :: ifm, niv
 !
     integer :: nbchmx
-    parameter (nbchmx=4)
+    parameter (nbchmx=5)
     integer :: nbopt(nbchmx), tab(nbchmx)
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nomopf(nbchmx)
     character(len=6) :: nompar(nbchmx), nomopr(nbchmx)
-    data nomlig/'.ROTAT','.PESAN','.PRESS','.FCO3D'/
-    data nomopf/'??????','??????','PRSU_F','SFCO3D'/
-    data nompaf/'??????','??????','PRESSF','FFCO3D'/
-    data nomopr/'RO    ','??????','PRSU_R','SRCO3D'/
-    data nompar/'ROTATR','PESANR','PRESSR','FRCO3D'/
-    data nbopt/10,15,9,15/
+    data nomlig/'.ROTAT','.PESAN','.PRESS','.FCO3D','.EFOND'/
+    data nomopf/'??????','??????','PRSU_F','SFCO3D','EFON_F'/
+    data nompaf/'??????','??????','PRESSF','FFCO3D','PEFOND'/
+    data nomopr/'RO    ','??????','PRSU_R','SRCO3D','EFON_R'/
+    data nompar/'ROTATR','PESANR','PRESSR','FRCO3D','PEFOND'/
+    data nbopt/10,15,9,15,16/
 !
 ! ----------------------------------------------------------------------
 !
@@ -133,7 +133,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     call jeexin(charge, iret)
     if (iret .eq. 0) then
         nchar = 0
-        goto 60
+        goto 99
     else
         call jelira(charge, 'LONMAX', nchar, k8bid)
         call jeveuo(charge, 'L', jchar)
@@ -207,7 +207,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
     lpaout(1) = 'PMATUUR'
 !
     if (prem) then
-        do 30 icha = 1, nchar
+        do icha = 1, nchar
             inum = 0
             lchout(1) = mesuiv(1:8)//'. '
             nomcha = zk24(jchar+icha-1) (1:8)
@@ -221,7 +221,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 ! ---- BOUCLES SUR LES TOUS LES TYPES DE CHARGE POSSIBLES SAUF LAPLACE)
                 somme = 0
                 ligrel = ligrmo
-                do 20 k = 1, nbchmx
+                do k = 1, nbchmx
                     lchin(1) = ligrch(1:13)//nomlig(k)//'.DESC'
                     call exisd('CHAMP_GD', lchin(1), iret)
                     tab(k) = iret
@@ -235,6 +235,21 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                             else
                                 option = 'RIGI_MECA_'//nomopr(k)
                                 lpain(1) = 'P'//nompar(k)
+                            endif
+!
+! ------------------------- For EFFE_FOND: you need two <CARTE>
+!
+                            if (option .eq. 'CHAR_MECA_EFON_R') then
+                                lpain(16) = 'PPREFFR'
+                                lchin(16) = nomcha//'.CHME.PREFF'
+                                lpain(1)     = 'PEFOND'
+                                lchin(1)     = nomcha//'.CHME.EFOND'
+                            endif
+                            if (option .eq. 'CHAR_MECA_EFON_F') then
+                                lpain(16) = 'PPREFFF'
+                                lchin(16) = nomcha//'.CHME.PREFF'
+                                lpain(1)     = 'PEFOND'
+                                lchin(1)     = nomcha//'.CHME.EFOND'
                             endif
                             lchout(1) (10:10) = 'G'
                             inum = inum + 1
@@ -256,12 +271,12 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                     if ((tab(k).eq.1) .or. (ier.gt.0)) then
                         somme = somme + 1
                     endif
-20              continue
+                enddo
                 if (somme .eq. 0) then
                     call u2mess('F', 'MECANONLINE2_4')
                 endif
             endif
-30      continue
+        enddo
     else
 !
 ! ----- LES MATR_ELEM EXISTENT DEJA, ON REGARDE S'ILS DEPENDENT DE
@@ -269,7 +284,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 !
         ligrel = ligrmo
 !
-        do 50 i = 1, nbchme
+        do i = 1, nbchme
             if (zk24(jlme-1+i) (10:10) .eq. 'G') then
                 call lxliis(zk24(jlme-1+i) (7:8), icha, ier)
                 nomcha = zk24(jchar+icha-1) (1:8)
@@ -279,7 +294,7 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
 !
                 call dismoi('F', 'TYPE_CHARGE', zk24(jchar+icha-1), 'CHARGE', ibid,&
                             affcha, ierd)
-                do 40 k = 1, nbchmx
+                do k = 1, nbchmx
                     lchin(1) = ligrch(1:13)//nomlig(k)//'.DESC'
                     call exisd('CHAMP_GD', lchin(1), iret)
                     if (iret .ne. 0) then
@@ -292,6 +307,17 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                                 option = 'RIGI_MECA_'//nomopr(k)
                                 lpain(1) = 'P'//nompar(k)
                             endif
+!
+! ------------------------- For EFFE_FOND: you need two <CARTE>
+!
+                            if (option .eq. 'CHAR_MECA_EFON_R') then
+                                lpain(16) = 'PPRESSR'
+                                lchin(16) = nomcha//'.CHME.PRESS'
+                            endif
+                            if (option .eq. 'CHAR_MECA_EFON_F') then
+                                lpain(16) = 'PPRESSF'
+                                lchin(16) = nomcha//'.CHME.PRESS'
+                            endif
 !               POUR UNE MATRICE NON SYMETRIQUE EN COQUE3D (VOIR TE0486)
                             if (k .eq. 4) lpaout(1) = 'PMATUNS'
                             if (k .eq. 3) lpaout(1) = 'PMATUNS'
@@ -301,15 +327,15 @@ subroutine mecgme(modelz, carelz, mate, lischa, instap,&
                                         'OUI')
                         endif
                     endif
-40              continue
+                enddo
             endif
-50      continue
+        enddo
     endif
 !
     call jelira(mesuiv//'.RELR', 'LONUTI', nbchme, k8bid)
 !
 !
-60  continue
+99  continue
 !
     call jedema()
 end subroutine

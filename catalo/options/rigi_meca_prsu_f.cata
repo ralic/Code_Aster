@@ -17,11 +17,11 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 % ======================================================================
 RIGI_MECA_PRSU_F
-<< MATRICE POUR PRESSION SUIVEUSE FONCTION >>
+        << MATRICE POUR UNE PRESSION SUIVEUSE FONCTION >>
 OPTION__
    IN__
-        PTEMPSR  INST_R        
-        PGEOMER  GEOM_R  
+        PTEMPSR  INST_R <<  PTEMPSR :  TIME  >> 
+        PGEOMER  GEOM_R <<  PGEOMER :  INITIAL GEOMETRY  >>
         PPRESSF  PRES_F
         PDEPLMR  DEPL_R  
         PDEPLPR  DEPL_R 

@@ -59,6 +59,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in)  :: load
     character(len=8), intent(in)  :: mesh
@@ -76,7 +77,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
 ! In  mesh      : name of mesh
 ! In  load      : name of load
-! In  ligrmo    : list of elements nume_node model
+! In  ligrmo    : list of elements in model
 ! In  vale_type : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------

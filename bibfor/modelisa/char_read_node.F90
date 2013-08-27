@@ -29,6 +29,7 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact

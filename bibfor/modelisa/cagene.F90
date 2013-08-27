@@ -24,7 +24,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/u2mess.h"
+#include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: ligrmz
     character(len=8) :: char, noma
@@ -50,7 +50,7 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 !
 !
     character(len=8) :: k8bid, mod
-    character(len=24) :: nomo, rep
+    character(len=24) :: nomo, phen, valk(2)
     character(len=19) :: ligrmo
     integer :: ibid, ier
     integer :: jnoma, jnomo
@@ -74,12 +74,15 @@ subroutine cagene(char, oper, ligrmz, noma, ndim)
 ! --- COHERENCE DU MODELE AVEC LA CHARGE
 !
     call dismoi('F', 'PHENOMENE', mod, 'MODELE', ibid,&
-                rep, ier)
-    if (oper(11:14) .eq. 'THER' .and. rep .ne. 'THERMIQUE') then
-        call u2mess('F', 'UTILITAI8_64')
-    endif
-    if (oper(11:14) .eq. 'MECA' .and. rep .ne. 'MECANIQUE') then
-        call u2mess('F', 'UTILITAI8_65')
+                phen, ier)
+    valk(1) = oper
+    valk(2) = phen
+    if (oper(11:14) .eq. 'THER' .and. phen .ne. 'THERMIQUE') then
+        call u2mesk('F', 'CHARGES2_64',2,valk)
+    elseif (oper(11:14) .eq. 'MECA' .and. phen .ne. 'MECANIQUE') then
+        call u2mesk('F', 'CHARGES2_64',2,valk)
+    elseif (oper(11:14) .eq. 'ACOU' .and. phen .ne. 'ACOUSTIQUE') then
+        call u2mesk('F', 'CHARGES2_64',2,valk)
     endif
 !
 ! --- RECUPERATION DE LA DIMENSION REELLE DU PROBLEME

@@ -50,10 +50,6 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
      Parfois, cela empêche de faire le "bon choix".
 """),
 
-5 : _(u"""
- mot-clé  %(k1)s  interdit en 2d
-"""),
-
 6 : _(u"""
   -> Phase de vérification du maillage : présence de noeuds orphelins.
      Les noeuds orphelins sont des noeuds qui n'appartiennent à aucune maille.

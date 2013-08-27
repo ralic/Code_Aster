@@ -98,21 +98,6 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
  le champ  %(k1)s  est de type inconnu.
 """),
 
-15 : _(u"""
-***********************************
- Erreur dans un calcul élémentaire.
- Contexte de l'erreur :
-   Maille concernée : %(k1)s
-"""),
-
-16 : _(u"""   Option de calcul : %(k1)s
-   Commentaire:"""),
-17 : _(u"""%(k1)s"""),
-18 : _(u"""     Paramètre d'entrée : %(k1)s
-      Commentaire:"""),
-19 : _(u"""     Paramètre de sortie : %(k1)s
-     Commentaire:"""),
-
 20 : _(u"""
  le GROUP_NO  %(k1)s  contient  %(k2)s  noeuds
 """),
@@ -120,10 +105,6 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 21 : _(u"""
  le GROUP_MA  %(k1)s  contient  %(k2)s  mailles
 """),
-
-22 : _(u"""     Grandeur associée au champ : %(k1)s
-     Commentaire:"""),
-23 : _(u"""***********************************"""),
 
 30 : _(u"""
 PROJ_CHAMP :

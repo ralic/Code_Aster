@@ -6,6 +6,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 #include "asterc/getvr8.h"
 #include "asterc/getvtx.h"
 #include "asterfort/alcart.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -70,7 +71,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
     else if (fonree.eq.'FONC') then
         call alcart('G', carte, noma, 'PRES_F')
     else
-        call u2mesk('F', 'MODELISA2_37', 1, fonree)
+        ASSERT(.false.)
     endif
 !
     call jeveuo(carte//'.NCMP', 'E', jncmp)
@@ -101,7 +102,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
 ! --- STOCKAGE DANS LA CARTE
 !
-    do 10 iocc = 1, npres
+    do iocc = 1, npres
 !
         if (fonree .eq. 'REEL') then
             call getvr8(motclf, 'PRES', iocc, iarg, 1,&
@@ -149,17 +150,18 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
             call reliem(ligrmo, noma, 'NO_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
-            call jeveuo(mesmai, 'L', jma)
-            call vetyma(noma, zk8(jma), nbma, k8b, 0,&
-                        motclf, ndim, ier)
-            call nocart(carte, 3, k8b, 'NOM', nbma,&
-                        zk8(jma), ibid, ' ', ncmp)
+            if (nbma .ne. 0) then
+                call jeveuo(mesmai, 'L', jma)
+                call vetyma(noma, zk8(jma), nbma, k8b, 0,&
+                            motclf, ndim, ier)
+                call nocart(carte, 3, k8b, 'NOM', nbma,&
+                            zk8(jma), ibid, ' ', ncmp)
 !
-            call jedetr(mesmai)
+                call jedetr(mesmai)
+            endif
         endif
 !
-10  end do
+    end do
 !
 !-----------------------------------------------------------------------
     call jedema()

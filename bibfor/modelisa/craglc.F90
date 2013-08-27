@@ -67,6 +67,8 @@ subroutine craglc(long, ligrch)
 !
     call jeexin(ligrch//'.LIEL', iret)
     if (iret .eq. 0) then
+
+!  appeler char_lrea_ligf
         call jecrec(ligrch//'.LIEL', 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                     long)
         lonlig = 2*long

@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cbpres(char, noma, ligrmo, ndim, fonree)
-        character(len=8) :: char
-        character(len=8) :: noma
-        character(*) :: ligrmo
-        integer :: ndim
-        character(len=4) :: fonree
+    subroutine cbpres(load, mesh, ligrmo, ndim, vale_type)
+        integer, intent(in) :: ndim
+        character(len=4), intent(in) :: vale_type
+        character(len=8), intent(in) :: load
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: ligrmo
     end subroutine cbpres
 end interface

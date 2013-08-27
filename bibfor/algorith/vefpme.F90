@@ -60,7 +60,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
 !-----------------------------------------------------------------------
     integer :: jlchin, nbchmx
 !-----------------------------------------------------------------------
-    parameter (nbchmx=13)
+    parameter (nbchmx=14)
     integer :: jchar, jinf, jtyp
     integer :: ibid, iret, nchar, k, icha, numchm, ier, nchin
     character(len=5) :: suffix
@@ -76,15 +76,15 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     complex(kind=8) :: cbid
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
-     &   '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN','.VEASS'/
+     &   '.F1D1D','.PRESS','.FCO3D','.FCO2D','.FLUX','.PESAN','.VEASS','.EFOND'/
     data nomopf/'FORC_F','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',&
-     &   'FF1D1D','PRES_F','FFCO3D','FFCO2D','FLUX_F','PESA_R','     '/
+     &   'FF1D1D','PRES_F','FFCO3D','FFCO2D','FLUX_F','PESA_R','     ','EFON_F'/
     data nompaf/'FORNOF','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',&
-     &   'FF1D1D','PRESSF','FFCO3D','FFCO2D','FLUXF','PESANR','      '/
+     &   'FF1D1D','PRESSF','FFCO3D','FFCO2D','FLUXF','PESANR','      ','PEFOND'/
     data nomopr/'FORC_R','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',&
-     &   'FR1D1D','PRES_R','FRCO3D','FRCO2D','FLUX_R','PESA_R','     '/
+     &   'FR1D1D','PRES_R','FRCO3D','FRCO2D','FLUX_R','PESA_R','     ','EFON_R'/
     data nompar/'FORNOR','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',&
-     &    'FR1D1D','PRESSR','FRCO3D','FRCO2D','FLUXR','PESANR','     '/
+     &    'FR1D1D','PRESSR','FRCO3D','FRCO2D','FLUXR','PESANR','     ','PEFOND'/
 !
 !
     call jemarq()
@@ -111,7 +111,7 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     call memare('V', lvechp, modele, mate, carele,&
                 'CHAR_MECA')
     call reajre(lvechp, ' ', 'V')
-    if (bidon) goto 30
+    if (bidon) goto 99
 !
     call megeom(modele, chgeom)
     call mecara(carele, exicar, chcara)
@@ -149,12 +149,12 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
     lchin(13) = chcara(12)
     lpaout(1) = 'PVECTUR'
 !
-    do 20 icha = 1, nchar
+    do icha = 1, nchar
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         numchm = zi(jinf+nchar+icha)
         if (numchm .eq. 5) then
-            do 10 k = 1, nbchmx
+            do k = 1, nbchmx
                 if (k .eq. 1) then
                     ligrel = ligrch
                 else
@@ -184,6 +184,25 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
 !           POUR LES ELEMENTS X-FEM
                     call exixfe(modele, ier)
                     nchin = 13
+
+!
+! ----------------- For EFFE_FOND: you need two <CARTE>
+!
+                    if (option .eq. 'CHAR_MECA_EFON_R') then
+                        nchin = nchin + 1
+                        lpain(nchin) = 'PPREFFR'
+                        lchin(nchin) = nomcha//'.CHME.PREFF'
+                        lpain(1)     = 'PEFOND'
+                        lchin(1)     = nomcha//'.CHME.EFOND'
+                    endif
+                    if (option .eq. 'CHAR_MECA_EFON_F') then
+                        nchin = nchin + 1
+                        lpain(nchin) = 'PPREFFF'
+                        lchin(nchin) = nomcha//'.CHME.PREFF'
+                        lpain(1)     = 'PEFOND'
+                        lchin(1)     = nomcha//'.CHME.EFOND'
+                    endif
+
                     if (ier .ne. 0) then
                         lpain(nchin + 1) = 'PPINTTO'
                         lchin(nchin + 1) = modele(1:8)//'.TOPOSE.PIN'
@@ -220,6 +239,9 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
                             nchin = nchin + 5
                         endif
                     endif
+
+
+
 !
                     if (nomlig(k) .eq. '.VEASS') then
                         call jeveuo(lchin(1), 'L', jlchin)
@@ -231,12 +253,12 @@ subroutine vefpme(modele, carele, mate, chargz, infchz,&
                     endif
                     call reajre(lvechp, lchout(1), 'V')
                 endif
-10          continue
+            end do
         endif
 !
-20  end do
+    end do
 !
-30  continue
+99  continue
 !
     lvechz = lvechp//'.RELR'
     call jedema()

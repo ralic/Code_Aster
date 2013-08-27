@@ -68,27 +68,27 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 ! ----------------------------------------------------------------------
 !
     character(len=5) :: suffix
-    character(len=8) :: nomcha, lpain(15), paout, k8bid, affcha, kbid, newnom
+    character(len=8) :: nomcha, lpain(16), paout, k8bid, affcha, kbid, newnom
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime, ligrel, ligrmo
-    character(len=24) :: lchin(15), chtim2, ligrch, evolch
+    character(len=24) :: lchin(16), chtim2, ligrch, evolch
     character(len=19) :: resuel, resufv(1), depmoi, depdel, vites
     integer :: ibid, iret, nchar, ilve, jchar, jinf, k, icha, numchm
     integer :: ierd, jlchin, ier
     logical :: exicar, bidon
     complex(kind=8) :: cbid
     integer :: nbchmx, ii, somme
-    parameter (nbchmx=6)
+    parameter (nbchmx=7)
     integer :: nbopt(nbchmx), tab(nbchmx)
     character(len=6) :: nomlig(nbchmx), nompaf(nbchmx), nompar(nbchmx)
     character(len=6) :: nomopf(nbchmx), nomopr(nbchmx)
 !
-    data nomlig/'.F1D1D','.PESAN','.ROTAT','.PRESS','.VEASS','.FCO3D'/
-    data nomopr/'SR1D1D','PESA_R','ROTA_R','PRSU_R','      ','SRCO3D'/
-    data nomopf/'SF1D1D','??????','??????','PRSU_F','      ','SFCO3D'/
-    data nompar/'FR1D1D','PESANR','ROTATR','PRESSR','      ','FRCO3D'/
-    data nompaf/'FF1D1D','??????','??????','PRESSF','      ','FFCO3D'/
-    data nbopt/10,15,10,9,0,9/
+    data nomlig/'.F1D1D','.PESAN','.ROTAT','.PRESS','.VEASS','.FCO3D','.EFOND'/
+    data nomopr/'SR1D1D','PESA_R','ROTA_R','PRSU_R','      ','SRCO3D','EFON_R'/
+    data nomopf/'SF1D1D','??????','??????','PRSU_F','      ','SFCO3D','EFON_F'/
+    data nompar/'FR1D1D','PESANR','ROTATR','PRESSR','      ','FRCO3D','PEFOND'/
+    data nompaf/'FF1D1D','??????','??????','PRESSF','      ','FFCO3D','PEFOND'/
+    data nbopt/10,15,10,9,0,9,16/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -109,9 +109,9 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
         if (nchar .ne. 0) then
             call jeveuo(charge, 'L', jchar)
             call jeveuo(infcha, 'L', jinf)
-            do 10 k = 1, nchar
+            do k = 1, nchar
                 if (zi(jinf+nchar+k) .eq. 4) bidon = .false.
-10          continue
+            enddo
         endif
     endif
 !
@@ -121,7 +121,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     call memare('V', vecele, modele(1:8), mate, carele,&
                 'CHAR_MECA')
     call reajre(vecele, ' ', 'V')
-    if (bidon) goto 60
+    if (bidon) goto 99
 !
     ligrmo = ligrez
     if (ligrmo .eq. ' ') ligrmo = modele(1:8)//'.MODELE'
@@ -170,7 +170,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
     paout = 'PVECTUR'
 !
     ilve = 0
-    do 50 icha = 1, nchar
+    do icha = 1, nchar
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         numchm = zi(jinf+nchar+icha)
@@ -180,7 +180,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
         if (numchm .eq. 4) then
             somme = 0
 !
-            do 20 k = 1, nbchmx
+            do k = 1, nbchmx
                 if (nomlig(k) .eq. '.FORNO') then
                     ligrel = ligrch
                 else
@@ -204,6 +204,21 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
                         lpain(1) = 'P'//nompar(k)
                     endif
 !
+! ----------------- For EFFE_FOND: you need two <CARTE>
+!
+                    if (option .eq. 'CHAR_MECA_EFON_R') then
+                        lpain(16) = 'PPREFFR'
+                        lchin(16) = nomcha//'.CHME.PREFF'
+                        lpain(1)     = 'PEFOND'
+                        lchin(1)     = nomcha//'.CHME.EFOND'
+                    endif
+                    if (option .eq. 'CHAR_MECA_EFON_F') then
+                        lpain(16) = 'PPREFFF'
+                        lchin(16) = nomcha//'.CHME.PREFF'
+                        lpain(1)     = 'PEFOND'
+                        lchin(1)     = nomcha//'.CHME.EFOND'
+                    endif
+!
                     call gcnco2(newnom)
                     resuel(10:16) = newnom(2:8)
                     call corich('E', resuel, icha, ibid)
@@ -224,7 +239,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
                 if ((tab(k).eq.1) .or. (ier.gt.0)) then
                     somme = somme + 1
                 endif
-20          continue
+            end do
             if (somme .eq. 0) then
                 call u2mess('F', 'MECANONLINE2_4')
             endif
@@ -233,20 +248,20 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 !       ----------------------------------------
 !       RESULTATS POSSIBLES
 !          1 - VITESSE
-        do 30 ii = 1, 1
+        do  ii = 1, 1
             resufv(ii) = resuel
             call gcnco2(newnom)
             resufv(ii) (10:16) = newnom(2:8)
-30      continue
+        end do
         call nmvgme(modele, ligrel, carele, charge, icha,&
                     instap, resufv, depmoi, depdel, vites)
-        do 40 ii = 1, 1
+        do ii = 1, 1
             call reajre(vecele, resufv(ii), 'V')
-40      continue
+        end do
 !
-50  end do
+    end do
 !
-60  continue
+99  continue
 !
     vecelz = vecele//'.RELR'
     call jedema()

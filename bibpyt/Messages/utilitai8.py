@@ -277,16 +277,6 @@ Conseil:
 de type valide
 """),
 
-64 : _(u"""
-  Vous définissez une charge thermique sur un modèle mécanique !
-  Le MODELE doit être de type thermique.
-"""),
-
-65 : _(u"""
-  Vous définissez une charge mécanique sur un modèle thermique !
-  Le MODELE doit être de type mécanique.
-"""),
-
 66 : _(u"""
   Le MACR_ELEM_DYNA a été créé avec une base modale qui entre-temps a été
   modifiée/enrichie. Le nombre d'équations dans le MACR_ELEM_DYNA ne 

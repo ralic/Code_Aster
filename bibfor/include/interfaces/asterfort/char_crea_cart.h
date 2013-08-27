@@ -16,17 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmpr3d(mode, nno, npg, poidsg, vff,&
-                      dff, geom, p, vect, matc)
-        integer :: npg
-        integer :: nno
-        integer :: mode
-        real(kind=8) :: poidsg(npg)
-        real(kind=8) :: vff(nno, npg)
-        real(kind=8) :: dff(2, nno, npg)
-        real(kind=8) :: geom(3, nno)
-        real(kind=8) :: p(npg)
-        real(kind=8) :: vect(3, nno)
-        real(kind=8) :: matc(3, nno, 3, nno)
-    end subroutine nmpr3d
+    subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
+                              vale_type, nb_carte, carte)
+        character(len=*),  intent(in) :: phenom
+        character(len=16), intent(in) :: load_type 
+        character(len=8), intent(in)  :: load
+        character(len=8), intent(in)  :: mesh
+        character(len=19), intent(in) :: ligrmo
+        character(len=4), intent(in)  :: vale_type
+        integer, intent(out) :: nb_carte
+        character(len=19), intent(out) :: carte(2)
+    end subroutine char_crea_cart
 end interface

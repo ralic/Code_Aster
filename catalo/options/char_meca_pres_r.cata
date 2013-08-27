@@ -1,5 +1,5 @@
 %& LIBRARY OPTIONS
-% person_in_charge: xavier.desroches at edf.fr
+% person_in_charge: mickael.abbas at edf.fr
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,12 +17,11 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
 CHAR_MECA_PRES_R
-        << CHAR_MECA_PRES_R (MOT-CLE PRES_REP) : CALCUL DU SECOND MEMBRE
-           CORRESPONDANT A UNE PRESSION>>
+        << SECOND MEMBRE POUR UNE PRESSION CONSTANTE >>
 OPTION__
    IN__
         PNBSP_I  NBSP_I 'CARA!.CANBSP' <<  PNBSP_I :  NOMBRE DE SOUS_POINTS  >>
-        PGEOMER  GEOM_R
+        PGEOMER  GEOM_R <<  PGEOMER :  INITIAL GEOMETRY  >>
         PPRESSR  PRES_R
         PCACOQU  CACOQU 'CARA!.CARCOQUE' <<  PCACOQU : CARACTERISTIQUE DE COQUE  >>
         PCAGEPO  CAGEPO 'CARA!.CARGEOPO' <<  PCAGEPO : CARACTERISTIQUE POUTRES, SECTION RECTANGLE OU CERCLE  >>

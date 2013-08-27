@@ -19,6 +19,18 @@
 
 cata_msg = {
 
+4 : _(u"""
+  -> Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D
+
+  -> Risque & Conseil :
+     Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
+     Certains chargements ne seront pas possibles.
+"""),
+
+5 : _(u"""
+ Le chargement de type %(k1)s est interdit en 2D.
+"""),
+
 6: _(u"""
 Erreur d'utilisation :
  Le modèle contient un mélange d'éléments 2D (vivant dans le plan Oxy) et 3D.
@@ -160,6 +172,10 @@ cas d'un modèle à %(i2)d dimensions.
 63: _(u"""
  Vous ne pouvez pas bloquer le déplacement tangent sur des faces d'éléments 3D.
  Utiliser DDL_IMPO ou LIAISON_DDL.
+"""),
+
+64 : _(u"""
+  Vous définissez une charge avec %(k1)s sur un modèle de type %(k2)s, ce n'est pas possible.
 """),
 
 82: _(u"""

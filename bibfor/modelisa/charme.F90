@@ -1,34 +1,18 @@
-subroutine charme(fonree)
+subroutine charme(load, vale_type)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!  Person in charge: mickael.abbas at edf.fr
     implicit none
+!
 #include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/adalig.h"
-#include "asterfort/alligr.h"
+#include "asterfort/assert.h"
 #include "asterfort/caarei.h"
 #include "asterfort/cachre.h"
 #include "asterfort/caddli.h"
 #include "asterfort/caddlp.h"
 #include "asterfort/cafaci.h"
+#include "asterfort/cafond.h"
 #include "asterfort/cafono.h"
+#include "asterfort/cafthm.h"
 #include "asterfort/cagene.h"
 #include "asterfort/cagrou.h"
 #include "asterfort/caimch.h"
@@ -59,6 +43,7 @@ subroutine charme(fonree)
 #include "asterfort/cbsint.h"
 #include "asterfort/cbvitn.h"
 #include "asterfort/chveno.h"
+#include "asterfort/char_crea_neum.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/initel.h"
 #include "asterfort/jedetr.h"
@@ -67,285 +52,356 @@ subroutine charme(fonree)
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
-    character(len=4) :: fonree
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-!      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
-!                                      ET AFFE_CHAR_MECA_F
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!      MOTS-CLES ACTUELLEMENT TRAITES:
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-!        MODELE
-!        EPSA_CALCULEE
-!        EVOL_CHAR
-!        PESANTEUR
-!        ROTATION
-!        DDL_IMPO, FACE_IMPO, ARETE_IMPO,
-!        LIAISON_DDL, LIAISON_OBLIQUE
-!        FORCE_NODALE
-!        CHARGE_REP: FORCE_CONTOUR FORCE_INTERNE FORCE_ARETE
-!                    FORCE_FACE    FORCE_POUTRE  FORCE_COQUE
-!        RELA_CINE_BP
-!        PRE_INIT
-!        PRES_REP
-!        FLUX_THM_REP
-!        FORCE_ELEC
-!        INTE_ELEC
-!        VITE_FACE
-!        ONDE_FLUI
-!        IMPE_FACE
-!        ONDE_PLANE
-!        CONTACT
-!        LIAISON_GROUP
-!        LIAISON_UNIF
-!        LIAISON_SOLIDE
-!        LIAISON_ELEM
-!        LIAISON_CHAMNO
-!        LIAISON_COQUE
-!        LIAISON_MAIL
-!        LIAISON_CYCL
-!        LIAISON_INTERF
-! ----------------------------------------------------------------------
-    integer :: nbocc(6), i, iret, ndim, ibid, jlgrf
-    character(len=5) :: param(7), para
-    character(len=8) :: char, noma, nomo
-    character(len=16) :: type, oper, chrep(6), motfac
+    character(len=4), intent(in) :: vale_type
+    character(len=8), intent(in) :: load
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of loads for AFFE_CHAR_MECA_*
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  vale_type : affected value type (real, complex or function)
+! In  load      : load
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer ndim, iret, ibid, jlgrf
+    character(len=8) :: mesh, model
+    character(len=16) :: keywordfact, command
     character(len=19) :: ligrch, ligrmo
 !
-    data chrep / 'FORCE_CONTOUR' , 'FORCE_INTERNE' , 'FORCE_ARETE' ,&
-     &             'FORCE_FACE'    , 'FORCE_POUTRE'  , 'FORCE_COQUE'   /
-    data param / 'F1D2D'         , 'F3D3D'         , 'F1D3D'       ,&
-     &             'F2D3D'         , 'F1D1D'         , 'FCO3D'       ,&
-     &             'FCO2D'         /
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-    call getres(char, type, oper)
 !
 ! - Mesh, Ligrel for model, dimension of model
 !
-    call cagene(char, oper, ligrmo, noma, ndim)
-    nomo = ligrmo(1:8)
+    command = 'AFFE_CHAR_MECA'
+    call cagene(load, command, ligrmo, mesh, ndim)
+    model = ligrmo(1:8)
+    if (ndim .gt. 3) call u2mess('A', 'CHARGES2_4')
 !
 ! - Ligrel for loads
 !
-    ligrch = char//'.CHME.LIGRE'
+    ligrch = load//'.CHME.LIGRE'
 !
-! - Keyword: FORCE_NODALE
+! --------------------------------------------------------------------------------------------------
 !
-    if (fonree .ne. 'COMP') then
-        call alligr(char, oper, noma, fonree, ligrch)
-        call cafono(char, ligrch, noma, ligrmo, fonree)
-    endif
+!   Others loadings
 !
-! --- CHARGES REPARTIES: FORCE_CONTOUR FORCE_INTERNE FORCE_ARETE
-!                        FORCE_FACE    FORCE_POUTRE  FORCE_COQUE
+! --------------------------------------------------------------------------------------------------
 !
-    do i = 1, 6
-        if (fonree .eq. 'COMP' .and. chrep(i) .ne. 'FORCE_POUTRE') then
-            nbocc(i) = 0
-        else
-            call getfac(chrep(i), nbocc(i))
-        endif
-    end do
+    if (vale_type .eq. 'REEL') then
 !
-! --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE ---
+! ----- LIAISON_INTERF
 !
-    if (ndim .gt. 3) call u2mess('A', 'MODELISA4_4')
+        call calimc(load)
 !
-    if (ndim .eq. 3) then
-        do i = 1, 6
-            if (nbocc(i) .ne. 0) then
+! ----- RELA_CINE_BP
 !
-                call cachre(char, ligrmo, noma, ndim, fonree,&
-                            param(i), chrep(i))
+        call caprec(load, mesh, ligrmo, vale_type)
 !
-            endif
-        end do
+! ----- IMPE_FACE
 !
-    else
-        do i = 4, 5
-            if (nbocc(i) .ne. 0) then
-!            --------- FORCE_FACE    INTERDIT EN 2D
-!            --------- FORCE_POUTRE  INTERDIT EN 2D
-                call u2mesk('A', 'MODELISA4_5', 1, chrep(i))
-            endif
-        end do
-        do i = 1, 6
-            if (nbocc(i) .ne. 0) then
+        call cbimpd(load, mesh, ligrmo, vale_type)
 !
-                para = param(i)
-!    CAS DE FORCE INTERNE EN 2D
-                if (i .eq. 2) para = 'F2D2D'
-!    CAS DES COQCYL AXI
-                if (i .eq. 6 .and. ndim .eq. 2) para = 'FCO2D'
-                call cachre(char, ligrmo, noma, ndim, fonree,&
-                            para, chrep(i))
-            endif
-        end do
-    endif
+! ----- VITE_FACE
 !
-    if (fonree .ne. 'COMP') then
-!         ================
+        call cbvitn(load, mesh, ligrmo, vale_type)
 !
-! --- DEFORMATION INITIALE ----
+! ----- ONDE_FLUI
 !
-        call cbchei(char, noma, ligrmo, fonree)
+        call cbonde(load, mesh, ligrmo, vale_type)
 !
-! --- PRE_SIGM----
+! ----- FLUX_THM_REP
 !
-        call cbsint(char, noma, ligrmo, fonree)
+        call cafthm(load, mesh, ligrmo, vale_type)
 !
-! --- PRESSION ---
+! ----- FORCE_SOL
 !
-        call cbpres(char, noma, ligrmo, ndim, fonree)
-!
-! --- VITE_FACE ---
-!
-        call cbvitn(char, noma, ligrmo, fonree)
-!
-! --- IMPE_FACE ---
-!
-        call cbimpd(char, noma, ligrmo, fonree)
-!
-    endif
-!
-! --- TEMPERATURE, PRESSION, PESANTEUR, ROTATION, FORCES ELECTROS
-!     DEFORMATIONS PLANES GENERALISEES, LIAISON UNILATERALE,
-!     DEFORMATIONS ANELASTIQUES, RELA_CINE_BP ---
-!
-    if (fonree .eq. 'REEL') then
-!         ================
-        call cbprca(char)
-        call cbpesa(char, noma, ndim, ligrmo)
-        call cbrota(char, noma, ndim, ligrmo)
-!
-! --- RELA_CINE_BP ----
-!
-        call caprec(char, noma, ligrmo, fonree)
-!
-! --- FORCE_ELEC ----
-!
-        call cbelec(char, ligrmo, noma)
-!
-! --- FORCES DE LAPLACE ----
-!
-        call cblapl(char, ligrmo, noma)
-!
-! --- ONDE_FLUI ---
-!
-        call cbonde(char, noma, ligrmo, fonree)
-!
-! --- DDL_POUTRE ---
-!
-        call caddlp(char, noma, ligrmo, fonree)
-!
-    endif
-!
-! --- ONDE_PLANE ---
-!
-    if (fonree .eq. 'FONC') then
-!         ================
-        call cbondp(char, noma)
-    endif
-!
-! --- DDL_IMPO ---
-!
-    motfac = 'DDL_IMPO'
-    call caddli(motfac, char, noma, ligrmo, fonree)
-!
-! --- LIAISON_DDL ---
-!
-    call caliai(fonree, char)
-!
-    if (fonree .eq. 'REEL') then
-!         ================
-!
-! --- LIAISON_MAIL ---
-!
-        call calirc(char)
-!
-! --- LIAISON_CYCL ---
-!
-        call calyrc(char)
-!
-! --- LIAISON_ELEM ---
-!
-        call caliel(fonree, char)
-!
-! --- LIAISON_CHAMNO ---
-!
-        call calich(char)
-!
-! --- LIAISON_RBE3 ---
-!
-        call carbe3(char)
-!
-! --- VECT_ASSE ---
-!
-        call caveas(char)
-!
-! --- VECT_ISS ---
-!
-        call caveis(char)
-!
-! --- CHAMNO_IMPO ---
-!
-        call caimch(char)
-!
-! --- LIAISON_INTERF ---
-!
-        call calimc(char)
-!
-! --- ARETE_IMPO ---
-!
-        call caarei(char, noma, ligrmo, fonree)
-!
-    endif
-!
-    if (fonree .ne. 'COMP') then
-!         ================
-!
-! --- FACE_IMPO ---
-        call cafaci(char, noma, ligrmo, fonree)
+        call caveis(load)
 
+! --------------------------------------------------------------------------------------------------
+    elseif (vale_type .eq. 'COMP') then
+
+! --------------------------------------------------------------------------------------------------
+    elseif (vale_type .eq. 'FONC') then
 !
-! --- LIAISON_OBLIQUE ---
-        call caliob(char, noma, ligrmo, fonree)
+! ----- IMPE_FACE
 !
-! --- LIAISON_GROUP ---
-        call caliag(fonree, char)
+        call cbimpd(load, mesh, ligrmo, vale_type)
 !
-! --- LIAISON_UNIF ---
-        call cagrou(char, noma, fonree)
+! ----- VITE_FACE
 !
-! --- LIAISON_SOLIDE ---
-        call caliso(char, noma, ligrmo, fonree)
+        call cbvitn(load, mesh, ligrmo, vale_type)
 !
-! --- LIAISON_COQUE ---
-        call calicp(char, fonree)
+! ----- ONDE_PLANE
 !
+        call cbondp(load, mesh)
+!
+! ----- FLUX_THM_REP
+!
+        call cafthm(load, mesh, ligrmo, vale_type)
+! --------------------------------------------------------------------------------------------------
+    else
+        ASSERT(.false.)
     endif
 !
+! --------------------------------------------------------------------------------------------------
 !
-! --- MISE A JOUR DU LIGREL DE CHARGE :
+!   Neumann loadings
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (vale_type .eq. 'REEL') then
+!
+! ----- PRES_REP/FORCE_TUYAU
+!
+        call cbpres(load, mesh, ligrmo, ndim, vale_type)
+!
+! ----- PRE_EPSI
+!
+        call cbchei(load, mesh, ligrmo, vale_type)
+!
+! ----- PRE_SIGM
+!
+        call cbsint(load, mesh, ligrmo, vale_type)
+!
+! ----- EFFE_FOND
+!
+        call cafond(load, ligrmo, mesh, ndim, vale_type)
+!
+! ----- EVOL_CHAR
+!
+        call cbprca(load)
+!
+! ----- PESANTEUR
+!
+        call cbpesa(load, mesh, ndim, ligrmo)
+!
+! ----- ROTATION
+!
+        call cbrota(load, mesh, ndim, ligrmo)
+!
+! ----- FORCE_ELEC
+!
+        call cbelec(load, ligrmo, mesh)
+!
+! ----- INTE_ELEC
+!
+        call cblapl(load, ligrmo, mesh)
+!
+! ----- VECT_ASSE
+!
+        call caveas(load)
+!
+! ----- FORCE_NODALE
+!
+        call cafono(load, ligrch, mesh, ligrmo, vale_type)
+!
+! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
+!
+        call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+
+! --------------------------------------------------------------------------------------------------
+    elseif (vale_type .eq. 'COMP') then
+!
+! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
+!
+        call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+
+! --------------------------------------------------------------------------------------------------
+    elseif (vale_type .eq. 'FONC') then
+!
+! ----- PRES_REP/FORCE_TUYAU
+!
+        call cbpres(load, mesh, ligrmo, ndim, vale_type)
+!
+! ----- PRE_EPSI
+!
+        call cbchei(load, mesh, ligrmo, vale_type)
+!
+! ----- PRE_SIGM
+!
+        call cbsint(load, mesh, ligrmo, vale_type)
+!
+! ----- EFFE_FOND
+!
+        call cafond(load, ligrmo, mesh, ndim, vale_type)
+!
+! ----- FORCE_NODALE
+!
+        call cafono(load, ligrch, mesh, ligrmo, vale_type)
+!
+! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
+!
+        call char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+! --------------------------------------------------------------------------------------------------
+    else
+        ASSERT(.false.)
+    endif
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Kinematic conditions
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (vale_type .eq. 'REEL') then
+!
+! ----- DDL_POUTRE
+!
+        call caddlp(load, mesh, ligrmo, vale_type)
+!
+! ----- DDL_IMPO
+!
+        keywordfact = 'DDL_IMPO'
+        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
+!
+! ----- ARETE_IMPO
+!
+        call caarei(load, mesh, ligrmo, vale_type)
+!
+! ----- FACE_IMPO
+!
+        call cafaci(load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_DDL
+!
+        call caliai(vale_type, load)
+!
+! ----- LIAISON_MAIL
+!
+        call calirc(load)
+!
+! ----- LIAISON_CYCL
+!
+        call calyrc(load)
+!
+! ----- LIAISON_ELEM
+!
+        call caliel(vale_type, load)
+!
+! ----- LIAISON_CHAMNO
+!
+        call calich(load)
+!
+! ----- CHAMNO_IMPO
+!
+        call caimch(load)
+!
+! ----- LIAISON_RBE3
+!
+        call carbe3(load)
+!
+! ----- LIAISON_OBLIQUE
+!
+        call caliob(load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_GROUP
+!
+        call caliag(vale_type, load)
+!
+! ----- LIAISON_UNIF
+!
+        call cagrou(load, mesh, vale_type)
+!
+! ----- LIAISON_SOLIDE
+!
+        call caliso(load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_COQUE
+!
+        call calicp(load, vale_type)
+! --------------------------------------------------------------------------------------------------
+    elseif (vale_type .eq. 'COMP') then
+!
+! ----- DDL_IMPO
+!
+        keywordfact = 'DDL_IMPO'
+        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_DDL
+!
+        call caliai(vale_type, load)
+! --------------------------------------------------------------------------------------------------
+    elseif (vale_type .eq. 'FONC') then
+!
+! ----- DDL_IMPO
+!
+        keywordfact = 'DDL_IMPO'
+        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
+!
+! ----- FACE_IMPO
+!
+        call cafaci(load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_DDL
+!
+        call caliai(vale_type, load)
+!
+! ----- LIAISON_OBLIQUE
+!
+        call caliob(load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_GROUP
+!
+        call caliag(vale_type, load)
+!
+! ----- LIAISON_UNIF
+!
+        call cagrou(load, mesh, vale_type)
+!
+! ----- LIAISON_SOLIDE
+!
+        call caliso(load, mesh, ligrmo, vale_type)
+!
+! ----- LIAISON_COQUE
+!
+        call calicp(load, vale_type)
+! --------------------------------------------------------------------------------------------------
+    else
+        ASSERT(.false.)
+    endif
+!
+! - Update loads <LIGREL>
+!
     call jeexin(ligrch//'.LGRF', iret)
     if (iret .ne. 0) then
         call adalig(ligrch)
         call cormgi('G', ligrch)
         call jeecra(ligrch//'.LGRF', 'DOCU', ibid, 'MECA')
         call initel(ligrch)
-!       -- LIEN ENTRE LE LIGREL DE CHARGE ET LE MODELE :
         call jeveuo(ligrch//'.LGRF', 'E', jlgrf)
-        zk8(jlgrf-1+2)=ligrmo(1:8)
+        zk8(jlgrf-1+2) = model
     endif
 !
+! - Check mesh orientation (normals)
 !
-    if (fonree .ne. 'COMP') then
-!       -- VERIFICATION DES NORMALES AUX MAILLES SURFACIQUES EN 3D
-!       -- ET LINEIQUES EN 2D
-        call chveno(fonree, noma, nomo)
+    if (vale_type .ne. 'COMP') then
+        call chveno(vale_type, mesh, model)
     endif
 !
 end subroutine

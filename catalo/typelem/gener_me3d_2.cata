@@ -63,6 +63,7 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     ERAYONM  = NEUT_R   ELEM__         (X1       )
+    CEFOND   = NEUT_R   ELEM__         (X1       )
     ECASECT  = NEUT_R   ELEM__         (X[10])
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
@@ -150,10 +151,20 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    18    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_EFON_F    19    IN__   NGEOMER  PGEOMER  CPRESSF  PPREFFF  CTEMPSR  PTEMPSR  CEFOND  PEFOND
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_EFON_R    18    IN__   NGEOMER  PGEOMER  EPRESNO  PPREFFR  CEFOND   PEFOND
+                              OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRSU_R    424   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_EFSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPREFFF
+                                     CTEMPSR  PTEMPSR  CEFOND   PEFOND
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_EFSU_R    424   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPREFFR
+                                     CEFOND   PEFOND
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
@@ -179,6 +190,12 @@ OPTION__
                                      CTEMPSR  PTEMPSR
                               OUT__  MMATUNS  PMATUNS
     RIGI_MECA_PRSU_R    424   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
+                              OUT__  MMATUNS  PMATUNS
+    RIGI_MECA_EFSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPREFFF
+                                     CTEMPSR  PTEMPSR  CEFOND   PEFOND
+                              OUT__  MMATUNS  PMATUNS
+    RIGI_MECA_EFSU_R    424   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPREFFR
+                                     CEFOND   PEFOND
                               OUT__  MMATUNS  PMATUNS
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM

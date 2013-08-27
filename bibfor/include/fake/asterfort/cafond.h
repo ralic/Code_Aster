@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cafond(char, ligrmo, ialloc, noma, fonree)
-        character(len=8) :: char
-        character(*) :: ligrmo
-        integer :: ialloc
-        character(len=8) :: noma
-        character(len=4) :: fonree
+    subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
+        character(len=8), intent(in)  :: load
+        character(len=8), intent(in)  :: mesh
+        integer, intent(in)  :: ndim
+        character(len=19), intent(in) :: ligrmo
+        character(len=4), intent(in)  :: vale_type
     end subroutine cafond
 end interface

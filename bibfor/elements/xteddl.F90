@@ -76,15 +76,15 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 ! --- CONECTIVITÉ DES FISSURE ET DES DDL HEAVISIDES
 !
     if (nfiss .eq. 1) then
-        do 300 ino = 1, nno
+        do ino = 1, nno
             fisno(ino,1) = 1
-300      continue
+        enddo
     else
-        do 310 ifh = 1, nfh
-            do 320 ino = 1, nno
+        do ifh = 1, nfh
+            do ino = 1, nno
                 fisno(ino,ifh) = zi(jfisno-1+(ino-1)*nfh+ifh)
-320          continue
-310      continue
+            enddo
+        enddo
     endif
 !     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
     call teattr(nomte, 'S', 'XFEM', tyenel, ier)
@@ -101,14 +101,14 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
 !     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
     ASSERT(nddl.le.ddlmax)
-    do 99 ino = 1, ddlmax
+    do ino = 1, ddlmax
         posddl(ino)=0
-99  end do
+    end do
 !
 !     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
     lelim=.false.
 !
-    do 100 ino = 1, nno
+    do ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
 !       ENRICHISSEMENT DU NOEUD
         if (ielim .eq. 1) then
@@ -117,19 +117,19 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         -------------------------
 !
 !         PB DE STATUT DES NOEUDS ENRICHIS
-            do 330 ifh = 1, nfh
+            do  ifh = 1, nfh
                 istatu = stano((ino-1)*nfiss+fisno(ino,ifh))
                 ASSERT(istatu.le.1)
                 if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL H
-                    do 10 k = 1, ndim
+                    do k = 1, ndim
                         posddl(in+ndim*ifh+k)=1
 !           ON SUPPRIME LES DDL C SI MULTI-HEAVISIDE AVEC CONTACT
                         if (lmultc) posddl(in+ndim*(nfh+ifh)+k)=1
-10                  continue
+                    enddo
                     lelim=.true.
                 endif
-330          continue
+             enddo
         else if (ielim.eq.2) then
 !
 !         2) CAS DES MAILLES 'CARRÉ'
@@ -142,9 +142,9 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !           ON NE SUPPRIME AUCUN DDL
             else if (istatu.eq.0) then
 !           ON SUPPRIME LES DDL E
-                do 20 k = 1, nfe*ndim
+                do k = 1, nfe*ndim
                     posddl(in+ndim*(1+nfh)+k)=1
-20              continue
+                enddo
                 lelim=.true.
             endif
 !
@@ -160,24 +160,24 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !           ON NE SUPPRIME AUCUN DDL
             else if (istatu.eq.2) then
 !           ON SUPPRIME LES DDL H
-                do 30 k = 1, ndim
+                do k = 1, ndim
                     posddl(in+ndim+k)=1
-30              continue
+                enddo
                 lelim=.true.
             else if (istatu.eq.1) then
 !           ON SUPPRIME LES DDL E
-                do 40 k = 1, nfe*ndim
+                do k = 1, nfe*ndim
                     posddl(in+ndim*(1+nfh)+k)=1
-40              continue
+                enddo
                 lelim=.true.
             else if (istatu.eq.0) then
 !           ON SUPPRIME LES DDLS H ET E
-                do 50 k = 1, ndim
+                do k = 1, ndim
                     posddl(in+ndim+k)=1
-50              continue
-                do 60 k = 1, nfe*ndim
+                enddo
+                do k = 1, nfe*ndim
                     posddl(in+ndim*(1+nfh)+k)=1
-60              continue
+                enddo
                 lelim=.true.
             endif
 !
@@ -186,20 +186,20 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         ------------------------------
             if (ino .le. nnos) then
 !
-                do 80 ifh = 1, max(1, nfh)
+                do  ifh = 1, max(1, nfh)
                     istatu = stano((ino-1)*max(1,nfh)+ifh)
                     if (istatu .eq. 0) then
 !             ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
-                        do 70 k = 1, ndim
+                        do  k = 1, ndim
                             posddl(in+ndim*(nfh+nfe+ifh)+k)=1
-70                      continue
+                        enddo
                         lelim=.true.
                     endif
-80              continue
+                enddo
             endif
         endif
 !
-100  end do
+    end do
 !
     if (lelim) then
 !
@@ -211,7 +211,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
             option .eq. 'MASS_MECA') then
             dmin=r8maem()
             dmax=-r8maem()
-            do 110 i = 1, nddl
+            do i = 1, nddl
                 if (matsym) then
                     codia=mat((i-1)*i/2+i)
                 else
@@ -222,7 +222,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                 else if (codia.lt.dmin) then
                     dmin=codia
                 endif
-110          continue
+             enddo
             codia=(dmax+dmin)/2.0d0
             if (codia .eq. 0) codia = 1
         endif
@@ -234,12 +234,12 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !     POUR LES OPTIONS CONCERNANT DES VECTEURS :
 !        MISE A ZERO DES TERMES I
 !
-        do 200 i = 1, nddl
-            if (posddl(i) .eq. 0) goto 200
+        do i = 1, nddl
+            if (posddl(i) .eq. 0) goto 199
             if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option&
                 .eq. 'FULL_MECA' .or. option .eq. 'RIGI_CONT' .or. option .eq. 'RIGI_FROT'&
                 .or. option .eq. 'MASS_MECA') then
-                do 210 j = 1, nddl
+                do j = 1, nddl
                     if (matsym) then
                         if (j .lt. i) mat((i-1)*i/2+j) = 0.d0
                         if (j .eq. i) mat((i-1)*i/2+j) = codia
@@ -249,7 +249,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                         if (j .ne. i) mat((j-1)*nddl+i) = 0.d0
                         if (j .eq. i) mat((i-1)*nddl+j) = codia
                     endif
-210              continue
+                enddo
             endif
             if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA' .or. option .eq.&
                 'FORC_NODA' .or. option .eq. 'CHAR_MECA_PRES_R' .or. option .eq.&
@@ -259,8 +259,10 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                 'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq.&
                 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FF3D3D' .or. option .eq.&
                 'CHAR_MECA_FF2D2D' .or. option .eq. 'CHAR_MECA_PESA_R' .or. option .eq.&
-                'CHAR_MECA_ROTA_R' .or. option .eq. 'CHAR_MECA_TEMP_R') vect(i) = 0.d0
-200      continue
+                'CHAR_MECA_ROTA_R' .or. option .eq. 'CHAR_MECA_TEMP_R' .or. option .eq.&
+                'CHAR_MECA_EFON_R' .or. option .eq.'CHAR_MECA_EFON_F') vect(i) = 0.d0
+199         continue
+       enddo
 !
     endif
 !

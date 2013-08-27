@@ -168,15 +168,6 @@ Erreur :
  points confondus.
 """),
 
-40 : _(u"""
- impossibilité : la maille  %(k1)s  doit être de type "SEG2" ou "SEG3"
- et elle est de type :  %(k2)s
-"""),
-
-42 : _(u"""
- le contour dont on doit calculer l'aire n'est pas fermé
-"""),
-
 43 : _(u"""
  le mot-clé "reuse" n'existe que pour l'opération "ASSE"
 """),

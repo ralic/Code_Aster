@@ -56,20 +56,24 @@ CM=AFFE_MATERIAU(        MAILLAGE=M,
                                   AFFE=_F(  TOUT = 'OUI',
                                          MATER = MA,            ))
 
-CH=AFFE_CHAR_MECA(       MODELE=MO,DDL_IMPO=(
+CH=AFFE_CHAR_MECA(       MODELE=MO,INFO=2,
+                         DDL_IMPO=(
                             _F(  GROUP_NO = 'DIRI',   DY = 0.,     ),
                             _F(  GROUP_NO = 'SB',     DZ = 0.,     ),
-                            _F(  GROUP_NO = 'DIRY',   DX = 0.,     )),
-                           FACE_IMPO=_F(  GROUP_MA = 'DNOR',   DNOR = 0.,   ),
-                            PRES_REP=_F(  GROUP_MA = 'PRE7',   PRES = 60.,  ),EFFE_FOND=(
+                            _F(  GROUP_NO = 'DIRY',   DX = 0.,     )
+                                  ),
+                         FACE_IMPO=_F(  GROUP_MA = 'DNOR',   DNOR = 0.,   ),
+                         PRES_REP=_F(  GROUP_MA = 'PRE7',   PRES = 60.,  ),
+                         EFFE_FOND=(
                            _F(  GROUP_MA_INT = 'AE7',
                                        GROUP_MA = 'SH',     PRES = 60.,  ),
                            _F(  GROUP_MA_INT = 'AE8',
-                                       GROUP_MA = 'SH',     PRES = 60.,  ))
+                                       GROUP_MA = 'SH',     PRES = 60.,  )
+                                  )
                        )
 
 
-RESU=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
+RESU=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,INFO=2,
                            EXCIT=_F(  CHARGE = CH,   ),
 
                       )

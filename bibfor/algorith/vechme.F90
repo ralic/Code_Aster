@@ -74,7 +74,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     integer :: nchinx
     parameter (nchinx=42)
     integer :: nbchmx
-    parameter (nbchmx=17)
+    parameter (nbchmx=18)
     integer :: jlchin, isigi
     integer :: ier, jchar, jinf
     integer :: ibid, iret, nchar, k, icha, ii, iexis
@@ -96,19 +96,19 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 !
     data nomlig/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',&
      &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',&
-     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.SIINT'/
+     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.SIINT','.EFOND'/
     data nomopf/'FORC_F','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',&
      &     'FF1D1D','PESA_R','ROTA_R','PRES_F','FRELEC','FFCO3D',&
-     &     'FFCO2D','EPSI_F','FLUX_F','      ',' '/
+     &     'FFCO2D','EPSI_F','FLUX_F','      ',' ','EFON_F'/
     data nompaf/'FORNOF','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',&
      &     'FF1D1D','PESANR','ROTATR','PRESSF','FRELEC','FFCO3D',&
-     &     'FFCO2D','EPSINF','FLUXF','      ',' '/
+     &     'FFCO2D','EPSINF','FLUXF','      ',' ','PEFOND'/
     data nomopr/'FORC_R','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',&
      &     'FR1D1D','PESA_R','ROTA_R','PRES_R','FRELEC','FRCO3D',&
-     &     'FRCO2D','EPSI_R','FLUX_R','      ',' '/
+     &     'FRCO2D','EPSI_R','FLUX_R','      ',' ','EFON_R'/
     data nompar/'FORNOR','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',&
      &     'FR1D1D','PESANR','ROTATR','PRESSR','FRELEC','FRCO3D',&
-     &     'FRCO2D','EPSINR','FLUXR','      ',' '/
+     &     'FRCO2D','EPSINR','FLUXR','      ',' ','PEFOND'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -121,10 +121,10 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
     charge = chargz
     infcha = infchz
     ligrmo = ligrez
-    do 10 ii = 1, nchinx
+    do ii = 1, nchinx
         lchin(ii) = ' '
         lpain(ii) = ' '
-10  end do
+    end do
     call exixfe(modele, ier)
     lxfem = ier.ne.0
     if (ligrmo .eq. ' ') ligrmo = modele(1:8)//'.MODELE'
@@ -233,7 +233,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 !
 ! --- CALCUL
 !
-    do 70 icha = 1, nchar
+    do icha = 1, nchar
         numchm = zi(jinf+nchar+icha)
         if (numchm .gt. 0) then
             nomcha = zk24(jchar+icha-1) (1:8)
@@ -242,7 +242,7 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
 ! ------- LE LIGREL UTILISE DANS CALCUL EST LE LIGREL DU MODELE
 ! ------- SAUF POUR LES FORCES NODALES
 !
-            do 40 k = 1, nbchmx
+            do k = 1, nbchmx
                 if (nomlig(k) .eq. '.FORNO') then
                     ligrel = ligrch
                 else
@@ -278,6 +278,23 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
                     endif
 !
                     nchin = 28
+!
+! ----------------- For EFFE_FOND: you need two <CARTE>
+!
+                    if (option .eq. 'CHAR_MECA_EFON_R') then
+                        nchin = nchin + 1
+                        lpain(nchin) = 'PPREFFR'
+                        lchin(nchin) = nomcha//'.CHME.PREFF'
+                        lpain(1)     = 'PEFOND'
+                        lchin(1)     = nomcha//'.CHME.EFOND'
+                    endif
+                    if (option .eq. 'CHAR_MECA_EFON_F') then
+                        nchin = nchin + 1
+                        lpain(nchin) = 'PPREFFF'
+                        lchin(nchin) = nomcha//'.CHME.PREFF'
+                        lpain(1)     = 'PEFOND'
+                        lchin(1)     = nomcha//'.CHME.EFOND'
+                    endif
 !
 ! ----------- POUR LES ELEMENTS DE BORD XFEM
 !
@@ -323,22 +340,24 @@ subroutine vechme(stop, modelz, chargz, infchz, inst,&
                     call reajre(vecele, lchout, 'V')
 !
                 endif
-40          continue
+40              continue
+            enddo
         endif
 !
 ! ----- TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR
 !
-        do 50 ii = 1, 3
+        do ii = 1, 3
             resufv(ii) = lchout
             call gcnco2(newnom)
             resufv(ii) (10:16) = newnom(2:8)
-50      continue
+        enddo
         call nmdepr(modelz, ligrmo, carele, chargz, icha,&
                     inst(1), resufv)
-        do 60 ii = 1, 3
+        do ii = 1, 3
             call reajre(vecele, resufv(ii), 'V')
-60      continue
-70  end do
+        enddo
+    end do
+!
 99  continue
 !
     vecelz = vecele//'.RELR'

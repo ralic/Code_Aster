@@ -366,10 +366,6 @@ Erreur d'utilisation :
  On ne peut pas filtrer les mailles de type %(k1)s car ce n'est pas un type de maille connu.
 """),
 
-68: _(u"""
- maille partiellement affectée.
-"""),
-
 69: _(u"""
  le paramètre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s
 """),

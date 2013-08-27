@@ -56,7 +56,7 @@ subroutine contex(nomop, nompar)
     call tecael(iadzi, iazk24)
     nomail=zk24(iazk24-1+3)(1:8)
 !
-    call u2mesk('I', 'CALCULEL5_15', 1, nomail)
+    call u2mesk('I', 'ELEMENT_15', 1, nomail)
 !
     call jeveuo('&CATA.CL.COMLIBR', 'L', jclibr)
 !
@@ -75,7 +75,7 @@ subroutine contex(nomop, nompar)
     lopt=(iopt.ne.0)
 !
     if (lopt) then
-        call u2mesk('I', 'CALCULEL5_16', 1, nomop)
+        call u2mesk('I', 'ELEMENT_16', 1, nomop)
         call jeveuo(jexnum('&CATA.OP.DESCOPT', iopt), 'L', jdesop)
         call jeveuo(jexnum('&CATA.OP.OPTPARA', iopt), 'L', iapara)
 !
@@ -85,7 +85,7 @@ subroutine contex(nomop, nompar)
         indic=zi(jdesop-1+4+nbin+nbou+2)
         if (nblig .gt. 0) then
             do 10,k=indic,indic-1+nblig
-            call u2mesk('I', 'CALCULEL5_17', 1, zk80(jclibr-1+k))
+            call u2mesk('I', 'ELEMENT_17', 1, zk80(jclibr-1+k))
 10          continue
         endif
     endif
@@ -100,21 +100,21 @@ subroutine contex(nomop, nompar)
     if (lpara) then
         itrou=indik8(zk8(iapara-1+1),nompa2,1,nbin)
         if (itrou .gt. 0) then
-            call u2mesk('I', 'CALCULEL5_18', 1, nompa2)
+            call u2mesk('I', 'ELEMENT_18', 1, nompa2)
             nblig=zi(jdesop-1+6+nbin+nbou+2*(itrou-1)+1)
             indic=zi(jdesop-1+6+nbin+nbou+2*(itrou-1)+2)
             igd=zi(jdesop-1+4+itrou)
         else
             itrou=indik8(zk8(iapara-1+nbin+1),nompa2,1,nbou)
             ASSERT(itrou.gt.0)
-            call u2mesk('I', 'CALCULEL5_19', 1, nompa2)
+            call u2mesk('I', 'ELEMENT_19', 1, nompa2)
             nblig=zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+1)
             indic=zi(jdesop-1+6+3*nbin+nbou+2*(itrou-1)+2)
             igd=zi(jdesop-1+4+nbin+itrou)
         endif
         if (nblig .gt. 0) then
             do 20,k=indic,indic-1+nblig
-            call u2mesk('I', 'CALCULEL5_17', 1, zk80(jclibr-1+k))
+            call u2mesk('I', 'ELEMENT_17', 1, zk80(jclibr-1+k))
 20          continue
         endif
     endif
@@ -128,19 +128,18 @@ subroutine contex(nomop, nompar)
         call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
 !       -- ON N'IMPRIME RIEN POUR ADRSJEVE !
         if (nomgd .ne. 'ADRSJEVE') then
-            call u2mesk('I', 'CALCULEL5_22', 1, nomgd)
+            call u2mesk('I', 'ELEMENT_22', 1, nomgd)
             call jeveuo(jexnum('&CATA.GD.DESCRIGD', igd), 'L', jdsgd)
             nblig=zi(jdsgd-1+6)
             indic=zi(jdsgd-1+7)
             if (nblig .gt. 0) then
                 do 30,k=indic,indic-1+nblig
-                call u2mesk('I', 'CALCULEL5_17', 1, zk80(jclibr-1+k))
+                call u2mesk('I', 'ELEMENT_17', 1, zk80(jclibr-1+k))
 30              continue
             endif
         endif
 !
     endif
-    call u2mess('I', 'CALCULEL5_23')
 !
     ASSERT(.false.)
 !
