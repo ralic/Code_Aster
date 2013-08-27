@@ -37,6 +37,11 @@ subroutine asmpi_info(comm, rank, size)
     endif
     call asmpi_info_wrap(comm2, rank2, size2)
 #else
+    if (.not. present(comm)) then
+        comm2 = 0
+    else
+        comm2 = comm
+    endif
     rank2 = 0
     size2 = 1
 #endif
@@ -47,4 +52,3 @@ subroutine asmpi_info(comm, rank, size)
         size = size2
     endif
 end subroutine asmpi_info
-

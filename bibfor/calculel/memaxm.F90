@@ -80,7 +80,6 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp,&
     integer :: ipt, isp, icmp, ncp, iicmp, iadr1, jcesk
     integer :: iadr2, iel1
     real(kind=8) :: valr, vmima
-    complex(kind=8) :: cbid
     character(len=19) :: chams, cham19
     integer :: tncomp(nbcmp)
     logical :: copi, lmax, labs, lreel

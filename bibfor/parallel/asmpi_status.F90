@@ -67,7 +67,7 @@ subroutine asmpi_status(istat, resp0)
         call u2mesi('E+', 'APPELMPI_96', 1, 0)
         call u2mesk('E', 'APPELMPI_83', 1, 'MPI_ISEND')
         call mpistp(1)
-        goto 9999
+        goto 999
     endif
     if (.not.term) goto 300
 !     END WHILE
@@ -86,13 +86,15 @@ subroutine asmpi_status(istat, resp0)
         call u2mesi('E+', 'APPELMPI_96', 1, 0)
         call u2mesk('E', 'APPELMPI_83', 1, 'MPI_IRECV')
         call mpistp(1)
-        goto 9999
+        goto 999
     endif
     if (.not.term) goto 200
 !     END WHILE
 !
     resp0 = irp0
 !
-9999  continue
+999 continue
+#else
+    resp0 = istat
 #endif
 end subroutine

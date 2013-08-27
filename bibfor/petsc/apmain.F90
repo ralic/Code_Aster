@@ -389,6 +389,16 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
     call jedema()
 !
+#else
+    character(len=1) :: kdummy
+    integer :: idummy
+    real(kind=8) :: rdummy
+    kdummy = action(1:1)
+    idummy = kptsc
+    rdummy = rsolu(1)
+    kdummy = vcine(1:1)
+    idummy = istop
+    idummy = iret
 #endif
 !
 end subroutine

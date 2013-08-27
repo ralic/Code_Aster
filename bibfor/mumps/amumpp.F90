@@ -45,6 +45,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "aster_types.h"
 #include "asterc/r4maem.h"
 #include "asterc/r4miem.h"
 #include "asterc/r8maem.h"
@@ -78,15 +79,13 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 #include "aster_mumps.h"
 #include "mpif.h"
 #include "jeveux.h"
-    integer :: nicntl
-    parameter (nicntl=26)
     type (smumps_struc) , pointer :: smpsk
     type (cmumps_struc) , pointer :: cmpsk
     type (dmumps_struc) , pointer :: dmpsk
     type (zmumps_struc) , pointer :: zmpsk
     integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, ibid, jdelg, k, ifm, niv
     integer :: jdlg2, jj
-    integer(kind=4) :: n4
+    blas_int :: n4
     character(len=1) :: rouc
     character(len=4) :: etam
     character(len=8) :: kbid
@@ -109,8 +108,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         smpsk=>smps(kxmps)
         rang=smpsk%myid
         n=smpsk%n
-        smpsk%nrhs=nbsol
-        smpsk%lrhs=n
+        smpsk%nrhs=to_mumps_int(nbsol)
+        smpsk%lrhs=to_mumps_int(n)
         ltypr=.true.
         rmax=r4maem()*0.5
         rmin=r4miem()*2.0
@@ -118,8 +117,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         cmpsk=>cmps(kxmps)
         rang=cmpsk%myid
         n=cmpsk%n
-        cmpsk%nrhs=nbsol
-        cmpsk%lrhs=n
+        cmpsk%nrhs=to_mumps_int(nbsol)
+        cmpsk%lrhs=to_mumps_int(n)
         ltypr=.false.
         rmax=r4maem()*0.5
         rmin=r4miem()*2.0
@@ -127,8 +126,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         dmpsk=>dmps(kxmps)
         rang=dmpsk%myid
         n=dmpsk%n
-        dmpsk%nrhs=nbsol
-        dmpsk%lrhs=n
+        dmpsk%nrhs=to_mumps_int(nbsol)
+        dmpsk%lrhs=to_mumps_int(n)
         ltypr=.true.
         rmax=r8maem()*0.5
         rmin=r8miem()*2.0
@@ -136,8 +135,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         zmpsk=>zmps(kxmps)
         rang=zmpsk%myid
         n=zmpsk%n
-        zmpsk%nrhs=nbsol
-        zmpsk%lrhs=n
+        zmpsk%nrhs=to_mumps_int(nbsol)
+        zmpsk%lrhs=to_mumps_int(n)
         ltypr=.false.
         rmax=r8maem()*0.5
         rmin=r8miem()*2.0
@@ -145,7 +144,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         ASSERT(.false.)
     endif
     nnbsol=n*nbsol
-    n4=nnbsol
+    n4=to_blas_int(nnbsol)
     nomat=nomats(kxmps)
     nosolv=nosols(kxmps)
     nonu=nonus(kxmps)
@@ -247,7 +246,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     else if (rtest.gt.rmax) then
                         raux=rmax*sign(1.d0,raux)
                     endif
-                    smpsk%rhs(i)=raux
+                    smpsk%rhs(i)=real(raux, kind=4)
                 enddo
             else if (type.eq.'C') then
                 do i = 1, nnbsol
@@ -257,10 +256,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                         caux=dcmplx(0.d0,0.d0)
                     else if (rtest.gt.rmax) then
                         caux=dcmplx(rmax*sign(1.d0,dble(caux)),0.d0)
-                        caux=rmax*dcmplx(1.d0*sign(1.d0,dble(caux)),&
-                    1.d0*sign(1.d0,imag(caux)))
+                        caux=rmax*dcmplx(1.d0*sign(1.d0,dble(caux)), 1.d0*sign(1.d0,imag(caux)))
                     endif
-                    cmpsk%rhs(i)=caux
+                    cmpsk%rhs(i)=cmplx(caux, kind=4)
                 enddo
             else if (type.eq.'D') then
                 do i = 1, nnbsol

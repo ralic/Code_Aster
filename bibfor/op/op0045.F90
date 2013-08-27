@@ -39,6 +39,7 @@ subroutine op0045()
 !-----------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
+! aslint: disable=W1501
 !
 ! VARIABLES LOCALES
 #include "aster_types.h"
@@ -142,7 +143,7 @@ subroutine op0045()
     real(kind=8) :: effmin, effmax, eps, quapi2, rtest
 !     &             RETFIN
     complex(kind=8) :: sigma, cbid, czero, dcmplx
-    character(len=1) :: ctyp, appr, ktyp, k1bid
+    character(len=1) :: ctyp, appr, ktyp
     character(len=8) :: modes, knega, method, arret
     character(len=9) :: typevp
     character(len=14) :: matra, matrb, matrc

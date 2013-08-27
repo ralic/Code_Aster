@@ -54,9 +54,9 @@ subroutine sdmpic(typesd, nomsd)
     types2 = typesd
 !
 !
+    k19=noms2(1:19)
     if (types2 .eq. 'CHAM_ELEM') then
 !     ----------------------------------
-        k19=noms2
         call dismoi('F', 'MPI_COMPLET', k19, 'CHAM_ELEM', ibid,&
                     kmpic, ibid)
         if (kmpic .eq. 'OUI') goto 9999
@@ -67,7 +67,6 @@ subroutine sdmpic(typesd, nomsd)
 !
     else if (types2.eq.'RESUELEM') then
 !     ----------------------------------
-        k19=noms2
         call dismoi('F', 'MPI_COMPLET', k19, 'RESUELEM', ibid,&
                     kmpic, ibid)
         if (kmpic .eq. 'OUI') goto 9999
@@ -78,7 +77,6 @@ subroutine sdmpic(typesd, nomsd)
 !
     else if (types2.eq.'MATR_ASSE') then
 !     ----------------------------------
-        k19=noms2
         call dismoi('F', 'MPI_COMPLET', k19, 'MATR_ASSE', ibid,&
                     kmpic, ibid)
         if (kmpic .eq. 'OUI') goto 9999

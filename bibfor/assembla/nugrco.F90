@@ -52,11 +52,6 @@ subroutine nugrco(nu, base)
     integer :: jpospr, nbddlj, jjoint, curpos, numpro, jjoin2, jnulg
     integer :: iddlg, iddll
 !
-    integer(kind=4) :: ibid4
-!
-    real(kind=8) :: rbid
-    parameter    (rbid=0.d0)
-!
     character(len=4) :: chnbjo
     character(len=24) :: nojoin, nogrco
     mpi_int :: mrank, msize

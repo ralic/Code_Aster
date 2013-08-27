@@ -30,7 +30,7 @@ subroutine fin999()
 #include "asterc/dllcls.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/asmpi_checkalarm.h"
-    integer :: ichk, ibid
+    integer :: ichk
 #ifdef _HAVE_PETSC
     integer :: iret
     real(kind=8) :: r8b

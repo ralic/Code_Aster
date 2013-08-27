@@ -51,9 +51,7 @@ subroutine nmevdt(sdtime, sderro, timer)
 !
     logical :: mtcpup, mtcpui, stopus
     character(len=4) :: etnewt
-    integer :: itcpup, itcpui, isusr1, ibid
-    real(kind=8) :: r8bid
-    complex(kind=8) :: c8bid
+    integer :: itcpup, itcpui, isusr1
 !
 ! ----------------------------------------------------------------------
 !

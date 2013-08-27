@@ -43,14 +43,13 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
     logical :: ljev
-    integer :: indi, ibid, jvalms, k, jnoml, nbfois, jvalmi
+    integer :: indi, jvalms, k, jnoml, nbfois, jvalmi
     integer :: rang, nbproc, npromx, i1
     parameter (npromx=1000)
     character(len=8) :: numes
     character(len=50) :: nommel
     real(kind=8) :: xtota, xuser, xsyst, xelap, moyenn(3), ectype(3)
     real(kind=8) :: xtotap(npromx), xsystp(npromx), xelapp(npromx)
-    complex(kind=8) :: cbid
     logical :: lmesur
 !
 !

@@ -104,14 +104,14 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
     call asmpi_info(mpicou, size=nbpro4)
-    if (nbpro4 .eq. 1) goto 9999
+    if (nbpro4 .eq. 1) goto 999
 !
 !     -- VERIFICATION RENDEZ-VOUS
     iret=1
     call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
         call u2mesk('I', 'APPELMPI_83', 1, optmpi)
-        goto 9999
+        goto 999
     endif
 !
 !     -- SCALAIRE :
@@ -348,9 +348,28 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
     if (optmpi .ne. 'BCAST' .and. nbv .gt. 1000) call jedetr('&&MPICM1.TRAV')
 !
-9999  continue
+999 continue
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
+#else
+    character(len=1) :: kdummy
+    integer :: idummy
+    real(kind=8) :: rdummy
+    complex(kind=8) :: cdummy
+!
+    if (present(nbval) .and. present(vi) .and. present(vr) .and. present(vc) .and. &
+        present(bcrank) .and. present(sci) .and. present(scr) .and. present(scc)) then
+        kdummy = optmpi(1:1)
+        kdummy = typsca(1:1)
+        idummy = nbval
+        idummy = bcrank
+        idummy = vi(1)
+        rdummy = vr(1)
+        cdummy = vc(1)
+        idummy = sci
+        rdummy = scr
+        cdummy = scc
+    endif
 #endif
 end subroutine

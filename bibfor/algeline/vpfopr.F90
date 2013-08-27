@@ -128,14 +128,13 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
 !
 ! VARIABLES LOCALES
     mpi_int :: mpicou, mpicow, rang, rangl, nbproc
-    character(len=1) :: typep, k1bid
+    character(len=1) :: typep
     character(len=8) :: k8bid
     character(len=16) :: ch16, valk(3)
     character(len=24) :: k24c, k24par
     integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
     integer :: jk24c, jkpar, nbrow, frecou
     real(kind=8) :: valr(2), omgmin, omgmax, omgshi, rbid, prec, omgdec
-    complex(kind=8) :: cbid
     logical :: caldet, ldyna
 !
     call infniv(ifm, niv)

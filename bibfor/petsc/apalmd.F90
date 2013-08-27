@@ -259,6 +259,9 @@ subroutine apalmd(kptsc)
 !
     call jedema()
 !
+#else
+    integer :: idummy
+    idummy = kptsc
 #endif
 !
 end subroutine

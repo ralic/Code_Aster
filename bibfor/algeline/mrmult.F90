@@ -60,7 +60,6 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
     character(len=19) :: matas
     integer :: neq, jtemp, neql, jrefa, ibid, jsmhc, jsmdi, jvtemp
     logical :: lmatd
-    complex(kind=8) :: cbid
     integer(kind=4) :: neq4
 !     ---------------------------------------------------------------
 !

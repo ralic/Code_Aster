@@ -376,7 +376,7 @@ subroutine promor(nuz, base)
         else if (exivf.eq.'OUI') then
             call jeveuo(nomlig//'.REPE', 'L', jrepe)
             call jeveuo(nomlig//'.NVGE', 'L', jnvge)
-            vge=zk16(jnvge-1+1)
+            vge=zk16(jnvge-1+1)(1:12)
             call jeveuo(vge//'.PTVOIS', 'L', jptvoi)
             call jeveuo(vge//'.ELVOIS', 'L', jelvoi)
             do 81 igr = 1, zzngel(ili)

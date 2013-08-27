@@ -14,9 +14,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "aster_types.h"
 interface
     subroutine asmpi_check(nbpro4, iret)
-        integer(kind=4) :: nbpro4
+        mpi_int :: nbpro4
         integer :: iret
     end subroutine asmpi_check
 end interface

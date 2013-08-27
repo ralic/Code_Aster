@@ -42,8 +42,8 @@ subroutine entete()
 ! --- INFORMATIONS GLOBALES
     call prhead(1)
 ! --- CONFIGURATION MPI
-#ifdef _USE_MPI
     call asmpi_info(rank=rank, size=size)
+#ifdef _USE_MPI
     vali(1) = to_aster_int(rank)
     vali(2) = to_aster_int(size)
     call u2mesi('I', 'SUPERVIS2_11', 2, vali)

@@ -55,7 +55,6 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-    character(len=32) :: jexnom, jexatr
     character(len=*) :: optmpi
     character(len=24) :: nomjev
 !
@@ -93,14 +92,14 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
     call asmpi_info(mpicou, size=nbpro4)
-    if (nbpro4 .eq. 1) goto 9999
+    if (nbpro4 .eq. 1) goto 999
 !
 !     -- VERIFICATION RENDEZ-VOUS
     iret=1
     call asmpi_check(nbpro4, iret)
     if (iret .ne. 0) then
         call u2mesk('I', 'APPELMPI_83', 1, optmpi)
-        goto 9999
+        goto 999
     endif
 !
     if (optmpi .eq. 'BCAST') then
@@ -226,9 +225,13 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
         ASSERT(.false.)
     endif
 !
-9999  continue
+999  continue
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
+#else
+    character(len=1) :: kdummy
+    kdummy = optmpi(1:1)
+    kdummy = nomjev(1:1)
 #endif
 end subroutine

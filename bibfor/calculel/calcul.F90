@@ -121,7 +121,6 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !-----------------------------------------------------------------------
     logical :: lfetmo, lfetts, lfettd, ldist, lfeti, lfetic, dbg, ldgrel
     real(kind=8) :: rbid, temp1(6), temp2(6)
-    complex(kind=8) :: cbid
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=19) :: ligrel

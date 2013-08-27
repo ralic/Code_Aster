@@ -28,6 +28,7 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 ! person_in_charge: thomas.de-soza at edf.fr
 ! CORPS DU PROGRAMME
     implicit none
+! aslint: disable=W1306
 #include "aster_types.h"
 #include "asterfort/asmpi_info.h"
 ! DECLARATION PARAMETRES D'APPELS

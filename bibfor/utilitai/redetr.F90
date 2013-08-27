@@ -41,10 +41,8 @@ subroutine redetr(matelz)
 !     IN/OUT  : MATELZ = NOM DE LA SD MATR_ELEM A NETTOYER
 !
 !
-    integer :: jrelr, iret1, iexi, iexiav, jtemp, jadet, ibid
+    integer :: jrelr, iret1, iexi, iexiav, jtemp, jadet
     integer :: izero, ico, k, nb1, nbdet, nb1av
-    real(kind=8) :: rbid
-    complex(kind=8) :: c8bid
     logical :: ldetr
     character(len=4) :: cbid
     character(len=19) :: matele, resuel
@@ -92,7 +90,7 @@ subroutine redetr(matelz)
 !                J'ESPERE QU'ILS N'ARRIVERONT JAMAIS
     do 10,k=1,nb1
     zi(jadet-1+k)=0
-    resuel=zk24(jrelr-1+k)
+    resuel=zk24(jrelr-1+k)(1:19)
     if (resuel .eq. ' ') then
         ASSERT(.false.)
         zi(jadet-1+k)=1
@@ -137,7 +135,7 @@ subroutine redetr(matelz)
     if (zi(jadet-1+k) .eq. 3) then
         ico=ico+1
         if (ico .gt. nbdet) goto 31
-        resuel = zk24(jrelr-1+k)
+        resuel = zk24(jrelr-1+k)(1:19)
         call detrsd('RESUELEM', resuel)
         zk24(jrelr-1+k) = ' '
     endif
@@ -148,7 +146,7 @@ subroutine redetr(matelz)
 !        SOIENT "VRAIS"
     ico=0
     do 40,k=1,nb1
-    resuel=zk24(jrelr-1+k)
+    resuel=zk24(jrelr-1+k)(1:19)
     if (resuel .ne. ' ') then
         ico=ico+1
         zk24(jtemp-1+ico) = resuel

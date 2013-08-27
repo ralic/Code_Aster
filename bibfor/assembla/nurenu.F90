@@ -51,11 +51,6 @@ subroutine nurenu(nu, base)
     integer :: jordjo, njoint, numpro, nbddlj, jjoint, jnewnu, numddl
     integer :: num
 !
-    integer(kind=4) :: ibid4
-!
-    real(kind=8) :: rbid
-    parameter    (rbid=0.d0)
-!
     character(len=4) :: chnbjo
     character(len=24) :: kbid, nonbdd, nojoin
     mpi_int :: mrank, msize

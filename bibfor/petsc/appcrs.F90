@@ -178,6 +178,11 @@ subroutine appcrs(kptsc, lmd)
 !
     call jedema()
 !
+#else
+    integer :: idummy
+    logical :: ldummy
+    idummy = kptsc
+    ldummy = lmd
 #endif
 !
 end subroutine

@@ -68,8 +68,7 @@ subroutine mesomm(champ, long, vi, vr, vc,&
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: longt, ncmpel, mode, j, igd
-    real(kind=8) :: rzero, rbid
-    complex(kind=8) :: cbid
+    real(kind=8) :: rzero
     character(len=4) :: typch, kmpic
     character(len=8) :: scal
     character(len=19) :: champ2, ligrel

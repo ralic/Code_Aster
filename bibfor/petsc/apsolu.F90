@@ -144,6 +144,13 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
     call jedema()
 !
+#else
+    integer :: idummy
+    logical :: ldummy
+    real(kind=8) :: rdummy
+    idummy = kptsc
+    ldummy = lmd
+    rdummy = rsolu(1)
 #endif
 !
 end subroutine

@@ -43,6 +43,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 ! inout scr    : réel a echanger      (si typsca='R')
 !----------------------------------------------------------------------
     implicit none
+! aslint: disable=W1304
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf.h"
 #include "aster_types.h"
@@ -93,7 +94,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
     call asmpi_info(mpicou, size=nbpro4)
-    if (nbpro4 .eq. 1) goto 9999
+    if (nbpro4 .eq. 1) goto 999
 !
 !     -- SCALAIRE :
 !     -------------
@@ -175,9 +176,29 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
         ASSERT(.false.)
     endif
 !
-9999  continue
+999  continue
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'FIN', ' ')
     call jedema()
+#else
+    character(len=1) :: kdummy
+    integer :: idummy
+    integer(kind=4) :: i4dummy
+    real(kind=8) :: rdummy
+!
+    if (present(nbval) .and. present(vi) .and. present(vi4) .and. present(vr) .and. &
+        present(sci) .and. present(sci4) .and. present(scr)) then
+        kdummy = optmpi(1:1)
+        kdummy = typsca(1:1)
+        idummy = nudest
+        idummy = numess
+        idummy = nbval
+        idummy = vi(1)
+        i4dummy = vi4(1)
+        rdummy = vr(1)
+        idummy = sci
+        i4dummy = sci4
+        rdummy = scr
+    endif
 #endif
 end subroutine

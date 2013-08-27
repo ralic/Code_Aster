@@ -40,8 +40,6 @@ function typmat(nbmat, tlimat)
 ! IN  I  NBMAT  : NOMBRE DE MATR_ELEM DE LA LISTE TLIMAT
 ! IN  K* TLIMAT : LISTE DES MATR_ELEM
 ! ----------------------------------------------------------------------
-    real(kind=8) :: rbid
-    complex(kind=8) :: cbid
 !----------------------------------------------------------------------
     character(len=8) :: sym, zero
     character(len=19) :: matel

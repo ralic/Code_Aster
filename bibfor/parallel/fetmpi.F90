@@ -422,7 +422,12 @@ subroutine fetmpi(optmpi, nbsd, ifm, niv, rang,&
 ! DECLARATION VARIABLES LOCALES
     integer :: nbsd1, ilist, idd, iexist
     character(len=24) :: nomlog
-!
+    real(kind=8) :: rdummy
+!   dummy arguments
+    nomlog = ach24
+    nomlog = ach241
+    nomlog = ach242
+    rdummy = argr1
 ! CORPS DU PROGRAMME
     call jemarq()
 !

@@ -28,7 +28,6 @@ subroutine fetskp()
 ! person_in_charge: aimery.assire at edf.fr
 !
 ! CORPS DU PROGRAMME
-! aslint: disable=W1303,W1501
     implicit none
 !
 !
@@ -198,10 +197,10 @@ subroutine fetskp()
             do 212 i = ima+1, nbma
                 mail2=zi(renum3-1+zi(renum1-1+zi(idma-1+i)))
                 do 205 j = zi4(idco-1+mail), zi4(idco-1+mail+1)-1
-                    if (zi4(co-1+j) .eq. mail2) zi4(edlo-1+j)=nbmato+ 1
+                    if (zi4(co-1+j) .eq. mail2) zi4(edlo-1+j)=int(nbmato+ 1, kind=4)
 205              continue
                 do 220 j = zi4(idco-1+mail2), zi4(idco-1+mail2+1)-1
-                    if (zi4(co-1+j) .eq. mail) zi4(edlo-1+j)=nbmato+1
+                    if (zi4(co-1+j) .eq. mail) zi4(edlo-1+j)=int(nbmato+1, kind=4)
 220              continue
 212          continue
 204      continue
@@ -230,7 +229,7 @@ subroutine fetskp()
         write(ifm,*) ' '
         do 203 ima = 1, nbma
             mail=zi(renum3-1+zi(renum1-1+zi(idma-1+ima)))
-            zi4(velo-1+mail)=poids
+            zi4(velo-1+mail)=int(poids, kind=4)
 203      continue
 117  end do
 !

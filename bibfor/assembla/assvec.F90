@@ -18,6 +18,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! aslint: disable=W1501
 #include "aster_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -127,7 +128,6 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     integer :: lshift
 !
     real(kind=8) :: temps(6), rbid
-    complex(kind=8) :: cbid
     integer :: vali(4)
     mpi_int :: mrank, msize
 !

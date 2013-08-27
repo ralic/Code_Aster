@@ -55,7 +55,6 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo,&
 !
     integer :: ibid, icmp, jcelv
     real(kind=8) :: r1, r2
-    complex(kind=8) :: cbid
     character(len=1) :: typrez
     character(len=4) :: type, kmpic
     character(len=19) :: chm19z

@@ -298,7 +298,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 write(ifm,*)'RANG    '//' NBRE MAILLES    '//&
      &         ' NBRE TERMES K    '//' LU FACTEURS'
                 do k = 0, nbproc-1
-                    write(ifm,1001)k,zi(monit(9)+k),zi(monit(1)+k),&
+                    write(ifm,101)k,zi(monit(9)+k),zi(monit(1)+k),&
                 zi(monit(2)+k)
                     iaux1=iaux1+zi(monit(9)+k)
                     iaux2=iaux2+zi(monit(1)+k)
@@ -309,7 +309,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !
                 write(ifm,*)'--------------------------------------------'&
      &          //'---------------'
-                write(ifm,1003)iaux1,iaux2,iaux3
+                write(ifm,103)iaux1,iaux2,iaux3
                 write(ifm,*)
                 do i = 1, 18
                     rmonit(i)=0.d0
@@ -364,7 +364,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 rmonit(8)=zi(monit(11))
                 rmonit(9)=zi(monit(12))
                 do k = 0, nbproc-1
-                    write(ifm,1001) k,zi(monit(10)+k),zi(monit(11)+k),&
+                    write(ifm,101) k,zi(monit(10)+k),zi(monit(11)+k),&
                 zi(monit(12)+k)
                     rmonit(1)=rmonit(1)+zi(monit(10)+k)
                     rmonit(2)=rmonit(2)+zi(monit(11)+k)
@@ -382,15 +382,15 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 rmonit(3)=rmonit(3)/nbproc
                 write(ifm,*)'------------------------------------------'//&
      &            '-----------------------------------'
-                write(ifm,1007) rmonit(1),rmonit(2),rmonit(3)
+                write(ifm,107) rmonit(1),rmonit(2),rmonit(3)
                 write(ifm,*)'------------------------------------------'//&
      &            '-----------------------------------'
 !
-                write(ifm,1008) rmonit(4),rmonit(5),rmonit(6)
+                write(ifm,108) rmonit(4),rmonit(5),rmonit(6)
                 write(ifm,*)'------------------------------------------'//&
      &            '-----------------------------------'
 !
-                write(ifm,1009) rmonit(7),rmonit(8),rmonit(9)
+                write(ifm,109) rmonit(7),rmonit(8),rmonit(9)
                 write(ifm,*)'------------------------------------------'//&
      &            '-----------------------------------'
 !
@@ -398,23 +398,11 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
                 write(ifm,*)&
                 '*********************************************'&
                 //'*********************************'
-                1001      format(' N ',i4,' :    ',i12,'    ',i12,'    ',i12)
-                1002      format(' N ',i4,' :',1pd10.2,' ',1pd10.2,' ',1pd10.2,7x,&
-     &              1pd10.2,' ',1pd10.2,' ',1pd10.2)
-                1003      format('TOTAL   : ',i15,' ',i15,' ',i15)
-                1004      format('MOYENNE :',1pd10.2,' ',1pd10.2,' ',1pd10.2,7x,&
-     &              1pd10.2,' ',1pd10.2,' ',1pd10.2)
-                1005      format('        :',1pd10.2,' ',1pd10.2,' ',1pd10.2,7x,&
-     &              1pd10.2,' ',1pd10.2,' ',1pd10.2)
-                1006      format('        :',1pd10.2,' ',1pd10.2,' ',1pd10.2,7x,&
-     &              1pd10.2,' ',1pd10.2,' ',1pd10.2)
-!
-                1007      format('MOYENNE :      ',1pd10.2,'      ',1pd10.2,'      ',&
-     &              1pd10.2)
-                1008      format('MINIMUM :      ',1pd10.2,'      ',1pd10.2,'      ',&
-     &              1pd10.2)
-                1009      format('MAXIMUM :      ',1pd10.2,'      ',1pd10.2,'      ',&
-     &              1pd10.2)
+101 format(' N ',i4,' :    ',i12,'    ',i12,'    ',i12)
+103 format('TOTAL   : ',i15,' ',i15,' ',i15)
+107 format('MOYENNE :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
+108 format('MINIMUM :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
+109 format('MAXIMUM :      ',1pd10.2,'      ',1pd10.2,'      ', 1pd10.2)
 ! FIN DU IF RANG
             endif
 !
@@ -432,6 +420,7 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
         ASSERT(.false.)
 !
     endif
-    999 call jedema()
+999 continue
+    call jedema()
 #endif
 end subroutine

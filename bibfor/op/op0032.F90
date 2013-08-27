@@ -19,6 +19,7 @@ subroutine op0032()
 ! ======================================================================
 !     EIGENVALUE-COUNTING METHODS FOR GEP OR QEP
 !     ------------------------------------------------------------------
+! aslint: disable=W1501
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 !
@@ -77,7 +78,7 @@ subroutine op0032()
     complex(kind=8) :: centrc, zimc1, cbid
     logical :: ltest, lc, ldyna, lflamb, lfirst, lcomod, lcoinf
     character(len=1) :: typep, tpparn(1), tpparr(2), tpparc(3), tpparf(2)
-    character(len=1) :: tpparm(2), k1bid
+    character(len=1) :: tpparm(2)
     character(len=3) :: impr
     character(len=8) :: typcon, typmet, typcha, table, kopt1, koptn
     character(len=14) :: matra, matrb, matrc

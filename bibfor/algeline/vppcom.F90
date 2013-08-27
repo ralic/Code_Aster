@@ -63,10 +63,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
     blas_int :: i4
     integer :: nconvl, nconvg, nconvm
     integer :: ibid, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
-    integer :: niv, ietfin, ietdeb, ietrat, ietmax
-    real(kind=8) :: retfin, rbid
+    integer :: niv
+    real(kind=8) ::  rbid
     complex(kind=8) :: cbid
-    character(len=1) :: k1bid
     character(len=24) :: klcom, k24buf, k24bus, k24b
 !      LOGICAL      LCPU
 !
@@ -159,6 +158,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
             call jedetr(k24bus)
             call jedetr(k24buf)
 !
+            ibid = 0
+            rbid = 0.d0
+            cbid = dcmplx(0.d0)
             call comatr('T', 'R', icom2, icom1-1, zi(jlcom),&
                         0, 0, [ibid], mxresf, nbparr,&
                         resur, 0, 0, [cbid])

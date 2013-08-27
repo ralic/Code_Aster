@@ -59,13 +59,12 @@ subroutine echmat(matz, ldist, rmin, rmax)
     character(len=14) :: nonu
     character(len=19) :: mat19
     real(kind=8) :: rdiag
-    complex(kind=8) :: cbid
 !=================================================================
     call jemarq()
 !
     mat19=matz
     call jeveuo(mat19//'.REFA', 'L', jrefa)
-    nonu=zk24(jrefa-1+2)
+    nonu=zk24(jrefa-1+2)(1:14)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', n, kbid)
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
     nz=zi(jsmdi-1+n)

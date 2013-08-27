@@ -31,5 +31,12 @@ subroutine asmpi_barrier(comm)
         comm2 = comm
     endif
     call MPI_BARRIER(comm2, idummy)
+#else
+    if (.not. present(comm)) then
+        comm2 = 0
+    else
+        comm2 = comm
+    endif
+    idummy = 0
 #endif
 end subroutine asmpi_barrier

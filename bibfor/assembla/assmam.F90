@@ -5,6 +5,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
 !
     implicit none
+! aslint: disable=W1501
 !
 #include "aster_types.h"
 #include "jeveux.h"

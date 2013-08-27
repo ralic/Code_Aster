@@ -18,6 +18,7 @@ subroutine asmpi_check(nbpro4, iret)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+! aslint: disable=W1306
 !     ARGUMENT IN
 #include "asterf.h"
 #include "aster_types.h"
@@ -78,7 +79,7 @@ subroutine asmpi_check(nbpro4, iret)
             iret = 1
             call u2mess('I', 'APPELMPI_80')
             call mpistp(2)
-            goto 9999
+            goto 999
         endif
 !
 !     SUR LE PROCESSEUR #0
@@ -155,8 +156,11 @@ subroutine asmpi_check(nbpro4, iret)
             endif
         endif
     endif
-9999  continue
+999  continue
 # endif
 !
+#else
+    iret = to_aster_int(nbpro4)
+    iret = 0
 #endif
 end subroutine

@@ -94,20 +94,17 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     real(kind=8) :: rval(3), rval1, rval2, rval3, rval1b, rval2b, rval3b, rinf12
     real(kind=8) :: rinf13
     integer :: info16, info26, vali(10), icoefm, icn22, icn23, rang, n, iaux1
-    integer :: iaux2, info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
-    integer :: ierr, tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
+    integer ::  info3, nbproc, ifm, niv, ibid, ipiv, info28, info12, i
+    integer ::  tmax, tmaxb, ltot, iret, isizemu, nsizemu, nsizema, execmu
     integer :: info34, icnt33
-!      INTEGER*4     getpid
-    integer(kind=4) :: pid
+    integer :: pid
     mpi_int :: mpicou
     logical :: lpara, lpeak, lpb1
     character(len=2) :: fstring
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid
     character(len=24) :: kpiv, valk(2), ksizemu
-    character(len=50) :: str, buffer
     character(len=80) :: nvers
-    character(len=256) :: jnom(2)
 !
     call jemarq()
 ! --- COMMUNICATEUR MPI DE TRAVAIL
@@ -402,20 +399,20 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! ---- (FACTORISATION NUMERIQUE + SOLVE)
         select case(type)
         case ('S')
-        smpsk%icntl(22)=icn22
-        smpsk%icntl(23)=icn23
+        smpsk%icntl(22)=to_mumps_int(icn22)
+        smpsk%icntl(23)=to_mumps_int(icn23)
         smpsk%ooc_tmpdir='.'
         case ('C')
-        cmpsk%icntl(22)=icn22
-        cmpsk%icntl(23)=icn23
+        cmpsk%icntl(22)=to_mumps_int(icn22)
+        cmpsk%icntl(23)=to_mumps_int(icn23)
         cmpsk%ooc_tmpdir='.'
         case ('D')
-        dmpsk%icntl(22)=icn22
-        dmpsk%icntl(23)=icn23
+        dmpsk%icntl(22)=to_mumps_int(icn22)
+        dmpsk%icntl(23)=to_mumps_int(icn23)
         dmpsk%ooc_tmpdir='.'
         case ('Z')
-        zmpsk%icntl(22)=icn22
-        zmpsk%icntl(23)=icn23
+        zmpsk%icntl(22)=to_mumps_int(icn22)
+        zmpsk%icntl(23)=to_mumps_int(icn23)
         zmpsk%ooc_tmpdir='.'
         end select
 !

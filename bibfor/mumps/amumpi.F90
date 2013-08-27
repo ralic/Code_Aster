@@ -54,12 +54,11 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     type (cmumps_struc) , pointer :: cmpsk
     type (dmumps_struc) , pointer :: dmpsk
     type (zmumps_struc) , pointer :: zmpsk
-    integer :: ifm, niv, icntl(nicntl), i, jrefa, isymm, jslvk, isymv, isym
-    integer :: jslvi, n1, n3, n5, nprec, ibid
-    mumps_int :: i4
-    real(kind=8) :: rvers, cntl(ncntl), rr4max, tmax
+    integer :: ifm, niv, i, jrefa, isymm, jslvk, isymv, isym
+    integer :: jslvi, nprec, ibid
+    mumps_int :: i4, icntl(nicntl)
+    real(kind=8) :: cntl(ncntl), rr4max
     logical :: lbid
-    character(len=1) ::  kbuff
     character(len=4) :: typm, etam
     character(len=12) :: k12bid
     character(len=14) :: nonu
@@ -117,7 +116,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 ! ---     ISYM = 1 => SYMETRIQUE DEFINIE POSITIVE
 ! ---     ISYM = 2 => SYMETRIQUE  GENERAL
 ! ---     ISYMM DEDUIT DE LA MATRICE : NONSYM OU SYMGEN
-        typm=zk24(jrefa-1+9)
+        typm=zk24(jrefa-1+9)(1:4)
         if (typm .eq. 'MR') then
             isymm=0
         else if (typm.eq.'MS') then
@@ -156,7 +155,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         endif
 !
 ! ---     PARAMETRES D'INITIALISATION DE L'OCCURENCE MUMPS KXMPS
-        i4=isym
+        i4=to_mumps_int(isym)
         if (type .eq. 'S') then
             smpsk%sym = i4
             smpsk%par = 1
@@ -195,13 +194,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                     lbid, kvers)
 !
 ! ---     MESSAGES/ALERTES MUMPS
-        icntl(1) = ifm
+        icntl(1) = to_mumps_int(ifm)
         icntl(2) = 0
         icntl(3) = 0
         icntl(4) = 1
         if (niv .ge. 2) then
 ! ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
-            icntl(3) = ifm
+            icntl(3) = to_mumps_int(ifm)
             icntl(4) = 2
         endif
 ! ---     FORMAT MATRICE
@@ -255,7 +254,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         icntl(13) = 0
 !
 ! ---     MEMOIRE SUPPL. POUR PIVOTAGE (DEFAUT:20)
-        icntl(14) = zi(jslvi-1+2)
+        icntl(14) = to_mumps_int(zi(jslvi-1+2))
 !
 ! ---     PAS UTILISES
         icntl(15)=0
@@ -343,7 +342,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             enddo
             do i = 2, ncntl
                 if (abs(cntl(i)) .gt. rr4max) ASSERT(.false.)
-                smpsk%cntl(i)=cntl(i)
+                smpsk%cntl(i)=real(cntl(i), kind=4)
             enddo
         else if (type.eq.'C') then
             do i = 1, nicntl
@@ -351,7 +350,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             enddo
             do i = 2, ncntl
                 if (abs(cntl(i)) .gt. rr4max) ASSERT(.false.)
-                cmpsk%cntl(i)=cntl(i)
+                cmpsk%cntl(i)=real(cntl(i), kind=4)
             enddo
         else if (type.eq.'D') then
             do i = 1, nicntl
@@ -396,13 +395,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                     lbid, kvers)
 !
 ! ---     MESSAGE/ALERTES MUMPS
-        icntl(1) = ifm
+        icntl(1) = to_mumps_int(ifm)
         icntl(2) = 0
         icntl(3) = 0
         icntl(4) = 1
         if (niv .ge. 2) then
 ! ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
-            icntl(3) = ifm
+            icntl(3) = to_mumps_int(ifm)
             icntl(4) = 2
         endif
 !
@@ -418,6 +417,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             else if (zk24(jslvk-1+11).eq.'FORCE') then
                 icntl(10)=10
                 cntl(2)=10.d-50
+                if (type .eq. 'S' .or. type.eq.'C') then
+                   cntl(2)=1.d-38
+                endif
             endif
             icntl(11)=1
         endif
@@ -428,7 +430,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             smpsk%icntl(4)=icntl(4)
             smpsk%icntl(10)=icntl(10)
             smpsk%icntl(11)=icntl(11)
-            smpsk%cntl(2) =cntl(2)
+            smpsk%cntl(2) =real(cntl(2), kind=4)
         else if (type.eq.'C') then
             cmpsk%icntl(1)=icntl(1)
             cmpsk%icntl(2)=icntl(2)
@@ -436,7 +438,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             cmpsk%icntl(4)=icntl(4)
             cmpsk%icntl(10)=icntl(10)
             cmpsk%icntl(11)=icntl(11)
-            cmpsk%cntl(2) =cntl(2)
+            cmpsk%cntl(2) =real(cntl(2), kind=4)
         else if (type.eq.'D') then
             dmpsk%icntl(1)=icntl(1)
             dmpsk%icntl(2)=icntl(2)

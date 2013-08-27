@@ -66,8 +66,6 @@ subroutine ajlipa(modelz, base)
 !
     logical :: plein0
 !
-    real(kind=8) :: rbid
-    complex(kind=8) :: cbid
     mpi_int :: mrank, msize
     data k24b /' '/
 !

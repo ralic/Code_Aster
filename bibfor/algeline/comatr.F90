@@ -45,7 +45,7 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
 ! IN/OUT VECTC: C8  : MATRICE COMPLEXE A COMMUNIQUER  (DIM1C X DIM2C)
 ! ======================================================================
 ! person_in_charge: olivier.boiteau at edf.fr
-! aslint: disable=W1304
+! aslint: disable=W1304,W1306
     implicit none
 !
 ! PARAMETRES D'APPEL
@@ -66,11 +66,11 @@ subroutine comatr(option, typev, nbproc, rang, vnconv,&
     character(len=1) :: option, typev
 !
 ! VARIABLES LOCALES
-    integer :: nconv, nconvg, i, j, idecal, iaux1, ibid, izero, idim1, idim2
+    integer :: nconv, nconvg, i, j, idecal, iaux1, izero, idim1, idim2
     integer :: ifm, niv
     integer(kind=4) :: i40, i41
-    real(kind=8) :: rzero, rbid
-    complex(kind=8) :: czero, cbid, dcmplx
+    real(kind=8) :: rzero
+    complex(kind=8) :: czero, dcmplx
     logical :: ldebug
 !
 ! --- INIT.
