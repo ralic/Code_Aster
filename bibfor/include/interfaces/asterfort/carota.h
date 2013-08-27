@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine carota(char, noma, irota, ndim, ligrmo)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: irota
-        integer :: ndim
-        character(*) :: ligrmo
+    subroutine carota(load, ligrmo, mesh, vale_type)
+        character(len=8), intent(in)  :: load
+        character(len=8), intent(in)  :: mesh
+        character(len=19), intent(in) :: ligrmo
+        character(len=4), intent(in)  :: vale_type
     end subroutine carota
 end interface

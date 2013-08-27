@@ -1,16 +1,17 @@
 subroutine te0232(option, nomte)
-    implicit none
-#include "jeveux.h"
 !
+    implicit none
+!
+#include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elref4.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/u2mess.h"
-    character(len=16) :: option, nomte
-! ......................................................................
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,90 +28,118 @@ subroutine te0232(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          COQUE 1D
-!                          OPTION : 'CHAR_MECA_ROTA_R'
-!                          ELEMENT: MECXSE3,METCSE3,METDSE3
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+! person_in_charge: mickael.abbas at edf.fr
+!
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: COQUE_1D
+! Option: CHAR_MECA_ROTA_R
+!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, fami, poum
     integer :: icodre, kpg, spt
     real(kind=8) :: zero, dfdx(3), nx, ny, poids, cour, rx, ry
-    integer :: nno, kp, k, npg, i, ivectu, irota, icaco
-    integer :: ipoids, ivf, idfdk, igeom, imate
-!
-!
-!-----------------------------------------------------------------------
+    integer :: nno, kp, k, npg, i
+    integer :: ipoids, ivf, idfdk
     integer :: jgano, ndim, nnos
     real(kind=8) :: r8b, rho
-!-----------------------------------------------------------------------
-    call elref1(elrefe)
+    integer :: j_geom, j_rota, j_vect, j_mate, j_caco
+    real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(option.eq.'CHAR_MECA_ROTA_R')
+!
+! - Finite element parameters
+!
+    call elref1(elrefe)
     call elref4(' ', 'RIGI', ndim, nno, nnos,&
                 npg, ipoids, ivf, idfdk, jgano)
 !
+! - IN fields
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PROTATR', 'L', irota)
+    call jevech('PGEOMER', 'L', j_geom)
+    call jevech('PMATERC', 'L', j_mate)
+    call jevech('PROTATR', 'L', j_rota)
+    call jevech('PCACOQU', 'L', j_caco)
+    rota_speed   = zr(j_rota-1+1)
+    rota_axis(1) = zr(j_rota-1+2)
+    rota_axis(2) = zr(j_rota-1+3)
+    rota_axis(3) = zr(j_rota-1+4)
+    rota_cent(1) = zr(j_rota-1+5)
+    rota_cent(2) = zr(j_rota-1+6)
+    rota_cent(3) = zr(j_rota-1+7)
 !
-! VERIFICATIONS SUR LE CHARGEMENT ROTATION
+! - OUT fields
 !
-    if (nomte(3:4) .eq. 'TD' .or. nomte(3:4) .eq. 'TC') then
+    call jevech('PVECTUR', 'E', j_vect)
+!
+! - Checking
+!
+    if (nomte(3:4) .eq. 'DP' .or. nomte(3:4) .eq. 'CP') then
 ! AXE=direction Oz
-        if (zr(irota+3) .le. r8miem()) then
-            call u2mess('F', 'MODELISA9_99')
+        if (abs(rota_axis(3)) .le. r8miem()) then
+            call u2mess('F', 'CHARGES2_67')
         endif
-        if (zr(irota+1) .gt. r8miem() .or. zr(irota+2) .gt. r8miem()) then
-            call u2mess('F', 'MODELISA10_3')
+        if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(2)) .gt. r8miem()) then
+            call u2mess('F', 'CHARGES2_67')
         endif
-    else if (nomte(3:4).eq.'CX') then
+    else if (nomte(3:4).eq.'AX') then
 ! AXE=Oy et CENTRE=ORIGINE
-        if (zr(irota+1) .gt. r8miem() .or. zr(irota+3) .gt. r8miem()) then
-            call u2mess('F', 'MODELISA10_1')
+        if (abs(rota_axis(1)) .gt. r8miem() .or. abs(rota_axis(3)) .gt. r8miem()) then
+            call u2mess('F', 'CHARGES2_65')
         endif
-        if (zr(irota+4) .gt. r8miem() .or. zr(irota+5) .gt. r8miem() .or. zr( irota+6) .gt.&
-            r8miem()) then
-            call u2mess('F', 'MODELISA10_2')
+        if (abs(rota_axis(2)) .le. r8miem()) then
+            call u2mess('F', 'CHARGES2_65')
+        endif
+        if (abs(rota_cent(1)) .gt. r8miem() .or. abs(rota_cent(2)) .gt. r8miem() .or. &
+            abs(rota_cent(3)) .gt. r8miem()) then
+            call u2mess('F', 'CHARGES2_66')
         endif
     endif
-    call jevech('PCACOQU', 'L', icaco)
-    call jevech('PVECTUR', 'E', ivectu)
+!
+! - Material
+!
     zero = 0.d0
     fami='FPG1'
     kpg=1
     spt=1
     poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
+    call rcvalb(fami, kpg, spt, poum, zi(j_mate),&
                 ' ', 'ELAS', 0, ' ', r8b,&
                 1, 'RHO', rho, icodre, 1)
 !
-    do 40 kp = 1, npg
+! - Computation
+!
+    do kp = 1, npg
         k = (kp-1)*nno
-        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom), dfdx,&
+        call dfdm1d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(j_geom), dfdx,&
                     cour, poids, nx, ny)
-        poids = poids*rho*zr(irota)**2*zr(icaco)
+        poids = poids*rho*rota_speed**2*zr(j_caco)
         rx = zero
         ry = zero
-        do 10 i = 1, nno
-            rx = rx + zr(igeom+2*i-2)*zr(ivf+k+i-1)
-            ry = ry + zr(igeom+2*i-1)*zr(ivf+k+i-1)
-10      continue
+        do i = 1, nno
+            rx = rx + zr(j_geom+2*i-2)*zr(ivf+k+i-1)
+            ry = ry + zr(j_geom+2*i-1)*zr(ivf+k+i-1)
+        end do
         if (nomte .eq. 'MECXSE3') then
             poids = poids*rx
-            do 20 i = 1, nno
-                zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids*zr(irota+ 2)**2*rx*zr(ivf+k+i-1)
-20          continue
+            do i = 1, nno
+                zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids*rota_axis(2)**2*rx*zr(ivf+k+i-1)
+            end do
         else
-            rx = rx - zr(irota+4)
-            ry = ry - zr(irota+5)
-            do 30 i = 1, nno
-                zr(ivectu+3*i-3) = zr(ivectu+3*i-3) + poids*zr(irota+ 3)**2*rx*zr(ivf+k+i-1)
-                zr(ivectu+3*i-2) = zr(ivectu+3*i-2) + poids*zr(irota+ 3)**2*ry*zr(ivf+k+i-1)
-30          continue
+            rx = rx - rota_cent(1)
+            ry = ry - rota_cent(2)
+            do i = 1, nno
+                zr(j_vect+3*i-3) = zr(j_vect+3*i-3) + poids*rota_axis(3)**2*rx*zr(ivf+k+i-1)
+                zr(j_vect+3*i-2) = zr(j_vect+3*i-2) + poids*rota_axis(3)**2*ry*zr(ivf+k+i-1)
+            end do
         endif
-40  end do
+    end do
 end subroutine

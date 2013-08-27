@@ -372,10 +372,4 @@ Erreur Europlexus
    du mot clef EUROPLEXUS soit 'OUI' dans toutes les occurrences.
 """),
 
-99 : _(u"""
-Le vecteur définissant l'axe de rotation a une composante nulle suivant Oz.
-Avec une modélisation C_PLAN ou D_PLAN, l'axe de rotation doit être dirigé 
-suivant Oz.
-"""),
-
 }

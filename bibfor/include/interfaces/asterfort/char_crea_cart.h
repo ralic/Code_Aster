@@ -25,6 +25,6 @@ interface
         character(len=19), intent(in) :: ligrmo
         character(len=4), intent(in)  :: vale_type
         integer, intent(out) :: nb_carte
-        character(len=19), intent(out) :: carte(2)
+        character(len=19), intent(out) :: carte(*)
     end subroutine char_crea_cart
 end interface

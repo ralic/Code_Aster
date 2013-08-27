@@ -38,7 +38,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
     character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in)  :: vale_type
     integer, intent(out) :: nb_carte
-    character(len=19), intent(out) :: carte(2)
+    character(len=19), intent(out) :: carte(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cmp(2)
-    character(len=8) :: name_cmp(2,5)
+    character(len=8) :: name_cmp(2,7)
     character(len=13) :: obje_pref
     character(len=8) :: gran_name(2)
     character(len=4) :: cart_type(2)
@@ -81,6 +81,8 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         nb_carte = 2   
     elseif (load_type.eq.'ONDE_PLANE') then
         nb_carte = 2
+    elseif (load_type.eq.'ROTATION') then
+        nb_carte = 1
     else
         ASSERT(.false.)
     endif
@@ -94,6 +96,8 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
     elseif (load_type.eq.'ONDE_PLANE') then
         carte(1) = obje_pref(1:13)//'.ONDPL'
         carte(2) = obje_pref(1:13)//'.ONDPR'
+    elseif (load_type.eq.'ROTATION') then
+        carte(1) = obje_pref(1:13)//'.ROTAT'
     else
         ASSERT(.false.)
     endif
@@ -114,6 +118,12 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         if (vale_type.eq.'FONC') then
             gran_name(1) = 'NEUT_K8'
             gran_name(2) = 'NEUT_R'
+        else
+            ASSERT(.false.)
+        endif
+    elseif (load_type.eq.'ROTATION') then
+        if (vale_type.eq.'REEL') then
+            gran_name(1) = 'ROTA_R'
         else
             ASSERT(.false.)
         endif
@@ -140,6 +150,12 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         else
             ASSERT(.false.)
         endif
+    elseif (load_type.eq.'ROTATION') then
+        if (vale_type.eq.'REEL') then
+            cart_type(1) = 'R'
+        else
+            ASSERT(.false.)
+        endif
     else
         ASSERT(.false.)
     endif
@@ -159,6 +175,15 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         name_cmp(2,2) = 'X2'
         name_cmp(2,3) = 'X3'
         name_cmp(2,4) = 'X4'
+    elseif (load_type.eq.'ROTATION') then
+        nb_cmp(1) = 7
+        name_cmp(1,1) = 'OME'
+        name_cmp(1,2) = 'AR'
+        name_cmp(1,3) = 'BR'
+        name_cmp(1,4) = 'CR'
+        name_cmp(1,5) = 'X'
+        name_cmp(1,6) = 'Y'
+        name_cmp(1,7) = 'Z'
     else
         ASSERT(.false.)
     endif
@@ -183,9 +208,9 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
             call jeveuo(carte(i_carte)//'.VALV', 'E', jvalv)
             do i_cmp = 1, nb_cmp(i_carte)
                 zk8(jncmp-1+i_cmp) = name_cmp(i_carte,i_cmp)
-                if (cart_type(i_carte) .eq. 'REEL') then
+                if (cart_type(i_carte) .eq. 'R') then
                     zr(jvalv-1+i_cmp)  = 0.d0
-                elseif (cart_type(i_carte) .eq.'FONC') then
+                elseif (cart_type(i_carte) .eq.'K8') then
                     zk8(jvalv-1+i_cmp) = '&FOZERO'
                 else
                     ASSERT(.false.)

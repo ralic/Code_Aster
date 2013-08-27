@@ -194,6 +194,10 @@ cas d'un modèle à %(i2)d dimensions.
  Le noeud  %(k1)s n'est l'image d'aucun noeud par la correspondance inverse.
 """),
 
+53: _(u"""
+ Vous avez donné une direction nulle pour l'axe de rotation.
+"""),
+
 61: _(u"""
  Le type d'onde S est interdit en 3D pour le chargement ONDE_PLANE, précisez SV ou SH.
 """),
@@ -209,6 +213,24 @@ cas d'un modèle à %(i2)d dimensions.
 
 64 : _(u"""
   Vous définissez une charge avec %(k1)s sur un modèle de type %(k2)s, ce n'est pas possible.
+"""),
+
+65 : _(u"""
+Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oz,
+ce qui induit un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
+l'axe de rotation doit être dirigé suivant Oy.
+"""),
+
+66 : _(u"""
+Les coordonnées du centre de rotation ont au moins une composante non nulle, ce qui induit
+un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
+le centre de rotation doit être confondu avec l'origine.
+"""),
+
+67 : _(u"""
+Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
+ce qui induit des forces centrifuges hors plan. Avec une modélisation C_PLAN ou D_PLAN,
+l'axe de rotation doit être dirigé suivant Oz.
 """),
 
 82: _(u"""

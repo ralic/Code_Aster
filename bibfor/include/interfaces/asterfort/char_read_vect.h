@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cbrota(char, noma, ndim, ligrmo)
-        character(len=8) :: char
-        character(len=8) :: noma
-        integer :: ndim
-        character(*) :: ligrmo
-    end subroutine cbrota
+    subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
+        character(len=16), intent(in) :: keywordfact
+        integer, intent(in)  :: iocc
+        character(len=*), intent(in) :: keyword_z
+        real(kind=8), intent(out) :: vect_r(3)
+    end subroutine char_read_vect
 end interface

@@ -96,12 +96,6 @@ cata_msg={
  erreur a l appel de la routine etenca pour extension de la carte  %(k1)s
 """),
 
-40: _(u"""
- Erreur utilisateur :
- Il ne faut pas définir les mots clés GROUP_MA et TOUT en même temps dans AFFE_CHAR_MECA/ROTATION,
- ni les mots clés MAILLE et TOUT.
-"""),
-
 44: _(u"""
  Erreur utilisateur dans CREA_MAILLAGE / LINE_QUAD :
   Vous avez demandé de transformer des mailles linéaires en mailles quadratiques.
@@ -114,9 +108,6 @@ cata_msg={
 
 
 
-63: _(u"""
- donner un vecteur non nul
-"""),
 
 64: _(u"""
  nombre d occurrence du mot clé "SOUR_CALCULEE"  supérieur a 1

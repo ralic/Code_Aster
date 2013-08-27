@@ -67,7 +67,7 @@ subroutine capesa(char, noma, ipesa, ndim)
             pesa(3)=pes(2)/norme
             pesa(4)=pes(3)/norme
         else
-            call u2mess('F', 'MODELISA3_63')
+            call u2mess('F', 'CHARGES2_53')
         endif
 !
         call getvtx('PESANTEUR', 'MAILLE', iocc, iarg, 1,&

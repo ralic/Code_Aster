@@ -1,4 +1,23 @@
-subroutine carota(char, noma, irota, ndim)
+subroutine carota(load, ligrmo, mesh, vale_type)
+!
+    implicit   none
+!
+#include "jeveux.h"
+#include "asterc/getfac.h"
+#include "asterc/r8miem.h"
+#include "asterfort/assert.h"
+#include "asterfort/char_crea_cart.h"
+#include "asterfort/char_read_elem.h"
+#include "asterfort/char_read_val.h"
+#include "asterfort/char_read_vect.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
+#include "asterfort/normev.h"
+#include "asterfort/u2mess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,150 +34,109 @@ subroutine carota(char, noma, irota, ndim)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-! BUT : STOCKAGE DE LA ROTATION DANS UNE CARTE ALLOUEE SUR LE
-!       LIGREL DU MODELE
+! person_in_charge: mickael.abbas at edf.fr
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR: NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      NOMA : NOM DU MAILLAGE
-!     IROTA : OCCURENCE DU MOT-CLE FACTEUR ROTATION
-!     NDIM : DIMENSION DU PROBLEME
-!     LIGRMO : NOM DU LIGREL DE MODELE
+    character(len=8), intent(in)  :: load
+    character(len=8), intent(in)  :: mesh
+    character(len=19), intent(in) :: ligrmo
+    character(len=4), intent(in)  :: vale_type
 !
-! ROUTINES APPELEES:
-#include "jeveux.h"
-#include "asterc/getvr8.h"
-#include "asterc/getvtx.h"
-#include "asterc/r8miem.h"
-#include "asterfort/alcart.h"
-#include "asterfort/assert.h"
-#include "asterfort/char_affe_neum.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
-#include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
-#include "asterfort/u2mess.h"
-#include "asterfort/vetyma.h"
-    real(kind=8) :: rota(7), norme
-    complex(kind=8) :: cbid
-    character(len=8) :: char, noma, licmp(7), k8b, k8tout
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Keyword = 'ROTATION'
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! In  mesh      : name of mesh
+! In  load      : name of load
+! In  ligrmo    : list of elements in model
+! In  vale_type : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    complex(kind=8) :: c16dummy
+    character(len=8) :: k8dummy
+    character(len=16) :: k16dummy
+    real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
+    real(kind=8) :: norme
+    integer :: iocc, nrota, nb_cmp, val_nb
+    integer :: jvalv
+    character(len=16) :: keywordfact
+    character(len=24) :: list_elem
+    integer :: j_elem
+    integer :: nb_elem
+    character(len=8) :: suffix
     character(len=19) :: carte
-    integer :: iocc, irota, nbmail, nbgpma
-    integer ::  jncmp, jvalv
-    integer :: nbma, ncmp, ndim, nrota, n1, n2, nbtout
-    character(len=16) ::  motclf
-    integer :: iarg
-    character(len=19) :: cartes(1)
-    integer :: ncmps(1)
+    integer :: nb_carte
 !
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    motclf = 'ROTATION'
-    do iocc = 1, irota
+! --------------------------------------------------------------------------------------------------
 !
-        call getvr8('ROTATION', 'VITESSE', iocc, iarg, 1,&
-                    rota(1), n1)
-        call getvr8('ROTATION', 'AXE', iocc, iarg, 3,&
-                    rota(2), n2)
-        call getvr8('ROTATION', 'CENTRE', iocc, iarg, 3,&
-                    rota(5), nrota)
+    call jemarq()
 !
-        if (n1 .gt. 0) then
-            ASSERT(n1.eq.1)
-            ASSERT(n2.eq.3)
-            norme=sqrt( rota(2)*rota(2)+rota(3)*rota(3)+rota(4)*rota(&
-            4) )
-            if (norme .gt. r8miem()) then
-                rota(2)=rota(2)/norme
-                rota(3)=rota(3)/norme
-                rota(4)=rota(4)/norme
-            else
-                call u2mess('F', 'MODELISA3_63')
-            endif
-        endif
-        call getvtx('ROTATION', 'MAILLE', iocc, iarg, 1,&
-                    k8b, nbmail)
-        call getvtx('ROTATION', 'GROUP_MA', iocc, iarg, 1,&
-                    k8b, nbgpma)
-        call getvtx('ROTATION', 'TOUT', iocc, iarg, 1,&
-                    k8tout, nbtout)
-        nbma = nbmail+nbgpma
+    keywordfact = 'ROTATION'
+    call getfac(keywordfact, nrota)
+    if (nrota.eq.0) goto 99
 !
+    ASSERT(nrota.eq.1)
 !
-!   SI NBMA = 0, ALORS IL N'Y A AUCUN MOT CLE GROUP_MA OU MAILLE ,
-!   DONC LA ROTATION S'APPLIQUE A TOUT LE MODELE (VALEUR PAR DEFAUT)
+! - Initializations
 !
-        if ((nbma.eq.0) .and. (nbtout.eq.1)) then
+    ASSERT(vale_type.eq.'REEL') 
+    list_elem = '&&CAROTA.LISTELEM'
+    suffix    = ' '
 !
-!   UTILISATION DE LA ROUTINE MECACT (PAS DE CHANGEMENT PAR RAPPORT
-!   A LA PRECEDENTE FACON DE PRENDRE EN COMPTE LA PESANTEUR)
+! - Creation and initialization to zero of <CARTE>
 !
-            carte=char//'.CHME.ROTAT'
-            licmp(1)='OME'
-            licmp(2)='AR'
-            licmp(3)='BR'
-            licmp(4)='CR'
-            licmp(5)='X'
-            licmp(6)='Y'
-            licmp(7)='Z'
-            call mecact('G', carte, 'MAILLA', noma, 'ROTA_R',&
-                        7, licmp, 0, rota, cbid,&
-                        ' ')
+    call char_crea_cart('MECANIQUE', keywordfact, load, mesh, ligrmo, &
+                        vale_type, nb_carte, carte)
+    ASSERT(nb_carte.eq.1)
 !
-        else if ((nbma.ne.0).and.(k8tout.eq.'NON')) then
+! - Loop on keywords
 !
-!   APPLICATION DE LA ROTATION AUX MAILLES OU GROUPES DE MAILLES
-!   MENTIONNES. ROUTINE MODIFIEE ET CALQUEE SUR LA PRISE EN COMPTE
-!   D'UNE ROTATION (CBROTA ET CAROTA)
+    do iocc = 1, nrota
 !
-            carte=char//'.CHME.ROTAT'
-            call alcart('G', carte, noma, 'ROTA_R')
-            call jeveuo(carte//'.NCMP', 'E', jncmp)
-            call jeveuo(carte//'.VALV', 'E', jvalv)
+! ----- Elements 
 !
-! --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
+        call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem, &
+                            nb_elem)
+        call jeveuo(list_elem, 'L', j_elem)
 !
-            ncmp = 7
-            zk8(jncmp)='OME'
-            zk8(jncmp+1)='AR'
-            zk8(jncmp+2)='BR'
-            zk8(jncmp+3)='CR'
-            zk8(jncmp+4)='X'
-            zk8(jncmp+5)='Y'
-            zk8(jncmp+6)='Z'
+! ----- Get speed
 !
-            zr(jvalv) = 0.d0
-            zr(jvalv+1) = 0.d0
-            zr(jvalv+2) = 0.d0
-            zr(jvalv+3) = 0.d0
-            zr(jvalv+4) = 0.d0
-            zr(jvalv+5) = 0.d0
-            zr(jvalv+6) = 0.d0
+        call char_read_val(keywordfact, iocc, 'VITESSE', vale_type, val_nb, &
+                           rota_speed, k8dummy, c16dummy, k16dummy)
+        ASSERT(val_nb.eq.1)
 !
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ' ', ncmp)
+! ----- Get axis
 !
+        call char_read_vect(keywordfact, iocc, 'AXE', rota_axis)
+        call normev(rota_axis, norme)
+        if (norme .le. r8miem()) call u2mess('F', 'CHARGES2_53')
 !
-! --- STOCKAGE DANS LA CARTE
+! ----- Get center
 !
-            zr(jvalv) = rota(1)
-            zr(jvalv+1) = rota(2)
-            zr(jvalv+2) = rota(3)
-            zr(jvalv+3) = rota(4)
-            zr(jvalv+4) = rota(5)
-            zr(jvalv+5) = rota(6)
-            zr(jvalv+6) = rota(7)
+        call char_read_vect(keywordfact, iocc, 'CENTRE', rota_cent)
 !
+! ----- Affectation of values in <CARTE>
 !
-            cartes(1) = carte
-            ncmps(1) = ncmp
-            call char_affe_neum(noma, ndim, motclf, iocc, 1, &
-                                cartes, ncmps)
-
-        else if ((nbma.ne.0).and.(k8tout.eq.'OUI')) then
-            call u2mess('F', 'MODELISA3_40')
-        endif
+        call jeveuo(carte//'.VALV', 'E', jvalv)
+        nb_cmp = 7
+        zr(jvalv-1+1) = rota_speed
+        zr(jvalv-1+2) = rota_axis(1)
+        zr(jvalv-1+3) = rota_axis(2)
+        zr(jvalv-1+4) = rota_axis(3)
+        zr(jvalv-1+5) = rota_cent(1)
+        zr(jvalv-1+6) = rota_cent(2)
+        zr(jvalv-1+7) = rota_cent(3)
+        call nocart(carte, 3, k8dummy, 'NUM', nb_elem,&
+                    k8dummy, zi(j_elem), ' ', nb_cmp)
+!
+        call jedetr(list_elem)
     end do
+!
+99  continue
+    call jedema()
 end subroutine

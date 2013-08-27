@@ -19,23 +19,7 @@
 
 cata_msg = {
 
-1 : _(u"""
-Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oz,
-ce qui induit un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
-l'axe de rotation doit être dirigé suivant Oy.
-"""),
 
-2 : _(u"""
-Les coordonnées du centre de rotation ont au moins une composante non nulle, ce qui induit
-un chargement non axisymétrique. Avec une modélisation AXIS ou AXIS_FOURIER,
-le centre de rotation doit être confondu avec l'origine.
-"""),
-
-3 : _(u"""
-Le vecteur définissant l'axe de rotation a une composante non nulle suivant Ox ou Oy,
-ce qui induit des forces centrifuges hors plan. Avec une modélisation C_PLAN ou D_PLAN,
-l'axe de rotation doit être dirigé suivant Oz.
-"""),
 
 
 4 : _(u"""

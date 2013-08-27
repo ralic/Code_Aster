@@ -39,7 +39,7 @@ subroutine charme(load, vale_type)
 #include "asterfort/cbpesa.h"
 #include "asterfort/cbprca.h"
 #include "asterfort/cbpres.h"
-#include "asterfort/cbrota.h"
+#include "asterfort/carota.h"
 #include "asterfort/cbsint.h"
 #include "asterfort/cbvitn.h"
 #include "asterfort/chveno.h"
@@ -203,7 +203,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- ROTATION
 !
-        call cbrota(load, mesh, ndim, ligrmo)
+        call carota(load, ligrmo, mesh, vale_type)
 !
 ! ----- FORCE_ELEC
 !

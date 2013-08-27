@@ -476,7 +476,7 @@ PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
 
 ROTA=AFFE_CHAR_MECA(        MODELE=MODEL2,
                              ROTATION=_F( VITESSE = 2400.,
-                                          AXE = (0.,1.,0.,),),
+                                          AXE = (0.,1.,),),
                          );
 
 ROTA_FO=DEFI_FONCTION(       NOM_PARA='INST',
