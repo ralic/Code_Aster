@@ -12,6 +12,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
 #include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/assma1.h"
@@ -850,8 +851,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             endif
 !
 !         -- IL FAUT COMMUNIQUER ELLAGR ENTRE LES PROCS :
-            if (ldist) call asmpi_comm_vect('MPI_MAX', 'I', 1, ibid, ellagr,&
-                                            rbid, cbid)
+            if (ldist) then
+                call asmpi_comm_vect('MPI_MAX', 'I', sci=ellagr)
+            endif
 !
 !
 !         -- MISE A L'ECHELLE DES COEF. DE LAGRANGE SI NECESSAIRE :
