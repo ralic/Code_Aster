@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine calcco(option, yachai, perman, meca, thmc,&
                       ther, hydr, imate, ndim, dimdef,&
                       dimcon, nbvari, yamec, yate, addeme,&
@@ -26,8 +26,9 @@ interface
                       p2, dp1, dp2, t, dt,&
                       phi, pvp, pad, h11, h12,&
                       kh, rho11, phi0, pvp0, sat,&
-                      retcom, crit, biot, vihrho, vicphi,&
-                      vicpvp, vicsat, rinstp)
+                      retcom, crit, tbiot, vihrho, vicphi,&
+                      vicpvp, vicsat, rinstp, angmas, aniso,&
+                      phenom)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
@@ -80,11 +81,14 @@ interface
         real(kind=8) :: sat
         integer :: retcom
         real(kind=8) :: crit(*)
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
         integer :: vihrho
         integer :: vicphi
         integer :: vicpvp
         integer :: vicsat
         real(kind=8) :: rinstp
+        real(kind=8) :: angmas(3)
+        integer :: aniso
+        character(len=16) :: phenom
     end subroutine calcco
-end interface
+end interface 

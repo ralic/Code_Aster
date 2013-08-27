@@ -1,6 +1,6 @@
 # TITRE   MODELISATION D UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -157,19 +157,16 @@ MATERIAU=DEFI_MATERIAU(
             R_GAZ      = 8.315,
             EMMAG      = EMMAG,
             RHO        = 1.,
-            BIOT_COEF  = 1.,
+            BIOT_L     = 1.,
+            BIOT_T     = 1.,
+            BIOT_N     = 1.,
             SATU_PRES  = UN,
             D_SATU_PRES= ZERO,
             PESA_X     = 0.0,
             PESA_Y     = 0.,
             PESA_Z     = 0.,
-#           PERM_IN    = PERMINT,
-            PERMIN_X   = PERMINT,
-            PERMIN_Y   = PERMINT,
-            PERMIN_Z   = ZERO,
-            PERMINXY   = ZERO,
-            PERMINYZ   = ZERO,
-            PERMINZX   = ZERO,
+            PERMIN_L   = PERMINT,
+            PERMIN_T   = PERMINT,
             PERM_LIQU  = UN,
             D_PERM_LIQU_SATU=ZERO,
             PERM_GAZ   = UN,
@@ -177,7 +174,8 @@ MATERIAU=DEFI_MATERIAU(
             D_PERM_PRES_GAZ=ZERO,
             FICKV_T    = ZERO,
             FICKA_T    = ZERO,
-            LAMB_T     = ZERO
+            LAMB_TL    = ZERO,
+            LAMB_TT    = ZERO,
               ),
 
    THM_INIT=_F(
@@ -302,6 +300,17 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 VALE_REFE=-889.31760999999995,
                 CRITERE='RELATIF',
                 PRECISION=1.E-2,),
+        )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=100,
+                RESULTAT=cal1,
+                NOM_CHAM='DEPL',
+                NOEUD='N103',
+                NOM_CMP='PRE1',
+                VALE_CALC=-893.48275999999998,
+                TOLE_MACHINE=1.E-4,
+                CRITERE='RELATIF',
+                ),
         )
 
 FIN();

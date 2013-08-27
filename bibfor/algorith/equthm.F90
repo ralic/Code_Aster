@@ -3,8 +3,10 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                   dimcon, nbvari, defgem, congem, vintm,&
                   defgep, congep, vintp, mecani, press1,&
                   press2, tempe, crit, rinstm, rinstp,&
-                  dt, r, drds, dsde, retcom)
+                  dt, r, drds, dsde, retcom,&
+                  angmas)
 ! ======================================================================
+!
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -23,8 +25,10 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! 
 ! ======================================================================
 ! aslint: disable=W1501,W1504
+
     implicit none
 ! ======================================================================
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -130,6 +134,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 ! OUT         : RETCOM RETOUR DES LOIS DE COMPORTEMENT
 ! ======================================================================
 #include "asterfort/comthm.h"
+#include "asterfort/vecini.h"
     integer :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom, ibid
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: yamec, addeme, adcome, yate, addete, adcote, i, j
@@ -141,6 +146,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
     real(kind=8) :: dsde(1:dimcon, 1:dimdef), dt, crit(*), rinstp, rinstm
     real(kind=8) :: deux, rac2, ta, ta1, p10, p20
     real(kind=8) :: rbid1(6, 14, 6), rbid2(14, 6)
+    real(kind=8) :: angmas(3)
     parameter    (deux = 2.d0)
     logical :: perman
     character(len=8) :: typmod(2)
@@ -170,6 +176,8 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
     ibid = 0
     p10 = 0.d0
     p20 = 0.d0
+    call vecini(3, 0.d0, pesa)
+!
 ! ============================================================
 ! --- COMME CONGEM CONTIENT LES VRAIES CONTRAINTES ET --------
 ! --- COMME PAR LA SUITE ON TRAVAILLE AVEC SQRT(2)*SXY -------
@@ -178,8 +186,10 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
     if (yamec .eq. 1) then
         do 100 i = 4, 6
             congem(adcome+i-1)= congem(adcome+i-1)*rac2
+            congem(adcome+6+i-1)= congem(adcome+6+i-1)*rac2
 100      continue
     endif
+!
 ! ============================================================
 ! --- INITIALISATION DES TABLEAUX A ZERO ---------------------
 ! --- ET DU TABLEAU CONGEP A CONGEM --------------------------
@@ -211,6 +221,8 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
         drds(dimdef+1,j)=0.d0
 800  end do
 !
+    retcom = 0
+!
     call comthm(option, perman, .false., ibid, rbid1,&
                 rbid2, imate, typmod, compor, crit,&
                 rinstm, rinstp, ndim, dimdef, dimcon,&
@@ -219,7 +231,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 addep2, adcp21, adcp22, addete, adcote,&
                 defgem, defgep, congem, congep, vintm,&
                 vintp, dsde, pesa, retcom, kpi,&
-                npg, p10, p20)
+                npg, p10, p20, angmas)
     if (retcom .ne. 0) then
         goto 9000
     endif
@@ -239,9 +251,11 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 r(addeme+ndim+i-1)= r(addeme+ndim+i-1) +congep(&
                 adcome-1+i)
  6          continue
-!  SCALAIRE SIGPPLUS MULTIPLIE PAR LE TENSEUR UNITE PAGE 33
-            do 7 i = 1, 3
-                r(addeme+ndim-1+i)=r(addeme+ndim-1+i)+congep(adcome+6)
+!  TENSEUR SIGPPLUS A 6 COMPOSANTES INDEPENDANTES DANS LE REPERE GLOBAL
+!
+            do 7 i = 1, 6
+                r(addeme+ndim-1+i)=r(addeme+ndim-1+i) +congep(&
+                adcome+6+i-1)
  7          continue
 !
 !  CONTRIBUTIONS A R1 DEPENDANTES DE YAP1
@@ -460,14 +474,15 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
                 drds(addeme+ndim-1+i,adcome+i-1)= drds(addeme+ndim-1+&
                 i,adcome+i-1)+1.d0
 25          continue
+!    DR2DS:DERIVEES PAR RAPPORT AUX COMPOSANTES DE SIGPPLUS
+!    TABLEAU 6 - 6 : ON N'ECRIT QUE LES TERMES NON NULS
+!    (1 SUR DIAGONALE)
+!    DANS LE CAS ISOTROPE LES 3 PREMIERS TERMES VALENT 1
+!    LES AUTRES SONT NULS
 !
-!    DR2DS:DERIVEES PAR RAPPORT AU SCALAIRE SIGPPLUS
-!    >> TENSEUR ISOTROPE : ON N'ECRIT QUE LES
-!    TROIS PREMIERS TERMES = 1
-!
-            do 26 i = 1, 3
-                drds(addeme+ndim-1+i,adcome+6)= drds(addeme+ndim-1+i,&
-                adcome+6)+1.d0
+            do 26 i = 1, 6
+                drds(addeme+ndim-1+i,adcome+6+i-1)= drds(addeme+ndim-&
+                1+i,adcome+6+i-1)+1.d0
 26          continue
         endif
 ! ======================================================================
@@ -575,6 +590,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
 !     DR7SOMMET/P11:DERIVEE / HM11PLUS  (ENTHALPIE MASSIQUE DU FLUIDE 1)
                 drds(dimdef+1,adcp11+ndim+1)=drds(dimdef+1,adcp11+&
                 ndim+1) -ta*(congep(adcp11)-congem(adcp11))
+
 !
 !     DR7GAUSS/P11:DERIVEE/COURANTM11PLUS : VECTEUR COURANT MASSE FLUIDE
                 do 351 i = 1, ndim
@@ -696,6 +712,7 @@ subroutine equthm(imate, option, ta, ta1, ndim,&
     if ((yamec.eq.1) .and. ((option .eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA'))) then
         do 110 i = 4, 6
             congep(adcome+i-1)= congep(adcome+i-1)/rac2
+            congep(adcome+6+i-1)= congep(adcome+6+i-1)/rac2
 110      continue
     endif
 ! ======================================================================

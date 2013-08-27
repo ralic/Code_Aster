@@ -15,14 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dmadp1(rho22, sat, dsatp1, biot, phi,&
-                    cs, mamolg, kh, dp21p1, emmag,&
-                    em)
+interface 
+    function dmadp1(rho22, sat, dsatp1, phi, cs,&
+                    mamolg, kh, dp21p1, emmag, em)
         real(kind=8) :: rho22
         real(kind=8) :: sat
         real(kind=8) :: dsatp1
-        real(kind=8) :: biot
         real(kind=8) :: phi
         real(kind=8) :: cs
         real(kind=8) :: mamolg
@@ -30,6 +28,6 @@ interface
         real(kind=8) :: dp21p1
         logical :: emmag
         real(kind=8) :: em
-        real(kind=8) :: dmadp1
+        real(kind=8) :: dmadp1_0
     end function dmadp1
-end interface
+end interface 

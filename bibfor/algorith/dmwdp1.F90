@@ -1,7 +1,7 @@
-function dmwdp1(rho11, signe, sat, dsatp1, biot,&
-                phi, cs, cliq, dp11p1, emmag,&
-                em)
+function dmwdp1(rho11, signe, sat, dsatp1, phi,&
+                cs, cliq, dp11p1, emmag, em)
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,16 +23,16 @@ function dmwdp1(rho11, signe, sat, dsatp1, biot,&
 ! --- A LA PRESSION CAPILLAIRE -----------------------------------------
 ! ======================================================================
     implicit none
-    real(kind=8) :: rho11, signe, sat, dsatp1, biot, phi, cs, cliq, dp11p1
+    real(kind=8) :: rho11, signe, sat, dsatp1, phi, cs, cliq, dp11p1
     real(kind=8) :: dmwdp1, em
     real(kind=8) :: dphip1
     logical :: emmag
 !
     if (emmag) then
         dphip1 = - sat*signe*em
-        dmwdp1 = rho11 *( sat*dphip1+signe*dsatp1*phi- signe *sat*phi* cliq*dp11p1)
+        dmwdp1 = rho11 *(sat*dphip1+signe*dsatp1*phi- signe *sat*phi* cliq*dp11p1)
     else
-        dmwdp1 = rho11 * signe * ( dsatp1*phi - sat*phi*cliq*dp11p1 - sat*sat*(biot-phi)*cs)
+        dmwdp1 = rho11 * signe * (dsatp1*phi - sat*phi*cliq*dp11p1 - sat*sat*cs)
     endif
 ! ======================================================================
 end function

@@ -122,16 +122,14 @@ MATERIAU=DEFI_MATERIAU(
             R_GAZ      = 8.315,
             EMMAG      = EMMAG,
             RHO        = 1.,
-            BIOT_COEF  = 1.,
+            BIOT_L     = 1.,
+            BIOT_T     = 1.,
+            BIOT_N= 1.,
             PESA_X     = 0.0,
             PESA_Y     = 0.,
             PESA_Z     = 0.,
-            PERMIN_X   = PERMINT,
-            PERMIN_Y   = PERMINT,
-            PERMIN_Z   = ZERO,
-            PERMINXY   = ZERO,
-            PERMINYZ   = ZERO,
-            PERMINZX   = ZERO,
+            PERMIN_L   = PERMINT,
+            PERMIN_T   = ZERO,
               ),
 
    THM_INIT=_F(
@@ -161,8 +159,8 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                         NOM_CMP  = ('DX','DY',) ,
                         VALE = (0.,0.,), ),
                     _F( GROUP_MA=('GAUCHE','DROITE'),
-                        NOM_CMP  = ('PRE1') ,
-                        VALE = (P0,), ),
+                        NOM_CMP  = 'PRE1' ,
+                        VALE = P0 ),
                 ))
 #*************************************************************
 # Affectation des CL
@@ -285,7 +283,7 @@ FLUXND = POST_ELEM(RESULTAT   = cal1,
               NOM_CMP=('FH11')))
 
 TEST_TABLE(VALE_REFE=-2.0E-10,
-           VALE_CALC=-1.998652644123E-10,
+           VALE_CALC=-1.998649403053E-10 ,
            PRECISION=1.E-3,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',
@@ -313,7 +311,7 @@ FLUXNG = POST_ELEM(RESULTAT   = cal1,
               NOM_CMP=('FH11')))
 
 TEST_TABLE(VALE_REFE=2.0E-10,
-           VALE_CALC=2.0013534127555E-10,
+           VALE_CALC=2.0013560999989E-10,
            PRECISION=1.E-3,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_FH11',

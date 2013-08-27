@@ -5,7 +5,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                   mecani, press1, press2, tempe, dimdef,&
                   dimcon, dimuel, nbvari, ndim, compor,&
                   typmod, typvf, axi, perman)
-! aslint: disable=W1504
+! aslint: disable=W1501,W1504    
     implicit none
 !
 #include "jeveux.h"
@@ -41,6 +41,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     character(len=8) :: typmod(2)
     character(len=16) :: option, compor(*)
     logical :: axi, perman
+!
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -216,8 +217,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! VARIABLES COMMUNES
 ! =====================================================================
     logical :: vf
-    real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa)
-    real(kind=8) :: normfa(maxdim, maxfa), vol
+    real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa), normfa(maxdim, maxfa), vol
     integer :: ifa, jfa, idim
     real(kind=8) :: pcp, pwp, pgp, dpgp1, dpgp2, dpwp1, dpwp2
     real(kind=8) :: cvp, dcvp1, dcvp2, cad, dcad1, dcad2
@@ -233,30 +233,30 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: fm1ws(maxfa+1, maxfa), fm2ws(maxfa+1, maxfa)
     real(kind=8) :: fm1ass(maxfa+1, maxfa), fm2ass(maxfa+1, maxfa)
     real(kind=8) :: fm1ads(maxfa+1, maxfa), fm2ads(maxfa+1, maxfa)
-    real(kind=8) :: pcpf(maxfa), pgpf(maxfa), dpgp1f(maxfa), dpgp2f(maxfa)
-    real(kind=8) :: pwpf(maxfa), dpwp1f(maxfa), dpwp2f(maxfa), cvpf(maxfa)
-    real(kind=8) :: dcvp1f(maxfa), cadf(maxfa), dcad1f(maxfa), dcad2f(maxfa)
-    real(kind=8) :: dcvp2f(maxfa)
+    real(kind=8) :: pcpf(maxfa), pgpf(maxfa), dpgp1f(maxfa), dpgp2f(maxfa), pwpf(maxfa)
+    real(kind=8) :: dpwp1f(maxfa), dpwp2f(maxfa), cvpf(maxfa), dcvp1f(maxfa), cadf(maxfa)
+    real(kind=8) :: dcad1f(maxfa), dcad2f(maxfa), dcvp2f(maxfa)
     real(kind=8) :: yss (maxdim, maxfa, maxfa)
     real(kind=8) :: c (maxfa, maxfa), d (maxfa, maxfa)
-    real(kind=8) :: flks(maxfa), dflks1(maxfa+1, maxfa), dflks2(maxfa+1, maxfa)
-    real(kind=8) :: fgks(maxfa), dfgks1(maxfa+1, maxfa), dfgks2(maxfa+1, maxfa)
-    real(kind=8) :: ftgks(maxfa), ftgks1(maxfa+1, maxfa), ftgks2(maxfa+1, maxfa)
-    real(kind=8) :: fclks(maxfa), fclks1(maxfa+1, maxfa), fclks2(maxfa+1, maxfa)
-    real(kind=8) :: mobwf(maxfa), moadf(maxfa), moasf(maxfa), movpf(maxfa)
-    real(kind=8) :: dw1f(maxfa), dw2f(maxfa), dvp1f(maxfa), das1f(maxfa)
-    real(kind=8) :: das2f(maxfa), dad1f(maxfa), dvp2f(maxfa), dad2f(maxfa)
-    real(kind=8) :: dvp1ff(maxfa), dvp2ff(maxfa), dw1ffa(maxfa), dw2ffa(maxfa)
-    real(kind=8) :: das1ff(maxfa), das2ff(maxfa), dad1ff(maxfa), dad2ff(maxfa)
-    real(kind=8) :: divp1(maxfa), divp2(maxfa), diad1(maxfa), diad2(maxfa)
-    real(kind=8) :: dias1(maxfa), dias2(maxfa), difuvp(maxfa), difuas(maxfa)
-    real(kind=8) :: difuad(maxfa), diad1f(maxfa), diad2f(maxfa), dias1f(maxfa)
-    real(kind=8) :: dias2f(maxfa), divp1f(maxfa), divp2f(maxfa)
+    real(kind=8) :: flks(maxfa), dflks1(maxfa+1, maxfa), dflks2(maxfa+1, maxfa), fgks(maxfa)
+    real(kind=8) :: dfgks1(maxfa+1, maxfa), dfgks2(maxfa+1, maxfa), ftgks(maxfa)
+    real(kind=8) :: ftgks1(maxfa+1, maxfa), ftgks2(maxfa+1, maxfa), fclks(maxfa)
+    real(kind=8) :: fclks1(maxfa+1, maxfa), fclks2(maxfa+1, maxfa)
+    real(kind=8) :: mobwf(maxfa), moadf(maxfa), moasf(maxfa), movpf(maxfa), dw1f(maxfa)
+    real(kind=8) :: dw2f(maxfa), dvp1f(maxfa), das1f(maxfa), das2f(maxfa), dad1f(maxfa)
+    real(kind=8) :: dvp2f(maxfa), dad2f(maxfa), dvp1ff(maxfa), dvp2ff(maxfa), dw1ffa(maxfa)
+    real(kind=8) :: dw2ffa(maxfa), das1ff(maxfa), das2ff(maxfa), dad1ff(maxfa), dad2ff(maxfa)
+    real(kind=8) :: divp1(maxfa), divp2(maxfa), diad1(maxfa), diad2(maxfa), dias1(maxfa)
+    real(kind=8) :: dias2(maxfa), difuvp(maxfa), difuas(maxfa), difuad(maxfa), diad1f(maxfa)
+    real(kind=8) :: diad2f(maxfa), dias1f(maxfa), dias2f(maxfa), divp1f(maxfa), divp2f(maxfa)
 !=====================================================================
     logical :: uticer, ldcen
     real(kind=8) :: xg(maxdim)
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: alpha, zero
+!     DANS LE CAS DES ELEMENTS FINIS ANGMAS EST NECESSAIRE
+!     DANS LE CAS DES VOLUMES FINIS ON INITIALISE À 0 ANGMAS(3)
+    real(kind=8) :: angbid(3)
     integer :: zzadma, ivois, lig, col
     integer :: iadp1k, iadp2k, iadp1, iadp2
     integer :: adcm1, adcm2, adcf1, adcf2
@@ -468,6 +468,10 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
 ! ===============================================
 ! ==== INITIALISATION DE DSDE ================
 ! ===============================================
+! INITIALISATION DE ANGMAS(3) À ZERO
+    do 511 i = 1, 3
+        angbid(i)=0.d0
+511  end do
     do 6 i = 1, dimcon
         do 6 j = 1, dimdef
             dsde(i,j)=0.d0
@@ -480,7 +484,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                 addep2, adcp21, adcp22, addete, adcote,&
                 defgem, defgep, congem, congep, vintm(1, 1),&
                 vintp(1, 1), dsde, pesa, retcom, 1,&
-                1, p10, p20)
+                1, p10, p20, angbid)
     if (retcom .ne. 0) then
         call u2mesk('F', 'COMPOR1_9', 0, ' ')
     endif
@@ -520,7 +524,7 @@ subroutine assesu(nno, nnos, nface, geom, crit,&
                     addep2, adcp21, adcp22, addete, adcote,&
                     defgem, defgep, congem, congep, vintm(1, fa+1),&
                     vintp(1, fa+1), dsde, pesa, retcom, 1,&
-                    1, p10, p20)
+                    1, p10, p20, angbid)
         if (retcom .ne. 0) then
             call u2mesk('F', 'COMPOR1_9', 0, ' ')
         endif

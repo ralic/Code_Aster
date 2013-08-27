@@ -15,15 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine calcme(option, compor, thmc, meca, imate,&
                       typmod, crit, instam, instap, tref,&
                       ndim, dimdef, dimcon, nvimec, yate,&
                       addeme, adcome, addete, defgem, congem,&
                       congep, vintm, vintp, addep1, addep2,&
-                      dsde, deps, depsv, p1, p2,&
+                      dsde, deps, p1, p2,&
                       t, dt, retcom, dp1, dp2,&
-                      sat, biot)
+                      sat, tbiot, ang2, aniso, phenom)
         integer :: nvimec
         integer :: dimcon
         integer :: dimdef
@@ -51,7 +51,6 @@ interface
         integer :: addep2
         real(kind=8) :: dsde(dimcon, dimdef)
         real(kind=8) :: deps(6)
-        real(kind=8) :: depsv
         real(kind=8) :: p1
         real(kind=8) :: p2
         real(kind=8) :: t
@@ -60,6 +59,9 @@ interface
         real(kind=8) :: dp1
         real(kind=8) :: dp2
         real(kind=8) :: sat
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
+        real(kind=8) :: ang2(3)
+        integer :: aniso
+        character(len=16) :: phenom
     end subroutine calcme
-end interface
+end interface 

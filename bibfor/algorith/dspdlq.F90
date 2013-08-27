@@ -1,7 +1,9 @@
-function dspdlq(biot, sat, dpvpl)
-    implicit      none
-    real(kind=8) :: biot, sat, dpvpl, dspdlq
+subroutine dspdlq(tbiot, sat, dpvpl, dsdlq)
+    implicit none
+    integer :: i
+    real(kind=8) :: tbiot(6), sat, dpvpl, dsdlq(6)
 ! ======================================================================
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +24,8 @@ function dspdlq(biot, sat, dpvpl)
 ! --- CALCUL DE LA DERIVEE DE LA CONTRAINTE DE PRESSION PAR RAPPORT ----
 ! --- A LA PRESSION D EAU (DANS LE CAS DE LIQU_VAPE) -------------------
 ! ======================================================================
-    dspdlq = -biot*(sat+(1.d0-sat)*dpvpl)
+    do 10 i = 1, 6
+        dsdlq(i) = -tbiot(i)*(sat+(1.d0-sat)*dpvpl)
+10  end do
 ! ======================================================================
-end function
+end subroutine

@@ -1,6 +1,6 @@
 # TITRE   TEST HM, 2D , MODELISATION THMC=GAZ
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -243,6 +243,7 @@ PWELL=AFFE_CHAR_MECA(MODELE=MO,
 #
 ####################################
 
+
 CHAMNO=CREA_CHAMP(MAILLAGE=MA,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -256,8 +257,12 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                    OPERATION='AFFE',
                    MAILLAGE=MA,
                    AFFE=(_F(GROUP_MA=('MASSIF','JEU'),
-                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X','FH11Y',),
-                           VALE=(0.0,-sigp,0.0,0.0,0.0,0.0,-pini,0.,0.,0.,),),
+                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',
+                                    'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
+                                    'M11','FH11X','FH11Y',),
+                           VALE=(0.0,-sigp,0.0,0.0,0.0,0.0,
+                                 0.0,-pini,0.0,0.0,0.0,0.0,
+                                 0.,0.,0.,),),
                          _F(GROUP_MA='JOINT',
                            NOM_CMP=('SIGN','SITX','SIP','M11','FH11X','LH1P','LH1M','DPRE1P','DPRE1M'),
                            VALE=(-sigp,0.0,-pini,ouvini*0.002,0.,0.,0.,0.,0.),),),);
@@ -327,7 +332,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='N1037',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.11592575013E5,),
+                  VALE_CALC=1.1160145862359E+05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
@@ -335,7 +340,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   NOM_CHAM='DEPL',
                   NOEUD='N1331',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.0135298027519E5,),
+                  VALE_CALC=1.0136595193729E+05 ,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
@@ -351,7 +356,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='N1037',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.1446702187244E5,),
+                  VALE_CALC= 1.1446686905267E+05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -359,7 +364,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='N1331',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.092939323934E5,),
+                  VALE_CALC=1.0929952397776E+05),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
@@ -367,7 +372,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOEUD='NS5193',
                   NOM_CMP='PRE1',
-                  VALE_CALC=1.1477524698866E5,),
+                  VALE_CALC=1.1477505465211E+05 ),
           )
 
 ####################################

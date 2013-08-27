@@ -15,13 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine equthp(imate, option, ndim, compor, typmod,&
                       kpi, npg, dimdef, dimcon, nbvari,&
                       defgem, congem, vintm, defgep, congep,&
                       vintp, mecani, press1, press2, tempe,&
                       crit, rinstm, rinstp, r, drds,&
-                      dsde, retcom)
+                      dsde, retcom, angmas)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
@@ -49,5 +49,6 @@ interface
         real(kind=8) :: drds(1:dimdef+1, 1:dimcon)
         real(kind=8) :: dsde(1:dimcon, 1:dimdef)
         integer :: retcom
+        real(kind=8) :: angmas(3)
     end subroutine equthp
-end interface
+end interface 

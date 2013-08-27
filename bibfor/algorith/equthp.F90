@@ -3,7 +3,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
                   defgem, congem, vintm, defgep, congep,&
                   vintp, mecani, press1, press2, tempe,&
                   crit, rinstm, rinstp, r, drds,&
-                  dsde, retcom)
+                  dsde, retcom, angmas)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,6 +148,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
     real(kind=8) :: dsde(1:dimcon, 1:dimdef), crit(*), rinstp, rinstm, rbid
     real(kind=8) :: rbid1(6, 14, 6), rbid2(14, 6)
     real(kind=8) :: deux, rac2
+    real(kind=8) :: angmas(3)
     parameter   (deux = 2.d0)
     logical :: perman
     character(len=8) :: typmod(2)
@@ -226,7 +227,7 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
                 addep2, adcp21, adcp22, addete, adcote,&
                 defgem, defgep, congem, congep, vintm,&
                 vintp, dsde, pesa, retcom, kpi,&
-                npg, rbid, rbid)
+                npg, rbid, rbid, angmas)
     if (retcom .ne. 0) then
         goto 9000
     endif
@@ -246,10 +247,10 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
                 r(addeme+ndim+i-1)= r(addeme+ndim+i-1) +congep(&
                 adcome-1+i)
  6          continue
-!  SCALAIRE SIGPPLUS MULTIPLIE PAR LE TENSEUR UNITE PAGE 33
-            do 7 i = 1, 3
+!  TENSEUR SIGPPLUS A 6 COMPOSANTES INDEPENDANTES DANS LE REPERE GLOBAL
+            do 7 i = 1, 6
                 r(addeme+ndim-1+i)=r(addeme+ndim-1+i) +congep(&
-                adcome+6)
+                adcome+6+i-1)
  7          continue
         endif
 ! ======================================================================
@@ -400,13 +401,15 @@ subroutine equthp(imate, option, ndim, compor, typmod,&
                 drds(addeme+ndim-1+i,adcome+i-1)= drds(addeme+ndim-1+&
                 i,adcome+i-1)+1.d0
 25          continue
-!    DR2DS:DERIVEES PAR RAPPORT AU SCALAIRE SIGPPLUS
-!    >> TENSEUR ISOTROPE : ON N'ECRIT QUE LES
-!    TROIS PREMIERS TERMES = 1
+!    DR2DS:DERIVEES PAR RAPPORT AUX COMPOSANTES DE SIGPPLUS
+!    TABLEAU 6 - 6 : ON N'ECRIT QUE LES TERMES NON NULS
+!    (1 SUR DIAGONALE)
+!    DANS LE CAS ISOTROPE LES 3 PREMIERS TERMES VALENT 1
+!    LES AUTRES SONT NULS
 !
-            do 26 i = 1, 3
-                drds(addeme+ndim-1+i,adcome+6)= drds(addeme+ndim-1+i,&
-                adcome+6)+1.d0
+            do 26 i = 1, 6
+                drds(addeme+ndim-1+i,adcome+6+i-1)= drds(addeme+ndim-&
+                1+i,adcome+6+i-1)+1.d0
 26          continue
         endif
 ! ======================================================================

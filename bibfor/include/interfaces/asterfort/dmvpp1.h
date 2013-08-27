@@ -15,19 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dmvpp1(rho11, rho12, phids, ums, bmph,&
-                    cs, dpvpl, sat, phi, pvp)
+interface 
+    function dmvpp1(rho11, rho12, phids, ums, cs,&
+                    dpvpl, sat, phi, pvp)
         real(kind=8) :: rho11
         real(kind=8) :: rho12
         real(kind=8) :: phids
         real(kind=8) :: ums
-        real(kind=8) :: bmph
         real(kind=8) :: cs
         real(kind=8) :: dpvpl
         real(kind=8) :: sat
         real(kind=8) :: phi
         real(kind=8) :: pvp
-        real(kind=8) :: dmvpp1
+        real(kind=8) :: dmvpp1_0
     end function dmvpp1
-end interface
+end interface 

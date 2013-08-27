@@ -1,7 +1,7 @@
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -160,6 +160,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                               ),);
 
 
+
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -197,13 +198,19 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA='BO',
                             NOM_CMP=
                             ('SIXX','SIYY','SIZZ','SIXY','SIXZ',
-                            'SIYZ','SIP','M11','FH11X','FH11Y',
+                             'SIYZ',
+                             'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ',
+                             'SIPYZ',
+                             'M11','FH11X','FH11Y',
                              'M12','FH12X','FH12Y',
                              'QPRIM','M21', 'FH21X','FH21Y',
                              'M22','FH22X', 'FH22Y','ENT22',),
                             VALE=
                             (0.0,0.0,0.0,0.0,0.0,
+                             0.0,
                              0.0,0.0,0.0,0.0,0.0,
+                             0.0,
+                             0.0,0.0,0.0,
                              0.0,0.0,0.0,
                              0.0,0.0,0.0,0.0,
                              0.,0.,0.,0.),),

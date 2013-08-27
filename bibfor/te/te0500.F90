@@ -58,18 +58,18 @@ subroutine te0500(option, nomte)
 ! DECLARATION VARIABLES LOCALES
 !
     integer :: nbre1, nbrr1
-    parameter ( nbre1 = 1 , nbrr1 = 3 )
+    parameter ( nbre1 = 1 , nbrr1 = 2 )
 !
     integer :: nbre2
     parameter ( nbre2 = 2 )
 !
-    integer :: nbre3
-    parameter ( nbre3 = 1 )
+    integer :: nbre3, nbrr3
+    parameter ( nbre3 = 1 , nbrr3 = 2 )
 !
     integer :: ndim, nno
 !
-    integer :: ipi, kpi, iaux, npg, igeom, jgano, imate, ierre, igrdca, iret
-    integer :: isigap, isigam, itab(7), nbcmp, typvf, ibid
+    integer :: ipi, kpi, iaux, npg, igeom, jgano, imate, ierre, igrdca, iret, isigap, isigam
+    integer :: itab(7), nbcmp, typvf, ibid
     integer :: dimdep, dimdef, dimcon
     integer :: ipoids, ivf, idfde, ipoid2, ivf2, idfde2
     integer :: nmec, npi, np1, np2, nnos, nnom, nddls, nddlm
@@ -78,6 +78,7 @@ subroutine te0500(option, nomte)
     real(kind=8) :: poids2
     real(kind=8) :: ovfl
     real(kind=8) :: valre1(nbre1), valrr1(nbrr1), valre2(nbre2), valre3(nbre3)
+    real(kind=8) :: valrr3(nbrr3), valrr2(nbrr1), valrr4(nbrr3)
     real(kind=8) :: longc, presc, myoung
     real(kind=8) :: valpar(1), time, raux, rholiq, viscli, permin
     real(kind=8) :: fluhpx, fluhmx, fluhpy, fluhmy, rbid81(9)
@@ -85,18 +86,22 @@ subroutine te0500(option, nomte)
 !
     logical :: laxi, perman, vf
 !
-    integer :: codme1(nbre1), codmr1(nbrr1), codme2(nbre2), codme3(nbre3), kpg
-    integer :: spt
+    integer :: codme1(nbre1), codmr1(nbrr1), codme2(nbre2), codmr2(nbrr1), codme3(nbre3), kpg, spt
+    integer :: codmr3(nbrr3), codmr4(nbrr3)
     character(len=3) :: modint
     character(len=4) :: nompar(1)
     character(len=8) :: typmod(2), valk
-    character(len=8) :: nomre1(nbre1), nomrr1(nbrr1), nomre2(nbre2)
-    character(len=8) :: nomre3(nbre3), fami, poum
+    character(len=8) :: nomre1(nbre1), nomrr1(nbrr1)
+    character(len=8) :: nomrr3(nbrr3), nomrr4(nbrr3), nomre2(nbre2), nomre3(nbre3), fami, poum
+    character(len=8) :: nomrr2(nbrr1)
 !
     data nomre1 / 'PERM_IN'    /
-    data nomrr1 / 'PERMIN_X','PERMIN_Y','PERMIN_Z' /
+    data nomrr1 / 'PERMIN_L','PERMIN_N' /
+    data nomrr2 / 'PERMIN_L','PERMIN_T'/
     data nomre2 / 'RHO','VISC' /
     data nomre3 / 'E'          /
+    data nomrr3 / 'E_L','E_N' /
+    data nomrr4 / 'E_L','E_T' /
 !
 ! ------------------------------------------------------------------
 !
@@ -180,8 +185,15 @@ subroutine te0500(option, nomte)
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
                     ' ', 'THM_DIFFU', 1, nompar, valpar,&
                     nbrr1, nomrr1, valrr1, codmr1, 0)
-        if (( codmr1(1).eq.0 ) .and. ( codmr1(2).eq.0 ) .and. ( codmr1(3) .eq.0 )) then
-            permin = sqrt(valrr1(1)**2+valrr1(2)**2+valrr1(3)**2)
+        if (( codmr1(1).eq.0 ) .and. ( codmr1(2).eq.0 )) then
+            permin = sqrt(valrr1(1)**2+valrr1(2)**2+valrr1(1)**2)
+        else
+            call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                        ' ', 'THM_DIFFU', 1, nompar, valpar,&
+                        nbrr1, nomrr2, valrr2, codmr2, 0)
+            if (( codmr2(1).eq.0 ) .and. ( codmr2(2).eq.0 )) then
+                permin = sqrt(valrr1(1)**2+valrr1(2)**2)
+            endif
         endif
     else
         call u2mesk('F', 'ELEMENTS4_78', 1, nomre1(1))
@@ -205,10 +217,24 @@ subroutine te0500(option, nomte)
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', 'ELAS', 1, nompar, valpar,&
-                nbre3, nomre3, valre3, codme3, 1)
+                nbre3, nomre3, valre3, codme3, 0)
 !
     if (codme3(1) .eq. 0) then
         myoung = valre3(1)
+    else if (codme3(1).eq.1) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                    ' ', 'ELAS_ISTR', 1, nompar, valpar,&
+                    nbrr3, nomrr3, valrr3, codmr3, 0)
+        if (( codmr3(1).eq.0 ) .and. ( codmr3(2).eq.0 )) then
+            myoung = sqrt(valrr3(1)**2+valrr3(2)**2)
+        else
+            call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                        ' ', 'ELAS_ORTH', 1, nompar, valpar,&
+                        nbrr3, nomrr4, valrr4, codmr4, 0)
+            if (( codmr4(1).eq.0 ) .and. ( codmr4(2).eq.0 )) then
+                myoung = sqrt(valrr4(1)**2+valrr4(2)**2)
+            endif
+        endif
     else
         call u2mesk('F', 'ELEMENTS4_71', 1, nomre3(1))
     endif
@@ -268,11 +294,13 @@ subroutine te0500(option, nomte)
 !
         iaux = nbcmp*(kpi-1)
 !
-        fluhpx = zr(isigap+iaux+8)
-        fluhmx = zr(isigam+iaux+8)
+        fluhpx = zr(isigap+iaux+8+5)
+        fluhmx = zr(isigam+iaux+8+5)
 !
-        fluhpy = zr(isigap+iaux+9)
-        fluhmy = zr(isigam+iaux+9)
+        fluhpy = zr(isigap+iaux+9+5)
+        fluhmy = zr(isigam+iaux+9+5)
+!
+        tertps = tertps + raux*poids2*((fluhpx-fluhmx)**2+(fluhpy- fluhmy)**2)
 !
         tertps = tertps + raux*poids2*((fluhpx-fluhmx)**2+(fluhpy- fluhmy)**2)
     else

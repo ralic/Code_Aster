@@ -3,9 +3,9 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                   ndim, dimdef, dimcon, nvimec, yate,&
                   addeme, adcome, addete, defgem, congem,&
                   congep, vintm, vintp, addep1, addep2,&
-                  dsde, deps, depsv, p1, p2,&
+                  dsde, deps, p1, p2,&
                   t, dt, retcom, dp1, dp2,&
-                  sat, biot)
+                  sat, tbiot, ang2, aniso, phenom)
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! ======================================================================
@@ -45,8 +45,9 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                                 N = NOMBRE DE PALIERS
 !                OUT RETCOM
 ! ======================================================================
-! aslint: disable=W1501,W1504
+! aslint: disable=W1501,W1504    
     implicit      none
+#include "asterfort/calela.h"
 #include "asterfort/dpvplc.h"
 #include "asterfort/dsipdp.h"
 #include "asterfort/elagon.h"
@@ -59,33 +60,35 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 #include "asterfort/nmcjs.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/redece.h"
+#include "asterfort/tecael.h"
 #include "asterfort/u2mess.h"
     logical :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom
     real(kind=8) :: defgem(dimdef), congem(dimcon), congep(dimcon)
     real(kind=8) :: vintm(nvimec), vintp(nvimec)
-    real(kind=8) :: dsde(dimcon, dimdef)
+    real(kind=8) :: dsde(dimcon, dimdef), rac2
     character(len=8) :: typmod(2)
-    character(len=16) :: option, compor(*), meca, thmc
+    character(len=16) :: option, compor(*), meca, thmc, phenom
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, j, nelas, nresma, numlc
-    real(kind=8) :: deps(6), depsv, t, dt, tini, p1, p2
+    integer :: i, j, nelas, nresma, numlc, aniso
+    real(kind=8) :: deps(6), t, dt, tini, p1, p2
     real(kind=8) :: young, nu, alpha0, crit(*), instam, instap, tref
-    parameter (nelas = 4  )
-    parameter (nresma = 18)
+    parameter     (nelas = 4  )
+    parameter     (nresma = 18)
     real(kind=8) :: elas(nelas)
     character(len=8) :: ncra1(nelas), fami, poum
     integer :: icodre(nresma)
     real(kind=8) :: dsdeme(6, 6),dsdeme12 (6,12)
-    real(kind=8) :: r8bid, angma1(3), angmas(7)
+    real(kind=8) :: r8bid, angma1(3), angmas(7), ang2(3), depstr(6)
+    real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=16) :: complg(3)
     logical :: cp, yapre2
 ! ======================================================================
 !    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
-    real(kind=8) :: dsidp1(6), dp1, dp2, sat, biot
+    real(kind=8) :: dsidp1(6), dp1, dp2, sat, tbiot(6)
 !CCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 !CCC    ET ENSUITE CONTRAINTES NETTES DANS LE MODELE DE BARCELONE
     real(kind=8) :: sipm, sipp
@@ -104,6 +107,9 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     kpg=1
     spt=1
     poum='+'
+!
+    rac2 = sqrt(2.0d0)
+!
     if ((meca.eq.'CJS') .or. (meca.eq.'CAM_CLAY') .or. (meca.eq.'BARCELONE') .or.&
         (meca.eq.'LAIGLE') .or. (meca.eq.'HOEK_BROWN_EFF') .or. (meca.eq.'HOEK_BROWN_TOT')&
         .or. (meca.eq.'MAZARS') .or. (meca.eq.'ENDO_ISOT_BETON')) then
@@ -113,7 +119,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     endif
     call rcvalb(fami, kpg, spt, poum, imate,&
                 ' ', 'ELAS', 1, 'TEMP', t,&
-                3, ncra1(1), elas(1), icodre, 1)
+                3, ncra1(1), elas(1), icodre, 0)
     young = elas(1)
     nu = elas(2)
     alpha0 = elas(3)
@@ -131,46 +137,79 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI ELASTIQUE ----------------------------------------------------
 ! ======================================================================
     if ((meca.eq.'ELAS')) then
+!
+!   DANS LE CAS ELASTIQUE ON REPASSE AUX CONTRAINTES RELLES POUR APPLIQU
+!  LA MATRICE DE ROTATION DANS LE CAS ANISOTROPE
+!
+        depstr = deps
+!
+        do 300 i = 4, 6
+            depstr(i) = deps(i)*rac2
+            congep(adcome+i-1)= congep(adcome+i-1)/rac2
+300      continue
+!
+!    CALCUL DE LA MATRICE DE HOOK DANS LE REPERE GLOBAL
+!
+        call calela(imate, ang2, mdal, dalal, t,&
+                    aniso, d, ndim, phenom)
+!
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
             do 101 i = 1, 3
                 do 301 j = 1, 3
                     dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
-                    addeme+ndim-1+j) +young*nu/(1.d0+nu)/(1.d0-2.d0*&
-                    nu)
+                    addeme+ndim-1+j)+d(i,j)
 301              continue
+                do 302 j = 4, 6
+                    dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
+                    addeme+ndim-1+j)+d(i,j)/(0.5*rac2)
+302              continue
 101          continue
+!
+            do 102 i = 4, 6
+                do 303 j = 1, 3
+                    dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
+                    addeme+ndim-1+j)+d(i,j)*rac2
+303              continue
+                do 304 j = 4, 6
+                    dsde(adcome-1+i,addeme+ndim-1+j)= dsde(adcome-1+i,&
+                    addeme+ndim-1+j)+d(i,j)*2.d0
+304              continue
+102          continue
         endif
 !
+!
         if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do 121 i = 1, 3
-                congep(adcome+i-1)=congep(adcome+i-1) +young*nu/(1.d0+&
-                nu)/(1.d0-2.d0*nu)*depsv
+            do 121 i = 1, 6
+                do 122 j = 1, 6
+                    congep(adcome+i-1)=congep(adcome+i-1)+d(i,j)*&
+                    depstr(j)
+122              continue
 121          continue
         endif
 !
-        do 102 i = 1, 6
+!   ON REVIENT AUX CONTRAINTES * RAC2
+!
+        do 400 i = 4, 6
+            congep(adcome+i-1)= congep(adcome+i-1)*rac2
+400      continue
+!
+!
+        if (yate .eq. 1) then
             if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                dsde(adcome-1+i,addeme+ndim-1+i)= dsde(adcome-1+i,&
-                addeme+ndim-1+i)+young/(1.d0+nu)
+                do 103 i = 1, 6
+                    dsde(adcome-1+i,addete)=dsde(adcome-1+i,addete)&
+                    -mdal(i)
+103              continue
             endif
             if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                congep(adcome+i-1)=congep(adcome+i-1) +young/(1.d0+nu)&
-                *deps(i)
+                do 104 i = 1, 6
+                    congep(adcome+i-1)=congep(adcome+i-1)-mdal(i)*dt
+104              continue
             endif
-102      continue
-        if (yate .eq. 1) then
-            do 103 i = 1, 3
-                if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                    dsde(adcome-1+i,addete)=dsde(adcome-1+i,addete)&
-                    -young*alpha0/(1.d0-2.d0*nu)
-                endif
-                if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-                    congep(adcome+i-1)=congep(adcome+i-1) -young*&
-                    alpha0/(1.d0-2.d0*nu)*dt
-                endif
-103          continue
         endif
+!
     endif
+!
 ! ======================================================================
 ! --- LOI CJS, LOI LAIGLE, LOI HOEK-BROWN OU LOI DRUCKER_PRAGER -------
 ! ======================================================================
@@ -350,7 +389,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
-        call nmbarc(ndim, imate, crit, sat, biot,&
+        call nmbarc(ndim, imate, crit, sat, tbiot(1),&
                     tini, t, deps, congem(adcome), vintm,&
                     option, congep(adcome), vintp, dsdeme, p1,&
                     p2, dp1, dp2, dsidp1, sipm,&
@@ -382,7 +421,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
 !
-        call elagon(ndim, imate, crit, sat, biot,&
+        call elagon(ndim, imate, crit, sat, tbiot(1),&
                     tini, t, alpha0, deps, young,&
                     nu, congem(adcome), option, congep(adcome), dsdeme,&
                     p1, p2, dp1, dsidp1, dsidp2)

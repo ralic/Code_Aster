@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine grdthm(nomte, perman, vf, ndim, mecani,&
                       press1, press2, tempe, dimdep, dimdef,&
                       dimcon, nmec, np1, np2)
@@ -34,4 +34,4 @@ interface
         integer :: np1
         integer :: np2
     end subroutine grdthm
-end interface
+end interface 

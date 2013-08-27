@@ -1,8 +1,9 @@
 subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
                   nbeco, nbeca, nbeba, nbema, nbegb,&
-                  nbtel, ntyele, npoutr, ndiscr, ncoque,&
-                  ncable, nbarre, nmassi, ngrill, ngribt,&
-                  nmembr, jdlm, jdln, ier)
+                  nbemb, nbthm1, nbthm2, ntyele, npoutr,&
+                  ndiscr, ncoque, ncable, nbarre, nmassi,&
+                  ngrill, ngribt, nmembr, jdlm, jdln,&
+                  ier)
 !
 ! aslint: disable=W1504
     implicit none
@@ -16,9 +17,8 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/u2mesk.h"
-    integer :: nbocc(*), nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbtel
-    integer :: ntyele(*), npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill
-    integer :: ngribt, nmembr
+    integer :: nbocc(*), nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb, nbthm1, nbthm2
+    integer :: ntyele(*), npoutr, ndiscr, ncoque, ncable, nbarre, nmassi, ngrill, ngribt, nmembr
 !
     character(len=8) :: noma, nomo
 ! ----------------------------------------------------------------------
@@ -38,6 +38,7 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! 
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
 !     COMPTEUR D'ELEMENTS
@@ -109,9 +110,20 @@ subroutine acecel(noma, nomo, nbocc, nbepo, nbedi,&
         do 48 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+1, nbepo+nbedi+ nbeco+nbeca+nbeba+nbema+nbegb
             if(nutyel.eq.ntyele(i))ngribt = ngribt + 1
 48      continue
-        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1, nbtel
+        do 49 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+1,& 
+                   nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb
             if(nutyel.eq.ntyele(i))nmembr = nmembr + 1
 49      continue
+!
+        do 60 i = nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+1,&
+                  nbepo+nbedi+nbeco+nbeca+nbeba+nbema+nbegb+nbemb+nbthm1
+            if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
+60      continue
+        do 61 i= nbepo+nbedi+nbeco+nbeca+nbeba+nbema+ nbegb+nbemb+&
+        nbthm1+1, nbepo+nbedi+nbeco+nbeca+nbeba+nbema+ nbegb+nbemb+&
+        nbthm1+nbthm2
+        if(nutyel.eq.ntyele(i))nmassi = nmassi + 1
+61      continue
 !
 40  end do
     if (ixnw .ne. 0) then

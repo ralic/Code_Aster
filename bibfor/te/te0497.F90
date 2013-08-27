@@ -96,8 +96,8 @@ subroutine te0497(option, nomte)
     real(kind=8) :: hk, deltat, theta
     real(kind=8) :: cyoung, rhohom, permin, viscli, porosi, poisso
     real(kind=8) :: tm2h1v(3), tm2h1b(3), tm2h1s(3)
-    real(kind=8) :: tsivom, tdevom, tsivoh, tsibom, tdebom, tsibsh, tsibbh
-    real(kind=8) :: tsisam, tdesam, tsissh, tsisbh, denomi
+    real(kind=8) :: tsivom, tdevom, tsivoh, tsibom, tdebom, tsibsh, tsibbh, tsisam, tdesam, tsissh
+    real(kind=8) :: tsisbh, denomi
     real(kind=8) :: longc, presc, admec, adhy0, adhy1, adv1h, adhymd
 !
     logical :: laxi, perman, vf
@@ -111,27 +111,30 @@ subroutine te0497(option, nomte)
     integer :: nbre1, nbre2, nbre3, nbre4
     parameter ( nbre1 = 2 , nbre2 = 2, nbre3 = 1 , nbre4 = 2 )
 !
-    integer :: nbr11, nbr12
-    parameter ( nbr11 = 1 , nbr12 = 3 )
+    integer :: nbr11, nbr12, nbr13, nbre5, nbre6
+    parameter (nbr11 = 1, nbr12 = 3, nbr13 = 4, nbre5 = 4, nbre6 = 5)
 !
-    real(kind=8) :: valre1(nbre1), valre2(nbre2), valre3(nbre3), valre4(nbre4)
-    real(kind=8) :: valr11(nbr11), valr12(nbr12)
+    real(kind=8) :: valre1(nbre1), valre2(nbre2), valre3(nbre3), valre4(nbre4), valr11(nbr11)
+    real(kind=8) :: valr12(nbr12), valre5(nbre5), valr13(nbr13), valre6(nbre6)
 !
-    integer :: codme1(nbre1), codme2(nbre2), codme3(nbre3), codme4(nbre4)
-    integer :: codm11(nbr11), codm12(nbr12)
+    integer :: codme1(nbre1), codme2(nbre2), codme3(nbre3), codme4(nbre4), codm11(nbr11)
+    integer :: codm12(nbr12), codm13(nbr13), codme5(nbre5), codme6(nbre6)
 !
-    character(len=8) :: nomre1(nbre1), nomre2(nbre2), nomre3(nbre3)
-    character(len=8) :: nomre4(nbre4), nomr11(nbr11), nomr12(nbr12)
+    character(len=8) :: nomre1(nbre1), nomre2(nbre2), nomre3(nbre3), nomre4(nbre4), nomr11(nbr11)
+    character(len=8) :: nomr12(nbr12), nomr13(nbr13), nomre5(nbre5), nomre6(nbre6)
     character(len=8) :: valk(2)
 !
     logical :: yapr, yaro
 !
     data nomre1 / 'RHO','BIOT_COE' /
+    data nomr13 / 'RHO','BIOT_L','BIOT_N','BIOT_T'/
     data nomr11 / 'PERM_IN' /
-    data nomr12 / 'PERMIN_X','PERMIN_Y','PERMIN_Z' /
+    data nomr12 / 'PERMIN_L','PERMIN_N','PERMIN_T' /
     data nomre2 / 'RHO','VISC' /
     data nomre3 / 'PORO'       /
     data nomre4 / 'E', 'NU'    /
+    data nomre5 / 'E_L','E_N','NU_LT','NU_LN'/
+    data nomre6 / 'E_L','E_T','NU_LT','NU_LN','NU_TN'/
 !
 ! ----------------------------------------------------------------------
     100 format(a,' :',(6(1x,1pe17.10)))
@@ -175,7 +178,7 @@ subroutine te0497(option, nomte)
     addep2 = press2(3)
     yate = tempe(1)
     addete = tempe(2)
-    adsip = adcp11 - adcome
+    adsip = adcp11-adcome-5
 !
 ! =====================================================================
 ! C. --- RECUPERATION DES DONNEES NECESSAIRES AU CALCUL ---------------
@@ -280,11 +283,23 @@ subroutine te0497(option, nomte)
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', 'THM_DIFFU', 1, nompar, valres,&
-                nbre1, nomre1, valre1, codme1, 1)
+                nbre1, nomre1, valre1, codme1, 0)
 !
     if (codme1(1) .eq. 0 .and. codme1(2) .eq. 0) then
         rhohom = valre1(1)
         biot = valre1(2)
+    else if (codme1(2).eq.1) then
+        call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                    ' ', 'THM_DIFFU', 1, nompar, valres,&
+                    nbr13, nomr13, valr13, codm13, 0)
+        if ((codm13(1).eq.0) .and. (codm13(2).eq.0) .and. (codm13(3) .eq.0)) then
+            rhohom = valr13(1)
+            biot = sqrt(valr13(2)**2+valr13(3)**2)
+            elseif ((codm13(1).eq.0).and.(codm13(2).eq.0).and. (codm13(4)&
+        .eq.0)) then
+            rhohom = valr13(1)
+            biot = sqrt(valr13(2)**2+valr13(4)**2)
+        endif
     else
         call u2mesk('F', 'ELEMENTS4_78', 1, nomre1(1)//nomre1(2))
     endif
@@ -304,8 +319,10 @@ subroutine te0497(option, nomte)
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
                     ' ', 'THM_DIFFU', 1, nompar, valres,&
                     nbr12, nomr12, valr12, codm12, 0)
-        if (( codm12(1).eq.0 ) .and. ( codm12(2).eq.0 ) .and. ( codm12(3) .eq.0 )) then
-            permin = sqrt(valr12(1)**2+valr12(2)**2+valr12(3)**2)
+        if (( codm12(1).eq.0 ) .and. ( codm12(2).eq.0 )) then
+            permin = sqrt(valr12(1)**2+valr12(2)**2+valr12(1)**2)
+        else if (( codm12(1).eq.0 ).and.( codm12(3).eq.0 )) then
+            permin = sqrt(valr12(1)**2+valr12(3)**2)
         endif
     else
         call u2mesk('F', 'ELEMENTS4_78', 1, nomr11(1))
@@ -352,11 +369,30 @@ subroutine te0497(option, nomte)
 !
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
                     ' ', 'ELAS', 1, nompar, valres,&
-                    nbre4, nomre4, valre4, codme4, 1)
+                    nbre4, nomre4, valre4, codme4, 0)
 !
         if (( codme4(1).eq.0 ) .and. ( codme4(2).eq.0 )) then
             cyoung = valre4(1)
             poisso = valre4(2)
+        else if ((codme4(1).eq.1).and.(codme4(2).eq.1)) then
+            call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                        ' ', 'ELAS_ISTR', 1, nompar, valres,&
+                        nbre5, nomre5, valre5, codme5, 0)
+            if ((codme5(1).eq.0) .and. (codme5(2).eq.0) .and. (codme5(3) .eq.0) .and.&
+                (codme5(4).eq.0)) then
+                cyoung = sqrt(valre5(1)**2+valre5(2)**2)
+                poisso = sqrt(valre5(3)**2+valre5(4)**2)
+            else
+                call rcvalb(fami, kpg, spt, poum, zi(imate),&
+                            ' ', 'ELAS_ORTH', 1, nompar, valres,&
+                            nbre6, nomre6, valre6, codme6, 0)
+                if ((codme6(1).eq.0) .and. (codme6(2).eq.0) .and. (codme6(3).eq.0) .and.&
+                    (codme6(4).eq.0)) then
+                    cyoung = sqrt(valre6(1)**2+valre6(2)**2)
+                    poisso = sqrt(valre6(3)**2+valre6(4)**2)
+                endif
+!
+            endif
         else
             call u2mesk('F', 'ELEMENTS4_71', 1, nomre4(1)//nomre4(2))
         endif

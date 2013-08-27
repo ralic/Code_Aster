@@ -1,8 +1,9 @@
 function dmadt(rho22, sat, phi, mamolg, dp21t,&
-               kh, alpha0, biot)
-    implicit      none
-    real(kind=8) :: rho22, sat, phi, mamolg, dp21t, kh, alpha0, biot, dmadt
+               kh, alphfi)
+    implicit none
+    real(kind=8) :: rho22, sat, phi, mamolg, dp21t, kh, alphfi, dmadt
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,6 @@ function dmadt(rho22, sat, phi, mamolg, dp21t,&
 ! --- CALCUL DE LA DERIVEE DE L AIR DISSOUS PAR RAPPORT A LA -----------
 ! --- TEMPERATURE ------------------------------------------------------
 ! ======================================================================
-    dmadt = rho22*sat* (phi*mamolg*dp21t/rho22/kh-3.0d0*alpha0*(biot-phi))
+    dmadt = rho22*sat* (phi*mamolg*dp21t/rho22/kh-3.0d0*alphfi)
 ! ======================================================================
 end function

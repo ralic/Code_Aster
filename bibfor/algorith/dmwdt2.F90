@@ -1,7 +1,7 @@
-function dmwdt2(rho11, alp11, phids, sat, bmph,&
-                cs, dpvpt)
-    implicit      none
-    real(kind=8) :: rho11, alp11, phids, sat, bmph, cs, dpvpt, dmwdt2
+function dmwdt2(rho11, alp11, phids, sat, cs,&
+                dpvpt)
+    implicit none
+    real(kind=8) :: rho11, alp11, phids, sat, cs, dpvpt, dmwdt2
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,6 @@ function dmwdt2(rho11, alp11, phids, sat, bmph,&
 ! --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE L EAU PAR RAPPORT ---
 ! --- A LA TEMPERATURE DANS LE CAS LIQU_VAPE ---------------------------
 ! ======================================================================
-    dmwdt2 = rho11*(-3.0d0*alp11 + (phids-sat*sat*bmph*cs+sat*bmph*cs)*dpvpt)
+    dmwdt2 = rho11*(-3.0d0*alp11 + (phids-sat*sat*cs+sat*cs)*dpvpt)
 ! ======================================================================
 end function

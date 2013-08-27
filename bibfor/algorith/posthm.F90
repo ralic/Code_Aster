@@ -40,7 +40,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
 ! ---   (A CE JOUR : 8 : 8 SOMMETS POUR LES HEXA20) -------------------
 ! =====================================================================
 ! --- * SPG1 DE DIMENSION NPGMAX*DIMMAX - OU DIMMAX -------------------
-! ---   EST LA DIMENSION MAXIMAL DE DIMCON (A CE JOUR : 31) -----------
+! ---   EST LA DIMENSION MAXIMAL DE DIMCON (A CE JOUR : 31+5) ----------
 ! =====================================================================
 ! --- * SPG2 DE DIMENSION NNOSMA*DIMMAX -------------------------------
 ! =====================================================================
@@ -56,7 +56,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim,&
     parameter (nvmax  = 60)
     parameter (npgmax = 8 )
     parameter (nnosma = 8 )
-    parameter (dimmax = 31)
+    parameter (dimmax = 31 + 5)
     parameter (nnomax = 20)
     real(kind=8) :: vpg1(npgmax*nvmax), vpg2(nnosma*nvmax)
     real(kind=8) :: spg1(npgmax*dimmax), spg2(nnosma*dimmax)

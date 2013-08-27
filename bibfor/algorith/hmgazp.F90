@@ -5,7 +5,8 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
                   adcote, congem, congep, vintm, vintp,&
                   dsde, epsv, depsv, p1, dp1,&
                   t, dt, phi, rho11, phi0,&
-                  sat, retcom, biot, rinstp)
+                  sat, retcom, tbiot, rinstp, angmas,&
+                  deps, aniso, phenom)
 ! ======================================================================
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
@@ -43,6 +44,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"
 #include "asterfort/dhdt.h"
+#include "asterfort/dilata.h"
 #include "asterfort/dilgaz.h"
 #include "asterfort/dmasp2.h"
 #include "asterfort/dmdepv.h"
@@ -57,6 +59,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 #include "asterfort/netbis.h"
 #include "asterfort/sigmap.h"
 #include "asterfort/thmrcp.h"
+#include "asterfort/unsmfi.h"
 #include "asterfort/viporo.h"
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec, yate
     integer :: adcome, adcp11, adcote
@@ -64,17 +67,19 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     real(kind=8) :: congem(dimcon), congep(dimcon)
     real(kind=8) :: vintm(nbvari), vintp(nbvari)
     real(kind=8) :: dsde(dimcon, dimdef), epsv, depsv, p1, dp1, t, dt
-    real(kind=8) :: phi, rho11, phi0
-    character(len=16) :: option, meca, ther, hydr, thmc
+    real(kind=8) :: phi, rho11, phi0, rac2
+    real(kind=8) :: angmas(3)
+    character(len=16) :: option, meca, ther, hydr, thmc, phenom
     logical :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i
+    integer :: i, aniso
     real(kind=8) :: epsvm, phim
-    real(kind=8) :: biot, k0, cs, alpha0, cp12, sat, mamolg
+    real(kind=8) :: tbiot(6), cs, cp12, sat, mamolg
+    real(kind=8) :: mdal(6), dalal, alphfi, cbiot, unsks, alpha0
     real(kind=8) :: r, rho0, csigm, alp11, em
-    real(kind=8) :: eps, rinstp
+    real(kind=8) :: eps, rinstp, deps(6)
     parameter  ( eps = 1.d-21 )
     logical :: emmag
 ! ======================================================================
@@ -82,17 +87,21 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! ======================================================================
     real(kind=8) :: rbid1, rbid2, rbid3, rbid4, rbid5, rbid6, rbid7
     real(kind=8) :: rbid8, rbid10, rbid12, rbid13, rbid14(3)
-    real(kind=8) :: rbid15, rbid16, rbid17, rbid18, rbid19, rbid20
+    real(kind=8) :: rbid15(ndim, ndim), rbid16, rbid17, rbid18, rbid19
     real(kind=8) :: rbid21, rbid22, rbid23, rbid24, rbid25, rbid26
-    real(kind=8) :: rbid27, rbid28, rbid29, rbid32
-    real(kind=8) :: rbid33, rbid34, rbid35, rbid36, rbid37, rbid38
+    real(kind=8) :: rbid27, rbid28, rbid29, rbid32(ndim, ndim)
+    real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid36, rbid37
     real(kind=8) :: rbid39, rbid40, rbid41, rbid42, rbid43, rbid44
-    real(kind=8) :: rbid45, rbid46, rbid47, rbid48, rbid49, rbid50, rbid51
-    real(kind=8) :: r3bid(6)
+    real(kind=8) :: rbid45, rbid46, rbid47, rbid48, rbid49, rbid50(ndim, ndim)
+    real(kind=8) :: rbid51, rbid20, rbid38, dsdp2(6)
     real(kind=8) :: signe, dp2, cliq, coeps, rho12, alp21, rho21, rho21m
-    real(kind=8) :: cp21, p2, satm, rho22, cp11, cp22, m11m
+    real(kind=8) :: cp21, p2, satm, rho22, cp11, cp22, m11m, dmdeps(6)
+    real(kind=8) :: dqeps(6)
+    real(kind=8) :: sigmp(6)
 !
     logical :: net, bishop
+!
+    rac2 = sqrt(2.d0)
 !
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
@@ -107,7 +116,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
                 ther, rbid1, rbid2, rbid3, rbid4,&
                 rbid5, t, p1, rbid6, rbid44,&
                 rbid7, rbid8, rbid10, r, rho0,&
-                csigm, biot, rbid12, sat, rbid13,&
+                csigm, tbiot, rbid12, sat, rbid13,&
                 rbid14, rbid15, rbid16, rbid17, rbid18,&
                 rbid19, rbid20, rbid21, rbid22, rbid23,&
                 rbid24, rbid25, rbid43, rbid40, rbid41,&
@@ -115,8 +124,8 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
                 mamolg, cp21, rbid32, rbid33, rbid34,&
                 rbid35, rbid36, rbid37, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                em, rbid50, r3bid, rbid51, rinstp,&
-                retcom)
+                em, rbid50, rbid51, rinstp, retcom,&
+                angmas, aniso, ndim)
 ! ======================================================================
 ! --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 ! --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -150,8 +159,10 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
     endif
 !
     call inithm(imate, yachai, yamec, phi0, em,&
-                alpha0, k0, cs, biot, t,&
-                epsv, depsv, epsvm)
+                cs, tbiot, t, epsv, depsv,&
+                epsvm, angmas, aniso, mdal, dalal,&
+                alphfi, cbiot, unsks, alpha0, ndim,&
+                phenom)
 !
 ! *********************************************************************
 ! *** LES VARIABLES INTERNES ******************************************
@@ -162,9 +173,10 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! =====================================================================
         if ((yamec.eq.1) .or. emmag) then
             call viporo(nbvari, vintm, vintp, advico, vicphi,&
-                        phi0, depsv, alpha0, dt, dp1,&
-                        dp2, signe, sat, cs, biot,&
-                        phi, phim, retcom)
+                        phi0, deps, depsv, alphfi, dt,&
+                        dp1, dp2, signe, sat, cs,&
+                        tbiot, phi, phim, retcom, cbiot,&
+                        unsks, alpha0, aniso, phenom)
         else if (yamec .eq. 2) then
             phi = vintp(advico+vicphi)
         endif
@@ -174,6 +186,15 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
         if (retcom .ne. 0) then
             goto 30
         endif
+    endif
+! =====================================================================
+! --- ACTUALISATION DE CS ET ALPHFI -----------------------------------
+! =====================================================================
+    if (yamec .eq. 1) then
+        call dilata(imate, phi, alphfi, t, aniso,&
+                    angmas, tbiot, ndim, phenom)
+        call unsmfi(imate, phi, cs, t, tbiot,&
+                    aniso, ndim, phenom)
     endif
 ! =====================================================================
 ! --- CALCUL DE LA MASSE VOLUMIQUE DU GAZ AUX INSTANT PLUS ET MOINS ---
@@ -188,14 +209,14 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! =====================================================================
 ! --- CALCUL DES COEFFICIENTS DE DILATATIONS ALPHA SELON FORMULE DOCR -
 ! =====================================================================
-        alp21 = dilgaz(sat,biot,phi,alpha0,t )
+        alp21 = dilgaz(sat,phi,alphfi,t)
 ! ======================================================================
 ! --- CALCUL DE LA CAPACITE CALORIFIQUE SELON FORMULE DOCR -------------
 ! ======================================================================
         call capaca(rho0, rho11, rho12, rho21, rho22,&
                     sat, phi, csigm, cp11, cp12,&
-                    cp21, cp22, k0, alpha0, t,&
-                    coeps, retcom)
+                    cp21, cp22, dalal, t, coeps,&
+                    retcom)
 ! =====================================================================
 ! --- PROBLEME LORS DU CALCUL DE COEPS --------------------------------
 ! =====================================================================
@@ -211,8 +232,8 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! --- CALCUL DE LA CHALEUR REDUITE Q' SELON FORMULE DOCR ---------------
 ! ======================================================================
-            congep(adcote) = congep(adcote) + calor(alpha0,k0,t,dt, depsv,dp1,dp2,signe,alp11,alp&
-                             &21,coeps)
+            congep(adcote) = congep(adcote) + calor(mdal,t,dt,deps, dp1,dp2,signe,alp11,alp21,&
+                             coeps,ndim)
         endif
     endif
 ! ======================================================================
@@ -223,14 +244,20 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 ! ======================================================================
         if (yamec .eq. 1) then
-            congep(adcome+6)=congep(adcome+6) + sigmap(net,bishop,sat,&
-            signe,biot,dp2,dp1)
+            call sigmap(net, bishop, sat, signe, tbiot,&
+                        dp2, dp1, sigmp)
+            do 10 i = 1, 3
+                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
+10          continue
+            do 14 i = 4, 6
+                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
+                rac2
+14          continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 ! ======================================================================
-        congep(adcp11) = appmas(&
-                         m11m, phi, phim, 1.0d0-sat, 1.0d0-satm, rho21, rho21m, epsv, epsvm)
+        congep(adcp11) = appmas(m11m,phi,phim,1.0d0-sat, 1.0d0-satm, rho21,rho21m,epsv,epsvm)
     endif
 !
 ! **********************************************************************
@@ -243,16 +270,23 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 ! ======================================================================
-            dsde(adcome+6,addep1)=dsde(adcome+6,addep1)+ dspdp2(net,&
-            bishop,biot)
+            call dspdp2(net, bishop, tbiot, dsdp2)
+            do 11 i = 1, 3
+                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)+&
+                dsdp2(i)
+11          continue
+            do 22 i = 4, 6
+                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)+&
+                dsdp2(i)*rac2
+22          continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 ! ======================================================================
-            do 10 i = 1, 3
-                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdepv(rho21,1.0d0&
-                                               &-sat,biot)
-10          continue
+            call dmdepv(rho21, 1.0d0-sat, tbiot, dmdeps)
+            do 12 i = 1, 6
+                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
+12          continue
         endif
         if (yate .eq. 1) then
 ! ======================================================================
@@ -278,9 +312,9 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 ! ======================================================================
             if (yamec .eq. 1) then
-                do 20 i = 1, 3
-                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqdeps(alpha0,&
-                                                   &k0,t)
+                call dqdeps(mdal, t, dqeps)
+                do 20 i = 1, 6
+                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
 20              continue
             endif
         endif
@@ -288,8 +322,8 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- POUR LES AUTRES CAS ----------------------------------------------
 ! ======================================================================
-        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmasp2(1.0d0, 0.0d0,rho21,sat,biot,phi,cs,p2,&
-                              & emmag,em)
+        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmasp2(1.0d0,0.0d0,rho21,sat,phi,cs,p2,emmag&
+                              ,em)
     endif
 ! =====================================================================
 ! --- MISE A JOUR DES VARIABLES P1 ET DP1 POUR CONFOMITE AUX FORMULES -

@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine assvsu(nno, nnos, nface, geom, crit,&
                       deplm, ddepl, congem, congep, vintm,&
                       vintp, defgem, defgep, dsde, matuu,&
@@ -67,4 +67,4 @@ interface
         integer :: nbsoco(nvoima)
         integer :: lisoco(nvoima, nscoma, 2)
     end subroutine assvsu
-end interface
+end interface 

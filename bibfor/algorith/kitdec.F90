@@ -29,6 +29,7 @@ subroutine kitdec(kpi, yachai, yamec, yate, yap1,&
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/calcva.h"
+#include "asterfort/tecael.h"
 #include "asterfort/thmrcp.h"
     integer :: kpi, yamec, yate, yap1, yap2, imate
     logical :: yachai
@@ -40,15 +41,17 @@ subroutine kitdec(kpi, yachai, yamec, yate, yap1,&
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES INITIALES -------------------------------
 ! ======================================================================
+    integer :: rbid54, rndim
     real(kind=8) :: rbid1, rbid2, rbid3, rbid4, rbid5, rbid6
-    real(kind=8) :: rbid8, rbid9, rbid10, rbid11, rbid12, rbid13, rbid14
-    real(kind=8) :: rbid15, rbid16, rbid17, rbid18, rbid19, rbid20
+    real(kind=8) :: rbid8, rbid9, rbid10, rbid11, rbid12(6), rbid13, rbid14
+    real(kind=8) :: rbid15(3), rbid16(3, 3), rbid17, rbid18, rbid19, rbid20
     real(kind=8) :: rbid21, rbid22, rbid23, rbid24, rbid25, rbid26
     real(kind=8) :: rbid27, rbid28, rbid29, rbid30, rbid31, rbid32
-    real(kind=8) :: rbid33, rbid34, rbid35, rbid36, rbid37, rbid38
+    real(kind=8) :: rbid33, rbid34, rbid35, rbid36, rbid37(3, 3)
     real(kind=8) :: rbid39, rbid40, rbid41, rbid42, rbid43, rbid44
-    real(kind=8) :: rbid45, rbid46, rbid47, rbid48, rbid49, rbid50, rbid51
-    real(kind=8) :: rbid52, rbid53, r3bid(6)
+    real(kind=8) :: rbid45, rbid46, rbid47, rbid48, rbid49, rbid50
+    real(kind=8) :: rbid52, rbid53, rbid38(3, 3), rbid51(3, 3)
+    real(kind=8) :: r7bid(3)
 ! ======================================================================
 ! --- INITIALISATION DE VARIABLES --------------------------------------
 ! ======================================================================
@@ -64,8 +67,8 @@ subroutine kitdec(kpi, yachai, yamec, yate, yap1,&
                 rbid35, rbid36, rbid37, rbid38, rbid39,&
                 rbid40, rbid41, rbid42, rbid43, rbid44,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                rbid50, rbid51, r3bid, rbid52, rinstp,&
-                retcom)
+                rbid50, rbid51, rbid52, rinstp, retcom,&
+                r7bid, rbid54, rndim)
 ! ======================================================================
 ! --- CALCUL DES VARIABLES ---------------------------------------------
 ! ======================================================================

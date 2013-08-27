@@ -1,11 +1,12 @@
-function dmwdp2(rho11, sat, biot, phi, cs,&
-                cliq, dp11p2, emmag, em)
+function dmwdp2(rho11, sat, phi, cs, cliq,&
+                dp11p2, emmag, em)
     implicit none
-    real(kind=8) :: rho11, sat, biot, phi, cs, cliq, dp11p2, dmwdp2
+    real(kind=8) :: rho11, sat, phi, cs, cliq, dp11p2, dmwdp2
     real(kind=8) :: em
     real(kind=8) :: dphip2
     logical :: emmag
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +31,7 @@ function dmwdp2(rho11, sat, biot, phi, cs,&
         dphip2 = em
         dmwdp2 = rho11 *(phi*dphip2+phi*cliq*dp11p2)
     else
-        dmwdp2 = rho11*sat*(phi*cliq*dp11p2+(biot-phi)*cs)
+        dmwdp2 = rho11*sat*(phi*cliq*dp11p2+cs)
     endif
 ! ======================================================================
 end function

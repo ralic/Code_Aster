@@ -15,16 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dmwdt2(rho11, alp11, phids, sat, bmph,&
-                    cs, dpvpt)
+interface 
+    function dmwdt2(rho11, alp11, phids, sat, cs,&
+                    dpvpt)
         real(kind=8) :: rho11
         real(kind=8) :: alp11
         real(kind=8) :: phids
         real(kind=8) :: sat
-        real(kind=8) :: bmph
         real(kind=8) :: cs
         real(kind=8) :: dpvpt
-        real(kind=8) :: dmwdt2
+        real(kind=8) :: dmwdt2_0
     end function dmwdt2
-end interface
+end interface 

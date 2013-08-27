@@ -1,0 +1,464 @@
+# TITRE   MODELISATION HM D UN PUITS CREUSE INCLINE DANS UNE FORMATION 
+#         ISOTROPE TRANSVERSE SATUREE EN EAU
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+import numpy as np
+import numpy.linalg as ln
+
+
+DEBUT(CODE=_F(NOM='WTNV139A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+
+## ANGLE EULER :
+AZI = 30.
+INCLI = 60.
+
+## ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
+# 
+BETA = -INCLI
+ALPHA = AZI
+# Conversion en radian
+BETAR = BETA*3.141592654/180.
+ALPHAR = ALPHA*3.141592654/180.
+
+
+UN=DEFI_CONSTANTE(VALE=1.)
+ZERO=DEFI_CONSTANTE(VALE=0.)
+
+########
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3)
+
+DVISCOL=DEFI_CONSTANTE(VALE=0.)
+
+# PERMEABILITE INTRINSEQUE 
+KINT=DEFI_CONSTANTE(VALE=5.E-20)
+
+# CONDUCTIVITE THERMIQUE
+LAMBDA=DEFI_CONSTANTE(VALE=4.8)
+
+# PRESSION IMPOSEE INITIALEMENT ET IMPOSEE A L INFINI
+PLIMP = 9.8E6
+
+
+
+###########
+#CONTRAINTE DANS LE REPERE PRINCIPAL DES CONTRAINTES
+########
+SIGXXP=-25.E+6
+SIGYYP=-22.E+6
+SIGZZP=-29.E+6
+SIGXYP=0.
+SIGXZP=0.
+SIGYZP=0.
+
+
+SIG=[[SIGXXP,SIGXYP,SIGXZP],[SIGXYP,SIGYYP,SIGYZP],[SIGXZP,SIGYZP,SIGZZP]]
+#print 'SIG',SIG
+#
+# PASSAGE DU REPERE DES CONTRAINTES AU REPERE DU PUITS (L,N) DU PUITS QUI ICI SERA LE REPERE GLOBAL
+
+MALPHA =  [[cos(ALPHAR),-sin(ALPHAR),0],[sin(ALPHAR),cos(ALPHAR),0.],[0,0,1]]
+MBETA =  [[cos(BETAR),0.,-sin(BETAR)],[0.,1.,0],[sin(BETAR),0,cos(BETAR)]]
+PASS = np.dot(MALPHA,MBETA)
+TPASS = np.transpose(PASS)
+INT = np.dot(SIG,PASS)
+SIL = np.dot(TPASS,INT)
+
+
+
+SILXX = SIL[0][0]
+SILYY = SIL[1][1]
+SILZZ = SIL[2][2]
+SILXY = SIL[0][1]
+SILXZ = SIL[0][2]
+SILYZ = SIL[1][2]
+
+###############################
+#print 'SIGL',SIL
+
+# COEFFICIENTS DE BIOT REPERE LN
+CBIOTL = 0.81689
+CBIOTN = 0.898635
+
+
+BIOT=[[CBIOTL,0.,0.],[0.,CBIOTL,0.],[0.,0.,CBIOTN]]
+
+
+## POUR INFO PASSAGE DE LA MATRICE DE BIOT - LOCAL - AU REPERE DES CONTRAINTES 
+
+IPASS = ln.inv(PASS)
+ITPASS = ln.inv(TPASS)
+INT1 = np.dot(BIOT,IPASS)
+BIOTG = np.dot(PASS,INT1)
+#CONTRAINTE DE PRESSION DE FLUIDE DANS LE REPERE GLOBAL (D ORTHOTROPIE)
+SIPXX0=-BIOT[0][0]* PLIMP
+SIPYY0=-BIOT[1][1]* PLIMP
+SIPZZ0=-BIOT[2][2]* PLIMP
+SIPXY0=-BIOT[0][1]* PLIMP
+SIPXZ0=-BIOT[0][2]* PLIMP
+SIPYZ0=-BIOT[1][2]* PLIMP
+
+
+#CONTRAINTES  EFFECTIVES DANS LE REPERE GLOBAL
+SIEFX=SILXX-SIPXX0
+SIEFY=SILYY-SIPYY0
+SIEFZ=SILZZ-SIPZZ0
+SIEFXY=SILXY-SIPXY0
+SIEFXZ=SILXZ-SIPXZ0
+SIEFYZ=SILYZ-SIPYZ0
+
+
+# MODULE DE YOUNG
+YOUNG=9.474E9
+
+#COEFFICIENT DE POISSON
+POISSON=0.24
+
+
+PRESREPY = -(SILYY)
+PRESREPX = -(SILXX)
+PRESREPZ = -(SILZZ)
+#***********************************************************************
+#    MAILLAGE 
+#***********************************************************************
+MAILIN=LIRE_MAILLAGE(FORMAT='MED',)
+
+MAIL = CREA_MAILLAGE(MAILLAGE  = MAILIN,
+                     LINE_QUAD = _F(TOUT = 'OUI'),
+                     )
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('HAUT',
+                                             'BAS',
+                                             'GAUCHE',
+                                             'CAVITE',
+                                             'DERECHA',
+                                             'DERRIERE',
+                                             'DEVANT',),),
+                  );
+MAIL=DEFI_GROUP( reuse=MAIL,
+                 MAILLAGE=MAIL,
+                 CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MAIL=DEFI_GROUP(reuse=MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='ROCHE',),
+                               _F(GROUP_MA='DERECHA',),
+                               _F(GROUP_MA='CAVITE',),
+                               _F(GROUP_MA='DEVANT',),
+                               _F(GROUP_MA='HAUT',),
+                               _F(GROUP_MA='GAUCHE',),
+                               _F(GROUP_MA='BAS'),
+                               _F(GROUP_MA='DERRIERE'),
+                               _F(NOM='BIDON1',
+                                  UNION=('DERECHA','HAUT',),),
+                               _F(NOM='DROITE',
+                                  DIFFE=('BIDON1','HAUT',),),
+                               _F(NOM='BIDON2',
+                                  UNION=('GAUCHE','CAVITE',),),
+                               _F(NOM='GAUCH',
+                                  DIFFE=('BIDON2','CAVITE',),),
+                               _F(NOM='BIDON3',
+                                  UNION=('BAS','CAVITE',),),
+                               _F(NOM='BASE',
+                                  DIFFE=('BIDON3','CAVITE',),),
+                               _F(NOM='BIDON5',
+                                  UNION=('DERRIERE','GAUCHE','BAS','CAVITE',),),
+                               _F(NOM='FRONT',
+                                  DIFFE=('BIDON5','GAUCHE','BAS','CAVITE','HAUT','DROITE'),),
+                               _F(NOM='BIDON6',
+                                  UNION=('DEVANT','GAUCHE','BAS','CAVITE',),),
+                               _F(NOM='FRONT2',
+                                  DIFFE=('BIDON6','GAUCHE','BAS','CAVITE',),),
+                               ),
+                 );
+
+#***********************************************************************
+#    CARACTERISTIQUES DU MATERIAU
+#***********************************************************************
+#
+MAT=DEFI_MATERIAU(
+        ELAS_ISTR=_F(
+            E_L  = YOUNG,
+            E_N  = 0.5*YOUNG,
+            RHO = 2700,
+            NU_LT = POISSON,
+            NU_LN = POISSON,
+            G_LN = 8.88E+9,),
+            COMP_THM = 'LIQU_SATU',                              
+        THM_LIQU=_F(
+            RHO = 1000.,  
+            UN_SUR_K = 5.E-10,
+            VISC = VISCOLIQ,
+            D_VISC_TEMP = DVISCOL,),
+        THM_DIFFU=_F(
+            RHO=2410.,
+            BIOT_L=CBIOTL,
+            BIOT_N=CBIOTN,
+            PESA_X=0.0,
+            PESA_Y=0.0,
+            PESA_Z=0.0,
+            PERMIN_L=KINT,
+            PERMIN_N=KINT,),
+         THM_INIT=_F(PRE1 = 0.,
+                     PORO = 0.14,),); 
+
+#***********************************************************************
+#    LISTE DES INSTANTS DE CALCUL
+#***********************************************************************
+TCONF = 0.
+T1 =TCONF + 86.4
+T2 =TCONF + 864
+T3 = TCONF + 8640.
+T4 = TCONF + 86400.
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=( _F(JUSQU_A = T1,NOMBRE = 10,), 
+                                  _F(JUSQU_A = T2,NOMBRE = 10,),
+                                  _F(JUSQU_A = T3,NOMBRE = 10,),
+                                  _F(JUSQU_A = T4,NOMBRE = 5,)
+                                ),
+                     );                      
+
+##################################################################################################
+#     
+#                         PHASE 1 : INITIALISATION 
+#
+##################################################################################################
+
+PHASE1=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION ='3D_HMS',),);
+#
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',  
+                             MATER = MAT,),
+                    );
+
+#***********************************************************************
+#        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE 
+#                  DEPLACEMENTS POUR LA PHASE 1 
+#***********************************************************************
+
+SIGINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                  OPERATION='AFFE',
+                  MODELE=PHASE1,
+    AFFE=(_F(TOUT='OUI',
+      NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIYZ','SIXZ',
+               'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
+               'M11','FH11X','FH11Y','FH11Z',),
+      VALE=(SIEFX,SIEFY,SIEFZ,SIEFXY,SIEFYZ,SIEFXZ, 
+            SIPXX0,SIPYY0,SIPZZ0,SIPXY0,SIPXZ0,SIPYZ0,
+            0.,0.,0.,0.,),),
+                         ), );
+
+DEPINIT=CREA_CHAMP(MAILLAGE=MAIL, 
+     OPERATION='AFFE', 
+     TYPE_CHAM='NOEU_DEPL_R',
+     AFFE=(_F(TOUT='OUI',
+              NOM_CMP = 'DX',
+              VALE=0.,),
+            _F(TOUT='OUI',
+              NOM_CMP = 'DY',
+              VALE=0.,),
+            _F(TOUT='OUI',
+              NOM_CMP = 'DZ',
+              VALE=0.,),
+            _F(TOUT='OUI',
+              NOM_CMP = 'PRE1',
+              VALE= PLIMP,),),
+                  );
+
+#***********************************************************************
+#             CHARGEMENT MECANIQUE (CONDITIONS AUX LIMITES)
+#***********************************************************************
+
+# BLOCAGE DES DEPLACEMENT AUX LIMITES DU MODELE
+CH_INF1=AFFE_CHAR_CINE(MODELE=PHASE1,
+                      MECA_IMPO=(_F(GROUP_NO='DROITE', PRE1=PLIMP,),),
+                                );
+
+CH_INF2=AFFE_CHAR_CINE(MODELE=PHASE1,
+                      MECA_IMPO=(_F(GROUP_NO='HAUT', PRE1=PLIMP,),),
+                                );
+
+CH_INF3=AFFE_CHAR_CINE(MODELE=PHASE1,
+                      MECA_IMPO=(_F(GROUP_NO='FRONT', PRE1=PLIMP,),),
+                                );
+    
+CH_PREY=AFFE_CHAR_MECA(MODELE=PHASE1,
+                      PRES_REP=(_F(GROUP_MA='HAUT', PRES=PRESREPY,),),
+                      );
+
+CH_PREX=AFFE_CHAR_MECA(MODELE=PHASE1,
+                      PRES_REP=(_F(GROUP_MA='DERECHA', PRES=PRESREPX,),),
+                      );
+
+CH_PREZ=AFFE_CHAR_MECA(MODELE=PHASE1,
+                      PRES_REP=(_F(GROUP_MA='DERRIERE', PRES=PRESREPZ,),),
+                      );
+
+CH_SYM2=AFFE_CHAR_CINE(MODELE=PHASE1,
+                      MECA_IMPO=(
+                                 _F(GROUP_NO='DEVANT', DZ=0.0,),
+                                 _F(GROUP_NO='GAUCHE', DX=0.0,),
+                                 _F(GROUP_NO='BAS', DY=0.0,),
+                                ),
+                      );
+
+# BLOCAGE DES DEPLACEMENT EN PAROI
+# BLOCAGE DES DEPLACEMENT EN PAROI
+CH_PAR=AFFE_CHAR_MECA(MODELE=PHASE1,
+                      DDL_IMPO=(_F(GROUP_MA=('CAVITE',), PRE1=12.E6),),
+                      );
+CME_PAR=AFFE_CHAR_MECA(MODELE=PHASE1,
+                      PRES_REP=(_F(GROUP_MA=('CAVITE',), PRES=12.E6),),
+                      );
+             
+#*****************************************************************
+#              CALCUL DES EFFORTS EN PAROI
+#*****************************************************************
+
+U0=STAT_NON_LINE(MODELE=PHASE1,
+   CHAM_MATER=CHMAT1,
+   EXCIT=(_F(CHARGE = CH_SYM2,),
+                        _F(CHARGE = CH_PREY,),
+                        _F(CHARGE = CH_PREX,),
+                        _F(CHARGE = CH_PREZ,),
+                        _F(CHARGE = CH_INF1,),
+                        _F(CHARGE = CH_INF2,),
+                        _F(CHARGE = CH_INF3,),
+                        _F(CHARGE = CH_PAR, ),
+                        _F(CHARGE = CME_PAR, ),
+   ),
+   ETAT_INIT=_F(SIGM=SIGINI,
+         DEPL=DEPINIT,),
+   COMP_INCR=_F(RELATION = 'KIT_HM',          
+         RELATION_KIT = ('ELAS',
+                  'LIQU_SATU',
+                  'HYDR_UTIL',),),
+   NEWTON=_F(MATRICE ='TANGENTE',
+                           REAC_ITER=1,),
+   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+           ITER_GLOB_MAXI = 50,),
+   INCREMENT=_F(LIST_INST = TEMPS1,
+         INST_FIN=T1,
+         ),
+                );
+
+#
+# POST TRAITEMENT
+#  
+U0=CALC_CHAMP(reuse=U0,
+              RESULTAT=U0,
+       INST=T1,
+              CONTRAINTE = 'SIEF_ELNO',)
+U0=CALC_CHAMP(reuse=U0,
+              CONTRAINTE=('SIEF_NOEU'),
+       INST=T1,
+       RESULTAT=U0)
+
+COUPEY = INTE_MAIL_3D ( MAILLAGE = MAIL ,
+          INFO = 1 ,
+                        DEFI_SEGMENT =_F( ORIGINE   = (0.0 ,0.01,0.5),
+                        EXTREMITE = (0. ,15,0.5),
+       ),
+                        PRECISION=1.E-8,
+   );
+
+SIG_MAY=POST_RELEVE_T(ACTION=_F(INTITULE='SIG_MA',
+                                CHEMIN=COUPEY,
+                               RESULTAT=U0,
+                               INST=(T1),
+                               NOM_CHAM='SIEF_ELNO',
+                               NOM_CMP=('SIXX','SIYY','SIZZ',
+                                        'SIXY','SIXZ','SIYZ',
+                                        'SIPXX','SIPYY','SIPZZ',
+                                        'SIPXY','SIPXZ','SIPYZ',),
+                               OPERATION='EXTRACTION',),
+                         );
+PRES_MAY=POST_RELEVE_T(ACTION=_F(INTITULE='PRES_MA',
+                                CHEMIN=COUPEY,
+                                RESULTAT=U0,
+                               INST=(T1),
+                                NOM_CHAM='DEPL',
+                                NOM_CMP=('PRE1',),
+                                OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=PRES_MAY,
+#           FORMAT='XMGRACE',
+           NOM_PARA=('COOR_Y','PRE1'),
+           FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
+    VALE=T1, 
+           PRECISION=0.0001),),
+
+           TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
+           );
+IMPR_TABLE(TABLE=SIG_MAY,
+           NOM_PARA=('COOR_Y','SIYY'),
+           FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
+    VALE=T1, 
+           PRECISION=0.0001),),
+
+           TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
+           );
+      
+# PRESSION DE PORE
+TEST_RESU(RESU=_F(INST=T1,
+                  REFERENCE='NON_DEFINI',
+                  RESULTAT=U0,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N2286',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=9.89316269E6,
+                  VALE_REFE=10.5E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-1,),
+          )
+
+## SOLUTION ANALYTIQUE AU POINT R=0.14 THETA = 90 deg C
+TEST_RESU(RESU=_F(INST=T1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N2286',#(0.,0.14,0.5)
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-10.4183095E6,
+                  VALE_REFE=-10.3E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-1,),
+          )
+TEST_RESU(RESU=_F(INST=T1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N2286',#(0.,0.14,0.5)
+                  NOM_CMP='SIPYY',
+                  VALE_CALC=-8.08162567E6,
+                  VALE_REFE=-8.9E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-1,),
+          )
+TEST_RESU(RESU=_F(INST=T1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U0,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOEUD='N2582',#(0.,13.1,0.5)
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-14.7957276793E6,
+                  VALE_REFE=-14.9E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-1,),
+          )
+FIN();

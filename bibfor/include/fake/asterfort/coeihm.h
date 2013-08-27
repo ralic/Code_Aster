@@ -15,19 +15,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine coeihm(option, perman, resi, rigi, imate,&
                       compor, crit, instam, instap, nomail,&
                       ndim, dimdef, dimcon, nbvari, yamec,&
-                      yap1, yap2, yate, nbpha1, nbpha2,&
+                      yap1, yap2, yate, &
                       addeme, adcome, addep1, adcp11, adcp12,&
                       addlh1, adcop1, addep2, adcp21, adcp22,&
-                      adcop2, addete, adcote, defgem, defgep,&
+                      addete, adcote, defgem, defgep,&
                       kpi, npg, npi, sigm, sigp,&
                       varim, varip, res, drde, retcom)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
+        integer :: ndim
         character(len=16) :: option
         logical :: perman
         logical :: resi
@@ -38,13 +39,10 @@ interface
         real(kind=8) :: instam
         real(kind=8) :: instap
         character(len=8) :: nomail
-        integer :: ndim
         integer :: yamec
         integer :: yap1
         integer :: yap2
         integer :: yate
-        integer :: nbpha1
-        integer :: nbpha2
         integer :: addeme
         integer :: adcome
         integer :: addep1
@@ -55,7 +53,6 @@ interface
         integer :: addep2
         integer :: adcp21
         integer :: adcp22
-        integer :: adcop2
         integer :: addete
         integer :: adcote
         real(kind=8) :: defgem(1:dimdef)
@@ -71,4 +68,4 @@ interface
         real(kind=8) :: drde(dimdef, dimdef)
         integer :: retcom
     end subroutine coeihm
-end interface
+end interface 

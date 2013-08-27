@@ -1,8 +1,10 @@
-function sigmap(net, bishop, sat, signe, biot,&
-                dp2, dp1)
-    implicit      none
+subroutine sigmap(net, bishop, sat, signe, tbiot,&
+                  dp2, dp1, sigmp)
+!
+    implicit none
 #include "asterfort/u2mess.h"
-    real(kind=8) :: signe, sat, biot, dp2, dp1, sigmap
+    integer :: i
+    real(kind=8) :: signe, sat, tbiot(6), dp2, dp1, sigmp(6)
     logical :: net, bishop
 ! ======================================================================
 ! ======================================================================
@@ -24,12 +26,15 @@ function sigmap(net, bishop, sat, signe, biot,&
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 ! ======================================================================
-    if (bishop) then
-        sigmap = biot*sat*signe*dp1 - biot*dp2
-    else if (net) then
-        sigmap = - biot*dp2
-    else
-        call u2mess('F', 'ALGORITH17_4')
-    endif
+!
+    do 10 i = 1, 6
+        if (bishop) then
+            sigmp(i) = tbiot(i)*sat*signe*dp1 - tbiot(i)*dp2
+        else if (net) then
+            sigmp(i) = - tbiot(i)*dp2
+        else
+            call u2mess('F', 'ALGORITH17_4')
+        endif
+10  end do
 ! ======================================================================
-end function
+end subroutine

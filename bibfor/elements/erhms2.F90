@@ -72,7 +72,7 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
     integer :: tbref1(12), tbref2(12)
     character(len=8) :: typmav
     real(kind=8) :: theta, jac(3), nx(3), ny(3)
-    real(kind=8) :: sielnp(90), sielnm(90), tm2h1s(3)
+    real(kind=8) :: sielnp(140), sielnm(140), tm2h1s(3)
 !
 !
 !
@@ -93,13 +93,12 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
     real(kind=8) :: intme1(3), intme2(3), inthyd(3)
     real(kind=8) :: ta1
 !
-    integer :: iarepe, jceldp, jcelvp, jceldm, jcelvm, imav, igrel, iel, iavalp
-    integer :: iavalm, iconx1, iconx2, admavp, admavm, adinov, adjnov, admnov
+    integer :: iarepe, jceldp, jcelvp, jceldm, jcelvm, imav, igrel, iel, iavalp, iavalm, iconx1
+    integer :: iconx2, admavp, admavm, adinov, adjnov, admnov
     integer :: jad, jadv, ncher
     integer :: nbnv, i, jno, mno, inov, jnov, mnov
     integer :: iaux, ibid
     character(len=2) :: formv, noeuv
-!
 ! =====================================================================
 ! 1.  RECUPERATION SUR LA MAILLE COURANTE AUX NOEUDS INO ET JNO DE :
 !     . CONTRAINTES EFFECTIVES (SIGMA MECANIQUE : SIXX, SIYY, SIXY)
@@ -132,15 +131,15 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
     sixxp(1) = sielnp(iaux+1)
     siyyp(1) = sielnp(iaux+2)
     sixyp(1) = sielnp(iaux+4)
-    fluxp(1) = sielnp(iaux+adsip+ibid+1)
-    fluyp(1) = sielnp(iaux+adsip+ibid+2)
+    fluxp(1) = sielnp(iaux+adsip+ibid+1+5)
+    fluyp(1) = sielnp(iaux+adsip+ibid+2+5)
 !
     iaux = nbcmp*(jno-1)
     sixxp(2) = sielnp(iaux+1)
     siyyp(2) = sielnp(iaux+2)
     sixyp(2) = sielnp(iaux+4)
-    fluxp(2) = sielnp(iaux+adsip+ibid+1)
-    fluyp(2) = sielnp(iaux+adsip+ibid+2)
+    fluxp(2) = sielnp(iaux+adsip+ibid+1+5)
+    fluyp(2) = sielnp(iaux+adsip+ibid+2+5)
 !
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
@@ -156,8 +155,8 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
 !
-    fluxp(3) = sielnp(iaux+adsip+ibid+1)
-    fluyp(3) = sielnp(iaux+adsip+ibid+2)
+    fluxp(3) = sielnp(iaux+adsip+ibid+1+5)
+    fluyp(3) = sielnp(iaux+adsip+ibid+2+5)
 !
     if (.not. perman) then
 !
@@ -165,15 +164,15 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         sixxm(1) = sielnm(iaux+1)
         siyym(1) = sielnm(iaux+2)
         sixym(1) = sielnm(iaux+4)
-        fluxm(1) = sielnm(iaux+adsip+ibid+1)
-        fluym(1) = sielnm(iaux+adsip+ibid+2)
+        fluxm(1) = sielnm(iaux+adsip+ibid+1+5)
+        fluym(1) = sielnm(iaux+adsip+ibid+2+5)
 !
         iaux = nbcmp*(jno-1)
         sixxm(2) = sielnm(iaux+1)
         siyym(2) = sielnm(iaux+2)
         sixym(2) = sielnm(iaux+4)
-        fluxm(2) = sielnm(iaux+adsip+ibid+1)
-        fluym(2) = sielnm(iaux+adsip+ibid+2)
+        fluxm(2) = sielnm(iaux+adsip+ibid+1+5)
+        fluym(2) = sielnm(iaux+adsip+ibid+2+5)
 !
 ! BIEN QUE LA PRESSION NE SOIT CALCULEE QU'AUX NOEUDS SOMMETS, LE
 ! GRADIENT L'EST EGALEMENT AU NOEUD MILIEU, VIA EPSTHM
@@ -184,8 +183,8 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         sixxm(3) = sielnm(iaux+1)
         siyym(3) = sielnm(iaux+2)
         sixym(3) = sielnm(iaux+4)
-        fluxm(3) = sielnm(iaux+adsip+ibid+1)
-        fluym(3) = sielnm(iaux+adsip+ibid+2)
+        fluxm(3) = sielnm(iaux+adsip+ibid+1+5)
+        fluym(3) = sielnm(iaux+adsip+ibid+2+5)
 !
     endif
 !
@@ -284,15 +283,15 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
     sixxpv(1) = zr(iaux+1)
     siyypv(1) = zr(iaux+2)
     sixypv(1) = zr(iaux+4)
-    fluxpv(1) = zr(iaux+adsip+ibid+1)
-    fluypv(1) = zr(iaux+adsip+ibid+2)
+    fluxpv(1) = zr(iaux+adsip+ibid+1+5)
+    fluypv(1) = zr(iaux+adsip+ibid+2+5)
 !
     iaux = admavp+adjnov
     sixxpv(2) = zr(iaux+1)
     siyypv(2) = zr(iaux+2)
     sixypv(2) = zr(iaux+4)
-    fluxpv(2) = zr(iaux+adsip+ibid+1)
-    fluypv(2) = zr(iaux+adsip+ibid+2)
+    fluxpv(2) = zr(iaux+adsip+ibid+1+5)
+    fluypv(2) = zr(iaux+adsip+ibid+2+5)
 !
 ! 2.4. NOEUD MILIEU
 !
@@ -311,8 +310,8 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
     sixxpv(3) = zr(iaux+1)
     siyypv(3) = zr(iaux+2)
     sixypv(3) = zr(iaux+4)
-    fluxpv(3) = zr(iaux+adsip+ibid+1)
-    fluypv(3) = zr(iaux+adsip+ibid+2)
+    fluxpv(3) = zr(iaux+adsip+ibid+1+5)
+    fluypv(3) = zr(iaux+adsip+ibid+2+5)
 !
     if (.not. perman) then
 !
@@ -324,16 +323,16 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         sixxmv(1) = zr(iaux+1)
         siyymv(1) = zr(iaux+2)
         sixymv(1) = zr(iaux+4)
-        fluxmv(1) = zr(iaux+adsip+ibid+1)
-        fluymv(1) = zr(iaux+adsip+ibid+2)
+        fluxmv(1) = zr(iaux+adsip+ibid+1+5)
+        fluymv(1) = zr(iaux+adsip+ibid+2+5)
 !
         iaux = admavm+adjnov
 !
         sixxmv(2) = zr(iaux+1)
         siyymv(2) = zr(iaux+2)
         sixymv(2) = zr(iaux+4)
-        fluxmv(2) = zr(iaux+adsip+ibid+1)
-        fluymv(2) = zr(iaux+adsip+ibid+2)
+        fluxmv(2) = zr(iaux+adsip+ibid+1+5)
+        fluymv(2) = zr(iaux+adsip+ibid+2+5)
 !
 ! NOEUD MILIEU
 !
@@ -353,8 +352,8 @@ subroutine erhms2(perman, ino, nbs, theta, jac,&
         sixxmv(3) = zr(iaux+1)
         siyymv(3) = zr(iaux+2)
         sixymv(3) = zr(iaux+4)
-        fluxmv(3) = zr(iaux+adsip+ibid+1)
-        fluymv(3) = zr(iaux+adsip+ibid+2)
+        fluxmv(3) = zr(iaux+adsip+ibid+1+5)
+        fluymv(3) = zr(iaux+adsip+ibid+2+5)
 !
     endif
 !

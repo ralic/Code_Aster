@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine posthm(option, modint, jgano, ncmp, nvim,&
                       vpg, vno)
         character(len=16) :: option
@@ -26,4 +26,4 @@ interface
         real(kind=8) :: vpg(*)
         real(kind=8) :: vno(*)
     end subroutine posthm
-end interface
+end interface 

@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine comthm(option, perman, vf, ifa, valfac,&
                       valcen, imate, typmod, compor, crit,&
                       instam, instap, ndim, dimdef, dimcon,&
@@ -24,10 +24,11 @@ interface
                       addep2, adcp21, adcp22, addete, adcote,&
                       defgem, defgep, congem, congep, vintm,&
                       vintp, dsde, pesa, retcom, kpi,&
-                      npg, p10, p20)
+                      npg, p10, p20, angmas)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
+        integer :: ndim
         character(len=16) :: option
         logical :: perman
         logical :: vf
@@ -40,7 +41,6 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: ndim
         integer :: yamec
         integer :: yap1
         integer :: yap2
@@ -68,5 +68,6 @@ interface
         integer :: npg
         real(kind=8) :: p10
         real(kind=8) :: p20
+        real(kind=8) :: angmas(3)
     end subroutine comthm
-end interface
+end interface 

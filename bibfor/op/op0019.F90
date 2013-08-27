@@ -1,4 +1,6 @@
 subroutine op0019()
+! aslint: disable=W1501
+    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,17 +24,17 @@ subroutine op0019()
 !
 ! ----------------------------------------------------------------------
 ! aslint: disable=W1501
-    implicit  none
 !     NBEPO  13 : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
 !     NBEDI   8 : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
 !     NBECO  29 : NOMBRE D'ELEMENTS DE TYPE "COQUE"
 !     NBECA   2 : NOMBRE D'ELEMENTS DE TYPE "CABLE"
 !     NBEBA   2 : NOMBRE D'ELEMENTS DE TYPE "BARRE"
-!     NBEMA  53 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
+!     NBEMA  50 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
 !     NBEGB   6 : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
 !     NBEMB   4 : NOMBRE D'ELEMENTS DE TYPE "MEMBRANE"
+!     NBTHM1   47 : NOMBRE D'ELEMENTS DE TYPE "MASSIF" THM
+!     NBTHM2   28 : NOMBRE D'ELEMENTS DE TYPE "MASSIF" *HH2*
 #include "jeveux.h"
-!
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/getvid.h"
@@ -86,14 +88,18 @@ subroutine op0019()
 #include "asterfort/u2mess.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+!
     integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb
-    integer :: nbtel, nbmcf, nbel1, nbel2, nbel3
+    integer :: nbtel, nbmcf, nbel1, nbel2, nbel3, nbel4, nbel5
+    integer :: nbthm1, nbthm2
     parameter  (      nbepo=13,nbedi=8,nbeco=29,nbeca=2,nbeba=2)
     parameter  (nbel1=nbepo   +nbedi  +nbeco   +nbeca  +nbeba)
-    parameter  (      nbema=54,nbegb=6,nbemb=4)
+    parameter  (      nbema=50,nbegb=6,nbemb=4,nbthm1=47,nbthm2=28)
     parameter  (nbel2=nbema)
     parameter  (nbel3=nbegb   +nbemb)
-    parameter  (nbtel=nbel1+nbel2+nbel3)
+    parameter  (nbel4=nbthm1)
+    parameter  (nbel5=nbthm2)
+    parameter  (nbtel=nbel1+nbel2+nbel3+nbel4+nbel5)
 !     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
     parameter  (nbmcf=15)
 ! ----------------------------------------------------------------------
@@ -111,7 +117,7 @@ subroutine op0019()
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclf(nbmcf), mcle(4), k16bid
     character(len=16) :: nomele(nbtel), nomel1(nbel1), nomel2(nbel2)
-    character(len=16) :: nomel3(nbel3)
+    character(len=16) :: nomel3(nbel3), nomel4(nbel4), nomel5(nbel5)
     character(len=19) :: cartcf, ligrmo, lchin(3), lchout(1)
     character(len=24) :: mlgnma, modnom, modnem, tmplst, tmplma, tmplno, tmpncf
     data mcle   /  'GROUP_MA        ','MAILLE          ',&
@@ -129,6 +135,8 @@ subroutine op0019()
 !        NOMEL1 : POUTRE(13) DISCRET(8) COQUE(28) CABLE(2) BARRE(2)
 !        NOMEL2 : MASSIF(53)
 !        NOMEL3 : GRILLE(6) MEMBRANE(4)
+!        NOMEL4 : MASSIF(49)
+!        NOMEL5 : MASSIF(28)
     data nomel1 /         'MECA_POU_D_T    ','MECA_POU_D_E    ',&
      &   'MECA_POU_D_T_GD ','MECA_POU_C_T    ','MEFS_POU_D_T    ',&
      &   'MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20',&
@@ -167,19 +175,61 @@ subroutine op0019()
      &   'THAXTR6         ','THAXQU8         ','THAXQU9         ',&
      &   'THPLTR3         ','THPLQU4         ','THPLTR6         ',&
      &   'THPLQU8         ','THPLQU9         ','MET3SEG3        ',&
-     &   'MET6SEG3        ','MET3SEG4        ','HM_DPQ8S        ',&
-     &   'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    '/
+     &   'MET6SEG3        ','MET3SEG4        '/
 !
     data nomel3 /         'MEGCQU4         ','MEGMTR3         ',&
      &   'MEGMQU4         ','MEGMTR6         ','MEGMQU8         ',&
      &   'MEGCTR3         ','MEMBTR3         ','MEMBTR6         ',&
      &   'MEMBQU4         ','MEMBQU8         '/
 !
+    data nomel4 /  'HM_DPQ8S        ','HM_AXIS_QU8S    ',&
+     &               'HM_DPTR6S       ','HM_AXIS_TR6S    ',&
+     &               'HM_HEXA20S      ','HM_PENTA15S     ',&
+     &               'HM_TETRA10S     ',&
+     &               'THM_DPQ8S       ','THM_AXIS_QU8S   ',&
+     &               'THM_DPTR6S      ','THM_AXIS_TR6S   ',&
+     &                     'THM_HEXA20S     ','THM_PENTA15S    ',&
+     &                     'THM_TETRA10S    ',&
+     &               'H_DPQ8S         ','H_DPTR6S        ',&
+     &                     'H_HEXA20S       ','H_PENTA15S      ',&
+     &                     'H_TETRA10S      ',&
+     &               'THHM_DPQ8S      ','THHM_AXIS_QU8S  ',&
+     &               'THHM_DPTR6S     ','THHM_AXIS_TR6S  ',&
+     &                     'THHM_HEXA20S    ','THHM_PENTA15S   ',&
+     &                     'THHM_TETRA10S   ',&
+     &               'HHM_DPQ8S       ','HHM_AXIS_QU8S   ',&
+     &               'HHM_DPTR6S      ','HHM_AXIS_TR6S   ',&
+     &                     'HHM_HEXA20S     ','HHM_PENTA15S    ',&
+     &                     'HHM_TETRA10S    ',&
+     &               'THH_DPQ8S       ','THH_AXIS_QU8S   ',&
+     &               'THH_DPTR6S      ','THH_AXIS_TR6S   ',&
+     &                     'THH_HEXA20S     ','THH_PENTA15S    ',&
+     &                     'THH_TETRA10S    ',&
+     &               'HH_DPQ8S        ','HH_AXIS_QU8S    ',&
+     &               'HH_DPTR6S       ','HH_AXIS_TR6S    ',&
+     &                     'HH_HEXA20S      ','HH_PENTA15S     ',&
+     &                     'HH_TETRA10S     '/
+    data nomel5 /        'THH2M_DPQ8S     ','THH2M_AXIS_QU8S   ',&
+     &                     'THH2M_DPTR6S    ','THH2M_AXIS_TR6S   ',&
+     &                     'THH2M_HEXA20S   ','THH2M_PENTA15S    ',&
+     &                     'THH2M_TETRA10S  ',&
+     &                     'HH2M_DPQ8S      ','HH2M_AXIS_QU8S    ',&
+     &                     'HH2M_DPTR6S     ','HH2M_AXIS_TR6S    ',&
+     &                     'HH2M_HEXA20S    ','HH2M_PENTA15S     ',&
+     &                     'HH2M_TETRA10S   ',&
+     &                     'THH2_DPQ8S      ','THH2_AXIS_QU8S    ',&
+     &                     'THH2_DPTR6S     ','THH2_AXIS_TR6S    ',&
+     &                     'THH2_HEXA20S    ','THH2_PENTA15S     ',&
+     &                     'THH2_TETRA10S   ',&
+     &                     'HH2_DPQ8S       ','HH2_AXIS_QU8S     ',&
+     &                     'HH2_DPTR6S      ','HH2_AXIS_TR6S     ',&
+     &                     'HH2_HEXA20S     ','HH2_PENTA15S      ',&
+     &                     'HH2_TETRA10S    '/
+!
     data nbmcle /  2,2,4,4,2,2,2,2,2,1,2,0,4,2,1/
 ! --- ------------------------------------------------------------------
     call jemarq()
 !     CALL ONERRF('ABORT', K16BID, IRET)
-!
     iret=0
 ! --- ------------------------------------------------------------------
 ! --- INITIALISATION DE  NOMELE
@@ -192,6 +242,14 @@ subroutine op0019()
     do 25 i = 1, nbel3
         nomele(i+nbel1+nbel2) = nomel3(i)
 25  end do
+!
+    do 26 i = 1, nbel4
+        nomele(i+nbel1+nbel2+nbel3) = nomel4(i)
+26  end do
+!
+    do 27 i = 1, nbel5
+        nomele(i+nbel1+nbel2+nbel3+nbel4) = nomel5(i)
+27  end do
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
     call getres(nomu, concep, cmd)
@@ -304,6 +362,7 @@ subroutine op0019()
 ! --- LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO
     lmax = max(1,lxp,lxc,lxo,lxa,lxk,lxb,lxm,lxpf,lxgb,lxmb)
 !
+!
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
     call infmaj()
@@ -354,7 +413,6 @@ subroutine op0019()
         call acevrm(nbocc(12), noma, lxrm, noemf2)
         lmax = max(lmax,lxrm)
     endif
-!
 ! --- ------------------------------------------------------------------
 ! --- VERIFICATION DE LA DIMENSION DES MASSES REPARTIES
     lxmr = 0
@@ -391,9 +449,10 @@ subroutine op0019()
 ! --- COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS
     call acecel(noma, nomo, nbocc, nbepo, nbedi,&
                 nbeco, nbeca, nbeba, nbema, nbegb,&
-                nbtel, ntyele, npoutr, ndiscr, ncoque,&
-                ncable, nbarre, nmassi, ngrill, ngribt,&
-                nmembr, jdlm, jdln, iret)
+                nbemb, nbthm1, nbthm2, ntyele, npoutr,&
+                ndiscr, ncoque, ncable, nbarre, nmassi,&
+                ngrill, ngribt, nmembr, jdlm, jdln,&
+                iret)
     if (iret .ne. 0) then
         call u2mess('F', 'MODELISA5_57')
     endif
@@ -451,7 +510,7 @@ subroutine op0019()
     if (nbocc(1) .ne. 0 .or. nbocc(3) .ne. 0 .or. nbocc(13) .ne. 0 .or. nbocc(7) .ne. 0&
         .or. nbocc(10) .ne. 0) then
         call aceaor(noma, nomo, lmax, nbepo, nbedi,&
-                    nbtel, ntyele, nomele, ivr, ifm,&
+                    nbel1+nbel2+nbel3, ntyele, nomele, ivr, ifm,&
                     nbocc)
     endif
 !

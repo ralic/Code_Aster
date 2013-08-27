@@ -1,7 +1,11 @@
-function dqdeps(alpha0, k0, t)
-    implicit      none
-    real(kind=8) :: alpha0, k0, t, dqdeps
+subroutine dqdeps(mdal, t, dqeps)
+    implicit none
+!
+    integer :: i
+    real(kind=8) :: mdal(6), t, dqeps(6)
+    real(kind=8) :: rac2
 ! ======================================================================
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +26,12 @@ function dqdeps(alpha0, k0, t)
 ! --- CALCUL DE LA DERIVEE DE LA CHALEUR PAR RAPPORT A LA DEFORMATION --
 ! --- VOLUMIQUE --------------------------------------------------------
 ! ======================================================================
-    dqdeps = 3.0d0*alpha0*k0*t
+    rac2= sqrt(2.d0)
+    do 10 i = 1, 3
+        dqeps(i) = mdal(i)*t
+10  end do
+    do 20 i = 4, 6
+        dqeps(i) = mdal(i)*t*rac2
+20  end do
 ! ======================================================================
-end function
+end subroutine

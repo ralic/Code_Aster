@@ -273,9 +273,13 @@ subroutine grdthm(nomte, perman, vf, ndim, mecani,&
 ! =====================================================================
 !====
 !
+!  ATTENTION LE NOMBRE DE PARAMETRES MECANIQUES AUGMENTE
+!  LE SCALAIRE SIP DEVIENT UN TENSEUR A 6 COMPOSANTES
+!  DANS LE CAS ISOTROPE SIP EST UN TENSEUR ISOTROPE
+!
         if (mecani(1) .eq. 1) then
             mecani(4) = ndim + 6
-            mecani(5) = 7
+            mecani(5) = 6 + 6
             nmec = ndim
         else
             mecani(4) = 0

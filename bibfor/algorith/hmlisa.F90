@@ -6,8 +6,8 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                   congep, vintm, vintp, dsde, epsv,&
                   depsv, p1, dp1, t, dt,&
                   phi, rho11, phi0, sat, retcom,&
-                  biot, rinstp)
-!
+                  tbiot, rinstp, angmas, deps, aniso,&
+                  phenom)
 ! ======================================================================
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
@@ -46,6 +46,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 #include "asterfort/capaca.h"
 #include "asterfort/dhdt.h"
 #include "asterfort/dhwdp1.h"
+#include "asterfort/dilata.h"
 #include "asterfort/dileau.h"
 #include "asterfort/dmdepv.h"
 #include "asterfort/dmwdp1.h"
@@ -60,6 +61,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 #include "asterfort/sigmap.h"
 #include "asterfort/thmrcp.h"
 #include "asterfort/u2mess.h"
+#include "asterfort/unsmfi.h"
 #include "asterfort/viemma.h"
 #include "asterfort/viporo.h"
 #include "asterfort/virhol.h"
@@ -69,20 +71,20 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     real(kind=8) :: congem(dimcon), congep(dimcon)
     real(kind=8) :: vintm(nbvari), vintp(nbvari)
     real(kind=8) :: dsde(dimcon, dimdef), epsv, depsv, p1, dp1, t, dt
-    real(kind=8) :: phi, rho11, phi0
-    real(kind=8) :: rinstp
-    character(len=16) :: option, meca, ther, thmc, hydr
+    real(kind=8) :: phi, rho11, phi0, rac2
+    real(kind=8) :: rinstp, angmas(3)
+    character(len=16) :: option, meca, ther, thmc, hydr, phenom
     logical :: perman, yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i
+    integer :: i, aniso
     real(kind=8) :: epsvm, phim, rho11m, rho110, rho0, csigm, alp11
-    real(kind=8) :: biot, k0, cs, alpha0, alpliq, cliq, cp11, sat
-    real(kind=8) :: em, alp12, dpad
+    real(kind=8) :: tbiot(6), cs, alpliq, cliq, cp11, sat
+    real(kind=8) :: em, alp12, dpad, alpha0
     real(kind=8) :: rho12, rho21, rho22, cp12, cp21, cp22, coeps, dsatp1
-    real(kind=8) :: m11m, satm
-    real(kind=8) :: eps
+    real(kind=8) :: m11m, satm, mdal(6), dalal, alphfi, cbiot, unsks
+    real(kind=8) :: eps, deps(6)
     parameter  ( eps = 1.d-21 )
     logical :: emmag
 ! ======================================================================
@@ -90,15 +92,19 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! ======================================================================
     real(kind=8) :: rbid1, rbid2, rbid3, rbid4, rbid5, rbid6, rbid7
     real(kind=8) :: rbid8, rbid10, rbid11, rbid12, rbid13, rbid14(3)
-    real(kind=8) :: rbid15, rbid16, rbid17, rbid18, rbid19, rbid20
+    real(kind=8) :: rbid15(ndim, ndim), rbid16, rbid17, rbid18, rbid19
     real(kind=8) :: rbid21, rbid22, rbid23, rbid24, rbid25, rbid26
-    real(kind=8) :: rbid27, rbid28, rbid29, rbid30, rbid31, rbid32
-    real(kind=8) :: rbid33, rbid34, rbid35, rbid36, rbid37, rbid38
+    real(kind=8) :: rbid27, rbid28, rbid29, rbid30, rbid31, rbid38
+    real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid36, rbid37
     real(kind=8) :: rbid39, rbid40, rbid45, rbid46, rbid47, rbid48, rbid49
-    real(kind=8) :: rbid50, rbid51, r3bid(6)
+    real(kind=8) :: rbid50(ndim, ndim), rbid51, rbid20, rbid32(ndim, ndim)
     real(kind=8) :: dp2, signe
+    real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
+    real(kind=8) :: dqeps(6)
 !
     logical :: net, bishop
+!
+    rac2 = sqrt(2.d0)
 !
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
@@ -108,7 +114,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                 ther, rbid1, rbid2, rbid3, rbid4,&
                 rbid5, t, p1, rbid40, rbid6,&
                 rbid7, rbid8, rbid10, rbid11, rho0,&
-                csigm, biot, rbid12, sat, rbid13,&
+                csigm, tbiot, rbid12, sat, rbid13,&
                 rbid14, rbid15, rbid16, rbid17, rbid18,&
                 rbid19, rbid20, rbid21, rbid22, rbid23,&
                 rbid24, rbid25, rho110, cliq, alpliq,&
@@ -116,8 +122,8 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
                 rbid30, rbid31, rbid32, rbid33, rbid34,&
                 rbid35, rbid36, rbid37, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                em, rbid50, r3bid, rbid51, rinstp,&
-                retcom)
+                em, rbid50, rbid51, rinstp, retcom,&
+                angmas, aniso, ndim)
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
@@ -152,8 +158,11 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     if (emmag .and. yachai) call u2mess('F', 'CHAINAGE_5')
 !
     call inithm(imate, yachai, yamec, phi0, em,&
-                alpha0, k0, cs, biot, t,&
-                epsv, depsv, epsvm)
+                cs, tbiot, t, epsv, depsv,&
+                epsvm, angmas, aniso, mdal, dalal,&
+                alphfi, cbiot, unsks, alpha0, ndim,&
+                phenom)
+!
 ! *********************************************************************
 ! *** LES VARIABLES INTERNES ******************************************
 ! *********************************************************************
@@ -164,9 +173,10 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! =====================================================================
         if ((yamec.eq.1) .or. yachai) then
             call viporo(nbvari, vintm, vintp, advico, vicphi,&
-                        phi0, depsv, alpha0, dt, dp1,&
-                        dp2, signe, sat, cs, biot,&
-                        phi, phim, retcom)
+                        phi0, deps, depsv, alphfi, dt,&
+                        dp1, dp2, signe, sat, cs,&
+                        tbiot, phi, phim, retcom, cbiot,&
+                        unsks, alpha0, aniso, phenom)
         else if (yamec .eq. 2) then
             phi = vintp(advico+vicphi)
         endif
@@ -190,6 +200,15 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
     if (retcom .ne. 0) then
         goto 30
     endif
+! =====================================================================
+! --- ACTUALISATION DE CS ET ALPHFI -----------------------------------
+! =====================================================================
+    if (yamec .eq. 1) then
+        call dilata(imate, phi, alphfi, t, aniso,&
+                    angmas, tbiot, ndim, phenom)
+        call unsmfi(imate, phi, cs, t, tbiot,&
+                    aniso, ndim, phenom)
+    endif
 ! **********************************************************************
 ! *** LES CONTRAINTES GENERALISEES *************************************
 ! **********************************************************************
@@ -200,7 +219,7 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! ======================================================================
 ! --- CALCUL DES COEFFICIENTS DE DILATATIONS ALPHA SELON FORMULE DOCR --
 ! ======================================================================
-        alp11 = dileau(sat,biot,phi,alpha0,alpliq)
+        alp11 = dileau(sat,phi,alphfi,alpliq)
 ! ======================================================================
 ! --- CALCUL DE LA CAPACITE CALORIFIQUE SELON FORMULE DOCR -------------
 ! --- RHO12, RHO21, RHO22 SONT NULLES ----------------------------------
@@ -208,8 +227,8 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! ======================================================================
         call capaca(rho0, rho11, rho12, rho21, rho22,&
                     sat, phi, csigm, cp11, cp12,&
-                    cp21, cp22, k0, alpha0, t,&
-                    coeps, retcom)
+                    cp21, cp22, dalal, t, coeps,&
+                    retcom)
 ! =====================================================================
 ! --- PROBLEME LORS DU CALCUL DE COEPS --------------------------------
 ! =====================================================================
@@ -226,8 +245,8 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! --- CALCUL DE LA CHALEUR REDUITE Q' SELON FORMULE DOCR ---------------
 ! --- DP2 ET ALP12 SONT  NULLES ----------------------------------------
 ! ======================================================================
-            congep(adcote) = congep(adcote) + calor(alpha0,k0,t,dt, depsv,dp1,dp2,signe,alp11,alp&
-                             &12,coeps)
+            congep(adcote) = congep(adcote) + calor(mdal,t,dt,deps, dp1,dp2,signe,alp11,alp12,coe&
+                             &ps,ndim)
         endif
     endif
 ! ======================================================================
@@ -238,14 +257,21 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 ! ======================================================================
         if (yamec .eq. 1) then
-            congep(adcome+6)=congep(adcome+6) + sigmap(net,bishop,sat,&
-            signe,biot,dp2,dp1)
+            call sigmap(net, bishop, sat, signe, tbiot,&
+                        dp2, dp1, sigmp)
+            do 10 i = 1, 3
+                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
+10          continue
+            do 14 i = 4, 6
+                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
+                rac2
+14          continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 ! ======================================================================
         if (.not.perman) then
-            congep(adcp11) = appmas( m11m,phi,phim,sat,satm,rho11, rho11m,epsv,epsvm)
+            congep(adcp11) = appmas(m11m,phi,phim,sat,satm,rho11, rho11m,epsv,epsvm)
         endif
     endif
 !
@@ -263,17 +289,26 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 ! ======================================================================
-            dsde(adcome+6,addep1)=dsde(adcome+6,addep1) + dspdp1(net,&
-            bishop,signe,biot,sat)
+            call dspdp1(net, bishop, signe, tbiot, sat,&
+                        dsdp1)
+            do 11 i = 1, 3
+                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
+                + dsdp1(i)
+11          continue
+!
+            do 88 i = 4, 6
+                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
+                + dsdp1(i)*rac2
+88          continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 ! ======================================================================
             if (.not.perman) then
-                do 10 i = 1, 3
-                    dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdepv(rho11,s&
-                                                   &at,biot)
-10              continue
+                call dmdepv(rho11, sat, tbiot, dmdeps)
+                do 12 i = 1, 6
+                    dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
+12              continue
             endif
         endif
         if (yate .eq. 1) then
@@ -297,24 +332,27 @@ subroutine hmlisa(perman, yachai, option, meca, thmc,&
             dsde(adcote,addete)=dsde(adcote,addete)+dqdt(coeps)
             dsde(adcote,addep1)=dsde(adcote,addep1)+dqdp(signe,alp11,&
             t)
+        
 ! ======================================================================
 ! --- CALCUL DE LA DERIVEE DE LA CHALEUR REDUITE Q' --------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 ! ======================================================================
             if (yamec .eq. 1) then
-                do 20 i = 1, 3
-                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqdeps(alpha0,&
-                                                   &k0,t)
+                call dqdeps(mdal, t, dqeps)
+                do 20 i = 1, 6
+                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
+
 20              continue
             endif
+
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- POUR LES AUTRES CAS ----------------------------------------------
 ! ======================================================================
         if (.not.perman) then
-            dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,biot,phi,c&
-                                  &s,cliq,1.0d0, emmag,em)
+            dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cli&
+                                  &q,1.0d0, emmag,em)
         endif
     endif
 ! ======================================================================

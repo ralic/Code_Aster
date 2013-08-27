@@ -15,17 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine thmlec(imate, thmc, meca, hydr, ther,&
                       t, p1, p2, phi, end,&
-                      pvp, pad, rgaz, biot, satur,&
-                      dsatur, pesa, permfh, permli, dperml,&
+                      pvp, pad, rgaz, tbiot, satur,&
+                      dsatur, pesa, tperm, permli, dperml,&
                       permgz, dperms, dpermp, fick, dfickt,&
                       dfickg, lambp, dlambp, unsurk, alpha,&
                       lambs, dlambs, viscl, dviscl, mamolg,&
-                      lambt, dlambt, viscg, dviscg, mamolv,&
-                      fickad, dfadt, lambct, isot, dficks,&
-                      instap)
+                      tlambt, tdlamt, viscg, dviscg, mamolv,&
+                      fickad, dfadt, tlamct, dficks, instap,&
+                      angmas, aniso, ndim)
+        integer :: ndim
         integer :: imate
         character(len=16) :: thmc
         character(len=16) :: meca
@@ -39,11 +40,11 @@ interface
         real(kind=8) :: pvp
         real(kind=8) :: pad
         real(kind=8) :: rgaz
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: satur
         real(kind=8) :: dsatur
         real(kind=8) :: pesa(3)
-        real(kind=8) :: permfh
+        real(kind=8) :: tperm(ndim, ndim)
         real(kind=8) :: permli
         real(kind=8) :: dperml
         real(kind=8) :: permgz
@@ -61,16 +62,17 @@ interface
         real(kind=8) :: viscl
         real(kind=8) :: dviscl
         real(kind=8) :: mamolg
-        real(kind=8) :: lambt
-        real(kind=8) :: dlambt
+        real(kind=8) :: tlambt(ndim, ndim)
+        real(kind=8) :: tdlamt(ndim, ndim)
         real(kind=8) :: viscg
         real(kind=8) :: dviscg
         real(kind=8) :: mamolv
         real(kind=8) :: fickad
         real(kind=8) :: dfadt
-        real(kind=8) :: lambct
-        real(kind=8) :: isot(6)
+        real(kind=8) :: tlamct(ndim, ndim)
         real(kind=8) :: dficks
         real(kind=8) :: instap
+        real(kind=8) :: angmas(3)
+        integer :: aniso
     end subroutine thmlec
-end interface
+end interface 

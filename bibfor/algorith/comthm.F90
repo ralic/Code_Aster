@@ -6,8 +6,9 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                   addep2, adcp21, adcp22, addete, adcote,&
                   defgem, defgep, congem, congep, vintm,&
                   vintp, dsde, pesa, retcom, kpi,&
-                  npg, p10, p20)
+                  npg, p10, p20, angmas)
 ! ======================================================================
+!
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -134,20 +135,22 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: nvim, advime, advith, advihy, advico
+    integer :: nvim, advime, advith, advihy, advico, anisof, aniso
     integer :: vihrho, vicphi, vicpvp, vicsat, nvih, nvic, nvit
     real(kind=8) :: p1, dp1, grap1(3), p2, dp2, grap2(3), t, dt, grat(3)
     real(kind=8) :: phi, pvp, pad, h11, h12, rho11, epsv, deps(6), depsv
     real(kind=8) :: t0, p10, p20, phi0, pvp0, sat, mamovg
-    real(kind=8) :: rgaz, biot, satur, dsatur, pesa(3)
-    real(kind=8) :: permfh, permli, dperml, permgz, dperms, dpermp, fick
-    real(kind=8) :: dfickt, dfickg, lambp, dlambp, unsurk
-    real(kind=8) :: lambs, dlambs, viscl, dviscl, lambt
-    real(kind=8) :: dlambt, viscg, dviscg, mamolg
-    real(kind=8) :: fickad, dfadt, kh, lambct, alpha, isot(6)
+    real(kind=8) :: rgaz, tbiot(6), satur, dsatur, pesa(3)
+    real(kind=8) :: tperm(ndim, ndim), permli, dperml, permgz, dperms, dpermp
+    real(kind=8) :: dfickt, dfickg, lambp, dlambp, unsurk, fick
+    real(kind=8) :: lambs, dlambs, viscl, dviscl
+    real(kind=8) :: viscg, dviscg, mamolg
+    real(kind=8) :: fickad, dfadt, kh, alpha
+    real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim),tdlamt(ndim, ndim)
     real(kind=8) :: dficks
     real(kind=8) :: deltat
-    character(len=16) :: meca, thmc, ther, hydr
+    real(kind=8) :: angmas(3)
+    character(len=16) :: meca, thmc, ther, hydr, phenom
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------
 ! ======================================================================
@@ -189,8 +192,9 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                 p2, dp1, dp2, t, dt,&
                 phi, pvp, pad, h11, h12,&
                 kh, rho11, phi0, pvp0, sat,&
-                retcom, crit, biot, vihrho, vicphi,&
-                vicpvp, vicsat, instap)
+                retcom, crit, tbiot, vihrho, vicphi,&
+                vicpvp, vicsat, instap, angmas, aniso,&
+                phenom)
 !
     if (retcom .ne. 0) then
         goto 9000
@@ -232,9 +236,9 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                     ndim, dimdef, dimcon, nvim, yate,&
                     addeme, adcome, addete, defgem, congem,&
                     congep, vintm, vintp, addep1, addep2,&
-                    dsde, deps, depsv, p1, p2,&
+                    dsde, deps, p1, p2,&
                     t, dt, retcom, dp1, dp2,&
-                    sat, biot)
+                    sat, tbiot, angmas, aniso, phenom)
         if (retcom .ne. 0) then
             goto 9000
         endif
@@ -244,42 +248,51 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 ! ======================================================================
     call thmlec(imate, thmc, meca, hydr, ther,&
                 t, p1, p2, phi, vintp(1),&
-                pvp, pad, rgaz, biot, satur,&
-                dsatur, pesa, permfh, permli, dperml,&
+                pvp, pad, rgaz, tbiot, satur,&
+                dsatur, pesa, tperm, permli, dperml,&
                 permgz, dperms, dpermp, fick, dfickt,&
                 dfickg, lambp, dlambp, unsurk, alpha,&
                 lambs, dlambs, viscl, dviscl, mamolg,&
-                lambt, dlambt, viscg, dviscg, mamovg,&
-                fickad, dfadt, lambct, isot, dficks,&
-                instap)
-!
+                tlambt, tdlamt, viscg, dviscg, mamovg,&
+                fickad, dfadt, tlamct, dficks, instap,&
+                angmas, anisof, ndim)
 !
 ! CONDUCTIVITES EN VF
 !
     if (vf .and. (ifa.eq.0)) then
-        valcen(vkint ,kxx)=permfh*isot(1)
-        valcen(vkint ,kyy)=permfh*isot(2)
-        valcen(vkint ,kzz)=permfh*isot(3)
-        valcen(vkint ,kxy)=permfh*isot(4)
-        valcen(vkint ,kyz)=permfh*isot(5)
-        valcen(vkint ,kzx)=permfh*isot(6)
+        if (ndim .eq. 3) then
+            valcen(vkint ,kxx)=tperm(1,1)
+            valcen(vkint ,kyy)=tperm(2,2)
+            valcen(vkint ,kzz)=tperm(3,3)
+            valcen(vkint ,kxy)=tperm(1,2)
+            valcen(vkint ,kyz)=tperm(1,3)
+            valcen(vkint ,kzx)=tperm(2,3)
+        else
+            valcen(vkint ,kxx)=tperm(1,1)
+            valcen(vkint ,kyy)=tperm(1,1)
+            valcen(vkint ,kzz)=tperm(2,2)
+            valcen(vkint ,kxy)=tperm(1,2)
+            valcen(vkint ,kyz)=0.d0
+            valcen(vkint ,kzx)=0.d0
+        endif
     endif
 ! ======================================================================
 ! --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 ! ======================================================================
     if (yap1 .eq. 1) then
+!
         call calcfh(option, perman, thmc, ndim, dimdef,&
                     dimcon, yamec, yate, addep1, addep2,&
                     adcp11, adcp12, adcp21, adcp22, addeme,&
                     addete, congep, dsde, p1, p2,&
                     grap1, grap2, t, grat, pvp,&
                     pad, rho11, h11, h12, rgaz,&
-                    dsatur, pesa, permfh, permli, dperml,&
+                    dsatur, pesa, tperm, permli, dperml,&
                     permgz, dperms, dpermp, fick, dfickt,&
                     dfickg, fickad, dfadt, kh, unsurk,&
                     alpha, viscl, dviscl, mamolg, viscg,&
-                    dviscg, mamovg, isot, dficks, vf,&
-                    ifa, valfac, valcen)
+                    dviscg, mamovg, dficks, vf, ifa,&
+                    valfac, valcen)
         if (retcom .ne. 0) then
             goto 9000
         endif
@@ -292,9 +305,10 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                     dimcon, yamec, yap1, yap2, addete,&
                     addeme, addep1, addep2, adcote, congep,&
                     dsde, t, grat, phi, pvp,&
-                    rgaz, biot, satur, dsatur, lambp,&
-                    dlambp, lambs, dlambs, lambt, dlambt,&
-                    mamovg, lambct, rho11, h11, h12)
+                    rgaz, tbiot, satur, dsatur, lambp,&
+                    dlambp, lambs, dlambs, tlambt, tdlamt,&
+                    mamovg, tlamct, rho11, h11, h12,&
+                    angmas, anisof, phenom)
         if (retcom .ne. 0) then
             goto 9000
         endif

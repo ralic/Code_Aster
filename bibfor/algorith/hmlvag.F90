@@ -8,7 +8,8 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
                   p1, p2, dp1, dp2, t,&
                   dt, phi, pvp, h11, h12,&
                   rho11, phi0, pvp0, sat, retcom,&
-                  thmc, crit, biot, rinstp)
+                  thmc, crit, tbiot, rinstp, angmas,&
+                  aniso, phenom)
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +48,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 #include "asterfort/dhdt.h"
 #include "asterfort/dhwdp1.h"
 #include "asterfort/dhwdp2.h"
+#include "asterfort/dilata.h"
 #include "asterfort/dileau.h"
 #include "asterfort/dilgaz.h"
 #include "asterfort/dmasdt.h"
@@ -73,6 +75,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 #include "asterfort/nmbarc.h"
 #include "asterfort/sigmap.h"
 #include "asterfort/thmrcp.h"
+#include "asterfort/unsmfi.h"
 #include "asterfort/viemma.h"
 #include "asterfort/viporo.h"
 #include "asterfort/vipvp1.h"
@@ -85,17 +88,18 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
     real(kind=8) :: congem(dimcon), congep(dimcon), vintm(nbvari), pvp0
     real(kind=8) :: vintp(nbvari), dsde(dimcon, dimdef), epsv, depsv
     real(kind=8) :: p1, dp1, p2, dp2, t, dt, phi, pvp, h11, h12, rho11, phi0
-    real(kind=8) :: rinstp
-    character(len=16) :: option, meca, ther, hydr, thmc
+    real(kind=8) :: rinstp, angmas(3)
+    character(len=16) :: option, meca, ther, hydr, thmc, phenom
     logical :: yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i
+    integer :: i, aniso
     real(kind=8) :: satm, epsvm, phim, rho11m, rho12m, rho21m, pvpm
-    real(kind=8) :: rho110, biot, k0, cs, alpha0, alpliq, cliq, rho12
+    real(kind=8) :: rho110, tbiot(6), cs, alpliq, cliq, rho12
     real(kind=8) :: rho21, cp11, cp12, cp21, sat, dsatp1, mamolv, mamolg
     real(kind=8) :: r, rho0, csigm, alp11, alp12, alp21, em, eps
+    real(kind=8) :: mdal(6), dalal, alphfi, cbiot, unsks, alpha0
     parameter  ( eps = 1.d-21 )
     logical :: emmag
 ! ======================================================================
@@ -112,16 +116,19 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ======================================================================
     real(kind=8) :: rbid1, rbid2, rbid3, rbid4, rbid5, rbid6, rbid7
     real(kind=8) :: rbid8, rbid10, rbid14(3)
-    real(kind=8) :: rbid15, rbid16, rbid17, rbid18, rbid19, rbid20
+    real(kind=8) :: rbid15(ndim, ndim), rbid16, rbid17, rbid18, rbid19
     real(kind=8) :: rbid21, rbid22, rbid23, rbid24, rbid25, rbid26
-    real(kind=8) :: rbid27, rbid28, rbid29, rbid32
-    real(kind=8) :: rbid33, rbid34, rbid35, rbid38
+    real(kind=8) :: rbid27, rbid28, rbid29, rbid32(ndim, ndim), rbid20
+    real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid38
     real(kind=8) :: rbid39, rbid45, rbid46, rbid47, rbid48, rbid49
-    real(kind=8) :: rbid50, rbid51
-    real(kind=8) :: r3bid(6)
+    real(kind=8) :: rbid50(ndim, ndim), rbid51
     real(kind=8) :: signe, dpad, coeps, cp22, pas, rho22, m11m, m12m, m21m
+    real(kind=8) :: dmdeps(6), sigmp(6)
+    real(kind=8) :: dqeps(6), dsdp1(6), dsdp2(6), rac2
 !
     logical :: net, bishop
+!
+    rac2 = sqrt(2.d0)
 !
 ! =====================================================================
 ! --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
@@ -131,7 +138,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
                 ther, rbid1, rbid2, rbid3, rbid4,&
                 rbid5, t, p1, p1-dp1, rbid6,&
                 rbid7, rbid8, rbid10, r, rho0,&
-                csigm, biot, satm, sat, dsatp1,&
+                csigm, tbiot, satm, sat, dsatp1,&
                 rbid14, rbid15, rbid16, rbid17, rbid18,&
                 rbid19, rbid20, rbid21, rbid22, rbid23,&
                 rbid24, rbid25, rho110, cliq, alpliq,&
@@ -139,8 +146,8 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
                 mamolg, cp21, rbid32, rbid33, rbid34,&
                 rbid35, mamolv, cp12, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                em, rbid50, r3bid, rbid51, rinstp,&
-                retcom)
+                em, rbid50, rbid51, rinstp, retcom,&
+                angmas, aniso, ndim)
 ! ======================================================================
 ! --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
 ! --- VARIABES POUR QU ELLES AIENT UNE VALEUR MEME DANS LES CAS OU -----
@@ -168,8 +175,10 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
         emmag = .true.
     endif
     call inithm(imate, yachai, yamec, phi0, em,&
-                alpha0, k0, cs, biot, t,&
-                epsv, depsv, epsvm)
+                cs, tbiot, t, epsv, depsv,&
+                epsvm, angmas, aniso, mdal, dalal,&
+                alphfi, cbiot, unsks, alpha0, ndim,&
+                phenom)
 ! *********************************************************************
 ! *** LES VARIABLES INTERNES ******************************************
 ! *********************************************************************
@@ -180,9 +189,10 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! =====================================================================
         if ((yamec.eq.1)) then
             call viporo(nbvari, vintm, vintp, advico, vicphi,&
-                        phi0, depsv, alpha0, dt, dp1,&
-                        dp2, signe, sat, cs, biot,&
-                        phi, phim, retcom)
+                        phi0, deps, depsv, alphfi, dt,&
+                        dp1, dp2, signe, sat, cs,&
+                        tbiot, phi, phim, retcom, cbiot,&
+                        unsks, alpha0, aniso, phenom)
         endif
         if (emmag) then
             call viemma(nbvari, vintm, vintp, advico, vicphi,&
@@ -218,7 +228,15 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
             goto 30
         endif
     endif
-!
+! =====================================================================
+! --- ACTUALISATION DE CS ET ALPHFI -----------------------------------
+! =====================================================================
+    if (yamec .eq. 1) then
+        call dilata(imate, phi, alphfi, t, aniso,&
+                    angmas, tbiot, ndim, phenom)
+        call unsmfi(imate, phi, cs, t, tbiot,&
+                    aniso, ndim, phenom)
+    endif
 ! **********************************************************************
 ! *** LES CONTRAINTES GENERALISEES *************************************
 ! **********************************************************************
@@ -232,9 +250,9 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ---  DANS LE CAS D'UN SEUL FLUIDE ---------------------------
 ! =====================================================================
     if (yate .eq. 1) then
-        alp11 = dileau(sat,biot,phi,alpha0,alpliq)
-        alp12 = dilgaz(sat,biot,phi,alpha0,t )
-        alp21 = dilgaz(sat,biot,phi,alpha0,t )
+        alp11 = dileau(sat,phi,alphfi,alpliq)
+        alp12 = dilgaz(sat,phi,alphfi,t )
+        alp21 = dilgaz(sat,phi,alphfi,t )
         h11 = congem(adcp11+ndim+1)
         h12 = congem(adcp12+ndim+1)
 ! ======================================================================
@@ -242,8 +260,8 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ======================================================================
         call capaca(rho0, rho11, rho12, rho21, rho22,&
                     sat, phi, csigm, cp11, cp12,&
-                    cp21, cp22, k0, alpha0, t,&
-                    coeps, retcom)
+                    cp21, cp22, dalal, t, coeps,&
+                    retcom)
 ! =====================================================================
 ! --- PROBLEME LORS DU CALCUL DE COEPS --------------------------------
 ! =====================================================================
@@ -263,8 +281,8 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! --- CALCUL DE LA CHALEUR REDUITE Q' SELON FORMULE DOCR ---------------
 ! ======================================================================
-            congep(adcote) = congep(adcote) + calor(alpha0,k0,t,dt, depsv,dp1,dp2,signe,alp11,alp&
-                             &12,coeps)
+            congep(adcote) = congep(adcote) + calor(mdal,t,dt,deps, dp1,dp2,signe,alp11,alp12,coe&
+                             &ps,ndim)
         endif
     endif
 ! ======================================================================
@@ -275,17 +293,22 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 ! ======================================================================
         if (yamec .eq. 1) then
-            congep(adcome+6)=congep(adcome+6) + sigmap(net,bishop,sat,&
-            signe,biot,dp2,dp1)
+            call sigmap(net, bishop, sat, signe, tbiot,&
+                        dp2, dp1, sigmp)
+            do 10 i = 1, 3
+                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
+10          continue
+            do 11 i = 4, 6
+                congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)*&
+                rac2
+11          continue
         endif
 ! ======================================================================
 ! --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 ! ======================================================================
-        congep(adcp11) = appmas( m11m,phi,phim,sat,satm,rho11, rho11m, epsv,epsvm)
-        congep(adcp12) = appmas(&
-                         m12m, phi, phim, 1.0d0-sat, 1.0d0-satm, rho12, rho12m, epsv, epsvm)
-        congep(adcp21) = appmas(&
-                         m21m, phi, phim, 1.0d0-sat, 1.0d0-satm, rho21, rho21m, epsv, epsvm)
+        congep(adcp11) = appmas(m11m,phi,phim,sat,satm,rho11, rho11m, epsv,epsvm)
+        congep(adcp12) = appmas(m12m,phi,phim,1.0d0-sat, 1.0d0-satm, rho12,rho12m,epsv,epsvm)
+        congep(adcp21) = appmas(m21m,phi,phim,1.0d0-sat, 1.0d0-satm, rho21,rho21m,epsv,epsvm)
     endif
 !
 ! **********************************************************************
@@ -302,22 +325,37 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 ! ======================================================================
-            dsde(adcome+6,addep1)=dsde(adcome+6,addep1) + dspdp1(net,&
-            bishop,signe,biot,sat)
-            dsde(adcome+6,addep2)=dsde(adcome+6,addep2) +dspdp2(net,&
-            bishop,biot)
+            call dspdp1(net, bishop, signe, tbiot, sat,&
+                        dsdp1)
+            call dspdp2(net, bishop, tbiot, dsdp2)
+            do 111 i = 1, 3
+                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
+                +dsdp1(i)
+                dsde(adcome+6+i-1,addep2)=dsde(adcome+6+i-1,addep2)&
+                +dsdp2(i)
+111          continue
+            do 112 i = 4, 6
+                dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1)&
+                +dsdp1(i)*rac2
+                dsde(adcome+6+i-1,addep2)=dsde(adcome+6+i-1,addep2)&
+                +dsdp2(i)*rac2
+112          continue
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 ! ======================================================================
-            do 10 i = 1, 3
-                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdepv(rho11,sat,b&
-                                               &iot)
-                dsde(adcp12,addeme+ndim-1+i) = dsde(adcp12,addeme+ ndim-1+i) + dmdepv(rho12,1.0d0&
-                                               &-sat,biot)
-                dsde(adcp21,addeme+ndim-1+i) = dsde(adcp21,addeme+ ndim-1+i) + dmdepv(rho21,1.0d0&
-                                               &-sat,biot)
-10          continue
+            call dmdepv(rho11, sat, tbiot, dmdeps)
+            do 12 i = 1, 6
+                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + dmdeps(i)
+12          continue
+            call dmdepv(rho12, 1.0d0-sat, tbiot, dmdeps)
+            do 13 i = 1, 6
+                dsde(adcp12,addeme+ndim-1+i) = dsde(adcp12,addeme+ ndim-1+i) + dmdeps(i)
+13          continue
+            call dmdepv(rho21, 1.0d0-sat, tbiot, dmdeps)
+            do 14 i = 1, 6
+                dsde(adcp21,addeme+ndim-1+i) = dsde(adcp21,addeme+ ndim-1+i) + dmdeps(i)
+14          continue
         endif
         if (yate .eq. 1) then
 ! ======================================================================
@@ -356,9 +394,9 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 ! ======================================================================
             if (yamec .eq. 1) then
-                do 20 i = 1, 3
-                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqdeps(alpha0,&
-                                                   &k0,t)
+                call dqdeps(mdal, t, dqeps)
+                do 20 i = 1, 6
+                    dsde(adcote,addeme+ndim-1+i) = dsde(adcote,addeme+ ndim-1+i) + dqeps(i)
 20              continue
             endif
         endif
@@ -366,18 +404,17 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! --- POUR LES AUTRES CAS ----------------------------------------------
 ! ======================================================================
-        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,biot,phi,cs,cl&
-                              &iq,1.0d0, emmag,em)
-        dsde(adcp11,addep2) = dsde(adcp11,addep2) + dmwdp2(rho11,sat, biot,phi,cs,cliq,1.0d0, emm&
+        dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cliq,1.&
+                              &0d0, emmag,em)
+        dsde(adcp11,addep2) = dsde(adcp11,addep2) + dmwdp2(rho11,sat, phi,cs,cliq,1.0d0, emmag,em&
+                              &)
+        dsde(adcp12,addep1) = dsde(adcp12,addep1) + dmvdp1(rho11, rho12,sat,dsatp1,phi,cs,pvp, em&
+                              &mag,em)
+        dsde(adcp12,addep2) = dsde(adcp12,addep2) + dmvdp2(rho11, rho12,sat,phi,cs,pvp, emmag,em)
+        dsde(adcp21,addep1) = dsde(adcp21,addep1) + dmasp1(rho11, rho12,rho21,sat,dsatp1,phi,cs,p&
+                              &as, emmag,em)
+        dsde(adcp21,addep2) = dsde(adcp21,addep2) + dmasp2(rho11, rho12,rho21,sat,phi,cs,pas, emm&
                               &ag,em)
-        dsde(adcp12,addep1) = dsde(adcp12,addep1) + dmvdp1(rho11, rho12,sat,dsatp1,biot,phi,cs,pv&
-                              &p, emmag,em)
-        dsde(adcp12,addep2) = dsde(adcp12,addep2) + dmvdp2(rho11, rho12,sat,biot,phi,cs,pvp, emma&
-                              &g,em)
-        dsde(adcp21,addep1) = dsde(adcp21,addep1) + dmasp1(rho11, rho12,rho21,sat,dsatp1,biot,phi&
-                              &,cs,pas, emmag,em)
-        dsde(adcp21,addep2) = dsde(adcp21,addep2) + dmasp2(rho11, rho12,rho21,sat,biot,phi,cs,pas&
-                              &, emmag,em)
     endif
 !
 ! =====================================================================
@@ -387,7 +424,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
         tini = t-dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
-        call nmbarc(ndim, imate, crit, sat, biot,&
+        call nmbarc(ndim, imate, crit, sat, tbiot(1),&
                     tini, t, deps, congem(adcome), vintm,&
                     option, congep(adcome), vintp, dsdeme, p1,&
                     p2, dp1, dp2, dsidp1, sipm,&

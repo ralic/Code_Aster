@@ -1,6 +1,6 @@
-function dileau(sat, biot, phi, alpha0, alpliq)
-    implicit      none
-    real(kind=8) :: sat, biot, phi, alpha0, alpliq, dileau
+function dileau(sat, phi, alphfi, alpliq)
+    implicit none
+    real(kind=8) :: sat, phi, alphfi, alpliq, dileau
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,6 @@ function dileau(sat, biot, phi, alpha0, alpliq)
 ! ======================================================================
 ! --- CALCUL DES COEFFICIENTS DE DILATATIONS D EAU SELON FORMULE DOCR --
 ! ======================================================================
-    dileau = sat*(biot-phi)*alpha0+alpliq*phi*sat
+    dileau = sat*alphfi+alpliq*phi*sat
 ! ======================================================================
 end function

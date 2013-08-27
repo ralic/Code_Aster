@@ -1,6 +1,6 @@
 # TITRE  MODELISATION D UN GRADIENT D'EAU SUR UN BARREAU SATURE EN LIQUIDE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,7 +125,9 @@ MATERIAU=DEFI_MATERIAU(COMP_THM='LIQU_AD_GAZ_VAPE',
                                    TEMP=293.),
                        THM_DIFFU=_F(R_GAZ=8.315,
                                     RHO=1.,
-                                    BIOT_COEF=1.,
+                                    BIOT_L=1.,
+                                    BIOT_T=1.,
+                                    BIOT_N= 1.,
                                     PESA_X=0.,
                                     PESA_Y=0.,
                                     PESA_Z=0.,
@@ -138,11 +140,11 @@ MATERIAU=DEFI_MATERIAU(COMP_THM='LIQU_AD_GAZ_VAPE',
                                     D_PERM_PRES_GAZ=ZERO,
                                     FICKV_T=ZERO,
                                     FICKA_T=ZERO,
-                                    PERMIN_X=PERMINT,
-                                    PERMIN_Y=PERMINT,
-                                    PERMIN_Z=ZERO,
-                                    LAMB_T=ZERO,
-                                    EMMAG=EMMAG),
+                                    PERMIN_L=PERMINT,
+                                    PERMIN_T=ZERO,
+                                    LAMB_TL=ZERO,
+                                    LAMB_TT=ZERO,
+                                    EMMAG=EMMAG,),
                        THM_LIQU=_F(RHO=1.,
                                    UN_SUR_K=UN_SUR_K,
                                    VISC=UN,

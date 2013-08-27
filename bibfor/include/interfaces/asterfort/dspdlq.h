@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dspdlq(biot, sat, dpvpl)
-        real(kind=8) :: biot
+interface 
+    subroutine dspdlq(tbiot, sat, dpvpl, dsdlq)
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: sat
         real(kind=8) :: dpvpl
-        real(kind=8) :: dspdlq
-    end function dspdlq
-end interface
+        real(kind=8) :: dsdlq(6)
+    end subroutine dspdlq
+end interface 

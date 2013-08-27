@@ -1,11 +1,11 @@
 function dmasp1(rho11, rho12, rho21, sat, dsatp1,&
-                biot, phi, cs, pas, emmag,&
-                em)
+                phi, cs, pas, emmag, em)
     implicit none
-    real(kind=8) :: rho11, rho12, rho21, sat, dsatp1, biot, phi, cs, pas, dmasp1
+    real(kind=8) :: rho11, rho12, rho21, sat, dsatp1, phi, cs, pas, dmasp1
     real(kind=8) :: em, dphip1
     logical :: emmag
 ! ======================================================================
+!           
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,10 +28,9 @@ function dmasp1(rho11, rho12, rho21, sat, dsatp1,&
 ! ======================================================================
     if (emmag) then
         dphip1 = - sat*em
-        dmasp1 = rho21 * ( -dsatp1*phi + (1.d0-sat)*dphip1 + phi*(1.d0- sat)/pas*rho12/rho11 )
+        dmasp1 = rho21 * (-dsatp1*phi + (1.d0-sat)*dphip1 + phi*(1.d0- sat)/pas*rho12/rho11)
     else
-        dmasp1 = rho21 * (&
-                 -dsatp1*phi - (1.d0-sat)*sat*(biot-phi)*cs + phi*(1.d0-sat)/pas*rho12/rho11)
+        dmasp1 = rho21 * (-dsatp1*phi - (1.d0-sat)*sat*cs + phi*(1.d0- sat)/pas*rho12/rho11)
     endif
 ! ======================================================================
 end function

@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine erhms2(perman, ino, nbs, theta, jac,&
                       nx, ny, sielnp, adsip, sielnm,&
                       nbcmp, typmav, tbref1, tbref2, ivois,&
@@ -27,9 +27,9 @@ interface
         real(kind=8) :: jac(3)
         real(kind=8) :: nx(3)
         real(kind=8) :: ny(3)
-        real(kind=8) :: sielnp(90)
+        real(kind=8) :: sielnp(140)
         integer :: adsip
-        real(kind=8) :: sielnm(90)
+        real(kind=8) :: sielnm(140)
         integer :: nbcmp
         character(len=8) :: typmav
         integer :: tbref1(12)
@@ -37,4 +37,4 @@ interface
         integer :: ivois
         real(kind=8) :: tm2h1s(3)
     end subroutine erhms2
-end interface
+end interface 

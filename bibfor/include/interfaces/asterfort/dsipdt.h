@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dsipdt(biot, sat, dpvpt)
-        real(kind=8) :: biot
+interface 
+    subroutine dsipdt(tbiot, sat, dpvpt, dspdt)
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: sat
         real(kind=8) :: dpvpt
-        real(kind=8) :: dsipdt
-    end function dsipdt
-end interface
+        real(kind=8) :: dspdt(6)
+    end subroutine dsipdt
+end interface 

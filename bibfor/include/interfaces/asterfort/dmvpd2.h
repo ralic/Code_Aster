@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     function dmvpd2(rho12, alp12, dpvpt, phi, ums,&
-                    pvp, phids, bmph, cs)
+                    pvp, phids, cs)
         real(kind=8) :: rho12
         real(kind=8) :: alp12
         real(kind=8) :: dpvpt
@@ -25,8 +25,7 @@ interface
         real(kind=8) :: ums
         real(kind=8) :: pvp
         real(kind=8) :: phids
-        real(kind=8) :: bmph
         real(kind=8) :: cs
-        real(kind=8) :: dmvpd2
+        real(kind=8) :: dmvpd2_0
     end function dmvpd2
-end interface
+end interface 

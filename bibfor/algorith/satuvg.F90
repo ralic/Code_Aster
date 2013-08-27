@@ -30,16 +30,17 @@ subroutine satuvg(vg, pc, sat, dsdpc)
 ! OUT
     real(kind=8) :: sat, dsdpc
 !
-    real(kind=8) :: satuma
-    real(kind=8) :: n, m, pr, smax, sr, s1max, pcmax, dpcmax
+    real(kind=8) :: satuma, n, m, pr, smax, sr
+    real(kind=8) :: s1max, pcmax, dpcmax, bidon
     real(kind=8) :: usn, usm, b1, c1
-    real(kind=8) :: bidon
+!
 !
     n = vg(1)
     pr = vg(2)
     sr = vg(3)
     smax = vg(4)
     satuma = vg(5)
+!
     m=1.d0-1.d0/n
     usn=1.d0/n
     usm=1.d0/m
@@ -50,11 +51,6 @@ subroutine satuvg(vg, pc, sat, dsdpc)
     call pcapvg(sr, pr, usm, usn, s1max,&
                 pcmax, dpcmax, bidon)
     call reguh1(pcmax, smax, 1.d0/dpcmax, b1, c1)
-!
-! FONCTION PROLONGATION A DROITE PAR FONCTION LINEAIRE DE S(PC)
-! ON SUPPRIME CAR INUTILE ET DANGEUREUX
-!      CALL PCAPVG(SR,PR,USM,USN,S1MIN,PCMIN,DPCMIN,BIDON)
-!     CALL REGUP1(X0,PCMIN,DPCMIN,AR,BR)
 !
     if ((pc.gt.pcmax)) then
 !

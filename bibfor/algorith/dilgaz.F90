@@ -1,7 +1,8 @@
-function dilgaz(sat, biot, phi, alpha0, t)
-    implicit      none
-    real(kind=8) :: sat, biot, phi, alpha0, t, dilgaz
+function dilgaz(sat, phi, alphfi, t)
+    implicit none
+    real(kind=8) :: sat, phi, alphfi, t, dilgaz
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +23,6 @@ function dilgaz(sat, biot, phi, alpha0, t)
 ! --- CALCUL DES COEFFICIENTS DE DILATATIONS DE GAZ, AIR SEC OU VAPEUR -
 ! --- SELON FORMULE DOCR -----------------------------------------------
 ! ======================================================================
-    dilgaz = (biot-phi)*(1.d0-sat)*alpha0+phi*(1.d0-sat)/3.d0/t
+    dilgaz = (1.d0-sat)*alphfi+phi*(1.d0-sat)/3.d0/t
 ! ======================================================================
 end function

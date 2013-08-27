@@ -8,8 +8,9 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                   p2, dp1, dp2, t, dt,&
                   phi, pvp, pad, h11, h12,&
                   kh, rho11, phi0, pvp0, sat,&
-                  retcom, crit, biot, vihrho, vicphi,&
-                  vicpvp, vicsat, rinstp)
+                  retcom, crit, tbiot, vihrho, vicphi,&
+                  vicpvp, vicsat, rinstp, angmas, aniso,&
+                  phenom)
 ! ======================================================================
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
@@ -53,7 +54,7 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
 #include "asterfort/hmlvag.h"
 #include "asterfort/hmlvga.h"
     integer :: ndim, dimdef, dimcon, nbvari, imate
-    integer :: yamec, yate
+    integer :: yamec, yate, aniso
     integer :: adcome, adcp11, bdcp11, adcp12, adcp21, adcp22, adcote
     integer :: addeme, addep1, addep2, addete, retcom
     integer :: advihy, advico, vihrho, vicphi, vicpvp, vicsat
@@ -62,12 +63,13 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
     real(kind=8) :: dsde(dimcon, dimdef), epsv, depsv, p1, dp1, p2, dp2, t, dt
     real(kind=8) :: phi, pvp, pad, h11, h12, kh, rho11, phi0
     real(kind=8) :: pvp0, sat, rinstp
-    character(len=16) :: option, meca, thmc, ther, hydr
+    real(kind=8) :: angmas(3)
+    character(len=16) :: option, meca, thmc, ther, hydr, phenom
     logical :: perman, yachai
 ! ======================================================================
 ! --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 ! ======================================================================
-    real(kind=8) :: deps(6), biot, crit(*)
+    real(kind=8) :: deps(6), tbiot(6), crit(*)
 !
 ! INITIALISATION ADRESSE SELON QUE LA PARTIE THH EST TRANSITOIRE OU NON
     if (perman) then
@@ -87,7 +89,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     congep, vintm, vintp, dsde, epsv,&
                     depsv, p1, dp1, t, dt,&
                     phi, rho11, phi0, sat, retcom,&
-                    biot, rinstp)
+                    tbiot, rinstp, angmas, deps, aniso,&
+                    phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE GAZ ----------------------------
 ! ======================================================================
@@ -99,7 +102,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     adcote, congem, congep, vintm, vintp,&
                     dsde, epsv, depsv, p1, dp1,&
                     t, dt, phi, rho11, phi0,&
-                    sat, retcom, biot, rinstp)
+                    sat, retcom, tbiot, rinstp, angmas,&
+                    deps, aniso, phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE ----------------------
 ! ======================================================================
@@ -113,7 +117,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     epsv, depsv, p1, dp1, t,&
                     dt, phi, pvp, h11, h12,&
                     rho11, phi0, pvp0, sat, retcom,&
-                    thmc, biot, rinstp)
+                    thmc, tbiot, rinstp, angmas, deps,&
+                    aniso, phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ------------------
 ! ======================================================================
@@ -128,7 +133,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     p1, p2, dp1, dp2, t,&
                     dt, phi, pvp, h11, h12,&
                     rho11, phi0, pvp0, sat, retcom,&
-                    thmc, crit, biot, rinstp)
+                    thmc, crit, tbiot, rinstp, angmas,&
+                    aniso, phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ -----------------------
 ! ======================================================================
@@ -142,7 +148,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     deps, epsv, depsv, p1, p2,&
                     dp1, dp2, t, dt, phi,&
                     rho11, phi0, sat, retcom, thmc,&
-                    crit, biot, rinstp)
+                    crit, tbiot, rinstp, angmas, aniso,&
+                    phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM -------------------
 ! ======================================================================
@@ -155,7 +162,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     vintm, vintp, dsde, epsv, depsv,&
                     p1, dp1, t, dt, phi,&
                     rho11, phi0, sat, retcom, thmc,&
-                    biot, rinstp)
+                    tbiot, rinstp, angmas, deps, aniso,&
+                    phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE ---------------
 ! ======================================================================
@@ -170,7 +178,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     p1, p2, dp1, dp2, t,&
                     dt, phi, pad, pvp, h11,&
                     h12, kh, rho11, phi0, pvp0,&
-                    sat, retcom, thmc, biot, rinstp)
+                    sat, retcom, thmc, tbiot, rinstp,&
+                    angmas, deps, aniso, phenom)
 ! ======================================================================
 ! --- CAS D'UNE LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE ---------------
 ! ======================================================================
@@ -185,7 +194,8 @@ subroutine calcco(option, yachai, perman, meca, thmc,&
                     p1, p2, dp1, dp2, t,&
                     dt, phi, pad, h11, h12,&
                     kh, rho11, phi0, sat, retcom,&
-                    thmc, biot, rinstp)
+                    thmc, tbiot, rinstp, angmas, deps,&
+                    aniso, phenom)
 ! ======================================================================
     endif
 ! ======================================================================

@@ -76,6 +76,7 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
 ! ======================================================================
     if (yamec .eq. 1) then
         do 100 i = 4, 6
+            congem(adcome+6+i-1) = congem(adcome+6+i-1)*rac2
             congem(adcome+i-1) = congem(adcome+i-1)*rac2
 100      continue
     endif
@@ -91,10 +92,11 @@ subroutine fonoda(imate, perman, mecani, press1, press2,&
             r(addeme+ndim+i-1)= r(addeme+ndim+i-1)+congem(adcome-1+i)
  6      continue
 ! ======================================================================
-! --- SCALAIRE SIGPPLUS MULTIPLIE PAR LE TENSEUR UNITE -----------------
+! --- TENSEUR SIGPPLUS -------------------------------------------------
 ! ======================================================================
-        do 7 i = 1, 3
-            r(addeme+ndim-1+i)=r(addeme+ndim-1+i)+congem(adcome+6)
+!
+        do 7 i = 1, 6
+            r(addeme+ndim-1+i)=r(addeme+ndim-1+i)+congem(adcome+6+i-1)
  7      continue
 ! ======================================================================
 ! --- CONTRIBUTION A R DEPENDANTE DE YAP1 ------------------------------

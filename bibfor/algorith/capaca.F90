@@ -1,14 +1,14 @@
 subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
                   sat, phi, csigm, cp11, cp12,&
-                  cp21, cp22, k0, alpha0, t,&
-                  coeps, retcom)
-    implicit      none
+                  cp21, cp22, dalal, t, coeps,&
+                  retcom)
+    implicit none
 #include "jeveux.h"
-#include "asterfort/iunifi.h"
 #include "asterfort/tecael.h"
+#include "asterfort/u2mesk.h"
     integer :: retcom
-    real(kind=8) :: rho0, rho11, rho12, rho21, rho22, sat, phi, csigm, alpha0, t
-    real(kind=8) :: k0, cp11, cp12, cp21, cp22, coeps
+    real(kind=8) :: rho0, rho11, rho12, rho21, rho22, sat, phi, csigm, dalal, t
+    real(kind=8) :: cp11, cp12, cp21, cp22, coeps
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
 ! ======================================================================
 ! --- CALCUL DE LA CAPACITE CALORIFIQUE --------------------------------
 ! ======================================================================
-    integer :: iadzi, iazk24, umess
+    integer :: iadzi, iazk24
     real(kind=8) :: umprhs
     character(len=8) :: nomail
 ! ======================================================================
@@ -39,11 +39,9 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
 ! ======================================================================
     umprhs = rho0-(rho11+rho22)*sat*phi-(rho12+rho21)*(1.d0-sat)*phi
     if (umprhs .le. 0.d0) then
-        umess = iunifi('MESSAGE')
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        write (umess,9001) 'CAPACA',' RHOS(1-PHI) <=0 A LA MAILLE: ',&
-        nomail
+        call u2mesk('A', 'ALGORITH17_39', 1, nomail)
         retcom = 1
         goto 30
     endif
@@ -52,19 +50,16 @@ subroutine capaca(rho0, rho11, rho12, rho21, rho22,&
 ! ======================================================================
 ! --- CALCUL DE COEPS SI MECANIQUE SINON ALPHA0=0 ----------------------
 ! ======================================================================
-    coeps = coeps - 9.d0*t*k0*alpha0*alpha0
+    coeps = coeps - t*dalal
     if (coeps .le. 0.d0) then
-        umess = iunifi('MESSAGE')
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        write (umess,9001) 'CAPACA',' COEPS <=0 A LA MAILLE: ',&
-        nomail
+        call u2mesk('A', 'ALGORITH17_40', 1, nomail)
         retcom = 1
         goto 30
     endif
 ! ======================================================================
 30  continue
 ! =====================================================================
-    9001 format (a8,2x,a30,2x,a8)
 ! ======================================================================
 end subroutine

@@ -1,7 +1,9 @@
-function dsipdt(biot, sat, dpvpt)
-    implicit      none
-    real(kind=8) :: biot, sat, dpvpt, dsipdt
+subroutine dsipdt(tbiot, sat, dpvpt, dspdt)
+    implicit none
+    integer :: i
+    real(kind=8) :: tbiot(6), sat, dpvpt, dspdt(6)
 ! ======================================================================
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +24,8 @@ function dsipdt(biot, sat, dpvpt)
 ! --- CALCUL DE LA DERIVEE DE LA CONTRAINTE DE PRESSION PAR RAPPORT ----
 ! --- A LA TEMPERATURE (POUR LE CAS LIQU_VAPE) -------------------------
 ! ======================================================================
-    dsipdt = -biot*(1.d0-sat)*dpvpt
+    do 10 i = 1, 6
+        dspdt(i) = -tbiot(i)*(1.d0-sat)*dpvpt
+10  end do
 ! ======================================================================
-end function
+end subroutine

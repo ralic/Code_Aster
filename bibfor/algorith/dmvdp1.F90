@@ -1,10 +1,11 @@
-function dmvdp1(rho11, rho12, sat, dsatp1, biot,&
-                phi, cs, pvp, emmag, em)
+function dmvdp1(rho11, rho12, sat, dsatp1, phi,&
+                cs, pvp, emmag, em)
     implicit none
-    real(kind=8) :: rho11, rho12, sat, dsatp1, biot, phi, cs, pvp, dmvdp1
+    real(kind=8) :: rho11, rho12, sat, dsatp1, phi, cs, pvp, dmvdp1
     real(kind=8) :: em, dphip1
     logical :: emmag
 ! ======================================================================
+!           
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,10 +28,9 @@ function dmvdp1(rho11, rho12, sat, dsatp1, biot,&
 ! ======================================================================
     if (emmag) then
         dphip1 = - sat*em
-        dmvdp1 = rho12 * ( -dsatp1*phi + (1.d0-sat)*dphip1 - phi*(1.d0- sat)/pvp*rho12/rho11 )
+        dmvdp1 = rho12 * (-dsatp1*phi + (1.d0-sat)*dphip1 - phi*(1.d0- sat)/pvp*rho12/rho11)
     else
-        dmvdp1 = rho12 * (&
-                 -dsatp1*phi - (1.d0-sat)*sat*(biot-phi)*cs - phi*(1.d0-sat)/pvp*rho12/rho11)
+        dmvdp1 = rho12 * (-dsatp1*phi - (1.d0-sat)*sat*cs - phi*(1.d0- sat)/pvp*rho12/rho11)
 ! ======================================================================
     endif
 end function

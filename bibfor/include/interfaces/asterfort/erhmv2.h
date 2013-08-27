@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
                       nmec, np1, np2, ndim, nno,&
                       nnos, nnom, npg, nddls, nddlm,&
@@ -51,8 +51,8 @@ interface
         real(kind=8) :: fovo(ndim)
         real(kind=8) :: deplp(nno*dimdep)
         real(kind=8) :: deplm(nno*dimdep)
-        real(kind=8) :: sielnp(90)
-        real(kind=8) :: sielnm(90)
+        real(kind=8) :: sielnp(140)
+        real(kind=8) :: sielnm(140)
         integer :: nbcmp
         real(kind=8) :: biot
         real(kind=8) :: unsurm
@@ -70,4 +70,4 @@ interface
         integer :: addete
         real(kind=8) :: tm2h1v(3)
     end subroutine erhmv2
-end interface
+end interface 

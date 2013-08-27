@@ -300,9 +300,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    PESA_X=0.0,
                                    PESA_Y=0.0,
                                    PESA_Z=0.0,
-                                   PERMIN_X=KINT,
-                                   PERMIN_Y=KINT,
-                                   PERMIN_Z=KINT,
+                                   PERM_IN=KINT,
                                  VG_N            = N,
                                  VG_PR           = PR,
                                  VG_SR           = SR,
@@ -438,7 +436,7 @@ ISO_P=IMPR_RESU(MODELE=MODELE,
            NOM_CMP =('V6',),
            MAILLAGE=MAIL,),);
          
-#===================== T=31536000S====================                  
+#===================== T=31536000S====================          
                       
 TEST_RESU(RESU=_F(INST=3.1536000E7,
                REFERENCE='NON_DEFINI',

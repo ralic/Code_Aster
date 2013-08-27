@@ -11,6 +11,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 #include "asterc/r8miem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "blas/daxpy.h"
 #include "asterfort/fnothm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/terefe.h"
@@ -44,7 +45,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 ! ======================================================================
 ! =====================================================================
     integer :: indice, i, j, k, parsig, partmp, parbsi
-    parameter (parsig = 837 ,partmp = 162 ,parbsi = 162 )
+    parameter (parsig = 27*36 ,partmp = 27*6 ,parbsi = 27*6 )
     real(kind=8) :: sigtm(parsig), ftemp(partmp), bsigm(parbsi)
     real(kind=8) :: sigref, fh1ref, fh2ref, fthref, contm(4)
 ! =====================================================================
@@ -67,7 +68,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
     ASSERT(nddls .le. 6)
     ASSERT(nno .le. 27)
     ASSERT(npi .le. 27)
-    ASSERT(dimcon .le. 31)
+    ASSERT(dimcon .le. 31 + 5)
 ! ======================================================================
 ! --- CES VERIFICATIONS ONT POUR OBJECTIF DE CONTROLER LA PRESENCE -----
 ! --- DES DIFFERENTS PARAMETRES DE REFERENCE ---------------------------
@@ -118,7 +119,7 @@ subroutine refthm(fnoevo, dt, perman, nno, nnos,&
 ! --- ON NE FAIT RIEN DANS LE CAS DE L'ENTHALPIE -----------------------
 ! ======================================================================
                     if (j .eq. (mecani(5)+ press1(2)*press1(7)+press2( 7)) .or. j .eq.&
-                        ( mecani(5)+ press1(2)*press1(7)+ press2(2)*press2(7) )) then
+                        (mecani(5)+ press1(2)*press1(7)+ press2(2)*press2(7))) then
                         goto 210
                     endif
                 endif

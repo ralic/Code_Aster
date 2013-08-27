@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine fonoda(imate, perman, mecani, press1, press2,&
                       tempe, dimdef, dimcon, ndim, dt,&
                       fnoevo, congem, r)
@@ -33,4 +33,4 @@ interface
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimdef+1)
     end subroutine fonoda
-end interface
+end interface 

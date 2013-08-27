@@ -107,7 +107,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
     real(kind=8) :: geom(ndim, nno)
     real(kind=8) :: fpx, fpy
     real(kind=8) :: frx(9), fry(9)
-    real(kind=8) :: sielnp(90), sielnm(90)
+    real(kind=8) :: sielnp(140), sielnm(140)
     real(kind=8) :: dfdi(nno, 3), dfdi2(nnos, 3)
     real(kind=8) :: b(dimdef, dimuel)
 !
@@ -121,8 +121,7 @@ subroutine erhmv2(axi, perman, deltat, dimdep, dimdef,&
     real(kind=8) :: grapxm, grapym, pressp, pressm
     real(kind=8) :: poids, poids2, ovfl
     real(kind=8) :: sigxxp, sigxyp, sigyyp, sigxxm, sigxym, sigyym
-    real(kind=8) :: dsxxxp, dsxyyp, dsxyxp, dsyyyp, dsxxxm, dsxyym, dsxyxm
-    real(kind=8) :: dsyyym
+    real(kind=8) :: dsxxxp, dsxyyp, dsxyxp, dsyyyp, dsxxxm, dsxyym, dsxyxm, dsyyym
     real(kind=8) :: divuxp, divuyp, divuxm, divuym
     real(kind=8) :: divup, divum, ter11, ter12
     integer :: ipi, kpi, nn, ii, iaux, jaux

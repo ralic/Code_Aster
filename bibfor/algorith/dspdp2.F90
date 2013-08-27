@@ -1,9 +1,11 @@
-function dspdp2(net, bishop, biot)
-    implicit      none
+subroutine dspdp2(net, bishop, tbiot, dsdp2)
+    implicit none
 #include "asterfort/u2mess.h"
-    real(kind=8) :: biot, dspdp2
+    integer :: i
+    real(kind=8) :: tbiot(6), dsdp2(6)
     logical :: net, bishop
 ! ======================================================================
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,12 +26,14 @@ function dspdp2(net, bishop, biot)
 ! --- CALCUL DE LA DERIVEE DE LA CONTRAINTE DE PRESSION PAR RAPPORT ----
 ! --- A LA PRESSION DE GAZ ---------------------------------------------
 ! ======================================================================
-    if (bishop) then
-        dspdp2 = - biot
-    else if (net) then
-        dspdp2 = - biot
-    else
-        call u2mess('F', 'ALGORITH17_4')
-    endif
+    do 10 i = 1, 6
+        if (bishop) then
+            dsdp2(i) = - tbiot(i)
+        else if (net) then
+            dsdp2(i) = - tbiot(i)
+        else
+            call u2mess('F', 'ALGORITH17_4')
+        endif
+10  end do
 ! ======================================================================
-end function
+end subroutine

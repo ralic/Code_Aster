@@ -4,12 +4,12 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                   addete, congep, dsde, p1, p2,&
                   grap1, grap2, t, grat, pvp,&
                   pad, rho11, h11, h12, r,&
-                  dsatp1, pesa, permfh, permli, dperml,&
+                  dsatp1, pesa, tperm, permli, dperml,&
                   krel2, dkr2s, dkr2p, fick, dfickt,&
                   dfickg, fickad, dfadt, kh, cliq,&
                   alpliq, viscl, dviscl, mamolg, viscg,&
-                  dviscg, mamolv, isot, dficks, vf,&
-                  ifa, valfac, valcen)
+                  dviscg, mamolv, dficks, vf, ifa,&
+                  valfac, valcen)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,13 +28,12 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
+!
 ! ======================================================================
 ! ROUTINE CALC_FLUX_HYDRO
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE DES FLUX
 ! HYDRAULIQUES AU POINT DE GAUSS CONSIDERE
 ! ======================================================================
-! LA PERMEABILITE INTRINSEQUE EST LE PRODUIT PERMFH*ISOT(I) EN ISOTROPE
-! COMME EN ANISOTROPE
 ! IN CORRESPONDANCE ANCIENNE PROGRAMMATION -----------------------------
 ! COND(1) -> PERMFH : PERM_IN OU PERM_END SOUS THM_DIFFU ---------------
 ! COND(2) -> PERMLI : PERM_LIQU SOUS THM_DIFFU ---------------
@@ -54,10 +53,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! VALFAC : SOCKAGE DES VALEURS CALCULEES AUX ARETES EN VF IFA!=0
 !          =>DES VALEURS AU CENTRE
 !
-!
-! aslint: disable=W1501,W1504
-    implicit none
-!
+! aslint: disable=W1501,W1504 
+   implicit none
 !
 #include "asterfort/hmderp.h"
 #include "asterfort/u2mesg.h"
@@ -84,12 +81,12 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     real(kind=8) :: congep(1:dimcon)
     real(kind=8) :: dsde(1:dimcon, 1:dimdef), p1, grap1(3), p2, t
     real(kind=8) :: grap2(3), grat(3), pvp, pad, h11, h12, rho11
-    real(kind=8) :: r, dsatp1, pesa(3), permfh
+    real(kind=8) :: r, dsatp1, pesa(3), tperm(ndim, ndim)
     real(kind=8) :: permli, dperml, krel2, dkr2s, dkr2p, fick
     real(kind=8) :: dfickt, dfickg, dficks, cliq, alpliq
     real(kind=8) :: fickad, dfadt
     real(kind=8) :: viscl, dviscl, viscg, dviscg
-    real(kind=8) :: mamolg, mamolv, isot(6)
+    real(kind=8) :: mamolg, mamolv
     character(len=16) :: option, thmc
     logical :: perman, vf
     integer :: ifa
@@ -98,7 +95,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, j
+    integer :: i, j, k
     real(kind=8) :: lambd1(5), lambd2(5), fv(5), fa(5), visco, dvisco
     real(kind=8) :: krel1, dkrel1, rho12, rho21, masrt
     real(kind=8) :: rho22, kh
@@ -312,6 +309,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
     dr22p1=0.d0
     dr22p2=0.d0
     dr22t=0.d0
+    rho12=0.d0
     rho22=0.d0
 !
     dr11p1 = 0.d0
@@ -402,18 +400,17 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! ======================================================================
         if (thmc .eq. 'LIQU_VAPE') then
             rho12=mamolv*pvp/r/t
-            lambd2(1) = permfh*krel2/viscg
+            lambd2(1) = krel2/viscg
             lambd2(2) = 0.0d0
-            lambd2(3) = permfh*dkr2s*dsatp1*(rho12/rho11-1.d0)/viscg
-            lambd2(4) = permfh*dkr2p/viscg
-            lambd2(5) = - permfh*krel2/viscg/viscg*dviscg+permfh* dkr2s*dsatp1*rho12*(h12-h11&
-                        )/t/viscg
+            lambd2(3) = dkr2s*dsatp1*(rho12/rho11-1.d0)/viscg
+            lambd2(4) = dkr2p/viscg
+            lambd2(5) = -krel2/viscg/viscg*dviscg+ dkr2s*dsatp1*rho12* (h12-h11)/t/viscg
         else
-            lambd2(1) = permfh*krel2/viscg
+            lambd2(1) = krel2/viscg
             lambd2(2) = 0.0d0
-            lambd2(3) = permfh*dkr2s*dsatp1/viscg
-            lambd2(4) = permfh*dkr2p/viscg
-            lambd2(5) = - permfh*krel2/viscg/viscg*dviscg
+            lambd2(3) = dkr2s*dsatp1/viscg
+            lambd2(4) = dkr2p/viscg
+            lambd2(5) = -krel2/viscg/viscg*dviscg
         endif
     endif
 ! ======================================================================
@@ -426,17 +423,17 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! --- LAMBD1(5) = D(CONDUC_HYDRO_LIQ)/DT -------------------------------
 ! ======================================================================
     if (thmc .eq. 'LIQU_VAPE') then
-        lambd1(1) = permfh*krel1/visco
+        lambd1(1) = krel1/visco
         lambd1(2) = 0.0d0
-        lambd1(3) = permfh*dkrel1*(rho12/rho11-1.d0)/visco
+        lambd1(3) = dkrel1*(rho12/rho11-1.d0)/visco
         lambd1(4) = 0.0d0
-        lambd1(5) = - permfh*krel1/visco/visco*dvisco+permfh* dkrel1* rho12*( h12-h11)/t/visco
+        lambd1(5) = -krel1/visco/visco*dvisco+ dkrel1*rho12*(h12-h11)/ t/visco
     else
-        lambd1(1) = permfh*krel1/visco
+        lambd1(1) = krel1/visco
         lambd1(2) = 0.0d0
-        lambd1(3) = permfh*dkrel1/visco
+        lambd1(3) = dkrel1/visco
         lambd1(4) = 0.0d0
-        lambd1(5) = - permfh*krel1/visco/visco*dvisco
+        lambd1(5) = -krel1/visco/visco*dvisco
     endif
 !
 ! **********************************************************************
@@ -1173,64 +1170,108 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
             if (((thmc.eq.'LIQU_SATU').or.(thmc.eq.'GAZ')) .or. (thmc.eq.'LIQU_GAZ_ATM')) then
                 do 102 i = 1, ndim
                     if (thmc .eq. 'LIQU_GAZ_ATM') then
-                        congep(bdcp11+i)=rho11*lambd1(1) *(grap1(i)+&
-                        rho11*pesa(i))*isot(i)
+                        congep(bdcp11+i)=0.d0
+                        do 1021 j = 1, ndim
+                            congep(bdcp11+i)=congep(bdcp11+i)+rho11*&
+                            lambd1(1) *tperm(i,j)*(grap1(j)+rho11*&
+                            pesa(j))
+1021                      continue
                     else
-                        congep(bdcp11+i)=rho11*lambd1(1) *(-grap1(i)+&
-                        rho11*pesa(i))*isot(i)
+                        congep(bdcp11+i)=0.d0
+                        do 1022 j = 1, ndim
+                            congep(bdcp11+i)=congep(bdcp11+i)+rho11*&
+                            lambd1(1) *tperm(i,j)*(-grap1(j)+rho11*&
+                            pesa(j))
+1022                      continue
                     endif
-102              end do
+102              continue
             endif
             if (thmc .eq. 'LIQU_VAPE_GAZ') then
                 do 103 i = 1, ndim
-                    congep(adcp11+i)=rho11*lambd1(1)*isot(i) *(-grap2(&
-                    i)+grap1(i)+rho11*pesa(i))
-                    congep(adcp12+i)=rho12*lambd2(1)*isot(i) *(-grap2(&
-                    i)+(rho12+rho21)*pesa(i)) -rho12*(1.d0-cvp)*fv(1)*&
-                    gc(i)
-                    congep(adcp21+i)=rho21*lambd2(1)*isot(i) *(-grap2(&
-                    i)+(rho12+rho21)*pesa(i)) +rho21*cvp*fv(1)*gc(i)
-103              end do
+                    congep(adcp11+i)= 0.d0
+                    congep(adcp12+i)= 0.d0
+                    congep(adcp21+i)= 0.d0
+                    do 1031 j = 1, ndim
+                        congep(adcp11+i)=congep(adcp11+i)+rho11*&
+                        lambd1(1)*tperm(i,j) *(-grap2(j)+grap1(j)+&
+                        rho11*pesa(j))
+                        congep(adcp12+i)=congep(adcp12+i)+rho12*&
+                        lambd2(1)*tperm(i,j) *(-grap2(j)+(rho12+rho21)&
+                        *pesa(j)) -rho12*(1.d0-cvp)*fv(1)*gc(i)
+                        congep(adcp21+i)=congep(adcp21+i)+rho21*&
+                        lambd2(1)*tperm(i,j) *(-grap2(j)+(rho12+rho21)&
+                        *pesa(j)) +rho21*cvp*fv(1)*gc(i)
+1031                  continue
+103              continue
             endif
             if (thmc .eq. 'LIQU_AD_GAZ_VAPE') then
                 do 203 i = 1, ndim
-                    congep(adcp11+i)=rho11*lambd1(1)*isot(i) *(-grap2(&
-                    i)+grap1(i)+(rho11+rho22)*pesa(i))
-                    congep(adcp12+i)=rho12*lambd2(1)*isot(i) *(-grap2(&
-                    i)+(rho12+rho21)*pesa(i)) -rho12*(1.d0-cvp)*fv(1)*&
-                    gc(i)
-                    congep(adcp21+i)=rho21*lambd2(1)*isot(i) *(-grap2(&
-                    i)+(rho12+rho21)*pesa(i)) +rho21*cvp*fv(1)*gc(i)
-                    congep(adcp22+i)=rho22*lambd1(1)*isot(i) *(grap1(&
-                    i)-grap2(i)+(rho22+rho11) *pesa(i))-fa(1)*gca(i)
-203              end do
+                    congep(adcp11+i)= 0.d0
+                    congep(adcp12+i)= -rho12*(1.d0-cvp)*fv(1)*gc(i)
+                    congep(adcp21+i)= rho21*cvp*fv(1)*gc(i)
+                    congep(adcp22+i)= -fa(1)*gca(i)
+                    do 2031 j = 1, ndim
+                        congep(adcp11+i)=congep(adcp11+i)+rho11*&
+                        lambd1(1)*tperm(i,j) *(-grap2(j)+grap1(j)+(&
+                        rho11+rho22)*pesa(j))
+                        congep(adcp12+i)=congep(adcp12+i)+rho12*&
+                        lambd2(1)*tperm(i,j) *(-grap2(j)+(rho12+rho21)&
+                        *pesa(j))
+                        congep(adcp21+i)=congep(adcp21+i)+rho21*&
+                        lambd2(1)*tperm(i,j) *(-grap2(j)+(rho12+rho21)&
+                        *pesa(j))
+                        congep(adcp22+i)=congep(adcp22+i)+rho22*&
+                        lambd1(1)*tperm(i,j) *(grap1(j)-grap2(j)+(&
+                        rho22+rho11) *pesa(j))
+2031                  continue
+203              continue
             endif
             if (thmc .eq. 'LIQU_AD_GAZ') then
                 do 205 i = 1, ndim
-                    congep(adcp11+i)=rho11*lambd1(1)*isot(i) *(-grap2(&
-                    i)+grap1(i)+(rho11+rho22)*pesa(i))
-                    congep(adcp12+i)=zero
-                    congep(adcp21+i)=rho21*lambd2(1)*isot(i) *(-grap2(&
-                    i)+(rho12+rho21)*pesa(i)) +rho21*cvp*fv(1)*gc(i)
-                    congep(adcp22+i)=rho22*lambd1(1)*isot(i) *(grap1(&
-                    i)-grap2(i)+(rho22+rho11) *pesa(i))-fa(1)*gca(i)
-205              end do
+                    congep(adcp11+i)= 0.d0
+                    congep(adcp12+i)= 0.d0
+                    congep(adcp21+i)= rho21*cvp*fv(1)*gc(i)
+                    congep(adcp22+i)= -fa(1)*gca(i)
+                    do 2051 j = 1, ndim
+                        congep(adcp11+i)=congep(adcp11+i)+rho11*&
+                        lambd1(1)*tperm(i,j) *(-grap2(j)+grap1(j)+(&
+                        rho11+rho22)*pesa(j))
+                        congep(adcp12+i)=congep(adcp12+i)+zero
+                        congep(adcp21+i)=congep(adcp21+i)+ rho21*&
+                        lambd2(1)*tperm(i,j) *(-grap2(j)+(rho12+rho21)&
+                        *pesa(j))
+                        congep(adcp22+i)=congep(adcp22+i)+rho22*&
+                        lambd1(1)*tperm(i,j) *(grap1(j)-grap2(j)+(&
+                        rho22+rho11) *pesa(j))
+2051                  continue
+205              continue
             endif
             if (thmc .eq. 'LIQU_VAPE') then
                 do 113 i = 1, ndim
-                    congep(adcp11+i)=rho11*lambd1(1)*isot(i) *(-grap1(&
-                    i)+rho11*pesa(i))
-                    congep(adcp12+i)=rho12*lambd2(1)*isot(i) *(-gp(i)+&
-                    rho12*pesa(i))
-113              end do
+                    congep(adcp11+i)= 0.d0
+                    congep(adcp12+i)= 0.d0
+                    do 1131 j = 1, ndim
+                        congep(adcp11+i)=congep(adcp11+i)+rho11*&
+                        lambd1(1)*tperm(i,j) *(-grap1(j)+rho11*pesa(j)&
+                        )
+                        congep(adcp12+i)=congep(adcp12+i)+rho12*&
+                        lambd2(1)*tperm(i,j) *(-gp(j)+rho12*pesa(j))
+1131                  continue
+113              continue
             endif
             if (thmc .eq. 'LIQU_GAZ') then
                 do 104 i = 1, ndim
-                    congep(adcp11+i)=rho11*lambd1(1)*isot(i) *(-grap2(&
-                    i)+grap1(i)+rho11*pesa(i))
-                    congep(adcp21+i)=rho21*lambd2(1)*isot(i) *(-grap2(&
-                    i)+rho21*pesa(i))
-104              end do
+                    congep(adcp11+i)= 0.d0
+                    congep(adcp21+i)= 0.d0
+                    do 1041 j = 1, ndim
+                        congep(adcp11+i)=congep(adcp11+i)+rho11*&
+                        lambd1(1)*tperm(i,j) *(-grap2(j)+grap1(j)+&
+                        rho11*pesa(j))
+                        congep(adcp21+i)=congep(adcp21+i)+rho21*&
+                        lambd2(1)*tperm(i,j) *(-grap2(j)+rho21*pesa(j)&
+                        )
+1041                  continue
+104              continue
             endif
         endif
 !
@@ -1239,400 +1280,557 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
             if ((thmc.eq.'LIQU_SATU') .or. (thmc.eq.'GAZ') .or. ( thmc.eq.'LIQU_GAZ_ATM')) then
                 do 108 i = 1, ndim
                     if (thmc .eq. 'LIQU_GAZ_ATM') then
-                        dsde(bdcp11+i,addep1)=dsde(bdcp11+i,addep1)&
-                        +dr11p1*lambd1(1)*isot(i)*(grap1(i)+rho11*&
-                        pesa(i))
-                        dsde(bdcp11+i,addep1)=dsde(bdcp11+i,addep1)&
-                        +rho11*lambd1(3)*isot(i)*(grap1(i)+rho11*pesa(&
-                        i))
-                        dsde(bdcp11+i,addep1)=dsde(bdcp11+i,addep1)&
-                        +rho11*lambd1(1)*isot(i)*(dr11p1*pesa(i))
-                        dsde(bdcp11+i,addep1+i)=dsde(bdcp11+i,addep1+&
-                        i) +rho11*lambd1(1)*isot(i)
+                        do 1081 j = 1, ndim
+                            dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
+                            addep1) +dr11p1*lambd1(1)*tperm(i,j)*&
+                            (grap1(j)+rho11*pesa(j))
+!
+                            dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
+                            addep1) +rho11*lambd1(3)*tperm(i,j)*&
+                            (grap1(j)+rho11*pesa(j))
+!
+                            dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
+                            addep1) +rho11*lambd1(1)*tperm(i,j)*(&
+                            dr11p1*pesa(j))
+!
+                            dsde(bdcp11+i,addep1+j)=dsde(bdcp11+i,&
+                            addep1+j) +rho11*lambd1(1)*tperm(i,j)
+1081                      continue
                     else
-                        dsde(bdcp11+i,addep1)=dsde(bdcp11+i,addep1)&
-                        +dr11p1*lambd1(1)*isot(i)*(-grap1(i)+rho11*&
-                        pesa(i))
-                        dsde(bdcp11+i,addep1)=dsde(bdcp11+i,addep1)&
-                        +rho11*lambd1(3)*isot(i)*(-grap1(i)+rho11*&
-                        pesa(i))
-                        dsde(bdcp11+i,addep1)=dsde(bdcp11+i,addep1)&
-                        +rho11*lambd1(1)*isot(i)*(dr11p1*pesa(i))
-                        dsde(bdcp11+i,addep1+i)=dsde(bdcp11+i,addep1+&
-                        i) -rho11*lambd1(1)*isot(i)
+                        do 1082 j = 1, ndim
+                            dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
+                            addep1) +dr11p1*lambd1(1)*tperm(i,j)*&
+                            (-grap1(j)+rho11*pesa(j))
+!
+                            dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
+                            addep1) +rho11*lambd1(3)*tperm(i,j)*&
+                            (-grap1(j)+rho11*pesa(j))
+!
+                            dsde(bdcp11+i,addep1)=dsde(bdcp11+i,&
+                            addep1) +rho11*lambd1(1)*tperm(i,j)*(&
+                            dr11p1*pesa(j))
+!
+                            dsde(bdcp11+i,addep1+j)=dsde(bdcp11+i,&
+                            addep1+j) -rho11*lambd1(1)*tperm(i,j)
+1082                      continue
                     endif
                     if (yamec .eq. 1) then
                         do 107 j = 1, 3
                             if (thmc .eq. 'LIQU_GAZ_ATM') then
-                                dsde(bdcp11+i,addeme+ndim-1+i)=&
-                                dsde(bdcp11+i,addeme+ndim-1+i)&
-                                +rho11*lambd1(2)*isot(i)* (grap1(i)+&
-                                rho11*pesa(i))
+                                do 1071 k = 1, ndim
+                                    dsde(bdcp11+i,addeme+ndim-1+i)=&
+                                    dsde(bdcp11+i,addeme+ndim-1+i)&
+                                    +rho11*lambd1(2)*tperm(i,k)*&
+                                    (grap1(k)+rho11*pesa(k))
+1071                              continue
                             else
-                                dsde(bdcp11+i,addeme+ndim-1+i)=&
-                                dsde(bdcp11+i,addeme+ndim-1+i)&
-                                +rho11*lambd1(2)*isot(i) *(-grap1(i)+&
-                                rho11*pesa(i))
+                                do 1072 k = 1, ndim
+                                    dsde(bdcp11+i,addeme+ndim-1+i)=&
+                                    dsde(bdcp11+i,addeme+ndim-1+i)&
+                                    +rho11*lambd1(2)*tperm(i,k)&
+                                    *(-grap1(k)+rho11*pesa(k))
+1072                              continue
                             endif
-107                      end do
+107                      continue
                     endif
-!
                     if (yate .eq. 1) then
                         if (thmc .eq. 'LIQU_GAZ_ATM') then
-                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
-                            addete) +dr11t*lambd1(1)*isot(i)*(grap1(i)&
-                            +rho11*pesa(i))
-                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
-                            addete) +rho11*lambd1(5)*isot(i)*(grap1(i)&
-                            +rho11*pesa(i))
-                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
-                            addete) +rho11*lambd1(1)*isot(i)*(dr11t*&
-                            pesa(i))
+                            do 1073 j = 1, ndim
+                                dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                                addete) +dr11t*lambd1(1)*tperm(i,j)*&
+                                (grap1(j)+rho11*pesa(j))
+!
+                                dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                                addete) +rho11*lambd1(5)*tperm(i,j)&
+                                *(grap1(j)+rho11*pesa(j))
+!
+                                dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                                addete) +rho11*lambd1(1)*tperm(i,j)*(&
+                                dr11t*pesa(j))
+1073                          continue
                         else
-                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
-                            addete) +dr11t*lambd1(1)*isot(i)*(-grap1(&
-                            i)+rho11*pesa(i))
-                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
-                            addete) +rho11*lambd1(5)*isot(i)*(-grap1(&
-                            i)+rho11*pesa(i))
-                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
-                            addete) +rho11*lambd1(1)*isot(i)*(dr11t*&
-                            pesa(i))
+                            do 1074 j = 1, ndim
+                                dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                                addete) +dr11t*lambd1(1)*tperm(i,j)*&
+                                (-grap1(j)+rho11*pesa(j))
+!
+                                dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                                addete) +rho11*lambd1(5)*tperm(i,j)*&
+                                (-grap1(j)+rho11*pesa(j))
+!
+                                dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                                addete) +rho11*lambd1(1)*tperm(i,j)*(&
+                                dr11t*pesa(j))
+1074                          continue
                         endif
                     endif
-108              end do
+108              continue
             endif
-!
-!
             if (thmc .eq. 'LIQU_VAPE_GAZ' .or. thmc .eq. 'LIQU_AD_GAZ_VAPE' .or. thmc .eq.&
                 'LIQU_GAZ' .or. thmc .eq. 'LIQU_AD_GAZ') then
                 do 105 i = 1, ndim
+                    do 1051 j = 1, ndim
 !
 ! DERIVEE DU FLUX LIQUIDE
 !
-                    dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
-                    +dr11p1*lambd1(1)*isot(i)* (-grap2(i)+grap1(i)+(&
-                    rho22+rho11)*pesa(i))
-                    dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
-                    +rho11*lambd1(3)*isot(i)* (-grap2(i)+grap1(i)+(&
-                    rho22+rho11)*pesa(i))
-                    dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
-                    +rho11*lambd1(1)*isot(i)*((dr22p1+dr11p1)*pesa(i))
-                    dsde(adcp11+i,addep2)=dsde(adcp11+i,addep2)&
-                    +dr11p2*lambd1(1)*isot(i)* (-grap2(i)+grap1(i)+(&
-                    rho22+rho11)*pesa(i))
-                    dsde(adcp11+i,addep2)=dsde(adcp11+i,addep2)&
-                    +rho11*lambd1(4)*isot(i)* (-grap2(i)+grap1(i)+(&
-                    rho22+rho11)*pesa(i))
-                    dsde(adcp11+i,addep2)=dsde(adcp11+i,addep2)&
-                    +rho11*lambd1(1)*isot(i)*((dr22p2+dr11p2)*pesa(i))
-                    dsde(adcp11+i,addep1+i)=dsde(adcp11+i,addep1+i)&
-                    +rho11*lambd1(1)*isot(i)
-                    dsde(adcp11+i,addep2+i)=dsde(adcp11+i,addep2+i)&
-                    -rho11*lambd1(1)*isot(i)
+                        dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
+                        +dr11p1*lambd1(1)*tperm(i,j)* (-grap2(j)+&
+                        grap1(j)+(rho22+rho11)*pesa(j))
+!
+                        dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
+                        +rho11*lambd1(3)*tperm(i,j)* (-grap2(j)+grap1(&
+                        j)+(rho22+rho11)*pesa(j))
+!
+                        dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
+                        +rho11*lambd1(1)*tperm(i,j)* ((dr22p1+dr11p1)*&
+                        pesa(j))
+!
+                        dsde(adcp11+i,addep2)=dsde(adcp11+i,addep2)&
+                        +dr11p2*lambd1(1)*tperm(i,j)* (-grap2(j)+&
+                        grap1(j)+(rho22+rho11)*pesa(j))
+!
+                        dsde(adcp11+i,addep2)=dsde(adcp11+i,addep2)&
+                        +rho11*lambd1(4)*tperm(i,j)* (-grap2(j)+grap1(&
+                        j)+(rho22+rho11)*pesa(j))
+!
+                        dsde(adcp11+i,addep2)=dsde(adcp11+i,addep2)&
+                        +rho11*lambd1(1)*tperm(i,j)* ((dr22p2+dr11p2)*&
+                        pesa(j))
+!
+                        dsde(adcp11+i,addep1+j)=dsde(adcp11+i,addep1+&
+                        j) +rho11*lambd1(1)*tperm(i,j)
+!
+                        dsde(adcp11+i,addep2+j)=dsde(adcp11+i,addep2+&
+                        j) -rho11*lambd1(1)*tperm(i,j)
+1051                  continue
 !
 ! DERIVEE DU FLUX DE VAPEUR
 !
                     if ((thmc.eq.'LIQU_VAPE_GAZ') .or. ( thmc.eq.'LIQU_AD_GAZ_VAPE') .or.&
                         ( thmc.eq.'LIQU_AD_GAZ')) then
-                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                        +dr12p1*lambd2(1)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                        +rho12*lambd2(3)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                        +rho12*lambd2(1)*isot(i)* ((dr12p1+dr21p1)*&
-                        pesa(i))
+                        do 1052 j = 1, ndim
+                            dsde(adcp12+i,addep1)=dsde(adcp12+i,&
+                            addep1) +dr12p1*lambd2(1)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp12+i,addep1)=dsde(adcp12+i,&
+                            addep1) +rho12*lambd2(3)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp12+i,addep1)=dsde(adcp12+i,&
+                            addep1) +rho12*lambd2(1)*tperm(i,j)*&
+                            ((dr12p1+dr21p1)*pesa(j))
+1052                      continue
+!
                         dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
                         -dr12p1*(1.d0-cvp)*fv(1)*gc(i)
+!
                         dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
                         +rho12*dcvp1*fv(1)*gc(i)
+!
                         dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
                         -rho12*(1.d0-cvp)*fv(3)*gc(i)
+!
                         dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
                         -rho12*(1.d0-cvp)*fv(1)*dgcvp1(i)
-                        dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
-                        +dr12p2*lambd2(1)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
-                        +rho12*lambd2(4)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
-                        +rho12*lambd2(1)*isot(i)* ((dr12p2+dr21p2)*&
-                        pesa(i))
+!
+                        do 1053 j = 1, ndim
+                            dsde(adcp12+i,addep2)=dsde(adcp12+i,&
+                            addep2) +dr12p2*lambd2(1)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp12+i,addep2)=dsde(adcp12+i,&
+                            addep2) +rho12*lambd2(4)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp12+i,addep2)=dsde(adcp12+i,&
+                            addep2) +rho12*lambd2(1)*tperm(i,j)*&
+                            ((dr12p2+dr21p2)*pesa(j))
+1053                      continue
+!
                         dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
                         -dr12p2*(1.d0-cvp)*fv(1)*gc(i)
+!
                         dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
                         +rho12*dcvp2*fv(1)*gc(i)
+!
                         dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
                         -rho12*(1.d0-cvp)*fv(4)*gc(i)
+!
                         dsde(adcp12+i,addep2)=dsde(adcp12+i,addep2)&
                         -rho12*(1.d0-cvp)*fv(1)*dgcvp2(i)
+!
                         dsde(adcp12+i,addep1+i)=dsde(adcp12+i,addep1+&
                         i) -rho12*(1.d0-cvp)*fv(1)*dgcgp1(1)
+!
+                        do 1054 j = 1, ndim
+                            dsde(adcp12+i,addep2+j)=dsde(adcp12+i,&
+                            addep2+j) -rho12*lambd2(1)*tperm(i,j)
+1054                      continue
+!
                         dsde(adcp12+i,addep2+i)=dsde(adcp12+i,addep2+&
-                        i) -rho12*lambd2(1)*isot(i) -rho12*(1.d0-cvp)*&
-                        fv(1)*dgcgp2(1)
+                        i) -rho12*(1.d0-cvp)*fv(1)*dgcgp2(1)
                     endif
 !
 ! DERIVEE DU FLUX D'AIR SEC
 !
-                    dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
-                    +dr21p1*lambd2(1)*isot(i)* (-grap2(i)+(rho12+&
-                    rho21)*pesa(i))
-                    dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
-                    +rho21*lambd2(3)*isot(i)* (-grap2(i)+(rho12+rho21)&
-                    *pesa(i))
-                    dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
-                    +rho21*lambd2(1)*isot(i)* ((dr12p1+dr21p1)*pesa(i)&
-                    )
+                    do 1055 j = 1, ndim
+                        dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
+                        +dr21p1*lambd2(1)*tperm(i,j)* (-grap2(j)+(&
+                        rho12+rho21)*pesa(j))
+!
+                        dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
+                        +rho21*lambd2(3)*tperm(i,j)* (-grap2(j)+(&
+                        rho12+rho21)*pesa(j))
+!
+                        dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
+                        +rho21*lambd2(1)*tperm(i,j)* ((dr12p1+dr21p1)*&
+                        pesa(j))
+1055                  continue
+!
                     dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
                     +dr21p1*cvp*fv(1)*gc(i)
+!
                     dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
                     +rho21*dcvp1*fv(1)*gc(i)
+!
                     dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
                     +rho21*cvp*fv(3)*gc(i)
+!
                     dsde(adcp21+i,addep1)=dsde(adcp21+i,addep1)&
                     +rho21*cvp*fv(1)*dgcvp1(i)
-                    dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
-                    +dr21p2*lambd2(1)*isot(i)* (-grap2(i)+(rho12+&
-                    rho21)*pesa(i))
-                    dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
-                    +rho21*lambd2(4)*isot(i)* (-grap2(i)+(rho12+rho21)&
-                    *pesa(i))
-                    dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
-                    +rho21*lambd2(1)*isot(i)* ((dr12p2+dr21p2)*pesa(i)&
-                    )
+!
+                    do 1056 j = 1, ndim
+                        dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
+                        +dr21p2*lambd2(1)*tperm(i,j)* (-grap2(j)+(&
+                        rho12+rho21)*pesa(j))
+!
+                        dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
+                        +rho21*lambd2(4)*tperm(i,j)* (-grap2(j)+(&
+                        rho12+rho21)*pesa(j))
+!
+                        dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
+                        +rho21*lambd2(1)*tperm(i,j)* ((dr12p2+dr21p2)*&
+                        pesa(j))
+1056                  continue
+!
                     dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
                     +dr21p2*cvp*fv(1)*gc(i)
+!
                     dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
                     +rho21*dcvp2*fv(1)*gc(i)
+!
                     dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
                     +rho21*cvp*fv(4)*gc(i)
+!
                     dsde(adcp21+i,addep2)=dsde(adcp21+i,addep2)&
                     +rho21*cvp*fv(1)*dgcvp2(i)
+!
                     dsde(adcp21+i,addep1+i)=dsde(adcp21+i,addep1+i)&
                     +rho21*cvp*fv(1)*dgcgp1(1)
+!
+                    do 1057 j = 1, ndim
+                        dsde(adcp21+i,addep2+j)=dsde(adcp21+i,addep2+&
+                        j) -rho21*lambd2(1)*tperm(i,j)
+1057                  continue
+!
                     dsde(adcp21+i,addep2+i)=dsde(adcp21+i,addep2+i)&
-                    -rho21*lambd2(1)*isot(i) +rho21*cvp*fv(1)*dgcgp2(&
-                    1)
+                    +rho21*cvp*fv(1)*dgcgp2(1)
 !
 ! DERIVEE DU FLUX D'AIR DISSOUS
 !
                     if (thmc .eq. 'LIQU_AD_GAZ_VAPE' .or. ( thmc.eq.'LIQU_AD_GAZ')) then
-                        dsde(adcp22+i,addep1)=dsde(adcp22+i,addep1)&
-                        +dr22p1*lambd1(1)*isot(i)* (-grap2(i)+grap1(i)&
-                        +(rho22+rho11)*pesa(i))
-                        dsde(adcp22+i,addep1)=dsde(adcp22+i,addep1)&
-                        +rho22*lambd1(3)*isot(i)*(-grap2(i)+grap1(i)+&
-                        (rho22+rho11)*pesa(i))
-                        dsde(adcp22+i,addep1)=dsde(adcp22+i,addep1)&
-                        +rho22*lambd1(1)*isot(i)*((dr22p1+dr11p1)*&
-                        pesa(i))
-! ICI
+                        do 1058 j = 1, ndim
+                            dsde(adcp22+i,addep1)=dsde(adcp22+i,&
+                            addep1) +dr22p1*lambd1(1)*tperm(i,j)*&
+                            (-grap2(j)+grap1(j)+(rho22+rho11)*pesa(j))
+!
+                            dsde(adcp22+i,addep1)=dsde(adcp22+i,&
+                            addep1) +rho22*lambd1(3)*tperm(i,j)*(-&
+                            grap2(j)+grap1(j)+ (rho22+rho11)*pesa(j))
+!
+                            dsde(adcp22+i,addep1)=dsde(adcp22+i,&
+                            addep1) +rho22*lambd1(1)*tperm(i,j)*&
+                            ((dr22p1+dr11p1)*pesa(j))
+1058                      continue
+!
                         dsde(adcp22+i,addep1)=dsde(adcp22+i,addep1)&
                         -fa(3)*gca(i)
-! ICI
+!
                         dsde(adcp22+i,addep1)=dsde(adcp22+i,addep1)&
                         -fa(1)*dgcap1(i)
 !
-                        dsde(adcp22+i,addep2)=dsde(adcp22+i,addep2)&
-                        +dr22p2*lambd1(1)*isot(i)* (-grap2(i)+grap1(i)&
-                        +(rho22+rho11)*pesa(i))
-                        dsde(adcp22+i,addep2)=dsde(adcp22+i,addep2)&
-                        +rho22*lambd1(4)*isot(i)*(-grap2(i)+grap1(i)+&
-                        (rho22+rho11)*pesa(i))
-                        dsde(adcp22+i,addep2)=dsde(adcp22+i,addep2)&
-                        +rho22*lambd1(1)*isot(i)*((dr22p2+dr11p2)*&
-                        pesa(i))
+                        do 1059 j = 1, ndim
+                            dsde(adcp22+i,addep2)=dsde(adcp22+i,&
+                            addep2) +dr22p2*lambd1(1)*tperm(i,j)*&
+                            (-grap2(j)+grap1(j)+(rho22+rho11)*pesa(j))
+!
+                            dsde(adcp22+i,addep2)=dsde(adcp22+i,&
+                            addep2) +rho22*lambd1(4)*tperm(i,j)*(-&
+                            grap2(j)+grap1(j)+ (rho22+rho11)*pesa(j))
+!
+                            dsde(adcp22+i,addep2)=dsde(adcp22+i,&
+                            addep2) +rho22*lambd1(1)*tperm(i,j)*&
+                            ((dr22p2+dr11p2)*pesa(j))
+1059                      continue
+!
                         dsde(adcp22+i,addep2)=dsde(adcp22+i,addep2)&
                         -fa(4)*gca(i)
+!
                         dsde(adcp22+i,addep2)=dsde(adcp22+i,addep2)&
                         -fa(1)*dgcap2(i)
+!
+                        do 1060 j = 1, ndim
+                            dsde(adcp22+i,addep1+j)=dsde(adcp22+i,&
+                            addep1+j) +rho22*lambd1(1)*tperm(i,j)
+1060                      continue
+!
                         dsde(adcp22+i,addep1+i)=dsde(adcp22+i,addep1+&
-                        i) +rho22*lambd1(1)*isot(i)-fa(1)*dgcgp1(2)
+                        i) -fa(1)*dgcgp1(2)
+!
+                        do 1061 j = 1, ndim
+                            dsde(adcp22+i,addep2+j)=dsde(adcp22+i,&
+                            addep2+j) -rho22*lambd1(1)*tperm(i,j)
+1061                      continue
+!
                         dsde(adcp22+i,addep2+i)=dsde(adcp22+i,addep2+&
-                        i) -rho22*lambd1(1)*isot(i)-fa(1)*dgcgp2(2)
+                        i) -fa(1)*dgcgp2(2)
                     endif
 !
 ! TERMES COMPLEMENTAIRES DE MECANIQUE ET THERMIQUE
 !
                     if (yamec .eq. 1) then
                         do 106 j = 1, 3
-                            dsde(adcp11+i,addeme+ndim-1+j)= dsde(&
-                            adcp11+i,addeme+ndim-1+j) +(rho11+rho22)*&
-                            lambd1(2)*isot(i) *(-grap2(i)+grap1(i)+(&
-                            rho11+rho22)*pesa(i))
-                            dsde(adcp12+i,addeme+ndim-1+j)= dsde(&
-                            adcp12+i,addeme+ndim-1+j) +rho12*lambd2(2)&
-                            *isot(i)* (-grap2(i)+(rho12+rho21)*pesa(i)&
-                            )
+                            do 1062 k = 1, ndim
+                                dsde(adcp11+i,addeme+ndim-1+j)=&
+                                dsde(adcp11+i,addeme+ndim-1+j)&
+                                +(rho11+rho22)*lambd1(2)*tperm(i,k)&
+                                *(-grap2(k)+grap1(k)+(rho11+rho22)*&
+                                pesa(k))
+!
+                                dsde(adcp12+i,addeme+ndim-1+j)=&
+                                dsde(adcp12+i,addeme+ndim-1+j)&
+                                +rho12*lambd2(2)*tperm(i,k)* (-grap2(&
+                                k)+(rho12+rho21)*pesa(k))
+1062                          continue
+!
                             dsde(adcp12+i,addeme+ndim-1+j)= dsde(&
                             adcp12+i,addeme+ndim-1+j) -rho12*(1.d0-&
                             cvp)*fv(2)*gc(i)
-                            dsde(adcp21+i,addeme+ndim-1+j)= dsde(&
-                            adcp21+i,addeme+ndim-1+j) +rho21*lambd2(2)&
-                            *isot(i)* (-grap2(i)+(rho12+rho21)*pesa(i)&
-                            )
+!
+                            do 1063 k = 1, ndim
+                                dsde(adcp21+i,addeme+ndim-1+j)=&
+                                dsde(adcp21+i,addeme+ndim-1+j)&
+                                +rho21*lambd2(2)*tperm(i,k)* (-grap2(&
+                                k)+(rho12+rho21)*pesa(k))
+1063                          continue
+!
                             dsde(adcp21+i,addeme+ndim-1+j)= dsde(&
                             adcp21+i,addeme+ndim-1+j) +rho21*cvp*fv(2)&
                             *gc(i)
+!
                             if (thmc .eq. 'LIQU_AD_GAZ_VAPE' .or. (thmc.eq.'LIQU_AD_GAZ')) then
-                                dsde(adcp22+i,addeme+ndim-1+j)=&
-                                dsde(adcp22+i,addeme+ndim-1+j)&
-                                +rho22*lambd1(2)*isot(i)*(-grap2(i)+&
-                                grap1(i) +(rho22+rho11)*pesa(i))
+                                do 1064 k = 1, ndim
+                                    dsde(adcp22+i,addeme+ndim-1+j)=&
+                                    dsde(adcp22+i,addeme+ndim-1+j)&
+                                    +rho22*lambd1(2)*tperm(i,k)*&
+                                    (-grap2(i)+grap1(k) +(rho22+rho11)&
+                                    *pesa(k))
+1064                              continue
+!
                                 dsde(adcp22+i,addeme+ndim-1+j)=&
                                 dsde(adcp22+i,addeme+ndim-1+j)&
                                 -fa(2)*gca(i)
                             endif
-106                      end do
-!
+106                      continue
                     endif
-!
                     if (yate .eq. 1) then
-                        dsde(adcp11+i,addete)=dsde(adcp11+i,addete)&
-                        +dr11t*lambd1(1)*isot(i)* (-grap2(i)+grap1(i)+&
-                        (rho22+rho11)*pesa(i))
-                        dsde(adcp11+i,addete)=dsde(adcp11+i,addete)&
-                        +rho11*lambd1(5)*isot(i)* (-grap2(i)+grap1(i)+&
-                        (rho22+rho11)*pesa(i))
-                        dsde(adcp11+i,addete)=dsde(adcp11+i,addete)&
-                        +rho11*lambd1(1)*isot(i)*((dr22t+dr11t)*pesa(&
-                        i))
+                        do 109 j = 1, ndim
+                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                            addete) +dr11t*lambd1(1)*tperm(i,j)*&
+                            (-grap2(j)+grap1(j)+(rho22+rho11)*pesa(j))
 !
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        +dr12t*lambd2(1)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        +rho12*lambd2(5)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        +rho12*lambd2(1)*isot(i)*((dr12t+dr21t)*pesa(&
-                        i))
+                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                            addete) +rho11*lambd1(5)*tperm(i,j)*&
+                            (-grap2(j)+grap1(j)+(rho22+rho11)*pesa(j))
+!
+                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                            addete) +rho11*lambd1(1)*tperm(i,j)*&
+                            ((dr22t+dr11t)*pesa(j))
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) +dr12t*lambd2(1)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) +rho12*lambd2(5)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) +rho12*lambd2(1)*tperm(i,j)*&
+                            ((dr12t+dr21t)*pesa(j))
+109                      continue
+!
                         dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
                         -dr12t*(1.d0-cvp)*fv(1)*gc(i)
+!
                         dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
                         +rho12*dcvt*fv(1)*gc(i)
+!
                         dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
                         -rho12*(1.d0-cvp)*fv(5)*gc(i)
+!
                         dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
                         -rho12*(1.d0-cvp)*fv(1)*dgcvt(i)
+!
                         dsde(adcp12+i,addete+i)=dsde(adcp12+i,addete+&
                         i) -rho12*(1.d0-cvp)*fv(1)*dgcgt(1)
 !
-                        dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
-                        +dr21t*lambd2(1)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
-                        +rho21*lambd2(5)*isot(i)* (-grap2(i)+(rho12+&
-                        rho21)*pesa(i))
-                        dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
-                        +rho21*lambd2(1)*isot(i)* ((dr12t+dr21t)*pesa(&
-                        i))
+                        do 1091 j = 1, ndim
+                            dsde(adcp21+i,addete)=dsde(adcp21+i,&
+                            addete) +dr21t*lambd2(1)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp21+i,addete)=dsde(adcp21+i,&
+                            addete) +rho21*lambd2(5)*tperm(i,j)*&
+                            (-grap2(j)+(rho12+rho21)*pesa(j))
+!
+                            dsde(adcp21+i,addete)=dsde(adcp21+i,&
+                            addete) +rho21*lambd2(1)*tperm(i,j)*&
+                            ((dr12t+dr21t)*pesa(j))
+1091                      continue
+!
                         dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
                         +dr21t*cvp*fv(1)*gc(i)
+!
                         dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
                         +rho21*dcvt*fv(1)*gc(i)
+!
                         dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
                         +rho21*cvp*fv(5)*gc(i)
+!
                         dsde(adcp21+i,addete)=dsde(adcp21+i,addete)&
                         +rho21*cvp*fv(1)*dgcvt(i)
+!
                         dsde(adcp21+i,addete+i)=dsde(adcp21+i,addete+&
                         i) +rho21*cvp*fv(1)*dgcgt(1)
 !
                         if ((thmc.eq.'LIQU_AD_GAZ_VAPE') .or. ( thmc.eq.'LIQU_AD_GAZ')) then
-                            dsde(adcp22+i,addete)=dsde(adcp22+i,&
-                            addete) +dr22t*lambd1(1)*isot(i)* (-grap2(&
-                            i)+grap1(i)+(rho22+rho11)*pesa(i))
-                            dsde(adcp22+i,addete)=dsde(adcp22+i,&
-                            addete) +rho22*lambd1(5)*isot(i)*(-grap2(&
-                            i)+grap1(i)+ (rho22+rho11)*pesa(i))
-                            dsde(adcp22+i,addete)=dsde(adcp22+i,&
-                            addete) +rho22*lambd1(1)*isot(i)*((dr22t+&
-                            dr11t)*pesa(i))
+                            do 1092 j = 1, ndim
+                                dsde(adcp22+i,addete)=dsde(adcp22+i,&
+                                addete) +dr22t*lambd1(1)*tperm(i,j)*&
+                                (-grap2(j)+grap1(j)+(rho22+rho11)*&
+                                pesa(j))
+!
+                                dsde(adcp22+i,addete)=dsde(adcp22+i,&
+                                addete) +rho22*lambd1(5)*tperm(i,j)*(-&
+                                grap2(j)+grap1(j) +(rho22+rho11)*pesa(&
+                                j))
+!
+                                dsde(adcp22+i,addete)=dsde(adcp22+i,&
+                                addete) +rho22*lambd1(1)*tperm(i,j)*&
+                                ((dr22t+dr11t)*pesa(j))
+1092                          continue
+!
                             dsde(adcp22+i,addete)=dsde(adcp22+i,&
                             addete) -fa(5)*gca(i)
+!
                             dsde(adcp22+i,addete)=dsde(adcp22+i,&
                             addete) -fa(1)*dgcat(i)
+!
                             dsde(adcp22+i,addete+i)=dsde(adcp22+i,&
                             addete+i) -fa(1)*dgcgt(2)
                         endif
                     endif
-!
-105              end do
+105              continue
             endif
-!
-!
-!
             if (thmc .eq. 'LIQU_VAPE') then
                 do 115 i = 1, ndim
+                    do 1151 j = 1, ndim
 !
 ! DERIVEE DU FLUX LIQUIDE
 !
-                    dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
-                    +dr11p1*lambd1(1)*isot(i)*(-grap1(i)+rho11*pesa(i)&
-                    ) +rho11*lambd1(1)*isot(i)*(dr11p1*pesa(i))&
-                    +rho11*lambd1(3)*isot(i)*(-grap1(i)+rho11*pesa(i))
-                    dsde(adcp11+i,addep1+i)=dsde(adcp11+i,addep1+i)&
-                    -rho11*lambd1(1)*isot(i)
+                        dsde(adcp11+i,addep1)=dsde(adcp11+i,addep1)&
+                        +dr11p1*lambd1(1)*tperm(i,j)*(-grap1(j)+rho11*&
+                        pesa(j)) +rho11*lambd1(1)*tperm(i,j)*(dr11p1*&
+                        pesa(j)) +rho11*lambd1(3)*tperm(i,j)*(-grap1(&
+                        j)+rho11*pesa(j))
+!
+                        dsde(adcp11+i,addep1+j)=dsde(adcp11+i,addep1+&
+                        j) -rho11*lambd1(1)*tperm(i,j)
+1151                  continue
 !
 ! DERIVEE DU FLUX DE VAPEUR
 !
-                    dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                    +dr12p1*lambd2(1)*isot(i)*(-gp(i)+rho12*pesa(i))
-                    dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                    +rho12*lambd2(3)*isot(i)*(-gp(i)+rho12*pesa(i))
-                    dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                    +rho12*lambd2(1)*isot(i)*(dr12p1*pesa(i))
-                    dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
-                    -rho12*lambd2(1)*isot(i)*dgpvp1(i)
-                    dsde(adcp12+i,addep1+i)=dsde(adcp12+i,addep1+i)&
-                    -rho12*lambd2(1)*isot(i)*dgpgp1(1)
+                    do 1152 j = 1, ndim
+                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
+                        +dr12p1*lambd2(1)*tperm(i,j)*(-gp(j)+rho12*&
+                        pesa(j))
 !
+                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
+                        +rho12*lambd2(3)*tperm(i,j)*(-gp(j)+rho12*&
+                        pesa(j))
 !
+                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
+                        +rho12*lambd2(1)*tperm(i,j)*(dr12p1*pesa(j))
+!
+                        dsde(adcp12+i,addep1)=dsde(adcp12+i,addep1)&
+                        -rho12*lambd2(1)*tperm(i,j)*dgpvp1(j)
+!
+                        dsde(adcp12+i,addep1+j)=dsde(adcp12+i,addep1+&
+                        j) -rho12*lambd2(1)*tperm(i,j)*dgpgp1(1)
+1152                  continue
 !
 ! TERMES COMPLEMENTAIRES DE MECANIQUE ET THERMIQUE
 !
                     if (yamec .eq. 1) then
                         do 116 j = 1, 3
-                            dsde(adcp11+i,addeme+ndim-1+j)= dsde(&
-                            adcp11+i,addeme+ndim-1+j) +rho11*lambd1(2)&
-                            *isot(i)*(-grap1(i)+rho11*pesa(i))
-                            dsde(adcp12+i,addeme+ndim-1+j)= dsde(&
-                            adcp12+i,addeme+ndim-1+j) +rho12*lambd2(2)&
-                            *isot(i)*(-gp(i)+rho12*pesa(i))
-116                      end do
+                            do 1161 k = 1, ndim
+                                dsde(adcp11+i,addeme+ndim-1+j)=&
+                                dsde(adcp11+i,addeme+ndim-1+j)&
+                                +rho11*lambd1(2)*tperm(i,k)* (-grap1(&
+                                k)+rho11*pesa(k))
 !
+                                dsde(adcp12+i,addeme+ndim-1+j)=&
+                                dsde(adcp12+i,addeme+ndim-1+j)&
+                                +rho12*lambd2(2)*tperm(i,k)* (-gp(k)+&
+                                rho12*pesa(k))
+1161                          continue
+116                      continue
                     endif
-!
                     if (yate .eq. 1) then
-                        dsde(adcp11+i,addete)=dsde(adcp11+i,addete)&
-                        +dr11t*lambd1(1)*isot(i)*(-grap1(i)+rho11*&
-                        pesa(i)) +rho11*lambd1(5)*isot(i)*(-grap1(i)+&
-                        rho11*pesa(i)) +rho11*lambd1(1)*isot(i)*dr11t*&
-                        pesa(i)
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        +dr12t*lambd2(1)*isot(i)*(-gp(i)+rho12*pesa(i)&
-                        )
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        +rho12*lambd2(5)*isot(i)*(-gp(i)+rho12*pesa(i)&
-                        )
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        +rho12*lambd2(1)*isot(i)*(dr12t*pesa(i))
-                        dsde(adcp12+i,addete)=dsde(adcp12+i,addete)&
-                        -rho12*lambd2(1)*isot(i)*dgpvt(i)
-                        dsde(adcp12+i,addete+i)=dsde(adcp12+i,addete+&
-                        i) -rho12*lambd2(1)*isot(i)*dgpgt(1)
+                        do 1162 j = 1, ndim
+                            dsde(adcp11+i,addete)=dsde(adcp11+i,&
+                            addete) +dr11t*lambd1(1)*tperm(i,j)*&
+                            (-grap1(j)+rho11*pesa(j)) +rho11*lambd1(5)&
+                            *tperm(i,j)* (-grap1(j)+rho11*pesa(j))&
+                            +rho11*lambd1(1)*tperm(i,j)*dr11t*pesa(j)
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) +dr12t*lambd2(1)*tperm(i,j)*(-gp(&
+                            j)+rho12*pesa(j))
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) +rho12*lambd2(5)*tperm(i,j)*(-gp(&
+                            j)+rho12*pesa(j))
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) +rho12*lambd2(1)*tperm(i,j)*(&
+                            dr12t*pesa(j))
+!
+                            dsde(adcp12+i,addete)=dsde(adcp12+i,&
+                            addete) -rho12*lambd2(1)*tperm(i,j)*dgpvt(&
+                            j)
+!
+                            dsde(adcp12+i,addete+j)=dsde(adcp12+i,&
+                            addete+j) -rho12*lambd2(1)*tperm(i,j)*&
+                            dgpgt(1)
+1162                      continue
                     endif
-!
-115              end do
+115              continue
             endif
-!
         endif
 !
 ! FIN CAS ELEMENTS FINIS
     endif
-!
 end subroutine

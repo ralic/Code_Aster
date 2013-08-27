@@ -1,8 +1,9 @@
-function dmwp1v(rho11, phids, sat, bmph, cs,&
-                dpvpl, phi, cliq)
-    implicit      none
-    real(kind=8) :: rho11, phids, sat, bmph, cs, dpvpl, phi, cliq, dmwp1v
+function dmwp1v(rho11, phids, sat, cs, dpvpl,&
+                phi, cliq)
+    implicit none
+    real(kind=8) :: rho11, phids, sat, cs, dpvpl, phi, cliq, dmwp1v
 ! ======================================================================
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +24,6 @@ function dmwp1v(rho11, phids, sat, bmph, cs,&
 ! --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE LIQUIDE PAR RAPPORT -
 ! --- A LA PRESSION DE LIQUIDE DANS LE CAS LIQU_VAPE -------------------
 ! ======================================================================
-    dmwp1v = rho11*(&
-             (phids-sat*sat*bmph*cs+sat*bmph*cs )*dpvpl - phids+sat*phi*cliq+sat*sat*bmph*cs)
+    dmwp1v = rho11*((phids-sat*sat*cs+sat*cs)*dpvpl - phids+sat*phi*cliq+sat*sat*cs)
 ! ======================================================================
 end function

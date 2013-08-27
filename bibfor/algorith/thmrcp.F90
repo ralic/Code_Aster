@@ -2,16 +2,16 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                   ther, t0, p10, p20, phi0,&
                   pvp0, t, p1, p1m, p2,&
                   phi, endo, pvp, rgaz, rhod,&
-                  cpd, biot, satm, satur, dsatur,&
-                  pesa, permfh, permli, dperml, permgz,&
+                  cpd, tbiot, satm, satur, dsatur,&
+                  pesa, tperm, permli, dperml, permgz,&
                   dperms, dpermp, fick, dfickt, dfickg,&
                   lambp, dlambp, rhol, unsurk, alpha,&
                   cpl, lambs, dlambs, viscl, dviscl,&
-                  mamolg, cpg, lambt, dlambt, viscg,&
+                  mamolg, cpg, tlambt, tdlamt, viscg,&
                   dviscg, mamolv, cpvg, viscvg, dvisvg,&
                   fickad, dfadt, cpad, kh, pad,&
-                  em, lambct, isot, dficks, instap,&
-                  retcom)
+                  em, tlamct, dficks, instap, retcom,&
+                  angmas, aniso, ndim)
 ! =====================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,17 +45,29 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 #include "asterfort/rcvala.h"
 #include "asterfort/satura.h"
 #include "asterfort/satuvg.h"
+#include "asterfort/tdlamb.h"
+#include "asterfort/tebiot.h"
+#include "asterfort/telamb.h"
+#include "asterfort/tlambc.h"
+#include "asterfort/tpermh.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
-    integer :: imate, retcom
+    integer :: imate, retcom, ndim
+    integer :: aniso, aniso1, aniso2, aniso3, aniso4, anisoh
     real(kind=8) :: t0, p10, p20, phi0, pvp0, t, p1, p2, phi, pvp
-    real(kind=8) :: rgaz, rhod, cpd, biot, satm, satur, dsatur, pesa(3)
-    real(kind=8) :: permfh, permli, dperml, permgz, dperms, dpermp
+    real(kind=8) :: rgaz, rhod, cpd, satm, satur, dsatur, pesa(3)
+    real(kind=8) :: permli, dperml, permgz, dperms, dpermp
     real(kind=8) :: fick, dfickt, dficks, dfickg, lambp, dlambp, rhol
     real(kind=8) :: alpha, cpl, lambs, dlambs, viscl, dviscl, cpg, pad
-    real(kind=8) :: lambt, dlambt, viscg, dviscg, mamolg, cpvg, viscvg
+    real(kind=8) :: viscg, dviscg, mamolg, cpvg, viscvg
     real(kind=8) :: dvisvg, fickad, dfadt, endo, mamolv, p1m, cpad, kh, em
-    real(kind=8) :: lambct, unsurk, isot(6), instap
+    real(kind=8) :: unsurk, instap
+    real(kind=8) :: angmas(3)
+    real(kind=8) :: biot(4), tbiot(6)
+    real(kind=8) :: permfh(4), tperm(ndim, ndim)
+    real(kind=8) :: lambct(4), tlamct(ndim, ndim)
+    real(kind=8) :: lambt(4), tlambt(ndim, ndim)
+    real(kind=8) :: dlambt(4), tdlamt(ndim, ndim)
     character(len=8) :: etape
     character(len=16) :: meca, thmc, ther, hydr
 ! =====================================================================
@@ -71,47 +83,47 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     integer :: dim36, dim37, dim38, dim40, dim41, dim42, dim43, dim39
     parameter   ( dimsat =  2 )
     parameter   ( dimvg  =  5 )
-    parameter   ( ncon   =  9 )
+    parameter   ( ncon   = 11 )
     parameter   ( dim1   =  5 )
-    parameter   ( dim2   =  4 )
+    parameter   ( dim2   =  7 )
     parameter   ( dim3   =  4 )
-    parameter   ( dim4   =  5 )
+    parameter   ( dim4   =  8 )
     parameter   ( dim5   =  2 )
-    parameter   ( dim6   =  6 )
+    parameter   ( dim6   =  9 )
     parameter   ( dim7   =  4 )
     parameter   ( dim8   =  2 )
-    parameter   ( dim9   =  7 )
+    parameter   ( dim9   =  10 )
     parameter   ( dim10  =  4 )
     parameter   ( dim11  =  2 )
     parameter   ( dim12  =  2 )
-    parameter   ( dim13  =  7 )
+    parameter   ( dim13  =  10 )
     parameter   ( dim14  =  4 )
     parameter   ( dim15  =  2 )
-    parameter   ( dim16  =  6 )
+    parameter   ( dim16  =  9 )
     parameter   ( dim17  =  4 )
-    parameter   ( dim18  = 16 )
+    parameter   ( dim18  = 22 )
     parameter   ( dim19  =  4 )
-    parameter   ( dim20  = 17 )
+    parameter   ( dim20  = 23 )
     parameter   ( dim21  =  3 )
-    parameter   ( dim22  = 26 )
+    parameter   ( dim22  = 32 )
     parameter   ( dim23  =  4 )
     parameter   ( dim24  =  3 )
-    parameter   ( dim25  = 33 )
+    parameter   ( dim25  = 39 )
     parameter   ( dim26  =  4 )
     parameter   ( dim27  =  3 )
     parameter   ( dim28  =  1 )
-    parameter   ( dim29  = 26 )
+    parameter   ( dim29  = 32 )
     parameter   ( dim30  =  4 )
     parameter   ( dim31  =  3 )
-    parameter   ( dim32  = 22 )
+    parameter   ( dim32  = 28 )
     parameter   ( dim33  =  4 )
 !
-    parameter   ( dim35  =  7 )
+    parameter   ( dim35  =  10 )
     parameter   ( dim36  =  4 )
     parameter   ( dim37  =  2 )
     parameter   ( dim38  =  2 )
     parameter   ( dim39  =  2 )
-    parameter   ( dim40  = 38 )
+    parameter   ( dim40  = 44 )
     parameter   ( dim41  =  4 )
     parameter   ( dim42  =  3 )
     parameter   ( dim43  =  1 )
@@ -120,7 +132,8 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !   NRESMA EST LE MAX DE DIMPAR, DIMSAT ET DE DIMI, AVEC I DE 1 A 43
     integer :: nresma
-    parameter ( nresma = 34 )
+!      PARAMETER ( NRESMA = 34 )
+    parameter ( nresma = 40 )
 !
     real(kind=8) :: val1(dim1), val2(dim2), val3(dim3), val4(dim4)
     real(kind=8) :: val5(dim5), val6(dim6), val7(dim7), val8(dim8)
@@ -172,8 +185,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra2  / 'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP'    ,&
-     &              'EMMAG' /
+     &              'EMMAG' ,&
+     &              'BIOT_T'   /
     data ncra3  / 'RHO'      ,&
      &              'UN_SUR_K' ,&
      &              'ALPHA'    ,&
@@ -184,8 +200,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data ncra4  / 'R_GAZ'    ,&
      &              'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP' ,&
-     &              'EMMAG'       /
+     &              'EMMAG'  ,&
+     &              'BIOT_T'   /
     data ncra5  / 'MASS_MOL' ,&
      &              'CP'       /
 ! =====================================================================
@@ -194,9 +213,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data ncra6  / 'R_GAZ'    ,&
      &              'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP'       ,&
      &              'SATU_PRE' ,&
-     &              'EMMAG'  /
+     &              'EMMAG'  ,&
+     &              'BIOT_T'   /
     data ncra7  / 'RHO'      ,&
      &              'UN_SUR_K' ,&
      &              'ALPHA'    ,&
@@ -209,10 +231,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data ncra9  / 'R_GAZ'    ,&
      &              'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP'       ,&
      &              'SATU_PRE' ,&
      &              'D_SATU_P' ,&
-     &              'EMMAG'    /
+     &              'EMMAG'    ,&
+     &              'BIOT_T'   /
     data ncra10 / 'RHO'      ,&
      &              'UN_SUR_K' ,&
      &              'ALPHA'    ,&
@@ -227,10 +252,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data ncra13 / 'R_GAZ'    ,&
      &              'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP'       ,&
      &              'SATU_PRE' ,&
      &              'D_SATU_P' ,&
-     &              'EMMAG' /
+     &              'EMMAG' ,&
+     &              'BIOT_T'   /
     data ncra14 / 'RHO'      ,&
      &              'UN_SUR_K' ,&
      &              'ALPHA'    ,&
@@ -242,10 +270,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra16 / 'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP'       ,&
      &              'SATU_PRE' ,&
      &              'D_SATU_P' ,&
-     &              'EMMAG' /
+     &              'EMMAG' ,&
+     &              'BIOT_T'   /
     data ncra17 / 'RHO'      ,&
      &              'UN_SUR_K' ,&
      &              'ALPHA'    ,&
@@ -257,15 +288,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'PESA_Y'   ,&
      &              'PESA_Z'   ,&
      &              'PERM_IN'  ,&
+     &              'PERMIN_L'  ,&
+     &              'PERMIN_N'  ,&
      &              'PERM_END' ,&
      &              'LAMB_T'   ,&
+     &              'LAMB_TL'   ,&
+     &              'LAMB_TN'   ,&
      &              'D_LB_T',&
+     &              'D_LB_TL',&
+     &              'D_LB_TN',&
      &              'LAMB_P'   ,&
      &              'D_LB_P',&
      &              'LAMB_CT',&
-     &              'PERMIN_X','PERMIN_Y',&
-     &              'PERMIN_Z','PERMINXY',&
-     &              'PERMINYZ','PERMINZX'/
+     &              'LAMB_C_L',&
+     &              'LAMB_C_N',&
+     &              'PERMIN_T',&
+     &              'LAMB_TT',&
+     &              'D_LB_TT',&
+     &              'LAMB_C_T'/
     data ncra19 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' ,&
@@ -278,15 +318,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'PESA_Y'   ,&
      &              'PESA_Z'   ,&
      &              'PERM_IN'  ,&
+     &              'PERMIN_L'  ,&
+     &              'PERMIN_N'  ,&
      &              'PERM_END' ,&
      &              'LAMB_T'   ,&
+     &              'LAMB_TL'   ,&
+     &              'LAMB_TN'   ,&
      &              'D_LB_T',&
+     &              'D_LB_TL',&
+     &              'D_LB_TN',&
      &              'LAMB_P'   ,&
      &              'D_LB_P',&
      &              'LAMB_CT',&
-     &              'PERMIN_X','PERMIN_Y',&
-     &              'PERMIN_Z','PERMINXY',&
-     &              'PERMINYZ','PERMINZX'/
+     &              'LAMB_C_L',&
+     &              'LAMB_C_N',&
+     &              'PERMIN_T',&
+     &              'LAMB_TT',&
+     &              'D_LB_TT',&
+     &              'LAMB_C_T'/
     data ncra21 / 'MASS_MOL' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' /
@@ -298,18 +347,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'PESA_Y'   ,&
      &              'PESA_Z'   ,&
      &              'PERM_IN'  ,&
+     &              'PERMIN_L'  ,&
+     &              'PERMIN_N'  ,&
      &              'PERM_END' ,&
      &              'LAMB_T'   ,&
-     &              'D_LB_T' ,  'LAMB_P' ,&
-     &              'D_LB_P' ,'LAMB_S'   ,&
-     &              'D_LB_S' ,'LAMB_CT'  ,&
+     &              'LAMB_TL'   ,&
+     &              'LAMB_TN'   ,&
+     &              'D_LB_T' ,&
+     &              'D_LB_TL',&
+     &              'D_LB_TN',&
+     &              'LAMB_P' ,&
+     &              'D_LB_P' ,&
+     &              'LAMB_S'   ,&
+     &              'D_LB_S' ,&
+     &              'LAMB_CT'  ,&
+     &              'LAMB_C_L',&
+     &              'LAMB_C_N',&
      &              'SATU_PRE' ,'D_SATU_P'  ,&
      &              'PERM_LIQ' , 'D_PERM_L' ,&
      &              'PERM_GAZ' , 'D_PERM_S' ,&
      &              'D_PERM_P',&
-     &              'PERMIN_X','PERMIN_Y',&
-     &              'PERMIN_Z','PERMINXY',&
-     &              'PERMINYZ','PERMINZX'/
+     &              'PERMIN_T',&
+     &              'LAMB_TT',&
+     &              'D_LB_TT',&
+     &              'LAMB_C_T'/
     data ncra23 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' ,&
@@ -322,11 +383,21 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra25 / 'R_GAZ'    ,'PESA_X'   ,&
      &              'PESA_Y'   ,'PESA_Z'   ,&
-     &              'PERM_IN'  ,'PERM_END' ,&
-     &              'LAMB_T'   ,'D_LB_T' ,&
+     &              'PERM_IN'  ,&
+     &              'PERMIN_L'  ,&
+     &              'PERMIN_N'  ,&
+     &              'PERM_END' ,&
+     &              'LAMB_T'   ,&
+     &              'LAMB_TL'   ,&
+     &              'LAMB_TN'   ,&
+     &              'D_LB_T' ,&
+     &              'D_LB_TL',&
+     &              'D_LB_TN',&
      &              'LAMB_P'   ,'D_LB_P' ,&
      &              'LAMB_S'   ,'D_LB_S' ,&
      &              'LAMB_CT'   ,&
+     &              'LAMB_C_L',&
+     &              'LAMB_C_N',&
      &              'SATU_PRE' ,'D_SATU_P' ,&
      &              'PERM_LIQ' ,'D_PERM_L' ,&
      &              'PERM_GAZ' ,'D_PERM_S' ,&
@@ -334,10 +405,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'FICKV_PV' ,'FICKV_PG' ,&
      &              'FICKV_S'  ,'D_FV_T'   ,&
      &              'D_FV_PG',&
-     &              'PERMIN_X','PERMIN_Y',&
-     &              'PERMIN_Z','PERMINXY',&
-     &              'PERMINYZ','PERMINZX',&
-     &              'D_FV_S'/
+     &              'D_FV_S',&
+     &              'PERMIN_T',&
+     &              'LAMB_TT',&
+     &              'D_LB_TT',&
+     &              'LAMB_C_T'/
     data ncra26 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' ,&
@@ -353,20 +425,29 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'PESA_X'   ,&
      &              'PESA_Y'   ,&
      &              'PESA_Z'   ,&
-     &              'PERM_IN'  ,'PERM_END' ,&
-     &              'LAMB_T'   ,'D_LB_T' ,&
+     &              'PERM_IN'  ,&
+     &              'PERMIN_L'  ,&
+     &              'PERMIN_N'  ,&
+     &              'PERM_END' ,&
+     &              'LAMB_T'   ,&
+     &              'LAMB_TL'   ,&
+     &              'LAMB_TN'   ,&
+     &              'D_LB_T' ,&
+     &              'D_LB_TL',&
+     &              'D_LB_TN',&
      &              'LAMB_P'   ,'D_LB_P' ,&
      &              'LAMB_S'   ,'D_LB_S' ,&
-     &              'LAMB_CT'  ,'SATU_PRE' ,&
+     &              'LAMB_CT'  ,&
+     &              'LAMB_C_L',&
+     &              'LAMB_C_N',&
+     &              'SATU_PRE' ,&
      &              'D_SATU_P' ,'PERM_LIQ' ,&
      &              'D_PERM_L' ,'PERM_GAZ' ,&
      &              'D_PERM_S' ,'D_PERM_P',&
-     &              'PERMIN_X',&
-     &              'PERMIN_Y',&
-     &              'PERMIN_Z',&
-     &              'PERMINXY',&
-     &              'PERMINYZ',&
-     &              'PERMINZX'/
+     &              'PERMIN_T',&
+     &              'LAMB_TT',&
+     &              'D_LB_TT',&
+     &              'LAMB_C_T'/
     data ncra30 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' ,&
@@ -381,19 +462,28 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'PESA_Y'   ,&
      &              'PESA_Z'   ,&
      &              'PERM_IN'  ,&
+     &              'PERMIN_L'  ,&
+     &              'PERMIN_N'  ,&
      &              'PERM_END' ,&
      &              'LAMB_T'   ,&
+     &              'LAMB_TL'   ,&
+     &              'LAMB_TN'   ,&
      &              'D_LB_T',&
+     &              'D_LB_TL',&
+     &              'D_LB_TN',&
      &              'LAMB_P',&
      &              'D_LB_P' ,&
      &              'LAMB_S'   ,&
      &              'D_LB_S' ,&
      &              'LAMB_CT'   ,&
+     &              'LAMB_C_L',&
+     &              'LAMB_C_N',&
      &              'SATU_PRE','D_SATU_P' ,&
-     &              'PERM_LIQ','D_PERM_L' ,&
-     &              'PERMIN_X','PERMIN_Y',&
-     &              'PERMIN_Z','PERMINXY',&
-     &              'PERMINYZ','PERMINZX'/
+     &              'PERM_LIQ','D_PERM_L',&
+     &              'PERMIN_T',&
+     &              'LAMB_TT',&
+     &              'D_LB_TT',&
+     &              'LAMB_C_T'/
     data ncra33 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' ,&
@@ -404,10 +494,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data ncra35  / 'R_GAZ'    ,&
      &              'RHO'      ,&
      &              'BIOT_COE' ,&
+     &              'BIOT_L'   ,&
+     &              'BIOT_N'   ,&
      &              'CP'       ,&
      &              'SATU_PRE' ,&
      &              'D_SATU_P' ,&
-     &              'EMMAG' /
+     &              'EMMAG' ,&
+     &              'BIOT_T'   /
     data ncra36 / 'RHO'      ,&
      &              'UN_SUR_K' ,&
      &              'ALPHA'    ,&
@@ -416,72 +509,92 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'CP'       /
     data ncra38 / 'MASS_MOL' ,&
      &              'CP'       /
-!      DATA NCRA39 / 'CP'        ,
-!    &              'COEF_HENRY' /
     data ncra39 / 'CP'        ,&
-     &              'COEF_HEN' /
+     &               'COEF_HEN' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ_VAPE -----
 ! =====================================================================
     data ncra40 / 'R_GAZ'    ,'PESA_X'   ,&
      &               'PESA_Y'    , 'PESA_Z'  ,&
-     &               'PERM_IN'   ,'PERM_END' ,&
-     &               'LAMB_T'    ,'D_LB_T' ,&
+     &               'PERM_IN'   ,&
+     &               'PERMIN_L'  ,&
+     &               'PERMIN_N'  ,&
+     &               'PERM_END' ,&
+     &               'LAMB_T'    ,&
+     &               'LAMB_TL'   ,&
+     &               'LAMB_TN'   ,&
+     &               'D_LB_T' ,&
+     &               'D_LB_TL',&
+     &               'D_LB_TN',&
      &               'LAMB_P'    ,'D_LB_P' ,&
      &               'LAMB_S'    ,'D_LB_S' ,&
      &               'LAMB_CT'    ,&
+     &               'LAMB_C_L',&
+     &               'LAMB_C_N',&
      &               'SATU_PRE' ,'D_SATU_P' ,&
-     &              'PERM_LIQ' ,'D_PERM_L' ,&
-     &              'PERM_GAZ' ,'D_PERM_S' ,&
-     &              'D_PERM_P' ,'FICKV_T'  ,&
-     &              'FICKV_PV' ,'FICKV_PG' ,&
-     &              'FICKV_S'  ,'D_FV_T',&
-     &              'D_FV_PG','FICKA_T'  ,&
-     &              'FICKA_PA' , 'FICKA_PL' ,&
-     &              'FICKA_S'  ,'D_FA_T' ,&
-     &              'PERMIN_X','PERMIN_Y',&
-     &              'PERMIN_Z','PERMINXY',&
-     &              'PERMINYZ','PERMINZX',&
-     &              'D_FV_S'/
+     &               'PERM_LIQ' ,'D_PERM_L' ,&
+     &               'PERM_GAZ' ,'D_PERM_S' ,&
+     &               'D_PERM_P' ,'FICKV_T'  ,&
+     &               'FICKV_PV' ,'FICKV_PG' ,&
+     &               'FICKV_S'  ,'D_FV_T',&
+     &               'D_FV_PG','FICKA_T'  ,&
+     &               'FICKA_PA' , 'FICKA_PL' ,&
+     &               'FICKA_S'  ,'D_FA_T' ,&
+     &               'D_FV_S',&
+     &               'PERMIN_T',&
+     &               'LAMB_TT',&
+     &               'D_LB_TT',&
+     &               'LAMB_C_T'/
     data ncra41 / 'UN_SUR_K' ,&
-     &              'VISC'     ,&
-     &              'D_VISC_T' ,&
-     &              'ALPHA'  /
+     &               'VISC'     ,&
+     &               'D_VISC_T' ,&
+     &               'ALPHA'  /
     data ncra42 / 'MASS_MOL' ,&
-     &              'VISC'     ,&
-     &              'D_VISC_T' /
+     &               'VISC'     ,&
+     &               'D_VISC_T' /
     data ncra43 / 'MASS_MOL' /
 ! =====================================================================
 ! -- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_AD_GAZ
 ! =====================================================================
     data crad35  / 'R_GAZ'    ,&
-     &              'RHO'      ,&
-     &              'BIOT_COE' ,&
-     &              'CP'       ,&
-     &              'SATU_PRE' ,&
-     &              'D_SATU_P' ,&
-     &              'EMMAG' /
+     &               'RHO'      ,&
+     &               'BIOT_COE' ,&
+     &               'BIOT_L'   ,&
+     &               'BIOT_N'   ,&
+     &               'CP'       ,&
+     &               'SATU_PRE' ,&
+     &               'D_SATU_P' ,&
+     &               'EMMAG' ,&
+     &               'BIOT_T'   /
     data crad36 / 'RHO'      ,&
-     &              'UN_SUR_K' ,&
-     &              'ALPHA'    ,&
-     &              'CP'       /
+     &               'UN_SUR_K' ,&
+     &               'ALPHA'    ,&
+     &               'CP'       /
     data crad37 / 'MASS_MOL' ,&
-     &              'CP'       /
-!      DATA CRAD39 / 'CP'        ,
-!    &              'COEF_HENRY' /
+     &               'CP'       /
     data crad39 / 'CP'        ,&
-     &              'COEF_HEN' /
+     &               'COEF_HEN' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ -----
 ! =====================================================================
 !     DANS CRAD40 ON NE LIT PAS DE 21 A 26 INCLUS ET 38
     data crad40 / 'R_GAZ'    ,'PESA_X'   ,&
      &                'PESA_Y'    , 'PESA_Z'  ,&
-     &                'PERM_IN'   ,'PERM_END' ,&
-     &                'LAMB_T'    ,'D_LB_T' ,&
+     &                'PERM_IN'   ,&
+     &                'PERMIN_L'  ,&
+     &                'PERMIN_N'  ,&
+     &                'PERM_END' ,&
+     &                'LAMB_T'    ,&
+     &                'LAMB_TL'   ,&
+     &                'LAMB_TN'   ,&
+     &                'D_LB_T' ,&
+     &                'D_LB_TL',&
+     &                'D_LB_TN',&
      &                'LAMB_P'    ,'D_LB_P' ,&
      &                'LAMB_S'    ,'D_LB_S' ,&
      &                'LAMB_CT'    ,&
+     &                'LAMB_C_L',&
+     &                'LAMB_C_N',&
      &                'SATU_PRE' ,'D_SATU_P' ,&
      &                'PERM_LIQ' ,'D_PERM_L' ,&
      &                'PERM_GAZ' ,'D_PERM_S' ,&
@@ -491,9 +604,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &                'D_FV_PG','FICKA_T'  ,&
      &                'FICKA_PA' , 'FICKA_PL' ,&
      &                'FICKA_S'  ,'D_FA_T' ,&
-     &                'PERMIN_X','PERMIN_Y','PERMIN_Z','PERMINXY',&
-     &                'PERMINYZ','PERMINZX',&
-     &                'D_FV_S'/
+     &                'D_FV_S',&
+     &                'PERMIN_T',&
+     &                'LAMB_TT',&
+     &                'D_LB_TT',&
+     &                'LAMB_C_T'/
     data crad41 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
      &              'D_VISC_T' ,&
@@ -521,6 +636,19 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     retcom = 0
     un = 1.d0
     zero=0.d0
+!
+    aniso = 0
+    aniso1 = 0
+    aniso2 = 0
+    aniso3 = 0
+    aniso4 = 0
+! INITIALISATION DES VECTEURS POUR LE CHOIX ISOTROPIE/ANISOTROPIE
+    do 12 ii = 1, 4
+        biot(ii)=0.d0
+        permfh(ii)=0.d0
+        lambct(ii)=0.d0
+        dlambt(ii)=0.d0
+12  end do
 !
     if (etape .eq. 'INITIALI') then
         do 10 ii = 1, dim1
@@ -572,31 +700,64 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val3(ii) = 0.0d0
 30          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 2, ncra2, val2, icodre,&
+                        0.0d0, 1, ncra2, val2, icodre,&
                         0)
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, ncra2(2), val2(2), icodre,&
+                        0)
+!
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra2(7), val2(7), icodre,&
+                            0)
+!
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra2(3), val2(3), icodre,&
+                                0)
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra2(3), val2(3), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra2(7), val2(7), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, ncra3, val3, icodre,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra2(3), val2(3), icodre,&
+                            t, 1, ncra2(5), val2(5), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, ncra3(3), val3(3), icodre,&
                             1)
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra2(4), val2(4), icodre,&
+                        0.0d0, 1, ncra2(6), val2(6), icodre,&
                         0)
             rhod = val2(1)
-            biot = val2(2)
-            cpd = val2(3)
-            em = val2(4)
+            biot(1) = val2(2)
+            biot(2) = val2(3)
+            biot(3) = val2(4)
+            biot(4) = val2(7)
+            cpd = val2(5)
+            em = val2(6)
             satur = 1.0d0
             rhol = val3(1)
             unsurk = val3(2)
             alpha = val3(3)
             cpl = val3(4)
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         else if (thmc.eq.'GAZ') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------
@@ -608,30 +769,63 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val5(ii) = 0.0d0
 50          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 3, ncra4, val4, icodre,&
+                        0.0d0, 2, ncra4, val4, icodre,&
                         0)
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, ncra4(3), val4(3), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra4(8), val4(8), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra4(4), val4(4), icodre,&
+                                0)
+!
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra4(4), val4(4), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra4(8), val4(8), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         0.0d0, 1, ncra5, val5, icodre,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra4(4), val4(4), icodre,&
+                            t, 1, ncra4(6), val4(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                             t, 1, ncra5(2), val5(2), icodre,&
                             1)
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra4(5), val4(5), icodre,&
+                        0.0d0, 1, ncra4(7), val4(7), icodre,&
                         0)
             rgaz = val4(1)
             rhod = val4(2)
-            biot = val4(3)
-            cpd = val4(4)
-            em = val4(5)
+            biot(1) = val4(3)
+            biot(2) = val4(4)
+            biot(3) = val4(5)
+            biot(4) = val4(8)
+            cpd = val4(6)
+            em = val4(7)
             satur = 1.0d0
             mamolg = val5(1)
             cpg = val5(2)
+!
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         else if (thmc.eq.'LIQU_VAPE') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------
@@ -646,8 +840,34 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val8(ii) = 0.0d0
 80          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, 'TEMP',&
-                        0.0d0, 3, ncra6, val6, icodre,&
+                        0.0d0, 2, ncra6, val6, icodre,&
                         0)
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, 'TEMP',&
+                        0.0d0, 1, ncra6(3), val6(3), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra6(9), val6(9), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra6(4), val6(4), icodre,&
+                                0)
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra6(4), val6(4), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra6(9), val6(9), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, ncra7, val7, icodre,&
                         0)
@@ -656,7 +876,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra6(4), val6(4), icodre,&
+                            t, 1, ncra6(6), val6(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, ncra7(3), val7(3), icodre,&
@@ -669,24 +889,27 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1m, val6(5), rbid1)
+                call satuvg(vg, p1m, val6(7), rbid1)
                 elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1m, 1, ncra6(5), val6(5), icodre,&
+                            p1m, 1, ncra6(7), val6(7), icodre,&
                             1)
             else
-                call satura(hydr, p1m, val6(5), rbid1)
+                call satura(hydr, p1m, val6(7), rbid1)
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra6(6), val6(6), icodre,&
+                        0.0d0, 1, ncra6(8), val6(8), icodre,&
                         0)
             rgaz = val6(1)
             rhod = val6(2)
-            biot = val6(3)
-            cpd = val6(4)
-            satm = val6(5)
-            em = val6(6)
+            biot(1) = val6(3)
+            biot(2) = val6(4)
+            biot(3) = val6(5)
+            biot(4) = val6(9)
+            cpd = val6(6)
+            satm = val6(7)
+            em = val6(8)
             rhol = val7(1)
             unsurk = val7(2)
             alpha = val7(3)
@@ -697,6 +920,9 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 retcom = 2
                 goto 500
             endif
+!
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         else if (thmc.eq.'LIQU_VAPE_GAZ') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------
@@ -714,8 +940,35 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val12(ii) = 0.0d0
 120          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 3, ncra9, val9, icodre,&
+                        0.0d0, 2, ncra9, val9, icodre,&
                         0)
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, ncra9(3), val9(3), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra9(10), val9(11), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra9(4), val9(4), icodre,&
+                                0)
+!
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra9(4), val9(4), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra9(10), val9(11), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, ncra10, val10, icodre,&
                         0)
@@ -727,7 +980,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra9(4), val9(4), icodre,&
+                            t, 1, ncra9(6), val9(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, ncra10(3), val10(3), icodre,&
@@ -743,32 +996,35 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1m, val9(5), rbid1)
-                call satuvg(vg, p1, val9(6), val9(7))
+                call satuvg(vg, p1m, val9(7), rbid1)
+                call satuvg(vg, p1, val9(8), val9(9))
 !
                 else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1m, 1, ncra9(5), val9(5), icodre,&
+                            p1m, 1, ncra9(7), val9(7), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra9(5), val9(6), icodre,&
+                            p1, 2, ncra9(7), val9(8), icodre,&
                             1)
             else
-                call satura(hydr, p1m, val9(5), rbid1)
-                call satura(hydr, p1, val9(6), val9(7))
+                call satura(hydr, p1m, val9(7), rbid1)
+                call satura(hydr, p1, val9(8), val9(9))
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra9(7), val9(8), icodre,&
+                        0.0d0, 1, ncra9(9), val9(10), icodre,&
                         0)
             rgaz = val9(1)
             rhod = val9(2)
-            biot = val9(3)
-            cpd = val9(4)
-            satm = val9(5)
-            satur = val9(6)
-            dsatur = val9(7)
-            em = val9(8)
+            biot(1) = val9(3)
+            biot(2) = val9(4)
+            biot(3) = val9(5)
+            biot(4) = val9(11)
+            cpd = val9(6)
+            satm = val9(7)
+            satur = val9(8)
+            dsatur = val9(9)
+            em = val9(10)
             rhol = val10(1)
             unsurk = val10(2)
             alpha = val10(3)
@@ -785,6 +1041,9 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 retcom = 2
                 goto 500
             endif
+!
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         else if (thmc.eq.'LIQU_AD_GAZ_VAPE') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE   -----------
@@ -805,9 +1064,35 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val39(ii) = 0.0d0
 131          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 3, ncra35, val35, icodre,&
+                        0.0d0, 2, ncra35, val35, icodre,&
                         0)
-!
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, ncra35(3), val35(3), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+!  attention au décalage
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra35(10), val35(11),icodre,0)
+                            
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra35(4), val35(4), icodre,&
+                                0)
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra35(4), val35(4), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra35(10), val35(11), icodre,& 
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, ncra36, val36, icodre,&
                         0)
@@ -822,7 +1107,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra35(4), val35(4), icodre,&
+                            t, 1, ncra35(6), val35(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, ncra36(3), val36(3), icodre,&
@@ -838,19 +1123,19 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1m, val35(5), rbid1)
-                call satuvg(vg, p1, val35(6), val35(7))
+                call satuvg(vg, p1m, val35(7), rbid1)
+                call satuvg(vg, p1, val35(8), val35(9))
                 else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1m, 1, ncra35(5), val35(5), icodre,&
+                            p1m, 1, ncra35(7), val35(7), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra35(5), val35(6), icodre,&
+                            p1, 2, ncra35(7), val35(8), icodre,&
                             1)
             else
-                call satura(hydr, p1m, val35(5), rbid1)
-                call satura(hydr, p1, val35(6), val35(7))
+                call satura(hydr, p1m, val35(7), rbid1)
+                call satura(hydr, p1, val35(8), val35(9))
             endif
             call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 0, ' ',&
                         0.0d0, 1, ncra39(1), val39(1), icodre,&
@@ -859,16 +1144,19 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         t, 1, ncra39(2), val39(2), icodre,&
                         1)
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra35(7), val35(8), icodre,&
+                        0.0d0, 1, ncra35(9), val35(10), icodre,&
                         0)
             rgaz = val35(1)
             rhod = val35(2)
-            biot = val35(3)
-            cpd = val35(4)
-            satm = val35(5)
-            satur = val35(6)
-            dsatur = val35(7)
-            em = val35(8)
+            biot(1) = val35(3)
+            biot(2) = val35(4)
+            biot(3) = val35(5)
+            biot(4) = val35(11)
+            cpd = val35(6)
+            satm = val35(7)
+            satur = val35(8)
+            dsatur = val35(9)
+            em = val35(10)
             rhol = val36(1)
             unsurk = val36(2)
             alpha = val36(3)
@@ -888,11 +1176,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 goto 500
             endif
 !
-!
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
 !
         else if (thmc.eq.'LIQU_AD_GAZ') then
 ! =====================================================================
-! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE   -----------
+! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_    -----------
 ! =====================================================================
             do 991 ii = 1, dim35+1
                 val35(ii) = 0.0d0
@@ -907,9 +1195,33 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val39(ii) = 0.0d0
 9131          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 3, crad35, val35, icodre,&
+                        0.0d0, 2, crad35, val35, icodre,&
                         0)
-!
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, crad35(3), val35(3), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, crad35(10), val35(11),icodre,0)
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, crad35(4), val35(4), icodre,&
+                                0)
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, crad35(4), val35(4), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, crad35(10), val35(11), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, crad36, val36, icodre,&
                         0)
@@ -920,7 +1232,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, crad35(4), val35(4), icodre,&
+                            t, 1, crad35(6), val35(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, crad36(3), val36(3), icodre,&
@@ -936,19 +1248,19 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1m, val35(5), rbid1)
-                call satuvg(vg, p1, val35(6), val35(7))
+                call satuvg(vg, p1m, val35(7), rbid1)
+                call satuvg(vg, p1, val35(8), val35(9))
                 else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1m, 1, crad35(5), val35(5), icodre,&
+                            p1m, 1, crad35(7), val35(7), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, crad35(5), val35(6), icodre,&
+                            p1, 2, crad35(7), val35(8), icodre,&
                             1)
             else
-                call satura(hydr, p1m, val35(5), rbid1)
-                call satura(hydr, p1, val35(6), val35(7))
+                call satura(hydr, p1m, val35(7), rbid1)
+                call satura(hydr, p1, val35(8), val35(9))
             endif
             call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 0, ' ',&
                         0.0d0, 1, crad39(1), val39(1), icodre,&
@@ -957,16 +1269,19 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         t, 1, crad39(2), val39(2), icodre,&
                         1)
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, crad35(7), val35(8), icodre,&
+                        0.0d0, 1, crad35(9), val35(10), icodre,&
                         0)
             rgaz = val35(1)
             rhod = val35(2)
-            biot = val35(3)
-            cpd = val35(4)
-            satm = val35(5)
-            satur = val35(6)
-            dsatur = val35(7)
-            em = val35(8)
+            biot(1) = val35(3)
+            biot(2) = val35(4)
+            biot(3) = val35(5)
+            biot(4) = val35(11)
+            cpd = val35(6)
+            satm = val35(7)
+            satur = val35(8)
+            dsatur = val35(9)
+            em = val35(10)
             rhol = val36(1)
             unsurk = val36(2)
             alpha = val36(3)
@@ -975,6 +1290,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             cpg = val37(2)
             cpad = val39(1)
             kh = val39(2)
+!
             if (satm .gt. un .or. satm .lt. zero) then
                 retcom = 2
                 goto 500
@@ -983,8 +1299,8 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 retcom = 2
                 goto 500
             endif
-!
-!
+!       
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
 !
         else if (thmc.eq.'LIQU_GAZ') then
 ! =====================================================================
@@ -1000,8 +1316,34 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val15(ii) = 0.0d0
 150          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 3, ncra13, val13, icodre,&
+                        0.0d0, 2, ncra13, val13, icodre,&
                         0)
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, ncra13(3), val13(3), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra13(10), val13(11),icodre,0)
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra13(4), val13(4), icodre,&
+                                0)
+!
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra13(4), val13(4), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra13(10), val13(11), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, ncra14, val14, icodre,&
                         0)
@@ -1010,7 +1352,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra13(4), val13(4), icodre,&
+                            t, 1, ncra13(6), val13(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, ncra14(3), val14(3), icodre,&
@@ -1026,31 +1368,34 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1m, val13(5), rbid1)
-                call satuvg(vg, p1, val13(6), val13(7))
+                call satuvg(vg, p1m, val13(7), rbid1)
+                call satuvg(vg, p1, val13(8), val13(9))
                 elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1m, 1, ncra13(5), val13(5), icodre,&
+                            p1m, 1, ncra13(7), val13(7), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra13(5), val13(6), icodre,&
+                            p1, 2, ncra13(7), val13(8), icodre,&
                             1)
             else
-                call satura(hydr, p1m, val13(5), rbid1)
-                call satura(hydr, p1, val13(6), val13(7))
+                call satura(hydr, p1m, val13(7), rbid1)
+                call satura(hydr, p1, val13(8), val13(9))
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra13(7), val13(8), icodre,&
+                        0.0d0, 1, ncra13(9), val13(10), icodre,&
                         0)
             rgaz = val13(1)
             rhod = val13(2)
-            biot = val13(3)
-            cpd = val13(4)
-            satm = val13(5)
-            satur = val13(6)
-            dsatur = val13(7)
-            em = val13(8)
+            biot(1) = val13(3)
+            biot(2) = val13(4)
+            biot(3) = val13(5)
+            biot(4) = val13(11)
+            cpd = val13(6)
+            satm = val13(7)
+            satur = val13(8)
+            dsatur = val13(9)
+            em = val13(10)
             rhol = val14(1)
             unsurk = val14(2)
             alpha = val14(3)
@@ -1065,6 +1410,9 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 retcom = 2
                 goto 500
             endif
+!
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         else if (thmc.eq.'LIQU_GAZ_ATM') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------
@@ -1076,14 +1424,41 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val17(ii) = 0.0d0
 170          continue
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 2, ncra16, val16, icodre,&
+                        0.0d0, 1, ncra16, val16, icodre,&
                         0)
+            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, ncra16(2), val16(2), icodre,&
+                        0)
+            if (icodre(1) .eq. 1) then
+                call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                            0.0d0, 1, ncra16(9), val16(10), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+                    aniso=1
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra16(3), val16(3), icodre,&
+                                0)
+!
+                else
+! ELAS_ORTH 2D
+                    aniso=2
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 2, ncra16(3), val16(3), icodre,&
+                                0)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                0.0d0, 1, ncra16(9), val16(10), icodre,&
+                                0)
+                endif
+            else if (icodre(1).eq.0) then
+                aniso=0
+            endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         0.0d0, 2, ncra17, val17, icodre,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra16(3), val16(3), icodre,&
+                            t, 1, ncra16(5), val16(5), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 2, ncra17(3), val17(3), icodre,&
@@ -1091,25 +1466,28 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             if (hydr .eq. 'HYDR_UTIL' .or. hydr .eq. 'HYDR_ENDO') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1m, 1, ncra16(4), val16(4), icodre,&
+                            p1m, 1, ncra16(6), val16(6), icodre,&
                             1)
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra16(4), val16(5), icodre,&
+                            p1, 2, ncra16(6), val16(7), icodre,&
                             1)
             else
-                call satura(hydr, p1m, val16(4), rbid1)
-                call satura(hydr, p1, val16(5), val16(6))
+                call satura(hydr, p1m, val16(6), rbid1)
+                call satura(hydr, p1, val16(7), val16(8))
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 1, ncra16(6), val16(7), icodre,&
+                        0.0d0, 1, ncra16(8), val16(9), icodre,&
                         0)
             rhod = val16(1)
-            biot = val16(2)
-            cpd = val16(3)
-            satm = val16(4)
-            satur = val16(5)
-            dsatur = val16(6)
-            em = val16(7)
+            biot(1) = val16(2)
+            biot(2) = val16(3)
+            biot(3) = val16(4)
+            biot(4) = val16(10)
+            cpd = val16(5)
+            satm = val16(6)
+            satur = val16(7)
+            dsatur = val16(8)
+            em = val16(9)
             rhol = val17(1)
             unsurk = val17(2)
             alpha = val17(3)
@@ -1122,6 +1500,9 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 retcom = 2
                 goto 500
             endif
+!
+            call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         endif
     else if (etape.eq.'SATURATI') then
         if (hydr .eq. 'HYDR_UTIL' .or. hydr .eq. 'HYDR_ENDO') then
@@ -1143,9 +1524,40 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- CAS FINAL -------------------------------------------------------
 ! =====================================================================
+! RECUPERATION DE BIOT_COEFF DANS LE CAS FINAL (ISOTROPIE)
         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                    0.0d0, 1, 'BIOT_COE', biot, icodre,&
-                    1)
+                    0.0d0, 1, 'BIOT_COE', biot(1), icodre,0)
+        if (icodre(1) .eq. 1) then
+           call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                    0.0d0, 1, 'BIOT_T', biot(4), icodre,0)
+! RECUPERATION DES BIOT_COEFF DANS LE CAS FINAL (ANISOTROPIE)
+            if(icodre(1) .eq. 1) then
+! ELAS_ISTR 3D
+              aniso=1
+              call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, 'BIOT_L', biot(2), icodre,0)
+              call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, 'BIOT_N', biot(3), icodre,0)
+            else
+! ELAS_ORTH 2D
+              aniso=2
+              call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, 'BIOT_L', biot(2), icodre,&
+                        0)
+              call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, 'BIOT_N', biot(3), icodre,&
+                        0)
+              call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                        0.0d0, 1, 'BIOT_T', biot(4), icodre,&
+                        0)
+            endif
+        else if (icodre(1).eq.0) then
+            aniso=0
+        endif
+!
+! CONSTRUCTION DU TENSEUR DE BIOT DANS L'ETAPE FINALE
+        call tebiot(angmas, biot, tbiot, aniso, ndim)
+!
         if (thmc .eq. 'LIQU_SATU') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_SATU -------------------------------
@@ -1157,19 +1569,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 val19(ii) = 0.0d0
 190          continue
 !
-!       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
+!       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE FCT DE PHI
 !
-            val18(8) = 1.0d0
+            val18(14) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val18( 4) = 1.0d0
-            val18(11) = 1.0d0
-            val18(12) = 1.0d0
-            val18(13) = 1.0d0
-            val18(14) = 0.d0
-            val18(15) = 0.d0
-            val18(16) = 0.d0
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 3, ncra18(1), val18(1), icodre,&
@@ -1178,13 +1584,44 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra18(4), val18(4), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra18(6), val18(6), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra18(5), val18(5), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra18(5), val18(5), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra18(19), val18(19), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
+!
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL18 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra18(5), val18(4), icodre,&
+                                endo, 1, ncra18(7), val18(4), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra18(7), val18(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra18(7), val18(6), icodre,&
                                 1)
                 endif
             endif
@@ -1193,28 +1630,84 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra18(6), val18(6), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra18(7), val18(7), icodre,&
+                            t, 1, ncra18(8), val18(8), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra18(10), val18(10), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra18(9), val18(9), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra18(9), val18(9), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra18(20), val18(20), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra18(11), val18(11), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra18(13), val18(13), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra18(12), val18(12), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra18(12), val18(12), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra18(21), val18(21), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra18(8), val18(8), icodre,&
+                            phi, 2, ncra18(14), val18(14), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra18(10), val18(10), icodre,&
+                            0.d0, 1, ncra18(16), val18(16), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra18(18), val18(18), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra18(17), val18(17), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra18(17), val18(17), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra18(22), val18(22), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 1, ncra19(4), val19(4), icodre,&
                             1)
             endif
-!
-!--- TENSEUR ISOTOPE LE CAS ECHEANT
-!
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, 6, ncra18(11), val18(11), icodre,&
-                        0)
-!
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         instap, 1, 'PESA_MUL', fpesa, icodre,&
@@ -1231,12 +1724,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = fpesa*val18(1)
             pesa(2) = fpesa*val18(2)
             pesa(3) = fpesa*val18(3)
-            permfh = val18(4)
-            lambt = val18(6)
-            dlambt = val18(7)
-            lambp = val18(8)
-            dlambp = val18(9)
-            lambct = val18(10)
+            permfh(1) = val18(4)
+            permfh(2) = val18(5)
+            permfh(3) = val18(6)
+            permfh(4) = val18(19)
+            lambt(1) = val18(8)
+            lambt(2) = val18(9)
+            lambt(3) = val18(10)
+            lambt(4) = val18(20)
+            dlambt(1) = val18(11)
+            dlambt(2) = val18(12)
+            dlambt(3) = val18(13)
+            dlambt(4) = val18(21)
+            lambp = val18(14)
+            dlambp = val18(15)
+            lambct(1) = val18(16)
+            lambct(2) = val18(17)
+            lambct(3) = val18(18)
+            lambct(4) = val18(22)
             lambs = 1.0d0
             dlambs = 0.0d0
             satur = 1.0d0
@@ -1245,12 +1750,20 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             viscl = val19(2)
             dviscl = val19(3)
             alpha = val19(4)
-            isot(1) = val18(11)
-            isot(2) = val18(12)
-            isot(3) = val18(13)
-            isot(4) = val18(14)
-            isot(5) = val18(15)
-            isot(6) = val18(16)
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
+!
         else if (thmc.eq.'GAZ') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE GAZ -------------------------------------
@@ -1264,32 +1777,59 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val20(9) = 1.0d0
+            val20(15) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val20(5) = 1.0d0
-            val20(12) = 1.0d0
-            val20(13) = 1.0d0
-            val20(14) = 1.0d0
-            val20(15) = 0.d0
-            val20(16) = 0.d0
-            val20(17) = 0.d0
+!
+!            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
+!     &                       DIM20-7, NCRA20(1), VAL20(1), ICODRE, 0)
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.0d0, dim20-7, ncra20(1), val20(1), icodre,&
+                        0.0d0, 4, ncra20(1), val20(1), icodre,&
                         0)
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. ( hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra20(5), val20(5), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra20(7), val20(7), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra20(6), val20(6), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra20(6), val20(6), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra20(20), val20(20), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL21 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra20(6), val20(5), icodre,&
+                                endo, 1, ncra20(8), val20(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra20(8), val20(6), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra20(8), val20(7), icodre,&
                                 1)
                 endif
             endif
@@ -1298,22 +1838,82 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra20(7), val20(7), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra20(8), val20(8), icodre,&
+                            t, 1, ncra20(9), val20(9), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra20(11), val20(11), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra20(10), val20(10), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra20(10), val20(10), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra20(21), val20(21), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra20(12), val20(12), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra20(14), val20(14), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra20(13), val20(13), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra20(13), val20(13), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra20(22), val20(22), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra20(9), val20(9), icodre,&
+                            phi, 2, ncra20(15), val20(15), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra20(11), val20(11), icodre,&
+                            0.d0, 1, ncra20(17), val20(17), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra20(19), val20(19), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra20(18), val20(18), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra20(18), val20(18), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra20(23), val20(23), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
             endif
 !
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, ncra20(12), val20(12), icodre,&
-                        0)
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         instap, 1, 'PESA_MUL', fpesa, icodre,&
                         0)
@@ -1329,12 +1929,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = val20( 2)*fpesa
             pesa(2) = val20( 3)*fpesa
             pesa(3) = val20( 4)*fpesa
-            permfh = val20( 5)
-            lambt = val20( 7)
-            dlambt = val20( 8)
-            lambp = val20( 9)
-            dlambp = val20(10)
-            lambct = val20(11)
+            permfh(1) = val20(5)
+            permfh(2) = val20(6)
+            permfh(3) = val20(7)
+            permfh(4) = val20(20)
+            lambt(1) = val20(9)
+            lambt(2) = val20(10)
+            lambt(3) = val20(11)
+            lambt(4) = val20(21)
+            dlambt(1) = val20(12)
+            dlambt(2) = val20(13)
+            dlambt(3) = val20(14)
+            dlambt(4) = val20(22)
+            lambp = val20(15)
+            dlambp = val20(16)
+            lambct(1) = val20(17)
+            lambct(2) = val20(18)
+            lambct(3) = val20(19)
+            lambct(4) = val20(23)
             lambs = 1.0d0
             dlambs = 0.0d0
             satur = 1.0d0
@@ -1344,12 +1956,20 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             dviscg = val21( 3)
             lambs = 0.0d0
             dlambs = 0.0d0
-            isot(1) = val20(12)
-            isot(2) = val20(13)
-            isot(3) = val20(14)
-            isot(4) = val20(15)
-            isot(5) = val20(16)
-            isot(6) = val20(17)
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
+!
         else if (thmc.eq.'LIQU_VAPE') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE -------------------------------
@@ -1366,17 +1986,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val22(9) = 1.0d0
-            val22(11) = 1.0d0
+            val22(15) = 1.0d0
+            val22(17) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
             val22(5) = 1.0d0
-            val22(21) = 1.0d0
-            val22(22) = 1.0d0
-            val22(23) = 1.0d0
-            val22(24) = 0.d0
-            val22(25) = 0.d0
-            val22(26) = 0.d0
+!
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 4, ncra22, val22, icodre,&
                         0)
@@ -1384,13 +1999,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra22(5), val22(5), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra22(7), val22(7), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra22(6), val22(6), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra22(6), val22(6), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra22(29), val22(29), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra22(6), val22(5), icodre,&
+                                endo, 1, ncra22(8), val22(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra22(8), val22(6), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra22(8), val22(7), icodre,&
                                 1)
                 endif
             endif
@@ -1402,17 +2047,80 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra22(7), val22(7), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra22(8), val22(8), icodre,&
+                            t, 1, ncra22(9), val22(9), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra22(11), val22(11), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra22(10), val22(10), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra22(10), val22(10), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra22(30), val22(30), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra22(12), val22(12), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra22(14), val22(14), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra22(13), val22(13), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra22(13), val22(13), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra22(31), val22(31), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra22(9), val22(9), icodre,&
+                            phi, 2, ncra22(15), val22(15), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra22(13), val22(13), icodre,&
+                            0.d0, 1, ncra22(19), val22(19), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra22(21), val22(21), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra22(20), val22(20), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra22(20), val22(20), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra22(32), val22(32), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, dim23-3, ncra23(4), val23(4), icodre,&
                             1)
@@ -1424,40 +2132,38 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, pvp-p1, val22(14), val22(15))
+                call satuvg(vg, pvp-p1, val22(22), val22(23))
                 if (hydr .eq. 'HYDR_VGM') then
-                    call permvg(vg, val22(14), val22(16), val22(17), val22(18),&
-                                val22(19))
+                    call permvg(vg, val22(22), val22(24), val22(25), val22(26),&
+                                val22(27))
                 else
-                    call permvc(vg, val22(14), val22(16), val22(17), val22(18),&
-                                val22(19))
+                    call permvc(vg, val22(22), val22(24), val22(25), val22(26),&
+                                val22(27))
                 endif
-                val22(20) = 0.d0
+                val22(28) = 0.d0
                 elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            pvp-p1, 2, ncra22(14), val22(14), icodre,&
+                            pvp-p1, 2, ncra22(22), val22(22), icodre,&
                             1)
             else
-                call satura(hydr, pvp-p1, val22(14), val22(15))
+                call satura(hydr, pvp-p1, val22(22), val22(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
-            valpar(1) = val22(14)
+            valpar(1) = val22(22)
             valpar(2) = p2
             if ((hydr.ne.'HYDR_VGM') .and. (hydr.ne.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
-                            valpar, 5, ncra22(16), val22(16), icodre,&
+                            valpar, 5, ncra22(24), val22(24), icodre,&
                             1)
             endif
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
-                            valpar( 1), 2, ncra22(11), val22(11), icodre,&
+                            valpar( 1), 2, ncra22(17), val22(17), icodre,&
                             0)
             endif
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, ncra22(21), val22(21), icodre,&
-                        0)
+!
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         instap, 1, 'PESA_MUL', fpesa, icodre,&
                         0)
@@ -1473,21 +2179,33 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = val22( 2)*fpesa
             pesa(2) = val22( 3)*fpesa
             pesa(3) = val22( 4)*fpesa
-            permfh = val22( 5)
-            lambt = val22( 7)
-            dlambt = val22( 8)
-            lambp = val22( 9)
-            dlambp = val22(10)
-            lambs = val22(11)
-            dlambs = val22(12)
-            lambct = val22(13)
-            satur = val22(14)
-            dsatur = val22(15)
-            permli = val22(16)
-            dperml = val22(17)
-            permgz = val22(18)
-            dperms = val22(19)
-            dpermp = val22(20)
+            permfh(1) = val22(5)
+            permfh(2) = val22(6)
+            permfh(3) = val22(7)
+            permfh(4) = val22(29)
+            lambt(1) = val22(9)
+            lambt(2) = val22(10)
+            lambt(3) = val22(11)
+            lambt(4) = val22(30)
+            dlambt(1) = val22(12)
+            dlambt(2) = val22(13)
+            dlambt(3) = val22(14)
+            dlambt(4) = val22(31)
+            lambp = val22(15)
+            dlambp = val22(16)
+            lambs = val22(17)
+            dlambs = val22(18)
+            lambct(1) = val22(19)
+            lambct(2) = val22(20)
+            lambct(3) = val22(21)
+            lambct(4) = val22(32)
+            satur = val22(22)
+            dsatur = val22(23)
+            permli = val22(24)
+            dperml = val22(25)
+            permgz = val22(26)
+            dperms = val22(27)
+            dpermp = val22(28)
             unsurk = val23( 1)
             viscl = val23( 2)
             dviscl = val23( 3)
@@ -1495,16 +2213,25 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             mamolv = val24( 1)
             viscvg = val24( 2)
             dvisvg = val24( 3)
-            isot(1) = val22(21)
-            isot(2) = val22(22)
-            isot(3) = val22(23)
-            isot(4) = val22(24)
-            isot(5) = val22(25)
-            isot(6) = val22(26)
+!
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
+!
         else if (thmc.eq.'LIQU_VAPE_GAZ') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------
@@ -1524,18 +2251,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val25(9) = 1.0d0
-            val25(11) = 1.0d0
+            val25(15) = 1.0d0
+            val25(17) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val25(5) = 1.0d0
-            val25(27) = 1.0d0
-            val25(28) = 1.0d0
-            val25(29) = 1.0d0
-            val25(30) = 0.0d0
-            val25(31) = 0.0d0
-            val25(32) = 0.0d0
+!
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 4, ncra25, val25, icodre,&
@@ -1544,13 +2266,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra25(5), val25(5), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra25(7), val25(7), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra25(6), val25(6), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra25(6), val25(6), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra25(36), val25(36), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra25(6), val25(5), icodre,&
+                                endo, 1, ncra25(8), val25(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra25(8), val25(6), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra25(8), val25(7), icodre,&
                                 1)
                 endif
             endif
@@ -1565,17 +2317,80 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra25(7), val25(7), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra25(8), val25(8), icodre,&
+                            t, 1, ncra25(9), val25(9), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra25(11), val25(11), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra25(10), val25(10), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra25(10), val25(10), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra25(37), val25(37), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra25(12), val25(12), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra25(15), val25(15), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra25(14), val25(14), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra25(14), val25(14), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra25(38), val25(38), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra25(9), val25(9), icodre,&
+                            phi, 2, ncra25(15), val25(15), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra25(13), val25(13), icodre,&
+                            0.d0, 1, ncra25(19), val25(19), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra25(21), val25(21), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra25(20), val25(20), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra25(20), val25(20), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra25(39), val25(39), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, 1, ncra26(4), val26(4), icodre,&
                             1)
@@ -1587,37 +2402,37 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1, val25(14), val25(15))
+                call satuvg(vg, p1, val25(22), val25(23))
                 if (hydr .eq. 'HYDR_VGM') then
-                    call permvg(vg, val25(14), val25(16), val25(17), val25(18),&
-                                val25(19))
+                    call permvg(vg, val25(22), val25(24), val25(25), val25(26),&
+                                val25(27))
                 else
-                    call permvc(vg, val25(14), val25(16), val25(17), val25(18),&
-                                val25(19))
+                    call permvc(vg, val25(22), val25(24), val25(25), val25(26),&
+                                val25(27))
                 endif
-                val25(20) = 0.d0
+                val25(28) = 0.d0
                 else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra25(14), val25(14), icodre,&
+                            p1, 2, ncra25(22), val25(22), icodre,&
                             1)
             else
-                call satura(hydr, p1, val25(14), val25(15))
+                call satura(hydr, p1, val25(22), val25(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
             nompar(3) = 'TEMP'
-            valpar(1) = val25(14)
+            valpar(1) = val25(22)
             valpar(2) = p2
             valpar(3) = t
             if ((hydr.ne.'HYDR_VGM') .and. (hydr.ne.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
-                            valpar, 5, ncra25(16), val25(16), icodre,&
+                            valpar, 5, ncra25(24), val25(24), icodre,&
                             1)
             endif
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
-                            valpar( 1), 2, ncra25(11), val25(11), icodre,&
+                            valpar( 1), 2, ncra25(17), val25(17), icodre,&
                             0)
             endif
 !
@@ -1627,42 +2442,39 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             valpar(1) = t
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, nompar,&
-                        valpar, 1, ncra25(21), val25(21), icodre,&
+                        valpar, 1, ncra25(29), val25(29), icodre,&
                         1)
             nompar(1) = 'PVAP'
             nompar(2) = 'PGAZ'
             nompar(3) = 'SAT'
             valpar(1) = pvp
             valpar(2) = p2
-            valpar(3) = val25(14)
+            valpar(3) = val25(22)
 !
 !           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
 !
-            val25(30) = 0.d0
+            val25(35) = 0.d0
             call rcvala(imate, ' ', 'THM_DIFFU', 1, nompar(3),&
-                        valpar( 3), 1, ncra25(33), val25(33), icodre,&
+                        valpar( 3), 1, ncra25(35), val25(35), icodre,&
                         0)
 !
 ! INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 !
-            val25(22) = 1.0d0
-            val25(23) = 1.0d0
-            val25(24) = 1.0d0
+            val25(30) = 1.0d0
+            val25(31) = 1.0d0
+            val25(32) = 1.0d0
             call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
-                        valpar, 3, ncra25(22), val25(22), icodre,&
+                        valpar, 3, ncra25(30), val25(30), icodre,&
                         0)
             nompar(1) = 'TEMP'
             nompar(2) = 'PGAZ'
             valpar(1) = t
             valpar(2) = p2
             call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
-                        valpar, 2, ncra25(25), val25(25), icodre,&
+                        valpar, 2, ncra25(33), val25(33), icodre,&
                         0)
 !
 !
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, ncra25(27), val25(27), icodre,&
-                        0)
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         instap, 1, 'PESA_MUL', fpesa, icodre,&
                         0)
@@ -1678,26 +2490,38 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = val25( 2)*fpesa
             pesa(2) = val25( 3)*fpesa
             pesa(3) = val25( 4)*fpesa
-            permfh = val25( 5)
-            lambt = val25( 7)
-            dlambt = val25( 8)
-            lambp = val25( 9)
-            dlambp = val25(10)
-            lambs = val25(11)
-            dlambs = val25(12)
-            lambct = val25(13)
-            satur = val25(14)
-            dsatur = val25(15)
-            permli = val25(16)
-            dperml = val25(17)
-            permgz = val25(18)
-            dperms = val25(19)
-            dpermp = val25(20)
+            permfh(1) = val25(5)
+            permfh(2) = val25(6)
+            permfh(3) = val25(7)
+            permfh(4) = val25(36)
+            lambt(1) = val25(9)
+            lambt(2) = val25(10)
+            lambt(3) = val25(11)
+            lambt(4) = val25(37)
+            dlambt(1) = val25(12)
+            dlambt(2) = val25(13)
+            dlambt(3) = val25(14)
+            dlambt(4) = val25(38)
+            lambp = val25(15)
+            dlambp = val25(16)
+            lambs = val25(17)
+            dlambs = val25(18)
+            lambct(1) = val25(19)
+            lambct(2) = val25(20)
+            lambct(3) = val25(21)
+            lambct(4) = val25(39)
+            satur = val25(22)
+            dsatur = val25(23)
+            permli = val25(24)
+            dperml = val25(25)
+            permgz = val25(26)
+            dperms = val25(27)
+            dpermp = val25(28)
 !
-            fick = val25(21)*val25(22)*val25(23)*val25(24)
-            dfickt = val25(25)*val25(22)*val25(23)*val25(24)
-            dfickg = val25(26)*val25(21)*val25(22)*val25(24)
-            dficks = val25(21)*val25(22)*val25(23)*val25(33)
+            fick = val25(29)*val25(30)*val25(31)*val25(32)
+            dfickt = val25(33)*val25(30)*val25(31)*val25(32)
+            dfickg = val25(34)*val25(29)*val25(30)*val25(32)
+            dficks = val25(29)*val25(30)*val25(31)*val25(35)
             unsurk = val26( 1)
             viscl = val26( 2)
             dviscl = val26( 3)
@@ -1706,20 +2530,28 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             viscg = val27( 2)
             dviscg = val27( 3)
             mamolv = val28( 1)
-            isot(1) = val25(27)
-            isot(2) = val25(28)
-            isot(3) = val25(29)
-            isot(4) = val25(30)
-            isot(5) = val25(31)
-            isot(6) = val25(32)
+!
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
 !
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
+!
         else if (thmc.eq.'LIQU_AD_GAZ_VAPE') then
 ! =====================================================================
-! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE PROVISOIRE--------------
+! --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE  --------------
 ! =====================================================================
             do 251 ii = 1, dim40
                 val40(ii) = 0.0d0
@@ -1736,19 +2568,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val40(9) = 1.0d0
-            val40(11) = 1.0d0
+            val40(15) = 1.0d0
+            val40(17) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val40(5) = 1.0d0
-            val40(32) = 1.0d0
-            val40(33) = 1.0d0
-            val40(34) = 1.0d0
 !
-            val40(35) = 0.0d0
-            val40(36) = 0.0d0
-            val40(37) = 0.0d0
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 4, ncra40, val40, icodre,&
@@ -1757,13 +2583,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra40(5), val40(5), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra40(7), val40(7), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra40(6), val40(6), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra40(6), val40(6), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra40(41), val40(41), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra40(6), val40(5), icodre,&
+                                endo, 1, ncra40(8), val40(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra40(8), val40(6), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra40(8), val40(7), icodre,&
                                 1)
                 endif
             endif
@@ -1778,17 +2634,80 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra40(7), val40(7), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra40(8), val40(8), icodre,&
+                            t, 1, ncra40(9), val40(9), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra40(11), val40(11), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra40(10), val40(10), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra40(10), val40(10), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra40(42), val40(42), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra40(12), val40(12), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra40(14), val40(14), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra40(13), val40(13), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra40(13), val40(13), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra40(43), val40(43), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra40(9), val40(9), icodre,&
+                            phi, 2, ncra40(15), val40(15), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra40(13), val40(13), icodre,&
+                            0.d0, 1, ncra40(19), val40(19), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra40(21), val40(21), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra40(20), val40(20), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra40(20), val40(20), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra40(44), val40(44), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, dim41-3, ncra41(4), val41(4), icodre,&
                             1)
@@ -1800,39 +2719,39 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1, val40(14), val40(15))
+                call satuvg(vg, p1, val40(22), val40(23))
                 if (hydr .eq. 'HYDR_VGM') then
-                    call permvg(vg, val40(14), val40(16), val40(17), val40(18),&
-                                val40(19))
+                    call permvg(vg, val40(22), val40(24), val40(25), val40(26),&
+                                val40(27))
                 else
-                    call permvc(vg, val40(14), val40(16), val40(17), val40(18),&
-                                val40(19))
+                    call permvc(vg, val40(22), val40(24), val40(25), val40(26),&
+                                val40(27))
                 endif
-                val40(20) = 0.d0
+                val40(28) = 0.d0
 !
 !
                 elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra40(14), val40(14), icodre,&
+                            p1, 2, ncra40(22), val40(22), icodre,&
                             1)
             else
-                call satura(hydr, p1, val40(14), val40(15))
+                call satura(hydr, p1, val40(22), val40(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
             nompar(3) = 'TEMP'
-            valpar(1) = val40(14)
+            valpar(1) = val40(22)
             valpar(2) = p2
             valpar(3) = t
             if ((hydr.ne.'HYDR_VGM') .and. (hydr.ne.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
-                            valpar, 5, ncra40(16), val40(16), icodre,&
+                            valpar, 5, ncra40(24), val40(24), icodre,&
                             1)
             endif
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
-                            valpar( 1), 2, ncra40(11), val40(11), icodre,&
+                            valpar( 1), 2, ncra40(17), val40(17), icodre,&
                             0)
             endif
 !
@@ -1841,39 +2760,39 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             nompar(1) = 'TEMP'
             valpar(1) = t
             call rcvala(imate, ' ', 'THM_DIFFU', 1, nompar,&
-                        valpar, 1, ncra40(21), val40(21), icodre,&
+                        valpar, 1, ncra40(29), val40(29), icodre,&
                         1)
 !
 ! INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 !
-            val40(22) = 1.0d0
-            val40(23) = 1.0d0
-            val40(24) = 1.0d0
+            val40(30) = 1.0d0
+            val40(31) = 1.0d0
+            val40(32) = 1.0d0
 !
             nompar(1) = 'PVAP'
             nompar(2) = 'PGAZ'
             nompar(3) = 'SAT'
             valpar(1) = pvp
             valpar(2) = p2
-            valpar(3) = val40(14)
+            valpar(3) = val40(22)
 !
 !
 !
 !           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
 !
-            val40(35) = 0.d0
+            val40(40) = 0.d0
             call rcvala(imate, ' ', 'THM_DIFFU', 1, nompar(3),&
-                        valpar( 3), 1, ncra40(38), val40(38), icodre,&
+                        valpar( 3), 1, ncra40(40), val40(40), icodre,&
                         0)
             call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
-                        valpar, 3, ncra40(22), val40(22), icodre,&
+                        valpar, 3, ncra40(30), val40(30), icodre,&
                         0)
             nompar(1) = 'TEMP'
             nompar(2) = 'PGAZ'
             valpar(1) = t
             valpar(2) = p2
             call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
-                        valpar, 2, ncra40(25), val40(25), icodre,&
+                        valpar, 2, ncra40(33), val40(33), icodre,&
                         0)
 !
 !
@@ -1886,22 +2805,18 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             valpar(1) = t
             valpar(2) = pad
             valpar(3) = p2-p1
-            valpar(4) = val40(14)
+            valpar(4) = val40(22)
 !
 ! INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 !
-            val40(28) = 1.0d0
-            val40(29) = 1.0d0
-            val40(30) = 1.0d0
+            val40(36) = 1.0d0
+            val40(37) = 1.0d0
+            val40(38) = 1.0d0
             call rcvala(imate, ' ', 'THM_DIFFU', 4, nompar,&
-                        valpar, 4, ncra40(27), val40(27), icodre,&
+                        valpar, 4, ncra40(35), val40(35), icodre,&
                         0)
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                        t, 1, ncra40(31), val40(31), icodre,&
-                        0)
-!
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, ncra40(32), val40(32), icodre,&
+                        t, 1, ncra40(39), val40(39), icodre,&
                         0)
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
@@ -1916,31 +2831,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 fpesa=1.d0
             endif
             rgaz = val40( 1)
-            pesa(1) = val40( 2)*fpesa
-            pesa(2) = val40( 3)*fpesa
-            pesa(3) = val40( 4)*fpesa
-            permfh = val40( 5)
-            lambt = val40( 7)
-            dlambt = val40( 8)
-            lambp = val40( 9)
-            dlambp = val40(10)
-            lambs = val40(11)
-            dlambs = val40(12)
-            lambct = val40(13)
-            satur = val40(14)
-            dsatur = val40(15)
-            permli = val40(16)
-            dperml = val40(17)
-            permgz = val40(18)
-            dperms = val40(19)
-            dpermp = val40(20)
+            pesa(1) = val40(2)*fpesa
+            pesa(2) = val40(3)*fpesa
+            pesa(3) = val40(4)*fpesa
+            permfh(1) = val40(5)
+            permfh(2) = val40(6)
+            permfh(3) = val40(7)
+            permfh(4) = val40(41)
+            lambt(1) = val40(9)
+            lambt(2) = val40(10)
+            lambt(3) = val40(11)
+            lambt(4) = val40(42)
+            dlambt(1) = val40(12)
+            dlambt(2) = val40(13)
+            dlambt(3) = val40(14)
+            dlambt(4) = val40(43)
+            lambp = val40(15)
+            dlambp = val40(16)
+            lambs = val40(17)
+            dlambs = val40(18)
+            lambct(1) = val40(19)
+            lambct(2) = val40(20)
+            lambct(3) = val40(21)
+            lambct(4) = val40(44)
+            satur = val40(22)
+            dsatur = val40(23)
+            permli = val40(24)
+            dperml = val40(25)
+            permgz = val40(26)
+            dperms = val40(27)
+            dpermp = val40(28)
 !
-            fick = val40(21)*val40(22)*val40(23)*val40(24)
-            dfickt= val40(25) * val40(22)*val40(23)*val40(24)
-            dfickg = val40(26)* val40(21)*val40(22)*val40(24)
-            dficks = val40(21)*val40(22)*val40(23)*val40(38)
-            fickad = val40(27)*val40(28)*val40(29)*val40(30)
-            dfadt= val40(31)*val40(28)*val40(29)*val40(30)
+            fick = val40(29)*val40(30)*val40(31)*val40(32)
+            dfickt = val40(33)*val40(30)*val40(31)*val40(32)
+            dfickg = val40(34)*val40(29)*val40(30)*val40(32)
+            dficks = val40(29)*val40(30)*val40(31)*val40(40)
+            fickad = val40(35)*val40(36)*val40(37)*val40(38)
+            dfadt = val40(39)*val40(36)*val40(37)*val40(38)
 !
             unsurk = val41( 1)
             viscl = val41( 2)
@@ -1950,16 +2877,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             viscg = val42( 2)
             dviscg = val42( 3)
             mamolv = val43( 1)
-            isot(1) = val40(32)
-            isot(2) = val40(33)
-            isot(3) = val40(34)
-            isot(4) = val40(35)
-            isot(5) = val40(36)
-            isot(6) = val40(37)
+!
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
 !
         else if (thmc.eq.'LIQU_AD_GAZ') then
 ! =====================================================================
@@ -1977,19 +2912,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val40(9) = 1.0d0
-            val40(11) = 1.0d0
+            val40(15) = 1.0d0
+            val40(17) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val40(5) = 1.0d0
-            val40(32) = 1.0d0
-            val40(33) = 1.0d0
-            val40(34) = 1.0d0
 !
-            val40(35) = 0.0d0
-            val40(36) = 0.0d0
-            val40(37) = 0.0d0
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 4, crad40, val40, icodre,&
@@ -1998,13 +2927,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, crad40(5), val40(5), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, crad40(7), val40(7), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, crad40(6), val40(6), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, crad40(6), val40(6), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, crad40(41), val40(41), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, crad40(6), val40(5), icodre,&
+                                endo, 1, crad40(8), val40(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, crad40(8), val40(6), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, crad40(8), val40(7), icodre,&
                                 1)
                 endif
             endif
@@ -2016,17 +2975,80 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, crad40(7), val40(7), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, crad40(8), val40(8), icodre,&
+                            t, 1, crad40(9), val40(9), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, crad40(11), val40(11), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, crad40(10), val40(10), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, crad40(10), val40(10), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, crad40(42), val40(42), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, crad40(12), val40(12), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, crad40(14), val40(14), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, crad40(13), val40(13), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, crad40(13), val40(13), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, crad40(43), val40(43), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, crad40(9), val40(9), icodre,&
+                            phi, 2, crad40(15), val40(15), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, crad40(13), val40(13), icodre,&
+                            0.d0, 1, crad40(19), val40(19), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, crad40(21), val40(21), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, crad40(20), val40(20), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, crad40(20), val40(20), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, crad40(44), val40(44), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, dim41-3, crad41(4), val41(4), icodre,&
                             1)
@@ -2038,39 +3060,39 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1, val40(14), val40(15))
+                call satuvg(vg, p1, val40(22), val40(23))
                 if (hydr .eq. 'HYDR_VGM') then
-                    call permvg(vg, val40(14), val40(16), val40(17), val40(18),&
-                                val40(19))
+                    call permvg(vg, val40(22), val40(24), val40(25), val40(26),&
+                                val40(27))
                 else
-                    call permvc(vg, val40(14), val40(16), val40(17), val40(18),&
-                                val40(19))
+                    call permvc(vg, val40(22), val40(24), val40(25), val40(26),&
+                                val40(27))
                 endif
-                val40(20) = 0.d0
+                val40(28) = 0.d0
 !
 !
                 elseif (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, crad40(14), val40(14), icodre,&
+                            p1, 2, crad40(22), val40(22), icodre,&
                             1)
             else
-                call satura(hydr, p1, val40(14), val40(15))
+                call satura(hydr, p1, val40(22), val40(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
             nompar(3) = 'TEMP'
-            valpar(1) = val40(14)
+            valpar(1) = val40(22)
             valpar(2) = p2
             valpar(3) = t
             if ((hydr.ne.'HYDR_VGM') .and. (hydr.ne.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
-                            valpar, 5, crad40(16), val40(16), icodre,&
+                            valpar, 5, crad40(24), val40(24), icodre,&
                             1)
             endif
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
-                            valpar( 1), 2, crad40(11), val40(11), icodre,&
+                            valpar( 1), 2, crad40(17), val40(17), icodre,&
                             0)
             endif
 !
@@ -2079,13 +3101,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             nompar(3) = 'SAT'
             valpar(1) = pvp
             valpar(2) = p2
-            valpar(3) = val40(14)
+            valpar(3) = val40(22)
 !
 !
 !
 !           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
 !
-            val40(35) = 0.d0
+            val40(40) = 0.d0
 !
 !    RECUPERATION DES FONCTIONS FICK AIR DISSOUS ET LEURS DERIVEES
 !
@@ -2096,22 +3118,18 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             valpar(1) = t
             valpar(2) = pad
             valpar(3) = p2-p1
-            valpar(4) = val40(14)
+            valpar(4) = val40(22)
 !
 ! INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 !
-            val40(28) = 1.0d0
-            val40(29) = 1.0d0
-            val40(30) = 1.0d0
+            val40(36) = 1.0d0
+            val40(37) = 1.0d0
+            val40(38) = 1.0d0
             call rcvala(imate, ' ', 'THM_DIFFU', 4, nompar,&
-                        valpar, 4, crad40(27), val40(27), icodre,&
+                        valpar, 4, crad40(35), val40(35), icodre,&
                         0)
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                        t, 1, crad40(31), val40(31), icodre,&
-                        0)
-!
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, crad40(32), val40(32), icodre,&
+                        t, 1, crad40(39), val40(39), icodre,&
                         0)
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
@@ -2129,28 +3147,40 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = val40( 2)*fpesa
             pesa(2) = val40( 3)*fpesa
             pesa(3) = val40( 4)*fpesa
-            permfh = val40( 5)
-            lambt = val40( 7)
-            dlambt = val40( 8)
-            lambp = val40( 9)
-            dlambp = val40(10)
-            lambs = val40(11)
-            dlambs = val40(12)
-            lambct = val40(13)
-            satur = val40(14)
-            dsatur = val40(15)
-            permli = val40(16)
-            dperml = val40(17)
-            permgz = val40(18)
-            dperms = val40(19)
-            dpermp = val40(20)
+            permfh(1) = val40(5)
+            permfh(2) = val40(6)
+            permfh(3) = val40(7)
+            permfh(4) = val40(41)
+            lambt(1) = val40(9)
+            lambt(2) = val40(10)
+            lambt(3) = val40(11)
+            lambt(4) = val40(42)
+            dlambt(1) = val40(12)
+            dlambt(2) = val40(13)
+            dlambt(3) = val40(14)
+            dlambt(4) = val40(43)
+            lambp = val40(15)
+            dlambp = val40(16)
+            lambs = val40(17)
+            dlambs = val40(18)
+            lambct(1) = val40(19)
+            lambct(2) = val40(20)
+            lambct(3) = val40(21)
+            lambct(4) = val40(44)
+            satur = val40(22)
+            dsatur = val40(23)
+            permli = val40(24)
+            dperml = val40(25)
+            permgz = val40(26)
+            dperms = val40(27)
+            dpermp = val40(28)
 !
-            fick = val40(21)*val40(22)*val40(23)*val40(24)
-            dfickt= val40(25) * val40(22)*val40(23)*val40(24)
-            dfickg = val40(26)* val40(21)*val40(22)*val40(24)
-            dficks = val40(21)*val40(22)*val40(23)*val40(38)
-            fickad = val40(27)*val40(28)*val40(29)*val40(30)
-            dfadt= val40(31)*val40(28)*val40(29)*val40(30)
+            fick = val40(29)*val40(30)*val40(31)*val40(32)
+            dfickt = val40(33)*val40(30)*val40(31)*val40(32)
+            dfickg = val40(34)*val40(29)*val40(30)*val40(32)
+            dficks = val40(29)*val40(30)*val40(31)*val40(40)
+            fickad = val40(35)*val40(36)*val40(37)*val40(38)
+            dfadt = val40(39)*val40(36)*val40(37)*val40(38)
 !
             unsurk = val41( 1)
             viscl = val41( 2)
@@ -2159,17 +3189,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             mamolg = val42( 1)
             viscg = val42( 2)
             dviscg = val42( 3)
-            isot(1) = val40(32)
-            isot(2) = val40(33)
-            isot(3) = val40(34)
-            isot(4) = val40(35)
-            isot(5) = val40(36)
-            isot(6) = val40(37)
+!
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
 !
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
 !
         else if (thmc.eq.'LIQU_GAZ') then
 ! =====================================================================
@@ -2187,18 +3224,13 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val29(9) = 1.0d0
-            val29(11) = 1.0d0
+            val29(15) = 1.0d0
+            val29(17) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val29(5) = 1.0d0
-            val29(21) = 1.0d0
-            val29(22) = 1.0d0
-            val29(23) = 1.0d0
-            val29(24) = 0.0d0
-            val29(25) = 0.0d0
-            val29(26) = 0.0d0
+!
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 4, ncra29, val29, icodre,&
@@ -2207,13 +3239,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra29(5), val29(5), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra29(7), val29(7), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra29(6), val29(6), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra29(6), val29(6), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra29(29), val29(29), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL29 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra29(6), val29(5), icodre,&
+                                endo, 1, ncra29(8), val29(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra29(8), val29(6), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra29(8), val29(7), icodre,&
                                 1)
                 endif
             endif
@@ -2225,17 +3287,80 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra29(7), val29(7), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra29(8), val29(8), icodre,&
+                            t, 1, ncra29(9), val29(9), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra29(11), val29(11), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra29(10), val29(10), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra29(10), val29(10), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra29(30), val29(30), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra29(12), val29(12), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra29(14), val29(14), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra29(13), val29(13), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra29(13), val29(13), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra29(31), val29(31), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra29(9), val29(9), icodre,&
+                            phi, 2, ncra29(15), val29(15), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra29(13), val29(13), icodre,&
+                            0.d0, 1, ncra29(19), val29(19), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra29(21), val29(21), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra29(20), val29(20), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra29(20), val29(20), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra29(32), val29(32), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, dim30-3, ncra30(4), val30(4), icodre,&
                             1)
@@ -2247,40 +3372,37 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 if (icodre(1) .eq. 1) then
                     call u2mess('F', 'ALGORITH16_94')
                 endif
-                call satuvg(vg, p1, val29(14), val29(15))
+                call satuvg(vg, p1, val29(22), val29(23))
                 if (hydr .eq. 'HYDR_VGM') then
-                    call permvg(vg, val29(14), val29(16), val29(17), val29(18),&
-                                val29(19))
+                    call permvg(vg, val29(22), val29(24), val29(25), val29(26),&
+                                val29(27))
                 else
-                    call permvc(vg, val29(14), val29(16), val29(17), val29(18),&
-                                val29(19))
+                    call permvc(vg, val29(22), val29(24), val29(25), val29(26),&
+                                val29(27))
                 endif
-                val29(20) = 0.d0
+                val29(28) = 0.d0
                 else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO')&
             then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra29(14), val29(14), icodre,&
+                            p1, 2, ncra29(22), val29(22), icodre,&
                             1)
             else
-                call satura(hydr, p1, val29(14), val29(15))
+                call satura(hydr, p1, val29(22), val29(23))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
-            valpar(1) = val29(14)
+            valpar(1) = val29(22)
             valpar(2) = p2
             if ((hydr.ne.'HYDR_VGM') .and. (hydr.ne.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
-                            valpar, 5, ncra29(16), val29(16), icodre,&
+                            valpar, 5, ncra29(24), val29(24), icodre,&
                             1)
-                if (ther .ne. ' ') then
-                endif
+            endif
+            if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
-                            valpar( 1), 2, ncra29(11), val29(11), icodre,&
+                            valpar( 1), 2, ncra29(17), val29(17), icodre,&
                             0)
             endif
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, ncra29(21), val29(21), icodre,&
-                        0)
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         instap, 1, 'PESA_MUL', fpesa, icodre,&
                         0)
@@ -2296,21 +3418,33 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = val29( 2)*fpesa
             pesa(2) = val29( 3)*fpesa
             pesa(3) = val29( 4)*fpesa
-            permfh = val29( 5)
-            lambt = val29( 7)
-            dlambt = val29( 8)
-            lambp = val29( 9)
-            dlambp = val29(10)
-            lambs = val29(11)
-            dlambs = val29(12)
-            lambct = val29(13)
-            satur = val29(14)
-            dsatur = val29(15)
-            permli = val29(16)
-            dperml = val29(17)
-            permgz = val29(18)
-            dperms = val29(19)
-            dpermp = val29(20)
+            permfh(1) = val29(5)
+            permfh(2) = val29(6)
+            permfh(3) = val29(7)
+            permfh(4) = val29(29)
+            lambt(1) = val29(9)
+            lambt(2) = val29(10)
+            lambt(3) = val29(11)
+            lambt(4) = val29(30)
+            dlambt(1) = val29(12)
+            dlambt(2) = val29(13)
+            dlambt(3) = val29(14)
+            dlambt(4) = val29(31)
+            lambp = val29(15)
+            dlambp = val29(16)
+            lambs = val29(17)
+            dlambs = val29(18)
+            lambct(1) = val29(19)
+            lambct(2) = val29(20)
+            lambct(3) = val29(21)
+            lambct(4) = val29(32)
+            satur = val29(22)
+            dsatur = val29(23)
+            permli = val29(24)
+            dperml = val29(25)
+            permgz = val29(26)
+            dperms = val29(27)
+            dpermp = val29(28)
             unsurk = val30( 1)
             viscl = val30( 2)
             dviscl = val30( 3)
@@ -2318,16 +3452,25 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             mamolg = val31( 1)
             viscg = val31( 2)
             dviscg = val31( 3)
-            isot(1) = val29(21)
-            isot(2) = val29(22)
-            isot(3) = val29(23)
-            isot(4) = val29(24)
-            isot(5) = val29(25)
-            isot(6) = val29(26)
+!
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
+!
         else if (thmc.eq.'LIQU_GAZ_ATM') then
 ! =====================================================================
 ! --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------
@@ -2341,18 +3484,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !       INITIALISATION POUR LA CONDUCTIVITE THERMIQUE
 !
-            val32(8) = 1.0d0
-            val32(10) = 1.0d0
+            val32(14) = 1.0d0
+            val32(16) = 1.0d0
 !
 !       INITIALISATION POUR L'ANISOTROPIE
 !
             val32(4) = 1.0d0
-            val32(17) = 1.0d0
-            val32(18) = 1.0d0
-            val32(19) = 1.0d0
-            val32(20) = 0.0d0
-            val32(21) = 0.0d0
-            val32(22) = 0.0d0
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         0.0d0, 3, ncra32, val32, icodre,&
@@ -2361,13 +3498,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             phi, 1, ncra32(4), val32(4), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                phi, 1, ncra32(6), val32(6), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+! ELAS_ISTR 3D
+                        aniso1=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 2, ncra32(5), val32(5), icodre,&
+                                    0)
+                    else
+! ELAS_ORTH 2D
+                        aniso1=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra32(5), val32(5), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
+                                    phi, 1, ncra32(25), val32(25), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso1=0
+                endif
             else if (hydr.eq.'HYDR_ENDO') then
                 if ((meca.eq.'MAZARS') .or. ( meca.eq.'ENDO_ISOT_BETON')) then
 ! =====================================================================
 ! --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL32 POUR ENDO ----
 ! =====================================================================
+                    aniso1=0
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
-                                endo, 1, ncra32(5), val32(4), icodre,&
+                                endo, 1, ncra32(7), val32(4), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra32(7), val32(5), icodre,&
+                                1)
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'ENDO',&
+                                endo, 1, ncra32(7), val32(6), icodre,&
                                 1)
                 endif
                 else if ((hydr.eq.'HYDR_VGM').or.(hydr.eq.'HYDR_VGC'))&
@@ -2379,43 +3546,103 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra32(6), val32(6), icodre,&
-                            1)
-                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                            t, 1, ncra32(7), val32(7), icodre,&
+                            t, 1, ncra32(8), val32(8), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra32(10), val32(10), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso2=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra32(9), val32(9), icodre,&
+                                    0)
+                    else
+                        aniso2=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra32(9), val32(9), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra32(26), val32(26), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso2=0
+                endif
+                call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                            t, 1, ncra32(11), val32(11), icodre,&
+                            0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra32(13), val32(13), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso3=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 2, ncra32(12), val32(12), icodre,&
+                                    0)
+                    else
+                        aniso3=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra32(12), val32(12), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                    t, 1, ncra32(27), val32(27), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso3=0
+                endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                            phi, 2, ncra32(8), val32(8), icodre,&
+                            phi, 2, ncra32(14), val32(14), icodre,&
                             0)
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                            0.d0, 1, ncra32(12), val32(12), icodre,&
+                            0.d0, 1, ncra32(18), val32(18), icodre,&
                             0)
+                if (icodre(1) .eq. 1) then
+                    call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
+                                t, 1, ncra32(20), val32(20), icodre,&
+                                0)
+                    if (icodre(1) .eq. 0) then
+                        aniso4=1
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 2, ncra32(19), val32(19), icodre,&
+                                    0)
+                    else
+                        aniso4=2
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra32(19), val32(19), icodre,&
+                                    0)
+                        call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
+                                    0.d0, 1, ncra32(28), val32(28), icodre,&
+                                    0)
+                    endif
+                else if (icodre(1).eq.0) then
+                    aniso4=0
+                endif
                 call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                             t, dim33-3, ncra33(4), val33(4), icodre,&
                             1)
             endif
             if (hydr .eq. 'HYDR_UTIL' .or. hydr .eq. 'HYDR_ENDO') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PCAP',&
-                            p1, 2, ncra32(13), val32(13), icodre,&
+                            p1, 2, ncra32(21), val32(21), icodre,&
                             1)
             else
-                call satura(hydr, p1, val32(13), val32(14))
+                call satura(hydr, p1, val32(21), val32(22))
             endif
             nompar(1) = 'SAT'
             nompar(2) = 'PGAZ'
-            valpar(1) = val32(13)
+            valpar(1) = val32(21)
             valpar(2) = p2
             call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
-                        valpar, 2, ncra32(15), val32(15), icodre,&
+                        valpar, 2, ncra32(23), val32(23), icodre,&
                         1)
             if (ther .ne. ' ') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
-                            valpar( 1), 2, ncra32(11), val32(11), icodre,&
+                            valpar( 1), 2, ncra32(16), val32(16), icodre,&
                             0)
             endif
-            call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                        0.d0, 6, ncra32(17), val32(17), icodre,&
-                        0)
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         instap, 1, 'PESA_MUL', fpesa, icodre,&
                         0)
@@ -2430,49 +3657,76 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             pesa(1) = val32( 1)*fpesa
             pesa(2) = val32( 2)*fpesa
             pesa(3) = val32( 3)*fpesa
-            permfh = val32( 4)
-            lambt = val32( 6)
-            dlambt = val32( 7)
-            lambp = val32( 8)
-            dlambp = val32( 9)
-            lambs = val32(10)
-            dlambs = val32(11)
-            lambct = val32(12)
-            satur = val32(13)
-            dsatur = val32(14)
-            permli = val32(15)
-            dperml = val32(16)
+            permfh(1) = val32(4)
+            permfh(2) = val32(5)
+            permfh(3) = val32(6)
+            permfh(4) = val32(25)
+            lambt(1) = val32(8)
+            lambt(2) = val32(9)
+            lambt(3) = val32(10)
+            lambt(4) = val32(26)
+            dlambt(1) = val32(11)
+            dlambt(2) = val32(12)
+            dlambt(3) = val32(13)
+            dlambt(4) = val32(27)
+            lambp = val32(14)
+            dlambp = val32(15)
+            lambs = val32(16)
+            dlambs = val32(17)
+            lambct(1) = val32(18)
+            lambct(2) = val32(19)
+            lambct(3) = val32(20)
+            lambct(4) = val32(28)
+            satur = val32(21)
+            dsatur = val32(22)
+            permli = val32(23)
+            dperml = val32(24)
             unsurk = val33( 1)
             viscl = val33( 2)
             dviscl = val33( 3)
             alpha = val33( 4)
-            isot(1) = val32(17)
-            isot(2) = val32(18)
-            isot(3) = val32(19)
-            isot(4) = val32(20)
-            isot(5) = val32(21)
-            isot(6) = val32(22)
+!
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, aniso1, ndim)
+!
+! CALCUL DU TENSEUR DE CONDUCTIVITE THERMIQUE
+            call telamb(angmas, lambt, tlambt, aniso2, ndim)
+!
+! CALCUL DU TENSEUR CONSTANTE INTERVENANT DANS LA DEFINITION
+! DE LA CONDUCTIVITE THERMIQUE
+            call tlambc(angmas, lambct, tlamct, aniso4, ndim)
+!
+! CALCUL DU TENSEUR DERIVEE DE LA CONDUCTIVITE THERMIQUE(T)
+            call tdlamb(angmas, dlambt, tdlamt, aniso3, ndim)
+!
         endif
         if (hydr .eq. 'HYDR') then
             call permea(imate, hydr, phi, t, satur,&
-                        ncon, cond)
-            permfh = cond(1)
-            permli = cond(2)
-            dperml = cond(3)
-            permgz = cond(4)
-            dperms = cond(5)
-            dpermp = cond(6)
-            fick = cond(7)
-            dfickt = cond(8)
-            dfickg = cond(9)
+                        ncon, cond, anisoh)
+            permfh(1) = cond(1)
+            permfh(2) = cond(2)
+            permfh(3) = cond(3)
+            permli = cond(4)
+            dperml = cond(5)
+            permgz = cond(6)
+            dperms = cond(7)
+            dpermp = cond(8)
+            fick = cond(9)
+            dfickt = cond(10)
+            dfickg = cond(11)
             if (satur .gt. un .or. satur .lt. zero) then
                 retcom = 2
                 goto 500
             endif
+!
+! CALCUL DU TENSEUR DE PERMEABILITE
+            call tpermh(angmas, permfh, tperm, anisoh, ndim)
+!
         endif
     endif
 500  continue

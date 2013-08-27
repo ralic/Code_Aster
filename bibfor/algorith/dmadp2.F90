@@ -1,10 +1,11 @@
-function dmadp2(rho22, sat, biot, phi, cs,&
-                mamolg, kh, dp21p2, emmag, em)
+function dmadp2(rho22, sat, phi, cs, mamolg,&
+                kh, dp21p2, emmag, em)
     implicit none
-    real(kind=8) :: rho22, sat, biot, phi, cs, mamolg, kh, dp21p2, dmadp2
+    real(kind=8) :: rho22, sat, phi, cs, mamolg, kh, dp21p2, dmadp2
     real(kind=8) :: dphip2, em
     logical :: emmag
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +30,7 @@ function dmadp2(rho22, sat, biot, phi, cs,&
         dphip2 = em
         dmadp2 = rho22*sat*(phi*mamolg*dp21p2/rho22/kh+dphip2)
     else
-        dmadp2 = rho22*sat*(phi*mamolg*dp21p2/rho22/kh+(biot-phi)*cs)
+        dmadp2 = rho22*sat*(phi*mamolg*dp21p2/rho22/kh+cs)
     endif
 ! ======================================================================
 end function

@@ -15,21 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function calor(alpha0, k0, t, dt, depsv,&
-                   dp1, dp2, signe, alp11, alp12,&
-                   coeps)
-        real(kind=8) :: alpha0
-        real(kind=8) :: k0
+interface 
+    function calor(mdal, t, dt, deps, dp1,&
+                   dp2, signe, alp11, alp12, coeps,&
+                   ndim)
+        integer :: ndim
+        real(kind=8) :: mdal(2*ndim)
         real(kind=8) :: t
         real(kind=8) :: dt
-        real(kind=8) :: depsv
+        real(kind=8) :: deps(6)
         real(kind=8) :: dp1
         real(kind=8) :: dp2
         real(kind=8) :: signe
         real(kind=8) :: alp11
         real(kind=8) :: alp12
         real(kind=8) :: coeps
-        real(kind=8) :: calor
+        real(kind=8) :: calor_0
     end function calor
-end interface
+end interface 

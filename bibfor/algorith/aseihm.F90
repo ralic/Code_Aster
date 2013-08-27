@@ -198,10 +198,10 @@ subroutine aseihm(option, axi, ndim, nno1, nno2,&
         call coeihm(option, perman, resi, rigi, imate,&
                     compor, crit, instam, instap, nomail,&
                     ndim, dimdef, dimcon, nbvari, yamec,&
-                    yap1, yap2, yate, nbpha1, nbpha2,&
+                    yap1, yap2, yate,&
                     addeme, adcome, addep1, adcp11, adcp12,&
                     addlh1, adcop1, addep2, adcp21, adcp22,&
-                    adcop2, addete, adcote, defgem, defgep,&
+                    addete, adcote, defgem, defgep,&
                     kpi, npg, npi, sigm(1, kpi), sigp(1, kpi),&
                     varim(1, kpi), varip(1, kpi), res, drde, retcom)
 !

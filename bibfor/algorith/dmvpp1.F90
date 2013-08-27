@@ -1,9 +1,9 @@
-function dmvpp1(rho11, rho12, phids, ums, bmph,&
-                cs, dpvpl, sat, phi, pvp)
-    implicit    none
-    real(kind=8) :: rho11, rho12, phids, ums, bmph, cs, dpvpl, sat, phi, pvp
-    real(kind=8) :: dmvpp1
+function dmvpp1(rho11, rho12, phids, ums, cs,&
+                dpvpl, sat, phi, pvp)
+    implicit none
+    real(kind=8) :: rho11, rho12, phids, ums, cs, dpvpl, sat, phi, pvp, dmvpp1
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ function dmvpp1(rho11, rho12, phids, ums, bmph,&
 ! --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE PRESSION DE VAPEUR --
 ! --- PAR RAPPORT A LA PRESSION DE LIQUIDE (CAS LIQU_VAPE) -------------
 ! ======================================================================
-    dmvpp1 = rho12*(&
-             (-phids-ums*ums*bmph*cs )*dpvpl +phids+ums*sat*bmph*cs+phi*ums*rho12/rho11/pvp)
+    dmvpp1 = rho12*((-phids-ums*ums*cs)*dpvpl +phids+ums*sat*cs+phi*ums*rho12/rho11/pvp)
 ! ======================================================================
 end function

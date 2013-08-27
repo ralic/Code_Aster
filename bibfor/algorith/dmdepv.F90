@@ -1,7 +1,7 @@
-function dmdepv(rho, fsat, biot)
-    implicit      none
-    real(kind=8) :: rho, fsat, biot, dmdepv
+subroutine dmdepv(rho, fsat, tbiot, dmdeps)
+
 ! ======================================================================
+!          
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,17 @@ function dmdepv(rho, fsat, biot)
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES PAR RAPPORT A LA -------
 ! --- DEFORMATION VOLUMIQUE --------------------------------------------
 ! ======================================================================
-    dmdepv = rho*biot*fsat
+    implicit none
+!
+    integer :: i
+    real(kind=8) :: rho, fsat, tbiot(6), dmdeps(6)
+    real(kind=8) :: rac2  
+    rac2=sqrt(2.d0)
+    do 10 i = 1, 3
+        dmdeps(i) = rho*tbiot(i)*fsat
+10  end do
+    do 20 i = 4, 6
+        dmdeps(i) = rho*tbiot(i)*fsat*rac2
+20  end do
 ! ======================================================================
-end function
+end subroutine

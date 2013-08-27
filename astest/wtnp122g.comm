@@ -167,7 +167,9 @@ MATERIAU=DEFI_MATERIAU(
          THM_DIFFU=_F(
             R_GAZ      = 8.315,
             RHO=2200.0,
-            BIOT_COEF  = 1.,
+            BIOT_L  = 1.,
+            BIOT_T  = 1.,
+            BIOT_N  = 1.,
 #*****SATURATION******            
             SATU_PRES  = ZERO,
             D_SATU_PRES= ZERO,
@@ -176,10 +178,8 @@ MATERIAU=DEFI_MATERIAU(
             PESA_Y     = 0.,
             PESA_Z     = 0.,
 #*****TENSEUR******            
-#           PERM_IN    = KINT,
-            PERMIN_X   = KINT,
-            PERMIN_Y   = KINT,
-            PERMIN_Z   = ZERO,
+            PERMIN_L   = KINT,
+            PERMIN_T   = ZERO,
             PERM_LIQU  = UN,
             D_PERM_LIQU_SATU=ZERO,
             PERM_GAZ   = UN,
@@ -188,7 +188,8 @@ MATERIAU=DEFI_MATERIAU(
 #*****FICK****** 
             FICKV_T    = ZERO,
             FICKA_T    = ZERO,
-            LAMB_T     = ZERO
+            LAMB_TL    = ZERO,
+            LAMB_TT    = ZERO,
               ),
             
         THM_INIT=_F( 

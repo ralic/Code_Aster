@@ -186,7 +186,7 @@ for k in range(1,nbadap+1):
     TEST_RESU(RESU=_F(PARA='ERRE_TPS_GLOB',
                       INST=250.0,
                       RESULTAT=RESU_1,
-                      VALE_CALC=0.095460688688661,
+                      VALE_CALC=0.135001800617,
                       
                       CRITERE='RELATIF',
                       ),

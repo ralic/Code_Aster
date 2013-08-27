@@ -15,13 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dspdp1(net, bishop, signe, biot, sat)
+interface 
+    subroutine dspdp1(net, bishop, signe, tbiot, sat,&
+                      dsdp1)
         logical :: net
         logical :: bishop
         real(kind=8) :: signe
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: sat
-        real(kind=8) :: dspdp1
-    end function dspdp1
-end interface
+        real(kind=8) :: dsdp1(6)
+    end subroutine dspdp1
+end interface 

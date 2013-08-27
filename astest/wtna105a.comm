@@ -1,4 +1,4 @@
-# TITRE - INJECTION DE GAZ DANS UN MILIEU DE TYPE ARGILE DECRIT PAR DES LOIS DE MUALEM /VAN-GENUCHTEN
+# TITRE - INJECTION DE GAZ DANS UN MILIEU DE TYPE ARGILE DECRIT PAR DES LOIS DE #MUALEM /VAN-GENUCHTEN
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -289,9 +289,7 @@ MATJEU = DEFI_MATERIAU (
   PESA_X      = 0.    ,
   PESA_Y      = 0.    ,
   PESA_Z      = 0.    ,
-  PERMIN_X     = KINTJEU  ,
-  PERMIN_Y     = KINTJEU  ,
-  PERMIN_Z     = KINTJEU  ,
+  PERM_IN     = KINTJEU  ,
 #
   VG_N      = NJEU   ,
   VG_PR      = PRJEU  ,
@@ -374,9 +372,7 @@ MATZE = DEFI_MATERIAU (
   PESA_X      = 0.    ,
   PESA_Y      = 0.    ,
   PESA_Z      = 0.    ,
-  PERMIN_X     = KINTZE  ,
-  PERMIN_Y     = KINTZE  ,
-  PERMIN_Z     = KINTZE  ,
+  PERM_IN     = KINTZE  ,
   VG_N      = NZE   ,
   VG_PR      = PRZE  ,
   VG_SR      = SRZE  ,
@@ -457,9 +453,7 @@ MATCOX = DEFI_MATERIAU (
   PESA_X      = 0.    ,
   PESA_Y      = 0.    ,
   PESA_Z      = 0.    ,
-  PERMIN_X     = KINTCOX  ,
-  PERMIN_Y     = KINTCOX  ,
-  PERMIN_Z     = KINTCOX  ,
+  PERM_IN     = KINTCOX  ,
 #
   VG_N      = NCOX   ,
   VG_PR      = PRCOX  ,

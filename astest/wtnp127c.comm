@@ -1,6 +1,6 @@
 # TITRE  MODELISATION D UN GRADIENT D'EAU SUR UN BARREAU SATURE EN LIQUIDE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,6 +106,14 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                            MODELISATION=MODELISA),
                   );
 
+# TEST DU CHANGEMENT DE L'ANGLE SUR LA PERMEABILITE
+ALPHA = 0.
+BETA = 90.
+ORIREP=AFFE_CARA_ELEM(MODELE=MODELT,
+                      MASSIF=( _F(GROUP_MA=('TOUT',),
+                      ANGL_REP=(ALPHA,BETA),
+                        ),),
+                      INFO=2,);
 #*********************************************************
 # DEFI_MATERIAU
 #*********************************************************
@@ -143,18 +151,18 @@ MATERIAU=DEFI_MATERIAU(
             R_GAZ      = 8.315,
             EMMAG      = EMMAG,
             RHO        = 1.,
-            BIOT_COEF  = 1.,
+            BIOT_L  = 1.,
+            BIOT_N  = 1.,
             SATU_PRES  = UN,
             D_SATU_PRES= ZERO,
             PESA_X     = 0.0,
             PESA_Y     = 0.,
             PESA_Z     = 0.,
-            PERMIN_X   = PERMINT,
-            PERMIN_Y   = PERMINT,
-            PERMIN_Z   = ZERO,
-            PERMINXY   = ZERO,
-            PERMINYZ   = ZERO,
-            PERMINZX   = ZERO,
+#            PERMIN_L   = PERMINT,
+#            PERMIN_N   = ZERO,
+# ON INVERSE ICI LES DEUX DIRECTIONS POUR TESTER LA ROTATION
+            PERMIN_L   = ZERO,
+            PERMIN_N   = PERMINT,
             PERM_LIQU  = UN,
             D_PERM_LIQU_SATU=ZERO,
             PERM_GAZ   = UN,
@@ -162,7 +170,8 @@ MATERIAU=DEFI_MATERIAU(
             D_PERM_PRES_GAZ=ZERO,
             FICKV_T    = ZERO,
             FICKA_T    = ZERO,
-            LAMB_T     = ZERO
+            LAMB_TL    = ZERO,
+            LAMB_TN    = ZERO,
               ),
 
    THM_INIT=_F(
@@ -231,13 +240,10 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                  EXCIT=( _F(CHARGE=CHIMP)),
 
                  COMP_INCR=_F(RELATION='KIT_HH',
-                              RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),
-                 ),
-
-                INCREMENT=_F(
-                   LIST_INST = LI,
-                     INST_FIN=TFINAL,
-                ),
+                              RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
+                 CARA_ELEM=ORIREP,
+                 INCREMENT=_F(
+                   LIST_INST = LI,),
 
                  ETAT_INIT  = _F ( DEPL = PINIT  ,
                                   ),
@@ -257,7 +263,6 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 # Impressions
 #*************************************************************
 #
-
 
 cal1=CALC_CHAMP(reuse=cal1,CONTRAINTE=('SIEF_ELNO'),RESULTAT=cal1)
 

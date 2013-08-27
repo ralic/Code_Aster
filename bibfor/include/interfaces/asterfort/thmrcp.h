@@ -15,21 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                       ther, t0, p10, p20, phi0,&
                       pvp0, t, p1, p1m, p2,&
                       phi, endo, pvp, rgaz, rhod,&
-                      cpd, biot, satm, satur, dsatur,&
-                      pesa, permfh, permli, dperml, permgz,&
+                      cpd, tbiot, satm, satur, dsatur,&
+                      pesa, tperm, permli, dperml, permgz,&
                       dperms, dpermp, fick, dfickt, dfickg,&
                       lambp, dlambp, rhol, unsurk, alpha,&
                       cpl, lambs, dlambs, viscl, dviscl,&
-                      mamolg, cpg, lambt, dlambt, viscg,&
+                      mamolg, cpg, tlambt, tdlamt, viscg,&
                       dviscg, mamolv, cpvg, viscvg, dvisvg,&
                       fickad, dfadt, cpad, kh, pad,&
-                      em, lambct, isot, dficks, instap,&
-                      retcom)
+                      em, tlamct, dficks, instap, retcom,&
+                      angmas, aniso, ndim)
+        integer :: ndim
         character(len=8) :: etape
         integer :: imate
         character(len=16) :: thmc
@@ -51,12 +52,12 @@ interface
         real(kind=8) :: rgaz
         real(kind=8) :: rhod
         real(kind=8) :: cpd
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: satm
         real(kind=8) :: satur
         real(kind=8) :: dsatur
         real(kind=8) :: pesa(3)
-        real(kind=8) :: permfh
+        real(kind=8) :: tperm(ndim, ndim)
         real(kind=8) :: permli
         real(kind=8) :: dperml
         real(kind=8) :: permgz
@@ -77,8 +78,8 @@ interface
         real(kind=8) :: dviscl
         real(kind=8) :: mamolg
         real(kind=8) :: cpg
-        real(kind=8) :: lambt
-        real(kind=8) :: dlambt
+        real(kind=8) :: tlambt(ndim, ndim)
+        real(kind=8) :: tdlamt(ndim, ndim)
         real(kind=8) :: viscg
         real(kind=8) :: dviscg
         real(kind=8) :: mamolv
@@ -91,10 +92,11 @@ interface
         real(kind=8) :: kh
         real(kind=8) :: pad
         real(kind=8) :: em
-        real(kind=8) :: lambct
-        real(kind=8) :: isot(6)
+        real(kind=8) :: tlamct(ndim, ndim)
         real(kind=8) :: dficks
         real(kind=8) :: instap
         integer :: retcom
+        real(kind=8) :: angmas(3)
+        integer :: aniso
     end subroutine thmrcp
-end interface
+end interface 

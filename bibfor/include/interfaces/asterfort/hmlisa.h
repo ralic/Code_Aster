@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine hmlisa(perman, yachai, option, meca, thmc,&
                       ther, hydr, imate, ndim, dimdef,&
                       dimcon, nbvari, yamec, yate, addeme,&
@@ -24,10 +24,12 @@ interface
                       congep, vintm, vintp, dsde, epsv,&
                       depsv, p1, dp1, t, dt,&
                       phi, rho11, phi0, sat, retcom,&
-                      biot, rinstp)
+                      tbiot, rinstp, angmas, deps, aniso,&
+                      phenom)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
+        integer :: ndim
         logical :: perman
         logical :: yachai
         character(len=16) :: option
@@ -36,7 +38,6 @@ interface
         character(len=16) :: ther
         character(len=16) :: hydr
         integer :: imate
-        integer :: ndim
         integer :: yamec
         integer :: yate
         integer :: addeme
@@ -65,7 +66,11 @@ interface
         real(kind=8) :: phi0
         real(kind=8) :: sat
         integer :: retcom
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: rinstp
+        real(kind=8) :: angmas(3)
+        real(kind=8) :: deps(6)
+        integer :: aniso
+        character(len=16) :: phenom
     end subroutine hmlisa
-end interface
+end interface 

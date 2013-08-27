@@ -1,4 +1,3 @@
-
 # TITRE   PRESSURISATION THERMIQUE D'UNE EPROUVETTE SATUREE NON DRAINE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -189,14 +188,16 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                             NOM_CMP=
                                     (
                      'SIXX','SIYY','SIZZ',
-                     'SIXY','SIYZ','SIXZ', 'SIP',
+                     'SIXY','SIYZ','SIXZ', 
+                     'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
                      'M11','FH11X','FH11Y','FH11Z','ENT11',                   
                      'QPRIM','FHTX','FHTY',
                                     ),
                             VALE=
                                  (
                      SIEFF0,SIEFF0,SIEFF0,
-                     0.0, 0.0, 0.0, SIPAG0,
+                     0.0, 0.0, 0.0, 
+                     SIPAG0,SIPAG0,SIPAG0,0.0, 0.0, 0.0, 
                      0.0,0.0,0.0,0.0,ENT1,
                      0.0,0.0,0.0,
                                  ),

@@ -15,11 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dqdeps(alpha0, k0, t)
-        real(kind=8) :: alpha0
-        real(kind=8) :: k0
+interface 
+    subroutine dqdeps(mdal, t, dqeps)
+        real(kind=8) :: mdal(6)
         real(kind=8) :: t
-        real(kind=8) :: dqdeps
-    end function dqdeps
-end interface
+        real(kind=8) :: dqeps(6)
+    end subroutine dqdeps
+end interface 

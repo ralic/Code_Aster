@@ -24,10 +24,14 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                       _F( GROUP_MA = 'BAS'))
                    )
 
+MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL, 
+             CREA_GROUP_MA=_F(NOM='TOUT',TOUT='OUI',)
+                   )
+
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
-                      MODELISATION = '3D_THM')
+                      MODELISATION = '3D_THMS')
                      )
 
 #
@@ -49,6 +53,17 @@ UN=DEFI_CONSTANTE(    VALE=1.)
 ZERO=DEFI_CONSTANTE(    VALE=0.)
 
 #
+# ON FAIT TOURNER LE REPERE POUR TESTER L'ANISOTROPIE DANS LE CAS THERMIQUE : LE MILIEU RESTE CEPENDANT ICI ISOTROPE
+#
+#=> ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
+# 
+BETA = -60.
+ALPHA = 30.
+
+ORIREP=AFFE_CARA_ELEM(MODELE=MODELE,
+       MASSIF=( _F(GROUP_MA=('TOUT'),
+              ANGL_REP=(ALPHA,BETA),
+                        ),),);
 #
 #
 # PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
@@ -99,19 +114,23 @@ ARGILE0=DEFI_MATERIAU(     THM_LIQU=_F(
    R_GAZ = 8.315,
    RHO = 1.6E3,
    CP = 2.85E6,
-   BIOT_COEF = 1.E-12,
+   BIOT_L = 1.E-12,
+   BIOT_N = 1.E-12,
    SATU_PRES = UN,
    D_SATU_PRES = ZERO,
    PESA_X = 0.,
    PESA_Y = 0.,
    PESA_Z = 0.,
-   PERM_IN = KINT,
+   PERMIN_L = KINT,
+   PERMIN_N = KINT,
    PERM_LIQU = UN,
    D_PERM_LIQU_SATU = ZERO,
    PERM_GAZ = PERMGAZ,
    D_PERM_SATU_GAZ = DPERGSA,
    D_PERM_PRES_GAZ = DPERGPG,
-   LAMB_T = CONDHOMO),
+   LAMB_TL = CONDHOMO,
+   LAMB_TN = CONDHOMO,
+  ),
                               THM_INIT=_F(
    TEMP = 273.,
    PRE1 = 0.,
@@ -119,11 +138,25 @@ ARGILE0=DEFI_MATERIAU(     THM_LIQU=_F(
    PORO = 0.4,
    PRES_VAPE = 1.),
                                COMP_THM = 'LIQU_SATU',
-                                     ELAS=_F(
-   E = 225.E6,
-   NU = 0.,
+              
+#                               ELAS=_F(
+#   E = 225.E6,
+#   NU = 0.,
+#   RHO = 2.E3,
+#   ALPHA = 8.E-6)
+#   )
+# CE CAS EST ISOTROPE MAIS ON VEUT TESTER ELAS_ISTR
+
+                               ELAS_ISTR=_F(
+   E_L  = 225.E6,
+   E_N  = 225.E6,
+   NU_LT = 0.,
+   NU_LN = 0.,
+   G_LN = 112.25E6,
    RHO = 2.E3,
-   ALPHA = 8.E-6)
+   ALPHA_L = 8.E-6,
+   ALPHA_N = 8.E-6,
+     )
    )
 
 CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
@@ -148,6 +181,7 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
                   );
 
 MESTAT=STAT_NON_LINE( MODELE=MODELE,
+                CARA_ELEM=ORIREP,
                 SOLVEUR=_F( METHODE = 'MUMPS',PCENT_PIVOT=120),
                         CHAM_MATER=CHMAT0,
                              EXCIT=_F(
@@ -172,8 +206,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1',
                   NOM_CMP='TEMP',
-                  VALE_CALC=0.294091352,
-                  VALE_REFE=0.29411799999999999,
+                  VALE_CALC=0.2940782,
+                  VALE_REFE=0.294118,
                   REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,),

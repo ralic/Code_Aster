@@ -101,14 +101,10 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
     real(kind=8) :: jac(3), nx(3), ny(3), tx(3), ty(3)
     integer :: nbcmp, ivois, iagd
     integer :: adsip
-    real(kind=8) :: theta, sielnp(90), sielnm(90), instpm(2)
-    integer :: tbref2(12), iade2, iava2, ncmpm2, iaptm2, iade3, iava3, ncmpm3
-    integer :: iaptm3
+    real(kind=8) :: theta, sielnp(140), sielnm(140), instpm(2)
+    integer :: tbref2(12), iade2, iava2, ncmpm2, iaptm2, iade3, iava3, ncmpm3, iaptm3
     real(kind=8) :: tm2h1b(3)
     real(kind=8) :: geom(ndim, *)
-!
-!
-!
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -119,9 +115,9 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
     integer :: idec1, idec2, idec3
     integer :: ier1, ier2, ier3, ier4, ier5, ier6
     integer :: ier11, ier21, ier31, ier41, ier51, ier61
-    real(kind=8) :: valpar(3), prp(3), prm(3), cip(3), cim(3), fluxhp(3)
-    real(kind=8) :: fluxhm(3), inte1, inte2, inte3, inted1, inted2, inted3
-    real(kind=8) :: sig11(3), sig22(3), sig12(3), fh11x(3), fh11y(3)
+    real(kind=8) :: valpar(3), prp(3), prm(3), cip(3), cim(3), fluxhp(3), fluxhm(3), inte1, inte2
+    real(kind=8) :: inte3, inted1, inted2, inted3, sig11(3), sig22(3), sig12(3), fh11x(3)
+    real(kind=8) :: fh11y(3)
     real(kind=8) :: ta1
     character(len=4) :: nompar(3)
     character(len=8) :: prf, cif, fluxhf
@@ -137,7 +133,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 ! =====================================================================
 ! 1. RECUPERATION SUR LA MAILLE COURANTE AUX NOEUDS INO ET JNO DE :
 !     . CONTRAINTES EFFECTIVES (SIGMA MECANIQUE : SIXX, SIYY, SIXY)
-!     . CONTRAINTES DE PRESSION (BIOT*PRESSION  : SIP)
+!     . CONTRAINTES DE PRESSION (TBIOT*PRESSION  : SIPXX, SIPYY, SIPXY)
 !     . FLUX DE PRESSION (FH11X, FH11Y)
 !
 !              X1          X2          X3
@@ -313,24 +309,25 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
         call r8inir(3, 0.d0, sig12, 1)
 !
     else
-!
+! ---- DANS CE QUI SUIT ON  PREND EN COMPTE DANS LE CALCUL DE
+!      LA CONTRAINTE TOTALE LES TERMES DU TENSEUR SIP
         idec1 = nbcmp*(ino-1)
 !
         sig11(1) = sielnp(idec1+1) + sielnp(idec1+adsip)
-        sig22(1) = sielnp(idec1+2) + sielnp(idec1+adsip)
-        sig12(1) = sielnp(idec1+4)
+        sig22(1) = sielnp(idec1+2) + sielnp(idec1+adsip+1)
+        sig12(1) = sielnp(idec1+4) + sielnp(idec1+adsip+3)
 !
         idec2 = nbcmp*(jno-1)
 !
         sig11(2) = sielnp(idec2+1) + sielnp(idec2+adsip)
-        sig22(2) = sielnp(idec2+2) + sielnp(idec2+adsip)
-        sig12(2) = sielnp(idec2+4)
+        sig22(2) = sielnp(idec2+2) + sielnp(idec2+adsip+1)
+        sig12(2) = sielnp(idec2+4) + sielnp(idec2+adsip+3)
 !
         idec3 = nbcmp*(mno-1)
 !
         sig11(3) = sielnp(idec3+1) + sielnp(idec3+adsip)
-        sig22(3) = sielnp(idec3+2) + sielnp(idec3+adsip)
-        sig12(3) = sielnp(idec3+4)
+        sig22(3) = sielnp(idec3+2) + sielnp(idec3+adsip+1)
+        sig12(3) = sielnp(idec3+4) + sielnp(idec3+adsip+3)
 !
     endif
 !
@@ -359,30 +356,34 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
             call r8inir(3, 0.d0, sig12, 1)
 !
         else
-!
+! ---- DANS CE QUI SUIT ON  PREND EN COMPTE DANS LE CALCUL DE
+!      LA CONTRAINTE TOTALE LES TERMES DU TENSEUR SIP
             idec1 = nbcmp*(ino-1)
 !
             sig11(1) = sielnp(idec1+1) - sielnm(idec1+1) + sielnp( idec1+adsip) - sielnm(idec1+ad&
                        &sip)
-            sig22(1) = sielnp(idec1+2) - sielnm(idec1+2) + sielnp( idec1+adsip) - sielnm(idec1+ad&
-                       &sip)
-            sig12(1) = sielnp(idec1+4) - sielnm(idec1+4)
+            sig22(1) = sielnp(idec1+2) - sielnm(idec1+2) + sielnp( idec1+adsip+1) - sielnm(idec1+&
+                       &adsip+1)
+            sig12(1) = sielnp(idec1+4) - sielnm(idec1+4) + sielnp( idec1+adsip+3) - sielnm(idec1+&
+                       &adsip+3)
 !
             idec2 = nbcmp*(jno-1)
 !
             sig11(2) = sielnp(idec2+1) - sielnm(idec2+1) + sielnp( idec2+adsip) - sielnm(idec2+ad&
                        &sip)
-            sig22(2) = sielnp(idec2+2) - sielnm(idec2+2) + sielnp( idec2+adsip) - sielnm(idec2+ad&
-                       &sip)
-            sig12(2) = sielnp(idec2+4) - sielnm(idec2+4)
+            sig22(2) = sielnp(idec2+2) - sielnm(idec2+2) + sielnp( idec2+adsip+1) - sielnm(idec2+&
+                       &adsip+1)
+            sig12(2) = sielnp(idec2+4) - sielnm(idec2+4) + sielnp( idec2+adsip+3) - sielnm(idec2+&
+                       &adsip+3)
 !
             idec3 = nbcmp*(mno-1)
 !
             sig11(3) = sielnp(idec3+1) - sielnm(idec3+1) + sielnp( idec3+adsip) - sielnm(idec3+ad&
                        &sip)
-            sig22(3) = sielnp(idec3+2) - sielnm(idec3+2) + sielnp( idec3+adsip) - sielnm(idec3+ad&
-                       &sip)
-            sig12(3) = sielnp(idec3+4) - sielnm(idec3+4)
+            sig22(3) = sielnp(idec3+2) - sielnm(idec3+2) + sielnp( idec3+adsip+1) - sielnm(idec3+&
+                       &adsip+1)
+            sig12(3) = sielnp(idec3+4) - sielnm(idec3+4) + sielnp( idec3+adsip+3) - sielnm(idec3+&
+                       &adsip+3)
 !
         endif
 !
@@ -538,15 +539,15 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
         else
 !
-            idec1 = nbcmp*(ino-1)+adsip+ibid+1
+            idec1 = nbcmp*(ino-1)+adsip+ibid+1+5
             fh11x(1) = theta *sielnp(idec1) + ta1*sielnm(idec1)
             fh11y(1) = theta *sielnp(idec1+1) + ta1*sielnm(idec1+1)
 !
-            idec2 = nbcmp*(jno-1)+adsip+ibid+1
+            idec2 = nbcmp*(jno-1)+adsip+ibid+1+5
             fh11x(2) = theta *sielnp(idec2) + ta1*sielnm(idec2)
             fh11y(2) = theta *sielnp(idec2+1) + ta1*sielnm(idec2+1)
 !
-            idec3 = nbcmp*(mno-1)+adsip+ibid+1
+            idec3 = nbcmp*(mno-1)+adsip+ibid+1+5
             fh11x(3) = theta *sielnp(idec3) + ta1*sielnm(idec3)
             fh11y(3) = theta *sielnp(idec3+1) + ta1*sielnm(idec3+1)
 !
@@ -573,15 +574,15 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
         else
 !
-            idec1 = nbcmp*(ino-1)+adsip+ibid+1
+            idec1 = nbcmp*(ino-1)+adsip+ibid+1+5
             fh11x(1) = sielnp(idec1)
             fh11y(1) = sielnp(idec1+1)
 !
-            idec2 = nbcmp*(jno-1)+adsip+ibid+1
+            idec2 = nbcmp*(jno-1)+adsip+ibid+1+5
             fh11x(2) = sielnp(idec2)
             fh11y(2) = sielnp(idec2+1)
 !
-            idec3 = nbcmp*(mno-1)+adsip+ibid+1
+            idec3 = nbcmp*(mno-1)+adsip+ibid+1+5
             fh11x(3) = sielnp(idec3)
             fh11y(3) = sielnp(idec3+1)
 !
@@ -591,7 +592,7 @@ subroutine erhmb2(perman, ino, nbs, ndim, theta,&
 !
         inte2 = jac(2)* ( fluxhp(2) - ( fh11x(2)*nx(2)+fh11y(2)*ny(2)) )**2
 !
-        idec3 = nbcmp*(mno-1)+adsip+ibid+1
+        idec3 = nbcmp*(mno-1)+adsip+ibid+1+5
 !
         inte3 = jac(3)* ( fluxhp(3) - ( fh11x(3)*nx(3)+fh11y(3)*ny(3)) )**2
 !

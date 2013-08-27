@@ -15,13 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dileau(sat, biot, phi, alpha0, alpliq)
+interface 
+    function dileau(sat, phi, alphfi, alpliq)
         real(kind=8) :: sat
-        real(kind=8) :: biot
         real(kind=8) :: phi
-        real(kind=8) :: alpha0
+        real(kind=8) :: alphfi
         real(kind=8) :: alpliq
         real(kind=8) :: dileau
     end function dileau
-end interface
+end interface 

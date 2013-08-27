@@ -1,5 +1,5 @@
 subroutine permea(imate, hydr, phi, t, sat,&
-                  ncon, cond)
+                  ncon, cond, aniso)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,36 +18,40 @@ subroutine permea(imate, hydr, phi, t, sat,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ARGUMENTS DE SORTIE
-!   COND(1) : KINT
-!   COND(2) : PERMLIQ
-!   COND(3) : D(PERMLIQ)/DSAT
-!   COND(4) : PERMGAZ
-!   COND(5) : D(PERMGAZ)/DSAT
-!   COND(6) : D(PERMGAZ)/DPGAZ
-!   COND(7) : FICK
-!   COND(8) : D(FICK)/DTEMP
-!   COND(9) : D(FICK)/DPGAZ
-!   COND(10) : CONDSOLI = CONDUCTIVITE THERMIQUE SOLIDE
-!   COND(11) : D(CONDSOLI)/DTEMP
-!   COND(12) : CONDLIQ= CONDUCTIVITE THERMIQUE LIQUIDE
-!   COND(13) : D(CONDLIQ)/DTEMP
-!   COND(14) : CONDGAZ= CONDUCTIVITE THERMIQUE GAZ
-!   COND(15) : D(CONDGAZ)/DTEMP
+!   COND(1) :  KINT
+!   COND(2) :  KINT_L (DANS LE CAS ISOTROPE TRANSVERSE)
+!   COND(3) :  KINT_N (DANS LE CAS ISOTROPE TRANSVERSE)
+!   COND(4) :  PERMLIQ
+!   COND(5) :  D(PERMLIQ)/DSAT
+!   COND(6) :  PERMGAZ
+!   COND(7) :  D(PERMGAZ)/DSAT
+!   COND(8) :  D(PERMGAZ)/DPGAZ
+!   COND(9) :  FICK
+!   COND(10) : D(FICK)/DTEMP
+!   COND(11) : D(FICK)/DPGAZ
+!   COND(12) : CONDSOLI = CONDUCTIVITE THERMIQUE SOLIDE
+!   COND(13) : D(CONDSOLI)/DTEMP
+!   COND(14) : CONDLIQ= CONDUCTIVITE THERMIQUE LIQUIDE
+!   COND(15) : D(CONDLIQ)/DTEMP
+!   COND(16) : CONDGAZ= CONDUCTIVITE THERMIQUE GAZ
+!   COND(17) : D(CONDGAZ)/DTEMP
 !
     implicit none
 !
 #include "asterfort/rcvala.h"
 #include "asterfort/u2mess.h"
-    integer :: imate, ncon, nc
-    parameter     ( nc = 1)
+    integer :: imate, ncon, nc, nc1
+    integer :: aniso
+    parameter      (nc = 1)
+    parameter      (nc1= 3)
     real(kind=8) :: t, phi, valpar(2), sat
     character(len=16) :: hydr
     character(len=8) :: nompar(2)
-    real(kind=8) :: cond(ncon), conred(nc)
+    real(kind=8) :: cond(ncon), conred(nc), conred1(nc1)
 !
-    integer :: icodre(nc)
-    character(len=8) :: ncra1(nc), ncra2(nc), ncra3(nc), ncra4(nc)
-    data ncra1 / 'PERM_IN' /
+    integer :: icodre(nc), icodre1(nc1)
+    character(len=8) :: ncra1(nc1), ncra2(nc), ncra3(nc), ncra4(nc)
+    data ncra1 / 'PERM_IN','PERMIN_L','PERMIN_N' /
 !     LAMBDA SOLIDE :
     data ncra2 / 'LAMBDA' /
 !     LAMBDA LIQUIDE :
@@ -57,6 +61,10 @@ subroutine permea(imate, hydr, phi, t, sat,&
 !
     if (hydr .eq. 'HYDR') then
 !
+        cond(1) = 0.d0
+        cond(2) = 0.d0
+        cond(3) = 0.d0
+!
         call u2mess('F', 'ALGORITH9_80')
 !
         nompar(1)='PORO'
@@ -64,32 +72,42 @@ subroutine permea(imate, hydr, phi, t, sat,&
         valpar(1)=phi
         valpar(2)=t
         call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
-                    valpar, nc, ncra1, conred, icodre,&
+                    valpar, 1, ncra1, conred1, icodre1,&
                     1)
-        cond(1)=conred(1)
-        cond(2)=sat
-        cond(3)=1.d0
-        cond(4)=1.d0-sat
-        cond(5)=-1.d0
-        cond(6)=0.d0
-        cond(7)=1.d-7
+        if (icodre1(1) .eq. 1) then
+            aniso=1
+            call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
+                        valpar, 2, ncra1(2), conred1(2), icodre1,&
+                        1)
+        else if (icodre1(1).eq.0) then
+            aniso=0
+        endif
+        cond(1)=conred1(1)
+        cond(2)=conred1(2)
+        cond(3)=conred1(3)
+        cond(4)=sat
+        cond(5)=1.d0
+        cond(6)=1.d0-sat
+        cond(7)=-1.d0
         cond(8)=0.d0
-        cond(9)=0.d0
+        cond(9)=1.d-7
+        cond(10)=0.d0
+        cond(11)=0.d0
         call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
                     valpar, nc, ncra2, conred, icodre,&
                     1)
-        cond(10)=conred(1)
-        cond(11)=0.d0
+        cond(12)=conred(1)
+        cond(13)=0.d0
         call rcvala(imate, ' ', 'THM_LIQU', 2, nompar,&
                     valpar, nc, ncra3, conred, icodre,&
                     1)
-        cond(12)=conred(1)
-        cond(13)=0.d0
+        cond(14)=conred(1)
+        cond(15)=0.d0
         call rcvala(imate, ' ', 'THM_GAZ', 2, nompar,&
                     valpar, nc, ncra4, conred, icodre,&
                     1)
-        cond(14)=conred(1)
-        cond(15)=0.d0
+        cond(16)=conred(1)
+        cond(17)=0.d0
     endif
 !
 end subroutine

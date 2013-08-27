@@ -275,9 +275,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    PESA_X=0.0,
                                    PESA_Y=0.0,
                                    PESA_Z=0.0,
-                                   PERMIN_X=KINT,
-                                   PERMIN_Y=KINT,
-                                   PERMIN_Z=KINT,
+                                   PERM_IN=KINT,
                                  VG_N            = N,
                                  VG_PR           = PR,
                                  VG_SR           = SR,
@@ -286,7 +284,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    FICKV_T=ZERO,
                                    FICKA_T= FICKWAR,
                                    FICKA_S  = FAS   ,
-                                   LAMB_T=ZERO,),);
+                                   LAMB_T=ZERO,    ),);
 #****************************************************************
 # AFFECTATION DES MATERIAUX
 #****************************************************************

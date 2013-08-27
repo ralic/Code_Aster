@@ -511,8 +511,8 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
 !
     logical :: tange, cont, vf, bool
     integer :: numav
-    real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa)
-    real(kind=8) :: normfa(maxdim, maxfa), vol, volv
+    real(kind=8) :: mface(maxfa), dface(maxfa), xface(maxdim, maxfa), normfa(maxdim, maxfa), vol
+    real(kind=8) :: volv
     integer :: ifa, jfa, jfav, idim
     real(kind=8) :: pcp, dpwp1, dpwp2
     real(kind=8) :: pgp, dpgp1, dpgp2
@@ -547,30 +547,26 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: fm1ass(maxfa+1, maxfa), fm2ass(maxfa+1, maxfa)
     real(kind=8) :: fm1ads(maxfa+1, maxfa), fm2ads(maxfa+1, maxfa)
 !
-    real(kind=8) :: pcpf(maxfa), pgpf(maxfa), dpgp1f(maxfa), dpgp2f(maxfa)
-    real(kind=8) :: pwpf(maxfa), dpwp1f(maxfa), dpwp2f(maxfa), cvpf(maxfa)
-    real(kind=8) :: dcvp1f(maxfa), cadf(maxfa), dcad1f(maxfa), dcad2f(maxfa)
-    real(kind=8) :: dcvp2f(maxfa)
+    real(kind=8) :: pcpf(maxfa), pgpf(maxfa), dpgp1f(maxfa), dpgp2f(maxfa), pwpf(maxfa)
+    real(kind=8) :: dpwp1f(maxfa), dpwp2f(maxfa), cvpf(maxfa), dcvp1f(maxfa), cadf(maxfa)
+    real(kind=8) :: dcad1f(maxfa), dcad2f(maxfa), dcvp2f(maxfa)
 !
-    real(kind=8) :: mobwf(0:nvoima, maxfa), moadf(0:nvoima, maxfa)
-    real(kind=8) :: moasf(0:nvoima, maxfa), movpf(0:nvoima, maxfa)
-    real(kind=8) :: dw1f(0:nvoima, maxfa), dw2f(0:nvoima, maxfa)
-    real(kind=8) :: dw1fv(0:nvoima, maxfa), dw2fv(0:nvoima, maxfa)
-    real(kind=8) :: dvp1f(0:nvoima, maxfa), dvp2f(0:nvoima, maxfa)
-    real(kind=8) :: dvp1fv(0:nvoima, maxfa), dvp2fv(0:nvoima, maxfa)
-    real(kind=8) :: das1f(0:nvoima, maxfa), das2f(0:nvoima, maxfa)
-    real(kind=8) :: das1fv(0:nvoima, maxfa), das2fv(0:nvoima, maxfa)
-    real(kind=8) :: dad1f(0:nvoima, maxfa), dad2f(0:nvoima, maxfa)
+    real(kind=8) :: mobwf(0:nvoima, maxfa), moadf(0:nvoima, maxfa), moasf(0:nvoima, maxfa)
+    real(kind=8) :: movpf(0:nvoima, maxfa), dw1f(0:nvoima, maxfa), dw2f(0:nvoima, maxfa)
+    real(kind=8) :: dw1fv(0:nvoima, maxfa), dw2fv(0:nvoima, maxfa), dvp1f(0:nvoima, maxfa)
+    real(kind=8) :: dvp2f(0:nvoima, maxfa), dvp1fv(0:nvoima, maxfa), dvp2fv(0:nvoima, maxfa)
+    real(kind=8) :: das1f(0:nvoima, maxfa), das2f(0:nvoima, maxfa), das1fv(0:nvoima, maxfa)
+    real(kind=8) :: das2fv(0:nvoima, maxfa), dad1f(0:nvoima, maxfa), dad2f(0:nvoima, maxfa)
     real(kind=8) :: dad1fv(0:nvoima, maxfa), dad2fv(0:nvoima, maxfa)
 !
 !
     real(kind=8) :: yss(maxdim, maxfa, maxfa)
     real(kind=8) :: c(maxfa, maxfa), d(maxfa, maxfa)
 !
-    real(kind=8) :: flks(maxfa), dflks1(maxfa+1, maxfa), dflks2(maxfa+1, maxfa)
-    real(kind=8) :: fgks(maxfa), dfgks1(maxfa+1, maxfa), dfgks2(maxfa+1, maxfa)
-    real(kind=8) :: ftgks(maxfa), ftgks1(maxfa+1, maxfa), ftgks2(maxfa+1, maxfa)
-    real(kind=8) :: fclks(maxfa), fclks1(maxfa+1, maxfa), fclks2(maxfa+1, maxfa)
+    real(kind=8) :: flks(maxfa), dflks1(maxfa+1, maxfa), dflks2(maxfa+1, maxfa), fgks(maxfa)
+    real(kind=8) :: dfgks1(maxfa+1, maxfa), dfgks2(maxfa+1, maxfa), ftgks(maxfa)
+    real(kind=8) :: ftgks1(maxfa+1, maxfa), ftgks2(maxfa+1, maxfa), fclks(maxfa)
+    real(kind=8) :: fclks1(maxfa+1, maxfa), fclks2(maxfa+1, maxfa)
 !
 !
 ! SI FICKFA =TRUE LES DIFFUSIVITES DE FICK SONT CALCULEES A PARTIR
@@ -581,34 +577,27 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     logical :: decen
 !=====================================================================
 ! NOUVELLE VARIABLES POUR SUSHI POUR TRAITER LA DIFFUSION PAR MOYENNE
-    real(kind=8) :: fclls(maxfa), fclls1(maxfa+1, maxfa), fclls2(maxfa+1, maxfa)
-    real(kind=8) :: ftgls(maxfa), ftgls2(maxfa+1, maxfa), ftgls1(maxfa+1, maxfa)
+    real(kind=8) :: fclls(maxfa), fclls1(maxfa+1, maxfa), fclls2(maxfa+1, maxfa), ftgls(maxfa)
+    real(kind=8) :: ftgls2(maxfa+1, maxfa), ftgls1(maxfa+1, maxfa)
 !
-    real(kind=8) :: flvpsk(maxfa), fvp1sk(maxfa+1, maxfa)
-    real(kind=8) :: fvp2sk(maxfa+1, maxfa), flassk(maxfa)
-    real(kind=8) :: fas1sk(maxfa+1, maxfa), fas2sk(maxfa+1, maxfa)
-    real(kind=8) :: fladsk(maxfa), fad1sk(maxfa+1, maxfa)
-    real(kind=8) :: fad2sk(maxfa+1, maxfa)
+    real(kind=8) :: flvpsk(maxfa), fvp1sk(maxfa+1, maxfa), fvp2sk(maxfa+1, maxfa), flassk(maxfa)
+    real(kind=8) :: fas1sk(maxfa+1, maxfa), fas2sk(maxfa+1, maxfa), fladsk(maxfa)
+    real(kind=8) :: fad1sk(maxfa+1, maxfa), fad2sk(maxfa+1, maxfa)
 !
-    real(kind=8) :: flvpsl(maxfa), fvp1sl(maxfa+1, maxfa)
-    real(kind=8) :: fvp2sl(maxfa+1, maxfa), flassl(maxfa)
-    real(kind=8) :: fas1sl(maxfa+1, maxfa), fas2sl(maxfa+1, maxfa)
-    real(kind=8) :: fladsl(maxfa), fad1sl(maxfa+1, maxfa)
-    real(kind=8) :: fad2sl(maxfa+1, maxfa)
+    real(kind=8) :: flvpsl(maxfa), fvp1sl(maxfa+1, maxfa), fvp2sl(maxfa+1, maxfa), flassl(maxfa)
+    real(kind=8) :: fas1sl(maxfa+1, maxfa), fas2sl(maxfa+1, maxfa), fladsl(maxfa)
+    real(kind=8) :: fad1sl(maxfa+1, maxfa), fad2sl(maxfa+1, maxfa)
 !
-    real(kind=8) :: moyvp(maxfa), moyvp1(maxfa, maxfa+1, 0:1)
-    real(kind=8) :: moyvp2(maxfa, maxfa+1, 0:1), moyas(maxfa)
-    real(kind=8) :: moyas1(maxfa, maxfa+1, 0:1), moyas2(maxfa, maxfa+1, 0:1)
-    real(kind=8) :: moyad(maxfa), moyad1(maxfa, maxfa+1, 0:1)
-    real(kind=8) :: moyad2(maxfa, maxfa+1, 0:1)
+    real(kind=8) :: moyvp(maxfa), moyvp1(maxfa, maxfa+1, 0:1), moyvp2(maxfa, maxfa+1, 0:1)
+    real(kind=8) :: moyas(maxfa), moyas1(maxfa, maxfa+1, 0:1), moyas2(maxfa, maxfa+1, 0:1)
+    real(kind=8) :: moyad(maxfa), moyad1(maxfa, maxfa+1, 0:1), moyad2(maxfa, maxfa+1, 0:1)
 !
     real(kind=8) :: dl (maxfa, maxfa)
     real(kind=8) :: yssl (maxdim, maxfa, maxfa)
     real(kind=8) :: cl (maxfa, maxfa)
 !
     integer :: fav, ifav
-    real(kind=8) :: mfacel(maxfa), dfacel(maxfa), xfacel(maxdim, maxfa)
-    real(kind=8) :: norfal(maxdim, maxfa)
+    real(kind=8) :: mfacel(maxfa), dfacel(maxfa), xfacel(maxdim, maxfa), norfal(maxdim, maxfa)
 !
     real(kind=8) :: cvpfv(maxfa), cvpfv1(maxfa), cvpfv2(maxfa)
     real(kind=8) :: cadfv(maxfa), cadfv1(maxfa), cadfv2(maxfa)
@@ -619,6 +608,9 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     real(kind=8) :: xg(maxdim), xl(maxdim)
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: zero
+!     DANS LE CAS DES ELEMENTS FINIS ANGMAS EST NECESSAIRE
+!     DANS LE CAS DES VOLUMES FINIS ON INITIALISE À 0 ANGMAS(7)
+    real(kind=8) :: angbid(3)
     integer :: zzadma, ivois, lig, col
     integer :: iadp1k, iadp2k, iadp1, iadp2
     integer :: adcm1, adcm2, adcf1, adcf2
@@ -658,6 +650,11 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
     call vecini(maxfa, zero, dcad2f)
 !
     alpha = crit(13)
+!---------------------------------------
+! INITIALISATION DE ANGMAS(3) À ZERO
+    do 511 i = 1, 3
+        angbid(i)=0.d0
+511  end do
 !============================
 ! ACTUELLEMENT ON OBLIGE A PRENDRE LE CENTRE
 ! AU CENTRE DE GRAVITE
@@ -821,7 +818,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                 addep2, adcp21, adcp22, addete, adcote,&
                 defgem, defgep, congem, congep, vintm(1, 1),&
                 vintp(1, 1), dsde, pesa, retcom, 1,&
-                1, p10, p20)
+                1, p10, p20, angbid)
     if (retcom .ne. 0) then
         call u2mesk('F', 'COMPOR1_9', 0, ' ')
     endif
@@ -862,7 +859,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         addep2, adcp21, adcp22, addete, adcote,&
                         defgem, defgep, congem, congep, vintm(1, fa+1),&
                         vintp(1, fa+1), dsde, pesa, retcom, 1,&
-                        1, p10, p20)
+                        1, p10, p20, angbid)
             if (retcom .ne. 0) then
                 call u2mesk('F', 'COMPOR1_9', 0, ' ')
             endif
@@ -1282,7 +1279,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                     addep2, adcp21, adcp22, addete, adcote,&
                     defgem, defgep, zr(iconmv), zr(iconpv), zr(ivarmv),&
                     zr(ivarpv), dsde, pesa, retcom, 1,&
-                    1, p10v, p20v)
+                    1, p10v, p20v, angbid)
 !
         if (retcom .ne. 0) then
             call u2mesk('F', 'COMPOR1_9', 0, ' ')
@@ -1317,7 +1314,7 @@ subroutine assvsu(nno, nnos, nface, geom, crit,&
                         addep2, adcp21, adcp22, addete, adcote,&
                         defgem, defgep, zr(iconmv), zr( iconpv), zr(ivarmv+nbvari*ifav),&
                         zr(ivarpv+nbvari*ifav), dsde, pesa, retcom, 1,&
-                        1, p10v, p20v)
+                        1, p10v, p20v, angbid)
 !
             if (retcom .ne. 0) then
                 call u2mesk('F', 'COMPOR1_9', 0, ' ')

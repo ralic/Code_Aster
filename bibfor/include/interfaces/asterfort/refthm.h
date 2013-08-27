@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine refthm(fnoevo, dt, perman, nno, nnos,&
                       nnom, npi, npg, ipoids, ipoid2,&
                       ivf, ivf2, idfde, idfde2, geom,&
@@ -59,4 +59,4 @@ interface
         integer :: np2
         logical :: axi
     end subroutine refthm
-end interface
+end interface 

@@ -15,6 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# wtnp121n.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test R
 # VALIDATION DE LA MODELISATION HYDRAULIQUE SATUREE H EN 3D
 
 DEBUT(CODE=_F(NOM='WTNP121N', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -118,12 +119,7 @@ MATERIAU=DEFI_MATERIAU(
             PESA_X     = 0.0,
             PESA_Y     = 0.,
             PESA_Z     = 0.,
-            PERMIN_X   = PERMINT,
-            PERMIN_Y   = PERMINT,
-            PERMIN_Z   = PERMINT,
-            PERMINXY   = ZERO,
-            PERMINYZ   = ZERO,
-            PERMINZX   = ZERO,
+            PERM_IN    = PERMINT,
             PERM_LIQU  = UN,
             D_PERM_LIQU_SATU=ZERO,
               ),

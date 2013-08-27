@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    function dmdepv(rho, fsat, biot)
+interface 
+    subroutine dmdepv(rho, fsat, tbiot, dmdeps)
         real(kind=8) :: rho
         real(kind=8) :: fsat
-        real(kind=8) :: biot
-        real(kind=8) :: dmdepv
-    end function dmdepv
-end interface
+        real(kind=8) :: tbiot(6)
+        real(kind=8) :: dmdeps(6)
+    end subroutine dmdepv
+end interface 

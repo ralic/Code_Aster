@@ -1,0 +1,10 @@
+P time_limit 50
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm wtna112b.comm D 1
+F mail wtna112a.mail D 20
+F datg wtna112a.datg D 16

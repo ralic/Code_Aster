@@ -1,7 +1,7 @@
 # person_in_charge: samuel.geniaut at edf.fr
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -274,7 +274,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MA,
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP=('DX','DY','DZ','PRE1','PRE2',),
                              VALE=(0.,0.,0.,0.,0.),),
-                          _F(GROUP_NO='ROCHES',
+                         _F(GROUP_NO='ROCHES',
                              NOM_CMP='PRE1',
                              VALE=6.92413E7,),),);
 
@@ -285,14 +285,20 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            NOM_CMP=
                            ('SIXX','SIYY','SIZZ','SIXY','SIXZ',
-                            'SIYZ','SIP','M11','FH11X','FH11Y','FH11Z',
+                            'SIYZ',
+                            'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ',
+                            'SIPYZ',
+                            'M11','FH11X','FH11Y','FH11Z',
                             'ENT11','M12','FH12X','FH12Y','FH12Z','ENT12',
                             'M21','FH21X','FH21Y','FH21Z','ENT21','QPRIM',
                                      'FHTX','FHTY','FHTZ'),
                            VALE=
                            (0.0,0.0,0.0,0.0,0.0,
+                            0.0,
+                            0.0,0.0,0.0,0.0,0.0,
+                            0.0,
+                            0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,
-                           0.0,0.0,0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
 
 REPONSE=STAT_NON_LINE(
@@ -339,6 +345,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='E',
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIZZ',
                    VALE_CALC=2531.64454,
+                   TOLE_MACHINE=1.E-05,
                    ),
                 _F(GROUP_NO='E',
                    INST=1.0,
@@ -346,6 +353,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='E',
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    VALE_CALC=3.7144950E7,
+                   TOLE_MACHINE=1.0000000000000001E-05,
                    ),
                 ),
           )

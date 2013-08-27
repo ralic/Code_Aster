@@ -1,9 +1,13 @@
-function dspdp1(net, bishop, signe, biot, sat)
-    implicit      none
+subroutine dspdp1(net, bishop, signe, tbiot, sat,&
+                  dsdp1)
+    implicit none
+!
 #include "asterfort/u2mess.h"
-    real(kind=8) :: signe, biot, sat, dspdp1
+    integer :: i
+    real(kind=8) :: signe, tbiot(6), sat, dsdp1(6)
     logical :: net, bishop
 ! ======================================================================
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,12 +28,14 @@ function dspdp1(net, bishop, signe, biot, sat)
 ! --- CALCUL DE LA DERIVEE DE LA CONTRAINTE DE PRESSION PAR RAPPORT ----
 ! --- A LA PRESSION CAPILLAIRE -----------------------------------------
 ! ======================================================================
-    if (bishop) then
-        dspdp1 = signe*biot*sat
-    else if (net) then
-        dspdp1 = 0.d0
-    else
-        call u2mess('F', 'ALGORITH17_4')
-    endif
+    do 10 i = 1, 6
+        if (bishop) then
+            dsdp1(i) = signe*tbiot(i)*sat
+        else if (net) then
+            dsdp1(i) = 0.d0
+        else
+            call u2mess('F', 'ALGORITH17_4')
+        endif
+10  end do
 ! ======================================================================
-end function
+end subroutine

@@ -1,6 +1,7 @@
+# MODIF  DATE 18/02/2013   AUTEUR SELLENET N.SELLENET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -222,14 +223,20 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA='BO',
                             NOM_CMP=
                             ('SIXX','SIYY','SIZZ','SIXY','SIXZ',
-                            'SIYZ','SIP','M11','FH11X','FH11Y','ENT11',
+                             'SIYZ',
+                             'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ',
+                             'SIPYZ',
+                             'M11','FH11X','FH11Y','ENT11',
                              'M12','FH12X','FH12Y','ENT12',
                              'QPRIM','FHTX','FHTY','M21',
                              'FH21X','FH21Y','ENT21',
                              'M22','FH22X', 'FH22Y','ENT22',),
                             VALE=
                             (0.0,0.0,0.0,0.0,0.0,
-                             0.0,0.0,0.0,0.0,0.0,0.0,
+                             0.0,
+                             0.0,0.0,0.0,0.0,0.0,
+                             0.0,
+                             0.0,0.0,0.0,0.0,
                              0.0,0.0,0.0, 2500000.0,
                              0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                              0.,0.,0.,0.),),
@@ -324,8 +331,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='VARI_NOEU',
                   NOEUD='N12',
                   NOM_CMP='V5',
-                  VALE_CALC=0.4,
-                  VALE_REFE=0.4,
+                  VALE_CALC=0.400000000,
+                  VALE_REFE=0.40000000000000002,
                   CRITERE='RELATIF',
                   PRECISION=1.E-4,),
           )

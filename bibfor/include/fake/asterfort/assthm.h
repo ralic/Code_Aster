@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine assthm(nno, nnos, nnom, npg, npi,&
                       ipoids, ipoid2, ivf, ivf2, idfde,&
                       idfde2, geom, crit, deplm, deplp,&
@@ -27,7 +27,7 @@ interface
                       press2, tempe, dimdef, dimcon, dimuel,&
                       nbvari, nddls, nddlm, nmec, np1,&
                       np2, ndim, compor, typmod, axi,&
-                      perman, modint, codret)
+                      perman, modint, codret, angmas)
         integer :: ndim
         integer :: nbvari
         integer :: dimuel
@@ -86,5 +86,6 @@ interface
         logical :: perman
         character(len=3) :: modint
         integer :: codret
+        real(kind=8) :: angmas(3)
     end subroutine assthm
-end interface
+end interface 

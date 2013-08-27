@@ -126,12 +126,7 @@ MATERIAU=DEFI_MATERIAU(
             PESA_X     = 0.0,
             PESA_Y     = 0.,
             PESA_Z     = 0.,
-            PERMIN_X   = PERMINT,
-            PERMIN_Y   = PERMINT,
-            PERMIN_Z   = ZERO,
-            PERMINXY   = ZERO,
-            PERMINYZ   = ZERO,
-            PERMINZX   = ZERO,
+            PERM_IN   = PERMINT,
               ),
 
    THM_INIT=_F(

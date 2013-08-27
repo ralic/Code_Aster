@@ -1,8 +1,9 @@
 function dmvpd2(rho12, alp12, dpvpt, phi, ums,&
-                pvp, phids, bmph, cs)
-    implicit      none
-    real(kind=8) :: rho12, alp12, dpvpt, phi, ums, pvp, phids, bmph, cs, dmvpd2
+                pvp, phids, cs)
+    implicit none
+    real(kind=8) :: rho12, alp12, dpvpt, phi, ums, pvp, phids, cs, dmvpd2
 ! ======================================================================
+!            
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +24,6 @@ function dmvpd2(rho12, alp12, dpvpt, phi, ums,&
 ! --- CALCUL DE LA DERIVEE DE L APPORT MASSIQUE DE VAPEUR PAR RAPPORT --
 ! --- A LA PRESSION DE GAZ ---------------------------------------------
 ! ======================================================================
-    dmvpd2 = rho12*(-3.d0*alp12 + dpvpt*(phi*ums/pvp-phids+bmph*ums*ums*cs))
+    dmvpd2 = rho12*(-3.d0*alp12 + dpvpt*(phi*ums/pvp-phids+ums*ums*cs))
 ! ======================================================================
 end function

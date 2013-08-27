@@ -15,9 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine permea(imate, hydr, phi, t, sat,&
-                      ncon, cond)
+                      ncon, cond, aniso)
         integer :: ncon
         integer :: imate
         character(len=16) :: hydr
@@ -25,5 +25,6 @@ interface
         real(kind=8) :: t
         real(kind=8) :: sat
         real(kind=8) :: cond(ncon)
+        integer :: aniso
     end subroutine permea
-end interface
+end interface 

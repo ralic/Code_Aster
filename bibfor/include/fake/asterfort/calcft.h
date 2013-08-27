@@ -15,20 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine calcft(option, thmc, imate, ndim, dimdef,&
                       dimcon, yamec, yap1, yap2, addete,&
                       addeme, addep1, addep2, adcote, congep,&
                       dsde, t, grat, phi, pvp,&
-                      rgaz, biot, sat, dsatp1, lambp,&
-                      dlambp, lambs, dlambs, lambt, dlambt,&
-                      mamolv, lambct, rho11, h11, h12)
+                      rgaz, tbiot, sat, dsatp1, lambp,&
+                      dlambp, lambs, dlambs, tlambt, tdlamt,&
+                      mamolv, tlamct, rho11, h11, h12,&
+                      angmas, aniso, phenom)
         integer :: dimcon
         integer :: dimdef
+        integer :: ndim
         character(len=16) :: option
         character(len=16) :: thmc
         integer :: imate
-        integer :: ndim
         integer :: yamec
         integer :: yap1
         integer :: yap2
@@ -44,19 +45,22 @@ interface
         real(kind=8) :: phi
         real(kind=8) :: pvp
         real(kind=8) :: rgaz
-        real(kind=8) :: biot
+        real(kind=8) :: tbiot(6)
         real(kind=8) :: sat
         real(kind=8) :: dsatp1
         real(kind=8) :: lambp
         real(kind=8) :: dlambp
         real(kind=8) :: lambs
         real(kind=8) :: dlambs
-        real(kind=8) :: lambt
-        real(kind=8) :: dlambt
+        real(kind=8) :: tlambt(ndim, ndim)
+        real(kind=8) :: tdlamt(ndim, ndim)
         real(kind=8) :: mamolv
-        real(kind=8) :: lambct
+        real(kind=8) :: tlamct(ndim, ndim)
         real(kind=8) :: rho11
         real(kind=8) :: h11
         real(kind=8) :: h12
+        real(kind=8) :: angmas(3)
+        integer :: aniso
+        character(len=16) :: phenom
     end subroutine calcft
-end interface
+end interface 

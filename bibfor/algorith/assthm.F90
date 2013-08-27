@@ -9,7 +9,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
                   press2, tempe, dimdef, dimcon, dimuel,&
                   nbvari, nddls, nddlm, nmec, np1,&
                   np2, ndim, compor, typmod, axi,&
-                  perman, modint, codret)
+                  perman, modint, codret, angmas)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -29,17 +29,16 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! aslint: disable=W1504
     implicit none
 !
 !
-#include "asterc/r8prem.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
 #include "asterfort/equthp.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
+#include "asterc/r8prem.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -64,6 +63,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
     real(kind=8) :: dsde(dimcon, dimdef), b(dimdef, dimuel)
     real(kind=8) :: r(dimdef+1), sigbar(dimdef), c(dimdef)
     real(kind=8) :: dt, ta, ta1, rthmc, ck(dimdef), cs(dimdef)
+    real(kind=8) :: angmas(3)
     logical :: axi, perman
     integer :: codmes(1)
     character(len=3) :: modint
@@ -328,6 +328,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
                 defgep(i)=defgep(i)+b(i,n)*deplp(n)
 109          continue
 108      continue
+!
 ! ======================================================================
 ! --- APPEL A LA ROUTINE EQUTHP OU EQUTHM ------------------------------
 ! ======================================================================
@@ -340,7 +341,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
                         defgem, contm((kpi-1)*dimcon+1), varim((kpi-1)*nbvari+1), defgep,&
                         contp((kpi-1)*dimcon+1), varip((kpi-1)*nbvari+1), mecani, press1, press2,&
                         tempe, crit, rinstm, rinstp, r,&
-                        drds, dsde, codret)
+                        drds, dsde, codret, angmas)
         else
             call equthm(imate, option, ta, ta1, ndim,&
                         compor, typmod, kpi, npg, dimdef,&
@@ -348,7 +349,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
                         varim((kpi-1)*nbvari+1), defgep, contp((kpi-1)* dimcon+1),&
                         varip((kpi-1)*nbvari+1), mecani, press1, press2, tempe,&
                         crit, rinstm, rinstp, dt, r,&
-                        drds, dsde, codret)
+                        drds, dsde, codret, angmas)
 ! ======================================================================
 ! --- ATTENTION CI-DESSOUS IL N'Y A PAS D'IMPACT DE CALCUL -------------
 ! --- ON RECOPIE POUR LA METHODE D'INTEGRATION SELECTIVE LES CONTRAINTES
@@ -419,6 +420,7 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
 ! ======================================================================
             call pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
                         drdsr, ck, b, poids, matri)
+!
         endif
 ! ======================================================================
 ! --- CALCUL DE VECTUU -------------------------------------------------
@@ -448,6 +450,8 @@ subroutine assthm(nno, nnos, nnom, npg, npi,&
 ! ======================================================================
 ! --- SORTIE DE BOUCLE SUR LES POINTS D'INTEGRATION --------------------
 ! ======================================================================
+! 888           CONTINUE
+!
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         kji=1
         do 115 ii = 1, dimuel

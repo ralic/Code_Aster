@@ -1,6 +1,7 @@
 subroutine te0600(option, nomte)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8dgrd.h"
 #include "asterc/ismaem.h"
 #include "asterfort/assthm.h"
 #include "asterfort/caethm.h"
@@ -9,12 +10,15 @@ subroutine te0600(option, nomte)
 #include "asterfort/epsthm.h"
 #include "asterfort/fnothm.h"
 #include "asterfort/jevech.h"
+#include "asterfort/naueul.h"
 #include "asterfort/posthm.h"
+#include "asterfort/rcangm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/refthm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/thmevc.h"
+#include "asterfort/vecini.h"
     character(len=16) :: option, nomte
 ! =====================================================================
 ! =====================================================================
@@ -57,13 +61,14 @@ subroutine te0600(option, nomte)
     integer :: jtab(7), igau, isig, nnom
     real(kind=8) :: defgep(21), defgem(21), dfdbid(27), poids
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(21, 120), epsm(405)
-    real(kind=8) :: drds(22, 31), drdsr(21, 31), dsde(31, 21)
+    real(kind=8) :: drds(22, 31+5), drdsr(21, 31+5), dsde(31+5, 21)
     real(kind=8) :: r(22), sigbar(21), c(21), ck(21), cs(21)
+    real(kind=8) :: angmas(7), coor(3), angnau(3), angleu(3)
     character(len=3) :: modint
     character(len=8) :: typmod(2)
     character(len=16) :: phenom
 ! =====================================================================
-    integer :: li, kp, j, l, k, ibid, typvf
+    integer :: li, kp, j, l, k, ibid, typvf, idim
     real(kind=8) :: r8bid, rho, coef, rx
     integer :: icodre(1)
     logical :: axi, perman
@@ -82,7 +87,7 @@ subroutine te0600(option, nomte)
 ! =====================================================================
 !    POUR LES CHAMPS DE CONTRAINTE
 !                                      SIXX SIYY SIZZ SIXY SIXZ SIYZ
-!                                      SIP
+!                                      SIPXX SIPYY SIPZZ SIPXY SIPXZ SIP
 !                                      M11 FH11X FH11Y FH11Z
 !                                      ENT11
 !                                      M12 FH12X FH12Y FH12Z
@@ -140,6 +145,7 @@ subroutine te0600(option, nomte)
                 nddlm, ibid, ibid, dimuel, ipoids,&
                 ivf, idfde, ipoid2, ivf2, idfde2,&
                 ibid, jgano)
+!
 ! =====================================================================
 ! --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 ! =====================================================================
@@ -161,6 +167,45 @@ subroutine te0600(option, nomte)
         call jevech('PVARIMR', 'L', ivarim)
         call jevech('PCONTMR', 'L', icontm)
         read (zk16(icompo-1+2),'(I16)') nbvari
+! =====================================================================
+! ----RECUPERATION DES ANGLES NAUTIQUES/EULER DEFINIS PAR AFFE_CARA_ELEM
+! --- ORIENTATION DU MASSIF
+! --- COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+! --- CONVERSION DES ANGLES NAUTIQUES EN ANGLES D'EULER
+! =====================================================================
+        call vecini(7, 0.d0, angmas)
+        call vecini(3, 0.d0, coor)
+        call vecini(3, 0.d0, angleu)
+        call vecini(3, 0.d0, angnau)
+!
+        do 150 i = 1, nno
+            do 140 idim = 1, ndim
+                coor(idim) = coor(idim)+zr(igeom+idim+ndim*(i-1)-1)/ nno
+140          continue
+150      continue
+        call rcangm(ndim, coor, angmas)
+!# ANGMAS : donne par affe_cara_elem en degre et ici en fourni en radian
+!# CAS OU AFFE_CARA_ELEM EST EN ANGLE D EULER => On CONVERTIT EN NAUTIQUE
+        if (abs(angmas(4)-2.d0) .lt. 1.d-3) then
+            if (ndim .eq. 3) then
+                angleu(1) = angmas(5)
+                angleu(2) = angmas(6)
+                angleu(3) = angmas(7)
+            else
+                angleu(1) = angmas(5)
+            endif
+            call eulnau(angleu/r8dgrd(), angnau/r8dgrd())
+!     
+!# CAS OU AFFE_CARA_ELEM EST EN ANGLE NAUTIQUE (OK PAS DE CONVERSION)
+        else
+            if (ndim .eq. 3) then
+                angnau(1) = angmas(1)
+                angnau(2) = angmas(2)
+                angnau(3) = angmas(3)
+            else
+                angnau(1) = angmas(1)
+            endif
+        endif
 ! =====================================================================
 ! --- PARAMETRES EN SORTIE ISMAEM? ------------------------------------
 ! =====================================================================
@@ -193,7 +238,7 @@ subroutine te0600(option, nomte)
                         press2, tempe, dimdef, dimcon, dimuel,&
                         nbvari, nddls, nddlm, nmec, np1,&
                         np2, ndim, zk16(icompo), typmod, axi,&
-                        perman, modint, retloi)
+                        perman, modint, retloi, angnau)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
@@ -209,7 +254,7 @@ subroutine te0600(option, nomte)
                         press2, tempe, dimdef, dimcon, dimuel,&
                         nbvari, nddls, nddlm, nmec, np1,&
                         np2, ndim, zk16(icompo), typmod, axi,&
-                        perman, modint, retloi)
+                        perman, modint, retloi, angnau)
             zi(jcret) = retloi
         endif
     endif

@@ -1,17 +1,14 @@
 subroutine coeihm(option, perman, resi, rigi, imate,&
                   compor, crit, instam, instap, nomail,&
                   ndim, dimdef, dimcon, nbvari, yamec,&
-                  yap1, yap2, yate, nbpha1, nbpha2,&
+                  yap1, yap2, yate, &
                   addeme, adcome, addep1, adcp11, adcp12,&
                   addlh1, adcop1, addep2, adcp21, adcp22,&
-                  adcop2, addete, adcote, defgem, defgep,&
+                  addete, adcote, defgem, defgep,&
                   kpi, npg, npi, sigm, sigp,&
                   varim, varip, res, drde, retcom)
 !
-! aslint: disable=W1306,W1504
     implicit none
-!
-!
 ! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,9 +37,9 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 #include "asterfort/nvithm.h"
 #include "asterfort/thmlec.h"
 #include "asterfort/u2mesk.h"
-    integer :: dimdef, dimcon, npg, kpi, npi, ndim, nbpha1, nbpha2
+    integer :: dimdef, dimcon, npg, kpi, npi, ndim
     integer :: nbvari, yamec, yate, yap1, yap2, imate
-    integer :: addeme, addep1, addep2, addete, adcop1, adcop2, addlh1
+    integer :: addeme, addep1, addep2, addete, adcop1, addlh1
     integer :: adcome, adcp11, adcp12, adcp21, adcp22, adcote
 !
     real(kind=8) :: defgem(1:dimdef), defgep(1:dimdef)
@@ -59,27 +56,26 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 !
 ! - VARIABLES LOCALES
     integer :: nvim, nvit, nvih, nvic, advime, advith, advihy, advico
-    integer :: i, j, f
+    integer :: i, j, f, aniso, anisof
     integer :: vihrho, vicphi, vicpvp, vicsat
     integer :: ifa, vicpr1, vicpr2
     real(kind=8) :: t0, p10, p20, phi0, pvp0, depsv, epsv, deps(6)
     real(kind=8) :: t, p1, p2, dt, dp1, dp2, grat(3), grap1(3), grap2(3)
     real(kind=8) :: pvp, pad, h11, h12, kh, rho11, phi
-    real(kind=8) :: sat, biot, rgaz, satur, dsatur, pesa(3)
-    real(kind=8) :: permfh, permli, dperml, permgz, dperms, dpermp, fick, dfickt
+    real(kind=8) :: sat, tbiot(6), rgaz, satur, dsatur, pesa(3)
+    real(kind=8) :: tperm(ndim, ndim), permli, dperml, permgz, dperms, dpermp
     real(kind=8) :: lambp, dlambp, unsurk, alpha, lambs, dlambs, viscl, dfickg
-    real(kind=8) :: dviscl, mamolg, lambt, dlambt, viscg, dviscg
-    real(kind=8) :: mamovg, fickad, dfadt, lambct, isot(6)
-    real(kind=8) :: dficks
+    real(kind=8) :: dviscl, mamolg, tlambt(ndim, ndim), tdlamt(ndim, ndim)
+    real(kind=8) :: mamovg, fickad, dfadt, tlamct(ndim, ndim), dfickt, dviscg
+    real(kind=8) :: dficks, klint(ndim-1, ndim-1), fick, viscg
     real(kind=8) :: dsde(dimcon, dimdef)
     real(kind=8) :: tlint, ouvh, deltat, unsurn
-    real(kind=8) :: valcen(14, 6)
+    real(kind=8) :: valcen(14, 6), angbid(3)
     integer :: maxfa
     parameter (maxfa=6)
     real(kind=8) :: valfac(maxfa, 14, 6)
-    character(len=16) :: meca, thmc, ther, hydr
+    character(len=16) :: meca, thmc, ther, hydr, phenom
     logical :: vf, yachai
-!
 !
 ! =====================================================================
 !.......................................................................
@@ -123,7 +119,6 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 ! IN ADCOP1 : ADRESSE DES CONTRAINTES CORRESPONDANT AU SAUT DE PRE1
 ! IN ADCP21 : ADRESSE DES CONTRAINTES FLUIDE 2 PHASE 1
 ! IN ADCP22 : ADRESSE DES CONTRAINTES FLUIDE 2 PHASE 2
-! IN ADCOP2 : ADRESSE DES CONTRAINTES CORRESPONDANT AU SAUT DE PRE2
 ! IN ADCOTE : ADRESSE DES CONTRAINTES THERMIQUES
 ! IN DEFGEM : DEFORMATIONS GENERALISEES A L'INSTANT MOINS
 ! IN DEFGEP : DEFORMATIONS GENERALISEES A L'INSTANT PLUS
@@ -177,9 +172,6 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 11          continue
 10      continue
     endif
-!
-!
-!
 ! ======================================================================
 ! --- MISE AU POINT POUR LES VARIABLES INTERNES ------------------------
 ! --- DEFINITION DES POINTEURS POUR LES DIFFERENTES RELATIONS DE -------
@@ -196,7 +188,6 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
         (meca.ne.'CZM_EXP_REG')) then
         call u2mesk('F', 'ALGORITH17_10', 1, meca)
     endif
-!
 ! ======================================================================
 ! --- CALCULS MECA -----------------------------------------------------
 ! ======================================================================
@@ -226,10 +217,13 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     epsv = 0.d0
     depsv = 0.d0
     phi0=0.d0
-!
 ! ======================================================================
 ! --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 ! ======================================================================
+! INITIALISATION DE ANGMAS(3) À ZERO
+    do 611 i = 1, 3
+        angbid(i)=0.d0
+611  end do
 !
     call calcco(option, yachai, perman, meca, thmc,&
                 ther, hydr, imate, ndim-1, dimdef,&
@@ -241,8 +235,9 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                 p2, dp1, dp2, t, dt,&
                 phi, pvp, pad, h11, h12,&
                 kh, rho11, phi0, pvp0, sat,&
-                retcom, crit, biot, vihrho, vicphi,&
-                vicpvp, vicsat, instap)
+                retcom, crit, tbiot, vihrho, vicphi,&
+                vicpvp, vicsat, instap, angbid, aniso,&
+                phenom)
 !
     if (retcom .ne. 0) then
         goto 9000
@@ -252,23 +247,36 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 ! ======================================================================
     call thmlec(imate, thmc, meca, hydr, ther,&
                 t, p1, p2, phi, varip(1),&
-                pvp, pad, rgaz, biot, satur,&
-                dsatur, pesa, permfh, permli, dperml,&
+                pvp, pad, rgaz, tbiot, satur,&
+                dsatur, pesa, tperm, permli, dperml,&
                 permgz, dperms, dpermp, fick, dfickt,&
                 dfickg, lambp, dlambp, unsurk, alpha,&
                 lambs, dlambs, viscl, dviscl, mamolg,&
-                lambt, dlambt, viscg, dviscg, mamovg,&
-                fickad, dfadt, lambct, isot, dficks,&
-                instap)
-!
+                tlambt, tdlamt, viscg, dviscg, mamovg,&
+                fickad, dfadt, tlamct, dficks, instap,&
+                angbid, anisof, ndim-1)
 ! ======================================================================
 ! --- CALCUL DES FLUX HYDRAULIQUES -------------------------------------
 ! ======================================================================
-!
     fick = 0.d0
     dfickt = 0.d0
     dfickg = 0.d0
     dperml = 0.d0
+!
+!
+! CREATION D'UN TENSEUR ISOTROPE POUR LA PERMEABILITE LONGTUDINALE
+! POUR LE CALCUL DANS CALCF
+!
+!
+    do 612 i = 1, ndim-1
+        do 613 j = 1, ndim-1
+            klint(i,j)=0.d0
+613      continue
+612  end do
+!
+    do 614 i = 1, ndim-1
+        klint(i,i)=tlint
+614  end do
 !
     if (yap1 .eq. 1) then
         call calcfh(option, perman, thmc, ndim-1, dimdef,&
@@ -277,21 +285,20 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                     addete, sigp, dsde, p1, p2,&
                     grap1, grap2, t, grat, pvp,&
                     pad, rho11, h11, h12, rgaz,&
-                    dsatur, pesa, tlint, permli, dperml,&
+                    dsatur, pesa, klint, permli, dperml,&
                     permgz, dperms, dpermp, fick, dfickt,&
                     dfickg, fickad, dfadt, kh, unsurk,&
                     alpha, viscl, dviscl, mamolg, viscg,&
-                    dviscg, mamovg, isot, dficks, vf,&
-                    ifa, valfac, valcen)
+                    dviscg, mamovg, dficks, vf, ifa,&
+                    valfac, valcen)
+!
         if (retcom .ne. 0) then
             goto 9000
         endif
     endif
-!
 ! ======================================================================
 ! --- CONTRAINTES GENERALISEES -----------------------------------------
 ! ======================================================================
-!
     if (resi) then
 ! - COMPOSANTES CONSTITUANT 1
         if (yap1 .eq. 1) then
@@ -345,7 +352,6 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 ! --- CALCUL DE L'OPERATEUR TANGENT ------------------------------------
 ! ======================================================================
     if (rigi) then
-!
 ! ======================================================================
 ! --- D(RESIDU)/D(DEFORMATIONS GENERALISES)------------
 ! --- POUR MATRICE DE RIGIDITE------------------------------------------
@@ -392,11 +398,8 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                 drde(addep1,addep1) = rho11*drde(addep1,addep1) + dsde(adcp11,addep1)
             endif
         endif
-!
     endif
-!
 ! ======================================================================
 9000  continue
 ! ======================================================================
-!
 end subroutine

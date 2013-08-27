@@ -15,7 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
+interface 
     subroutine assesu(nno, nnos, nface, geom, crit,&
                       deplm, deplp, congem, congep, vintm,&
                       vintp, defgem, defgep, dsde, matuu,&
@@ -58,4 +58,4 @@ interface
         logical :: axi
         logical :: perman
     end subroutine assesu
-end interface
+end interface 
