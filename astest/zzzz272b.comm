@@ -234,8 +234,10 @@ SIEFINI1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
                     MODELE=MODE_00,
                     PROL_ZERO='OUI',
                     AFFE=_F(TOUT='OUI',
-                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10'),
-                            VALE_F=(SIGXX0,SIGXX0,SIGXX0,SIGXY0,SIGXZ0,SIGYZ0,SIGPRE0,FLUHX0,FLUHY0,FLUHZ0)));
+                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15'),
+                            VALE_F=(SIGXX0,SIGXX0,SIGXX0,SIGXY0,SIGXZ0,SIGYZ0,
+                                    SIGPRE0, SIGPRE0, SIGPRE0,ZERO,ZERO,ZERO,
+                                    FLUHX0,FLUHY0,FLUHZ0)));
 
 SIEFINI2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
                     OPERATION='EVAL',
@@ -248,8 +250,10 @@ SIEF_INI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     PROL_ZERO='OUI',
                     ASSE=_F(TOUT='OUI',
                             CHAM_GD=SIEFINI2,
-                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10'),
-                            NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','FH11X','FH11Y','FH11Z')));
+                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15'),
+                            NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',
+                                          'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
+                                          'FH11X','FH11Y','FH11Z')));
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=P_E,
                                NU=P_NU,

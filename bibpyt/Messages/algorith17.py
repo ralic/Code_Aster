@@ -160,12 +160,12 @@ cata_msg={
   compte dans les calculs postérieurs.
 """),
 33 : _(u"""
-  Attention le comportement isotrope transverse ELAS_ISTR 3D doit etre compatible avec un comportement
-   isotrope (L,N) transverse dans THM_DIFFU et reciproquement.
+  Attention le comportement isotrope transverse ELAS_ISTR 3D doit être compatible avec un comportement
+   isotrope (L,N) transverse dans THM_DIFFU et réciproquement.
 """),
 34 : _(u"""
-  Attention le comportement ELAS_ORTH 2D doit etre compatible avec un comportement orthotrope 2D (L,T) 
-  dans THM_DIFFU et reciproquement.
+  Attention le comportement ELAS_ORTH 2D doit être compatible avec un comportement orthotrope 2D (L,T) 
+  dans THM_DIFFU et réciproquement.
 """),
 35 : _(u"""
   Attention, en THM le comportement ELAS_ISTR n'est valable qu'en 3D, pour 2D passer en ELAS_ORTH 
@@ -182,8 +182,8 @@ cata_msg={
    INCOMPATIBLE 2D
 """),
 39 : _(u"""
-  Routines CAPACA, RHOS(1-PHI)  <=0 A LA MAILLE: %(k1)s
+  Attention on sort momentanément du domaine admissible car porosité négative sur la maille %(k1)s
 """),
 40 : _(u"""
-  Routines CAPACA, coeps <=0 A LA MAILLE: %(k1)s
+   Attention on sort momentanément du domaine admissible car chaleur spécifique négative sur la maille %(k1)s
 """),}
