@@ -1,0 +1,5 @@
+P time_limit 150
+P memory_limit 256
+P testlist C
+F comm ssnp104a.comm D 1
+F mail ssnp104a.mmed D 20

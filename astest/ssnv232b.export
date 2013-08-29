@@ -1,0 +1,5 @@
+P time_limit 150
+P memory_limit 256
+P testlist C
+F comm ssnv232b.comm D 1
+F mail ssnv232b.mail D 20

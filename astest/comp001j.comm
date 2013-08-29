@@ -1,0 +1,88 @@
+# TITRE TEST COMPORTEMENT MOHR-COULOMB 3D
+#......................................................................
+# comp001j.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+
+DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI',);
+
+# donnee materiau et fonction
+
+# modules mecaniques [Pa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG_Pa = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+#YOUNG_Pa = 1.E10
+print 'young=',YOUNG_Pa,' /// nu=',POISSON
+
+#   parametres loi de Mohr-Coulomb
+# ------------------------------------
+SY_Pa = 1.0E+3;
+
+# def des materiaux
+ACIER = [None]*2
+
+#unite en Pa
+C_Pa = 1.e+6
+
+YOUNG = YOUNG_Pa / C_Pa
+SY = SY_Pa / C_Pa;
+
+#   parametres de test
+# ------------------------------------
+# list_npas =[1,1,1,1,1,5,10,15,25,50,100];
+# list_tole =[1e-10]*(len(list_npas)+10);
+
+ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+                               NU=POISSON,
+                               ALPHA=0.),
+                       MOHR_COULOMB=_F(
+                            PHI      = 33.,
+                            ANGDIL   = 27.,
+                            COHESION = SY_Pa,),);
+#unite en MPa
+ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                               NU=POISSON,
+                               ALPHA=0.),
+                       MOHR_COULOMB=_F(
+                            PHI      = 33.,
+                            ANGDIL   = 27.,
+                            COHESION = SY,),);
+
+tabresu=TEST_COMPOR(INFO=2,
+              OPTION='MECA',
+              #LIST_NPAS=list_npas,
+              #LIST_TOLE=list_tole,
+              LIST_TOLE=[1.E-00,1.E-10,1.E-10,1.E-10]+\
+                        [1.e-1]+[2.e-2,1.e-2]+[1.e-8],
+              #SUPPORT  ='ELEMENT',
+              COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+              NEWTON=_F(REAC_ITER=1),
+              LIST_MATER=ACIER,
+              VARI_TEST=('V1','V2','V3','VMIS','TRACE'),
+              YOUNG=YOUNG_Pa,
+              POISSON=POISSON,);
+              
+              
+IMPR_TABLE(TABLE=tabresu)
+
+FIN();

@@ -155,7 +155,8 @@ def verif_essais(COMP_INCR,ESSAI_TD ,
               'DRUCK_PRAGER',  
               'DRUCK_PRAG_N_A',
               'CAM_CLAY',      
-              'CJS',]
+              'CJS',
+              'MOHR_COULOMB']
     nom_rdc = COMP_INCR.List_F()[0]['RELATION']
     if not( nom_rdc in RdC_OK ):
       UTMESS('F','COMPOR2_39',valk=(typ_essai,SomListStr(RdC_OK),nom_rdc))
@@ -193,7 +194,8 @@ def verif_essais(COMP_INCR,ESSAI_TD ,
               'DRUCK_PRAGER',  
               'DRUCK_PRAG_N_A',
               'CAM_CLAY',      
-              'CJS',]
+              'CJS',
+              'MOHR_COULOMB']
     nom_rdc = COMP_INCR.List_F()[0]['RELATION']
     if not( nom_rdc in RdC_OK ):
       UTMESS('F','COMPOR2_39',valk=(typ_essai,SomListStr(RdC_OK),nom_rdc))

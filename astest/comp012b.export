@@ -1,0 +1,4 @@
+P time_limit 60
+P memory_limit 256
+P testlist R 
+F comm comp012b.comm D 1

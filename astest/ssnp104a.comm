@@ -1,0 +1,371 @@
+
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+#
+#     TITLE :  RIGID FOOTING WITH MOHE-COULOMB MODEL IN 2D
+#     AUTHOR:  MARC KHAM
+#     DATE  :  1 MAI 2013
+#     REF.  :  Emil Smed Sorensen
+#              Master Thesis: "Elasto-Plastic Strain Hardening
+#                              Mohr-Coulomb Model"
+#
+#===========================================================
+
+DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'));
+
+# Modules Elastiques
+# ==================================
+
+Poisson= 0.25 ;
+
+Young = 9.e+9 ;
+
+Mu= Young/2./(1+Poisson);
+
+print ' ==> Young =',Young,' Poisson =',Poisson
+
+# propriétés anélastiques (Mohr-Coulomb)
+# ================================================
+
+Sigma0=80.e+6 ;
+Sigma0=0.e+00 ;
+
+Peak=True
+
+if Peak:
+  Psi = 32.07 ;  # en degrés
+  Phi = 32.07 ;
+  cohes=4.21e6;
+else:
+  Psi = 17.93 ;  # en degrés
+  Phi = 17.93 ;
+  cohes=1.91e6;
+
+print ' ==> Mohr-Coulomb'
+print '     Psi =',Psi,' Phi =',Phi,' Cohes =',cohes
+
+# DEFINITION DES CONSTANTES
+# ====================================
+
+n =0.
+
+rho_eau = 1000. ;
+
+rho_sec = 2000. ; # Densité SECHE
+
+rho_grai = rho_sec /(1.-n) ; # Densité granulaire
+
+rho_homo = rho_sec + rho_eau*n ; # Densité Homogénéisée
+
+rho_deja = rho_homo - rho_eau ; # Densité Déjaugée
+
+K0 = 1. ;  # coefficient de poussée des terres
+
+H = 20. ;  # hauteur de la fondation;
+
+G = 9.81 ;
+
+# Modele de fondation rigide
+# =======================================
+#
+#        APPUI      Freesurf               UY    = 1m
+#       =======___________________         Sigma0= 80MPa
+#       | 1m                      |
+#       |                         |         Y
+#       |                         |         ^
+#       |                         |         \__> X  
+#       |                         |
+# Left  |                  H=20m  |  Right
+#       |                         |
+#       |                         |
+#       |                         |
+#       |                         |
+#       |                         |
+#       |         L=30m           |
+#        _________________________ 
+#                  Base
+
+Soil =['Soil1','Soil2']
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED');
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+MODMEC1=AFFE_MODELE(INFO=1,
+                    MAILLAGE=MAILLAGE,
+                    AFFE=_F(#TOUT='OUI',
+                            GROUP_MA=Soil+['APPUI','Freesurf',],
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN',),);
+                                  
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_2D=_F(GROUP_MA=('Freesurf',),),);
+
+# comportement plastique en méca pur pour le sol
+SOL=DEFI_MATERIAU(ELAS=_F(E=Young, NU=Poisson, RHO=rho_deja, ALPHA=0.,),
+                  MOHR_COULOMB=_F(
+                            PHI      = Psi,
+                            ANGDIL   = Phi,
+                            COHESION = cohes,),);
+                   
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(GROUP_MA=Soil, MATER=SOL,),);
+
+DDLIMP0=AFFE_CHAR_CINE(MODELE=MODMEC1,
+                       MECA_IMPO=(_F(GROUP_MA='Base', DY=0.0,),
+                                  _F(GROUP_MA=('Left','Right','APPUI',),
+                                     DX=0.0,),),);
+
+PREIMP0=AFFE_CHAR_MECA(MODELE=MODMEC1,
+                       PRES_REP=_F(GROUP_MA=('Freesurf',),PRES=0.,),);
+
+Depl=2.E-1; # 0.2M
+
+#-------------------------
+
+DDLIMP1=AFFE_CHAR_MECA(MODELE=MODMEC1,
+                       DDL_IMPO=_F(GROUP_MA='APPUI', DY=-Depl,),);
+
+PESE=AFFE_CHAR_MECA(MODELE=MODMEC1,
+                    PESANTEUR=_F(GRAVITE=9.81,
+                                 DIRECTION=(0.0,-1.0,0.0,),),);
+
+TM = -1.0 ;
+T0 = 0. ;
+T1 = 20. ;
+T2 = 100. ;
+T3 = 200. ;
+TFIN = 1000. ;
+                           
+FEVOL=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(T0,0.,T3,1.),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+                                 
+TEMPS=DEFI_LIST_REEL(DEBUT=T0,
+                     INTERVALLE=(_F(JUSQU_A=T1,  NOMBRE=10,),
+                                 _F(JUSQU_A=T2,  NOMBRE=40,),
+                                 _F(JUSQU_A=T3,  NOMBRE=50,),
+                                 _F(JUSQU_A=TFIN,NOMBRE=800,),),);
+                     
+L_ARCH=DEFI_LIST_REEL(DEBUT=T0,
+                     INTERVALLE=(_F(JUSQU_A=T1,  PAS=1.,),
+                                 _F(JUSQU_A=T2,  PAS=1.,),
+                                 _F(JUSQU_A=T3,  PAS=1.,),
+                                 _F(JUSQU_A=TFIN,PAS=1.,),),); 
+                           
+TANBID=DEFI_LIST_REEL(DEBUT=TM,
+                     INTERVALLE=_F(JUSQU_A=T0, NOMBRE=3,),);
+                     
+#-------------------------------------------------------------------
+# CREATION DES CHAMPS INITIAUX DE PRESSION ET DE CONTRAINTES
+# DANS LA FONDATION
+#-------------------------------------------------------------------
+#  RECUPERATION DU CHAMP DE GEOMETRIE 
+#  (AUX NOEUDS PUIS AUX POINTS DE GAUSS)
+
+CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                OPERATION='EXTR',
+                MAILLAGE=MAILLAGE,
+                NOM_CHAM='GEOMETRIE',);
+
+CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
+                OPERATION='DISC',
+                MODELE=MODMEC1,
+                CHAM_GD=CHXN,);
+
+                        
+# CHAMP DE CONTRAINTE EFFECTIVE EN Y
+# ----------------------------------
+SIEFY = FORMULE(VALE='rho_deja*G*Y - Sigma0', NOM_PARA='Y');
+
+SIEFX = FORMULE(VALE='K0*(SIEFY(Y)+Sigma0) -Sigma0', NOM_PARA='Y');
+                            
+SIEFZ = FORMULE(VALE='SIEFX(Y)', NOM_PARA='Y');
+
+ZERO = FORMULE(VALE='0.', NOM_PARA='Y',);
+
+#  CONTRAINTES dans la fondation
+SIEF1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
+                OPERATION='AFFE',
+                MODELE=MODMEC1,
+                PROL_ZERO='OUI',
+                AFFE=_F(GROUP_MA=Soil,
+                        NOM_CMP=('X1','X2','X3',),
+                        VALE_F=(SIEFX,SIEFY,SIEFZ,),),);
+                        
+SIEF2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
+                 OPERATION='EVAL',
+                 CHAM_F=SIEF1,
+                 CHAM_PARA=CHXG,);
+
+SIEFINI=CREA_CHAMP(INFO=1,
+                   TYPE_CHAM='ELGA_SIEF_R',
+                   OPERATION='ASSE',
+                   MODELE=MODMEC1,
+                   PROL_ZERO='OUI',
+                   ASSE=_F(GROUP_MA=Soil,
+                           CHAM_GD=SIEF2,
+                           NOM_CMP=('X1','X2','X3',),
+                           NOM_CMP_RESU=('SIXX','SIYY','SIZZ',),),);
+
+                               
+#--------------------------------------------------------------------
+#       Test d'équilibre avec Mohr-Coulomb
+#--------------------------------------------------------------------
+
+# calcul de l'état initial
+RESU0=STAT_NON_LINE(MODELE=MODMEC1,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=DDLIMP0,),
+                           _F(CHARGE=PREIMP0,),
+                           _F(CHARGE=PESE,),),
+                    COMP_INCR=_F(RELATION='ELAS',),
+                    ETAT_INIT=_F(SIGM=SIEFINI,),
+                    INCREMENT=_F(LIST_INST=TANBID,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,
+                                   ITER_GLOB_MAXI=10,
+                                   ARRET='OUI'),);
+RESU0=CALC_CHAMP(reuse=RESU0,
+              CONTRAINTE=('SIGM_ELNO'),
+              RESULTAT=RESU0,);
+
+
+RESU0=CALC_CHAMP(reuse=RESU0,
+              CONTRAINTE='SIGM_NOEU',
+              RESULTAT=RESU0,);
+
+coupe = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
+                     GROUP_MA=Soil,
+                     DEFI_SEGMENT=_F(ORIGINE  = (1.,  0.,),
+                                     EXTREMITE= (1.,-20.,),),);
+                               
+TAB_SI0=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
+                             CHEMIN=coupe,
+                             RESULTAT=RESU0,
+                             NOM_CHAM='SIGM_NOEU',
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TAB_SI0, UNITE=8,);
+                  
+#--------------------------------------------------------------------
+#       Calcul de la fondation rigide avec Mohr-Coulomb
+#--------------------------------------------------------------------
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS,),
+                        ECHEC=_F(SUBD_METHODE ='MANUEL',
+                                 SUBD_PAS     = 5,
+                                 SUBD_NIVEAU  =10,
+                                 SUBD_PAS_MINI=1.E-6,
+                                 ),);
+  
+RESU=STAT_NON_LINE(MODELE=MODMEC1,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=DDLIMP0,),
+                           _F(CHARGE=PREIMP0,),
+                           _F(CHARGE=PESE,),
+                           _F(CHARGE=DDLIMP1,FONC_MULT=FEVOL,),),
+                              #"PETIT_REAC","GROT_GDEP","SIMO_MIEHE",
+                              #"GDEF_HYPO_ELAS","GREEN_REAC","GDEF_LOG"
+                    COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+                    ETAT_INIT=_F(SIGM=SIEFINI,),
+                    INCREMENT=_F(LIST_INST=DEFLIST,
+                                 INST_INIT=T0,
+                                 INST_FIN =T3,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,
+                              PAS_MINI_ELAS =1.E-5,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                   ITER_GLOB_MAXI=20,
+                                   ITER_GLOB_ELAS=100,
+                                   ARRET='OUI',),
+                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),
+                    );
+
+# ==============================================================================
+#
+#          TEST DE LA RSULTANTE VERTICALE DES FORCES SUR LA FONDATION
+#          A T=200SEC.
+#          AUTO-COMPARAISON
+#
+# ==============================================================================
+# RESU=CALC_CHAMP(reuse=RESU,
+#               CONTRAINTE=('SIGM_ELNO'),
+#               VARI_INTERNE=('VARI_ELNO'),
+#               DEFORMATION=('EPSI_ELNO'),
+#               RESULTAT=RESU,);
+# 
+# 
+# RESU=CALC_CHAMP(reuse=RESU,
+#               CONTRAINTE='SIGM_NOEU',
+#               VARI_INTERNE='VARI_NOEU',
+#               DEFORMATION='EPSI_NOEU',
+#               RESULTAT=RESU,);
+
+RESU=CALC_CHAMP(reuse =RESU,
+                RESULTAT =RESU,
+                FORCE='FORC_NODA',
+                GROUP_MA=Soil,);
+
+# FORCE RESULTANTE DANS LA DIRECTION Y
+# -----------------------------------
+FRESULT= POST_RELEVE_T(ACTION=_F(INTITULE  = 'F_RESULTANTE',
+                                 OPERATION = 'EXTRACTION',
+                                 GROUP_NO  = 'APPUI',
+                                 NOM_CHAM  = 'FORC_NODA',
+                                 RESULTANTE= 'DY',
+                                 RESULTAT  =  RESU,
+                                 TOUT_ORDRE= 'OUI',),);
+
+# TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
+#                              CHEMIN=coupe,
+#                              RESULTAT=RESU,
+#                              NOM_CHAM='SIGM_NOEU',
+#                              TOUT_CMP='OUI',
+#                              OPERATION='EXTRACTION',),);
+#                                
+# TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
+#                              CHEMIN=coupe,
+#                              RESULTAT=RESU,
+#                              NOM_CHAM='VARI_NOEU',
+#                              TOUT_CMP='OUI',
+#                              OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=FRESULT,  UNITE=8,);
+# IMPR_TABLE(TABLE=TAB_SIEF, UNITE=8,);
+# IMPR_TABLE(TABLE=TAB_VARI, UNITE=8,);
+
+
+TEST_TABLE(NOM_PARA='DY', TABLE=FRESULT,
+           FILTRE=_F(NOM_PARA ='INST',
+                     VALE     =200.,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-4,),
+           # Non-regression
+           VALE_CALC=-2.0226340762154E+08,
+           # Reference: Auto-test
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=-2.0226340762154E+08,);
+
+FIN();

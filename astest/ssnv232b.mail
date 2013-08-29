@@ -1,0 +1,100 @@
+ TITRE
+ CUBE
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N3        1.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+ N4        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N5        0.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+ N6        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N7        1.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+ N8        0.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ QUAD4   
+ M1       N1       N2       N3       N5      
+ M2       N2       N3       N7       N6      
+ M3       N3       N5       N8       N7      
+ M4       N4       N6       N7       N8      
+ M5       N1       N2       N6       N4      
+ M6       N5       N1       N4       N8      
+ FINSF
+ %
+ HEXA8   
+ M13      N1       N2       N3       N5       N4       N6       N7      
+          N8      
+ FINSF
+ %
+ GROUP_NO
+ A                       
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ C                       
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ D                       
+ N5      
+ FINSF
+ %
+ GROUP_MA
+ ARRIERE                 
+ M3      
+ FINSF
+ %
+ GROUP_MA
+ COTE                    
+ M3       M2      
+ FINSF
+ %
+ GROUP_MA
+ BAS                     
+ M4      
+ FINSF
+ %
+ GROUP_MA
+ SYM                     
+ M4       M5       M6      
+ FINSF
+ %
+ GROUP_MA
+ DEVANT                  
+ M5      
+ FINSF
+ %
+ GROUP_MA
+ DROIT                   
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ ECHAN                   
+ M13     
+ FINSF
+ %
+ GROUP_MA
+ GAUCHE                  
+ M6      
+ FINSF
+ %
+ GROUP_MA
+ HAUT                    
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ APPUI                   
+ M1      
+ FINSF
+ %
+ FIN

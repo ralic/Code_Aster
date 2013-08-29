@@ -1,0 +1,230 @@
+
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+# TITRE ESSAI TRIAXIAL DRAINE MONOTONE SUR SABLE D'HOSTUN - LOI DE MOHR-COULOMB, SIMU_POINT_MAT
+
+
+DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'))
+
+# modules mecaniques [kPa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+print 'young=',YOUNG,' /// nu=',POISSON
+
+# pression de preconsolidation [en kPa]
+PCO=50.E+3
+
+#*******************************************************************
+#    INCREMENTS DE TEMPS
+#*******************************************************************
+
+tarret =19.
+npas   =300
+temps_max =30.
+depzz   =-.000001
+epzz_max=-.0003
+
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A = tarret   , NOMBRE = 190),
+                                  _F(JUSQU_A = temps_max, NOMBRE = 110),),);
+
+
+#***********************************************************************
+#    ESSAI TRIAXIAL NON DRAINE CYCLIQUE
+#***********************************************************************
+SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
+                  MOHR_COULOMB=_F(
+                            PHI      = 33.,
+                            ANGDIL   = 27.,
+                            COHESION = 1.0E+3,),);
+                            
+COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
+                    PROL_DROITE = 'CONSTANT',
+                    VALE=( 0.0, 0.,
+                           temps_max, 0.,),);
+                          
+COEF2=DEFI_FONCTION(NOM_PARA    = 'INST',
+                    PROL_DROITE = 'CONSTANT',
+                    VALE=( 0.0, -PCO,
+                           temps_max, -PCO,),);
+
+COEF3=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=( 0.0, 0.0,
+                           temps_max, epzz_max,),);
+  
+TSIMU=SIMU_POINT_MAT(INFO=2,
+                  COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+                  MATER=SOL,
+                  INCREMENT=_F(LIST_INST=TEMPS1,
+                               INST_INIT=0.,
+                               INST_FIN =temps_max,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,
+                            PREDICTION='ELASTIQUE'),
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
+                                 ITER_GLOB_MAXI = 10,
+                                 ARRET='NON',),
+                  ARCHIVAGE=_F(LIST_INST=TEMPS1,),
+                  SIGM_IMPOSE=_F(SIXX=COEF2,
+                                 SIYY=COEF2,),
+                  EPSI_IMPOSE=_F(EPZZ=COEF3,
+                                 EPXY=COEF1,
+                                 EPXZ=COEF1,
+                                 EPYZ=COEF1,),
+                  SIGM_INIT=_F(SIXX=-PCO,
+                               SIYY=-PCO,
+                               SIZZ=-PCO,),
+                  EPSI_INIT=_F(EPXX=0.,
+                               EPYY=0.,
+                               EPZZ=0.,
+                               EPXY=0.,
+                               EPXZ=0.,
+                               EPYZ=0.,),);
+IMPR_TABLE(TABLE=TSIMU,);
+
+# =============================================================================
+#
+#           TEST DES RESULTATS PAR RAPPORT A UNE SOLUTION ANALYTIQUE
+#
+# =============================================================================
+
+# Calcul de la solution analytique
+# ---------------------------------
+from Contrib.essai_triaxial import Triaxial_DR
+epzz,sizz,sixx,epsivp,epsidp, =\
+    Triaxial_DR(K,G,33.,27.,1.e+3,-PCO,depzz,epzz_max)
+
+
+TEST_TABLE(NOM_PARA='SIXX', TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA ='EPZZ',
+                     VALE     =-3.E-4,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-7,),
+           # Non-regression
+           VALE_CALC=-50000.,
+           # Reference
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=sixx[-1],);
+
+TEST_TABLE(NOM_PARA='SIZZ', TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA ='EPZZ',
+                     VALE     =-3.E-4,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-7,),
+           # Non-regression
+           VALE_CALC=-1.7328954160409E+05,
+           # Reference
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=sizz[-1],);
+           
+TEST_TABLE(NOM_PARA='V1', TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA ='EPZZ',
+                     VALE     =-3.E-4,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-7,),
+           # Non-regression
+           VALE_CALC=1.6784502547223E-04,
+           # Reference
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=epsivp[-1],);
+
+TEST_TABLE(NOM_PARA='V2', TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA ='EPZZ',
+                     VALE     =-3.E-4,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-7,),
+           # Non-regression
+           VALE_CALC=3.3099447556584E-04,
+           # Reference
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=epsidp[-1],);
+           
+# ================================================================
+#                            POST-TRAITEMENTS
+# ================================================================
+#
+# tsigm = TAB_SIG.EXTR_TABLE().values();
+# 
+# epxx = tsigm['EPXX'];
+# epzz = tsigm['EPZZ'];
+# sixx = tsigm['SIXX'];
+# sizz = tsigm['SIZZ'];
+# epvp = tsigm['V1'];
+# edvp = tsigm['V2'];
+# indi = tsigm['V3'];
+#
+# co_sigm,co_epsi,co_vari,co_seuil,= [],[],[],[],;
+# 
+# # CHAMPS CINEMATIQUES
+# # _____________________________
+# co_sigm =Defi_Xmcourbe(courbe=co_sigm,
+#         X=epzz, Y=sizz,
+#         legend='SIZZ',
+#         color=1,);
+#         
+# co_sigm =Defi_Xmcourbe(courbe=co_sigm,
+#         X=epzz, Y=sixx,
+#         legend='SIXX',
+#         color=2,);
+#         
+# co_epsi =Defi_Xmcourbe(courbe=co_epsi,
+#         X=epzz, Y=epxx,
+#         legend='EPXX',
+#         color=1,);
+#         
+# co_epsi =Defi_Xmcourbe(courbe=co_epsi,
+#         X=epzz, Y=epvp,
+#         legend='EPVP',
+#         color=2,);
+#         
+# co_epsi =Defi_Xmcourbe(courbe=co_epsi,
+#         X=epzz, Y=edvp,
+#         legend='EDVP',
+#         color=3,);
+#         
+# co_vari =Defi_Xmcourbe(courbe=co_vari,
+#         X=epzz, Y=indi,
+#         legend='INDICATEUR PLASTIQUE',
+#         color=1,);
+#         
+# Courbes = [co_sigm,co_epsi,co_vari,co_seuil,];
+#            
+# Nom_Fichier= ['triax0d_sigm.agr','triax0d_epsi.agr','triax0d_vari.agr',];
+#   
+# unit=38
+# for c in range(len(Nom_Fichier)):
+# 
+#   DEFI_FICHIER(ACTION='ASSOCIER',
+#                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
+#                UNITE=unit,);
+#                   
+#   IMPR_FONCTION(FORMAT='XMGRACE',
+#               UNITE=unit,
+#               COURBE=Courbes[c]);
+#                   
+#   DEFI_FICHIER(ACTION='LIBERER',
+#                UNITE=unit,);
+
+FIN();

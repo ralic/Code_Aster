@@ -1,0 +1,109 @@
+
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+#
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# TITRE ESSAI TRIAXIAL DRAINE MONOTONE SUR SABLE D'HOSTUN - LOI DE MOHR-COULOMB, SIMU_POINT_MAT
+
+DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'))
+
+# modules mecaniques [kPa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+print 'young=',YOUNG,' /// nu=',POISSON
+
+# pression de preconsolidation [en kPa]
+PCO=-50.E+3
+
+#*******************************************************************
+#
+#                     INCREMENTS DE CHARGEMENT
+#
+#*******************************************************************
+
+depzz   =-.000001
+epzz_max=-.0003
+tfin    =100.
+
+
+#***********************************************************************
+#    ESSAI TRIAXIAL NON DRAINE CYCLIQUE
+#***********************************************************************
+SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
+                  MOHR_COULOMB=_F(
+                            PHI      = 33.,
+                            ANGDIL   = 27.,
+                            COHESION = 1.0E+3,),);
+
+TABTD = CO('TSIMU');
+
+CALC_ESSAI_GEOMECA(INFO=2,
+                   MATER=SOL,
+                   COMP_INCR=_F(RELATION='MOHR_COULOMB',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
+                                  ITER_GLOB_MAXI = 10,
+                                  ARRET = 'OUI',),
+                   #
+                   # Essai triaxial draine
+                   ESSAI_TD = _F(PRES_CONF   = PCO,
+                                 EPSI_IMPOSE = epzz_max, 
+                                 NB_INST     = 300,
+                                 TABLE_RESU  = TABTD),);
+
+IMPR_TABLE(TABLE=TABTD);
+
+# =============================================================================
+#
+#           TEST DES RESULTATS PAR RAPPORT A UNE SOLUTION ANALYTIQUE
+#
+# =============================================================================
+
+# Calcul de la solution analytique
+# ---------------------------------
+from Contrib.essai_triaxial import Triaxial_DR
+
+epzz,sizz,sixx,epsivp,epsidp, =\
+                Triaxial_DR(K,G,33.,27.,1.e+3,PCO,depzz,epzz_max)
+
+
+TEST_TABLE(NOM_PARA='SIG_LAT', TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA ='EPS_AXI',
+                     VALE     =-3.E-4,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-7,),
+           # Non-regression
+           VALE_CALC=-50000.,
+           # Reference
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=sixx[-1],);
+
+TEST_TABLE(NOM_PARA='SIG_AXI', TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA ='EPS_AXI',
+                     VALE     =-3.E-4,
+                     CRITERE  ='ABSOLU',
+                     PRECISION=1e-7,),
+           # Non-regression
+           VALE_CALC=-1.7328954160409E+05,
+           # Reference
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=sizz[-1],);
+
+FIN();
