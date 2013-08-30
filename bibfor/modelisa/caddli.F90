@@ -18,7 +18,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 #include "asterfort/char_impo_liai.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
-#include "asterfort/char_read_node.h"
+#include "asterfort/getnode.h"
 #include "asterfort/char_xfem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
@@ -89,7 +89,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     character(len=8) :: vale_func(n_max_cmp)
     character(len=16) :: cmp_name(n_max_cmp)
 !
-    integer :: i, ino, icmp, ier, nume_node
+    integer :: iocc, ino, icmp, ier, nume_node
     integer :: jdirec, jprnm, jnom, jcompt
     integer :: nbcmp, nbec, nbnoeu, nddli
     character(len=8) :: name_node, k8bid, nomg, model
@@ -183,13 +183,13 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! - Loop on factor keyword
 !
-    do i = 1, nddli
+    do iocc = 1, nddli
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLI.LIST_NODE'
-        call char_read_node(mesh, keywordfact, i, list_suffix, list_node, &
-                            nb_node)
+        call getnode(mesh, keywordfact, iocc, list_suffix, ' ', &
+                     list_node, nb_node)
 !
 ! ----- No nodes (empty groups)
 !
@@ -198,7 +198,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! ----- Detection of LIAISON
 !
-        call char_read_val(keywordfact, i, 'LIAISON', 'TEXT', val_nb_liai, &
+        call char_read_val(keywordfact, iocc, 'LIAISON', 'TEXT', val_nb_liai, &
                            val_r_liai, val_f_liai, val_c_liai, val_t_liai)
         l_liai = val_nb_liai.gt.0
 !
@@ -246,7 +246,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, i , vale_type, n_keyexcl, keywordexcl,  &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
                             n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real, &
                             vale_func, vale_cplx)
         l_ocmp = cmp_nb.gt.0

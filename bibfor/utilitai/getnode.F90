@@ -1,5 +1,5 @@
-subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
-                          nb_node )
+subroutine getnode(mesh, keywordfact, iocc, suffix, stop_void, &
+                   list_node, nb_node, model)
 !
     implicit none
 !
@@ -11,6 +11,7 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
+#include "asterfort/u2mesk.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -35,23 +36,43 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
     character(len=16), intent(in) :: keywordfact
     integer, intent(in)  :: iocc
     character(len=8), intent(in) :: suffix
+    character(len=1), intent(in) :: stop_void
     integer, intent(out) :: nb_node
     character(len=24), intent(in) :: list_node
+    character(len=8), intent(in), optional :: model
 !
 ! --------------------------------------------------------------------------------------------------
-!
-! Loads affectation
 !
 ! Read mesh affectation - Nodes 
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! Create list of elements:
+!  - read MAILLE/GROUP_MA/TOUT/NOEU_GROUP_NO keywords
+!  - remove by SANS_MAILLE/SANS_GROUP_MA/SANS_NOEUD/SANS_GROUP_NO keywords
+!  - can use <SUFFIX> to enhance keyword. For instance:
+!           suffix = '_1': GROUP_MA -> GROUP_MA_1 
+!                          MAILLE -> MAILLE_1 
+!                          SANS_GROUP_MA -> SANS_GROUP_MA_1 
+!                          SANS_MAILLE -> SANS_MAILLE_1 
+!                          GROUP_NO -> GROUP_NO_1 
+!                          NOEUD -> NOEUD_1 
+!                          SANS_GROUP_NO -> SANS_GROUP_NO_1 
+!                          SANS_NOEUD -> SANS_NOEUD_1 
+!           WARNING ->     TOUT -> TOUT  
+!  - can stop or alarm if no elements in final list
+!
 ! In  mesh         : name of mesh
 ! In  keywordfact  : factor keyword to read
 ! In  iocc         : factor keyword index in AFFE_CHAR_MECA
 ! In  suffix       : suffix for read
+! In  stop_void    : if nb_elem == 0
+!                      'F' - Error
+!                      'A' - Error
+!                      ' ' - Nothing
 ! In  list_node    : list of nodes read
 ! Out nb_node      : number of nodes read
+! In  model        : <optional> check elements belongs to model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +80,7 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
     character(len=16) :: typmcl(5)
     character(len=24) :: list_lect, list_excl
     character(len=24) :: keyword
+    character(len=8)  :: model_name
     integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: num_lect, num_excl
@@ -76,6 +98,8 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
     nb_node = 0
     nb_lect = 0
     nb_excl = 0
+    model_name = ' '
+    if (present(model)) model_name = model
 !
 ! - Read nodes
 ! 
@@ -110,7 +134,7 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
         typmcl(nb_mocl) = 'NOEUD'
     endif
     if (nb_mocl.ne.0) then
-        call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc ,&
+        call reliem(model_name, mesh, 'NU_NOEUD', keywordfact, iocc ,&
                     nb_mocl, moclm, typmcl, list_lect, nb_lect)
     endif
 !
@@ -179,6 +203,12 @@ subroutine char_read_node(mesh, keywordfact, iocc, suffix, list_node, &
             endif
         end do
         ASSERT(i_node.eq.nb_node)
+    endif
+!
+! - If no nodes
+!
+    if (stop_void.ne.' ' .and. nb_node .eq. 0) then
+        call u2mesk(stop_void,'UTILITY_4', 1, keywordfact)
     endif
 !
     call jedetr(list_lect)

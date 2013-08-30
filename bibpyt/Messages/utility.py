@@ -28,4 +28,11 @@ cata_msg = {
  Le contour dont on doit calculer l'aire n'est pas fermé.
 """),
 
+3 : _(u"""
+ Il n'y a aucun élément lors de la lecture du mot-clef facteur %(k1)s.
+"""),
+
+4 : _(u"""
+ Il n'y a aucun noeud lors de la lecture du mot-clef facteur %(k1)s.
+"""),
 }

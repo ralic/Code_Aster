@@ -8,7 +8,7 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/vetyma.h"
-#include "asterfort/char_read_elem.h"
+#include "asterfort/getelem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,8 +71,8 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
 !
 ! - Elements to apply
 !
-    call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem, &
-                        nb_elem)
+    call getelem(mesh, keywordfact, iocc, suffix, 'A', &
+                 list_elem, nb_elem)
     if (nb_elem .eq. 0) goto 99
 !
 ! - Check elements
@@ -85,7 +85,7 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
         endif
     enddo
 !
-! - Apply Neumann loads in <CARTE> 
+! - Apply Neumann loads in <CARTE>
 !
     do i_carte = 1, nb_carte
         if (nb_cmp(i_carte).ne.0) then

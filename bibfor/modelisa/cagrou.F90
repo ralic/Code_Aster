@@ -8,7 +8,7 @@ subroutine cagrou(load, mesh, vale_type)
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
-#include "asterfort/char_read_node.h"
+#include "asterfort/getnode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -124,7 +124,8 @@ subroutine cagrou(load, mesh, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CAGROU.LIST_NODE'
-        call char_read_node(mesh, keywordfact, iocc, list_suffix, list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+                     list_node, nb_node)
         if (nb_node .lt. 2) call u2mess('F', 'CHARGES2_82')
         call jeveuo(list_node, 'L', jlino)
 !

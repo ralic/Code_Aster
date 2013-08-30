@@ -26,8 +26,8 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 #include "asterfort/char_excl_keyw.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
-#include "asterfort/char_read_node.h"
-#include "asterfort/char_read_elem.h"
+#include "asterfort/getnode.h"
+#include "asterfort/getelem.h"
 #include "asterfort/char_xfem.h"
 !
 ! ======================================================================
@@ -77,12 +77,12 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     character(len=8) :: vale_func(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: i
-    integer :: nbnoeu,  jdirec, nbno
+    integer :: iocc
+    integer :: nbnoeu, jdirec
     integer :: idim, nume_node, jnorm, jtang, nfaci
     integer :: ibid,  ier, ndim, jcompt
     integer :: ino, jprnm, nbec
-    integer :: nbma, nbcmp, inom
+    integer :: nbcmp, inom
     real(kind=8) :: repe_defi(3)
     integer :: repe_type
     real(kind=8) :: coef_real_unit
@@ -90,6 +90,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     integer :: i_keyword, n_keyword
     character(len=24) :: list_node, list_elem
     integer :: jlino, jlima
+    integer :: nb_node, nb_elem
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
     character(len=8) :: model, nomg
@@ -146,7 +147,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     call char_excl_keyw(keywordfact, n_suffix, list_suffix, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
-! 
+!
     nomg = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
@@ -160,9 +161,9 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
     call wkvect('&&CAFACI.DIRECT', 'V V R', 3*nbnoeu, jdirec)
 !
 ! - Xfem fields
-! 
+!
     call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat, &
-                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)    
+                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
@@ -170,35 +171,37 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
 ! - Loop on factor keyword
 !
-    do i = 1, nfaci
+    do iocc = 1, nfaci
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CAFACI.LIST_NODE'
         list_elem = '&&CAFACI.LIST_ELEM'
-        call char_read_node(mesh, keywordfact, i, list_suffix, list_node, nbno)
-        call char_read_elem(mesh, keywordfact, i, list_suffix, list_elem, nbma)
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+                     list_node, nb_node)
+        call getelem(mesh, keywordfact, iocc, list_suffix, 'F', &
+                     list_elem, nb_elem)
         call jeveuo(list_node,'L',jlino)
         call jeveuo(list_elem,'L',jlima)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, i , vale_type, n_keyexcl, keywordexcl,  &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
                             n_max_keyword, n_keyword  ,keywordlist, nbterm, vale_real, &
                             vale_func, vale_cplx)
 !
 ! ----- Detection of DNOR, DTAN and others
 !
-        call char_read_val(keywordfact, i, 'DNOR', vale_type, val_nb_dnor, &
+        call char_read_val(keywordfact, iocc, 'DNOR', vale_type, val_nb_dnor, &
                            val_r_dnor, val_f_dnor, val_c_dnor, val_t_dnor)
         l_dnor = val_nb_dnor.gt.0
-        call char_read_val(keywordfact, i, 'DTAN', vale_type, val_nb_dtan, &
+        call char_read_val(keywordfact, iocc, 'DTAN', vale_type, val_nb_dtan, &
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
 !
 ! ----- Some verifications
-!  
+!
         if (ndim .eq. 3 .and. l_dtan) call u2mess('F', 'CHARGES2_63')
         if (vale_type .eq. 'FONC') then
             if (l_dnor .or. l_dtan) then
@@ -209,20 +212,20 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 ! ----- Normals and/or tangents
 !
         if (l_dnor) then
-            call canort(mesh, nbma, zi(jlima), ndim,&
-                        nbno, zi(jlino), 1)
+            call canort(mesh, nb_elem, zi(jlima), ndim,&
+                        nb_node, zi(jlino), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
         endif
         if (l_dtan) then
-            call canort(mesh, nbma, zi(jlima), ndim,&
-                        nbno, zi(jlino), 2)
+            call canort(mesh, nb_elem, zi(jlima), ndim,&
+                        nb_node, zi(jlino), 2)
             call jeveuo('&&CANORT.TANGENT', 'L', jtang)
         endif
 !
 ! ----- If DNOR exists
 !
         if (l_dnor) then
-            do ino = 1, nbno
+            do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
@@ -251,7 +254,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 ! ----- If DTAN exists
 !
         if (l_dtan) then
-            do ino = 1, nbno
+            do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
@@ -287,7 +290,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
 !
 ! --------- Linear relation
 !
-            do ino = 1, nbno
+            do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 call afddli(model, nbcmp, zk8(inom), nume_node, name_node, &

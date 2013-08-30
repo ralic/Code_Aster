@@ -16,13 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine char_read_mesh(mesh, keywordfact, iocc, suffix, list_node, &
-                              nb_node )
+    subroutine getnode(mesh, keywordfact, iocc, suffix, stop_void, &
+                       list_node, nb_node, model)
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywordfact
         integer, intent(in)  :: iocc
         character(len=8), intent(in) :: suffix
+        character(len=1), intent(in) :: stop_void
         integer, intent(out) :: nb_node
         character(len=24), intent(in) :: list_node
-    end subroutine char_read_mesh
+        character(len=8), intent(in), optional :: model
+    end subroutine getnode
 end interface

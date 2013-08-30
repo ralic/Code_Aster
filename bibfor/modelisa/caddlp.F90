@@ -10,7 +10,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
-#include "asterfort/char_read_node.h"
+#include "asterfort/getnode.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -157,7 +157,8 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! ----- Read mesh affectation
 !
         list_node = '&&CADDLP.LIST_NODE'
-        call char_read_node(mesh, keywordfact, iocc, list_suffix, list_node, nb_node)
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+                    list_node, nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Counting components

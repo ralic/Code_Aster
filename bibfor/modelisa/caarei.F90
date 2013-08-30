@@ -39,8 +39,8 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 #include "asterfort/char_excl_keyw.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_keyw.h"
-#include "asterfort/char_read_node.h"
-#include "asterfort/char_read_elem.h"
+#include "asterfort/getnode.h"
+#include "asterfort/getelem.h"
 #include "asterfort/char_xfem.h"
 !
 ! ======================================================================
@@ -91,9 +91,9 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=16) :: keywordlist(n_max_keyword)
 !
     integer :: jtang, jcompt, jdirec, jprnm
-    integer :: i, nume_node, ibid, ier
+    integer :: iocc, nume_node, ibid, ier
     integer :: ino, inom, idim
-    integer :: nbnoeu, narei, nbma, nbcmp, nbec, ndim, nbno
+    integer :: nbnoeu, narei, nbcmp, nbec, ndim
     real(kind=8) :: repe_defi(3)
     integer :: repe_type
     real(kind=8) :: coef_real_unit
@@ -101,6 +101,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     integer :: i_keyword, n_keyword
     character(len=24) :: list_node, list_elem
     integer :: jlino, jlima
+    integer :: nb_node, nb_elem
     character(len=2) :: lagr_type
     character(len=4) :: coef_type
     character(len=8) :: model, nomg
@@ -183,26 +184,28 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
 ! - Loop on factor keyword
 !
-    do i = 1, narei
+    do iocc = 1, narei
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CAAREI.LIST_NODE'
         list_elem = '&&CAAREI.LIST_ELEM'
-        call char_read_node(mesh, keywordfact, i, list_suffix, list_node, nbno)
-        call char_read_elem(mesh, keywordfact, i, list_suffix, list_elem, nbma)
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+                     list_node, nb_node)
+        call getelem(mesh, keywordfact, iocc, list_suffix, 'F', &
+                     list_elem, nb_elem)
         call jeveuo(list_node,'L',jlino)
         call jeveuo(list_elem,'L',jlima)
 !
 ! ----- Read keywords and their values except for affectation
 !
-        call char_read_keyw(keywordfact, i , vale_type, n_keyexcl, keywordexcl,  &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
                             n_max_keyword, n_keyword, keywordlist, nbterm, vale_real, &
                             vale_func, vale_cplx)
 !
 ! ----- Detection of DTAN and others
 !
-        call char_read_val(keywordfact, i, 'DTAN', vale_type, val_nb_dtan, &
+        call char_read_val(keywordfact, iocc, 'DTAN', vale_type, val_nb_dtan, &
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
@@ -210,14 +213,14 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 ! ----- Tangents
 !
         if (l_dtan) then
-            call catang(mesh, nbma, zi(jlima), nbno, zi(jlino))
+            call catang(mesh, nb_elem, zi(jlima), nb_node, zi(jlino))
             call jeveuo('&&CATANG.TANGENT', 'L', jtang)
         endif
 !
 ! ----- If DTAN exists
 !
         if (l_dtan) then
-            do ino = 1, nbno
+            do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 do idim = 1, ndim
@@ -253,7 +256,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 !
 ! --------- Linear relation
 !
-            do ino = 1, nbno
+            do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 call afddli(model, nbcmp, zk8(inom), nume_node, name_node, &

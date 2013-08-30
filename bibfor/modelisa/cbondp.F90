@@ -7,7 +7,7 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 #include "asterc/getvr8.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/char_read_elem.h"
+#include "asterfort/getelem.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -101,10 +101,10 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
 !
         list_elem = '&&CBONDP.LIST_ELEM'
         suffix = ' '
-        call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem, &
-                            nb_elem)
-        call jeveuo(list_elem,'L',j_elem)
+        call getelem(mesh, keywordfact, iocc, suffix, 'A', &
+                     list_elem, nb_elem)
         if (nb_elem.eq.0) goto 100
+        call jeveuo(list_elem,'L',j_elem)
 !
 ! ----- Get wave function
 !

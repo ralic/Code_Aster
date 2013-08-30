@@ -9,7 +9,7 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_pair_node.h"
-#include "asterfort/char_read_node.h"
+#include "asterfort/getnode.h"
 #include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz12d.h"
@@ -165,12 +165,14 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
 ! ----- Read nodes - First list
 !
         suffix = '_1'
-        call char_read_node(mesh, keywordfact, iocc, suffix, list_node_i1, nb_node_1)
+        call getnode(mesh, keywordfact, iocc, suffix, 'F', &
+                     list_node_i1, nb_node_1)
 !
 ! ----- Read nodes - Second list
 !
         suffix = '_2'
-        call char_read_node(mesh, keywordfact, iocc, suffix, list_node_i2, nb_node_2)
+        call getnode(mesh, keywordfact, iocc, suffix, 'F', &
+                     list_node_i2, nb_node_2)
 !
         if (nb_node_1 .ne. nb_node_2) call u2mess('F', 'CHARGES2_8')
         nb_node = nb_node_1
@@ -220,6 +222,6 @@ subroutine calicp(load, mesh, ligrmo, vale_type)
     call jedetr(list_pair)
 !
 999 continue
-    
+
     call jedema()
 end subroutine

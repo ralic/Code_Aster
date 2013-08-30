@@ -7,7 +7,7 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/char_read_elem.h"
+#include "asterfort/getelem.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_read_vect.h"
 #include "asterfort/jedema.h"
@@ -84,7 +84,7 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
 ! - Initializations
 !
-    ASSERT(vale_type.eq.'REEL') 
+    ASSERT(vale_type.eq.'REEL')
     list_elem = '&&CAROTA.LISTELEM'
     suffix    = ' '
 !
@@ -98,10 +98,10 @@ subroutine carota(load, ligrmo, mesh, vale_type)
 !
     do iocc = 1, nrota
 !
-! ----- Elements 
+! ----- Elements
 !
-        call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem, &
-                            nb_elem)
+        call getelem(mesh, keywordfact, iocc, suffix, 'F', &
+                     list_elem, nb_elem)
         call jeveuo(list_elem, 'L', j_elem)
 !
 ! ----- Get speed

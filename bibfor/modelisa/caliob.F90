@@ -31,7 +31,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char_excl_keyw.h"
-#include "asterfort/char_read_node.h"
+#include "asterfort/getnode.h"
 #include "asterfort/char_read_keyw.h"
 !
 ! ======================================================================
@@ -81,11 +81,11 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
     character(len=16) :: keywordlist(n_max_keyword)
 !
     character(len=24) :: list_node
-    integer :: jlino
+    integer :: jlino, nb_node
     integer :: ier, ino
-    integer :: nbno, ndim, nbec
+    integer :: ndim, nbec
     integer :: nliai, nume_node
-    integer :: i_angle, i_keyword, i, i_direct
+    integer :: i_angle, i_keyword, iocc, i_direct
     real(kind=8) :: coefr, val_r, direct(3)
     character(len=8) :: ddl, coeff, val_f
     complex(kind=8) :: coefc, val_c
@@ -147,21 +147,21 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 ! - Loop on factor keyword
 !
-    do i = 1, nliai
+    do iocc = 1, nliai
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CALIOB.LIST_NODE'
-        call char_read_node(mesh, keywordfact, i, list_suffix, list_node, nbno)
+        call getnode(mesh, keywordfact, iocc, list_suffix, 'F', &
+                     list_node, nb_node)
         call jeveuo(list_node, 'L', jlino)
-        write(6,*) 'NBNO: ',nbno
 !
 ! ----- Local orientation
 !
         angl_naut(1) = zero
         angl_naut(2) = zero
         angl_naut(3) = zero
-        call getvr8(keywordfact, 'ANGL_NAUT', i, iarg, 3,&
+        call getvr8(keywordfact, 'ANGL_NAUT', iocc, iarg, 3,&
                     angl_naut, n_angle)
         do i_angle= 1, min(3, abs(n_angle))
             angl_naut(i_angle) = rdgd*angl_naut(i_angle)
@@ -170,7 +170,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, i , vale_type, n_keyexcl, keywordexcl,  &
+        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,  &
                             n_max_keyword, n_keyword  ,keywordlist, ddlimp, valimr, &
                             valimf, valimc)
 !
@@ -211,7 +211,7 @@ subroutine caliob(load, mesh, ligrmo, vale_type)
 !
 ! --------- Affect in direction
 !
-            do ino = 1, nbno
+            do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 call afrela(coefr, coefc, ddl, name_node, ndim,&

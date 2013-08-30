@@ -7,7 +7,7 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/char_read_elem.h"
+#include "asterfort/getelem.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/infniv.h"
@@ -118,15 +118,15 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 ! ----- Elements for hole
 !
         suffix = '_INT'
-        call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem_hole, &
-                            nb_elem_hole)
+        call getelem(mesh, keywordfact, iocc, suffix, 'F', &
+                     list_elem_hole, nb_elem_hole)
         call jeveuo(list_elem_hole, 'L', j_elem_hole)
 !
 ! ----- Elements for section
 !
         suffix = ' '
-        call char_read_elem(mesh, keywordfact, iocc, suffix, list_elem_sect, &
-                            nb_elem_sect)
+        call getelem(mesh, keywordfact, iocc, suffix, 'F', &
+                     list_elem_sect, nb_elem_sect)
         call jeveuo(list_elem_sect, 'L', j_elem_sect)
 !
 ! ----- Create <LIGREL>
