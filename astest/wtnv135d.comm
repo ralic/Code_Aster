@@ -317,7 +317,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOEUD='NO8',
                   NOM_CMP='DX',
                   VALE_CALC=0.030197531960783,
-                  TOLE_MACHINE=1.E-5            # ajustement pour clap0f0q
+                  TOLE_MACHINE=5.E-4            # ajustement pour clap0f0q
                   ),
           )
 
