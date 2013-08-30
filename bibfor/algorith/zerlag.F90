@@ -1,4 +1,4 @@
-subroutine zerlag(typc, vectr, vectz, nbddl, ideeq)
+subroutine zerlag(nbddl, ideeq, vectr, vectz )
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -24,21 +24,17 @@ subroutine zerlag(typc, vectr, vectz, nbddl, ideeq)
 !   |_________________________________________________________________|
 !
 !
-!   EXEMPLES : CALL ZERLAG ('R', ZR(JVECT), CBID     , NEQ, ZI(JDEEQ))
-!              CALL ZERLAG ('C', RBID     , ZC(JVECT), NEQ, ZI(JDEEQ))
+!   EXEMPLES : call zerlag (neq, zi(jdeeq), zr(jvect))
+!              call zerlag (neq, zi(jdeeq), vectz=zc(jvect))
 !
 !                     DESCRIPTIVE DES VARIABLES
 !   ___________________________________________________________________
-!  | IN > TYPC   : LE TYPE (REEL :'R' OU COMPLEXE 'C') DES CHAMPS  [K1]|
-!  |               A TRAITER                                           |
-!   ___________________________________________________________________
+!  | IN > NBDDL  : NOMBRE DE DDL PHYSIQUES / TAILLE DU VECTEUR      [I]|
+!  | IN > IDEEQ  : VECTEUR DES DESCRIPTEURS D'EQUATIONS DU NUME_DDL [I]|
 !  | IN > VECTR  : VECTEUR REEL DE TAILLE NBDDL A TRAITER          [R8]|
 !  |OUT <                      (SI COMPL.EQ.0 )                        |
 !  | IN > VECTZ  : VECTEUR COMPLEXE DE TAILLE NBDDL A TRAITER     [C16]|
 !  |OUT <                      (SI COMPL.EQ.1 )                        |
-!   ___________________________________________________________________
-!  | IN > NBDDL  : NOMBRE DE DDL PHYSIQUES / TAILLE DU VECTEUR      [I]|
-!  | IN > IDEEQ  : VECTEUR DES DESCRIPTEURS D'EQUATIONS DU NUME_DDL [I]|
 !   ___________________________________________________________________
 !
 #include "jeveux.h"
@@ -49,9 +45,9 @@ subroutine zerlag(typc, vectr, vectz, nbddl, ideeq)
 !
 !     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
 !
-    integer :: nbddl, ideeq(2, nbddl)
-    real(kind=8) :: vectr(nbddl)
-    complex(kind=8) :: vectz(nbddl)
+    integer :: nbddl, ideeq(2*nbddl)
+    real(kind=8), intent(out), optional :: vectr(nbddl)
+    complex(kind=8), intent(out), optional :: vectz(nbddl)
     character(len=1) :: typc
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
@@ -64,17 +60,18 @@ subroutine zerlag(typc, vectr, vectz, nbddl, ideeq)
 !  ____________________________________________________________________
 !
 !     1.1 - CAS REEL
-    if (typc .eq. 'R') then
-        do 10 i = 1, nbddl
-            ityp = ideeq(2,i)
+    if (present(vectr)) then
+        do i = 1, nbddl
+            ityp = ideeq(2*i)
             if (ityp .le. 0) vectr(i)=0.d0
-10      continue
-    else
+        end do
+    endif    
+    if (present(vectz)) then
 !     1.2 - CAS COMPLEXE
-        do 20 i = 1, nbddl
-            ityp = ideeq(2,i)
+        do i = 1, nbddl
+            ityp = ideeq(2*i)
             if (ityp .le. 0) vectz(i)=dcmplx(0.d0,0.d0)
-20      continue
+        end do 
     endif
 !  ____________________________________________________________________
 !

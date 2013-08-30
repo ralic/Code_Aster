@@ -231,7 +231,11 @@ subroutine copmod(basemo, champ, neq, numer, nbmode,&
 !       3.1.6 - ANNULER LES DDL DE LAGRANGE S'IL S'AGIT DES CHAMPS DE
 !               DEPLACEMENTS
         if (champ .eq. 'DEPL') then
-            call zerlag(typc, bmodr((i-1)*neq+1), bmodz((i-1)*neq+1), neq, zi(jdeeq))
+           if (typc .ne. 'C') then
+              call zerlag(neq, zi(jdeeq), vectr=bmodr((i-1)*neq+1))
+           else 
+              call zerlag(neq, zi(jdeeq), vectz=bmodz((i-1)*neq+1))
+           endif   
         endif
 !
 10  end do

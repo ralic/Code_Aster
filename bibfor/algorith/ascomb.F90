@@ -40,7 +40,7 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
 #include "asterfort/wkvect.h"
     character(len=1) :: typres
     character(len=8) :: nompar
-    real(kind=8) :: valpar
+    real(kind=8) :: valpar, tval(1)
     character(len=19) :: lischa
     character(len=*) :: vecelz
     character(len=19) :: cnchar
@@ -126,7 +126,8 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
                 valres = 1.d0
                 if (nomfct .ne. ' ') then
                     ASSERT(typfct(7:10).eq.'REEL')
-                    call fointe('F', nomfct, 1, nompar, valpar,&
+                    tval(1) = valpar
+                    call fointe('F', nomfct, 1, nompar, tval,&
                                 valres, iret)
                 endif
             else
@@ -185,12 +186,13 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar,&
                 calpha = exp(dcmplx(0.d0,phase*dgrd))
                 if (npuis .ne. 0) calpha = calpha*omega**npuis
                 if (nomfct .ne. ' ') then
+                    tval(1)=valpar
                     if (typfct(7:10) .eq. 'REEL') then
-                        call fointe('F', nomfct, 1, nompar, valpar,&
+                        call fointe('F', nomfct, 1, nompar, tval,&
                                     valre, iret)
                         valim = 0.d0
                     else if (typfct(7:10).eq.'COMP') then
-                        call fointc('F', nomfct, 1, nompar, valpar,&
+                        call fointc('F', nomfct, 1, nompar, tval,&
                                     valre, valim, iret)
                     else
                         ASSERT(.false.)

@@ -82,7 +82,7 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !-----------------------------------------------------------------------
     integer :: i, ibid, jvectn, jvectu, jvectv
     integer :: jcnrd, jcnrl, jcnrv, iret, icesd, icesl, icesv
-    integer :: tneces, tdisp2, jvecno, n, k
+    integer :: tneces, tdisp2(1), jvecno, n, k
     integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, cnbno, ibidno, kwork, somnow, inop
     integer :: nbma, adrma, jtypma
@@ -154,9 +154,9 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
 !
     tneces = 209*nbordr*2
     call jedisp(1, tdisp2)
-    tdisp2 = (tdisp2 * loisem()) / lor8em()
-    if (tdisp2 .lt. tneces) then
-        vali (1) = tdisp2
+    tdisp2(1) = (tdisp2(1) * loisem()) / lor8em()
+    if (tdisp2(1) .lt. tneces) then
+        vali (1) = tdisp2(1)
         vali (2) = tneces
         call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
                     vali, 0, 0.d0)

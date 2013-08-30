@@ -16,7 +16,6 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
 !
 !     SUBROUTINE ARPACK ECRIVANT DES VECTEURS DE COMPLEXE.
 !-----------------------------------------------------------------------
@@ -27,12 +26,13 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !  Usage:      CALL ZVOUT (LOUT, N, CX, IDIGIT, IFMT)
 !
 !  Arguments
-!     N      - Length of array CX.  (Input)
-!     CX     - Complex*16 array to be printed.  (Input)
-!     IFMT   - Format to be used in printing array CX.  (Input)
-!     IDIGIT - Print up to IABS(IDIGIT) decimal digits per number.  (In)
-!              If IDIGIT .LT. 0, printing is done with 72 columns.
-!              If IDIGIT .GT. 0, printing is done with 132 columns.
+!     lout   - logical unit number. (Input)
+!     n      - Length of array cx.  (Input)
+!     cx     - Complex*16 array to be printed.  (Input)
+!     ifmt   - Format to be used in printing array cx.  (Input)
+!     idigit - Print up to iabs(idigit) decimal digits per number.  (In)
+!              if idigit .lt. 0, printing is done with 72 columns.
+!              if idigit .gt. 0, printing is done with 132 columns.
 !
 !-----------------------------------------------------------------------
 ! ASTER INFORMATION
@@ -42,9 +42,9 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !-----------------------------------------------------------------------
     implicit none
 !     ... SPECIFICATIONS FOR ARGUMENTS
-    integer :: n, idigit, lout
-    complex(kind=8) :: cx(*)
-    character(len=*) :: ifmt
+    integer, intent(in) :: n, idigit, lout
+    complex(kind=8), intent(in) :: cx(*)
+    character(len=*), intent(in) :: ifmt
 !
 !     ... SPECIFICATIONS FOR LOCAL VARIABLES
     integer :: i, ndigit, k1, k2, lll

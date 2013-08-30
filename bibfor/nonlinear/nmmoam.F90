@@ -71,7 +71,6 @@ subroutine nmmoam(sdammz, nbmoda)
     character(len=24) :: matric, nomcha
     character(len=24) :: sdammo
     real(kind=8) :: pi, r8bid
-    complex(kind=8) :: cbid
     integer :: iret, iam, imode, vali(3), iadrif
     integer :: na, nb, n, nm
     integer :: nbmd, neq, nbmax, nbamor
@@ -200,10 +199,10 @@ subroutine nmmoam(sdammz, nbmoda)
                     iret)
         call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
         call dcopy(neq, zr(jval), 1, zr(ltvec), 1)
-        call zerlag('R', zr(ltvec), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
         call mrmult('ZERO', lmat, zr(ltvec), zr(jbasmo+(imode-1)*neq), 1,&
                     .true.)
-        call zerlag('R', zr(jbasmo+(imode-1)*neq), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
 11  end do
 !
 ! --- MENAGE

@@ -27,7 +27,7 @@ subroutine jecroc(nomlu)
     common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
-    integer :: icre, iret, jctab, itab
+    integer :: icre, iret, jctab, itab(1)
     character(len=8) :: nume
 !-----------------------------------------------------------------------
     integer :: ibacol, l

@@ -97,7 +97,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !-----------------------------------------------------------------------
     integer :: i, ia, iarchi, ib, ibid, ier
-    integer :: if, ife, im, im1, ind, ipas, ipm
+    integer :: if, ife, im, im1, ind, ipas, ipm(1)
     integer :: iret, isto1, jacce, jdepl, jfext, jm, jmass
     integer :: jtra1, jtra2, jtra3, jtra4, jtra5, jtra6, jvite
     integer :: n100, nbbloc, nbexci, nbmod1, nbmode, nbpas, nbpasb
@@ -159,7 +159,7 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
 !     --- A-T-ON ASSEZ DE PLACE POUR CREER LE VECTEUR "FEXT" ? ---
     call jedisp(1, ipm)
     ndim = nbmode * nbpas
-    if (ndim .le. ipm) then
+    if (ndim .le. ipm(1)) then
 !        --- ON ALLOUE LE VECTEUR ---
         nbbloc = 1
         nbpasb = nbpas
@@ -167,8 +167,8 @@ subroutine mdnewm(nbpas, dt, nbmode, pulsat, pulsa2,&
         call wkvect('&&MDNEWM.FEXT', 'V V R8', ndim, jfext)
     else
 !        --- DECOUPAGE EN BLOC ---
-        nbbloc = ndim / ipm
-        nbpasb = ipm / nbmode
+        nbbloc = ndim / ipm(1)
+        nbpasb = ipm(1) / nbmode
         nbpasf = nbpas - ( nbbloc * nbpasb )
         nbbloc = nbbloc + 1
         ndim = nbmode * nbpasb

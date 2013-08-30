@@ -56,7 +56,6 @@ subroutine nmmuap(sddyna)
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
     integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
     integer :: iarg
-    complex(kind=8) :: cbid
 !
 ! ---------------------------------------------------------------------
 !
@@ -133,7 +132,7 @@ subroutine nmmuap(sddyna)
 !
 ! --- MISE A ZERO DES DDL DE LAGRANGE
 !
-            call zerlag('R', zr(jpsdel+(i-1)*neq), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+(i-1)*neq))
         endif
 10  end do
 !

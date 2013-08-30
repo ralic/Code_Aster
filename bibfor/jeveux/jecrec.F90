@@ -31,7 +31,7 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu,&
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
 !-----------------------------------------------------------------------
-    integer :: iadcol, iadnum, icl, ilongu, ipgcex, jcara, jdate
+    integer :: iadcol, iadnum, icl, ilongu(1), ipgcex, jcara, jdate
     integer :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlongu
     integer :: jlono, jltyp, jluti, jmarq, jnom, jorig, jrnom
     integer :: jtype, la, lenk, n, nb, nbl

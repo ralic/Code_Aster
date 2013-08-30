@@ -176,7 +176,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     real(kind=8) :: valr(2)
     logical :: gasymr, gsyrie, ener
     integer :: iarg
-    complex(kind=8) :: cbid
 !
     data nomddl/'        '/
     data vitini/'&&VITINI'/
@@ -321,7 +320,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
             call trmult(modsta, iexci, mailla, neq, iddeeq,&
                         zr(jpsdel+ (iexci-1)*neq))
 !     --- MISE A ZERO DES DDL DE LAGRANGE
-            call zerlag('R', zr(jpsdel+ (iexci-1)*neq), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+ (iexci-1)*neq))
         else
             zi(jmltap+iexci-1) = 0
         endif

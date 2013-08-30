@@ -224,7 +224,7 @@ subroutine op0072()
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-            call zerlag('R', zr(idvect), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvect))
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !
@@ -258,7 +258,7 @@ subroutine op0072()
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-            call zerlag('R', zr(idvec1), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvec1))
 !
 !-------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
@@ -269,7 +269,7 @@ subroutine op0072()
                 call dcopy(neq, zr(idbase+(j-1)*neq), 1, zr(idvec2), 1)
 ! --------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-                call zerlag('R', zr(idvec2), cbid, neq, zi(iddeeq))
+                call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
 !
 ! --------- PRODUIT SCALAIRE MODE(I)*MODE(J)
 !
@@ -288,7 +288,7 @@ subroutine op0072()
 !
 ! ------- MISE A ZERO DES DDLS DE LAGRANGE
 !
-            call zerlag('R', zr(idvec1), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvec1))
 !
 ! ------- PRODUIT SCALAIRE VECTASS * MODE
 !

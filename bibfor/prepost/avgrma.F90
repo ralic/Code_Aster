@@ -80,7 +80,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !-----------------------------------------------------------------------
     integer :: jvectn, jvectu, jvectv, nbvecm
     integer :: jcerd, jcerl, jcerv, iret, icesd, icesl, icesv, ibid
-    integer :: tneces, tdisp2, jvecpg, n, k
+    integer :: tneces, tdisp2(1), jvecpg, n, k
     integer :: ideb, dim, j, ngam, tab2(18), ifin
     integer :: l, nbpg, nbpgp, kwork, sompgw, imap
     integer :: ipg
@@ -147,9 +147,9 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
 !
     tneces = 209*nbordr*2
     call jedisp(1, tdisp2)
-    tdisp2 = (tdisp2 * loisem()) / lor8em()
-    if (tdisp2 .lt. tneces) then
-        vali (1) = tdisp2
+    tdisp2(1) = (tdisp2(1) * loisem()) / lor8em()
+    if (tdisp2(1) .lt. tneces) then
+        vali (1) = tdisp2(1)
         vali (2) = tneces
         call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
                     vali, 0, 0.d0)

@@ -135,7 +135,7 @@ subroutine jelihd(nomf, fichdf, clas)
     equivalence     (ik32,k32),(ik8,k8)
     integer :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
     integer :: i, k, ktemp1, ktemp2, lon, lon2, ic, lcarao, iadrs, lonok
-    integer :: longj, itab, jtab, iconv, nblma2
+    integer :: longj, itab(1), jtab, iconv, nblma2
     equivalence     (igenr,genr),(itype,type),&
      &                (idocu,docu),(iorig,orig),(irnom,rnom)
 !     ------------------------------------------------------------------

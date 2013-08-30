@@ -71,7 +71,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 ! PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 !-----------------------------------------------------------------------
     integer :: ibid, ierd, lordr, jordr, nbordr, ndim, iret, jcesd
-    integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp, jrwork, tpaq
+    integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
     integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax, jnbpaq
     integer :: nmaini, nbmap, tspaq, iordr, jad
     integer :: jsigv, jsigd, jsigl, imap, nbpg, ipg, icmp, iret1
@@ -280,9 +280,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !    JEDISP REND LA DIMENSION EN ENTIERS, ON LA CONVERTIT A L'AIDE
 !    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS.
     call jedisp(1, tdisp)
-    tdisp = (tdisp / lor8em()) * loisem()
-    tdisp = int(0.6d0*tdisp)
-    call wkvect('&&PAQMAI.RWORK', 'V V R', tdisp, jrwork)
+    tdisp(1) = (tdisp(1) / lor8em()) * loisem()
+    tdisp(1) = int(0.6d0*tdisp(1))
+    call wkvect('&&PAQMAI.RWORK', 'V V R', tdisp(1), jrwork)
 !
 !       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
 !      &     FORDEF )THEN
@@ -295,7 +295,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !     CHOSE QUE DANS paqnoe.f PARCE QUE BORMAX EST NATURELLEMENT
 !     SURDIMENSIONNEE CAR NBMA TIENT COMPTE DES MAILLES NON VOLUMIQUES.
     bormax = nbma*nbpgmx*nbordr*nbcmp
-    val1 = dble(tdisp)/dble(bormax)
+    val1 = dble(tdisp(1))/dble(bormax)
 !
     if (val1 .lt. 1.0d0) then
         nbpmax = int(1.0d0/val1) + 1
@@ -320,7 +320,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
         tpaq = tpaq + zi(jnbpg - 1 + ima)*nbordr*nbcmp
         nmapaq = nmapaq + 1
 !
-        if (tpaq .lt. tdisp) then
+        if (tpaq .lt. tdisp(1)) then
             if (ima .eq. nbma) then
                 numpaq = numpaq + 1
                 zi(jnbpaq + (numpaq-1)*4) = numpaq
@@ -330,8 +330,8 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                 nbpaq = numpaq
             endif
 !
-        else if (( tpaq .ge. tdisp ) .and. (ima .lt. 3)) then
-            vali (1) = tdisp
+        else if (( tpaq .ge. tdisp(1) ) .and. (ima .lt. 3)) then
+            vali (1) = tdisp(1)
             vali (2) = tpaq
             call u2mesg('F', 'PREPOST5_67', 0, ' ', 2,&
                         vali, 0, 0.d0)
@@ -340,7 +340,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
 !    DU NOMBRE DE MAILLE DE CHAQUE PAQUET ET DU NOMBRE DE PAQUET.
 !
-        else if (( tpaq .ge. tdisp ) .and. (ima .gt. 2)) then
+        else if (( tpaq .ge. tdisp(1) ) .and. (ima .gt. 2)) then
 ! ON RECULE DE DEUX MAILLES POUR ETRE SUR DE NE PAS DEBORDER DU VECTEUR
 ! DE TRAVAIL (JRWORK).
 !
@@ -385,7 +385,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
     nmemo = 0
 !
     do 200 numpaq = 1, nbpaq
-        call jerazo('&&PAQMAI.RWORK', tdisp, 1)
+        call jerazo('&&PAQMAI.RWORK', tdisp(1), 1)
         tpaq = zi(jnbpaq + (numpaq-1)*4 + 1)
         nmaini = zi(jnbpaq + (numpaq-1)*4 + 2)
         nbmap = zi(jnbpaq + (numpaq-1)*4 + 3)
@@ -623,7 +623,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
 !
         if (nomcri(1:11) .eq. 'VMIS_TRESCA') then
             nomopt = 'DOMA_ELGA'
-            call vampli(zr(jrwork), tdisp, zi(jnbpg), nbpgt, nbordr,&
+            call vampli(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr,&
                         nmaini, nbmap, tspaq, nomopt, cesr)
             goto 200
         endif
@@ -634,7 +634,7 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
                         nomcri, nomfor, grdvie, forvie, cesr)
 !
         else if (typcha .eq. 'NON_PERIODIQUE') then
-            call avgrma(zr(jrwork), tdisp, zi(jnbpg), nbpgt, nbordr,&
+            call avgrma(zr(jrwork), tdisp(1), zi(jnbpg), nbpgt, nbordr,&
                         nmaini, nbmap, numpaq, tspaq, nomcri,&
                         nomfor, grdvie, forvie, fordef, proaxe,&
                         cesr)

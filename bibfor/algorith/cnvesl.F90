@@ -42,7 +42,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
     character(len=1) :: typres
     character(len=8) :: nompar
     integer :: neq
-    real(kind=8) :: valpar
+    real(kind=8) :: valpar, tval(1)
 !
 ! ----------------------------------------------------------------------
 !
@@ -124,12 +124,13 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar,&
             valre = 1.d0
             valim = 0.d0
             if (nomfct .ne. ' ') then
+                tval(1)=valpar
                 if (typfct(7:10) .eq. 'REEL') then
-                    call fointe('F', nomfct, 1, nompar, valpar,&
+                    call fointe('F', nomfct, 1, nompar, tval,&
                                 valre, iret)
                     valim = 0.d0
                 else if (typfct(7:10).eq.'COMP') then
-                    call fointc('F', nomfct, 1, nompar, valpar,&
+                    call fointc('F', nomfct, 1, nompar, tval,&
                                 valre, valim, iret)
                 else
                     ASSERT(.false.)

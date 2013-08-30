@@ -34,7 +34,7 @@ subroutine jeexin(nomlu, iret)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: ibacol, iblong, ibnum, ic, icre, id, ilong
-    integer :: itab, ixlong, ixnom, ixnum, jcara, jctab, jdate
+    integer :: itab(1), ixlong, ixnom, ixnum, jcara, jctab, jdate
     integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
     integer :: jmarq, n, nuti
 !-----------------------------------------------------------------------

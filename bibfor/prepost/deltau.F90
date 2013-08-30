@@ -81,7 +81,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
     integer :: j, kwork, n, jcerd, jcerl, jcerv, jad
     integer :: iret, imap, icesd, icesl, icesv, ibid
-    integer :: ipg, tneces, tdisp, jvecpg, jvectn
+    integer :: ipg, tneces, tdisp(1), jvecpg, jvectn
     integer :: jvectu, jvectv, ngam, dim, tab2(18)
     integer :: nbpg, sompgw, nbpgp, l, jdtaum, jresun
     integer :: icmp, vali(2)
@@ -145,9 +145,9 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 !
     tneces = 209*nbordr*2
     call jedisp(1, tdisp)
-    tdisp = (tdisp * loisem()) / lor8em()
-    if (tdisp .lt. tneces) then
-        vali (1) = tdisp
+    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
+    if (tdisp(1) .lt. tneces) then
+        vali (1) = tdisp(1)
         vali (2) = tneces
         call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
                     vali, 0, 0.d0)

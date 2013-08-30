@@ -154,7 +154,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 ! --------- CALCUL PRODUIT MATRICE*MODE I
                 call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
                             .true.)
-                call zerlag('R', zr(idvec2), cbid, neq, zi(iddeeq))
+                call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
                 do 20 j = nbj, i
@@ -189,7 +189,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
             ASSERT(nbj.eq.1)
             call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), zr(idvec2), 1,&
                         .true.)
-            call zerlag('R', zr(idvec2), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
             do 50 j = 1, nueq
                 pij=ddot(neq,zr(idbase+(j-1)*neq),1,zr(idvec2),1)
                 if (j .le. i) then

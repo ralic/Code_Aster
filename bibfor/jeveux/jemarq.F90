@@ -43,7 +43,7 @@ subroutine jemarq()
     real(kind=8) :: svuse, smxuse
     common /statje/  svuse,smxuse
 ! ----------------------------------------------------------------------
-    integer :: iadma, iadrs, lsi, ktempo(2)
+    integer :: iadma(1), iadrs, lsi, ktempo(2)
 ! ----------------------------------------------------------------------
     if (kdesma(1) .eq. 0) then
 !

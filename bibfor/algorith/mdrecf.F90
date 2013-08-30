@@ -89,7 +89,6 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     integer :: imodco, inum, iret, jdepl, jdrif, jmod, jordr
     integer :: jvale, l1, lprol, m1, n1, n2, n3
     integer :: n4, n5, na, nbv, nf, nm
-    complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -273,7 +272,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call jelibe(chamno//'.VALE')
 !
 !           --- MISE A ZERO DES DDL DE LAGRANGE
-                call zerlag('R', zr(jpsdel+(i-1)*neq), cbid, neq, zi( iddeeq))
+                call zerlag(neq, zi( iddeeq), vectr=zr(jpsdel+(i-1)*neq))
 !
             else
                 ASSERT(.false.)

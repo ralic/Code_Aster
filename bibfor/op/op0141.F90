@@ -352,7 +352,7 @@ subroutine op0141()
             if (matr .ne. ' ') then
                 call mrmult('ZERO', imatra, zr(idbas1+(i-1)*neq), zr(idvec1), 1,&
                             .true.)
-                call zerlag('R', zr(idvec1), cbid, neq, zi(iddeeq))
+                call zerlag(neq, zi(iddeeq), vectr=zr(idvec1))
             else
                 call dcopy(neq, zr(idbas1+(i-1)*neq), 1, zr(idvec1), 1)
             endif
@@ -367,7 +367,7 @@ subroutine op0141()
                 if (matr .ne. ' ') then
                     call mrmult('ZERO', imatra, zr(idbas2+(j-1)*neq), zr(idvec2), 1,&
                                 .true.)
-                    call zerlag('R', zr(idvec2), cbid, neq, zi( iddeeq))
+                    call zerlag(neq, zi( iddeeq), vectr=zr(idvec2))
                 else
                     call dcopy(neq, zr(idbas2+(j-1)*neq), 1, zr(idvec2), 1)
                 endif
@@ -378,7 +378,7 @@ subroutine op0141()
                     call vdiff(neq, zr(idbas1+(i-1)*neq), zr(idbas2+(j- 1)*neq), zr(idbas3))
                     call mrmult('ZERO', imatra, zr(idbas3), zr(idvec3), 1,&
                                 .true.)
-                    call zerlag('R', zr(idvec3), cbid, neq, zi( iddeeq))
+                    call zerlag(neq, zi( iddeeq), vectr=zr(idvec3))
 !
                     pij = abs(ddot( neq,zr(idbas3) ,1, zr(idvec3),1))
 !

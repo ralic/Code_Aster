@@ -212,7 +212,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !
     integer :: i, iend, istart, j, jj, kplusp, msglvl
     logical :: first
-    complex(kind=8) :: cdum, f, g, h11, h21, r, s, sigma, t
+    complex(kind=8) :: cdum, f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid
     save       first, smlnum, ulp, unfl
 !
@@ -289,7 +289,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !     %----------------------------------------------%
 !
     do 110 jj = 1, np
-        sigma = shift(jj)
+        sigma(1) = shift(jj)
 !
         if (msglvl .gt. 2) then
             call ivout(logfil, 1, jj, ndigit, '_NAPPS: SHIFT NUMBER.')
@@ -341,7 +341,7 @@ subroutine znapps(n, kev, np, shift, v,&
 !
         h11 = h(istart,istart)
         h21 = h(istart+1,istart)
-        f = h11 - sigma
+        f = h11 - sigma(1)
         g = h21
 !
         do 80 i = istart, iend-1

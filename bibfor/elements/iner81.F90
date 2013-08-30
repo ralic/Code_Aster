@@ -140,7 +140,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
         iad = (if-1)*nbdef
         do 20 i = 1, nbdef
             call dcopy(neq, zr(idbase+(i-1)*neq), 1, zr(ltvec1), 1)
-            call zerlag('R', zr(ltvec1), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
             zr(ldres+iad+i-1) = ddot(neq,zr(ltvec1),1,zr(ltvec2),1)
 20      continue
 !

@@ -222,7 +222,7 @@ subroutine op0162()
 !
 !-----       MISE A ZERO DES DDLS DE LAGRANGE
 !
-            call zerlag('R', zr(idvec2), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
 !
 !-----       PRODUIT SCALAIRE VECTASS * MODE
 !
@@ -238,7 +238,7 @@ subroutine op0162()
 !
 !-----       MISE A ZERO DES DDLS DE LAGRANGE
 !
-            call zerlag('R', zr(idvec2), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvec2))
 !
 !-----       PRODUIT SCALAIRE VECTASS * MODE
 !

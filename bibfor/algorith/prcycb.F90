@@ -101,7 +101,6 @@ subroutine prcycb(nomres, soumat, repmat)
     integer :: nbdga, nbmod, nbnoa, nbnod, nbnog, nbsec, nbsma
     integer :: neq, ntail, ntrian, numa, numd, numg
     real(kind=8) :: xprod
-    complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     data pgc /'PRCYCB'/
 !-----------------------------------------------------------------------
@@ -350,7 +349,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltveca+(i-1)*neq), 1)
         call jelibe(chamva)
-        call zerlag('R', zr(ltveca+(i-1)*neq), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltveca+(i-1)*neq))
 666  end do
     do 667 i = 1, nbddr
         iord=zi(ltord+i-1)
@@ -358,7 +357,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvecb+(i-1)*neq), 1)
         call jelibe(chamva)
-        call zerlag('R', zr(ltvecb+(i-1)*neq), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvecb+(i-1)*neq))
 667  end do
     do 668 i = 1, nbddr
         iord=zi(ltorg+i-1)
@@ -366,7 +365,7 @@ subroutine prcycb(nomres, soumat, repmat)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvecc+(i-1)*neq), 1)
         call jelibe(chamva)
-        call zerlag('R', zr(ltvecc+(i-1)*neq), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvecc+(i-1)*neq))
 668  end do
     if (nbdax .gt. 0) then
         do 669 i = 1, nbdax
@@ -375,7 +374,7 @@ subroutine prcycb(nomres, soumat, repmat)
             call jeveuo(chamva, 'L', llcham)
             call dcopy(neq, zr(llcham), 1, zr(ltvecd+(i-1)*neq), 1)
             call jelibe(chamva)
-            call zerlag('R', zr(ltvecd+(i-1)*neq), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(ltvecd+(i-1)*neq))
 669      continue
     endif
 !
@@ -429,8 +428,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltveca+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag('R', zr(ltvec1), cbid, neq, zi(iddeeq))
-        call zerlag('R', zr(ltvec3), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
 !
 ! ----- PRODUIT AVEC MODES
 !
@@ -494,8 +493,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltvecb+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag('R', zr(ltvec1), cbid, neq, zi(iddeeq))
-        call zerlag('R', zr(ltvec3), cbid, neq, zi(iddeeq))
+        call zerlag( neq, zi(iddeeq), vectr=zr(ltvec1))
+        call zerlag( neq, zi(iddeeq), vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
@@ -580,8 +579,8 @@ subroutine prcycb(nomres, soumat, repmat)
                     .false.)
         call mrmult('ZERO', lmatm, zr(ltvecc+(i-1)*neq), zr(ltvec3), 1,&
                     .false.)
-        call zerlag('R', zr(ltvec1), cbid, neq, zi(iddeeq))
-        call zerlag('R', zr(ltvec3), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec3))
 !
 ! ----- CALCUL TERME DIAGONAL
 !
@@ -767,8 +766,8 @@ subroutine prcycb(nomres, soumat, repmat)
                         .false.)
             call mrmult('ZERO', lmatm, zr(ltvecd+(i-1)*neq), zr(ltvec3), 1,&
                         .false.)
-            call zerlag('R', zr(ltvec1), cbid, neq, zi(iddeeq))
-            call zerlag('R', zr(ltvec3), cbid, neq, zi(iddeeq))
+            call zerlag( neq, zi(iddeeq), vectr=zr(ltvec1))
+            call zerlag( neq, zi(iddeeq), vectr=zr(ltvec3))
 !
 ! ------- MULTIPLICATION PAR MODES PROPRES
 !

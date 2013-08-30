@@ -71,7 +71,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
 !-----------------------------------------------------------------------
     integer :: ibid, ierd, lordr, jordr, nbordr, ndim, iret, iret1
-    integer :: nbno, ino, tdisp, jrwork, tpaq, iret2, iret3
+    integer :: nbno, ino, tdisp(1), jrwork, tpaq, iret2, iret3
     integer :: nbpaq, numpaq, nnopaq, bormax, nbpmax, nbp0, bor0
     integer :: nbcmp, jpaqno, k, ordini, iord, jinst
     integer :: nnoini, nbnop, tspaq, iordr
@@ -231,20 +231,20 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !    JEDISP REND LA DIMENSION EN ENTIERS, ON LA CONVERTIT A L'AIDE
 !    DES FONCTIONS ENVIMA POUR ALLOUER UN TABLEAU DE REELS
     call jedisp(1, tdisp)
-    tdisp = (tdisp * loisem()) / lor8em()
-    tdisp = int(0.6d0*tdisp)
-    call wkvect('&&PAQNOE.RWORK', 'V V R', tdisp, jrwork)
+    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
+    tdisp(1) = int(0.6d0*tdisp(1))
+    call wkvect('&&PAQNOE.RWORK', 'V V R', tdisp(1), jrwork)
 !
     nbcmp = 18
 !
     bormax = nbno*nbordr*nbcmp
-    val1 = dble(tdisp)/dble(bormax)
+    val1 = dble(tdisp(1))/dble(bormax)
 !
 !     ON TIENT COMPTE DU RECUL DE DEUX NOEUDS POUR CALCULER NBPMAX
     if (val1 .lt. 1.0d0) then
         nbp0 = int(1.0d0/val1) + 1
         bor0 = nbp0*2*nbordr*nbcmp
-        val2 = dble(tdisp)/dble(bormax+bor0)
+        val2 = dble(tdisp(1))/dble(bormax+bor0)
         nbpmax = int(1.0d0/val2) + 1
     else
         nbpmax = 2
@@ -266,7 +266,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
         tpaq = tpaq + nbordr*nbcmp
         nnopaq = nnopaq + 1
 !
-        if (tpaq .lt. tdisp) then
+        if (tpaq .lt. tdisp(1)) then
             if (ino .eq. nbno) then
                 numpaq = numpaq + 1
                 zi(jpaqno + (numpaq-1)*4) = numpaq
@@ -276,8 +276,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
                 nbpaq = numpaq
             endif
 !
-        else if (( tpaq .ge. tdisp ) .and. (ino .lt. 3)) then
-            vali (1) = tdisp
+        else if (( tpaq .ge. tdisp(1) ) .and. (ino .lt. 3)) then
+            vali (1) = tdisp(1)
             vali (2) = tpaq
             call u2mesg('F', 'PREPOST5_67', 0, ' ', 2,&
                         vali, 0, 0.d0)
@@ -286,7 +286,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
 !    DU NOMBRE DE MAILLE DE CHAQUE PAQUET ET DU NOMBRE DE PAQUET.
 !
-        else if (( tpaq .ge. tdisp ) .and. (ino .gt. 2)) then
+        else if (( tpaq .ge. tdisp(1) ) .and. (ino .gt. 2)) then
 ! ON RECULE DE DEUX NOEUDS POUR ETRE SUR DE NE PAS DEBORDER DU VECTEUR
 ! DE TRAVAIL (JRWORK).
 !
@@ -324,7 +324,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !  <<REMPLISSAGE>> DU VECTEUR DE TRAVAIL
 !
     do 200 numpaq = 1, nbpaq
-        call jerazo('&&PAQNOE.RWORK', tdisp, 1)
+        call jerazo('&&PAQNOE.RWORK', tdisp(1), 1)
         tpaq = zi(jpaqno + (numpaq-1)*4 + 1)
         nnoini = zi(jpaqno + (numpaq-1)*4 + 2)
         nbnop = zi(jpaqno + (numpaq-1)*4 + 3)
@@ -517,7 +517,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !
         if (nomcri(1:11) .eq. 'VMIS_TRESCA') then
             nomopt = 'DOMA_NOEUD'
-            call vampli(zr(jrwork), tdisp, zi(jnoeu), nbno, nbordr,&
+            call vampli(zr(jrwork), tdisp(1), zi(jnoeu), nbno, nbordr,&
                         nnoini, nbnop, tspaq, nomopt, cnsr)
             goto 200
         endif
@@ -535,7 +535,7 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 !   POUR POST_FATIGUE
             post = .false.
 !
-            call avgrno(zr(jrwork), tdisp, zi(jnoeu), nbno, nbordr,&
+            call avgrno(zr(jrwork), tdisp(1), zi(jnoeu), nbno, nbordr,&
                         nnoini, nbnop, tspaq, nomcri, nomfor,&
                         grdvie, forvie, fordef, nommai, proaxe,&
                         k8b, cnsr, post, resu)

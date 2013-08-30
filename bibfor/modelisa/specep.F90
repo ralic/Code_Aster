@@ -84,7 +84,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
     integer :: ispno, ispre, ispte, itypfl, iv, ivale, lwr
     integer :: nbexcp, nbma, nbmano, nbmr, numno0
     real(kind=8) :: beta, coedim, coef1, coef2, coefd, difphi, fr
-    real(kind=8) :: frc, frref, phi1, phi2, phie, ptf, resuim
+    real(kind=8) :: frc, frref, phi1, phi2, phie, ptf(1), resuim
     real(kind=8) :: resure, rhof, s0, scal11, scal12, scal21, scal22
     real(kind=8) :: sref, tolr, uabs
 !-----------------------------------------------------------------------
@@ -234,7 +234,7 @@ subroutine specep(casint, nomu, spectr, base, vite,&
                 ASSERT(iret.eq.0)
                 k8b = ' '
                 do 22 il = 1, nbpf
-                    ptf = zr(lwr+il-1)
+                    ptf(1) = zr(lwr+il-1)
                     call fointc('E', nomfon, 0, k8b, ptf,&
                                 resure, resuim, ier)
                     if (ier .ne. 0) then

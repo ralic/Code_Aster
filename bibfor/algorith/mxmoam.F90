@@ -64,7 +64,6 @@ subroutine mxmoam(sddyna, nbmodp)
     integer :: imode, ifonc, imode2
     integer :: iret, ibid, nf, lpar, vali(3)
     real(kind=8) :: r8bid
-    complex(kind=8) :: cbid
     character(len=8) :: k8bid
     character(len=8) :: modmec, magene, amgene, rigene
     character(len=14) :: numddl
@@ -171,7 +170,7 @@ subroutine mxmoam(sddyna, nbmodp)
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
             call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
-            call zerlag('R', zr(jbasmo+(imode-1)*neq), cbid, neq, zi( iddeeq))
+            call zerlag(neq, zi( iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
 61      continue
 !
 ! ---   ON RECUPERE MASSES GENERALISEES DANS MODE_MECA
@@ -203,7 +202,7 @@ subroutine mxmoam(sddyna, nbmodp)
                         iret)
             call jeveuo(nomcha(1:19)//'.VALE', 'L', jval)
             call dcopy(neq, zr(jval), 1, zr(jbasmo+(imode-1)*neq), 1)
-            call zerlag('R', zr(jbasmo+(imode-1)*neq), cbid, neq, zi( iddeeq))
+            call zerlag(neq, zi( iddeeq), vectr=zr(jbasmo+(imode-1)*neq))
 67      continue
 !
 ! --- CREATION RIGIDITES GENERALISEES

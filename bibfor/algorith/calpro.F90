@@ -140,7 +140,7 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
         call mrmult('ZERO', lmat, zr(idbase+(i-1)*neq), zr(ltvec1), 1,&
                     .true.)
-        call zerlag('R', zr(ltvec1), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec1))
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE
 !

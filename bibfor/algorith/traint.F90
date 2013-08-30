@@ -70,7 +70,6 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
     integer :: lesc, lraid, leff1, leff2, ltrain, ideeq, nbddl, llint, lslast
     integer :: lcopy1, lcopy2, unit, lmasst, ldepma, ldepsl, nl
     real(kind=8) :: travm, travk, trvint
-    complex(kind=8) :: cbid
     integer :: iarg
 !
     call getvis(' ', 'UNITE', 1, iarg, 1,&
@@ -287,7 +286,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         call jeveuo(zk8(ibid)//'      .NUME.DEEQ', 'L', ideeq)
 !
 !-- ANULATION DES LAGRANGES
-        call zerlag('R', zr(lcopy1), cbid, nbeq1, zi(ideeq))
+        call zerlag(nbeq1, zi(ideeq), vectr=zr(lcopy1))
 !
 !-- EXTRACTION DES COMPOSANTES ASSOCIEES A L'INTERFACE
         ibid=0
@@ -323,7 +322,7 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2,&
         call jeveuo(zk8(ibid)//'      .NUME.DEEQ', 'L', ideeq)
 !
 !-- ANULATION DES LAGRANGES
-        call zerlag('R', zr(lcopy2), cbid, nbeq2, zi(ideeq))
+        call zerlag(nbeq2, zi(ideeq), vectr=zr(lcopy2))
 !
 !-- EXTRACTION DES COMPOSANTES ASSOCIEES A L'INTERFACE
         ibid=0

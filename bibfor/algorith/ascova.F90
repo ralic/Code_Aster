@@ -39,7 +39,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 #include "asterfort/wkvect.h"
     character(len=*) :: fomulz, npara, typres, cnchar, detr
     character(len=24) :: vachar
-    real(kind=8) :: vpara
+    real(kind=8) :: vpara, tval(1)
 ! ----------------------------------------------------------------------
 !  BUT :   AJOUTER / COMBINER DES VECTEURS ASSEMBLES (CHAM_NO)
 !
@@ -174,7 +174,8 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
                 ASSERT(icha.le.nchar)
                 valre = 1.d0
                 valim = 0.d0
-                if (fct) call fointc('F', zk24(jfonct+icha-1)(1:8), 1, npara, vpara,&
+                tval(1)=vpara
+                if (fct) call fointc('F', zk24(jfonct+icha-1)(1:8), 1, npara, tval,&
                                      valre, valim, ier)
             endif
 !

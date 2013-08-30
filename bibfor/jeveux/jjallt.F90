@@ -37,8 +37,8 @@ subroutine jjallt(lonoi, ic, gi, typei, ltypi,&
 ! OUT  JCDYN  : ADRESSE PAR RAPPORT AU COMMUN DE REFERENCE EN
 !               ALLOCATION DYNAMIQUE
 !
-    integer :: izr, izc, izl, izk8, izk16, izk24, izk32, izk80, jbid, izi4
-    integer :: jcdyn
+    integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1),&
+               izk32(1), izk80(1), jbid, izi4(1), jcdyn
     equivalence    (izr,zr),(izc,zc),(izl,zl),(izk8,zk8),(izk16,zk16),&
      &               (izk24,zk24),(izk32,zk32),(izk80,zk80),(izi4,zi4)
 ! DEB ------------------------------------------------------------------

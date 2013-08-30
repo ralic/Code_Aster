@@ -61,7 +61,6 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
     character(len=19) :: mat, nume
-    complex(kind=8) :: cbid
     integer :: iarg
 !
     call wkvect('&&VECIND.NEW_STAT', 'V V R', nbc*nbc, jnsta)
@@ -83,10 +82,10 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
 !
     do 500 i1 = 1, nbc
         if (mat .ne. ' ') then
-            call zerlag('R', zr(lvec+nbl*(i1-1)), cbid, nbl, zi(ideeq))
+            call zerlag(nbl, zi(ideeq), vectr=zr(lvec+nbl*(i1-1)))
             call mrmult('ZERO', lmat, zr(lvec+nbl*(i1-1)), zr(ltrav1), 1,&
                         .true.)
-            call zerlag('R', zr(ltrav1), cbid, nbl, zi(ideeq))
+            call zerlag(nbl, zi(ideeq), vectr=zr(ltrav1))
             norme=ddot(nbl,zr(ltrav1),1,zr(lvec+nbl*(i1-1)),1)
 !
         else

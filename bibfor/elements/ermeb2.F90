@@ -301,8 +301,8 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom,&
             call fointe('FM', fyf, 3, nompar, valpar,&
                         fyc(2), ier4)
 !
-            call r8inir(2, fxc, chx, 1)
-            call r8inir(2, fyc, chy, 1)
+            call r8inir(2, fxc(1), chx, 1)
+            call r8inir(2, fyc(1), chy, 1)
 !
             if (nbna .eq. 3) then
                 mno=nbs+ino

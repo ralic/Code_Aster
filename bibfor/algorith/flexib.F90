@@ -77,7 +77,6 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, nc, neq
     integer :: nl, numc, numl
     real(kind=8) :: toto, xkgen, xx
-    complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     data pgc /'FLEXIB'/
 !-----------------------------------------------------------------------
@@ -177,7 +176,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call dcapno(basmod, 'DEPL    ', iord, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag('R', zr(ltvec), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
         do 70 j = 1, nl
 !
@@ -205,7 +204,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
         call jeveuo(chamva, 'L', llcham)
         call wkvect('&&'//pgc//'.VECT', 'V V R', neq, ltvec)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag('R', zr(ltvec), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
         do 90 j = 1, nc
             do 95 k = 1, nl

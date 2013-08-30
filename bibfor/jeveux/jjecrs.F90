@@ -50,7 +50,7 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
     integer :: ista1, ista2, is, ktempo(2)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadma, iadrs, k, lsi
+    integer :: iadma(1), iadrs, k, lsi
 !-----------------------------------------------------------------------
     ista1 = iszon(jiszon+iadmi-1)
     is = jiszon+iszon(jiszon+iadmi-4)

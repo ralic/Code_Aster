@@ -106,7 +106,6 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
     character(len=11) :: forma
     character(len=40) :: formb, formc
     real(kind=8) :: wint, wext, liai, ecin, amor, wsch
-    complex(kind=8) :: cbid
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
@@ -175,7 +174,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
         call ddlphy(depplu, neq, zr(ivmoyz), zk8(idesc))
         call ddlphy(depplu, neq, zr(ivpmvz), zk8(idesc))
 ! ON ENLEVE UNIQUEMENT LES LAGRANGES DES CONDITIONS DE DIRICHLET
-        call zerlag('R', zr(iumoyz), cbid, neq, zi(jdeeq))
+        call zerlag(neq, zi(jdeeq), vectr=zr(iumoyz))
     else
 ! --------------------------------------------------------------------
 ! CALCUL STATIQUE (STAT_NON_LINE)
@@ -203,7 +202,7 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1,&
 ! ON NE GARDE QUE LES DDL NODAUX PHYSIQUES
         call ddlphy(depplu, neq, zr(iupmuz), zk8(idesc))
 ! ON ENLEVE UNIQUEMENT LES LAGRANGES DES CONDITIONS DE DIRICHLET
-        call zerlag('R', zr(iumoyz), cbid, neq, zi(jdeeq))
+        call zerlag(neq, zi(jdeeq), vectr=zr(iumoyz) )
     endif
 ! --------------------------------------------------------------------
 ! WINT : TRAVAIL REEL DES EFFORTS CALCULE COMME LE TRAVAIL DES FORCES

@@ -87,7 +87,7 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     integer :: j, k, ki, l, n, jcnrd, jcnrl, jcnrv, ibidno
     integer :: iret, nbma, adrma, icesd, icesl, icesv
-    integer :: ibid, tneces, tdisp, jvecno
+    integer :: ibid, tneces, tdisp(1), jvecno
     integer :: jvectn, jvectu, jvectv, ngam, ideb, dim
     integer :: tab2(18), inop, nunoe, jdtaum, jresun
     integer :: jtypma
@@ -162,9 +162,9 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
 !
     tneces = 209*nbordr*2
     call jedisp(1, tdisp)
-    tdisp = (tdisp * loisem()) / lor8em()
-    if (tdisp .lt. tneces) then
-        vali (1) = tdisp
+    tdisp(1) = (tdisp(1) * loisem()) / lor8em()
+    if (tdisp(1) .lt. tneces) then
+        vali (1) = tdisp(1)
         vali (2) = tneces
         call u2mesg('F', 'PREPOST5_8', 0, ' ', 2,&
                     vali, 0, 0.d0)

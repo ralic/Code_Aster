@@ -65,7 +65,6 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
     integer :: tach1, lomeg, lmod1, lmass, lbid, ltrsst, lraid, leff1, leff2
     integer :: lintf, nbint, ideeq, lcopy1, lsecme, limped, unit, numsst
     real(kind=8) :: travm, travk, traint, comlin(2), shift
-    complex(kind=8) :: cbid
     character(len=24) :: lisint
     integer :: iarg
 !
@@ -142,7 +141,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
         call lceqvn(nbeq1, zr(ibid), zr(lcopy1))
 !
 !-- ANNULATION DES DDL DE LAGRANGE
-        call zerlag('R', zr(lcopy1), cbid, nbeq1, zi(ideeq))
+        call zerlag(nbeq1, zi(ideeq), vectr=zr(lcopy1))
 !
 !-- NOUVELLE COPIE
         call lceqvn(nbeq1, zr(lcopy1), zr(lmod1))
@@ -177,7 +176,7 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1,&
 !--
         call daxpy(nbeq1, -(zr(lomeg+j1-1)**2), zr(leff1), 1, zr(leff2),&
                    1)
-        call zerlag('R', zr(leff1), cbid, nbeq1, zi(ideeq))
+        call zerlag(nbeq1, zi(ideeq), vectr=zr(leff1))
         lbid=lsecme
         call lceqvn(nbeq1, zr(leff1), zr(lsecme+nbeq1*(j1-1)))
 !

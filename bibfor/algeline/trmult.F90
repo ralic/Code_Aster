@@ -190,7 +190,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 30  end do
 !
 !     --- MISE A ZERO DES DDL DE LAGRANGE
-    call zerlag('R', pside(1), c16b, neq, zi(iddeeq))
+    call zerlag(neq, zi(iddeeq), vectr=pside(1))
 !
     call jedetr('&&TRMULT.NOEUD')
     call jedetr('&&TRMULT.GROUP_NO')

@@ -410,7 +410,7 @@ subroutine vecgen(nomres, numeg)
             call dcopy(neq, zr(iadmod), 1, zr(idvect), 1)
 !
 !     MISE A ZERO DES D.D.L. DE LAGRANGE
-            call zerlag('R', zr(idvect), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(idvect))
 !
 !     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
             zr(iavale+j-1) = ddot(neq,zr(idvect),1,zr(ladrve),1)

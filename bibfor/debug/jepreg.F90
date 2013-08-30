@@ -69,7 +69,7 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
     common /statje/  svuse,smxuse
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas
-    integer :: itp, jitp, iaditp, iadyn, idco, idos, idec, icomp
+    integer :: itp(1), jitp, iaditp, iadyn, idco, idos, idec, icomp
     integer :: ji, nl, nd, iaddi(2), idosl, idcol, lgl, ic
 ! DEB ------------------------------------------------------------------
     kclas = clas ( 1: min(1,len(clas)))

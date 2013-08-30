@@ -60,7 +60,6 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
     character(len=24) :: nu
     integer :: jprov, jdeeq, jrefa, neq
     real(kind=8) :: coerma, coeram, coerri
-    complex(kind=8) :: cbid
     logical :: lamor, limpl
     logical :: lnewma, ltheta, lthetd, lthetv, lkrenk
 !
@@ -138,10 +137,10 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
             nu = zk24(jrefa-1+2)
             call jeveuo(nu(1:14)//'.NUME.DEEQ', 'L', jdeeq)
             call jelira(vite2(1:19)//'.VALE', 'LONMAX', neq)
-            call zerlag('R', zr(jprov), cbid, neq, zi(jdeeq))
+            call zerlag(neq, zi(jdeeq), vectr=zr(jprov))
             call nminer(rigid, vite2, cniner)
             call jeveuo(cniner(1:19)//'.VALE', 'E', jprov)
-            call zerlag('R', zr(jprov), cbid, neq, zi(jdeeq))
+            call zerlag(neq, zi(jdeeq), vectr=zr(jprov))
             call vtaxpy(coerri, cniner, cndyna)
             call jeveuo(cndyna(1:19)//'.VALE', 'E', jprov)
         else

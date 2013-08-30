@@ -80,7 +80,6 @@ subroutine prcymn(nomres, soumat, repmat)
     integer :: nbsma, nbv, neq, ntail, ntrian, numa, numd
     integer :: numg
     real(kind=8) :: xx
-    complex(kind=8) :: cbid
 !-----------------------------------------------------------------------
     data pgc /'PRCYMN'/
 !-----------------------------------------------------------------------
@@ -292,7 +291,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag('R', zr(ltvec), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
         do 81 j = 1, nbddr
 !
@@ -320,7 +319,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call dcapno(basmod, 'DEPL    ', i, chamva)
         call jeveuo(chamva, 'L', llcham)
         call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-        call zerlag('R', zr(ltvec), cbid, neq, zi(iddeeq))
+        call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
         do 91 j = 1, nbddr
 !
@@ -354,7 +353,7 @@ subroutine prcymn(nomres, soumat, repmat)
             call dcapno(basmod, 'DEPL    ', i, chamva)
             call jeveuo(chamva, 'L', llcham)
             call dcopy(neq, zr(llcham), 1, zr(ltvec), 1)
-            call zerlag('R', zr(ltvec), cbid, neq, zi(iddeeq))
+            call zerlag(neq, zi(iddeeq), vectr=zr(ltvec))
 !
             do 101 j = 1, nbdax
 !
