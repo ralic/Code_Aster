@@ -41,7 +41,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
 ! ======================================================================
 !
 ! IN   NOMAZ  : NOM DU MAILLAGE
-! OUT  NBMST  : NOMBRE DE MAILLES RECUPEREES
+! INOUT  NBMST  : NOMBRE DE MAILLES DUPLIQUEES
 !     ------------------------------------------------------------------
 !
     integer :: n1, ier, im, numa, nume, ibid, lgp, lgm, ilist, klist, nbv1, i
@@ -133,7 +133,13 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                 nommai = prfm(1:lgp)//nommai
             endif
             do 32 i = 1, nbmst
-                if (zk8(klist+i-1) .eq. nommai) goto 34
+                if (zk8(klist+i-1) .eq. nommai) then
+                    if (mcfact.eq.'CREA_GROUP_MA') then
+                        call u2mesk('F','MODELISA9_57',1,nommai)
+                    else
+                        goto 34
+                    endif
+                endif
 32          continue
             nbmst = nbmst + 1
             if (nbmst .gt. nbv1) then

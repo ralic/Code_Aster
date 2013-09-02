@@ -242,6 +242,19 @@ Conseil :
  pour la maille  %(k1)s
 """),
 
+57 : _(u"""
+Erreur d'utilisation pour la commande CREA_MAILLAGE / CREA_GROUP_MA :
+  Le programme tente de créer une maille appelée %(k1)s
+  mais cette maille a déjà été crée par une occurrence précédente de ce mot clé facteur.
+
+Risques et conseils :
+  Pour éviter cette erreur, vous pouvez changer la valeur
+  de PREF_MAILLE pour chaque occurrence du mot clé CREA_GROUP_MA.
+  """),
+
+
+
+
 59 : _(u"""
  erreur lors de la définition de la courbe de traction : %(k1)s
  le premier point de la courbe de traction %(k2)s a pour abscisse:  %(r1)f
