@@ -39,7 +39,7 @@ STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
                               MODELISATION='3D',),),);
 # CONDITIONS AUX LIMITES
 
-CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR,INFO=2,
+CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                         PESANTEUR=_F(GRAVITE=-9.81,
                                      DIRECTION=(0.0,0.0,1.0,),),
                         ROTATION= _F(VITESSE=10.0,
@@ -106,7 +106,7 @@ SIGMA=CREA_CHAMP( OPERATION='EXTR',
                   RESULTAT=RESU, NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA' )
 
-CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,INFO=2,
+CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                         PESANTEUR=_F(GRAVITE=-9.81,
                                      DIRECTION=(0.0,0.0,1.0,),),
                         ROTATION= _F(VITESSE=10.0,
@@ -163,7 +163,7 @@ MODE_1=MODE_ITER_SIMULT(MATR_RIGI=K_MODAL,
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=20,),
                         VERI_MODE=_F(SEUIL=0.0001,),
-                        SOLVEUR=_F(NPREC=9),
+                         SOLVEUR=_F( METHODE='MUMPS',),
                         );
 
 #----------------------------------------------------------------------
@@ -196,6 +196,8 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODE_2,
+# TOLE_MACHINE: Mauvais conditionnement de la matrice (1E+12)
+                   TOLE_MACHINE = 6.E-6, 
                    VALE_CALC=1.78712,
                    VALE_REFE=1.75,
                    CRITERE='RELATIF',
