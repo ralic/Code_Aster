@@ -41,6 +41,7 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mesg.h"
+    integer :: nbgr
     character(len=8) :: mailla
     character(len=24) :: valk(2), nomcou, nomgr(nbgr)
 !
@@ -48,7 +49,7 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, nb, nbgr, nbto, num
+    integer :: i, ier, nb, nbto, num
 !-----------------------------------------------------------------------
     if (nbgr .eq. 0) then
         nbto=0

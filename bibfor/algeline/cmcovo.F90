@@ -1,6 +1,5 @@
 subroutine cmcovo(main, maout, nbma, lima, prefno,&
                   prefma, inima, epais, plan, trans)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 !

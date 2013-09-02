@@ -155,7 +155,6 @@ subroutine znapps(n, kev, np, shift, v,&
 !
 !-----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 !     %-----------------------------%

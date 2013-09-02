@@ -20,9 +20,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-    integer :: nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
+    integer :: nnop, nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
-    integer :: lgpg, ndim, nfe, nfh, nnop, npg
+    integer :: lgpg, ndim, nfe, nfh, npg
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), crit(3), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
     real(kind=8) :: matuu(*), vi(lgpg, npg)

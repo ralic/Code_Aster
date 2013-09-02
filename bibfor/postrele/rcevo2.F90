@@ -1,7 +1,6 @@
 subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                   kemixt, cstex, csmex, lfatig, flexio,&
                   lrocht, cnoc, cresu, cpres)
-! aslint: disable=W1501
     implicit      none
 #include "jeveux.h"
 !

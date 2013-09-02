@@ -32,8 +32,8 @@ subroutine jjalty(typei, ltypi, cel, inatb, jctab)
 ! OUT  JCTAB  : ADRESSE PAR RAPPORT AU COMMUN DE REFERENCE
 !
 !-----------------------------------------------------------------------
-    integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1),&
-               izk32(1), izk80(1), izi4(1)
+    integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1)
+    integer :: izk32(1), izk80(1), izi4(1)
     equivalence    (izr,zr),(izc,zc),(izl,zl),(izk8,zk8),(izk16,zk16),&
                    (izk24,zk24),(izk32,zk32),(izk80,zk80),(izi4,zi4)
 ! DEB ------------------------------------------------------------------

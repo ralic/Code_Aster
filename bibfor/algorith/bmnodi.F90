@@ -66,14 +66,14 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
     character(len=*) :: basmdz, nmintz, intfz
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
-    integer :: ivcord(nbdef), idec(300)
+    integer :: nbdef, ivcord(nbdef), idec(300)
     integer :: vali, ier
     character(len=10) :: typbas(3)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, inoe, iordef, iret, j, lldes, llnoe
-    integer :: llref, nbcmp, nbdef, nbdif, nbec, nbmod, nbnoe
+    integer :: llref, nbcmp, nbdif, nbec, nbmod, nbnoe
     integer :: nbnot, numint
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE','CYCLIQUE','RITZ'/

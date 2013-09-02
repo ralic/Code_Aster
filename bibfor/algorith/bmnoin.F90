@@ -56,7 +56,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
     character(len=24) :: noeint
     character(len=24) :: valk(2)
-    integer :: numnoe(nbnoi)
+    integer :: nbnoi, numnoe(nbnoi)
 !
 !-----------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
 !-----------------------------------------------------------------------
     integer :: i, inoe, lldes, llint, llref, nbdif, nbeffi
-    integer :: nbnoe, nbnoi, numcou, numint
+    integer :: nbnoe, numcou, numint
 !-----------------------------------------------------------------------
     call jemarq()
     intf = intfz

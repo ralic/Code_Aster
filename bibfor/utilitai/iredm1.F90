@@ -2,7 +2,6 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                   iamor, mass, rigi, amored, freq,&
                   smass, srigi, samor, cmass, crigi,&
                   camor)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !

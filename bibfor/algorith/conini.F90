@@ -98,11 +98,11 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar,&
     logical :: inval
     logical :: cas2d, cas3d, valid
 !
-    integer :: noecon(nbnoe), maicon(nbmar), marcon(nbmar)
+    integer :: nbnoe, noecon(nbnoe), maicon(nbmar), marcon(nbmar)
     integer :: mbcor(nbmar), jmicor(nbmar)
     character(len=8) :: nommar(nbmar), nomtyr(nbmar)
     integer :: ierr, ifm, imai, inoe, inor, itest, nbcom
-    integer :: nbmarc, nbnoe, niv
+    integer :: nbmarc, niv
 !-----------------------------------------------------------------------
 !     TYPES VALIDES POUR LES MAILLES DE REFERENCE
     valid()=(cas2d .and. (ktyr(:4).eq.'TRIA'.or.ktyc(:&

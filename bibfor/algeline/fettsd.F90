@@ -58,7 +58,7 @@ subroutine fettsd(infofe, nbi, nbsd, vddl, sdfeti,&
 !----------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 ! CORPS DU PROGRAMME
-! aslint: disable=W1304,W1304,W1501
+! aslint: disable=W1304,W1304
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

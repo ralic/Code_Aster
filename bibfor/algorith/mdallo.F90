@@ -22,7 +22,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
 #include "asterfort/wkvect.h"
     character(len=*) :: basemo, masgen, riggen, amogen
     character(len=8) :: nomres, intitu(*)
-    integer :: nbrevi
+    integer :: nbchoc, nbrede, nbrevi
     character(len=8) :: noecho(nbchoc, *), fonred(nbrede, *), fonrev(nbrevi, *)
     character(len=16) :: method
 ! ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     integer :: jdesc, jfcho, jdisc, jinti, jncho, jordr, jptem
     integer :: jredc, jredd, jredn, jrevc, jrevd, jrevn
     integer :: jrefe, jsst, jvcho, jvint
-    integer :: jvite, nbchoc, nbmode, nbrede, nbsto1
+    integer :: jvite, nbmode, nbsto1
     real(kind=8) :: dt
 !-----------------------------------------------------------------------
     call jemarq()

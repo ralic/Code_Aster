@@ -28,7 +28,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 !

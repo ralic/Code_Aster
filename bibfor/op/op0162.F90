@@ -165,15 +165,15 @@ subroutine op0162()
     call getvr8(' ', 'PAS', 1, iarg, 1,&
                 pas, n)
     if (n1 .ne. 0) then
-        write(ifmis,'(''TEMPS DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,&
-     &  1X,''PAS'',1X,1PE12.5)') tini,tfin,pas
-        write(ifm,'(''TEMPS DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,&
-     &  1X,''PAS'',1X,1PE12.5)') tini,tfin,pas
+        write(ifmis,'(''TEMPS DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') &
+              tini,tfin,pas
+        write(ifm,'(''TEMPS DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') & 
+              tini,tfin,pas
     else
-        write(ifmis,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,&
-     &  1X,''PAS'',1X,1PE12.5)') fini,ffin,pas
-        write(ifm,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,&
-     &  1X,''PAS'',1X,1PE12.5)') fini,ffin,pas
+        write(ifmis,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') &
+              fini,ffin,pas
+        write(ifm,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,1X,''PAS'',1X,1PE12.5)') &
+              fini,ffin,pas
     endif
     ic=0
     call getvr8(' ', 'DIRE_ONDE', ic, iarg, 3,&

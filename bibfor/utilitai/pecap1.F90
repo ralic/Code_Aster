@@ -93,6 +93,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
 ! -----  ARGUMENTS
+    integer :: ngi 
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
 ! -----  VARIABLES LOCALES
     integer :: gd
@@ -114,7 +115,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     integer :: i, ianueq, iaprno, ibid, idcoor, iddesc, idnoma
     integer :: idvale, ierd, igr, iret, iret1, iret2, ival
     integer :: jdes, jgro, m, nbmail, nbno, nbordr, nec
-    integer :: ngi, numa, numail
+    integer :: numa, numail
     real(kind=8) :: ct, deux, prec, r8b, strap, temp, undemi
     real(kind=8) :: x1, x2, xmin, y1, y2, ymin, zero
 !

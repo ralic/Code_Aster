@@ -44,16 +44,16 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
 #include "asterfort/wkvect.h"
     character(len=8) ::  noeu
     character(len=19) :: trange
+    integer :: nbpair, nbinst, iarg
     real(kind=8) :: coef(*), ang(*), temps(*)
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: ichoc, idebut, ifin, ifires, isupp, j
     integer :: jdesc, jdloc, jfcho, jinst, jncho, jvgli, jwk1
     integer :: jwk2, jwk3, jwk4, jwk5, jwk6, lg
-    integer :: n1, n2, n3, n4, nbchoc, nbinst, nbloc
-    integer :: nbpair, nbpas, nbpt, nbval, nt
+    integer :: n1, n2, n3, n4, nbchoc, nbloc
+    integer :: nbpas, nbpt, nbval, nt
     real(kind=8) :: puusur, tdebut, tfin, tmax, tmin
 !-----------------------------------------------------------------------
     call jemarq()

@@ -41,7 +41,6 @@ subroutine creaco(nbmato, ma, bord, nbbord, nblien,&
 ! person_in_charge: aimery.assire at edf.fr
 !
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 !

@@ -1,6 +1,5 @@
 subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
                   mater)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 !

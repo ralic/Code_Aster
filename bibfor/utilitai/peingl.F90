@@ -57,7 +57,6 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
 !
 !      PEINGL  --  OPERATEUR POST_ELEM
 !                  TRAITEMENT DU MOT-FACTEUR "INDIC_ENER"

@@ -2,7 +2,6 @@ subroutine i2imas(epsi, conec, coord, typ, nbm,&
                   numail, xa, ya, xb, yb,&
                   nbseg, sgtor, sgtex, mail1, mail2,&
                   facor, facex, paror, parex)
-! aslint: disable=W1501
     implicit   none
 !
 ! ======================================================================

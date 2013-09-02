@@ -4,7 +4,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                   cspe, cresu, kinti, it, jt,&
                   lrocht, symax, cpres, kemixt, cspto,&
                   cspte, cspmo, cspme)
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit   none
 #include "jeveux.h"
 #include "asterc/getres.h"

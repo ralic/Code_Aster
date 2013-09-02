@@ -23,7 +23,6 @@ subroutine crmeri(promes, iakpee)
 !
 !
 !
-! aslint: disable=W1501
     implicit none
 !
 #include "jeveux.h"

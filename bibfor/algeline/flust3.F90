@@ -1,7 +1,6 @@
 subroutine flust3(melflu, typflu, base, nuor, amor,&
                   freq, masg, fact, vite, nbm,&
                   npv, nivpar, nivdef)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !

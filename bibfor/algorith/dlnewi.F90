@@ -65,7 +65,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

@@ -62,6 +62,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/dcopy.h"
+    integer :: nl, nc
     real(kind=8) :: flex(nl, nc)
     character(len=6) :: pgc
     character(len=8) :: basmod, typint, intf, kbid, k8bid
@@ -74,8 +75,8 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
     integer :: i, ibid, iddeeq, iord, iran, iret, j
     integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
     integer :: llnoc, llnol, llref, lltyp, ltextc, ltextl, ltorc
-    integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, nc, neq
-    integer :: nl, numc, numl
+    integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
+    integer :: numc, numl
     real(kind=8) :: toto, xkgen, xx
 !-----------------------------------------------------------------------
     data pgc /'FLEXIB'/

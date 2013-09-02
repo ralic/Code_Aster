@@ -1,6 +1,5 @@
 subroutine assvss(base, vec, vecel, nu, vecpro,&
                   motcle, type, fomult, instap)
-! aslint: disable=W1501
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -45,16 +45,16 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mesg.h"
+    integer :: nbma, nbgr, nbto, numnot(nbto)
     character(len=8) :: mailla, nomma(nbma)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
-    integer :: numnot(nbto)
+
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadg, icomp, j, nb, nbgr, nbma
-    integer :: nbto, numa
+    integer :: i, iadg, icomp, j, nb, numa
 !-----------------------------------------------------------------------
     call jemarq()
     icomp=0

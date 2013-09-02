@@ -67,7 +67,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     character(len=8) :: nomu, nomzon
     character(len=19) :: spectr, base
     real(kind=8) :: vite, vmoyzi, vmoyto
-    integer :: nuor(nbm), vali(2)
+    integer :: nbm, nuor(nbm), vali(2)
 !
     integer :: dim, nbval, icmp
     character(len=8) :: nomcmp, depla(3)
@@ -84,7 +84,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     integer :: imb, imodf, imodi, ip, ipvn, irefe, irhoe
     integer :: irsp, ispect, itypfl, ivale, ivitn, iz
     integer :: jm, jmb, kk, lwr, n1, n2, nbcmp
-    integer :: nbfonc, nbm, nbp, nbpf, nzex
+    integer :: nbfonc, nbp, nbpf, nzex
     real(kind=8) :: beta, beta1, beta2, eps, err, fr, frc
     real(kind=8) :: gamma, phi0, phi01, phi02, phie, r1, ren
     real(kind=8) :: rom, rov, sx, tauxv, tol, vitezi, x1

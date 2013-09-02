@@ -28,7 +28,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
                   za3, za4, za5, zin, zitr,&
                   nbchoc, parcho, noecho)
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================

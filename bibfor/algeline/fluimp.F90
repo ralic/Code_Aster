@@ -1,7 +1,6 @@
 subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                   nuor, freq, freqi, nbm, vite,&
                   npv, carac, calcul, amoc)
-! aslint: disable=W1501
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -487,8 +486,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
      &             ' CONSTANTES DE CONNORS'
                 ctrav3((2+(30*nzone)):(2+(30*nzone)))='*'
                 ctrav3((3+(30*nzone)):(3+(30*nzone)+120))=&
-     & '    VITESSE CRITIQUE (m/s)   *   VITESSE REDUITE CRITIQUE  *&
-     &    RAPPORT D INSTABILITE    *     RAPPORT TTES CMPS       *'
+     & '    VITESSE CRITIQUE (m/s)   *   VITESSE REDUITE CRITIQUE  *'&
+     &//'    RAPPORT D INSTABILITE    *     RAPPORT TTES CMPS       *'
                 write(ifr,'(A)') ctrav2(1:(2+(30*nzone)))
                 write(ifr,'(A)') ctrav1(1:(2+(30*nzone)+90))
                 write(ifr,'(A)') ctrav2(1:(2+(30*nzone)+120))
@@ -577,8 +576,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     1001 format (1p,' VITESSE MOYENNE SUR L ENSEMBLE DES ZONES = ',d13.6)
     1002 format (1p,' MODE : NUMERO D ORDRE:',i3,'/ FREQ:',d13.6)
     1003 format (1p,' MASSE LINEIQUE DE REFERENCE DU TUBE (kg/m) : ',e13.6)
-    1004 format (1p,' MASSE VOLUMIQUE DE REFERENCE DU FLUIDE&
-     & SECONDAIRE (kg/m3) : ',e13.6)
+    1004 format (1p,' MASSE VOLUMIQUE DE REFERENCE DU FLUIDE SECONDAIRE (kg/m3) : ',e13.6)
     2001 format (a2,4a16)
     2002 format (a66)
 !

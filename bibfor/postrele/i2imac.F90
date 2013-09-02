@@ -2,7 +2,6 @@ subroutine i2imac(epsi, conec, coord, typ, nbm,&
                   numail, xc, yc, r, alfinf,&
                   alfsup, nbseg, sgtor, sgtex, mail1,&
                   mail2, facor, facex, paror, parex)
-! aslint: disable=W1501
     implicit  none
 !
 ! ======================================================================

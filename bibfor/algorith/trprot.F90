@@ -2,7 +2,6 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx,&
                   iady, iadz, isst, iadrp, norm1,&
                   norm2, ndble, num, nu, ma,&
                   mate, moint, ilires, k, icor)
-! aslint: disable=W1501
     implicit none
 !---------------------------------------------------------------------
 ! ======================================================================

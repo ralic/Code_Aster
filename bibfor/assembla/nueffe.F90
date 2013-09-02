@@ -1,6 +1,5 @@
 subroutine nueffe(lligr, base, nuz, renum, moloc,&
                   solveu, nequa)
-! aslint: disable=W1501
     implicit none
 #include "jeveux.h"
 !

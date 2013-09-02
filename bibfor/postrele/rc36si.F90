@@ -1,5 +1,4 @@
 subroutine rc36si(noma, nbma, listma)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 !

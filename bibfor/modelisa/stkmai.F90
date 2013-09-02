@@ -51,6 +51,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 #include "asterfort/tesmcl.h"
 #include "asterfort/u2mesk.h"
     real(kind=8) :: rv
+    integer :: nbm
     character(len=8) :: mcl(nbm), noma, b8
     integer :: deblig, fmt(nbm)
     character(len=14) :: cnl
@@ -60,7 +61,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iadc, iadt, icl, ifl, iret
-    integer :: irtet, irteti, iv, nbm, nume, numn
+    integer :: irtet, irteti, iv, nume, numn
     integer :: numtcl
 !-----------------------------------------------------------------------
     data b8         /'        '/

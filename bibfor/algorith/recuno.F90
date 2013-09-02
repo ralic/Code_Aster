@@ -46,16 +46,15 @@ subroutine recuno(mailla, nbno, nbgr, nomno, nomgr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/u2mesg.h"
+    integer :: nbno, nbgr, nbto, numnot(nbto)
     character(len=8) :: mailla, nomno(nbno)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
-    integer :: numnot(nbto)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadg, icomp, j, nb, nbgr, nbno
-    integer :: nbto, nuno
+    integer :: i, iadg, icomp, j, nb, nuno
 !-----------------------------------------------------------------------
     call jemarq()
     icomp=0

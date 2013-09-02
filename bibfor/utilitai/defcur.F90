@@ -48,7 +48,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 #include "asterfort/u2mess.h"
 #include "asterfort/vefcur.h"
 #include "asterfort/wkvect.h"
-    integer :: ptch, pnoe
+    integer :: ptch, pnoe, nb, nv
     real(kind=8) :: vecr1(nb), vecr2(nv)
     character(len=2) :: prolgd
     character(len=8) :: nommai, interp, veck1(nb)
@@ -62,8 +62,8 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     integer :: ii, im, ima1, ima2, ind, ing, ino
     integer :: iseg2, isens, itym, itypm, jgcnx, ji, jj
     integer :: jp, kk, kseg, labs, lnoe, lvali, mi
-    integer :: nb, nbchm, nbnoma, nbpoi1, nbrma, nbrma1, nbrma2
-    integer :: nbrse1, nbrse2, nbrseg, nbseg2, nm, numno, nv
+    integer :: nbchm, nbnoma, nbpoi1, nbrma, nbrma1, nbrma2
+    integer :: nbrse1, nbrse2, nbrseg, nbseg2, nm, numno
 !
 !-----------------------------------------------------------------------
     call jemarq()
