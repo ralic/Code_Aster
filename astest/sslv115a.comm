@@ -24,6 +24,11 @@ DEBUT(CODE=_F(NOM='SSLV115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IG
 
 MAILLAGE=LIRE_MAILLAGE(UNITE=20,);
 
+MA2=CREA_MAILLAGE(
+    MAILLAGE = MAILLAGE,
+    LINE_QUAD = _F(GROUP_MA='GXXXXXX_CABLE001')
+    )
+
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
@@ -74,6 +79,7 @@ BETON=DEFI_MATERIAU(BPEL_BETON=_F(),
                             E=3.E10,),);
 
 ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(),
+                    CABLE_GAINE_FROT=_F(TYPE='ADHERENT',PENA_LAGR=1.E4),
                     ELAS=_F(NU=0.0,
                             RHO=2.E4,
                             ALPHA=1.E-05,
@@ -237,5 +243,199 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
           )
 
 # -----------------------------------------------------------------------------------------------
+# TEST EN CABLE_GAINE
+# -----------------------------------------------------------------------------------------------
 
+MA2=DEFI_GROUP(reuse=MA2,
+                    MAILLAGE=MA2,
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+
+MO2=AFFE_MODELE(AFFE=(_F(GROUP_MA='GXXXXXX_VOILE',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA='GXXXXXX_CABLE001',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='CABLE_GAINE',),),
+                   MAILLAGE=MA2,);
+
+CA2=AFFE_CARA_ELEM(MODELE=MO2,
+                        BARRE=_F(SECTION='GENERALE',
+                                 GROUP_MA='GXXXXXX_CABLE001',
+                                 CARA=('A'),
+                                 VALE=(0.00015),),);
+
+
+CH2=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
+                               GROUP_MA='GXXXXXX_VOILE',),
+                            _F(MATER=ACIER,
+                               GROUP_MA='GXXXXXX_CABLE001',),),
+                      MAILLAGE=MA2,);
+
+CAB2=DEFI_CABLE_BP(CHAM_MATER=CH2,
+                      MODELE=MO2,
+                      DEFI_CABLE=_F(NOEUD_ANCRAGE=('NC001001','NC001005'),
+                                    GROUP_MA='GXXXXXX_CABLE001',),
+                      TYPE_ANCRAGE=('ACTIF','ACTIF'),
+                      GROUP_MA_BETON='GXXXXXX_VOILE',
+                      TENSION_INIT=2.E5,
+                      RECUL_ANCRAGE=0.0,
+                      CARA_ELEM=CA2,
+                      INFO=2,);
+
+CHAR2=AFFE_CHAR_MECA(MODELE=MO2,
+                        DDL_IMPO=(_F(NOEUD='NB001001',
+                                     DY=0.0,),
+                                  _F(DX=0.0,
+                                     GROUP_NO='GXXXXXX_VGAUCH',),
+                                  _F(DZ=0.0,
+                                     GROUP_NO='GXXXXXX_VINF',),
+                                   _F(GLIS=0.0,
+                                     NOEUD=('NC001001','NC001005'),),
+                                  ),
+                                    )
+
+CHAR2Z=AFFE_CHAR_MECA(MODELE=MO2,
+                       PESANTEUR=_F(GRAVITE=10.0,
+                                    DIRECTION=(0.0,0.0,-1.0),),);
+
+CHAR2X=AFFE_CHAR_MECA(MODELE=MO2,
+                       PESANTEUR=_F(GRAVITE=10.0,
+                                    DIRECTION=(-1.0,0.0,0.0),),);
+
+EVOL2=CALC_PRECONT( CHAM_MATER=CH2,
+                       MODELE=MO2,
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                      RESI_GLOB_RELA=1.E-05,),
+                       COMP_INCR=(_F(GROUP_MA='GXXXXXX_VOILE',
+                                    RELATION='ELAS',
+                                    DEFORMATION='PETIT',),
+                                  _F( RELATION = 'KIT_CG',
+                                      RELATION_KIT=('ELAS','CABLE_GAINE_FROT',),
+                                      GROUP_MA = 'GXXXXXX_CABLE001'
+                                     ),
+                                  ),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       CARA_ELEM=CA2,
+                       SOLVEUR=_F(METHODE='MUMPS',),
+                       EXCIT=(
+                              _F(CHARGE=CHAR2,),
+                              _F(CHARGE=CHAR2Z,
+                                 ),),
+                       CABLE_BP=( CAB2 ,),
+                       INFO=1,);
+
+EVOL2=CALC_CHAMP(reuse =EVOL2,
+                    FORCE='REAC_NODA',
+                    RESULTAT=EVOL2,);
+
+
+EVOL22=CALC_PRECONT(CHAM_MATER=CH2,
+                      MODELE=MO2,
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                     RESI_GLOB_RELA=1.E-05,),
+                      COMP_INCR=(_F(TOUT='OUI',
+                                   RELATION='ELAS',
+                                   DEFORMATION='PETIT',),
+                                 _F( RELATION = 'KIT_CG',
+                                      RELATION_KIT=('ELAS','CABLE_GAINE_FROT'),
+                                      GROUP_MA = 'GXXXXXX_CABLE001'
+                                     ),
+                                 ),
+                      INCREMENT=_F(LIST_INST=LINST,),
+                      CARA_ELEM=CA2,
+                      SOLVEUR=_F(METHODE='MUMPS',),
+                      EXCIT=(
+                           _F(CHARGE=CHAR2,),
+                             _F(CHARGE=CHAR2X,
+                                ),),
+                       CABLE_BP=( CAB2 ,),
+                      INFO=1,);
+
+EVOL22=CALC_CHAMP(reuse =EVOL22,
+                   FORCE='REAC_NODA',
+                   RESULTAT=EVOL22,);
+
+FORC2DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='FORCDZ',
+                                GROUP_NO=('GXXXXXX_VOILE','GXXXXXX_CABLE001'),
+                                RESULTANTE='DZ',
+                                NUME_ORDRE=2,
+                                RESULTAT=EVOL2,
+                                NOM_CHAM='REAC_NODA',),);
+
+
+FORC22DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='FORCDX',
+                                 GROUP_NO=('GXXXXXX_VOILE','GXXXXXX_CABLE001'),
+                                 RESULTANTE='DX',
+                                 RESULTAT=EVOL22,
+                                 NUME_ORDRE=2,
+                                 NOM_CHAM='REAC_NODA',),);
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=132.00000000000,
+           VALE_REFE=132.0,
+           NOM_PARA='DZ',
+           TABLE=FORC2DZ,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-10,
+           VALE_CALC=132.00000000000,
+           VALE_REFE=132.0,
+           NOM_PARA='DX',
+           TABLE=FORC22DX,)
+
+# CONTRAINTES
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOL2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-1.6665670423982E+05,
+                   VALE_REFE=-1.6666666666700001E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='toto1',),
+                _F(NUME_ORDRE=2,
+                   REFERENCE='ANALYTIQUE',
+                   POINT=1,
+                   RESULTAT=EVOL2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC= 1.9998804508778E+05,
+                   VALE_REFE=2.E5,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-3,
+                   MAILLE='SG001001',),
+                ),
+          )
+
+# DEFORMATION DANS LE BETON
+
+EVOL2=CALC_CHAMP(reuse=EVOL2,
+                   RESULTAT=EVOL2,
+                    DEFORMATION=('EPSI_ELNO'))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=EVOL2,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOEUD='NB001001',
+                  NOM_CMP='EPXX',
+                  VALE_CALC=-5.5552234746606E-06,
+                  VALE_REFE=-5.5555555555999996E-06,
+                  CRITERE='RELATIF',
+                  PRECISION=1.0000000000000001E-04,
+                  MAILLE='toto1',),
+          )
+IMPR_RESU(RESU=_F(RESULTAT=EVOL2))
+#
 FIN();
+
+

@@ -45,7 +45,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
 !
 ! ROUTINE MECA_NON_LINE (CALCUL)
 !
-! CALCUL DE LA CARTE POUR RESI_RELA_REFE
+! CALCUL DE LA CARTE POUR RESI_RELA_REFE POUR UN ELEMENT CABLE/GAINE
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,15 +66,14 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
 !                     8 : MOMENT (FORC_REFE)
 !                     9 : DEPL_REFE
 !                    10 : LAGR_REFE
-! OUT CNVFRE : FORCE DE REFERENCE POUR CONVERGENCE EN REFERENCE
-! OUT VECELE : NOM DU VECT_ELEM
+! OUT VECELZ : NOM DU VECT_ELEM
 !
 !
 !
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=24)
+    parameter    (nbout=1, nbin=25)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -201,6 +200,8 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     lchin(23) = baseco
     lpain(24) = 'PLONFA'
     lchin(24) = lonfac
+    lpain(25) = 'PCAGNBA'
+    lchin(25) = chcara(11)(1:19)
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

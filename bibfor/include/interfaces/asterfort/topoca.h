@@ -17,12 +17,14 @@
 !
 interface
     subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca,&
-                      numaca)
+                      numaca, quad, sens)
         character(len=19) :: tablca
         character(len=8) :: mailla
         integer :: icabl
         integer :: nbf0
         integer :: nbnoca(*)
         character(len=19) :: numaca
+        logical :: quad
+        integer :: sens
     end subroutine topoca
 end interface

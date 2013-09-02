@@ -68,7 +68,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
     character(len=19) :: chins
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
-    logical :: peecal
+    logical :: peecal,ltest
 !
     call jemarq()
 !
@@ -120,7 +120,11 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !           -- IL NE FAUT VERIFIER QUE LES MAILLES AFFECTEES DE CHIN:
                 if (zk16(jch1+ima-1) .eq. ' ') goto 5
 !           -- IL NE FAUT VERIFIER QUE LES MAILLES POSTRAITEES:
-                if (.not.peecal .or. (peecal .and. zi(indma+ima-1) .eq.1)) then
+                ltest = .false.
+                if (peecal)then
+                    if (zi(indma+ima-1).eq.1) ltest=.true.
+                endif
+                if((.not.peecal) .or. ltest) then
 !           -- SI LE CHAMP COOR_ELGA N'EST PAS CALCULE ON S'ARRETE:
                     if (zk16(jch2+ima-1) .eq. ' ') then
                         valk=zk16(jch1+ima-1)(1:8)
@@ -170,7 +174,11 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         if (iexi .eq. 0) then
             call wkvect(cespoi//'.PDSM', 'V V R', nbma, jpdsm)
             do 11 ima = 1, nbma
-                if (.not.peecal .or. (peecal .and. zi(indma+ima-1) .eq.1)) then
+                ltest = .false.
+                if (peecal) then
+                    if (zi(indma+ima-1).eq.1) ltest=.true.
+                endif
+                if((.not.peecal) .or. ltest)then
                     nbpt=zi(jpoid-1+5+4*(ima-1)+1)
                     do 21 ipt = 1, nbpt
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
@@ -188,7 +196,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !
 !
 !     -- PONDERATION DU CHAMP PAR LES POIDS DES POINTS :
-    do 10 ima = 1, nbma
+    do ima = 1, nbma
         if (.not.peecal .or. (peecal .and. zi(indma+ima-1).eq.1)) then
             nbpt =zi(jchsd-1+5+4*(ima-1)+1)
             nbsp =zi(jchsd-1+5+4*(ima-1)+2)
@@ -229,7 +237,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 30              continue
 20          continue
         endif
-10  end do
+    end do
 !
     call jedema()
 !

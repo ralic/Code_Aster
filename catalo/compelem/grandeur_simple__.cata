@@ -275,10 +275,10 @@ GRANDEUR_SIMPLE__
        RCOURB :
        ANGCOU :
        ANGZZK :
-       REP    : definition du repere 
-                = 1 : COQUE_INTR_UTIL permet le passage du repere 
+       REP    : definition du repere
+                = 1 : COQUE_INTR_UTIL permet le passage du repere
                       intrinseque de l'element au repere local de l'element
-                = 2 : COQUE_UTIL_INTR permet le passage du repere 
+                = 2 : COQUE_UTIL_INTR permet le passage du repere
                       local de l'element au repere intrinseque de l'element
 >>
     CAORIE   = R    ALPHA    BETA     GAMMA    ALPHA2   BETA2    GAMMA2   ALPHA3   BETA3
@@ -439,6 +439,7 @@ GRANDEUR_SIMPLE__
 <<  DEPL_C Type:C Deplacement (complexe)
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repere global)
+       GLIS    : translation relative suivante tangente (repere local)
        PRE1, PRE2 : DDL de pression
        TEMP : DDL de temperature
        PHI : angle de fissuration
@@ -496,7 +497,7 @@ GRANDEUR_SIMPLE__
        PIY     : projete du gradient de pression suivanty (methode OSGS)
        PIZ     : projete du gradient de pression suivantz (methode OSGS)
 >>
-    DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
+    DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      GLIS     PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
                     H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
                     H4Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -518,6 +519,7 @@ GRANDEUR_SIMPLE__
 <<  DEPL_F Type:K8 Deplacement (fonction)
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repere global)
+       GLIS    : translation relative suivante tangente (repere local)
        PRE1, PRE2 : DDL de pression
        TEMP : DDL de temperature
        PHI : angle de fissuration
@@ -575,7 +577,7 @@ GRANDEUR_SIMPLE__
        PIZ     : projete du gradient de pression suivantz (methode OSGS)
 >>
 
-    DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
+    DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      GLIS      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
                     H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
                     H4Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -597,6 +599,7 @@ GRANDEUR_SIMPLE__
 <<  DEPL_R Type:R Deplacement reel aux noeuds
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repere global)
+       GLIS    : translation relative suivante tangente (repere local)
        PRE1, PRE2 : DDL de pression
        TEMP : DDL de temperature
        PHI : angle de fissuration
@@ -653,7 +656,7 @@ GRANDEUR_SIMPLE__
        PIY     : projete du gradient de pression suivanty (methode OSGS)
        PIZ     : projete du gradient de pression suivantz (methode OSGS)
 >>
-    DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
+    DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      GLIS      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
                     H2X      H2Y      H2Z      H3X      H3Y      H3Z      H4X      H4Y
                     H4Z      LAGR     E1X      E1Y      E1Z      E2X

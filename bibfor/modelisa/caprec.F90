@@ -12,22 +12,21 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterfort/aflrch.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
+#include "asterfort/cescar.h"
 #include "asterfort/char_rcbp_cabl.h"
 #include "asterfort/char_rcbp_lino.h"
 #include "asterfort/char_rcbp_sigm.h"
+#include "asterfort/chsfus.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/drz02d.h"
 #include "asterfort/drz03d.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
-#include "asterfort/etenca.h"
 #include "asterfort/exisdg.h"
-#include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
@@ -37,11 +36,6 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/ltnotb.h"
-#include "asterfort/nocart.h"
-#include "asterfort/tbexip.h"
-#include "asterfort/tbexve.h"
-#include "asterfort/tbliva.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -94,7 +88,6 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=2) :: lagr_type
     character(len=8) :: cmp_name
-    integer :: cmp_index_n 
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     character(len=8) :: nomg_depl, nomg_sief
@@ -109,12 +102,13 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     integer  :: nb_node, jlino
     character(len=8)  :: cabl_prec
     character(len=19) :: cabl_sigm
-    logical :: l_first, l_rota_2d, l_rota_3d
+    logical :: l_rota_2d, l_rota_3d
     integer :: i_cabl, i_ancr, i_no, nume_node
     integer :: nb_elem
     integer :: jprnm
     character(len=24) :: name_ancr, name_anc1, name_anc2
     integer :: nume_cabl, nume_cabl0
+    integer :: jlces, jll, jlr, nbchs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,7 +128,11 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     list_rela_tmp = '&&CAPREC.LIRELA_TMP'
     cabl_sigm = load//'.CHME.SIGIN'
     model = ligrmo(1:8)
-    l_first = .true.
+!
+    call wkvect('&&CAPREC.LCES', 'V V K16', nliai, jlces)
+    call wkvect('&&CAPREC.LCESL', 'V V L', nliai, jll)
+    call wkvect('&&CAPREC.LCESR', 'V V R', nliai, jlr)
+    nbchs=0
 !
     call dismoi('F', 'DIM_GEOM', model, 'MODELE', ndimmo,&
                 k8bid, iret)
@@ -151,8 +149,8 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
     dist = armin(mesh)
 !
-! - Information about DEPL_R  <GRANDEUR> 
-! 
+! - Information about DEPL_R  <GRANDEUR>
+!
     nomg_depl = 'DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'L', j_cmp_depl)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'LONMAX', nb_cmp_depl, k8bid)
@@ -182,20 +180,14 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
     cmp_index_drz = indik8(zk8(j_cmp_depl), cmp_name, 1, nb_cmp_depl)
     ASSERT(cmp_index_drz.gt.0)
 !
-! - Information about SIEF_R  <GRANDEUR> 
-! 
+! - Information about SIEF_R  <GRANDEUR>
+!
     nomg_sief = 'SIEF_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'L', j_cmp_sief)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'LONMAX', nb_cmp_sief, k8bid)
     call dismoi('F', 'NB_EC', nomg_sief, 'GRANDEUR', nbec_sief,&
                 k8bid, iret)
     ASSERT(nbec_sief.le.10)
-!
-! - Index in SIEF_R <GRANDEUR> for N
-!
-    cmp_name  = 'N'
-    cmp_index_n = indik8(zk8(j_cmp_sief), cmp_name, 1, nb_cmp_sief)
-    ASSERT(cmp_index_n.gt.0)
 !
     do iocc = 1, nliai
 !
@@ -222,8 +214,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 ! --------- Get and combine stresses
 !
             if (l_sigm_bpel) then
-                call char_rcbp_sigm(ligrmo, cabl_prec, cabl_sigm, l_first, nb_cmp_sief, &
-                                    nb_elem, nbec_sief, cmp_index_n)
+                call char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll, jlr)
             endif
 !
 ! --------- Linear relations
@@ -295,7 +286,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 ! --------------------------------- Compute linear relations
 !
-                                    if (l_rota_2d) then 
+                                    if (l_rota_2d) then
                                         call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
                                                     cmp_index_drz, lagr_type, list_rela)
                                     else
@@ -339,7 +330,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                     ASSERT(.false.)
                                 endif
                                 call jedetr(list_node)
-                                call aflrch(list_rela, load)                            
+                                call aflrch(list_rela, load)
                             endif
 140                         continue
                         enddo
@@ -352,7 +343,15 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
         endif
     enddo
 !
-    call jedetc('V',cabl_sigm,1)
+! - Fusion des champs et transformation en carte
+!
+    if (nbchs .gt. 0) then
+        call chsfus(nbchs, zk16(jlces), zl(jll), zr(jlr), 0.d0,&
+                    .false., 'V', '&&CAPREC.CES')
+        call cescar('&&CAPREC.CES', cabl_sigm, 'G')
+    endif
+!
+    call jedetc('V','&&CAPREC.CES',1)
 !
 999 continue
     call jedema()

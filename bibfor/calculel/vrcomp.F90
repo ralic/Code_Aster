@@ -102,7 +102,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
 !                     1         2         3         4
 !            123456789012345678901234567890123456789012345678
     comp1='LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC  '
-    comp2='ELAS            SANS '
+    comp2='ELAS            SANS            KIT_CG'
 !     REMARQUES :
 !       'SANS' EST UN COMPORTEMENT INFINIMENT "MOU"
 !              QUI N'A PAS DE VARIABLES INTERNES.
@@ -301,7 +301,8 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
                         1, 1, iadm)
             ASSERT(iadm.gt.0)
             relcom=zk16(jcopmv-1+iadm)
-            if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS') goto 30
+            if (relcom .eq. 'ELAS' .or. relcom .eq. 'SANS' .or. &
+                relcom .eq. 'KIT_CG') goto 30
         else
 !           CE N'EST PAS FACILE A VERIFIER SANS COMPOM !
 !           ON VERIFIE :  NCMPM=1 ET VARIM(*)=0.D0
@@ -331,7 +332,7 @@ subroutine vrcomp(compom, compop, varmoi, ligrep)
         call u2mesg('A', 'CALCULEL3_48', 1, nomail, 2,&
                     vali, 0, 0.d0)
     endif
-    40 end do
+40  continue
     goto 90
 !
 !

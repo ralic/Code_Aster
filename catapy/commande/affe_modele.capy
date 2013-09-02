@@ -103,6 +103,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
                                   "AXIS_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "BARRE",           # RESP. : FLEJOU J.L.FLEJOU
+                                  "CABLE_GAINE",     # RESP. :
                                   "2D_BARRE",        # RESP. : FLEJOU J.L.FLEJOU
                                   "C_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
                                   "C_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES

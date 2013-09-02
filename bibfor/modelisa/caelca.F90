@@ -1,7 +1,7 @@
 subroutine caelca(modele, chmat, caelem, irana1, icabl,&
-                  nbnoca, numaca, regl, relax, ea,&
-                  rh1000, prelax, fprg, frco, frli,&
-                  sa)
+                  nbnoca, numaca, quad, regl, relax, &
+                  ea,  rh1000, prelax, fprg, frco, &
+                  frli,  sa)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -44,6 +44,8 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !                    NUMEROS DES MAILLES APPARTENANT AUX CABLES
 !                    CE VECTEUR EST COMPLETE LORS DU PASSAGE PREALABLE
 !                    DANS LA ROUTINE TOPOCA
+! IN      : QUAD   : VRAI SI MAILLAGE QUADRATIQUE (SEG3)
+!
 ! IN      : REGL    : CHARACTER*4, NOM DU REGLEMENT UTILISE
 !                     BPEL OU ETCC
 !  IN/OUT : RELAX  : LOGICAL , SCALAIRE
@@ -76,6 +78,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 #include "jeveux.h"
 !
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -89,14 +92,14 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     character(len=8) :: modele, chmat, caelem
     integer :: irana1, icabl, nbnoca(*)
     character(len=19) :: numaca
-    logical :: relax
+    logical :: relax, quad
     real(kind=8) :: ea, rh1000, prelax, fprg, frco, frli, sa
 !
 ! VARIABLES LOCALES
 ! -----------------
     integer :: ias, iasmax, icmp, icode, icste, idecma, imail, iranv, iret
     integer :: jdesc, jmodma, jnumac, jptma, jvalk, jvalr, lonuti, nbcste, nbec
-    integer :: nbno, ncaba, ntyele, numail, nbcmp, ier, idebgd
+    integer :: nbno, ncaba, ntyele(2), numail, nbcmp, ier, idebgd, i, nbma
     real(kind=8) :: eps, rbid
     logical :: trouv1, trouv2, trouv3, trouv4, trouv5
     character(len=3) :: k3cab, k3mai
@@ -108,9 +111,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !
 !
     character(len=8) :: bpela(5), etcca(4), young
-    character(len=16) :: nomele
+    character(len=16) :: nomele(2)
 !
-    data          nomele /'MECA_BARRE      '/
+    data          nomele /'MECA_BARRE      ','MECGSEG3        '/
     data          bpela  /'RELAX_10','MU0_RELA','F_PRG',&
      &                      'FROT_COU','FROT_LIN'/
     data          etcca  /'RELAX_10','F_PRG','COEF_FRO','PERT_LIG'/
@@ -127,22 +130,32 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
     nbno = nbnoca(icabl)
+    if (quad) then
+        ASSERT((mod(nbno-1,2).eq.0))
+        nbma=(nbno-1)/2
+    else
+        nbma = nbno-1
+    endif
+
 !
     call jelira(numaca, 'LONUTI', lonuti)
-    idecma = lonuti - nbno + 1
+    idecma = lonuti - nbma
     call jeveuo(numaca, 'L', jnumac)
 !
-    call jenonu(jexnom('&CATA.TE.NOMTE', nomele), ntyele)
+    do 5 i=1,2
+        call jenonu(jexnom('&CATA.TE.NOMTE',nomele(i)),ntyele(i))
+5   continue
     modmai = modele//'.MAILLE'
     call jeveuo(modmai, 'L', jmodma)
 !
-    do 10 imail = 1, nbno-1
+    do imail = 1, nbma
         numail = zi(jnumac+idecma+imail-1)
-        if (zi(jmodma+numail-1) .ne. ntyele) then
+        if ((zi(jmodma+numail-1).ne.ntyele(1)).and. &
+            (zi(jmodma+numail-1).ne.ntyele(2))) then
             write(k3cab,'(I3)') icabl
             call u2mesk('F', 'MODELISA2_48', 1, k3cab)
         endif
-10  end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   RECUPERATION DES CARACTERISTIQUES DU MATERIAU ACIER
@@ -176,7 +189,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !.... DU CABLE
 !.... N.B. LE PASSAGE PREALABLE DANS LA ROUTINE TOPOCA GARANTIT NBNO > 2
 !
-    do 20 imail = 2, nbno-1
+    do imail = 2, nbma
         numail = zi(jnumac+idecma+imail-1)
         ias = zi(jptma+numail-1)
         if (ias .eq. 0) then
@@ -193,7 +206,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             write(k3cab,'(I3)') icabl
             call u2mesk('F', 'MODELISA2_50', 1, k3cab)
         endif
-20  end do
+    end do
 !
 ! 2.2 RELATION DE COMPORTEMENT <ELAS> DU MATERIAU ACIER
 ! ---
@@ -210,13 +223,13 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     call jelira(rcvalr, 'LONMAX', nbcste)
 !
     trouv1 = .false.
-    do 30 icste = 1, nbcste
+    do icste = 1, nbcste
         if (zk8(jvalk+icste-1) .eq. young) then
             trouv1 = .true.
             ea = zr(jvalr+icste-1)
             goto 31
         endif
-30  end do
+    end do
 !
 31  continue
     if (.not. trouv1) then
@@ -357,9 +370,9 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !
     icode = zi(jdesc-1+3+2*iasmax+nbec*(ias-1)+1)
     iranv = 0
-    do 50 icmp = 1, irana1
+    do icmp = 1, irana1
         if (exisdg(icode,icmp)) iranv = iranv + 1
-50  end do
+    end do
     if (iranv .eq. 0) then
         write(k3mai,'(I3)') numail
         write(k3cab,'(I3)') icabl
@@ -380,7 +393,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !     ON VERIFIE QUE LA MEME AIRE DE SECTION DROITE A ETE AFFECTEE
 !     A TOUTES LES MAILLES DU CABLE
 !     LE PASSAGE PREALABLE DANS LA ROUTINE TOPOCA GARANTIT NBNO > 2
-    do 60 imail = 2, nbno-1
+    do imail = 2, nbma
 !
         numail = zi(jnumac+idecma+imail-1)
         ias = zi(jptma+numail-1)
@@ -411,7 +424,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
             call u2mesk('F', 'MODELISA2_60', 1, k3cab)
         endif
 !
-60  end do
+    end do
 !
     call jedema()
 !

@@ -241,6 +241,7 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
                 endif
             endif
 !
+
             if (comp(1:8) .eq. 'MULTIFIB') exipmf=.true.
             if (comp(1:4) .eq. 'ZMAT') then
                 iszmat = .true.

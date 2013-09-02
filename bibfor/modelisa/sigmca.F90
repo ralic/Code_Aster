@@ -1,4 +1,5 @@
-subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
+subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
+                  quad)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -34,6 +35,7 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
 !  IN     : NUMACA : CHARACTER*19 , SCALAIRE
 !                    NOM D'UN VECTEUR D'ENTIERS POUR STOCKAGE DES
 !                    NUMEROS DES MAILLES APPARTENANT AUX CABLES
+!  IN     : QUAD   : VRAI SI MAILLAGE QUADRATIQUE (SEG3)
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
@@ -42,19 +44,22 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
 ! ---------
 #include "jeveux.h"
 #include "asterfort/jedema.h"
+#include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
+    logical :: quad
     character(len=19) :: carsig, numaca, tablca
     integer :: icabl, nbnoca(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: idecma, idecno, imail, ipara, jnumac, jtblp, jtbnp, jncmp
-    integer :: jtens, jvalv, nblign, nbmaca, nbno, nbpara, numail
+    integer :: idecma, idecno, imail, ipara, jnumac, jtblp, jtbnp, jtens, jvalv, nblign, nbmaca
+    integer :: nbno, nbpara, numail, nbma, mma
     character(len=1) :: k1b
     character(len=24) :: tens
+    real(kind=8) :: rtens
     logical :: trouve
 !
     character(len=24) :: parcr
@@ -77,14 +82,14 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
     nblign = zi(jtbnp+1)
     call jeveuo(tablca//'.TBLP', 'L', jtblp)
     trouve = .false.
-    do 10 ipara = 1, nbpara
+    do ipara = 1, nbpara
         if (zk24(jtblp+4*(ipara-1)) .eq. parcr) then
             trouve = .true.
             tens = zk24(jtblp+4*(ipara-1)+2)
             call jeveuo(tens, 'L', jtens)
         endif
         if (trouve) goto 11
-10  end do
+    end do
 11  continue
     idecno = nblign - nbno
 !
@@ -92,7 +97,15 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
 ! ---
     call jelira(numaca, 'LONUTI', nbmaca)
     call jeveuo(numaca, 'L', jnumac)
-    idecma = nbmaca - nbno + 1
+    if (quad) then
+        ASSERT((mod(nbno-1, 2).eq.0))
+        nbma=(nbno-1)/2
+        mma = 2
+    else
+        nbma = nbno-1
+        mma = 1
+    endif
+    idecma = nbmaca - nbma
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 2   MISE A JOUR DE LA CARTE DES CONTRAINTES INITIALES AUX ELEMENTS
@@ -102,14 +115,15 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
 !.... BOUCLE SUR LE NOMBRE DE MAILLES DU CABLE COURANT
 !
     call jeveuo(carsig//'.VALV', 'E', jvalv)
-    call jeveuo(carsig//'.NCMP', 'E', jncmp)
-    zk8(jncmp) = 'N'
-    do 20 imail = 1, nbno-1
+    do imail = 1, nbma
         numail = zi(jnumac+idecma+imail-1)
-        zr(jvalv) = (zr(jtens+idecno+imail-1) + zr(jtens+idecno+ imail) ) / 2.0d0
+        rtens = ( zr(jtens+idecno+mma*imail-mma) + zr(jtens+idecno+ mma*imail) ) / 2.0d0
+        zr(jvalv)=rtens
+        zr(jvalv+1)=0.d0
+        zr(jvalv+2)=0.d0
         call nocart(carsig, 3, k1b, 'NUM', 1,&
-                    k1b, numail, ' ', 1)
-20  end do
+                    k1b, numail, ' ', 3)
+    end do
 !
     call jedema()
 !

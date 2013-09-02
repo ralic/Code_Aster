@@ -7,7 +7,7 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/ltnotb.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexve.h"
 !
@@ -55,7 +55,6 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: table
-    integer :: jtable
     logical :: l_para_exis
     character(len=8) :: k8bid
 !
@@ -65,14 +64,13 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
 !
 ! - Initializations
 !
-    nb_cabl = 0  
+    nb_cabl = 0
     nb_anc1 = 0
-    nb_anc2 = 0  
+    nb_anc2 = 0
 !
 ! - Get table
 !
-    call jeveuo(cabl_prec//'           .LTNS', 'L', jtable)
-    table = zk24(jtable)
+    call ltnotb(cabl_prec, 'CABLE_BP', table)
 !
 ! - Check table
 !
@@ -88,7 +86,7 @@ subroutine char_rcbp_cabl(cabl_prec, list_cabl, list_anc1, list_anc2, nb_cabl, &
     call tbexve(table, 'NUME_CABLE'  , list_cabl, 'V', nb_cabl,&
                 k8bid)
     call tbexve(table, 'NOM_ANCRAGE1', list_anc1, 'V', nb_anc1,&
-                k8bid)              
+                k8bid)
     call tbexve(table, 'NOM_ANCRAGE2', list_anc2, 'V', nb_anc2,&
                 k8bid)
 !

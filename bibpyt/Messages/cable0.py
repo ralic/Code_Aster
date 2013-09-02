@@ -26,4 +26,10 @@ INST_FIN plus petit que INST_INIT.
 Le mot-clé MAILLE est interdit, utilisez GROUP_MA.
 """),
 
+3: _(u"""
+Parmi les occurrences de CABLE_BP, le mot-clé ADHERENT renseigné dans DEFI_CABLE_BP
+est 'OUI' pour certaines et 'NON' pour d'autres.
+CALC_PRECONT ne peut pas traiter ce type de cas
+"""),
+
 }

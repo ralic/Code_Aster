@@ -27,7 +27,7 @@ subroutine op0019()
 !     NBEDI   8 : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
 !     NBECO  29 : NOMBRE D'ELEMENTS DE TYPE "COQUE"
 !     NBECA   2 : NOMBRE D'ELEMENTS DE TYPE "CABLE"
-!     NBEBA   2 : NOMBRE D'ELEMENTS DE TYPE "BARRE"
+!     NBEBA   3 : NOMBRE D'ELEMENTS DE TYPE "BARRE"
 !     NBEMA  50 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
 !     NBEGB   6 : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
 !     NBEMB   4 : NOMBRE D'ELEMENTS DE TYPE "MEMBRANE"
@@ -91,7 +91,7 @@ subroutine op0019()
     integer :: nbepo, nbedi, nbeco, nbeca, nbeba, nbema, nbegb, nbemb
     integer :: nbtel, nbmcf, nbel1, nbel2, nbel3, nbel4, nbel5
     integer :: nbthm1, nbthm2
-    parameter  (      nbepo=13,nbedi=8,nbeco=29,nbeca=2,nbeba=2)
+    parameter  (      nbepo=13,nbedi=8,nbeco=29,nbeca=2,nbeba=3)
     parameter  (nbel1=nbepo   +nbedi  +nbeco   +nbeca  +nbeba)
     parameter  (      nbema=50,nbegb=6,nbemb=4,nbthm1=47,nbthm2=28)
     parameter  (nbel2=nbema)
@@ -154,7 +154,7 @@ subroutine op0019()
      &   'MEBODKT         ','MEBODST         ','MEBOQ4G         ',&
      &   'MEBOCQ3         ','THCOSE3         ','THCOSE2         ',&
      &   'MECABL2         ','MEPOULI         ','MECA_BARRE      ',&
-     &   'MECA_2D_BARRE   '/
+     &   'MECA_2D_BARRE   ','MECGSEG3'/
 !
     data nomel2 /         'MECA_HEXA8      ','MECA_PENTA6     ',&
      &   'MECA_PENTA18    ','MECA_TETRA4     ','MECA_HEXA27     ',&
@@ -231,15 +231,15 @@ subroutine op0019()
     iret=0
 ! --- ------------------------------------------------------------------
 ! --- INITIALISATION DE  NOMELE
-    do 10 i = 1, nbel1
+    do i = 1, nbel1
         nomele(i) = nomel1(i)
-10  end do
-    do 20 i = 1, nbel2
+    end do
+    do   i = 1, nbel2
         nomele(i+nbel1) = nomel2(i)
-20  end do
-    do 25 i = 1, nbel3
+    end do
+    do i = 1, nbel3
         nomele(i+nbel1+nbel2) = nomel3(i)
-25  end do
+    end do
 !
     do 26 i = 1, nbel4
         nomele(i+nbel1+nbel2+nbel3) = nomel4(i)
@@ -256,9 +256,9 @@ subroutine op0019()
 ! --- VERIFICATIONS SUPPLEMENTAIRES DE SYNTAXE
     call getvtx(' ', 'VERIF', 1, iarg, 2,&
                 ver, nbver)
-    do 30 i = 1, 3
+    do i = 1, 3
         ivr(i) = 0
-30  end do
+    end do
     if (nbver .gt. 0) then
         do 40 i = 1, nbver
             if (ver(i) .eq. 'MAILLE  ') ivr(1) = 1
@@ -268,9 +268,9 @@ subroutine op0019()
         call u2mess('F', 'MODELISA5_55')
     endif
 !
-    do 50 i = 1, nbmcf
+    do i = 1, nbmcf
         call getfac(mclf(i), nbocc(i))
-50  end do
+    end do
 !
 ! --- ------------------------------------------------------------------
 ! --- VERIFICATION DE LA SYNTAXE DES ELEMENTS POUTRE
@@ -439,9 +439,9 @@ subroutine op0019()
 !
 ! --- ------------------------------------------------------------------
 ! --- RECUPERATION DES NUMEROS DES TYPES ELEMENTS
-    do 60 i = 1, nbtel
+    do i = 1, nbtel
         call jenonu(jexnom('&CATA.TE.NOMTE', nomele(i)), ntyele(i))
-60  end do
+    end do
 !
 ! --- ------------------------------------------------------------------
 ! --- COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS
@@ -457,7 +457,7 @@ subroutine op0019()
 !
 ! --- ------------------------------------------------------------------
 ! --- VERIFICATION DE L'EXISTENCE DES MAILLES/NOEUDS/GROUPES DECLARES
-    do 100 iclf = 1, nbmcf
+    do iclf = 1, nbmcf
         do 90 ioc = 1, nbocc(iclf)
             call codent(ioc, 'G', kioc)
             do 80 icle = 1, nbmcle(iclf)
@@ -466,7 +466,7 @@ subroutine op0019()
                 call verima(noma, zk24(jdls), ng, mcle(icle))
 80          continue
 90      continue
-100  end do
+    end do
 !
 ! --- ------------------------------------------------------------------
 ! --- VERIFICATION DE LA BONNE  AFFECTATION  DES  CARACTERISTIQUES

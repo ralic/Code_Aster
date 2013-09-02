@@ -18,7 +18,7 @@ subroutine lc0056(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=W1504
+! aslint: disable=W0104,W1504
     implicit none
     integer :: imate,ndim,kpg,ksp,codret,icomp,nvi
     real(kind=8)           :: crit(*), angmas(3)
@@ -30,5 +30,7 @@ subroutine lc0056(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
     character(len=16)     :: compor(*),option
     character(len=8)      :: typmod(*)
     character(len=*)    :: fami
+!   KIT_CG
+!   ON NE DOIT JAMAIS PASSER PAR LA
     call u2mess('F','FERMETUR_11')
 end subroutine

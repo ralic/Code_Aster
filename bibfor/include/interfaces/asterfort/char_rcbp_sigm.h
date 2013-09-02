@@ -16,15 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine char_rcbp_sigm(ligrmo, cabl_prec, cabl_sigm, l_first, nb_cmp_sief, &
-                              nb_elem, nbec_sief, cmp_index_n)
+    subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
+                          jlr)
         character(len=8), intent(in) :: cabl_prec
-        character(len=19), intent(in) :: cabl_sigm
-        character(len=19), intent(in) :: ligrmo
-        logical, intent(inout) :: l_first
-        integer, intent(in) :: nb_cmp_sief
-        integer, intent(in) :: nb_elem
-        integer, intent(in) :: nbec_sief
-        integer, intent(in) :: cmp_index_n
+    integer, intent(in) :: iocc
+    integer, intent(in) :: nbchs
+    integer, intent(in) :: jlces
+    integer, intent(in) :: jll
+    integer, intent(in) :: jlr
     end subroutine char_rcbp_sigm
 end interface

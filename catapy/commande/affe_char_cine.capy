@@ -48,7 +48,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
                                'H1X','H1Y','H1Z','E1X','E1Y','E1Z','E2X','E2Y','E2Z',
                                'E3X','E3Y','E3Z','E4X','E4Y','E4Z','V11','V12','V13','V21','V22',
                                'V23','V31','V32','V33','PRES11','PRES12','PRES13','PRES21',
-                               'PRES22','PRES23','PRES31','PRES32','PRES33','LH1'),),
+                               'PRES22','PRES23','PRES31','PRES32','PRES33','LH1','GLIS'),),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -134,6 +134,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
              PRES32          =SIMP(statut='f',typ='R' ),
              PRES33          =SIMP(statut='f',typ='R' ),
              LH1             =SIMP(statut='f',typ='R' ),
+             GLIS            =SIMP(statut='f',typ='R' ),
          ),
 
          THER_IMPO       =FACT(statut='f',max='**',

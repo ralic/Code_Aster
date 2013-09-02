@@ -16,11 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca)
+    subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
+                      quad)
         character(len=19) :: tablca
         character(len=19) :: carsig
         integer :: icabl
         integer :: nbnoca(*)
         character(len=19) :: numaca
+        logical :: quad
     end subroutine sigmca
 end interface

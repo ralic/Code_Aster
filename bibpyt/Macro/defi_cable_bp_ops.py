@@ -28,6 +28,7 @@
 #  - CARA_ELEM
 #  - GROUP_MA_BETON
 #  - DEFI_CABLE
+#  - ADHERENT
 #  - TYPE_ANCRAGE
 #  - TENSION_INIT
 #  - RECUL_ANCRAGE
@@ -44,8 +45,9 @@
 
 
 def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
-                           DEFI_CABLE,TYPE_ANCRAGE,TENSION_INIT,RECUL_ANCRAGE,
-                           TYPE_RELAX,CONE,TITRE,INFO,**args):
+                           DEFI_CABLE,ADHERENT,TYPE_ANCRAGE,TENSION_INIT,
+                           RECUL_ANCRAGE,TYPE_RELAX,TITRE,INFO,CONE = None,
+                           **args):
 
   """
      Ecriture de la macro DEFI_CABLE_BP
@@ -72,6 +74,8 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
   #                  Début de la Macro :
 
   motscles={}
+
+  keys = args.keys()
 
   # RECUPERATION DES INFOS DONNEES PAR LE MOT-CLE "CONE"
 
@@ -120,7 +124,7 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 #   CAS OU ON RENTRE UNE TENSION INITIALE DU CABLE (TYPE_RELAX='ETCC_REPRISE')
     motscle3={}
     if i.has_key('TENSION_CT') ==1:
-       motscle3 = {'TENSION_CT' : i['TENSION_CT']} 
+       motscle3 = {'TENSION_CT' : i['TENSION_CT']}
 
     # CAS OU L'ON A DEFINI LE MOT-CLE "CONE"
     if CONE:
@@ -267,10 +271,10 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
 # FIN BOUCLE sur i in DEFI_CABLE
 
-     
+
   # LANCEMENT DE DEFI_CABLE_BP
-#    TRAITEMENT DE LA RELAXATION 
-  
+#    TRAITEMENT DE LA RELAXATION
+
   if TYPE_RELAX=='ETCC_DIRECT':
     motscles['NBH_RELAX']=args['NBH_RELAX'];
 
@@ -279,12 +283,12 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
   if TYPE_RELAX=='BPEL':
     motscles['R_J']=args['R_J'];
-      
+
 #  if PERT_ELAS=='OUI':
 #    motscles['ESP_CABLE']=args['ESP_CABLE'] ;
-#    motscles['EP_BETON']=args['EP_BETON'] ; 
-      
-    
+#    motscles['EP_BETON']=args['EP_BETON'] ;
+
+
 #    dRelaxation=RELAXATION[0].cree_dict_valeurs(RELAXATION[0].mc_liste)
 #    for i in dRelaxation.keys():
 #      if dRelaxation[i]==None : del dRelaxation[i]
@@ -294,6 +298,7 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
                        CHAM_MATER=CHAM_MATER,
                        CARA_ELEM=CARA_ELEM,
                        GROUP_MA_BETON=GROUP_MA_BETON,
+                       ADHERENT = ADHERENT,
                        TYPE_ANCRAGE=TYPE_ANCRAGE,
                        TENSION_INIT=TENSION_INIT,
                        RECUL_ANCRAGE=RECUL_ANCRAGE,

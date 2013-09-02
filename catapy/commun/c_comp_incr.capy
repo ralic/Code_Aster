@@ -66,6 +66,20 @@ def C_COMP_INCR(COMMAND=None) :  #COMMUN#
                                        "MAZARS"
                                        ),),
                    ),
+           b_kit_cg= BLOC(condition = "RELATION == 'KIT_CG' ",
+                            fr="relations pour elements cables gaines",
+               RELATION_KIT    =SIMP(statut='o',typ='TXM',min=2,max=2,validators=NoRepeat(),
+                                 into=(
+                                       "CABLE_GAINE_FROT",
+                                       "VMIS_ISOT_LINE",
+                                       "VMIS_ISOT_TRAC",
+                                       "VMIS_CINE_LINE",
+                                       "PINTO_MENEGOTTO",
+                                       "ELAS",
+                                       "SANS"
+                                       ),),
+                   ),
+
            b_kit_thm = BLOC(condition = "RELATION in ['KIT_HHM','KIT_HH','KIT_H','KIT_HM','KIT_THHM', \
                                                       'KIT_THH','KIT_THM','KIT_THV']",
                             fr="lois de comportements thermo-hydro-mecaniques",

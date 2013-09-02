@@ -1,25 +1,25 @@
-subroutine char_rcbp_sigm(ligrmo, cabl_prec, cabl_sigm, l_first, nb_cmp_sief, &
-                          nb_elem, nbec_sief, cmp_index_n)
+subroutine char_rcbp_sigm(cabl_prec, iocc, nbchs, jlces, jll,&
+                          jlr)
 !
     implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/copisd.h"
-#include "asterfort/etenca.h"
-#include "asterfort/jecreo.h"
+#include "asterfort/carces.h"
+#include "asterfort/codent.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nocart.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbexve.h"
 #include "asterfort/u2mesk.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,13 +36,11 @@ subroutine char_rcbp_sigm(ligrmo, cabl_prec, cabl_sigm, l_first, nb_cmp_sief, &
 ! ======================================================================
 !
     character(len=8), intent(in) :: cabl_prec
-    character(len=19), intent(in) :: cabl_sigm
-    character(len=19), intent(in) :: ligrmo
-    logical, intent(inout) :: l_first
-    integer, intent(in) :: nb_cmp_sief
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: nbec_sief
-    integer, intent(in) :: cmp_index_n
+    integer, intent(in)    :: iocc
+    integer, intent(inout) :: nbchs
+    integer, intent(in)    :: jlces
+    integer, intent(in)    :: jll
+    integer, intent(in)    :: jlr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,97 +50,49 @@ subroutine char_rcbp_sigm(ligrmo, cabl_prec, cabl_sigm, l_first, nb_cmp_sief, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  cabl_prec     : prestress information from CABLE_BP
-! In  cabl_sigm     : stresses in cables
-! In  ligrmo        : list of elements in model
-! I/O l_first       : .true. if first stresses read
-! In  nb_cmp_sief   : number of components of SIEF_R <GRANDEUR>
-! In  nb_elem       : numbor ef elements in mesh
-! In  nbec_sief     : number of coded integer of SIEF_R <GRANDEUR>
-! In  cmp_index_n   : index in SIEF_R <GRANDEUR> for N
+! In  cabl_prec       : prestress information from CABLE_BP
+! In  iocc            : numero d'occurence
+! I/O nbchs           : nombres de champs a fusionner
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordfact
+    character(len=4)  :: chen
     character(len=8)  :: k8bid
-    character(len=19) :: cabl_sigm_read
-    integer :: iret, elem_nume, i_cmp
-    integer :: jcmp, jdesc, jvale, jptma, jvalv
-    integer :: jdesc_read, jvale_read, jptma_read
-    integer :: icode_read, icode_n, icode
-    integer :: iasm, ias
-    integer :: iasm_read, ias_read
+    character(len=19) :: cabl_sigm_read, tabl2, lisnom
+    integer :: iret
+    integer :: nbnom, jlsnom
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! - Initializations
+! - on interdit ADHERENT = NON de DEFI_CABLE_BP dans ce cas
 !
-    keywordfact = 'RELA_CINE_BP'
-    icode_n = 2**cmp_index_n
+    call ltnotb(cabl_prec, 'CABLE_GL', tabl2)
+    lisnom = '&&CAPREC.ADHERENT'
+    call tbexve(tabl2, 'ADHERENT', lisnom, 'V', nbnom,&
+                k8bid)
+    call jeveuo(lisnom, 'L', jlsnom)
+    if (zk8(jlsnom)(1:3).eq.'NON') call u2mess('F','MODELISA3_38')
+    call jedetr(lisnom)
 !
-! - Read stresses
+! - Transformation de la carte en champ
 !
     cabl_sigm_read = cabl_prec//'.CHME.SIGIN'
     call jeexin(cabl_sigm_read//'.DESC', iret)
     if (iret.eq.0) call u2mesk('F','CHARGES2_49', 1, cabl_prec)
-!
-    if (l_first) then
-!
-! ----- Reference field in cabl_sigm
-!
-        call copisd('CHAMP_GD', 'G', cabl_sigm_read, cabl_sigm)
-        l_first = .false.
-        call etenca(cabl_sigm, ligrmo, iret)
-        ASSERT(iret.eq.0)
-!
-! ----- Only N component
-!
-        call jecreo(cabl_sigm//'.NCMP', 'V V K8')
-        call jeecra(cabl_sigm//'.NCMP', 'LONMAX', nb_cmp_sief, ' ')
-        call jecreo(cabl_sigm//'.VALV', 'V V R')
-        call jeecra(cabl_sigm//'.VALV', 'LONMAX', nb_cmp_sief, ' ')
-        call jeveuo(cabl_sigm//'.NCMP', 'E', jcmp)
-        do i_cmp = 1, nb_cmp_sief
-            zk8(jcmp+i_cmp-1) = ' '
-        enddo
-        zk8(jcmp) = 'N'
-    else
-        call etenca(cabl_sigm_read, ligrmo, iret)
-        ASSERT(iret.eq.0)
-        call jeveuo(cabl_sigm//'.DESC', 'L', jdesc)
-        call jeveuo(cabl_sigm//'.VALE', 'L', jvale)
-        call jeveuo(cabl_sigm//'.PTMA', 'L', jptma)
-        call jeveuo(cabl_sigm//'.VALV', 'E', jvalv)
-        call jeveuo(cabl_sigm_read//'.DESC', 'L', jdesc_read)
-        call jeveuo(cabl_sigm_read//'.VALE', 'L', jvale_read)
-        call jeveuo(cabl_sigm_read//'.PTMA', 'L', jptma_read)
-!
-! ----- Combine values with first field
-!
-        iasm       = zi(jdesc       +1)
-        iasm_read  = zi(jdesc_read  +1)
-        do elem_nume = 1, nb_elem
-            ias        = zi(jptma      +elem_nume-1)
-            ias_read   = zi(jptma_read +elem_nume-1)
-            icode      = zi(jdesc      +3+2*iasm      + nbec_sief*(ias - 1))
-            icode_read = zi(jdesc_read +3+2*iasm_read + nbec_sief*(ias_read-1))
-            if (icode_read .eq. icode_n) then
-                zr(jvalv) = zr(jvale_read + nb_cmp_sief*(ias_read-1))
-                if (icode .eq. icode_n) then
-                    zr(jvalv) = zr(jvalv) + zr(jvale + nb_cmp_sief*(ias_read-1))
-                endif
-                call nocart(cabl_sigm, 3, k8bid, 'NUM', 1,&
-                            k8bid, elem_nume, ' ', 1)
-            endif
-        enddo
-!
-        call jelibe(cabl_sigm_read//'.DESC')
-        call jelibe(cabl_sigm_read//'.VALE')
-        call jelibe(cabl_sigm_read//'.PTMA')
-        call jedetc('V', cabl_sigm_read, 1)
-    endif
+
+    ASSERT(nbchs.lt.10000)
+    call codent(nbchs, 'D0', chen)
+    call carces(cabl_sigm_read, 'ELEM', ' ', 'V', '&&CAPREC.CES'// chen,&
+                'A', iret)
+    zk16(jlces+iocc-1)='&&CAPREC.CES'//chen
+    zr(jlr+iocc-1)=1.d0
+    zl(jll+iocc-1)=.true.
+    nbchs=nbchs+1
+    call jelibe(cabl_sigm_read//'.DESC')
+    call jelibe(cabl_sigm_read//'.VALE')
+    call jedetc('V', cabl_sigm_read, 1)
 !
     call jedema()
 end subroutine

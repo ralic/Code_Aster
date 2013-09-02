@@ -47,6 +47,7 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
     character(len=16) :: comcod
     integer :: iarg
 !
+
     nbkit=0
     if ((comp(1:4).eq.'KIT_') .or. (comp(1:4).eq.'META')) then
         do 101 ii = 1, dimaki
@@ -63,7 +64,7 @@ subroutine nmdoki(moclef, modele, comp, k, dimaki,&
             call lcinfo(comcod, numlc2, nbvarm)
 !          FAIRE UN TRAITEMENT SPECIFIQUE META CAR
             nbvari = nbvari*nbvarm + nbvari + 1
-        else if (comp.eq.'KIT_DDI') then
+        else if ((comp.eq.'KIT_DDI').or.(comp.eq.'KIT_CG')) then
             nbkit=2
             call getvtx(moclef, 'RELATION_KIT', k, iarg, 2,&
                         nomkit(1), n1)
