@@ -400,7 +400,7 @@ MECAF1=MECA_STATIQUE(INFO=niv_info,
                                 NMAX_ITER=100,
                                 NB_REORTHO_DD=20,
                                 INFO_FETI='FFFFFFFFFFTFFF',
-                                RESI_RELA=1.E-8,
+                                RESI_RELA=1.E-10,
                                 ));
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -446,7 +446,7 @@ MECAF2=MECA_STATIQUE(INFO=niv_info,
                                 NMAX_ITER=100,
                                 NB_REORTHO_DD=20,
                                 INFO_FETI='FFFFFFFFFFTFFF',
-                                RESI_RELA=1.E-8,
+                                RESI_RELA=1.E-10,
                                 ));
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
