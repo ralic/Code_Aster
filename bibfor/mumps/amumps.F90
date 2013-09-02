@@ -81,7 +81,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 #include "jeveux.h"
     type (smumps_struc) , pointer :: smpsk
     integer :: jslvk, jslvr, rang, nbproc, niv, ifm, ibid, ietdeb, ifactm
-    integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, vali(4), pcpi
+    integer :: ietrat, jrefa, nprec, jslvi, ifact, iaux, iaux1, vali(4), pcpi
     character(len=1) ::  rouc, type, prec
     character(len=4) :: etam, klag2
     character(len=8) :: ktypr, k8bid
@@ -243,6 +243,16 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ------------------------------------------------
 !        ANALYSE MUMPS:
 !       ------------------------------------------------
+!       INITIALISATIONS POUR ANALYSE+FACTO+CORRECTION EVENTUELLE
+        ifact=0
+        lpb13=.false.
+        if (usersm(1:4) .eq. 'AUTO') then
+            ifactm=pcentp(1)
+        else
+            ifactm=1
+        endif
+
+10      continue
         call amumpt(2, kmonit, temps, rang, nbproc,&
                     kxmps, lquali, type, ietdeb, ietrat,&
                     rctdeb, ldist)
@@ -277,8 +287,8 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       -----------------------------------------------------
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
-        call amumpu(1, 'S', kxmps, usersm, ibid,&
-                    lbid, k12bid)
+         if (.not.lpb13) call amumpu(1, 'S', kxmps, usersm, ibid,lbid, k12bid)
+
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE
         if (usersm(1:4) .eq. 'EVAL') goto 99
@@ -304,22 +314,16 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 ! --- CELA PEUT ETRE DU A UN ICNTL(23) MAL ESTIME
 !
         smpsk%job = 2
-        ifact=0
-        lpb13=.false.
-        if (usersm(1:4) .eq. 'AUTO') then
-            ifactm=pcentp(1)
-        else
-            ifactm=1
-        endif
         if (lresol) then
             pcpi=smpsk%icntl(14)
             do ifact = 1, ifactm
                 call smumps(smpsk)
                 iaux=smpsk%infog(1)
+                iaux1=smpsk%icntl(23)
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(14)
-                if ((iaux.eq.-8) .or. (iaux.eq.-9) .or. (iaux.eq.-14) .or. (iaux.eq.-15)&
-                    .or. (iaux.eq.-17) .or. (iaux.eq.-20)) then
+                if ((iaux.eq.-8) .or. ((iaux.eq.-9).and.(iaux1.eq.0)) .or. (iaux.eq.-14) .or. &
+                    (iaux.eq.-15).or. (iaux.eq.-17) .or. (iaux.eq.-20)) then
                     if (ifact .eq. ifactm) then
 ! ---  ICNTL(14): PLUS DE NOUVELLE TENTATIVE POSSIBLE
                         if (lpreco) then
@@ -334,10 +338,9 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                             call u2mesi('F', 'FACTOR_53', 3, vali)
                         endif
                     else
-! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE
+! ---  ICNTL(14): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                         smpsk%icntl(14)=smpsk%icntl(14)*pcentp(2)
                         zi(jslvi-1+2)=smpsk%icntl(14)
-                        if ((iaux.eq.-9) .or. (ifact.eq.(ifactm-1))) smpsk%icntl(22)=1
                         if ((niv.ge.2) .and. (.not.lpreco)) then
                             vali(1)=smpsk%icntl(14)/pcentp(2)
                             vali(2)=smpsk%icntl(14)
@@ -345,18 +348,23 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                             vali(4)=ifactm
                             call u2mesi('I', 'FACTOR_58', 4, vali)
                         endif
+                        ifactm=max(ifactm-ifact,1)
+                        goto 10
                     endif
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(23)
 ! --- CE N'EST UTILE QU' UNE FOIS D'OU LE CONTROLE DE LPB13
-                else if ((iaux.eq.-13).and.(.not.lpb13)) then
-! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE
+                else if (((iaux.eq.-13).or.((iaux.eq.-9).and.(iaux1.ne.0))).and.(.not.lpb13)) then
+! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                     if ((niv.ge.2) .and. (.not.lpreco)) then
                         vali(1)=smpsk%icntl(23)
                         call u2mesi('I', 'FACTOR_85', 1, vali)
                     endif
                     lpb13=.true.
                     smpsk%icntl(23)=0
+                    smpsk%icntl(22)=1
+                    ifactm=max(ifactm-ifact,1)
+                    goto 10
                 else
 ! ---  SORTIE STANDARD SANS ERREUR
                     exit

@@ -379,7 +379,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !        --- PCENTP(2) --> TERME MULTIPLICATIF DE PCENT_PIVOT ENTRE DEUX
 !            TENTATIVES DE FACTO.:
 !                    PCENT_PIVOT_NEW=PCENT_PIVOT_OLD*PCENTP(2)
-    pcentp(1)=3
+    pcentp(1)=5
     pcentp(2)=2
     if (rouc .eq. 'R') then
         if (prec .eq. 'S') then

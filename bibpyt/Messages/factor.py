@@ -145,7 +145,7 @@ Solveur MUMPS :
   MUMPS a manqué de mémoire lors de la factorisation de la matrice à cause du pivotage.
   L'espace supplémentaire requis par ce pivotage est difficilement prévisible a priori.
   Il est contrôlé par le paramètre SOLVEUR/PCENT_PIVOT.
-  MUMPS a essayé, sans succès, %(i1)d valeurs de ce paramètre:
+  MUMPS a essayé, sans succès, plusieurs valeurs de ce paramètre:
                  partant de %(i2)d %% pour finir à %(i3)d %%.
 Conseils :
   - Augmenter la valeur du mot clé  SOLVEUR/PCENT_PIVOT. On a le droit de dépasser la valeur 100
@@ -200,8 +200,7 @@ Solveur MUMPS :
   L'espace supplémentaire requis par ce pivotage est difficilement prévisible a priori.
   MUMPS vient d'échouer avec une valeur de cet espace supplémentaire égale à: 
                                SOLVEUR/PCENT_PIVOT=%(i1)d %%.
-  On va réessayer avec une valeur plus importante: %(i2)d %% et/ou en passant en gestion
-  mémoire OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE').
+  On va réessayer avec une valeur plus importante: %(i2)d %%.
   La prochaine fois, relancer votre calcul en prenant ces nouvelles valeurs du paramétrage.
   C'est la tentative n %(i3)d de factorisation ! 
 
@@ -475,8 +474,10 @@ Solveur MUMPS :
   sur une estimation de la mémoire disponible et celle-ci est sans doute faussée. Cela peut 
    arriver, par exemple, sur d'anciens noyaux système.
 
-  > Par précaution, on va réessayer en laissant complètement la main à MUMPS. Le calcul sera
-    potentiellement plus lent, mais cela gommera ces problèmes d'estimations mémoire préalables.
+  > Par précaution, on va réessayer en laissant complètement la main à MUMPS et en passant en
+    gestion mémoire OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE'). Le calcul sera
+    potentiellement plus lent, mais cela gommera ces problèmes d'estimations mémoire préalables tout
+    en économisant au maximum la consommation mémoire de MUMPS.
   
 Conseil :
   Contactez l'équipe de développement.
