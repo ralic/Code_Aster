@@ -610,22 +610,20 @@ RESUGLO=REST_COND_TRAN(   RESULTAT=DYTREX,
                                         
                                         
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
-                  INST=5.0000000000000001E-3,
+                  INST=5.0E-3,
                   RESULTAT=DYTREX,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.011228399999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.011228399840872,
                   ),
           )
 
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
-                  INST=3.0000000000000001E-3,
+                  INST=3.0E-3,
                   RESULTAT=DYTREX,
                   NOM_CHAM='VITE',
                   NOM_CMP='DX',
-                  VALE_CALC=4.1317300000000001,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=4.1329544771015,
                   ),
           )
 
@@ -634,29 +632,27 @@ TEST_RESU(RESU=_F(GROUP_NO='PC3',
                   RESULTAT=DYTREX,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.0100389,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-0.010038734764066,
                   ),
           )
 
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
-                  INST=5.0000000000000001E-3,
+                  INST=5.0E-3,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=DYTREX,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.011228400,
+                  VALE_CALC=0.011228399840872,
                   VALE_REFE=0.0113478,
-                  PRECISION=0.010999999999999999,),
+                  PRECISION=0.011,),
           )
 
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
-                  INST=5.0000000000000001E-3,
+                  INST=5.0E-3,
                   RESULTAT=RESUGLO,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.011228399999999999,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.011228399840872,
                   ),
           )
 
@@ -665,20 +661,19 @@ TEST_RESU(RESU=_F(GROUP_NO='PC3',
                   RESULTAT=RESUGLO,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.0100389,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-0.010038734764066,
                   ),
           )
 
 TEST_RESU(RESU=_F(GROUP_NO='PC3',
-                  INST=5.0000000000000001E-3,
+                  INST=5.0E-3,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESUGLO,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.011228400,
+                  VALE_CALC=0.011228399840872,
                   VALE_REFE=0.0113478,
-                  PRECISION=0.010999999999999999,),
+                  PRECISION=0.011,),
           )
 
 FIN( ) 

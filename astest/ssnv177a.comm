@@ -233,15 +233,13 @@ ROT_ENDO=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_endo),
                      PROL_DROITE='CONSTANT',);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=(135.71600000000001, -44.283999999999992),
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=(135.716, -44.284),
                         VALE_PARA=1.0,
                         FONCTION=ROT_EPSI,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=(23.0825, -156.91749999999999),
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=(23.08248, -156.91752),
                         VALE_PARA=1.0,
                         FONCTION=ROT_ENDO,
                         ),

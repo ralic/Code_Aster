@@ -291,7 +291,7 @@ SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 ################### TESTS U_F COMPARAISON GEFDYN ####################
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.070000000000000007,
+           PRECISION=0.07,
            VALE_CALC= 4.22748732E-07,
            VALE_REFE=4.01E-07,
            NOM_PARA='V7',
@@ -311,9 +311,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
+           PRECISION=0.05,
            VALE_CALC=-4.41827286E-07,
-           VALE_REFE=-4.2500000000000001E-07,
+           VALE_REFE=-4.25E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -321,7 +321,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
+           PRECISION=0.05,
            VALE_CALC=-4.41827286E+05,
            VALE_REFE=-4.25000E5,
            NOM_PARA='SIGN',
@@ -333,8 +333,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 ################### TESTS U_M NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=-8.7497999999999994E-08,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-8.7498030736702E-08,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -342,8 +341,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-8.7498E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-87498.030736702,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -351,46 +349,41 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.8526300000000001E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.8526340695249E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.85263E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.8526340695249E5,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.8813900000000001E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-2.8813882064631E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.88139E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-2.8813882064631E5,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
 
 ################### TESTS U_F  NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=1.3367999999999999E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.336803580613E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -398,8 +391,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-6.5334599999999999E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-65334.600000045,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -407,44 +399,35 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.3829500000000001E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.3829472449661E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.70079E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.7007912449665E5,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.1896300000000002E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.1896262525914E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.26026E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.2602582525915E5,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
-
-IMPR_TABLE(TABLE=SAUT_M,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'),);
-IMPR_TABLE(TABLE=SIGN_M,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'),);
-IMPR_TABLE(TABLE=SAUT_F,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'),);
-IMPR_TABLE(TABLE=SIGN_F,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'),);
 
 FIN()

@@ -53,13 +53,11 @@ DETRUIRE(CONCEPT=_F(NOM=form))
 
 # tester que fonc est bien celui du jdc
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
-                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=1.0,
                         FONCTION=fonc,),
               )
 
 TEST_TABLE(VALE_CALC=2.4691200000000002,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TOUTRESU',
            TABLE=tabres,
            FILTRE=_F(NOM_PARA='INST',

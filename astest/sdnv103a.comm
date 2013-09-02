@@ -187,21 +187,19 @@ DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS
 
 TEST_RESU(RESU=(_F(GROUP_NO='A2',
-                   INST=2.4999999999999999E-07,
+                   INST=2.5E-07,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-2.3267500000000001,
-                   TOLE_MACHINE=6.9999999999999999E-06,
+                   VALE_CALC=-2.3267500000045,
                    CRITERE='RELATIF',
                    ),
                 _F(GROUP_NO='A2',
-                   INST=2.4999999999999999E-07,
+                   INST=2.5E-07,
                    RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DZ',
-                   VALE_CALC=-2.27000000172E5,
-                   TOLE_MACHINE=3.6500000000000002E-06,
+                   VALE_CALC=-2.2700000007693E5,
                    CRITERE='RELATIF',
                    ),
                 ),
@@ -219,11 +217,10 @@ TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-
            NOM_PARA='JEU',
            TABLE=TABJEU,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.4999999999999999E-07,),
+                     VALE=2.5E-07,),
            )
 
 IMPR_TABLE(TABLE=TABJEU,);

@@ -205,44 +205,42 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=ULAG))
 
 TEST_TABLE(
-           VALE_CALC=311.88499999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=311.88545427563,
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.20000000000000001,),
+                     VALE=0.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=1208.97,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1208.7819654759,
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2414.5320729110999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2414.2109273652,
+           TOLE_MACHINE=2.E-3,               # TODO TOLE_MACHINE
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2095.6286117451,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2095.704435962,
+           TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2352.5696275201999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2352.7564548006,
+           TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
            NOM_PARA='DY',
            TABLE=T_REA_LA,
            FILTRE=_F(NOM_PARA='INST',
@@ -319,44 +317,39 @@ IMPR_TABLE(TABLE=T_REA_CO,);
 IMPR_TABLE(TABLE=T_DEP_CO,);
 
 TEST_TABLE(
-           VALE_CALC=311.88499999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=311.88546916638,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.20000000000000001,),
+                     VALE=0.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=1210.4300000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1210.5916564958,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2432.3157105804999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2431.6311462501,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2085.1589042336,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2085.1589045614,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2342.3299999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2341.905899643,
            NOM_PARA='DY',
            TABLE=T_REA_CO,
            FILTRE=_F(NOM_PARA='INST',
@@ -433,48 +426,43 @@ IMPR_TABLE(TABLE=T_DEP_ES,);
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=UESCL))
 
 TEST_TABLE(
-           VALE_CALC=311.88546925896998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=311.88546916638,
            NOM_PARA='DY',
            TABLE=T_REA_ES,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.20000000000000001,),
+                     VALE=0.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=1273.7681520778999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1273.7681509716,
            NOM_PARA='DY',
            TABLE=T_REA_ES,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 TEST_TABLE(
-           VALE_CALC=3036.8846196129002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3036.8846170366,
            NOM_PARA='DY',
            TABLE=T_REA_ES,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=4817.1535229181,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4817.1535188104,
            NOM_PARA='DY',
            TABLE=T_REA_ES,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=6256.0715858420999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6256.0715800396,
            NOM_PARA='DY',
            TABLE=T_REA_ES,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.93999999999999995,),
+                     VALE=0.94,),
            )
 
 FIN();

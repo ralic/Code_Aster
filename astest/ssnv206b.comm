@@ -121,27 +121,21 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
 
 
 U1=STAT_NON_LINE(
-                            MODELE=MODELE,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F(
-                CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F(
-                CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F(
-                CHARGE = DEPL_1)),
-                         COMP_INCR=_F(
-                RELATION = 'LETK',
-                ALGO_INTE='NEWTON_PERT',
-                RESI_INTE_RELA=1E-10,
-                ITER_INTE_MAXI = 100,
-                ITER_INTE_PAS=-5,
-                ),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 50),
-                         INCREMENT=_F(
-                LIST_INST = DEFLIST1,),
-
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                EXCIT=(      _F( CHARGE = CHAR_U1,
+                                 FONC_MULT = COEF1),
+                             _F( CHARGE = CHAR_U2,
+                                 FONC_MULT = COEF1),
+                             _F( CHARGE = DEPL_1)),
+                COMP_INCR=_F( RELATION = 'LETK',
+                              ALGO_INTE='NEWTON_PERT',
+                              RESI_INTE_RELA=1E-10,
+                              ITER_INTE_MAXI = 100,
+                              ITER_INTE_PAS=-5,      ),
+                CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 50),
+                INCREMENT=_F( LIST_INST = DEFLIST1,),
                 )
 
 
@@ -294,16 +288,14 @@ TEST_RESU(RESU=(_F(INST=7000.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N4',
                    NOM_CMP='DX',
-                   VALE_CALC=-7.6000000000000004E-4,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-7.6E-4,
                    ),
                 _F(INST=1.3000E4,
                    RESULTAT=U2,
                    NOM_CHAM='DEPL',
                    NOEUD='N4',
                    NOM_CMP='DX',
-                   VALE_CALC=0.030259999999999999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.030264925688308,
                    ),
                 ),
           )
@@ -314,15 +306,13 @@ TEST_RESU(RESU=(_F(INST=7000.0,
                    NOEUD='N4',
                    NOM_CMP='SIYY',
                    VALE_CALC=-5.0,
-                   TOLE_MACHINE=1.E-3,
                    ),
                 _F(INST=1.3000E4,
                    RESULTAT=U2,
                    NOM_CHAM='SIGM_NOEU',
                    NOEUD='N4',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-11.945,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-11.944621339874,
                    ),
                 ),
           )

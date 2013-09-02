@@ -74,11 +74,7 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
-                    );
-
-
-IMPR_CO(CONCEPT=_F(NOM=COMPORP))
-
+                    )
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=(
@@ -119,47 +115,42 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
                         );
 
-
-IMPR_TABLE(TABLE=SOLNL)
-
 # comparaison a la modelisation A - agregat 10 grains
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.089999999999999997,
-           VALE_CALC=301.139724363,
+           VALE_CALC=301.13972436315,
            VALE_REFE=279.77699999999999,
            NOM_PARA='SIZZ',
            TABLE=SOLNL,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0000000000000001E-3,),
+                     VALE=5.0E-3,),
            )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.059999999999999998,
-           VALE_CALC= 2.92603509E-03,
+           VALE_CALC= 2.9260350907111E-03,
            VALE_REFE=3.0731600000000001E-3,
            NOM_PARA='V3',
            TABLE=SOLNL,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0000000000000001E-3,),
+                     VALE=5.0E-3,),
            )
 
 # non regression
 TEST_TABLE(
-           VALE_CALC=301.13510000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=301.13972436315,
            NOM_PARA='SIZZ',
            TABLE=SOLNL,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0000000000000001E-3,),
+                     VALE=5.0E-3,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2.9260670000000001E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.9260350907111E-3,
            NOM_PARA='V3',
            TABLE=SOLNL,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0000000000000001E-3,),
+                     VALE=5.0E-3,),
            )
 
 # test de FORMAT_TABLE='CMP_LIGNE'
@@ -189,9 +180,6 @@ SOLNL2=SIMU_POINT_MAT(INFO=1,
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
                         );
 
-
-IMPR_TABLE(TABLE=SOLNL2)
-
 # comparaison a la modelisation A - agregat 10 grains
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.089999999999999997,
@@ -213,7 +201,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            NOM_PARA='VALEUR',
            TABLE=SOLNL2,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=5.0000000000000001E-3,),
+                      VALE=5.0E-3,),
                    _F(NOM_PARA='CMP',
                       VALE_K='V3',),
                    ),
@@ -222,24 +210,22 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # non regression
 
 TEST_TABLE(
-           VALE_CALC=301.13510000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=301.13972436315,
            NOM_PARA='VALEUR',
            TABLE=SOLNL2,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=5.0000000000000001E-3,),
+                      VALE=5.0E-3,),
                    _F(NOM_PARA='CMP',
                       VALE_K='SIZZ',),
                    ),
            )
 
 TEST_TABLE(
-           VALE_CALC=2.9260670000000001E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.9260350907111E-3,
            NOM_PARA='VALEUR',
            TABLE=SOLNL2,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=5.0000000000000001E-3,),
+                      VALE=5.0E-3,),
                    _F(NOM_PARA='CMP',
                       VALE_K='V3',),
                    ),
@@ -249,7 +235,6 @@ TBEPZZ=CALC_TABLE(TABLE = SOLNL2,
                ACTION =_F(OPERATION='FILTRE',
                           NOM_PARA='CMP',CRIT_COMP='EQ',VALE_K='EPZZ'))
 
-IMPR_TABLE(TABLE=TBEPZZ)
 
 FEPZZ=RECU_FONCTION(TABLE=TBEPZZ,
                    PARA_X='INST',
@@ -260,7 +245,6 @@ TBSIZZ=CALC_TABLE(TABLE = SOLNL2,
                ACTION =_F(OPERATION='FILTRE',
                           NOM_PARA='CMP',CRIT_COMP='EQ',VALE_K='SIZZ'))
 
-IMPR_TABLE(TABLE=TBSIZZ)
 
 FSIZZ=RECU_FONCTION(TABLE=TBSIZZ,
                    PARA_X='INST',

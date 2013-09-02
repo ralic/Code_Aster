@@ -269,249 +269,140 @@ TRAN3=REST_GENE_PHYS(RESU_GENE=TRAN_GE3,
 
 #
 
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=(
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='DEPL',
                   NOEUD='N8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.0164295,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.016429482567223,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
                   NOEUD='N8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.025415799999999999,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.025415803241973,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='DEPL',
                   NOEUD='M8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.011167699999999999,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.011167695859929,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
                   NOEUD='M8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.044263999999999998,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.044264003005645,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='DEPL',
                   NOEUD='O8',
                   NOM_CMP='DY',
-                  VALE_CALC=5.8975700000000004E-3,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=5.8975672775191E-03,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
                   NOEUD='O8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.104583,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.10458258732287,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
                   NOEUD='N8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.016426400000000001,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.016426416903430,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
                   NOEUD='N8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.025415500000000001,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.025415533783830,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
                   NOEUD='M8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.011162699999999999,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.011162681225834,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
                   NOEUD='M8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.044119699999999998,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.044119727748667,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
                   NOEUD='O8',
                   NOM_CMP='DY',
-                  VALE_CALC=5.8873600000000003E-3,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=5.887355556664E-03,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
                   NOEUD='O8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.10455,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.10454997181750,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
                   NOEUD='N8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.016426900000000001,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.016426941407286,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
                   NOEUD='N8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.025411,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.025410985444505,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
                   NOEUD='M8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.011163299999999999,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.011163261855857,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
                   NOEUD='M8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.044259100000000003,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.044259071807201,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
                   NOEUD='O8',
                   NOM_CMP='DY',
-                  VALE_CALC=5.88712E-3,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=5.8871162027632E-03,
                   ),
-          )
-
-#
-
-TEST_RESU(RESU=_F(INST=1.0,
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
                   NOEUD='O8',
                   NOM_CMP='DY',
-                  VALE_CALC=0.104587,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
+                  VALE_CALC=0.10458711265535,
                   ),
-          )
+          ))
 
-#
 ##RESTITUTION D'UN DEPLACEMENT
-
-
-#
 
 LISTINST=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=_F(JUSQU_A=1.,
                                       NOMBRE=250,),);
-
-#
 
 FONC1=RECU_FONCTION(RESU_GENE=TRAN_GE1,
                     LIST_INST=LISTINST,
@@ -520,11 +411,7 @@ FONC1=RECU_FONCTION(RESU_GENE=TRAN_GE1,
                     NOEUD='M8',
                     INTERPOL='LIN',);
 
-#
 ##RESTITUTION D'UN PARAMETRE DE CHOC
-
-
-#
 
 FONC2=RECU_FONCTION(RESU_GENE=TRAN_GE1,
                     NOEUD_CHOC='M8',
@@ -533,11 +420,7 @@ FONC2=RECU_FONCTION(RESU_GENE=TRAN_GE1,
                     LIST_PARA=LISTINST,
                     INTITULE='CHOC1_2',);
 
-#
 ##IMPRESSION D'UN DEPLACEMENT
-
-
-#
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               PILOTE='POSTSCRIPT',
@@ -546,11 +429,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_X='TEMPS(S)',
               LEGENDE_Y='DEPLACEMENT(M)',);
 
-#
 ##IMPRESSION D'UN PARAMETRE DE CHOC
-
-
-#
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               PILOTE='POSTSCRIPT',
@@ -560,11 +439,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_X='TEMPS(S)',
               LEGENDE_Y='DEPLACEMENT(M)',);
 
-#
 ##CALCULS STATISTIQUES
-
-
-#
 
 TABLE=POST_DYNA_MODA_T(RESU_GENE=TRAN_GE1,
                        CHOC=_F(INST_INIT=0.,
@@ -573,8 +448,4 @@ TABLE=POST_DYNA_MODA_T(RESU_GENE=TRAN_GE1,
                                SEUIL_FORCE=0.,
                                DUREE_REPOS=0.,),);
 
-#
-
-FIN();
-
-#
+FIN()

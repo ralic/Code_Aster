@@ -259,8 +259,7 @@ DEPLA = POST_RELEVE_T(
 # TESTS RESU
 
 TEST_TABLE(
-           VALE_CALC=3.7160114000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.7160599343029,
            NOM_PARA='DY',
            TABLE=FORC,
            FILTRE=_F(NOM_PARA='INST',
@@ -268,8 +267,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.0367141100000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.036758279583,
            NOM_PARA='DY',
            TABLE=FORC,
            FILTRE=_F(NOM_PARA='INST',
@@ -277,8 +275,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.5900151200000003,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.5900595605716,
            NOM_PARA='DY',
            TABLE=FORC,
            FILTRE=_F(NOM_PARA='INST',
@@ -291,8 +288,7 @@ TEST_RESU(RESU=_F(INST=10,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
-                  VALE_CALC=3.8705561473717E-03,
-                  TOLE_MACHINE=1.E-6,
+                  VALE_CALC=3.8705561473718E-03,
                   MAILLE='M9788',),
           )
           
@@ -302,7 +298,6 @@ TEST_RESU(RESU=_F(INST=10,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
                   VALE_CALC=16.693315519188,
-                  TOLE_MACHINE=1.E-6,
                   MAILLE='M9788',),
           )
           
@@ -311,8 +306,7 @@ TEST_RESU(RESU=_F(INST=10,
                   RESULTAT=U,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V7',
-                  VALE_CALC=4.8093409300539E-03,
-                  TOLE_MACHINE=1.E-6,
+                  VALE_CALC=4.809340930054E-03,
                   NOEUD='N137'
                   ),
           )
@@ -322,7 +316,6 @@ TEST_RESU(RESU=_F(INST=10,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIGN',
                   VALE_CALC=12.253117222718,
-                  TOLE_MACHINE=1.E-6,
                   NOEUD='N137'
                   ),
           )

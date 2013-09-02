@@ -371,7 +371,7 @@ U0=CALC_CHAMP(reuse=U0,
        RESULTAT=U0)
 
 COUPEY = INTE_MAIL_3D ( MAILLAGE = MAIL ,
-          INFO = 1 ,
+                        INFO = 1 ,
                         DEFI_SEGMENT =_F( ORIGINE   = (0.0 ,0.01,0.5),
                         EXTREMITE = (0. ,15,0.5),
        ),
@@ -397,20 +397,17 @@ PRES_MAY=POST_RELEVE_T(ACTION=_F(INTITULE='PRES_MA',
                                 NOM_CMP=('PRE1',),
                                 OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=PRES_MAY,
-#           FORMAT='XMGRACE',
            NOM_PARA=('COOR_Y','PRE1'),
            FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
-    VALE=T1, 
-           PRECISION=0.0001),),
-
+                            VALE=T1, 
+                            PRECISION=0.0001),),
            TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
            );
 IMPR_TABLE(TABLE=SIG_MAY,
            NOM_PARA=('COOR_Y','SIYY'),
            FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
-    VALE=T1, 
+                            VALE=T1, 
            PRECISION=0.0001),),
-
            TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
            );
       

@@ -178,39 +178,35 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  OPERATION='EXTRACTION',),);
 
 TEST_TABLE(
-           VALE_CALC=313.96515859657001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=313.92180378218,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.20000000000000001,),
+                     VALE=0.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=1220.6114997883999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1220.3603686296,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2456.8221137607002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2454.8288778733,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=2067.7188799695,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2066.3013028737,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 FIN();

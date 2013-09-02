@@ -251,8 +251,7 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #--------------------------------------------------------------
 
 TEST_TABLE(
-           VALE_CALC=2.8785299999999998E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.8785386525331E-03,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -260,8 +259,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.8826300E7,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.8826376134578E+07,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -269,8 +267,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.5560899999999997E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.5560935298917E-03,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -278,8 +275,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.0492200E7,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.049221207627E+07,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -287,8 +283,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.4787899999999999E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=7.4787982340231E-03,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -296,8 +291,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.944520E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.9445202510233E+06,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -305,8 +299,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.015767900000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.015767913795967,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -314,23 +307,11 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.56080E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=8.5608022638359E+05,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=140,),
            )
-
-#--------------------------------------------------------------
-IMPR_FONCTION(
-              FORMAT='TABLEAU',
-              COURBE=_F(FONC_X = UY,
-                        FONC_Y = FY,
-                       )
-             )
-
-IMPR_TABLE(TABLE=TAB_U)
-IMPR_TABLE(TABLE=FORCE)
 
 FIN()

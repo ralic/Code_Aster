@@ -229,8 +229,7 @@ FORCE=CALC_TABLE(TABLE=TFORCE,
 # TEST SUR LA REPONSE GLOBALE
 # ----------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=4269.54,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4269.5834407808,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
@@ -238,8 +237,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4767.5900000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4767.5991863925,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
@@ -247,8 +245,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5109.7700000000004,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5110.2028593694,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
@@ -256,8 +253,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5383.7600000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5386.397273114,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',

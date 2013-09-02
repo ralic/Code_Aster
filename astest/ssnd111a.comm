@@ -234,8 +234,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=42,
 
 
 # test de VISCOCHAB explicite = SIDOLO : non regression
-TEST_FONCTION(VALEUR=_F(VALE_CALC=224.30987999999999,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=224.3099,
                         VALE_PARA=39.75,
                         NOM_PARA='INST',
                         FONCTION=f03yE,
@@ -243,8 +242,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=224.30987999999999,
               )
 
 # reference= VISCOCHAB explicite = SIDOLO
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.8111399999999999E-3,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.811138E-3,
                         VALE_PARA=40.5,
                         NOM_PARA='INST',
                         FONCTION=qve,
@@ -255,7 +253,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.8111399999999999E-3,
 
 # reference= VISCOCHAB explicite = SIDOLO
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.798124E-3,
-                        VALE_REFE=1.81114E-3,
+                        VALE_REFE=1.811138E-3,
                         VALE_PARA=40.5,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=9.E-3,
@@ -265,7 +263,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.798124E-3,
 
 # reference= VISCOCHAB explicite = SIDOLO
 TEST_FONCTION(VALEUR=_F(VALE_CALC=224.0339686,
-                        VALE_REFE=224.30988,
+                        VALE_REFE=224.3099,
                         VALE_PARA=39.75,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=2.E-3,
@@ -277,7 +275,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=224.0339686,
 
 # reference= VISCOCHAB explicite = SIDOLO
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00179539158538,
-                        VALE_REFE=1.8111399999999999E-3,
+                        VALE_REFE=1.811138E-3,
                         VALE_PARA=40.5,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=1.E-2,
@@ -287,7 +285,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00179539158538,
 
 # reference= VISCOCHAB explicite = SIDOLO
 TEST_FONCTION(VALEUR=_F(VALE_CALC=224.102943242,
-                        VALE_REFE=224.30987999999999,
+                        VALE_REFE=224.3099,
                         VALE_PARA=39.75,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=2.E-3,

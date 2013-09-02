@@ -176,8 +176,8 @@ TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 # TEST REFERENCE
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
-           VALE_CALC=-8.659716973,
+           PRECISION=0.15,
+           VALE_CALC=-8.659716973133,
            VALE_REFE=-8.0083311249999998,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
@@ -186,8 +186,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
-           VALE_CALC=-16.460266150,
+           PRECISION=0.15,
+           VALE_CALC=-16.460266149598,
            VALE_REFE=-16.016662499999999,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
@@ -196,8 +196,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
-           VALE_CALC=-23.981505154,
+           PRECISION=0.15,
+           VALE_CALC=-23.981505154254,
            VALE_REFE=-24.02499375,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
@@ -206,8 +206,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
-           VALE_CALC=-32.315054252,
+           PRECISION=0.15,
+           VALE_CALC=-32.315054506629,
            VALE_REFE=-32.033324999999998,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
@@ -221,8 +221,7 @@ TEST_RESU(RESU=_F(GROUP_NO='D',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.73820670973525004,
-                  TOLE_MACHINE=1.0000000000000001E-05,
+                  VALE_CALC=0.73820670958003,
                   ),
           )
 
@@ -231,8 +230,7 @@ TEST_RESU(RESU=_F(GROUP_NO='D',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=1.3018367174726,
-                  TOLE_MACHINE=1.0000000000000001E-05,
+                  VALE_CALC=1.3018366400531,
                   ),
           )
 
@@ -241,8 +239,7 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  VALE_CALC=-15.32178131601,
-                  TOLE_MACHINE=1.0000000000000001E-05,
+                  VALE_CALC=-15.321781176279,
                   ),
           )
 
@@ -251,8 +248,8 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  VALE_CALC=-12.002286887515,
-                  TOLE_MACHINE=1.0000000000000001E-05,
+                  VALE_CALC=-12.002283069286,
+                  TOLE_MACHINE=2.E-6,               # TODO TOLE_MACHINE
                   ),
           )
 

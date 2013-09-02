@@ -247,48 +247,44 @@ force1=CALC_TABLE(TABLE=force,
 # TEST SUR LE CONTRACTION DU DIAMETRE
 # ----------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=0.60567599999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.60577645811890,
            NOM_PARA='NDX',
            TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
 # ----------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=28.869599999999998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=28.869329959747,
            NOM_PARA='FR',
            TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
 # ----------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=0.93162900000000004,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.93163276664640,
            NOM_PARA='NDX',
            TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
 # ----------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=23.6023,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=23.602269800408,
            NOM_PARA='FR',
            TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 #-----------------------------------------------------------
@@ -297,13 +293,13 @@ TEST_TABLE(
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=0.333261511,
+           PRECISION=0.05,
+           VALE_CALC=0.33326151133450,
            VALE_REFE=0.349885,
            NOM_PARA='NDX',
            TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 #-----------------------------------------------------------
@@ -312,13 +308,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=29.385097860,
+           PRECISION=0.05,
+           VALE_CALC=29.385097860382,
            VALE_REFE=29.3597,
            NOM_PARA='FR',
            TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 #-----------------------------------------------------------
@@ -327,13 +323,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=0.605776458,
+           PRECISION=0.05,
+           VALE_CALC=0.60577645811890,
            VALE_REFE=0.620591,
            NOM_PARA='NDX',
            TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 #-----------------------------------------------------------
@@ -342,13 +338,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=28.869329960,
+           PRECISION=0.05,
+           VALE_CALC=28.869329959747,
            VALE_REFE=28.6069,
            NOM_PARA='FR',
            TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 #-----------------------------------------------------------
@@ -357,13 +353,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=0.931632767,
+           PRECISION=0.05,
+           VALE_CALC=0.93163276664640,
            VALE_REFE=0.95468299999999995,
            NOM_PARA='NDX',
            TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 #-----------------------------------------------------------
@@ -372,13 +368,13 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=23.602269800,
+           PRECISION=0.05,
+           VALE_CALC=23.602269800408,
            VALE_REFE=22.673100000000002,
            NOM_PARA='FR',
            TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 #-----------------------------------------------------------
@@ -401,7 +397,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=UP,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
-                  VALE_CALC=9.099817108336E-03,
+                  VALE_CALC=9.0998171083362E-03,
                   MAILLE='M114',),
           )
           
@@ -419,7 +415,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=UP,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V7',
-                  VALE_CALC=0.010345531595502,
+                  VALE_CALC=0.010345531595503,
                   NOEUD='NS76'
                   ),
           )

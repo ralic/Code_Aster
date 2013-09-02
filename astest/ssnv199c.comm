@@ -260,19 +260,13 @@ FRES = POST_RELEVE_T(
 
 TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   INST=3.0,
-                  REFERENCE='NON_DEFINI',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=4.618671260,
-                  VALE_REFE=4.6061236900000004,
-                  PRECISION=5.0000000000000001E-3,),
+                  VALE_CALC=4.618671260,),
           )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=1.E-2,
-           VALE_CALC=7.131642915,
-           VALE_REFE=7.1807147499999999,
+TEST_TABLE(VALE_CALC=7.131642915,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -281,19 +275,13 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
 
 TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   INST=5.0,
-                  REFERENCE='NON_DEFINI',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=6.904142377,
-                  VALE_REFE=6.9693988100000004,
-                  PRECISION=0.014999999999999999,),
+                  VALE_CALC=6.904142377,),
           )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=5.0000000000000001E-3,
-           VALE_CALC=5.831866022,
-           VALE_REFE=5.83764679,
+TEST_TABLE(VALE_CALC=5.831866022,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -302,26 +290,17 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
 
 TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   INST=7.0,
-                  REFERENCE='NON_DEFINI',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=9.625956831,
-                  VALE_REFE=9.7548271599999996,
-                  PRECISION=0.02,),
+                  VALE_CALC=9.625956831,),
           )
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=5.0000000000000001E-3,
-           VALE_CALC=4.945223815,
-           VALE_REFE=4.9343015100000001,
+TEST_TABLE(VALE_CALC=4.945223815,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=7.0,),
            )
-
-IMPR_TABLE(TABLE = UPILO)
-IMPR_TABLE(TABLE = FRES)
 
 FIN(FORMAT_HDF='OUI')

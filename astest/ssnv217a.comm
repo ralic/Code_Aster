@@ -168,8 +168,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC=0.86689832,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.86689831579605,
                   MAILLE='M19',),
           )
 
@@ -179,7 +178,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=8888.8888999999999,
-                  TOLE_MACHINE=1.E-3,
                   MAILLE='M19',),
           )
 
@@ -188,8 +186,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=12,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
-                  VALE_CALC=0.85897367999999996,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.85897368291594,
                   MAILLE='M19',),
           )
 
@@ -198,8 +195,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  VALE_CALC=8333.2067000000006,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=8333.2066895869,
                   MAILLE='M19',),
           )
 
@@ -208,8 +204,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=22,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V3',
-                  VALE_CALC=0.86689832,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.86689831579605,
                   MAILLE='M19',),
           )
 
@@ -218,8 +213,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=2.4072934399999998E4,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=24072.934392415,
                   MAILLE='M19',),
           )
 
@@ -228,8 +222,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=31,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
-                  VALE_CALC=0.89161999999999997,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.89161679569913,
                   MAILLE='M19',),
           )
 
@@ -238,8 +231,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=40,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-5.3333332999999996E5,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-5.3333333333331E5,
                   MAILLE='M19',),
           )
 
@@ -255,7 +247,7 @@ ENER2 = POST_ELEM( RESULTAT = U, TRAV_EXT = _F(),)
 
 # On se sert de ENER1 comme reference pour ENER2 :
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=503.91043140284,
+           VALE_CALC=503.91043140283,
            
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
@@ -264,7 +256,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=524.44797530353003,
+           VALE_CALC=524.44797530353,
            
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
@@ -273,7 +265,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=2.4841796608591999E5,
+           VALE_CALC=2.4841796608604E5,
            
            NOM_PARA='TRAV_EXT',
            TABLE=ENER1,
@@ -282,10 +274,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=503.910431403,
-           VALE_REFE=503.91043140284,
+           VALE_CALC=503.91043140283,
            NOM_PARA='TRAV_REEL',
            TABLE=ENER2,
            FILTRE=_F(NOM_PARA='INST',
@@ -295,10 +284,7 @@ TEST_TABLE(CRITERE='RELATIF',
 # A cause du "reuse", il faut cumuler ce que l'on trouve dans ENER1 :
 X2=503.91043140284 + 524.44797530353
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=1.5E-06,
-           VALE_CALC= 1.02835716E+03,
-           VALE_REFE=1028.35840670637,
+           VALE_CALC= 1028.3571634035,
            NOM_PARA='TRAV_REEL',
            TABLE=ENER2,
            FILTRE=_F(NOM_PARA='INST',
@@ -308,10 +294,7 @@ TEST_TABLE(CRITERE='RELATIF',
 # A cause du "reuse", il faut cumuler ce que l'on trouve dans ENER1 :
 X3=503.91043140284 + 524.44797530353 + 2.4841796608592E+05
 TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 2.49446323E+05,
-           VALE_REFE=2.4944632449262636E5,
+           VALE_CALC= 2.4944632324942E+05,
            NOM_PARA='TRAV_REEL',
            TABLE=ENER2,
            FILTRE=_F(NOM_PARA='INST',

@@ -251,9 +251,9 @@ PRE_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 # C'EST POURQUOI ON AUTORISE DES ECARTS (ET NON DES ERREURS) DE 15%
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.080000000000000002,
+           PRECISION=0.08,
            VALE_CALC= 1.41734345E-06,
-           VALE_REFE=1.5200000000000001E-06,
+           VALE_REFE=1.52E-06,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -271,9 +271,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
+           PRECISION=0.15,
            VALE_CALC=-5.84537754E-07,
-           VALE_REFE=-5.2300000000000001E-07,
+           VALE_REFE=-5.23E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -281,9 +281,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
+           PRECISION=0.15,
            VALE_CALC=-5.84537754E+05,
-           VALE_REFE=-5.23000E5,
+           VALE_REFE=-5.23E5,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -293,8 +293,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 ################### TESTS U_HM  NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=8.4903999999999998E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=8.4904234925845E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -302,8 +301,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-8.8289949999999997E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-88289.946998092,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -311,44 +309,35 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.8450999999999998E-08,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.8450687078825E-08,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-8.8274880000000005E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-88274.882419031,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.6198000000000002E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.6197740229089E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.83626E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.8362597815756E5,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
-
-IMPR_TABLE(TABLE=SAUTHM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'));
-IMPR_TABLE(TABLE=SNT_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'));
-IMPR_TABLE(TABLE=SNM_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V11'));
-IMPR_TABLE(TABLE=PRE_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','PRE1'),TRI=_F(NOM_PARA='COOR_X'));
 
 FIN(FORMAT_HDF='OUI')

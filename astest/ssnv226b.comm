@@ -190,16 +190,18 @@ INT_VI=POST_ELEM(MODELE=TROISD,
 IMPR_TABLE(TABLE=INT_VI)
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.80113000E8,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=7.80113E8,
+                        VALE_CALC=7.80113E8,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=437.5,
                         NOM_PARA='INST',
                         FONCTION=F_SI,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5000.0,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_REFE=5000.0,
+                        VALE_CALC=5000.0,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=440.0,
                         NOM_PARA='INST',
                         FONCTION=F_SI,

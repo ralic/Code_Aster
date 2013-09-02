@@ -169,9 +169,6 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  GROUP_NO='SESC',
                                  RESULTANTE='DY',),);
 
-IMPR_TABLE(TABLE=TAB_REAC,
-           FORMAT='TABLEAU',);
-
 #----------------------------------------------------------------------
 #                   TESTS DES RESULTATS
 #----------------------------------------------------------------------
@@ -184,46 +181,7 @@ TEST_TABLE(TABLE=TAB_REAC,
            VALE_REFE=-320135.1,
            PRECISION=0.2,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=-3.6492888861545E+05,);
+           VALE_CALC=-3.6492888860861E+05,)
 
-# TEST_TABLE(TABLE=TAB_REAC,
-#            NOM_PARA='DY',
-#            FILTRE=_F(NOM_PARA='INST',
-#                      VALE=0.04),
-#            VALE=-6.402702E+05,
-#            PRECISION=0.20,
-#            REFERENCE='ANALYTIQUE',);
-#
-# TEST_TABLE(TABLE=TAB_REAC,
-#            NOM_PARA='DY',
-#            FILTRE=_F(NOM_PARA='INST',
-#                      VALE=0.06),
-#            VALE=-9.604053E+05,
-#            PRECISION=0.20,
-#            REFERENCE='ANALYTIQUE',);
-#
-# TEST_TABLE(TABLE=TAB_REAC,
-#            NOM_PARA='DY',
-#            FILTRE=_F(NOM_PARA='INST',
-#                      VALE=0.08),
-#            VALE=-1.280540E+06,
-#            PRECISION=0.10,
-#            REFERENCE='ANALYTIQUE',);
-#
-# TEST_TABLE(TABLE=TAB_REAC,
-#            NOM_PARA='DY',
-#            FILTRE=_F(NOM_PARA='INST',
-#                      VALE=0.1),
-#            VALE=-1.600675E+06,
-#            PRECISION=0.05,
-#            REFERENCE='ANALYTIQUE',);
-# TESTS DE NON REGRESSION
-
-TEST_TABLE(TABLE=TAB_REAC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.02,),
-           NOM_PARA='DY',
-           TOLE_MACHINE=0.001,
-           VALE_CALC=-364934.302744,);
 
 FIN();

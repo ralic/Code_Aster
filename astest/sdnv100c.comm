@@ -201,7 +201,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CMP='DZ',
                   VALE_CALC=-2.00000000E-03,
                   VALE_REFE=-2.E-3,
-                  PRECISION=0.050000000000000003,),
+                  PRECISION=0.05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=20,
@@ -211,7 +211,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOEUD='N100',
                   NOM_CMP='DZ',
                   VALE_CALC=-3.99999997E-03,
-                  VALE_REFE=-4.0000000000000001E-3,
+                  VALE_REFE=-4.0E-3,
                   PRECISION=1.E-3,),
           )
 
@@ -222,8 +222,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=40,
                   NOEUD='N100',
                   NOM_CMP='DZ',
                   VALE_CALC=-3.98112441E-03,
-                  VALE_REFE=-4.0000000000000001E-3,
-                  PRECISION=0.050000000000000003,),
+                  VALE_REFE=-4.0E-3,
+                  PRECISION=0.05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
@@ -232,9 +232,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOEUD='N5',
                   NOM_CMP='DZ',
-                  VALE_CALC=-2.00000000E-03,
+                  VALE_CALC=-2.0E-03,
                   VALE_REFE=-2.E-3,
-                  PRECISION=0.050000000000000003,),
+                  PRECISION=0.05,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=60,
@@ -250,8 +250,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
           )
 
 #
-
-
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00305885413073,
                         VALE_REFE=0.0,
                         CRITERE='ABSOLU',
@@ -262,23 +260,5 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.00305885413073,
                         FONCTION=MVC,),
               )
 
-#Non Regression
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N5',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-2.E-3,
-                   ),
-                _F(NUME_ORDRE=40,
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N100',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-3.9811244121287998E-3,
-                   ),
-                ),
-          )
 
 FIN();

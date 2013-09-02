@@ -217,7 +217,6 @@ IMPR_FONCTION(
 
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.14999999999999999,
-                        TOLE_MACHINE=1.E-3,
                         VALE_PARA=500.0,
                         NOM_PARA='INST',
                         FONCTION=F_EP,

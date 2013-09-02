@@ -137,16 +137,14 @@ IMPR_FONCTION(
 
 #fluage secondaire
 tsec=2000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.020962000000000001,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02096806,
                         VALE_PARA=2000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.032288999999999998,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03229801,
                         VALE_PARA=2000,
                         NOM_PARA='INST',
                         FONCTION=endo,
@@ -155,16 +153,14 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.032288999999999998,
 
 # fluage tertiaire
 tter=4000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.050909999999999997,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05093084,
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=epsYY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.068073999999999996,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06808433,
                         VALE_PARA=4000,
                         NOM_PARA='INST',
                         FONCTION=endo,
@@ -186,8 +182,7 @@ IMPR_FONCTION(
 tvit = 1520.
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.6533019999999999E-06,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.653918E-06,
                         VALE_PARA=1520.0,
                         NOM_PARA='INST',
                         FONCTION=depsdt,

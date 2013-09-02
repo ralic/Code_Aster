@@ -324,7 +324,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            PRECISION=1.E-10,
            VALE_CALC= 5.6843418860808E-14,
            VALE_REFE=0.0,
-           TOLE_MACHINE=1.E-10,
            NOM_PARA='RMS',
            TABLE=RMS1,)
 
@@ -350,10 +349,9 @@ RMS3=INFO_FONCTION( RMS=_F(  FONCTION = ACCE3)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-10,
            VALE_CALC= 2.406296799622E-11,
            VALE_REFE=0.0,
-           TOLE_MACHINE=1.E-10,
+           PRECISION=1.E-10,
            NOM_PARA='RMS',
            TABLE=RMS3,)
 

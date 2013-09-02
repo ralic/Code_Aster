@@ -185,9 +185,8 @@ FREQ1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=25.391817587601,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=4.8109999999999999,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=25.39100,
+                        VALE_PARA=4.811,
                         FONCTION=FREQ1,
                         ),
               )
@@ -203,9 +202,8 @@ FREQ2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=52.863087959990999,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=4.8109999999999999,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=52.85638,
+                        VALE_PARA=4.811,
                         FONCTION=FREQ2,
                         ),
               )
@@ -221,9 +219,8 @@ AMOR1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.028050018242770001,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=4.8109999999999999,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.02805219,
+                        VALE_PARA=4.811,
                         FONCTION=AMOR1,
                         ),
               )
@@ -240,8 +237,7 @@ AMOR2=RECU_FONCTION(
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.999E-3,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=4.8109999999999999,
+                        VALE_PARA=4.811,
                         FONCTION=AMOR2,
                         ),
               )
@@ -291,8 +287,8 @@ DYN0=POST_DYNA_ALEA(   INTE_SPEC=REPP0,
 IMPR_TABLE(  TABLE=DYN0, )
 
 TEST_TABLE(
-           VALE_CALC=2.2842131643039999E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.2842159127376E-3,
+           TOLE_MACHINE=3.E-6,                 # TODO TOLE_MACHINE
            NOM_PARA='ECART',
            TABLE=DYN0,
            FILTRE=(_F(NOM_PARA='NOEUD_I',

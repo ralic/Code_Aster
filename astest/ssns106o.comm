@@ -431,17 +431,15 @@ IMPR_TABLE(TABLE=TDISS_G1,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='ENDO',
            TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.050000000000000003,),
+                     VALE=0.05,),
            )
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=8.2519176999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=8.2519177442469,
            NOM_PARA='ENDO',
            TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
@@ -451,16 +449,12 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=17.281652999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=17.281653420429,
            NOM_PARA='ENDO',
            TABLE=TDISS_G1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
            )
-
-
-
 
 #-----------------------------------------------
 #CALCUL DES RESULTATS POUR LE CHARGEMENT chf2

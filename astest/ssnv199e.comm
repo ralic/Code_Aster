@@ -306,13 +306,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=5.0082899999999997,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=5.0082899999999997,),
           )
 
 TEST_TABLE(
            VALE_CALC=6.7885400000000002,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -324,13 +322,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=6.9729799999999997,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=6.9729799999999997,),
           )
 
 TEST_TABLE(
            VALE_CALC=5.7577199999999999,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -342,13 +338,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=9.1255400000000009,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=9.1255400000000009,),
           )
 
 TEST_TABLE(
            VALE_CALC=4.9328106534403,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -394,9 +388,5 @@ TEST_RESU(RESU=_F(INST=4.0,
                   NOEUD='N2'
                   ),
           )
-
-IMPR_TABLE(TABLE = UPILO)
-IMPR_TABLE(TABLE = FRES)
-
 
 FIN(FORMAT_HDF='OUI')

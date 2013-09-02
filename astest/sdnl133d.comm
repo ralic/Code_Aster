@@ -534,8 +534,7 @@ TAB_RESU=CREA_TABLE(LISTE=(_F(PARA='PHI',LISTE_R = phi,),
 IMPR_TABLE(TABLE=TAB_RESU,);
 
 TEST_TABLE(
-           VALE_CALC=18.8325,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=18.832613937685,
            NOM_PARA='KPHI',
            TABLE=TAB_RESU,
            FILTRE=_F(NOM_PARA='PHI',
@@ -543,8 +542,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=58.408000000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=58.408207688055,
            NOM_PARA='DKPHI',
            TABLE=TAB_RESU,
            FILTRE=_F(NOM_PARA='PHI',
@@ -552,39 +550,35 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=18.8325,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=18.832613937675,
            NOM_PARA='KPHI',
            TABLE=TAB_RESU,
            FILTRE=_F(NOM_PARA='PHI',
-                     VALE=3.1415899999999999,),
+                     VALE=3.14159,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-58.408000000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-58.408207688002,
            NOM_PARA='DKPHI',
            TABLE=TAB_RESU,
            FILTRE=_F(NOM_PARA='PHI',
-                     VALE=3.1415899999999999,),
+                     VALE=3.14159,),
            )
 
 TEST_TABLE(
-           VALE_CALC=17.835999999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=17.836121013608,
            NOM_PARA='KPHI',
            TABLE=TAB_RESU,
            FILTRE=_F(NOM_PARA='PHI',
-                     VALE=6.2657299999999996,),
+                     VALE=6.26573,),
            )
 
 TEST_TABLE(
-           VALE_CALC=55.716000000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=55.715868978459,
            NOM_PARA='DKPHI',
            TABLE=TAB_RESU,
            FILTRE=_F(NOM_PARA='PHI',
-                     VALE=6.2657299999999996,),
+                     VALE=6.26573,),
            )
 
 TAB_SOUP=CREA_TABLE(LISTE=(_F(PARA='ANGLE',LISTE_R = anglef,),
@@ -593,8 +587,7 @@ TAB_SOUP=CREA_TABLE(LISTE=(_F(PARA='ANGLE',LISTE_R = anglef,),
 IMPR_TABLE(TABLE=TAB_SOUP,);
 
 TEST_TABLE(
-           VALE_CALC=0.24138000000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.24138140775014,
            NOM_PARA='SOUPLESSE',
            TABLE=TAB_SOUP,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -602,21 +595,19 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.24138000000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.24138140775014,
            NOM_PARA='SOUPLESSE',
            TABLE=TAB_SOUP,
            FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=3.1415899999999999,),
+                     VALE=3.14159,),
            )
 
 TEST_TABLE(
-           VALE_CALC=0.253195,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.25319324012791,
            NOM_PARA='SOUPLESSE',
            TABLE=TAB_SOUP,
            FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=6.2657299999999996,),
+                     VALE=6.26573,),
            )
 
 FIN();

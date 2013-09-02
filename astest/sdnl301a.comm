@@ -221,11 +221,8 @@ POST=POST_DYNA_MODA_T(RESU_GENE=TRANGENE,
 
 IMPR_TABLE(TABLE=POST);
 
-TEST_TABLE(PRECISION=0.050000000000000003,
-           TOLE_MACHINE=1.e-2,
-           VALE_CALC=22.798460970,
-           VALE_REFE=23.399999999999999,
-           REFERENCE='NON_DEFINI',
+TEST_TABLE(VALE_CALC=22.798441107832,
+           TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
            NOM_PARA='RMS_T_TOTAL',
            TABLE=POST,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -349,11 +346,8 @@ POST2=POST_DYNA_MODA_T(RESU_GENE=TRANGEN2,
                               INST_FIN = TFIN));
 IMPR_TABLE(TABLE=POST2);
 
-TEST_TABLE(PRECISION=0.050000000000000003,
-           TOLE_MACHINE=3.e-2,
-           VALE_CALC=22.893076703,
-           VALE_REFE=23.399999999999999,
-           REFERENCE='NON_DEFINI',
+TEST_TABLE(VALE_CALC=22.68432262353,
+           TOLE_MACHINE=2.E-2,               # TODO TOLE_MACHINE
            NOM_PARA='RMS_T_TOTAL',
            TABLE=POST2,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -363,75 +357,5 @@ TEST_TABLE(PRECISION=0.050000000000000003,
                    ),
            )
 
-# RESTITUTION SUR BASE PHYSIQUE ET POST-TRAITEMENT
-
-# RESPHY = REST_GENE_PHYS(RESU_GENE =TRANGEN2,
-#                         TOUT_ORDRE='OUI',
-#                         NOM_CHAM  ='DEPL');
-#
-# dN25_Y2a = RECU_FONCTION(RESULTAT= RESPHY,
-#                         NOM_CHAM= 'DEPL',
-#                         NOEUD   = 'N2',
-#                         INTERPOL= 'LIN',
-#                         NOM_CMP = 'DY');
-#
-# dN7_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
-#                         NOM_CHAM = 'DEPL',
-#                         NOEUD    = 'N14',
-#                         INTERPOL = 'LIN',
-#                         NOM_CMP  = 'DY');
-#
-# dN13_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
-#                         NOM_CHAM = 'DEPL',
-#                         NOEUD    = 'N26',
-#                         INTERPOL = 'LIN',
-#                         NOM_CMP  = 'DY');
-#
-# dN19_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
-#                         NOM_CHAM = 'DEPL',
-#                         NOEUD    = 'N38',
-#                         INTERPOL = 'LIN',
-#                         NOM_CMP  = 'DY',);
-#
-# dN25_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
-#                         NOM_CHAM = 'DEPL',
-#                         NOEUD    = 'N2',
-#                         INTERPOL = 'LIN',
-#                         NOM_CMP  = 'DY');
-#
-# IMPR_FONCTION(FORMAT='XMGRACE',
-#             UNITE = 25,
-#             LEGENDE_X='TEMPS',
-#             LEGENDE_Y='DEPL',
-#             COURBE=(_F(FONCTION=dN25_Y1b,
-#                        LEGENDE='dN25_Y1b',
-#                        COULEUR=9,
-#                        MARQUEUR=0,),
-#                     _F(FONCTION=dN25_Y2b ,
-#                        LEGENDE='dN25_Y2b',
-#                        COULEUR=6,
-#                        MARQUEUR=0,)));
-#
-#
-# IMPR_FONCTION(FORMAT='XMGRACE',
-#             UNITE = 26,
-#             LEGENDE_X='TEMPS',
-#             LEGENDE_Y='DEPL',
-#             COURBE=(_F(FONCTION=dN7_Y2b,
-#                        LEGENDE='dN7_Y2b',
-#                        COULEUR=7,
-#                        MARQUEUR=0,),
-#                     _F(FONCTION=dN13_Y2b,
-#                        LEGENDE='dN13_Y2b',
-#                        COULEUR=8,
-#                        MARQUEUR=0,),
-#                     _F(FONCTION=dN19_Y2b,
-#                        LEGENDE='dN19_Y2b',
-#                        COULEUR=9,
-#                        MARQUEUR=0,),
-#                     _F(FONCTION=dN25_Y2b ,
-#                        LEGENDE='dN25_Y2b',
-#                        COULEUR=6,
-#                        MARQUEUR=0,)));
 
 FIN();

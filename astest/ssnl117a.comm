@@ -171,7 +171,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DY',
                    VALE_CALC=0.011198591,
                    VALE_REFE=0.010934899999999999,
-                   PRECISION=0.029999999999999999,),
+                   PRECISION=0.03,),
                 _F(NUME_ORDRE=8,
                    GROUP_NO='D',
                    REFERENCE='AUTRE_ASTER',
@@ -188,7 +188,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DY',
                    VALE_CALC=0.022715198,
                    VALE_REFE=0.022083599999999998,
-                   PRECISION=0.029999999999999999,),
+                   PRECISION=0.03,),
                 ),
           )
 
@@ -208,26 +208,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DRZ',
                    VALE_CALC=-5.88964685E+06,
                    VALE_REFE=-5.889810E6,),
-                ),
-          )
-
-# NON REGRESSION :
-
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='D',
-                   RESULTAT=U1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.011190311916921001,
-                   TOLE_MACHINE=1.E-3,),
-                _F(NUME_ORDRE=8,
-                   GROUP_NO='D',
-                   RESULTAT=U1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.022698008851706999,
-                   TOLE_MACHINE=1.E-3,),
                 ),
           )
 

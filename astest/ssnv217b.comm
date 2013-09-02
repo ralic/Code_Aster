@@ -158,8 +158,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
-                  VALE_CALC=0.98870380000000002,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.98870383394014,
                   MAILLE='M19',),
           )
 
@@ -168,8 +167,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
-                  VALE_CALC=7999.991,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=7999.9907671631,
                   MAILLE='M19',),
           )
 
@@ -179,7 +177,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=11,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.98999999999999999,
-                  TOLE_MACHINE=1.E-3,
                   MAILLE='M19',),
           )
 
@@ -188,8 +185,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  VALE_CALC=8333.1929999999993,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=8333.1931721638,
                   MAILLE='M19',),
           )
 
@@ -198,8 +194,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=22,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V3',
-                  VALE_CALC=0.86689832,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.86689831579605,
                   MAILLE='M19',),
           )
 
@@ -208,8 +203,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=2.4072934000000001E4,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=24072.934392415,
                   MAILLE='M19',),
           )
 
@@ -218,8 +212,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=34,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
-                  VALE_CALC=0.97567000000000004,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=0.97566784614057,
                   MAILLE='M19',),
           )
 
@@ -228,8 +221,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=40,
                   RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-5.3333332999999996E5,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=-5.3333333333331E5,
                   MAILLE='M19',),
           )
 

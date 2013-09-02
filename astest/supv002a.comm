@@ -147,9 +147,8 @@ tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
+           VALE_CALC_I=294,
            VALE_REFE_I=0,
-           TOLE_MACHINE=300,
            PRECISION=300,
            NOM_PARA='NBWARN',
            TABLE=tabw,

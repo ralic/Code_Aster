@@ -33,12 +33,12 @@ MAX_SI=POST_ELEM(
                                 TOUT='OUI',RESULTAT=SOLNL,))
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=221.570236990,
+           VALE_CALC=221.57023698834,
            VALE_REFE=221.56999999999999,
            NOM_PARA='MAX_SIXX',
            TABLE=MAX_SI,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0000000000000001E-3,),
+                     VALE=5.0E-3,),
            )
 
 VIMAX=CREA_CHAMP( OPERATION='EXTR',
@@ -58,7 +58,7 @@ MAX_VI=POST_ELEM(
 
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC= 9.33308081E-04,
+           VALE_CALC= 9.3330808079547E-04,
            VALE_REFE=9.3330799999999999E-4,
            NOM_PARA='MIN_V3',
            TABLE=MAX_VI,)
@@ -69,12 +69,12 @@ MAX_EP=POST_ELEM(
                                 GROUP_MA='ALL'),)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC= 9.33308081E-04,
+           VALE_CALC= 9.3330808151363E-04,
            VALE_REFE=9.3330799999999999E-4,
            NOM_PARA='MIN_EPZZ',
            TABLE=MAX_EP,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0000000000000001E-3,),
+                     VALE=5.0E-3,),
            )
 
 MAX_DE1=POST_ELEM(
@@ -85,15 +85,13 @@ MAX_DE1=POST_ELEM(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.9999999999999997E-4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.E-4,
            NOM_PARA='MIN_DY',
            TABLE=MAX_DE1,
            )
 
 TEST_TABLE(
            VALE_CALC=1.E-3,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MAX_DZ',
            TABLE=MAX_DE1,
            )
@@ -105,20 +103,10 @@ MAX_DE2=POST_ELEM(
                                 NUME_ORDRE=1),)
 
 TEST_TABLE(
-           VALE_CALC=-2.9999999999999997E-4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.E-4,
            NOM_PARA='MIN_DX',
            TABLE=MAX_DE2,
            )
-
-# IMPR_TABLE(TABLE=MAX_SI)
-# IMPR_TABLE(TABLE=MAX_VI)
-# IMPR_TABLE(TABLE=MAX_EP)
-# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),))
-# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ')))
-# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='EPSP_ELGA',NOM_CMP=('EPXX','EPYY','EPZZ'),))
-# IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='VARI_ELGA',NOM_CMP=('V1','V2','V3'),))
-
 
 #####################################################################
 # Calcul des moyennes
@@ -148,8 +136,7 @@ INT1EPX=POST_ELEM(  RESULTAT=SOLNL,
                                 NOM_CMP=('EPXX'),
                                 TOUT='OUI'),),)
 TEST_TABLE(
-           VALE_CALC=-1.3935499999999999E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.3935522297381E-3,
            NOM_PARA='INTE_EPXX',
            TABLE=INT1EPX,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -160,8 +147,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.3935499999999999E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.3935522297381E-3,
            NOM_PARA='INTE_EPXX',
            TABLE=INT1EPX,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -172,8 +158,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.3935200000000001E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-1.3935176817989E-3,
            NOM_PARA='INTE_EPXX',
            TABLE=INT1EPX,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -207,7 +192,7 @@ INT2EPX=POST_ELEM(  CHAM_GD=CH4,
                     INTEGRALE=_F( NOM_CMP='EPXX',TOUT='OUI'),)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=-1.39351768E-03,
+           VALE_CALC=-1.3935176817989E-03,
            VALE_REFE=-1.3935200000000001E-3,
            NOM_PARA='INTE_EPXX',
            TABLE=INT2EPX,)
@@ -292,7 +277,7 @@ INTVOL=POST_ELEM( CHAM_GD=CHEVA,
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC=29.459658357,
+           VALE_CALC=29.459658356606,
            VALE_REFE=29.724499999999999,
            NOM_PARA='INTE_X1',
            TABLE=INTVOL,)
@@ -344,7 +329,7 @@ INTVO2=POST_ELEM( CHAM_GD=CHEVA3,
 
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=21.582351677,
+           VALE_CALC=21.582351677335,
            VALE_REFE=21.5824,
            NOM_PARA='INTE_X1',
            TABLE=INTVO2,)
@@ -381,8 +366,7 @@ VEPXX2=POST_ELEM(MODELE=TROISD,
                                  TOUT='OUI',
                                  NB_INTERV=5,),),)
 TEST_TABLE(
-           VALE_CALC=32.5959,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=32.595917138232,
            NOM_PARA='DISTRIBUTION',
            TABLE=VEPXX,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
@@ -393,8 +377,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=32.5959,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=32.595917138232,
            NOM_PARA='DISTRIBUTION',
            TABLE=VEPXX,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
@@ -405,8 +388,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=28.037500000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=28.037462323085,
            NOM_PARA='DISTRIBUTION',
            TABLE=VEPXX,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
@@ -430,8 +412,7 @@ VSIXX=POST_ELEM(MODELE=TROISD,
                                 NB_INTERV=5,),)
 
 TEST_TABLE(
-           VALE_CALC=64.599999999999994,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=64.60035160535,
            NOM_PARA='DISTRIBUTION',
            TABLE=VSIXX,
            FILTRE=(_F(NOM_PARA='CHAM_GD',

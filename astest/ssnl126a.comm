@@ -76,19 +76,19 @@ res=STAT_NON_LINE(MODELE=modele,
 
 
 TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
-                   INST=0.20000000000000001,
+                   INST=0.2,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=res,
                    VALE_CALC=-9.976366410,
-                   VALE_REFE=-9.9600000000000009,
+                   VALE_REFE=-9.9645,
                    PRECISION=2.E-3,),
                 _F(PARA='CHAR_CRIT',
                    INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=res,
                    VALE_CALC=-0.675266654,
-                   VALE_REFE=-0.66000000000000003,
-                   PRECISION=0.029999999999999999,),
+                   VALE_REFE=-0.6643,
+                   PRECISION=0.03,),
                 ),
           )
 

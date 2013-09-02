@@ -278,8 +278,7 @@ DEPLA = POST_RELEVE_T(
 # TESTS RESU
 
 TEST_TABLE(
-           VALE_CALC=3.1612800000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.1613244958558,
            NOM_PARA='DY',
            TABLE=FORC,
            FILTRE=_F(NOM_PARA='INST',
@@ -287,8 +286,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.1586500000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.1587046461814,
            NOM_PARA='DY',
            TABLE=FORC,
            FILTRE=_F(NOM_PARA='INST',
@@ -296,8 +294,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.40000000000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.40000000000000,
            NOM_PARA='DY',
            TABLE=DEPLA,
            FILTRE=_F(NOM_PARA='INST',
@@ -309,8 +306,7 @@ TEST_RESU(RESU=_F(INST=5,
                   RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
-                  VALE_CALC=6.2033100000000001E-05,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=6.2033102168082E-05,
                   MAILLE='M9788',),
           )
 

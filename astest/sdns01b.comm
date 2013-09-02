@@ -330,25 +330,21 @@ N3201=  INFO_FONCTION(NORME=_F(FONCTION=M13201),)
 # LA VALIDATION A ETE EFFECTUEE PAR REFERENCE BIBLIO (CF. DOC.)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68135,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=M13201,
                          ),
                       _F(VALE_CALC=20500.827,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=M23201,
                          ),
                       _F(VALE_CALC=75.058764,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=INF3201,
                          ),
                       _F(VALE_CALC=215.81480 ,
-                         TOLE_MACHINE=9.9999999999999995E-08,
                          VALE_PARA=(1.E-3, 50.0),
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=UP3201,
@@ -358,7 +354,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=133.68135,
 
 TEST_TABLE(
            VALE_CALC=1043.3847164151,
-           TOLE_MACHINE=9.9999999999999995E-08,
            NOM_PARA='NORME',
            TABLE=N3201,
            )

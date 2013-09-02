@@ -209,8 +209,7 @@ TEST_RESU(RESU=_F(GROUP_NO='testptn',
                   RESULTAT=EVOEL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=8.8280000000000002E-05,
-                  TOLE_MACHINE=1.E-3,
+                  VALE_CALC=8.8280916073992E-05,
                   ),
           )
 

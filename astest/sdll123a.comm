@@ -353,10 +353,7 @@ FREQROT=CREA_TABLE(
 IMPR_TABLE(TABLE=FREQROT)
 
 TEST_TABLE(
-           VALE_REFE=123.915,
            VALE_CALC=123.91535370831,
-           PRECISION=1.E-3,
-           REFERENCE='NON_DEFINI',
            NOM_PARA='FREQ',
            TABLE=FREQROT,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -364,10 +361,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_REFE=124.546,
            VALE_CALC=124.54646642508,
-           PRECISION=1.E-3,
-           REFERENCE='NON_DEFINI',
            NOM_PARA='FREQ',
            TABLE=FREQROT,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -375,10 +369,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_REFE=497.033,
            VALE_CALC=497.033,
-           PRECISION=1.E-3,
-           REFERENCE='NON_DEFINI',
            NOM_PARA='FREQ',
            TABLE=FREQROT,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -386,10 +377,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_REFE=499.575,
            VALE_CALC=499.575,
-           PRECISION=1.E-3,
-           REFERENCE='NON_DEFINI',
            NOM_PARA='FREQ',
            TABLE=FREQROT,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -400,10 +388,10 @@ TEST_TABLE(
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODEQ,
-                   VALE_REFE=123.915,
+                   VALE_REFE=123.91535370831,
                    VALE_CALC=123.91535367663,
                    PRECISION=1.E-3,
-                   REFERENCE='NON_DEFINI',
+                   REFERENCE='SOURCE_EXTERNE',
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,

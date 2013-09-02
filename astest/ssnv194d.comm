@@ -186,16 +186,14 @@ _F(FONC_X=F_EP, FONC_Y=F_SI),
 ))
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10009999999999999,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10000000,
                         VALE_PARA=333.33333333333337,
                         NOM_PARA='INST',
                         FONCTION=F_EP,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=815.78599999999994,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=815.7863,
                         VALE_PARA=333.33333333333337,
                         NOM_PARA='INST',
                         FONCTION=F_SI,

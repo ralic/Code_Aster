@@ -289,13 +289,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=4.8511600000000001,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=4.8511622200512,),
           )
 
 TEST_TABLE(
-           VALE_CALC=6.8909000000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.890905247434,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -307,13 +305,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=6.7463600000000001,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=6.7463620426143,),
           )
 
 TEST_TABLE(
-           VALE_CALC=5.8339299999999996,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.8339380670898,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -325,13 +321,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=8.9282000000000004,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=8.9282036204243,),
           )
 
 TEST_TABLE(
-           VALE_CALC=5.0647500000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.0647569853236,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -378,30 +372,5 @@ TEST_RESU(RESU=_F(INST=4.0,
                   ),
           )
 
-IMPR_TABLE(TABLE = UPILO)
-IMPR_TABLE(TABLE = FRES)
-
-#DEPL = RECU_FONCTION(
-#  RESULTAT = U,
-#  NOM_CHAM = 'DEPL',
-#  NOM_CMP  = 'DY',
-#  GROUP_NO = 'NO7',
-#  )
-#
-#FONO = RECU_FONCTION(
-#  RESULTAT = U,
-#  NOM_CHAM = 'FORC_NODA',
-#  NOM_CMP  = 'DY',
-#  GROUP_NO = 'NO7',
-#  )
-#
-#IMPR_FONCTION(
-#  FORMAT = 'XMGRACE',
-#  PILOTE = 'INTERACTIF',
-#  COURBE = _F(
-#    FONC_X = DEPL,
-#    FONC_Y = FONO,
-#    ),
-#  )
 
 FIN(FORMAT_HDF='OUI')

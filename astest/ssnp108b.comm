@@ -191,8 +191,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 #
 TEST_TABLE(
-           VALE_CALC=1.99822E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.9982248921222E5,
            NOM_PARA='N',
            TABLE=ESSAI1,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -201,8 +200,7 @@ TEST_TABLE(
 
 #
 TEST_TABLE(
-           VALE_CALC=1.99439E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.9943932520206E5,
            NOM_PARA='N',
            TABLE=ESSAI1,
            FILTRE=_F(NOM_PARA='NOEUD',

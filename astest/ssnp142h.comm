@@ -278,8 +278,7 @@ P_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 # SAUT ET CONTRAINTE NORMALE
 TEST_TABLE(
-           VALE_CALC=7.352E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=7.3519882975888E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -287,8 +286,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-85432.,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-85432.857142788,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -296,45 +294,40 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-6.0114E-09,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-6.0114128817803E-09,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-92720.,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-92720.889035844,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=3.2000000000000002,),
+                     VALE=3.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.4848E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.4848392020949E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.681E5,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-3.6810391934694E+05,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.5999999999999996,),
+                     VALE=4.6,),
            )
 
 # PRESSION
 TEST_TABLE(
-           VALE_CALC=8.829E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=88289.999999825,
            NOM_PARA='PRE1',
            TABLE=PRE_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -342,8 +335,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.829E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=88289.999999825,
            NOM_PARA='V18',
            TABLE=P_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -351,27 +343,19 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=29430.,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=29429.998706221,
            NOM_PARA='PRE1',
            TABLE=PRE_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.4000000000000004,),
+                     VALE=4.4,),
            )
 
 TEST_TABLE(
-           VALE_CALC=29430.,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=29429.998706221,
            NOM_PARA='V18',
            TABLE=P_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.4000000000000004,),
+                     VALE=4.4,),
            )
 
-IMPR_TABLE(TABLE=SAUTHM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'));
-IMPR_TABLE(TABLE=SNT_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'));
-IMPR_TABLE(TABLE=SNM_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V11'));
-IMPR_TABLE(TABLE=PRE_HM,FORMAT='TABLEAU',NOM_PARA=('COOR_X','PRE1'),TRI=_F(NOM_PARA='COOR_X'));
-IMPR_TABLE(TABLE=P_HM,  FORMAT='TABLEAU',NOM_PARA=('COOR_X','V18' ),TRI=_F(NOM_PARA='COOR_X'));
-#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=U_HM,))
 FIN(FORMAT_HDF='OUI')

@@ -309,8 +309,8 @@ IMPR_TABLE(TABLE=DIFF_MAT)
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-4,
-           TOLE_MACHINE=1.E-4,    # ajustement pour tester en absolu la valeur nulle
-           VALE_CALC=0.0,         # valeur calculée de l'ordre de 1.E-4
+           TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
+           VALE_CALC=9.4446595381118E-05,
            VALE_REFE=0.0,
            NOM_PARA='MAT_DIFF',
            TYPE_TEST='MAX',
@@ -326,7 +326,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.19733000E8,
+           VALE_CALC=7.1973325291788E8,
            NOM_PARA='VMIS_Pa_1',
            TABLE=R_SI_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -334,7 +334,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.5164229999999999E-3,
+           VALE_CALC=-3.5164225238106E-3,
            NOM_PARA='V16_Pa_1',
            TABLE=R_SI_3,
            FILTRE=_F(NOM_PARA='INST',
@@ -342,7 +342,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.54275000E8,
+           VALE_CALC=1.5427502539398E8,
            NOM_PARA='SIXX_Pa_1',
            TABLE=R_SI_4,
            FILTRE=_F(NOM_PARA='INST',

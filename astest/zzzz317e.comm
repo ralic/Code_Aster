@@ -97,7 +97,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.1593522,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 15.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
-#                         TOLE_MACHINE=1.E-4,
                          FONCTION=SRO2,),),);
 
 

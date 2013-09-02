@@ -240,8 +240,7 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #--------------------------------------------------------------
 
 TEST_TABLE(
-           VALE_CALC=3.3165999999999998E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.3165984661801E-03,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -249,8 +248,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.2615300E7,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.2615323048389E+07,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -258,8 +256,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.29488E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.294882780642E-03,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -267,8 +264,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.738730E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.7387267685285E+06,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -276,8 +272,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.4575199999999996E-3,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.4575154375402E-03,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -285,8 +280,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.872060E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=7.8720645690555E+06,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -294,8 +288,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.010475399999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.010475353383401,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -303,25 +296,11 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.161890E6,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=2.1618944323847E+06,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=200,),
            )
-
-#--------------------------------------------------------------
-IMPR_FONCTION(
-              FORMAT='TABLEAU',
-              COURBE=_F(FONC_X = UY,
-                        FONC_Y = FY,
-                       )
-             )
-
-IMPR_TABLE(TABLE=TAB_U)
-IMPR_TABLE(TABLE=FORCE)
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=EVOL,NOM_CHAM='VARI_ELGA',TYPE_CHAM='SCALAIRE',NOM_CMP=('V1','V2','V3','V4','V7','V8'),GROUP_MA = ('JOINT'))))
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=EVOL,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY'),GROUP_MA = ('MATIERE','JOINT'))))
 
 FIN()

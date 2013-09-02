@@ -141,7 +141,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIYY',
                    VALE_CALC=250.41027791082999,
-                   
                    ),
                 _F(GROUP_NO='A',
                    INST=10.0,
@@ -149,7 +148,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    VALE_CALC=-214.58706080190001,
-                   
                    ),
                 ),
           )

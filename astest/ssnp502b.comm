@@ -178,7 +178,7 @@ TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 # TEST REFERENCE
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
+           PRECISION=0.15,
            VALE_CALC=-8.659716973,
            VALE_REFE=-8.0083311249999998,
            NOM_PARA='DY',
@@ -188,7 +188,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
+           PRECISION=0.15,
            VALE_CALC=-16.460266150,
            VALE_REFE=-16.016662499999999,
            NOM_PARA='DY',
@@ -198,7 +198,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
+           PRECISION=0.15,
            VALE_CALC=-23.981506301,
            VALE_REFE=-24.02499375,
            NOM_PARA='DY',
@@ -208,7 +208,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.14999999999999999,
+           PRECISION=0.15,
            VALE_CALC=-32.315058462,
            VALE_REFE=-32.033324999999998,
            NOM_PARA='DY',
@@ -224,7 +224,6 @@ TEST_RESU(RESU=_F(GROUP_NO='D',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=0.73820670974606994,
-                  TOLE_MACHINE=1.0000000000000001E-05,
                   ),
           )
 
@@ -234,7 +233,6 @@ TEST_RESU(RESU=_F(GROUP_NO='D',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE_CALC=1.301836717072,
-                  TOLE_MACHINE=1.0000000000000001E-05,
                   ),
           )
 
@@ -244,7 +242,6 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE_CALC=-15.321781340218999,
-                  TOLE_MACHINE=1.0000000000000001E-05,
                   ),
           )
 
@@ -254,7 +251,6 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE_CALC=-12.002286719888,
-                  TOLE_MACHINE=1.0000000000000001E-05,
                   ),
           )
 

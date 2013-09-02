@@ -221,7 +221,7 @@ DEPREF_2=1.7771170448857E-02;
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.040000000000000001,
+           PRECISION=0.04,
            VALE_CALC=-0.095328626,
            VALE_REFE=-0.098756898959655004,
            NOM_PARA='DY',
@@ -230,7 +230,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.040000000000000001,
+           PRECISION=0.04,
            VALE_CALC=0.095318373,
            VALE_REFE=0.098756898959655004,
            NOM_PARA='DY',
@@ -239,15 +239,13 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=-0.017771170448857,
-           TOLE_MACHINE=1.0000000000000001E-05,
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            TABLE=TABDEP_2,
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.017771170448857,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.017757778886353,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TABDEP_2,
@@ -258,37 +256,29 @@ VREF_1=1.2697828769295E-02
 # VALEUR DE NON REGRESSION  OBTENUE AVEC LA 10.01.25
 VREF_2=2.4507420622247E-02
 
-TEST_RESU(RESU=(_F(INST=0.10000000000000001,
+TEST_RESU(RESU=(_F(INST=0.1,
                    POINT=10,
                    RESULTAT=UTOT1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.012697828769295001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
                    MAILLE='M277',),
-                _F(INST=0.14000000000000001,
+                _F(INST=0.14,
                    POINT=10,
                    RESULTAT=UTOT1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.012697828769295001,
-                   TOLE_MACHINE=1.0000000000000001E-05,
                    MAILLE='M277',),
-                _F(INST=0.29999999999999999,
+                _F(INST=0.3,
                    POINT=10,
                    RESULTAT=UTOT1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.024507420622246999,
-                   TOLE_MACHINE=1.0000000000000001E-05,
                    MAILLE='M277',),
                 ),
           )
-
-#IMPR_RESU(MODELE=MODELEK,
-#          FORMAT='GMSH',
-#          RESU=_F(RESULTAT=UTOT1,
-#                  NOM_CHAM=('VARI_ELGA')));
 
 FIN()
 #

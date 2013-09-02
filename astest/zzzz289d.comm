@@ -114,7 +114,6 @@ TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATMUPQ        .M01.RESL',),
           )
 

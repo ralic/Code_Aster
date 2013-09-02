@@ -130,7 +130,7 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      CHAM_GD=DIFF,
                      VALE_CALC=0.59734630435,
                      VALE_REFE=0.59734630434863001,
-                     TOLE_MACHINE=1.E-10,),
+                     ),
           )
 
 IMPR_RESU(FORMAT='MED',

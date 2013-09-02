@@ -109,7 +109,6 @@ TEST_RESU(RESU=_F(INST=3.0,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=95.999315999999993,
-                  TOLE_MACHINE=1.E-3,
                   MAILLE='MA1',),
           )
 

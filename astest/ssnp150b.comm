@@ -561,12 +561,11 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 # -----------
 
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
-                     PRECISION=5.0000000000000002E-11,
+                     PRECISION=5.0E-11,
                      TYPE_TEST='MAX',
                      CHAM_GD=DIFFUN,
                      VALE_CALC= 3.5630505970E-07,
-                     VALE_REFE=3.5630505969622002E-07,
-                     TOLE_MACHINE=5.0000000000000002E-11,),
+                     VALE_REFE=3.5630505969622002E-07,),
           )
 
 # On cree une liste bidon pour pouvoir
@@ -592,18 +591,11 @@ BIDONP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2P));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.6039430000000001,
-                        TOLE_MACHINE=1.9999999999999999E-07,
-                        VALE_PARA=1.0,
-                        FONCTION=BIDONP,
-                        ),
-              )
-
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.6039425744,
                         VALE_REFE=2.5,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
-                        PRECISION=0.050000000000000003,
+                        PRECISION=0.05,
                         FONCTION=BIDONP,),
               )
 

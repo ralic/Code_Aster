@@ -40,7 +40,6 @@ MATK=ASSE_MATRICE(  MATR_ELEM=MK, NUME_DDL=NU,INFO=2)
 IMPR_CO(CONCEPT=_F(NOM=MATK))
 
 TEST_RESU(OBJET=_F(VALE_CALC=5.86586E5,
-                   TOLE_MACHINE=1.E-3,
                    NOM='MATK               .VALM',),
           )
 

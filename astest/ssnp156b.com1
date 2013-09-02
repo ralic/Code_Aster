@@ -352,23 +352,21 @@ IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA',),),);
 
 # ===========================================
-# Tests
+# Tests de non regression. Pour comparaison graphique avec les resultats de reference : voir la doc
 
 TEST_RESU(RESU=(_F(GROUP_NO='Sf',
                    INST=1.0,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.73616515310580999,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.73616577927100,
                    ),
                 _F(GROUP_NO='Sf',
                    INST=1.0,
                    RESULTAT=RESU,
                    NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=-160.40053222751001,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-160.40113477117,
                    ),
                 ),
           )

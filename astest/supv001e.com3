@@ -28,12 +28,10 @@ assert mult12sq(2.) == 48.
 assert mult2(2.) == 4.
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.0,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=2.0,
                          NOM_PARA='INST',
                          FONCTION=mult2,),
                       _F(VALE_CALC=48.0,
-                         TOLE_MACHINE=1.E-3,
                          VALE_PARA=2.0,
                          NOM_PARA='INST',
                          FONCTION=mult12sq,),

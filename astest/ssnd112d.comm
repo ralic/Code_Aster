@@ -435,48 +435,42 @@ DEFI_FICHIER(UNITE = 28,
 
 
 tdep=tmax
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.48564000000000002,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.48563589,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=epsDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=341.84143299999999,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=341.8414,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=sigDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.19600000E8,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.196425E+08,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=rho_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.45299,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.45298902,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.1865230E7,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.186523E+07,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=rho_8,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.23730000000000001,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.23727698,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_8,

@@ -186,8 +186,7 @@ IMPR_TABLE(TABLE=TAB_T)
 
 # Tests de la force normale
 TEST_TABLE(
-           VALE_CALC=-9.4538788774073005E7,
-           TOLE_MACHINE=1.9999999999999999E-07,
+           VALE_CALC=-9.4538776171532E+07,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -195,44 +194,39 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.3455680794825E8,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=-1.345567896841E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.7840289731858999E8,
-           TOLE_MACHINE=5.9999999999999997E-07,
+           VALE_CALC=-1.7840288703549E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.69999999999999996,),
+                     VALE=0.7,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.2557093066911E8,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=-2.2557081658764E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7555462366576999E8,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=-2.7555438807337E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.90000000000000002,),
+                     VALE=0.9,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.2989819957773E8,
-           TOLE_MACHINE=2.9999999999999999E-07,
+           VALE_CALC=-3.2989817982847E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -240,8 +234,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.3240504079293001E8,
-           TOLE_MACHINE=2.9999999999999999E-07,
+           VALE_CALC=-3.3240504054728E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -249,8 +242,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.3489814486807001E8,
-           TOLE_MACHINE=4.9999999999999998E-07,
+           VALE_CALC=-3.3489814402184E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -258,8 +250,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.373778969659E8,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=-3.3737758242156E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -267,8 +258,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.3984381244300002E8,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=-3.3984346216101E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -276,8 +266,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.4229629032247001E8,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=-3.4229590424525E+08,
            NOM_PARA='DY',
            TABLE=TAB_N,
            FILTRE=_F(NOM_PARA='INST',
@@ -286,8 +275,7 @@ TEST_TABLE(
 
 # Tests de la force tangentielle
 TEST_TABLE(
-           VALE_CALC=1.8359148468033999E7,
-           TOLE_MACHINE=2.9999999999999999E-07,
+           VALE_CALC=1.8359148468034E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -295,8 +283,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.6679902448734999E7,
-           TOLE_MACHINE=1.9999999999999999E-06,
+           VALE_CALC=2.6679896853672E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -304,8 +291,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.5989425997285999E7,
-           TOLE_MACHINE=4.9999999999999998E-07,
+           VALE_CALC=3.5989420501441E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -313,26 +299,23 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.6081849902230002E7,
-           TOLE_MACHINE=4.9999999999999998E-07,
+           VALE_CALC=4.6081844086981E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 TEST_TABLE(
-           VALE_CALC=5.6885421296386003E7,
-           TOLE_MACHINE=5.5000000000000003E-07,
+           VALE_CALC=5.6885415537783E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.90000000000000002,),
+                     VALE=0.9,),
            )
 
 TEST_TABLE(
-           VALE_CALC=6.9020369717112005E7,
-           TOLE_MACHINE=5.9999999999999997E-07,
+           VALE_CALC=6.9020354634835E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -340,8 +323,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.2693239845571995E7,
-           TOLE_MACHINE=3.9999999999999998E-07,
+           VALE_CALC=7.2693236508798E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -349,8 +331,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.6371655551772997E7,
-           TOLE_MACHINE=9.9999999999999995E-08,
+           VALE_CALC=7.6371652237431E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -358,8 +339,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.0055855257551998E7,
-           TOLE_MACHINE=9.9999999999999995E-08,
+           VALE_CALC=8.0055851960701E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -367,8 +347,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.3746073444324002E7,
-           TOLE_MACHINE=2.9999999999999999E-07,
+           VALE_CALC=8.3746070160476E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',
@@ -376,8 +355,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.7442527374573007E7,
-           TOLE_MACHINE=2.9999999999999999E-07,
+           VALE_CALC=8.7442524098204E+07,
            NOM_PARA='DX',
            TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST',

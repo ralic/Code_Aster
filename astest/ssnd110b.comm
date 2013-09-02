@@ -228,16 +228,14 @@ EVIYZ=RECU_FONCTION(TABLE=EXPLDD,
 sys1=8
 sys2=5
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.03685900000E11,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.036859E+11,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=rho_8,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.01940000000E11,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.019420E+11,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=rho_5,
@@ -246,16 +244,14 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.01940000000E11,
 
 # glissement plastiques
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.9426999999999999E-05,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.942675E-05,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_8,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.01835E-05,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.018346E-05,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_5,
@@ -264,32 +260,28 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.01835E-05,
 
 # deformation viscoplastique globale
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.21869E-05,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.218691E-05,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIXX,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.2119999999999999E-05,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.212262E-05,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIZZ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.6871000000000001E-06,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.687086E-06,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIXY,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=8.6170000000000007E-06,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.617210E-06,
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIYZ,
@@ -676,32 +668,28 @@ DEFI_FICHIER(UNITE = 28,
 sys1=5
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.944964E6,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.944964E+06,
                         VALE_PARA=100.0,
                         NOM_PARA='INST',
                         FONCTION=rhoi_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.086727E6,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.086727E+06,
                         VALE_PARA=500.0,
                         NOM_PARA='INST',
                         FONCTION=rhoi_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.054399999999999997,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.05441691,
                         VALE_PARA=100.0,
                         NOM_PARA='INST',
                         FONCTION=gammi_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.28714000000000001,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.28714373,
                         VALE_PARA=500.0,
                         NOM_PARA='INST',
                         FONCTION=gammi_5,

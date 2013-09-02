@@ -42,7 +42,6 @@ POURSUITE(CODE=_F(  NOM = 'ZZZZ136A'))
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=s1_g,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -51,7 +50,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532129,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=s1_g,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -60,7 +58,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=s1_g,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -69,7 +66,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=s1_g,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -78,7 +74,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250899,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=s1_g,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -87,7 +82,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=s1_g,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -100,7 +94,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -109,7 +102,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532129,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -118,7 +110,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -127,7 +118,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -136,7 +126,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250899,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -145,7 +134,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -158,7 +146,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -167,7 +154,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532129,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -176,7 +162,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -185,7 +170,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -194,7 +178,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250899,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -203,7 +186,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -216,7 +198,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -225,7 +206,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532129,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -234,7 +214,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -243,7 +222,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -252,7 +230,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250899,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -261,7 +238,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -274,7 +250,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -283,7 +258,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532129,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -292,7 +266,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -301,7 +274,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -310,7 +282,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250899,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -319,7 +290,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -332,7 +302,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -341,7 +310,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532129,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -350,7 +318,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -359,7 +326,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -368,7 +334,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250899,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -377,7 +342,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -390,7 +354,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.089220331584459,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -399,7 +362,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.089220331584455,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -408,7 +370,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -417,7 +378,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.26761768635569,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -426,7 +386,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.11240718369833,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -435,7 +394,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.11240718369833,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -448,7 +406,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.089220331584459,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -457,7 +414,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.089220331584455,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -466,7 +422,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -475,7 +430,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.26761768635569,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -484,7 +438,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.11240718369833,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -493,7 +446,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.11240718369833,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -506,7 +458,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.35683801794015,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -515,7 +466,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17839735477123,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -524,7 +474,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -533,7 +482,6 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=   -1.8041124150159E-15,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -542,7 +490,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.15896776369434,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -551,7 +498,6 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=   -2.4910629115027E-15,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -564,7 +510,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   0.35683801794015,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -573,7 +518,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17839735477123,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -582,7 +526,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -599,7 +542,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.15896776369434,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -620,7 +562,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   0.35683801794015,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -629,7 +570,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17839735477123,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -638,7 +578,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -647,7 +586,6 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=   -1.8457457784393E-15,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -656,7 +594,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.15896776369434,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -665,7 +602,6 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=   -2.466776782839E-15,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -678,7 +614,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   0.35683801794015,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -687,7 +622,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17839735477123,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -696,7 +630,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -713,7 +646,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.15896776369434,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -734,7 +666,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532126,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -743,7 +674,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -752,7 +682,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -761,7 +690,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -770,7 +698,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -779,7 +706,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250897,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -792,7 +718,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532126,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -801,7 +726,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -810,7 +734,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -819,7 +742,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -828,7 +750,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -837,7 +758,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250897,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -850,7 +770,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -859,7 +778,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532126,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -868,7 +786,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -877,7 +794,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -886,7 +802,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250897,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -895,7 +810,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -908,7 +822,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -917,7 +830,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532126,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -926,7 +838,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -935,7 +846,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -944,7 +854,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250897,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -953,7 +862,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -966,7 +874,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -975,7 +882,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532126,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -984,7 +890,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -993,7 +898,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1002,7 +906,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250897,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1011,7 +914,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1025,7 +927,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.24809578347109,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1034,7 +935,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.074258409532126,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1043,7 +943,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.16240837189743,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1052,7 +951,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1061,7 +959,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.040604037250897,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1070,7 +967,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12715939612545,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1084,7 +980,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.33250093042141,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1093,7 +988,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.46140514142841,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1102,7 +996,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.37996662890831,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1111,7 +1004,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.098127002868082,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1120,7 +1012,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42080820176757,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1129,7 +1020,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   6.0398293897706E-03,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1138,7 +1028,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.51191638042200,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1147,7 +1036,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.34813582130353,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1156,7 +1044,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.62166344679278,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1165,7 +1052,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.044455208172757,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1174,7 +1060,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17122485927218,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1183,7 +1068,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.015228659645237,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1195,7 +1079,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.33250093042141,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4_N31,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1204,7 +1087,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.46140514142841,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4_N31,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1213,7 +1095,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.37996662890831,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4_N31,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1222,7 +1103,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.098127002868082,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4_N31,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1231,7 +1111,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42080820176757,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4_N31,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1240,7 +1119,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   6.0398293897706E-03,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4_N31,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1252,7 +1130,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.37996662890832,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S4_N1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1261,7 +1138,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.46140514142841,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S4_N1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1270,7 +1146,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.33250093042140,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S4_N1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1279,7 +1154,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   6.0398293897725E-03,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S4_N1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1288,7 +1162,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42080820176757,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S4_N1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1297,7 +1170,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.098127002868082,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S4_N1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1310,7 +1182,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1320,7 +1191,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1330,7 +1200,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1340,7 +1209,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1349,7 +1217,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1358,7 +1225,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1371,7 +1237,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1381,7 +1246,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1391,7 +1255,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1401,7 +1264,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1410,7 +1272,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1419,7 +1280,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1432,7 +1292,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1442,7 +1301,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1452,7 +1310,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1462,7 +1319,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1471,7 +1327,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1480,7 +1335,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1493,7 +1347,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1503,7 +1356,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1513,7 +1365,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1523,7 +1374,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1532,7 +1382,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1541,7 +1390,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1554,7 +1402,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1564,7 +1411,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1574,7 +1420,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1584,7 +1429,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1593,7 +1437,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1602,7 +1445,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1615,7 +1457,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1625,7 +1466,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1635,7 +1475,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1645,7 +1484,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1654,7 +1492,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1663,7 +1500,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D1L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1676,7 +1512,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1765645481805E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1686,7 +1521,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1765645481805E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1696,7 +1530,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1706,7 +1539,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9417200740312E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1715,7 +1547,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9417200740312E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1724,7 +1555,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1737,7 +1567,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1765645481805E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1747,7 +1576,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1765645481805E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1757,7 +1585,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1767,7 +1594,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9417200740312E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1776,7 +1602,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9417200740312E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1785,7 +1610,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1798,7 +1622,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -3.0781271034173E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1817,7 +1640,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1827,7 +1649,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.746006863027E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1844,7 +1665,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1858,7 +1678,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -3.0781271034173E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1877,7 +1696,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1887,7 +1705,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.746006863027E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1904,7 +1721,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1918,7 +1734,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -3.0781271034173E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1928,7 +1743,6 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=   -3.4410713482206E-22,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D2_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1938,7 +1752,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1948,7 +1761,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.746006863027E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1965,7 +1777,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -1979,7 +1790,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -3.0781271034173E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -1998,7 +1808,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2008,7 +1817,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.746006863027E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2025,7 +1833,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D2L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2038,7 +1845,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2048,7 +1854,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2058,7 +1863,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2068,7 +1872,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2077,7 +1880,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2086,7 +1888,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2099,7 +1900,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2109,7 +1909,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2119,7 +1918,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2129,7 +1927,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2138,7 +1935,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2147,7 +1943,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2160,7 +1955,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2170,7 +1964,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2180,7 +1973,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2190,7 +1982,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2199,7 +1990,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2208,7 +1998,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2221,7 +2010,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2231,7 +2019,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2241,7 +2028,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2251,7 +2037,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2260,7 +2045,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2269,7 +2053,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2282,7 +2065,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2292,7 +2074,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2302,7 +2083,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2312,7 +2092,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2321,7 +2100,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2330,7 +2108,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2344,7 +2121,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2354,7 +2130,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2364,7 +2139,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2374,7 +2148,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=D3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2383,7 +2156,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=D3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2392,7 +2164,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=D3L_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2405,7 +2176,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.11390010204615,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2415,7 +2185,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2425,7 +2194,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.029926440375790,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2439,7 +2207,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.11390010204615,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1L_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2449,7 +2216,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2459,7 +2225,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.029926440375790,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1L_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2473,7 +2238,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2483,7 +2247,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.20845409095706,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2493,7 +2256,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.046909409130759,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2507,7 +2269,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1L_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2517,7 +2278,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.20845409095706,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2527,7 +2287,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.046909409130759,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1L_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2541,7 +2300,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.029926440375790,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2551,7 +2309,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.046909409130759,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2561,7 +2318,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.47553162855561,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2575,7 +2331,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.029926440375790,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=S1L_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2585,7 +2340,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.046909409130759,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=S1L_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2595,7 +2349,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.47553162855561,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=S1L_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2609,7 +2362,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TRAC_DIR',
            TABLE=D1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2623,7 +2375,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TRAC_DIR',
            TABLE=D1L_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -2817,7 +2568,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(
            VALE_CALC=   0.12841285356815,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2826,7 +2576,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.028383789980382,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2835,7 +2584,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.18455086500279,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2844,7 +2592,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.21609286284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2853,7 +2600,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.093910022750173,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2862,7 +2608,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17347044290691,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M1L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2875,7 +2620,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12841285356815,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2884,7 +2628,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.028383789980382,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2893,7 +2636,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.18455086500279,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2902,7 +2644,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.21609286284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2911,7 +2652,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.093910022750173,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2920,7 +2660,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17347044290691,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2933,7 +2672,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12841285356815,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2942,7 +2680,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.028383789980382,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2951,7 +2688,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.18455086500279,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2960,7 +2696,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.21609286284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2969,7 +2704,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.093910022750173,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2978,7 +2712,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17347044290691,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -2991,7 +2724,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.089220331584459,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3000,7 +2732,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.089220331584455,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3009,7 +2740,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3018,7 +2748,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.26761768635569,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3027,7 +2756,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.11240718369833,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3036,7 +2764,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.11240718369833,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M2L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3049,7 +2776,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.35683801794015,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3058,7 +2784,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17839735477123,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3067,7 +2792,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3084,7 +2808,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.15896776369434,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M2L_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3105,7 +2828,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   0.35683801794015,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3114,7 +2836,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17839735477123,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3123,7 +2844,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42864071042752,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3140,7 +2860,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.15896776369434,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3161,7 +2880,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -0.028383789980377,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3170,7 +2888,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12841285356815,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3179,7 +2896,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.18455086500279,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3188,7 +2904,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.21609286284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3197,7 +2912,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.17347044290691,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3206,7 +2920,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.093910022750170,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M3L_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3219,7 +2932,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12841285356815,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3228,7 +2940,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.028383789980377,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3237,7 +2948,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.18455086500279,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3246,7 +2956,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.21609286284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3255,7 +2964,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.093910022750170,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3264,7 +2972,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.17347044290691,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3277,7 +2984,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.12841285356815,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3286,7 +2992,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.028383789980377,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3295,7 +3000,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.18455086500279,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3304,7 +3008,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.21609286284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3313,7 +3016,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.093910022750170,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3322,7 +3024,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.17347044290691,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3336,7 +3037,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.11390010204615,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3345,7 +3045,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.47553162855561,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3354,7 +3053,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.20845409095706,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3363,7 +3061,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3372,7 +3069,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3381,7 +3077,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.046909409130759,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3390,7 +3085,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.42198680388702,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3399,7 +3093,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.41249652299217,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3408,7 +3101,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.74626954255325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3417,7 +3109,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.29678870265864,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3426,7 +3117,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.29678870265864,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3435,7 +3125,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.023657471575675,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=M4L_C,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3448,7 +3137,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3458,7 +3146,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3468,7 +3155,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3478,7 +3164,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3487,7 +3172,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3496,7 +3180,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3509,7 +3192,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3519,7 +3201,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3529,7 +3210,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3539,7 +3219,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3548,7 +3227,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3557,7 +3235,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3570,7 +3247,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3580,7 +3256,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3590,7 +3265,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3600,7 +3274,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3609,7 +3282,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3618,7 +3290,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641964E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N1_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3631,7 +3302,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1765645481805E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3641,7 +3311,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1765645481805E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N2_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3651,7 +3320,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3661,7 +3329,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9417200740312E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3670,7 +3337,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9417200740312E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3679,7 +3345,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3692,7 +3357,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -3.0781271034173E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3711,7 +3375,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3721,7 +3384,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.746006863027E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3738,7 +3400,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3752,7 +3413,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -3.0781271034173E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3762,7 +3422,6 @@ TEST_TABLE(
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=   -3.4410713482206E-22,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N2_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3772,7 +3431,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   -9.0730840212336E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3782,7 +3440,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.746006863027E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3799,7 +3456,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(
            VALE_CALC=   6.6555071485016E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N2_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3812,7 +3468,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3822,7 +3477,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3832,7 +3486,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_G,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3842,7 +3495,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3851,7 +3503,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3860,7 +3511,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3873,7 +3523,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3883,7 +3532,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3893,7 +3541,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_L,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3903,7 +3550,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3912,7 +3558,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3921,7 +3566,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_L,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3934,7 +3578,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3944,7 +3587,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9700797599399E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3954,7 +3596,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.277687241494E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_U,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -3964,7 +3605,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.1909427927289E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TABLE=N3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3973,7 +3613,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   1.9029499057604E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=N3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3982,7 +3621,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -1.2974924641963E-08,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TABLE=N3_U,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -3995,7 +3633,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.22320051623378,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=O1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4005,7 +3642,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.32970715811035,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=O1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4015,7 +3651,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.034100281246146,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=O1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4029,7 +3664,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.32970715811035,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=O1_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4039,7 +3673,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.29421035993269,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=O1_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4049,7 +3682,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.020434789870494,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=O1_TDY,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4063,7 +3695,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.034100281246146,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_1',
            TABLE=O1_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4073,7 +3704,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.020434789870494,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_2',
            TABLE=O1_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4083,7 +3713,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.46846838499201,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TR_DIR_3',
            TABLE=O1_TDZ,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4097,7 +3726,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -2.3504907016788E-07,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='TRAC_DIR',
            TABLE=P1_TDX,
            FILTRE=_F(CRITERE='ABSOLU',
@@ -4207,7 +3835,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(
            VALE_CALC=   -0.15294114015997,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXX',
            TABLE=S5_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -4216,7 +3843,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.16941305284325,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=S5_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -4225,7 +3851,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.34600141002907,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=S5_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -4234,7 +3859,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   0.23860611445314,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXY',
            TABLE=S5_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -4243,7 +3867,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   -0.096670560431839,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIXZ',
            TABLE=S5_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -4252,7 +3875,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=   3.352383146774E-03,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYZ',
            TABLE=S5_G,
            FILTRE=_F(NOM_PARA='ABSC_CURV',

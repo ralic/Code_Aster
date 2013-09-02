@@ -210,112 +210,62 @@ TRAN3=REST_GENE_PHYS(   RESU_GENE=TRAN_GE3,
                              INTERPOL='LIN')
 
 #
-TEST_RESU(RESU=_F(INST=1.0,
+TEST_RESU(RESU=(
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='DEPL',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.2548299999999999E-4,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=-1.2548329076485E-04,),
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='VITE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=8.3521300000000001E-4,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=8.3521301648811E-04,),
+               _F(INST=1.0,
                   RESULTAT=TRAN1,
                   NOM_CHAM='ACCE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=0.36395300000000003,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=0.36395279092512,),
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.25437E-4,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=-1.254370289034E-04,),
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=8.4098500000000004E-4,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=8.4098546805027E-04,),
+               _F(INST=1.0,
                   RESULTAT=TRAN2,
                   NOM_CHAM='ACCE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=0.28545399999999999,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=0.28545359738930,),
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=-1.2552599999999999E-4,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=-1.2552515413372E-04,),
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=8.3285599999999998E-4,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
-
-#
-TEST_RESU(RESU=_F(INST=1.0,
+                  VALE_CALC=8.3285564859441E-04,),
+               _F(INST=1.0,
                   RESULTAT=TRAN3,
                   NOM_CHAM='ACCE',
                   NOEUD='N11',
                   NOM_CMP='DY',
-                  VALE_CALC=0.34578140000000002,
-                  TOLE_MACHINE=1.E-4,
-                  CRITERE='RELATIF',
-                  ),
-          )
+                  VALE_CALC=0.34578137533016,),
+               ))
 
 #
 FIN()

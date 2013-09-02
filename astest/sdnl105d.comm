@@ -482,8 +482,7 @@ IMPR_TABLE(TABLE=RMS)
 # UTILISEE (I.E. CELLE DE PYTHON v2.3).
 
 TEST_TABLE(
-           VALE_CALC=4.1245671733566001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.1245899239361,
            NOM_PARA='SUP',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -491,8 +490,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.4852445451528,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.4851680521635,
            NOM_PARA='INF',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -500,8 +498,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.7318143788391001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.7317884182478,
            NOM_PARA='MOY',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -509,8 +506,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.043744293902475001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.043752901655381,
            NOM_PARA='VAR',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -518,8 +514,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.011881667275226999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.011881671104798,
            NOM_PARA='SUP',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -527,8 +522,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.011469763652458,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.011469764042101,
            NOM_PARA='MOY',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -536,8 +530,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.088058769141797,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.088058725522363,
            NOM_PARA='INF',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',
@@ -545,8 +538,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.092781999953829006,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.092781999085259,
            NOM_PARA='MOY',
            TABLE=RMS,
            FILTRE=_F(NOM_PARA='NOM_CHAM',

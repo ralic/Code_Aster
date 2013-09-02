@@ -415,49 +415,43 @@ DEFI_FICHIER(UNITE = 31,
 
 # NON REGRESSION
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.224443,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22444296,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=epsDIR,
                         ),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=230.7133,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=sigDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35670000000000002,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35669922,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamma_1,
                         ),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.490252E-05,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493022,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamma_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.306764E-06,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho_9,
                         ),
@@ -465,48 +459,42 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0202331,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02023307,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=epsDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=114.125,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=114.1254,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=sigDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.8085199999999995E-07,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.808516E-07,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=rho_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0385454,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03854542,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=gamma_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.07407E-07,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.074071E-07,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=rho_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.04944E-3,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.049440E-03,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=gamma_9,
@@ -608,49 +596,43 @@ for i in range(1,13):
 
 # NON REGRESSION
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.224443,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22444296,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=epsDIR2,
                         ),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=230.7133,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=sigDIR2,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35670000000000002,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35669922,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamm2_1,
                         ),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.490252E-05,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho2_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493022,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamm2_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.306764E-06,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho2_9,
                         ),
@@ -658,48 +640,42 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0202331,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02023307,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=epsDIR2,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=114.125,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=114.1254,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=sigDIR2,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.8085199999999995E-07,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.808516E-07,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=rho2_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0385454,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03854542,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=gamm2_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.07407E-07,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.074071E-07,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=rho2_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.04944E-3,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.049440E-03,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=gamm2_9,
@@ -802,49 +778,43 @@ for i in range(1,13):
 
 # NON REGRESSION
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.224443,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22444296,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=epsDIR3,
                         ),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=230.7133,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=sigDIR3,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35670000000000002,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.35669922,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamm3_1,
                         ),
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.490252E-05,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho3_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05493022,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=gamm3_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=0.20000000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=6.306764E-06,
+                        VALE_PARA=0.2,
                         NOM_PARA='INST',
                         FONCTION=rho3_9,
                         ),
@@ -852,48 +822,42 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=6.3067600000000001E-06,
 
 tdep=0.02
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0202331,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02023307,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=epsDIR3,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=114.125,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=114.1254,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=sigDIR3,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.8085199999999995E-07,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.808516E-07,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=rho3_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0385454,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03854542,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=gamm3_1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.07407E-07,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.074071E-07,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=rho3_9,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.04944E-3,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.049440E-03,
                         VALE_PARA=0.02,
                         NOM_PARA='INST',
                         FONCTION=gamm3_9,

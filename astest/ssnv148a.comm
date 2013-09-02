@@ -162,8 +162,9 @@ RET=POST_ELEM(
 # TESTS WEIBULL
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.014809636,
-           VALE_REFE=0.014809636445635,
+           VALE_CALC=0.014809636445635,
+           VALE_REFE=0.01465,
+           PRECISION=1.2E-2,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -171,8 +172,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.014809636,
-           VALE_REFE=0.014809636445635,
+           VALE_CALC=0.014809636445635,
+           VALE_REFE=0.01465,
+           PRECISION=1.2E-2,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -180,8 +182,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.014809636,
-           VALE_REFE=0.014809636445635,
+           VALE_CALC=0.014809636445635,
+           VALE_REFE=0.01465,
+           PRECISION=1.2E-2,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -189,8 +192,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.999999383,
-           VALE_REFE=0.99999938317435999,
+           VALE_CALC=0.99999938317436,
+           VALE_REFE=1.0,
+           PRECISION=1.E-4,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -199,8 +203,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.014809636,
-           VALE_REFE=0.014809636445635,
+           VALE_CALC=0.014809636445635,
+           VALE_REFE=0.01465,
+           PRECISION=1.2E-2,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -208,8 +213,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.014809636,
-           VALE_REFE=0.014809636445635,
+           VALE_CALC=0.014809636445635,
+           VALE_REFE=0.01465,
+           PRECISION=1.2E-2,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -217,8 +223,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.014809636,
-           VALE_REFE=0.014809636445635,
+           VALE_CALC=0.014809636445635,
+           VALE_REFE=0.01465,
+           PRECISION=1.2E-2,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -227,7 +234,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.999999383,
-           VALE_REFE=0.99999938317435999,
+           VALE_REFE=1.0,
+           PRECISION=1.E-4,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=WEIB2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -266,15 +274,12 @@ TEST_TABLE(
                      VALE_I=4,),
            )
 
-IMPR_TABLE(TABLE=WEIB)
-IMPR_TABLE(TABLE=WEIB2)
-IMPR_TABLE(TABLE=WEIB3)
-
 # TESTS RICE ET TRACEY
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=1.045823643,
-           VALE_REFE=1.0458000000000001,
+           VALE_CALC=1.0458236434468,
+           VALE_REFE=1.0447,
+           PRECISION=2.E-2,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=RET,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -282,8 +287,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=1.045823643,
-           VALE_REFE=1.0458000000000001,
+           VALE_CALC=1.0458236434468,
+           VALE_REFE=1.0447,
+           PRECISION=2.E-2,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=RET,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -291,8 +297,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=1.045823643,
-           VALE_REFE=1.0458000000000001,
+           VALE_CALC=1.0458236434468,
+           VALE_REFE=1.0447,
+           PRECISION=2.E-2,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=RET,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -300,15 +307,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=1.070072912,
-           VALE_REFE=1.0701000000000001,
+           VALE_CALC=1.0700729120909,
+           VALE_REFE=1.068,
+           PRECISION=2.E-2,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=RET,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=4,),
            )
-
-IMPR_TABLE(TABLE=RET)
 
 #--------------------------------------------------
 # POST_ELEM
@@ -325,11 +331,11 @@ AOUI_MOY=POST_ELEM(
                NUME_ORDRE=(1,2,3,4),              
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=AOUI_MOY)
 
-TEST_TABLE(
-           VALE_CALC=1.0458000000000001,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0458236434468,
+           VALE_REFE=1.0447,
+           PRECISION=2.E-3,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=AOUI_MOY,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -344,11 +350,11 @@ BOUI_MOY=POST_ELEM(
                              NUME_ORDRE=(1,2,3,4),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=BOUI_MOY)
 
-TEST_TABLE(
-           VALE_CALC=1.0458000000000001,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0458236434468,
+           VALE_REFE=1.0447,
+           PRECISION=2.E-3,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=BOUI_MOY,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -363,11 +369,9 @@ COUI_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=COUI_MOY)
 
 TEST_TABLE(
-           VALE_CALC=1.4387799999999999E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=14387.843158606,
            NOM_PARA='VOLUME_CONCERNE',
            TABLE=COUI_MOY,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -390,11 +394,11 @@ DOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=DOUI_ELG)
 
-TEST_TABLE(
-           VALE_CALC=1.0458000000000001,
-           TOLE_MACHINE=1.E-3,
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0458236434468,
+           VALE_REFE=1.0447,
+           PRECISION=2.E-3,
            NOM_PARA='TX_CROIS_CAVITES',
            TABLE=DOUI_ELG,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -408,7 +412,6 @@ EOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=EOUI_ELG)
 
 #----------------------
 
@@ -419,7 +422,6 @@ FOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=FOUI_ELG)
 #
 # ATTENTION : ON NE TESTE PAS LES VOLUMES USES POUR CES 2 TABLES
 #             EOUI_ELG ET FOUI_ELG
@@ -439,7 +441,6 @@ ANON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=ANON_MOY)
 #----------------------
 
 BNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
@@ -448,7 +449,6 @@ BNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=BNON_MOY)
 
 #----------------------
 
@@ -459,7 +459,6 @@ CNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=CNON_MOY)
 
 #--------------------------------------------------
 # POST_ELEM
@@ -474,7 +473,6 @@ DNON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=DNON_ELG)
 
 #----------------------
 
@@ -484,7 +482,6 @@ ENON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
 
-IMPR_TABLE(TABLE=ENON_ELG)
 
 #----------------------
 
@@ -494,7 +491,6 @@ FNON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
                                      'M8','M9','M10','M11','M12','M13','M14'),     
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,);
-IMPR_TABLE(TABLE=FNON_ELG)
 
 FIN()
 #

@@ -251,7 +251,7 @@ U2=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 20)
               )
-IMPR_RESU(RESU=_F(RESULTAT=U2))
+
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
 
 
@@ -269,7 +269,7 @@ tab_depl=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                 TOUT_CMP='OUI',
                                 LIST_INST=ARCHI,
                                 OPERATION='EXTRACTION'));
-IMPR_TABLE(TABLE=tab_depl);
+
 tab_sigm=POST_RELEVE_T(ACTION=_F(INTITULE='SIGM_NOEU',
                                 NOEUD='N4',
                                 RESULTAT=U2,
@@ -277,7 +277,7 @@ tab_sigm=POST_RELEVE_T(ACTION=_F(INTITULE='SIGM_NOEU',
                                 TOUT_CMP='OUI',
                                 LIST_INST=ARCHI,
                                 OPERATION='EXTRACTION'));
-IMPR_TABLE(TABLE=tab_sigm);
+
 tab_vari=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 NOEUD='N4',
                                 RESULTAT=U2,
@@ -285,7 +285,6 @@ tab_vari=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 TOUT_CMP='OUI',
                                 LIST_INST=TEMPS2,
                                 OPERATION='EXTRACTION'));
-IMPR_TABLE(TABLE=tab_vari);
 
 TFIN1 = 700000.
 TFIN2 = 1300000.
@@ -296,16 +295,14 @@ TEST_RESU(RESU=(_F(INST=700000.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N4',
                    NOM_CMP='DX',
-                   VALE_CALC=-7.6000000000000004E-4,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-7.6E-4,
                    ),
                 _F(INST=1.3000E6,
                    RESULTAT=U2,
                    NOM_CHAM='DEPL',
                    NOEUD='N4',
                    NOM_CMP='DX',
-                   VALE_CALC=0.029877,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.029877323241275,
                    ),
                 ),
           )
@@ -316,15 +313,13 @@ TEST_RESU(RESU=(_F(INST=700000.0,
                    NOEUD='N4',
                    NOM_CMP='SIYY',
                    VALE_CALC=-5.0,
-                   TOLE_MACHINE=1.E-3,
                    ),
                 _F(INST=1.3000E6,
                    RESULTAT=U2,
                    NOM_CHAM='SIGM_NOEU',
                    NOEUD='N4',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-12.010,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=-12.009670434202,
                    ),
                 ),
           )

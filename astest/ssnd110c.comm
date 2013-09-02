@@ -233,21 +233,12 @@ sigtps=RECU_FONCTION(TABLE=POLYECP,
                    PARA_Y='SIZZ',
                    INTERPOL='LIN');
 
-#Valeur de non-regression
-TEST_FONCTION(VALEUR=_F(VALE_CALC=424.93530500000003,
-                        TOLE_MACHINE=1.E-3,
-                        VALE_PARA=45.0,
-                        NOM_PARA='INST',
-                        FONCTION=sigtps,
-                        ),
-              )
-
 #Valeur experimentale
 TEST_FONCTION(VALEUR=_F(VALE_CALC=424.935304592,
-                        VALE_REFE=387.80000000000001,
+                        VALE_REFE=387.8,
                         VALE_PARA=45.0,
                         REFERENCE='SOURCE_EXTERNE',
-                        PRECISION=0.10000000000000001,
+                        PRECISION=0.1,
                         NOM_PARA='INST',
                         FONCTION=sigtps,),
               )

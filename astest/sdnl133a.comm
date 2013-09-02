@@ -245,30 +245,17 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               ))
 
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.8308805000000003E-09,
-                         
-                         VALE_PARA=0.90000000000000002,
-                         FONCTION=DEPN4Z,
-                         ),
-                      _F(VALE_CALC=1.8442026999999999E-09,
-                         
-                         VALE_PARA=1.0,
-                         FONCTION=DEPN4Z,
-                         ),
-                      ),
-              )
-
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.83088061479e-09,
-                         VALE_REFE=4.5276500000000002E-09,
-                         VALE_PARA=0.90000000000000002,
+                         VALE_REFE=4.52765E-09,
+                         VALE_PARA=0.9,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.10000000000000001,
+                         PRECISION=0.1,
                          FONCTION=DEPN4Z,),
                       _F(VALE_CALC=1.84420269199e-09,
-                         VALE_REFE=1.7775700000000001E-09,
+                         VALE_REFE=1.77757E-09,
                          VALE_PARA=1.0,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.10000000000000001,
+                         PRECISION=0.1,
                          FONCTION=DEPN4Z,),
                       ),
               )

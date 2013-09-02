@@ -178,7 +178,6 @@ for i in [1,2,3,4]: #Boucle sur les increments
              PRECISION=1.E-10,
              VALE_CALC=0.0,
              VALE_REFE=0.0,
-             TOLE_MACHINE=1.E-10,
              NOM_PARA='DIST',
              TYPE_TEST='SOMM',
              TABLE=DEP[i],)

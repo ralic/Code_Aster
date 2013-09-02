@@ -271,7 +271,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=82,
                    NOM_CMP='V8',
                    VALE_CALC= 7.34795174E-03,
                    VALE_REFE=6.9974900000000003E-3,
-                   PRECISION=0.059999999999999998, TOLE_MACHINE=(0.059999999999999998, 9.9999999999999995E-07),
+                   PRECISION=0.059999999999999998,
                    MAILLE='MA1',),
                 ),
           )

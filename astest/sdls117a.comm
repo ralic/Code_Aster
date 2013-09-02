@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#       (CALCUL MODALE ET CALCUL HARMONIQUE)
+#       (CALCUL MODAL ET CALCUL HARMONIQUE)
 
 # SDLS117A
 # PLAQUE  RECTANGULAIRE EXCENTREE
@@ -167,7 +167,6 @@ DEP_DYN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
 TEST_RESU(RESU=(_F(NUME_ORDRE=200,
                    GROUP_NO='A2',
                    VALE_CALC_C=0j,
-                   TOLE_MACHINE=1.E-3,
                    RESULTAT=DEP_DYN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
@@ -176,7 +175,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=200,
                 _F(NUME_ORDRE=350,
                    GROUP_NO='A2',
                    VALE_CALC_C=0j,
-                   TOLE_MACHINE=1.E-3,
                    RESULTAT=DEP_DYN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
@@ -185,7 +183,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=200,
                 _F(NUME_ORDRE=600,
                    GROUP_NO='A2',
                    VALE_CALC_C=0j,
-                   TOLE_MACHINE=1.E-3,
                    RESULTAT=DEP_DYN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
@@ -194,7 +191,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=200,
                 _F(NUME_ORDRE=800,
                    GROUP_NO='A2',
                    VALE_CALC_C=0j,
-                   TOLE_MACHINE=1.E-3,
                    RESULTAT=DEP_DYN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',

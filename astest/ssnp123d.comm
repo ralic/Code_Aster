@@ -128,8 +128,7 @@ IMPR_TABLE(TABLE=S_T,);
 # NOn REGRESSION
 
 TEST_TABLE(
-           VALE_CALC=234.12162678999999,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=234.12162679423,
            NOM_PARA='SIYY',
            TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -137,8 +136,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=256.98783319,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=256.98783319353,
            NOM_PARA='SIYY',
            TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -146,8 +144,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=300.28717383999998,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=300.28717383814,
            NOM_PARA='SIYY',
            TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -155,8 +152,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=267.55482696000001,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=267.55482695734,
            NOM_PARA='SIYY',
            TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -164,8 +160,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=183.49849877,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=183.4984987651,
            NOM_PARA='SIYY',
            TABLE=S_T,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -181,8 +176,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='NUEST',
-                  VALE_CALC=0.14980212200000001,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=0.14980212215405,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),
@@ -193,8 +187,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='ERME_ELNO',
                   NOEUD='N5',
                   NOM_CMP='ERREST',
-                  VALE_CALC=0.010603982,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=0.010603981954603,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),
@@ -209,8 +202,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIGM_ELNO',
                   NOEUD='N5',
                   NOM_CMP='SIYY',
-                  VALE_CALC=440.20187086999999,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=440.20187087436,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),
@@ -221,8 +213,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIGM_ELNO',
                   NOEUD='N5',
                   NOM_CMP='SIXX',
-                  VALE_CALC=-0.241927537,
-                  TOLE_MACHINE=1.E-4,
+                  VALE_CALC=-0.24192753667832,
                   CRITERE='RELATIF',
                   MAILLE='M1294',
                   ),

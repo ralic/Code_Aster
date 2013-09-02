@@ -213,9 +213,9 @@ SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 ################### TESTS COMPARAISON GEFDYN ####################
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.059999999999999998,
-           VALE_CALC= 6.02102542E-07,
-           VALE_REFE=6.3799999999999997E-07,
+           PRECISION=0.06,
+           VALE_CALC=6.02102542E-07,
+           VALE_REFE=6.38E-07,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -223,9 +223,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.070000000000000007,
+           PRECISION=0.07,
            VALE_CALC= 2.00318942E-06,
-           VALE_REFE=2.1399999999999998E-06,
+           VALE_REFE=2.14E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -233,9 +233,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.070000000000000007,
-           VALE_CALC= 3.62260622E-06,
-           VALE_REFE=3.8800000000000001E-06,
+           PRECISION=0.07,
+           VALE_CALC=3.62260622E-06,
+           VALE_REFE=3.88E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -245,8 +245,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 ################ TESTS NON REGRESSION ###########################
 
 TEST_TABLE(
-           VALE_CALC=6.0216299999999996E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.0210257736746E-07,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -254,8 +253,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.5216300000000001E-07,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.5210150480789E-07,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -263,8 +261,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-4.9999900000000001E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-49998.927440427,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -272,8 +269,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.7436900000000001E-06,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.7435131720485E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -281,8 +277,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.79369E-06,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.7935099677834E-06,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -290,8 +285,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-4.9999699999999997E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-49996.795734891,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -299,8 +293,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.89115E-06,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.8907287773465E-06,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -308,8 +301,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.9411500000000004E-06,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=3.9407212325226E-06,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -317,17 +309,11 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-4.9999199999999997E4,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=-49992.455176062,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
                      VALE=8.5,),
            )
-
-IMPR_TABLE(TABLE=VAR_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);
-IMPR_TABLE(TABLE=SIG_AV,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);
-IMPR_TABLE(TABLE=VAR_AP ,FORMAT='TABLEAU',NOM_PARA=('COOR_Y','V7','V10'),);
-IMPR_TABLE(TABLE=SIG_AP, FORMAT='TABLEAU',NOM_PARA=('COOR_Y','SIGN',),);
 
 FIN()

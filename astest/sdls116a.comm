@@ -134,7 +134,7 @@ RESU1 = DYNA_NON_LINE(
                        MASS_DIAG = 'OUI',
                      );
 
-TEST_RESU(RESU=(_F(INST=1.1999999999999999E-3,
+TEST_RESU(RESU=(_F(INST=1.2E-3,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
@@ -142,8 +142,8 @@ TEST_RESU(RESU=(_F(INST=1.1999999999999999E-3,
                    NOM_CMP='DZ',
                    VALE_CALC=0.011750853,
                    VALE_REFE=0.0117509,
-                   PRECISION=5.0000000000000001E-3, TOLE_MACHINE=(5.0000000000000001E-3, 5.0000000000000004E-06),),
-                _F(INST=1.1999999999999999E-3,
+                   PRECISION=5.0E-3, ),
+                _F(INST=1.2E-3,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=RESU1,
                    NOM_CHAM='VITE',
@@ -151,7 +151,7 @@ TEST_RESU(RESU=(_F(INST=1.1999999999999999E-3,
                    NOM_CMP='DRX',
                    VALE_CALC=4.577056970,
                    VALE_REFE=4.5782600000000002,
-                   PRECISION=0.02, TOLE_MACHINE=(0.02, 5.0000000000000004E-06),),
+                   PRECISION=0.02, ),
                 ),
           )
 

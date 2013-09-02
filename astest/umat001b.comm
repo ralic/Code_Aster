@@ -116,9 +116,8 @@ TEST_RESU(
                    NOM_CMP ='DX',
                    VALE_CALC=0.10295396313384,
                    VALE_REFE=0.102954,
-                   TOLE_MACHINE=(1.E-6,1.E-6),
                    PRECISION=1.E-4,
-                   REFERENCE='NON_DEFINI')
+                   REFERENCE='AUTRE_ASTER')
          )
 
 TEST_RESU(
@@ -129,9 +128,8 @@ TEST_RESU(
                    NOM_CMP ='SIZZ',
                    VALE_CALC=-0.028952070277992,
                    VALE_REFE=-0.028952,
-                   TOLE_MACHINE=(1.E-6,1.E-6),
                    PRECISION=1.E-4,
-                   REFERENCE='NON_DEFINI')
+                   REFERENCE='AUTRE_ASTER')
          )
 
 
@@ -190,7 +188,6 @@ TEST_RESU(
                    NOM_CMP ='DX',
                    VALE_CALC=0.11245447527981,
                    VALE_REFE= 0.102954 ,
-                   TOLE_MACHINE=(1E-6,1.E-6),
                    PRECISION=0.1,
                    REFERENCE='AUTRE_ASTER')
          )
@@ -203,7 +200,6 @@ TEST_RESU(
                    NOM_CMP ='SIZZ',
                    VALE_CALC=-0.031225207274718,
                    VALE_REFE= -0.028952,
-                   TOLE_MACHINE=(1E-6,1.E-6),
                    PRECISION=0.1,
                    REFERENCE='AUTRE_ASTER')
          )
@@ -216,9 +212,8 @@ TEST_RESU(
                    NOM_CMP ='DX',
                    VALE_CALC=0.11245447527981,
                    VALE_REFE= 0.112454 ,
-                   TOLE_MACHINE=(1E-6,1.E-6),
                    PRECISION=1.E-4,
-                   REFERENCE='NON_DEFINI')
+                   REFERENCE='AUTRE_ASTER')
          )
 
 TEST_RESU(
@@ -229,9 +224,8 @@ TEST_RESU(
                    NOM_CMP ='SIZZ',
                    VALE_CALC=-0.031225207274718,
                    VALE_REFE= -0.031225,
-                   TOLE_MACHINE=(1E-6,1.E-6),
                    PRECISION=1.E-4,
-                   REFERENCE='NON_DEFINI')
+                   REFERENCE='AUTRE_ASTER')
          )
 
 

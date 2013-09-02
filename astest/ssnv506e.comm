@@ -151,95 +151,49 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
 #------------------------------------------------------------------
 # TESTS SUR DES VALEURS ANALYTIQUES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-2.08922659E+06,
+           PRECISION=0.05,
+           VALE_CALC=-2.0892265938373E+06,
            VALE_REFE=-2.0380426000000001E6,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.20000000000000001,),
+                     VALE=0.2,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-4.09284999E+06,
+           PRECISION=0.05,
+           VALE_CALC=-4.0928499948843E+06,
            VALE_REFE=-4.0760852000000002E6,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
+                     VALE=0.4,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=-5.84675901E+06,
+           PRECISION=0.05,
+           VALE_CALC=-5.8467590105762E+06,
            VALE_REFE=-6.1141277999999998E6,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
+                     VALE=0.6,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.10000000000000001,
-           VALE_CALC=-7.68205678E+06,
+           PRECISION=0.1,
+           VALE_CALC=-7.6820567798871E+06,
            VALE_REFE=-8.1521704000000004E6,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
+                     VALE=0.8,),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.14999999999999999,
-           VALE_CALC=-9.12992585E+06,
+           PRECISION=0.15,
+           VALE_CALC=-9.1299258461947E+06,
            VALE_REFE=-10190213,
-           NOM_PARA='DY',
-           TABLE=TAB_REAC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-# TESTS DE NON REGRESSION SUR LES VALEURS
-TEST_TABLE(
-           VALE_CALC=-2.090570128427E6,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='DY',
-           TABLE=TAB_REAC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.20000000000000001,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=-4.0942690624961001E6,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='DY',
-           TABLE=TAB_REAC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.40000000000000002,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=-5.8481747707614005E6,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='DY',
-           TABLE=TAB_REAC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.59999999999999998,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=-7.6835784360959996E6,
-           TOLE_MACHINE=1.E-3,
-           NOM_PARA='DY',
-           TABLE=TAB_REAC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.80000000000000004,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=-9.1321615262970999E6,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',

@@ -193,7 +193,7 @@ for icomp,comp in enumerate(compor) :
                              VALE_REFE=681.5,
                              VALE_PARA=1.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=2.E-3,
+                             TOLE_MACHINE=2.E-3,          # TODO TOLE_MACHINE
                              PRECISION=2.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
@@ -201,7 +201,7 @@ for icomp,comp in enumerate(compor) :
                              VALE_REFE=680.39999999999998,
                              VALE_PARA=2.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=1.E-3,
+                             TOLE_MACHINE=1.E-3,          # TODO TOLE_MACHINE
                              PRECISION=1.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
@@ -209,7 +209,7 @@ for icomp,comp in enumerate(compor) :
                              VALE_REFE=680.29999999999995,
                              VALE_PARA=3.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=1.E-3,
+                             TOLE_MACHINE=1.E-3,          # TODO TOLE_MACHINE
                              PRECISION=1.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
@@ -217,7 +217,7 @@ for icomp,comp in enumerate(compor) :
                              VALE_REFE=680.20000000000005,
                              VALE_PARA=4.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=1.E-3,
+                             TOLE_MACHINE=1.E-3,          # TODO TOLE_MACHINE
                              PRECISION=1.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),

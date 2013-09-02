@@ -106,8 +106,7 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODE_MEC,
-                  VALE_CALC=2.3725399999999999,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=2.3725399999999999,),
           )
 
 #

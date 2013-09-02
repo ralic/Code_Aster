@@ -252,8 +252,7 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                        )
 
 TEST_TABLE(
-           VALE_CALC=3.205409,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=3.2054051583296,
            NOM_PARA='SIXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -264,8 +263,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3571779999999999E-07,
-           TOLE_MACHINE=2.0000000000000001E-4,
+           VALE_CALC=7.3584025807964E-07,
            NOM_PARA='EPXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -276,8 +274,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.382555,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=4.3825549811244,
            NOM_PARA='SIXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -288,8 +285,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.307822E-05,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=2.3078334024645E-05,
            NOM_PARA='EPXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -300,8 +296,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.2170460000000002E-4,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=8.2170445420861E-4,
            NOM_PARA='EPXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -338,8 +333,7 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),)
                        )
 TEST_TABLE(
-           VALE_CALC=3.205409,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=3.2054051583277,
            NOM_PARA='SIXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -350,8 +344,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3571779999999999E-07,
-           TOLE_MACHINE=2.0000000000000001E-4,
+           VALE_CALC=7.3584025827023E-07,
            NOM_PARA='EPXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -362,8 +355,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.382555,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=4.3825550891595,
            NOM_PARA='SIXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -374,8 +366,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.307822E-05,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=2.3078333560905E-05,
            NOM_PARA='EPXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -386,8 +377,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.217039E-4,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=8.2170380450757E-4,
            NOM_PARA='EPXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -455,8 +445,7 @@ RELEVE_3=POST_RELEVE_T(ACTION=(
                        )
 
 TEST_TABLE(
-           VALE_CALC=3.205409,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=3.2054051583249,
            NOM_PARA='SIXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -467,8 +456,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3571779999999999E-07,
-           TOLE_MACHINE=2.0000000000000001E-4,
+           VALE_CALC=7.3584025825912E-07,
            NOM_PARA='EPXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -479,8 +467,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.6142089999999998,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=4.6142088846345,
            NOM_PARA='SIXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -491,8 +478,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.1953530000000001E-05,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=2.1953642980033E-05,
            NOM_PARA='EPXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -503,8 +489,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.4293349999999998E-4,
-           TOLE_MACHINE=1.E-4,
+           VALE_CALC=8.4293343565466E-4,
            NOM_PARA='EPXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',

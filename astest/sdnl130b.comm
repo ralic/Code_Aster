@@ -17,18 +17,24 @@
 # ======================================================================
 #
 DEBUT(CODE=_F(NOM = 'SDNL130B',NIV_PUB_WEB='INTERNET'))
+
 # LECTURE DU SEISME
 INCLUDE(UNITE=92)
+
 # LECTURE MAILLAGE LINEIQUE
 MAPOU = LIRE_MAILLAGE(FORMAT='MED',UNITE = 17,)
+
 # LECTURE MAILLAGE SECTION1
 MASEC = LIRE_MAILLAGE(FORMAT='MED',UNITE = 18,)
+
 #
 MAPOU = DEFI_GROUP (reuse=MAPOU, MAILLAGE =MAPOU, CREA_GROUP_NO =_F(NOM='TOUS_NO',GROUP_MA='POUTRE',),)
+
 
 MOPOU=AFFE_MODELE(
    MAILLAGE=MAPOU,
    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),)
+
 
 # LES MATERIAUX
 EB = 3.7272E10
@@ -151,8 +157,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DY',
                    VALE_CALC=-3.8515766763984E4,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='C',
                    INST=1.76,
@@ -160,62 +164,48 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=1.4170139074950001E-3,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='A',
-                   INST=2.0499999999999998,
+                   INST=2.05,
                    RESULTAT=RERE,
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DY',
                    VALE_CALC=2.8814150604268001E4,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='C',
-                   INST=2.0499999999999998,
+                   INST=2.05,
                    RESULTAT=RERE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=-9.3311630121311999E-4,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='A',
-                   INST=2.6800000000000002,
+                   INST=2.68,
                    RESULTAT=RERE,
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DY',
                    VALE_CALC=-7.5182532664141996E4,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='C',
-                   INST=2.6800000000000002,
+                   INST=2.68,
                    RESULTAT=RERE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=4.8174375448133003E-3,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='A',
-                   INST=2.8700000000000001,
+                   INST=2.87,
                    RESULTAT=RERE,
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DY',
                    VALE_CALC=4.4564360755135996E4,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 _F(GROUP_NO='C',
-                   INST=2.8700000000000001,
+                   INST=2.87,
                    RESULTAT=RERE,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=-1.8912620053437E-3,
-
-                   CRITERE=('RELATIF', 'ABSOLU'),
                    ),
                 ),
           )

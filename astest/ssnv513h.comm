@@ -382,42 +382,42 @@ for j,i in enumerate([1,2,4]): #Boucle sur les zones
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MIN',
-             VALE_CALC=VALE_CALC[j*6+0], VALE_REFE=vale[i], TOLE_MACHINE=2.E-04,
+             VALE_CALC=VALE_CALC[j*6+0], VALE_REFE=vale[i], TOLE_MACHINE=2.E-04,   #  TODO TOLE_MACHINE
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MAX',
-             VALE_CALC=VALE_CALC[j*6+1], VALE_REFE=vale[i], TOLE_MACHINE=2.E-04,
+             VALE_CALC=VALE_CALC[j*6+1], VALE_REFE=vale[i], TOLE_MACHINE=2.E-04,    #  TODO TOLE_MACHINE
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MIN',
-             VALE_CALC=VALE_CALC[j*6+2], VALE_REFE=0, TOLE_MACHINE=2.E-04,
+             VALE_CALC=VALE_CALC[j*6+2], VALE_REFE=0, TOLE_MACHINE=2.E-04,          #  TODO TOLE_MACHINE
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MAX',
-             VALE_CALC=VALE_CALC[j*6+3], VALE_REFE=0, TOLE_MACHINE=2.E-04,
+             VALE_CALC=VALE_CALC[j*6+3], VALE_REFE=0, TOLE_MACHINE=2.E-04,          #  TODO TOLE_MACHINE
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MIN',
-             VALE_CALC=VALE_CALC[j*6+4], VALE_REFE=0, TOLE_MACHINE=2.E-04,
+             VALE_CALC=VALE_CALC[j*6+4], VALE_REFE=0, TOLE_MACHINE=2.E-04,          #  TODO TOLE_MACHINE
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE');
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MAX',
-             VALE_CALC=VALE_CALC[j*6+5], VALE_REFE=0, TOLE_MACHINE=2.E-04,
+             VALE_CALC=VALE_CALC[j*6+5], VALE_REFE=0, TOLE_MACHINE=2.E-04,          #  TODO TOLE_MACHINE
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE');

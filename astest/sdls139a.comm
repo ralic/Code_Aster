@@ -559,7 +559,6 @@ for ind in range(len(FONC0)):
     
     TEST_TABLE(CRITERE='ABSOLU',
                REFERENCE='AUTRE_ASTER',
-               TOLE_MACHINE=1.E-3,
                PRECISION=1.E-3,
                VALE_CALC=0.0,
                VALE_REFE=0.0,

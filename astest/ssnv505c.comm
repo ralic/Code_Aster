@@ -137,8 +137,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  RESULTANTE='DY',
                                  OPERATION='EXTRACTION',),);
 TEST_TABLE(
-           VALE_CALC=43.566800000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=43.566829799536,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
@@ -146,8 +145,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=169.59800000000001,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=169.5623152771,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
@@ -156,7 +154,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=322.85023572807,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
@@ -164,8 +161,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=267.16199999999998,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=267.1619582487,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',
@@ -173,8 +169,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=309.62299999999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=309.90832534157,
            NOM_PARA='DY',
            TABLE=TAB_REAC,
            FILTRE=_F(NOM_PARA='INST',

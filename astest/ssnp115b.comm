@@ -65,9 +65,6 @@ CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),);
 
-
-
-
 RESUNL=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               FORMAT='MED',
               MODELE=MO,
@@ -87,15 +84,12 @@ RESUNL=CALC_CHAMP(  reuse=RESUNL,
                       RESULTAT=RESUNL
                         )
 
-
-
 TEST_RESU(RESU=_F(GROUP_NO='PHAUTG',
                   INST=1.3999999999999999,
                   RESULTAT=RESUNL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=1.3999999999999999,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=1.3999999999999999,),
           )
 
 TEST_RESU(RESU=_F(GROUP_NO='PHAUTG',
@@ -103,8 +97,7 @@ TEST_RESU(RESU=_F(GROUP_NO='PHAUTG',
                   RESULTAT=RESUNL,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
-                  VALE_CALC=541.56996562397001,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=541.56996562397001,),
           )
 
 # SEGMENT VOISIN DE BD
@@ -152,18 +145,4 @@ IMPR_FONCTION(
             _F(FONCTION=FSYMLC10),
             _F(FONCTION=FSYML100),
            ))
-
-##
-## Trace des courbes en interactif
-##
-##IMPR_FONCTION(
-##    FORMAT    = 'XMGRACE',
-##    PILOTE    = 'INTERACTIF',
-##    LEGENDE_X = 'Abcisses curvilignes',
-##    LEGENDE_Y = 'Contraintes (MPa)',
-##    TITRE     = 'Plaque trouee',
-##    COURBE=(_F(FONCTION=FSYPRT),
-##            _F(FONCTION=FSYMLC10),
-##            _F(FONCTION=FSYML100),
-##           ))
 FIN()

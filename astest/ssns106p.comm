@@ -496,17 +496,15 @@ IMPR_TABLE(TABLE=TD_1,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='D2',
            TABLE=TD_1,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.050000000000000003,),
+                     VALE=0.05,),
            )
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=5.81963E-01,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.58196111312300,
            NOM_PARA='D2',
            TABLE=TD_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -516,8 +514,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.09324,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.0932352446538,
            NOM_PARA='D2',
            TABLE=TD_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -700,7 +697,6 @@ IMPR_TABLE(TABLE=TD_2,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='D1',
            TABLE=TD_2,
            FILTRE=_F(NOM_PARA='INST',
@@ -709,8 +705,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=5.81963E-01,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.58196213689423,
            NOM_PARA='D1',
            TABLE=TD_2,
            FILTRE=_F(NOM_PARA='INST',
@@ -720,18 +715,13 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.09324,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.0932354679789,
+           TOLE_MACHINE=5.E-6,                 # TODO TOLE_MACHINE
            NOM_PARA='D1',
            TABLE=TD_2,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.0,),
            )
-
-
-
-
-
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT chf3
@@ -907,17 +897,15 @@ IMPR_TABLE(TABLE=TD_3,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='D2',
            TABLE=TD_3,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.050000000000000003,),
+                     VALE=0.05,),
            )
 
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=5.81963E-01,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.58196111312300,
            NOM_PARA='D2',
            TABLE=TD_3,
            FILTRE=_F(NOM_PARA='INST',
@@ -927,8 +915,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 #----- TRACTION - PHASE ENDOMMAGEMENT -----
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=1.09324,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=1.0932352446538,
            NOM_PARA='D2',
            TABLE=TD_3,
            FILTRE=_F(NOM_PARA='INST',

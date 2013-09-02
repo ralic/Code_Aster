@@ -194,16 +194,18 @@ COURBE=_F(FONC_X=F_EP, FONC_Y=F_SI))
 
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=7.80304000E8,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=7.80304E8,
+                        VALE_REFE=7.80304E8,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=250.0,
                         NOM_PARA='INST',
                         FONCTION=F_SI,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=8.7786600000000006E4,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.77866E4,
+                        VALE_REFE=8.77866E4,
+                        REFERENCE='ANALYTIQUE',
                         VALE_PARA=255.0,
                         NOM_PARA='INST',
                         FONCTION=F_SI,

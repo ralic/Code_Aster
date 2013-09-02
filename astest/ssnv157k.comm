@@ -34,10 +34,10 @@ CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT1,
                     MAILLAGE=TOTO,);
 
 MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
-                                           PHENOMENE='MECANIQUE',
-                                           MODELISATION='D_PLAN_GRAD_EPSI',),
-                               MAILLAGE=TOTO,
-                               INFO=2,);
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN_GRAD_EPSI',),
+               MAILLAGE=TOTO,
+               INFO=2,);
 
 
 CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
@@ -119,15 +119,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=33,
                    NOM_CHAM='DEPL',
                    NOEUD='N2',
                    NOM_CMP='DY',
-                   VALE_CALC=9.5435899999999994E-3,
-                   TOLE_MACHINE=1.E-3,),
+                   VALE_CALC=9.5435891815836E-3,),
                 _F(NUME_ORDRE=33,
                    POINT=2,
                    RESULTAT=EVOL1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
-                   VALE_CALC=0.99765899999999996,
-                   TOLE_MACHINE=1.E-3,
+                   VALE_CALC=0.99765935915405,
                    MAILLE='M31',),
                 ),
           )

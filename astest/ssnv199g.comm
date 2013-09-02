@@ -312,13 +312,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=5.0100600000000002,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=5.010062278459,),
           )
 
 TEST_TABLE(
-           VALE_CALC=6.7836299999999996,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=6.7836391344235,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -330,13 +328,11 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=6.9751799999999999,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=6.9751847167311,),
           )
 
 TEST_TABLE(
-           VALE_CALC=5.7548500000000002,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=5.7548591820679,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
@@ -348,23 +344,15 @@ TEST_RESU(RESU=_F(GROUP_NO='NO7',
                   RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=9.1320999999999994,
-                  TOLE_MACHINE=1.E-3,),
+                  VALE_CALC=9.1321031846219,),
           )
 
 TEST_TABLE(
-           VALE_CALC=4.9332200000000004,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=4.9332296856929,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=4.0,),
            )
-
-IMPR_TABLE(TABLE = UPILO)
-IMPR_TABLE(TABLE = FRES)
-
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U,NOM_CHAM='VARI_ELGA',TYPE_CHAM='SCALAIRE',NOM_CMP=('V1','V2','V3','V4','V7'),GROUP_MA = ('JOINT_I','JOINT_P')))),
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ',),GROUP_MA = ('DCB_1','DCB_2')))),
 
 FIN(FORMAT_HDF='OUI')
