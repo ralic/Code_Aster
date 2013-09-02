@@ -189,6 +189,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn,&
     ndesch = nchmno//'.DESC'
     nrefch = nchmno//'.REFE'
     nvalch = nchmno//'.VALE'
+    ibid = 0
     zero = 0.0d0
     epsi = 1.0d-6
 !

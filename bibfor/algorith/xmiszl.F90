@@ -155,6 +155,7 @@ subroutine xmiszl(vecinc, defico, noma)
     lcumul(2) = .false.
     lcumul(3) = .false.
     lcumul(4) = .false.
+    c16bid = dcmplx(0.d0, 0.d0)
     call cnsfus(4, lichs, lcumul, lcoefr, [c16bid],&
                 .false., 'V', cns1c)
 !

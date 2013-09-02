@@ -94,7 +94,6 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     real(kind=8) :: vale_real_norm
     complex(kind=8) :: vale_cplx_norm
     integer :: imult
-    character(len=8) :: k8bid
     character(len=8) :: dof_name_tran(3), dof_name_rota(3)
     character(len=19) :: lisrel
     integer :: idbeta, idcoef, iddl, idim, idlagr, idnbre

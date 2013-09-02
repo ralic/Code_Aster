@@ -48,7 +48,6 @@ subroutine zerlag(nbddl, ideeq, vectr, vectz )
     integer :: nbddl, ideeq(2*nbddl)
     real(kind=8), intent(out), optional :: vectr(nbddl)
     complex(kind=8), intent(out), optional :: vectz(nbddl)
-    character(len=1) :: typc
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !

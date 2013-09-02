@@ -54,13 +54,13 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
     character(len=8) :: mod
 !
     integer :: ndt, ndi, itens, ndim
-    real(kind=8) :: fkooh(6, 6), dev(6), n(6)
+    real(kind=8) :: dev(6), n(6)
     real(kind=8) :: kron(6), eps0, pk, ph1, ph2, delta1, delta2, h1st, h2st
     real(kind=8) :: biga, sig0, pkc, alphad, sequid, dt, theta, epsi, coef
     real(kind=8) :: h1, h2, h, d, dp, cosh1, cosh2, sinh1, sinh2, dmgmi, grj0
     real(kind=8) :: seq, seq0, sequi, shmax, sinn, terme1, trsig, trsig0, ddmg
     real(kind=8) :: sigf(6), equi(16), dm1, epsef(6), young, poiss, deuxmu, dmg
-    real(kind=8) :: dgds(6, 6), i6(6, 6), id(6, 6), nxn(6, 6), dfedee(6, 6), dh1
+    real(kind=8) :: id(6, 6), nxn(6, 6), dfedee(6, 6), dh1
     real(kind=8) :: dh2
     real(kind=8) :: un, zero, d23, d13, dseqde(6), hookf(6, 6), troisk, gh1, gh2
     parameter ( un   =  1.d0      )

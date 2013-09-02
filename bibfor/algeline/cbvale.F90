@@ -75,6 +75,8 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres,&
     call jemarq()
     zero = 0.d0
     czero = dcmplx(zero,zero)
+    rbid = zero
+    cbid = czero
 !
 !
     nomddl = ddlexc

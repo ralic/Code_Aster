@@ -1,7 +1,6 @@
 subroutine dxmate(fami, df, dm, dmf, dc,&
                   dci, dmc, dfc, nno, pgl,&
                   multic, coupmf, t2ev, t2ve, t1ve)
-! aslint: disable=W1501
     implicit   none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"

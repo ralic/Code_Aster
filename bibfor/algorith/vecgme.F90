@@ -68,7 +68,7 @@ subroutine vecgme(modele, carele, mate, charge, infcha,&
 ! ----------------------------------------------------------------------
 !
     character(len=5) :: suffix
-    character(len=8) :: nomcha, lpain(16), paout, k8bid, affcha, kbid, newnom
+    character(len=8) :: nomcha, lpain(16), paout, affcha, kbid, newnom
     character(len=16) :: option
     character(len=24) :: chgeom, chcara(18), chtime, ligrel, ligrmo
     character(len=24) :: lchin(16), chtim2, ligrch, evolch

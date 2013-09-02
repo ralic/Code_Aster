@@ -53,7 +53,7 @@ subroutine echmat(matz, ldist, rmin, rmax)
 ! ---------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, ibid, nz, n, imatd
+    integer :: jsmdi, nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
     integer :: jcol, nlong, jrefa, jvalm1
     character(len=1) ::  ktyp, base1
     character(len=14) :: nonu

@@ -110,8 +110,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     character(len=19) :: matdev, mat19, resu, matel, ligre1, ligre2, sdfeti
     character(len=24) :: method, k24b, nomlog, infofe
     character(len=1) :: matsym
-    real(kind=8) :: c1, temps(6), rbid
-    complex(kind=8) :: cbid
+    real(kind=8) :: c1, temps(6)
 !
     logical :: acreer, cumul, dbg, iddok, lbid, lfeti, lfetic
     logical :: lgoto, llich, llichd, llichp, llimo, ldist

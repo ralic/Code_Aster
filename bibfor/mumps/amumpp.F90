@@ -83,7 +83,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     type (cmumps_struc) , pointer :: cmpsk
     type (dmumps_struc) , pointer :: dmpsk
     type (zmumps_struc) , pointer :: zmpsk
-    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, ibid, jdelg, k, ifm, niv
+    integer :: n, nnbsol, rang, lmat, i, ierd, idvalc, jdelg, k, ifm, niv
     integer :: jdlg2, jj
     blas_int :: n4
     character(len=1) :: rouc
