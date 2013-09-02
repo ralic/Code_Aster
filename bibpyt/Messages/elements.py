@@ -172,6 +172,10 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette 
  élément non traité  %(k1)s
 """),
 
+
+
+
+
 36 : _(u"""
  nombre de couches négatif ou nul :  %(k1)s
 """),

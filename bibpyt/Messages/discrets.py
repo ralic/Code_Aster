@@ -176,6 +176,14 @@ Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
 31 :_(u"""      %(k1)8s   %(r1)12.5E   %(r2)12.5E   %(r3)12.5E
 """),
 
+32 : _(u"""
+Erreur d'utilisation :
+  Pour l'option %(k1)s, l'élément %(k2)s doit avoir des caractéristiques symétriques.
+Risques et conseils :
+  Dans la commande AFFE_CARA_ELEM, il ne faut pas utiliser le mot-clé DISCRET / SYME='NON'
+  pour ces éléments.
+"""),
+
 
 40 :_(u"""
 L'utilisation des discrets non-symétriques n'est actuellement pas possible pour des calculs non-linéaires.

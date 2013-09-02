@@ -66,6 +66,7 @@ subroutine te0041(option, nomte)
     complex(kind=8) :: hyst, dcmplx
     integer :: icodre(3), kpg, spt
     character(len=8) :: nomres(3), k8bid, fami, poum
+    character(len=24) :: valk(2)
     integer :: ibid, itype, irep, nbterm, nno, nc, ndim, nddl, i, iret, j
     integer :: jdr, jdm, lorien, jdc, jma, iacce, ivect
     integer :: ntermx
@@ -106,9 +107,13 @@ subroutine te0041(option, nomte)
     else if (option.eq.'AMOR_MECA') then
         call infdis('SYMA', infodi, r8bid, k8bid)
     else
-!        POUR LES AUTRES OPTIONS C'EST SYMETRIQUE
+!       -- POUR LES AUTRES OPTIONS C'EST SYMETRIQUE
         call infdis('SKMA', ibid, r8bid, k8bid)
-        ASSERT(ibid .eq. 3)
+        if (ibid.ne.3) then
+           valk(1)=option
+           valk(2)=nomte
+           call u2mesk('F','DISCRETS_32',2,valk)
+        endif
     endif
 !
 ! --- INFORMATIONS SUR LES DISCRETS :
@@ -137,7 +142,7 @@ subroutine te0041(option, nomte)
             do 10 i = 1, nbterm
                 zc(jdm+i-1) = zr(jdr+i-1) * hyst
 10          continue
-            goto 9999
+            goto 999
         endif
 !
         call jevech('PCAORIE', 'L', lorien)
@@ -432,7 +437,7 @@ subroutine te0041(option, nomte)
 27      continue
     endif
 !
-9999  continue
+999   continue
 !
     call jedema()
 end subroutine

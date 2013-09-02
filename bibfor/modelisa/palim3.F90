@@ -99,7 +99,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
                 nbmc, motcle, tymocl, nomjv, nbma)
     call jeveuo(nomjv, 'L', jnoma)
 !
-    do 30 im = 0, nbma-1
+    do im = 0, nbma-1
         nommai = zk8(jnoma+im)
         call jenonu(jexnom(nomama, nommai), numa)
         if (numa .eq. 0) then
@@ -153,7 +153,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
             zi(ilist+nbmst-1) = numa
 34          continue
         endif
-30  end do
+    end do
     call jedetr(nomjv)
 !
     if (ier .ne. 0) ASSERT(.false.)
