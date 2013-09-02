@@ -176,9 +176,9 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr,&
     call wkvect('&&AVCIPR_RTRV', 'V V R', (nbordr+2), jrtrv) 
 
 ! Integer
-    call wkvect('&&AVCIPR_ITVR', 'V V R', 2*(nbordr+2), jitrv)
-    call wkvect('&&AVCIPR_VALORD', 'V V R', nbvec*nbordr, jvalor) 
-    call wkvect('&&AVCIPR_ORPIC', 'V V R', nbvec*(nbordr+2), jordpi)
+    call wkvect('&&AVCIPR_ITVR', 'V V I', 2*(nbordr+2), jitrv)
+    call wkvect('&&AVCIPR_VALORD', 'V V I', nbvec*nbordr, jvalor) 
+    call wkvect('&&AVCIPR_ORPIC', 'V V I', nbvec*(nbordr+2), jordpi)
 
 
     call propla(nbvec, vectn, vectu, vectv, nbordr,&

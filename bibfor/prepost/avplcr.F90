@@ -83,7 +83,7 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 ! REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
-    integer :: ncycl(nbvec), nbvec1, nval, ibid, dir
+    integer :: ncycl(nbvec), nbvec1, nval, ibid
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     integer ::jomin, jomax, jvmin, jvmax
     integer :: vnormx(2), ideb, ifin, n, k, dim, j, kp, nbp
@@ -111,8 +111,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
 ! CONSTRUCTION DU VECTEUR NORMAL SUR UNE DEMI SPHERE
 
 !
-    call wkvect('&&AVPLCR.VECT_OMIN', 'V V R', nbvec*(nbordr+2), jomin)
-    call wkvect('&&AVPLCR.VECT_OMAX', 'V V R', nbvec*(nbordr+2), jomax)
+    call wkvect('&&AVPLCR.VECT_OMIN', 'V V I', nbvec*(nbordr+2), jomin)
+    call wkvect('&&AVPLCR.VECT_OMAX', 'V V I', nbvec*(nbordr+2), jomax)
     call wkvect('&&AVPLCR.VECT_VMIN', 'V V R', nbvec*(nbordr+2), jvmin)
     call wkvect('&&AVPLCR.VECT_VMAX', 'V V R', nbvec*(nbordr+2), jvmax)
 
