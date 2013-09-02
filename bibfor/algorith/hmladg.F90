@@ -43,6 +43,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! aslint: disable=W1504,W1504
     implicit none
+! aslint: disable=W1306
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"

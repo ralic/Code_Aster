@@ -2,7 +2,6 @@ subroutine lcdvin(fami, kpg, ksp, comp, mod,&
                   imat, matcst, nvi, nmat, vini,&
                   coeft, x, dtime, sigi, dvin,&
                   iret)
-! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

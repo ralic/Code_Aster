@@ -22,7 +22,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1306,W1504
+! aslint: disable=,W1504
     implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/codere.h"

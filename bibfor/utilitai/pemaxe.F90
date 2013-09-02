@@ -2,7 +2,6 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele,&
                   chpost, nbcmp, nomcmp, nuord, inst,&
                   iocc)
 !
-! aslint: disable=W1306
     implicit none
 !
 #include "jeveux.h"

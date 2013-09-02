@@ -24,7 +24,6 @@ subroutine nmpr3d_vect(nno, npg, poidsg, vff, dff,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1306
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: nno

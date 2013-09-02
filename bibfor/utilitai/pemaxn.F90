@@ -1,7 +1,6 @@
 subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
                   chpost, nbcmp, nomcmp, nuord, inst)
 !
-! aslint: disable=W1306
     implicit none
 !
 #include "jeveux.h"

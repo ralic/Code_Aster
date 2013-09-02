@@ -1,7 +1,6 @@
 subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom,&
                   degre, icnc, numeli, xy, erreur,&
                   energi, mesu, alpha, nalpha)
-! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 !

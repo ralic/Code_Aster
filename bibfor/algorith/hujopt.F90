@@ -31,7 +31,6 @@ subroutine hujopt(mod, angmas, imat, nmat, mater,&
 !         DRDY   :  MATRICE JACOBIENNE
 !     OUT DSDE   :  MATRICE TANGENTE EN VITESSE
 !     ----------------------------------------------------------------
-! aslint: disable=W1306
     implicit none
 !     ----------------------------------------------------------------
 #include "asterc/r8prem.h"

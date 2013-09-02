@@ -31,6 +31,7 @@ subroutine calcft(option, thmc, imate, ndim, dimdef,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+! aslint: disable=W1306
 #include "asterfort/dilata.h"
 #include "asterfort/unsmfi.h"
     integer :: ndim, dimdef, dimcon, imate, aniso

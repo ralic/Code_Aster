@@ -30,6 +30,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
 ! ======================================================================
 !
 ! - VARIABLES ENTREE
+! aslint: disable=W1306
 #include "asterfort/calcco.h"
 #include "asterfort/calcfh.h"
 #include "asterfort/coeime.h"

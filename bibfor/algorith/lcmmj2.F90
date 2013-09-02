@@ -3,7 +3,7 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat,&
                   is, nbsys, nfs, nsg, hsr,&
                   vind, dy, dgsdts, dksdts, dgrdbs,&
                   dksdbr, iret)
-! aslint: disable=W1306,W1504
+! aslint: disable=,W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================

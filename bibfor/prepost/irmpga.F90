@@ -18,7 +18,6 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
-! aslint: disable=W1306
 !_______________________________________________________________________
 !     ECRITURE AU FORMAT MED - LOCALISATION POINTS DE GAUSS
 !        -  -            -                  -         --

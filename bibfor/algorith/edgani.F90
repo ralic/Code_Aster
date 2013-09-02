@@ -1,7 +1,6 @@
 subroutine edgani(dim, y, pm, dvsitr, eqsitr,&
                   mu, ani, gamma, m, n,&
                   g, maxg, dgdy)
-! aslint: disable=W1306
     implicit none
 !
 !

@@ -1,6 +1,5 @@
 subroutine xmilac(ndim, igeom, ptint, tabco, tabdir,&
                   jgrlsn, p, r, ptmil, milac)
-! aslint: disable=W1306
     implicit none
 !
 #include "jeveux.h"

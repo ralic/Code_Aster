@@ -4,7 +4,7 @@ subroutine lcmmj1(taur, materf, cpmono, ifa, nmat,&
                   vind, dy, iexp, expbp, itmax,&
                   toler, dgsdts, dksdts, dgrdbs, dkrdbs,&
                   iret)
-! aslint: disable=W1306,W1504
+! aslint: disable=,W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================

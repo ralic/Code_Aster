@@ -43,7 +43,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 ! IN  ME      : TERMES UTILES AU CALCUL DE TL DANS POSLOG
 ! OUT SIGP    : CONTRAINTES DE CAUCHY EN T+
 !
-! aslint: disable=W1306,W1504
+! aslint: disable=,W1504
     implicit none
 #include "asterfort/d1macp.h"
 #include "asterfort/deflg2.h"

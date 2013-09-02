@@ -19,7 +19,6 @@ subroutine equreg(imate, option, compor, regula, dimdef,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! aslint: disable=W1306
     implicit      none
 #include "asterfort/reg2gr.h"
 #include "asterfort/regcge.h"

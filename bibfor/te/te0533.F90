@@ -77,6 +77,7 @@ subroutine te0533(option, nomte)
 !......................................................................
 !
     call jemarq()
+    rela = 0.d0
 !
 ! --- INITIALISATIONS
 !
@@ -241,13 +242,11 @@ subroutine te0533(option, nomte)
 !
                     if (algocr .eq. 3) then
                         do 3 i = 1, ncompv
-                            zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) =&
-                            coheo(i)
+                            zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) = coheo(i)
  3                      continue
                     endif
 !
-                    elseif (option.eq.'RIGI_FROT' .and.rela.ne.3.d0.and.&
-                    rela.ne.4.d0) then
+                elseif (option.eq.'RIGI_FROT' .and. rela.ne.3.d0 .and. rela.ne.4.d0) then
 !
                     call xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
                                 ffc, ffp, idepd, idepm, indco,&

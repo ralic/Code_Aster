@@ -16,7 +16,6 @@ subroutine calkbp(nno, ndim, w, dff1, kbp)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
-! aslint: disable=W1306
     implicit none
 !
 #include "asterfort/assert.h"

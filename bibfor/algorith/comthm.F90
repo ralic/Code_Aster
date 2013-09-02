@@ -97,6 +97,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 ! aslint: disable=W1504
     implicit none
 !
+! aslint: disable=W1306
 #include "asterfort/calcco.h"
 #include "asterfort/calcfh.h"
 #include "asterfort/calcft.h"

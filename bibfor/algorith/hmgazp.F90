@@ -40,6 +40,7 @@ subroutine hmgazp(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+! aslint: disable=W1306
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"

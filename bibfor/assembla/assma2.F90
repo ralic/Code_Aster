@@ -77,10 +77,10 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     if (nbssa .eq. 0) goto 100
 !
     lmesym=.true.
-    do 10 i = 1, nbecmx
+    do i = 1, nbecmx
         icodla(i)=0
         icodge(i)=0
-10  end do
+    end do
 !
     call dismoi('F', 'NOM_MODELE', nu14, 'NUME_DDL', ibid,&
                 mo, ierd)
@@ -126,72 +126,73 @@ subroutine assma2(lmasym, tt, nu14, ncmp, matel,&
     call ssvalm('DEBUT', optio, mo, ma, 0,&
                 jresl, nbvel)
 !
-    do 90,ima=1,nbsma
-!         -- BOUCLE SUR LES MACRO-ELEMENTS :
-!         ----------------------------------
-    if (zi(jsssa-1+ima) .eq. 0) goto 90
-!
-    call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
-    call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
-!
-    nbterm=0
-!
-    call ssvalm(' ', optio, mo, ma, ima,&
-                jresl, nbvel)
-!
-    nomacr=zk8(jnmacr-1+ima)
-    call dismoi('F', 'NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', ibid,&
-                num2, ierd)
-    call jeveuo(nomacr//'.CONX', 'L', iaconx)
-    call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', jprno)
-!
-    do 80 k1 = 1, nnoe
-        n1=zi(jsupma-1+k1)
-        if (n1 .gt. nm) then
-            do 20 iec = 1, nbecmx
-                icodge(iec)=icodla(iec)
-20          continue
-!
-        else
-            inold=zi(iaconx-1+3*(k1-1)+2)
-            do 30 iec = 1, nec
-                icodge(iec)=zi(jprno-1+(nec+2)*(inold-1)+2+iec)
-30          continue
-        endif
-!
-        iad1=zzprno(1,n1,1)
-        call cordd2(jprn1, jprn2, 1, icodge, nec,&
-                    ncmp, n1, nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
-        zi(jnulo1-1+2*(k1-1)+1)=iad1
-        zi(jnulo1-1+2*(k1-1)+2)=nddl1
-        do 70 i1 = 1, nddl1
-            do 50 k2 = 1, k1-1
+    do ima=1,nbsma
+!             -- BOUCLE SUR LES MACRO-ELEMENTS :
+!             ----------------------------------
+        if (zi(jsssa-1+ima) .eq. 0) goto 90
+!       
+        call jeveuo(jexnum(ma//'.SUPMAIL', ima), 'L', jsupma)
+        call jelira(jexnum(ma//'.SUPMAIL', ima), 'LONMAX', nnoe)
+!       
+        nbterm=0
+!       
+        call ssvalm(' ', optio, mo, ma, ima,&
+                    jresl, nbvel)
+!       
+        nomacr=zk8(jnmacr-1+ima)
+        call dismoi('F', 'NOM_NUME_DDL', nomacr, 'MACR_ELEM_STAT', ibid,&
+                    num2, ierd)
+        call jeveuo(nomacr//'.CONX', 'L', iaconx)
+        call jeveuo(jexnum(num2//'.NUME.PRNO', 1), 'L', jprno)
+!       
+        do k1 = 1, nnoe
+            n1=zi(jsupma-1+k1)
+            if (n1 .gt. nm) then
+                do iec = 1, nbecmx
+                    icodge(iec)=icodla(iec)
+                end do
+!       
+            else
+                inold=zi(iaconx-1+3*(k1-1)+2)
+                do iec = 1, nec
+                    icodge(iec)=zi(jprno-1+(nec+2)*(inold-1)+2+iec)
+                end do
+            endif
+!       
+            iad1=zzprno(1,n1,1)
+            call cordd2(jprn1, jprn2, 1, icodge, nec,&
+                        ncmp, n1, nddl1, zi(jposd1-1+nmxcmp*(k1-1)+1))
+            zi(jnulo1-1+2*(k1-1)+1)=iad1
+            zi(jnulo1-1+2*(k1-1)+2)=nddl1
+            do i1 = 1, nddl1
+                do k2 = 1, k1-1
+                    iad2=numlo1(k2,1)
+                    nddl2=numlo1(k2,2)
+                    do i2 = 1, nddl2
+                        iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
+                        iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
+                        call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
+                                    jsmdi, iad11, iad21)
+                    end do
+                end do
+                k2=k1
                 iad2=numlo1(k2,1)
                 nddl2=numlo1(k2,2)
-                do 40 i2 = 1, nddl2
+                do i2 = 1, i1
                     iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
                     iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
                     call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                                 jsmdi, iad11, iad21)
-40              continue
-50          continue
-            k2=k1
-            iad2=numlo1(k2,1)
-            nddl2=numlo1(k2,2)
-            do 60 i2 = 1, i1
-                iad11=zi(jnueq-1+iad1+posdd1(k1,i1)-1)
-                iad21=zi(jnueq-1+iad2+posdd1(k2,i2)-1)
-                call asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
-                            jsmdi, iad11, iad21)
-60          continue
-70      continue
-80  continue
-!
-!
-!         ---- POUR FINIR, ON RECOPIE EFFECTIVEMENT LES TERMES:
-    call ascopr(lmasym, lmesym, 'R'//tt(2:2), jtmp2, nbterm,&
-                jresl, c1, jvalm)
-    90 end do
+                end do
+            end do
+        end do
+!       
+!       
+!             ---- POUR FINIR, ON RECOPIE EFFECTIVEMENT LES TERMES:
+        call ascopr(lmasym, lmesym, 'R'//tt(2:2), jtmp2, nbterm,&
+                    jresl, c1, jvalm)
+90      continue
+    end do
     call ssvalm('FIN', optio, mo, ma, ima,&
                 jresl, nbvel)
 !

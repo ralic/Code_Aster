@@ -40,6 +40,7 @@ subroutine hmlgat(yachai, option, meca, ther, hydr,&
 !                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 ! ======================================================================
     implicit none
+! aslint: disable=W1306
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"
 #include "asterfort/capaca.h"

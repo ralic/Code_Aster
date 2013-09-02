@@ -57,7 +57,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !       OUT  DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !       OUT  CODRET  CODE-RETOUR = 0 SI OK, =1 SINON
 ! ======================================================================
-! aslint: disable=W1504,W0104,W1306
+! aslint: disable=W1504,W0104
     implicit none
 #include "jeveux.h"
 !

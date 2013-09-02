@@ -2,6 +2,7 @@ subroutine rlduc8(nommat, hcol, adia, ablo, neq,&
                   nbbloc, xsol, nbsol)
     implicit none
 !
+! aslint: disable=W1306
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"

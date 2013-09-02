@@ -44,6 +44,7 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+! aslint: disable=W1306
 #include "asterc/r8maem.h"
 #include "asterfort/appmas.h"
 #include "asterfort/calor.h"

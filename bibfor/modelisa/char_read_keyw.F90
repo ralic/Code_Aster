@@ -2,7 +2,6 @@ subroutine char_read_keyw(keywordfact, iocc , val_type, n_keyexcl, keywordexcl, 
                           n_max_keyword, n_keyword , keywordlist, val_nb, val_r, &
                           val_f, val_c)
 !
-! aslint: disable=W1306
 !
     implicit none
 !
