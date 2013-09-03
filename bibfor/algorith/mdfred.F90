@@ -1,5 +1,5 @@
 subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
-                  parred, fonred, saured, saredi)
+                  fonred, saured, saredi)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -23,18 +23,17 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 ! ----------------------------------------------------------------------
 ! IN  : NBMODE : NOMBRE DE MODES
 ! IN  : DEPGEN : DEPLACEMENTS GENERALISES AU PAS COURANT
-! VAR : FEXGEN : FORCES GENERALISEES AU PAS COURANT
+! VAR : FEXGEN : forceES GENERALISEES AU PAS COURANT
 ! IN  : NBREDE : NOMBRE DE POINTS DECRIVANT LA NON-LINEARITE
 ! IN  : DPLRED : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE RED
-! IN  : PARRED : PARAMETRES DES NON-LINEARITES
 ! IN  : FONRED : FONCTIONS DE NON-LINEARITE
 ! OUT : SAURED : VALEURS SAUVEGARDEES
 ! OUT : SAREDI : VALEURS SAUVEGARDEES
 ! ----------------------------------------------------------------------
 #include "asterfort/fointe.h"
-    integer :: ierd, icomp, nbmode, nbrede, saredi(*)
-    real(kind=8) :: resu, seuil, forc, xs, absl, penl, depgen(*), fexgen(*)
-    real(kind=8) :: parred(nbrede, *), saured(*), dplred(nbrede, nbmode, *)
+    integer :: ier, icomp, nbmode, nbrede, saredi(*)
+    real(kind=8) :: seuil, force, depgen(*), fexgen(*)
+    real(kind=8) :: saured(*), dplred(nbrede, nbmode, *)
     character(len=8) :: fonc, comp, fonred(nbrede, *)
     integer :: i, j
 !-----------------------------------------------------------------------
@@ -45,8 +44,6 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 !
         comp = fonred(i,2)
         fonc = fonred(i,3)
-        absl = parred(i,1)
-        penl = parred(i,2)
 !
         if (comp(1:2) .eq. 'DX') icomp = 1
         if (comp(1:2) .eq. 'DY') icomp = 2
@@ -61,32 +58,14 @@ subroutine mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
 20      continue
 !
         saured(i) = seuil
-        saredi(i) = 0
+        saredi(i) = 1
 !
-        xs = abs(seuil)
-        if (xs .gt. absl) then
-            saredi(i) = 1
-            if (fonred(i,4) .eq. 'TRANSIS ') then
-                call fointe('F ', fonc, 1, comp, xs,&
-                            resu, ierd)
-                if (seuil .lt. 0.d0) resu = -resu
-                forc = ( penl * seuil ) - resu
+        call fointe('F ', fonc, 1, comp, seuil, force, ier)
+        if (force .eq. 0.d0) saredi(i) = 0
 !
-                do 30 j = 1, nbmode
-                    fexgen(j)=fexgen(j)+dplred(i,j,icomp)*forc
-30              continue
-!
-            endif
-        endif
-!
-        if (fonred(i,4) .eq. 'DEPL    ') then
-            call fointe('F ', fonc, 1, comp, seuil,&
-                        forc, ierd)
-!
-            do 40 j = 1, nbmode
-                fexgen(j)=fexgen(j)+dplred(i,j,icomp)*forc
-40          continue
-        endif
+        do 30 j = 1, nbmode
+            fexgen(j)=fexgen(j)+dplred(i,j,icomp)*force
+30      continue
 !
 10  end do
 !

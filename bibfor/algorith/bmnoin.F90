@@ -1,6 +1,5 @@
 subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
                   numnoe, nbdif)
-! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

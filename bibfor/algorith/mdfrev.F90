@@ -1,5 +1,5 @@
 subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
-                  fonrev)
+                  fonrev, saurev, sarevi)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -29,11 +29,11 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
 ! IN  : FONREV : FONCTIONS DE NON-LINEARITE
 ! ----------------------------------------------------------------------
 #include "asterfort/fointe.h"
-    integer :: ier, icomp, nbmode, nbrevi
-    real(kind=8) :: force, vitess, vitgen(*), fexgen(*)
+    integer :: ier, icomp, nbmode, nbrevi, sarevi(*)
+    real(kind=8) :: force, vitess, vitgen(*), fexgen(*), saurev(*)
     real(kind=8) :: dplrev(nbrevi, nbmode, *)
     character(len=8) :: fonc, comp, fonrev(nbrevi, *)
-    integer :: i, j
+    integer :: i, j  
 !-----------------------------------------------------------------------
 !
 !     --- BOUCLE SUR LES NOEUDS DE NON-LINEARITE ---
@@ -55,8 +55,11 @@ subroutine mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
             vitess = vitess + dplrev(i,j,icomp)*vitgen(j)
 20      continue
 !
-        call fointe('F ', fonc, 1, comp, vitess,&
-                    force, ier)
+        saurev(i) = vitess
+        sarevi(i) = 1
+!
+        call fointe('F ', fonc, 1, comp, vitess, force, ier)
+        if (force .eq. 0.d0) sarevi(i) = 0
 !
         do 30 j = 1, nbmode
             fexgen(j)=fexgen(j)+dplrev(i,j,icomp)*force

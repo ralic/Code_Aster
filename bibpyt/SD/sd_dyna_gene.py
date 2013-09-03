@@ -64,7 +64,7 @@ class sd_dyna_gene(sd_titre,sd_resu_dyna) :
     # si RELA_EFFO_VITE :
     REVN = Facultatif(AsVK24(lonmax=1, ))
     REVC = Facultatif(AsVI())
-    REVD = Facultatif(AsVR())
+    REVV = Facultatif(AsVR())
 
     def u_dime(self):# --> ok
     
@@ -175,5 +175,5 @@ class sd_dyna_gene(sd_titre,sd_resu_dyna) :
         type_calcul, nbmode, nbchoc, nbsauv, nbexcit, nbrede, nbrevi = self.u_dime()
         if nbrevi == 0 : return
         assert self.REVC.lonmax == nbsauv*nbrevi
-        assert self.REVD.lonmax == nbsauv*nbrevi
+        assert self.REVV.lonmax == nbsauv*nbrevi
         assert self.REVN.lonmax == nbrevi

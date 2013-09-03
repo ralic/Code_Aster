@@ -2,9 +2,9 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
                   dt, dtsto, lflu, nbexci, idescf,&
                   nomfon, coefm, liad, inumor, nbchoc,&
                   logcho, dplmod, parcho, noecho, saucho,&
-                  nbrede, dplred, parred, fonred, saured,&
-                  saredi, nbrevi, dplrev, fonrev, nofdep,&
-                  nofvit, nofacc, psidel, monmot, nbrfis,&
+                  nbrede, dplred, fonred, saured,saredi,& 
+                  nbrevi, dplrev, fonrev, saurev, sarevi, &
+                  nofdep, nofvit, nofacc, psidel, monmot, nbrfis,&
                   fk, dfk, angini, foncp, nbpal,&
                   vrotat, typal, finpal, cnpal, prdeff,&
                   conv, fsauv, typbas, pulsa2, masgen,&
@@ -43,7 +43,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
 #include "blas/dcopy.h"
     character(len=16) :: typbas
     integer :: ee, ss, nbconv, nbmxcv, descmm, descmr, descma, palmax, im, iff
-    integer :: nbrede, nbrevi, nbrfis, saredi(*), netag, neqgen, nbexci
+    integer :: nbrede, nbrevi, nbrfis, saredi(*), sarevi(*), netag, neqgen, nbexci
     integer :: idescf(*), liad(*), inumor(*), nbchoc, logcho(nbchoc, *), nbpal
     integer :: istep, ier, ind, jm
     parameter (palmax=20)
@@ -56,10 +56,10 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
     logical :: lamor, lflu, prdeff
     real(kind=8) :: cdp(7), zero, teval, dt, coefm(*), dplmod(nbchoc, neqgen, *)
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
-    real(kind=8) :: parred(*), dplrev(*), angini, dtsto, vrotat, errt, errd
-    real(kind=8) :: errv, edp1, edp2, edp3, edp4, r8bid, psidel(*), conv, skd
+    real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd
+    real(kind=8) :: errv, edp1, edp2, edp3, edp4, r8bid, psidel(*), conv, skd, r8b(1)
     real(kind=8) :: skv, tol, temps, adp(6, 6), arot, fsauv(palmax, 3), vrot
-    real(kind=8) :: gyogen(*), rgygen(*), amogen(*), saucho(*), saured(*)
+    real(kind=8) :: gyogen(*), rgygen(*), amogen(*), saucho(*), saured(*), saurev(*)
     real(kind=8) :: work1(*), amgy(*), rigy(*), depl(*), vite(*), acce(*)
     real(kind=8) :: fext(*), depli(*), vitei(*), erde(*), ervi(*), kde(*)
     real(kind=8) :: kvi(*), atol
@@ -154,11 +154,11 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
             call mdfnli(neqgen, depl, vite, acce, fext,&
-                        r8bid, r8bid, r8bid, r8bid, nbchoc,&
+                        r8b, r8b, r8b, r8b, nbchoc,&
                         logcho, dplmod, parcho, noecho, saucho,&
-                        nbrede, dplred, parred, fonred, saured,&
-                        saredi, nbrevi, dplrev, fonrev, teval,&
-                        nofdep, nofvit, nofacc, nbexci, psidel,&
+                        nbrede, dplred, fonred, saured,saredi,&
+                        nbrevi, dplrev, fonrev, saurev, sarevi,&
+                        teval,  nofdep, nofvit, nofacc, nbexci, psidel,&
                         monmot, nbrfis, fk, dfk, angini,&
                         foncp, (istep+1), nbpal, dt, dtsto,&
                         vrotat, typal, finpal, cnpal, prdeff,&

@@ -64,7 +64,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
     integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
     integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
     integer :: jdeps, jvits, jaccs, jpass, jinst
-    integer :: jfcho, jdcho, jvcho, jicho, jredc, jredd, jrevc, jrevd
+    integer :: jfcho, jdcho, jvcho, jicho, jredc, jredd, jrevc, jrevv
     integer :: ires, n1, jdesc, nbmode, lvalv, lvala, j, lv1, lv2, lv3
     integer :: jrefam, jvint, jfreq
     real(kind=8) :: r1, rbid
@@ -237,7 +237,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                         k8b, 0, k8b, 0, k8b,&
                         jdeps, jvits, jaccs, jpass, jordr,&
                         jinst, jfcho, jdcho, jvcho, jicho,&
-                        jredc, jredd, jrevc, jrevd, 'EULER           ',&
+                        jredc, jredd, jrevc, jrevv, 'EULER           ',&
                         ibid, k4bid, 'TRAN', 'GLOB')
 !
 !           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
@@ -276,7 +276,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                             0, isto4, 0, 0.d0, 0,&
                             zr(jdeps), zr(jvits), zr(jaccs), zr( jpass), zi(jordr),&
                             zr(jinst), zr(jfcho), zr(jdcho), zr( jvcho), zi(jicho),&
-                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevd))
+                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevv))
 500          continue
         else
 !           --- SI LE RESULTAT TRAN_GENE N'EST PAS UN NOUVEAU CONCEPT,

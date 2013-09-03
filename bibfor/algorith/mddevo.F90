@@ -1,7 +1,7 @@
 subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                   masgen, amogen, basemo, tinit, iparch,&
                   nbsauv, nbchoc, logcho, dplmod, parcho,&
-                  noecho, nbrede, dplred, parred, fonred,&
+                  noecho, nbrede, dplred, fonred,&
                   nbrevi, dplrev, fonrev, depsto, vitsto,&
                   accsto, iorsto, temsto, fchost, dchost,&
                   vchost, ichost, iredst, dredst, coefm,&
@@ -34,12 +34,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     integer :: logcho(*), iorsto(*), iredst(*), iparch(*), ichost(*), irevst(*)
+    integer :: nbmode, nbchoc
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), amogen(*), parcho(*)
-    real(kind=8) :: parred(*), depsto(*), vitsto(*), accsto(*), temsto(*)
+    real(kind=8) :: depsto(*), vitsto(*), accsto(*), temsto(*)
     real(kind=8) :: fchost(*), dchost(*), vchost(*), dredst(*), dplred(*)
     real(kind=8) :: dplrev(*), passto(*), dplmod(nbchoc, nbmode, *), drevst(*)
     character(len=8) :: basemo, noecho(*), fonred(*), fonrev(*), nomres, monmot
-    character(len=8) :: fbid(2)
+    character(len=8) :: fbid(2), k8b
 !
     real(kind=8) :: coefm(*), psidel(*)
     integer :: liad(*), inumor(*), idescf(*)
@@ -86,7 +87,6 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 ! IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 ! IN  : DPLRED : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE RED
-! IN  : PARRED : TABLEAU DES PARAMETRES DE RED
 ! IN  : FONRED : TABLEAU DES FONCTIONS AUX NOEUDS DE RED
 ! IN  : NBREVI : NOMBRE DE RELATION EFFORT VITESSE (REV)
 ! IN  : DPLREV : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE REV
@@ -111,11 +111,11 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
     integer :: isto2, isto3, jacce, jbid1, jchor, jdep1, jdep2
     integer :: jdep3, jdep4, jdepl, jfex1, jfex2, jfex3, jfex4
     integer :: jfext, jredi, jredr, jtra1, jvint, jvit1, jvit2
-    integer :: jvit3, jvit4, jvite, n100, nbchoc, nbexci, nbmod1
+    integer :: jvit3, jvit4, jvite, n100, nbexci, nbmod1
     integer :: isto4, jrevr, jrevi
-    integer :: nbmode, nbpas, nbrede, nbrevi, nbsauv, nbscho, ndt
+    integer :: nbpas, nbrede, nbrevi, nbsauv, nbscho, ndt
 !
-    real(kind=8) :: deux, dt, dt1, dt2, dt3, dt4, dt5
+    real(kind=8) :: deux, dt, dt1, dt2, dt3, dt4, dt5, r8b(1)
     real(kind=8) :: dt6, g1, g2, g3, g4, quatre, six
     real(kind=8) :: tarchi, temps, tinit, x1, x2, zero
 !-----------------------------------------------------------------------
@@ -215,13 +215,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
     call mdfnli(nbmode, zr(jdep2), zr(jvit2), zr(jbid1), zr(jfex2),&
-                r8bid2, r8bid3, r8bid4, r8bid5, nbchoc,&
+                r8b, r8b, r8b, r8b, nbchoc,&
                 logcho, dplmod, parcho, noecho, zr(jchor),&
-                nbrede, dplred, parred, fonred, zr(jredr),&
-                zi(jredi), nbrevi, dplrev, fonrev, tinit,&
-                nofdep, nofvit, nofacc, nbexci, psidel,&
+                nbrede, dplred, fonred, zr(jredr),zi(jredi),&
+                nbrevi, dplrev, fonrev, zr(jrevr),zi(jrevi),&
+                tinit, nofdep, nofvit, nofacc, nbexci, psidel,&
                 monmot, 0, fbid, fbid, 0.d0,&
-                fbid, 0, 0, 0.d0, 0.d0,&
+                k8b, 0, 0, 0.d0, 0.d0,&
                 0.d0, typal, finpal, cnpal, prdeff,&
                 r8b2, fsauv)
 !
@@ -288,13 +288,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
 !
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
         call mdfnli(nbmode, zr(jdep3), zr(jvit3), zr(jbid1), zr(jfex3),&
-                    r8bid2, r8bid3, r8bid4, r8bid5, nbchoc,&
+                    r8b, r8b, r8b, r8b, nbchoc,&
                     logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, parred, fonred, zr(jredr),&
-                    zi(jredi), nbrevi, dplrev, fonrev, temps,&
-                    nofdep, nofvit, nofacc, nbexci, psidel,&
+                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                    temps, nofdep, nofvit, nofacc, nbexci, psidel,&
                     monmot, 0, fbid, fbid, 0.d0,&
-                    fbid, 0, 0, 0.d0, 0.d0,&
+                    k8b, 0, 0, 0.d0, 0.d0,&
                     0.d0, typal, finpal, cnpal, prdeff,&
                     r8b2, fsauv)
 !
@@ -326,13 +326,13 @@ subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
         endif
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
         call mdfnli(nbmode, zr(jdep4), zr(jvit4), zr(jbid1), zr(jfex4),&
-                    r8bid2, r8bid3, r8bid4, r8bid5, nbchoc,&
+                    r8b, r8b, r8b, r8b, nbchoc,&
                     logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, parred, fonred, zr(jredr),&
-                    zi(jredi), nbrevi, dplrev, fonrev, temps,&
-                    nofdep, nofvit, nofacc, nbexci, psidel,&
+                    nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                    nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                    temps, nofdep, nofvit, nofacc, nbexci, psidel,&
                     monmot, 0, fbid, fbid, 0.d0,&
-                    fbid, 0, 0, 0.d0, 0.d0,&
+                    k8b, 0, 0, 0.d0, 0.d0,&
                     0.d0, typal, finpal, cnpal, prdeff,&
                     r8b2, fsauv)
 !

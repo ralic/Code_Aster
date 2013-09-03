@@ -20,9 +20,9 @@ interface
                       dt, dtsto, lflu, nbexci, idescf,&
                       nomfon, coefm, liad, inumor, nbchoc,&
                       logcho, dplmod, parcho, noecho, saucho,&
-                      nbrede, dplred, parred, fonred, saured,&
-                      saredi, nbrevi, dplrev, fonrev, nofdep,&
-                      nofvit, nofacc, psidel, monmot, nbrfis,&
+                      nbrede, dplred, fonred, saured, saredi,&
+                      nbrevi, dplrev, fonrev, saurev, sarevi,&
+                      nofdep, nofvit, nofacc, psidel, monmot, nbrfis,&
                       fk, dfk, angini, foncp, nbpal,&
                       vrotat, typal, finpal, cnpal, prdeff,&
                       conv, fsauv, typbas, pulsa2, masgen,&
@@ -54,13 +54,14 @@ interface
         real(kind=8) :: saucho(*)
         integer :: nbrede
         real(kind=8) :: dplred(*)
-        real(kind=8) :: parred(*)
         character(len=8) :: fonred(*)
         real(kind=8) :: saured(*)
         integer :: saredi(*)
         integer :: nbrevi
         real(kind=8) :: dplrev(*)
         character(len=8) :: fonrev(*)
+        real(kind=8) :: saurev(*)
+        integer :: sarevi(*)
         character(len=8) :: nofdep(*)
         character(len=8) :: nofvit(*)
         character(len=8) :: nofacc(*)

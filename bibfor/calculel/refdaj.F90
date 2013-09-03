@@ -44,7 +44,7 @@ subroutine refdaj(arret, result, nbordr, numer, typre, conre, codret)
 ! --------- call refdaj ('F',tragen,nbordr,numddl,'DYNAMIQUE'  ,matric,iret)
 !           call refdaj ('F',ritzba,nbordr,numddl,'INTERF_DYNA',intdyn,iret)
 !           call refdaj ('F',ritzba,nbordr,numddl,'INTERF_STAT',modsta,iret)
-!
+! 
 !                     DESCRIPTIVE DES VARIABLES
 !   ___________________________________________________________________
 !  | IN > ARRET  : 'F' OU ' ' : ON ARRETE AVEC ERREUR FATALE EN    [K1]|

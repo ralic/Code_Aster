@@ -2,7 +2,6 @@ subroutine modeau(melflu, noma, geom, fsvr, base,&
                   freqi, nbm, nuor, vicoq, torco,&
                   tcoef, amor, masg, fact, amfr,&
                   vecpr, maj)
-! aslint: disable=W1306
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================

@@ -1,6 +1,5 @@
 subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                   seul)
-! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 !

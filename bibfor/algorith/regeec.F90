@@ -66,7 +66,7 @@ subroutine regeec(nomres, resgen, nomsst)
     integer :: neq, nno, numo, nusst, nutars, iadpar(6), llref2, llref3
     integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid
-    character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr, macelem
+    character(len=8) :: kbid, basmod, mailla, lint, modgen, soutr
     character(len=16) :: depl, nompar(6), typres, quamod
     character(len=19) :: raid, numddl, numgen, chamne
     character(len=24) :: crefe(2), chamol, chamba

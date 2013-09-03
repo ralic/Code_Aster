@@ -19,13 +19,13 @@ interface
     subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
                       masgen, phicar, pulsa2, amogen, nbchoc,&
                       logcho, dplmod, parcho, noecho, saucho,&
-                      nbrede, dplred, parred, fonred, saured,&
-                      saredi, nbrevi, dplrev, fonrev, temps,&
-                      nofdep, nofvit, nofacc, nbexci, psidel,&
-                      monmot, nbrfis, fk, dfk, angini,&
-                      foncp, numpas, nbpal, dt, dtsto,&
-                      vrotat, typal, finpal, cnpal, prdeff,&
-                      conv, fsauv)
+                      nbrede, dplred, fonred, saured, saredi,&
+                      nbrevi, dplrev, fonrev, saurev, sarevi,&
+                      temps , nofdep, nofvit, nofacc, nbexci, psidel,&
+                      monmot, nbrfis, fk    , dfk   , angini,&
+                      foncp , numpas, nbpal , dt    , dtsto ,&
+                      vrotat, typal , finpal, cnpal , prdeff,&
+                      conv  , fsauv)
         integer :: nbexci
         integer :: nbchoc
         integer :: nbmode
@@ -44,13 +44,14 @@ interface
         real(kind=8) :: saucho(*)
         integer :: nbrede
         real(kind=8) :: dplred(*)
-        real(kind=8) :: parred(*)
         character(len=8) :: fonred(*)
         real(kind=8) :: saured(*)
         integer :: saredi(*)
         integer :: nbrevi
         real(kind=8) :: dplrev(*)
         character(len=8) :: fonrev(*)
+        real(kind=8) :: saurev(*)
+        integer :: sarevi(*)
         real(kind=8) :: temps
         character(len=8) :: nofdep(nbexci)
         character(len=8) :: nofvit(nbexci)

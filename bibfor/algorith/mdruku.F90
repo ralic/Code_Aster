@@ -4,7 +4,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                   rgygen, lamor, amogen, descma, gyogen,&
                   foncv, fonca, typbas, basemo, lflu,&
                   nbchoc, intitu, logcho, dplmod, parcho,&
-                  noecho, nbrede, dplred, parred, fonred,&
+                  noecho, nbrede, dplred, fonred,&
                   nbrevi, dplrev, fonrev, coefm, liad,&
                   inumor, idescf, nofdep, nofvit, nofacc,&
                   nomfon, psidel, monmot, nbrfis, fk,&
@@ -28,7 +28,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1504,W1306
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 !
@@ -65,14 +65,14 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     integer :: nbconv, nbmxcv, nbsaui, nbscho, im, ind, iadrk, iarg, ibid
     integer :: jacce, ier, iret, jacci, jaccs, jamgy, jdcho, jdepi, jdepl, jdeps
     integer :: jerde, jervi, jfcho, jfext, jicho, jinst, jkde, jkvi, jm, jmass
-    integer :: jordr, jpass, jredc, jredd, jrevc, jrevd, jrigy, jtra1, jvcho
+    integer :: jordr, jpass, jredc, jredd, jrevc, jrevv, jrigy, jtra1, jvcho
     integer :: jvite, jviti, jvits, n1, npm
     parameter    (palmax=20)
     parameter    (dimnas=8)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
-    real(kind=8) :: parcho(*), parred(*), dplrev(*), dplred(*), rgygen(*)
+    real(kind=8) :: parcho(*), dplrev(*), dplred(*), rgygen(*)
     real(kind=8) :: dplmod(nbchoc, neqgen, *), gyogen(*), dt, dt2, dtsto, tfin
-    real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1
+    real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1, r8b(1)
     real(kind=8) :: temps, coefm(*), psidel(*), deux, pow, fsauv(palmax, 3)
     real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol
     logical :: lamor, lflu, prdeff, adapt, flagdt
@@ -102,7 +102,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                 intitu, nbrede, fonred, nbrevi, fonrev,&
                 jdeps, jvits, jaccs, jpass, jordr,&
                 jinst, jfcho, jdcho, jvcho, jicho,&
-                jredc, jredd, jrevc, jrevd, method,&
+                jredc, jredd, jrevc, jrevv, method,&
                 ibid, nomsym, 'TRAN', 'VOLA')
 !
 !
@@ -289,11 +289,11 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
     if (nbpal .ne. 0) nbchoc = 0
     call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                masgen, r8bid1, pulsa2, zr(jamgy), nbchoc,&
+                masgen, r8b, pulsa2, zr(jamgy), nbchoc,&
                 logcho, dplmod, parcho, noecho, zr(jchor),&
-                nbrede, dplred, parred, fonred, zr(jredr),&
-                zi(jredi), nbrevi, dplrev, fonrev, tinit,&
-                nofdep, nofvit, nofacc, nbexci, psidel,&
+                nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                tinit,  nofdep, nofvit, nofacc, nbexci, psidel,&
                 monmot, nbrfis, fk, dfk, angini,&
                 foncp, 1, nbpal, dt, dtsto,&
                 vrotat, typal, finpal, cnpal, prdeff,&
@@ -332,7 +332,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                 zi(jredi), isto4, nbrevi, zr(jrevr), zi(jrevi),&
                 zr(jdeps), zr(jvits), zr(jaccs), zr(jpass), zi(jordr),&
                 zr(jinst), zr(jfcho), zr(jdcho), zr(jvcho), zi(jicho),&
-                zr(jvint), zi(jredc), zr(jredd), zi(jrevc), zr(jrevd))
+                zr(jvint), zi(jredc), zr(jredd), zi(jrevc), zr(jrevv))
 !
     isto1 = isto1 + 1
     iarchi = iarchi + 1
@@ -355,9 +355,9 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                         dt, dtsto, lflu, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, nbchoc,&
                         logcho, dplmod, parcho, noecho, zr(jchor),&
-                        nbrede, dplred, parred, fonred, zr(jredr),&
-                        zi(jredi), nbrevi, dplrev, fonrev, nofdep,&
-                        nofvit, nofacc, psidel, monmot, nbrfis,&
+                        nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                        nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                        nofdep, nofvit, nofacc, psidel, monmot, nbrfis,&
                         fk, dfk, angini, foncp, nbpal,&
                         vrotat, typal, finpal, cnpal, prdeff,&
                         conv, fsauv, typbas, pulsa2, masgen,&
@@ -372,9 +372,9 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                         dt, dtsto, lflu, nbexci, idescf,&
                         nomfon, coefm, liad, inumor, nbchoc,&
                         logcho, dplmod, parcho, noecho, zr(jchor),&
-                        nbrede, dplred, parred, fonred, zr(jredr),&
-                        zi(jredi), nbrevi, dplrev, fonrev, nofdep,&
-                        nofvit, nofacc, psidel, monmot, nbrfis,&
+                        nbrede, dplred, fonred, zr(jredr), zi(jredi),&
+                        nbrevi, dplrev, fonrev, zr(jrevr), zi(jrevi),&
+                        nofdep, nofvit, nofacc, psidel, monmot, nbrfis,&
                         fk, dfk, angini, foncp, nbpal,&
                         vrotat, typal, finpal, cnpal, prdeff,&
                         conv, fsauv, typbas, pulsa2, masgen,&
@@ -403,7 +403,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                             zi(jredi), isto4, nbrevi, zr( jrevr), zi(jrevi),&
                             zr(jdeps), zr(jvits), zr(jaccs), zr( jpass), zi(jordr),&
                             zr(jinst), zr(jfcho), zr(jdcho), zr( jvcho), zi(jicho),&
-                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevd))
+                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevv))
                 isto1 = isto1 + 1
                 iarchi = iarchi + 1
 !
@@ -425,7 +425,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                             intitu, nbrede, fonred, nbrevi, fonrev,&
                             jdeps, jvits, jaccs, jpass, jordr,&
                             jinst, jfcho, jdcho, jvcho, jicho,&
-                            jredc, jredd, jrevc, jrevd, method,&
+                            jredc, jredd, jrevc, jrevv, method,&
                             ibid, nomsym, 'TRAN', 'VOLA')
 !
                 call mdarnl(isto1, iarchi, temps, dt, neqgen,&
@@ -434,7 +434,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                             zi(jredi), isto4, nbrevi, zr( jrevr), zi(jrevi),&
                             zr(jdeps), zr(jvits), zr(jaccs), zr( jpass), zi(jordr),&
                             zr(jinst), zr(jfcho), zr(jdcho), zr( jvcho), zi(jicho),&
-                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevd))
+                            zr(jvint), zi(jredc), zr(jredd), zi( jrevc), zr(jrevv))
                 isto1 = isto1 + 1
                 iarchi = iarchi + 1
             endif

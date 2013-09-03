@@ -131,13 +131,13 @@ subroutine mdtr74(nomres)
     integer :: jnodep, jnoec, jnomfo, jnovit, jordr, jparc, jpard
     integer :: jpass, jphie, jpoids, jpsdel, jpsid, jpul2, jpuls
     integer :: jraig, jranc, jredc, jredd, jrede, jrefa, jrefac
-    integer :: jrevc, jrevd
+    integer :: jrevc, jrevv
     integer :: jrefak, jrefam, jrevi, jrhoe, jscdek, jscdem, jvcho
     integer :: jvit0, jvits, lamre, lires, llnequ, lmat, lnoe
     integer :: lprofv, lprol, n, n1, n2, na, nbamor
     integer :: nbcho1, nbchoc, nbexit, nbf, nbflam, nbfv, nbm0
     integer :: nbmd, nbmg, nbmod2, nbmode, nbmp, nbnli, nbpas
-    integer :: nbrede, nbretr, nbrevi, nbsauv, nbsism, nbstoc, nbstok
+    integer :: nbrede, nbrevi, nbsauv, nbsism, nbstoc, nbstok
     integer :: nbstom, neq, ngr, nm, nmp, nr
     integer :: nterm, nts, numvif, nv, nbobjs
     real(kind=8) :: crit, deux, dtarch, eps, omeg2, prec
@@ -717,27 +717,11 @@ subroutine mdtr74(nomres)
 !     --- RELATION EFFORT DEPLACEMENT ---
 !
     call getfac('RELA_EFFO_DEPL', nbrede)
-    call getfac('RELA_TRANSIS', nbretr)
-    nbrede = nbrede + nbretr
-!     RELA_TRANSIS CORRESPOND A L'ANCIEN RELA_EFFO_DEPL TEL QU'IL ETAIT
-!     UTILISE JUSQU'EN VERSION 4 ET CONSERVE POUR COMPATIBILITE.
-!     A PARTIR DE LA VERSION 5 RELA_EFFO_DEPL FONCTIONNE COMME
-!     RELA_EFFO_VITE.
     if (nbrede .ne. 0) then
         call wkvect('&&MDTR74.DPLR', 'V V R8', nbrede*6*nbmode, jrede)
-        call wkvect('&&MDTR74.PARA_REDE', 'V V R8', nbrede*2, jpard)
-        call wkvect('&&MDTR74.FONC_REDE', 'V V K8', nbrede*4, jfond)
-!        ON UTILISE UNE NOUVELLE VALEUR DE FONC_REDE POUR DISTINGUER
-!        LES DEUX MOT-CLES FACTEURS
-        do 110 i = 1, nbrede
-            if (i .le. nbretr) then
-                zk8(jfond+3*nbrede+i-1) = 'TRANSIS '
-            else
-                zk8(jfond+3*nbrede+i-1) = 'DEPL    '
-            endif
-110      continue
+        call wkvect('&&MDTR74.FONC_REDE', 'V V K8', nbrede*3, jfond)
         call mdrede(numddl, nbrede, nbmode, zr(jbase), neq,&
-                    zr(jrede), zr(jpard), zk8(jfond), iret)
+                    zr(jrede), zk8(jfond), iret)
         if (iret .ne. 0) goto 120
     endif
 !
@@ -821,7 +805,7 @@ subroutine mdtr74(nomres)
                     zk8(jinti), nbrede, zk8(jfond), nbrevi, zk8(jfonv),&
                     jdeps, jvits, jaccs, jpass, jordr,&
                     jinst, jfcho, jdcho, jvcho, jicho,&
-                    jredc, jredd, jrevc, jrevd, method,&
+                    jredc, jredd, jrevc, jrevv, method,&
                     ibid, k4bid, 'TRAN', 'GLOB')
 !     DANS LE CAS DE RUNGE KUTTA, L'ALLOCATION SE FAIT A L'INTERIEUR DE
 !     LA ROUTINE MDRUKU
@@ -903,10 +887,10 @@ subroutine mdtr74(nomres)
                     fonca, typbas, basemo, tinit, zi(jarch),&
                     nbsauv, itemax, prec, xlambd, lflu,&
                     nbnli, zi(jranc), zr(jdepl), zr(jparc), zk8( jnoec),&
-                    nbrede, zr(jrede), zr(jpard), zk8(jfond), nbrevi,&
+                    nbrede, zr(jrede), zk8(jfond), nbrevi,&
                     zr( jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
                     zi(jordr), zr( jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
-                    zi(jicho), zi(jredc), zr( jredd), zi(jrevc), zr(jrevd),&
+                    zi(jicho), zi(jredc), zr( jredd), zi(jrevc), zr(jrevv),&
                     zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8(jnodep),&
                     zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
                     nbrfis, fk, dfk, angini, foncp,&
@@ -920,7 +904,7 @@ subroutine mdtr74(nomres)
                     zr( jrgyg), lamor, zr(jamog), ibid, zr(jgyog),&
                     foncv, fonca, typbas, basemo, lflu,&
                     nbnli, zk8(jinti), zi(jranc), zr(jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zr(jpard), zk8(jfond),&
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
                     nbrevi, zr( jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve),&
                     zi(jinumo), zi( jidesc), zk8(jnodep), zk8(jnovit), zk8(jnoacc),&
                     zk8(jnomfo), zr( jpsid), monmot, nbrfis, fk,&
@@ -934,14 +918,14 @@ subroutine mdtr74(nomres)
                     zr(jamog), ibid, typbas, basemo, tinit,&
                     tfin, dtarch, nbsauv, itemax, prec,&
                     xlambd, lflu, nbnli, zi( jranc), zr(jdepl),&
-                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), zr( jpard),&
+                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), &
                     zk8(jfond), nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps),&
                     zr( jvits), zr(jaccs), zr(jpass), zi(jordr), zr(jinst),&
                     zr(jfcho), zr( jdcho), zr(jvcho), zi(jicho), zi(jredc),&
                     zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
                     zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevd))
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
     else if (method.eq.'NEWMARK') then
         call mdnewm(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
                     zr(jmasg), zr(jraig), zr(jrgyg), lamor, zr(jamog),&
@@ -954,13 +938,13 @@ subroutine mdtr74(nomres)
         call mddevo(nbpas, dt, nbmode, zr(jpuls), zr(jpul2),&
                     zr(jmasg), zr(jamog), basemo, tinit, zi(jarch),&
                     nbsauv, nbnli, zi(jranc), zr( jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zr(jpard), zk8(jfond),&
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
                     nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps), zr(jvits),&
                     zr(jaccs), zi(jordr), zr(jinst), zr(jfcho), zr(jdcho),&
                     zr(jvcho), zi(jicho), zi(jredc), zr(jredd), zr(jcoefm),&
                     zi(jiadve), zi( jinumo), zi(jidesc), zk8(jnodep), zk8(jnovit),&
                     zk8(jnoacc), zk8( jnomfo), zr(jpsid), monmot, nomres,&
-                    ntotex, zr(jpass), zi(jrevc), zr(jrevd))
+                    ntotex, zr(jpass), zi(jrevc), zr(jrevv))
     endif
 !     --- IMPRESSION DES RESULTATS DE CHOC DANS TOUS LES CAS
 !     --- SAUF ITMI POUR ITMI ON IMPRIME DANS MDITM2

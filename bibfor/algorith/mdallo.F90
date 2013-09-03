@@ -3,9 +3,9 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
                   intitu, nbrede, fonred, nbrevi, fonrev,&
                   jdepl, jvite, jacce, jptem, jordr,&
                   jdisc, jfcho, jdcho, jvcho, jadcho,&
-                  jredc, jredd, jrevc, jrevd, method,&
+                  jredc, jredd, jrevc, jrevv, method,&
                   nbsym, nomsym, typcal, sauve)
-! aslint: disable=W1504,W1306
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 !
@@ -80,7 +80,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     logical :: entvid
     integer :: i, ic, iret, jacce, jadcho, jdcho, jdepl, jchmp
     integer :: jdesc, jfcho, jdisc, jinti, jncho, jordr, jptem
-    integer :: jredc, jredd, jredn, jrevc, jrevd, jrevn
+    integer :: jredc, jredd, jredn, jrevc, jrevv, jrevn
     integer :: jsst, jvcho, jvint
     integer :: jvite, nbmode, nbsto1
     real(kind=8) :: dt
@@ -106,7 +106,7 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
     jredc = 1
     jredd = 1
     jrevc = 1
-    jrevd = 1
+    jrevv = 1
     blanc = '        '
     bl11pt = '           .'
 !
@@ -314,10 +314,10 @@ subroutine mdallo(nomres, basemo, masgen, riggen, amogen,&
             call jeecra(nomres//'           .REVC', 'LONMAX', nbstoc)
             call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc)
             call jeveut(nomres//'           .REVC', 'E', jrevc)
-            call jecreo(nomres//'           .REVD', typsau//' R')
-            call jeecra(nomres//'           .REVD', 'LONMAX', nbstoc)
-            call jeecra(nomres//'           .REVD', 'LONUTI', nbstoc)
-            call jeveut(nomres//'           .REVD', 'E', jrevd)
+            call jecreo(nomres//'           .REVV', typsau//' R')
+            call jeecra(nomres//'           .REVV', 'LONMAX', nbstoc)
+            call jeecra(nomres//'           .REVV', 'LONUTI', nbstoc)
+            call jeveut(nomres//'           .REVV', 'E', jrevv)
         endif
         call jeexin(nomres//'           .REVN', iret)
         if (iret .eq. 0) then

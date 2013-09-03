@@ -143,7 +143,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
     integer :: nbr0
     integer :: jordre, jtemps, jdepg, jvitg, jaccg, jdep, jfor, jvit, kdepl
     integer :: kvite, kacce, kordr, kinst, kptem, kfcho, kdcho, kvcho, kadcho
-    integer :: krevc, krevd, jptem
+    integer :: krevc, krevv, jptem
     integer :: ifr, ifm, latest, iercpu, nbrede, nbrevi, kredc, kredd
     real(kind=8) :: tc, dt, div, tc0, ts0, tol, tolc, toln, tolv, ftest, ftest0
     real(kind=8) :: ttrans, premac, prerel, tps1(4)
@@ -535,7 +535,7 @@ subroutine mditm2(np2, np3, np4, n2, nbm,&
                 k8b, nbrede, k8b, nbrevi, k8b,&
                 kdepl, kvite, kacce, kptem, kordr,&
                 kinst, kfcho, kdcho, kvcho, kadcho,&
-                kredc, kredd, krevc, krevd, method,&
+                kredc, kredd, krevc, krevv, method,&
                 ibid, k4bid, 'TRAN', 'GLOB')
 !
     call ecrbas(nbsauv, nbnl, nbm, zr(jdepg), zr(jvitg),&

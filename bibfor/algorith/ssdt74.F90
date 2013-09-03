@@ -94,7 +94,7 @@ subroutine ssdt74(nomres, nomcmd)
     integer :: jnoacc, jnodep, jnoec, jnomfo, jnovit, jordr, jparc
     integer :: jpard, jpass, jpsdel, jpsid, jpul2, jpuls, jraig
     integer :: jranc, jredc, jredd, jrede, jrefa, jrevi, jscde
-    integer :: jrevc, jrevd
+    integer :: jrevc, jrevv
     integer :: jvcho, jvec, jvecr, jvits, k, n1, namor
     integer :: nbbas, nbchoc, nbmode, nbmodi, nbmody, nbmost, nbpas
     integer :: nbrede, nbrevi, nbsauv, nbsst, neq, neqgen, nm
@@ -373,7 +373,7 @@ subroutine ssdt74(nomres, nomcmd)
                     zk8(jinti), nbrede, zk8(jfond), nbrevi, zk8(jfonv),&
                     jdeps, jvits, jaccs, jpass, jordr,&
                     jinst, jfcho, jdcho, jvcho, jadcho,&
-                    jredc, jredd, jrevc, jrevd, method,&
+                    jredc, jredd, jrevc, jrevv, method,&
                     ibid, k4bid, 'TRAN', 'GLOB')
 !     DANS LE CAS DE RUNGE KUTTA, L'ALLOCATION SE FAIT A L'INTERIEUR DE
 !     LA ROUTINE MDRUKU
@@ -431,10 +431,10 @@ subroutine ssdt74(nomres, nomcmd)
                     fbid, typbas, k8b, tinit, zi(jarch),&
                     nbsauv, itemax, prec, xlambd, lflu,&
                     nbchoc, zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
-                    nbrede, zr(jrede), zr(jpard), zk8(jfond), nbrevi,&
+                    nbrede, zr(jrede), zk8(jfond), nbrevi,&
                     zr(jrevi), zk8(jfonv), zr(jdeps), zr(jvits), zr(jaccs),&
                     zi(jordr), zr(jinst), zr(jfcho), zr(jdcho), zr(jvcho),&
-                    zi(jadcho), zi(jredc), zr(jredd), zi(jrevc), zr(jrevd),&
+                    zi(jadcho), zi(jredc), zr(jredd), zi(jrevc), zr(jrevv),&
                     zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc), zk8( jnodep),&
                     zk8(jnovit), zk8(jnoacc), zk8(jnomfo), zr(jpsid), monmot,&
                     0, fbid, fbid, 0.d0, fbid,&
@@ -447,14 +447,14 @@ subroutine ssdt74(nomres, nomcmd)
                     zr(jamog), desca, typbas, k8b, tinit,&
                     tfin, dtarch, nbsauv, itemax, prec,&
                     xlambd, lflu, nbchoc, zi( jranc), zr(jdepl),&
-                    zr(jparc), zk8(jnoec), nbrede, zr(jrede), zr( jpard),&
+                    zr(jparc), zk8(jnoec), nbrede, zr(jrede),&
                     zk8(jfond), nbrevi, zr(jrevi), zk8(jfonv), zr(jdeps),&
                     zr( jvits), zr(jaccs), zr(jpass), zi(jordr), zr(jinst),&
                     zr(jfcho), zr( jdcho), zr(jvcho), zi(jadcho), zi(jredc),&
                     zr(jredd), zr(jcoefm), zi(jiadve), zi(jinumo), zi(jidesc),&
                     zk8(jnodep), zk8(jnovit), zk8( jnoacc), zk8(jnomfo), zr(jpsid),&
                     monmot, nbpal, dtsto, vrotat, prdeff,&
-                    method, nomres, ntotex, zi(jrevc), zr(jrevd))
+                    method, nomres, ntotex, zi(jrevc), zr(jrevv))
 !
     else if (method(1:5).eq.'RUNGE') then
         call mdruku(method, tinit, tfin, dt, dtmin,&
@@ -463,7 +463,7 @@ subroutine ssdt74(nomres, nomcmd)
                     r8b, lamor, zr(jamog), desca, r8b,&
                     fbid, fbid, typbas, k8b, lflu,&
                     nbchoc, zk8(jinti), zi(jranc), zr(jdepl), zr(jparc),&
-                    zk8(jnoec), nbrede, zr(jrede), zr(jpard), zk8(jfond),&
+                    zk8(jnoec), nbrede, zr(jrede), zk8(jfond),&
                     nbrevi, zr(jrevi), zk8(jfonv), zr(jcoefm), zi(jiadve),&
                     zi(jinumo), zi(jidesc), zk8( jnodep), zk8(jnovit), zk8(jnoacc),&
                     zk8(jnomfo), zr(jpsid), monmot, 0, fbid,&

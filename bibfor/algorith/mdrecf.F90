@@ -2,7 +2,6 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                   iadvec, inumor, fondep, fonvit, fonacc,&
                   neq, typbas, basemo, nbmode, riggen,&
                   nommot, nomres)
-! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
 #include "asterc/getvid.h"

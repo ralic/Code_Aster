@@ -49,7 +49,7 @@ subroutine ritz99(nomres)
 #include "asterfort/wkvect.h"
     complex(kind=8) :: cbid
     integer :: vali(3)
-    character(len=8) :: nomres, resul1, resul2, k8b, intf, intfb, listam
+    character(len=8) :: nomres, resul1, resul2, k8b, intf, listam
     character(len=19) :: numref, nume1
     character(len=24) :: trang1, trang2, tempor, tempi, tempi2, rigi1, mass1, amor1
     character(len=24) :: valk(3), concep(3)

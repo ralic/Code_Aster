@@ -1,13 +1,13 @@
 subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
                   masgen, phicar, pulsa2, amogen, nbchoc,&
                   logcho, dplmod, parcho, noecho, saucho,&
-                  nbrede, dplred, parred, fonred, saured,&
-                  saredi, nbrevi, dplrev, fonrev, temps,&
-                  nofdep, nofvit, nofacc, nbexci, psidel,&
-                  monmot, nbrfis, fk, dfk, angini,&
-                  foncp, numpas, nbpal, dt, dtsto,&
-                  vrotat, typal, finpal, cnpal, prdeff,&
-                  conv, fsauv)
+                  nbrede, dplred, fonred, saured, saredi,&
+                  nbrevi, dplrev, fonrev, saurev, sarevi,&
+                  temps , nofdep, nofvit, nofacc, nbexci, psidel,&
+                  monmot, nbrfis, fk    , dfk   , angini,&
+                  foncp , numpas, nbpal , dt    , dtsto ,&
+                  vrotat, typal , finpal, cnpal , prdeff,&
+                  conv  , fsauv)
 ! aslint: disable=W1504
     implicit none
 #include "asterfort/mdfcho.h"
@@ -15,13 +15,13 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 #include "asterfort/mdfred.h"
 #include "asterfort/mdfrev.h"
 #include "asterfort/mdrfis.h"
-    integer :: nbmode, nbrede, nbrevi, nbexci, logcho(*), saredi(*)
+    integer :: nbmode, nbrede, nbrevi, nbexci, logcho(*), saredi(*), sarevi(*)
     integer :: nbpal, nbchoc
     integer :: numpas
     real(kind=8) :: dt, dtsto, vrotat, conv, angini
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*), masgen(*)
     real(kind=8) :: phicar(*), pulsa2(*), amogen(*), parcho(*), saucho(*)
-    real(kind=8) :: parred(*), saured(*), dplrev(*), dplred(*)
+    real(kind=8) :: saured(*), dplrev(*), dplred(*), saurev(*)
     real(kind=8) :: accgen(*), dplmod(nbchoc, nbmode, *)
     real(kind=8) :: temps, psidel(nbchoc, nbexci, *)
     character(len=8) :: noecho(*), fonred(*), fonrev(*), monmot
@@ -76,13 +76,14 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 ! OUT : SAUCHO : TABLEAU DES VALEURS A SAUVEGARDER POUR LES CHOCS
 ! IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 ! IN  : DPLRED : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE RED
-! IN  : PARRED : TABLEAU DES PARAMETRES DE RED
 ! IN  : FONRED : TABLEAU DES FONCTIONS AUX NOEUDS DE RED
 ! OUT : SAURED : TABLEAU DES VALEURS A SAUVEGARDER POUR LES RED
 ! OUT : SAREDI : TABLEAU DES VALEURS A SAUVEGARDER POUR LES RED
 ! IN  : NBREVI : NOMBRE DE RELATION EFFORT VITESSE (REV)
 ! IN  : DPLREV : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE REV
 ! IN  : FONREV : TABLEAU DES FONCTIONS AUX NOEUDS DE REV
+! OUT : SAUREV : TABLEAU DES VALEURS A SAUVEGARDER POUR LES REV
+! OUT : SAREVI : TABLEAU DES VALEURS A SAUVEGARDER POUR LES REV
 !
 ! IN  : TEMPS  : INSTANT DE CALCUL DES DEPL_IMPO
 ! IN  : NOFDEP : NOM DE LA FONCTION DEPL_IMPO
@@ -102,7 +103,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 !
 !     --- NON-LINEARITE DE TYPE RELA_EFFO_DEPL ---
     if (nbrede .ne. 0) call mdfred(nbmode, depgen, fexgen, nbrede, dplred,&
-                                   parred, fonred, saured, saredi)
+                                   fonred, saured, saredi)
 !
 !     --- NON-LINEARITE DE TYPE ROTOR FISSURE ---
     if (nbrfis .gt. 0) call mdrfis(nbmode, depgen, fexgen, nbchoc, nbrfis,&
@@ -111,7 +112,7 @@ subroutine mdfnli(nbmode, depgen, vitgen, accgen, fexgen,&
 !
 !     --- NON-LINEARITE DE TYPE RELA_EFFO_VITE ---
     if (nbrevi .ne. 0) call mdfrev(nbmode, vitgen, fexgen, nbrevi, dplrev,&
-                                   fonrev)
+                                   fonrev, saurev, sarevi)
 !
 !     COUPLAGE AVEC EDYOS
     conv = 1.d0

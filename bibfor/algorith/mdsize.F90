@@ -59,6 +59,6 @@ subroutine mdsize(nomres, nbsauv, nbmode, nbchoc, nbrede,&
     if (nbrevi .gt. 0) then
         nbstoc = nbrevi * nbsauv
         call jeecra(nomres//'           .REVC', 'LONUTI', nbstoc)
-        call jeecra(nomres//'           .REVD', 'LONUTI', nbstoc)
+        call jeecra(nomres//'           .REVV', 'LONUTI', nbstoc)
     endif
 end subroutine

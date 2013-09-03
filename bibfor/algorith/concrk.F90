@@ -31,7 +31,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
     integer :: parch, nbobjs, nbsaui, neqgen, nbchoc, nbrede, nbrevi, nbsauv
     integer :: loncum, ino, nbstoc, nbsto1
     integer :: jdeps, jvits, jaccs, jpass, jords, jinst, jfcho, jdcho, jvcho
-    integer :: jicho, jredc, jredd, jrevc, jrevd, ibid, jdepl, jvite, jacce
+    integer :: jicho, jredc, jredd, jrevc, jrevv, ibid, jdepl, jvite, jacce
     integer :: jdisc, jordr, jptem, jfc, jdl, jvc, jic, jvi, jvir, jedc, jedd
     integer :: jevc, jevd, decal1, decal2, decal3, decal4, decal5, decal6, iarg
     integer :: nm, jrefa
@@ -60,7 +60,7 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
                 intitu, nbrede, fonred, nbrevi, fonrev,&
                 jdeps, jvits, jaccs, jpass, jords,&
                 jinst, jfcho, jdcho, jvcho, jicho,&
-                jredc, jredd, jrevc, jrevd, method,&
+                jredc, jredd, jrevc, jrevv, method,&
                 ibid, k4bid, 'TRAN', 'GLOB')
 !
 !
@@ -150,13 +150,13 @@ subroutine concrk(nomres, parch, facobj, nbobjs, nom4rk,&
         if (nbrevi .ne. 0) then
             nbstoc = nbrevi * nbsauv
             call jeveuo(nom8rk//'           .REVC', 'L', jevc)
-            call jeveuo(nom8rk//'           .REVD', 'L', jevd)
+            call jeveuo(nom8rk//'           .REVV', 'L', jevd)
 !
             call jacopo(nbstoc, 'I', jevc, jrevc+decal6)
-            call dcopy(nbstoc, zr(jevd), 1, zr(jrevd+decal6), 1)
+            call dcopy(nbstoc, zr(jevd), 1, zr(jrevv+decal6), 1)
 !
             call jedetr(nom8rk//'           .REVC')
-            call jedetr(nom8rk//'           .REVD')
+            call jedetr(nom8rk//'           .REVV')
         endif
 !          LONGUEUR CUMULEE DES OBJETS COPIES (EN MULTIPLE DE NBSAUV)
         loncum = loncum + nbsauv

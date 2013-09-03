@@ -19,7 +19,7 @@ interface
     subroutine mddevo(nbpas, dt, nbmode, pulsat, pulsa2,&
                       masgen, amogen, basemo, tinit, iparch,&
                       nbsauv, nbchoc, logcho, dplmod, parcho,&
-                      noecho, nbrede, dplred, parred, fonred,&
+                      noecho, nbrede, dplred, fonred,&
                       nbrevi, dplrev, fonrev, depsto, vitsto,&
                       accsto, iorsto, temsto, fchost, dchost,&
                       vchost, ichost, iredst, dredst, coefm,&
@@ -44,7 +44,6 @@ interface
         character(len=8) :: noecho(*)
         integer :: nbrede
         real(kind=8) :: dplred(*)
-        real(kind=8) :: parred(*)
         character(len=8) :: fonred(*)
         integer :: nbrevi
         real(kind=8) :: dplrev(*)

@@ -4,7 +4,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   fonca, typbas, basemo, tinit, iparch,&
                   nbsauv, itemax, prec, xlambd, lflu,&
                   nbchoc, logcho, dplmod, parcho, noecho,&
-                  nbrede, dplred, parred, fonred, nbrevi,&
+                  nbrede, dplred, fonred, nbrevi,&
                   dplrev, fonrev, depsto, vitsto, accsto,&
                   iorsto, temsto, fchost, dchost, vchost,&
                   ichost, iredst, dredst, irevst, drevst,&
@@ -14,7 +14,7 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
                   nbpal, dtsto, vrotat, prdeff, nomres,&
                   nbexci, passto)
 !
-! aslint: disable=W1501,W1504
+! aslint: disable=W1504
     implicit none
 !
 #include "jeveux.h"
@@ -44,10 +44,11 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
+    integer :: nbchoc, neqgen
     integer :: iorsto(*), iredst(*), itemax, descmm, descmr, descma, iparch(*)
     integer :: logcho(nbchoc, *), ichost(*), ibid, irevst(*)
     real(kind=8) :: pulsat(*), pulsa2(*), masgen(*), riggen(*), amogen(*)
-    real(kind=8) :: gyogen(*), rgygen(*), parcho(*), parred(*), depsto(*)
+    real(kind=8) :: gyogen(*), rgygen(*), parcho(*), depsto(*)
     real(kind=8) :: vitsto(*), accsto(*), temsto(*), fchost(*), dchost(*)
     real(kind=8) :: vchost(*), dredst(*), drevst(*), prec
     real(kind=8) :: dplmod(nbchoc, neqgen, *), dplred(*), dplrev(*), passto(*)
@@ -115,7 +116,6 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 ! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
 ! IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 ! IN  : DPLRED : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE RED
-! IN  : PARRED : TABLEAU DES PARAMETRES DE RED
 ! IN  : FONRED : TABLEAU DES FONCTIONS AUX NOEUDS DE RED
 ! IN  : NBREVI : NOMBRE DE RELATION EFFORT VITESSE (REV)
 ! IN  : DPLREV : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE REV
@@ -140,13 +140,13 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
     integer :: palmax
 !-----------------------------------------------------------------------
-    integer :: i, iarchi, icho, if, im, iret, isto1, ier, ind
+    integer :: i, iarchi, icho, ifor, im, iret, isto1, ier, ind
     integer :: isto2, isto3, iter, jacce, jaccgi, jamogi, jchor
     integer :: jdepl, jfext, jfexti, jm, jmass, jphi2, jpuls
-    integer :: jredi, jredr, jtra1, jvint, jvite, n100, nbchoc
+    integer :: jredi, jredr, jtra1, jvint, jvite, n100
     integer :: nbexci, nbmod1, nbpas, nbrede, nbrevi, nbsauv, nbscho
-    integer :: ndt, neqgen, jamgy, jrigy, jrevr, jrevi, isto4
-    real(kind=8) :: deux, r8bid1, r8bid2, r8bid3, r8bid4, r8bid5, tarchi
+    integer :: ndt, jamgy, jrigy, jrevr, jrevi, isto4
+    real(kind=8) :: deux, r8bid1, tarchi, r8b(1)
     real(kind=8) :: temps, tinit, xlambd, xnorm, xref, xx, zero
 !
 !-----------------------------------------------------------------------
@@ -334,16 +334,16 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !         CAS DES FORCES DE LAME FLUIDE
 !
-        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                    zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
-                    logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, parred, fonred, zr(jredr),&
-                    zi(jredi), nbrevi, dplrev, fonrev, tinit,&
-                    nofdep, nofvit, nofacc, nbexci, psidel,&
-                    monmot, nbrfis, fk, dfk, angini,&
-                    foncp, 1, 0, dt, dtsto,&
-                    vrotat, typal, finpal, cnpal, prdeff,&
-                    conv, fsauv)
+        call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
+                    zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc   ,&
+                    logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
+                    nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
+                    nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
+                    tinit    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
+                    monmot   , nbrfis   , fk       , dfk       , angini   ,&
+                    foncp    , 1        , 0        , dt        , dtsto    ,&
+                    vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
+                    conv     , fsauv)
         if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
             call u2mess('F', 'EDYOS_46')
         else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -379,16 +379,17 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !       CAS CLASSIQUE
 !
         if (nbpal .ne. 0) nbchoc = 0
-        call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr(jfext),&
-                    masgen, r8bid1, pulsa2, zr(jamgy), nbchoc,&
-                    logcho, dplmod, parcho, noecho, zr(jchor),&
-                    nbrede, dplred, parred, fonred, zr(jredr),&
-                    zi( jredi), nbrevi, dplrev, fonrev, tinit,&
-                    nofdep, nofvit, nofacc, nbexci, psidel,&
-                    monmot, nbrfis, fk, dfk, angini,&
-                    foncp, 1, nbpal, dt, dtsto,&
-                    vrotat, typal, finpal, cnpal, prdeff,&
-                    conv, fsauv)
+        call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
+                    masgen   , r8b      , pulsa2   , zr(jamgy) , nbchoc,&
+                    logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
+                    nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
+                    nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
+                    tinit    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
+                    monmot   , nbrfis   , fk       , dfk       , angini   ,&
+                    foncp    , 1        , nbpal    , dt        , dtsto    ,&
+                    vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
+                    conv     , fsauv)
+
         if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
             call u2mess('F', 'EDYOS_46')
         else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -470,8 +471,8 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !        --- FORCES EXTERIEURES ---
 !
-        do 20 if = 0, neqgen-1
-            zr(jfext+if) = zero
+        do 20 ifor = 0, neqgen-1
+            zr(jfext+ifor) = zero
 20      continue
         if (nbexci .ne. 0) then
             call mdfext(temps, r8bid1, neqgen, nbexci, idescf,&
@@ -498,16 +499,17 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !         --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-                call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr( jfexti),&
+                call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfexti),&
                             zr(jmass), zr(jphi2), zr(jpuls), zr(jamogi), nbchoc,&
-                            logcho, dplmod, parcho, noecho, zr(jchor),&
-                            nbrede, dplred, parred, fonred, zr(jredr),&
-                            zi(jredi), nbrevi, dplrev, fonrev, temps,&
-                            nofdep, nofvit, nofacc, nbexci, psidel,&
-                            monmot, nbrfis, fk, dfk, angini,&
-                            foncp, (i+1), nbpal, dt, dtsto,&
-                            vrotat, typal, finpal, cnpal, prdeff,&
-                            conv, fsauv)
+                            logcho   , dplmod   , parcho   , noecho   , zr(jchor),&
+                            nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
+                            nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
+                            temps    , nofdep   , nofvit   , nofacc   , nbexci , psidel,&
+                            monmot   , nbrfis   , fk       , dfk      , angini ,&
+                            foncp    , (i+1)    , nbpal    , dt       , dtsto  ,&
+                            vrotat   , typal    , finpal   , cnpal    , prdeff ,&
+                            conv     , fsauv)
+
                 if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
                     call u2mess('F', 'EDYOS_46')
                 else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then
@@ -545,16 +547,17 @@ subroutine mdeul1(nbpas, dt, neqgen, pulsat, pulsa2,&
 !
 !        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
 !
-            call mdfnli(neqgen, zr(jdepl), zr(jvite), zr(jacce), zr( jfext),&
-                        r8bid2, r8bid3, r8bid4, r8bid5, nbchoc,&
-                        logcho, dplmod, parcho, noecho, zr(jchor),&
-                        nbrede, dplred, parred, fonred, zr(jredr),&
-                        zi(jredi), nbrevi, dplrev, fonrev, temps,&
-                        nofdep, nofvit, nofacc, nbexci, psidel,&
-                        monmot, nbrfis, fk, dfk, angini,&
-                        foncp, (i+1), nbpal, dt, dtsto,&
-                        vrotat, typal, finpal, cnpal, prdeff,&
-                        conv, fsauv)
+            call mdfnli(neqgen   , zr(jdepl), zr(jvite), zr(jacce) , zr(jfext),&
+                        r8b      , r8b      , r8b      , r8b       , nbchoc,&
+                        logcho   , dplmod   , parcho   , noecho    , zr(jchor),&
+                        nbrede   , dplred   , fonred   , zr(jredr), zi(jredi),&
+                        nbrevi   , dplrev   , fonrev   , zr(jrevr), zi(jrevi),&  
+                        temps    , nofdep   , nofvit   , nofacc    , nbexci   , psidel,&
+                        monmot   , nbrfis   , fk       , dfk       , angini   ,&
+                        foncp    , (i+1)    , nbpal    , dt        , dtsto    ,&
+                        vrotat   , typal    , finpal   , cnpal     , prdeff   ,&
+                        conv     , fsauv)
+
             if ((conv.le.0.d0) .and. (nbconv.gt.nbmxcv)) then
                 call u2mess('F', 'EDYOS_46')
             else if ((conv.le.0.d0) .and. (nbconv.le.nbmxcv)) then

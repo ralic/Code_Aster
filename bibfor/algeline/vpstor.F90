@@ -2,7 +2,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                   vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                   nbpark, nopara, mod45, resufi, resufr,&
                   resufk, iprec)
-! aslint: disable=W1306,W1304
+! aslint: disable=W1304
     implicit   none
 #include "jeveux.h"
 !
@@ -70,7 +70,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     character(len=16) :: typcon, nomcmd, nosy, typmod
     character(len=19) :: chamno, sd2
     character(len=24) :: nume, nopast(nbpast)
-    character(len=24) :: valk, typeba, raide, raide2
+    character(len=24) :: valk, typeba, raide, raide2, k24b
     logical :: lrefd, lbasm, lstock
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
@@ -117,7 +117,8 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         call getvid(' ', 'RAIDE'        , 0, iarg, 1, raide, ier)
         call dismoi('F', 'NOM_NUME_DDL' , raide, 'MATR_ASSE', iarg, nume , iret)
     else
-        call dismoi('C', 'REF_RIGI_PREM', modes, 'RESU_DYNA', iarg, raide, iret)
+        call dismoi('C', 'REF_RIGI_PREM', modes, 'RESU_DYNA', iarg, k24b, iret)
+        raide = k24b(1:8)
         call exisd('MATR_ASSE', raide, iret)
         if (iret .ne. 0) then
             call dismoi('F', 'NOM_NUME_DDL' , raide, 'MATR_ASSE', iarg, nume, iret)
@@ -161,14 +162,11 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !     DETERMINER LE NOM DU MODELE, DU MATERIAU ET DES
 !     CARACTERISTIQUES ELEMENTAIRES
     if (lstock) then
-        if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon .eq. 'MODE_ACOU' .or. typcon .eq.&
-            'MODE_FLAMB' .or. typcon .eq. 'MODE_STAB') then
-            call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', iarg,&
-                        modele, iret)
-            call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', iarg,&
-                        chmat, iret)
-            call dismoi('F', 'CARA_ELEM', raide, 'MATR_ASSE', iarg,&
-                        carael, iret)
+        if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or. &
+            typcon(1:10).eq.'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
+            call dismoi('F', 'NOM_MODELE', raide, 'MATR_ASSE', iarg, modele, iret)
+            call dismoi('F', 'CHAM_MATER', raide, 'MATR_ASSE', iarg, chmat , iret)
+            call dismoi('F', 'CARA_ELEM' , raide, 'MATR_ASSE', iarg, carael, iret)
         else if (typcon(1:9).eq.'MODE_GENE') then
             call jeveuo(raide(1:19)//'.LIME', 'L', jmodg)
             if (zk24(jmodg)(1:8) .eq. '        ') then

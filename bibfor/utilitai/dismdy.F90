@@ -43,11 +43,11 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !
     logical  :: oktref
     integer  :: corent(6), ibid, jref, intyre, nbrefs, inddeb, indfin, senpar, numocc
-    integer  :: indcha, ir, jind, index, l1, l2, l3, nbcham, jordr
+    integer  :: indcha, ir, jind, index, l1, l2, l3, nbcham
     character(len=4)  :: accref(6), typref, indref
     character(len=8)  :: resdyn, numcha, intf, k8bid
     character(len=24) :: numddl, cortre(6), questl, typcon, nomcha, nomgd
-    character(len=32) :: jexnum, repk, typres
+    character(len=32) :: jexnum, repk
 !
 !     --- TYPE DE REFERENCES QUE NOUS POUVONS RECUPERER [REF_XXXX_****]
     data  accref /  'RIGI'    ,   'MASS'    ,   'AMOR'    ,    'INTD'    ,    'INTS'    ,  'MESU' /

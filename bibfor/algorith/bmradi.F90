@@ -1,6 +1,5 @@
 subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
                   ivddl, nbdif)
-! aslint: disable=W1306
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

@@ -42,7 +42,7 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte,&
 !  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
 !
 !
-! aslint: disable=W1504,W1306
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 #include "asterfort/dlarch.h"

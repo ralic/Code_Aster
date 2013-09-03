@@ -22,7 +22,7 @@ interface
                       rgygen, lamor, amogen, descma, gyogen,&
                       foncv, fonca, typbas, basemo, lflu,&
                       nbchoc, intitu, logcho, dplmod, parcho,&
-                      noecho, nbrede, dplred, parred, fonred,&
+                      noecho, nbrede, dplred, fonred,&
                       nbrevi, dplrev, fonrev, coefm, liad,&
                       inumor, idescf, nofdep, nofvit, nofacc,&
                       nomfon, psidel, monmot, nbrfis, fk,&
@@ -62,7 +62,6 @@ interface
         character(len=8) :: noecho(nbchoc, *)
         integer :: nbrede
         real(kind=8) :: dplred(*)
-        real(kind=8) :: parred(*)
         character(len=8) :: fonred(*)
         integer :: nbrevi
         real(kind=8) :: dplrev(*)

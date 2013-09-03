@@ -44,9 +44,9 @@ subroutine clas99(nomres)
     integer :: vali
 !
 !
-    character(len=24) :: valk, concep(3)
-    character(len=8) :: nomres, intf, kbid, resul1
-    character(len=19) :: numddl, raid, mass, raidlt, amor
+    character(len=24) :: valk
+    character(len=8) :: nomres, intf, kbid
+    character(len=19) :: numddl, raid, mass, raidlt
     complex(kind=8) :: cbid
     integer :: iarg
 !

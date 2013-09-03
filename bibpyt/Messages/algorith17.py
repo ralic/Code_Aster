@@ -43,12 +43,6 @@ cata_msg={
   Le calcul de la racine numéro %(i1)d par la méthode de la matrice compagnon a échoué.
 """),
 
-7 : _(u"""
-  Il n'y a qu'un seul MODE_MECA en entrée de DEFI_BASE_MODALE. La numérotation
-  de référence prise est celle associée a celui-ci. Le mot-clé NUME_REF
-  n'est pas pris en compte
-"""),
-
 8 : _(u"""
   Il manque le nume_ddl dans le concept %(k1)s.
   Propositions :

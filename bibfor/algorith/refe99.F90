@@ -53,9 +53,6 @@ subroutine refe99(nomres)
 !
 !
 !
-    character(len=6) :: nompro
-    parameter (nompro='REFE99')
-!
     integer :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
     integer :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
     integer :: nbtot, nbold, nbmod1, nbmod2, nbmout, nbmodo

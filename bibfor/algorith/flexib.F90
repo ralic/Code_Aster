@@ -1,6 +1,5 @@
 subroutine flexib(basmod, nbmod, flex, nl, nc,&
                   numl, numc)
-! aslint: disable=W1306
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG

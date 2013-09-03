@@ -22,7 +22,7 @@ interface
                       fonca, typbas, basemo, tinit, iparch,&
                       nbsauv, itemax, prec, xlambd, lflu,&
                       nbchoc, logcho, dplmod, parcho, noecho,&
-                      nbrede, dplred, parred, fonred, nbrevi,&
+                      nbrede, dplred, fonred, nbrevi,&
                       dplrev, fonrev, depsto, vitsto, accsto,&
                       iorsto, temsto, fchost, dchost, vchost,&
                       ichost, iredst, dredst, irevst, drevst,&
@@ -63,7 +63,6 @@ interface
         character(len=8) :: noecho(nbchoc, *)
         integer :: nbrede
         real(kind=8) :: dplred(*)
-        real(kind=8) :: parred(*)
         character(len=8) :: fonred(*)
         integer :: nbrevi
         real(kind=8) :: dplrev(*)

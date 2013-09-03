@@ -1,7 +1,6 @@
 subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                   noma, nomgrp, iaxe, kec, geom,&
                   vicoq, torco, tcoef, ifreba)
-! aslint: disable=W1306
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================

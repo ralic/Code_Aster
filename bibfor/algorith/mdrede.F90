@@ -1,5 +1,5 @@
 subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
-                  dplred, parred, fonred, ier)
+                  dplred, fonred, ier)
     implicit none
 #include "jeveux.h"
 !
@@ -21,7 +21,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 #include "asterfort/u2mess.h"
 #include "asterfort/wkvect.h"
     integer :: nbrede, nbmode, neq, ier
-    real(kind=8) :: dplred(nbrede, nbmode, *), parred(nbrede, *), bmodal(neq, *)
+    real(kind=8) :: dplred(nbrede, nbmode, *), bmodal(neq, *)
     character(len=8) :: fonred(nbrede, *)
     character(len=14) :: numddl
 ! ----------------------------------------------------------------------
@@ -49,15 +49,10 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 ! IN  : NBMODE       : NOMBRE DE MODES DE LA BASE DE PROJECTION
 ! IN  : BMODAL       : VECTEURS MODAUX
 ! IN  : NEQ          : NOMBRE D'EQUATIONS
-! IN  : FONRED( ,4)  : TYPE DU MOT-CLE FACTEUR (TRANSIS OU DEPL)
 ! OUT : DPLRED       : TABLEAU DES DEPLACEMENTS MODAUX AUX NOEUDS DE RED
-! OUT : PARRED       : TABLEAU DES PARAMETRES DE RED
 ! OUT : FONRED( ,1-3): TABLEAU DES FONCTIONS AUX NOEUDS DE RED
 ! OUT : IER          : CODE RETOUR
 ! ----------------------------------------------------------------------
-!
-!
-    real(kind=8) :: valr
 !
 !
 !
@@ -72,8 +67,8 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, iret, j, jdpl, lfon, llrefe, lval
-    integer :: nbpt, nc, nf, nn, ns
+    integer :: ibid, iret, j, jdpl, llrefe
+    integer :: nc, nf, nn, ns
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
@@ -88,25 +83,14 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
     do 10 i = 1, nbrede
 !
-        if (fonred(i,4) .eq. 'DEPL    ') then
-            call getvtx('RELA_EFFO_DEPL', 'NOEUD', i, iarg, 1,&
-                        noeu, nn)
-            call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', i, iarg, 1,&
-                        comp, nc)
-            call getvid('RELA_EFFO_DEPL', 'RELATION', i, iarg, 1,&
-                        fonc, nf)
-            call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', i, iarg, 1,&
-                        sst, ns)
-        else if (fonred(i,4) .eq. 'TRANSIS ') then
-            call getvtx('RELA_TRANSIS', 'NOEUD', i, iarg, 1,&
-                        noeu, nn)
-            call getvtx('RELA_TRANSIS', 'NOM_CMP', i, iarg, 1,&
-                        comp, nc)
-            call getvid('RELA_TRANSIS', 'RELATION', i, iarg, 1,&
-                        fonc, nf)
-            call getvtx('RELA_TRANSIS', 'SOUS_STRUC', i, iarg, 1,&
-                        sst, ns)
-        endif
+        call getvtx('RELA_EFFO_DEPL', 'NOEUD', i, iarg, 1,&
+                    noeu, nn)
+        call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', i, iarg, 1,&
+                    comp, nc)
+        call getvid('RELA_EFFO_DEPL', 'RELATION', i, iarg, 1,&
+                    fonc, nf)
+        call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', i, iarg, 1,&
+                    sst, ns)
 !
         if (comp(1:2) .eq. 'DX') icomp = 1
         if (comp(1:2) .eq. 'DY') icomp = 2
@@ -149,35 +133,6 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
                         0, 0, 0.d0)
             ier = ier + 1
             goto 10
-        endif
-!
-        parred(i,1) = 0.d0
-        parred(i,2) = 0.d0
-        call jeexin(fonc//'           .VALE', iret)
-        if (iret .eq. 0) then
-            if (fonred(i,4) .eq. 'TRANSIS ') then
-                valk = fonc
-                call u2mesg('E', 'ALGORITH15_19', 1, valk, 0,&
-                            0, 0, 0.d0)
-                ier = ier + 1
-                goto 10
-            endif
-        else
-            call jeveuo(fonc//'           .VALE', 'L', lval)
-            parred(i,1) = zr(lval)
-            if (fonred(i,4) .eq. 'TRANSIS ') then
-                call jelira(fonc//'           .VALE', 'LONUTI', nbpt)
-                lfon = lval + ( nbpt / 2 )
-                if (abs(zr(lval)) .lt. 1.d-08) then
-                    valk = fonc
-                    valr = zr(lval)
-                    call u2mesg('E', 'ALGORITH15_20', 1, valk, 0,&
-                                0, 1, valr)
-                    ier = ier + 1
-                    goto 10
-                endif
-                parred(i,2) = zr(lfon) / zr(lval)
-            endif
         endif
 !
         do 11 j = 1, nbmode

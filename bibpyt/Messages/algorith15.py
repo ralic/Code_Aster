@@ -104,18 +104,6 @@ cata_msg = {
     et sa composante :  %(k1)s
 """),
 
-19 : _(u"""
-  il manque le seuil  pour la fonction interprétée  %(k1)s
-"""),
-
-20 : _(u"""
- l'abscisse linéaire est nulle pour la courbe :  %(k1)s
- abscisse :  %(r1)f
-"""),
-
-
-
-
 
 
 
