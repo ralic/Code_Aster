@@ -47,7 +47,7 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
     real(kind=8) :: bfb(3, 9), bfa(3, 3), bfn(3, 9), bm(3, 6), bf(3, 9)
     real(kind=8) :: bca(2, 3), bcn(2, 9), bc(2, 9)
     real(kind=8) :: hft2(2, 6), an(3, 9)
-    real(kind=8) :: qsi, eta, t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: qsi, eta, t2ev(4), t2ve(4), t1ve(9)
     logical :: coupmf
 !     ------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ subroutine dstb(carat3, pgl, igau, jacgau, bmat)
 !     ----------------------------------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+                multic, coupmf, t2ev, t2ve, t1ve)
 !
 ! --- CALCUL DE LA MATRICE NOTEE (HF.T2) PAR BATOZ RELIANT LES
 ! --- EFFORTS TRANCHANTS (T) AU VECTEUR DES DERIVEES DES COURBURES

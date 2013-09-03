@@ -1,6 +1,6 @@
 subroutine dxmate(fami, df, dm, dmf, dc,&
                   dci, dmc, dfc, nno, pgl,&
-                  multic, coupmf, t2iu, t2ui, t1ve)
+                  multic, coupmf, t2ev, t2ve, t1ve)
     implicit   none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -24,7 +24,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
     integer :: nno, multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
-    real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: pgl(3, 3), t2ev(4), t2ve(4), t1ve(9)
     logical :: coupmf
     character(len=4) :: fami
 ! ======================================================================
@@ -109,7 +109,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 !
     if (phenom .eq. 'ELAS_COQMU') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                     c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -135,7 +135,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         nomres(2) = 'NU'
     else if (phenom.eq.'ELAS_COQUE') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                     c, s)
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
 !       (3,3) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -417,15 +417,15 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
                         xab1, df)
             call utbtab('ZERO', 3, 3, dmf, t1ve,&
                         xab1, dmf)
-            call utbtab('ZERO', 2, 2, dc, t2ui,&
+            call utbtab('ZERO', 2, 2, dc, t2ve,&
                         xab2, dc)
-            call utbtab('ZERO', 2, 2, dci, t2ui,&
+            call utbtab('ZERO', 2, 2, dci, t2ve,&
                         xab2, dci)
             if (elasco .eq. 2) then
                 call utdtab('ZERO', 3, 2, 2, 3,&
-                            dmc, t2ui, t1ve, xab3, dmc)
+                            dmc, t2ve, t1ve, xab3, dmc)
                 call utdtab('ZERO', 3, 2, 2, 3,&
-                            dfc, t2ui, t1ve, xab3, dfc)
+                            dfc, t2ve, t1ve, xab3, dfc)
             endif
         endif
 !
@@ -489,9 +489,9 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
                     xab1, df)
         call utbtab('ZERO', 3, 3, dmf, t1ve,&
                     xab1, dmf)
-        call utbtab('ZERO', 2, 2, dc, t2ui,&
+        call utbtab('ZERO', 2, 2, dc, t2ve,&
                     xab2, dc)
-        call utbtab('ZERO', 2, 2, dci, t2ui,&
+        call utbtab('ZERO', 2, 2, dci, t2ve,&
                     xab2, dci)
 !
         multic = 1

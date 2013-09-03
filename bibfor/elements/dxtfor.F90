@@ -35,7 +35,7 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
 !
     integer :: i, nno, jcara
     real(kind=8) :: aire, alpha, beta
-    real(kind=8) :: fx, fy, carat3(21), t2iu(4), t2ui(4), c, s
+    real(kind=8) :: fx, fy, carat3(21), t2ev(4), t2ve(4), c, s
 !     ------------------------------------------------------------------
     nno = 3
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
@@ -44,19 +44,19 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                 c, s)
 !
     if (.not.global) then
         do 10 i = 1, nno
             fx = for(1,i)
             fy = for(2,i)
-            for(1,i) = t2iu(1)*fx + t2iu(3)*fy
-            for(2,i) = t2iu(2)*fx + t2iu(4)*fy
+            for(1,i) = t2ev(1)*fx + t2ev(3)*fy
+            for(2,i) = t2ev(2)*fx + t2ev(4)*fy
             fx = for(4,i)
             fy = for(5,i)
-            for(4,i) = t2iu(1)*fx + t2iu(3)*fy
-            for(5,i) = t2iu(2)*fx + t2iu(4)*fy
+            for(4,i) = t2ev(1)*fx + t2ev(3)*fy
+            for(5,i) = t2ev(2)*fx + t2ev(4)*fy
 10      continue
     endif
 !

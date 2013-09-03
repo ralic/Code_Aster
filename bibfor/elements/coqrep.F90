@@ -1,10 +1,10 @@
-subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
+subroutine coqrep(pgl, alpha, beta, t2ev, t2ve,&
                   c, s)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/u2mess.h"
-    real(kind=8) :: pgl(3, 3), t2iu(*), t2ui(*), alpha, beta, c, s
+    real(kind=8) :: pgl(3, 3), t2ev(*), t2ve(*), alpha, beta, c, s
 !     ---------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,8 +25,8 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     ------------------------------------------------------------------
 !
-!         CALCUL DE LA MATRICE DE PASSAGE DU REPERE INTRINSEQUE (ELEMENT) A CELUI
-!         DE L'UTILISATEUR (VARIETE) (LE REPERE DE LA VARIETE EST OBTENU PAR LA MATRICE
+!         CALCUL DE LA MATRICE DE PASSAGE DU REPERE DE L'ELEMENT A
+!         LA VARIETE (LE REPERE DE LA VARIETE EST OBTENU PAR LA MATRICE
 !         DE PASSAGE GLOBAL -> LOCAL) AINSI QUE SON INVERSE
 !
 !         POUR TOUTES LES OPTIONS DE POST TRAITEMENT COQUE
@@ -56,14 +56,14 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
     c = pjdx*pgl(1,1) + pjdy*pgl(1,2) + pjdz*pgl(1,3)
     s = pjdx*pgl(2,1) + pjdy*pgl(2,2) + pjdz*pgl(2,3)
 !
-    t2iu(1) = c
-    t2iu(2) = s
-    t2iu(3) = - s
-    t2iu(4) = c
+    t2ev(1) = c
+    t2ev(2) = s
+    t2ev(3) = - s
+    t2ev(4) = c
 !
-    t2ui(1) = c
-    t2ui(2) = - s
-    t2ui(3) = s
-    t2ui(4) = c
+    t2ve(1) = c
+    t2ve(2) = - s
+    t2ve(3) = s
+    t2ve(4) = c
 !
 end subroutine

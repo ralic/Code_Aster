@@ -1,5 +1,6 @@
-subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, vip, dsidep, crit,&
-                            iret)
+subroutine lgdmvm(imate, compor, epsm, deps, vim,&
+                  option, sigm, sig, vip, dsidep,&
+                  crit, iret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +30,11 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 #include "asterfort/r8inir.h"
 #include "asterfort/rrlds.h"
 #include "asterfort/trlds.h"
-    integer :: imate, iret
+    character(len=16) :: option, compor
     real(kind=8) :: epsm(6), deps(6), vim(*), ep
     real(kind=8) :: r8bid(6), crit(*)
     real(kind=8) :: sigm(*), sig(*), vip(*), dsidep(6, *)
-    character(len=16) :: option, compor
+    integer :: imate, iret
 ! ----------------------------------------------------------------------
 !
 !      LOI GLOBALE COUPLEE POUR LES PLAQUES/COQUES DKTG
@@ -50,11 +51,10 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 ! ----------------------------------------------------------------------
 !
 !
-    logical :: rigi, resi, lbid
-    integer :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu
+    integer :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
     real(kind=8) :: crbid, inbid, sigpp(6), rac2, emda(6)
     real(kind=8) :: empl(6), depzz, eps2d(6), deps2d(6), d22, d21eps
     real(kind=8) :: tan3d(6, 6)
@@ -62,6 +62,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
     real(kind=8) :: ddemp(6), tanloc(6, 6), tanpom(6, 6), precr
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil, alpha
     real(kind=8) :: alfmc
+    logical :: rigi, resi, lbid
     character(len=8) :: typmod(2)
 !
     rac2 = sqrt(2.d0)
@@ -76,9 +77,9 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !-----NOMBRE DE VARIABLES INTERNES DU MODELE, SANS CELLE POUR
 !-----LA CONTRAINTE PLANE
     if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
-        nvv = 20
+        nvv = 17
     else if (compor(1:10) .eq. 'VMIS_ISOT_') then
-        nvv = 15
+        nvv = 12
     endif
 !
 !-----TOLERANCE POUR LA CONTRAINTE HORS PLAN
@@ -108,56 +109,59 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
                r8bid(5), r8bid(6))
 !
 !-----OBTENTION DU MODULE ELASTIQUE INITIAL
-    call r8inir(6, 0.d0, demp, 1)
-    call r8inir(7, 0.d0, vip, 1)
+    do 100, i = 1,6
+    demp(i) = 0.0d0
+    100 end do
+    do 110, i = 1,4
+    vip(i) = 0.0d0
+    110 end do
 !
     call lcgldm(demp, demp, vip, 'RIGI_MECA_TANG  ', demp,&
                 vip, cel, lambda, deuxmu, lamf,&
                 deumuf, gt, gc, gf, seuil,&
                 alpha, alfmc, crit, iret)
 !
-    do j = 1, 6
-        do i = 1, 6
-            celdam(i,j) = cel(i,j)
-        end do
-    end do
+    do 115, j = 1,6
+    do 115, i = 1,6
+    celdam(i,j) = cel(i,j)
+115  continue
 !
 !-----TRIANGULATION DU MODULE ELASTIQUE
     call trlds(celdam, 6, 6, ierr)
     ASSERT(ierr.eq.0)
 !
+!
 !-----INVERSION DU MODULE ELASTIQUE
     call r8inir(36, 0.d0, celinv, 1)
-    do j = 1, 6
-        celinv(j,j) = 1.0d0
-    end do
+    do 130, j = 1,6
+    celinv(j,j) = 1.0d0
+    130 end do
 !
     call rrlds(celdam, 6, 6, celinv, 6)
 !
 !-----CALCUL DE LA DEFORMATION ELASTIQUE A L INSTANT -
     call r8inir(6, 0.d0, emel, 1)
-    do j = 1, 6
-        do i = 1, 6
+    do 150 j = 1, 6
+        do 150 i = 1, 6
             emel(i) = emel(i) + celinv(i,j)*sigm(j)
-        end do
-    end do
+150      continue
 !
 !-----INITIALISATION DES VARIABLES DEPS^(-P), EPS^(-P) ET EMDA
     call r8inir(6, 0.d0, demp, 1)
-    do i = 1, 6
-        ddemp(i) = deps(i)
-        emmp(i) = vim(nvv-6 + i)
-        emda(i) = emmp(i) - emel(i)
-        empl(i) = epsm(i) - emda(i)
-    end do
+    do 200, i = 1,6
+    ddemp(i) = deps(i)
+    emmp(i) = vim(nvv-6 + i)
+    emda(i) = emmp(i) - emel(i)
+    empl(i) = epsm(i) - emda(i)
+    200 end do
 !
 !-------DEBUT BOUCLE INTERNE
-    do isg = 1, nsgmax
+    do 2000 isg = 1, nsgmax
 !
 !       CORRECTION DE LA VARIABLE PRINCIPALE
-        do i = 1, 6
-            demp(i) = demp(i) + ddemp(i)
-        end do
+        do 205, i = 1,6
+        demp(i) = demp(i) + ddemp(i)
+205      continue
 !
 !-------CALCUL DE L ENDOMMAGEMENT
         call r8inir(6, 0.d0, sigpd, 1)
@@ -169,84 +173,85 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !-------CALCUL DE L INCREMENT DE LA DEFORMATION ELASTIQUE
 !        PUIS DEPS - DEPS^D
         call r8inir(6, 0.d0, deda, 1)
-        do j = 1, 6
-            do i = 1, 6
+        do 210 j = 1, 6
+            do 210 i = 1, 6
                 deda(i) = deda(i) + celinv(i,j)*sigpd(j)
-            end do
-        end do
-        do i = 1, 6
+210          continue
+        do 220 i = 1, 6
             deda(i) = deps(i) - (demp(i) - (deda(i)- emel(i)))
-        end do
+220      continue
 !
 !-------CALCUL DE LA PLASTICITE
 !
 !-------BOUCLE POUR SATISFAIRE LA CONDITION DE CONTRAINTES PLANES
 !
-        depzz=vip(nvv+1) -vip(nvv+2)*deps(1)-vip(nvv+3)*deps(2)-vip(nvv+4)*deps(4)/rac2
+        depzz=vip(nvv+1) -vip(nvv+2)*deps(1)-vip(nvv+3)*deps(2)&
+        -vip(nvv+4)*deps(4)/rac2
 !
-        do icp = 1, ncpmax
-            eps2d(1) = empl(1)
-            eps2d(2) = empl(2)
-            eps2d(3) = 0.0d0
-            eps2d(4) = empl(3)/rac2
-            eps2d(5) = 0.d0
-            eps2d(6) = 0.d0
-            deps2d(1) = deda(1)
-            deps2d(2) = deda(2)
-            deps2d(3) = depzz
-            deps2d(4) = deda(3)/rac2
-            deps2d(5) = 0.d0
-            deps2d(6) = 0.d0
+        do 1000, icp = 1,ncpmax
 !
-            sig2dm(1) = sigm(1)/ep
-            sig2dm(2) = sigm(2)/ep
-            sig2dm(3) = 0.0d0
-            sig2dm(4) = sigm(3)/ep*rac2
-            sig2dm(5) = 0.0d0
-            sig2dm(6) = 0.0d0
+        eps2d(1) = empl(1)
+        eps2d(2) = empl(2)
+        eps2d(3) = 0.0d0
+        eps2d(4) = empl(3)/rac2
+        eps2d(5) = 0.d0
+        eps2d(6) = 0.d0
+        deps2d(1) = deda(1)
+        deps2d(2) = deda(2)
+        deps2d(3) = depzz
+        deps2d(4) = deda(3)/rac2
+        deps2d(5) = 0.d0
+        deps2d(6) = 0.d0
+!
+        sig2dm(1) = sigm(1)/ep
+        sig2dm(2) = sigm(2)/ep
+        sig2dm(3) = 0.0d0
+        sig2dm(4) = sigm(3)/ep*rac2
+        sig2dm(5) = 0.0d0
+        sig2dm(6) = 0.0d0
 !
 !---------VMIS_CINE_LINE--------------------
-            call r8inir(6, 0.d0, sig2dp, 1)
-            if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
-                call nmcine('RIGI', 1, 1, 3, imate,&
-                            compor, crbid, inbid, inbid, eps2d,&
-                            deps2d, sig2dm, vim(8), 'FULL_MECA       ', sig2dp,&
-                            vip(8), tan3d, iret)
+        call r8inir(6, 0.d0, sig2dp, 1)
+        if (compor(1:14) .eq. 'VMIS_CINE_LINE') then
+            call nmcine('RIGI', 1, 1, 3, imate,&
+                        compor, crbid, inbid, inbid, eps2d,&
+                        deps2d, sig2dm, vim(5), 'FULL_MECA       ', sig2dp,&
+                        vip(5), tan3d, iret)
 !
 !---------VMIS_ISOT_LINE--------------------
-            else if (compor (1:14) .eq. 'VMIS_ISOT_LINE') then
+        else if (compor (1:14) .eq. 'VMIS_ISOT_LINE') then
 !     --    POUR POUVOIR UTILISER NMISOT
             typmod(1) = '3D  '
             typmod(2) = '        '
             call nmisot('RIGI', 1, 1, 3, typmod,&
                         imate, 'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm,&
-                        vim(8), 'FULL_MECA       ', sig2dp, vip(8), tan3d,&
+                        vim(5), 'FULL_MECA       ', sig2dp, vip(5), tan3d,&
                         r8bid(1), r8bid(2), iret)
         endif
 !
-            d22 = tan3d(3,3)
+        d22 = tan3d(3,3)
 !
-            if (prec .gt. 0d0) then
-                sigpeq=0.d0
-                do j = 1, 4
-                    sigpeq = sigpeq + sig2dp(j)**2
-                end do
-                sigpeq = sqrt(sigpeq)
-                if (sigpeq .lt. signul) then
-                    precr = critcp
-                else
-                    precr = critcp*sigpeq
-                endif
+        if (prec .gt. 0d0) then
+            sigpeq=0.d0
+            do 301 j = 1, 4
+                sigpeq = sigpeq + sig2dp(j)**2
+301          continue
+            sigpeq = sqrt(sigpeq)
+            if (sigpeq .lt. signul) then
+                precr = critcp
             else
-                precr = abs(prec)
+                precr = critcp*sigpeq
             endif
+        else
+            precr = abs(prec)
+        endif
 !
-            if ((icp.ge.ncpmax .or. abs(sig2dp(3)).lt.precr)) goto 100
+        if ((icp.ge.ncpmax .or. abs(sig2dp(3)).lt.precr)) goto 1001
 !
-            depzz = depzz - sig2dp(3)/d22
+        depzz = depzz - sig2dp(3)/d22
 !
-        end do
-100     continue
+1000      continue
+1001      continue
 !
         if (abs(sig2dp(3)) .gt. precr) then
             iret = 1
@@ -266,40 +271,37 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
         scm(3) = 0.d0
         scm(4) = -tan3d(4,3)*sig2dp(3)/d22*rac2
 !
-        do j = 1, 4
+        do 310 j = 1, 4
             sig2dp(j)=sig2dp(j)+scm(j)
-        end do
+310      continue
 !
-        do j = 1, 6
-            if (j .ne. 3) then
-                do i = 1, 6
-                    if (i .ne. 3) then
-                        tan3d(j,i) = tan3d(j,i) - 1.d0/tan3d(3,3)*tan3d(j,3)* tan3d(3,i)
-                    endif
-                end do
-            endif
-        end do
+        do 336 j = 1, 6
+            if (j .eq. 3) goto 336
+            do 337 i = 1, 6
+                if (i .eq. 3) goto 337
+                tan3d(j,i) = tan3d(j,i) - 1.d0/tan3d(3,3)*tan3d(j,3)* tan3d(3,i)
+337          continue
+336      continue
 !
 !-------COPIE DES CONTRAINTES ET
 !-------DE LA MATRICE TANGENTE POUR LE MODULE PLASTIQUE
 !
 !       PARTIE MEMBRANE (ELASTO-PLASTIQUE)
         call r8inir(36, 0.d0, tanepl, 1)
-        do j = 1, 2
-            do i = 1, 2
+        do 410 j = 1, 2
+            do 400 i = 1, 2
                 tanepl(i,j) = tan3d(i,j)*ep
-            end do
+400          continue
             tanepl(3,j) = tan3d(4,j)*ep/rac2
             tanepl(j,3) = tan3d(j,4)*ep/rac2
-        end do
+410      continue
         tanepl(3,3) = tan3d(4,4)*ep/2.0d0
 !
 !       PARTIE FLEXION (ELASTIQUE)
-        do j = 4, 6
-            do i = 4, 6
+        do 420 j = 4, 6
+            do 420 i = 4, 6
                 tanepl(i,j) = cel(i,j)
-            end do
-        end do
+420          continue
 !
 !       CONTRAINTES EN MEMBRANE (ELASTO-PLASTIQUE)
         sigpp(1) = sig2dp(1)*ep
@@ -308,23 +310,23 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !
 !       CONTRAINTES EN MEMBRANE (ELASTIQUE)
         call r8inir(3, 0.d0, sigpp(4), 1)
-        do i = 4, 6
-            do j = 4, 6
+        do 450 i = 4, 6
+            do 440 j = 4, 6
                 sigpp(j) = sigpp(j) + tanepl(j,i)*deda(i)
-            end do
+440          continue
             sigpp(i) = sigpp(i) + sigm(i)
-        end do
+450      continue
 !
 !
 !-------CALCUL DU RESIDU
         residu = 0.0d0
-        do i = 1, 6
+        do 500 i = 1, 6
             sigpp(i) = sigpp(i) - sigpd(i)
             residu = residu + sigpp(i)*ddemp(i)
             ddemp(i) = sigpp(i)
-        end do
+500      continue
 !
-        if (abs(residu) .lt. critcp) goto 200
+        if (abs(residu) .lt. critcp) goto 2001
 !
 !-------CONSTRUCTION DU MODULE TANGENT LOCAL
 !       ET ITERATION NEWTON
@@ -332,28 +334,23 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !-------Cp*Ce^(-1)*Cd
         call r8inir(36, 0.d0, tanloc, 1)
         call r8inir(36, 0.d0, tanpom, 1)
-        do i = 1, 6
-            do j = 1, 6
-                do k = 1, 6
+        do 560 i = 1, 6
+            do 560 j = 1, 6
+                do 560 k = 1, 6
                     tanloc(i,j) = tanloc(i,j) + celinv(k,i)*tandam(k, j)
-                end do
-            end do
-        end do
+560              continue
 !
-        do i = 1, 6
-            do j = 1, 6
-                do k = 1, 6
+        do 600 i = 1, 6
+            do 600 j = 1, 6
+                do 600 k = 1, 6
                     tanpom(i,j) = tanpom(i,j) + tanepl(i,k)*tanloc(k, j)
-                end do
-            end do
-        end do
+600              continue
 !
 !-------Cd + Cp - Cp*Ce^(-1)*Cd
-        do i = 1, 6
-            do j = 1, 6
+        do 650 i = 1, 6
+            do 650 j = 1, 6
                 tanloc(i,j) = tanepl(i,j) + tandam(i,j) - tanpom(i,j)
-            end do
-        end do
+650          continue
 !
 !-------TRIANGULATION DE (Cd + Cp - Cp*Ce^(-1)*Cd)
         call trlds(tanloc, 6, 6, ierr)
@@ -362,9 +359,9 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
 !-------RESOLUTION DU DDEMP
         call rrlds(tanloc, 6, 6, ddemp, 1)
 !
-    end do
+2000  end do
 !-----FIN DE BOUCLE INTERNE
-200 continue
+2001  continue
 !
 !-----TEST DE CV SIG = SIGPD = SIDPP
     if (abs(residu) .lt. critcp .and. iret .eq. 0) then
@@ -373,10 +370,10 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
         iret = 1
     endif
 !
-    do j = 1, 6
+    do 660 j = 1, 6
         sig(j) = sigpd(j)
         vip(nvv-6 + j) = emmp(j) + demp(j)
-    end do
+660  end do
 !
 !-----CALCUL DE LA MATRICE TANGENTE
     if (rigi) then
@@ -388,18 +385,17 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
         ASSERT(ierr.eq.0)
 !
         call r8inir(36, 0.d0, tanpom, 1)
-        do j = 1, 6
-            tanpom(j,j) = 1.0d0
-        end do
+        do 700, j = 1,6
+        tanpom(j,j) = 1.0d0
+700      continue
 !
         call rrlds(tanepl, 6, 6, tanpom, 6)
 !
 !       Cp^(-1) - Ce^(-1)
-        do j = 1, 6
-            do i = 1, 6
+        do 710 j = 1, 6
+            do 710 i = 1, 6
                 tanpom(i,j) = tanpom(i,j) - celinv(i,j)
-            end do
-        end do
+710          continue
 !
 !-------INVERSION DU MODULE D ENDOMMAGEMENT
 !
@@ -408,18 +404,17 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
         ASSERT(ierr.eq.0)
 !
         call r8inir(36, 0.d0, tanepl, 1)
-        do j = 1, 6
-            tanepl(j,j) = 1.0d0
-        end do
+        do 720, j = 1,6
+        tanepl(j,j) = 1.0d0
+720      continue
 !
         call rrlds(tandam, 6, 6, tanepl, 6)
 !
 !       Cd^(-1) + Cp^(-1) - Ce^(-1)
-        do j = 1, 6
-            do i = 1, 6
+        do 730 j = 1, 6
+            do 730 i = 1, 6
                 tanpom(i,j) = tanpom(i,j) + tanepl(i,j)
-            end do
-        end do
+730          continue
 !
 !-------INVERSION DU (Cd^(-1) + Cp^(-1) - Ce^(-1))
 !
@@ -428,9 +423,9 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
         ASSERT(ierr.eq.0)
 !
         call r8inir(36, 0.d0, dsidep, 1)
-        do j = 1, 6
-            dsidep(j,j) = 1.0d0
-        end do
+        do 740, j = 1,6
+        dsidep(j,j) = 1.0d0
+740      continue
 !
         call rrlds(tanpom, 6, 6, dsidep, 6)
 !

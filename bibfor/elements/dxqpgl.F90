@@ -48,9 +48,9 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
 !        J : PRODUIT VECTORIEL K I                  *****************
 !                                                  1        K        2
 !
-!     CALCUL DES MATRICE T1VE ET T2UI DE PASSAGE D'UNE MATRICE,
+!     CALCUL DES MATRICE T1VE ET T2VE DE PASSAGE D'UNE MATRICE,
 !     RESPECTIVEMENT (3,3) ET (2,2), DU REPERE DE LA VARIETE AU REPERE
-!     DE L'ELEMENT ET T2UI, INVERSE DE T2IU
+!     DE L'ELEMENT ET T2VE, INVERSE DE T2EV
 !
 !     VERIFICATION QUE L'ELEMENT EST REELLEMENT PLAN
 !

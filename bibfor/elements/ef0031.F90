@@ -38,7 +38,7 @@ subroutine ef0031(nomte)
     integer :: icompo, ichn, jgeom, jcara, iret, icontp, ibid
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), effgt(32), alpha, beta
-    real(kind=8) :: t2iu(4), t2ui(4), c, s
+    real(kind=8) :: t2ev(4), t2ve(4), c, s
 !
 !     ---> POUR DKT/DST EFFINT = 24
 !     ---> POUR DKQ/DSQ EFFINT = 32
@@ -73,10 +73,10 @@ subroutine ef0031(nomte)
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                 c, s)
 !
-    call dxefro(npg, t2iu, effint, effgt)
+    call dxefro(npg, t2ve, effint, effgt)
     call jevech('PEFFORR', 'E', ichn)
     call ppgan2(jgano, 1, ind, effgt, zr(ichn))
 !

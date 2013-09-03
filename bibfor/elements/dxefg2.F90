@@ -41,7 +41,7 @@ subroutine dxefg2(pgl, sigt)
     integer ::  somire
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
     real(kind=8) :: tmoypg, tsuppg, tinfpg
-    real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: t2ev(4), t2ve(4), t1ve(9)
     integer :: icodre(56)
     character(len=4) :: fami
     character(len=10) :: phenom
@@ -78,7 +78,7 @@ subroutine dxefg2(pgl, sigt)
 !     ----------------------------------------------------
 !
     call dxmat1('RIGI', epais, df, dm, dmf,&
-                pgl, indith, t2iu, t2ui, t1ve,&
+                pgl, indith, t2ev, t2ve, t1ve,&
                 npg)
     if (indith .eq. -1) goto 30
 !

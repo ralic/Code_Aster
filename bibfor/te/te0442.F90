@@ -49,8 +49,8 @@ subroutine te0442(option, nomte)
     integer :: jcara, ncmp, vali(2)
     parameter    (nptmax=9,ncpmax=8,nspmax=162)
     real(kind=8) :: pgl(3, 3), alpha, beta, c, s
-    real(kind=8) :: t2iu1(2, 2), t2ui1(2, 2)
-    real(kind=8) :: t2iu2(2, 2), t2ui2(2, 2)
+    real(kind=8) :: t2ev1(2, 2), t2ve1(2, 2)
+    real(kind=8) :: t2ev2(2, 2), t2ve2(2, 2)
     real(kind=8) :: conin(nptmax*ncpmax*nspmax)
     real(kind=8) :: rep
     character(len=4) :: fami
@@ -157,7 +157,7 @@ subroutine te0442(option, nomte)
 !
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu1, t2ui1,&
+    call coqrep(pgl, alpha, beta, t2ev1, t2ve1,&
                 c, s)
 !
     rep = zr(jang+2)
@@ -167,23 +167,23 @@ subroutine te0442(option, nomte)
 ! --- A L'ELEMENT AU REPERE INTRINSEQUE DE LA COQUE
 !     ---------------------------------------
         if (option .eq. 'REPE_TENS') then
-            call dxsiro(np*nbsp, t2ui1, zr(jin), conin)
+            call dxsiro(np*nbsp, t2ev1, zr(jin), conin)
         else if (option.eq.'REPE_GENE') then
-            call dxefro(np, t2ui1, zr(jin), conin)
+            call dxefro(np, t2ev1, zr(jin), conin)
         endif
 !
 ! --- CALCUL DES MATRICES DE PASSAGE DU CHGT DE REPERE
         alpha = zr(jang) * r8dgrd()
         beta = zr(jang+1) * r8dgrd()
-        call coqrep(pgl, alpha, beta, t2iu2, t2ui2,&
+        call coqrep(pgl, alpha, beta, t2ev2, t2ve2,&
                     c, s)
 !
 ! ---   PASSAGE DES QUANTITES DU REPERE INTRINSEQUE
 ! ---   A L'ELEMENT AU REPERE LOCAL 2 DE LA COQUE
         if (option .eq. 'REPE_TENS') then
-            call dxsiro(np*nbsp, t2iu2, conin, zr(jout))
+            call dxsiro(np*nbsp, t2ve2, conin, zr(jout))
         else if (option.eq.'REPE_GENE') then
-            call dxefro(np, t2iu2, conin, zr(jout))
+            call dxefro(np, t2ve2, conin, zr(jout))
         endif
 !
 ! --- PASSAGE DES CONTRAINTES DU REPERE INTRINSEQUE
@@ -192,9 +192,9 @@ subroutine te0442(option, nomte)
 !     ---------------------------------------
     else if (rep.eq.1.d0) then
         if (option .eq. 'REPE_TENS') then
-            call dxsiro(np*nbsp, t2iu1, zr(jin), zr(jout))
+            call dxsiro(np*nbsp, t2ve1, zr(jin), zr(jout))
         else if (option.eq.'REPE_GENE') then
-            call dxefro(np, t2iu1, zr(jin), zr(jout))
+            call dxefro(np, t2ve1, zr(jin), zr(jout))
         endif
 !
 ! --- PASSAGE DES CONTRAINTES DU REPERE LOCAL 1
@@ -203,9 +203,9 @@ subroutine te0442(option, nomte)
 !     ---------------------------------------
     else if (rep.eq.2.d0) then
         if (option .eq. 'REPE_TENS') then
-            call dxsiro(np*nbsp, t2ui1, zr(jin), zr(jout))
+            call dxsiro(np*nbsp, t2ev1, zr(jin), zr(jout))
         else if (option.eq.'REPE_GENE') then
-            call dxefro(np, t2ui1, zr(jin), zr(jout))
+            call dxefro(np, t2ev1, zr(jin), zr(jout))
         endif
 !
     endif

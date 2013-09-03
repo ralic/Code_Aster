@@ -64,7 +64,7 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: masloc(300), masglo(300), rof, wgtmf
     real(kind=8) :: zero, unquar, undemi, un, neuf, douze, excent, xinert
     real(kind=8) :: coefm, wgtf, wgtm, detj, wgt, roe, rho, epais
-    real(kind=8) :: qsi, eta, jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: qsi, eta, jacob(5), caraq4(25), t2ev(4), t2ve(4), t1ve(9)
     character(len=1) :: stopz(3)
     logical :: coupmf, exce, iner
 !     ------------------------------------------------------------------
@@ -111,7 +111,7 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
 !     ---------------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+                multic, coupmf, t2ev, t2ve, t1ve)
 !
 ! --- INITIALISATIONS :
 !     ---------------

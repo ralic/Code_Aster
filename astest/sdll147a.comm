@@ -660,8 +660,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
-                  VALE_CALC=3.3224015883646E-04,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -679,7 +682,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DZ',
-                  VALE_CALC=9.6976209120442E-08,
+                  VALE_CALC=0.,
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   CRITERE='ABSOLU',
                   ),
           )
@@ -698,8 +704,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRY',
-                  VALE_CALC=8.675378922301E-05,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -708,8 +717,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRZ',
-                  VALE_CALC=4.7590811433221E-14,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -718,8 +730,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
-                  VALE_CALC=6.0500207748802E-05,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -738,8 +753,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DZ',
-                  VALE_CALC=2.6429790798481E-08,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -767,21 +785,24 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRZ',
-                  VALE_CALC=4.7590811433221E-14,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   GROUP_NO='S',
-                  REFERENCE='NON_DEFINI',
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
-                  VALE_CALC=2.8274142136932E-03,
-                  VALE_REFE=2.8288137175073E-3,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  PRECISION=5.0000000000000001E-3,
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -800,8 +821,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DZ',
-                  VALE_CALC=7.3559491158438E-07,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -810,8 +834,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRX',
-                  VALE_CALC=1.037732263534E-46,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -820,8 +847,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRY',
-                  VALE_CALC=6.895248005638E-04,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -830,8 +860,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRZ',
-                  VALE_CALC=4.4598563106069E-31,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 
@@ -849,8 +882,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=2.0194839173658E-15,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
+                  TOLE_MACHINE=.01,
+# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
+# VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
 

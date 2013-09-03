@@ -45,7 +45,7 @@ subroutine te0422(option, nomte)
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), alpha, beta
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32)
-    real(kind=8) :: t2iu(4), t2ui(4), c, s
+    real(kind=8) :: t2ev(4), t2ve(4), c, s
 !
     character(len=4) :: fami
 !
@@ -75,7 +75,7 @@ subroutine te0422(option, nomte)
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                 c, s)
 !
     call jevech('PDEPLAR', 'L', jdepg)
@@ -86,6 +86,6 @@ subroutine te0422(option, nomte)
     call dxefgv(nomte, option, xyzl, pgl, depl,&
                 effgt)
 !
-    call dxefro(npg, t2iu, effgt, zr(jeffg))
+    call dxefro(npg, t2ve, effgt, zr(jeffg))
 !
 end subroutine

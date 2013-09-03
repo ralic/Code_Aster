@@ -73,7 +73,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: kfc11(9, 3), kfc21(9), kmc(6, 3)
     real(kind=8) :: kmf12(6, 3), kmf12a(36)
     real(kind=8) :: bsigth(24), enerth, excent, un, zero
-    real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: qsi, eta, carat3(21), t2ev(4), t2ve(4), t1ve(9)
     logical :: coupmf, exce, indith
 !     ------------------------------------------------------------------
     real(kind=8) :: ctor
@@ -113,7 +113,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !           MEMBRANE ET CISAILLEMENT INVERSEE -------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+                multic, coupmf, t2ev, t2ve, t1ve)
 !     ------------------------------------------------------------------
 !     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 !     ------------------------------------------------------------------

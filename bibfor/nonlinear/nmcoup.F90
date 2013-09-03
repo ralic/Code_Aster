@@ -26,9 +26,9 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 ! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
 #include "jeveux.h"
-#include "asterfort/kit_glrc_dm_vmis.h"
 #include "asterfort/lcumfe.h"
 #include "asterfort/lcumfp.h"
+#include "asterfort/lgdmvm.h"
 #include "asterfort/nmcpla.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -123,7 +123,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                         vind, opt, nwkin, wkin, sigf,&
                         vinf, ndsde, dsde, nwkout, wkout,&
                         iret)
-            if (iret .eq. 1) goto 999
+            if (iret .eq. 1) goto 9999
             else if (cmp2(1:10) .eq. 'ENDO_ISOT_BETON' .or. cmp2(1:6)&
         .eq. 'MAZARS') then
             option(2)(1:16) = cmp2(1:16)
@@ -179,7 +179,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 !
             option(2)(1:16) = cmp2(1:16)
 !
-            call kit_glrc_dm_vmis(imat, cmp2, epsdt, depst, vind,&
+            call lgdmvm(imat, cmp2, epsdt, depst, vind,&
                         opt, sigd, sigf, vinf, dsde,&
                         crit, iret)
 !
@@ -191,5 +191,5 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
         call u2mess('F', 'ALGORITH7_6')
     endif
 !
-999 continue
+9999  continue
 end subroutine

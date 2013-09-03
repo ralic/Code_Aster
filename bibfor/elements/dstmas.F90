@@ -60,7 +60,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: masloc(171), masglo(171)
     real(kind=8) :: rho, epais, roe, rof, ctor, excent, detj, wgt
     real(kind=8) :: zero, un, six, douze, wgtf, wgtm, wgtmf
-    real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: qsi, eta, carat3(21), t2ev(4), t2ve(4), t1ve(9)
     character(len=1) :: stopz(3)
     logical :: coupmf, exce
 !     ------------------------------------------------------------------
@@ -105,7 +105,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+                multic, coupmf, t2ev, t2ve, t1ve)
 !
 !     -------- CALCUL DU PRODUIT HF.T2 ---------------------------------
     call dsxhft(df, carat3(9), hft2)

@@ -51,7 +51,7 @@ subroutine te0404(option, nomte)
     real(kind=8) :: e, nu, rho, vitmat, epais
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
-    real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
+    real(kind=8) :: pgl(3, 3), t2ev(4), t2ve(4), t1ve(9), valres(2)
     logical :: coupmf
 ! DEB ------------------------------------------------------------------
 !
@@ -123,7 +123,7 @@ subroutine te0404(option, nomte)
 !
         call dxmate(fami, df, dm, dmf, dc,&
                     dci, dmc, dfc, nno, pgl,&
-                    multic, coupmf, t2iu, t2ui, t1ve)
+                    multic, coupmf, t2ev, t2ve, t1ve)
         nu = dm(1,2)/dm(1,1)
         e = (1.d0-nu**2)*dm(1,1)/epais
     endif

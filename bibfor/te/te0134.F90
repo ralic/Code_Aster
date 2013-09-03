@@ -40,7 +40,7 @@ subroutine te0134(option, nomte)
     integer :: jgeom, jrepl1, jrepl2, jrepl3, jcacoq, iret
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
     integer :: i
-    real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4)
+    real(kind=8) :: pgl(3, 3), t2ev(4), t2ve(4)
     real(kind=8) :: pulx(3), puly(3), pulz(3), ux(3), uy(3), uz(3)
     real(kind=8) :: coor(12), alpha, beta, c, s
 !
@@ -70,23 +70,23 @@ subroutine te0134(option, nomte)
     alpha = zr(jcacoq+1)*r8dgrd()
     beta = zr(jcacoq+2)*r8dgrd()
 !
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                 c, s)
 !
-!     T2IU : LA MATRICE DE PASSAGE (2X2) : UTILISATEUR -> INTRINSEQUE
+!     T2EV : LA MATRICE DE PASSAGE (2X2) : UTILISATEUR -> INTRINSEQUE
 !
 !     PUL : LA MATRICE DE PASSAGE (3X3) : UTILISATEUR -> INTRINSEQUE
 !
-!         (T2IU(1) , T2IU(3) , 0 )
-!     PUL=(T2IU(2) , T2IU(4) , 0 )
+!         (T2EV(1) , T2EV(3) , 0 )
+!     PUL=(T2EV(2) , T2EV(4) , 0 )
 !         (  0     ,    0    , 1 )
 !     PUL = (PULX,PULY,PULZ)
-    pulx(1) = t2iu(1)
-    pulx(2) = t2iu(2)
+    pulx(1) = t2ev(1)
+    pulx(2) = t2ev(2)
     pulx(3) = 0.0d0
 !
-    puly(1) = t2iu(3)
-    puly(2) = t2iu(4)
+    puly(1) = t2ev(3)
+    puly(2) = t2ev(4)
     puly(3) = 0.0d0
     pulz(1) = 0.0d0
     pulz(2) = 0.0d0

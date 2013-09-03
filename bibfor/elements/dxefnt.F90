@@ -43,7 +43,7 @@ subroutine dxefnt(nomte, pgl, sigt)
     integer :: icodre(56)
     character(len=10) :: phenom
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
-    real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: t2ev(4), t2ve(4), t1ve(9)
     real(kind=8) :: tsup(4), tinf(4), tmoy(4), rbid
     integer :: multic, nbcou, jcou, imoy
 !     ------------------------------------------------------------------
@@ -118,7 +118,7 @@ subroutine dxefnt(nomte, pgl, sigt)
 ! --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 !     ----------------------------------------------------
         call dxmath('NOEU', epais, df, dm, dmf,&
-                    pgl, multic, indith, t2iu, t2ui,&
+                    pgl, multic, indith, t2ev, t2ve,&
                     t1ve, nno)
         if (indith .eq. -1) goto 30
 !

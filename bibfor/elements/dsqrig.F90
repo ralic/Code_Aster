@@ -81,7 +81,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
     real(kind=8) :: bcmbcb(8, 12), kma(8, 4), kmb(8, 12)
     real(kind=8) :: kmpmt(8, 8), kmpm(8, 8), membcf(8, 8), bcapm(2, 8)
     real(kind=8) :: bsigth(24), enerth, ctor, un, zero, eta, excent, qsi
-    real(kind=8) :: jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: jacob(5), caraq4(25), t2ev(4), t2ve(4), t1ve(9)
     logical :: coupmf, exce, indith
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
@@ -128,7 +128,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig,&
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2iu, t2ui, t1ve)
+                multic, coupmf, t2ev, t2ve, t1ve)
 !
 !     ---- CALCUL DE LA MATRICE PB -------------------------------------
     if (exce) then

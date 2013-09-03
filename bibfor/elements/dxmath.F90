@@ -1,5 +1,5 @@
 subroutine dxmath(fami, epais, df, dm, dmf,&
-                  pgl, multic, indith, t2iu, t2ui,&
+                  pgl, multic, indith, t2ev, t2ve,&
                   t1ve, npg)
     implicit   none
 #include "jeveux.h"
@@ -15,7 +15,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 #include "asterfort/utbtab.h"
     integer :: multic, indith, npg, npgh
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
-    real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
+    real(kind=8) :: pgl(3, 3), t2ev(4), t2ve(4), t1ve(9)
     character(len=4) :: fami
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -83,7 +83,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre)
     if (phenom .eq. 'ELAS_COQMU') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                     c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE
@@ -111,7 +111,7 @@ subroutine dxmath(fami, epais, df, dm, dmf,&
 !
     else if (phenom.eq.'ELAS_COQUE') then
 !
-        call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+        call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                     c, s)
 !
 !       CALCUL DE LA MATRICE T1VE DE PASSAGE D'UNE MATRICE

@@ -71,7 +71,7 @@ subroutine te0033(option, nomte)
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid, valr(2)
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32), effpg(32)
-    real(kind=8) :: t2iu(4), t2ui(4), c, s
+    real(kind=8) :: t2ev(4), t2ve(4), c, s
 !
     logical :: dkg
 !
@@ -176,7 +176,7 @@ subroutine te0033(option, nomte)
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                 c, s)
 !
     call jevech('PDEPLAR', 'L', jdepg)
@@ -254,7 +254,7 @@ subroutine te0033(option, nomte)
             call t3gsie(option, fami, xyzl, pgl, depl,&
                         nbcou, zr(jsigm))
         endif
-        call dxsiro(np*nbcou*3, t2iu, zr(jsigm), zr(jsigm))
+        call dxsiro(np*nbcou*3, t2ve, zr(jsigm), zr(jsigm))
 !     ----------------------------
     else if (option(1:9) .eq. 'DEGE_ELNO') then
         call jevech('PDEFOGR', 'E', jeffg)
@@ -276,7 +276,7 @@ subroutine te0033(option, nomte)
 !
 ! ---    PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 ! ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-        call dxefro(np, t2iu, effgt, zr(jeffg))
+        call dxefro(np, t2ve, effgt, zr(jeffg))
 !     ----------------------------
     else if (option(1:9) .eq. 'DEGE_ELGA') then
         call jevech('PDEFOPG', 'E', jeffg)
@@ -297,7 +297,7 @@ subroutine te0033(option, nomte)
         endif
 ! ---    PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 ! ---    A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-        call dxefro(np, t2iu, effpg, zr(jeffg))
+        call dxefro(np, t2ve, effpg, zr(jeffg))
     endif
 !
     if (option .eq. 'SIEF_ELGA') then

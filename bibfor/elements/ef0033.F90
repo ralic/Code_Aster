@@ -39,7 +39,7 @@ subroutine ef0033(nomte)
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: depl(24)
     real(kind=8) :: effgt(32)
-    real(kind=8) :: t2iu(4), t2ui(4), c, s
+    real(kind=8) :: t2ev(4), t2ve(4), c, s
 !
     character(len=4) :: fami
 !     ------------------------------------------------------------------
@@ -69,7 +69,7 @@ subroutine ef0033(nomte)
     call jevech('PCACOQU', 'L', jcara)
     alpha = zr(jcara+1) * r8dgrd()
     beta = zr(jcara+2) * r8dgrd()
-    call coqrep(pgl, alpha, beta, t2iu, t2ui,&
+    call coqrep(pgl, alpha, beta, t2ev, t2ve,&
                 c, s)
 !
 !
@@ -85,7 +85,7 @@ subroutine ef0033(nomte)
 ! ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 !       ---------------------------------------
     call jevech('PEFFORR', 'E', jeffg)
-    call dxefro(np, t2iu, effgt, zr(jeffg))
+    call dxefro(np, t2ve, effgt, zr(jeffg))
 !
 !
 end subroutine
