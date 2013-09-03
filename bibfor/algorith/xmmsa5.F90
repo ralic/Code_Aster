@@ -4,6 +4,7 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
                   am, r)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/lceiou.h"
 #include "asterfort/lceitc.h"
 #include "asterfort/matini.h"
@@ -63,7 +64,7 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
     integer :: i, ier
 !
     real(kind=8) :: vim(9), vip(9), lamb(3)
-    real(kind=8) :: delta(6)
+    real(kind=8) :: delta(6), eps
 !
     character(len=16) :: option
 !
@@ -80,16 +81,16 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 !
 ! --- ON CONSTRUIT P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
 !
-    do 1 i = 1, ndim
+    do i = 1, ndim
         p(1,i) = nd(i)
- 1  end do
-    do 2 i = 1, ndim
+    end do
+    do i = 1, ndim
         p(2,i) = tau1(i)
- 2  end do
+    end do
     if (ndim .eq. 3) then
-        do 3 i = 1, ndim
+        do i = 1, ndim
             p(3,i) = tau2(i)
- 3      continue
+        end do
     endif
 !
 ! --- CALCUL SAUT DE DEPLACEMENT EN BASE LOCALE {AM}=[P]{SAUT}
@@ -100,9 +101,9 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 !
 ! --- INVERSION DE CONVENTIONS ENTRE X-FEM ET ROUTINE COMPORTEMENT
 !
-    do 4 i = 1, ndim
+    do i = 1, ndim
         am(i) = -am(i)
- 4  end do
+    end do
 !
 ! SI ON VEUT SIMPLEMENT LE SAUT LOCAL, ON S ARRETE ICI
 !
@@ -121,6 +122,11 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
             option='FULL_MECA'
         else
             option='FULL_MECA'
+        endif
+
+        if(job.eq.'MATRICE'.and.option.eq.'FULL_MECA') then
+            eps = 100.*r8prem()
+            vim(4)=min(1.d0,vim(4)*(1+eps))
         endif
 !
 ! VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
@@ -143,7 +149,6 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
         alpha(2) = vip(2)
 ! SI ACTUALISATION: NOUVEAU PAS DONC PREDICTION EN PERSPECTIVE
 ! SINON, DESCENTE
-!
         if (job .eq. 'ACTU_VI') then
             alpha(3) = 1.d0
         else if (job.eq.'MATRICE') then
