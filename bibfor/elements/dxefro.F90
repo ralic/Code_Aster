@@ -31,6 +31,9 @@ subroutine dxefro(ne, t2iu, edgle, edglc)
 !     OUT EDGLC R  8   NXX NYY NXY MXX MYY MXY VX VY
 !  OU IN  EDGLE R  8   EXX EYY EXY KXX KYY KXY GAX GAY
 !     OUT EDGLE R  8   EXX EYY EXY KXX KYY KXY GAX GAY
+!     
+!     ATTENTION : LES DEFORMATIONS GENERALISEES SONT ATTENDUES SOUS LA FORME
+!     EXX EYY EXY ET NON PAS SOUS LA FORME EXX EYY 2EXY.  
 !     ------------------------------------------------------------------
     real(kind=8) :: nle(2,2), mle(2,2), xab(2, 2)
     real(kind=8) :: nlc(2,2), mlc(2,2)
