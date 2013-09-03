@@ -83,7 +83,7 @@ subroutine te0412(option, nomte)
     real(kind=8) :: ent, enm, enf, enc, enmf
     real(kind=8) :: effint(32), effort(32), degpg(32)
     real(kind=8) :: alpha, beta
-    real(kind=8) :: t2ev(4), t2ve(4), c, s
+    real(kind=8) :: t2iu(4), t2ui(4), c, s
     real(kind=8) :: dmeps(3), dfkhi(3), dcgam(3)
     real(kind=8) :: df(9), dm(9), dmf(9), dc(4), dci(4)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
@@ -214,18 +214,19 @@ subroutine te0412(option, nomte)
                 end do
 ! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERES
 !
-!     T2EV : LA MATRICE DE PASSAGE (2X2) : UTILISATEUR -> INTRINSEQUE
-!     T2VE : LA MATRICE DE PASSAGE (2X2) : INTRINSEQUE -> UTILISATEUR
+!     T2UI : LA MATRICE DE PASSAGE (2X2) : UTILISATEUR -> INTRINSEQUE
+!     T2IU : LA MATRICE DE PASSAGE (2X2) : INTRINSEQUE -> UTILISATEUR
 !
                 call jevech('PCACOQU', 'L', jcara)
                 alpha = zr(jcara+1) * r8dgrd()
                 beta = zr(jcara+2) * r8dgrd()
-                call coqrep(pgl, alpha, beta, t2ev, t2ve, c, s)
+(??)                call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+(??)                            c, s)
 !
 ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES AUX POINTS
 ! --- D'INTEGRATION DU REPERE LOCAL AU REPERE INTRINSEQUE
 !
-                call dxefro(npg, t2ev, effort, effint)
+                call dxefro(npg, t2ui, effort, effint)
             else
                 call dxeffi(option, nomte, pgl, zr(icontp), nbsig, effint)
             endif
@@ -314,8 +315,9 @@ subroutine te0412(option, nomte)
 !
         call utpvgl(nno, 6, pgl, zr(jdepm), ul)
 !
-        call dxmate('RIGI', df, dm, dmf, dc, dci, dmc, dfc, nno, pgl, multic, coupmf, t2ev, t2ve,&
-                    t1ve)
+        call dxmate('RIGI', df, dm, dmf, dc,&
+                    dci, dmc, dfc, nno, pgl,&
+                    multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     -- CALCUL DES DEFORMATIONS GENERALISEES AUX POINTS DE GAUSS
 !     -----------------------------------------------------------

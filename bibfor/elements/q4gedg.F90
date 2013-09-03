@@ -44,7 +44,7 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: bdm(3), bdf(3), bcdf(2), dcis(2)
     real(kind=8) :: vf(3), vm(3), vt(2)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), vcm(2), vcf(2), caraq4(25)
-    real(kind=8) :: t2ev(4), t2ve(4), t1ve(9), jacob(5), qsi, eta
+    real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), jacob(5), qsi, eta
     logical :: coupmf
     character(len=4) :: fami
 !     ------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine q4gedg(xyzl, option, pgl, depl, edgl)
 !     ----- CARACTERISTIQUES DES MATERIAUX --------
     call dxmate(fami, df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2ev, t2ve, t1ve)
+                multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
     do 20 j = 1, nno
         do 10 i = 1, 2

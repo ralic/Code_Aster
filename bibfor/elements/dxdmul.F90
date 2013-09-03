@@ -1,4 +1,4 @@
-subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ve,&
+subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
                   h, d1i, d2i, x3i, epi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ve,&
     integer :: icou
     integer :: iniv
     real(kind=8) :: t1ve(3, 3)
-    real(kind=8) :: t2ve(2, 2)
+    real(kind=8) :: t2ui(2, 2)
     real(kind=8) :: h(3, 3)
     real(kind=8) :: d1i(2, 2), d2i(2, 4)
     real(kind=8) :: x3i, epi
@@ -39,7 +39,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ve,&
 !     IN  ICOU   : NUMERO DE LA COUCHE
 !     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
 !     IN  T1VE   : MATRICE DE CHANGEMENT DE REPERE D'UNE MATRICE (3,3)
-!     IN  T2VE   : MATRICE DE CHANGEMENT DE REPERE D'UNE MATRICE (2,2)
+!     IN  T2UI   : MATRICE DE CHANGEMENT DE REPERE D'UNE MATRICE (2,2)
 !     OUT H      : MATRICE D'ELASTICITE DE LA COUCHE, REPERE INTRINSEQUE
 !     OUT D1I    : MATRICE D1I REPERE INTRINSEQUE
 !     OUT D2I    : MATRICE D2I REPERE INTRINSEQUE

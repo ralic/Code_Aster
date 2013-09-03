@@ -64,9 +64,9 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
     integer :: itab(7), iret, nbpt, nbsp
     parameter      (npgt=10)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
-    real(kind=8) :: t2ev(4), t2ve(4), pgl(3, 3), epais, alpha, beta
+    real(kind=8) :: t2iu(4), t2ui(4), pgl(3, 3), epais, alpha, beta
     real(kind=8) :: c, s
-    save           t2ev,t2ve,matevn,matevg
+    save           t2iu,t2ui,matevn,matevg
 !
     ASSERT(loue.eq.'L' .or. loue.eq.'E')
     ASSERT(sens.eq.'UI' .or. sens.eq.'IU')
@@ -127,14 +127,14 @@ subroutine cosiro(nomte, param, loue, sens, goun,&
             call jevech('PCACOQU', 'L', jcara)
             alpha = zr(jcara+1) * r8dgrd()
             beta = zr(jcara+2) * r8dgrd()
-            call coqrep(pgl, alpha, beta, t2ev, t2ve,&
+            call coqrep(pgl, alpha, beta, t2iu, t2ui,&
                         c, s)
         endif
 !
         if (sens .eq. 'UI') then
-            call dxsiro(nbpt*nbsp, t2ev, zr(jtens), zr(jtens))
+            call dxsiro(nbpt*nbsp, t2ui, zr(jtens), zr(jtens))
         else
-            call dxsiro(nbpt*nbsp, t2ve, zr(jtens), zr(jtens))
+            call dxsiro(nbpt*nbsp, t2iu, zr(jtens), zr(jtens))
         endif
     endif
 !

@@ -61,7 +61,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 !                   -----(6,9)  -----(6,9)
     real(kind=8) :: mefl(54)
     real(kind=8) :: bsigth(24), enerth, carat3(25)
-    real(kind=8) :: t2ev(4), t2ve(4), t1ve(9), qsi, eta
+    real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), qsi, eta
     logical :: coupmf, indith
     integer :: i, jcoqu, jdepg, k
     real(kind=8) :: ctor, excent, zero
@@ -96,7 +96,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
 !           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
     call dxmate('RIGI', df, dm, dmf, dc,&
                 dci, dmc, dfc, nno, pgl,&
-                multic, coupmf, t2ev, t2ve, t1ve)
+                multic, coupmf, t2iu, t2ui, t1ve)
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE --------
     call gtria3(xyzl, carat3)
