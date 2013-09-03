@@ -104,13 +104,13 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
 !
 ! --  CALCUL DES EPSILON INITIAUX
     if (resi) then
-        do 10 k = 1, 6
+        do k = 1, 6
             eps(k) = epsm(k) + deps(k)
-10      continue
+        end do
     else
-        do 40 k = 1, 6
+        do k = 1, 6
             eps(k) = epsm(k)
-40      continue
+        end do
     endif
 !
 ! --  ON UTILISE EPSILON SOUS FORME VECTORIELLE
@@ -127,8 +127,7 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
     trot = efp(1)+efp(2)
 !
 ! --  CALCUL DES CONSTANTES INDEPENDANTES DE DA1, DA2 ET EPS33
-    call cstgld(lamf, muf, alf, gf, emp,&
-                efp, qff)
+    call cstgld(lamf, muf, alf, gf, emp, efp, qff)
 !
 ! --  INITIALISATION DE DA1, DA2 ET EPS33
     if (lelas) then
@@ -174,12 +173,9 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
         else
             vip(4) = 1.0d0
         endif
-        vip(5)=1.d0-0.5d0*((1.d0+gmt*da1)/(1.d0+da1) +(1.d0+gmt*da2)/(&
-        1.d0+da2))
-        vip(6)=1.d0-0.5d0*((1.d0+gmc*da1)/(1.d0+da1) +(1.d0+gmc*da2)/(&
-        1.d0+da2))
-        vip(7)=1.d0-max((1.d0+gf*da1)/(1.d0+da1), (1.d0+gf*da2)/(1.d0+&
-        da2))
+        vip(5)=1.d0-0.5d0*((1.d0+gmt*da1)/(1.d0+da1) +(1.d0+gmt*da2)/(1.d0+da2))
+        vip(6)=1.d0-0.5d0*((1.d0+gmc*da1)/(1.d0+da1) +(1.d0+gmc*da2)/(1.d0+da2))
+        vip(7)=1.d0-max((1.d0+gf*da1)/(1.d0+da1), (1.d0+gf*da2)/(1.d0+da2))
     else
         if (lelas) then
             da1 = 0.0d0
