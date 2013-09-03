@@ -86,12 +86,14 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     integer :: nfilt3, isizemu, nsizemu, rang, esizemu
     mumps_int :: nbeq, nz2, iligg, jcolg
     character(len=4) ::  etam
+    character(len=8) ::  k8bid
     character(len=14) :: nonu
+    character(len=16) :: k16bid, nomcmd
     character(len=19) :: nomat, nosolv
     character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest
     complex(kind=8) :: caux
-    logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl
+    logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -773,17 +775,30 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
             call jelibe(nonu//'.NUML.DELG')
         endif
 !
-        if (niv .ge. 2) then
-! --- TEST POUR EVITER LE MONITORING DES CMDES ECLATEES
-! --- ET DE LDLT_SP
+        if (niv.ge.2) then
+! --- TEST POUR EVITER LE MONITORING DES CMDES ECLATEES ET DE LDLT_SP
 !     LES OBJETS TEMPORAIRES DE MONITORING SONT EFFACES A CHAQUE
 !     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
-            call jeexin(kmonit(1), iret)
-            if (iret .ne. 0) then
-                call jeveuo(kmonit(1), 'E', ibid)
-                zi(ibid+rang)=nz2
+            call getres(k8bid, k16bid, nomcmd)
+            if ((nomcmd(1:8).eq.'NUME_DDL') .or. (nomcmd(1:10).eq.'FACTORISER') .or.&
+                (nomcmd(1:8).eq.'RESOUDRE')) then
+                lcmde=.true.
+            else
+                lcmde=.false.
+            endif
+            if ((.not.lcmde).and.(.not.lpreco)) then
+                call jeexin(kmonit(1), iret)
+                if (iret.ne.0) then
+! --- CAS CMDE STD AVEC MUMPS SOLVEUR DIRECT
+                    call jeveuo(kmonit(1), 'E', ibid)
+                    zi(ibid+rang)=nz2
+                else
+! --- L'OBJET KMONIT(1) DEVRAIT EXISTER
+                    ASSERT(.false.)
+                endif
             endif
         endif
+
 !
 !       ------------------------------------------------
 !       IMPRESSION DE LA MATRICE (SI DEMANDEE) :
