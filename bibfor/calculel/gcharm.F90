@@ -28,7 +28,6 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time  ,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lisnca.h"
 #include "asterfort/u2mesk.h"
     logical :: lfchar
     character(len=8) :: nomfct,newfct
