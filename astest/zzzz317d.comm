@@ -49,47 +49,27 @@ L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
 
 
 amor=0.05
-ecart=1.0/9.81*100
 TSM=10.00
 amo_sro=0.05
 ZPA=0.1593 
 ZPA_50=0.1618
 SA_25=0.1901
 tini=2.5
-
+SA_1=0.1415
+SA_01=0.0080
 ############################################
-## NBTIR>1, NB_ITER=0
+## on teste NBTIR>1, NB_ITER=0
 #############################################
 
 
 nbtir=20
-fc=0.025
+fc=0.10
 
 ACCE1a=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=200000,
-              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**12,FREQ_FILTRE=fc,
-              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT     =amor,FREQ_PAS=0.01, 
-                                       ERRE_ZPA  =(0.75, 0.25),ERRE_MAX  =(0.05, 0.25),ERRE_RMS  =(0.2,),),
-#              MODULATION      = _F(TYPE="CONSTANT", ),              
-#               MODULATION      = _F(TYPE="JENNINGS_HOUSNER", ),)
+              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,FREQ_FILTRE=fc,
+              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT     =amor,FREQ_PAS=0.01,),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
-
-
-
-FONCT1a=RECU_FONCTION(  TABLE=ACCE1a,
-                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
-                        NOM_PARA_TABL='FONCTION',)
-SRO1a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCT1a, LIST_FREQ = L_FREQ, METHODE='HARMO',
-                      NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
-
-
-#INDIC1a=INFO_FONCTION(  NOCI_SEISME=_F(
-#                   FONCTION = FONCT1a, BORNE_SUP = 0.95,BORNE_INF = 0.05,
-#                   PESANTEUR = 9.81, AMOR_REDUIT=0.05,OPTION = ('TOUT')) )
-#IMPR_TABLE (TABLE=INDIC1a,  UNITE=8,);
-
-
 
 
 # Calcul spectre median 
@@ -104,7 +84,7 @@ for ii in range(nbtir):
                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = nacc),
                         NOM_PARA_TABL='FONCTION',)
-   SRO1[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1[ii], LIST_FREQ = L_FREQ, #METHODE='HARMO',
+   SRO1[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1[ii], LIST_FREQ = L_FREQ, METHODE='HARMO',
                       NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
    l_SRO.append(SRO1[ii])
 
@@ -119,27 +99,79 @@ SRO_MED=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SRO,
 ## TESTS
 #############################################
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.16968653 ,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15906898,
                          VALE_REFE=ZPA_50    ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
-                        _F(VALE_CALC=0.189526,
+                        _F(VALE_CALC= 0.19751334  ,
                          VALE_REFE=SA_25  ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
-#                        _F(VALE_CALC=0.16,
-#                         VALE_REFE=ZPA_50  ,                        
-#                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
-#                         REFERENCE='ANALYTIQUE',
-#                         PRECISION=0.1,
-#                         FONCTION=SRO2[2],),
-
+                        _F(VALE_CALC=8.133449E-03,
+                         VALE_REFE=SA_01  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_MED,),
                          ),)
 
+
+
+###########################################
+## on valide ici FREQ_PENTE
+#############################################
+#
+
+ACCE2a=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=200000,
+              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =2,NB_POIN=2**11,FREQ_FILTRE=fc,
+              SPEC_MEDIANE        = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT     =amor,FREQ_PAS=0.01, FREQ_PENTE=-0.000001),
+               MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
+
+FONC1a=RECU_FONCTION(  TABLE=ACCE1a,
+                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1), NOM_PARA_TABL='FONCTION',)
+
+SRO1a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1a, LIST_FREQ = L_FREQ, METHODE='HARMO',
+                      NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
+
+
+FONC2a=RECU_FONCTION(  TABLE=ACCE2a,
+                      FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1), NOM_PARA_TABL='FONCTION',)
+
+SRO2a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC2a, LIST_FREQ = L_FREQ, METHODE='HARMO',
+                      NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
+############################################
+## TESTS
+#############################################
+#
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17959194 ,                         
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         FONCTION=SRO1a,),
+                        _F(VALE_CALC=0.20405387  ,                         
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         FONCTION=SRO1a,),
+                        _F(VALE_CALC=0.01058748 ,                     
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1),
+                         FONCTION=SRO1a,),
+                         ),)
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.17959194  , VALE_REFE=0.17959194 ,                           
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         FONCTION=SRO2a, REFERENCE='AUTRE_ASTER',),
+
+                        _F(VALE_CALC= 0.20405387  ,   VALE_REFE=0.20405387 ,                          
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         FONCTION=SRO2a, REFERENCE='AUTRE_ASTER',),
+
+                        _F(VALE_CALC= 0.01058748 ,  VALE_REFE=0.01058748 ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1),
+                         FONCTION=SRO2a, REFERENCE='AUTRE_ASTER',),
+                         ),)
 
 
 ###

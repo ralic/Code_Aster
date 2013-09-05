@@ -1,0 +1,132 @@
+# TITRE GENERATION DE SIGNAUX SISMIQUES OPTION SPEC_FRACTILE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# person_in_charge: irmela.zentner at edf.fr
+#
+DEBUT(CODE=_F(NOM='zzzz317f',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+#
+################################################
+#
+#################################################
+#
+###########################################################################
+# D : SIMULATION POUR DSP COMPATIBLE AVEC UN SPECTRA : FIT EN MEDIANE
+###########################################################################
+#
+##
+###############################
+# DEFINITION DES PECTRES CIBLE
+##############################
+
+###MEDIANE 
+SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',
+                          VALE=( 0.1000,  0.0080,
+                                 0.1333,  0.0127,0.2000, 0.0245,0.2500, 0.0303, 0.3333,  0.0414,0.5000, 0.0666,
+                                0.6667, 0.0922,1.0000,  0.1415,1.3333,  0.1843,2.0000,  0.2650, 2.5000,  0.3033, 3.3333,
+                                0.3430, 4.0000,  0.3647,5.0000, 0.3916,6.6667, 0.3807,10.0000, 0.3183,12.5000, 0.2648,20.0000, 
+                                0.2056,25.0000, 0.1901,33.3333, 0.1719, 50.0000, 0.1618,  100.0000, 0.1593,
+) )
+
+
+###UN_SIGMA
+SIG_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',
+                          VALE=(  0.1000, 0.0182, 0.1333,0.0272,  0.2000,0.0494,  0.2500,0.0579,  0.3333, 0.0791,  0.5000,0.1267,  0.6667,0.1742,
+                                  1.0000, 0.2637,    1.3333, 0.3397,  2.0000, 0.4782,   2.5000,0.5432,   3.3333, 0.6112,  4.0000, 0.6468,
+                                  5.0000,  0.6930,   6.6667, 0.6778,  10.0000, 0.5653,  12.5000, 0.4671,  20.0000,  0.3545,   25.0000, 0.3248,   33.3333, 0.2902,
+                                  50.0000,    0.2697, 100.0000,    0.2653,) )
+
+L_FREQ = DEFI_LIST_REEL(DEBUT=0.05,
+              INTERVALLE=(_F(JUSQU_A=1.0, PAS=0.05,), _F(JUSQU_A=5., PAS=0.1,),
+                           _F(JUSQU_A=20.0, PAS=0.2,), _F(JUSQU_A=50.0, PAS=0.5,),
+                           _F(JUSQU_A=100.0, PAS=2.0,),
+                        ) );
+amor=0.05
+TSM=10.00
+tini=2.5
+ZPA=0.1593 
+
+ZPA_50=0.1618
+SAF_50=0.2697
+
+SAM_25=0.1901
+SAF_25=0.3248
+
+
+############################################
+## 
+#############################################
+
+# tirages accelerogrammes
+nbtir=20
+fc=0.075
+ACCE1a=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=200000,
+              PAS_INST       =0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,NB_POIN=2**11,    FREQ_FILTRE=fc,
+              SPEC_FRACTILE        = _F(SPEC_OSCI  =SRO_NGA, SPEC_1_SIGMA  =SIG_NGA,  AMOR_REDUIT=amor,FREQ_PAS=0.01, ),
+               MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
+
+
+# Calcul spectre median et unsigma
+FONC1=[None]*(nbtir)
+SRO1=[None]*(nbtir)
+l_SRO=[]
+
+for ii in range(nbtir):
+   nacc=ii+1
+   FONC1[ii]=RECU_FONCTION(  TABLE=ACCE1a,
+                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = nacc),
+                        NOM_PARA_TABL='FONCTION',)
+   SRO1[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1[ii], LIST_FREQ = L_FREQ, METHODE='HARMO',
+                      NORME=9.81, AMOR_REDUIT=(amor,),),);  
+   l_SRO.append(SRO1[ii])
+
+SRO_MED=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SRO,
+                             FRACT=0.5) )
+SRO_SIG=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SRO,
+                             FRACT=0.8413) )
+
+############################################
+## TESTS: spectres cibles
+#############################################
+#
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15955094,
+                         VALE_REFE=ZPA_50    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_MED,),
+                        _F(VALE_CALC=0.209115,
+                         VALE_REFE=SAM_25  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.2,
+                         FONCTION=SRO_MED,),
+                        _F(VALE_CALC= 0.26585746,
+                         VALE_REFE=SAF_50    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_SIG,),
+                        _F(VALE_CALC= 0.314218 ,
+                         VALE_REFE=SAF_25  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_SIG,),
+                         ),)
+FIN( )

@@ -61,25 +61,23 @@ FONCT1=RECU_FONCTION( TABLE=ACCE1a,
                               NOM_PARA_TABL='FONCTION',)
 
 RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
-#IMPR_TABLE (TABLE=RMS1,    UNITE=8,);
+
 N1=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT1,
                              BORNE_SUP = 0.95,BORNE_INF = 0.05,
                              PESANTEUR = 9.81,AMOR_REDUIT=0.05,
                              OPTION = 'TOUT') )
 
-#IMPR_TABLE (TABLE=N1,  UNITE=8,);
-#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
-#                     _F(FONCTION=FONCT1 ,)))
+
 #
 TEST_TABLE(
-           VALE_CALC=0.044798058322245,
+           VALE_CALC=0.056165275748070,
            NOM_PARA='INTE_ARIAS',
            TABLE=N1,
            )
 
 TEST_TABLE(
-           VALE_CALC=7.79,
+           VALE_CALC=7.35,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N1,)
 
@@ -101,13 +99,12 @@ RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC=1.0682658963835,
+           VALE_CALC=1.0633965972487,
            VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1b,)
 
-IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
-                     _F(FONCTION=FONCT1b ,)))
+
 
 ##############################
 # OPTION "GAMMA"
@@ -129,21 +126,19 @@ N3=INFO_FONCTION(  NOCI_SEISME=_F(
                              PESANTEUR = 9.81,AMOR_REDUIT=0.05,
                              OPTION = ('TOUT') ))
 
-#IMPR_TABLE (TABLE=N3,  UNITE=8,);
+
 RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
-#IMPR_TABLE (TABLE=RMS3,  UNITE=8,);
+
 #
-#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
-#                     _F(FONCTION=FONCT3 ,)))
 
 TEST_TABLE(
-           VALE_CALC=0.041618358430000,
+           VALE_CALC=0.052975514080583,
            NOM_PARA='INTE_ARIAS',
            TABLE=N3,
            )
 
 TEST_TABLE(
-           VALE_CALC=8.86,
+           VALE_CALC=7.11,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N3,
            )
@@ -163,11 +158,9 @@ FONCT3b=RECU_FONCTION( TABLE=ACCE3b,
 
 RMS3b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3b))
 
-IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
-                     _F(FONCTION=FONCT3b ,)))
 
 TEST_TABLE(
-           VALE_CALC=0.96409533255472,
+           VALE_CALC=0.94635675231513,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS3b,
            )
@@ -191,16 +184,14 @@ FONCT2a=RECU_FONCTION(    TABLE=ACCE2a,
 
 
 RMS2a=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2a))
-IMPR_TABLE (TABLE=RMS2a,  UNITE=8,);
+
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC=1.0209468418836,
+           VALE_CALC=1.020918728144 ,
            VALE_REFE=ecart*9.81,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS2a,)
-
-#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
 
 
 
@@ -240,11 +231,11 @@ N2=INFO_FONCTION(  NOCI_SEISME=_F(
 
 
 RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
-IMPR_TABLE (TABLE=RMS2,  UNITE=8,);
 
-#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
+
+
 TEST_TABLE(
-           VALE_CALC=0.053565864709396  ,
+           VALE_CALC=0.053543264377154  ,
            NOM_PARA='INTE_ARIAS',
            TABLE=N2,
            )
@@ -305,7 +296,7 @@ POST_DSP=POST_DYNA_ALEA(  INTE_SPEC=DSP_M,
 #REFERENCE [ 0.00324168  0.00014989] (DSP CP)
 #[  3.61724321e-03   1.48368417e-04   3.57812105e-05]
 #[  3.61724321e-03   1.48368417e-04   3.57812105e-05]
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.297902E-04 ,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.310644E-04 ,
                          VALE_REFE=1.48288849e-04,
                          VALE_PARA=10.0,
                          REFERENCE='ANALYTIQUE',
@@ -314,7 +305,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.297902E-04 ,
                       ),
               )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.623451E-03,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.616318E-03,
                          VALE_REFE=3.61601202e-03,
                          VALE_PARA=1.0,
                          REFERENCE='ANALYTIQUE',
@@ -326,7 +317,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.623451E-03,
 ecart0= 0.174711603824 # valeur theorique de la DSP cible
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-1,
-           VALE_CALC=0.17424364477819,
+           VALE_CALC=0.17421589332267,
            VALE_REFE=ecart0,
            NOM_PARA='ECART',
            TABLE=POST_DSP,
@@ -338,42 +329,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 #
-###############################
-####    TEST  visuel
-###############################
-## ---------------------------------------------------------------------
 
-l_w=2.*pi*NP.arange(0.0, 50., 0.1) 
-def calc_dsp_KT(lfreq, w0,amor,fcp, So=1.0):
-# KT model  
-      x11  =NP.array([4.*(amor**2)*(w0**2)*FREQ**2  for FREQ in lfreq ])
-      xnum =x11+w0**4
-      denom=NP.array([ (w0**2-FREQ**2)**2 for FREQ in lfreq ])
-      denom=denom+x11
-      valkt=xnum/denom
-# CP filter
-      wcp=2.*pi*fcp
-#      wcp=0.5*pi
-      amocp=1.0
-      valcp  =NP.array([  FREQ**4 / ( 4.*(amocp**2)*(wcp**2)*FREQ**2+(wcp**2-FREQ**2)**2 )  for FREQ in lfreq ]  )
-      dsp=valcp*valkt
-      return dsp*So  
-
-lfreq=2.*pi*NP.array([1.0, 10.,20.])
-vale_dsp=calc_dsp_KT(l_w , frr*2.*pi,amor,fcp)
-vale_int=NP.trapz(vale_dsp,l_w)*2.
-
-print ' --- REFERENCE ---'
-#fqt=0.78133404521855609
-vale_arias=TT*pi/(2.*9.81)
-fq=sqrt(arias/vale_arias)
-
-vale_test=calc_dsp_KT(lfreq , frr*2.*pi,amor,fcp, fq**2/vale_int)
-print lfreq
-print vale_test
-print vale_test*2*pi
-vale_dsp=calc_dsp_KT(l_w , frr*2.*pi,amor,fcp, fq**2/vale_int)
-vale_int=NP.trapz(vale_dsp,l_w)*2.
-print 'sigma', sqrt(vale_int)
 #
 FIN( )

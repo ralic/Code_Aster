@@ -524,9 +524,9 @@ FREQ3=MODE_ITER_INV(   MATR_RIGI=MATASSR3,      MATR_MASS=MATASSM3,
 MODESTA3=MODE_STATIQUE( MATR_RIGI=MATASSR3,
                         MATR_MASS=MATASSM3,
                         MODE_STAT=_F(
-                  NOEUD = ('PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31',),
-                  AVEC_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX', ))
-                  )
+                        NOEUD = ('PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31',),
+                        AVEC_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX', )))
+
 
 DYNALEA3=DYNA_ALEA_MODAL(
           BASE_MODALE=_F(
@@ -537,18 +537,20 @@ DYNALEA3=DYNA_ALEA_MODAL(
            EXCIT=_F(
              DERIVATION = 2,
              INTE_SPEC = INTERRE2,
+
              NOEUD_I = ( 'PA11', 'PA21', 'PA31', 'PA11', 'PA21', 'PA31', ),
              NOM_CMP_I = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  ),
+
              NOEUD_J = ( 'PA11', 'PA21', 'PA31', 'PA11', 'PA21', 'PA31', ),
              NOM_CMP_J = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  ),
+
              NOEUD = ( 'PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31', ),
              NOM_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  )),
-              REPONSE=_F(
-             DERIVATION = 2,
+
+             REPONSE=_F( DERIVATION = 2,
              FREQ_MIN = 0.,
              FREQ_MAX = 30.,
-             PAS = 5.)
-                )
+             PAS = 5.))
 
 INTERRE3=REST_SPEC_PHYS(         MODE_MECA=FREQ3,
                                          BANDE=( 0., 35., ),

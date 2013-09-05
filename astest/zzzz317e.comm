@@ -53,6 +53,7 @@ amo_sro=0.05
 ZPA=0.1593 
 ZPA_50=0.1618
 SA_125=0.2648
+SA_20=0.2056
 tini=2.5
 
 nbtir=1
@@ -61,7 +62,7 @@ fc=0.05
 
 
 ##############################################
-### MODULATION GAMMA
+### SPEC_UNIQUE, MODULATION GAMMA, NB_ITER
 ##############################################
 #
 
@@ -69,7 +70,7 @@ fc=0.05
 
 ACCE2=GENE_ACCE_SEISME( INFO =2,
               INIT_ALEA=10000025,
-              PAS_INST       =0.01, NB_POIN=2**12,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE    =nbtir,FREQ_FILTRE=fc,
+              PAS_INST       =0.01, NB_POIN=2**11,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE    =nbtir,FREQ_FILTRE=fc,
               SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT     =amor, FREQ_PAS=0.01, NB_ITER=nbiter,  
                                        ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,),   ),
               MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
@@ -82,19 +83,21 @@ SRO2=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC2, LIST_FREQ = L_FREQ, METHODE='HAR
                       NORME=9.81, AMOR_REDUIT=(amo_sro,),),); 
 
 
+
+
 #############################################
 ## TESTS
 #############################################
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.1593522,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.16222496    ,
                          VALE_REFE=ZPA_50    ,                        
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO2,),
-                        _F(VALE_CALC=0.268827,
-                         VALE_REFE=SA_125  ,                        
-                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 15.0),
+                        _F(VALE_CALC=0.21888942,
+                         VALE_REFE=SA_20  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 20.),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION=SRO2,),),);
@@ -106,4 +109,5 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.1593522,
 
 
 ###
+
 FIN( )

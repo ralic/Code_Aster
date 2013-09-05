@@ -42,7 +42,7 @@ tini=0.5
 #----------------------------------------------------------------
 #
 ACCE4=GENE_ACCE_SEISME( INFO            =2, INIT_ALEA=10000,
-              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
+              PAS_INST       =DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,FREQ_FILTRE=0.25,
               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, FREQ_PENTE=fp),
               MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", INTE_ARIAS =arias), )
 
@@ -58,25 +58,21 @@ N4=INFO_FONCTION(  NOCI_SEISME=_F(
 
 RMS4=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT4))
 #
-#IMPR_TABLE (TABLE=RMS4,  UNITE=8,);
-#
-IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
-                     _F(FONCTION=FONCT4 ,)))
 
 TEST_TABLE(
-           VALE_CALC=0.058846133156181,
+           VALE_CALC=0.069293761553066,
            NOM_PARA='INTE_ARIAS',
            TABLE=N4,
            )
 
 TEST_TABLE(
-           VALE_CALC=4.7600,
+           VALE_CALC=5.03,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N4,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.15647380735786,
+           VALE_CALC=0.16979727695741,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS4,
            )
@@ -103,25 +99,22 @@ N5=INFO_FONCTION(  NOCI_SEISME=_F(
 
 RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
 TEST_TABLE(
-           VALE_CALC=0.046792097043320,
+           VALE_CALC=0.062250669296113,
            NOM_PARA='INTE_ARIAS',
            TABLE=N5,
            )
 
 TEST_TABLE(
-           VALE_CALC=4.830000000000000,
+           VALE_CALC=4.38,
            NOM_PARA='DUREE_PHAS_FORT',
            TABLE=N5,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.13726314116779,
+           VALE_CALC=0.15832176971917,
            NOM_PARA='ECART_TYPE',
            TABLE=RMS5,
            )
-
-IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
-                     _F(FONCTION=FONCT5 ,)))
 ################################################################
 ################################################################
 FIN( )
