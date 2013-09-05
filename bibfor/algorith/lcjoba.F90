@@ -111,8 +111,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 !    LECTURE DES CARACTERISTIQUES ELASTIQUES
     nomres(1) = 'E'
     call rcvala(imate, ' ', 'ELAS', 1, ' ',&
-                0.d0, 1, nomres, valres, icodre,&
-                1)
+                [0.d0], 1, nomres, valres, icodre, 1)
     e = valres(1)
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -132,8 +131,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
     nomres(14) = 'BDN'
 !
     call rcvala(imate, ' ', 'JOINT_BA', 1, ' ',&
-                0.d0, 14, nomres, valres, icodre,&
-                1)
+                [0.d0], 14, nomres, valres, icodre, 1)
     hpen = valres(1)
     gtt = valres(2)
     gamd0 = valres(3)

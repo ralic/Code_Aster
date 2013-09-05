@@ -31,7 +31,7 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
     integer :: nno
     real(kind=8) :: kcis, matc(5, 5), vectt(3, 3)
 !
-    real(kind=8) :: valres(5), valpar
+    real(kind=8) :: valres(5), valpar(1)
     character(len=*) :: nomte
     integer :: icodre(5)
     character(len=4) :: fami
@@ -59,8 +59,7 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 !
     nbpar = 1
     nompar = 'TEMP'
-    call moytem(fami, npg, 3*zi(jcou), '+', valpar,&
-                iret)
+    call moytem(fami, npg, 3*zi(jcou), '+', valpar(1),iret)
 !
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
 !
@@ -72,8 +71,7 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 !        ------ MATERIAU ISOTROPE --------------------------------------
 !
         call rcvala(zi(jmate), ' ', phenom, nbpar, nompar,&
-                    valpar, nbv, nomres, valres, icodre,&
-                    1)
+                    valpar(1), nbv, nomres, valres, icodre,1)
 !
         young = valres(1)
         nu = valres(2)
@@ -101,8 +99,7 @@ subroutine matrc(nomte, nno, kcis, matc, vectt)
 ! ----   ET DU TEMPS
 !        -----------
         call rcvala(zi(jmate), ' ', phenom, nbpar, nompar,&
-                    valpar, nbv, nomres, valres, icodre,&
-                    1)
+                    valpar(1), nbv, nomres, valres, icodre,1)
 !
         el = valres(1)
         et = valres(2)

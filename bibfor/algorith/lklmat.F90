@@ -115,14 +115,12 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
     call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                tempd, 3, nomc(1), materd(1, 1), cerr(1),&
-                0)
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1), 0)
     indal=1
     if (cerr(3) .ne. 0) indal=0
 !
     call rcvala(imat, ' ', 'LETK', 1, 'TEMP',&
-                tempd, 27, nomc(4), materd(1, 2), cerr(4),&
-                0)
+                [tempd], 27, nomc(4), materd(1, 2), cerr(4), 0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================

@@ -60,8 +60,7 @@ subroutine matrth(fami, npg, young, nu, alpha,&
         call moytem(fami, npg, 3*zi(jcou), '+', temp,&
                     iret)
         call rcvala(zi(jmate), ' ', phenom, 1, 'TEMP',&
-                    temp, 3, nomres, valres, icodre,&
-                    1)
+                    [temp], 3, nomres, valres, icodre,1)
         if (icodre(3) .ne. 0) then
             indith = -1
             goto 9999

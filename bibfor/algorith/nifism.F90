@@ -97,7 +97,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     logical :: axi, grand, nonloc
     integer :: g, nddl, ndu
     integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
-    integer :: k2ret, lij(3, 3), vij(3, 3), os, kk
+    integer :: k2ret(1), lij(3, 3), vij(3, 3), os, kk
     integer :: viaja
     integer :: cod(27)
     real(kind=8) :: rac2
@@ -111,7 +111,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     real(kind=8) :: taup(6), taudv(6), tauhy, tauldc(6)
     real(kind=8) :: dsidep(6, 3, 3)
     real(kind=8) :: d(6, 3, 3), hdv(3, 3), dhy(6), h(3, 3), hhy
-    real(kind=8) :: gradgp(3), c
+    real(kind=8) :: gradgp(3), c(1)
     real(kind=8) :: t1, t2
     real(kind=8) :: kr(6)
     real(kind=8) :: tampon(10), id(3, 3), rbid
@@ -165,9 +165,9 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     do g = 1, npg
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
-        c=0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', 0.d0, 1, 'C_GONF', c, k2ret, 0)
-        nonloc = k2ret.eq.0 .and. c.ne.0.d0
+        c(1)=0.d0
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', [0.d0], 1, 'C_GONF', c(1), k2ret(1), 0)
+        nonloc = k2ret(1).eq.0 .and. c(1).ne.0.d0
 !
 ! - CALCUL DES DEFORMATIONS
         call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
@@ -289,7 +289,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
             if (nonloc) then
                 do ra = 1, nno2
                     kk = vg(ra)
-                    t1 = c*ddot(ndim,gradgp,1,dff2(ra,1),nno2)
+                    t1 = c(1)*ddot(ndim,gradgp,1,dff2(ra,1),nno2)
                     vect(kk) = vect(kk) + w*t1
                 end do
             endif
@@ -412,7 +412,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
                 if (nonloc) then
                     do rb = 1, nno2
                         kk = os + vg(rb)
-                        t1 = c*ddot(ndim,dff2(ra,1),nno2,dff2(rb,1), nno2)
+                        t1 = c(1)*ddot(ndim,dff2(ra,1),nno2,dff2(rb,1), nno2)
                         matr(kk) = matr(kk) + w*t1
                     end do
                 endif

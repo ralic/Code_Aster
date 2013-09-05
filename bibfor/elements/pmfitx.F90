@@ -44,7 +44,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     integer :: nbgf, inbf, icompo, isdcom, i, ipos, icp, nugf, ig, nbfig, nbgfmx
     integer :: lcage, labsc
     real(kind=8) :: rho, rhos, rhofi, rhofe, cm, phie, phii
-    real(kind=8) :: val, e, nu, valres(4), absmoy
+    real(kind=8) :: val(1), e, nu, valres(4), absmoy
     character(len=8) :: materi, nomre4(4)
     integer :: codres(4)
     character(len=2) :: nomres(2)
@@ -87,15 +87,13 @@ subroutine pmfitx(icdmat, isw, casect, gto)
             endif
         else if (isw.eq.2) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ',&
-                        zero, 1, 'RHO', val, codres,&
-                        0)
+                        [zero], 1, 'RHO', val, codres,0)
             if (codres(1) .eq. 1) then
                 call jevech('PCAGEPO', 'L', lcage)
                 call jevech('PABSCUR', 'L', labsc)
                 absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/deux
                 call rcvala(icdmat, materi, 'ELAS_FLUI', 1, 'ABSC',&
-                            absmoy, 4, nomre4, valres, codres,&
-                            1)
+                            [absmoy], 4, nomre4, valres, codres,1)
                 rhos = valres(1)
                 rhofi = valres(2)
                 rhofe = valres(3)
@@ -107,16 +105,15 @@ subroutine pmfitx(icdmat, isw, casect, gto)
                 phii = (phie-deux*zr(lcage-1+2))
                 call rhoequ(rho, rhos, rhofi, rhofe, cm,&
                             phii, phie)
-                val = rho
+                val(1) = rho
             endif
         else if (isw.eq.3) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ',&
-                        zero, 1, 'RHO', val, codres,&
-                        0)
-            if (codres(1) .ne. 0) val = zero
+                        [zero], 1, 'RHO', val, codres,0)
+            if (codres(1) .ne. 0) val(1) = zero
         endif
         do 20 i = 1, 6
-            casect(i) = casect(i) + val*casec1(i)
+            casect(i) = casect(i) + val(1)*casec1(i)
 20      continue
         ipos=ipos+nbfig*ncarfi
 100  end do

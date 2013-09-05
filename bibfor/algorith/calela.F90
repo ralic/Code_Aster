@@ -99,8 +99,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
 ! ======================================================================
     if (aniso .eq. 0) then
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    t, 3, ncra1(1), elas1(1), icodr1,&
-                    0)
+                    [t], 3, ncra1(1), elas1(1), icodr1, 0)
         young = elas1(1)
         nu = elas1(2)
         g = young/(2.d0*(1.d0+nu))
@@ -130,8 +129,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     else if (aniso.eq.1) then
         if (phenom .eq. 'ELAS') then
             call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                        t, 3, ncra1(1), elas1(1), icodr1,&
-                        0)
+                        [t], 3, ncra1(1), elas1(1), icodr1, 0)
             young1 = elas1(1)
             young3 = elas1(1)
             nu12 = elas1(2)
@@ -148,8 +146,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
                 call u2mess('F', 'ALGORITH17_35')
             endif
             call rcvala(imate, ' ', 'ELAS_ISTR', 1, 'TEMP',&
-                        t, 7, ncra2(1), elas2(1), icodr2,&
-                        0)
+                        [t], 7, ncra2(1), elas2(1), icodr2, 0)
             young1 = elas2(1)
             young3 = elas2(2)
             nu12 = elas2(3)
@@ -188,8 +185,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
     else if (aniso.eq.2) then
         if (phenom .eq. 'ELAS') then
             call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                        t, 3, ncra1(1), elas1(1), icodr1,&
-                        0)
+                        [t], 3, ncra1(1), elas1(1), icodr1, 0)
             young1 = elas1(1)
             young2 = elas1(1)
             young3 = elas1(1)
@@ -205,8 +201,7 @@ subroutine calela(imate, angmas, mdal, dalal, t,&
                 call u2mess('F', 'ALGORITH17_36')
             endif
             call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
-                        t, 10, ncra3(1), elas3(1), icodr2,&
-                        0)
+                        [t], 10, ncra3(1), elas3(1), icodr2, 0)
             young1 = elas3(1)
             young3 = elas3(2)
             young2 = elas3(3)

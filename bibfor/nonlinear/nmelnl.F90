@@ -195,8 +195,7 @@ subroutine nmelnl(fami, kpg, ksp, poum, ndim,&
         nomres(2)='A_PUIS'
         nomres(3)='N_PUIS'
         call rcvala(imate, ' ', 'ECRO_PUIS', 1, 'TEMP',&
-                    temp, 3, nomres, valres, icodre,&
-                    2)
+                    [temp], 3, nomres, valres, icodre,2)
         sigy = valres(1)
         alfafa = valres(2)
         coco = e/alfafa/sigy

@@ -33,12 +33,12 @@ subroutine te0451(option, nomte)
 ! ......................................................................
 !
     integer :: j1, nbcou, npgh, jsigm, idec, jeff, npg, itab(7), iret
-    integer :: nbsp, kpg, ibid, nbsig, nbeff, icou, jmate, icodre, j2
+    integer :: nbsp, kpg, ibid, nbsig, nbeff, icou, jmate, icodre(1), j2
     real(kind=8) :: nxx, nyy, mxx, myy, nxy, mxy, qx, qy, excen
     real(kind=8) :: r8bid, cb, cm, ch, h, hb, hm, hh
     real(kind=8) :: siyyb, siyym, siyyh, sixxb, sixxm, sixxh, sixyb, sixym
     real(kind=8) :: sixyh
-    real(kind=8) :: siyzb, siyzm, siyzh, sixzb, sixzm, sixzh, epcou(100), epi
+    real(kind=8) :: siyzb, siyzm, siyzh, sixzb, sixzm, sixzh, epcou(100), epi(1)
     character(len=8) :: alias8, nomres
     character(len=3) :: cmod, num
     character(len=2) :: val
@@ -75,20 +75,18 @@ subroutine te0451(option, nomte)
     call codent(1, 'G', val)
     nomres='C'//num//'_V'//val
     call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                r8bid, 1, nomres, epi, icodre,&
-                0)
-    if (icodre .eq. 0) lcoqmu=.true.
+                [r8bid], 1, nomres, epi(1), icodre(1),0)
+    if (icodre(1) .eq. 0) lcoqmu=.true.
     if (lcoqmu) then
         ASSERT(nbcou.le.100)
         do 10,icou=1,nbcou
         call codent(icou, 'G', num)
         nomres='C'//num//'_V'//val
         call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
-                    r8bid, 1, nomres, epi, icodre,&
-                    0)
-        ASSERT(icodre.eq.0)
-        ASSERT(epi.ge.0.d0)
-        epcou(icou)=epi
+                    [r8bid], 1, nomres, epi(1), icodre(1),0)
+        ASSERT(icodre(1).eq.0)
+        ASSERT(epi(1).ge.0.d0)
+        epcou(icou)=epi(1)
 10      continue
     endif
 !
@@ -130,12 +128,12 @@ subroutine te0451(option, nomte)
 !
 !         -- HB, HM, HH : "HAUTEUR" DES SOUS-POINTS :
     if (lcoqmu) then
-        epi=epcou(icou)
+        epi(1)=epcou(icou)
     else
-        epi=h/nbcou
+        epi(1)=h/nbcou
     endif
-    hm=hb+epi/2.d0
-    hh=hm+epi/2.d0
+    hm=hb+epi(1)/2.d0
+    hh=hm+epi(1)/2.d0
 !
 !         -- SIXXB, SIYYB, ... : CONTRAINTES AU BAS DE LA COUCHE
     sixxb=zr(jsigm-1+idec+1)
@@ -166,9 +164,9 @@ subroutine te0451(option, nomte)
 !         -- ON INTEGRE DANS L'EPAISSEUR DE CHAQUE COUCHE
 !            AVEC UNE FORRMULE DE NEWTON-COTES A 3 POINTS
 !            LES COEFFICIENTS SONT 1/6, 4/6 ET 1/6
-    cb=epi/6
-    cm=4.d0*epi/6
-    ch=epi/6
+    cb=epi(1)/6
+    cm=4.d0*epi(1)/6
+    ch=epi(1)/6
 !
 !         -- NXX, NYY, NXY = SOMME DE SIXX, SIYY, SIXY :
     nxx=nxx+cb*sixxb+cm*sixxm+ch*sixxh
@@ -187,7 +185,7 @@ subroutine te0451(option, nomte)
     mxy=mxy+cb*sixyb*hb+cm*sixym*hm+ch*sixyh*hh
 !
 !         -- MISE A JOUR DE HB POUR LA COUCHE SUIVANTE :
-    hb=hb+epi
+    hb=hb+epi(1)
 20  continue
 !
     zr(jeff-1+(kpg-1)*nbeff+1)=nxx

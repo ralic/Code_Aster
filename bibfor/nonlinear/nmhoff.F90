@@ -46,8 +46,8 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 ! --------------------------------------------------------------------
     logical :: resi, rigi, elas, line
     integer :: k, l, ndimsi
-    integer :: cod
-    real(kind=8) :: sy, m, am
+    integer :: cod(1)
+    real(kind=8) :: sy(1), m, am
     real(kind=8) :: eps(6), epsno
     real(kind=8) :: coef, rac23
 ! -----------------------------------------------------------------
@@ -75,10 +75,9 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps,&
 ! -- CARACTERISTIQUES MATERIAU (SY) ET RIGIDITE
 !
     call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                0.d0, 1, 'SY', sy, cod,&
-                2)
+                [0.d0], 1, 'SY', sy, cod,2)
     m = 1 + 10**(1-inst)
-    am = sy * rac23**m
+    am = sy(1) * rac23**m
     if (line) then
         coef = am
     else

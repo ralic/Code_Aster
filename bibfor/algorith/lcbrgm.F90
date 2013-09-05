@@ -104,8 +104,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                0.d0, 2, nomres, valres, icodre,&
-                1)
+                [0.d0], 2, nomres, valres, icodre, 1)
 !
     e = valres(1)
     nu = valres(2)

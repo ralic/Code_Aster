@@ -126,8 +126,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
     nomres(1) = 'E'
     nomres(2) = 'NU'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                0.d0, 2, nomres, valres, idret,&
-                1)
+                [0.d0], 2, nomres, valres, idret, 1)
 !
     e = valres(1)
     nu = valres(2)
@@ -140,8 +139,7 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
     nomres(1) = 'SY'
     nomres(2) = 'D_SIGM_EPSI'
     call rcvala(imate, ' ', 'ECRO_LINE', 0, ' ',&
-                0.d0, 2, nomres, valres, idret,&
-                1)
+                [0.d0], 2, nomres, valres, idret, 1)
     sy = valres(1)
     gamma = - valres(2)/e
     wy = sy**2 / (2*e)

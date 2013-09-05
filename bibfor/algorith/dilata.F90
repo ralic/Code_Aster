@@ -73,7 +73,7 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
 ! --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 ! =====================================================================
      call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                t, 1, ncra1(1), elas1(1), icodre1,0)
+                [t], 1, ncra1(1), elas1(1), icodre1,0)
      talpha(1,1)=elas1(1)
      talpha(2,2)=elas1(1)
      talpha(3,3)=elas1(1)
@@ -87,13 +87,13 @@ subroutine dilata(imate, phi, alphfi, t, aniso,&
         goto 999
      else if ((phenom.eq.'ELAS_ISTR')) then
         call rcvala(imate, ' ', 'ELAS_ISTR', 1, 'TEMP',&
-                    t, 2, ncra2(1), elas2(1), icodre2,0)
+                   [t], 2, ncra2(1), elas2(1), icodre2,0)
           talpha(1,1)=elas2(1)
           talpha(2,2)=elas2(1)
           talpha(3,3)=elas2(2)
      else if ( phenom.eq.'ELAS_ORTH')then
         call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
-                    t, 3, ncra3(1), elas3(1), icodre3,0)
+                    [t], 3, ncra3(1), elas3(1), icodre3,0)
           talpha(1,1)=elas3(1)
           talpha(2,2)=elas3(3)
           talpha(3,3)=elas3(2)

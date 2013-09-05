@@ -22,7 +22,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 !
 #include "asterfort/rcvala.h"
     integer :: imate
-    real(kind=8) :: xhi, kxhi, dkxidx
+    real(kind=8) :: xhi, kxhi(1), dkxidx
 !
 ! ----------------------------------------------------------------------
 !     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
@@ -45,7 +45,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
     real(kind=8) :: vpar(2), tp
     real(kind=8) :: zero
     parameter    (zero = 0.d0)
-    integer :: ok
+    integer :: ok(1)
     character(len=8) :: nompar(2), nom
 !
     data nom / 'K_D' /
@@ -53,7 +53,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
 ! ----------------------------------------------------------------------
 !-- 1. INITIALISATION
 !--------------------
-    kxhi = zero
+    kxhi(1) = zero
     dkxidx = zero
 !
 !-- 2. CALCUL DE K_D(XHI,TEMP) A PARTIR DU MATERIAU CODE
@@ -65,16 +65,5 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
     vpar(2) = xhi
 !
     call rcvala(imate, ' ', 'VENDOCHAB', 2, nompar,&
-                vpar, 1, nom, kxhi, ok,&
-                2)
-!
-!-- 3. CREATION D'UNE FONCTION KT(XHI) EXTRAITE DE LA NAPPE
-!          A LA TEMPERATURE COURANTE
-!-----------------------------------------------------------
-!CCCC      CALL RCNAPP (IMATE,TP,IFON)
-!
-!-- 4.  CALCUL DE LA DERIVEE DK(XHI)/DXHI
-!--------------------------------------------
-!CCCC      CALL RCFODE (IFON,XHI,KXHI,DKHIDX)
-!
+                vpar, 1, nom, kxhi, ok,2)
 end subroutine

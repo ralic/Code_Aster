@@ -76,7 +76,7 @@ subroutine te0027(option, nomte)
     real(kind=8) :: tcla, tthe, tfor, tplas, tini, poids, rbid
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4), dvdm(3, 4)
     real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho, om, omo
-    real(kind=8) :: ecin, prod3, prod4, accele(3), e, nu, mu
+    real(kind=8) :: ecin, prod3, prod4, accele(3), e(1), nu(1), mu
 !
     logical :: grand, fonc, incr, epsini
 !
@@ -480,17 +480,15 @@ subroutine te0027(option, nomte)
 ! CALCUL DE LA DEFORMATION DE REFERENCE
             call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'NU', nu, icodre(1),&
-                        1)
+                        [rbid], 1, 'NU', nu(1), icodre(1),1)
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'E', e, icodre(1),&
-                        1)
+                        [rbid], 1, 'E', e(1), icodre(1),1)
 !
-            mu = e/(2.d0*(1.d0+nu))
+            mu = e(1)/(2.d0*(1.d0+nu(1)))
 !
-            epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
-            epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
-            epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
+            epsref(1)=-(1.d0/e(1))*(sigin(1)-(nu(1)*(sigin(2)+sigin(3))))
+            epsref(2)=-(1.d0/e(1))*(sigin(2)-(nu(1)*(sigin(3)+sigin(1))))
+            epsref(3)=-(1.d0/e(1))*(sigin(3)-(nu(1)*(sigin(1)+sigin(2))))
             epsref(4)=-(1.d0/mu)*sigin(4)
             epsref(5)=-(1.d0/mu)*sigin(5)
             epsref(6)=-(1.d0/mu)*sigin(6)

@@ -124,8 +124,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 !    LECTURE DES CARACTERISTIQUES DE REGULARISATION
     nomres(1) = 'PENA_LAGR'
     call rcvala(imate, ' ', 'NON_LOCAL', 0, ' ',&
-                0.d0, 1, nomres, valres, icodre,&
-                1)
+                [0.d0], 1, nomres, valres, icodre, 1)
     r=valres(1)
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT

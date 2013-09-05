@@ -141,16 +141,14 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
     nomres(2)= 'E       '
     nomres(3)= 'NU      '
     call rcvala(imate, ' ', 'ELAS', 0, '   ',&
-                tmpp, 3, nomres, rprops, icode,&
-                2)
+                [tmpp], 3, nomres, rprops, icode, 2)
 !
 ! Reading material Mohr-Coulomb properties
     nomres(1)= 'PHI     '
     nomres(2)= 'ANGDIL  '
     nomres(3)= 'COHESION'
     call rcvala(imate, ' ', 'MOHR_COULOMB', 0, '   ',&
-                tmpp, 3, nomres, rprops(4), icode(4),&
-                2)
+                [tmpp], 3, nomres, rprops(4), icode(4), 2)
 !
 ! Initialize some algorithmic and internal variables
     dgama =r0

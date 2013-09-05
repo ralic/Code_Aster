@@ -63,7 +63,7 @@ subroutine te0096(option, nomte)
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: compor(4), oprupt, phenom
 !
-    real(kind=8) :: epsref(6), e, mu
+    real(kind=8) :: epsref(6), e(1), mu
     real(kind=8) :: epsi, rac2, crit(3)
     real(kind=8) :: dfdi(27), f(3, 3), sr(3, 3), sigl(6), sigin(6), dsigin(6, 3)
     real(kind=8) :: eps(6), epsin(6), depsin(6, 3), epsp(6), depsp(6, 3)
@@ -73,7 +73,7 @@ subroutine te0096(option, nomte)
     real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho, om, omo
     real(kind=8) :: dtdm(3, 5), der(6), dfdm(3, 5), dudm(3, 4), dvdm(3, 4)
     real(kind=8) :: vepscp
-    real(kind=8) :: ecin, prod3, prod4, nu, accele(3)
+    real(kind=8) :: ecin, prod3, prod4, nu(1), accele(3)
 !
     integer :: ipoids, ivf, idfde
     integer :: icomp, igeom, itemps, idepl, imate
@@ -266,7 +266,7 @@ subroutine te0096(option, nomte)
                     1, 'RHO', rho, icodre(1), 1)
         call rcvalb(famil, kpg, spt, poum, matcod,&
                     ' ', phenom, 1, ' ', rbid,&
-                    1, 'NU', nu, icodre(1), 1)
+                    1, 'NU', nu(1), icodre(1), 1)
     endif
 !
 ! CORRECTION DES FORCES VOLUMIQUES
@@ -388,7 +388,7 @@ subroutine te0096(option, nomte)
                     dvdm(j,4) = dvdm(j,4) + zr(ivites+ij)*der(4)
                     accele(j) = accele(j) + zr(iaccel+ij)*der(4)
                     if (cp) then
-                        vepscp = -nu/(1.d0-nu)*(dvdm(1,1)+dvdm(2,2))
+                        vepscp = -nu(1)/(1.d0-nu(1))*(dvdm(1,1)+dvdm(2,2))
                     endif
                 endif
                 dudm(j,4) = dudm(j,4) + zr(idepl+ij)*der(4)
@@ -569,15 +569,15 @@ subroutine te0096(option, nomte)
 ! CALCUL DE LA DEFORMATION DE REFERENCE
             call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'NU', nu, icodre(1), 1)
+                        [rbid], 1, 'NU', nu(1), icodre(1), 1)
             call rcvala(matcod, ' ', phenom, 1, ' ',&
-                        rbid, 1, 'E', e, icodre(1), 1)
+                        [rbid], 1, 'E', e(1), icodre(1), 1)
 !
-            mu = e/(2.d0*(1.d0+nu))
+            mu = e(1)/(2.d0*(1.d0+nu(1)))
 !
-            epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
-            epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
-            epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
+            epsref(1)=-(1.d0/e(1))*(sigin(1)-(nu(1)*(sigin(2)+sigin(3))))
+            epsref(2)=-(1.d0/e(1))*(sigin(2)-(nu(1)*(sigin(3)+sigin(1))))
+            epsref(3)=-(1.d0/e(1))*(sigin(3)-(nu(1)*(sigin(1)+sigin(2))))
             epsref(4)=-(1.d0/mu)*sigin(4)
 !
 !

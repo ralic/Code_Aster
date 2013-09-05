@@ -98,8 +98,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'A066'
 !
     call rcvala(imate, ' ', 'DHRC_SEUILS', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -142,8 +141,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAC661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -186,8 +184,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAC662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -230,8 +227,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAT661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -274,8 +270,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'AAT662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -318,8 +313,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAC661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -362,8 +356,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAC662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -406,8 +399,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAT661'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -450,8 +442,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(21) = 'GAT662'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 21, nomres, valres, icodre,&
-                1)
+                [0.0d0], 21, nomres, valres, icodre,1)
 !
     l=0
     do i = 1, 6
@@ -514,8 +505,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(24) = 'AB622'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 24, nomres, ab, icodre,&
-                1)
+                [0.0d0], 24, nomres, ab, icodre,1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE GB(6,2,2)
@@ -547,8 +537,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(24) = 'GB622'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 24, nomres, gb, icodre,&
-                1)
+                [0.0d0], 24, nomres, gb, icodre,1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE C0(2,2,2)
@@ -564,8 +553,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(8) = 'C0222'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 8, nomres, c0, icodre,&
-                1)
+                [0.0d0], 8, nomres, c0, icodre,1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE AC(2,2,2)
@@ -581,8 +569,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(8) = 'AC222'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 8, nomres, ac, icodre,&
-                1)
+                [0.0d0], 8, nomres, ac, icodre,1)
 !
 !     -----------------------------------------------------------------
 !     MATRICE GC(2,2,2)
@@ -598,8 +585,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(8) = 'GC222'
 !
     call rcvala(imate, ' ', 'DHRC', 0, '',&
-                0.0d0, 8, nomres, gc, icodre,&
-                1)
+                [0.0d0], 8, nomres, gc, icodre,1)
 !
 !     -----------------------------------------------------------------
 !     SEUILS CSTSEU
@@ -610,8 +596,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, b0, c0,&
     nomres(3) = 'K0MICR'
 !
     call rcvala(imate, ' ', 'DHRC_SEUILS', 0, '',&
-                0.0d0, 3, nomres, valres, icodre,&
-                1)
+                [0.0d0], 3, nomres, valres, icodre,1)
 !
     cstseu(1)=valres(1)**2*valres(3)*h
 !

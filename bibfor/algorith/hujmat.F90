@@ -98,16 +98,14 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
 !
 ! --- RECUPERATION DES PROPRIETES DE LA LOI DE HUJEUX
     call rcvala(imat, ' ', 'HUJEUX', 0, '   ',&
-                tempf, 21, nomc(4), materf(1, 2), cerr(4),&
-                2)
+                [tempf], 21, nomc(4), materf(1, 2), cerr(4), 2)
 !
 !
     if (phenom .eq. 'ELAS') then
 !
 ! --- RECUPERATION DES PROPRIETES ELASTIQUES
         call rcvala(imat, ' ', phenom, 0, '   ',&
-                    tempf, 3, nomc(1), materf(1, 1), cerr(1),&
-                    0)
+                    [tempf] , 3, nomc(1), materf(1, 1), cerr(1), 0)
 !
         materf(17,1) =1.d0
 !
@@ -141,8 +139,7 @@ subroutine hujmat(mod, imat, tempf, materf, ndt,&
 !        ALPHA2= MATERF(8,1)
 !        ALPHA3= MATERF(9,1)
         call rcvala(imat, ' ', phenom, 0, '   ',&
-                    tempf, 12, nomc(1), materf(1, 1), cerr(1),&
-                    0)
+                    [tempf], 12, nomc(1), materf(1, 1), cerr(1), 0)
 !
         nu21 = materf(2,1)*materf(4,1)/materf(1,1)
         nu31 = materf(3,1)*materf(5,1)/materf(1,1)

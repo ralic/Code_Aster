@@ -82,17 +82,6 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
         call u2mesk('F', 'ELEMENTS2_32', 1, phenom)
     endif
 !
-!     EPAISSEUR
-!      CALL JEVECH('PCACOQU','L',JCOQU)
-!      EPAIS = ZR(JCOQU)
-!      NOMRES(1)  = 'EPAIS'
-!      CALL RCVALA(IMATE,' ',PHENOM,0,' ',R8B,1,NOMRES,
-!     &              VALRES,CODRES,'FM')
-!      IF(VALRES(1) .NE. EPAIS) THEN
-!        VALRES(2) = EPAIS
-!        CALL U2MESG('F','ELEMENTS5_42',0,' ',0,0,2,VALRES)
-!      ENDIF
-!
     fami='RIGI'
 !
     call rcvarc(' ', 'TEMP_INF', '+', fami, ipg,&
@@ -142,14 +131,12 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     if (iret .eq. 0) then
         nomres(3) = 'ALPHA'
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    tmoyp, 3, nomres, valres, icodre,&
-                    1)
+                    [tmoyp], 3, nomres, valres, icodre, 1)
         alph = valres(3)
 !
     else
         call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                    0.d0, 2, nomres, valres, icodre,&
-                    1)
+                    [0.d0], 2, nomres, valres, icodre, 1)
 !
     endif
     e = valres(1)
@@ -161,8 +148,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     nomres(2) = 'NUF'
 !
     call rcvala(imate, ' ', 'GLRC_DM   ', 0, ' ',&
-                0.d0, 2, nomres, valres, icodre,&
-                0)
+                [0.d0], 2, nomres, valres, icodre, 0)
 !
     if (icodre(1) .eq. 0) then
         ef = valres(1)
@@ -188,8 +174,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     nomres(6) = 'MYF'
     nomres(7) = 'ALPHA_C'
     call rcvala(imate, ' ', 'GLRC_DM', 0, ' ',&
-                0.d0, 7, nomres, valres, icodre,&
-                0)
+                [0.d0], 7, nomres, valres, icodre, 0)
 !
     gt = valres(1)
     gf = valres(3)

@@ -121,7 +121,7 @@ subroutine te0003(option, nomte)
     integer :: tymvol, ndegre, ifa, tyv
 !
     real(kind=8) :: r8bid, r8bid3(4)
-    real(kind=8) :: insold, inst, valthe, aux, rhocp, dfdx(27), dfdy(27), poids
+    real(kind=8) :: insold, inst, valthe, aux, rhocp(1), dfdx(27), dfdy(27), poids
     real(kind=8) :: r, valfp(9), valfm(9), r8cart, valsp, valsm, valunt, terbuf
     real(kind=8) :: tempm, tempp, fluxm(3), fluxp(3), fforme, deltat, prec, ovfl
     real(kind=8) :: der(6), flurp, flurm, unsurr, x3, y3, xn(9), yn(9), zn(9)
@@ -502,8 +502,7 @@ subroutine te0003(option, nomte)
     if ((phenom.eq.'THER') .or. (phenom.eq.'THER_ORTH')) then
         lnonli = .false.
         call rcvala(zi(imate), ' ', phenom, 1, 'INST',&
-                    inst, 1, 'RHO_CP', rhocp, icodre,&
-                    1)
+                    [inst], 1, 'RHO_CP', rhocp(1), icodre,1)
         if (icodre(1) .ne. 0) call u2mess('F', 'ELEMENTS2_62')
     else if (phenom.eq.'THER_NL') then
         lnonli = .true.
@@ -514,7 +513,7 @@ subroutine te0003(option, nomte)
     endif
     if (tabniv(4) .eq. 2) then
         write (ifm,*) 'PHENOM =',phenom
-        if (.not.lnonli) write (ifm,1000) 'RHOCP',rhocp
+        if (.not.lnonli) write (ifm,1000) 'RHOCP',rhocp(1)
     endif
 !
 !---------------------------------
@@ -621,7 +620,7 @@ subroutine te0003(option, nomte)
             if (tabniv(6) .eq. 2) write (ifm,1000) 'RHOCPP/M', rhocpp,rhocpm
         else
 ! CAS LINEAIRE
-            terbuf = terbuf - (tempp-tempm)*rhocp*unsurd
+            terbuf = terbuf - (tempp-tempm)*rhocp(1)*unsurd
         endif
 ! IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC...
         if (tabniv(6) .eq. 2) write (ifm, 1000) 'TERMVO TEMPP/M/DELTAT', tempp, tempm, deltat

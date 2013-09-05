@@ -87,8 +87,7 @@ subroutine dichoc(nbt, neq, nno, nc, icodma,&
 !        SI MOT_CLE RIGI_NOR ==> RIGNOR = VALRE1(1)
 !        SINON               ==> RIGNOR = KLV(1)
         call rcvala(icodma, ' ', 'DIS_CONTACT', nbpar, nompar,&
-                    valpar, nbre1, nomre1, valre1, codre1,&
-                    0)
+                    [valpar], nbre1, nomre1, valre1, codre1, 0)
         if (codre1(1) .eq. 0) then
             rignor = valre1(1)
         else
@@ -210,8 +209,7 @@ subroutine dichoc(nbt, neq, nno, nc, icodma,&
 !        SI MOT_CLE RIGI_NOR ==> RIGNOR = VALRE1(1)
 !        SINON               ==> RIGNOR = KLV(1)
         call rcvala(icodma, ' ', 'DIS_CONTACT', nbpar, nompar,&
-                    valpar, nbre1, nomre1, valre1, codre1,&
-                    0)
+                    [valpar], nbre1, nomre1, valre1, codre1, 0)
         if (codre1(1) .eq. 0) then
             rignor = valre1(1)
         else

@@ -150,12 +150,10 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         t1ve(9) = t1ve(1) - t1ve(4)
 !
         call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                    zero, 1, 'MEMB_L  ', valres(1), icodre,&
-                    0)
+                    [zero], 1, 'MEMB_L  ', valres(1), icodre, 0)
         if (icodre(1) .eq. 1) then
             call rcvala(zi(jmate), ' ', phenom, 0, ' ',&
-                        zero, 1, 'M_LLLL  ', valres(1), icodre,&
-                        0)
+                        [zero], 1, 'M_LLLL  ', valres(1), icodre, 0)
             if (icodre(1) .eq. 1) then
                 call u2mess('F', 'ELEMENTS_41')
             else

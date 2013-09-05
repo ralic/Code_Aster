@@ -79,8 +79,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
         endif
 !
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    t, 3, ncra1(1), elas( 1), icodre,&
-                    0)
+                    [t], 3, ncra1(1), elas( 1), icodre, 0)
 !
         young = elas(1)
         nu = elas(2)

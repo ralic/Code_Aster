@@ -45,12 +45,12 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !     ------------------------------------------------------------------
 ! TOLE
 !
-    real(kind=8) :: rho, coef1, coef2, s, s2, s4, s3, s5
+    real(kind=8) :: rho(1), coef1, coef2, s, s2, s4, s3, s5
     real(kind=8) :: zero, un, xxx, r8min, r8bid, g
     real(kind=8) :: u(3), v(3), w(8), w2(3), dw(12), tet1, tet2
     real(kind=8) :: q(12), qq(12), qqr(12), qqi(12), pta(3), dir(3)
     real(kind=8) :: dir1(3), dir2(3), d1, d2, omeg2, x1(3), x2(3), v1(3), v2(3)
-    integer :: icodre
+    integer :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: ch16
     logical :: global, normal
@@ -156,19 +156,17 @@ subroutine ptforp(itype, option, nomte, a, a2,&
             else
                 call pmfitx(zi(lmate), 3, casect, r8bid)
             endif
-            rho=casect(1)
+            rho(1)=casect(1)
             coef1=1.d0
             coef2=1.d0
         else
             if (ist .eq. 1) then
                 call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ',&
-                            r8bid, 1, 'RHO', rho, icodre,&
-                            1)
+                            [r8bid], 1, 'RHO', rho(1), icodre,1)
             else
                 call rcvala(zi(lmate), ' ', 'ELAS', 0, ' ',&
-                            r8bid, 1, 'RHO', rho, icodre,&
-                            0)
-                if (icodre .ne. 0) rho = zero
+                            [r8bid], 1, 'RHO', rho(1), icodre,0)
+                if (icodre(1) .ne. 0) rho(1) = zero
             endif
 !          ---A CAUSE DES CHARGEMENTS VARIABLE ---
             coef1 = a
@@ -177,11 +175,11 @@ subroutine ptforp(itype, option, nomte, a, a2,&
 !
         do 20 i = 1, 3
             if (option .eq. 'CHAR_MECA_PESA_R') then
-                q(i) = rho * g * dir(i)
-                q(i+6) = rho * g * dir(i)
+                q(i) = rho(1) * g * dir(i)
+                q(i+6) = rho(1) * g * dir(i)
             else if (option.eq.'CHAR_MECA_ROTA_R') then
-                q(i) = rho * omeg2 * d1 * dir1(i)
-                q(i+6) = rho * omeg2 * d2 * dir2(i)
+                q(i) = rho(1) * omeg2 * d1 * dir1(i)
+                q(i+6) = rho(1) * omeg2 * d2 * dir2(i)
             endif
 20      continue
 !

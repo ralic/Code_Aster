@@ -105,11 +105,9 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
 ! --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 ! =================================================================
     call rcvala(imat, ' ', 'ELAS', 1, 'TEMP',&
-                tempd, 3, nomc(1), materd(1, 1), cerr(1),&
-                0)
+                [tempd], 3, nomc(1), materd(1, 1), cerr(1), 0)
     call rcvala(imat, ' ', 'LAIGLE', 1, 'TEMP',&
-                tempd, 14, nomc(4), materd(1, 2), cerr(4),&
-                0)
+                [tempd], 14, nomc(4), materd(1, 2), cerr(4), 0)
 ! =================================================================
 ! - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 ! =================================================================

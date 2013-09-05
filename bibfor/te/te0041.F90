@@ -196,8 +196,7 @@ subroutine te0041(option, nomte)
             valres(3) = zero
             call utpsgl(nno, nc, pgl, zr(jdr), matv1)
             call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ',&
-                        valpar, 3, nomres, valres, icodre,&
-                        0)
+                        [valpar], 3, nomres, valres, icodre,0)
             if (icodre(1) .eq. 0 .and. valres(1) .ne. zero) then
                 if (icodre(2) .eq. 0) then
                     mata1(1)=matv1(1)*valres(2)/valres(1)

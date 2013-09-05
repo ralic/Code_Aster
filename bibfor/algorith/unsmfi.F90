@@ -82,8 +82,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
 ! --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 ! =====================================================================
         call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                    t, 2, ncra1(1), elas1(1), icodr1,&
-                    0)
+                    [t], 2, ncra1(1), elas1(1), icodr1, 0)
         youngs = elas1(1)
         nus = elas1(2)
         k0 = youngs / 3.d0 / (1.d0-2.d0*nus)
@@ -94,8 +93,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
     else if (aniso.eq.1) then
         if (phenom .eq. 'ELAS') then
             call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                        t, 2, ncra1(1), elas1(1), icodr1,&
-                        0)
+                        [t], 2, ncra1(1), elas1(1), icodr1, 0)
             young1 = elas1(1)
             young3 = elas1(1)
             nu12 = elas1(2)
@@ -103,8 +101,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
             g13 = young1/(2*(1.d0+nu12))
         else if (phenom.eq.'ELAS_ISTR') then
             call rcvala(imate, ' ', 'ELAS_ISTR', 1, 'TEMP',&
-                        t, 5, ncra2(1), elas2(1), icodr2,&
-                        0)
+                        [t], 5, ncra2(1), elas2(1), icodr2, 0)
             young1 = elas2(1)
             young3 = elas2(2)
             nu12 = elas2(3)
@@ -116,8 +113,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
         nu31 = nu13*young3/young1
 !
         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                    0.0d0, 2, ncra3(1), val1(1), icodre,&
-                    0)
+                    [0.0d0], 2, ncra3(1), val1(1), icodre, 0)
         biot1 = val1(1)
         biot3 = val1(2)
 !
@@ -183,8 +179,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
     else if (aniso.eq.2) then
         if (phenom .eq. 'ELAS') then
             call rcvala(imate, ' ', 'ELAS', 1, 'TEMP',&
-                        t, 2, ncra1(1), elas1(1), icodr1,&
-                        0)
+                        [t], 2, ncra1(1), elas1(1), icodr1, 0)
             young1 = elas1(1)
             young2 = elas1(1)
             young3 = elas1(1)
@@ -194,8 +189,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
             g12 = young1/(2*(1.d0+nu12))
         else if (phenom.eq.'ELAS_ORTH') then
             call rcvala(imate, ' ', 'ELAS_ORTH', 1, 'TEMP',&
-                        t, 7, ncra4(1), elas4(1), icodr2,&
-                        0)
+                        [t], 7, ncra4(1), elas4(1), icodr2, 0)
             young1 = elas4(1)
             young3 = elas4(2)
             young2 = elas4(3)
@@ -205,8 +199,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
             g12 = elas4(7)
         endif
         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                    0.0d0, 3, ncra3(1), val1(1), icodre,&
-                    0)
+                    [0.0d0], 3, ncra3(1), val1(1), icodre, 0)
         biot1 = val1(1)
         biot3 = val1(2)
 !        biot2 = val1(3) inutile ici

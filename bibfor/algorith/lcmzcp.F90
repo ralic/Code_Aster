@@ -166,8 +166,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     nomres(1)='B_ENDOGE'
     nomres(2)='K_DESSIC'
     call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                0.0d0, 2, nomres, valres, icodre,&
-                0)
+                [0.0d0], 2, nomres, valres, icodre, 0)
     if (icodre(1) .ne. 0) valres(1) = 0.0d0
     if (icodre(2) .ne. 0) valres(2) = 0.0d0
     bendo = valres(1)

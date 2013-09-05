@@ -23,7 +23,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 #include "asterfort/rcvala.h"
 #include "asterfort/u2mess.h"
     integer :: ndt, ndi, nvi, imat, typedp
-    real(kind=8) :: materf(5, 2)
+    real(kind=8) :: materf(5, 2), ltyped(1)
     character(len=8) :: mod
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES MATERIAU POUR LA LOI DE DRUCKER PRAGER --
@@ -36,7 +36,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 !           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 ! ======================================================================
     real(kind=8) :: trois, deux, un, six, alpha, sy, syult, c, a, phi
-    real(kind=8) :: typed, tabtmp(4), coe, dilat, psi
+    real(kind=8) :: typed, tabtmp(4), coe, dilat(1), psi
     integer :: icodre(8)
     character(len=8) :: nomc(8)
 ! ======================================================================
@@ -55,11 +55,9 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
     materf(3,1) = 0.0d0
     call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                0.d0, 2, nomc(1), materf(1, 1), icodre,&
-                1)
+                [0.d0], 2, nomc(1), materf(1, 1), icodre, 1)
     call rcvala(imat, ' ', 'ELAS', 0, ' ',&
-                0.d0, 1, nomc(3), materf(3, 1), icodre,&
-                0)
+                [0.d0], 1, nomc(3), materf(3, 1), icodre, 0)
 ! ======================================================================
 ! --- DEFINITION PARAMETRES MATERIAU DRUCKER ---------------------------
 ! ======================================================================
@@ -71,8 +69,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
 ! ======================================================================
     typed = r8vide()
     call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                0.d0, 1, 'TYPE_DP', typed, icodre,&
-                0)
+                [0.d0], 1, 'TYPE_DP', ltyped(1), icodre, 0)
+    typed=ltyped(1)
     if (typed .eq. 1.0d0) then
 ! ======================================================================
 ! --- CAS LINEAIRE -----------------------------------------------------
@@ -80,8 +78,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         typedp = 1
         nomc(7) = 'H'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    0.d0, 4, nomc(4), tabtmp(1), icodre,&
-                    1)
+                    [0.d0], 4, nomc(4), tabtmp(1), icodre, 1)
 ! ======================================================================
 ! --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 ! --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
@@ -102,8 +99,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         typedp = 2
         nomc(7) = 'SY_ULTM'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    0.d0, 4, nomc(4), tabtmp(1), icodre,&
-                    1)
+                    [0.d0], 4, nomc(4), tabtmp(1), icodre, 1)
 ! ======================================================================
 ! --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 ! --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
@@ -121,9 +117,8 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         materf(4,2) = tabtmp(3)
         nomc(8) = 'DILAT'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
-                    0.d0, 1, nomc(8), dilat, icodre,&
-                    1)
-        psi = atan2 ( (trois*dilat / deux / sqrt(( deux*dilat + 1.0d0 )*(1.0d0-dilat))), 1.0d0 )
+                    [0.d0], 1, nomc(8), dilat(1), icodre, 1)
+        psi = atan2 ( (trois*dilat(1) / deux / sqrt(( deux*dilat(1) + 1.0d0 )*(1.0d0-dilat(1)))), 1.0d0 )
         materf(5,2) = psi
     endif
 ! ======================================================================

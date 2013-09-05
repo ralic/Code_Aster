@@ -131,8 +131,7 @@ subroutine lc0055(fami, kpg, ksp, ndim, imate,&
         nomres(2)= 'E       '
         nomres(3)= 'NU      '
         call rcvala(imate, ' ', 'ELAS', 0, '   ',&
-                    tp, 3, nomres, rprops, icode,&
-                    2)
+                    [tp], 3, nomres, rprops, icode,2)
 !
         call mctgel(dsidep, rprops)
 !

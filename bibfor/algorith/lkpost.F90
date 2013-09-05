@@ -55,8 +55,7 @@ subroutine lkpost(imate, tempd, sigf, nvi, vip)
     nomc(12) = 'H0_EXT   '
 !
     call rcvala(imate, ' ', 'LETK', 1, 'TEMP',&
-                tempd, dimpar, nomc(1), mater(1), cerr(1),&
-                0)
+                [tempd], dimpar, nomc(1), mater(1), cerr(1), 0)
 !
 ! =================================================================
 ! --- DEFINITION DU NIVEAU DE DEGRADATION DE LA ROCHE SUIVANT LE DOMAINE

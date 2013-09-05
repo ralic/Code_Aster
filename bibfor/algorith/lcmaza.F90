@@ -191,13 +191,11 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
         nomres(1)='B_ENDOGE'
         nomres(2)='K_DESSIC'
         call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                    0.d0, 1, nomres(1), valres(1), icodre(1),&
-                    0)
+                    [0.d0], 1, nomres(1), valres(1), icodre(1), 0)
         if (icodre(1) .ne. 0) valres(1) = 0.d0
         bendo = valres(1)
         call rcvala(imate, ' ', 'ELAS', 0, ' ',&
-                    0.d0, 1, nomres(2), valres(2), icodre(2),&
-                    0)
+                    [0.d0], 1, nomres(2), valres(2), icodre(2), 0)
         if (icodre(2) .ne. 0) valres(2) = 0.d0
         kdess = valres(2)
     else

@@ -47,8 +47,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     epais = zr(jcoqu)
     nomres(1) = 'EPAIS'
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                r8b, 1, nomres, valres, codres,&
-                1)
+                [r8b], 1, nomres, valres, codres,1)
     if (valres(1) .ne. epais) then
         valres(2) = epais
         call u2mesg('F', 'ELEMENTS5_42', 0, ' ', 0,&
@@ -63,8 +62,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(2) = 'NU'
 !
     call rcvala(zimat, ' ', 'ELAS            ', 0, ' ',&
-                r8b, 2, nomres, valres, codres,&
-                1)
+                [r8b], 2, nomres, valres, codres,1)
     matr(6) = valres(1)
     matr(7) = valres(2)
 !
@@ -84,8 +82,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(10) = 'BM33'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                r8b, 10, nomres, valres, codres,&
-                1)
+                [r8b], 10, nomres, valres, codres,1)
 !
     matr(1) = 1.0d0
     matr(2) = valres(1)
@@ -109,8 +106,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(5) = 'GAMMA'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                r8b, 5, nomres, valres, codres,&
-                1)
+                [r8b], 5, nomres, valres, codres,1)
 !
     matr(8) = valres(1)
     matr(9) = valres(2)
@@ -128,8 +124,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(6) = 'C2N3'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                r8b, 6, nomres, valres, codres,&
-                1)
+                [r8b], 6, nomres, valres, codres,1)
 !
     matr(16) = valres(1)
     matr(17) = valres(2)
@@ -148,8 +143,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     nomres(6) = 'C2M3'
 !
     call rcvala(zimat, ' ', phenom, 0, ' ',&
-                r8b, 6, nomres, valres, codres,&
-                1)
+                [r8b], 6, nomres, valres, codres,1)
 !
     matr(19) = valres(1)
     matr(20) = valres(2)

@@ -67,7 +67,7 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
 !
     logical :: axi, grand
     logical :: nonloc
-    integer :: k2ret, vij(3, 3), lij(3, 3)
+    integer :: k2ret(1), vij(3, 3), lij(3, 3)
     integer :: nddl, ndu, g
     integer :: kl, sa, ra, na, ia, ja, kk
     real(kind=8) :: geomm(3*27), jm, wm, epsm(6)
@@ -76,7 +76,7 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     real(kind=8) :: fm(3, 3)
     real(kind=8) :: w
     real(kind=8) :: tau(6), taudv(6), tauhy
-    real(kind=8) :: gradgm(3), c
+    real(kind=8) :: gradgm(3), c(1)
     real(kind=8) :: t1, t2
     real(kind=8) :: kr(6), id(3, 3)
     real(kind=8) :: am, ap, bm, boa, aa, bb, daa, dbb, dboa, d2boa
@@ -121,9 +121,9 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
     do g = 1, npg
 !
 ! - LONGUEUR CARACTERISTIQUE -> PARAMETRE C
-        c=0.d0
-        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', 0.d0, 1, 'C_GONF', c, k2ret, 0)
-        nonloc = k2ret.eq.0 .and. c.ne.0.d0
+        c(1)=0.d0
+        call rcvala(mate, ' ', 'NON_LOCAL', 0, ' ', [0.d0], 1, 'C_GONF', c(1), k2ret(1), 0)
+        nonloc = k2ret(1).eq.0 .and. c(1).ne.0.d0
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
         call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1,g), idff1, r, w, dff1)
@@ -182,7 +182,7 @@ subroutine nifnlg(ndim, nno1, nno2, nno3, npg, iw, vff1, vff2, vff3, idff1,&
         if (nonloc) then
             do ra = 1, nno2
                 kk = vg(ra)
-                t1 = c*ddot(ndim,gradgm,1,dff2(ra,1),nno2)
+                t1 = c(1)*ddot(ndim,gradgm,1,dff2(ra,1),nno2)
                 vect(kk) = vect(kk) + w*t1
             end do
         endif
