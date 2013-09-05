@@ -26,7 +26,6 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/ltnotb.h"
-#include "asterfort/malino.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/u2mesg.h"
 #include "asterfort/u2mess.h"

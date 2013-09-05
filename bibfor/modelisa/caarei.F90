@@ -28,8 +28,6 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/kndiff.h"
-#include "asterfort/mainoe.h"
 #include "asterfort/reliem.h"
 #include "asterfort/u2mesi.h"
 #include "asterfort/u2mesk.h"
