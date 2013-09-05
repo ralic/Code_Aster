@@ -47,7 +47,9 @@ La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
 """),
 
 
-
+26 : _(u"""
+La charge <%(k1)s> ne peut pas être pilotée.
+"""),
 
 
 27 : _(u"""

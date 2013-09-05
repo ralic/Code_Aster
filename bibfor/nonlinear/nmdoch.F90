@@ -36,6 +36,7 @@ subroutine nmdoch(lischa, iexcit, excit)
 #include "asterfort/liscad.h"
 #include "asterfort/lisccr.h"
 #include "asterfort/liscli.h"
+#include "asterfort/lisexp.h"
 #include "asterfort/lislfc.h"
 #include "asterfort/u2mesk.h"
 #include "asterfort/u2mess.h"
@@ -523,6 +524,13 @@ subroutine nmdoch(lischa, iexcit, excit)
                 endif
             endif
         endif
+!
+! ----- Some loads are prohibited with PILOTAGE
+!
+        if (npilo .gt. 1) then
+            call lisexp(lischa)
+        endif
+        
     endif
     call jedetr(lisdbl)
     call jedema()
