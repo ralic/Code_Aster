@@ -18,11 +18,11 @@
 interface
     subroutine exfonc(fonact, parmet, method, solveu, defico,&
                       sddyna)
-        integer :: fonact(*)
-        real(kind=8) :: parmet(*)
-        character(len=16) :: method(*)
-        character(len=19) :: solveu
-        character(len=24) :: defico
-        character(len=19) :: sddyna
+        integer, intent(in) :: fonact(*)
+        character(len=19), intent(in) :: solveu
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: defico
+        real(kind=8), intent(in) :: parmet(*)
+        character(len=16), intent(in) :: method(*)
     end subroutine exfonc
 end interface

@@ -3,25 +3,8 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
                   sddyna, sdcriq, mate, compoz, result,&
                   fonact)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+   implicit      none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
-!
-    implicit      none
 #include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterc/getfac.h"
@@ -46,24 +29,50 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 #include "asterfort/nmcpqu.h"
 #include "asterfort/nmlssv.h"
 #include "asterfort/u2mess.h"
-    integer :: fonact(*)
-    logical :: lunil, lcont
-    character(len=16) :: method(*)
-    real(kind=8) :: parcri(*), parmet(*)
-    character(len=19) :: solveu, lischa, sddyna, sdnume
-    character(len=24) :: sdcriq
-    character(len=24) :: mate, modele
-    character(len=24) :: defico
-    character(len=8) :: result
-    character(len=*) :: compoz
 !
-! ----------------------------------------------------------------------
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ROUTINE MECA_NON_LINE (INITIALISATION)
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! FONCTIONNALITES ACTIVEES
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-! ----------------------------------------------------------------------
+    real(kind=8), intent(in) :: parcri(*)
+    real(kind=8), intent(in) :: parmet(*)
+    character(len=16), intent(in) :: method(*)
+    character(len=19), intent(in) :: solveu
+    character(len=24), intent(in) :: modele
+    character(len=24), intent(in) :: defico
+    character(len=19), intent(in) :: lischa
+    logical, intent(in) :: lcont
+    logical, intent(in) :: lunil
+    character(len=19), intent(in) :: sdnume
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: sdcriq
+    character(len=24), intent(in) :: mate
+    character(len=*), intent(in) :: compoz
+    character(len=8), intent(in) :: result
+    integer, intent(inout) :: fonact(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! MECA_NON_LINE - Init
+!
+! Prepare active functionnalities information
+!
+! --------------------------------------------------------------------------------------------------
+!
 !
 ! IN  MODELE : MODELE MECANIQUE
 ! IN  DEFICO : SD DE DEFINITION DU CONTACT
@@ -83,25 +92,25 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! IN  RESULT : STRUCTURE DONNEE RESULTAT
 ! OUT FONACT : FONCTIONNALITES SPECIFIQUES ACTIVEES (VOIR ISFONC)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nocc, iret, nbss, nbsst, ibid
     integer :: nbfonc, iform, jslvk
     logical :: lbors, lfrot, lchoc, lallv
     logical :: lboucg, lboucf, lboucc
-    integer :: jsolve, ixfem, ichar, iflamb, imvibr, istab, nmatdi
+    integer :: ixfem, ichar, iflamb, imvibr, istab, nmatdi
     logical :: lsuiv, llapl, lcine, ldidi
     character(len=8) :: k8bid, repk
     character(len=16) :: nomcmd, k16bid, matdis
     character(len=19) :: compor
     character(len=24) :: metres, precon, errthm
-    logical :: lstat, ldyna, lgrot, lendo, larrno
+    logical :: lstat, ldyna, larrno
     logical :: lnewtc, lnewtf, lnewtg
     logical :: lexpl
     integer :: ifm, niv
     integer :: iarg, nsta
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
@@ -125,53 +134,46 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     ldyna = nomcmd(1:4).eq.'DYNA'
     lexpl = ndynlo(sddyna,'EXPLICITE')
 !
+    call jeveuo(solveu//'.SLVK', 'L', jslvk)
+    metres=zk24(jslvk)
+!
 ! --- ELEMENTS EN GRANDES ROTATIONS
 !
     call jeexin(sdnume(1:19)//'.NDRO', iret)
-    lgrot = iret.ne.0
+    if (iret.ne.0) fonact(15) = 1
 !
 ! --- ELEMENTS AVEC ENDO AUX NOEUDS
 !
     call jeexin(sdnume(1:19)//'.ENDO', iret)
-    lendo = iret.ne.0
+    if (iret.ne.0) fonact(40) = 1
 !
 ! --- RECHERCHE LINEAIRE
 !
     call getfac('RECH_LINEAIRE', nocc)
-    if (nocc .ne. 0) then
-        fonact(1) = 1
-    endif
+    if (nocc .ne. 0) fonact(1) = 1
 !
 ! --- PILOTAGE
 !
     if (lstat) then
         nocc = 0
         call getfac('PILOTAGE', nocc)
-        if (nocc .ne. 0) then
-            fonact(2) = 1
-        endif
+        if (nocc .ne. 0) fonact(2) = 1
     endif
 !
 ! --- LIAISON UNILATERALE
 !
-    if (lunil) then
-        fonact(12) = 1
-    endif
+    if (lunil) fonact(12) = 1
 !
 ! --- ENERGIE
 !
     call getfac('ENERGIE', nocc)
-    if (nocc .ne. 0) then
-        fonact(50) = 1
-    endif
+    if (nocc .ne. 0) fonact(50) = 1
 !
 ! --- PROJ_MODAL
 !
     if (ldyna) then
         call getfac('PROJ_MODAL', nocc)
-        if (nocc .ne. 0) then
-            fonact(51) = 1
-        endif
+        if (nocc .ne. 0) fonact(51) = 1
     endif
 !
 ! --- MATR_DISTRIBUEE
@@ -179,36 +181,25 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     matdis='NON'
     call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', 1, iarg, 1,&
                 matdis, nmatdi)
-    if (matdis .eq. 'OUI') then
-        fonact(52) = 1
-    endif
+    if (matdis .eq. 'OUI') fonact(52) = 1
 !
 ! --- DEBORST ?
 !
     call nmcpqu(compor, 'C_PLAN', 'DEBORST', lbors)
-    if (lbors) then
-        fonact(7) = 1
-    endif
+    if (lbors) fonact(7) = 1
 !
 ! --- CONVERGENCE SUR CRITERE EN CONTRAINTE GENERALISEE
 !
-    if (parcri(6) .ne. r8vide()) then
-        fonact(8) = 1
-    endif
+    if (parcri(6) .ne. r8vide()) fonact(8) = 1
 !
 ! --- CONVERGENCE SUR CRITERE NORME PAR FORC CMP
 !
-    if (parcri(7) .ne. r8vide()) then
-        fonact(35) = 1
-        if (ldyna) call u2mess('F', 'MECANONLINE5_53')
-    endif
+    if (parcri(7) .ne. r8vide()) fonact(35) = 1
 !
 ! --- X-FEM
 !
     call exixfe(modele, ixfem)
-    if (ixfem .ne. 0) then
-        fonact(6) = 1
-    endif
+    if (ixfem .ne. 0) fonact(6) = 1
 !
 ! --- CONTACT / FROTTEMENT
 !
@@ -249,9 +240,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
     if (lcont) then
         lallv = cfdisl(defico,'ALL_VERIF')
-        if (lallv) then
-            fonact(38) = 1
-        endif
+        if (lallv) fonact(38) = 1
     endif
 !
 ! --- BOUCLES EXTERNES CONTACT / FROTTEMENT
@@ -292,19 +281,11 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! ----- BOUCLES EXTERNES
 !
-        if (lboucg) then
-            fonact(31) = 1
-        endif
-        if (lboucf) then
-            fonact(32) = 1
-        endif
-        if (lboucc) then
-            fonact(33) = 1
-        endif
+        if (lboucg) fonact(31) = 1
+        if (lboucf) fonact(32) = 1
+        if (lboucc) fonact(33) = 1
 !
-        if (lboucg .or. lboucf .or. lboucc) then
-            fonact(34) = 1
-        endif
+        if (lboucg .or. lboucf .or. lboucc) fonact(34) = 1
     endif
 !
 ! --- NEWTON GENERALISE
@@ -318,15 +299,6 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
             if (lnewtc) fonact(53) = 1
             if (lnewtg) fonact(55) = 1
         endif
-    endif
-!
-! --- FETI
-!
-    call jeveuo(solveu//'.SLVK', 'L', jsolve)
-    if (zk24(jsolve)(1:4) .eq. 'FETI') then
-        fonact(11) = 1
-    else
-        fonact(11) = 0
     endif
 !
 ! --- AU MOINS UNE CHARGE SUIVEUSE
@@ -356,36 +328,18 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
     call dismoi('F', 'NB_SS_ACTI', modele, 'MODELE', nbss,&
                 k8bid, iret)
-    if (nbss .gt. 0) then
-        fonact(14) = 1
-    endif
+    if (nbss .gt. 0) fonact(14) = 1
 !
 ! --- CALCUL PAR SOUS-STRUCTURATION
 !
     call nmlssv('LECT', lischa, nbsst)
-    if (nbsst .gt. 0) then
-        fonact(24) = 1
-    endif
-!
-! --- ELEMENTS EN GRANDES ROTATIONS
-!
-    if (lgrot) then
-        fonact(15) = 1
-    endif
-!
-! --- ELEMENTS AVEC ENDO AUX NOEUDS
-!
-    if (lendo) then
-        fonact(40) = 1
-    endif
+    if (nbsst .gt. 0) fonact(24) = 1
 !
 ! --- CALCUL DE FLAMBEMENT
 !
     iflamb = 0
     call getfac('CRIT_STAB', iflamb)
-    if (iflamb .gt. 0) then
-        fonact(18) = 1
-    endif
+    if (iflamb .gt. 0) fonact(18) = 1
 !
 ! --- CALCUL DE STABILITE
 !
@@ -393,18 +347,14 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     call getvtx('CRIT_STAB', 'DDL_STAB', 1, iarg, 0,&
                 k16bid, nsta)
     istab = -nsta
-    if (istab .gt. 0) then
-        fonact(49) = 1
-    endif
+    if (istab .gt. 0) fonact(49) = 1
 !
 ! --- CALCUL DE MODES VIBRATOIRES
 !
     imvibr = 0
     if (ldyna) then
         call getfac('MODE_VIBR', imvibr)
-        if (imvibr .gt. 0) then
-            fonact(19) = 1
-        endif
+        if (imvibr .gt. 0) fonact(19) = 1
     endif
 !
 ! --- ERREUR EN TEMPS
@@ -418,108 +368,70 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- ALGORITHME IMPLEX
 !
     if (lstat) then
-        if (method(1) .eq. 'IMPLEX') then
-            fonact(28) = 1
-        else
-            fonact(28) = 0
-        endif
+        if (method(1) .eq. 'IMPLEX') fonact(28) = 1
     endif
 !
 ! --- ALGORITHME NEWTON_KRYLOV
 !
-    if (method(1) .eq. 'NEWTON_KRYLOV') then
-        fonact(48) = 1
-    else
-        fonact(48) = 0
-    endif
+    if (method(1) .eq. 'NEWTON_KRYLOV') fonact(48) = 1
 !
 ! --- ELEMENTS DIS_CHOC ?
 !
     call nmcpqu(compor, 'RELCOM', 'DIS_CHOC', lchoc)
-    if (lchoc) then
-        fonact(29) = 1
-    endif
+    if (lchoc) fonact(29) = 1
 !
 ! --- PRESENCE DE VARIABLES DE COMMANDE
 !
     call dismoi('F', 'EXI_VARC', mate, 'CHAM_MATER', ibid,&
                 repk, iret)
-    if (repk .eq. 'OUI') then
-        fonact(30) = 1
-    endif
+    if (repk .eq. 'OUI') fonact(30) = 1
 !
 ! --- MODELISATION THM ?
 !
     call dismoi('F', 'EXI_THM', modele, 'MODELE', ibid,&
                 repk, iret)
-    if (repk(1:3) .eq. 'OUI') then
-        fonact(37) = 1
-    endif
+    if (repk .eq. 'OUI') fonact(37) = 1
 !
 ! --- PRESENCE D'ELEMENTS UTILISANT STRX (PMF)
 !
     call dismoi('F', 'EXI_STRX', modele, 'MODELE', ibid,&
                 repk, iret)
-    if (repk .eq. 'OUI') then
-        fonact(56) = 1
-    endif
+    if (repk .eq. 'OUI') fonact(56) = 1
 !
 ! --- CONCEPT REENTRANT ?
 !
     call gcucon(result, 'EVOL_NOLI', iret)
-    if (iret .gt. 0) then
-        fonact(39) = 1
-    endif
+    if (iret .gt. 0) fonact(39) = 1
+!
+! --- SOLVEUR FETI ?
+!
+    if (metres .eq. 'FETI') fonact(11) = 1
 !
 ! --- SOLVEUR LDLT?
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
-    if (metres .eq. 'LDLT') then
-        fonact(41) = 1
-    endif
+    if (metres .eq. 'LDLT') fonact(41) = 1
 !
 ! --- SOLVEUR MULT_FRONT?
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
-    if (metres .eq. 'MULT_FRONT') then
-        fonact(42) = 1
-    endif
+    if (metres .eq. 'MULT_FRONT') fonact(42) = 1
 !
 ! --- SOLVEUR GCPC?
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
-    if (metres .eq. 'GCPC') then
-        fonact(43) = 1
-    endif
+    if (metres .eq. 'GCPC') fonact(43) = 1
 !
 ! --- SOLVEUR MUMPS?
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
-    if (metres .eq. 'MUMPS') then
-        fonact(44) = 1
-    endif
+    if (metres .eq. 'MUMPS') fonact(44) = 1
 !
 ! --- SOLVEUR PETSC?
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
-    if (metres .eq. 'PETSC') then
-        fonact(45) = 1
-    endif
+    if (metres .eq. 'PETSC') fonact(45) = 1
 !
 ! --- PRECONDITIONNEUR LDLT_SP?
 !
-    call jeveuo(solveu//'.SLVK', 'L', jslvk)
-    metres=zk24(jslvk)
     if (metres .eq. 'PETSC' .or. metres .eq. 'GCPC') then
         precon=zk24(jslvk-1+2)
-        if (precon .eq. 'LDLT_SP') then
-            fonact(46) = 1
-        endif
+        if (precon .eq. 'LDLT_SP') fonact(46) = 1
     endif
 !
 ! --- BLINDAGE ARRET=NON
@@ -530,6 +442,12 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! --- CALCUL DYNAMIQUE EXPLICITE
 !
     if (lexpl) fonact(54) = 1
+!
+! - Do elastic properties are functions ?
+!
+    call dismoi('F', 'ELAS_FO', mate, 'CHAM_MATER', ibid,&
+                repk, iret)
+    if (repk .eq. 'OUI') fonact(57) = 1
 !
 ! --- AFFICHAGE
 !
@@ -749,6 +667,10 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
         endif
         if (isfonc(fonact,'EXI_VARC')) then
             write (ifm,*) '<MECANONLINE> ...... VARIABLES DE COMMANDE'
+            nbfonc = nbfonc + 1
+        endif
+        if (isfonc(fonact,'ELAS_FO')) then
+            write (ifm,*) '<MECANONLINE> ...... Elasticite fonction'
             nbfonc = nbfonc + 1
         endif
 !

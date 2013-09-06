@@ -20,21 +20,21 @@ interface
                       defico, lischa, lcont, lunil, sdnume,&
                       sddyna, sdcriq, mate, compoz, result,&
                       fonact)
-        real(kind=8) :: parcri(*)
-        real(kind=8) :: parmet(*)
-        character(len=16) :: method(*)
-        character(len=19) :: solveu
-        character(len=24) :: modele
-        character(len=24) :: defico
-        character(len=19) :: lischa
-        logical :: lcont
-        logical :: lunil
-        character(len=19) :: sdnume
-        character(len=19) :: sddyna
-        character(len=24) :: sdcriq
-        character(len=24) :: mate
-        character(*) :: compoz
-        character(len=8) :: result
-        integer :: fonact(*)
+        real(kind=8), intent(in) :: parcri(*)
+        real(kind=8), intent(in) :: parmet(*)
+        character(len=16), intent(in) :: method(*)
+        character(len=19), intent(in) :: solveu
+        character(len=24), intent(in) :: modele
+        character(len=24), intent(in) :: defico
+        character(len=19), intent(in) :: lischa
+        logical, intent(in) :: lcont
+        logical, intent(in) :: lunil
+        character(len=19), intent(in) :: sdnume
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: sdcriq
+        character(len=24), intent(in) :: mate
+        character(len=*), intent(in) :: compoz
+        character(len=8), intent(in) :: result
+        integer, intent(inout) :: fonact(*)
     end subroutine nmfonc
 end interface

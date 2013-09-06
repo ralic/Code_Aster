@@ -2,6 +2,19 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
                   sddyna, numins, iterat, defico, metpre,&
                   metcor, reasma)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/diinst.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/u2mess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,26 +33,18 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/diinst.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/u2mess.h"
-    character(len=10) :: phase
-    real(kind=8) :: parmet(*)
-    character(len=16) :: method(*)
-    character(len=16) :: metcor, metpre
-    character(len=19) :: sddisc, sddyna
-    integer :: numins, iterat
-    character(len=24) :: defico
-    integer :: fonact(*)
-    logical :: reasma
+    character(len=10), intent(in) :: phase
+    real(kind=8), intent(in) :: parmet(*)
+    character(len=16), intent(in) :: method(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: numins
+    integer, intent(in) :: iterat
+    character(len=24), intent(in) :: defico
+    integer, intent(in) :: fonact(*)
+    character(len=16), intent(out) :: metcor
+    character(len=16), intent(out) :: metpre
+    logical, intent(out) :: reasma
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,7 +80,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
     integer :: reincr, reiter
     logical :: lmodim
     logical :: leltc, lctcd, lelas
-    logical :: lprem, ldyna, lamor, lchoc, lvarc
+    logical :: lprem, ldyna, lamor, lchoc, lvarc, l_elas_fo
 !
 ! ----------------------------------------------------------------------
 !
@@ -111,12 +116,13 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    lchoc = isfonc(fonact,'DIS_CHOC')
-    lvarc = isfonc(fonact,'EXI_VARC' )
+    ldyna     = ndynlo(sddyna,'DYNAMIQUE')
+    lamor     = ndynlo(sddyna,'MAT_AMORT')
+    lctcd     = isfonc(fonact,'CONT_DISCRET')
+    leltc     = isfonc(fonact,'ELT_CONTACT')
+    lchoc     = isfonc(fonact,'DIS_CHOC')
+    lvarc     = isfonc(fonact,'EXI_VARC' )
+    l_elas_fo = isfonc(fonact,'ELAS_FO' )
 !
 ! --- AJOUTE-T-ON UNE CONTRIBUTION DU CONTACT DISCRET DANS LA MATRICE ?
 !
@@ -196,7 +202,7 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 ! --- VARIABLES COMMANDES: LA MATRICE ELASTIQUE DOIT ETRE REACTUALISEE
 !
     if (lelas .and. phase .eq. 'PREDICTION') then
-        if (lvarc) then
+        if (lvarc .and. l_elas_fo) then
             reasma = .true.
         endif
     endif
