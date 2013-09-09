@@ -32,6 +32,8 @@ subroutine nirela(irela, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2
 !                                         2) ln(J) = G
 !                                         3) J = exp(G)
 !                                         4) J^2 = 1 + G
+!                                         5) ln(J) = ln(1 + G)
+!
 ! IN  JP     CHANGEMENT DE VOLUME EN T+
 ! IN  GM     GONFLEMENT EN T-
 ! IN  GP     GONFLEMENT EN T+
@@ -102,6 +104,20 @@ subroutine nirela(irela, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2
         dbb = 4.d0*jp
         dboa = 1.d0
         d2boa = 0.d0
+    else if (irela .eq. 5) then
+!-----------------------------------------------------------------------
+!    APPLICATION: A(G) = 1+G   ET   B(J) = ln(J)
+!-----------------------------------------------------------------------
+        am = 1.d0+gm
+        ap = 1.d0+gp
+        bp = log(jp)
+        boa = log(1.d0+gp)
+        aa = 1.d0/ap
+        bb = 1.d0
+        daa = -1.d0/(ap)**2
+        dbb = 0.d0
+        dboa = 1.d0/(ap)
+        d2boa = -1.d0/(ap)**2
     else
         ASSERT(.false.)
     endif
