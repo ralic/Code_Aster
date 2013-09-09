@@ -53,7 +53,7 @@ def Defi_Xmcourbe(X=None,Y=None,FUNCTION=None,courbe=None,legend='X',color=0,mar
 from Contrib.veri_matr_tang import VERI_MATR_TANG
 import numpy as np
 
-DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='NON'))
+DEBUT(PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'))
 
 # modules mecaniques [kPa]
 K=516.2E6
@@ -163,6 +163,8 @@ elif matr_tang:
 else:
   comp_incr =_F(RELATION='MOHR_COULOMB',);
   
+DEBUG(SDVERI='NON')
+  
 TAB_SIG=SIMU_POINT_MAT(INFO=2,
                   COMP_INCR=comp_incr,
                   MATER=SOL,
@@ -187,6 +189,7 @@ TAB_SIG=SIMU_POINT_MAT(INFO=2,
                                EPYZ=0.,),);
 IMPR_TABLE(TABLE=TAB_SIG,);
 
+DEBUG(SDVERI='OUI')
 # ================================================================
 #
 #            TEST DE LA MATRICE TANGENTE CONSISTENTE

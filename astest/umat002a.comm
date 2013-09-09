@@ -249,6 +249,8 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
+DEBUG(SDVERI='NON')
+
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
                                 TYPE_MATR_TANG='VERIFICATION',

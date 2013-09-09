@@ -385,6 +385,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
   DEFI_MATERIAU  = self.get_cmd('DEFI_MATERIAU')
   DETRUIRE       = self.get_cmd('DETRUIRE')
   FORMULE        = self.get_cmd('FORMULE')
+  DEBUG          = self.get_cmd('DEBUG')
   IMPR_FONCTION  = self.get_cmd('IMPR_FONCTION')
   SIMU_POINT_MAT = self.get_cmd('SIMU_POINT_MAT')
   TEST_TABLE     = self.get_cmd('TEST_TABLE')
@@ -785,12 +786,14 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                      SUBD_PAS=10,
                                      SUBD_NIVEAU=10,),)
       #       Resout le pb a deformation imposee
+          DEBUG(SDVERI='NON')
           U=SIMU_POINT_MAT(INFO=INFO,
                          MATER      = LIST_MATER[imat],
                          ARCHIVAGE = _F(LIST_INST = __tempsar),
                          INCREMENT=_F(LIST_INST=__DEFLIS2,),
                          **motscles
                               );
+          DEBUG(SDVERI='OUI')
           motscles={}
           if args['VERI_MATR_OPTION'] is not None :
               motscles['PRECISION']=args['VERI_MATR_OPTION'].List_F()[0]['PRECISION']

@@ -20,11 +20,9 @@
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE MOHR-COULOMB
 # PRESSION DE CONSOLIDATION P0 = 50KPA
 
-from Contrib.veri_matr_tang import VERI_MATR_TANG
 import numpy as np
 
-# Pour pouvoir utiliser VERI_MATR_TANG, il faut mettre SDVERI='NON'
-DEBUT(PAR_LOT='NON', DEBUG=_F(SDVERI='NON'),);
+DEBUT(PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'),);
 
 # modules mecaniques [kPa]
 K=516.2E6

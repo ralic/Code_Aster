@@ -22,7 +22,7 @@
 
 from Contrib.veri_matr_tang import VERI_MATR_TANG
 
-DEBUT(CODE=_F(NOM='COMP002I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON');
+DEBUT(CODE=_F(NOM='COMP002I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON',DEBUG=_F(SDVERI='OUI'));
 
 #parametres vitesse de sollicitation
 vitesse = 1.e-5
@@ -288,6 +288,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
+DEBUG(SDVERI='NON')
 RESU_TGT=SIMU_POINT_MAT(
                         COMP_INCR=_F(RELATION=compor,
                                      ITER_INTE_MAXI=100,

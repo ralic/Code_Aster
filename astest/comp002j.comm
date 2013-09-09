@@ -18,7 +18,7 @@
 
 from Contrib.veri_matr_tang import VERI_MATR_TANG
 
-DEBUT(CODE=_F(NOM='COMP002J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+DEBUT(CODE=_F(NOM='COMP002J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
 );
 
 # donnee materiau et fonction
@@ -267,6 +267,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = Linst,),
                                          SUBD_PAS=10,
                                          SUBD_NIVEAU=2,),)
 
+DEBUG(SDVERI='NON')
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,
                                 TYPE_MATR_TANG='VERIFICATION',
