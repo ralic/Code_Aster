@@ -26,7 +26,6 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
     character(len=8) :: mail
     character(len=*) :: nomob1
     logical :: coince
-!-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,6 +152,16 @@ subroutine utmasu(mail, kdim, nlima, lima, nomob1,&
 !                -- SI IPOS=0, LES 2 MAILLES SONT DU MEME COTE, ON PEUT
 !                   CONSERVER LA 1ERE.
                 else
+                    if (indmai.lt.0) then
+                       ASSERT(indmai.eq.-1 .or. indmai.eq.-2)
+                       if (indmai.eq.-1) then
+                          call jenuno(jexnum(mail//'.NOMMAI', im1), valk( 1))
+                       else
+                          call jenuno(jexnum(mail//'.NOMMAI', im2), valk( 1))
+                       endif
+                       call u2mesk('F','CALCULEL2_32', 1,valk)
+                    endif
+
 !                -- SINON, IM2 ET IM1 SONT DE PART ET D'AUTRE DE NUMA
                     if (.not.coince) then
                         call jenuno(jexnum(mail//'.NOMMAI', numa), valk( 1))

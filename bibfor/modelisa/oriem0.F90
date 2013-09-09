@@ -1,6 +1,6 @@
 subroutine oriem0(kdim, type, coor, lino1, nbno1,&
                   lino2, nbno2, lino3, nbno3, ier,&
-                  imai)
+                  indmai)
     implicit   none
 ! person_in_charge: jacques.pellet at edf.fr
 #include "asterfort/assert.h"
@@ -9,12 +9,17 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 #include "asterfort/jemarq.h"
 #include "asterfort/provec.h"
 #include "blas/ddot.h"
-    integer :: lino1(*), nbno1, lino2(*), nbno2, lino3(*), nbno3
-    integer :: ier, imai
-    real(kind=8) :: coor(*)
-    character(len=2) :: kdim
-    character(len=8) :: type
-!.======================================================================
+    character(len=2),intent(in) :: kdim
+    character(len=8),intent(in) :: type
+    real(kind=8),intent(in) :: coor(*)
+    integer,intent(in) :: lino1(*)
+    integer,intent(in) :: nbno1
+    integer,intent(in) :: lino2(*)
+    integer,intent(in) :: nbno2
+    integer,intent(in) :: lino3(*)
+    integer,intent(in) :: nbno3
+    integer,intent(out) :: ier
+    integer,intent(out) :: indmai
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +39,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 ! BUT :  DETERMINER LA POSITION RELATIVE DE 2 MAILLES "VOLUMIQUES"
 !        (LINO1 ET LINO2) PAR RAPPORT A UNE MAILLE DE "PEAU" (LINO3)
 !        ON SUPPOSE QUE LES NOEUDS DE LA MAILLE DE PEAU APPARTIENNENT
-!        AUX 2 MAILLES VOLUMIQUES.
+!        AUX 2 MAILLES "VOLUMIQUES".
 ! ======================================================================
 ! IN  : KDIM   : '3D' / '2D'
 ! IN  : TYPE   : TYPE DE LA MAILLE DE PEAU (TRIA3, QUAD4, SEG2, ...)
@@ -44,13 +49,14 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 ! IN  : NBNO2  : NB DE NOEUDS DE LINO2
 ! IN  : LINO3  : LISTE DES NOEUDS DE LA MAILLE DE PEAU (2.5D OU 1.5D)
 ! IN  : NBNO3  : NB DE NOEUDS DE DE LA MAILLE DE PEAU
-! OUT : IER    : = 0  MAILLE 1 ET MAILLES 2 DU MEME COTE (PAR RAPPORT
-!                     A LA MAILLE DE PEAU)
+! OUT : IER    : = 0 : LES 2 MAILLES 1 ET 2 SONT DU MEME COTE
 !                = 1  SINON
-! OUT : IMAI   : = /0 /1 /2
-!          SI IER =0 :  IMAI = 0
-!          SINON:  IMAI = 1 OU 2
-!              IMAI EST LE NUMERO DE LA MAILLE QUI A LA MEME NORMALE
+! OUT : indmai   : = /0 /1 /2
+!          SI IER = 0 :  indmai = 0
+!          SI IER = 1 :
+!            / indmai = -1 OU -2 : ON NE PEUT PAS REPONDRE POUR LA MAILLE 1 OU 2
+!            / indmai = 1 OU 2
+!              indmai EST LE NUMERO DE LA MAILLE QUI A LA MEME NORMALE
 !              SORTANTE QUE LA MAILLE DE PEAU.
 !.========================= DEBUT DES DECLARATIONS ====================
 !
@@ -94,6 +100,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
         nor1(1)=-n1n2(2)
         nor1(2)=n1n2(1)
         nor1(3)=n1n2(3)
+        ASSERT(ddot(3,nor1,1,nor1,1).gt.0)
     endif
 !
 !
@@ -136,24 +143,33 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 60  end do
     ASSERT(.false.)
 70  continue
-!
-!
+
+
 !     LES MAILLES 1 ET 2 SONT ELLES DU MEME COTE PAR RAPPORT
 !     A LA MAILLE DE PEAU ?
 !     -------------------------------------------------------
-    ASSERT(ps1.ne.0.d0 .and. ps2.ne.0.d0)
-    ier=1
-    if ((ps1.gt.0.and.ps2.gt.0) .or. (ps1.lt.0.and.ps2.lt.0)) ier=0
-!
-    imai=0
-    if (ier .ne. 0) then
-        if (ps1 .lt. 0) then
-            imai=1
-        else
-            imai=2
-        endif
+
+!   -- si l'un des mailles est degeneree, on ne peut pas repondre :
+    if (ps1.eq.0.d0) then
+       ier=1
+       indmai=-1
+       goto 999
     endif
-!
+    if (ps2.eq.0.d0) then
+       ier=1
+       indmai=-2
+       goto 999
+    endif
+
+    if ((ps1.gt.0.and.ps2.gt.0) .or. (ps1.lt.0.and.ps2.lt.0)) then
+       ier=0
+       indmai=0
+    else
+       ier=1
+       if (ps1 .lt. 0) indmai=1
+       if (ps2 .lt. 0) indmai=2
+    endif
+
+999 continue
     call jedema()
-!
 end subroutine

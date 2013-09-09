@@ -196,6 +196,20 @@ Erreur utilisateur dans la commande AFFE_CARA_ELEM :
   sur un élément qui ne sait pas traiter l'excentrement (maille %(k1)s).
 """),
 
+32: _(u"""
+Erreur utilisateur :
+  On cherche à déterminer de quel coté se situe une maille
+  par rapport à une maille de "peau".
+  Mais cette maille est dégénérée : elle a une arrête de longueur nulle,
+  ce qui empêche de calculer sa normale "sortante".
+  La maille "coupable" est : %(k1)s
+
+Risques et conseils :
+  Si le problème concerne les mots clés ORIE_PEAU_3D (ou ORIE_PEAU_2D)
+  de la commande MODI_MAILLAGE, vous pouvez utiliser les mots clés 
+  GROUP_MA_VOLU (ou GROUP_MA_SURF) pour éviter de traiter certaines mailles.
+"""),
+
 33: _(u"""
 Erreur Utilisateur :
  Pour le modèle  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
