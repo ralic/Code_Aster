@@ -47,9 +47,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 FPRES=DEFI_CONSTANTE(NOM_RESU='PRES',
                      VALE=100000000.0,)
 
+
+
 ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-CH_P=AFFE_CHAR_MECA_F(MODELE=MODELE,
+CH_PF=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO='LP2P4',
                                      DY=ZERO,),
                                    _F(GROUP_NO='LP1P111',
@@ -69,7 +71,7 @@ TEMPLI=DEFI_LIST_REEL(DEBUT=0.0,
 
 RIGIEL=CALC_MATR_ELEM( MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
-                       CHARGE=CH_P,
+                       CHARGE=CH_PF,
                        OPTION='RIGI_MECA')
 
 MASSEL=CALC_MATR_ELEM( MODELE=MODELE,
@@ -81,7 +83,7 @@ AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHAM_MATER=CHAMPMAT,
                               RIGI_MECA = RIGIEL,
                               MASS_MECA = MASSEL,
-                              CHARGE=CH_P
+                              CHARGE=CH_PF
                             )
 
 NUMEROTA=NUME_DDL( MATR_RIGI=RIGIEL)
@@ -107,18 +109,11 @@ evol=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        MATR_RIGI=RIGI,
                        MATR_AMOR=AMORT,
                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                       EXCIT=_F(CHARGE=CH_P,
+                       EXCIT=_F(CHARGE=CH_PF,
                                 FONC_MULT=FONC,),
                        INCREMENT=_F(LIST_INST=TEMPLI,),
                        ARCHIVAGE=_F(PAS_ARCH=100,),);
-#CALC_CHAMP( reuse=evol,RESULTAT=evol,
-#                      MODELE=MODELE,
-#                      CHAM_MATER=CHAMPMAT,
-#                       EXCIT=_F(CHARGE=CH_P,
-#                                FONC_MULT=FONC,),
-#                       TOUT_ORDRE='OUI',
-#                       CONTRAINTE=('SIGM_ELNO',)
-#          )
+
 
 THETA1=CALC_THETA( MODELE=MODELE,
                    DIRECTION=(1.,0.,0.,),
@@ -147,21 +142,21 @@ THETA3=CALC_THETA( MODELE=MODELE,
 G1=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA1,SYME='OUI'),
-                    EXCIT=_F(CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
 G2=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA2,SYME='OUI'),
-                    EXCIT=_F(CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
 G3=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA3,SYME='OUI'),
-                    EXCIT=_F(CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
@@ -169,7 +164,7 @@ G3=CALC_G(          RESULTAT=evol,
 G4=CALC_G(          THETA=_F(THETA=THETA1,SYME='OUI'),
                     RESULTAT=evol,
                     NUME_ORDRE=5,
-                    EXCIT=_F(CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
@@ -178,6 +173,27 @@ IMPR_TABLE ( TABLE   = G1 );
 IMPR_TABLE ( TABLE   = G2 );
 
 IMPR_TABLE ( TABLE   = G3 );
+
+# TEST de FONC_MULT + charge non fonction dans CALC_G (Issue21096)
+F_UNIT=DEFI_CONSTANTE(NOM_RESU='PRES',
+                     VALE=1.0,)
+
+CH_P=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='LP2P4',
+                                     DY=0.,),
+                                   _F(GROUP_NO='LP1P111',
+                                      DX=0.,),
+                                  _F(GROUP_NO='P4',
+                                     DX=0.,DY=0.,),),
+                        PRES_REP=_F(GROUP_MA='LP1P2',
+                                    PRES=100000000.,),);
+
+G5=CALC_G(          RESULTAT=evol,
+                    TOUT_ORDRE='OUI',
+                    THETA=_F(THETA=THETA2,SYME='OUI'),
+                    EXCIT=_F(CHARGE=CH_P,
+                             FONC_MULT=F_UNIT,),
+                  )
 
 
 
@@ -247,6 +263,38 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=1.703000E6,
            NOM_PARA='G',
            TABLE=G2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
+
+############
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 5.69165277E+05,
+           VALE_REFE=5.67700E5,
+           NOM_PARA='G',
+           TABLE=G5,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 1.13176716E+06,
+           VALE_REFE=1.135000E6,
+           NOM_PARA='G',
+           TABLE=G5,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.014,
+           VALE_CALC= 1.68567971E+06,
+           VALE_REFE=1.703000E6,
+           NOM_PARA='G',
+           TABLE=G5,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,),
            )

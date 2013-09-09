@@ -1,5 +1,18 @@
 subroutine liscnv(phenoz, base, lisold, lisnew)
 !
+    implicit      none
+!
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/liscn1.h"
+#include "asterfort/liscn2.h"
+#include "asterfort/liscrs.h"
+#include "asterfort/lisdef.h"
+#include "asterfort/lisnnl.h"
+#include "asterfort/lissav.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,20 +30,10 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/liscn1.h"
-#include "asterfort/liscn2.h"
-#include "asterfort/liscrs.h"
-#include "asterfort/lisdef.h"
-#include "asterfort/lisnnl.h"
-#include "asterfort/lissav.h"
-    character(len=*) :: phenoz
-    character(len=19) :: lisold, lisnew
-    character(len=1) :: base
+    character(len=*), intent(in) :: phenoz
+    character(len=1), intent(in) :: base
+    character(len=19), intent(in) :: lisold
+    character(len=19), intent(in) :: lisnew
 !
 ! ----------------------------------------------------------------------
 !
@@ -108,8 +111,8 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 !
 ! ----- RECUPERATION FONCTION MULTIPLICATRICE
 !
-        call liscn1(lisold, nbchar, ichar, nomfct, typfct,&
-                    phase, npuis)
+        call liscn1(lisold, ichar, nomfct, typfct, phase, &
+                    npuis)
 !
 ! ----- SAUVEGARDE DES INFORMATIONS
 !

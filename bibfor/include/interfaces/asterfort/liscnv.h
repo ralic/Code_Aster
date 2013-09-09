@@ -15,11 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine liscnv(phenoz, base, lisold, lisnew)
-        character(*) :: phenoz
-        character(len=1) :: base
-        character(len=19) :: lisold
-        character(len=19) :: lisnew
+        character(len=*), intent(in) :: phenoz
+        character(len=1), intent(in) :: base
+        character(len=19), intent(in) :: lisold
+        character(len=19), intent(in) :: lisnew
     end subroutine liscnv
-end interface 
+end interface

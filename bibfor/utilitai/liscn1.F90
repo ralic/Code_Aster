@@ -1,5 +1,12 @@
-subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
-                  phase, npuis)
+subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
+                  npuis)
+!
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,16 +25,12 @@ subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=19) :: lisold
-    character(len=16) :: typfct
-    character(len=8) :: nomfct
-    real(kind=8) :: phase
-    integer :: npuis, ichar, nbchar
+    character(len=19), intent(in) :: lisold
+    integer, intent(in)  :: ichar
+    character(len=16) , intent(out) :: typfct
+    character(len=8), intent(out)  :: nomfct
+    real(kind=8), intent(out)  :: phase
+    integer, intent(out)  :: npuis
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,9 +47,8 @@ subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
 !
 ! ----------------------------------------------------------------------
 !
-    character(len=24) :: infcha, fomult
-    integer :: jinfch, jalifc
-    integer :: iinf1, iinf2
+    character(len=24) :: fomult
+    integer :: jalifc
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,9 +56,7 @@ subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
 !
 ! - ACCES ANCIENNE SD
 !
-    infcha = lisold(1:19)//'.INFC'
     fomult = lisold(1:19)//'.FCHA'
-    call jeveuo(infcha, 'L', jinfch)
     call jeveuo(fomult, 'L', jalifc)
 !
 ! - INITIALISATIONS
@@ -65,24 +65,9 @@ subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
     npuis = 0
     typfct = 'CONST_REEL'
     nomfct = zk24(jalifc+ichar-1)(1:8)
-!
-    iinf1 = zi(jinfch+ichar)
-    if ((iinf1.eq.-2) .or. (iinf1.eq.-3) .or. (iinf1.eq.6) .or. (iinf1.eq.2) .or.&
-        (iinf1.eq.3)) then
+    if (nomfct(1:8).ne.'&&NMDOME'.and.nomfct.ne.' ') then
         typfct = 'FONCT_REEL'
-    endif
-!
-    iinf2 = zi(jinfch+nbchar+ichar)
-    if ((iinf2.eq.2) .or. (iinf2.eq.3)) then
-        typfct = 'FONCT_REEL'
-    endif
-!
-! - Cas des fonctions constantes
-!
-    if (typfct.eq.'FONCT_REEL') then
-      if (nomfct(1:2).eq.'&&') typfct = 'CONST_REEL'
-    endif
-
+    endif    
 !
     call jedema()
 end subroutine

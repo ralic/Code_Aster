@@ -15,15 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
-    subroutine liscn1(lisold, nbchar, ichar, nomfct, typfct,&
-                      phase, npuis)
-        character(len=19) :: lisold
-        integer :: nbchar
-        integer :: ichar
-        character(len=8) :: nomfct
-        character(len=16) :: typfct
-        real(kind=8) :: phase
-        integer :: npuis
+interface
+    subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
+                      npuis)
+        character(len=19), intent(in) :: lisold
+        integer, intent(in)  :: ichar
+        character(len=16) , intent(out) :: typfct
+        character(len=8), intent(out)  :: nomfct
+        real(kind=8), intent(out)  :: phase
+        integer, intent(out)  :: npuis
     end subroutine liscn1
-end interface 
+end interface
