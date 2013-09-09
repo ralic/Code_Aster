@@ -190,30 +190,29 @@ cata_msg={
 
 
 35: _(u"""
- Attention, FREQ_FOND <0 àl'instant t= %(k1)s s. 
-
+Attention, FREQ_FOND < 0 à l'instant t= %(k1)s s. 
 """),
 
 36: _(u"""
- Tolérance sur l'ajustement du spectre au tirage %(i1)d:
- L'erreur %(k1)s vaut %(r1).2f %% ce qui est supérieur à la borne de %(r2).2f %% demandée. 
+Tolérance sur l'ajustement du spectre au tirage %(i1)d:
+L'erreur %(k1)s vaut %(r1).2f %% ce qui est supérieur à la borne de %(r2).2f %% demandée. 
 """),
 
-
 37: _(u"""
- Erreur, fréquence max Fmax = %(k1)s Hz trop elevée, il faut Fmax<100Hz pour cette modélisation. 
-
+La fréquence maximale du spectre vaut %(k1)s Hz. 
+Il faut des fréquences inférieures à 100 Hz pour la modélisation SPEC_FRACTILE. 
 """),
 
 38: _(u"""
- Il faut faire plus qu'un seul tirage avec l'option SPEC_MEDIANE. 
-
+Il faut faire plus d'un seul tirage avec l'option SPEC_MEDIANE. 
 """),
 
 39: _(u"""
- Attention: la durée de la simulation TT=%(k1)s s est supérieure à 3 fois la phase forte. 
-        ceci peut conduire à des résultats moins bons: réduire NB_POINT.
-
+Attention:
+    La durée de la simulation vaut %(k1)s s. Elle est supérieur à trois fois la phase forte. 
+    Ceci peut conduire à des résultats moins bons.
+Conseil:
+    Réduire NB_POINT.
 """),
 
 }

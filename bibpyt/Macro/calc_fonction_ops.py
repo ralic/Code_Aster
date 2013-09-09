@@ -35,7 +35,7 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe
-from Utilitai.gauss_process  import  ACCE2SRO   
+from Utilitai.gauss_process  import  ACCE2SRO
 
 from Utilitai.Utmess import  UTMESS
 from Macro.defi_inte_spec_ops import tocomplex
