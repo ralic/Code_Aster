@@ -211,4 +211,8 @@ Conseil:
     Réduire NB_POINT.
 """),
 
+40: _(u"""
+ Le MULT_APPUI n'est compatible qu'avec les modes classiques et ne fonctionne pas avec les modes issus de la sous-structuration
+"""),
+
 }

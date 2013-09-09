@@ -71,12 +71,12 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     integer :: ltype, nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod, nbnot, nbsst
     integer :: neq, neqs, nno, numo, nutars, llref2, llref3, elim, lmoet
     integer :: neqet, lmapro, neqred, lsilia, numsst, lsst
-    integer :: iadpar(9)
+    integer :: iadpar(12)
     integer :: vali(2)
-    real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek
+    real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek, fpartx, fparty, fpartz
     real(kind=8) :: genem, mat(3, 3), omeg2, rbid
     character(len=8)  :: basmod, macrel, modgen, soutr, kbid
-    character(len=16) :: depl, nompar(9)
+    character(len=16) :: depl, nompar(12)
     character(len=19) :: raid, numddl, numgen, chamne
     character(len=24) :: crefe(2), chamol, chamba, indirf, seliai, sizlia, sst
     character(len=24) :: valk, nomsst, intf
@@ -87,8 +87,9 @@ subroutine regegl(nomres, resgen, mailsk, profno)
     data depl   /'DEPL            '/
     data soutr  /'&SOUSSTR'/
     data nompar /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE',&
-     &             'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
-     &             'TYPE_MODE'/
+     &            'MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',&
+     &            'FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ',&
+     &            'TYPE_MODE'/
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -360,11 +361,14 @@ subroutine regegl(nomres, resgen, mailsk, profno)
             endif
 30      continue
 !
+        fpartx = efmasx/genem
+        fparty = efmasy/genem
+        fpartz = efmasz/genem
         efmasx = efmasx*efmasx/genem
         efmasy = efmasy*efmasy/genem
         efmasz = efmasz*efmasz/genem
         call rsnoch(nomres, depl, i)
-        call rsadpa(nomres, 'E', 9, nompar, i,&
+        call rsadpa(nomres, 'E', 12, nompar, i,&
                     0, iadpar, kbid)
         zr(iadpar(1)) = freq
         zr(iadpar(2)) = genek
@@ -374,7 +378,10 @@ subroutine regegl(nomres, resgen, mailsk, profno)
         zr(iadpar(6)) = efmasx
         zr(iadpar(7)) = efmasy
         zr(iadpar(8)) = efmasz
-        zk16(iadpar(9)) = 'MODE_DYN'
+        zr(iadpar(9)) = fpartx
+        zr(iadpar(10)) = fparty
+        zr(iadpar(11)) = fpartz
+        zk16(iadpar(12)) = 'MODE_DYN'
 !
         call jelibe(chamol)
 !

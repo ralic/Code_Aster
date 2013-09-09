@@ -103,10 +103,10 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     real(kind=8) :: temps
     logical :: prim, secon, glob
     character(len=4) :: ctyp
-    character(len=8) :: k8b, nume, noeu, noma
+    character(len=8) :: k8b, noeu, noma
     character(len=15) :: motfa1
     character(len=16) :: nomsy, nomsy2, nopara(nbpara)
-    character(len=19) :: kvec, kval
+    character(len=19) :: kvec, kval, moncha
     character(len=24) :: kvx1, kvx2, kve2, kve3, kve4, kve5, obj1, obj2
     character(len=24) :: grnoeu
     integer :: iarg
@@ -124,8 +124,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     kve3 = '&&ASCALC.REP_DIR'
     kve4 = '&&ASCALC.TABS'
     kve5 = '&&ASCALC.C_REP_MOD_RIG'
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                nume, iret)
+    call rsexch('F', mome, 'DEPL', 1, moncha, ier)
 !
     call getfac('COMB_DEPL_APPUI', ndepl)
     if (ndepl .ne. 0) then
@@ -306,7 +305,7 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
 !              ----CALCUL DE L ACCELERATION ABSOLUE
 !
                 call asacce(nomsy, monoap, muapde, nbsup, neq,&
-                            nbmode, id, nume, zr(jmod), zr(jval),&
+                            nbmode, id, moncha, zr(jmod), zr(jval),&
                             spectr, zr( jcrer), zr(jcrep), nbdis)
 !
 !              --- CALCUL DES RECOMBINAISONS PAR DIRECTIONS---

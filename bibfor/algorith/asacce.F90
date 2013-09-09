@@ -1,5 +1,5 @@
 subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
-                  nbmode, id, nume, vecmod, parmod,&
+                  nbmode, id, moncha, vecmod, parmod,&
                   spectr, recmor, recmod, nbdis)
     implicit  none
 #include "jeveux.h"
@@ -12,7 +12,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
     real(kind=8) :: vecmod(neq, *), parmod(nbmode, *), spectr(*)
     real(kind=8) :: recmod(nbsup, neq, *), recmor(nbsup, neq, *)
     character(len=16) :: nomsy
-    character(len=*) :: nume
+    character(len=*) :: moncha
     logical :: monoap, muapde
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -86,7 +86,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 !
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
-            call pteddl('NUME_DDL', nume, 1, nomcmp(id), neq,&
+            call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
                         zi(juni))
 !
             gamma0 = spectr(id+3*(nbmode-1))
@@ -110,7 +110,7 @@ subroutine asacce(nomsy, monoap, muapde, nbsup, neq,&
 !
 !           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             call wkvect('&&ASTRON.VECTEUR_UNIT', 'V V I', neq, juni)
-            call pteddl('NUME_DDL', nume, 1, nomcmp(id), neq,&
+            call pteddl('CHAM_NO', moncha, 1, nomcmp(id), neq,&
                         zi(juni))
 !
             gamma0 = spectr(id+3*(nbmode-1)+3*nbmode*(is-1))

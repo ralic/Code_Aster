@@ -1,0 +1,755 @@
+# TITRE CALCUL SISMIQUE DE LA TUYAUTERIE BM3 (TEST NRC) - CALCUL PAR SSD
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDLL149C',
+              NIV_PUB_WEB='INTERNET',),);
+
+MA=LIRE_MAILLAGE(UNITE=20,);
+
+MA1=LIRE_MAILLAGE(UNITE=21,);
+
+MA2=LIRE_MAILLAGE(UNITE=22,);
+
+# -------------------------------------------------------------
+# MODELISATION POUTRES DROITES ET COURBES DE TIMOCHENKO
+# ------------------------------------------------------------- 
+
+MODELE=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=(_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),
+                         _F(GROUP_MA=('E2','E5','E7','E13','E16','E19','E23','E26','E29','E35',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_C_T',),
+                         _F(GROUP_MA=('R1','R4','R7','R11','R15','R17','R23','R36','R38','R31',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
+
+MODEL1=AFFE_MODELE(MAILLAGE=MA1,
+                   AFFE=(_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),
+                         _F(GROUP_MA=('E2','E5','E7','E13','E16','E19',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_C_T',),
+                         _F(GROUP_MA=('R1','R4','R7','R11','R15','R17',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
+
+MODEL2=AFFE_MODELE(MAILLAGE=MA2,
+                   AFFE=(_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),
+                         _F(GROUP_MA=('E23','E26','E29','E35',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_C_T',),
+                         _F(GROUP_MA=('R23','R36','R38','R31',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
+
+# -------------------------------------------------------------
+# CARACTERISTIQUES DES SECTIONS ET DES RAIDEURS
+# ------------------------------------------------------------- 
+#SEC1:
+R1 = 1.75;
+
+e1 = 0.216;
+
+rc1 = 4.5;
+
+lambda1 = ((e1 * rc1) / ((R1 - (e1 / 2.0)) ** 2));
+
+cflex1 = (1.65 / lambda1);
+
+
+#SEC2:
+R2 = 2.25;
+
+e2 = 0.237;
+
+rc2 = 6.0;
+
+lambda2 = ((e2 * rc2) / ((R2 - (e2 / 2.0)) ** 2));
+
+cflex2 = (1.65 / lambda2);
+
+
+#SEC3:
+R3 = 4.3125;
+
+e3 = 0.322;
+
+rc3 = 12.0;
+
+lambda3 = ((e3 * rc3) / ((R3 - (e3 / 2.0)) ** 2));
+
+cflex3 = (1.65 / lambda3);
+
+
+#RAIDEUR :
+raideur1 = 1e+20;
+
+raideur2 = 100000000000.0;
+
+raideur3 = 100000000.0;
+
+raideur4 = 100000.0;
+
+
+#AFFECTATION :
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
+                        POUTRE=(_F(GROUP_MA='SEC1',
+                                   SECTION='CERCLE',
+                                   CARA=('R','EP',),
+                                   VALE=(R1,e1,),),
+                                _F(GROUP_MA='SEC2',
+                                   SECTION='CERCLE',
+                                   CARA=('R','EP',),
+                                   VALE=(R2,e2,),),
+                                _F(GROUP_MA='SEC3',
+                                   SECTION='CERCLE',
+                                   CARA=('R','EP',),
+                                   VALE=(R3,e3,),),),
+                        DISCRET=(_F(CARA='K_TR_D_L',
+                                    GROUP_MA='R1',
+                                    VALE=(raideur2,raideur2,raideur2,raideur1,raideur1,raideur1,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R4',
+                                    VALE=(raideur3,0.,raideur3,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R7',
+                                    VALE=(0.,raideur3,0.,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R11',
+                                    VALE=(0.,raideur3,raideur4,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R15',
+                                    VALE=(raideur4,0.,0.,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R17',
+                                    VALE=(0.,raideur3,raideur4,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R36',
+                                    VALE=(0.,raideur3,raideur4,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R38',
+                                    VALE=(raideur2,raideur2,raideur2,raideur1,raideur1,raideur1,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R23',
+                                    VALE=(raideur4,raideur3,0.,0.,0.,0.,),),
+                                 _F(CARA='K_TR_D_L',
+                                    GROUP_MA='R31',
+                                    VALE=(raideur2,raideur2,raideur2,raideur1,raideur1,raideur1,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R1',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R4',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R7',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R11',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R15',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R17',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R36',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R38',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R23',
+                                    VALE=(0.,0.,0.,0.,),),
+                                 _F(CARA='M_TR_D_L',
+                                    GROUP_MA='R31',
+                                    VALE=(0.,0.,0.,0.,),),),
+                        DEFI_ARC=(_F(GROUP_MA='E2',
+                                     CENTRE=(15.,-4.5,0.,),
+                                     RAYON=rc1,
+                                     COEF_FLEX=cflex1,),
+                                  _F(GROUP_MA='E5',
+                                     CENTRE=(19.5,-199.5,4.5,),
+                                     RAYON=rc1,
+                                     COEF_FLEX=cflex1,),
+                                  _F(GROUP_MA='E7',
+                                     CENTRE=(24.,-204.,139.5,),
+                                     RAYON=rc1,
+                                     COEF_FLEX=cflex1,),
+                                  _F(GROUP_MA='E13',
+                                     CENTRE=(483.,-204.,148.5,),
+                                     RAYON=rc1,
+                                     COEF_FLEX=cflex1,),
+                                  _F(GROUP_MA='E16',
+                                     CENTRE=(492.,-204,235.5,),
+                                     RAYON=rc1,
+                                     COEF_FLEX=cflex1,),
+                                  _F(GROUP_MA='E19',
+                                     CENTRE=(723.,-208.5,240.,),
+                                     RAYON=rc1,
+                                     COEF_FLEX=cflex1,),
+                                  _F(GROUP_MA='E23',
+                                     CENTRE=(733.5,-264.,190.,),
+                                     RAYON=rc2,
+                                     COEF_FLEX=cflex2,),
+                                  _F(GROUP_MA='E26',
+                                     CENTRE=(845.5,-264.,178.,),
+                                     RAYON=rc2,
+                                     COEF_FLEX=cflex2,),
+                                  _F(GROUP_MA='E29',
+                                     CENTRE=(851.5,-270.,142.,),
+                                     RAYON=rc2,
+                                     COEF_FLEX=cflex2,),
+                                  _F(GROUP_MA='E35',
+                                     CENTRE=(739.5,-264.,414.,),
+                                     RAYON=rc3,
+                                     COEF_FLEX=cflex3,),),);
+
+CARA1=AFFE_CARA_ELEM(MODELE=MODEL1,
+                     POUTRE=_F(GROUP_MA='SEC1',
+                               SECTION='CERCLE',
+                               CARA=('R','EP',),
+                               VALE=(R1,e1,),),
+                     DISCRET=(_F(CARA='K_TR_D_L',
+                                 GROUP_MA='R1',
+                                 VALE=(raideur2,raideur2,raideur2,raideur1,raideur1,raideur1,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R4',
+                                 VALE=(raideur3,0.,raideur3,0.,0.,0.,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R7',
+                                 VALE=(0.,raideur3,0.,0.,0.,0.,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R11',
+                                 VALE=(0.,raideur3,raideur4,0.,0.,0.,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R15',
+                                 VALE=(raideur4,0.,0.,0.,0.,0.,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R17',
+                                 VALE=(0.,raideur3,raideur4,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R1',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R4',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R7',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R11',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R15',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R17',
+                                 VALE=(0.,0.,0.,0.,),),),
+                     DEFI_ARC=(_F(GROUP_MA='E2',
+                                  CENTRE=(15.,-4.5,0.,),
+                                  RAYON=rc1,
+                                  COEF_FLEX=cflex1,),
+                               _F(GROUP_MA='E5',
+                                  CENTRE=(19.5,-199.5,4.5,),
+                                  RAYON=rc1,
+                                  COEF_FLEX=cflex1,),
+                               _F(GROUP_MA='E7',
+                                  CENTRE=(24.,-204.,139.5,),
+                                  RAYON=rc1,
+                                  COEF_FLEX=cflex1,),
+                               _F(GROUP_MA='E13',
+                                  CENTRE=(483.,-204.,148.5,),
+                                  RAYON=rc1,
+                                  COEF_FLEX=cflex1,),
+                               _F(GROUP_MA='E16',
+                                  CENTRE=(492.,-204,235.5,),
+                                  RAYON=rc1,
+                                  COEF_FLEX=cflex1,),
+                               _F(GROUP_MA='E19',
+                                  CENTRE=(723.,-208.5,240.,),
+                                  RAYON=rc1,
+                                  COEF_FLEX=cflex1,),),);
+
+CARA2=AFFE_CARA_ELEM(MODELE=MODEL2,
+                     POUTRE=(_F(GROUP_MA='SEC2',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(R2,e2,),),
+                             _F(GROUP_MA='SEC3',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(R3,e3,),),),
+                     DISCRET=(_F(CARA='K_TR_D_L',
+                                 GROUP_MA='R36',
+                                 VALE=(0.,raideur3,raideur4,0.,0.,0.,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R38',
+                                 VALE=(raideur2,raideur2,raideur2,raideur1,raideur1,raideur1,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R23',
+                                 VALE=(raideur4,raideur3,0.,0.,0.,0.,),),
+                              _F(CARA='K_TR_D_L',
+                                 GROUP_MA='R31',
+                                 VALE=(raideur2,raideur2,raideur2,raideur1,raideur1,raideur1,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R36',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R38',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R23',
+                                 VALE=(0.,0.,0.,0.,),),
+                              _F(CARA='M_TR_D_L',
+                                 GROUP_MA='R31',
+                                 VALE=(0.,0.,0.,0.,),),),
+                     DEFI_ARC=(_F(GROUP_MA='E23',
+                                  CENTRE=(733.5,-264.,190.,),
+                                  RAYON=rc2,
+                                  COEF_FLEX=cflex2,),
+                               _F(GROUP_MA='E26',
+                                  CENTRE=(845.5,-264.,178.,),
+                                  RAYON=rc2,
+                                  COEF_FLEX=cflex2,),
+                               _F(GROUP_MA='E29',
+                                  CENTRE=(851.5,-270.,142.,),
+                                  RAYON=rc2,
+                                  COEF_FLEX=cflex2,),
+                               _F(GROUP_MA='E35',
+                                  CENTRE=(739.5,-264.,414.,),
+                                  RAYON=rc3,
+                                  COEF_FLEX=cflex3,),),);
+
+# -------------------------------------------------------------
+# CARACTERISTIQUES MATERIAUX
+# ------------------------------------------------------------- 
+YOUNG = 29000000.0;
+
+POISSON = 0.3;
+
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                           NU=POISSON,
+                           RHO=1.0429E-3,),);
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                           NU=POISSON,
+                           RHO=1.1073E-3,),);
+
+MAT3=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                           NU=POISSON,
+                           RHO=1.2901E-3,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    MODELE=MODELE,
+                    AFFE=(_F(GROUP_MA='SEC1',
+                             MATER=MAT1,),
+                          _F(GROUP_MA='SEC2',
+                             MATER=MAT2,),
+                          _F(GROUP_MA='SEC3',
+                             MATER=MAT3,),),);
+
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
+                     MODELE=MODEL1,
+                     AFFE=_F(GROUP_MA='SEC1',
+                             MATER=MAT1,),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA2,
+                     MODELE=MODEL2,
+                     AFFE=(_F(GROUP_MA='SEC2',
+                              MATER=MAT2,),
+                           _F(GROUP_MA='SEC3',
+                              MATER=MAT3,),),);
+
+# ANALYSE MODALE
+# -------------------------------------------------------------
+
+SUPPORT=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO=('N1B','N4B','N7B','N11B','N15B','N17B','N36B','N38B','N23B','N31B',),
+                                   DX=0,
+                                   DY=0,
+                                   DZ=0,
+                                   DRX=0,
+                                   DRY=0,
+                                   DRZ=0,),);
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=CARA_ELE,
+           CHARGE=SUPPORT,
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE'),
+                         OPTION='MASS_MECA',),),);
+
+MODECA=MODE_ITER_SIMULT(MATR_RIGI=RIGIDITE,
+                        MATR_MASS=MASSE,
+                        CALC_FREQ=_F(OPTION='BANDE',
+                                     FREQ=(0.,16.,),),);
+
+SUPPOR1=AFFE_CHAR_MECA(MODELE=MODEL1,
+                       DDL_IMPO=(_F(GROUP_NO=('N1B','N4B','N7B','N11B','N15B','N17B',),
+                                    DX=0,
+                                    DY=0,
+                                    DZ=0,
+                                    DRX=0,
+                                    DRY=0,
+                                    DRZ=0,),
+                                 _F(GROUP_NO='N21',
+                                    DX=0,
+                                    DY=0,
+                                    DZ=0,
+                                    DRX=0,
+                                    DRY=0,
+                                    DRZ=0,),),);
+
+SUPPOR2=AFFE_CHAR_MECA(MODELE=MODEL2,
+                       DDL_IMPO=(_F(GROUP_NO=('N36B','N38B','N23B','N31B',),
+                                    DX=0,
+                                    DY=0,
+                                    DZ=0,
+                                    DRX=0,
+                                    DRY=0,
+                                    DRZ=0,),
+                                 _F(GROUP_NO='N21',
+                                    DX=0,
+                                    DY=0,
+                                    DZ=0,
+                                    DRX=0,
+                                    DRY=0,
+                                    DRZ=0,),),);
+
+MACEL1=CREA_ELEM_SSD(MODELE=MODEL1,
+                     CHAM_MATER=CHMAT1,
+                     CARA_ELEM=CARA1,
+                     CHARGE=SUPPOR1,
+                     INTERFACE=_F(NOM='N21_11',
+                                  TYPE='CRAIGB',
+                                  GROUP_NO='N21',),
+                     BASE_MODALE=_F(TYPE='CLASSIQUE',),
+                     CALC_FREQ=_F(OPTION='BANDE',
+                                  FREQ=(0.,32.,),),);
+
+MACEL2=CREA_ELEM_SSD(MODELE=MODEL2,
+                     CHAM_MATER=CHMAT2,
+                     CARA_ELEM=CARA2,
+                     CHARGE=SUPPOR2,
+                     INTERFACE=_F(NOM='N21_23',
+                                  TYPE='CRAIGB',
+                                  GROUP_NO='N21',),
+                     BASE_MODALE=_F(TYPE='CLASSIQUE',),
+                     CALC_FREQ=_F(OPTION='BANDE',
+                                  FREQ=(0.,32.,),),);
+
+ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('MODEGE'),
+                               NUME_DDL_GENE=CO('NUMEGE'),
+                               RIGI_GENE=CO('RIGGEN'),
+                               MASS_GENE=CO('MASGEN'),),
+              SOUS_STRUC=(_F(NOM='S11',
+                             MACR_ELEM_DYNA=MACEL1,),
+                          _F(NOM='S23',
+                             MACR_ELEM_DYNA=MACEL2,),),
+              LIAISON=_F(SOUS_STRUC_1='S11',
+                         INTERFACE_1='N21_11',
+                         SOUS_STRUC_2='S23',
+                         INTERFACE_2='N21_23',),);
+
+MODEGEN=MODE_ITER_SIMULT(MATR_RIGI=RIGGEN,
+                         MATR_MASS=MASGEN,
+                         CALC_FREQ=_F(OPTION='BANDE',
+                                      FREQ=(0.,16.,),),);
+
+SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
+                     SOUS_STRUC=(_F(NOM='S11',
+                                    TOUT='OUI',),
+                                 _F(NOM='S23',
+                                    TOUT='OUI',),),);
+
+SQUEL=DEFI_GROUP(reuse =SQUEL,
+                 MAILLAGE=SQUEL,
+                 CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
+                                   NOM='N10',
+                                   POINT=(254.0,-204.0,144.0,),
+                                   RAYON=0.0005,
+                                   PRECISION=0.001,),
+                                _F(OPTION='ENV_SPHERE',
+                                   NOM='N20',
+                                   POINT=(727.5,-208.5,240.0,),
+                                   RAYON=0.0005,
+                                   PRECISION=0.001,),
+                                _F(OPTION='ENV_SPHERE',
+                                   NOM='N30',
+                                   POINT=(851.5,-270.0,136.0,),
+                                   RAYON=0.0005,
+                                   PRECISION=0.001,),),);
+
+#
+#   RESTITUTION SUR MAILLAGE SQUELETTE
+
+MODSQEL=REST_SOUS_STRUC(RESU_GENE=MODEGEN,
+                        SQUELETTE=SQUEL,);
+
+# -------------------------------------------------------------
+# VALIDATION DES FREQUENCES PROPRES
+# -------------------------------------------------------------
+
+TEST_RESU(RESU=(_F(RESULTAT=MODSQEL,
+                   NUME_MODE=1,
+                   PARA='FREQ',
+                   VALE_REFE=2.91,
+                   PRECISION=0.01,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=2.90615563827,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=2,
+                   PARA='FREQ',
+                   VALE_REFE=4.44,
+                   PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=4.39381466931,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=3,
+                   PARA='FREQ',
+                   VALE_REFE=4.86,
+                   PRECISION=0.01,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=4.83405696012,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=4,
+                   PARA='FREQ',
+                   VALE_REFE=5.02,
+                   PRECISION=0.01,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=5.00597614259,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=5,
+                   PARA='FREQ',
+                   VALE_REFE=6.95,
+                   PRECISION=0.01,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=6.88357953856,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=6,
+                   PARA='FREQ',
+                   VALE_REFE=7.58,
+                   PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=7.44429995278,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=7,
+                   PARA='FREQ',
+                   VALE_REFE=7.82,
+                   PRECISION=0.01,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=7.76894631383,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=8,
+                   PARA='FREQ',
+                   VALE_REFE=10.94,
+                   PRECISION=0.01,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=10.9841482779,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=9,
+                   PARA='FREQ',
+                   VALE_REFE=11.65,
+                   PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=11.4943944287,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=10,
+                   PARA='FREQ',
+                   VALE_REFE=11.78,
+                   PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=11.6519775137,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=11,
+                   PARA='FREQ',
+                   VALE_REFE=12.8,
+                   PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=12.5612305311,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=12,
+                   PARA='FREQ',
+                   VALE_REFE=14.32,
+                   PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=14.0598011197,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=13,
+                   PARA='FREQ',
+                   VALE_REFE=15.17,
+                   PRECISION=0.06,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=14.3171123193,),
+                _F(RESULTAT=MODSQEL,
+                   NUME_MODE=14,
+                   PARA='FREQ',
+                   VALE_REFE=14.5074655891,
+                   PRECISION=0.04,
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=14.9425853562,),),);
+
+# -------------------------------------------------------------
+# LECTURE DU SRO
+# -------------------------------------------------------------              
+
+SPECTRE=LIRE_FONCTION(UNITE=33,
+                      NOM_PARA='FREQ',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',);
+
+SRO=DEFI_NAPPE(NOM_PARA='AMOR',
+               PARA=0.01,
+               FONCTION=SPECTRE,);
+###############################################################
+
+
+# -------------------------------------------------------------
+# ANALYSE SPECTRALE AVEC COMBINAISON CQC : A2
+# -------------------------------------------------------------        
+
+ANA_A2=COMB_SISM_MODAL(MODE_MECA=MODECA,
+                       AMOR_REDUIT=0.01,
+                       EXCIT=_F(AXE=(1.,0.,0.,),
+                                SPEC_OSCI=SRO,
+                                ECHELLE=386.4,),
+                       MONO_APPUI='OUI',
+                       COMB_MODE=_F(TYPE='CQC',),
+                       OPTION=('DEPL','ACCE_ABSOLU',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=ANA_A2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='N10',
+                   VALE_CALC=0.274320870426,),
+                _F(RESULTAT=ANA_A2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='N20',
+                   VALE_CALC=0.17917375827,),
+                _F(RESULTAT=ANA_A2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='N30',
+                   VALE_CALC=0.00825114033803,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=ANA_A2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOM_CMP='DX',
+                   GROUP_NO='N10',
+                   VALE_CALC=227.61647972,),
+                _F(RESULTAT=ANA_A2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOM_CMP='DX',
+                   GROUP_NO='N20',
+                   VALE_CALC=285.905726266,),
+                _F(RESULTAT=ANA_A2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOM_CMP='DX',
+                   GROUP_NO='N30',
+                   VALE_CALC=177.283876736,),),);
+
+ANA_A2_S=COMB_SISM_MODAL(MODE_MECA=MODSQEL,
+                         AMOR_REDUIT=0.01,
+                         EXCIT=_F(AXE=(1.0,0.0,0.0,),
+                                  SPEC_OSCI=SRO,
+                                  ECHELLE=386.4,),
+                         MONO_APPUI='OUI',
+                         COMB_MODE=_F(TYPE='CQC',),
+                         OPTION=('DEPL','ACCE_ABSOLU',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='N10',
+                   VALE_REFE=0.27432,
+                   PRECISION=0.002,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=0.27475007055522,),
+                _F(RESULTAT=ANA_A2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='N20',
+                   VALE_REFE=0.179173,
+                   PRECISION=0.002,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=0.17893552413,),
+                _F(RESULTAT=ANA_A2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='N30',
+                   VALE_REFE=0.00825,
+                   PRECISION=0.05,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=0.00786823994237,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOM_CMP='DX',
+                   GROUP_NO='N10',
+                   VALE_REFE=227.616,
+                   PRECISION=0.002,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=227.200486278,),
+                _F(RESULTAT=ANA_A2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOM_CMP='DX',
+                   GROUP_NO='N20',
+                   VALE_REFE=285.906,
+                   PRECISION=0.03,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=279.756663937,),
+                _F(RESULTAT=ANA_A2_S,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ACCE_ABSOLU',
+                   NOM_CMP='DX',
+                   GROUP_NO='N30',
+                   VALE_REFE=177.284,
+                   PRECISION=0.04,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_CALC=171.22213837,),),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=(_F(RESULTAT=ANA_A2,),
+                _F(RESULTAT=ANA_A2_S,),),);
+
+FIN();
+

@@ -167,8 +167,6 @@ subroutine op0109()
 !
     endif
 !
-    call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid,&
-                noma, ierd)
 !     ----- RECUPERATION DES AMORTISSEMENTS -----
     call getvr8(' ', 'AMOR_REDUIT', 1, iarg, 0,&
                 r8b, na1)
@@ -329,6 +327,7 @@ subroutine op0109()
                 tmas, nt)
     if (nt .ne. 0) then
 !        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
+        call dismoi('F', 'NOM_MAILLA', masse, 'MATR_ASSE', ibid, noma, ierd)
         call tbexp2(tmas, 'LIEU')
         call tbexp2(tmas, 'MASSE')
         call tbliva(tmas, 1, 'LIEU', ibid, r8b,&
@@ -377,8 +376,6 @@ subroutine op0109()
 24      continue
     endif
 !
-    call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid,&
-                nume, iret)
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'MASS_EFFE') then
         write(ifm,1070)
         if (calmas) then
@@ -456,11 +453,16 @@ subroutine op0109()
         call u2mess('F', 'SEISME_33')
     endif
 !     --- VERIFICATION DES MODES ---
-    call asveri(zk16(jopt), nbopt, meca, psmo, stat,&
+    if (masse .ne. ' ') then
+! dans les cas non standards (sous-structuration) on passe sans verif
+       call asveri(zk16(jopt), nbopt, meca, psmo, stat,&
                 tronc, monoap, nbsup, zi(jnsu), zk8(jkno),&
                 zi(jdir), zi(jordr), nbmode)
+    endif
 !     ----- CAS DU MULTI-SUPPORT -----
     if (.not.monoap) then
+        call dismoi('F', 'NOM_NUME_DDL', masse, 'MATR_ASSE', ibid, nume, iret)
+        if (nume.eq.' ')  call u2mess('F', 'SEISME_40')
         call wkvect('&&OP0109.REAC_SUP', 'V V R', nbsup*nbmode*3, jrea)
         call wkvect('&&OP0109.DEPL_SUP', 'V V R', nbsup*3, jdep)
         call wkvect('&&OP0109.TYPE_COM', 'V V I', nbsup*3, jcsu)
