@@ -601,7 +601,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
                         endif
                         seuil= sieleq - (1.5d0*deuxmu*trans + 1.d0)*&
                         rmoy
-                        call nzcalc(crit, phase, nz, fmel, seuil,&
+                        call nzcalc(crit, phase, nz, fmel(1), seuil,&
                                     dt, trans, hmoy, deuxmu, eta,&
                                     unsurn, dp, iret)
                         if (iret .eq. 1) goto 9999

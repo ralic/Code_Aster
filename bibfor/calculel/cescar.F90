@@ -210,8 +210,8 @@ subroutine cescar(cesz, cartz, basz)
                 zk80(jvalv-1+k)=zk80(jvals-1+k)
             endif
 50          continue
-            call nocart(cart, 3, kbid, 'NUM', nbpaqu,&
-                        kbid, zi(jlima), ' ', nbcmps)
+            call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
+                        limanu=zi(jlima))
 !
 !           -- POUR FAIRE LE NOCART, ON A DU ECRASER JVALV.
 !           -- IL FAUT LE RETABLIR :
@@ -301,8 +301,8 @@ subroutine cescar(cesz, cartz, basz)
         zk80(jvalv-1+k)=zk80(jvals-1+k)
     endif
     90 end do
-    call nocart(cart, 3, kbid, 'NUM', nbpaqu,&
-                kbid, zi(jlima), ' ', nbcmps)
+    call nocart(cart, 3, nbcmps, mode='NUM', nma=nbpaqu,&
+                limanu=zi(jlima))
 !
 !
     call jedetr('&&CESCAR.LIMA')

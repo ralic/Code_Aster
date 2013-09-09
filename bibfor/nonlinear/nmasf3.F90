@@ -35,7 +35,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     integer :: nno, nbpg1, imate
     integer :: ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2
-    character(len=16) :: compor(4)
+    character(len=16) :: compor(*)
     real(kind=8) :: geom(3, nno)
     real(kind=8) :: deplm(3, nno), dfdi(nno, 3)
     real(kind=8) :: def(6, 3, nno)

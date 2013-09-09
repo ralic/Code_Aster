@@ -161,7 +161,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
                     vim, option, compor, sigp, vip,&
                     dsde)
     else if (asyml) then
-        call nmmaba(imate, compor, ep, dsde, sigy,&
+        call nmmaba(imate, compor(1), ep, dsde, sigy,&
                     ncstpm, cstpm)
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'ECRO_ASYM_LINE', 0, ' ', [0.d0],&
@@ -190,7 +190,7 @@ subroutine nmiclg(fami, kpg, ksp, option, compor,&
         call verift(fami, kpg, ksp, 'T', imate,&
                     materi, 'ELAS', 1, depsth, iret)
         depsm=deps-depsth
-        call nmmaba(imate, compor, ep, dsde, sigy,&
+        call nmmaba(imate, compor(1), ep, dsde, sigy,&
                     ncstpm, cstpm)
         call nm1dpm(fami, kpg, ksp, imate, option,&
                     8, ncstpm, cstpm, sigm, vim,&

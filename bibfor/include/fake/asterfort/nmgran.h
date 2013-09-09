@@ -25,7 +25,7 @@ interface
         integer :: ksp
         character(len=8) :: typmod(*)
         integer :: imate
-        character(len=16) :: compor(3)
+        character(len=16) :: compor(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: tpmxm

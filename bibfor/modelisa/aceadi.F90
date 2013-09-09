@@ -129,11 +129,9 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
     zk8(jdcinf+10) = 'TYDI    '
     call infdis('INIT', ibid, zr(jdvinf+10), zk8(jdcinf+10))
 !
-    call nocart(cartdi, 1, ' ', ' ', 0,&
-                ' ', 0, ' ', dimcar)
+    call nocart(cartdi, 1, dimcar)
     if (ixnw .ne. 0) then
-        call nocart(cartdi, -1, ' ', ' ', 0,&
-                    ' ', 0, ligmo, dimcar)
+        call nocart(cartdi, -1, dimcar, ligrel=ligmo)
     endif
     do 220 i = 1, 3
 !        CARTE POUR LES DISCRETS
@@ -155,11 +153,9 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
             zr(jdv(i)+j-1) = 0.d0
             zk8(jdc(i)+j-1) = kma(i)//ki
 22      continue
-        call nocart(cart(i), 1, ' ', ' ', 0,&
-                    ' ', 0, ' ', dimmat)
+        call nocart(cart(i), 1, dimmat)
         if (ixnw .ne. 0) then
-            call nocart(cart(i), -1, ' ', ' ', 0,&
-                        ' ', 0, ligmo, dimmat)
+            call nocart(cart(i), -1, dimmat, ligrel=ligmo)
         endif
 20  end do
 !
@@ -223,10 +219,8 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                             ncmp, l, jdcinf, jdvinf, isym,&
                             ifm)
                 do 38 ii = 1, ng
-                    call nocart(cartdi, 2, zk24(jdls+ii-1), ' ', 0,&
-                                ' ', 0, ' ', dimcar)
-                    call nocart(cart(l), 2, zk24(jdls+ii-1), ' ', 0,&
-                                ' ', 0, ' ', ncmp)
+                    call nocart(cartdi, 2, dimcar, groupma=zk24(jdls+ii-1))
+                    call nocart(cart(l), 2, ncmp, groupma=zk24(jdls+ii-1))
 38              continue
 36          continue
         endif
@@ -239,10 +233,10 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp, l, jdcinf, jdvinf, isym,&
                             ifm)
-                call nocart(cartdi, 3, ' ', 'NOM', nm,&
-                            zk8(jdls2), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', nm,&
-                            zk8(jdls2), 0, ' ', ncmp)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=nm,&
+                            limano=zk8(jdls2))
+                call nocart(cart(l), 3, ncmp, mode='NOM', nma=nm,&
+                            limano=zk8(jdls2))
 40          continue
         endif
 !
@@ -263,10 +257,10 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                                         jdc, jdv, ivr, iv, kma,&
                                         ncmp, l, jdcinf, jdvinf, isym,&
                                         ifm)
-                            call nocart(cartdi, -3, ' ', 'NUM', kk,&
-                                        ' ', zi(jddi), ligmo, dimcar)
-                            call nocart(cart(l), -3, ' ', 'NUM', kk,&
-                                        ' ', zi(jddi), ligmo, ncmp)
+                            call nocart(cartdi, -3, dimcar, ligrel=ligmo, nma=kk,&
+                                        limanu=zi(jddi))
+                            call nocart(cart(l), -3, ncmp, ligrel=ligmo, nma=kk,&
+                                        limanu=zi(jddi))
 44                      continue
                     endif
 42              continue
@@ -282,10 +276,10 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc,&
                                     jdc, jdv, ivr, iv, kma,&
                                     ncmp, l, jdcinf, jdvinf, isym,&
                                     ifm)
-                        call nocart(cartdi, -3, ' ', 'NUM', kk,&
-                                    ' ', zi( jddi), ligmo, dimcar)
-                        call nocart(cart(l), -3, ' ', 'NUM', kk,&
-                                    ' ', zi( jddi), ligmo, ncmp)
+                        call nocart(cartdi, -3, dimcar, ligrel=ligmo, nma=kk,&
+                                    limanu=zi( jddi))
+                        call nocart(cart(l), -3, ncmp, ligrel=ligmo, nma=kk,&
+                                    limanu=zi( jddi))
 46                  continue
                 endif
             endif

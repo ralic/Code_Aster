@@ -72,7 +72,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     integer :: nno
     parameter (nno=4)
 !            NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
-    real(kind=8) :: distn, angmas(3), wk
+    real(kind=8) :: distn, angmas(3), wk(1)
 !
 ! --------- VARIABLES LOCALES :
 !  -- GENERALITES :
@@ -150,7 +150,6 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     integer :: j, k, nbcon, nbsp, nbvar, ndimv
     real(kind=8) :: deux, rac2, qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd
-    real(kind=8) :: lc
     logical :: vecteu, matric, dkt, dkq, leul
 !     ------------------------------------------------------------------
 !
@@ -381,7 +380,7 @@ subroutine dktnli(nomte, opt, xyzl, ul, dul,&
     call nmcomp('RIGI', ipg, ksp, 2, typmod,&
                 zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
                 6, eps2d, deps2d, 6, sigm,&
-                zr(ivarim+ivpg), opt, angmas, 1, lc,&
+                zr(ivarim+ivpg), opt, angmas, 1, [0.d0],&
                 zr(icontp+ icpg), zr(ivarip+ivpg), 36, dsidep, 1,&
                 wk, cod)
 !

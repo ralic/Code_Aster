@@ -1,5 +1,5 @@
-subroutine nocart(chinz, code, groupz, modez, nma,&
-                  limano, limanu, nmligz, ncmp)
+subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
+                  limano, limanu, ligrel)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,68 +36,108 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-    integer :: code, nma, ncmp, limanu(*)
-    character(len=3) :: mode
-    character(len=24) :: groupe
-    character(len=*) :: limano(*)
-    character(len=8) :: limanz
-    character(len=19) :: chin, nomlig
-    character(len=*) :: chinz, nmligz, groupz, modez
+    character(len=*), intent(in) :: carte
+    integer, intent(in) :: code
+    integer, intent(in) :: ncmp
+    character(len=*), intent(in), optional :: groupma
+    character(len=*),intent(in), optional :: mode
+    integer, intent(in), optional :: nma
+    character(len=*), intent(in), optional :: limano(*)
+    integer, intent(in), optional :: limanu(*)
+    character(len=*), intent(in), optional ::  ligrel
 ! ----------------------------------------------------------------------
 !     ENTREES:
-!     CHINZ : NOM DE LA CARTE A ENRICHIR
-!     CODE : 1: 'TOUT' LES MAILLES DU MAILLAGE.
-!           -1: 'TOUT' LES MAILLES SUPPL. D'1 LIGREL.
-!            2: 1 GROUPE NOMME DE MAILLES DU MAILLAGE.
-!            3: 1 LISTE TARDIVE DE MAILLES DU MAILLAGE.
-!           -3: 1 LISTE TARDIVE DE MAILLES TARDIVES D'1 LIGREL.
-!     GROUPZ : NOM D' 1 GROUPE DE MAILLES DU MAILLAGE
-!              ( UNIQUEMENT SI CODE= 2)
-!     MODEZ : 'NOM' OU 'NUM' :
-!             SI 'NOM' ON UTILISE LA LISTE LIMANO (NOMS DES MAILLES)
-!                 ( UNIQUEMENT SI CODE= 3)
-!             SI 'NUM' ON UTILISE LA LISTE LIMANU (NUMERO DES MAILLES)
-!                 ( UNIQUEMENT SI CODE= 3 OU -3)
-!     NMA  : NOMBRE DE MAILLES DANS LIMANO OU LIMANU
-!                 ( UNIQUEMENT SI CODE= 3 OU -3)
-!     LIMANO : NOMS DES MAILLES DU GROUPE_TARDIF (CODE=3)
-!     LIMANU : NUMEROS DES MAILLES DU GROUPE_TARDIF (CODE=3 OU -3)
-!     NMLIGZ : NOM DU LIGREL OU SONT EVENTUELLEMENT DEFINIES LES MAILLES
-!         TARDIVES QUE L'ON VEUT AFFECTER.
-!         NOMLIG EST NON_BLANC UNIQUEMENT SI CODE=-3 OU CODE=-1
-!     NCMP : NOMBRE DE COMPOSANTES DECRITES
+!     --------
+!     carte : NOM DE LA CARTE A ENRICHIR
+!
+!     CODE : 1: 'TOUT(ES)' LES MAILLES DU MAILLAGE.
+!           -1: 'TOUT(ES)' LES MAILLES SUPPL. D'1 LIGREL.
+!            2: 1 GROUPE_MA DU MAILLAGE.
+!            3: 1 LISTE DE MAILLES DU MAILLAGE.
+!           -3: 1 LISTE DE MAILLES TARDIVES D'1 LIGREL.
+!
+!     NCMP : NOMBRE DES COMPOSANTES DECRITES
 !            DANS CHIN.NCMP ET CHIN.VALV
 !            -- REMARQUE : ON PEUT SUR-DIMENSIONNER NCMP A CONDITION
 !                          QUE LA LISTE DES NOMS DE CMPS CONTIENNE DES
 !                          "BLANCS". LES CMPS REELLEMENT NOTEES SONT
 !                          LES COMPOSANTES NON-BLANCHES.
 !
+!     groupma : NOM D' 1 GROUP_MA DU MAILLAGE
+!              ( UNIQUEMENT SI CODE= 2)
+!
+!     mode : 'NOM' OU 'NUM' :
+!             SI 'NOM' ON UTILISE LA LISTE LIMANO (NOMS DES MAILLES)
+!                 ( UNIQUEMENT SI CODE= 3)
+!             SI 'NUM' ON UTILISE LA LISTE LIMANU (NUMERO DES MAILLES)
+!                 ( UNIQUEMENT SI CODE= 3 OU -3)
+!
+!     NMA  : NOMBRE DE MAILLES DANS LIMANO OU LIMANU
+!                 ( UNIQUEMENT SI CODE= 3 OU -3)
+!
+!     LIMANO : NOMS DES MAILLES DU GROUPE_TARDIF (CODE=3)
+!
+!     LIMANU : NUMEROS DES MAILLES DU GROUPE_TARDIF (CODE=3 OU -3)
+!
+!     ligrel : NOM DU LIGREL OU SONT EVENTUELLEMENT DEFINIES LES MAILLES
+!         TARDIVES QUE L'ON VEUT AFFECTER.
+!         NOMLIG EST NON_BLANC UNIQUEMENT SI CODE=-3 OU CODE=-1
+!
 !     SORTIES:
 !     ON ENRICHIT LE CONTENU DE LA CARTE CHIN
 !
 ! ----------------------------------------------------------------------
-!
-!     FONCTIONS EXTERNES:
-!     -------------------
-!-----------------------------------------------------------------------
+    character(len=24) :: groupe
+    character(len=19) :: chin, nomlig
+    character(len=8) :: nomail
     integer :: nec, nedit, ngdmx, iaddg, gr, dim, i, numero, gd
     integer :: jdesc, jlima, ldim
-    character(len=8) :: ma, base
+    character(len=8) :: ma, base,mode2
     integer :: noma, noli
     character(len=24) :: clima, trav
     logical :: laggr
-!-----------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
     integer ::  illima, lontap, lontav
 !-----------------------------------------------------------------------
     call jemarq()
-    chin = chinz
-    nomlig = nmligz
-    groupe = groupz
-    mode = modez
+    chin = carte
     laggr=.false.
-!
+    nomlig=' '
+    groupe=' '
+
+!   -- verification des arguments :
+!   --------------------------------------------
+    if (code.eq.1) then
+    elseif (code.eq.-1) then
+       ASSERT(present(ligrel))
+       nomlig = ligrel
+    elseif (code.eq.2) then
+       ASSERT(present(groupma))
+       groupe = groupma
+    elseif (code.eq.3) then
+       ASSERT(present(mode))
+       ASSERT(mode.eq.'NUM' .or. mode.eq.'NOM')
+       mode2=mode
+       ASSERT(present(nma))
+       ASSERT(nma.gt.0)
+       if (mode2.eq.'NUM') then
+          ASSERT(present(limanu))
+       else
+          ASSERT(present(limano))
+       endif
+    elseif (code.eq.-3) then
+       ASSERT(present(ligrel))
+       nomlig = ligrel
+       ASSERT(present(nma))
+       ASSERT(nma.gt.0)
+       ASSERT(present(limanu))
+       mode2='NUM'
+    else
+       ASSERT(.false.)
+    endif
+
+
+
+
     call jeveuo(chin//'.NOMA', 'L', noma)
     ma = zk8(noma-1+1)
 !
@@ -139,7 +179,7 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
 !        -- A "TOUT":   9999
         zi(jdesc-1+3+2*nedit) = 9999
     else if (code.eq.2) then
-        call jenonu(jexnom(ma//'.GROUPEMA', groupe), gr)
+        call jenonu(jexnom(ma//'.GROUPEMA', groupma), gr)
         zi(jdesc-1+3+2*nedit) = gr
     else if (abs(code).eq.3) then
         zi(jdesc-1+3+2*nedit) = nedit
@@ -177,13 +217,13 @@ subroutine nocart(chinz, code, groupz, modez, nma,&
     call jeecra(jexnum(chin//'.LIMA', nedit), 'LONMAX', ldim)
     call jeveuo(jexnum(chin//'.LIMA', nedit), 'E', jlima)
     do 100 i = 1, dim
-        if (mode .eq. 'NUM') then
+        if (mode2.eq.'NUM') then
 !             MAILLES NUMEROTEES ( DU MAILLAGE (>0) OU TARDIVES(<0) )
             zi(jlima-1+i) = limanu(i)
-        else if (mode.eq.'NOM') then
+        else if (mode2.eq.'NOM') then
 !             MAILLES NOMMEES DU MAILLAGE
-            limanz = limano(i)
-            call jenonu(jexnom(ma//'.NOMMAI', limanz), numero)
+            nomail = limano(i)
+            call jenonu(jexnom(ma//'.NOMMAI', nomail), numero)
             zi(jlima-1+i) = numero
         else
             ASSERT(.false.)

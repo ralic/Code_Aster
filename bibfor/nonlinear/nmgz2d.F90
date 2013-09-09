@@ -36,7 +36,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
     integer :: ipoids, ivf, idfde, ivectu, ideplm, ideplp
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
 !
     real(kind=8) :: instam, instap, angmas(3)
     real(kind=8) :: geomi(2, nno), crit(3)
@@ -89,7 +89,7 @@ subroutine nmgz2d(fami, nno, npg, ipoids, ivf,&
 !
     real(kind=8) :: dsidep(6, 6), f(3, 3), fm(3, 3), fr(3, 3), epsm(6), epsp(6)
     real(kind=8) :: r, sigma(6), sign(6), sig(6), sigg(4)
-    real(kind=8) :: poids, tmp1, tmp2, rbid
+    real(kind=8) :: poids, tmp1, tmp2, rbid(1)
     real(kind=8) :: elgeom(10, 9), fp(3, 3)
     real(kind=8) :: kron(3, 3), geomp(2, nno), rac2
     data kron/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/

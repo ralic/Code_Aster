@@ -11,7 +11,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
     real(kind=8) :: angmas(*), tampon(*)
-    real(kind=8) :: crit(1), instam, instap, epsm(6), deps(6)
+    real(kind=8) :: crit(*), instam, instap, epsm(6), deps(6)
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !

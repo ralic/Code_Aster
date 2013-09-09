@@ -35,7 +35,7 @@ subroutine nmed2d(nno, npg, ipoids, ivf, idfde,&
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde, ivectu, ideplm, iddepl
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
     real(kind=8) :: geom(2, nno), crit(3)
     real(kind=8) :: dfdi(nno, 2), def(4, nno, 2)
     real(kind=8) :: sigm(4, npg), sigp(4, npg)

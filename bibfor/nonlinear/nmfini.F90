@@ -92,9 +92,9 @@ subroutine nmfini(sddyna, valinc, measse, modele, mate,&
     logical :: lamor, ldyna
     character(len=8) :: k8bid
     integer :: nbvect, icnfno, ifnomo, iret
-    character(len=16) :: loptve
-    character(len=6) :: ltypve
-    logical :: lassve, lcalve
+    character(len=16) :: loptve(20)
+    character(len=6) :: ltypve(20)
+    logical :: lassve(20), lcalve(20)
     character(len=19) :: cnfnod, fnomoi
 !
     call jemarq()

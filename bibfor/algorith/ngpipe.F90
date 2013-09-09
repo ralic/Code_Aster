@@ -27,7 +27,7 @@ subroutine ngpipe(typilo, npg, neps, nddl, b,&
 #include "asterfort/r8inir.h"
 #include "blas/dgemv.h"
     character(len=8) :: typmod(*)
-    character(len=16) :: typilo, compor(4)
+    character(len=16) :: typilo, compor(*)
 !
     integer :: npg, neps, nddl, mat, lgpg
     real(kind=8) :: ddlm(nddl), ddld(nddl), ddl0(nddl), ddl1(nddl)

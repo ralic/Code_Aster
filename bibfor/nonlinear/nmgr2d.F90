@@ -39,7 +39,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
 !
     real(kind=8) :: instam, instap, angmas(3), detfm
     real(kind=8) :: geomi(2, nno), crit(3)
@@ -92,7 +92,7 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !
     real(kind=8) :: dsidep(6, 6), f(3, 3), fm(3, 3), epsm(6), epsp(6), deps(6)
     real(kind=8) :: r, sigma(6), sigmn(6), detf, poids, maxeps
-    real(kind=8) :: elgeom(10, 9), r8bid, rac2
+    real(kind=8) :: elgeom(10, 9), r8bid(1), rac2
 !
 !     INITIALISATION
 !

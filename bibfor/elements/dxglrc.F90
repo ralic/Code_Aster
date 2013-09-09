@@ -177,7 +177,7 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
     real(kind=8) :: ul(6, 4), dul(6, 4), pgl(3, 3), crit(*)
     real(kind=8) :: delas(6, 6), dsidep(6, 6)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
-    real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth
+    real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth,win(1),wout(1)
     real(kind=8) :: khith
     real(kind=8) :: alpha, beta
 ! VARIABLES POUR DHRC
@@ -575,9 +575,9 @@ subroutine dxglrc(nomte, opt, compor, xyzl, ul,&
             call nmcoup('RIGI', ipg, 1, 3, k8bid,&
                         zi(imate), compor, lbid, crit, r8bid,&
                         r8bid, 6, epsm, deps, 6,&
-                        sigm, ecr, opt, 1, r8bid,&
+                        sigm, ecr, opt, 1, win,&
                         sig, ecrp, 36, dsidep, 1,&
-                        r8bid, codret)
+                        wout, codret)
         else
             valk = compor(1)
             call utmess('F', 'ELEMENTS4_79', sk=valk)

@@ -1,4 +1,4 @@
-subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
+subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo,&
                           vale_type, nb_carte, carte)
 !
     implicit none
@@ -36,7 +36,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
     character(len=8), intent(in)  :: load
     character(len=8), intent(in)  :: mesh
     character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in)  :: vale_type
+    character(len=4), intent(in) :: vale_type
     integer, intent(out) :: nb_carte
     character(len=19), intent(out) :: carte(*)
 !
@@ -60,7 +60,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_cmp(2)
-    character(len=8) :: name_cmp(2,7)
+    character(len=8) :: name_cmp(2, 7)
     character(len=13) :: obje_pref
     character(len=8) :: gran_name(2)
     character(len=4) :: cart_type(2)
@@ -79,9 +79,9 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 !
     if (load_type.eq.'EFFE_FOND') then
         nb_carte = 2
-    elseif (load_type.eq.'ONDE_PLANE') then
+    else if (load_type.eq.'ONDE_PLANE') then
         nb_carte = 2
-    elseif (load_type.eq.'ROTATION') then
+    else if (load_type.eq.'ROTATION') then
         nb_carte = 1
     else
         ASSERT(.false.)
@@ -90,13 +90,13 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 !
 ! - Name of the <CARTE> - TODO: using lisdef utility
 !
-    if (load_type.eq.'EFFE_FOND') then
+    if (load_type .eq. 'EFFE_FOND') then
         carte(1) = obje_pref(1:13)//'.EFOND'
         carte(2) = obje_pref(1:13)//'.PREFF'
-    elseif (load_type.eq.'ONDE_PLANE') then
+    else if (load_type.eq.'ONDE_PLANE') then
         carte(1) = obje_pref(1:13)//'.ONDPL'
         carte(2) = obje_pref(1:13)//'.ONDPR'
-    elseif (load_type.eq.'ROTATION') then
+    else if (load_type.eq.'ROTATION') then
         carte(1) = obje_pref(1:13)//'.ROTAT'
     else
         ASSERT(.false.)
@@ -104,25 +104,25 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 !
 ! - Name of the <GRANDEUR> - TODO: using lisdef utility
 !
-    if (load_type.eq.'EFFE_FOND') then
-        if (vale_type.eq.'REEL') then
+    if (load_type .eq. 'EFFE_FOND') then
+        if (vale_type .eq. 'REEL') then
             gran_name(1) = 'NEUT_R'
             gran_name(2) = 'PRES_R'
-        elseif (vale_type.eq.'FONC') then
+        else if (vale_type.eq.'FONC') then
             gran_name(1) = 'NEUT_R'
             gran_name(2) = 'PRES_F'
         else
             ASSERT(.false.)
         endif
-    elseif (load_type.eq.'ONDE_PLANE') then
-        if (vale_type.eq.'FONC') then
+    else if (load_type.eq.'ONDE_PLANE') then
+        if (vale_type .eq. 'FONC') then
             gran_name(1) = 'NEUT_K8'
             gran_name(2) = 'NEUT_R'
         else
             ASSERT(.false.)
         endif
-    elseif (load_type.eq.'ROTATION') then
-        if (vale_type.eq.'REEL') then
+    else if (load_type.eq.'ROTATION') then
+        if (vale_type .eq. 'REEL') then
             gran_name(1) = 'ROTA_R'
         else
             ASSERT(.false.)
@@ -133,25 +133,25 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 !
 ! - Type of the <CARTE> - TODO: using lisdef utility
 !
-    if (load_type.eq.'EFFE_FOND') then
-        if (vale_type.eq.'REEL') then
+    if (load_type .eq. 'EFFE_FOND') then
+        if (vale_type .eq. 'REEL') then
             cart_type(1) = 'R'
             cart_type(2) = 'R'
-        elseif (vale_type.eq.'FONC') then
+        else if (vale_type.eq.'FONC') then
             cart_type(1) = 'R'
             cart_type(2) = 'K8'
         else
             ASSERT(.false.)
         endif
-    elseif (load_type.eq.'ONDE_PLANE') then
-        if (vale_type.eq.'FONC') then
+    else if (load_type.eq.'ONDE_PLANE') then
+        if (vale_type .eq. 'FONC') then
             cart_type(1) = 'K8'
             cart_type(2) = 'R'
         else
             ASSERT(.false.)
         endif
-    elseif (load_type.eq.'ROTATION') then
-        if (vale_type.eq.'REEL') then
+    else if (load_type.eq.'ROTATION') then
+        if (vale_type .eq. 'REEL') then
             cart_type(1) = 'R'
         else
             ASSERT(.false.)
@@ -162,12 +162,12 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 !
 ! - Components of the <CARTE> - TODO: using lisdef utility
 !
-    if (load_type.eq.'EFFE_FOND') then
+    if (load_type .eq. 'EFFE_FOND') then
         nb_cmp(1) = 1
         nb_cmp(2) = 1
         name_cmp(1,1) = 'X1'
         name_cmp(2,1) = 'PRES'
-    elseif (load_type.eq.'ONDE_PLANE') then
+    else if (load_type.eq.'ONDE_PLANE') then
         nb_cmp(1) = 1
         nb_cmp(2) = 4
         name_cmp(1,1) = 'Z1'
@@ -175,7 +175,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
         name_cmp(2,2) = 'X2'
         name_cmp(2,3) = 'X3'
         name_cmp(2,4) = 'X4'
-    elseif (load_type.eq.'ROTATION') then
+    else if (load_type.eq.'ROTATION') then
         nb_cmp(1) = 7
         name_cmp(1,1) = 'OME'
         name_cmp(1,2) = 'AR'
@@ -192,7 +192,7 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
 !
     do i_carte = 1, nb_carte
         call exisd('CARTE', carte(i_carte), iret)
-        if (iret.eq.0) then
+        if (iret .eq. 0) then
             call alcart('G', carte(i_carte), mesh, gran_name(i_carte))
             l_init(i_carte) = .true.
         else
@@ -209,15 +209,14 @@ subroutine char_crea_cart(phenom, load_type, load, mesh, ligrmo, &
             do i_cmp = 1, nb_cmp(i_carte)
                 zk8(jncmp-1+i_cmp) = name_cmp(i_carte,i_cmp)
                 if (cart_type(i_carte) .eq. 'R') then
-                    zr(jvalv-1+i_cmp)  = 0.d0
-                elseif (cart_type(i_carte) .eq.'K8') then
+                    zr(jvalv-1+i_cmp) = 0.d0
+                else if (cart_type(i_carte) .eq.'K8') then
                     zk8(jvalv-1+i_cmp) = '&FOZERO'
                 else
                     ASSERT(.false.)
                 endif
             enddo
-            call nocart(carte(i_carte), 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, nb_cmp(i_carte))
+            call nocart(carte(i_carte), 1, nb_cmp(i_carte))
         endif
     enddo
 !

@@ -23,6 +23,7 @@ subroutine caraff(noma, gran, base, cartz)
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
 !
+!
     character(len=1) :: base
     character(len=8) :: noma, gran
     character(len=*) :: cartz
@@ -96,8 +97,7 @@ subroutine caraff(noma, gran, base, cartz)
         zk8(jncmp-1+k) = zk8(iad-1+k)
         zr(jvalv-1+k) = rvid
 10      continue
-        call nocart(carte, 1, ' ', 'NOM', 0,&
-                    ' ', 0, ' ', nbcmp)
+        call nocart(carte, 1, nbcmp)
     endif
 !
 !     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
@@ -152,16 +152,15 @@ subroutine caraff(noma, gran, base, cartz)
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ' ', nbcmp)
+            call nocart(carte, 1, nbcmp)
 !
         else
             call reliem(' ', noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcls, typmcl, mesmai, nbmail)
             if (nbmail .eq. 0) goto 30
             call jeveuo(mesmai, 'L', jmail)
-            call nocart(carte, 3, ' ', 'NUM', nbmail,&
-                        k8b, zi(jmail), ' ', nbcmp)
+            call nocart(carte, 3, nbcmp, mode='NUM', nma=nbmail,&
+                        limanu=zi(jmail))
             call jedetr(mesmai)
         endif
 30  end do

@@ -76,7 +76,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
     integer :: nepg, g, ieg, cod(npgmax)
     real(kind=8) :: sigm(0:epsmax*npgmax-1), sigp(0:epsmax*npgmax-1)
     real(kind=8) :: epsm(0:epsmax*npgmax-1), epsd(0:epsmax*npgmax-1)
-    real(kind=8) :: dsidep(0:epsmax*epsmax*npgmax-1), dum
+    real(kind=8) :: dsidep(0:epsmax*epsmax*npgmax-1), dum(1)
     real(kind=8) :: ktgb(0:epsmax*npgmax*ddlmax-1)
 ! ----------------------------------------------------------------------
 #define os(g)   (g-1)*neps
@@ -125,9 +125,9 @@ subroutine ngfint(option, typmod, ndim, nddl, neps,&
         call nmcomp(fami, g, 1, ndim, typmod,&
                     mat, compor, crit, instam, instap,&
                     neps, epsm(os(g)), epsd(os(g)), neps, sigm(os(g)),&
-                    vim(1, g), option, angmas, 1, dum,&
+                    vim(1, g), option, angmas, 1, dum(1),&
                     sigp(os(g)), vip(1, g), neps*neps, dsidep( dos(g)), 1,&
-                    dum, cod(g))
+                    dum(1), cod(g))
         if (cod(g) .eq. 1) goto 9000
 20  end do
 !

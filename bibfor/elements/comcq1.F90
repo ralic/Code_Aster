@@ -108,7 +108,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                             materi, 'ELAS', 1, depsth, iret)
                 depsm=deps(1)-depsth
                 call nm1dis(fami, kpg, ksp, imate, em,&
-                            ep, sigm, depsm, vim, option,&
+                            ep, sigm(1), depsm, vim, option,&
                             compor, ' ', sigp(1), vip, etg)
                 dsde(1,1) = etg+1.d-6*ep
 !               DSDE(1,1) = ETG
@@ -119,7 +119,7 @@ subroutine comcq1(fami, kpg, ksp, mod, imate,&
                             materi, 'ELAS', 1, depsth, iret)
                 depsm=deps(1)-depsth
                 call nm1dci(fami, kpg, ksp, imate, em,&
-                            ep, sigm, depsm, vim, option,&
+                            ep, sigm(1), depsm, vim, option,&
                             ' ', sigp(1), vip, ep)
                 dsde(1,1) = etg
                 dsde(2,2) = ep

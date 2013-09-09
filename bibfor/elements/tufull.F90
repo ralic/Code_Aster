@@ -71,7 +71,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     real(kind=8) :: pass(nbrddl, nbrddl)
     real(kind=8) :: pgl(3, 3), omega, vtemp(nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
-    real(kind=8) :: lc, angmas(3)
+    real(kind=8) :: angmas(3)
     integer :: nno, npg, nbcou, nbsec, m, icompo, ndimv, ivarix
     integer :: ipoids, ivf, nbvari, lgpg, jtab(7)
     integer :: imate, imatuu, icagep, igeom
@@ -96,7 +96,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     codret = 0
 !
 ! --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-! --- INITIALISE A 0.D0 (ON NE S'EN SERT PAS)
+! --- INITIALISE A 0.d0 (ON NE S'EN SERT PAS)
     call r8inir(3, 0.d0, angmas, 1)
 !
     m = 3
@@ -312,7 +312,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
                 call nmcomp('RIGI', igau, ksp, 2, typmod,&
                             zi(imate), zk16(icompo), zr(icarcr), instm, instp,&
                             6, eps2d, deps2d, 6, sign,&
-                            zr(ivarim+k2), option, angmas, 1, lc,&
+                            zr(ivarim+k2), option, angmas, 1, [0.d0],&
                             sigma, zr( ivarip+k2), 36, dsidep, 1,&
                             rbid(1), cod)
 !

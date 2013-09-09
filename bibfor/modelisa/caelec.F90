@@ -70,8 +70,7 @@ subroutine caelec(char, ligrmo, noma)
     do 100 i = 1, 7
         zr(jvalv-1+i) = 0.d0
 100  end do
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, 7)
+    call nocart(carte, 1, 7)
 !
     mesmai = '&&CAELEC.MES_MAILLES'
     motcle(1) = 'GROUP_MA'
@@ -138,15 +137,14 @@ subroutine caelec(char, ligrmo, noma)
 !
         if (nbtou .ne. 0) then
 !
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, 7)
+            call nocart(carte, 1, 7)
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) goto 120
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', 7)
+            call nocart(carte, 3, 7, mode='NUM', nma=nbma,&
+                        limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !

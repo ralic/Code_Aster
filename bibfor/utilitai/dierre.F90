@@ -46,7 +46,7 @@ subroutine dierre(sddisc, sdcrit, iterat)
 !
     character(len=24) :: critcr
     integer :: jcrr
-    real(kind=8) :: vrela, vmaxi, vchar
+    real(kind=8) :: vrela(1), vmaxi(1), vchar(1)
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,12 +56,12 @@ subroutine dierre(sddisc, sdcrit, iterat)
 !
     critcr = sdcrit(1:19)//'.CRTR'
     call jeveuo(critcr, 'L', jcrr)
-    vrela = zr(jcrr+3-1)
-    vmaxi = zr(jcrr+4-1)
-    vchar = zr(jcrr+6-1)
-    call nmlere(sddisc, 'E', 'VRELA', iterat, vrela)
-    call nmlere(sddisc, 'E', 'VMAXI', iterat, vmaxi)
-    call nmlere(sddisc, 'E', 'VCHAR', iterat, vchar)
+    vrela(1) = zr(jcrr+3-1)
+    vmaxi(1) = zr(jcrr+4-1)
+    vchar(1) = zr(jcrr+6-1)
+    call nmlere(sddisc, 'E', 'VRELA', iterat, vrela(1))
+    call nmlere(sddisc, 'E', 'VMAXI', iterat, vmaxi(1))
+    call nmlere(sddisc, 'E', 'VCHAR', iterat, vchar(1))
 !
     call jedema()
 end subroutine

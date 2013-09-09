@@ -117,8 +117,8 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
         call jeveuo(carte(1)//'.VALV', 'E', jvalv)
         nb_cmp = 1
         zk8(jvalv-1+1) = signal
-        call nocart(carte(1), 3, k8dummy, 'NUM', nb_elem,&
-                    k8dummy, zi(j_elem), ' ', nb_cmp)
+        call nocart(carte(1), 3, nb_cmp, mode='NUM', nma=nb_elem,&
+                    limanu=zi(j_elem))
 !
 ! ----- Get direction
 !
@@ -171,8 +171,8 @@ subroutine cbondp(load, ligrmo, mesh, ndim, vale_type)
         zr(jvalv-1+2) = wave_dire(2)
         zr(jvalv-1+3) = wave_dire(3)
         zr(jvalv-1+4) = wave_type_r
-        call nocart(carte(2), 3, k8dummy, 'NUM', nb_elem,&
-                    k8dummy, zi(j_elem), ' ', nb_cmp)
+        call nocart(carte(2), 3, nb_cmp, mode='NUM', nma=nb_elem,&
+                    limanu=zi(j_elem))
 !
 100      continue
 !

@@ -578,7 +578,7 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
                     dp=seuil/(1.5d0*deuxmu+(1.5d0*deuxmu*trans+1.d0)*&
                     rprim)
                 else
-                    call nzcalc(crit, phase, nz, fmel, seuil,&
+                    call nzcalc(crit, phase, nz, fmel(1), seuil,&
                                 dt, trans, rprim, deuxmu, eta,&
                                 unsurn, dp, iret)
                     if (iret .eq. 1) goto 9999

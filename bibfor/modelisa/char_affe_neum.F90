@@ -1,14 +1,14 @@
-subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
+subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
                           carte, nb_cmp)
 !
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/getelem.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/vetyma.h"
-#include "asterfort/getelem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,8 +28,8 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: mesh
-    integer, intent(in)  :: ndim
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: ndim
     character(len=16), intent(in) :: keywordfact
     integer, intent(in) :: iocc
     integer, intent(in) :: nb_carte
@@ -66,11 +66,11 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
 !
     list_elem = '&&LIST_ELEM'
     load_type = keywordfact
-    suffix    = ' '
+    suffix = ' '
 !
 ! - Elements to apply
 !
-    call getelem(mesh, keywordfact, iocc, suffix, 'A', &
+    call getelem(mesh, keywordfact, iocc, suffix, 'A',&
                  list_elem, nb_elem)
     if (nb_elem .eq. 0) goto 99
 !
@@ -78,8 +78,8 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
 !
     call jeveuo(list_elem, 'L', j_elem)
     do i_carte = 1, nb_carte
-        if (nb_cmp(i_carte).ne.0) then
-            call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem, &
+        if (nb_cmp(i_carte) .ne. 0) then
+            call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem,&
                         codret)
         endif
     enddo
@@ -87,14 +87,14 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
 ! - Apply Neumann loads in <CARTE>
 !
     do i_carte = 1, nb_carte
-        if (nb_cmp(i_carte).ne.0) then
-            call nocart(carte(i_carte), 3, k8dummy, 'NUM', nb_elem,&
-                        k8dummy, zi(j_elem), ' ', nb_cmp(i_carte))
+        if (nb_cmp(i_carte) .ne. 0) then
+            call nocart(carte(i_carte), 3, nb_cmp(i_carte), mode='NUM', nma=nb_elem,&
+                        limanu=zi(j_elem))
         endif
     enddo
 !
 99  continue
-
+!
     call jedetr(list_elem)
-
+!
 end subroutine

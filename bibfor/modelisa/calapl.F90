@@ -92,8 +92,7 @@ subroutine calapl(char, ligrmo, noma)
         zk8(jncmp+1) = 'TRANS'
         zk16(jvalv) = ' '
         zk16(jvalv+1) = ' '
-        call nocart(carte, 1, ' ', 'NOM', 0,&
-                    ' ', 0, ligrmo, 2)
+        call nocart(carte, 1, 2)
 !
         call wkvect(ltrans, 'G V R', 6, jtran)
         zr(jtran) = 0.d0
@@ -146,8 +145,7 @@ subroutine calapl(char, ligrmo, noma)
 14              continue
                 call jedetr(mesma2)
             endif
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, 2)
+            call nocart(carte, 1, 2)
 !
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
@@ -171,8 +169,8 @@ subroutine calapl(char, ligrmo, noma)
 18              continue
                 call jedetr(mesma2)
             endif
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', 2)
+            call nocart(carte, 3, 2, mode='NUM', nma=nbma,&
+                        limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !

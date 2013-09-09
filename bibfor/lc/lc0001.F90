@@ -102,7 +102,7 @@ subroutine lc0001(fami, kpg, ksp, ndim, imate,&
 !
         call nmorth(fami, kpg, ksp, ndim, mcmate,&
                     imate, 'T', deps, sigm, option,&
-                    angmas, sigp, vip, dsidep)
+                    angmas, sigp, vip(1), dsidep)
     endif
 !
 !

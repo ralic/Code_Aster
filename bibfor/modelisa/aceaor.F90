@@ -340,8 +340,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                         zr(jdvlvo) = zr(jdor+nummai*3-3)
                         zr(jdvlvo+1) = zr(jdor+nummai*3-2)
                         zr(jdvlvo+2) = zr(jdor+nummai*3-1)
-                        call nocart(cartor, 3, ' ', 'NUM', 1,&
-                                    ' ', nummai, ' ', 3)
+                        call nocart(cartor, 3, 3, mode='NUM', nma=1,&
+                                    limanu=[nummai])
                         goto 68
                     endif
                 endif
@@ -357,8 +357,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, nbedi,&
                     zr(jdvlvo) = zr(jdor+(i+nbmail)*3-3)
                     zr(jdvlvo+1) = zr(jdor+(i+nbmail)*3-2)
                     zr(jdvlvo+2) = zr(jdor+(i+nbmail)*3-1)
-                    call nocart(cartor, -3, ' ', 'NUM', 1,&
-                                ' ', -i, nomo//'.MODELE    ', 3)
+                    call nocart(cartor, -3, 3, ligrel=nomo//'.MODELE    ', nma=1,&
+                                limanu=[-i])
                     goto 72
                 endif
 74          continue

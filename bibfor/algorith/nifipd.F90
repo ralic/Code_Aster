@@ -110,7 +110,7 @@ subroutine nifipd(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: iddid, devdi(6), iddev(6)
     real(kind=8) :: t1, t2
     real(kind=8) :: idev(6, 6), kr(6)
-    real(kind=8) :: tampon(10), rbid
+    real(kind=8) :: tampon(10), rbid(1)
 !
     parameter    (grand = .false.)
     data         kr   / 1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/

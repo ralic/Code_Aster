@@ -82,8 +82,7 @@ subroutine carayo(char, ligrmo, noma, fonree)
         zk8(jvalv-1+2) = '&FOZERO'
         zk8(jvalv-1+3) = '&FOZERO'
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte, 1, ncmp)
 !
     mesmai = '&&CARAYO.MES_MAILLES'
     motcle(1) = 'GROUP_MA'
@@ -106,16 +105,15 @@ subroutine carayo(char, ligrmo, noma, fonree)
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
+            call nocart(carte, 1, ncmp)
 !
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) goto 10
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', ncmp)
+            call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
+                        limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !

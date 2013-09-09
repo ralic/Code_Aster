@@ -262,7 +262,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     inspas = 1
     newins = inst+dt
-    call nmdcei(sddisc, numins, newins, nbini, inspas,&
+    call nmdcei(sddisc, numins, [newins], nbini, inspas,&
                 'ADAP', r8bid)
 !
 9999  continue

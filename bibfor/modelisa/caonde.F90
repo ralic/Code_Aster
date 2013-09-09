@@ -75,8 +75,7 @@ subroutine caonde(char, ligrmo, noma, fonree)
     else
         zk8(jvalv) = '&FOZERO'
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, 1)
+    call nocart(carte, 1, 1)
 !
     mesmai = '&&CAONDE.MES_MAILLES'
     motcle(1) = 'GROUP_MA'
@@ -98,8 +97,8 @@ subroutine caonde(char, ligrmo, noma, fonree)
                     2, motcle, typmcl, mesmai, nbma)
         if (nbma .eq. 0) goto 10
         call jeveuo(mesmai, 'L', jma)
-        call nocart(carte, 3, k8b, 'NUM', nbma,&
-                    k8b, zi(jma), ' ', 1)
+        call nocart(carte, 3, 1, mode='NUM', nma=nbma,&
+                    limanu=zi(jma))
         call jedetr(mesmai)
 !
 10  end do

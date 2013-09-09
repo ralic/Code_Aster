@@ -222,7 +222,7 @@ subroutine nmrepl(modele, numedd, mate, carele, comref,&
     call nmchso(valint(1, 2), 'VALINC', 'SIGPLU', sigplt, valint(1, 2))
     call nmchso(valint(1, 2), 'VALINC', 'VARPLU', varplt, valint(1, 2))
     call nmchso(solalg, 'SOLALG', 'DEPDEL', depdet, solalt)
-    call nmchso(veasse, 'VEASSE', 'CNDIRI', cndirs, veasst)
+    call nmchso(veasse, 'VEASSE', 'CNDIRI', cndirs(1), veasst)
 !
 ! --- CALCUL DE F(RHO=0)
 !

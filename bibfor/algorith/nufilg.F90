@@ -116,7 +116,7 @@ subroutine nufilg(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: iddid
     real(kind=8) :: ftr(3, 3), t1, t2
     real(kind=8) :: idev(6, 6), kr(6)
-    real(kind=8) :: tampon(10), id(3, 3), rbid
+    real(kind=8) :: tampon(10), id(3, 3), rbid(1)
     real(kind=8) :: sigtr
     real(kind=8) :: alpha, trepst
     real(kind=8) :: dsbdep(2*ndim, 2*ndim)

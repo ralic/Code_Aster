@@ -16,10 +16,11 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 !
+!
     character(len=8) :: noma, nomu, crit
     integer :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(3)
-    integer :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm
     integer :: nmmt(*), nno, icmp, iavant, no4, nbcmp, icoud2
+    integer :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm
     real(kind=8) :: cozk(3*nbzk), coor(*), coor3(12), zk1(3), zk2(3), zk3(3)
     real(kind=8) :: angl1(3), angl2(3), angl3(3), epsi, angl4(3)
 ! ----------------------------------------------------------------------
@@ -245,8 +246,8 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap,&
             zr(jdvlvo-1+icmp+4) = theta
             zr(jdvlvo-1+icmp+5) = omega
 !
-            call nocart(cartor, 3, ' ', 'NUM', 1,&
-                        ' ', nummai, ' ', nbcmp)
+            call nocart(cartor, 3, nbcmp, mode='NUM', nma=1,&
+                        limanu=[nummai])
 !
             if (ivr(3) .eq. 1) then
                 call jenuno(jexnum(mlgnma, nummai), nommai)

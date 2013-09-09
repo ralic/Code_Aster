@@ -269,8 +269,8 @@ subroutine op0112()
                 zr(jvalv-1+icmp) = 0.d0
             end do
             ii = zi(jligr-1+idecal)
-            call nocart(carte, -3, ' ', 'NUM', 1,&
-                        ' ', ii, liel, nbcmpg)
+            call nocart(carte, -3, nbcmpg, ligrel=liel, nma=1,&
+                        limanu=[ii])
         endif
     end do
 !

@@ -18,6 +18,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 !
+!
     integer :: ialloc
     character(len=4) :: fonree
     character(len=8) :: char, noma
@@ -92,8 +93,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
         else
             zk8(jvalv) = '&FOZERO'
         endif
-        call nocart(carte, 1, ' ', 'NOM', 0,&
-                    ' ', 0, ligrmo, ncmp)
+        call nocart(carte, 1, ncmp)
     endif
 !
     mesmai = '&&CAFOTU.MES_MAILLES'
@@ -125,8 +125,7 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                     call utmess('A', 'MODELISA9_81', nk=2, valk=valk)
                 endif
             enddo
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
+            call nocart(carte, 1, ncmp)
 !
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
@@ -144,8 +143,8 @@ subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
                         call utmess('A', 'MODELISA9_81', nk=2, valk=valk)
                     endif
                 enddo
-                call nocart(carte, 3, k8b, 'NUM', nbma,&
-                            k8b, zi(jma), ' ', ncmp)
+                call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
+                            limanu=zi(jma))
                 call jedetr(mesmai)
             endif
         endif

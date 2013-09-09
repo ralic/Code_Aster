@@ -28,7 +28,7 @@ subroutine nmel2d(fami, poum, nno, npg, ipoids,&
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
     integer :: ivectu, idepl
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
     character(len=*) :: fami, poum
     real(kind=8) :: geom(2, nno), crit(3)
     real(kind=8) :: angmas(3)

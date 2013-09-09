@@ -135,12 +135,11 @@ subroutine cmtref(chmat, nomail)
 !          CONCERNEES PAR AUCUN KTRF :
     zk8(jvalv-1+nm+2) = 'NAN'
     if (codcm1 .eq. 1) then
-        call nocart(carcm2, 1, k8b, k8b, 0,&
-                    k8b, ibid, ' ', nm+2)
+        call nocart(carcm2, 1, nm+2)
 !
     else
-        call nocart(carcm2, 3, k8b, 'NUM', ncm1,&
-                    k8b, zi(jlcm1), ' ', nm+2)
+        call nocart(carcm2, 3, nm+2, mode='NUM', nma=ncm1,&
+                    limanu=zi(jlcm1))
     endif
 !
     do 30,ktrf = 1,nbtrf
@@ -174,12 +173,11 @@ subroutine cmtref(chmat, nomail)
     if (ninter .eq. 0) goto 30
 !
     if (codint .eq. 1) then
-        call nocart(carcm2, 1, k8b, k8b, 0,&
-                    k8b, ibid, ' ', nm+2)
+        call nocart(carcm2, 1, nm+2)
 !
     else
-        call nocart(carcm2, 3, k8b, 'NUM', ninter,&
-                    k8b, zi(jlint), ' ', nm+2)
+        call nocart(carcm2, 3, nm+2, mode='NUM', nma=ninter,&
+                    limanu=zi(jlint))
     endif
 !
 30  continue

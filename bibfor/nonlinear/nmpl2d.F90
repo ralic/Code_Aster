@@ -37,7 +37,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 !
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
 !
     real(kind=8) :: instam, instap
     real(kind=8) :: angmas(3)
@@ -91,7 +91,7 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl
 !
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
-    real(kind=8) :: poids, tmp, sig(6), rbid
+    real(kind=8) :: poids, tmp, sig(6), rbid(1)
     real(kind=8) :: elgeom(10, 9), rac2
 !
 ! - INITIALISATION

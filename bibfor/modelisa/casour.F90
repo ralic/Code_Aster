@@ -80,8 +80,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
     else
         zk8(jvalv) = '&FOZERO'
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte, 1, ncmp)
 !
 ! --- STOCKAGE DANS LA CARTE
 !

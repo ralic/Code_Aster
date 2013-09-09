@@ -185,24 +185,22 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
             do 20 i = 1, ng
-                call nocart(cartco, 2, zk24(jdls+i-1), ' ', 0,&
-                            ' ', 0, ' ', 8)
+                call nocart(cartco, 2, 8, groupma=zk24(jdls+i-1))
 20          continue
             if (lcartf) then
                 do 25 i = 1, ng
-                    call nocart(cartcf, 2, zk24(jdls+i-1), ' ', 0,&
-                                ' ', 0, ' ', 2)
+                    call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
 25              continue
             endif
         endif
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
         if (nm .gt. 0) then
-            call nocart(cartco, 3, ' ', 'NOM', nm,&
-                        zk8(jdls2), 0, ' ', 8)
+            call nocart(cartco, 3, 8, mode='NOM', nma=nm,&
+                        limano=zk8(jdls2))
             if (lcartf) then
-                call nocart(cartcf, 3, ' ', 'NOM', nm,&
-                            zk8(jdls2), 0, ' ', 2)
+                call nocart(cartcf, 3, 2, mode='NOM', nma=nm,&
+                            limano=zk8(jdls2))
             endif
         endif
 !

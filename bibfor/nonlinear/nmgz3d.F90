@@ -36,7 +36,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
 !
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
 !
     real(kind=8) :: instam, instap
     real(kind=8) :: geomi(3, nno), crit(3)
@@ -86,7 +86,7 @@ subroutine nmgz3d(fami, nno, npg, ipoids, ivf,&
     integer :: kpg, kk, kkd, n, i, m, j, j1, kl, pq, cod(27)
 !
     real(kind=8) :: dsidep(6, 6), f(3, 3), fm(3, 3), fr(3, 3), epsbid(6)
-    real(kind=8) :: r, sigma(6), sign(6), sig(6), sigg(6), rbid
+    real(kind=8) :: r, sigma(6), sign(6), sig(6), sigg(6), rbid(1)
     real(kind=8) :: poids, tmp1, tmp2
     real(kind=8) :: elgeom(10, 27), angmas(3)
     real(kind=8) :: geomp(3, nno), fb(3, 3)

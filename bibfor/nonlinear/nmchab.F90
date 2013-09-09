@@ -88,7 +88,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: dt, ksim(6), qm, crit(10), instam, instap, beta1, beta2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option
+    character(len=16) :: compor(*), option
     common/fchab/mat,pm,sigedv,epspm,alfam,alfa2m,deuxmu,rpvm,rpvp,&
      &    qm,qp,ksim,ksip,dt,n1,n2,depsp,&
      &    beta1,beta2,ndimsi,nbvar,visc,memo,idelta

@@ -328,10 +328,10 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
         zr(jdvba) = zr(jdge)
         call jeveuo(jexnum(tmpgef, i), 'L', jdgef)
         zk8(jdvbaf) = zk8(jdgef)
-        call nocart(cartba, 3, ' ', 'NOM', 1,&
-                    nommai, 0, ' ', 1)
-        call nocart(cartbf, 3, ' ', 'NOM', 1,&
-                    nommai, 0, ' ', 1)
+        call nocart(cartba, 3, 1, mode='NOM', nma=1,&
+                    limano=[nommai])
+        call nocart(cartbf, 3, 1, mode='NOM', nma=1,&
+                    limano=[nommai])
 70  end do
 !
 ! --- AFFECTATIONS DONNEES GEOMETRIQUES (ON AFFECTE TOUTES LES CMPS)
@@ -347,15 +347,15 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
             do 78 i = 1, 6
                 zr (jdvbg+i-1) = 0.d0
 78          continue
-            call nocart(cartbg, 3, ' ', 'NOM', 1,&
-                        nommai, 0, ' ', 6)
+            call nocart(cartbg, 3, 6, mode='NOM', nma=1,&
+                        limano=[nommai])
         else
 ! ---       RECTANGLE OU CERCLE
             do 80 i = 1, 6
                 zr (jdvbg+i-1) = zr(jdge+i)
 80          continue
-            call nocart(cartbg, 3, ' ', 'NOM', 1,&
-                        nommai, 0, ' ', 6)
+            call nocart(cartbg, 3, 6, mode='NOM', nma=1,&
+                        limano=[nommai])
         endif
 76  end do
 !

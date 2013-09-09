@@ -111,8 +111,7 @@ subroutine capesa(char, noma, ipesa, ndim)
             zr(jvalv+1) = 0.d0
             zr(jvalv+2) = 0.d0
             zr(jvalv+3) = 0.d0
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ' ', ncmp)
+            call nocart(carte, 1, ncmp)
 !
 !
 ! --- STOCKAGE DANS LA CARTE

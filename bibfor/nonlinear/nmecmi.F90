@@ -36,7 +36,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     integer :: kpg, ksp, ndim, imate, iret, iret0, iret1, iret2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option
+    character(len=16) :: compor(*), option
     real(kind=8) :: crit(10), tp2, line, radi
     real(kind=8) :: deps(6), prec, dx, deuxmu
     real(kind=8) :: sigm(6), vim(8), sigp(6), vip(8), dsidep(6, 6)

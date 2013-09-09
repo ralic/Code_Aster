@@ -69,7 +69,7 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
     integer :: code(9), ni, mj, kk, p, q, kpg, ibid, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
-    real(kind=8) :: rbid
+    real(kind=8) :: rbid(1)
     real(kind=8) :: angmas(3)
 !
     character(len=8) :: typmod(2)
@@ -119,7 +119,6 @@ subroutine nmfi3d(nno, nddl, npg, lgpg, wref,&
 !
 ! -   APPEL A LA LOI DE COMPORTEMENT
 !
-        rbid = r8vide()
         code(kpg) = 0
 !
 !       CONTRAINTES -

@@ -96,16 +96,15 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
             do 20 i = 1, ng
-                call nocart(cartpf, 2, zk24(jdls+i-1), ' ', 0,&
-                            ' ', 0, ' ', 6)
+                call nocart(cartpf, 2, 6, groupma=zk24(jdls+i-1))
 20          continue
         endif
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
         if (nm .gt. 0) then
-            call nocart(cartpf, 3, ' ', 'NOM', nm,&
-                        zk8(jdls2), 0, ' ', 6)
+            call nocart(cartpf, 3, 6, mode='NOM', nma=nm,&
+                        limano=zk8(jdls2))
         endif
 !
 10  end do

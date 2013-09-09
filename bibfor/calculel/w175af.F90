@@ -122,15 +122,14 @@ subroutine w175af(modele, chfer1)
 !
         call getvtx('AFFE', 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
-            call nocart(chfer1, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ' ', ncmpmx)
+            call nocart(chfer1, 1, ncmpmx)
 !
         else
             call reliem(' ', noma, 'NU_MAILLE', 'AFFE', iocc,&
                         2, motcls, typmcl, mesmai, nbmail)
             call jeveuo(mesmai, 'L', jmail)
-            call nocart(chfer1, 3, ' ', 'NUM', nbmail,&
-                        k8b, zi(jmail), ' ', ncmpmx)
+            call nocart(chfer1, 3, ncmpmx, mode='NUM', nma=nbmail,&
+                        limanu=zi(jmail))
             call jedetr(mesmai)
         endif
 30  continue

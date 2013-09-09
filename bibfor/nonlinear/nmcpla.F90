@@ -306,7 +306,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
     if (cmp2(1)(1:9) .eq. 'VMIS_ISOT' .or. cmp2(1)(1:14) .eq. 'VMIS_ISOT_LINE') then
 !
         call nmisot(fami, kpg, ksp, ndim, typmod,&
-                    imat, cmp2, crit, deps, sigd,&
+                    imat, cmp2(1), crit, deps, sigd,&
                     vind(nn), opt, sigf, vinf(nn), dsde,&
                     rbid, rbid, iret)
 !

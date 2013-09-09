@@ -91,8 +91,7 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
         zk8(jvalv) = '&FOZERO'
         zk8(jvalv+1) = '&FOZERO'
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte, 1, ncmp)
 !
     mesmai = '&&CAPRES.MES_MAILLES'
     lismai = '&&CAPRES.NUM_MAILLES'
@@ -135,8 +134,8 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
             call xtmafi(noma, ndim, fiss, nfiss, lismai,&
                         mesmai, nbma)
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NOM', nbma,&
-                        zk8(jma), ibid, ' ', ncmp)
+            call nocart(carte, 3, ncmp, mode='NOM', nma=nbma,&
+                        limano=zk8(jma))
             call jedetr(mesmai)
             call jedetr(lismai)
 !

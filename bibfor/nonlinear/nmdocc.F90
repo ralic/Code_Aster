@@ -294,13 +294,12 @@ subroutine nmdocc(compor, modele, nbmo1, moclef, nomcmp,&
 !
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jma)
-                call nocart(compor, 3, k8b, 'NUM', nbma,&
-                            k8b, zi(jma), ' ', ncmpma)
+                call nocart(compor, 3, ncmpma, mode='NUM', nma=nbma,&
+                            limanu=zi(jma))
                 call jedetr(mesmai)
             else
 ! -----   PAR DEFAUT C'EST TOUT='OUI'
-                call nocart(compor, 1, k8b, k8b, 0,&
-                            k8b, ibid, k8b, ncmpma)
+                call nocart(compor, 1, ncmpma)
             endif
 !
 150      continue

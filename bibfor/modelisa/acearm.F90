@@ -197,10 +197,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp, l, jdcinf, jdvinf, isym,&
                             impr)
-                call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', ncmp)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
+                call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
 !              AFFECTATION MATRICE MASSE NULLE
                 iv = 1
                 ledisc = 'M_T_D_N'
@@ -208,10 +208,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp, l, jdcinf, jdvinf, isym,&
                             impr)
-                call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', ncmp)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
+                call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
 !              AFFECTATION MATRICE AMORTISSEMENT NULLE
                 iv = 1
                 ledisc = 'A_T_D_N'
@@ -219,10 +219,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp, l, jdcinf, jdvinf, isym,&
                             impr)
-                call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', ncmp)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
+                call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
 41          continue
 !
         endif
@@ -248,10 +248,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp2, l, jdcinf, jdvinf, isym,&
                             impr)
-                call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', ncmp2)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
+                call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
 !              AFFECTATION MATRICE MASSE NULLE
                 iv = 1
                 ledisc = 'M_T_D_L'
@@ -259,10 +259,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp2, l, jdcinf, jdvinf, isym,&
                             impr)
-                call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', ncmp2)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
+                call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
 !              AFFECTATION MATRICE AMORTISSEMENT NULLE
                 iv = 1
                 ledisc = 'A_T_D_L'
@@ -270,10 +270,10 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
                             jdc, jdv, ivr, iv, kma,&
                             ncmp2, l, jdcinf, jdvinf, isym,&
                             impr)
-                call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', dimcar)
-                call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                            zk8(jd), 0, ' ', ncmp2)
+                call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
+                call nocart(cart(l), 3, ncmp2, mode='NOM', nma=1,&
+                            limano=[zk8(jd)])
 42          continue
         endif
 30  end do

@@ -66,6 +66,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
     real(kind=8) :: dsigma(mxcmel), zero, deux, s1dsig, norm, dnorm, matel(20)
     real(kind=8) :: zernor, tensm(6), tensp(6), indm, indp, xm(6), xp(6)
     real(kind=8) :: coef, cinf, c2inf, mat(50)
+    character(len=16) :: compor2(3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -168,7 +169,9 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia,&
             compor.eq.'VMIS_CIN2_MEMO') .or. (&
             compor.eq.'VISC_CIN2_CHAB') .or. (&
             compor.eq.'VISC_CIN2_MEMO')) then
-                call nmcham('RIGI', igau, 1, imate, compor,&
+                compor2=' '
+                compor2(1)=compor
+                call nmcham('RIGI', igau, 1, imate, compor2,&
                             matel, mat, nbvar, memo, visc,&
                             idelta, coef)
 !              approximation : on supose C constant

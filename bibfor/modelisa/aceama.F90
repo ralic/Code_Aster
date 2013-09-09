@@ -80,8 +80,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     zr(jdvc+5) = 0.d0
     zr(jdvc+6) = 0.d0
 !
-    call nocart(cartma, 1, ' ', 'NOM', 0,&
-                ' ', 0, ' ', 7)
+    call nocart(cartma, 1, 7)
 !
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTMA
     do 10 ioc = 1, nbocc
@@ -134,16 +133,15 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
             do 20 i = 1, ng
-                call nocart(cartma, 2, zk24(jdls+i-1), ' ', 0,&
-                            ' ', 0, ' ', 7)
+                call nocart(cartma, 2, 7, groupma=zk24(jdls+i-1))
 20          continue
         endif
 !
 ! ---    "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
         if (nm .gt. 0) then
-            call nocart(cartma, 3, ' ', 'NOM', nm,&
-                        zk8(jdls2), 0, ' ', 7)
+            call nocart(cartma, 3, 7, mode='NOM', nma=nm,&
+                        limano=zk8(jdls2))
         endif
 !
 10  end do

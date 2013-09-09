@@ -150,8 +150,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
 !
 !     -- ON NOTE DANS LA CARTE LES VALEURS VOULUES :
 !
-    call nocart(nomca2, 1, ' ', 'NOM', 0,&
-                ' ', 0, ' ', ncmp)
+    call nocart(nomca2, 1, ncmp)
 !
     call jedetr(nomca2(1:19)//'.VALV')
     call jedetr(nomca2(1:19)//'.NCMP')

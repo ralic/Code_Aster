@@ -55,7 +55,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu
-    real(kind=8) :: crbid, inbid, sigpp(6), rac2, emda(6)
+    real(kind=8) :: crbid(1), inbid, sigpp(6), rac2, emda(6)
     real(kind=8) :: empl(6), depzz, eps2d(6), deps2d(6), d22, d21eps
     real(kind=8) :: tan3d(6, 6)
     real(kind=8) :: sig2dm(6), sig2dp(6), scm(4), sigpeq, critcp, signul, prec
@@ -214,12 +214,12 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, option, sigm, sig, v
                             vip(8), tan3d, iret)
 !
 !---------VMIS_ISOT_LINE--------------------
-            else if (compor (1:14) .eq. 'VMIS_ISOT_LINE') then
+            else if (compor(1:14) .eq. 'VMIS_ISOT_LINE') then
 !     --    POUR POUVOIR UTILISER NMISOT
             typmod(1) = '3D  '
             typmod(2) = '        '
             call nmisot('RIGI', 1, 1, 3, typmod,&
-                        imate, 'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm,&
+                        imate,  'VMIS_ISOT_LINE  ', crbid, deps2d, sig2dm,&
                         vim(8), 'FULL_MECA       ', sig2dp, vip(8), tan3d,&
                         r8bid(1), r8bid(2), iret)
         endif

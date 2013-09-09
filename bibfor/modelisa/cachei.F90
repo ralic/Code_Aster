@@ -120,8 +120,7 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
             zk8(jvalv-1+i) = '&FOZERO'
 12      continue
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte, 1, ncmp)
 !
     mesmai = '&&CACHEI.MES_MAILLES'
     motcle(1) = 'GROUP_MA'
@@ -193,15 +192,14 @@ subroutine cachei(char, ligrmo, noma, fonree, param,&
 !
         if (nbtou .ne. 0) then
 !
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
+            call nocart(carte, 1, ncmp)
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) goto 20
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', ncmp)
+            call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
+                        limanu=zi(jma))
             call jedetr(mesmai)
         endif
 20  end do

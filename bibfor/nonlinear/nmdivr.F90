@@ -52,7 +52,7 @@ subroutine nmdivr(sddisc, sderro, iterat)
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: r, rm1, rm2
+    real(kind=8) :: r(1), rm1(1), rm2(1)
     logical :: divres
 !
 ! ----------------------------------------------------------------------
@@ -69,19 +69,19 @@ subroutine nmdivr(sddisc, sderro, iterat)
 !
 ! --- RESIDU GLOBAL (RESI_GLOB_MAXI) A L'ITERATION COURANTE
 !
-    call nmlere(sddisc, 'L', 'VMAXI', iterat, r)
+    call nmlere(sddisc, 'L', 'VMAXI', iterat, r(1))
 !
 ! --- RESIDU GLOBAL (RESI_GLOB_MAXI) A L'ITERATION "MOINS 1"
 !
-    call nmlere(sddisc, 'L', 'VMAXI', iterat-1, rm1)
+    call nmlere(sddisc, 'L', 'VMAXI', iterat-1, rm1(1))
 !
 ! --- RESIDU GLOBAL (RESI_GLOB_MAXI) A L'ITERATION "MOINS 2"
 !
-    call nmlere(sddisc, 'L', 'VMAXI', iterat-2, rm2)
+    call nmlere(sddisc, 'L', 'VMAXI', iterat-2, rm2(1))
 !
 ! --- SI LE RESIDU N'EST PAS DIMINUE SUR UNE DES 2 ITERATIONS : DIV
 !
-    if (min(r,rm1) .gt. rm2) divres = .true.
+    if (min(r(1),rm1(1)) .gt. rm2(1)) divres = .true.
 !
 999  continue
 !

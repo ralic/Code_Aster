@@ -328,8 +328,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !
             igrel = igrel + 1
             call jenuno(jexnum('&CATA.TE.NOMTE', numel), nomele)
-            call noligr(ligrch, igrel, numel, 1, in,&
-                        ' ', 1, 1, inema, zi(jnbno),&
+            call noligr(ligrch, igrel, numel, 1, [in],&
+                        [' '], 1, 1, inema, zi(jnbno),&
                         typlag)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
@@ -346,8 +346,8 @@ subroutine cafono(char, ligrcz, noma, ligrmz, fonree)
 !   ON CREE UNE CARTE POUR CHAQUE NOEUD AFFECTE ET ON NOTE TOUTES
 !   LES COMPOSANTES (NBCOMP)
 !
-            call nocart(carte, -3, ' ', 'NUM', 1,&
-                        ' ', zi(jl), liel, nbcomp)
+            call nocart(carte, -3, nbcomp, ligrel=liel, nma=1,&
+                        limanu=[zi(jl)])
 !
         endif
 !

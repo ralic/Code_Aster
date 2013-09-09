@@ -72,7 +72,7 @@ subroutine te0027(option, nomte)
     real(kind=8) :: sigl(6), sigin(6), dsigin(6, 3)
     real(kind=8) :: thet, tgdm(3), tgd(20)
     real(kind=8) :: prod, prod1, prod2, divt, valpar(4)
-    real(kind=8) :: tcla, tthe, tfor, tplas, tini, poids, rbid
+    real(kind=8) :: tcla, tthe, tfor, tplas, tini, poids, rbid,dsidep(6,6)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4), dvdm(3, 4)
     real(kind=8) :: p, ppg, dpdm(3), rp, energi(2), rho(1), om, omo
     real(kind=8) :: ecin, prod3, prod4, accele(3), e(1), nu(1), mu
@@ -432,7 +432,7 @@ subroutine te0027(option, nomte)
             crit(3) = 1.d-3
             call nmelnl(fami, kp, 1, '+', ndim,&
                         typmod, matcod, compor, crit, oprupt,&
-                        eps, sigl, rbid, rbid, energi)
+                        eps, sigl, rbid, dsidep, energi)
             call tecach('NNN', 'PCONTGR', 'L', 1, isigm,&
                         iret)
             if (iret .eq. 0) then

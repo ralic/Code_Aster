@@ -154,7 +154,7 @@ subroutine nmco1d(fami, kpg, ksp, imate, compor,&
                     sigp, dsidep, codret)
 !
     else if (pinto) then
-        call nmmaba(imate, compor, e, et, sigy,&
+        call nmmaba(imate, compor(1), e, et, sigy,&
                     ncstpm, cstpm)
         call verift(fami, kpg, ksp, 'T', imate,&
                     materi, 'ELAS', 1, depsth, iret)

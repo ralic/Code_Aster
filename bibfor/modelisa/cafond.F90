@@ -8,7 +8,6 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/char_crea_cart.h"
-#include "asterfort/char_read_val.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/getelem.h"
@@ -167,8 +166,8 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
         call jeveuo(carte(1)//'.VALV', 'E', jvalv)
         nb_cmp = 1
         zr(jvalv-1+1) = coef_mult
-        call nocart(carte(1), 3, k8dummy, 'NUM', nb_elem_sect,&
-                    k8dummy, zi(j_elem_sect), ' ', nb_cmp)
+        call nocart(carte(1), 3, nb_cmp, mode='NUM', nma=nb_elem_sect,&
+                    limanu=zi(j_elem_sect))
 !
 ! ----- Affectation of values in <CARTE> - Pressure
 !
@@ -181,8 +180,8 @@ subroutine cafond(load, ligrmo, mesh, ndim, vale_type)
         else
             ASSERT(.false.)
         endif
-        call nocart(carte(2), 3, k8dummy, 'NUM', nb_elem_sect,&
-                    k8dummy, zi(j_elem_sect), ' ', nb_cmp)
+        call nocart(carte(2), 3, nb_cmp, mode='NUM', nma=nb_elem_sect,&
+                    limanu=zi(j_elem_sect))
 !
 ! ----- Check elements
 !

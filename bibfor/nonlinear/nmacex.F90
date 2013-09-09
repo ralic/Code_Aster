@@ -58,7 +58,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 !
     integer :: ibid, regres, depart, jvresi
     real(kind=8) :: cresi, crela, cmaxi
-    real(kind=8) :: vrela, vmaxi
+    real(kind=8) :: vrela(1), vmaxi(1)
     real(kind=8) :: r8bid
     real(kind=8) :: xa0, xa1, xdet
     integer :: nbiter, mniter, mxiter
@@ -104,9 +104,9 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 !
     if (regres .eq. 3) then
         regres = 0
-        if (vrela .gt. crela) then
+        if (vrela(1) .gt. crela) then
             regres = 1
-        else if (vmaxi .gt. cmaxi) then
+        else if (vmaxi(1) .gt. cmaxi) then
             regres = 2
         endif
     endif

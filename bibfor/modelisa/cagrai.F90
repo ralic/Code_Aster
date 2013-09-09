@@ -80,8 +80,7 @@ subroutine cagrai(char, ligrmo, noma, fonree)
             zk8(jvalv-1+i) = '&FOZERO'
 12      continue
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, 3)
+    call nocart(carte, 1, 3)
 !
     mesmai = '&&CAGRAI.MES_MAILLES'
     motcle(1) = 'GROUP_MA'
@@ -115,16 +114,15 @@ subroutine cagrai(char, ligrmo, noma, fonree)
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, 3)
+            call nocart(carte, 1, 3)
 !
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) goto 20
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', 3)
+            call nocart(carte, 3, 3, mode='NUM', nma=nbma,&
+                        limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !

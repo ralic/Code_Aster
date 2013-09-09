@@ -170,8 +170,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         img = zi(jdgm+ijm-1)
                         zr(jdvc) = xrc
                         zr(jdvc+1) = xang * dgrd
-                        call nocart(cartar, 3, ' ', 'NUM', 1,&
-                                    ' ', img, ' ', 8)
+                        call nocart(cartar, 3, 8, mode='NUM', nma=1,&
+                                    limanu=[img])
 576                  continue
 556              continue
 !
@@ -226,8 +226,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                             call orien2(x1, x2, xcen, angl)
                             zr(jdvc) = rr
                             zr(jdvc+1) = angl(3) + pi
-                            call nocart(cartar, 3, ' ', 'NUM', 1,&
-                                        ' ', img, ' ', 8)
+                            call nocart(cartar, 3, 8, mode='NUM', nma=1,&
+                                        limanu=[img])
 57                      continue
 557                  continue
                 else
@@ -285,8 +285,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                             call orien2(x1, x2, xcen, angl)
                             zr(jdvc) = rr
                             zr(jdvc+1) = angl(3) + pi
-                            call nocart(cartar, 3, ' ', 'NUM', 1,&
-                                        ' ', img, ' ', 8)
+                            call nocart(cartar, 3, 8, mode='NUM', nma=1,&
+                                        limanu=[img])
 58                      continue
 558                  continue
                 endif
@@ -305,8 +305,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                     zr(jdvc) = xrc
                     zr(jdvc+1) = xang * dgrd
                     nomail = zk24(jdls-1+ijm)
-                    call nocart(cartar, 3, ' ', 'NOM', 1,&
-                                nomail, 0, ' ', 8)
+                    call nocart(cartar, 3, 8, mode='NOM', nma=1,&
+                                limano=[nomail])
 559              continue
 !
             else if (nc.ne.0 .or. np.ne.0) then
@@ -359,8 +359,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         zr(jdvc) = rr
                         zr(jdvc+1) = angl(3) + pi
                         nomail = zk24(jdls-1+ijm)
-                        call nocart(cartar, 3, ' ', 'NOM', 1,&
-                                    nomail, 0, ' ', 8)
+                        call nocart(cartar, 3, 8, mode='NOM', nma=1,&
+                                    limano=[nomail])
 55                  continue
                 else
                     call orien2(x1, x2, xtan, angl)
@@ -413,8 +413,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
                         zr(jdvc) = rr
                         zr(jdvc+1) = angl(3) + pi
                         nomail = zk24(jdls-1+ijm)
-                        call nocart(cartar, 3, ' ', 'NOM', 1,&
-                                    nomail, 0, ' ', 8)
+                        call nocart(cartar, 3, 8, mode='NOM', nma=1,&
+                                    limano=[nomail])
 56                  continue
                 endif
                 write(ifm,*)'MOT CLE FACTEUR DEFI_ARC, MOT CLE MAILLE'

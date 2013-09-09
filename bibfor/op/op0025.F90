@@ -61,9 +61,9 @@ subroutine op0025()
     integer :: vali
     integer :: ifm, niv, iret
     integer :: neq, numins
-    integer :: parmei(1), parcri(1)
+    integer :: parmei(2), parcri(3)
 !
-    real(kind=8) :: parmer(1), parcrr(1), para(2), valr(2)
+    real(kind=8) :: parmer(2), parcrr(2), para(2), valr(2)
     real(kind=8) :: tpsthe(6), tps1(4), deltat, deltam
     real(kind=8) :: theta, instap
 !

@@ -116,7 +116,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: gradgp(3), c(1)
     real(kind=8) :: t1, t2
     real(kind=8) :: kr(6)
-    real(kind=8) :: tampon(10), id(3, 3), rbid
+    real(kind=8) :: tampon(10), id(3, 3), rbid(1)
     real(kind=8) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa
 !
     parameter    (grand = .true.)

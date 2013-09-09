@@ -92,8 +92,8 @@ subroutine pmfd02(noma, cesdec)
         zi(jvalv-1+1) = nbcou
 !
         call jeveuo(mesmai, 'L', jma)
-        call nocart(carte, 3, k8b, 'NUM', nbma,&
-                    k8b, zi(jma), ' ', 1)
+        call nocart(carte, 3, 1, mode='NUM', nma=nbma,&
+                    limanu=zi(jma))
         call jedetr(mesmai)
 210  end do
 !
@@ -111,8 +111,8 @@ subroutine pmfd02(noma, cesdec)
         zi(jvalv-1+2) = nbsec
 !
         call jeveuo(mesmai, 'L', jma)
-        call nocart(carte, 3, k8b, 'NUM', nbma,&
-                    k8b, zi(jma), ' ', 2)
+        call nocart(carte, 3, 2, mode='NUM', nma=nbma,&
+                    limanu=zi(jma))
         call jedetr(mesmai)
 220  end do
 !

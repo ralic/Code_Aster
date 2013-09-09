@@ -93,8 +93,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
         zk8(jvalv+1) = '&FOZERO'
         zk8(jvalv+2) = '&FOZERO'
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte, 1, ncmp)
 !
     mesmai = '&&CAFTHM.MAILLES_INTE'
     motcle(1) = 'GROUP_MA'
@@ -122,15 +121,14 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !
         if (nbtou .ne. 0) then
 !
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, ncmp)
+            call nocart(carte, 1, ncmp)
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jma)
-                call nocart(carte, 3, k8b, 'NUM', nbma,&
-                            k8b, zi(jma), ' ', ncmp)
+                call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
+                            limanu=zi(jma))
                 call jedetr(mesmai)
             endif
         endif

@@ -109,7 +109,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
     real(kind=8) :: rac2, t1, t2, alpha
     real(kind=8) :: def(6, nno, 3), tmp1
     real(kind=8) :: tampon(10), taup(6)
-    real(kind=8) :: tbid(6), rbid, r8bid, id(3, 3)
+    real(kind=8) :: tbid(6), rbid(1), r8bid, id(3, 3)
     real(kind=8) :: epsm(6), epsmm(6)
     real(kind=8) :: rp(3, 3), rpa(3, 3)
     real(kind=8) :: rpat(3, 3), etdm(3, 3), lambp(3, 3)
@@ -126,7 +126,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
         ASSERT(.false.)
     endif
 !
-    rbid = r8vide()
+    rbid(1) = r8vide()
     rac2 = sqrt(2.d0)
     nddl = ndim*nno
     ndu = ndim
@@ -145,7 +145,7 @@ subroutine nmsh1(fami, option, typmod, formal, ndim,&
 !--------------------------INITIALISATION------------------------
 !
 !     INTIALISATION DU VECTEUR TBID AVEC LA VALEUR RBID
-    call r8inir(6, rbid, tbid, 1)
+    call r8inir(6, rbid(1), tbid, 1)
 !
 !     MISE A ZERO TAUP[6]=0, DSIDEP[54]=0, TAMPON[10]=0, COD[27]=0
     call r8inir(6, 0.d0, taup, 1)

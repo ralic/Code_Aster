@@ -360,8 +360,7 @@ subroutine op0180()
         zk8(jncmp+icmp-1) = zk8(jsief+icmp-1)
         zr(jvalv+icmp-1) = 0.0d0
     end do
-    call nocart(carsig, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, nsief)
+    call nocart(carsig, 1, nsief)
     zk8(jncmp) = effnor(1)
     zk8(jncmp+1) = effnor(2)
     zk8(jncmp+2) = effnor(3)

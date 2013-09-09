@@ -225,8 +225,8 @@ subroutine abscur(nomu, it)
         stot = stot+s
         zr(iavalv+1) = stot
         zr(iab2+mi-1)= stot
-        call nocart(nomu//'.ABS_CURV  ', 3, ' ', 'NUM', 1,&
-                    ' ', ima, ' ', 2)
+        call nocart(nomu//'.ABS_CURV  ', 3, 2, mode='NUM', nma=1,&
+                    limanu=[ima])
 10  end do
 !     CAS DES POI1
     do 20 ipoi1 = 1, nbpoi1
@@ -239,8 +239,8 @@ subroutine abscur(nomu, it)
         endif
         zr(iavalv ) = s
         zr(iavalv+1) = s
-        call nocart(nomu//'.ABS_CURV  ', 3, ' ', 'NUM', 1,&
-                    ' ', ima, ' ', 2)
+        call nocart(nomu//'.ABS_CURV  ', 3, 2, mode='NUM', nma=1,&
+                    limanu=[ima])
 20  end do
 !
 ! --- MENAGE

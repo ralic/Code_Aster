@@ -43,7 +43,7 @@ subroutine nmnkft(solveu, sddisc, iterat)
 !
 !
     integer :: jslvr, ibid
-    real(kind=8) :: epsi, epsold, resnew, resold, epsmin
+    real(kind=8) :: epsi, epsold, resnew(1), resold(1), epsmin
     character(len=19) :: solveu
 !
 ! ----------------------------------------------------------------------
@@ -61,22 +61,22 @@ subroutine nmnkft(solveu, sddisc, iterat)
         call nmlerr(sddisc, 'L', 'INIT_NEWTON_KRYLOV', epsi, ibid)
     else
         if (iterat .eq. 0) then
-            call nmlere(sddisc, 'L', 'VCHAR', iterat, resold)
+            call nmlere(sddisc, 'L', 'VCHAR', iterat, resold(1))
         else
-            call nmlere(sddisc, 'L', 'VMAXI', iterat-1, resold)
+            call nmlere(sddisc, 'L', 'VMAXI', iterat-1, resold(1))
         endif
         call nmlerr(sddisc, 'L', 'ITER_NEWTON_KRYLOV', epsold, ibid)
-        call nmlere(sddisc, 'L', 'VMAXI', iterat, resnew)
-        if (resold .eq. 0.d0) then
+        call nmlere(sddisc, 'L', 'VMAXI', iterat, resnew(1))
+        if (resold(1) .eq. 0.d0) then
             epsi=epsold
             goto 10
         endif
         if ((0.9d0*epsold**2) .gt. 0.2d0) then
-            epsi=min(max(0.1d0*resnew**2/resold**2,0.9d0*epsold**2)&
+            epsi=min(max(0.1d0*resnew(1)**2/resold(1)**2,0.9d0*epsold**2)&
             ,4.d-1*epsold)
         else
             epsmin = zr(jslvr)
-            epsi=max(min(0.1d0*resnew**2/resold**2,4.d-1*epsold)&
+            epsi=max(min(0.1d0*resnew(1)**2/resold(1)**2,4.d-1*epsold)&
             ,epsmin)
 !
 !

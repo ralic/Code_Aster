@@ -76,13 +76,13 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
     integer :: jprol, jvale, nbval(3), maxval, nz
     integer :: ndimsi, i, j, k, mode, ire2, iret1, iret2
 !
-    real(kind=8) :: phase(3), phasm(3), zalpha
+    real(kind=8) :: phase(5), phasm(3), zalpha
     real(kind=8) :: temp, dt
 !
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk
     real(kind=8) :: fmel(1), sy(3), h(3), hmoy, hplus(3), r(3), rmoy
     real(kind=8) :: theta(4), epsthe(2)
-    real(kind=8) :: eta(3), n(3), unsurn(3), c(3), m(3), cmoy, mmoy, cr
+    real(kind=8) :: eta(5), n(3), unsurn(5), c(3), m(3), cmoy, mmoy, cr
     real(kind=8) :: dz(2), dz1(2), dz2(2), vi(3), dvin, vimoy, ds
     real(kind=8) :: trans, kpt(2), zvarim, zvarip, deltaz
 !
@@ -529,7 +529,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                 dp = 0.d0
             else
                 vip(4) = 1.d0
-                call nzcalc(crit, phase, nz, fmel, seuil,&
+                call nzcalc(crit, phase, nz, fmel(1), seuil,&
                             dt, trans, hmoy, deuxmu, eta,&
                             unsurn, dp, iret)
                 if (iret .eq. 1) goto 9999
@@ -575,7 +575,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
                         endif
                         seuil= sieleq - (1.5d0*deuxmu*trans + 1.d0)*&
                         rmoy
-                        call nzcalc(crit, phase, nz, fmel, seuil,&
+                        call nzcalc(crit, phase, nz, fmel(1), seuil,&
                                     dt, trans, hmoy, deuxmu, eta,&
                                     unsurn, dp, iret)
                         if (iret .eq. 1) goto 9999

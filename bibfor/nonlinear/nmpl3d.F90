@@ -36,12 +36,12 @@ subroutine nmpl3d(fami, nno, npg, ipoids, ivf,&
 !
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(16)
+    character(len=16) :: option, compor(*)
 !
     real(kind=8) :: instam, instap, angmas(*)
     real(kind=8) :: geom(3, nno), crit(*)
     real(kind=8) :: deplm(1:3, 1:nno), deplp(1:3, 1:nno), dfdi(nno, 3)
-    real(kind=8) :: def(6, nno, 3), rbid
+    real(kind=8) :: def(6, nno, 3), rbid(1)
     real(kind=8) :: sigm(6, npg), sigp(6, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: matuu(*), vectu(3, nno)

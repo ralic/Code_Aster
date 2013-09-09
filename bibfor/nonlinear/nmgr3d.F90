@@ -39,7 +39,7 @@ subroutine nmgr3d(nno, npg, ipoids, ivf, idfde,&
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
 !
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
 !
     real(kind=8) :: instam, instap
     real(kind=8) :: geomi(3, nno), crit(3), detfm

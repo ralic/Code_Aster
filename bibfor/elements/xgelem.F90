@@ -89,7 +89,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
     real(kind=8) :: crit(3), dfdm(3, 4)
     real(kind=8) :: energi(2), sigl(6), prod, prod2, rac2, sr(3, 3), tcla, divt
-    real(kind=8) :: tfor
+    real(kind=8) :: tfor,dsidep(6,6)
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
     logical :: grdepl, cp, axi
@@ -428,7 +428,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         crit(3) = 1.d-3
         call nmelnl('RIGI', kpg, 1, '+', ndim,&
                     typmod, matcod, compor, crit, oprupt,&
-                    eps, sigl, rbid, rbid, energi)
+                    eps, sigl, rbid, dsidep, energi)
 !
 !       -----------------------------------------------------------
 !       6) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)

@@ -75,8 +75,7 @@ subroutine cavite(char, ligrmo, noma, fonree)
     else
         zk8(jvalv) = '&FOZERO'
     endif
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, 1)
+    call nocart(carte, 1, 1)
 !
     mesmai = '&&CAVITE.MES_MAILLES'
     motcle(1) = 'GROUP_MA'
@@ -94,16 +93,15 @@ subroutine cavite(char, ligrmo, noma, fonree)
 !
         call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
-            call nocart(carte, 1, ' ', 'NOM', 0,&
-                        ' ', 0, ligrmo, 1)
+            call nocart(carte, 1, 1)
 !
         else
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .eq. 0) goto 10
             call jeveuo(mesmai, 'L', jma)
-            call nocart(carte, 3, k8b, 'NUM', nbma,&
-                        k8b, zi(jma), ' ', 1)
+            call nocart(carte, 3, 1, mode='NUM', nma=nbma,&
+                        limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !

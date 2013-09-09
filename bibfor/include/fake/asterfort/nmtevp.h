@@ -26,7 +26,7 @@ interface
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate
-        character(len=16) :: compor(3)
+        character(len=16) :: compor(*)
         real(kind=8) :: crit(6)
         real(kind=8) :: instam
         real(kind=8) :: instap

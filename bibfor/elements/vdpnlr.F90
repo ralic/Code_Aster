@@ -97,7 +97,7 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: etildm ( 5 )
     real(kind=8) :: eps2d ( 4 ), deps2d ( 4 )
     real(kind=8) :: sign ( 4 ), sigma ( 4 ), dsidep ( 6 , 6 )
-    real(kind=8) :: detild ( 5 ), rbid
+    real(kind=8) :: detild ( 5 ), rbid(1)
     real(kind=8) :: gxz, gyz
     real(kind=8) :: stlis ( 5 , 4 )
     real(kind=8) :: bars ( 9 , 9 )
@@ -196,7 +196,6 @@ subroutine vdpnlr(option, nomte, codret)
     integer :: nbvari, itab(8), lgpg, k2
     integer :: nbv, iret
     real(kind=8) :: rac2, angmas(3)
-    real(kind=8) :: lc
     real(kind=8) :: valres ( 26 )
     real(kind=8) :: cisail
 !
@@ -726,7 +725,7 @@ subroutine vdpnlr(option, nomte, codret)
                 call nmcomp('MASS', intsn, ksp, 2, typmod,&
                             zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp),&
                             4, eps2d, deps2d, 4, sign,&
-                            zr(ivarim+k2), option, angmas, 1, lc,&
+                            zr(ivarim+k2), option, angmas, 1, [0.d0],&
                             sigma, zr(ivarip+k2), 36, dsidep, 1,&
                             rbid, cod)
 !

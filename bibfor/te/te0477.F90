@@ -61,10 +61,10 @@ subroutine te0477(option, nomte)
     real(kind=8) :: re(24, 24), sigma(120), d(36)
     real(kind=8) :: dusdx(180), fstab(12), sigmm(120), sigmp(120)
     real(kind=8) :: valres(nbres), sigm(6), simp(6)
-    real(kind=8) :: lc, g, angmas(3), instm, instp, dsidep(6, 6)
+    real(kind=8) :: g, angmas(3), instm, instp, dsidep(6, 6)
     real(kind=8) :: depslo(120), eps2d(6), deps2d(6), epsloc(120)
     integer :: iinstm, iinstp, iret, codret, jtab(7), lgpg
-    real(kind=8) :: nu, e, para(2), rbid
+    real(kind=8) :: nu, e, para(2), rbid(1)
     real(kind=8) :: xidepp(60), re6(18, 18), re15(45, 45), re20(60, 60)
     real(kind=8) :: duddd(180)
     real(kind=8) :: dsde(20, 6, 6)
@@ -212,7 +212,7 @@ subroutine te0477(option, nomte)
                 call nmcomp('RIGI', ipg, 1, 2, typmod,&
                             zi(imate), zk16( icompo), zr(icarcr), instm, instp,&
                             6, eps2d, deps2d, 6, sigm,&
-                            zr(ivarim+lgpg*(ipg-1)), option, angmas, 1, lc,&
+                            zr(ivarim+lgpg*(ipg-1)), option, angmas, 1, [0.d0],&
                             simp, zr(ivarip+lgpg*(ipg-1)), 36, dsidep, 1,&
                             rbid, codret)
                 g = d(1)/(2.d0*(1.d0+d(2)))

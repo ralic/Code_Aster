@@ -30,7 +30,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 #include "asterfort/utmess.h"
     integer :: imate, kpg, ksp
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option
+    character(len=16) :: compor(*), option
     character(len=*) :: fami
     real(kind=8) :: instam, instap
     real(kind=8) :: tpmxm, tpmxp

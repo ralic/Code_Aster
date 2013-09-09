@@ -35,7 +35,7 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, vff1, vff2, idff1,&
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: sig(2*ndim, npg), ddl(*), vect(*)
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(4)
+    character(len=16) :: compor(*)
 !-----------------------------------------------------------------------
 !          CALCUL DES FORCES NODALES POUR LES ELEMENTS
 !          INCOMPRESSIBLES POUR LES GRANDES DEFORMATIONS

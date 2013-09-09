@@ -97,20 +97,18 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
 ! ---    "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
         if (ng .gt. 0) then
             do 20 i = 1, ng
-                call nocart(cartca, 2, zk24(jdls+i-1), ' ', 0,&
-                            ' ', 0, ' ', 2)
-                call nocart(cartcf, 2, zk24(jdls+i-1), ' ', 0,&
-                            ' ', 0, ' ', 1)
+                call nocart(cartca, 2, 2, groupma=zk24(jdls+i-1))
+                call nocart(cartcf, 2, 1, groupma=zk24(jdls+i-1))
 20          continue
         endif
 !
 ! -      "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
 !
         if (nm .gt. 0) then
-            call nocart(cartca, 3, ' ', 'NOM', nm,&
-                        zk8(jdls2), 0, ' ', 2)
-            call nocart(cartcf, 3, ' ', 'NOM', nm,&
-                        zk8(jdls2), 0, ' ', 1)
+            call nocart(cartca, 3, 2, mode='NOM', nma=nm,&
+                        limano=zk8(jdls2))
+            call nocart(cartcf, 3, 1, mode='NOM', nma=nm,&
+                        limano=zk8(jdls2))
         endif
 !
 10  end do

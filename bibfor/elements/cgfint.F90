@@ -86,10 +86,10 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
     logical :: resi, rigi
     integer :: nddl, g, cod(27), n, i, m, j, kk, codm(3), nbvifr, nbvica
     integer :: nbvi
-    real(kind=8) :: rbid, r, mu, epsm, deps, wg, l(3), de, ddedt, t1
+    real(kind=8) ::  r, mu, epsm, deps, wg, l(3), de(1), ddedt, t1
     real(kind=8) :: b(4, 3), gliss
     real(kind=8) :: sigcab, dsidep, dde(2), ddedn, courb
-    real(kind=8) :: angmas(3), val(3), rphi, frotc, wkin(2)
+    real(kind=8) :: angmas(3), val(3), rphi, frotc, wkin(2),wkout(1)
     character(len=12) :: nom(3)
     character(len=1) :: poum
 !
@@ -213,10 +213,10 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
 !
         call nmcomp('RIGI', g, 1, ndim, typmod,&
                     mat, compoz, crit, instam, instap,&
-                    3, mu, gliss, 1, rbid,&
-                    vim(nbvica+1, g), option, rbid, 2, wkin,&
+                    1, [mu], [gliss], 1, [0.d0],&
+                    vim(nbvica+1, g), option, [0.d0], 2, wkin,&
                     de, vip(nbvica+1, g), 36, dde, 1,&
-                    rbid, cod(g))
+                    wkout, cod(g))
         if (cod(g) .eq. 1) goto 9000
 !
 !      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
@@ -226,8 +226,8 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
 !        STOCKAGE DES CONTRAINTES
 !        CONVENTION DE RANGEMENT SIGP(1,2,3) EXPLICITE CI-DESSOUS
             sigp( 1,g) = sigcab*a
-            sigp( 2,g) = mu + r*(gliss-de)
-            sigp( 3,g) = gliss-de
+            sigp( 2,g) = mu + r*(gliss-de(1))
+            sigp( 3,g) = gliss-de(1)
 !
 !        VECTEUR FINT:U ET UC
             do 300 n = 1, nno1

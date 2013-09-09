@@ -460,10 +460,10 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)
-                    call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', dimcar)
-                    call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', ncmp)
+                    call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
+                    call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
 !                 AFFECTATION DE MATRICE MASSE NULLE
                     iv = 1
 !
@@ -472,10 +472,10 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)
-                    call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', dimcar)
-                    call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', ncmp)
+                    call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
+                    call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
 28              continue
             else
                 lokm = 0
@@ -513,10 +513,10 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)
-                    call nocart(cartdi, -3, ' ', 'NUM', kk,&
-                                ' ', zi(jddi), ligmo, dimcar)
-                    call nocart(cart(l), -3, ' ', 'NUM', kk,&
-                                ' ', zi(jddi), ligmo, ncmp)
+                    call nocart(cartdi, -3, dimcar, ligrel=ligmo, nma=kk,&
+                                limanu=zi(jddi))
+                    call nocart(cart(l), -3, ncmp, ligrel=ligmo, nma=kk,&
+                                limanu=zi(jddi))
 !                 AFFECTATION DE MATRICE MASSE NULLE
                     iv = 1
                     call r8inir(nbval, 0.0d0, vale, 1)
@@ -524,10 +524,10 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)
-                    call nocart(cartdi, -3, ' ', 'NUM', kk,&
-                                ' ', zi(jddi), ligmo, dimcar)
-                    call nocart(cart(l), -3, ' ', 'NUM', kk,&
-                                ' ', zi(jddi), ligmo, ncmp)
+                    call nocart(cartdi, -3, dimcar, ligrel=ligmo, nma=kk,&
+                                limanu=zi(jddi))
+                    call nocart(cart(l), -3, ncmp, ligrel=ligmo, nma=kk,&
+                                limanu=zi(jddi))
 36              continue
             endif
 34      continue

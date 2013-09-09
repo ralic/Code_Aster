@@ -38,7 +38,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(3), option
+    character(len=16) :: compor(*), option
 ! ----------------------------------------------------------------------
 !     INTEGRATION DE LA LOI DE JOHNSON-COOK
 !     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS

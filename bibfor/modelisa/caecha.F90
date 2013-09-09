@@ -102,10 +102,8 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
         zk8(jvalv2-1+2) = '&FOZERO'
         zk8(jvalv2-1+3) = '&FOZERO'
     endif
-    call nocart(carte1, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
-    call nocart(carte2, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte1, 1, ncmp)
+    call nocart(carte2, 1, ncmp)
 !
 ! --- STOCKAGE DANS LA CARTE
 !

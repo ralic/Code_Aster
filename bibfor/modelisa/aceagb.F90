@@ -179,23 +179,21 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 ! ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             if (ng .gt. 0) then
                 do 20 i = 1, ng
-                    call nocart(cartgr, 2, zk24(jdls+i-1), ' ', 0,&
-                                ' ', 0, ' ', 5)
+                    call nocart(cartgr, 2, 5, groupma=zk24(jdls+i-1))
 20              continue
                 if (lcartf) then
                     do 25 i = 1, ng
-                        call nocart(cartcf, 2, zk24(jdls+i-1), ' ', 0,&
-                                    ' ', 0, ' ', 2)
+                        call nocart(cartcf, 2, 2, groupma=zk24(jdls+i-1))
 25                  continue
                 endif
             endif
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
             if (nm .gt. 0) then
-                call nocart(cartgr, 3, ' ', 'NOM', nm,&
-                            zk8(jdls2), 0, ' ', 5)
+                call nocart(cartgr, 3, 5, mode='NOM', nma=nm,&
+                            limano=zk8(jdls2))
                 if (lcartf) then
-                    call nocart(cartcf, 3, ' ', 'NOM', nm,&
-                                zk8(jdls2), 0, ' ', 2)
+                    call nocart(cartcf, 3, 2, mode='NOM', nma=nm,&
+                                limano=zk8(jdls2))
                 endif
             endif
         else
@@ -255,11 +253,11 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !
                 zr(jdvc+1) = ang(1) * r8rddg()
                 zr(jdvc+2) = ang(2) * r8rddg()
-                call nocart(cartgr, 3, ' ', 'NUM', 1,&
-                            k8b, numa, ' ', 5)
+                call nocart(cartgr, 3, 5, mode='NUM', nma=1,&
+                            limanu=[numa])
                 if (lcartf) then
-                    call nocart(cartcf, 3, ' ', 'NUM', 1,&
-                                k8b, numa, ' ', 2)
+                    call nocart(cartcf, 3, 2, mode='NUM', nma=1,&
+                                limanu=[numa])
                 endif
 200          continue
         endif

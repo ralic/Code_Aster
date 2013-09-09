@@ -116,8 +116,7 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
     do 96 i = 5, nbcrit
         zr(jvalv-1+i) = 0.d0
 96  end do
-    call nocart(carcri, 1, k8b, k8b, 0,&
-                k8b, ibid, k8b, nbcrit)
+    call nocart(carcri, 1, nbcrit)
 ! ----------------------------------------------------------------------
     mocles(1) = 'GROUP_MA'
     mocles(2) = 'MAILLE'
@@ -320,13 +319,12 @@ subroutine nmdocr(carcrz, modele, nbmo1, moclef, iret)
 !
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jma)
-                call nocart(carcri, 3, k8b, 'NUM', nbma,&
-                            k8b, zi(jma), ' ', nbcrit)
+                call nocart(carcri, 3, nbcrit, mode='NUM', nma=nbma,&
+                            limanu=zi(jma))
                 call jedetr(mesmai)
             else
 !           PAR DEFAUT C'EST TOUT='OUI'
-                call nocart(carcri, 1, k8b, k8b, 0,&
-                            k8b, ibid, k8b, nbcrit)
+                call nocart(carcri, 1, nbcrit)
             endif
 !
 150      continue

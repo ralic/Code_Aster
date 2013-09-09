@@ -179,8 +179,7 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                 else if (fonree.eq.'FONC') then
                     zk8(jvalv) = '&FOZERO'
                 endif
-                call nocart(carte, 1, ' ', 'NOM', 0,&
-                            ' ', 0, ' ', ncmp)
+                call nocart(carte, 1, ncmp)
 !
 !           RECUPERATION DES MAILLES PRINCIPALES XFEM POUR FISS(1:NFISS)
                 mesmai = '&&CAECHP.MES_MAILLES'
@@ -195,8 +194,8 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                 else if (fonree.eq.'FONC') then
                     zk8(jvalv) = cechpf
                 endif
-                call nocart(carte, 3, ' ', 'NOM', nbm,&
-                            zk8(jma), ibid, ' ', ncmp)
+                call nocart(carte, 3, ncmp, mode='NOM', nma=nbm,&
+                            limano=zk8(jma))
 !
 !           MENAGE
                 call jedetr(mesmai)
@@ -236,8 +235,8 @@ subroutine caechp(char, ligrch, ligrmo, igrel, inema,&
                 else if (fonree.eq.'FONC') then
                     zk8(jvalv) = cechpf
                 endif
-                call nocart(carte, -3, ' ', 'NUM', nbm,&
-                            ' ', zi(jligr), ligrch, ncmp)
+                call nocart(carte, -3, ncmp, ligrel=ligrch, nma=nbm,&
+                            limanu=zi(jligr))
 400          continue
 !
 !         MENAGE

@@ -67,7 +67,7 @@ subroutine nmfi2d(npg, lgpg, mate, option, geom,&
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE
     real(kind=8) :: coopg(3, npg)
-    real(kind=8) :: dsidep(6, 6), b(2, 8), rbid
+    real(kind=8) :: dsidep(6, 6), b(2, 8), rbid(1)
     real(kind=8) :: sum(2), dsu(2), poids
     real(kind=8) :: crit(*)
     real(kind=8) :: angmas(3)

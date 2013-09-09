@@ -40,6 +40,7 @@ subroutine aflrch(lisrez, chargz)
 #include "asterfort/ordlrl.h"
 #include "asterfort/utmess.h"
 !
+!
     character(len=19) :: lisrel
     character(len=8) :: charge
     character(len=*) :: lisrez, chargz
@@ -266,8 +267,8 @@ subroutine aflrch(lisrez, chargz)
 !
             if (numel .ne. 0) then
                 igrel=igrel+1
-                call noligr(ligrch, igrel, numel, 1, in,&
-                            '        ', 3, 1, inema, zi(jnbno),&
+                call noligr(ligrch, igrel, numel, 1, [in],&
+                            ['        '], 3, 1, inema, zi(jnbno),&
                             zk8(jrlla+irela-1))
             else
                 call utmess('F', 'CHARGES2_33', sk=nomnoe)
@@ -288,8 +289,8 @@ subroutine aflrch(lisrez, chargz)
                 zr(jvalv1)=zr(jrlcof-1+j)
             endif
             nunewm=-(inema0+j)
-            call nocart(ca1, -3, ' ', 'NUM', 1,&
-                        ' ', nunewm, ligrch, 1)
+            call nocart(ca1, -3, 1, ligrel=ligrch, nma=1,&
+                        limanu=[nunewm])
             if (j .lt. nbnema) then
                 if (typval .eq. 'REEL') then
                     zr(jvalv2)=0.d0
@@ -311,8 +312,8 @@ subroutine aflrch(lisrez, chargz)
                     ASSERT(.false.)
                 endif
             endif
-            call nocart(ca2, -3, ' ', 'NUM', 1,&
-                        ' ', nunewm, ligrch, 1)
+            call nocart(ca2, -3, 1, ligrel=ligrch, nma=1,&
+                        limanu=[nunewm])
         enddo
 60      continue
     end do

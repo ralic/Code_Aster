@@ -133,8 +133,8 @@ subroutine carota(load, ligrmo, mesh, vale_type)
         zr(jvalv-1+5) = rota_cent(1)
         zr(jvalv-1+6) = rota_cent(2)
         zr(jvalv-1+7) = rota_cent(3)
-        call nocart(carte, 3, k8dummy, 'NUM', nb_elem,&
-                    k8dummy, zi(j_elem), ' ', nb_cmp)
+        call nocart(carte, 3, nb_cmp, mode='NUM', nma=nb_elem,&
+                    limanu=zi(j_elem))
 !
         call jedetr(list_elem)
     end do

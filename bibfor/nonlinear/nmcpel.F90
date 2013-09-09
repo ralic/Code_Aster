@@ -12,7 +12,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
     real(kind=8) :: angmas(3), crit(3), eps(6), sig(6), vi(*), dsidep(6, 6)
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
-    character(len=16) :: compor(4), option
+    character(len=16) :: compor(*), option
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
 ! IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
 ! IN  EPS     : DEFORMATIONS
 ! OUT SIG     : CONTRAINTES
-! OUT VI      : VARIABLES INTERNES
+! OUT VI(1)     : VARIABLE INTERNE
 ! OUT DSIDEP  : RIGIDITE TANGENTE
 !
 !               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
@@ -89,7 +89,7 @@ subroutine nmcpel(fami, kpg, ksp, poum, ndim,&
     compor(1)(1:14) .eq. 'ELAS_VMIS_TRAC' ) then
         call nmelnl(fami, kpg, ksp, poum, ndim,&
                     typmod, imate, compor, crit, option,&
-                    eps, sig, vi, dsidep, energi)
+                    eps, sig, vi(1), dsidep, energi)
 !
 !    LOI ELASTIQUE POUR MODELE SIGNORINI
     else if (compor(1)(1:10).eq. 'ELAS_HYPER') then

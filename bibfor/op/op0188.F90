@@ -98,8 +98,7 @@ subroutine op0188()
     ncmp = 1
     zk8(jncmp-1+1) = 'X1'
     zr(jvalv-1+1) = 0.d0
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ' ', ncmp)
+    call nocart(carte, 1, ncmp)
 !
 !     CREATION DE LA LISTE DES MAILLES QUI AURONT LA VALEUR 1
     listma = '&&OP0188.LISTMA'
@@ -201,8 +200,8 @@ subroutine op0188()
 !     STOCKAGE DANS LA CARTE
     zk8(jncmp-1+1) = 'X1'
     zr(jvalv-1+1) = 1.d0
-    call nocart(carte, 3, ' ', 'NUM', nbmali,&
-                k8b, zi(jma), ' ', ncmp)
+    call nocart(carte, 3, ncmp, mode='NUM', nma=nbmali,&
+                limanu=zi(jma))
     call tecart(carte)
 !
     call jedema()

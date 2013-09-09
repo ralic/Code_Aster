@@ -19,7 +19,6 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
@@ -40,6 +39,7 @@ subroutine xmcart(noma, defico, modele, resoco)
 #include "asterfort/nocart.h"
 #include "asterfort/xmimp3.h"
 #include "asterfort/xxmmvd.h"
+!
     character(len=8) :: noma, modele
     character(len=24) :: defico, resoco
 !
@@ -278,8 +278,8 @@ subroutine xmcart(noma, defico, modele, resoco)
         zr(jvalv(1)-1+33) = mminfr(defico,'COEF_PENA_CONT' ,izone )
         zr(jvalv(1)-1+34) = mminfr(defico,'COEF_PENA_FROT' ,izone )
 !
-        call nocart(carte(1), -3, kbid, 'NUM', 1,&
-                    kbid, -ipc, ligrxf, ncmp(1))
+        call nocart(carte(1), -3, ncmp(1), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.STANO
 !
@@ -312,8 +312,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                 iad)
 240          continue
 230      continue
-        call nocart(carte(2), -3, kbid, 'NUM', 1,&
-                    kbid, -ipc, ligrxf, ncmp(2))
+        call nocart(carte(2), -3, ncmp(2), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PINTER
 !
@@ -325,8 +325,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                 zr(jvalv(3)-1+ndim*(j-1)+i)=zr(jcesv(2)-1+iad)
 20          continue
 10      continue
-        call nocart(carte(3), -3, kbid, 'NUM', 1,&
-                    kbid, -ipc, ligrxf, ncmp(3))
+        call nocart(carte(3), -3, ncmp(3), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.AINTER
 !
@@ -338,8 +338,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                 zr(jvalv(4)-1+zxain*(j-1)+i)=zr(jcesv(3)-1+iad)
 50          continue
 40      continue
-        call nocart(carte(4), -3, kbid, 'NUM', 1,&
-                    kbid, -ipc, ligrxf, ncmp(4))
+        call nocart(carte(4), -3, ncmp(4), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.CCFACE
 !
@@ -351,8 +351,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                 zi(jvalv(5)-1+npte*(j-1)+i)=zi(jcesv(4)-1+iad)
 80          continue
 70      continue
-        call nocart(carte(5), -3, kbid, 'NUM', 1,&
-                    kbid, -ipc, ligrxf, ncmp(5))
+        call nocart(carte(5), -3, ncmp(5), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
 !
         if (lmulti) then
             if (nfhe .gt. 1 .or. nfhm .gt. 1) then
@@ -393,8 +393,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                         endif
 280                  continue
 270              continue
-                call nocart(carte(6), -3, kbid, 'NUM', 1,&
-                            kbid, -ipc, ligrxf, ncmp(6))
+                call nocart(carte(6), -3, ncmp(6), ligrel=ligrxf, nma=1,&
+                            limanu=[-ipc])
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PLALA
 !
@@ -407,8 +407,8 @@ subroutine xmcart(noma, defico, modele, resoco)
                         zi(jvalv(7)-1+i)=1
                     endif
 290              continue
-                call nocart(carte(7), -3, kbid, 'NUM', 1,&
-                            kbid, -ipc, ligrxf, ncmp(7))
+                call nocart(carte(7), -3, ncmp(7), ligrel=ligrxf, nma=1,&
+                            limanu=[-ipc])
             endif
         endif
 !

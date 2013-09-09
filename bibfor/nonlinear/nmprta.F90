@@ -120,7 +120,7 @@ subroutine nmprta(modele, numedd, numfix, mate, carele,&
 !
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnpilo
-    real(kind=8) :: r8bid
+    real(kind=8) :: r8bid(8)
     logical :: lstat, limpl, leltc
     integer :: ifm, niv
 !

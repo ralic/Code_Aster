@@ -43,7 +43,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     integer :: ipoid2, ivf2, idfde2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: geom(3, nno), crit(3)
     real(kind=8) :: deplm(3, nno), deplp(3, nno), dfdi(nno, 3)
@@ -90,7 +90,7 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     integer :: kpg, i, ii, ino, ia, j, k, kl, proj, cod(9), nbpg2
     integer :: ndim, nnos, jgano, kp, iaa
     real(kind=8) :: d(6, 6), f(3, 3), eps(6), deps(6), r, s, sigma(6), sign(6)
-    real(kind=8) :: poids, poipg2(8), rbid
+    real(kind=8) :: poids, poipg2(8), rbid(1)
     real(kind=8) :: elgeom(10, 9)
     real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8), hx(3, 4)
     real(kind=8) :: gam(4, 8), coopg2(24), h(8, 4), dh(4, 24)

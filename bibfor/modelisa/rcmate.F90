@@ -76,15 +76,14 @@ subroutine rcmate(chmat, nomail, nomode)
         call getvid('AFFE', 'MATER', iocc=i, nbval=nm, vect=zk8(jvalv))
         call getvtx('AFFE', 'TOUT', iocc=i, scal=oui, nbret=nt)
         if (nt .ne. 0) then
-            call nocart(chamat, 1, k8b, k8b, 0,&
-                        k8b, ibid, ' ', nm)
+            call nocart(chamat, 1, nm)
         else
             call reliem(nomode, nomail, 'NU_MAILLE', 'AFFE', i,&
                         2, motcle(1), typmcl(1), mesmai, nbma)
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jmail)
-                call nocart(chamat, 3, k8b, 'NUM', nbma,&
-                            k8b, zi(jmail), ' ', nm)
+                call nocart(chamat, 3, nm, mode='NUM', nma=nbma,&
+                            limanu=zi(jmail))
                 call jedetr(mesmai)
             endif
         endif

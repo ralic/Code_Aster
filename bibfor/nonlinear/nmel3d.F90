@@ -27,7 +27,7 @@ subroutine nmel3d(fami, poum, nno, npg, ipoids,&
 #include "asterfort/nmgeom.h"
     integer :: nno, npg, imate, lgpg, codret, ipoids, ivf, idfde
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(4)
+    character(len=16) :: option, compor(*)
     character(len=*) :: fami, poum
     real(kind=8) :: geom(3, nno), crit(3)
     real(kind=8) :: angmas(3)

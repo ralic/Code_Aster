@@ -121,8 +121,8 @@ subroutine sigmca(tablca, carsig, icabl, nbnoca, numaca,&
         zr(jvalv)=rtens
         zr(jvalv+1)=0.d0
         zr(jvalv+2)=0.d0
-        call nocart(carsig, 3, k1b, 'NUM', 1,&
-                    k1b, numail, ' ', 3)
+        call nocart(carsig, 3, 3, mode='NUM', nma=1,&
+                    limanu=[numail])
     end do
 !
     call jedema()

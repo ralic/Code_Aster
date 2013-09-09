@@ -290,10 +290,10 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)
-                    call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', dimcar)
-                    call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', ncmp)
+                    call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
+                    call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
 !                 AFFECTATION DE MATRICE RIGIDITE NULLE
                     iv = 1
 !
@@ -302,10 +302,10 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)
-                    call nocart(cartdi, 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', dimcar)
-                    call nocart(cart(l), 3, ' ', 'NOM', 1,&
-                                zk8(jd), 0, ' ', ncmp)
+                    call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
+                    call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
+                                limano=[zk8(jd)])
 28              continue
             endif
 34      continue

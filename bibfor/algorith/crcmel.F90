@@ -97,8 +97,7 @@ subroutine crcmel(nbmo1, moclef, compor, ces2, modele,&
         zk16(jvalv-1+4) = 'COMP_ELAS'
     endif
 !
-    call nocart(compor, 1, k8b, k8b, 0,&
-                k8b, ibid, k8b, ncmpma)
+    call nocart(compor, 1, ncmpma)
 !
 ! ======================================================================
 !    ETAPE UTILE POUR LES VERIFICATIONS DE COHERENCE

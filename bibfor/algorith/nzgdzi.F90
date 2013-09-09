@@ -32,7 +32,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
     integer :: ndim, imat, iret, kpg, ksp
-    character(len=16) :: compor(3), option
+    character(len=16) :: compor(*), option
     character(len=*) :: fami
     real(kind=8) :: crit(3), instam, instap
     real(kind=8) :: df(3, 3), fm(3, 3)
@@ -66,13 +66,13 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat,&
     integer :: i, j, k, l, mode, ire2
     integer :: ind(3, 3), nbr, iret1
 !
-    real(kind=8) :: phase(3), phasm(3), zalpha
+    real(kind=8) :: phase(5), phasm(3), zalpha
     real(kind=8) :: temp, dt
 !
     real(kind=8) :: epsth, e, nu, mu, mum, troisk
     real(kind=8) :: fmel(1), sy(3), h(3), hmoy, hplus(3), r(3), rmoy
     real(kind=8) :: theta(4)
-    real(kind=8) :: eta(3), n(3), unsurn(3), c(3), m(3), cmoy, mmoy, cr
+    real(kind=8) :: eta(5), n(3), unsurn(5), c(3), m(3), cmoy, mmoy, cr
     real(kind=8) :: dz(2), dz1(2), dz2(2), vi(3), dvin, vimoy, ds
     real(kind=8) :: trans, kpt(2), zvarim, zvarip, deltaz
 !

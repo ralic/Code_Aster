@@ -88,7 +88,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     integer :: lij(3, 3), vij(3, 3), ia, ja, na, ib, jb, nb, g, kk, os, ija, i
     integer :: nddl, ndu, vu(3, 27)
     integer :: cod(27)
-    real(kind=8) :: tampon(10), wkout
+    real(kind=8) :: tampon(10), wkout(1)
     real(kind=8) :: geomm(3*27), geomp(3*27), r, w
     real(kind=8) :: jm, jd, jp, fm(3, 3), fd(3, 3), coef
     real(kind=8) :: sigmam(6), taup(6), dsidep(6, 3, 3)

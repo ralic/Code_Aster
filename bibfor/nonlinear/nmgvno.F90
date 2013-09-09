@@ -95,7 +95,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
     real(kind=8) :: avm, avd, avp, agm(3), agd(3), agp(3), bp
     real(kind=8) :: r, wg, epsm(6), epsd(6), f(3, 3), b(6, 3, 27)
     real(kind=8) :: nonloc(2), sigmam(6), sigma(6), dsidep(6, 6, 4), t1, t2
-    real(kind=8) :: di, char, r8bid
+    real(kind=8) :: di, char, r8bid(1)
     real(kind=8) :: dfdi2(8*3)
     real(kind=8) :: critd(20)
 !

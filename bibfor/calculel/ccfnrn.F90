@@ -100,6 +100,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1,&
                     0, iad, k8bid)
         typmo=zk16(iad)
+    else
+        typmo=' '
     endif
 !
 ! TRI DES OPTIONS SUIVANT TYPESD

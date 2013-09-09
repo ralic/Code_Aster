@@ -97,7 +97,7 @@ subroutine ndxpre(modele, numedd, numfix, mate, carele,&
     character(len=19) :: cncine, cndonn, cnzero
     character(len=24) :: k24bla, codere
     integer :: ldccvg, faccvg, rescvg
-    real(kind=8) :: r8bid
+    real(kind=8) :: r8bid(8)
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------

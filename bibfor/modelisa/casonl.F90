@@ -68,8 +68,7 @@ subroutine casonl(char, ligrmo, noma, ndim)
 ! --- DEFAUT: STOCKAGE D'UNE SOURCE NULLE SUR TOUT LE MAILLAGE
 !
     zk8(jvalv) = '&FOZERO'
-    call nocart(carte, 1, ' ', 'NOM', 0,&
-                ' ', 0, ligrmo, ncmp)
+    call nocart(carte, 1, ncmp)
 !
 !
 ! --- STOCKAGE DES FONCTIONS SOURCES DANS LA CARTE

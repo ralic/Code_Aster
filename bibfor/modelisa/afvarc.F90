@@ -304,19 +304,17 @@ subroutine afvarc(chmat, nomail, nomode)
     if (nbgm1+nbm1 .eq. 0) nbtou=1
 !
     if (nbtou .ne. 0) then
-        call nocart(cart1, 1, ' ', 'NOM', 0,&
-                    ' ', 0, ' ', ncmp)
-        call nocart(cart2, 1, ' ', 'NOM', 0,&
-                    ' ', 0, ' ', 7)
+        call nocart(cart1, 1, ncmp)
+        call nocart(cart2, 1, 7)
     else
         call reliem(nomode, nomail, 'NU_MAILLE', 'AFFE_VARC', iocc,&
                     2, motcle, typmcl, mesmai, nbma)
         if (nbma .eq. 0) goto 80
         call jeveuo(mesmai, 'L', jma)
-        call nocart(cart1, 3, k8b, 'NUM', nbma,&
-                    ' ', zi(jma), ' ', ncmp)
-        call nocart(cart2, 3, k8b, 'NUM', nbma,&
-                    ' ', zi(jma), ' ', 7)
+        call nocart(cart1, 3, ncmp, mode='NUM', nma=nbma,&
+                    limanu=zi(jma))
+        call nocart(cart2, 3, 7, mode='NUM', nma=nbma,&
+                    limanu=zi(jma))
         call jedetr(mesmai)
     endif
 !

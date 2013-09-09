@@ -110,7 +110,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw,&
     real(kind=8) :: ddev(6, 6), devd(6, 6), dddev(6, 6)
     real(kind=8) :: t1, t2
     real(kind=8) :: idev(6, 6)
-    real(kind=8) :: tampon(10), rbid
+    real(kind=8) :: tampon(10), rbid(1)
     real(kind=8) :: alpha, trepst
     real(kind=8) :: dsbdep(2*ndim, 2*ndim), kbb(ndim, ndim), kbp(ndim, nno2)
     real(kind=8) :: kce(nno2, nno2), rce(nno2)

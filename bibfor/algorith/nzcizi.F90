@@ -69,13 +69,13 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
     integer :: nz
     integer :: ndimsi, i, j, k, l, mode, ire2
 !
-    real(kind=8) :: phase(3), phasm(3), zalpha
+    real(kind=8) :: phase(5), phasm(3), zalpha
     real(kind=8) :: dt
 !
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk
     real(kind=8) :: fmel(1), sy(3), symoy, h(3), hmoy, rprim
     real(kind=8) :: theta(4)
-    real(kind=8) :: eta(3), n(3), unsurn(3), c(3), m(3), cmoy, mmoy, cr
+    real(kind=8) :: eta(5), n(3), unsurn(5), c(3), m(3), cmoy, mmoy, cr
     real(kind=8) :: dz(2), dz1(2), dz2(2), vi(18), dvin, vimt(18)
     real(kind=8) :: xmoy(6), ds(6), xmoyeq
     real(kind=8) :: trans, kpt(2), zvarim, zvarip, deltaz
@@ -552,7 +552,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat,&
                     dp=seuil/(1.5d0*deuxmu+(1.5d0*deuxmu*trans+1.d0)*&
                     rprim)
                 else
-                    call nzcalc(crit, phase, nz, fmel, seuil,&
+                    call nzcalc(crit, phase, nz, fmel(1), seuil,&
                                 dt, trans, rprim, deuxmu, eta,&
                                 unsurn, dp, iret)
                     if (iret .eq. 1) goto 9999

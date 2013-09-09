@@ -84,7 +84,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
     real(kind=8) :: matuu(*), fint(ndim*nno)
     real(kind=8) :: geomm(3*27), geomp(3*27), fm(3, 3), fp(3, 3), deplt(3*27)
     real(kind=8) :: r, poids, elgeom(10, 27), tn(6), tp(6), deps(6)
-    real(kind=8) :: gn(3, 3), lamb(3), logl(3), rbid, tbid(6)
+    real(kind=8) :: gn(3, 3), lamb(3), logl(3), rbid(1), tbid(6)
     real(kind=8) :: def(2*ndim, nno, ndim), pff(2*ndim, nno, nno)
     real(kind=8) :: dsidep(6, 6), pk2(6), pk2m(6)
 !

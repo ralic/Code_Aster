@@ -113,14 +113,13 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 ! ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             if (ng .gt. 0) then
                 do 20 i = 1, ng
-                    call nocart(cartgr, 2, zk24(jdls+i-1), ' ', 0,&
-                                ' ', 0, ' ', 2)
+                    call nocart(cartgr, 2, 2, groupma=zk24(jdls+i-1))
 20              continue
             endif
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
             if (nm .gt. 0) then
-                call nocart(cartgr, 3, ' ', 'NOM', nm,&
-                            zk8(jdls2), 0, ' ', 2)
+                call nocart(cartgr, 3, 2, mode='NOM', nma=nm,&
+                            limano=zk8(jdls2))
             endif
         else
 !
@@ -177,8 +176,8 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                 call angvx(axex, ang(1), ang(2))
                 zr(jdvc) = ang(1) * r8rddg()
                 zr(jdvc+1) = ang(2) * r8rddg()
-                call nocart(cartgr, 3, ' ', 'NUM', 1,&
-                            k8b, numa, ' ', 2)
+                call nocart(cartgr, 3, 2, mode='NUM', nma=1,&
+                            limanu=[numa])
 200          continue
         endif
 10  end do

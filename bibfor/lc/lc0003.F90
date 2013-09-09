@@ -14,7 +14,7 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate,&
     integer :: icomp, nvi
     integer :: codret
     real(kind=8) :: angmas(*), tampon(*)
-    real(kind=8) :: crit(1), instam, instap
+    real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !

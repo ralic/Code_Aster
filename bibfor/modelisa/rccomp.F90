@@ -109,15 +109,14 @@ subroutine rccomp(chmat, nomail, nomode)
 !
         call getvtx('AFFE_COMPOR', 'TOUT', iocc=i, scal=k8b, nbret=nt)
         if (nt .ne. 0) then
-            call nocart(compor, 1, k8b, k8b, 0,&
-                        k8b, ibid, ' ', ncmpma)
+            call nocart(compor, 1, ncmpma)
         else
             call reliem(nomode, nomail, 'NU_MAILLE', 'AFFE_COMPOR', i,&
                         2, motcle(1), typmcl(1), mesmai, nbma)
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jmail)
-                call nocart(compor, 3, k8b, 'NUM', nbma,&
-                            k8b, zi(jmail), ' ', ncmpma)
+                call nocart(compor, 3, ncmpma, mode='NUM', nma=nbma,&
+                            limanu=zi(jmail))
                 call jedetr(mesmai)
             endif
         endif

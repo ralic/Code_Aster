@@ -90,16 +90,16 @@ subroutine irpara(resu, form, ifi, nbordr, ordr,&
             do 120 ipa = 1, nbpa
                 call rsadpa(resu, 'L', 1, nompar(ipa), ordr(1),&
                             1, iad, ctype)
-                if (ctype(1:1) .eq. 'I' .and. zi(iad) .ne. iundf) then
-                    zk16(lnipa+necri) = nompar(ipa)
-                    necri = necri + 1
-                else if (ctype(1:1).eq.'I') then
+                if (ctype(1:1) .eq. 'I') then
+                    if (zi(iad) .ne. iundf) then
+                       zk16(lnipa+necri) = nompar(ipa)
+                       necri = necri + 1
+                    endif
                 else if (ctype(1:1).eq.'R') then
                     if (zr(iad) .ne. rundf) then
                         zk16(lnrpa+necrr) = nompar(ipa)
                         necrr = necrr + 1
                     endif
-                else if (ctype(1:1).eq.'R') then
                 else if (ctype(1:2).eq.'K8') then
                     zk16(lk8pa+neck8) = nompar(ipa)
                     neck8 = neck8 + 1
