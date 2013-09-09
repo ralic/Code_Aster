@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine medomg(result,numord,modele,mate,lischa)
+    subroutine medomg(result, numord, modele, mate, lischa)
         integer :: numord
         character(len=8) :: modele, result
         character(len=24) :: mate

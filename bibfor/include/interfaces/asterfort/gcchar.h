@@ -15,24 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
-    subroutine gcchar(ichar, iprec, iord, time, carteo,&
-                      motclz, lfchar, lpchar, lformu, lfmult,&
-                      lccomb, charge, nomfct, newfct, oldfon)
-        integer :: ichar
-        integer :: iprec
-        integer :: iord
-        real(kind=8) :: time
-        character(len=19) :: carteo
-        character(*) :: motclz
+interface
+    subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
+                      lpchar, lformu, lfmult, lccomb, cartei,&
+                      nomfct, newfct, oldfon)
         logical :: lfchar
         logical :: lpchar
         logical :: lformu
         logical :: lfmult
         logical :: lccomb
-        character(len=8) :: charge
-        character(len=24) :: nomfct
-        character(len=8) :: newfct
         character(len=24) :: oldfon
+        character(len=8) ::  nomfct
+        character(len=8) ::  newfct
+        integer :: ichar
+        integer :: iprec
+        real(kind=8) :: time
+        character(len=19) :: cartei
+        character(len=19) :: carteo
     end subroutine gcchar
-end interface 
+end interface

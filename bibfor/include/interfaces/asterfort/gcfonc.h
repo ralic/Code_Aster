@@ -15,14 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
-    subroutine gcfonc(ichar, charge, lfchar, lfmult, newfct,&
-                      lformu)
-        integer :: ichar
-        character(len=8) :: charge
-        logical :: lfchar
-        logical :: lfmult
-        character(len=8) :: newfct
-        logical :: lformu
+interface
+    subroutine gcfonc(ichar ,iord  ,cartei,lfchar,lfmult,&
+                      newfct,lformu)
+        logical, intent(in) :: lfmult
+        logical, intent(in) :: lfchar
+        integer, intent(in) :: ichar
+        integer, intent(in) :: iord
+        character(len=8), intent(out) :: newfct
+        character(len=19), intent(in) :: cartei
+        logical, intent(out) :: lformu
     end subroutine gcfonc
-end interface 
+end interface

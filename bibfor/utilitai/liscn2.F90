@@ -1,5 +1,12 @@
 subroutine liscn2(lisold, nbchar, ichar, typapp)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,11 +24,6 @@ subroutine liscn2(lisold, nbchar, ichar, typapp)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
     character(len=19) :: lisold
     character(len=16) :: typapp
     integer :: ichar, nbchar

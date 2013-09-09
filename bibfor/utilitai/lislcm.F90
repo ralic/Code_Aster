@@ -1,5 +1,13 @@
 subroutine lislcm(lischa, ichar, motclc)
 !
+    implicit     none
+!
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lisnnb.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,12 +25,6 @@ subroutine lislcm(lischa, ichar, motclc)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     integer :: ichar
     integer :: motclc(2)

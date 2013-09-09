@@ -15,11 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine liscn2(lisold, nbchar, ichar, typapp)
         character(len=19) :: lisold
-        integer :: nbchar
-        integer :: ichar
         character(len=16) :: typapp
+        integer :: ichar, nbchar
     end subroutine liscn2
-end interface 
+end interface

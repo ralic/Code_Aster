@@ -15,39 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=W1504
-interface 
+interface
     subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
-                      chepsi, chpesa, chrota, lpvolu, lp1d2d,&
-                      lp2d3d, lppres, lpepsi, lppesa, lprota,&
+                      chepsi, chpesa, chrota, lvolu , l1d2d ,&
+                      l2d3d , lpres , lepsi , lpesa , lrota ,&
                       lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
                       lfpesa, lfrota, carte0, lformu, lpchar,&
                       lccomb)
         character(len=16) :: motcle
-        character(len=19) :: chvolu
-        character(len=19) :: ch1d2d
-        character(len=19) :: ch2d3d
-        character(len=19) :: chpres
-        character(len=19) :: chepsi
-        character(len=19) :: chpesa
-        character(len=19) :: chrota
-        logical :: lpvolu
-        logical :: lp1d2d
-        logical :: lp2d3d
-        logical :: lppres
-        logical :: lpepsi
-        logical :: lppesa
-        logical :: lprota
-        logical :: lfvolu
-        logical :: lf1d2d
-        logical :: lf2d3d
-        logical :: lfpres
-        logical :: lfepsi
-        logical :: lfpesa
-        logical :: lfrota
-        character(len=24) :: carte0
-        logical :: lformu
-        logical :: lpchar
-        logical :: lccomb
+        character(len=19) :: carte0
+        logical :: lformu, lpchar, lccomb
+        character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
+        character(len=19) :: chepsi, chpesa, chrota
+        logical :: lvolu, l1d2d, l2d3d, lpres
+        logical :: lepsi, lpesa, lrota
+        logical :: lfvolu, lf1d2d, lf2d3d, lfpres
+        logical :: lfepsi, lfpesa, lfrota
     end subroutine gcsele
-end interface 
+end interface

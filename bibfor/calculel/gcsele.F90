@@ -5,6 +5,10 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
                   lfpesa, lfrota, carte0, lformu, lpchar,&
                   lccomb)
 !
+    implicit none
+!
+#include "asterfort/assert.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +27,6 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
 ! ======================================================================
 ! aslint: disable=W1504
 !
-    implicit none
-#include "asterfort/assert.h"
     character(len=16) :: motcle
     character(len=19) :: carte0
     logical :: lformu, lpchar, lccomb
@@ -39,7 +41,7 @@ subroutine gcsele(motcle, chvolu, ch1d2d, ch2d3d, chpres,&
 !
 ! ROUTINE CALC_G
 !
-! SELECTION DES VARAIABLES CORRESPONDANT AU MOT-CLEF ACTIF
+! SELECTION DES VARIABLES CORRESPONDANT AU MOT-CLEF ACTIF
 !
 ! ----------------------------------------------------------------------
 !

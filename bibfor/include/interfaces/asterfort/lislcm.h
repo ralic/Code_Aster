@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
+interface
     subroutine lislcm(lischa, ichar, motclc)
         character(len=19) :: lischa
         integer :: ichar
         integer :: motclc(2)
     end subroutine lislcm
-end interface 
+end interface

@@ -2,6 +2,17 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
                   lpchar, lformu, lfmult, lccomb, cartei,&
                   nomfct, newfct, oldfon)
 !
+    implicit none
+!
+#include "jeveux.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/gcharf.h"
+#include "asterfort/gcharm.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/tecart.h"
+#include "asterfort/u2mess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,21 +30,19 @@ subroutine gcchar(ichar , iprec , time  , carteo, lfchar,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/gcharf.h"
-#include "asterfort/gcharm.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/tecart.h"
-#include "asterfort/u2mess.h"
-    logical :: lfchar, lpchar, lformu, lfmult, lccomb
+    logical :: lfchar
+    logical :: lpchar
+    logical :: lformu
+    logical :: lfmult
+    logical :: lccomb
     character(len=24) :: oldfon
-    character(len=8) ::  nomfct,newfct
-    integer :: ichar,iprec
+    character(len=8) ::  nomfct
+    character(len=8) ::  newfct
+    integer :: ichar
+    integer :: iprec
     real(kind=8) :: time
-    character(len=19) :: cartei,carteo
+    character(len=19) :: cartei
+    character(len=19) :: carteo
 !
 ! ----------------------------------------------------------------------
 !

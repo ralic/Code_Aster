@@ -16,11 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine medomp(result,modele,mate,carele,nh)
-        character(len=8) :: result
-        character(len=8) :: modele
+    subroutine medomp(result, modele, mate, carele, nh)
+        character(len=8) :: modele, carele, result
         character(len=24) :: mate
-        character(len=8) :: carele
         integer :: nh
     end subroutine medomp
 end interface
