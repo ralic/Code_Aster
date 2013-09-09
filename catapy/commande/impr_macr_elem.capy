@@ -18,7 +18,7 @@
 
 IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
                     UIinfo={"groupes":("Impression","Outils-métier",)},
-         fr="Impression d'une structure de données MACR_ELEM_DYNA au format IDEAS MISS3D PLEXUS ou CADYRO",
+         fr="Impression d'une structure de données MACR_ELEM_DYNA au format IDEAS MISS3D",
          MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",
                                into=("MISS_3D","IDEAS") ),
@@ -27,11 +27,6 @@ IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
            UNITE           =SIMP(statut='f',typ='I',defaut=30),
            VERSION          =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),
          ),             
-
-#         b_plexus         =BLOC(condition = "FORMAT == 'PLEXUS'",
-#           UNITE           =SIMP(statut='f',typ='I',defaut=30),
-#           VERSION         =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),
-#         ),                      
 
          b_miss_3d       =BLOC(condition = "FORMAT == 'MISS_3D'",
            regles=(EXCLUS('AMOR_REDUIT','LIST_AMOR'),),
@@ -49,13 +44,5 @@ IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
            IMPR_MODE_STAT  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
 
-#         b_cadyro        =BLOC(condition = "FORMAT == 'CADYRO'",
-#           SQUELETTE       =SIMP(statut='f',typ=squelette ),
-#           UNITE_MODE_MECA =SIMP(statut='f',typ='I',defaut= 26 ),
-#           UNITE_MODE_STAT =SIMP(statut='f',typ='I',defaut= 27 ),
-#           UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut= 28 ),
-#           IMPR_MODE_MECA  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-#           IMPR_MODE_STAT  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-#         ),
 
 )  ;

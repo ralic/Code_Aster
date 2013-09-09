@@ -33,7 +33,7 @@ subroutine op0160()
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
     integer :: versio, n1, ific, vali(2)
-    character(len=8) :: format, macrel, basemo
+    character(len=8) :: format, macrel, basemo, k8b
     character(len=16) :: fichie
     integer :: iarg, jrefe, nbmodt, nbvect, jdesm
 !     ------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine op0160()
 !     1. RECUPERATION DU NOMBRE DES MODES -----
     call jeveuo(macrel//'.MAEL_REFE', 'L', jrefe)
     basemo = zk24(jrefe)(1:8)
-    call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt)
+    call jelira(basemo//'           .ORDR', 'LONMAX', nbmodt, k8b)
 !
 !     2. RECUPERATION DU NOMBRE DE VECTEURS DE BASE -----
     call jeveuo(macrel//'.DESM', 'L', jdesm)
@@ -85,21 +85,6 @@ subroutine op0160()
         call iredmi(macrel)
 !
 !     ------------------------------------------------------------------
-!      ELSEIF ( FORMAT .EQ. 'CADYRO' ) THEN
-!         CALL IREDCA ( MACREL )
-!
-!     ------------------------------------------------------------------
-!      ELSEIF ( FORMAT .EQ. 'PLEXUS' ) THEN
-!
-!         CALL GETVIS ( ' ', 'VERSION', 1,IARG,1, VERSIO, N1 )
-!
-!         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
-!         IF ( .NOT. ULEXIS( IFIC ) ) THEN
-!            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
-!         ENDIF
-!
-!         CALL IREDPL ( MACREL, IFIC, VERSIO )
-!
     else
         ASSERT(.false.)
     endif
