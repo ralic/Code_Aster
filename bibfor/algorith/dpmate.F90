@@ -118,7 +118,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi,&
         nomc(8) = 'DILAT'
         call rcvala(imat, ' ', 'DRUCK_PRAGER', 0, ' ',&
                     [0.d0], 1, nomc(8), dilat(1), icodre, 1)
-        psi = atan2 ( (trois*dilat(1) / deux / sqrt(( deux*dilat(1) + 1.0d0 )*(1.0d0-dilat(1)))), 1.0d0 )
+        psi=atan2((trois*dilat(1) / deux / sqrt(( deux*dilat(1) + 1.0d0 )*(1.0d0-dilat(1)))),1.0d0)
         materf(5,2) = psi
     endif
 ! ======================================================================

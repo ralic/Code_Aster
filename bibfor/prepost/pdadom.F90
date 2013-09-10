@@ -54,6 +54,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     real(kind=8) :: xp, y, y1, yd1, yd2, ypic1, ypic2
 !
 !-----------------------------------------------------------------------
+    rbid = 0.d0
     ifonc = 0
     ibask = 0
     ihosin = 0

@@ -38,6 +38,7 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
     character(len=16) :: phenom
 ! DEB ------------------------------------------------------------------
 !
+    rbid = 0.d0
     nbpar = 0
     nompar = ' '
     nomval(1) = 'SM'

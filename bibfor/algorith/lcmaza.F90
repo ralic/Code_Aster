@@ -20,7 +20,6 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !
 !
 ! ======================================================================
-! aslint: disable=W1501
     implicit none
 #include "asterc/iisnan.h"
 #include "asterc/r8nnem.h"

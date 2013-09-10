@@ -48,6 +48,7 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
 !-----------------------------------------------------------------------
     integer :: i, nbpar
 !-----------------------------------------------------------------------
+    rbid = 0.d0
     nompar = ' '
     nbpar = 0
     nomres(1) = 'A_BASQUI'

@@ -81,6 +81,7 @@ subroutine pofaun()
 !
     call jemarq()
 !
+    r8b = 0.d0
     fateps = .false.
     lhaigh = .false.
     lke = .false.

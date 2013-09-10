@@ -105,6 +105,7 @@ subroutine op0056()
     parameter (nv=83)
     integer :: iarg
 !
+    r8bid = 0.d0
     call jemarq()
     call infmaj()
 !

@@ -65,6 +65,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
         call codent(i, 'G', val)
         nomres(i) = 'C'//num//'_V'//val
 10  end do
+    r8bid = 0.d0
     call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
                 [r8bid], 9, nomres, valres, icodre, 1)
     epi = valres(1)

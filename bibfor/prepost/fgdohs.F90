@@ -49,6 +49,7 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
 !-----------------------------------------------------------------------
     integer :: i, nbpar
 !-----------------------------------------------------------------------
+    rbid = 0.d0
     nomres(1) = 'E_REFE'
     nomres(2) = 'A0'
     nomres(3) = 'A1'

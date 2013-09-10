@@ -74,6 +74,7 @@ subroutine te0451(option, nomte)
     call codent(1, 'G', num)
     call codent(1, 'G', val)
     nomres='C'//num//'_V'//val
+    r8bid = 0.d0
     call rcvala(zi(jmate), ' ', 'ELAS_COQMU', 0, ' ',&
                 [r8bid], 1, nomres, epi(1), icodre(1),0)
     if (icodre(1) .eq. 0) lcoqmu=.true.

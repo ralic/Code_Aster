@@ -57,6 +57,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
 !
     call jemarq()
 !
+    rbid = 0.d0
     epmax = 0.d0
     nomre1 = 'MANSON_C'
     nomre2 = 'WOHLER  '

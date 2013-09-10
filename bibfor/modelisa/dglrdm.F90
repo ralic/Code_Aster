@@ -146,6 +146,7 @@ subroutine dglrdm()
     k8b = ' '
     call getvr8('BETON', 'EPAIS', 1, iarg, 1,&
                 h, ibid)
+    r8b = 0.d0
     call rcvale(mater, 'ELAS            ', 0, k8b, [r8b],&
                 5, nomres, valres, icodr2, 0)
     if (icodr2(1) .ne. 0 .or. icodr2(2) .ne. 0) call u2mess('A', 'ALGORITH6_8')

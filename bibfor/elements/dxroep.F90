@@ -37,6 +37,7 @@ subroutine dxroep(rho, epais)
     character(len=16) :: phenom
 ! --DEB
 !
+    r8bid = 0.d0
     call jevech('PMATERC', 'L', jmate)
 !
     call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))

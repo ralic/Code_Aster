@@ -55,6 +55,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !     ------------------------------------------------------------------
 !
 !234567                                                              012
+    r8b = 0.d0
     k8b = '        '
     call jemarq()
 !

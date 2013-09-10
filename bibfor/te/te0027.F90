@@ -33,7 +33,6 @@ subroutine te0027(option, nomte)
 !
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
-! aslint: disable=W1501
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS

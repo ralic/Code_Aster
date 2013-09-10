@@ -50,6 +50,7 @@ subroutine rc32r8(nomres, mater, symax)
     data typar1 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R' /
 ! DEB ------------------------------------------------------------------
 !
+    rbid = 0.d0
     call tbajpa(nomres, npar1-2, nopar1(3), typar1(3))
 !
     if (symax .eq. r8vide()) then

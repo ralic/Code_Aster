@@ -46,6 +46,7 @@ subroutine maglrc(zimat, matr, delas, ecr)
     call jevech('PCACOQU', 'L', jcoqu)
     epais = zr(jcoqu)
     nomres(1) = 'EPAIS'
+    r8b = 0.d0
     call rcvala(zimat, ' ', phenom, 0, ' ',&
                 [r8b], 1, nomres, valres, codres,1)
     if (valres(1) .ne. epais) then

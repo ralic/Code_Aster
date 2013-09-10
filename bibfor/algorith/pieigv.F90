@@ -18,9 +18,6 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-!
-! aslint: disable=W1501
     implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/critev.h"

@@ -67,6 +67,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
 !     ------------------------------------------------------------------
 !
 !234567                                                              012
+    r8b = 0.d0
     k8b = '        '
     call jemarq()
 !

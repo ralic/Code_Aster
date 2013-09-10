@@ -62,6 +62,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp,&
 !
     call jemarq()
 !
+    rbid = 0.d0
     null = 0.d0
     un = 1.d0
     deux = 2.d0

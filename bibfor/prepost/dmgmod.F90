@@ -80,6 +80,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !-----------------------------------------------------------------------
     integer :: ik, ivalf
 !-----------------------------------------------------------------------
+    r8b = 0.d0
     call jemarq()
 !
     nomdmg = '&&OP0151.EQUI_GD'
